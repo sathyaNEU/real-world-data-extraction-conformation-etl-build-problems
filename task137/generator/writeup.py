@@ -1,5 +1,4 @@
 """submission.md, every figure from figures.json."""
-import figs as FG
 
 
 def n(x):
@@ -16,7 +15,6 @@ def band(F, k):
 
 def write(path, F):
     h = F["hospital_visits_2025_26"]
-    sk = F["sickness_by_quarter"]
     L = []
     L.append("## Tags\n")
     L.append("**Domain:** Healthcare delivery and health economics (utilization, access and demand forecasting).")
@@ -65,13 +63,7 @@ def write(path, F):
              "late-March forms on its old code's weekdays, and under them the weekly visits jump at the switch, where under "
              "the late-March link they run on); then counted hospital-form visits by specialty and financial quarter of "
              "the visit date.")
-    L.append("6. Counted sickness in eroster_phlebotomy_2023-04_to_2026-09.csv as the holders' Sickness lines plus the "
-             "lines shown unassigned (Vacant line Y) from a sickness's sixth clinic day until the same holder returns, which "
-             "are filled posts, the one vacant post being the one section 4 of the annual report names (14 July to 12 "
-             "September 2025), since every other unassigned stretch follows five Sickness lines of one holder and ends "
-             "with that holder back; working days lost at 7.5 hours each and the rate over every clinic day of every "
-             "filled post, by financial quarter.")
-    L.append("7. Charted each Monday-to-Friday week of 2025-26, GP-referred visits seen, turned away and kept in-house, in "
+    L.append("6. Charted each Monday-to-Friday week of 2025-26, GP-referred visits seen, turned away and kept in-house, in "
              "gp_demand_2025-26.png.\n")
     L.append("## 4. Deliverable Answers\n")
     L.append("### hub_plan_2027-28.xlsx\n")
@@ -79,9 +71,6 @@ def write(path, F):
     L.append("2. Hospital-clinic visits to the walk-in clinic in 2025-26 by financial quarter of the visit, Q1 to Q4:")
     for sp, q in h.items():
         L.append("   - %s: %s, %s, %s, %s" % (sp, n(q["Q1"]), n(q["Q2"]), n(q["Q3"]), n(q["Q4"])))
-    L.append("3. Working days lost to sickness and the sickness absence rate, by financial quarter of 2025-26:")
-    for q, v in sk.items():
-        L.append("   - %s: %s days, %.1f per cent" % (FG.QN[q], v["days_lost"], v["rate_pct"]))
     L.append("\n### gp_demand_2025-26.png\n")
     L.append("1. Stacked bars for each Monday-to-Friday week of 2025-26: GP-referred visits seen, turned away and kept "
              "in-house by the practices with their own phlebotomy clinics.")

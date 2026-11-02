@@ -42,14 +42,14 @@ def metadata(target):
         "task": "task137",
         "title": "How many GP-referred blood-test visits a trust's new community phlebotomy hub should plan for in "
                  "2027-28, from a walk-in clinic that ran out of tickets, with the clinic's hospital-clinic visits by "
-                 "specialty and its phlebotomists' sickness absence",
+                 "specialty",
         "domain": "Healthcare Delivery & Health Economics",
         "subdomain": "utilization-access-demand-forecasting (latent demand: the GP-referred demand a walk-in clinic "
                      "never sees because practices with their own phlebotomy clinics keep patients in-house after it "
                      "has been running out)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "other: one planning figure at the nearest 2,500, a weekly chart of 2025-26 GP-referred demand, "
-                        "and two asks on the hospital clinics' visits and the team's sickness absence",
+                        "and one ask on the hospital clinics' visits by specialty and quarter",
         "as_of": P.AS_OF.isoformat(),
         "deliverables": [GD.XLSX, GD.PNG],
         "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
@@ -57,9 +57,7 @@ def metadata(target):
         "stated_inputs": ["the hub takes every patient with a GP request from 1 April 2027 and is staffed never to "
                           "run out of tickets (prompt, annual report section 6)",
                           "underlying demand grows 3.5 per cent a year for two years from 2025-26, with no working-day "
-                          "adjustment (prompt; ICB planning assumptions)",
-                          "sickness absence is the hours lost to sickness as a percentage of the hours rostered to the "
-                          "substantive team (annual report section 4)"],
+                          "adjustment (prompt; ICB planning assumptions)"],
         "field_terms": [],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
@@ -145,8 +143,8 @@ def main(second=True, checks=True):
         print("byte-identical; target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
         import verify as V
         assert not V.main(zp)
-        import pair as PR
-        PR.score(TARGET)
+        import ceiling as CL
+        CL.score(TARGET)
     return F
 
 

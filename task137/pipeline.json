@@ -43,7 +43,7 @@
   "history": "pass 5 FIX_NOW (the AIC margin restated at 60; the evidence for the two soft ask forks written into steps 5 and 6), pass 6 APPROVE"
  },
  "call": "45,000 GP-referred visits (44,760.2); default 42,500 (42,011.3); the round 2 Opus reader's ten daily lags 42,500 (41,934.0)",
- "resume": "RE-ROOT owed (2026-11-02): the honest-cracker audit found Ask B spent, and the ask rework found no Ask B device that passes both tests as worded: the report's sections 1 and 4, the kiosk's ticket rule and the queue bays, all files the call reads, fix every dimension but the absence label, and the label's only forcing structure is the battery's sequence check (candidate table in the design note's Tried and rejected). Ask A holds weakly and cannot be strengthened without changing the queue events file the call reads. Unblocking needs a file the call reads to change (for example a hospital patient under two numbers after the 16 March 2026 PAS replacement, keyed on the queue export's hospital-form rows), which is a new architecture's work: re-root at stage 1, or a determinism re-check after such a change.",
+ "resume": "RE-ROOT of the ask layer owed (2026-11-02). The sickness ask was cut at the coordinator's decision (prompt clause, figures.json through the generator, block 4 item 3 and step 6 with SF13, the golden's sickness sheet, its checks and verify route; the e-roster kept as a distractor); target.zip md5 8f5c6aa2 unchanged, every file the call reads asserted byte-identical, freeze rubric PASS, checks and verify 0 failures. Ask A, the one ask left, is spent under the careful-solver cracker: a careful solver tests the register's clinic_days on the 805 register-coded 2025-26 visits before naming the old codes by them, the test fails on 328, every off-schedule form was issued 16 to 31 March and none from 1 April, and the late-March link follows (generator/ceiling.py: 28 of 28, pair 83.5, mirror leakage 100.0 per cent; precut fails on those three rows only). The main call, its stump and its judge record stand. Next: an ask layer on records the call does not read with a device that passes both tests, or the author's leave to change a file the call reads (for example a patient key on the queue export's hospital-form rows for an identity device), which needs a determinism re-check.",
  "architecture_1": {
   "status": "RETURNED",
   "domain": "banking-credit-financial-risk",
@@ -236,5 +236,14 @@
   "why": "the annual report's section 4 names the one vacant post, so reading every unassigned line as vacant contradicts a filed fact; the other 67 follow a holder's Sickness lines",
   "probe": "scratchpad audit_cracker/task137/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
   "status_before": "SHIPPED"
+ },
+ "ask_cut_2026_11_02": {
+  "cut": "Ask B (working days lost to sickness and the sickness absence rate by quarter, 8 figures)",
+  "kept": "Ask A (hospital-clinic visits by specialty and quarter, 28 figures)",
+  "pack": "unchanged: target.zip md5 8f5c6aa228c4385bd09c5d4fdf29e2c8, sha256 dd38b80d...28699",
+  "e_roster": "kept as a distractor (no ask and no golden route reads it; one standing-family covariate counts its lines on the floor)",
+  "ask_a_ruling": "the register route's validation on the register-coded forms is a battery item a careful solver runs unprompted: SPENT",
+  "ceiling": "generator/ceiling.py: careful cracker 28 of 28, pair 83.5, mirror leakage 100.0, two careful responses 100.0 each; 28.5 only for a cracker that skips the validation",
+  "gates": "checks 0 failed, verify 0 failed, two builds byte-identical, freeze rubric PASS (determinism flags only the 9 cut keys and the xlsx answers), precut 61 checks 3 FAIL (pair ceiling, mirror leakage, cracker), voice-check PASS, figures_check 59 of 59; leak.py and surface not run (nothing ships)"
  }
 }

@@ -261,79 +261,46 @@ def main(target, R=None):
     check("SF12 the weekly visits run on across the switch under the late-March link and jump under the register's reading "
           "(specialties' week-on-week moves through the fortnight both codes run, at least twice as large)",
           b_reg >= 2 * b_gold, (b_gold, b_reg))
-    days = S.clinic_days_list(target)
-    sick = S.ask_sick(target, days)
-    flag = S.ask_sick_flag(target, days)
-    defin = S.ask_sick_definition(target, days)
-    over = S.ask_sick_overclean(target, days)
-
-    def bhits(x):
-        return sum(int(round(x[q]["hours"] / 7.5) == round(sick[q]["hours"] / 7.5)) + int(round(x[q]["rate"], 1) == round(sick[q]["rate"], 1))
-                   for q in sick)
-    check("ask B: unassigned lines read as vacant posts (the careful route) misses all 8 cells", bhits(flag) == 0, "%d of 8" % bhits(flag))
-    check("ask B: filled posts from the report with sickness rows only misses all 8 cells", bhits(defin) == 0, "%d of 8" % bhits(defin))
-    check("ask B: every unassigned line read as sickness (the over-cleaner) lands outside Q2, recorded", True, "%d of 8" % bhits(over))
-    for q, v in sick.items():
-        check("ask B %s: the rate at least 0.02 inside its 0.1 cell" % q, 0.05 - abs(v["rate"] - round(v["rate"], 1)) >= 0.02, v["rate"])
-    r = S.roster(target)
-    sub = r[r.Assignment != "Bank Phlebotomist"].copy()
-    check("ask B: the e-roster carries no long-term label and no row longer than a clinic day",
-          not (r.Absence == "Sickness - long term").any() and (r.Hours == 7.5).all())
-    # identity: each unassigned line outside the report's vacancy belongs to a holder who is away that day, whose last
-    # line before was sickness and who comes back
-    v0, v1 = S.report_vacancy(target)
-    spans = sub[sub["Employee no"].notna()].groupby("Employee no").d.agg(["min", "max"])
-    bad = 0
-    for d, x in sub.groupby("d"):
-        ny = int((x["Vacant line"] == "Y").sum()) - (1 if v0 <= d <= v1 else 0)
-        if ny <= 0:
-            continue
-        here = set(x["Employee no"].dropna())
-        away = [e for e, s in spans.iterrows() if s["min"] < d < s["max"] and e not in here]
-        prev = [sub[(sub["Employee no"] == e) & (sub.d < d)].sort_values("d").Absence.iloc[-1] for e in away]
-        bad += int(ny != sum(1 for a in prev if a == "Sickness"))
-    check("ask B: every unassigned line outside the report's vacancy is an away holder whose last line was sickness", bad == 0, bad)
-    # SF13: Vacant line Y read as a vacant post, refuted by the report's one named vacancy and the holders' stretches
-    import re as _re13
-    rep13 = pdf_text(os.path.join(target, DC.FILES["report"]))
-    check("SF13 positive control: section 4 names one vacant post, from 14 July to 12 September 2025",
-          len(_re13.findall(r"vacant from \d+ \w+ to \d+ \w+ \d{4}", rep13)) == 1 and "One Band 2 post was vacant" in rep13
-          and (v0, v1) == (dt.date(2025, 7, 14), dt.date(2025, 9, 12)))
-    yl = sub[(sub["Vacant line"] == "Y") & (sub.d >= S.FY0) & (sub.d <= S.FY1)]
-    out13 = sorted({d for d in yl.d if not (v0 <= d <= v1)})
-    check("SF13 read as vacant posts, the 2025-26 unassigned lines would add vacancies on clinic days outside the one "
-          "section 4 names", len(out13) > 0, "%d clinic days" % len(out13))
-    rdays = sorted(sub.d.unique())
-    ri = {d: i for i, d in enumerate(rdays)}
-    held = sub[sub["Employee no"].notna()]
-    gaps13, bad13 = [], []
-    for e, x in held.groupby("Employee no"):
-        xd = set(x.d)
-        lo, hi = min(xd), max(xd)
-        gap = [d for d in rdays if lo < d < hi and d not in xd]
-        runs = []
-        for d in gap:
-            if runs and ri[d] == ri[runs[-1][-1]] + 1:
-                runs[-1].append(d)
-            else:
-                runs.append([d])
-        for g13 in runs:
-            prev = x[x.d < g13[0]].sort_values("d").Absence.tolist()
-            five = prev[-5:] == ["Sickness"] * 5 and (len(prev) < 6 or prev[-6] != "Sickness")
-            back = x[x.d > g13[-1]].sort_values("d").d.iloc[0] == rdays[ri[g13[-1]] + 1]
-            gaps13.append((e, g13[0], g13[-1]))
-            if not (five and back):
-                bad13.append((e, g13[0], g13[-1]))
-    check("SF13 every unassigned stretch outside the named vacancy is a holder's: it follows exactly five Sickness lines and "
-          "ends with the same holder back the next clinic day", len(gaps13) > 0 and not bad13, (len(gaps13), bad13))
-    in_gap = {d: sum(1 for _, a, b in gaps13 if a <= d <= b) for d in rdays}
-    ycount = sub[sub["Vacant line"] == "Y"].groupby("d").size()
-    check("SF13 every unassigned line is one of those stretches or the named vacancy",
-          all(int(n) == in_gap[d] + (1 if v0 <= d <= v1 else 0) for d, n in ycount.items()))
-    leaver = held.groupby("Employee no").d.max()
-    starter = held.groupby("Employee no").d.min()
-    check("SF13 the named vacancy runs from the clinic day after a leaver's last line to the clinic day before a starter's "
-          "first", any(rdays[ri[d] + 1] == v0 for d in leaver if d < v0) and any(rdays[ri[d] - 1] == v1 for d in starter if d > v1))
+    # the rubric repair's scope (fix-rubric step 4): the ask-side cut of the sickness ask left every file the call reads
+    # byte-identical to the shipped pack (target.zip 8f5c6aa2) and every main-call figure where it was
+    import hashlib as _hl
+    shipped = {
+        "legacy": "e4702be456835e0bdb46f8868c1fa6b9bc0a6288b7777b795b0526841a906025",
+        "events": "2030dc9f0eb48f3831b585e16b1812a61fdb9a34be4b6e4569ebdbc1aa7f970f",
+        "log": "375b24eae54127b155bc13ff60c2fe7ac31f911c0f2eff924179490dae95e4ec",
+        "roster": "b890cea47bed9519ffbc16f5e44eeb838e3c3b0c52f923cab6f5e4b671170fb4",
+        "kiosk": "448d009a9cb8a4bfc15088b89fc7578db5d0d7437faa0f0a760b76f52bcef80e",
+        "practices": "9798d444c2591440036d592ab1af4260062bff73f920c7ebdc39fbef7df718c9",
+        "report": "81d59c980d2e81e8cd1b77baf0c5489848c6c2b826eb2cb388796645612df5b0",
+        "icb": "e7fb6723f096c1d3f49aefad8d8b0c731e45f8cc6a292ccb5cbc2f89f24f07bd",
+        "bh": "7177c0f65ba886fa10f5df234cb8bd9d77eb55a2e5d7d22b1e678200cf26ccce",
+    }
+    moved = [DC.FILES[k] for k, h in shipped.items()
+             if _hl.sha256(open(os.path.join(target, DC.FILES[k]), "rb").read()).hexdigest() != h]
+    check("scope: every file the call reads (and the e-roster the standing family's covariate reads) is byte-identical "
+          "to the shipped pack", not moved, moved)
+    main_ref = {"plan_visits_2027_28": 45000, "plan_unrounded": 44760, "base_2025_26": 41784, "kept_in_house_2025_26": 2566,
+                "window_weeks": 8, "window_runner_up_weeks": 9, "base_2025_26_runner_up": 41990,
+                "aic_gap_five_weeks_or_fewer": 60, "base_2025_26_low": 41800, "base_2025_26_high": 42000,
+                "kept_in_house_low": 2600, "kept_in_house_high": 2800, "plan_unrounded_low": 44800,
+                "plan_unrounded_high": 45000, "coef_about": -0.37, "gp_seen_2025_26": 37853, "gp_turned_away_2025_26": 1365,
+                "gp_arrivals_2025_26": 39218, "run_out_days_2025_26": 56, "clinic_days_2025_26": 253,
+                "coef_window_share": -0.374, "coef_se": 0.026, "growth_pct": 3.5, "growth_years": 2, "rounding_unit": 2500,
+                "default_path_plan": 42500, "default_path_unrounded": 42011, "seen_only_plan": 40000,
+                "seen_only_unrounded": 40549, "weekly_weeks": 53}
+    _fjs = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")
+    if os.path.exists(_fjs):
+        import json as _js
+        with open(_fjs) as _fh:
+            _F = _js.load(_fh)
+        diff = {k: (v, _F.get(k)) for k, v in main_ref.items() if _F.get(k) != v}
+        check("scope: every main-call figure in figures.json is the shipped value", not diff, diff)
+        check("scope: figures.json holds the call's figures and the one ask, nothing of the cut sickness ask",
+              set(_F) == set(main_ref) | {"hospital_visits_2025_26"}, sorted(set(_F) ^ (set(main_ref) | {"hospital_visits_2025_26"})))
+    gpc = ci[ci.request_type == "GP"]
+    clinic_like = gpc.request_org.fillna("").str.match(r"^(HG-C\d\d|[A-Z]{3}\d\d[A-Z])$")
+    check("separation by count: no GP-form check-in carries a hospital clinic code, old or new (the device rows sit on "
+          "hospital forms only)", int(clinic_like.sum()) == 0, int(clinic_like.sum()))
     import re as _re
     import zipfile as _zf
     for k in ("log", "hub"):
@@ -356,13 +323,13 @@ def main(target, R=None):
     check("gates: ten or more files", len(files) >= 10, len(files))
     check("gates: three or more formats", len(fmts) >= 3, sorted(fmts))
     check("gates: a file of 25,000 rows or more", big >= 25000, big)
-    check("gates: two distractors named", len(DC.DISTRACTORS) >= 2, DC.DISTRACTORS)
+    check("gates: two or more distractors named", len(DC.DISTRACTORS) >= 2, DC.DISTRACTORS)
     tmp = tempfile.mkdtemp()
     for f in files:
         if f not in [DC.FILES[k] for k in DC.DISTRACTORS]:
             shutil.copy(os.path.join(target, f), tmp)
     Dx, cix, evx, gx = S.solve(tmp)
-    check("gates: the golden is unchanged with both distractors deleted", gx["plan_r"] == gold and abs(gx["plan"] - g["plan"]) < 1e-6)
+    check("gates: the golden is unchanged with every distractor deleted (the e-roster among them)", gx["plan_r"] == gold and abs(gx["plan"] - g["plan"]) < 1e-6)
     shutil.rmtree(tmp)
     # documents read back, positive controls on the same extractor
     rep = pdf_text(os.path.join(target, DC.FILES["report"]))

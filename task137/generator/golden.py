@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 
-import figs as FG
 import params as P
 
 XLSX = "hub_plan_2027-28.xlsx"
@@ -80,26 +79,7 @@ def write(folder, F, X):
         for c in row:
             c.number_format = "#,##0"
     ws2.freeze_panes = "B3"
-    ws3 = wb.create_sheet("Sickness 2025-26")
-    ws3.append(["Phlebotomy team sickness absence, 2025-26 (substantive posts; 7.5-hour clinic days)"])
-    ws3["A1"].font = Font(bold=True)
-    ws3.append(["Quarter", "Working days lost to sickness", "Sickness absence rate (%)"])
-    for c in ws3[2]:
-        c.font = bold
-    for q, v in F["sickness_by_quarter"].items():
-        ws3.append([FG.QN[q], v["days_lost"], v["rate_pct"]])
-        ws3.cell(row=ws3.max_row, column=2).number_format = "0"
-        ws3.cell(row=ws3.max_row, column=3).number_format = "0.0"
-    ws3.append([])
-    ws3.append(["Rate as the annual report defines it (section 4): hours lost to sickness over the hours rostered to the "
-                "substantive team, vacant posts and bank shifts left out. Lines the e-roster shows unassigned from a "
-                "sickness's sixth clinic day until the holder returns count as that holder's sickness; the one vacant "
-                "post is the one the report names."])
-    ws3["A%d" % ws3.max_row].font = Font(italic=True, size=9)
-    ws3.column_dimensions["A"].width = 26
-    ws3.column_dimensions["B"].width = 30
-    ws3.column_dimensions["C"].width = 26
-    ws4 = wb.create_sheet("Notes")
+    ws3 = wb.create_sheet("Notes")
     for line in (["Notes"],
                  ["Records", "Walk-in queue records 3 April 2023 to 30 September 2026 (old kiosk to 17 November 2024, "
                              "new kiosk from 18 November 2024; the parallel-run fortnight counted once)"],
@@ -112,14 +92,14 @@ def write(folder, F, X):
                             "year, applied to 2025-26 for two years; no working-day adjustment"],
                  ["Not in the plan", "Patients sent from hospital clinics, who stay at Outpatients block A; the booked "
                                      "clinic at %s, which carries on as now" % P.SATELLITE]):
-        ws4.append(line)
-    ws4["A1"].font = Font(bold=True)
-    for r in range(2, ws4.max_row + 1):
-        ws4.cell(row=r, column=1).font = bold
-        ws4.cell(row=r, column=2).alignment = Alignment(wrap_text=True, vertical="top")
-        ws4.cell(row=r, column=1).alignment = Alignment(vertical="top")
-    ws4.column_dimensions["A"].width = 18
-    ws4.column_dimensions["B"].width = 96
+        ws3.append(line)
+    ws3["A1"].font = Font(bold=True)
+    for r in range(2, ws3.max_row + 1):
+        ws3.cell(row=r, column=1).font = bold
+        ws3.cell(row=r, column=2).alignment = Alignment(wrap_text=True, vertical="top")
+        ws3.cell(row=r, column=1).alignment = Alignment(vertical="top")
+    ws3.column_dimensions["A"].width = 18
+    ws3.column_dimensions["B"].width = 96
     import docs as DC
     DC.save_xlsx(wb, os.path.join(folder, XLSX), dt.datetime(2026, 10, 2, 16, 5), P.PEOPLE["outpatients"])
     # chart

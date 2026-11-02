@@ -1,16 +1,17 @@
 {
   "task": "task137",
-  "title": "How many GP-referred blood-test visits a trust's new community phlebotomy hub should plan for in 2027-28, from a walk-in clinic that ran out of tickets, with the clinic's hospital-clinic visits by specialty and its phlebotomists' sickness absence",
+  "title": "How many GP-referred blood-test visits a trust's new community phlebotomy hub should plan for in 2027-28, from a walk-in clinic that ran out of tickets, with the clinic's hospital-clinic visits by specialty",
   "domain": "Healthcare Delivery & Health Economics",
   "subdomain": "utilization-access-demand-forecasting (latent demand: the GP-referred demand a walk-in clinic never sees because practices with their own phlebotomy clinics keep patients in-house after it has been running out)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "other: one planning figure at the nearest 2,500, a weekly chart of 2025-26 GP-referred demand, and two asks on the hospital clinics' visits and the team's sickness absence",
+  "prompt_shape": "other: one planning figure at the nearest 2,500, a weekly chart of 2025-26 GP-referred demand, and one ask on the hospital clinics' visits by specialty and quarter",
   "as_of": "2026-10-02",
   "deliverables": [
     "hub_plan_2027-28.xlsx",
     "gp_demand_2025-26.png"
   ],
   "distractor_files": [
+    "eroster_phlebotomy_2023-04_to_2026-09.csv",
     "phlebotomy_patient_survey_2025.csv",
     "community_hub_session_plan_2027.xlsx"
   ],
@@ -20,8 +21,7 @@
   ],
   "stated_inputs": [
     "the hub takes every patient with a GP request from 1 April 2027 and is staffed never to run out of tickets (prompt, annual report section 6)",
-    "underlying demand grows 3.5 per cent a year for two years from 2025-26, with no working-day adjustment (prompt; ICB planning assumptions)",
-    "sickness absence is the hours lost to sickness as a percentage of the hours rostered to the substantive team (annual report section 4)"
+    "underlying demand grows 3.5 per cent a year for two years from 2025-26, with no working-day adjustment (prompt; ICB planning assumptions)"
   ],
   "field_terms": [],
   "input_gates": {

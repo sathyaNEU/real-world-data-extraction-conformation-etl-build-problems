@@ -159,36 +159,6 @@ def main(zp):
             tab[(sp, q)] = tab.get((sp, q), 0) + 1
     miss = [(sp, q) for sp, qq in F["hospital_visits_2025_26"].items() for q, v in qq.items() if tab.get((sp, q), 0) != v]
     ok("ask A: all 28 cells", not miss, miss[:3])
-    # ask B, own route by identity: an unassigned line belongs to a holder who has no line that day, whose last line
-    # before was sickness and who comes back; any other unassigned line is the vacant post
-    ro_rows = [r for r in rows(z, "eroster_phlebotomy_2023-04_to_2026-09.csv") if r["Assignment"] != "Bank Phlebotomist"]
-    by_day = {}
-    for r in ro_rows:
-        by_day.setdefault(r["Roster date"], []).append(r)
-    span = {}
-    for r in ro_rows:
-        if r["Employee no"]:
-            a0, a1 = span.get(r["Employee no"], (r["Roster date"], r["Roster date"]))
-            span[r["Employee no"]] = (min(a0, r["Roster date"]), max(a1, r["Roster date"]))
-    last = {}
-    sick, rost = {}, {}
-    for day in sorted(by_day):
-        rs = by_day[day]
-        present = {r["Employee no"] for r in rs if r["Employee no"]}
-        absent_sick = [e for e, (a0, a1) in span.items() if a0 < day < a1 and e not in present and last.get(e) == "Sickness"]
-        unassigned = sum(1 for r in rs if r["Vacant line"] == "Y")
-        d = dt.date.fromisoformat(day)
-        if dt.date(2025, 4, 1) <= d <= dt.date(2026, 3, 31):
-            q = "Q%d" % (((d.month - 4) % 12) // 3 + 1)
-            k = min(len(absent_sick), unassigned)
-            sick[q] = sick.get(q, 0) + sum(1 for r in rs if r["Absence"] == "Sickness") + k
-            rost[q] = rost.get(q, 0) + sum(1 for r in rs if r["Vacant line"] == "N") + k
-        for r in rs:
-            if r["Employee no"]:
-                last[r["Employee no"]] = r["Absence"]
-    for q, v in F["sickness_by_quarter"].items():
-        ok("ask B %s days lost" % q, sick.get(q, 0) == v["days_lost"], sick.get(q, 0))
-        ok("ask B %s rate" % q, round(100.0 * sick.get(q, 0) / rost[q], 1) == v["rate_pct"], round(100.0 * sick.get(q, 0) / rost[q], 3))
     # every format read back
     from pypdf import PdfReader
     rep = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(z.read("phlebotomy_annual_report_2025-26.pdf"))).pages))

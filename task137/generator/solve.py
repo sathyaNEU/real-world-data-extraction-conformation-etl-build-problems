@@ -502,66 +502,6 @@ def roster(target):
     return r
 
 
-def clinic_days_list(target):
-    """Clinic days from the queue records: every day either system recorded a visit."""
-    seen, ci, ev = load_seen(target)
-    return sorted(seen.index)
-
-
-def report_vacancy(target):
-    """The vacant post the annual report names (section 4), as a date range."""
-    import re
-    from pypdf import PdfReader
-    txt = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, F["report"])).pages))
-    m = re.search(r"post was vacant from (\d+ \w+) to (\d+ \w+ \d{4})", txt)
-    end = dt.datetime.strptime(m.group(2), "%d %B %Y").date()
-    start = dt.datetime.strptime("%s %d" % (m.group(1), end.year), "%d %B %Y").date()
-    return start, end
-
-
-def _sick_counts(target, days, mode):
-    r = roster(target)
-    sub = r[r.Assignment != "Bank Phlebotomist"]
-    v0, v1 = report_vacancy(target)
-    out = {}
-    for q in ("Q1", "Q2", "Q3", "Q4"):
-        qd = [d for d in days if FY0 <= d <= FY1 and quarter(d) == q]
-        x = sub[sub.d.isin(qd)]
-        sick = int((x.Absence == "Sickness").sum())
-        yrows = int((x["Vacant line"] == "Y").sum())
-        nrows = int((x["Vacant line"] == "N").sum())
-        vacd = sum(1 for d in qd if v0 <= d <= v1)
-        if mode == "golden":        # unassigned lines are filled posts whose holder is off sick, bar the vacant post
-            s_days, r_days = sick + yrows - vacd, nrows + yrows - vacd
-        elif mode == "flag":        # every unassigned line read as a vacant post
-            s_days, r_days = sick, nrows
-        elif mode == "definition":  # filled posts from the report's vacancy, sickness from the rows
-            s_days, r_days = sick, len(qd) * P.POSTS - vacd
-        else:                        # every unassigned line read as sickness, the vacant post included
-            s_days, r_days = sick + yrows, nrows + yrows
-        out[q] = {"hours": round(7.5 * s_days, 1), "rate": round(100.0 * s_days / r_days, 2), "rostered": round(7.5 * r_days, 1)}
-    return out
-
-
-def ask_sick(target, days):
-    """Working days lost to sickness and the sickness absence rate by financial quarter of 2025-26: a holder's sickness
-    rows, and the lines the e-roster shows unassigned from the sixth clinic day of a sickness until the same holder
-    returns, which are filled posts; the one vacant post is the one the annual report names."""
-    return _sick_counts(target, days, "golden")
-
-
-def ask_sick_flag(target, days):
-    return _sick_counts(target, days, "flag")
-
-
-def ask_sick_definition(target, days):
-    return _sick_counts(target, days, "definition")
-
-
-def ask_sick_overclean(target, days):
-    return _sick_counts(target, days, "overclean")
-
-
 def weekly(D, b, col):
     y = D[D.fy == 2025].copy()
     y["kept"] = y.arr * (np.exp(-b * y[col]) - 1)

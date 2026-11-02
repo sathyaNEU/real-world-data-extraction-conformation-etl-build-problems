@@ -22,8 +22,7 @@ Underlying 2025-26 GP-referred demand was about 41,800 to 42,000 visits, about 2
 3. Took each Monday-to-Friday week's run-out share (its logged run-out days over its clinic days) and modelled each clinic day's GP-referred arrivals (seen plus turned away), April 2023 to September 2026, as Poisson in weekday, month, a linear trend, the day after a bank holiday and the mean share of the previous L weeks, L from one to twelve by AIC: eight weeks, every window of five weeks or fewer at least 60 worse, coefficient about -0.37 (standard error 0.026), the fall sitting with the practices whose phlebotomy_les_2025-26 is Y in gp_practices_catchment.csv.
 4. Took the GP-referred arrivals of every clinic day of 2025-26 with that effect removed: about 41,800 to 42,000 visits (the eight-week window and the nine-week window next to it in fit), grown 3.5 per cent a year for two years to about 44,800 to 45,000, 45,000 to the nearest 2,500.
 5. Named each 2025-26 hospital request's clinic code: forms issued before 16 March 2026 carry the old PAS's codes, which outpatient_clinic_codes.csv does not hold, and each old code is the new code whose forms issued in the second half of March 2026 fall on the same weekdays as the old code's, before the clinics changed their sessions in April (the register's clinic_days name all seven wrongly: none of the new codes they pick has late-March forms on its old code's weekdays, and under them the weekly visits jump at the switch, where under the late-March link they run on); then counted hospital-form visits by specialty and financial quarter of the visit date.
-6. Counted sickness in eroster_phlebotomy_2023-04_to_2026-09.csv as the holders' Sickness lines plus the lines shown unassigned (Vacant line Y) from a sickness's sixth clinic day until the same holder returns, which are filled posts, the one vacant post being the one section 4 of the annual report names (14 July to 12 September 2025), since every other unassigned stretch follows five Sickness lines of one holder and ends with that holder back; working days lost at 7.5 hours each and the rate over every clinic day of every filled post, by financial quarter.
-7. Charted each Monday-to-Friday week of 2025-26, GP-referred visits seen, turned away and kept in-house, in gp_demand_2025-26.png.
+6. Charted each Monday-to-Friday week of 2025-26, GP-referred visits seen, turned away and kept in-house, in gp_demand_2025-26.png.
 
 ## 4. Deliverable Answers
 
@@ -38,11 +37,6 @@ Underlying 2025-26 GP-referred demand was about 41,800 to 42,000 visits, about 2
    - Haematology: 424, 437, 454, 495
    - Renal medicine: 378, 361, 398, 440
    - Rheumatology: 406, 376, 343, 2,192
-3. Working days lost to sickness and the sickness absence rate, by financial quarter of 2025-26:
-   - Q1 (April to June): 29 days, 6.8 per cent
-   - Q2 (July to September): 23 days, 5.6 per cent
-   - Q3 (October to December): 39 days, 8.7 per cent
-   - Q4 (January to March): 23 days, 5.2 per cent
 
 ### gp_demand_2025-26.png
 

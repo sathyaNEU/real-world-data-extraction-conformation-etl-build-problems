@@ -27,7 +27,7 @@ FILES = {
     "hub": "community_hub_session_plan_2027.xlsx",
 }
 PACK = list(FILES)
-DISTRACTORS = ["survey", "hub"]
+DISTRACTORS = ["roster", "survey", "hub"]
 CONTEXT = ["report", "icb"]
 
 

@@ -1,17 +1,11 @@
 """Every owed figure, computed from the shipped files, as the write-up states it."""
 import solve as S
 
-QN = {"Q1": "Q1 (April to June)", "Q2": "Q2 (July to September)", "Q3": "Q3 (October to December)",
-      "Q4": "Q4 (January to March)"}
-
-
 def compute(target):
     D, ci, ev, g = S.solve(target)
     fam = S.family(D, ci, g["L"])
     lad = S.ladder(D, target, ci)
     hosp, code_spec = S.ask_hosp(ci, target)
-    days = S.clinic_days_list(target)
-    sick = S.ask_sick(target, days)
     wk = S.weekly(D, g["b"], g["col"])
     arr25 = g["seen_gp"] + g["away_gp"]
     # the intermediates as a band: the window the fit picks and the window next to it in fit
@@ -43,16 +37,13 @@ def compute(target):
         "coef_se": round(g["se"], 3),
         "growth_pct": 3.5,
         "growth_years": 2,
-        "hours_per_day": 7.5,
         "rounding_unit": 2500,
         "default_path_plan": S.rnd(arr25 * S.G2),
         "default_path_unrounded": round(arr25 * S.G2),
         "seen_only_plan": S.rnd(g["seen_gp"] * S.G2),
         "seen_only_unrounded": round(g["seen_gp"] * S.G2),
         "hospital_visits_2025_26": hosp,
-        "sickness_by_quarter": {q: {"days_lost": int(round(v["hours"] / 7.5)), "rate_pct": round(v["rate"], 1)}
-                                for q, v in sick.items()},
         "weekly_weeks": int(len(wk)),
     }
-    X = {"D": D, "ci": ci, "g": g, "fam": fam, "lad": lad, "hosp": hosp, "code_spec": code_spec, "sick": sick, "wk": wk}
+    X = {"D": D, "ci": ci, "g": g, "fam": fam, "lad": lad, "hosp": hosp, "code_spec": code_spec, "wk": wk}
     return F, X

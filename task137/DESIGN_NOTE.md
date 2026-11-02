@@ -47,9 +47,9 @@ nothing new is filed, and how long it lasts is the record's to pick (`## Tried a
    The integrated care board's planning assumption (3.5 per cent a year) is applied to 2025-26.
 4. Call and shape: the hub's 2027-28 GP-referred visits to the nearest 2,500 (`quantity_figure`, how-many); shape
    `other`: the call with its three components, the weekly chart of 2025-26 GP-referred demand (seen, turned away and
-   kept in-house, 53 weeks), and two ask grids on the walk-in clinic's other work (hospital-clinic visits by specialty
-   and quarter, 28 figures; working days lost to sickness and the sickness absence rate by quarter, 8 figures).
-   Criteria: the call and its four components (5), the chart (3 or more), 36 ask figures, the two files: 25 or more.
+   kept in-house, 53 weeks), and one ask grid on the walk-in clinic's other work (hospital-clinic visits by specialty
+   and quarter, 28 figures; the sickness grid of 8 figures was cut on 2026-11-02, `## Ask sheet`).
+   Criteria: the call and its four components (5), the chart (3 or more), 28 ask figures, the two files: 38, 25 or more.
 5. Mechanism keys: gap time then population (the record was made under a clinic that ran out and the plan bets on one
    that never does, and the patients the run-outs sent elsewhere are in no record); pattern none, generators G5 (the
    practices' own phlebotomists bleed the deterred patients), G12 (a turned-away patient is logged, a deterred one
@@ -138,6 +138,16 @@ No decoy: nothing is planted: the queue records, the log, the e-roster, the kios
 No certified replay: no certified or published figure is reproduced to recover a method; the annual report's activity table is the clinic's own count of patients seen and turned away, which the easy route and the golden both reproduce, and the deterrence and its window are recovered from the record's own variation, not from any figure.
 Lesson: a walk-in service's unconstrained demand is not its patients seen plus its patients refused: where referrers can provide the service themselves, the service's run-outs send later patients to them for as long as the referrers keep the habit, so the record's arrivals, refusals included, are held down by the service's own record of running out, and a model that lets the run-outs reach a week or ten days sees the start of the fall and misses most of it; how long the effect lasts is a model-selection question the record answers. No build on file prices demand deterred by a service's own recent run-outs, the unconstrained-demand builds (task18, task108, task147, task168, task308 v1) all recovering demand truncated on the day or counted twice after it.
 
+## Survivor anatomy
+
+Actor: the deciding property is how long the practices with their own phlebotomy clinics keep GP-referred patients in-house after the walk-in clinic's run-out weeks (eight weeks, 2,566 visits in 2025-26), and no file stores it: it is a relation between each clinic day's GP-referred arrivals and the reception log's run-outs in the weeks before, no column holds the deterrence, its window or the patients kept (R1, asserted), and the register's phlebotomy_les_2025-26 flag, which names the practices with a clinic, is two steps from it (a lagged run-out share, then a fit across windows), not one join.
+Link: each clinic day's GP-referred arrivals in the two queue systems are compared with the share of clinic days the reception log shows running out in each of the previous eight calendar weeks, a lagged cross-file comparison no key offers (a day joins its own log line, never the weeks before it) and no sentence invites (nothing filed says that run-outs keep later patients away).
+Reflex: the field's own measure of a capacity-limited walk-in service's unconstrained demand, activity plus the patients turned away, is rung 1 and the default path, filing 42,500 (42,011 grown) against the golden's 45,000, and its detruncation form, the run-out days completed from the GP ticket-issue curve, files 42,500 too (42,265); the default path ends on 42,500.
+Back-test: what a solver uses to validate seen plus turned away passes: it reproduces the annual report's activity table (37,853 seen, 1,365 turned away, 56 run-out days), the full days completed from the ticket-issue curve land in the same cell (42,265 against 42,011), and the return check finds that the turned away do not come back (t of -0.8 and -2.2 at one and two days), so adding them counts nobody twice and nothing in the pack refutes the easy route.
+Second use: the decisive step reads only the two queue systems and the reception log (the day after a bank holiday from the record's own closures or the bank holidays file), and deleting the step drops none of them: the queue records are the clinic's activity count every route reads, the log is the PALS return the default path adds, and the bank holidays file is the published calendar a solver checks the clinic days against; the practice register, which the corroborating comparison of practices with and without a clinic reads, also carries the list sizes and the October 2025 merger that the GP request forms' codes need.
+Shock: the visits the step puts back read as ordinary seasonal movement: of the ten 2025-26 weeks it raises most, five are among the ten lowest weeks for GP-referred arrivals a clinic day, and those low weeks fall in June to August, November and December, where the calendar explains them; ranked on GP arrivals a day, patients seen, patients turned away, the run-out share and hospital-form visits, the ten weeks form an interval on none of them (on GP arrivals a day they rank 1, 2, 3, 5, 8, 18, 20, 22, 23 and 30 of 44 full weeks).
+Pins: the WHAT is filed in the trust's and the board's own genres, the annual report's section 6 (every patient with a GP request at a hub that never runs out of tickets, its activity plan set from 2025-26) and the integrated care board's planning assumptions letter (3.5 per cent a year for two years, no working-day adjustment), and no filed sentence names the run-outs' reach into later weeks, the eight-week window or the practices keeping patients in-house; the report's line that most practices run their own phlebotomy clinics describes the practices, and deleting it leaves the call forced, since the golden reads only the queue records and the log.
+
 ## Default path
 
 1. Read the prompt and the annual report: from 1 April 2027 the hub takes every patient with a GP request and never runs
@@ -200,7 +210,6 @@ across weeks picks eight. That is the stage 4 readers' Gate F question.
 | SF10 | Brantmoor's booked clinic | carries on as now, outside the hub | its booked patients moving to the hub | no file counts them | the report's section 6 ("the booked clinic at Brantmoor Community Hospital carries on as now") |
 | SF11 | the short windows' AIC margin in step 3 (judge pass 5, solution_incorrect wording) | a bound that holds on every sample the step's method implies (the whole record or the days whose twelve previous weeks lie in it, the day after a bank holiday from the record's closures or from the bank holidays file): the lowest margin, 62.6, floored to ten, so at least 60 worse | the whole record's own margin stated as the bound, at least 67 (the judge reproduced 65.3 on the whole record and 62.6 on a common sample) | same call (eight weeks on all four samples) | restated as a computed bound, `aic_gap_five_weeks_or_fewer` 67 to 60, asserted on all four samples with 2 to spare; per-window samples are not a reading, their AICs being on different days |
 | SF12 | ask A: the specialty of each old PAS code (an ask, not the call) | the late-March link: each old code is the new code whose 16 to 31 March 2026 forms fall on its weekdays | the register's clinic_days matched to the old codes' weekdays (all seven wrong) | same call (ask A only: 0 of 28 under it) | the data, no document: none of the new codes the register's reading picks has late-March forms on its old code's weekdays, and the weekly visits jump at the switch under it and run on under the link; one clause in step 5; asserted |
-| SF13 | ask B: Vacant line Y (an ask, not the call) | a holder's line unassigned from a sickness's sixth clinic day until the holder returns, bar the one vacancy section 4 names | every Y line a vacant post (11, 10, 13 and 9 days) | same call (ask B only: 0 of 8 under it) | the report's one named vacancy and the roster: every other unassigned stretch follows exactly five Sickness lines and ends with the same holder back, and the named vacancy runs from a leaver's last line to a starter's first; one clause in step 6; asserted, no document |
 
 ## Ladder
 
@@ -270,17 +279,18 @@ under both; the distractors (the patient survey and the hub's draft session plan
 
 ## Ask sheet
 
-Both asks sit on the walk-in clinic's other work in 2025-26, rows the call never reads: the call reads GP-form arrivals
-by day and the log's GP counts; ask A reads the hospital-form check-ins and the clinic register, ask B the e-roster's
-substantive lines. H18 homes: ask A is the hospital-clinic demand that stays at block A when the GP-referred patients
-move to the hub, by specialty and quarter for its session plan; ask B is the sickness allowance the hub's establishment
-carries, from the clinic team's own 2025-26 record under the report's definition. The prompt pins both asks' grain: each
-financial quarter of 2025-26, hospital-clinic visits counted by visit date, and the chart's Monday-to-Friday weeks.
+The ask sits on the walk-in clinic's other work in 2025-26, rows the call never reads: the call reads GP-form arrivals
+by day and the log's GP counts, and the ask reads the hospital-form check-ins and the clinic register. H18 home: the
+hospital-clinic demand that stays at block A when the GP-referred patients move to the hub, by specialty and quarter, for
+its session plan. The prompt pins the ask's grain: each financial quarter of 2025-26, hospital-clinic visits counted by
+visit date, and the chart's Monday-to-Friday weeks.
 
 Re-sited 2026-10-26 after stage 4 on zip 6611e937, where the Opus reader kept 36 of 36 and the Sonnet reader 8 of 36:
 the old ask A device (a same-string code reallocation the register's `code_in_use_from` announced, recovered by matching
-request weekdays to the register's clinic days) and the old ask B device (a long-term absence as one 270- or 337.5-hour
-row, an impossible day that both readers spread over clinic days) were both on the careful solver's path.
+request weekdays to the register's clinic days) was on the careful solver's path. Cut 2026-11-02: the sickness ask
+(working days lost and the absence rate by quarter, 8 figures), spent under the honest-cracker audit and with no device
+that passes both tests on the files the call does not read; the e-roster stays in the pack as a distractor (`## Tried
+and rejected`).
 
 - **Ask A, hospital-clinic visits in each financial quarter of 2025-26 by specialty, counted by visit date (28 figures,
   whole visits).** Files: `phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv` (CHECKED_IN rows: request_type HOSP,
@@ -297,41 +307,41 @@ row, an impossible day that both readers spread over clinic days) were both on t
   route (0 of 28, asserted); the old codes dropped as unmatched (0 of 28); the golden's link (28 of 28, the control).
   Realism: a PAS replacement brings new codes and rebuilt clinic templates; nothing in any file narrates either, and the
   register describes the current PAS.
-- **Ask B, working days lost to sickness and the sickness absence rate in each financial quarter of 2025-26 (8 figures,
-  whole days and per cent to one decimal).** Files: `eroster_phlebotomy_2023-04_to_2026-09.csv` (Employee no,
-  Assignment, Roster date, Absence, Vacant line, Hours), the clinic days, the report's section 4 (the definition and the
-  one vacant post). Primary (which records are one event, from an identity): once a holder's sickness passes five clinic
-  days the e-roster unassigns the line until the holder returns, so a long sickness reads as five Sickness lines and then
-  unassigned lines (Vacant line Y, no employee) exactly like the vacant post's; the remedy is to tell them apart by who
-  holds the post, the same employee before and after against a leaver and a new starter, with the report naming the one
-  vacant post (14 July to 12 September 2025). Instances: the two 2025-26 long absences, the 2024 one and the short
-  sicknesses of eight and ten clinic days. Hazards: bank shifts and the vacant post outside the denominator, annual leave
-  inside it, bank holidays not clinic days. Stops: unassigned lines read as vacant posts, the careful route and the
-  report's definition executed on the flag (0 of 8, asserted); filled posts from the report with sickness lines only (0 of
-  8, asserted); every unassigned line read as sickness, the over-cleaner (6 of 8: right outside Q2, where the vacant post
-  sits).
-- Separation: the call recomputes unchanged with the hospital forms' clinic codes scrambled (asserted); the asks'
-  device rows are hospital-form check-ins' clinic codes and issue dates and the e-roster's lines, none of them a GP-form
-  arrival or a log count. The hardening moved the demand stream only: the e-roster's lines come from the staffing
-  stream, so ask B's eight figures are unchanged, and ask A's 28 are recomputed under the new run-outs with the same
-  device (one March link per old code, the careful route 0 of 28).
-- Reuse: neither primary repeats a device of the last three builds.
+- Separation: the call recomputes unchanged with the hospital forms' clinic codes scrambled (asserted); the device rows
+  are hospital-form check-ins' clinic codes and issue dates, none of them a GP-form arrival or a log count, and no GP-form
+  check-in carries a clinic code (asserted by count); every file the call reads is byte-identical to the shipped pack
+  after the cut (asserted).
+- Reuse: the primary repeats no device of the last three builds.
 
-| Ask | Figures | Cracker (stage 4's Opus reader's path on this pack: lands the call; old codes named by request weekday against the register's clinic days; the report's definition executed with unassigned lines read as vacant posts) | Verdict |
+**The careful solver's validation, ruled 2026-11-02.** The careful route names the 16,417 2025-26 visits on old codes by
+their issue weekdays against the register's clinic_days, a clean one-to-one match. Before naming them so, a careful
+solver tests the rule on the 805 2025-26 visits whose forms already carry a register code, the battery's
+code-against-schedule item (supplemental-stumping 1.1c), and it fails: 328 of the 805 were issued on a weekday the
+register does not list for their clinic (Cardiology's 48 and Gastroenterology's 34 all of them), all 440 off-schedule
+forms in the extract were issued from 16 to 31 March and none of the 7,166 from 1 April, and the item's literal remedy
+re-derives none of them (every weekday is listed by two or three clinics). The one reading left is that the clinics
+changed days on 1 April, which is the late-March link, and the battery's re-keyed-records item, matching the old PAS
+codes to the new on the forms issued either side of the switch, lands there too. So the validation is a battery item a
+careful solver runs unprompted, and Ask A is spent: the device's discovery and its remedy are one step apart (1.0).
+
+| Ask | Figures | Cracker (the careful solver on this pack: lands the call, runs the battery, tests the register's clinic_days on the register-coded forms in the window before naming the old codes by them) | Verdict |
 |---|---|---|---|
-| A hospital-clinic visits, seven specialties by quarter | 28 | every old code matched to the register row with its weekdays, each one the wrong specialty | miss |
-| B days lost, four quarters | 4 | the long absences' unassigned lines left out as vacancy | miss |
-| B sickness rate, four quarters | 4 | the same, numerator and denominator | miss |
+| A hospital-clinic visits, seven specialties by quarter | 28 | the test fails on 328 of the 805 register-coded 2025-26 visits, every failure issued before 1 April; each old code linked to the new code whose late-March forms share its weekdays | lands |
 
-Measured on the cut pack by `pair.py`: the cracker keeps 0 of 36 ask figures and the mirror (off the call at 42,500, the
-same ask routes) 0 of 36; the over-cleaner's ask B keeps 6 of 8, a pair of 37.7. These are models until the next scored
-readers measure the re-sited pack.
+Routes on the cut pack (`generator/ceiling.py`, target.zip md5 8f5c6aa2): the register's clinic_days 0 of 28; the same
+after the code-against-schedule item's literal remedy 0 of 28 (440 off-schedule forms, none re-derivable); the
+validation followed through 28 of 28; the re-key match on the forms either side of the switch 28 of 28; the re-key match
+on every new-code form 0 of 28 (no weekday set matches, which sends the solver to the dates); the re-key match on the
+April forms 0 of 28; the full includer 28 of 28. The mirror (off the call at 42,500) takes the ask the same way, since
+the ask reads nothing the call constructs. Two careful responses on the call: 100.0 each. Criteria: 38 (the call, its
+four components, the chart's three, 28 ask figures, the two files).
 
-Pair ceiling: 28.5 (cracker 45.0 with 0 of 36 ask figures, mirror 12.0 with 0 of 36, on weights 38, 7 and 55)
+Pair ceiling: 83.5 (the careful cracker 100.0 with 28 of 28, the mirror 67.0 with 28 of 28, on weights 38, 7 and 55;
+28.5 only for a cracker that skips the validation)
 
-Mirror leakage: 0.0 per cent of ask weight
+Mirror leakage: 100.0 per cent of ask weight
 
-Measured by: generator/pair.py
+Measured by: generator/ceiling.py
 
 ## Layer 1 inventory
 
@@ -344,8 +354,8 @@ Measured by: generator/pair.py
 | the kiosk filling exactly on days nobody was turned away | the senior phlebotomist's allocation, met to the ticket | kiosk file, queue records | a full day read as a run-out (59 days in 2025-26 against the log's 56) | R2: 3 days, same call (44,858) |
 | blank practice barcodes, a practice merger | the request forms, the ODS register | events, practices | GP-referred read by practice code | SF1: 415 forms, same call (44,493) |
 | new PAS clinic codes from 16 March 2026, clinics on new weekdays from 1 April | the PAS replacement and the 2026-27 templates | events, clinic register | ask A only | ask A assertions |
-| a long sickness's line unassigned after five clinic days, the vacant post, bank shifts | the e-roster | e-roster | ask B only | ask B assertions |
-| financial years, bank holidays | the trust's calendar | all | calendar years, bank holidays as clinic days | SF2; ask B |
+| a long sickness's line unassigned after five clinic days, the vacant post, bank shifts | the e-roster | e-roster | none: a distractor since the sickness ask was cut (no ask and no golden route reads it; one standing-family covariate counts its lines on the floor) | gates: the golden unchanged with it deleted; scope: byte-identical to the shipped pack |
+| financial years, bank holidays | the trust's calendar | all | calendar years, bank holidays as clinic days | SF2 |
 
 ## Stage 3 gates
 
@@ -702,3 +712,4 @@ recomputed under the new run-outs. The round 2 pack (d3c6d25d) and its ship-read
   link from the register's clinic_days and ask B's holder stretches from vacancies (SF12, SF13), no document changed.
 - The ceiling recorded on the reship cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver, every field read by its plain meaning, every filed rule executed and the hygiene battery run, keeps 8 of 36 against the recorded 0 of 36, SPENT on Ask B (Ask A holds, weakly), pair 40.7; the reason in one line: the annual report's section 4 names the one vacant post, so reading every unassigned line as vacant contradicts a filed fact; the other 67 follow a holder's Sickness lines. The ask layer is owed a /fix-rubric pass before delivery; the leak repair stands.
 - The /fix-rubric re-site of Ask B (2026-11-01, after the honest-cracker audit) found no device that passes both tests, so nothing shipped: section 4 fixes each quarter's filled post-days (427, 411, 448, 441), the kiosk's 40 and 32 ticket rule and the queue bays fix which holders were off the floor each day (40, 45, 56, 31 holder-days), so only the label on those days is free and only the run it sits in can force it, which is the battery's sequence check; an as-of bank label on a holder's absence lines (43 label flips, 46 days at six substantive lines), a shadow key carrying her absences (never on the floor, 46 days at eight lines), a sickness keyed as worked (the ticket rule broken on every such day) and a relabelled absence type (no file records the type, so unforced) all died, new hospital-side records hand over Ask A's code link and GP-side ones carry the in-house signal; Ask A cannot be strengthened cheaply, its rows sitting in the queue export the call reads.
+- The sickness ask cut and Ask A measured on its own (2026-11-02, the coordinator's decision after the re-site found no Ask B device): the cut moved no pack byte (target.zip md5 8f5c6aa2, every file the call reads asserted byte-identical) and no main-call figure (freeze rubric PASS), but the careful-solver cracker lands Ask A, because a careful solver tests the register's clinic_days on the 805 register-coded 2025-26 visits before naming the 16,417 old-code visits by them, the test fails on 328 of them with every off-schedule form issued 16 to 31 March and none from 1 April, and the late-March link follows (generator/ceiling.py: 28 of 28, pair 83.5, mirror leakage 100.0 per cent); nothing shipped, and the ask layer is owed a device on records the call does not read.
