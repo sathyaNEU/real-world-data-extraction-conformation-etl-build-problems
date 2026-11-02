@@ -59,8 +59,11 @@ def guidance(out):
          Paragraph("3.2 A scheme's benefit is the number of injury collisions it is expected to prevent each year: the "
                    "junction's expected annual injury collisions as it stands, at its 2026 traffic, times one less the "
                    "crash modification factor for its layout in Table 2.", BODY),
-         Paragraph("3.3 A junction's expected annual injury collisions are estimated from the authority's validated "
-                   "collision record for the five years 2021 to 2025.", BODY),
+         Paragraph("3.3 A junction's expected annual injury collisions are the long-run yearly average that junction "
+                   "would have as it stands, with its own layout and traffic. The injury collisions it recorded in the "
+                   "years it was listed for are part of the evidence on that average and are not the average itself. "
+                   "Expected collisions are estimated from the authority's validated collision record for the five years "
+                   "2021 to 2025.", BODY),
          Paragraph("3.4 The bid names the junction with the largest benefit among those the screening listed, and gives "
                    "every listed junction's benefit.", BODY),
          Paragraph("Table 2. Crash modification factors for a roundabout replacing give-way or stop control "

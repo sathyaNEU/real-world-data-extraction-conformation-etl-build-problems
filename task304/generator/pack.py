@@ -143,27 +143,35 @@ class Pack:
         save_xlsx(wb, self.p("junction_inventory_2026.xlsx"), "Ardleshire County Council Network Management")
 
     def road_register(self):
-        """The county's network register: classified roads by section between inventory nodes, with the highway
-        authority for each section."""
+        """The county's network register: classified roads by section, each with its start and end grid references
+        (the roads are registered on their east-west line) and the highway authority for it; C-class and unclassified
+        roads as one entry each."""
         W = self.W
         bynode = sorted(W.junctions, key=lambda j: (j["road"], j["easting"]))
         rows = []
+        west, east = 441000, 486000
         for road in sorted(set(j["road"] for j in W.junctions if not j["road"].startswith("C"))):
             nodes = [j for j in bynode if j["road"] == road]
             name = nodes[0]["road_name"]
             if road == "A4600":
                 b = W.boundary_node
-                rows.append([road, "Ardle Bypass", nodes[0]["node"], b["node"], "A", "Strategic road network", "01/04/2009"])
-                rows.append([road, "Kestermoor Road East", b["node"], nodes[-1]["node"], "A", "Ardleshire County Council",
-                             "01/04/2019"])
-            elif road == "A6510":
-                rows.append([road, name, nodes[0]["node"], nodes[-1]["node"], "A", "Strategic road network", "01/04/2009"])
+                nb = b["northing"]
+                rows.append([road, "Ardle Bypass", "", b["node"], west, nb, b["easting"], nb, "A", "Strategic road network",
+                             "01/04/2009"])
+                rows.append([road, "Kestermoor Road East", b["node"], "", b["easting"], nb, east, nb, "A",
+                             "Ardleshire County Council", "01/04/2019"])
             else:
-                rows.append([road, name, nodes[0]["node"], nodes[-1]["node"], road[0], "Ardleshire County Council",
-                             "01/04/1996"])
+                nn = int(round(sum(j["northing"] for j in nodes) / len(nodes) / 10.0) * 10)
+                end = 470000 if road == "A6510" else east
+                auth = "Strategic road network" if road == "A6510" else "Ardleshire County Council"
+                since = "01/04/2009" if road == "A6510" else "01/04/1996"
+                rows.append([road, name, "", "", west, nn, end, nn, road[0], auth, since])
+        rows.append(["C", "All C-class roads in the county", "", "", "", "", "", "", "C", "Ardleshire County Council", "01/04/1996"])
+        rows.append(["U", "All unclassified roads in the county", "", "", "", "", "", "", "U", "Ardleshire County Council",
+                     "01/04/1996"])
         write_csv(self.p("road_network_register_2026.csv"),
-                  ["road_number", "section_name", "from_node", "to_node", "road_class", "highway_authority",
-                   "authority_from"], rows)
+                  ["road_number", "section_name", "from_node", "to_node", "start_easting", "start_northing",
+                   "end_easting", "end_northing", "road_class", "highway_authority", "authority_from"], rows)
 
     # ------------------------------------------------------------------ the 2026 provisional police data
     def provisional(self):

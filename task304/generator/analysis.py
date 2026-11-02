@@ -170,35 +170,36 @@ class Pack:
 
     # ------------------------------------------------------------------ the asks (2026 provisional data)
     def road_register(self):
-        """Sections of classified roads between inventory nodes, each with its highway authority; a section spans the
-        eastings of its end nodes."""
+        """Register sections: a classified road's sections each span the eastings between their start and end grid
+        references (the roads are registered on an east-west line); C-class and unclassified roads have one entry."""
         head, body = read_csv(self.p("road_network_register_2026.csv"))
         ix = {h: i for i, h in enumerate(head)}
-        east = self.node_easting()
         reg = []
         for r in body:
-            e0, e1 = east[r[ix["from_node"]]], east[r[ix["to_node"]]]
-            reg.append(dict(road=r[ix["road_number"]], e0=min(e0, e1), e1=max(e0, e1), auth=r[ix["highway_authority"]]))
+            if r[ix["start_easting"]]:
+                e0, e1 = sorted((int(r[ix["start_easting"]]), int(r[ix["end_easting"]])))
+            else:
+                e0, e1 = None, None
+            reg.append(dict(road=r[ix["road_number"]], e0=e0, e1=e1, auth=r[ix["highway_authority"]]))
         return reg
 
-    def node_easting(self):
-        head, body = read_xlsx(self.p("junction_inventory_2026.xlsx"), "Junctions")
-        ix = {h: i for i, h in enumerate(head)}
-        return {r[ix["node"]]: int(r[ix["easting"]]) for r in body}
-
     def county_road(self, road, easting, reg=None):
-        """A collision is on the county's roads unless its road has a section another authority holds that covers
-        its easting; the end sections run on to the county boundary."""
+        """The register's section containing the collision's easting on its road (C-class and unclassified roads by
+        their own entries) decides whether the county is its highway authority."""
         reg = reg or self.road_register()
-        secs = sorted((s for s in reg if s["road"] == road), key=lambda s: s["e0"])
+        key = "C" if road.startswith("C") else road
+        secs = [s for s in reg if s["road"] == key]
         if not secs:
-            return True                               # unclassified and C roads are the county's
-        for i, s in enumerate(secs):
-            lo = -1e9 if i == 0 else s["e0"]
-            hi = 1e9 if i == len(secs) - 1 else s["e1"]
-            if lo <= easting < hi:
+            raise KeyError("road %s is not in the register" % road)
+        for s in secs:
+            if s["e0"] is None or s["e0"] <= easting < s["e1"] or (easting == s["e1"] == max(x["e1"] for x in secs)):
                 return s["auth"] == "Ardleshire County Council"
-        return True
+        raise KeyError("easting %d on %s is in no register section" % (easting, road))
+
+    def sections_hit(self, road, easting, reg=None):
+        reg = reg or self.road_register()
+        key = "C" if road.startswith("C") else road
+        return [s for s in reg if s["road"] == key and (s["e0"] is None or s["e0"] <= easting < s["e1"])]
 
     def provisional(self, dedupe="match", deaths="match", trunk="register"):
         """Collisions January to September 2026 (one record each), with casualties and the true quarter."""
@@ -279,6 +280,8 @@ class Pack:
         elif trunk == "road":
             trunk_roads = {s["road"] for s in reg if s["auth"] != "Ardleshire County Council"}
             recs = [c for c in recs if c["road"] not in trunk_roads]
+        elif trunk == "classified":                # only the register's numbered roads, unclassified left out
+            recs = [c for c in recs if c["road"] != "U" and self.county_road(c["road"], c["e"], reg)]
         for c in recs:
             c["q"] = (c["date"].month - 1) // 3 + 1
             c["sev"] = min(k["sev"] for k in c["cas"])

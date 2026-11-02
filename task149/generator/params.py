@@ -72,7 +72,7 @@ STRADDLE = {"KH309": [("KW03", 0.58), ("KW04", 0.42)]}
 LOCAL_CELLS = ["RG01", "RG02", "RG04", "RG05", "RG06", "RG08", "RG09", "BM701"]
 OUTSIDE_CELLS = ["XO001", "XO002"]
 SAMPLE = 0.09  # panel devices per resident commuter, about
-DEP_SHIFT = {"KW01": 1, "KW02": 9, "KW04": -11, "KW05": 27}  # minutes added to every shift of a destination's workers (set by tuning)
+DEP_SHIFT = {"KW01": 1, "KW02": 9, "KW04": -11, "KW05": 27, "KW09": 1}  # minutes added to every shift of a destination's workers (set by tuning)
 GATE_SEED = 38
 
 # Existing stations on the Ardnagree line and their 2019 base and 2027 standing (ordinary weekday entries).
@@ -92,4 +92,8 @@ LISNAGRY_FORECAST = 1140
 # parent station, gateline id, first day, last day, share of the station's entries taken.
 GATELINES = [("KDK", "G0417", dt.date(2019, 6, 3), dt.date(2020, 2, 28), 0.33, 0.39),
              ("ARD", "G0213", dt.date(2018, 1, 1), dt.date(2021, 5, 31), 0.19, 0.25),
-             ("KCN", "G0305", dt.date(2018, 1, 1), dt.date(2022, 8, 26), 0.25, 0.31)]
+             ("KCN", "G0305", dt.date(2018, 1, 1), dt.date(2022, 8, 26), 0.25, 0.31),
+             ("CBY", "G0711", dt.date(2022, 5, 3), dt.date(2027, 11, 30), 0.15, 0.21),
+             ("KUH", "G0612", dt.date(2024, 9, 2), dt.date(2027, 11, 30), 0.20, 0.26),
+             ("LSG", "G0909", dt.date(2026, 3, 2), dt.date(2027, 11, 30), 0.18, 0.24)]
+STATION_NO = {"ARD": "02", "KCN": "03", "KDK": "04", "UHK": "06", "KUH": "06", "CBH": "07", "CBY": "07", "LSG": "09"}

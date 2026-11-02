@@ -65,6 +65,7 @@ def finalise_ooxml(path, when, author, kind, titles):
             t = re.sub(r"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", r"\g<1>%s\g<2>" % stamp, t)
             t = re.sub(r"(<dc:creator[^>]*>)[^<]*(</dc:creator>)", r"\g<1>%s\g<2>" % author, t)
             t = re.sub(r"(<cp:lastModifiedBy[^>]*>)[^<]*(</cp:lastModifiedBy>)", r"\g<1>%s\g<2>" % author, t)
+            t = re.sub(r"<dc:description>[^<]*</dc:description>", "<dc:description/>", t)
             data = t.encode("utf-8")
         elif name == "[Content_Types].xml":
             t = data.decode("utf-8")
@@ -113,6 +114,7 @@ def save_docx(doc, path, when, author):
     cp.created = when
     cp.modified = when
     cp.revision = 3
+    cp.comments = ""
     text = "\n".join(p.text for p in doc.paragraphs)
     for t in doc.tables:
         for row in t.rows:

@@ -54,8 +54,8 @@ BEHAVIOUR = {
     "MD": dict(demand=1.15, copies=0.82, imp=0.48, base=0.005),
     "NH": dict(demand=1.05, copies=0.85, imp=0.40, base=0.005),
 }
-IMPATIENT_PLACE = 0.60    # chance an impatient student cancels on placing, per shown week of wait beyond the first
-IMPATIENT_EMAIL = 0.12    # the same at each Monday holds email
+IMPATIENT_PLACE = 0.75    # chance an impatient student cancels on placing, per shown week of wait beyond the first
+IMPATIENT_EMAIL = 0.04    # the same at each Monday holds email
 
 OFFER_HOURS = 48
 P_BORROW = 0.86

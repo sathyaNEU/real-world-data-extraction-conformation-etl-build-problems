@@ -385,8 +385,8 @@ def build(target, seed=P.SEED):
     n["gates"] = IO.write_csv(os.path.join(target, FILES["gates"]), ["date", "location_code", "entries"],
                               [(d.isoformat(), c, v) for d, c, v in w["gates"]])
     n["register"] = IO.write_csv(os.path.join(target, FILES["register"]),
-                                 ["station_code", "station_name", "opened", "closed", "notes"],
-                                 [(c, nm, o.isoformat(), cl.isoformat() if cl else "",
+                                 ["station_code", "station_no", "station_name", "opened", "closed", "notes"],
+                                 [(c, P.STATION_NO[c], nm, o.isoformat(), cl.isoformat() if cl else "",
                                    {"UHK": "Code retired 28 Feb 2023; the station continues as KUH from 1 Mar 2023",
                                     "KUH": "Formerly UHK (same platforms, new code from the 2023 ticketing system)",
                                     "CBH": "Closed 13 Jun 2021; replaced by Carrigboy (CBY), 400 m east",

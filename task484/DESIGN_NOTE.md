@@ -159,7 +159,7 @@ approach, which see one lane and so give that year only through the day the coun
 | SF15 | rounding path | one decimal on the annual figure | the daily flow to 10 first | same call, same figures | asserted (checks SF15) |
 | SF16 | heavy goods vehicles (ask A) | goods vehicles over 3.5 t: legacy classes 5 to 7, TX-8 classes 6 to 8 | buses or light vans included | other figures | terms note section 3 and the class tables |
 | SF17 | a counter's missing days (ask A) | the recorded days' mean | filled from its own weekdays | same figures | asserted (checks SF17) |
-| SF18 | an approach (ask B) | road and heading, its lanes summed, abbreviations read as the road | lanes as approaches | other figures | the register's approach and heading columns |
+| SF18 | an approach (ask B) | the register's approach entry (the road and the side it comes in from), its lanes summed | the road alone, two a junction | other figures | the register enters each arm by road and side, four a junction, the same on every lane (asserted, checks SF18) |
 | SF19 | vehicles recorded (ask B) | sum of the recorded daily flows | imputed dark days | other figures | the prompt asks what the detectors recorded |
 | SF20 | the renewal day (ask B) | read from the dark days, matching the log | the register's commissioning date | same day | asserted (checks SF20) |
 
@@ -248,8 +248,8 @@ signals, part of the round's supply. H18: a component of the supply on detectors
 and the detectors re-terminated, so before the renewal each channel number carried another lane; the register
 holds the current assignment only. The repair groups the pre-renewal channels into approaches by their day-to-day
 co-movement and matches each group to the current approach on level, weekend shares and 07:00 to 19:00 share
-across the dark days. Hazard: the register's abbreviated approach names split an approach in two unless read in
-full. Stops: register mapping all year; pre-renewal days dropped; golden.
+across the dark days. Each approach is the register's own entry (its road and the side it comes in from), written
+the same on every lane of the arm. Stops: register mapping all year; pre-renewal days dropped; golden.
 
 | Ask | Figures | Cracker's handling | Cracker's result |
 |---|---|---|---|
@@ -680,3 +680,11 @@ models; the stage 4 readers measure the real one.
   and an industrial estate, and the log closed Grange Road's school for snow; each handed over the property the
   decisive step recovers from the records. The ends now carry place names and the log says most schools closed.
 - 2026-11-02, stage 3: the firmware version 4.2.1 coincided with a golden section figure; renumbered 5.1.3.
+- 2026-11-02, stage 4 judge (zip sha256 ec5ec5c1): DETERMINISTIC, FIX_NOW. The three workbooks carried the writer's
+  app.xml (AppVersion 3.1) and the log the writer's template parts (a thumbnail, stylesWithEffects, customXml); every
+  xlsx and docx is now finalised as its application saves it (its own app.xml, no template parts, every entry at the
+  document's own date), asserted in checks H1 and in verify. The register's approach column held the road alone, two
+  groups a junction against the golden's four arms (Gate E on ask B); each arm is now entered as its road and the side
+  it comes in from, the same on every lane, and grouping by that column gives the golden's eight approaches (SF18).
+  No graded figure moved; the register's commissioning dates against the log's recommissioning a day later stay as
+  the systems' own mess.

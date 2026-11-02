@@ -37,7 +37,9 @@ SOURCES = {
               "2026; synthetic",
     "pricefile": "Saltmarsh Market Pricing, weekly price change releases (preliminary and revised), Q4 2026; "
                  "synthetic",
-    "adsales": "Saltmarsh Market Merchandising, flyer item units by price zone and flyer week, Q4 2026; synthetic",
+    "adsales": "Saltmarsh Market Merchandising, flyer item units by price zone and day, flyer weeks starting 1 "
+               "October to 31 December 2026; synthetic",
+    "corrections": "Saltmarsh Market Pricing, mid-week price corrections, Q4 2026; synthetic",
     "contacts": "Saltmarsh Market Customer Care, contacts mentioning a store, Q4 2026; synthetic",
     "markdowns": "Saltmarsh Market store systems, clearance markdown tags printed, Q4 2026; synthetic",
 }

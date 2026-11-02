@@ -1,0 +1,133 @@
+{
+ "architecture": 2,
+ "as_of": "2027-01-15",
+ "decision": "which Saltmarsh Market stores go on Price Watch for the first quarter of 2027 under the price integrity standard, from their fourth-quarter 2026 price accuracy",
+ "deliverables": [
+  "price_watch_2027q1.xlsx",
+  "price_accuracy_q4_2026.svg"
+ ],
+ "distractor_files": [
+  "customer_care_price_contacts_2026Q4.csv",
+  "clearance_markdown_labels_2026Q4.csv"
+ ],
+ "distractor_notes": {
+  "clearance_markdown_labels_2026Q4.csv": "clearance markdown tags printed at each store; relevant to shelf labels, unused by the solution",
+  "customer_care_price_contacts_2026Q4.csv": "customer care contacts by store and category over the quarter; relevant to price integrity, unused by the solution"
+ },
+ "files": {
+  "PI-2_price_integrity_standard_rev3.pdf": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Store Operations, Price Integrity Standard PI-2 revision 3 (approved 18 September 2026); synthetic"
+  },
+  "clearance_markdown_labels_2026Q4.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Saltmarsh Market store systems, clearance markdown tags printed, Q4 2026; synthetic"
+  },
+  "customer_care_price_contacts_2026Q4.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Saltmarsh Market Customer Care, contacts mentioning a store, Q4 2026; synthetic"
+  },
+  "flyer_ad_plan_wk40-wk53_2026.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Merchandising, weekly flyer ad plan, flyer weeks starting 1 October to 31 December 2026; synthetic"
+  },
+  "flyer_item_daily_units_2026Q4.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Merchandising, flyer item units by price zone and day, flyer weeks starting 1 October to 31 December 2026; synthetic"
+  },
+  "label_printer_fleet_jobs_2026-10-01_2026-12-31.jsonl": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market printer fleet console, shelf-edge label printer jobs, 1 October to 31 December 2026; synthetic"
+  },
+  "pos_hourly_item_scans_2026Q4.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market POS host, item scans by store, business date and hour, Q4 2026; synthetic"
+  },
+  "pos_price_overrides_2026Q4.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market POS host, register price overrides, 2026-10-01T00:00Z to 2027-01-01T00:00Z; synthetic"
+  },
+  "price_audit_results_2026Q4.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Price Integrity, weekly random price audit results, Q4 2026; synthetic"
+  },
+  "price_change_item_movement_2026Q4.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Pricing analytics, price-changed item movement on each changeover Thursday and the Thursday before, Q4 2026; synthetic"
+  },
+  "price_corrections_2026Q4.csv": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Pricing, mid-week price corrections, Q4 2026; synthetic"
+  },
+  "service_desk_adjustments_Q4_2026.xlsx": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Customer Service, service desk adjustments, Q4 2026; synthetic"
+  },
+  "store_directory_2027-01.xlsx": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Store Operations, store directory, January 2027; synthetic"
+  },
+  "thursday_changeover_checks_Q4-2026.xlsx": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Price Integrity, Thursday changeover check handheld export, Q4 2026; synthetic"
+  },
+  "weekly_price_change_releases_2026Q4.xlsx": {
+   "date": "2027-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Saltmarsh Market Pricing, weekly price change releases (preliminary and revised), Q4 2026; synthetic"
+  }
+ },
+ "largest_file": {
+  "name": "price_change_item_movement_2026Q4.csv",
+  "rows": 55067
+ },
+ "row_counts": {
+  "clearance_markdown_labels_2026Q4.csv": 2684,
+  "customer_care_price_contacts_2026Q4.csv": 920,
+  "flyer_ad_plan_wk40-wk53_2026.csv": 618,
+  "flyer_item_daily_units_2026Q4.csv": 25088,
+  "label_printer_fleet_jobs_2026-10-01_2026-12-31.jsonl": 2148,
+  "pos_hourly_item_scans_2026Q4.csv": 16772,
+  "pos_price_overrides_2026Q4.csv": 2945,
+  "price_audit_results_2026Q4.csv": 29120,
+  "price_change_item_movement_2026Q4.csv": 55067,
+  "price_corrections_2026Q4.csv": 78,
+  "service_desk_adjustments_Q4_2026.xlsx": 2223,
+  "store_directory_2027-01.xlsx": 14,
+  "thursday_changeover_checks_Q4-2026.xlsx": 3920,
+  "weekly_price_change_releases_2026Q4.xlsx": 16872
+ },
+ "stated_inputs": [
+  "99.0"
+ ],
+ "task": "task238"
+}

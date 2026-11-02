@@ -200,23 +200,22 @@ def main():
     ok("V8 the model alone files %s" % max(spf_b, key=spf_b.get), max(spf_b, key=spf_b.get) == F["model_route"] != best)
 
     # ---------------- the annex, on its own code path
-    east = {r["node"]: int(r["easting"]) for r in inv}
     reg = csv_rows("road_network_register_2026.csv")
     secs = defaultdict(list)
     for r in reg:
-        e0, e1 = sorted((east[r["from_node"]], east[r["to_node"]]))
+        if r["start_easting"]:
+            e0, e1 = sorted((int(r["start_easting"]), int(r["end_easting"])))
+        else:
+            e0, e1 = -10 ** 9, 10 ** 9
         secs[r["road_number"]].append((e0, e1, r["highway_authority"]))
+    ok("V9a the register gives the county C-class and unclassified roads and pins the A4600 handover by grid reference",
+       secs.get("U") and secs["U"][0][2] == "Ardleshire County Council" and len(secs.get("A4600", [])) == 2)
 
     def county(road, e):
-        s = sorted(secs.get(road, []))
-        if not s:
-            return True
-        for i, (e0, e1, auth) in enumerate(s):
-            lo = -1e18 if i == 0 else e0
-            hi = 1e18 if i == len(s) - 1 else e1
-            if lo <= e < hi:
-                return auth == "Ardleshire County Council"
-        return True
+        key = "C" if road.startswith("C") else road
+        hits = [x for x in secs[key] if x[0] <= e < x[1] or (e == x[1] == max(y[1] for y in secs[key]))]
+        assert len(hits) == 1, (road, e, hits)
+        return hits[0][2] == "Ardleshire County Council"
     old = {}
     for r in csv_rows("police_collisions_2026_jan_may.csv"):
         d = dt.datetime.strptime(r["collision_date"] + " " + r["collision_time"], "%d/%m/%Y %H:%M")
