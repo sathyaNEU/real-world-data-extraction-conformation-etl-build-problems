@@ -725,7 +725,7 @@ def tune(blks, fam):
             for dlt in range(-int(0.08 * b0), int(0.08 * b0) + 1):
                 K = sum(b["load"] for b in base[ph]) + dlt
                 fl = [K / (P.CP * x) for x in g]
-                if same_bin(fl, 5, 0.35):
+                if same_bin(fl, 5, 0.8):
                     o.append((abs(dlt), dlt, K))
             opts[ph] = sorted(o)[:30]
         if any(not opts[ph] for ph in opts):
@@ -742,7 +742,7 @@ def tune(blks, fam):
                             and KA / (P.CP * 20.0) >= 1.06 * H):
                         continue
                     f3 = [KA / (P.CP * x) for x in g]
-                    if not same_bin(f3, 10, 1.0) or max(f3) >= H:
+                    if not same_bin(f3, 10, 1.25) or max(f3) >= H:
                         continue
                     first[KA] = (cost, (a[1], b[1], c3[1]))
         second = {}
@@ -763,9 +763,9 @@ def tune(blks, fam):
                         and KAB / (P.CP * p_lo) <= H / 1.06):
                     continue
                 f6 = [KAB / (P.CP * x) for x in g]
-                if not same_bin(f6, 10, 1.0):
+                if not same_bin(f6, 10, 1.25):
                     continue
-                if not same_bin([v - H for v in f6], 10, 1.0):
+                if not same_bin([v - H for v in f6], 10, 1.25):
                     continue
                 best = (cost, H, {1: da[0], 2: da[1], 3: da[2], 4: db[0], 5: db[1], 6: db[2]})
     if best is None:
