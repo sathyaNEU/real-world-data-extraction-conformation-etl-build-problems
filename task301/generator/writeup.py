@@ -10,7 +10,8 @@ def figure_values(F):
     """Every figure blocks 1 to 4 state, in the form they state it."""
     out = [n(F["A_r"])] + [n(F["A_prov_r"][pc]) for pc, _ in GD.PROVS]
     out += [n(F["R0_r"]["C"]), n(F["rival_bound"]), n(F["R3_r"]["E"])]
-    out += [n(F["line"]), "%.3f" % F["uprate"], "6.1", "%.1f" % F["take_up_pct"], n(F["A_limit"]), n(F["A_rate"]),
+    out += [n(F["line"]), "%.3f" % F["uprate"], "6.1", "%.1f" % F["pace12_widening"], "%.1f" % F["pace12_launch"],
+            "3.9", n(F["A_limit"]), n(F["A_rate"]),
             n(F["C_old"]), n(F["C_new"]), n(F["cfv_old_limit"])]
     for ym, _ in GD.MONTHS:
         out += [n(F["families"][ym].get(pc, 0)) for pc, _ in GD.PROVS]
@@ -44,14 +45,16 @@ def write(F, path):
           "2. Gave each measure's households their payments from child_poverty_proposals_2027.pdf and counted, with "
           "the household weights, the children moved from below €%s to at or above it: with a full year, C %s and A "
           "%s." % (n(F["line"]), n(F["R0_r"]["C"]), n(F["A_r"])),
-          "3. Paid A and E for all of 2027 (automatic from January); B, C and D pay from the month after each "
-          "claim's decision (complemento_familiar_rules_2026.pdf, payment), their eventual claimants at the "
-          "department's %.1f per cent coverage (complemento_familiar_coverage_2025.pdf)." % F["take_up_pct"],
+          "3. Paid A and E for all of 2027 (automatic from January); B, C and D pay a family only once it has "
+          "claimed, from the month after its claim is decided (appraisal guidance 3.9 with "
+          "complemento_familiar_rules_2026.pdf, payment).",
           "4. From cfv_register_extract_20261102.csv (both date layouts) took the granted initial claims of the "
           "families the April 2024 rise brought in (computable income from €%s to under €%s, claimed from 1 April "
-          "2024) as C's claiming pace by month to October 2026, the claims before the rise under €%s as B and D's, "
-          "and the months from claim to first payment." % (n(F["cfv_old_limit"]), n(F["C_old"]),
-                                                           n(F["cfv_old_limit"])),
+          "2024) month by month as a share of the survey's households with children in that band (%s per cent by "
+          "the twelfth month) as C's claims, the claims before the rise under €%s over the households under it (%s "
+          "per cent) as B and D's, and the months from claim to first payment." % (
+              n(F["cfv_old_limit"]), n(F["C_old"]), "%.1f" % F["pace12_widening"], n(F["cfv_old_limit"]),
+              "%.1f" % F["pace12_launch"]),
           "5. Took each household's chance of crossing the line over claim month and decision lag: A %s, B, C and D "
           "each under %s, E %s, so A is funded." % (n(F["A_r"]), n(F["rival_bound"]), n(F["R3_r"]["E"])),
           "6. Counted each family once in the last month of each quarter of 2025 from resolutions decided by 31 "

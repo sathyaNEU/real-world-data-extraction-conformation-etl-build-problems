@@ -167,13 +167,17 @@ def write_fieldwork(W, rng, target):
     cases = W["cases"]
     nums = ids(rng, len(cases), 100000, 999999)
     order = sorted(range(len(cases)), key=lambda i: (cases[i]["closed"], cases[i]["ref"], cases[i]["issue"]))
+    case_id = {id(cases[i]): "C26-%06d" % nums[k] for k, i in enumerate(order)}
+    first_of = {id(c["dwelling"]): case_id[id(c)] for c in cases if c["issue"] == 1}
     rows = []
     for k, i in enumerate(order):
         c = cases[i]
-        rows.append(["C26-%06d" % nums[k], c["ref"], c["dwelling"]["office"], c["interviewer"], c["issue"],
-                     OUTCOME[c["outcome"]], c["visits"], c["closed"].strftime("%d/%m/%Y")])
+        rows.append([case_id[id(c)], c["ref"], c["dwelling"]["office"], c["interviewer"], c["issue"],
+                     first_of[id(c["dwelling"])] if c["issue"] > 1 else "", OUTCOME[c["outcome"]], c["visits"],
+                     c["closed"].strftime("%d/%m/%Y")])
     IO.write_csv(os.path.join(target, FILES["fieldwork"]),
-                 ["case", "dwelling", "office", "interviewer", "issue", "result", "visits", "closed"], rows)
+                 ["case", "dwelling", "office", "interviewer", "issue", "reissue_of", "result", "visits", "closed"],
+                 rows)
     return len(rows)
 
 

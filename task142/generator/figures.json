@@ -1,12 +1,12 @@
 {
  "KAB_kW": 5533,
  "KA_kW": 4240,
- "available_m3h": 167,
+ "available_m3h": 168,
  "blocks_n": 15,
  "call": "2028-29",
- "capacity_m3h": 1120,
+ "capacity_m3h": 1112,
  "cold_days": 36,
- "committed_m3h": 953,
+ "committed_m3h": 944,
  "cp": 1.163,
  "design_drop": 40,
  "drop_K": 24.1,
@@ -37,11 +37,11 @@
  "headroom_2027_28": 20,
  "heat_2425_MWh": {
   "Utiliteit": 11800,
-  "Woningen": 66000
+  "Woningen": 67000
  },
  "heat_2526_MWh": {
   "Utiliteit": 12700,
-  "Woningen": 74000
+  "Woningen": 75000
  },
  "heat_change_MWh": {
   "Utiliteit": 900,
@@ -50,15 +50,15 @@
  "heat_exact": {
   "2425": {
    "Utiliteit": 11783.2,
-   "Woningen": 65997.5
+   "Woningen": 66901.4
   },
   "2526": {
    "Utiliteit": 12691.4,
-   "Woningen": 73591.2
+   "Woningen": 74604.7
   }
  },
  "like_n": 19,
- "net_flow": 38.8,
+ "net_flow": 39.7,
  "phase_flow": {
   "1": 45,
   "2": 50,
@@ -84,13 +84,13 @@
   "6": 293
  },
  "pre_mean": 35.8,
- "pre_res_harm": 31.1,
+ "pre_res_harm": 32.7,
  "r0_f3": 91.1,
  "r0_f6": 118.9,
- "r1_f3": 94.0,
- "r1_f6": 122.6,
- "r2_f3": 117.2,
- "r2_f6": 152.9,
+ "r1_f3": 91.9,
+ "r1_f6": 119.9,
+ "r2_f3": 111.4,
+ "r2_f6": 145.4,
  "r2m_f3": 101.9,
  "r2m_f6": 133.0,
  "return_gap_C": [
@@ -109,14 +109,14 @@
  ],
  "rung_drops": {
   "r0_design": 40.0,
-  "r1_network": 38.8,
+  "r1_network": 39.7,
   "r2_pre_hi": 41.6,
-  "r2_pre_lo": 31.1,
+  "r2_pre_lo": 32.7,
   "side_textbook": 20.0
  },
  "sections": "3.2 3.3 3.4",
  "shortfall_2028_29": 30,
- "shortfall_exact": 30.5,
+ "shortfall_exact": 29.5,
  "side_f3": 182.3,
  "side_f6": 237.9,
  "textbook_drop": 20

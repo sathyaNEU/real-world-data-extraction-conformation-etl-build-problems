@@ -11,7 +11,7 @@
  "shape": "06",
  "decision_type": "date_or_period",
  "answer_unit": "date_or_period",
- "answer": "2028-29 heating season (phases 1 to 6 need about 200 m3/h of design-day flow against 167 available at OS West, short by about 30; 2027-28 holds at about 150)",
+ "answer": "2028-29 heating season (phases 1 to 6 need about 200 m3/h of design-day flow against 168 available at OS West, short by about 30; 2027-28 holds at about 150)",
  "answer_source": "generator/figures.json (call, flow_2027_28, flow_2028_29, shortfall_2028_29)",
  "gap": [
   "objective",
@@ -32,7 +32,7 @@
  "validated_decoy": false,
  "context_artifact": "capacity_report",
  "stump_class": "analytical",
- "analyst_test": "A strong planner who reads the capacity procedure, the hydraulic test, the rev2 heat-load study and the meter data correctly carries each converting block's design heat load into design-day flow at the network's 40 K design drop, the network's metered cold-day drop (38.8 K) or the drop of the network's pre-1985 buildings (31 to 42 K) and files none (the west station stays inside its 167 m3/h through 2028-29), when the blocks keep original radiators whose like connections run at about 24 K on cold days and put the station short in the 2028-29 season.",
+ "analyst_test": "A strong planner who reads the capacity procedure, the hydraulic test, the rev2 heat-load study and the meter data correctly carries each converting block's design heat load into design-day flow at the network's 40 K design drop, the network's metered cold-day drop (39.7 K) or the drop of the network's pre-1985 buildings (33 to 42 K) and files none (the west station stays inside its 168 m3/h through 2028-29), when the blocks keep original radiators whose like connections run at about 24 K on cold days and put the station short in the 2028-29 season.",
  "domain_test": "The deciding quantity is each connecting building's design-day circulation flow, its heat load over the supply-return temperature drop its installation makes, which a district heating planner sizes pumps on (flow equals load over 1.16 kWh per cubic metre per kelvin times the drop); with another field's nouns there is no supply and return temperature, no installation whose drop sets the flow, and no pump sized on that flow.",
  "layer2_family": "estimation_fit",
  "layer2_pattern": "own:design-day-flow-at-the-cold-day-drop-of-like-installations",
@@ -85,10 +85,16 @@
  "opening_move": "question-first",
  "question_form": "when",
  "driver": "A newcomer's draw on a shared carrier is its load over the drop it makes in the carrier, and the drop belongs to the equipment behind it, which the units already on the carrier show only as two regimes in their own readings that no field labels; carrying the newcomers at the carrier's design drop, its measured average or the average of similar-looking units finds room that is not there.",
- "driver_concrete": "Each converting block's design-day flow is its design heat load over 1.163 times the supply-return drop that the network's connections with original radiator systems make on days at or below 0 C (about 24 K, readable only as the high-return regime in the heat meters), not the network's 40 K design drop, its metered cold-day drop of 38.8 K or the pre-1985 buildings' 31 to 42 K, so OS West runs short in the 2028-29 season instead of never; a textbook 90/70 radiator drop of 20 K files 2027-28.",
+ "driver_concrete": "Each converting block's design-day flow is its design heat load over 1.163 times the supply-return drop that the network's connections with original radiator systems make on days at or below 0 C (about 24 K, readable only as the high-return regime in the heat meters), not the network's 40 K design drop, its metered cold-day drop of 39.7 K or the pre-1985 buildings' 33 to 42 K, so OS West runs short in the 2028-29 season instead of never; a textbook 90/70 radiator drop of 20 K files 2027-28.",
  "stump": "A competent planner converts each block's design heat load into flow at the network's 40 K design drop, its metered cold-day drop or the pre-1985 buildings' drop and files that OS West never runs short through 2028-29; the step that lands it there is carrying blocks that keep their original radiators at a drop those radiators cannot make, when the network's own radiator connections, recognisable only by their high returns, run at about 24 K on cold days and put the station short in 2028-29.",
  "mechanism_source": "design_note",
- "differentiation": {},
+ "differentiation": {
+  "task140": "task140 solves a compute pool's lowest-tier residual jointly with a dependent service whose load rises with that tier; task142 has no residual or dependency: each unmetered block's design-day flow is its load over the drop of its own installation, read from the metered connections whose cold-day returns show that installation, and the shared axes (objective gap, a unit swap, a capacity report) carry different mechanisms",
+  "task134": "task134 raises a held level's forward rate by the distance the untouched ground beside it shows; task142 has no held level or rate: it converts kilowatts to cubic metres an hour through a physical drop read from like installations on the same network",
+  "task133": "task133 lets each truck rise to the next binding limit in another dimension; task142 has no second limit: the one capacity is the station's flow, and the decisive estimate is the drop the unmetered blocks' radiators will make",
+  "task167": "task167 v2 matches a young grant book to the units whose first-year draws looked like its own and reads their schedule at later ages; task142's newcomers have no record at all: the blocks are unmetered, their installation is known from the works, and the parameter is a physical drop read from the metered connections whose cold-day returns form the high-return regime, with no age or schedule",
+  "task261": "task261 recomputes a subgroup difference's standard error over a design's replicates; task142 estimates no variance and compares no subgroups: it forecasts a station's design-day flow from a drop read off like installations"
+ },
  "lineage": [
   {
    "architecture": "v1",

@@ -236,6 +236,34 @@ def c_shifted_back(D, units):
     return _share(D, units, {u: _union(lst) for u, lst in iv.items()})
 
 
+def c_literal(D, units, inclusive=False, own_extreme=False, end_second=0):
+    """Standard section 6 read word for word, on its own pass over the hourly export: a record counts only where
+    the meter's hourly maximum or minimum in an hour it covers is outside 216 V to 253 V; each apartment's counting
+    records joined into spans across its elements over the market-time days.  The keyword arguments are the
+    boundary conventions a reader might bring (limits inclusive, the record's own extreme also beyond the limit,
+    an end second counted inclusively); none may move a figure out of its bin."""
+    from datetime import timedelta
+    ext = {}
+    with open(D["pq_path"]) as f:
+        import csv as _csv
+        for r in _csv.DictReader(f):
+            ext[(r["meter_serial"], r["element"], r["interval_start_utc"])] = (float(r["v_min"]), float(r["v_max"]))
+    iv = {}
+    for u, e, s, t in _events(D, units):
+        h, ok = s.replace(minute=0, second=0), False
+        while h < t and not ok:
+            v = ext.get((e["meter_serial"], e["element"], h.strftime("%Y-%m-%dT%H:%M:%SZ")))
+            if v is not None:
+                ok = (v[1] >= 253.0 or v[0] <= 216.0) if inclusive else (v[1] > 253.0 or v[0] < 216.0)
+            h += timedelta(hours=1)
+        if not ok or (own_extreme and not (e["v_extreme"] > 253.0 or e["v_extreme"] < 216.0)):
+            continue
+        s2, t2 = max(s, WEEK_UTC[0]), min(t + timedelta(seconds=end_second), WEEK_UTC[1])
+        if t2 > s2:
+            iv.setdefault(u, []).append((s2, t2))
+    return _share(D, units, {u: _union(lst) for u, lst in iv.items()})
+
+
 def c_union_utc(D, units):
     """Each apartment's records joined into spans, but on UTC dates 13 to 19 July."""
     iv = {}

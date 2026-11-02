@@ -27,23 +27,29 @@ def write(target, w, r):
     # ---------------- Scanner Code: till overrides (POS, UTC) and service desk adjustments (local) ----------------
     ov = []
     desk = []
-    for (no, t, i, sc, sh, chan, reg_no, txn, extra) in w.claim_rows:
+    def recno_of(no, reg_no, txn):
+        rec = r.choice(["%d-%02d-%d", "%02d-%d", "%d/%02d"])
+        if rec.startswith("%d-%02d-"):
+            return rec % (no, reg_no, txn)
+        if rec.startswith("%02d"):
+            return rec % (reg_no, txn)
+        return rec % (txn, reg_no)
+
+    for (no, t, i, sc, sh, chan, reg_no, txn, (kind, later)) in w.claim_rows:
         refund, pay_now = code_payout(sc, sh)
         if chan == "till":
-            ov.append([no, reg_no, txn, zstamp(t), w.upc[i], int(round(sc * 100)), int(round(pay_now * 100)), "SC",
+            charged = sh if kind == "partial" else pay_now
+            ov.append([no, reg_no, txn, zstamp(t), w.upc[i], int(round(sc * 100)), int(round(charged * 100)), "SC",
                        "OP%03d" % (int(r.integers(10, 99)))])
-            if extra:   # the supervisor who authorised the override also logged it in the desk app
-                ts = t + dt.timedelta(minutes=float(r.uniform(1, 25)))
-                rec = r.choice(["%d-%02d-%d", "%02d-%d", "%d/%02d"])
-                recno = (rec % (no, reg_no, txn)) if rec.startswith("%d-%02d-") else (
-                    (rec % (reg_no, txn)) if rec.startswith("%02d") else (rec % (txn, reg_no)))
-                desk.append([STORE[no][2], ts, recno, ean13(w.upc[i]), w.desc[i], "Scanner Code", refund])
+            if kind == "dup":       # the approving supervisor's entry for the same payout
+                desk.append([STORE[no][2], later, recno_of(no, reg_no, txn), ean13(w.upc[i]), w.desc[i],
+                             "Scanner Code", refund])
+            elif kind == "partial":  # the rest of the Code remedy, paid at the desk on the same receipt
+                desk.append([STORE[no][2], later, recno_of(no, reg_no, txn), ean13(w.upc[i]), w.desc[i],
+                             "Scanner Code", round(refund - (sc - sh), 2)])
         else:
-            ts = extra
-            rec = r.choice(["%d-%02d-%d", "%02d-%d", "%d/%02d"])
-            recno = (rec % (no, reg_no, txn)) if rec.startswith("%d-%02d-") else (
-                (rec % (reg_no, txn)) if rec.startswith("%02d") else (rec % (txn, reg_no)))
-            desk.append([STORE[no][2], ts, recno, ean13(w.upc[i]), w.desc[i], "Scanner Code", refund])
+            desk.append([STORE[no][2], later, recno_of(no, reg_no, txn), ean13(w.upc[i]), w.desc[i],
+                         "Scanner Code", refund])
     # ordinary overrides and desk adjustments that are not Code payouts
     keys = sorted(w.daytot)
     for _ in range(2300):

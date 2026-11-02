@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Mill Lane Crossroads, 1.3 injury collisions prevented a year (expected 2.7 a year as it stands; runner-up Tollgate Crossroads 1.0; the cluster-site default files Saxby Cross at 2.1, the traffic model alone Tollgate Crossroads)",
+  "answer_source": "task304/submission.md and task304/generator/figures.json",
   "gap": [
     "time",
     "population"
@@ -48,7 +48,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "collision_records_2016_2025.csv",
-    "rows": 0,
+    "rows": 25836,
     "entity": "one row is one police-reported injury collision",
     "grain": "collision",
     "source": "constructed (seeded generator)"
@@ -72,14 +72,14 @@
     ]
   },
   "deliverables": [
-    "junction_bid_2027.pdf",
+    "junction_bid_2027.docx",
     "bid_annex_2026.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "how-many",
   "driver": "The decisive quantity is each candidate's long-run count of events at its present exposure, when the candidates were listed because their recent counts were high: a listed unit's recent count carries the luck that listed it, so ranking on it favours the luckiest, and ranking on an exposure model fitted to comparable units ignores what each unit's own record shows; only each unit's own record weighed against the model by how far comparable units spread beyond chance estimates the long-run count the decision is scored on.",
-  "driver_concrete": "Each listed junction's expected injury collisions a year at its 2026 traffic come from a safety performance function fitted on the network's give-way junctions of its layout, combined with the junction's own 2021 to 2025 record by empirical Bayes; the junction with the most recent collisions sits on a lightly trafficked road whose model predicts few, the busiest junction's record runs well below its model, and the crossroads between them keeps both its record and its traffic high.",
-  "stump": "A competent analyst takes each listed junction's 2021 to 2025 injury collisions as its expected annual count and files the junction with the highest recent count; the step that lands it there is reading a recent count as the long-run count at junctions listed because their recent counts were high, which only the network's own junctions, modelled on traffic and layout and weighed against each site's record by their spread beyond chance, correct.",
+  "driver_concrete": "Each listed junction's expected injury collisions a year at its 2026 traffic come from a negative binomial performance function fitted to the county's 1,436 give-way and stop-controlled junctions (overdispersion 0.26), weighed against the junction's own 2021 to 2025 count by empirical Bayes; Saxby Cross's 22 collisions on a road predicted at 0.4 a year carry a weight of 0.66 on the prediction and fall to 0.8 prevented a year, Tollgate Crossroads's traffic predicts the most but its record runs below it, and Mill Lane Crossroads leads at 1.3.",
+  "stump": "A competent analyst takes each listed junction's 2021 to 2025 injury collisions as its expected annual count (the cluster-site practice) and files Saxby Cross at 2.1 injury collisions prevented a year; the step that lands it there is reading a recent count as the long-run count at junctions listed because their recent counts were high: Saxby Cross carries 3,700 vehicles a day and the county's performance function predicts 0.4 collisions a year there, while Mill Lane Crossroads keeps both its record and its traffic high, which only the record weighed against the function fitted to the county's 1,436 comparable junctions shows.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task479": "task479 weighs small employers' noisy claims records against the trust's pool level because a few members make a short record mostly chance; here every candidate was listed for a high recent count, so the bias has one direction across the whole list, the reference is a traffic-and-layout exposure model fitted to the network's own junctions rather than a pool level, and the model alone (ignoring each site's record) is itself a wrong rung"
@@ -222,7 +222,12 @@
   ],
   "notes": "Architecture 5, re-rooted 2026-11-02 after architecture 4 was spent at stage 4 (SEND_BACK, H3 rule_application, F too easy); the parcel-hub noise world is closed and the slot moves to Urban & Regional Science. Axes redrawn at the draw: shape 07 (task271) to 01, the candidates ranked by prevented collisions under a cap of one scheme; pattern A (spent with gap time and pick_one_of_n in five builds) to none with G17 decisive, the honest name being statistical rigour on a screened set; org local_government (task134) and then government_agency (task485) to professional_services, the consultancy holding the county's road safety engineering term contract, which is who does this analysis for a shire county. stump_strategy causal_design: regression to the mean in a candidate set screened on its recent counts. forcing_event other: the fund's 2027 bid round closing on 29 January 2027.",
   "registered": "2026-11-02T01:41:08Z",
-  "shell": {},
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "the",
+    "rounding opener": "benefits",
+    "deliverable set": "docx+xlsx"
+  },
   "lineage_shells": [
     {
       "question form": "how-many",

@@ -672,3 +672,11 @@ models; the stage 4 readers measure the real one.
   table landed one counter inside its bin; the two-axle share now runs at about half of heavy goods vehicles, as on
   urban roads, and each counter's share is tuned so its figure sits two vehicles inside its bin and the
   install-date reading three bins away.
+- 2026-11-02, stage 3: the counters first shared one 07:00 to 19:00 share to three decimals, a generated
+  uniformity; each counter, section and approach now carries its own share, and the counters' 24/12 ratio counts as
+  a licensed form only where a section's own record agrees with it (checks BE9), so Kingsway's default and golden
+  now differ by two bins while both stay over the line.
+- 2026-11-02, stage 3: the count register's end junctions first named a retail park roundabout, a park entrance
+  and an industrial estate, and the log closed Grange Road's school for snow; each handed over the property the
+  decisive step recovers from the records. The ends now carry place names and the log says most schools closed.
+- 2026-11-02, stage 3: the firmware version 4.2.1 coincided with a golden section figure; renumbered 5.1.3.

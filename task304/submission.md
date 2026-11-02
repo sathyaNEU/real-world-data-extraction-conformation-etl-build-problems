@@ -5,13 +5,13 @@
 
 ## 1. Final Recommendation
 
-**Ardleshire should bid for the roundabout at Mill Lane Crossroads.** It would prevent 1.3 injury collisions a year, against 1.1 at Tollgate Crossroads. Not Saxby Cross, which had the most collisions in 2021 to 2025 but carries little traffic, so most of its count is the chance that listed it. Not Tollgate Crossroads, which carries the most traffic but whose own record runs well below what its traffic predicts.
+**Ardleshire should bid for the roundabout at Mill Lane Crossroads.** It would prevent 1.3 injury collisions a year, against 1.0 at Tollgate Crossroads. Not Saxby Cross, which had the most collisions in 2021 to 2025 but carries little traffic, so most of its count is the chance that listed it. Not Tollgate Crossroads, whose traffic predicts the most collisions of any listed junction but whose own record runs well below that.
 
 ## 2. Critical Components
 
 1. Mill Lane Crossroads's expected injury collisions a year as it stands, at its 2026 traffic: **2.7**.
 2. Mill Lane Crossroads's benefit (crossroads factor 0.52): **1.3** injury collisions prevented a year.
-3. Tollgate Crossroads, the runner-up: **1.1** a year.
+3. Tollgate Crossroads, the runner-up: **1.0** a year.
 
 ## 3. Step-by-Step Solution
 
@@ -19,7 +19,7 @@
 2. Counted injury collisions by junction node and year for 2021 to 2025 in collision_records_2016_2025.csv, for every give-way or stop-controlled T, staggered and crossroads junction in the inventory (1,436 junctions, zero years included).
 3. Fitted a negative binomial safety performance function to those junction-years (log of major and minor road traffic, layout and year terms): overdispersion 0.26.
 4. Combined each listed junction's own 2021 to 2025 count with its predicted count by empirical Bayes (weight 1 / (1 + overdispersion x predicted five-year count) on the prediction) and carried the result to the junction's 2026 traffic at the window's average year level: Mill Lane Crossroads 2.7 a year.
-5. Multiplied by one less the crash modification factor for each layout in Table 2 of junction_safety_fund_guidance_2027.pdf: Mill Lane Crossroads 1.3 prevented a year, Tollgate Crossroads 1.1.
+5. Multiplied by one less the crash modification factor for each layout in Table 2 of junction_safety_fund_guidance_2027.pdf: Mill Lane Crossroads 1.3 prevented a year, Tollgate Crossroads 1.0.
 6. For Annex A, read the old system's 2026 collisions and casualties to May and the new system's JSON export from June, kept each collision the migration re-sent once (the new record on the same date and road within 20 minutes and 40 metres of an old one replaces it), applied the deaths within 30 days in fatal_casualty_notifications_2026.xlsx matched on date, road, time and casualty, and left out the trunk sections in road_network_register_2026.csv, placed by their end nodes' eastings in the inventory.
 7. Took a collision's severity from its most severely injured casualty and each casualty's road user from casualty_type (old system) or class and the vehicle they were in (new system), by quarter of the collision date.
 8. Placed the roundabout at the junction with the largest benefit: Mill Lane Crossroads.
@@ -31,7 +31,7 @@
 1. The junction: Mill Lane Crossroads.
 2. Injury collisions a roundabout would prevent each year, every listed junction:
    - Mill Lane Crossroads: 1.3
-   - Tollgate Crossroads: 1.1
+   - Tollgate Crossroads: 1.0
    - Church Street Junction: 0.9
    - Saxby Cross: 0.8
    - Coppice Way Junction: 0.5

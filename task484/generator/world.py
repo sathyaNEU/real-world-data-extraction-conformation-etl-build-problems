@@ -135,11 +135,11 @@ HOURLY = {
 # ---------------------------------------------------------------------------------------------------------
 SECTIONS = [
     # name, class, setting, kind, base AADF, from junction road, to junction road, length km, end_j, lanes
-    ("Brookfield Way", "C", "urban", "retail", 9350, "Western Avenue", "Brookfield Retail Park roundabout", 0.62, "J05", 1),
-    ("Hollins Lane", "C", "urban", "leisure", 8950, "Fenwick Road", "Hollins Park entrance", 0.81, "J11", 1),
+    ("Brookfield Way", "C", "urban", "retail", 9350, "Western Avenue", "Brookfield roundabout", 0.62, "J05", 1),
+    ("Hollins Lane", "C", "urban", "leisure", 8950, "Fenwick Road", "Hollins Park", 0.81, "J11", 1),
     ("Infirmary Road", "U", "urban", "hospital", 8800, "Coventry Road", "Priory Road", 0.47, "J14", 2),
     ("Grange Road", "B", "urban", "school", 7400, "Station Street", "Sandy Lane", 0.74, "J08", 1),
-    ("Castlegate Road", "C", "urban", "industrial", 7300, "Lea Road", "Castlegate Industrial Estate", 0.95, "J16", 1),
+    ("Castlegate Road", "C", "urban", "industrial", 7300, "Lea Road", "Castlegate", 0.95, "J16", 1),
     ("College Road", "B", "urban", "university", 6900, "Kingsway", "Oakhill Road", 0.58, "J03", 1),
     ("Station Street", "B", "urban", "commuter", 9900, "Market Way", "Birch Street", 0.52, "J09", 2),
     ("Kingsway", "B", "urban", "commuter", 11600, "Ring Road", "Rowley Street", 0.69, "J02", 1),

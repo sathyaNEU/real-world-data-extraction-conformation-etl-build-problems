@@ -129,6 +129,7 @@ def load(target):
     D["nem12"] = read_nem12(P(find("nem12_QUAYLIGHT")))
     D["pq"] = read_pq(P(find("QES_PQ_hourly_V")))
     D["pq_max"] = read_pq_max(P(find("QES_PQ_hourly_V")))
+    D["pq_path"] = P(find("QES_PQ_hourly_V"))
     with open(P(find("QES_PQ_events"))) as f:
         D["events"] = json.load(f)["events"]
     with open(P(find("QES_register_reads"))) as f:
@@ -171,13 +172,13 @@ def read_pq(path):
 
 
 def read_pq_max(path):
-    """{(meter_serial, element, hour start UTC): the hour's highest voltage}."""
+    """{(meter_serial, element, hour start UTC): (the hour's lowest voltage, its highest)}."""
     out = {}
     with open(path) as f:
         r = csv.reader(f)
         next(r)
         for s, el, t, va, vmin, vmax, n in r:
-            out[(s, el, t)] = float(vmax)
+            out[(s, el, t)] = (float(vmin), float(vmax))
     return out
 
 
@@ -443,21 +444,20 @@ def ask_requests(D, units):
     return out, reqs
 
 
-def excursion_record(e, D):
-    """A record is a time the meter recorded its supply outside the limits only if the meter's own hourly maxima
-    go above the upper limit in an hour the record covers (records outside the hourly export are kept)."""
+def excursion_record(e, D, upper=253.0, lower=216.0, inclusive=False):
+    """Standard section 6: a record counts only where the meter's own hourly maximum or minimum, in an hour the
+    record covers, is itself outside the limits (above 253 V or below 216 V)."""
     s = datetime.strptime(e["start_utc"], "%Y-%m-%dT%H:%M:%SZ")
     t = datetime.strptime(e["end_utc"], "%Y-%m-%dT%H:%M:%SZ")
     h = s.replace(minute=0, second=0)
-    seen = False
     while h < t:
         v = D["pq_max"].get((e["meter_serial"], e["element"], h.strftime("%Y-%m-%dT%H:%M:%SZ")))
         if v is not None:
-            seen = True
-            if v > 253.0:
+            vmin, vmax = v
+            if (vmax >= upper or vmin <= lower) if inclusive else (vmax > upper or vmin < lower):
                 return True
         h += timedelta(hours=1)
-    return not seen
+    return False
 
 
 def ask_voltage(D, units):

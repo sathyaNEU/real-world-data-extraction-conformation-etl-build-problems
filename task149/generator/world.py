@@ -83,7 +83,7 @@ def _schedule(rng, dev, days):
         for d in days:
             if d.weekday() in pdays:
                 s = start + rng.normal(0, 6)
-                out.append((d, s, s + rng.uniform(285, 420), "day"))
+                out.append((d, s, s + rng.uniform(335, 450), "day"))
     elif reg == "roster4on4off":
         phase = int(rng.integers(0, 8))
         for i, d in enumerate(days):
@@ -112,6 +112,9 @@ def _schedule(rng, dev, days):
                 d = block[int(j)]
                 s = early + rng.normal(0, 4)
                 out.append((d, s, s + 480 + rng.normal(0, 5), "night" if early >= 1320 else "day"))
+    sh = P.DEP_SHIFT.get(dev.dest, 0)
+    if sh:
+        out = [(d, a + sh, b + sh, k) for d, a, b, k in out]
     return out
 
 
@@ -166,10 +169,10 @@ def build_panel(rng):
             dev = new_dev("worker", code, _pick(rng, P.REGIMES[code]))
             cells = P.WORK_CELLS[code]
             cw = [c for c in cells if c != dev.home] or cells
-            if code == "KW04" and "KU309" in cw and rng.random() < 0.08:
+            if code == "KW04" and "KU309" in cw and rng.random() < 0.04:
                 dev.work_cell = "KH309"
             elif code == "KW03" and "KH309" in cw:
-                dev.work_cell = "KH309" if rng.random() < 0.06 else str(rng.choice([c for c in cw if c != "KH309"]))
+                dev.work_cell = "KH309" if rng.random() < 0.03 else str(rng.choice([c for c in cw if c != "KH309"]))
             else:
                 dev.work_cell = str(rng.choice([c for c in cw if c != "KU309"] or cw))
             dev.parent = rng.random() < 0.30
@@ -178,7 +181,7 @@ def build_panel(rng):
         devices.append(new_dev("wfh"))
     for _ in range(14):
         dev = new_dev("nofixed")
-        dev.sites = list(rng.choice(["CO111", "CO112", "RG03", "RG07", "BM701", "AP801", "XO001", "LS901", "KC103"],
+        dev.sites = list(rng.choice(["CO111", "CO112", "RG10", "RG11", "BM701", "AP801", "XO001", "LS901", "KC103"],
                                     size=7, replace=False))
         devices.append(dev)
     for _ in range(int(rng.poisson(260 * P.SAMPLE))):
@@ -358,5 +361,5 @@ def build(seed=P.SEED):
     rng = np.random.default_rng(seed)
     devices = build_panel(rng)
     cf, cp = census(np.random.default_rng(seed + 1))
-    gates = gate_entries(np.random.default_rng(seed + 2))
+    gates = gate_entries(np.random.default_rng(seed + P.GATE_SEED))
     return {"devices": devices, "census_final": cf, "census_prov": cp, "gates": gates}

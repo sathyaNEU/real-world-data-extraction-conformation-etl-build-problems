@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Nine of the sections the Council counted in 2025 carried more than three million vehicles and go into the noise mapping contract's scope: Ashfield Road, Brookfield Way, Hollins Lane, Holloway Hill, Infirmary Road, Kingsway, Priory Road, Station Street and Wharf Street.** Not the set the permanent counters' factors give, which puts College Road and Grange Road over the line and leaves Brookfield Way, Hollins Lane and Infirmary Road under it: those sections' weeks and years follow the school, the campus, the retail park, the leisure park and the hospital at their ends, not the commuter roads the counters sit on, and each one's own year is on the signal detectors of its approach.
+**Nine of the sections the Council counted in 2025 carried more than three million vehicles and go into the noise mapping contract's scope: Ashfield Road, Brookfield Way, Hollins Lane, Holloway Hill, Infirmary Road, Kingsway, Priory Road, Station Street and Wharf Street.** Not the set the permanent counters' factors give, which puts College Road and Grange Road over the line and leaves Brookfield Way, Hollins Lane and Infirmary Road under it: on the signal detectors of their own approaches those sections' weeks and years run unlike the commuter roads the counters sit on, and those detectors carry each section's own year.
 
 ## 2. Critical Components
 

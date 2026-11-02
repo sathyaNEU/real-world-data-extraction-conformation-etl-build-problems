@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, propane, survey, appliance, counters, heating, record, season, factor, comparison, golden, detector, reflex, window, register, factors, exports, burned, degree, sentence, decisive, estimand, readable, vehicle, method
+Stump terms swept: architecture, propane, survey, appliance, counters, heating, record, season, golden, factor, comparison, register, detector, reflex, window, factors, decisive, exports, burned, degree, sentence, records, estimand, readable, vehicle
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `traffic_estimate_terms_2025.pdf`: golden figure 3.5 appears: ...les. Heavy goods vehicles are goods vehicles over 3.5 tonnes gross vehicle weight, rigid or articulated...
@@ -17,7 +17,7 @@ Stump terms swept: architecture, propane, survey, appliance, counters, heating, 
 ## 6 ranking artifacts (REVIEW 5, INFO 1)
 - **REVIEW** `count_points_2025.xlsx`: names 29 of 38 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `expansion_factor_review_2025.xlsx`: names 12 of 38 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `network_operations_log_2025.docx`: names 14 of 38 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `network_operations_log_2025.docx`: names 13 of 38 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `streetworks_permits_2025.csv`: names 22 of 38 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `utc_asset_register_2025.xlsx`: names 11 of 38 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `atc_sites_2025.csv`: names 12 of 38 answer-set candidates; confirm it does not rank them on the decision question

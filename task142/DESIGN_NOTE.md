@@ -23,33 +23,33 @@ Architecture 2, drawn 2026-11-02 at the Batch 3 queue reset. Architecture 1 (Iro
    - H: transporting a measured rate by a recorded composition: task281's camera mix carried by clinic; dropped as the same driver.
 10. Screens before the draw: `guard.py recent`, `coverage`, `mechanisms --objective forecasting` and `slots` on the mechanism nouns (drop, return temperature, installation regime, design-day flow, like units, mixture) and the setting nouns (district heating, heat network, pump station, housing corporation, gas boiler room): no build on file carries a heat network or a supply-return drop.
 11. Abstraction test against the nearest drivers on the objective: task281 carries a validated rate to sites by a latent device mix recovered from dated placements; this build recovers no composition of the newcomers (they are all one kind) and transports no rate: it estimates a physical parameter of an unmetered unit from the metered units that share its installation, found as a regime in their own readings.
-12. Data-native sentence: Warmtenet West's pre-1985 blocks were connected either on their original radiators or after a renovation that changed their emitters, nothing in the register records which, and on the 36 days at or below 0 C the first kind return at 63.7 to 66.3 C while every other connection returns at 33.8 to 54.7 C; the Weidehaven blocks keep their original radiators, so the drop the network's own data put on them is the high-return regime's 24 K, not the network's 38.8 K or the pre-1985 buildings' 31 to 42 K.
+12. Data-native sentence: Warmtenet West's pre-1985 blocks were connected either on their original radiators or after a renovation that changed their emitters, nothing in the register records which, and on the 36 days at or below 0 C the first kind return at 63.7 to 66.3 C while every other connection returns at 33.8 to 54.7 C; the Weidehaven blocks keep their original radiators, so the drop the network's own data put on them is the high-return regime's 24 K, not the network's 39.7 K or the pre-1985 buildings' 33 to 42 K.
 
 ## Survivor anatomy
 
 - Actor: the deciding property is each existing connection's installation regime (original radiators or renovated emitters), and no file has a column for it: the register carries build year, category, object name, wijk, contracted capacity and connection date, the heat meters carry energy, volume and temperatures; the regime exists only as the cluster a connection's cold-day returns fall in, and the converting blocks have no meter at all.
 - Link: the like installations are found by a cross-unit comparison the capacity procedure never asks for: unmetered blocks specified in kilowatts matched to metered connections with the same kind of installation, recognised from their own return regime; no key offers it (build year, wijk, street family, category and connection year each hold both regimes).
 - Reflex: the field's method for a new connection's design-day flow (design heat load over 1.163 times the network's design drop, 90/50 so 40 K, or the network's metered cold-day drop) sits at rungs 0 and 1 and files none through 2028-29.
-- Back-test: the textbook route validates: carrying every existing connection at the network's kW-weighted cold-day drop (38.8 K) reproduces the hydraulic test's committed 953 m3/h exactly, and the station's metered flow on the cold days equals the connections' metered volumes; the pre-1985 average is the textbook refinement and nothing in the pack refutes it.
+- Back-test: the textbook route validates: carrying every existing connection at the network's kW-weighted cold-day drop (39.7 K) reproduces the hydraulic test's committed 944 m3/h exactly, and the station's metered flow on the cold days equals the connections' metered volumes; the pre-1985 average is the textbook refinement and nothing in the pack refutes it.
 - Second use: the heat meter export is read by the default path itself (rungs 1 and 2) and carries the 2025-26 heat of Ask 2; the register carries every rung's build years and Ask 2's categories and meter history; the weather file carries the procedure's window for every rung; the schedule, the rev2 study, the procedure and the hydraulic study carry every rung; the scope carries what the conversion replaces and Ask 1's gas year; delete the decisive step and every file still has its job.
 - Shock: nothing moves; the like installations read as ordinary connections (no surcharge, no status, no complaint, energy per contracted kilowatt inside the network's spread), they sit at the top of a cold-day return sort that no question asks for, and the call's answer (a season) is not an interval of any sort of any shipped column.
 - Pins: procedure CT-03 v3 sections 3.2 to 3.4 file the WHAT (design-day flow is the design heat load over 1.163 times the drop between supply and return the connection's heating installation makes at the connection on days with a daily mean of 0 C or lower; for a connection not yet in service, the drop its installation is expected to make in service; the most recent heat-load study; the season test against the hydraulic study's available flow for the connections connected by 1 October); no filed sentence names a regime, a comparison group, a build year or a return temperature.
 
 ## Default path
 
-1. Read procedure CT-03 v3 sections 3.2 to 3.4 and the hydraulic test: OS West has 167 m3/h of design-day flow available for connections from 1 October 2026; the network's design basis is 90/50 C.
+1. Read procedure CT-03 v3 sections 3.2 to 3.4 and the hydraulic test: OS West has 168 m3/h of design-day flow available for connections from 1 October 2026; the network's design basis is 90/50 C.
 2. Take each block's design heat load from the rev2 heat-load study (the most recent, 3.4): phases 1 to 3 total 4,240 kW, phases 1 to 6 total 5,533 kW.
-3. The blocks have no heat meter, so carry them at the drop the network makes: the design basis (40 K), or better the metered drop of the network's connections on the 36 days at or below 0 C (38.8 K flow-weighted), or, refining to buildings like the blocks, the connections in pre-1985 buildings (31.1 to 41.6 K, kW-weighted to median).
-4. Design-day flow at 1.163 times that drop: phases 1 to 3 at most 117 m3/h, phases 1 to 6 at most 153 m3/h, against 167 available.
+3. The blocks have no heat meter, so carry them at the drop the network makes: the design basis (40 K), or better the metered drop of the network's connections on the 36 days at or below 0 C (39.7 K flow-weighted), or, refining to buildings like the blocks, the connections in pre-1985 buildings (32.7 to 41.6 K, kW-weighted to median).
+4. Design-day flow at 1.163 times that drop: phases 1 to 3 at most 111 m3/h, phases 1 to 6 at most 145 m3/h, against 168 available.
 5. Apply section 3.3 season by season: neither season is short.
 
 Ends on: none: the west station stays inside its available design-day flow through the 2028-29 season
 
-Golden: 2028-29 heating season (phases 1 to 6 need about 200 m3/h against 167, short by about 30; 2027-28 holds at about 150)
+Golden: 2028-29 heating season (phases 1 to 6 need about 200 m3/h against 168, short by about 30; 2027-28 holds at about 150)
 
 ## Stump sentence
 
-The default path carries the blocks at the network's 40 K design drop, its metered cold-day drop of 38.8 K or the 31 to 42 K of its pre-1985 buildings and files none: the station stays inside its 167 m3/h through 2028-29; but the blocks keep their original radiators, and the network's own original-radiator connections, recognisable only as the regime whose cold-day returns sit at 64 to 66 C, make about 24 K, which puts the blocks connected by 2028-29 at about 200 m3/h and the station short in that season.
+The default path carries the blocks at the network's 40 K design drop, its metered cold-day drop of 39.7 K or the 33 to 42 K of its pre-1985 buildings and files none: the station stays inside its 168 m3/h through 2028-29; but the blocks keep their original radiators, and the network's own original-radiator connections, recognisable only as the regime whose cold-day returns sit at 64 to 66 C, make about 24 K, which puts the blocks connected by 2028-29 at about 200 m3/h and the station short in that season.
 
 ## Three rules
 
@@ -60,8 +60,8 @@ The default path carries the blocks at the network's 40 K design drop, its meter
 - Layer 2: estimation of an unmetered unit's parameter from comparable metered units: the methodological choice is which metered connections stand in for the blocks' retained installations, recognised from the structure of their own readings, rather than the network's design value, its metered average or the units that look similar by build year.
 - Decisive step: recognising that the network's cold-day drops are a mixture of installation regimes no field records, that the blocks' retained radiators belong to the high-return regime, and carrying them at that regime's metered cold-day drop instead of the network's or the pre-1985 buildings'.
 - Not semantics: every field read correctly (UTC days, GJ and MWh, the register's meter history, rev2 over the concept, the window of 0 C and below) still leaves the regime in no column; with the clean truth's regime labels removed the default route files none (checks.py R3b).
-- Not rule application: no filed rule names a regime, a comparison group, build years or return temperatures (R3c); executing CT-03 3.2 to 3.4 with the design drop, the network's metered drop or the pre-1985 drop files none. Enumerated family: design drop, network drop (mean, median, kW-weighted, flow-weighted, residential only), similar buildings (pre-1985, pre-1985 residential, built 1955 to 1975, built 1962 to 1971, each four ways, and a build-year regression), the textbook radiator regime (90/70, 20 K), the like installations (four poolings, two drop routes, five windows, connection or station supply, the whole season): spread none to 2027-28. Standing family once the regime is seen: every like-installation member, 23.7 to 24.2 K at the filed window and route, spread zero on the call (2028-29 in all 23, f3 150.4 to 153.7 and f6 196.3 to 200.6 m3/h against 167); the ruling-out is loud only to a reader who plots cold-day returns (a 9 K gap between 54.7 and 63.7 C).
-- Analyst test: a strong planner who reads CT-03, the hydraulic test, the rev2 study and the meter data correctly and carries the blocks at the design drop, the network's metered cold-day drop or the pre-1985 buildings' drop files none (the station stays inside 167 m3/h through 2028-29), against the golden's 2028-29.
+- Not rule application: no filed rule names a regime, a comparison group, build years or return temperatures (R3c); executing CT-03 3.2 to 3.4 with the design drop, the network's metered drop or the pre-1985 drop files none. Enumerated family: design drop, network drop (mean, median, kW-weighted, flow-weighted, residential only), similar buildings (pre-1985, pre-1985 residential, built 1955 to 1975, built 1962 to 1971, each four ways, and a build-year regression), the textbook radiator regime (90/70, 20 K), the like installations (four poolings, two drop routes, five windows, connection or station supply, the whole season): spread none to 2027-28. Standing family once the regime is seen: every like-installation member, 23.7 to 24.2 K at the filed window and route, spread zero on the call (2028-29 in all 23, f3 150.4 to 153.7 and f6 196.3 to 200.6 m3/h against 168); the ruling-out is loud only to a reader who plots cold-day returns (a 9 K gap between 54.7 and 63.7 C).
+- Analyst test: a strong planner who reads CT-03, the hydraulic test, the rev2 study and the meter data correctly and carries the blocks at the design drop, the network's metered cold-day drop or the pre-1985 buildings' drop files none (the station stays inside 168 m3/h through 2028-29), against the golden's 2028-29.
 - Estimand: CT-03 v3 sections 3.2 to 3.4 (procedure_capaciteitstoets_aansluitingen_v3.pdf): the population is the blocks connected by 1 October of each season, the outcome their design-day flow (design heat load in the most recent heat-load study over 1.163 times the drop their installations will make at the connection on days at or below 0 C), the unit m3/h, the comparison the available design-day flow in the station's current hydraulic test.
 - No decoy: nothing is planted: no memo, briefing, draft or stakeholder figure argues a drop; the hydraulic test states the design basis as the network's design, true; the concept study is a declared distractor superseded by rev2 under 3.4; no block of readings is copied or withheld.
 - No certified replay: no published or certified drop or flow for the blocks exists anywhere in the pack; the method is not recovered by reproducing a figure.
@@ -72,8 +72,8 @@ The default path carries the blocks at the network's 40 K design drop, its meter
 | Rung | What the reader does | Test that could fire | Verdict |
 |---|---|---|---|
 | 0 design basis | carries every block at 90/50, 40 K | the field's reflex; the hydraulic test states the design basis | readable |
-| 1 network metered drop | carries the blocks at the network's flow-weighted cold-day drop, 38.8 K | the empirical planner's reflex; the committed-flow identity validates it | readable |
-| 2 similar buildings | carries the blocks at the pre-1985 connections' drop, 31.1 to 41.6 K | build year is a register column, one filter away | readable |
+| 1 network metered drop | carries the blocks at the network's flow-weighted cold-day drop, 39.7 K | the empirical planner's reflex; the committed-flow identity validates it | readable |
+| 2 similar buildings | carries the blocks at the pre-1985 connections' drop, 32.7 to 41.6 K | build year is a register column, one filter away | readable |
 | side textbook radiators | carries the blocks at a 90/70 radiator regime, 20 K | a rule of thumb, no data read | readable |
 | 3 like installations (decisive) | reads the regime from the cold-day returns, carries the blocks at the original-radiator connections' drop, about 24 K | no column, no key, no filed sentence names a regime or a comparison group; nothing sorts the like connections together but a sort nobody is asked for | silent |
 
@@ -90,9 +90,9 @@ The default path carries the blocks at the network's 40 K design drop, its meter
 | SF7 | design heat load | rev2 study (18 September 2026) | concept study (27 March 2026) | same call | CT-03 3.4 (the most recent study); same call |
 | SF8 | connected by a season | connected before 1 October of the season | connected before the design day | same call | CT-03 3.3; every phase dated May to September |
 | SF9 | adding block loads | at full value | with a simultaneity factor | same call | CT-03 3.3 files full value |
-| SF10 | available flow | the hydraulic test's 167 m3/h | capacity less a metered peak | figures differ | CT-03 3.3 (the current hydraulic test's available flow) |
+| SF10 | available flow | the hydraulic test's 168 m3/h | capacity less a metered peak | figures differ | CT-03 3.3 (the current hydraulic test's available flow) |
 | SF11 | like installations | every connection in the high-return regime | the residential ones, any threshold in the 54.7 to 63.7 C gap | same call | same call (one set) |
-| SF12 | comparison and rounding | unrounded flow against 167 | rounded flows | same call | same call |
+| SF12 | comparison and rounding | unrounded flow against 168 | rounded flows | same call | same call |
 | SF13 | the season's whole load | blocks of every earlier phase stay connected | a season's own phases only | moves 2028-29 to none | CT-03 3.3 (the connections to be connected by the start of the season) |
 | SF14 | the gas year | registers at 06:00 local on 1 October 2025 and 2026 | calendar months by UTC | same graded figures | the scope's reporting clause; same figures |
 | SF15 | the register on a daily AMR row | the reading at the end of its UTC day, so 1 October 2025 is the first row's register less its energy | the reading at the start of the day | figures differ | the export's own arithmetic: every register step equals that day's energy (asserted) |
@@ -103,12 +103,12 @@ The default path carries the blocks at the network's 40 K design drop, its meter
 | Rung | Route | Drop (K) | Phases 1-3, 2027-28 (m3/h) | Phases 1-6, 2028-29 (m3/h) | Call |
 |---|---|---|---|---|---|
 | 0 | design basis 90/50 | 40.0 | 91.1 | 118.9 | none |
-| 1 | network metered cold-day drop, flow-weighted | 38.8 | 94.0 | 122.6 | none |
-| 2 | pre-1985 buildings (kW-weighted residential to the median of 1955 to 1975 builds) | 31.1 to 41.6 | 87.6 to 117.2 | 114.4 to 152.9 | none |
+| 1 | network metered cold-day drop, flow-weighted | 39.7 | 91.9 | 119.9 | none |
+| 2 | pre-1985 buildings (kW-weighted residential to the median of 1955 to 1975 builds) | 32.7 to 41.6 | 87.6 to 111.4 | 114.4 to 145.4 | none |
 | side | textbook radiator regime 90/70 | 20.0 | 182.3 | 237.9 | 2027-28 |
 | golden | like installations, the high-return regime | 23.7 to 24.2 | 150.4 to 153.7 | 196.3 to 200.6 | 2028-29 |
 
-Available design-day flow 167 m3/h (capacity 1,120 less committed 953). Margins: the golden's 2027-28 flow sits 8 per cent or more under the available flow under every member, its 2028-29 flow 17 per cent or more over it; rung 2's 2028-29 flow sits 9 per cent or more under it; the textbook regime's 2027-28 flow sits 9 per cent over it. Graded figures under the golden family: phase flows 45, 50, 55, 20, 15 and 10 m3/h (nearest 5), 2027-28 150 and 2028-29 200 (nearest 10), shortfall 30 (nearest 10), the drop about 24 K; every member inside every bin (checks.py G and SF6).
+Available design-day flow 168 m3/h (capacity 1,112 less committed 944). Margins: the golden's 2027-28 flow sits 9 per cent or more under the available flow under every member, its 2028-29 flow 16 per cent or more over it; rung 2's 2028-29 flow sits 15 per cent or more under it; the textbook regime's 2027-28 flow sits 8 per cent over it. Graded figures under the golden family: phase flows 45, 50, 55, 20, 15 and 10 m3/h (nearest 5), 2027-28 150 and 2028-29 200 (nearest 10), shortfall 30 (nearest 10), the drop about 24 K; every member inside every bin (checks.py G and SF6).
 
 ## Closure table
 
@@ -123,7 +123,7 @@ Available design-day flow 167 m3/h (capacity 1,120 less committed 953). Margins:
 | 7 | Weighting | arithmetic mean of connection drops | C1 across poolings (SF6) |
 | 8 | Window length | the whole 2025-26 meter year's cold days | C1 (SF2) |
 | 9 | Boundary inclusivity | a daily mean of exactly 0.0 C counts | filed, CT-03 3.2 (or lower) |
-| 10 | Rounding path | unrounded flows against 167, rounded on report | C1 (SF12) |
+| 10 | Rounding path | unrounded flows against 168, rounded on report | C1 (SF12) |
 | 11 | Tie-break | none needed | C1: no season within 8 per cent of the line |
 | 12 | Maturity and censoring | none: every like connection metered all winter | asserted: no gap on a cold day |
 | 13 | Order of operations | drop first, then each phase's flow, then the cumulative test | C1: flows add |
@@ -160,6 +160,18 @@ The asks sit on files the call never reads (the grid operator's gas telemetry an
 | Ask 2 change to 2025-26 by category | the same 2024-25 base under the change | AMR gaps, summer 2026 exchanges | 2025-26 from the registers per serial, less its 2024-25 | miss |
 
 The full includer (old EANs through the master data, the master data's closing and opening registers, the AMR opening register through the meter history) keeps all ten. Zero device rows sit in the call's population: no gas or drive-by row is read by the call, and no gap, exchange or estimated row falls on a day at or below 0 C (checks.py M).
+
+## Leak review
+
+`leak.py --asof 2026-10-16` on the final cut: no LEAK; eight REVIEW lines, each ruled here (the available flow, capacity, committed flow, 1.163 and the design basis are declared `stated_inputs`).
+- Sweep 3, stadswarmte_tarievenblad_2026.pdf (100): harmless, the tariff's 100 kW class boundary; the write-up's 100 is a rounding unit.
+- Sweep 3, hydraulische_toets_os_west_2026-10-09.pdf (5 of 8 words of the call): harmless, the test's own subject (the station's design-day flow and the season it covers); it states no season and no flow for the blocks.
+- Sweep 3, procedure_capaciteitstoets_aansluitingen_v3.pdf (7 of 8 words of the call): harmless, CT-03 3.3 defines what running short in a heating season means (the WHAT); it names no season.
+- Sweep 4, the hydraulic test (network, design, capacity, connection): harmless, the station's capacity and committed flow; no regime, return temperature or build year (checks.py R3c).
+- Sweep 4, the procedure (network, design, capacity, connection, return, installation): harmless, "return" and "installation" are CT-03 3.2's definition of the drop (the WHAT); no regime, comparison group or build year (R3c).
+- Sweep 4, the scope (design, metered, connection, installation): harmless, the works (the delivery set on the existing installation, radiators kept) and Ask 1's gas year; no drop or return temperature (R3c').
+- Sweep 4, the prompt's deliverable sentence: harmless, the prompt's own terms (design-day flow, connected, available flow).
+- Sweep 9, weidehaven_aardgasvrij_fasering_2027-2028.xlsx (15 dates after the as-of): harmless, the schedule's planned connection dates, forward-looking by genre.
 
 ## Architecture 1 record
 

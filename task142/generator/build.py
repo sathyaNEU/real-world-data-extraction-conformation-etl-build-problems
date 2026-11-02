@@ -36,7 +36,7 @@ SOURCES = {
 }
 
 
-def metadata(n):
+def metadata(n, w):
     return {
         "task": "task142", "architecture": 2, "as_of": P.ASOF.isoformat(),
         "decision": "the first heating season (2027-28, 2028-29 or neither) in which OS West runs short of design-day "
@@ -46,7 +46,7 @@ def metadata(n):
                                "license": "synthetic, CC0",
                                "role": "distractor" if k in P.DISTRACTORS else "evidence"} for k in P.FILES},
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],
-        "stated_inputs": ["167", "1,120", "953", "1.163", "90/50", "90", "0"],
+        "stated_inputs": [str(w["H"]), "{:,}".format(w["capacity"]), str(w["committed_int"]), "1.163", "90/50", "90", "0"],
         "distractor_notes": {
             P.FILES["prelim"]: "the consultant's concept design heat losses, superseded by revision 2 under CT-03 3.4; "
                                "relevant to the loads, unused by the solution",
@@ -73,7 +73,7 @@ def one_build(base):
     w, n = PK.build(target)
     GD.write_all(target, golden, gen)
     with open(os.path.join(base, "metadata.json"), "w") as fh:
-        json.dump(metadata(n), fh, indent=1, sort_keys=True)
+        json.dump(metadata(n, w), fh, indent=1, sort_keys=True)
         fh.write("\n")
     return digest(base)
 

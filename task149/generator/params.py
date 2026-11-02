@@ -20,11 +20,11 @@ MIDTERM_2019 = [dt.date(2019, 10, 28) + dt.timedelta(days=i) for i in range(5)]
 # share of each destination's journeys to work from the catchment.
 DEST = [
     # code, final-release name, provisional-release name, census commuters (final), station share
-    ("KW01", "Kilcarrow city centre", "Kilcarrow City Central Area", 1430, 0.42),
-    ("KW02", "Kilcarrow Docklands", "Docklands and North Quays", 1210, 0.46),
-    ("KW03", "University Hospital campus", "Hospital Campus (Wilton Road)", 2000, 0.31),
+    ("KW01", "Kilcarrow city centre", "Kilcarrow City Central Area", 1430, 0.40),
+    ("KW02", "Kilcarrow Docklands", "Docklands and North Quays", 1210, 0.47),
+    ("KW03", "University Hospital campus", "Hospital Campus (Wilton Road)", 2000, 0.32),
     ("KW04", "Kilcarrow University", "University Campus", 540, 0.28),
-    ("KW05", "Carrigboy business park", "Carrigboy Industrial Estate", 1330, 0.22),
+    ("KW05", "Carrigboy business park", "Carrigboy Industrial Estate", 1330, 0.21),
     ("KW06", "Port of Kilcarrow, Ringcurran", "Ringcurran Port Area", 750, 0.07),
     ("KW07", "Ballymurragh retail park", "Ballymurragh", 630, 0.03),
     ("KW08", "Airport business park", "Airport and Environs", 420, 0.05),
@@ -67,11 +67,13 @@ TRAVEL_MIN = {"KW01": 34, "KW02": 38, "KW03": 31, "KW04": 36, "KW05": 44, "KW06"
 HOME_CELLS = [("RG%02d" % i, w) for i, w in enumerate([0.13, 0.11, 0.12, 0.10, 0.12, 0.11, 0.10, 0.11, 0.10], 1)]
 WORK_CELLS = {"KW01": ["KC101", "KC102", "KC103"], "KW02": ["KD201", "KD202"], "KW03": ["KH301", "KH302", "KH309"],
               "KW04": ["KU401", "KU309"], "KW05": ["CB501", "CB502"], "KW06": ["RC601"], "KW07": ["BM701"],
-              "KW08": ["AP801"], "KW09": ["LS901", "AR902"], "KW10": ["RG03", "RG07"], "KW11": ["CO111", "CO112"]}
+              "KW08": ["AP801"], "KW09": ["LS901", "AR902"], "KW10": ["RG10", "RG11"], "KW11": ["CO111", "CO112"]}
 STRADDLE = {"KH309": [("KW03", 0.58), ("KW04", 0.42)]}
 LOCAL_CELLS = ["RG01", "RG02", "RG04", "RG05", "RG06", "RG08", "RG09", "BM701"]
 OUTSIDE_CELLS = ["XO001", "XO002"]
 SAMPLE = 0.09  # panel devices per resident commuter, about
+DEP_SHIFT = {"KW04": -12, "KW05": 16}  # minutes added to every shift of a destination's workers (set by tuning)
+GATE_SEED = 40
 
 # Existing stations on the Ardnagree line and their 2019 base and 2027 standing (ordinary weekday entries).
 STATIONS = [

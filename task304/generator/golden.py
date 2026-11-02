@@ -125,7 +125,7 @@ def bid_docx(path, F):
                "performance function on major and minor road traffic, fitted by negative binomial regression), each "
                "weighted by how far those junctions spread beyond chance, and are carried to the junction's 2026 traffic. "
                "%s had the most collisions on the list but carries little traffic, so most of its count is chance; "
-               "%s carries the most traffic but its own record runs well below what its traffic predicts." % (
+               "%s's traffic predicts the most collisions of any listed junction but its own record runs well below that." % (
                    "{:,}".format(F["reference_junctions"]), F["observed_route"], F["model_route"]))
     _para(doc, "Holt Lane's traffic fell by about a fifth from 2024 (junction inventory), so Saxby Cross's expected collisions "
                "are at its lower 2026 traffic. The supporting tables of the guidance's Annex A are in bid_annex_2026.xlsx.",

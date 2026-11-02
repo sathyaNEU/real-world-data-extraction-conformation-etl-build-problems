@@ -50,15 +50,15 @@ card's lineage. Everything above `## Architecture 4 record` is architecture 5.
   fiction: Friday 4 December 2026 (the bid closes 29 January 2027).
 - **The call:** which listed junction takes the roundabout, sized by the injury collisions a year it would prevent.
   Golden: Mill Lane Crossroads, 1.3 a year (expected 2.7 a year as it stands); the runner-up Tollgate Crossroads at
-  1.1. Forward facing: the benefit is the collisions the 2027 scheme would prevent in the years after it opens.
+  1.0. Forward facing: the benefit is the collisions the 2027 scheme would prevent in the years after it opens.
 - **Shape arithmetic:** six listed junctions' benefits 6; the junction and the runner-up 2; the chart's parts (a bar
   per junction, the chosen bar marked, value labels, the axis title) 4; ask A, injury collisions by quarter and
   severity, 9; ask B, casualties by quarter and road user, 12; the two files 2. 35 gradable criteria, 21 of them asks.
 - **Data-native sentence:** a county's junction screening lists the junctions whose last five years were worst, and
   a five-year count at a junction is a few collisions drawn from its long-run rate, so the junctions at the top of a
   screening are partly the unlucky ones; a lightly trafficked crossroads that drew 22 injury collisions in five years
-  will draw far fewer in the next five, while the busiest junction on the list sits well below what its traffic
-  predicts, and only each junction's own record weighed against a performance function fitted to the county's
+  will draw far fewer in the next five, while the listed junction whose traffic predicts the most sits well below
+  that prediction, and only each junction's own record weighed against a performance function fitted to the county's
   1,436 comparable junctions, by how far those junctions spread beyond chance, estimates what each can be expected
   to have.
 - **Abstraction sentence:** "each candidate's long-run count of events at its present exposure, when the candidates
@@ -95,8 +95,8 @@ card's lineage. Everything above `## Architecture 4 record` is architecture 5.
   the list the fund names.
 - **Shock:** the move reads as ordinary statistics on the record (a count model of the county's junctions), not an
   anomaly; sorted on the 2021 to 2025 count, collisions per vehicle, traffic, the model's prediction or the listed
-  order, Mill Lane Crossroads is first on none of them (Saxby Cross leads the count and the rate, Tollgate
-  Crossroads the traffic and the model).
+  order, Mill Lane Crossroads is first on none of them (Saxby Cross leads the count and the rate, Coppice Way
+  Junction the traffic, Tollgate Crossroads the model's prediction).
 - **Pins:** the WHAT is filed in the fund's guidance in its own genre (the benefit as expected annual injury
   collisions as the junction stands at its 2026 traffic, times one less the Table 2 factor; the validated record
   2021 to 2025; the listed junctions); no filed sentence names a performance function, a weighting, chance or
@@ -118,7 +118,7 @@ card's lineage. Everything above `## Architecture 4 record` is architecture 5.
 A competent analyst takes each listed junction's 2021 to 2025 injury collisions as its expected annual count, the
 cluster-site practice, and files Saxby Cross at 2.1 injury collisions prevented a year (the `Ends on:` answer); the
 step that lands it there is reading a recent count as the long-run count at junctions listed because their recent
-counts were high: Saxby Cross carries 3,740 vehicles a day on its major road and the county's performance function
+counts were high: Saxby Cross carries 3,700 vehicles a day on its major road and the county's performance function
 predicts 0.4 collisions a year there, so most of its 22 were chance, while Mill Lane Crossroads keeps both a high
 record and high traffic, which only the record weighed against the model fitted to the county's 1,436 comparable
 junctions shows.
@@ -156,7 +156,7 @@ junctions shows.
   factor and leaves how to estimate a junction's expectation to the analyst; no filed sentence names a model, a
   weighting, selection or chance. Enumerated family (every construction a competent analyst reaches for): the
   five-year count (Saxby Cross 2.1), the count carried to 2026 traffic (Saxby Cross 2.0), collisions per million
-  entering vehicles (Saxby Cross), the performance function alone (Tollgate Crossroads 0.8), the record weighed against
+  entering vehicles (Saxby Cross), the performance function alone (Tollgate Crossroads 0.7), the record weighed against
   the function (Mill Lane Crossroads 1.3): three distinct calls. Standing family (the weighing under every licensed
   convention: year terms or none, the 2026 level at the window's average or 2025's, overdispersion by likelihood or by
   moments, staggered junctions pooled with T junctions or apart, layouts fitted apart): Mill Lane Crossroads every time,
@@ -217,14 +217,14 @@ junctions shows.
 |---|---|---|---|---|---|---|---|---|
 | R0 | five-year count as the expectation, prevented a year | Saxby Cross 2.1 | 1.73 | 1.15 | 1.34 | 2.11 | 0.72 | 0.78 |
 | R0' | the count carried to 2026 traffic | Saxby Cross 2.0 | 1.74 | 1.18 | 1.36 | 2.05 | 0.72 | 0.82 |
-| R1 | the performance function alone | Tollgate Crossroads 0.8 | 0.60 | 0.85 | 0.41 | 0.18 | 0.26 | 0.16 |
-| G | the record weighed against the function | Mill Lane Crossroads 1.3 | 1.31 | 1.08 | 0.91 | 0.81 | 0.50 | 0.42 |
+| R1 | the performance function alone | Tollgate Crossroads 0.7 | 0.60 | 0.72 | 0.41 | 0.18 | 0.26 | 0.16 |
+| G | the record weighed against the function | Mill Lane Crossroads 1.3 | 1.31 | 1.02 | 0.91 | 0.81 | 0.50 | 0.42 |
 
-Margins: R0 1.22x (Saxby Cross over Mill Lane Crossroads), R0' 1.18x, R1 1.40x (Tollgate Crossroads over Mill Lane
-Crossroads), G 1.21x (Mill Lane Crossroads over Tollgate Crossroads); collisions per million entering vehicles also file
+Margins: R0 1.22x (Saxby Cross over Mill Lane Crossroads), R0' 1.18x, R1 1.19x (Tollgate Crossroads over Mill Lane
+Crossroads), G 1.28x (Mill Lane Crossroads over Tollgate Crossroads); collisions per million entering vehicles also file
 Saxby Cross (3.86x). Position: Mill Lane Crossroads is second on R0 and on R1 and first only on G. The overdispersion is
-0.26 on 1,436 junctions over five years, so the weight on each listed junction's prediction runs from 0.31 (Tollgate
-Crossroads, the busiest) to 0.66 (Saxby Cross, the quietest). On the clean truth (each junction's true long-run rate)
+0.26 on 1,436 junctions over five years, so the weight on each listed junction's prediction runs from 0.35 (Tollgate
+Crossroads, the highest prediction) to 0.66 (Saxby Cross, the lowest). On the clean truth (each junction's true long-run rate)
 the largest benefit is also at Mill Lane Crossroads (R3c'). The pricing sequence: (1) the residue the filed WHAT leaves
 is how to estimate an expectation, a method, not a knob; (2) the move is worth the whole call: Saxby Cross falls from
 2.1 to 0.8; (3) the one-number routes (count, rate, traffic, prediction) name Saxby Cross or Tollgate Crossroads;
@@ -246,7 +246,7 @@ expectation; (8) the reflex sweep as code (checks.py R3a to R3c) lands every ref
 | 8 Window length | five years | filed (clause 3.3) |
 | 9 Boundary inclusivity | 12 or more in the screening | the note; SF1 |
 | 10 Rounding path | one decimal of the unrounded benefit | SF9, asserted |
-| 11 Tie-break | none needed | C1, 1.21x clear |
+| 11 Tie-break | none needed | C1, 1.28x clear |
 | 12 Maturity and censoring | the validated years are closed | C1 |
 | 13 Order of operations | counts, function, weighing, 2026 traffic, factor | C1, asserted invariant to the year level (SF6) |
 | 14 Row order | irrelevant | C1, sums |
@@ -327,6 +327,35 @@ Pair ceiling: 28.6 (the cracker 38 + 7 + 55 x 0.048 = 47.6; the mirror 0 + 7 + 5
 route printing none of the six benefits; averaged)
 Mirror leakage: 4.8 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack: ask A 0 of 9 to the cracker, ask B 1 of 12)
+
+## Build record
+
+- **Pack:** 12 files in four formats (7 csv, 2 xlsx, 2 pdf, 1 json); the bulk file is collision_records_2016_2025.csv at
+  25,836 collisions; distractors skid_resistance_survey_2025.csv and community_speedwatch_2026.csv, named in
+  `metadata.json`. The fiction's as-of date is 4 December 2026.
+- **Measured on the cut pack:** the Ladder table above (golden Mill Lane Crossroads 1.31 prevented a year, expected 2.72
+  a year, against Tollgate Crossroads 1.02); overdispersion 0.260 on 1,436 junctions; the annex from target/ equals the
+  clean truth in all 21 cells (A0, A0'). Every member of the standing family prints every benefit at the same
+  one-decimal value (R3e); the nearest any member comes to a rounding edge is 0.025 (Fen Lane Junction, family 0.412
+  to 0.425; Tollgate Crossroads 1.006 to 1.024; Mill Lane Crossroads 1.277 to 1.309, its expectation 2.691 to 2.727).
+- **Gates on the final cut (2026-11-02):** generator checks 58 of 58; verify 14 of 14 (its own NB2 fit by joint
+  quasi-Newton, overdispersion 0.260); two byte-identical builds, target.zip 1a624630; figures_check 37 figures, 0
+  absent; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (710 characters); leak.py REVIEW, no LEAK (ruled below);
+  guard heart PASS (nearest driver 0.07); guard surface: no hard tell (no shared file, seed table or invented name;
+  personas Alison Hartley and Cheryl Gregory, the card's), two pairs promoted on surface similarity alone (corpus top 1
+  per cent) against task231 and task271, each sharing only the decisive gap label (time), for the author's adjudicated
+  clone check. Pair ceiling 28.6, mirror leakage 4.8 per cent (generator/ceiling.py).
+
+**leak.py REVIEW lines, ruled:**
+- Sweep 3 on the screening note (all five of the call's distinctive words): it lists all six junctions alphabetically
+  with nodes, districts, layouts and roads, and names the county; no count, rate or rank. Harmless.
+- Sweep 4 on the guidance (record, junctions, traffic, control, expected, crossroads): clauses 3.2 and 3.3 (the filed
+  WHAT: expected annual injury collisions as the junction stands at its 2026 traffic, estimated from the validated
+  record for 2021 to 2025) and Table 2's factors; it names no model, weighting, chance or selection. Harmless.
+- Sweep 4 on the screening note (record, junctions, control, crossroads): what was screened and the screening's own
+  rule (twelve or more in 2021 to 2025), the fact the bid's list rests on. Harmless.
+- Sweep 6 on the inventory (six of the seven answer-set names beside numbers): traffic estimates by year for every one
+  of the network's nodes, not a ranking on the benefit. Harmless.
 
 ## Architecture 4 record (spent 2026-11-02 at stage 4)
 
@@ -1183,3 +1212,6 @@ task122, task136 and task264 on corpus-top-percent surface similarity, and task1
   junction's traffic retuned inside its range until every licensed member prints the same figure. The pre-2021 fit and
   the total-entering form stay outside the family, the first by clause 3.3's window and the second by the record's
   likelihood (lower by more than 10).
+- Second architecture 5 tuning (2026-11-02): Tollgate Crossroads's layouts-fitted-apart member sat 0.005 above the 1.05
+  edge (family 1.055 to 1.079), so its traffic was lowered into the 1.0 bin (family 1.006 to 1.024), which also widened
+  the golden margin to 1.28x; the model-alone rung still names it at 1.19x.

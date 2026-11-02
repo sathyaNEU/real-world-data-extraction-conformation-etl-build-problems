@@ -46,6 +46,10 @@ def guidance(path, line):
               "received in 2025, divided by its equivalent adults under 3.2."),
         ("p", "3.8 The measures' payments are counted as additional income. The Ministry has confirmed that no "
               "national benefit is reduced by them, and none of the regional benefits is reduced by another."),
+        ("p", "3.9 Only the payments a household actually receives during 2027 are counted. Under a measure that "
+              "families have to claim, a family newly entitled to it receives payments only once it has claimed and "
+              "its claim has been decided, and then from the month the Complemento Familiar's rules on payment set; a "
+              "family that has not claimed receives nothing from it."),
         ("h", "4. What the cabinet receives"),
         ("p", "4.1 A note of no more than two pages recommending one measure, with the number of children it brings "
               "above the line in 2027 for the region and for each province."),
@@ -109,7 +113,9 @@ def proposals(path, line, costs):
               "staff who run the Complemento Familiar."),
         ("p", "C. The Complemento Familiar is the department's established payment for families with children on "
               "low incomes. The higher limit brings families up to %s of computable income per equivalent adult "
-              "within it." % euro(P.C_LIMIT)),
+              "within it. Families who already receive the Complemento keep it as now; the families the higher limit "
+              "newly covers are those from %s to under %s who do not receive it." % (euro(P.C_LIMIT), euro(P.CFV_LIMIT),
+                                                                                    euro(P.C_LIMIT))),
         ("p", "D. Families renting their home carry the highest housing costs; the supplement is paid per child and "
               "follows the same income test as B."),
         ("p", "E. A higher amount for the families the Complemento already reaches."),
@@ -157,12 +163,14 @@ def rules(path):
         ("p", "7.1 Every award is reviewed twelve months after its first month of payment, on the latest closed tax "
               "year. A renewal takes effect from the review month."),
         ("p", "7.2 Where documents asked for at a review have not arrived, payment is suspended from the review "
-              "month. If they arrive within three months the suspension is lifted and the suspended months are paid "
-              "with the next monthly payment; if not, the award is extinguished from the review month."),
+              "month. If they arrive within three months the suspension is lifted and the award pays for the "
+              "suspended months, with the next monthly payment; if not, the award is extinguished from the review "
+              "month."),
         ("h", "8. Changes of circumstances"),
         ("p", "Families report a birth, a child reaching 18 and a change of address within one month. A birth raises "
-              "the amount and a child reaching 18 lowers it from the month after the change; a change of address "
-              "takes effect from the month after it is reported."),
+              "the amount and a child reaching 18 lowers it from the month after the change; when the family's last "
+              "child under 18 reaches 18, the award ends with that month. A change of address takes effect from the "
+              "month after it is reported."),
         ("h", "9. History"),
         ("p", "The Complemento opened for claims on 1 October 2022 with a limit of €7,200 of computable income per "
               "equivalent adult and €90 a month per child. Order SOC/41/2024 raised the limit to €8,400 from 1 April "

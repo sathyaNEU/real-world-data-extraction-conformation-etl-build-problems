@@ -111,7 +111,7 @@ def ops_log(W, out):
                       "or the day it was reported.")
     rows = []
     atc_name = {a["name"]: W.atc_id[a["name"]] for a in W.atcs}
-    rows.append((dt.date(2025, 1, 9), "Network", "Snow from early morning; gritting on priority routes, Grange Road school closed.", "MW"))
+    rows.append((dt.date(2025, 1, 9), "Network", "Snow from early morning; gritting on priority routes, most schools closed.", "MW"))
     rows.append((dt.date(2025, 1, 10), "Network", "Snow clearing; traffic light until midday.", "MW"))
     lname = W.atc_outage[0]
     rows.append((dt.date(2025, 1, 27), "%s (%s)" % (atc_name[lname], lname),
@@ -154,7 +154,7 @@ def ops_log(W, out):
                                      WD.DAYS[a1 + 1].strftime("%d %B").lstrip("0") if a1 + 1 < 365 else "repaired in the new year", "IG"))
     rows.append((dt.date(2025, 3, 3), "Count programme", "2025 manual classified count programme starts (Heathside Survey Services).", "MW"))
     rows.append((dt.date(2025, 10, 24), "Count programme", "2025 count programme complete; count sheets received and keyed.", "MW"))
-    rows.append((dt.date(2025, 12, 19), "UTC", "Christmas timing plans loaded at the shopping centre and retail park junctions.", "IG"))
+    rows.append((dt.date(2025, 12, 19), "UTC", "Christmas timing plans loaded at the town centre junctions.", "IG"))
     rows.sort(key=lambda r: (r[0], r[1]))
     t = doc.add_table(rows=1, cols=4)
     t.style = "Table Grid"

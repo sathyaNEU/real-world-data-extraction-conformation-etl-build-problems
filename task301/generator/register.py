@@ -18,13 +18,15 @@ import numpy as np
 import params as P
 
 # share of eventual claimants who have claimed by month k after a claim window opens (k = 1, 2, ...)
-PACE_LAUNCH = [0.12, 0.20, 0.27, 0.325, 0.375, 0.43, 0.47, 0.505, 0.54, 0.57, 0.595, 0.62,
-               0.645, 0.67, 0.695, 0.72, 0.745, 0.77, 0.79, 0.81, 0.83, 0.85, 0.87, 0.89,
-               0.905, 0.92, 0.935, 0.945, 0.955, 0.965, 0.972, 0.979, 0.986, 0.991, 0.996, 1.0]
+PACE_LAUNCH = [0.17, 0.29, 0.38, 0.45, 0.51, 0.56, 0.60, 0.635, 0.665, 0.69, 0.71, 0.73,
+               0.75, 0.77, 0.79, 0.81, 0.83, 0.85, 0.87, 0.885, 0.90, 0.915, 0.93, 0.94,
+               0.95, 0.96, 0.967, 0.974, 0.98, 0.985, 0.99, 0.993, 0.996, 0.998, 0.999, 1.0]
 PACE_WIDENING = [0.04, 0.075, 0.11, 0.145, 0.18, 0.21, 0.24, 0.27, 0.30, 0.33, 0.36, 0.385,
                  0.41, 0.435, 0.46, 0.49, 0.52, 0.55, 0.58, 0.61, 0.64, 0.67, 0.70, 0.73,
                  0.76, 0.79, 0.82, 0.85, 0.88, 0.905, 0.93, 0.95, 0.965, 0.98, 0.99, 1.0]
 EVENTUAL = 0.82
+EVENTUAL_LAUNCH = 0.88
+LAMBDA_WIDENING = 0.018
 SUSPEND_P = 0.075
 REVOKE_P = 0.045
 
@@ -140,14 +142,16 @@ def build(rng, W):
         return base
 
     for f in fams:
-        if rng.random() >= EVENTUAL:
-            continue
-        if f["cohort"] == "launch":
-            ct = draw_pace_month(rng, PACE_LAUNCH) - 1
-        elif f["cohort"] == "widening":
-            ct = RISE_T + draw_pace_month(rng, PACE_WIDENING) - 1
+        if f["cohort"] == "widening":
+            # the families the April 2024 rise brought within the limit claim at a low, steady monthly rate
+            ct = RISE_T + int(rng.geometric(LAMBDA_WIDENING)) - 1
         else:
-            ct = f["entitled_t"] + int(rng.exponential(4.0))
+            if rng.random() >= (EVENTUAL_LAUNCH if f["cohort"] == "launch" else EVENTUAL):
+                continue
+            if f["cohort"] == "launch":
+                ct = draw_pace_month(rng, PACE_LAUNCH) - 1
+            else:
+                ct = f["entitled_t"] + int(rng.exponential(4.0))
         if ct > LAST_T:
             continue
         cd = claim_day(ct)
@@ -267,6 +271,36 @@ def build(rng, W):
             if new != a["muni"]:
                 incidents.append({"fid": fid, "ex": a["ex"], "date": day(), "type": "DOM", "dato": new})
     incidents.sort(key=lambda r: (r["date"], r["fid"], r["type"]))
+    # a family whose last child under 18 reaches 18 is entitled to nothing from the month after: the award open in
+    # that month ends with it, and the family's later resolutions and 2025 incidents never happen
+    ended = {}
+    for r in incidents:
+        if r["type"] != "MAY":
+            continue
+        fid = r["fid"]
+        t = t_of(r["date"].year, r["date"].month)
+        births = sum(1 for x in incidents if x["fid"] == fid and x["type"] == "NAC" and x["date"] < r["date"])
+        cov = [a for a in awards if a["fid"] == fid and a["res"] == "C" and a["first"] is not None
+               and a["first"] <= t and (a["last"] is None or a["last"] >= t)]
+        if cov and max(a["kids"] for a in cov) + births == 1:
+            ended[fid] = (t, r["date"])
+            for a in cov:
+                a["last"] = t
+    if ended:
+        awards[:] = [a for a in awards if not (a["fid"] in ended and (
+            (a["first"] is not None and a["first"] > ended[a["fid"]][0]) or
+            (a["first"] is None and a["claim"] > ended[a["fid"]][1])))]
+        incidents[:] = [x for x in incidents if not (x["fid"] in ended and x["date"] > ended[x["fid"]][1])]
+        # an incident recorded on a resolution that no longer exists is recorded on the family's resolution open then
+        alive = {a["ex"] for a in awards}
+        for x in incidents:
+            if x["ex"] in alive:
+                continue
+            t = t_of(x["date"].year, x["date"].month)
+            opts = sorted((a for a in awards if a["fid"] == x["fid"] and a["first"] is not None and a["first"] <= t),
+                          key=lambda a: (a["first"], a["dec"]))
+            x["ex"] = opts[-1]["ex"] if opts else None
+        incidents[:] = [x for x in incidents if x["ex"] is not None]
     # a move takes effect from the month after it is recorded; resolutions starting from then carry the new address
     for r in incidents:
         if r["type"] != "DOM":

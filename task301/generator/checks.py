@@ -44,10 +44,11 @@ def margin(d):
     return d[o[0]] / d[o[1]]
 
 
-def r3(H, F, PC, T_, lag=None, curves=None, modes=None):
-    """Children brought above the line in 2027 by each measure, the golden construction on given inputs."""
-    lag = PC["lag"] if lag is None else lag
-    curves = curves or {"B": PC["launch"], "C": PC["widening"], "D": PC["launch"]}
+def r3(H, F, L, lag=None, curves=None, modes=None, T_=1.0):
+    """Children brought above the line in 2027 by each measure, the golden construction on given inputs: C's
+    newly entitled claim along the April 2024 cohort's cumulative share of its band, B's and D's along the launch's."""
+    lag = L["paces"]["lag"] if lag is None else lag
+    curves = curves or {"B": L["L"][AN.GOLD][0], "C": L["W"][AN.GOLD][0], "D": L["L"][AN.GOLD][0]}
     out = {}
     for m in ("A", "B", "C", "D", "E"):
         if m in AUTOMATIC and not (modes and m in modes):
@@ -73,20 +74,23 @@ def clean_households(W):
     return out
 
 
-def clean_paces(R):
+def clean_curves(W, R):
+    """The two openings' cumulative claims as a share of their band, from the world's own claims and households."""
     g = [a for a in R["awards"] if a["tipo"] == "I" and a["res"] == "C" and not a["appeal"]]
+    hh = [h for h in W["hh"] if h["kids"]]
+    stock_w = sum(h["w"] for h in hh if P.CFV_LIMIT_OLD <= h["comp_eq"] < P.CFV_LIMIT)
+    stock_l = sum(h["w"] for h in hh if h["comp_eq"] < P.CFV_LIMIT_OLD)
 
-    def curve(sel, t_open, n):
+    def curve(sel, t_open, stock):
         cnt = collections.Counter(RG.t_of(a["claim"].year, a["claim"].month) - t_open + 1 for a in sel)
-        tot = sum(v for k, v in cnt.items() if 1 <= k <= n)
         out, acc = [], 0
-        for k in range(1, n + 1):
+        for k in range(1, 13):
             acc += cnt.get(k, 0)
-            out.append(acc / tot)
+            out.append(acc / stock)
         return out
     widen = curve([a for a in g if P.CFV_LIMIT_OLD <= a["inc"] < P.CFV_LIMIT and a["claim"] >= P.CFV_LIMIT_RISE],
-                  RG.RISE_T, RG.LAST_T - RG.RISE_T + 1)
-    launch = curve([a for a in g if a["claim"] < P.CFV_LIMIT_RISE and a["inc"] < P.CFV_LIMIT_OLD], 0, RG.RISE_T)
+                  RG.RISE_T, stock_w)
+    launch = curve([a for a in g if a["claim"] < P.CFV_LIMIT_RISE and a["inc"] < P.CFV_LIMIT_OLD], 0, stock_l)
     lag = collections.Counter(a["first"] - RG.t_of(a["claim"].year, a["claim"].month) for a in g)
     n = sum(lag.values())
     return {"widening": widen, "launch": launch, "lag": [(k, v / n) for k, v in sorted(lag.items())]}

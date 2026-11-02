@@ -18,8 +18,8 @@ def write(path, F):
     L.append("")
     L.append("**Ardleshire should bid for the roundabout at %s.** It would prevent %.1f injury collisions a year, against "
              "%.1f at %s. Not %s, which had the most collisions in 2021 to 2025 but carries little traffic, so most of its "
-             "count is the chance that listed it. Not %s, which carries the most traffic but whose own record runs well "
-             "below what its traffic predicts." % (best, F["call_benefit"], F["runner_up_benefit"], ru,
+             "count is the chance that listed it. Not %s, whose traffic predicts the most collisions of any listed junction "
+             "but whose own record runs well below that." % (best, F["call_benefit"], F["runner_up_benefit"], ru,
                                                    F["observed_route"], F["model_route"]))
     L.append("")
     L.append("## 2. Critical Components")

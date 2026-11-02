@@ -255,7 +255,8 @@ def run(W, target, E):
                                ("general supply alone", R.a_general_only, "july_mwh", 0),
                                ("rows by written unit", R.b_rows_by_unit, "requests", 9), ("careful route (the date rule)", R.b_cracker, "requests", 6),
                                ("UTC dates, summed", R.c_sum_utc, "voltage_pct", 3),
-                               ("careful route (spans across elements, every record)", R.c_cracker, "voltage_pct", 3),
+                               ("careful route without the hourly cross-check (every record joined into spans)", R.c_cracker, "voltage_pct", 0),
+                               ("calendar UTC days", R.c_union_utc, "voltage_pct", 0),
                                ("elements summed", R.c_elements_summed, "voltage_pct", 3)]:
         k = kept(fn(D, U), key)
         ok("ask device: %s keeps at most %d of 18 %s figures" % (name, cap, key), k <= cap, "%d kept" % k)
@@ -287,6 +288,29 @@ def run(W, target, E):
        all(bin_of(gen[k], 0.01) != bin_of(E["july_mwh"][k], 0.01) for k in gen), "")
     ok("F2: the standard files use as both registers together",
        "general supply and controlled load together" in " ".join(D["std_text"].split()), "")
+    # round 2 (Q5): section 6 files which record governs, the limits' inclusivity and the market-time days
+    std6 = " ".join(D["std_text"].split())
+    ok("Q5: section 6 files that a record counts only where the meter's own hourly maximum or minimum is outside the limits",
+       "a record counts only where the meter's own hourly maximum or minimum, in an hour the record covers, is itself outside the limits" in std6, "")
+    ok("Q5: section 6 files outside as above 253 V or below 216 V", "while its voltage is above 253 V or below 216 V" in std6, "")
+    ok("Q5: section 6 sets the run of days from midnight to midnight in market time",
+       "from the midnight in market time that begins the first day to the midnight that ends the last" in std6, "")
+    lit = R.c_literal(D, U)
+    ok("Q5: section 6 read word for word gives the golden on all 18 risers", all(abs(lit[k] - E["voltage_pct"][k]) < 1e-12 for k in lit), "")
+    every = R.c_cracker(D, U)
+    ok("Q5: ignoring the hourly cross-check moves every riser out of its bin (the 18 cells the ceiling counts)",
+       all(bin_of(every[k], 0.01) != bin_of(E["voltage_pct"][k], 0.01) for k in every), "")
+    exts = [float(e["v_extreme"]) for e in D["events"]]
+    ok("Q5: no event record's extreme sits at a limit (253.0 V or 216.0 V)", not any(abs(x - 253.0) < 1e-9 or abs(x - 216.0) < 1e-9 for x in exts),
+       "lowest extreme %.1f" % min(exts))
+    conv = {"limits inclusive": R.c_literal(D, U, inclusive=True), "the record's own extreme also beyond the limit": R.c_literal(D, U, own_extreme=True)}
+    for name, vals in conv.items():
+        ok("Q5: %s gives the same figures on every riser" % name, all(abs(vals[k] - lit[k]) < 1e-12 for k in lit), "")
+    endinc = R.c_literal(D, U, end_second=1)
+    moves = {k: abs(endinc[k] - lit[k]) for k in lit}
+    room = {k: edge(E["voltage_pct"][k], 0.01) for k in lit}
+    ok("Q5: every cell's distance to its rounding edge exceeds what any boundary convention moves (an end second counted inclusively the largest)",
+       all(room[k] > moves[k] for k in lit), "tightest room %.5f against a move of %.5f" % (min(room.values()), max(moves.values())))
     # F1: the standard files the any-phase reading for three-phase supplies
     ok("F1: the standard files when a three-phase supply is outside the limits",
        "A three-phase supply is outside the limits while any one of its phases is outside them" in " ".join(D["std_text"].split()), "")
@@ -335,7 +359,7 @@ def run(W, target, E):
         while h < en:
             v = D["pq_max"].get((e["meter_serial"], e["element"], h.strftime("%Y-%m-%dT%H:%M:%SZ")))
             if v is not None:
-                vs.append(v)
+                vs.append(v[1])
             h = h + (datetime(2026, 1, 1, 1) - datetime(2026, 1, 1, 0))
         if vs:
             (hv_ex if A.excursion_record(e, D) else hv_in).append(max(vs))

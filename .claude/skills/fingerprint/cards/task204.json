@@ -1,115 +1,145 @@
 {
- "task": "task204",
- "architecture": "v1",
- "drawn": "2026-10-27",
- "slot_note": "Wave 5, first fresh draw in the lane. Screened against the two closed families named in the intake brief (records-fixed count nonlinearity; a behavioural rate transported between populations) and against the four screens in order: swap, guard and slots, bin test, floor and geometric-mean with the deletion tests and the reflex sweep beside it.",
- "domain": "physical-environmental-sciences",
- "subdomain": "environmental-monitoring-exceedance",
- "niche": "indoor air quality monitoring of a further-education estate's large teaching spaces against the outdoor-air requirement in the school building standard",
- "objective": "anomaly-detection",
- "shape": "07",
- "decision_type": "quantity_figure",
- "answer_unit": "rate_or_share",
- "answer": "The Tulrohan block's six teaching spaces are supplied with 5.0 litres per second per occupant present of outdoor air across the autumn term's timetabled sessions (5.0815 unrounded), 3.0 short of the 8 TGD-M4 requires, so January's minor works fund option A, replacing AHU-03 and AHU-04 and the Tulrohan supply and extract distribution, and not the timetable change. Six of the six spaces are below the requirement on their own records.",
- "answer_source": "generator truth, asserted in generator/checks.py and recomputed from the shipped bundle alone in generator/verify.py",
- "gap": [
-  "objective",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G7",
-  "G3"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_standard",
- "stump_class": "analytical",
- "analyst_test": "With the record clean and every filed rule applied, the easy route is the field's own steady-state carbon dioxide estimate of outdoor air per person, taken on each timetabled session's mean excess over the outdoor baseline and occupant-weighted across the term, which files 11.0 litres per second per occupant present, 10.95 before rounding, for the Tulrohan block and clears the 8 litres per second per person standard, against a golden of 5.0.",
- "domain_test": "The deciding quantity is the outdoor-air supply rate per occupant present, which building physics estimates from a space's own carbon dioxide balance (the source from occupancy, the removal by air supply and the stored term from the room's volume), and a noun swap breaks the task because the quantity exists only through a physical volume, a per-occupant generation rate fixed by the standard and a response time equal to volume over flow.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:unsteady-balance-across-a-filed-session-window",
- "layer1": [
-  "a building management system export in Irish local time across the October clock change",
-  "room volumes in a table inside the as-built room-data-sheet PDF",
-  "one sensor replaced mid-term, its span check carrying a 40 ppm offset either side",
-  "enrolment group sizes against the statutory attendance register",
-  "the campus outdoor sensor with a two-week gap filled from the national station",
-  "session windows straddling the lunch unoccupied setback in the plant schedule",
-  "one exported concentration column carrying thousands separators and a ppm suffix"
- ],
- "stakeholder_role": "the Education and Training Board's estates and compliance officer",
- "role_family": "field_unit_lead",
- "scoring_unit": "other",
- "spine": {
-  "file": "bms_co2_5min_autumn2026.csv",
-  "rows": 293559,
-  "entity": "one monitored teaching space at one five-minute stamp",
-  "grain": "space x 5 minutes",
-  "source": "synthetic"
- },
- "forum": "executive_team",
- "forcing_event": "budget_or_appropriation",
- "org_family": "university_or_school",
- "world": {
-  "geography": "Ireland (west midlands)",
-  "currency": "EUR",
-  "org_type": "Education and Training Board further-education campus",
-  "invented_names": [
-   "Beldarrig ETB",
-   "Kilmoneen Further Education Campus",
-   "Tulrohan Block"
+  "task": "task204",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
+  "slot_note": "Batch 3 re-root of the anomaly-detection number: the indoor-air architecture's world is closed, so the draw moves to Criminology & Justice (the seed AD27's world, decision and quantity kept: how many offender groups sit behind a spring robbery rise and which ground each series team covers); the pitfall is re-found from the data, not the seed's resale chain.",
+  "domain": "criminology-justice",
+  "subdomain": "crime-incidence-hotspot-analysis",
+  "client_domain": "criminology-justice",
+  "niche": "a municipal police service's crime analysis unit sizing its summer series-robbery teams from a spring rise in phone snatches at light-rail stations, where one crew rides the trains and strikes as the doors close at stations in several patrol districts, read against the transit system's own timetable",
+  "objective": "anomaly-detection",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
   ],
-  "people": [
-   "Aileen Menton",
-   "Alanna Hilary",
-   "Alastair Crangle",
-   "Antoinette Fee",
-   "Benjamin Garavan",
-   "Caroline Creedon",
-   "Christie Richard",
-   "Cody O'Gara",
-   "Conall Murtagh",
-   "Corrie MacCarville",
-   "Cory Ferris",
-   "Dominic Filbin",
-   "Emilie Mahedy",
-   "Finn Melican",
-   "Grainne Kilkenny",
-   "Jana McCafferky",
-   "Johanna Murnane",
-   "Karl Gorey",
-   "Abbie Loughran",
-   "Orlaigh Sinan",
-   "Rhiannon Monk",
-   "Tony Davenport",
-   "Una Nyhan"
-  ]
- },
- "deliverables": [
-  "tulrohan_ventilation_assessment.xlsx",
-  "tulrohan_co2_day_profile.png"
- ],
- "opening_move": "question-first",
- "question_form": "whether",
- "driver": "The deciding quantity is a transport rate recovered by solving a unit's own unsteady balance across the windows the organisation's own schedule files, because each unit's response time runs longer than those windows, so every reading of the same record that treats the measured level as settled overstates the rate by a factor set by the unit's volume per occupant, and no settled level anywhere in the record recovers it.",
- "driver_concrete": "The Tulrohan block's outdoor-air supply per occupant present is recovered by integrating each teaching space's carbon dioxide balance across the timetabled sessions, the stored term from each session's own first and last readings and the source term from the attendance register, because these spaces are large and sparsely occupied and their concentrations are still rising when a 55-minute session ends, so every steady-state read of the same record puts the block's supply above the standard.",
- "stump": "A competent solver applies the campus procedure note to the validated five-minute record, computes each session's steady-state outdoor air per person from the session's mean carbon dioxide excess and the attendance present, occupant-weights it across the term and files 11.0 litres per second per occupant present for the Tulrohan block, clearing the 8 litres per second per person standard so that the January allocation is spent on re-timetabling; the step that lands them there is reading a concentration that is still rising as though it had settled, in spaces whose response times run two to five times a session's length.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task120": "task120 recovers a flow as the residue of a balance, the stock change being a measured quantity added to a subtraction; here the unknown is the balance's own transport coefficient, recovered because the state never reaches equilibrium inside the window the schedule files, and both of the field's quick reads fail in opposite directions (the settled-level reads high by 1.9 to 2.2 times, the unoccupied decay reads low by 3 to 8 times) rather than one term being forgotten.",
-  "task189": "task189 recovers values known only to lie below instrument-dependent limits; nothing here is censored, every reading is reported and correct, and what is unobserved is a rate no file holds.",
-  "task193": "task193 counts how many units would show one of two orderings under a null, the room for each ordering set by where a unit's exposure starts in the window; nothing physical sets the window there and no quantity is unobserved except the null's own count, where here the deciding quantity is a transport rate no file holds and the window is the organisation's own session against the space's response time.",
-  "task249": "task249's decisive move is a capped budget shared between a unit's parts, so a within-unit comparison of treated against untreated parts misses the units where the cap binds; it is an allocation spillover between parts, not an estimator of one unit's own rate read against the window it is measured over.",
-  "task254": "task254 reads each stage of a fixed sequence at the period the unit enters it, and every stage duration is recorded; here nothing in the record holds the deciding rate, and the error is not which period a recorded duration is read at but that the recorded level has not reached the state the easy estimator assumes."
- },
- "lineage": [],
- "notes": "gate_g read against the vocab: the decisive step is a choice between two estimators of one filed quantity, and the one that stands is pinned by the data's own structure (no interval in the record has the plant in its occupied state with the rooms empty, and no session is long enough for the level to settle) rather than by validation or a standard, which determinism-check section 1 ranks first among closures. stump_strategy decomposition_attribution: the measured concentration is correctly reported and the decisive move attributes it between the source (occupants) and the transport (air supply) over a window too short for a settled reading to separate them.",
- "registered": "2026-10-27T05:39:32Z"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G10",
+    "G2"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "With both occurrence logs deduplicated, every time put on one clock and the directive read correctly, the easy route links the spring phone snatches the way crime linkage does by default, by method, suspect description and straight-line distance and elapsed time between offences, which puts a separate group at each station the travelling crew uses and merges that crew with the local evening group at a station it never works, so it files the wrong number of series teams and the wrong districts for each.",
+  "domain_test": "The deciding quantity is the set of linked offence series behind the rise, which crime linkage analysis recovers from behavioural similarity and the distance and time between offences; here the distance that links a crew's offences is distance along the rail line in train time, read by placing each snatch on the trip leaving that station, and with another field's nouns there is no offender series, no modus operandi, no journey-to-crime path and no series team for the count to fund.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:offender-series-linked-along-the-line-by-the-train-trip-each-snatch-sits-on",
+  "layer1": [
+    "two occurrence systems (the police records management system and the transit peace officers' occurrence log) holding overlapping reports of the same snatches under different identifiers, times and place names",
+    "the transit log stamped in UTC and the police system in Mountain local time across the 8 March 2026 daylight-saving change",
+    "a patrol district realignment on 1 January 2026, so 2025 occurrences carry the old district codes",
+    "a GTFS timetable feed with two service periods (the spring service change on 29 March 2026) and after-midnight trips written past 24:00:00",
+    "the directive and the district station list as PDF tables",
+    "station names spelled three ways (the police address block, the transit station code and the GTFS stop name)"
+  ],
+  "stakeholder_role": "the crime analysis unit supervisor, who prepares the series assessment the deputy chief signs into the summer deployment plan",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "rms_occurrences_extract.csv",
+    "rows": 26000,
+    "entity": "one police occurrence (any type) reported in the extract windows",
+    "grain": "occurrence",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "local_government",
+  "world": {
+    "geography": "Canada, Alberta (a fictional prairie city with a two-line light-rail system)",
+    "currency": "CAD",
+    "org_type": "municipal police service (crime analysis unit) and the city's transit agency",
+    "invented_names": [],
+    "people": [
+      "Joel Jackson",
+      "Steven House",
+      "Emily Wagner",
+      "Clarence Werner",
+      "Kristin Weber"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The units that decide the count are groups behind the events, and one group travels along a fixed network on a published schedule, so its events sit at the network's own departure times in sequence along the route; linkage by straight-line distance and elapsed time splits that group into one local cluster at each place it strikes and merges it with a local group that shares its manner, and only placing each event on the scheduled trip leaving its place recovers one group across several areas and separates it from the local one.",
+  "driver_concrete": "Each evening snatch at an Eastline station is placed on the train trip whose departure from that station matches the 911 call, and the snatches that fall on one trip's successive departures are one crew's run, so the travelling crew is a single offender group across four patrol districts while the evening snatches at the one station it never works are a separate local group, which no grouping by station, district, method or description reproduces.",
+  "stump": "A competent solver links the twelve weeks' phone snatches the way crime linkage does by default, by method, suspect description and straight-line distance and elapsed time, and files one series team per station cluster (the travelling crew split into four local groups in four districts, its evening snatches at Cobb Street merged with that station's local group), so the summer plan stands up the wrong number of teams with the wrong ground; the step that lands them there is measuring the distance between a crew's offences in straight-line kilometres and hours instead of along the line on the train trip each snatch sits on.",
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-27, no portal result; the indoor-air world is closed)",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "environmental-monitoring-exceedance",
+      "niche": "indoor air quality monitoring of a further-education estate's large teaching spaces against the outdoor-air requirement in the school building standard",
+      "objective": "anomaly-detection",
+      "shape": "07",
+      "decision_type": "quantity_figure",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G7",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "decomposition_attribution",
+      "forum": "executive_team",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "university_or_school",
+      "role_family": "field_unit_lead",
+      "context_artifact": "filed_standard",
+      "driver": "The deciding quantity is a transport rate recovered by solving a unit's own unsteady balance across the windows the organisation's own schedule files, because each unit's response time runs longer than those windows, so every reading of the same record that treats the measured level as settled overstates the rate by a factor set by the unit's volume per occupant, and no settled level anywhere in the record recovers it.",
+      "driver_concrete": "The Tulrohan block's outdoor-air supply per occupant present is recovered by integrating each teaching space's carbon dioxide balance across the timetabled sessions, the stored term from each session's own first and last readings and the source term from the attendance register, because these spaces are large and sparsely occupied and their concentrations are still rising when a 55-minute session ends, so every steady-state read of the same record puts the block's supply above the standard.",
+      "stump": "A competent solver applies the campus procedure note to the validated five-minute record, computes each session's steady-state outdoor air per person from the session's mean carbon dioxide excess and the attendance present, occupant-weights it across the term and files 11.0 litres per second per occupant present for the Tulrohan block, clearing the 8 litres per second per person standard so that the January allocation is spent on re-timetabling; the step that lands them there is reading a concentration that is still rising as though it had settled, in spaces whose response times run two to five times a session's length.",
+      "deliverables": [
+        "tulrohan_ventilation_assessment.xlsx",
+        "tulrohan_co2_day_profile.png"
+      ],
+      "question_form": "whether",
+      "world": {
+        "geography": "Ireland (west midlands)",
+        "org_type": "Education and Training Board further-education campus"
+      }
+    }
+  ],
+  "lineage_shells": [
+    {
+      "architecture": "v1",
+      "question_form": "whether",
+      "deliverables": [
+        "xlsx",
+        "png"
+      ]
+    }
+  ],
+  "differentiation": {
+    "task272": "task272 counts a period's output past a limit when a process drifts inside runs between resets and only sparse checks see it; nothing here drifts or is sampled, every offence is recorded, and the decided unit is the offender group, linked across places through the scheduled trip each offence sits on.",
+    "task487": "task487 prices events found at inspections, a share of them started by the inspection itself, from how often each kind is found against the inspection window; here no event is found late or started by an observer, and the timetable is not an observation window but the path that ties one group's offences together across districts."
+  },
+  "mechanism_source": "design_note",
+  "notes": "gate_g read against the vocab: the decisive step is the choice of the proximity that links offences into series (distance and time along the rail line on the trip each snatch sits on, against straight-line distance and elapsed time), pinned by the data's own structure; stump_strategy grain_or_unit: the decided unit is the offender group's series, built by linking occurrence rows through a network bridge (the timetable), never a key column.",
+  "registered": "2026-11-02T02:25:25Z",
+  "shell": {
+    "question form": "what",
+    "second-sentence opener": "january's",
+    "rounding opener": "give",
+    "deliverable set": "csv+png+xlsx"
+  }
 }

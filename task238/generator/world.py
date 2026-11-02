@@ -231,8 +231,8 @@ class World:
         self.overcharge_scans = []    # (store, datetime, item index, scanned price, shelf price)
         for s in P.STORES:
             no, share = s[0], s[7]
-            r = np.random.default_rng([P.SEED, no, 11])
             for k, c in enumerate(self.co):
+                r = np.random.default_rng([P.SEED, no, 11, k])
                 d = c["date"]
                 hrs, counts = self.hourly[(no, d)]
                 big = 1.18 if c["big"] else 1.0
@@ -351,18 +351,26 @@ class World:
                 sh = float(self.reg[i])
                 pool.append((no, t, i, round(sh + 0.40, 2), sh))
         pool.sort(key=lambda x: (x[0], x[1]))
+        zone = {s[0]: s[4] for s in P.STORES}
         for (no, t, i, sc, sh) in pool:
             at_till = r.random() < 0.66
             reg_no = int(r.integers(1, 9))
             txn[no] += int(r.integers(3, 40))
             if at_till:
-                dup = r.random() < 0.38       # a supervisor approval entered in the desk app as well
-                self.claim_rows.append((no, t, i, sc, sh, "till", reg_no, txn[no], dup))
+                # Halifax stores: a supervisor approves the Code payout and logs it in the desk app as well.
+                # Zone 2 stores: the cashier often takes the line back to the shelf price only, and the desk
+                # pays the free item (or the 10.00) when the customer asks for the Code's remedy.
+                if zone[no] == 1:
+                    kind = "dup" if r.random() < 0.55 else "plain"
+                else:
+                    kind = "partial" if r.random() < 0.45 else "plain"
+                later = t + dt.timedelta(minutes=float(r.uniform(2, 35)))
+                self.claim_rows.append((no, t, i, sc, sh, "till", reg_no, txn[no], (kind, later)))
             else:
                 later = t + dt.timedelta(hours=float(r.uniform(2, 70)))
                 if later.date() in P.CLOSED or not hours_of(later.date()):
                     later = later + dt.timedelta(days=1)
-                self.claim_rows.append((no, t, i, sc, sh, "desk", reg_no, txn[no], later))
+                self.claim_rows.append((no, t, i, sc, sh, "desk", reg_no, txn[no], ("desk", later)))
 
     # ------------------------------------------------------------------ flyer keying (ask B)
     def flyer_keying(self):

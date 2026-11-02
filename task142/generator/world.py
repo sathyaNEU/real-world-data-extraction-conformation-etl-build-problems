@@ -149,7 +149,7 @@ def connections(rng):
                 c["object"] = "Flat %s %d-%d" % (st, a, b) if rng.random() < 0.7 else "Complex %s %d t/m %d" % (st, a, b)
                 c["adres"] = "%s %d" % (st, a)
                 c["wijk"] = WIJKEN_OLD[int(rng.integers(len(WIJKEN_OLD)))]
-                c["kw"] = int(np.clip(rng.lognormal(math.log(380 if reg == "HT" else 265), 0.33), 140, 760) // 5 * 5)
+                c["kw"] = int(np.clip(rng.lognormal(math.log(315), 0.36), 140, 760) // 5 * 5)
                 c["aansluitdatum"] = cdate(2009, 2024)
             elif reg == "LT":
                 c["cat"] = "Woningen"
@@ -702,7 +702,7 @@ def same_bin(vals, unit, margin):
     return len(rs) == 1 and min(dist_to_edge(v, unit) for v in vals) >= margin
 
 
-def tune(blks, fam):
+def tune(blks, fam, committed_int=None):
     """Set the station's available design-day flow H (whole m3/h, the exchangers' limit less the committed flow, never
     a multiple of 5) and one block load per phase (the largest block's design load within 8 per cent) so that every
     licensed estimate of the like installations' drop gives the same call and every graded figure clears its bin
@@ -718,6 +718,10 @@ def tune(blks, fam):
     for H in range(140, 200):
         if H % 5 == 0:
             continue
+        if committed_int is not None:
+            cap = committed_int + H
+            if cap % 10 == 0 or len(set(str(cap))) == 1:
+                continue
         opts = {}
         for ph in range(1, 7):
             o = []
@@ -815,8 +819,8 @@ def build(seed=P.SEED):
     legacy = legacy_and_open(rng2, conns, wx)
     rows = amr_export(rng2, wx, conns, amr)
     fam = families(rows, conns, wx)
-    H, dl = tune(blks, fam)
     committed, per = committed_flow(conns, rows, wx)
+    H, dl = tune(blks, fam, int(round(committed)))
     gas_reads, gas_master, gscale = tune_gas(blks, wx, seed)
     sc, E, V, loss = scada(np.random.default_rng(seed + 3000), wx, conns, amr)
     w = {"wx": wx, "conns": conns, "amr": amr, "blocks": blks, "legacy": legacy, "amr_rows": rows, "fam": fam,

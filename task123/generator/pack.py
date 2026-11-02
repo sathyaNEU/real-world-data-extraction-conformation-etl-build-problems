@@ -166,8 +166,10 @@ def events(W):
                     en = t0 + timedelta(seconds=(k2 + 1) * 300 - int(rng.integers(0, 200)))
                     if en <= st:
                         en = st + timedelta(seconds=40)
+                    # the record's extreme is the meter's ten-cycle value, beyond its five-minute averages
+                    m5 = float(x[k:k2 + 1].max())
                     out.append({"i": i, "serial": a["serial"], "element": el, "start": st, "end": en,
-                                "vpk": float(x[k:k2 + 1].max()) + abs(rng.normal(0, 0.3))})
+                                "m5": m5, "vpk": m5 + 0.15 + abs(rng.normal(0, 0.3))})
                     k = k2 + 1
                 else:
                     k += 1
@@ -186,8 +188,8 @@ def resent(W, evs):
     apts = W["apts"]
     # concentrator (tower, first floor, last floor) and the market-time date of the morning it rebooted
     zones = [("A", 2, 3, 15), ("A", 8, 9, 16), ("A", 12, 13, 19), ("A", 14, 15, 15), ("A", 20, 21, 16), ("A", 22, 23, 19),
-             ("B", 4, 5, 16), ("B", 6, 7, 19), ("B", 10, 11, 15), ("B", 16, 17, 16), ("B", 18, 19, 19),
-             ("C", 2, 3, 19), ("C", 6, 7, 15), ("C", 10, 11, 16), ("C", 16, 17, 19), ("C", 24, 25, 15)]
+             ("B", 4, 5, 16), ("B", 6, 7, 19), ("B", 10, 11, 15), ("B", 16, 17, 16), ("B", 18, 19, 19), ("B", 22, 23, 15),
+             ("C", 2, 3, 19), ("C", 6, 7, 15), ("C", 10, 11, 16), ("C", 16, 17, 19), ("C", 18, 19, 16), ("C", 24, 25, 15)]
     extra = []
     for e in evs:
         a = apts[e["i"]]
@@ -198,7 +200,7 @@ def resent(W, evs):
                 c = dict(e)
                 c["start"] = e["start"] + timedelta(hours=10, seconds=int(rng.integers(4, 40)))
                 c["end"] = e["end"] + timedelta(hours=10) - timedelta(seconds=int(rng.integers(4, 40)))
-                c["vpk"] = e["vpk"] - float(rng.uniform(0.4, 1.6))
+                c["vpk"] = e["m5"] + 0.11 + float(rng.uniform(0.0, 1.0)) * (e["vpk"] - e["m5"] - 0.11)
                 c["resent"] = True
                 if (c["end"] - c["start"]).total_seconds() >= 60:
                     extra.append(c)
@@ -498,7 +500,7 @@ def standard_pdf(W, path):
              Paragraph("5. When a rising main needs works", h2),
              Paragraph("A rising main needs re-phasing at its floor boards or a larger main before the 2027 works are connected where, on any of its phases, the phase demand plus the added demand on that phase exceeds %d per cent of its rating per phase." % int(round(Wd.LIMIT_SHARE * 100)), body),
              Paragraph("6. Supply voltage", h2),
-             Paragraph("The statutory limits are 216 V to 253 V at the point of supply (Electricity Distribution Code of Practice). A three-phase supply is outside the limits while any one of its phases is outside them. An apartment's time outside the limits is the time its meter recorded its supply outside them.", body),
+             Paragraph("The statutory limits are 216 V to 253 V at the point of supply (Electricity Distribution Code of Practice). A three-phase supply is outside the limits while any one of its phases is outside them, and any supply while its voltage is above 253 V or below 216 V. An apartment's time outside the limits over a run of days is the time, from the midnight in market time that begins the first day to the midnight that ends the last, that its meter's event records show its supply outside them; a record counts only where the meter's own hourly maximum or minimum, in an hour the record covers, is itself outside the limits.", body),
              Paragraph("7. Use", h2),
              Paragraph("An apartment's use over a period is the energy its meter registered over the period, general supply and controlled load together.", body),
              Paragraph("8. Charger requests", h2),

@@ -10,6 +10,7 @@ LIMIT_SHARE = 0.80          # the standard's share of a rising main's per-phase 
 EV_KW = 3.7                 # the standard's evening after-diversity demand of an approved charger
 COOK_KW = 1.4               # the standard's evening after-diversity demand of a cooktop conversion
 JULY_DAYS = 31
+MIN_MORNING_KWH = 12.0     # a riser's estimated meters carry at least this much of 1 August's morning
 P_AUG_EST = 0.15           # meters the head-end could not reach at midnight on 1 August
 PEAK_WEEK = [date(2026, 7, 13) + timedelta(days=d) for d in range(5)]      # Monday 13 to Friday 17 July
 PQ_START_UTC = datetime(2026, 7, 12, 0, 0)                                  # the PQ export runs 12 to 20 July UTC
@@ -325,10 +326,21 @@ def register_reads(W, seed=SEED + 41):
     elig = [i for i, a in enumerate(apts) if i not in gapset and i not in estset and "exchange" not in a]
     for i, a in enumerate(apts):
         a["aug_estimated"] = bool(i in elig and rq.random() < P_AUG_EST)
+    # the on-demand read once a meter answered again (08:40 to 13:20), and the morning's use it carries
+    later = {}
+    for i in elig:
+        ri = np.random.default_rng([seed + 9, i])
+        mins = int(ri.integers(520, 800))
+        later[i] = (mins,) + morning_kwh(W, i, mins, ri)
+    # the head-end's misses fall on every riser it can reach; where a riser's misses carry little morning use,
+    # the operator's own list of failed midnight reads ran longer (more meters on that riser missed)
     for r in W["plan"]:
         mine = [i for i in elig if apts[i]["riser"] == r["riser"]]
-        if mine and not any(apts[i]["aug_estimated"] for i in mine):
-            apts[mine[int(rq.integers(0, len(mine)))]]["aug_estimated"] = True
+        def carried():
+            return sum(later[i][1] + (later[i][2] if W["has_cl"][i] else 0.0) for i in mine if apts[i]["aug_estimated"])
+        while mine and carried() < MIN_MORNING_KWH and not all(apts[i]["aug_estimated"] for i in mine):
+            rest = [i for i in mine if not apts[i]["aug_estimated"]]
+            apts[rest[int(rq.integers(0, len(rest)))]]["aug_estimated"] = True
     # move-out and move-in special reads on 1 August for a few tenancy changes (midnight read actual as well)
     rs = np.random.default_rng(seed + 7)
     for i, a in enumerate(apts):
@@ -351,8 +363,11 @@ def register_reads(W, seed=SEED + 41):
             if a["aug_estimated"] or a["special_read"]:
                 # a later actual read on 1 August: an on-demand read once the meter answered again, or a tenancy
                 # change's special read; the registers have moved on by the morning's use since midnight
-                mins = int(rr.integers(520, 800)) if a["aug_estimated"] else int(rr.integers(540, 960))
-                m1, m2 = morning_kwh(W, i, mins, rr)
+                if a["aug_estimated"]:
+                    mins, m1, m2 = later[i]
+                else:
+                    mins = int(rr.integers(540, 960))
+                    m1, m2 = morning_kwh(W, i, mins, rr)
                 a["later_read"] = {"time": "%02d:%02d" % divmod(mins, 60), "e1": round(r0 + kwh_half.sum() + m1, 2)}
                 if "reads_e2" in a:
                     a["later_read"]["e2"] = round(a["reads_e2"]["aug"] + m2, 2)

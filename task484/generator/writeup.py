@@ -21,9 +21,9 @@ def write(G, path):
          "## 1. Final Recommendation", "",
          "**%s of the sections the Council counted in 2025 carried more than three million vehicles and go into the noise "
          "mapping contract's scope: %s.** Not the set the permanent counters' factors give, which puts %s over the line and "
-         "leaves %s under it: those sections' weeks and years follow the school, the campus, the retail park, the leisure park "
-         "and the hospital at their ends, not the commuter roads the counters sit on, and each one's own year is on the signal "
-         "detectors of its approach." % (WORDS[len(over)], names(over), names(flips_out), names(flips_in)), "",
+         "leaves %s under it: on the signal detectors of their own approaches those sections' weeks and years run unlike the "
+         "commuter roads the counters sit on, and those detectors carry each section's own year." % (
+             WORDS[len(over)], names(over), names(flips_out), names(flips_in)), "",
          "## 2. Critical Components", ""]
     L.append("1. Over the line on their own detectors: %s." % "; ".join(
         "%s %s million" % (r, "%.1f" % secs[r]["annual"]) for r in flips_in))

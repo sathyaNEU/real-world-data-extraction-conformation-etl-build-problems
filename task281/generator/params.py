@@ -1,0 +1,60 @@
+"""Fixed parameters of the Ardmuir University Library world (architecture 4)."""
+import datetime as dt
+
+SEED = 28104
+
+UTC = dt.timezone.utc
+# UK clock changes inside the record (UTC instants)
+BST_2025_END = dt.datetime(2025, 10, 26, 1, 0, tzinfo=UTC)
+BST_2026_START = dt.datetime(2026, 3, 29, 1, 0, tzinfo=UTC)
+BST_2026_END = dt.datetime(2026, 10, 25, 1, 0, tzinfo=UTC)
+
+RECORD_START = dt.datetime(2025, 9, 1, 0, 0, tzinfo=UTC)
+EXTRACT = dt.datetime(2026, 10, 31, 5, 40, tzinfo=UTC)      # the October download
+
+# the fund's window (UK local dates), filed in the terms
+WIN_START_LOCAL = dt.date(2026, 1, 12)
+WIN_END_LOCAL = dt.date(2026, 4, 26)
+GRACE_DAYS = 14          # hold-weeks start after the second week
+CAP_DAYS = 84            # a hold counts at most twelve weeks
+FUND_GBP = 180000
+
+# semesters: (name, teaching start local date, weeks of demand)
+SEMESTERS = [
+    ("A25", dt.date(2025, 9, 22), 16),
+    ("S26", dt.date(2026, 1, 12), 19),
+    ("A26", dt.date(2026, 9, 21), 6),
+]
+
+# 2026-27 faculties; old (2025-26) faculty codes they absorb
+FACULTIES = [
+    # code, name, old faculty codes
+    ("AHU", "Arts and Humanities", ["AH"]),
+    ("SSC", "Social Sciences", ["SS"]),
+    ("BUS", "Ardmuir Business School", ["BS"]),
+    ("LAW", "Law", ["LW"]),
+    ("SAE", "Science and Engineering", ["EN", "PS"]),
+    ("LSC", "Life Sciences", ["LS"]),
+    ("MED", "Medicine and Dentistry", ["MD"]),
+    ("HSC", "Health Sciences", ["NH"]),
+]
+
+# behaviour per old faculty: request intensity scale, copies scale, cancel base (per day), sensitivity
+# (extra daily cancel probability per expected week of wait ahead)
+BEHAVIOUR = {
+    "AH": dict(demand=0.78, copies=1.00, base=0.006, sens=0.012),
+    "SS": dict(demand=0.95, copies=1.05, base=0.007, sens=0.016),
+    "BS": dict(demand=1.25, copies=1.15, base=0.009, sens=0.085),
+    "LW": dict(demand=1.10, copies=0.95, base=0.008, sens=0.110),
+    "EN": dict(demand=1.05, copies=1.10, base=0.008, sens=0.030),
+    "PS": dict(demand=0.90, copies=1.05, base=0.007, sens=0.024),
+    "LS": dict(demand=1.00, copies=1.00, base=0.008, sens=0.020),
+    "MD": dict(demand=1.30, copies=1.20, base=0.010, sens=0.095),
+    "NH": dict(demand=1.05, copies=0.90, base=0.009, sens=0.055),
+}
+
+OFFER_HOURS = 48
+P_BORROW = 0.86
+LOAN_DAYS = [(7, 0.66), (3, 0.19), (1, 0.15)]
+P_EARLY_RETURN = 0.24
+METER_LOANS = 40

@@ -33,8 +33,8 @@ def figures(target):
         "line": L["F"]["line"], "uprate": L["F"]["uprate"], "take_up_pct": round(100 * L["T"], 1),
         "A_rate": L["F"]["A_rate"], "A_limit": L["F"]["A_limit"], "C_old": L["F"]["C_old"], "C_new": L["F"]["C_new"],
         "cfv_old_limit": L["F"]["cfv_old_limit"],
-        "pace12_widening": round(100 * L["paces"]["widening"][11], 1),
-        "pace12_launch": round(100 * L["paces"]["launch"][11], 1),
+        "pace12_widening": round(100 * L["W"][AN.GOLD][0][11], 1),
+        "pace12_launch": round(100 * L["L"][AN.GOLD][0][11], 1),
         "families": G["families"], "fieldwork": G["fieldwork"],
     }
     F["families_region"] = {ym: sum(v.values()) for ym, v in F["families"].items()}
@@ -224,20 +224,20 @@ def write_note(F, path, png):
               "if every family it newly covers were paid for the whole year, which is how the proposals are costed. "
               "Families have to claim the Complemento, and it pays only from the month after the claim is decided. "
               "After the last limit rise, in April 2024, the families it brought in claimed slowly: by the twelfth "
-              "month they had made %s per cent of the claims they made in their first two and a half years, against "
-              "%s per cent of the launch's families by the same point. At that pace, C's payments in 2027 reach too "
-              "few families for long enough, and C brings fewer than %s children above the line in 2027."
+              "month %s per cent of them had claimed, against %s per cent of the families entitled at the launch in "
+              "October 2022. At that pace, C's payments in 2027 reach too few families for long enough, and C brings "
+              "fewer than %s children above the line in 2027."
               % (fmt(F["C_new"]), fmt(F["R0_r"]["C"]), "%.0f" % F["pace12_widening"], "%.0f" % F["pace12_launch"],
                  fmt(F["rival_bound"]))),
         ("p", "The new claimed payments, B and D, would start the way the Complemento itself started in October 2022 "
               "and also stay under %s children in 2027. E adds to families the Complemento already pays, most of "
               "them far below the line, and brings about %s above it." % (fmt(F["rival_bound"]), fmt(F["R3_r"]["E"]))),
         ("h", "Basis"),
-        ("p", "Claimed measures are counted with the families who would claim them, at the department's coverage "
-              "rate of %.1f per cent, each paid from the month after its decision; claims for C arrive at the pace "
-              "the register recorded after the April 2024 rise, claims for B and D at the pace after the launch. The "
-              "annex gives the Complemento's caseload in each quarter of 2025 and the ECVV 2026 fieldwork by "
-              "province." % F["take_up_pct"]),
+        ("p", "Claimed measures are counted only with the families who claim them, each paid from the month after "
+              "its decision (guidance 3.9): claims for C arrive month by month as the families the April 2024 rise "
+              "brought in claimed, claims for B and D as the families entitled at the launch claimed, each as a share "
+              "of the survey's households in the band. The annex gives the Complemento's caseload in each quarter of "
+              "2025 and the ECVV 2026 fieldwork by province."),
     ]
     IO.write_pdf(path, "Child poverty measures 2027: note to the cabinet", "Guiomar Iñiguez",
                  "Consejería de Derechos Sociales y Familias", blocks,

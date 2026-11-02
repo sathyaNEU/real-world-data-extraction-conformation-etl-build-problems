@@ -355,10 +355,11 @@ def ask_payouts(target, by_name):
         else:
             reg, txn = int(parts[0]), int(parts[1])
         upc = str(r["UPC"])[1:]
-        if (s, reg, txn, upc) in till:
-            dup += 1
+        amt = float(r["Refund $"])
+        if (s, reg, txn, upc) in till and abs(till[(s, reg, txn, upc)] - amt) < 0.005:
+            dup += 1          # the same payout, logged a second time by the approving supervisor
             continue
-        pay[s] += float(r["Refund $"])
+        pay[s] += amt
     return {s: round(v, 2) for s, v in pay.items()}, dup
 
 
