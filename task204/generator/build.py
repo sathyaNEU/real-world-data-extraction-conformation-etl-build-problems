@@ -112,7 +112,7 @@ def zip_target(target, path):
             dirs.sort()
             for f in sorted(files):
                 p = os.path.join(root, f)
-                arc = os.path.join("target", os.path.relpath(p, target))
+                arc = os.path.relpath(p, target)
                 zi = zipfile.ZipInfo(arc, date_time=ZIP_TIME)
                 zi.compress_type = zipfile.ZIP_DEFLATED
                 zi.external_attr = 0o644 << 16

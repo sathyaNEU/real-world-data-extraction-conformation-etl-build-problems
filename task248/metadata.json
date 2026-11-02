@@ -1,0 +1,122 @@
+{
+ "architecture": 2,
+ "as_of": "2027-01-12",
+ "decision": "which of the marina group's underground fuel tanks need their gauge charts redone before the wetstock monitoring service starts on 1 April 2027",
+ "deliverables": [
+  "recharting_list_2027.csv",
+  "cutover_readiness_2027.pdf"
+ ],
+ "distractor_files": [
+  "lake_levels_2026.csv",
+  "monthly_closeouts_2026.xlsx"
+ ],
+ "files": {
+  "FS-3_fuel_systems_standard.pdf": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Highbank Marinas FS-3 fuel systems standard, revision 6, approved 14 September 2026; synthetic"
+  },
+  "atg_deliveries_2026.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Highbank Marinas automatic tank gauge consoles, 2026 delivery reports; synthetic"
+  },
+  "atg_inventory_2026.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Highbank Marinas automatic tank gauge consoles, 2026 inventory reports as exported by the monitoring portal on 11 January 2027; synthetic, built for this task"
+  },
+  "atg_leak_tests_2026.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Monitoring portal log of the consoles' 0.2 gal/h in-tank leak tests, 2026; synthetic"
+  },
+  "atg_tank_setup.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Monitoring portal console and tank setup history; synthetic"
+  },
+  "bols_2026.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Fuel distributor's 2026 bill of lading export for the Highbank Marinas accounts; synthetic"
+  },
+  "dock_piping.xlsx": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Highbank Marinas fuel dock piping record, hose to tank; synthetic"
+  },
+  "dock_sales_2026-11-09_2026-12-31.jsonl": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "New dock point-of-sale transaction export from the shadow week to 31 December 2026; synthetic"
+  },
+  "dock_sales_legacy_2026.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Legacy dock point-of-sale transaction export, 1 January to go-live on 16 November 2026; synthetic"
+  },
+  "lake_levels_2026.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Daily pool elevation and outflow for Lake Wenning and Tolliver Lake, 2026; synthetic"
+  },
+  "monthly_closeouts_2026.xlsx": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Marina managers' monthly book-to-gauge fuel close-outs, 2026 season; synthetic"
+  },
+  "pos_grades.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "New point-of-sale grade table as held at export; synthetic"
+  },
+  "tank_charts.csv": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Gauge chart tables as loaded in the consoles, quarter-inch steps; synthetic"
+  },
+  "tank_register.xlsx": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Highbank Marinas underground storage tank register; synthetic"
+  },
+  "wetstock_onboarding_2027.pdf": {
+   "date": "2027-01-11",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Clearline Wetstock Services onboarding letter of 3 December 2026; synthetic"
+  }
+ },
+ "largest_file": {
+  "name": "atg_inventory_2026.csv",
+  "rows": 83728
+ },
+ "row_counts": {
+  "atg_deliveries_2026.csv": 134,
+  "atg_inventory_2026.csv": 83728,
+  "atg_leak_tests_2026.csv": 1092,
+  "atg_tank_setup.csv": 22,
+  "bols_2026.csv": 134,
+  "dock_sales_2026-11-09_2026-12-31.jsonl": 330,
+  "dock_sales_legacy_2026.csv": 25225,
+  "lake_levels_2026.csv": 730,
+  "pos_grades.csv": 19,
+  "tank_charts.csv": 1636
+ },
+ "task": "task248"
+}

@@ -178,9 +178,10 @@ Bridgewater and Yarmouth below 99.0 per cent.
   none. Enumerated family: those four plus the window reconstruction under every hanging treatment, hour mix, stray
   basis and pace (SF1 to SF6): from no store to seven. Standing family once the data rule out the others (the checks
   after the print show labels going up over about half an hour, not at once nor all at the end; the hourly report holds
-  each Thursday's own hours; a store's own pace rests on three check visits at most): every member files the same five
-  stores and the same printed accuracies, the tightest printed figure 0.04 inside its bin; the ruling-out is loud only
-  for a reader who opens the printer log beside the checks (checks before the print 98% old, after the batch 0.2%).
+  each Thursday's own hours; a store's own pace is identified only where its checks met a batch still going up, and
+  there it prints the same figures): every member files the same five stores and the same printed accuracies, the
+  tightest printed figure 0.038 inside its bin (Spryfield and Lower Sackville); the ruling-out is loud only
+  for a reader who opens the printer log beside the checks (checks before the print 100% old, after the batch 0.1%).
 - **Analyst test:** a strong analyst who cleans every file, reads PI-2 correctly and estimates each store's price
   accuracy from the weekly random price audit puts no store on Price Watch, every store at 99.9% or more, against the
   golden's five stores below 99.0% rebuilt from each changeover's window and the store's own Thursday scans.
@@ -211,7 +212,7 @@ Bridgewater and Yarmouth below 99.0 per cent.
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | how a batch's labels go up | over the minutes after the print, at the pace the checks show | all at the print; all at the batch's end | same call | same call; the checks before the print are 98% old and after the batch 0.2% |
+| SF1 | how a batch's labels go up | over the minutes after the print, at the pace the checks show | all at the print; all at the batch's end | same call | same call; the checks before the print are 100% old and after the batch 0.1% |
 | SF2 | the moment inside an hour | scans spread evenly through each hour | all at mid-hour | same call and figures | same call |
 | SF3 | the hours of a changeover's scans | that Thursday's own hourly scans | the quarter's average Thursday; even trading hours | same call (figures move up to 0.07 under the average) | PI-2 s.3.1 "at the moment of the scan"; the hourly report holds that Thursday's hours |
 | SF4 | the stray-label share | pooled over the chain's audits | each store's own audits | same call and figures | same call |

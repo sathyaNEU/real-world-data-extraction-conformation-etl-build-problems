@@ -1,0 +1,102 @@
+{
+ "call": {
+  "count": 6,
+  "listed": [
+   "BP-2",
+   "CF-2",
+   "DH-1",
+   "FL-1",
+   "GC-1",
+   "HS-2"
+  ],
+  "pairs": {
+   "BP-2": "reorder and half-full",
+   "CF-2": "reorder and normal fill",
+   "DH-1": "reorder and half-full",
+   "FL-1": "reorder and half-full",
+   "GC-1": "reorder and normal fill",
+   "HS-2": "reorder and half-full"
+  }
+ },
+ "limit_gal": 25,
+ "unlisted_count": 14,
+ "capacities_gal": {
+  "BP-2": 10000,
+  "CF-2": 10000,
+  "DH-1": 10000,
+  "FL-1": 12000,
+  "GC-1": 10000,
+  "HS-2": 8000
+ },
+ "rungs": {
+  "monthly_reconciliation": [],
+  "delivery_check": [
+   "CF-2",
+   "GC-1"
+  ],
+  "intervals_alone": [
+   "BP-2",
+   "CF-2",
+   "DH-1",
+   "DH-2",
+   "EB-1",
+   "EB-2",
+   "FL-1",
+   "HS-1",
+   "HS-2"
+  ]
+ },
+ "A1": {
+  "AH-1": 10,
+  "AH-2": 10,
+  "AH-3": 10,
+  "BP-1": 14,
+  "BP-2": 14,
+  "BP-3": 14,
+  "CF-1": 9,
+  "CF-2": 9,
+  "DH-1": 10,
+  "DH-2": 14,
+  "EB-1": 13,
+  "EB-2": 13,
+  "EB-3": 13,
+  "FL-1": 11,
+  "FL-2": 11,
+  "GC-1": 11,
+  "GC-2": 13,
+  "GC-3": 11,
+  "HS-1": 13,
+  "HS-2": 13
+ },
+ "A2": {
+  "Ashby Hollow Marina": 0,
+  "Brannock Point Marina": 17,
+  "Cedar Fork Boat Dock": 12,
+  "Dellwood Harbor": 1,
+  "Elkhorn Bend Marina": 15,
+  "Foxtail Landing Resort & Marina": 12,
+  "Gilliam Creek Marina": 1,
+  "Hackett Shoals Dock": 9
+ },
+ "A3": {
+  "Ashby Hollow Marina|REC-90 ethanol-free": 75025,
+  "Ashby Hollow Marina|E10 unleaded": 37588,
+  "Ashby Hollow Marina|Diesel": 35964,
+  "Brannock Point Marina|REC-90 ethanol-free": 86206,
+  "Brannock Point Marina|E10 unleaded": 40609,
+  "Brannock Point Marina|Diesel": 34248,
+  "Cedar Fork Boat Dock|REC-90 ethanol-free": 62140,
+  "Cedar Fork Boat Dock|Diesel": 20789,
+  "Dellwood Harbor|REC-90 ethanol-free": 93626,
+  "Elkhorn Bend Marina|REC-90 ethanol-free": 66829,
+  "Elkhorn Bend Marina|E10 unleaded": 30522,
+  "Elkhorn Bend Marina|Diesel": 33148,
+  "Foxtail Landing Resort & Marina|REC-90 ethanol-free": 77018,
+  "Foxtail Landing Resort & Marina|Diesel": 29319,
+  "Gilliam Creek Marina|REC-90 ethanol-free": 75997,
+  "Gilliam Creek Marina|E10 unleaded": 33908,
+  "Gilliam Creek Marina|Diesel": 32719,
+  "Hackett Shoals Dock|REC-90 ethanol-free": 63380,
+  "Hackett Shoals Dock|E10 unleaded": 30502
+ }
+}
