@@ -4,8 +4,8 @@ import datetime as dt
 TASK = "task475"
 D = dt.date
 
-ORG = "Institute of Accredited Building Certifiers"
-ORG_SHORT = "IABC"
+ORG = "Institute of Building Certification Practitioners"
+ORG_SHORT = "IBCP"
 EXAM = "Certifier Accreditation Examination"
 PAPER2 = "Paper 2: Building Assessment and Certification Practice"
 
@@ -36,12 +36,12 @@ QUESTION_MAX = 20
 
 # centre code, name, candidate number block, share of candidates, venue, state
 CENTRES = [
-    ("SYD", "Sydney", 1, 0.235, "Level 2, 160 Sussex Street, Sydney", "NSW"),
-    ("WSY", "Western Sydney", 2, 0.125, "Ground floor, 9 Wentworth Street, Parramatta", "NSW"),
-    ("MEL", "Melbourne", 3, 0.25, "Level 5, 452 Flinders Street, Melbourne", "VIC"),
-    ("BNE", "Brisbane", 4, 0.17, "Level 1, 100 Edward Street, Brisbane", "QLD"),
-    ("PER", "Perth", 5, 0.115, "Level 3, 12 St Georges Terrace, Perth", "WA"),
-    ("ADL", "Adelaide", 6, 0.105, "Level 2, 33 King William Street, Adelaide", "SA"),
+    ("SYD", "Sydney", 1, 0.235, "Level 2, Sussex Street, Sydney", "NSW"),
+    ("WSY", "Western Sydney", 2, 0.125, "Ground floor, Wentworth Street, Parramatta", "NSW"),
+    ("MEL", "Melbourne", 3, 0.25, "Level 5, Flinders Street, Melbourne", "VIC"),
+    ("BNE", "Brisbane", 4, 0.17, "Level 1, Edward Street, Brisbane", "QLD"),
+    ("PER", "Perth", 5, 0.115, "Level 3, St Georges Terrace, Perth", "WA"),
+    ("ADL", "Adelaide", 6, 0.105, "Level 2, King William Street, Adelaide", "SA"),
 ]
 CODES = [c[0] for c in CENTRES]
 CENTRE_NAME = {c[0]: c[1] for c in CENTRES}

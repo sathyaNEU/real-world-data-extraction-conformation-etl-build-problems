@@ -147,19 +147,6 @@ def write_pdf(path, title, issuer, blocks, stamp_date):
     open(path, "wb").write(data)
 
 
-def abn(rng):
-    w8 = [10, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
-    while True:
-        d = [int(x) for x in rng.integers(0, 10, 11)]
-        if d[0] == 0:
-            continue
-        dd = d.copy()
-        dd[0] -= 1
-        if sum(a * b for a, b in zip(dd, w8)) % 89 == 0:
-            s = "".join(map(str, d))
-            return "%s %s %s %s" % (s[:2], s[2:5], s[5:8], s[8:])
-
-
 # ---------------------------------------------------------------------------------------------------------------
 # the e-marking platform's export of marks of record (both 2026 series)
 def marking_rows(w, rng):
@@ -313,7 +300,7 @@ def build_pack(w, out):
             cen.append([code, name, venue, state, blk * 1000 + 1, blk * 1000 + 999, "2026-08-01", ""])
         else:
             cen.append([code, name, venue, state, blk * 1000 + 1, blk * 1000 + 999, "2011-05-01", ""])
-    cen.append(["HBA", "Hobart", "Level 1, 85 Macquarie Street, Hobart", "TAS", 7001, 7999, "2015-05-01",
+    cen.append(["HBA", "Hobart", "Level 1, Macquarie Street, Hobart", "TAS", 7001, 7999, "2015-05-01",
                 "2025-06-30"])
     write_csv(fp("centres"), ["centre_code", "centre_name", "venue", "state", "cand_no_from", "cand_no_to",
                               "opened", "closed"], cen)
@@ -405,9 +392,9 @@ def build_pack(w, out):
     # 8 corporate accounts
     acc = []
     for code, name, dom, disc in W.FIRMS:
-        acc.append([code, name, abn(rng), "accounts@%s" % dom, "Member firm agreement" if disc else "Standard terms",
+        acc.append([code, name, "accounts@%s" % dom, "Member firm agreement" if disc else "Standard terms",
                     ("%.1f" % disc).rstrip("0").rstrip("."), "2025-07-01", "2027-06-30"])
-    write_csv(fp("accounts"), ["account_code", "account_name", "abn", "billing_email", "terms",
+    write_csv(fp("accounts"), ["account_code", "account_name", "billing_email", "terms",
                                "exam_services_discount_pct", "agreement_from", "agreement_to"], acc)
     counts["accounts"] = len(acc)
 

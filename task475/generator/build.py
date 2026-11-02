@@ -22,21 +22,21 @@ import params as P  # noqa: E402
 import world as W  # noqa: E402
 
 SOURCES = {
-    "export": "IABC e-marking platform, export of Paper 2 marks of record for the May and November 2026 series, "
+    "export": "IBCP e-marking platform, export of Paper 2 marks of record for the May and November 2026 series, "
               "pulled 30 November 2026",
-    "may_reg": "IABC legacy examinations system, candidate register for the May 2026 sitting, exported 3 August 2026 "
+    "may_reg": "IBCP legacy examinations system, candidate register for the May 2026 sitting, exported 3 August 2026 "
                "at the portal migration",
-    "nov_reg": "IABC candidate portal, entries for the November 2026 sitting, pulled 30 November 2026",
-    "requests": "IABC candidate portal, candidate request log (API export), 3 August to 30 November 2026",
-    "centres": "IABC Examinations Office, examination centre directory",
-    "reviews": "IABC enquiries CRM, results review requests for the May 2026 sitting",
-    "invoices": "IABC finance system, accounts receivable invoices to corporate accounts, 2026",
-    "accounts": "IABC finance system, corporate account register",
-    "regs": "IABC Council, Certifier Accreditation Examination Regulations, version 3",
-    "paper": "IABC Examinations Office, Paper 2 question paper, November 2026 sitting",
-    "minutes": "IABC Examinations Committee, minutes of the meeting of 18 June 2026 (draft for confirmation)",
-    "history": "IABC Examinations Office, accreditation results by sitting, 2019 to May 2026",
-    "venues": "IABC Examinations Office, venue holds for the 2027 sittings",
+    "nov_reg": "IBCP candidate portal, entries for the November 2026 sitting, pulled 30 November 2026",
+    "requests": "IBCP candidate portal, candidate request log (API export), 3 August to 30 November 2026",
+    "centres": "IBCP Examinations Office, examination centre directory",
+    "reviews": "IBCP enquiries CRM, results review requests for the May 2026 sitting",
+    "invoices": "IBCP finance system, accounts receivable invoices to corporate accounts, 2026",
+    "accounts": "IBCP finance system, corporate account register",
+    "regs": "IBCP Council, Certifier Accreditation Examination Regulations, version 3",
+    "paper": "IBCP Examinations Office, Paper 2 question paper, November 2026 sitting",
+    "minutes": "IBCP Examinations Committee, minutes of the meeting of 18 June 2026 (draft for confirmation)",
+    "history": "IBCP Examinations Office, accreditation results by sitting, 2019 to May 2026",
+    "venues": "IBCP Examinations Office, venue holds for the 2027 sittings",
 }
 COVERS = {
     "export": "one row per mark of record entered for a part of a question, both 2026 series",

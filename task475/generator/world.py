@@ -61,16 +61,16 @@ GROUPS = {
 GROUP_P = [("anglo", 0.62), ("viet", 0.06), ("chinese", 0.10), ("south_asian", 0.09), ("med", 0.07),
            ("filipino", 0.03), ("other", 0.03)]
 FIRMS = [
-    ("ACC-1042", "Harbourline Building Surveyors Pty Ltd", "harbourline.com.au", 10.0),
-    ("ACC-1067", "Certis Approvals Group", "certisapprovals.com.au", 12.5),
-    ("ACC-1103", "Westgate Certification Services", "westgatecert.com.au", 10.0),
-    ("ACC-1118", "Southern Cross Building Consultants", "scbc.com.au", 0.0),
-    ("ACC-1150", "Bayside Private Certifiers", "baysidepc.com.au", 15.0),
+    ("ACC-1042", "Harbourline Building Surveyors Pty Ltd", "harbourlinebs.com.au", 10.0),
+    ("ACC-1067", "Corella Approvals Group", "corellaapprovals.com.au", 12.5),
+    ("ACC-1103", "Wattlebank Certification Services", "wattlebankcert.com.au", 10.0),
+    ("ACC-1118", "Tallowwood Building Consultants", "tallowwoodbc.com.au", 0.0),
+    ("ACC-1150", "Bayswell Private Certifiers", "bayswellpc.com.au", 15.0),
     ("ACC-1176", "Gidgee Building Approvals", "gidgeeba.com.au", 10.0),
-    ("ACC-1191", "Riverina Compliance Partners", "rivcomply.com.au", 12.5),
-    ("ACC-1224", "Kestrel Building Certification", "kestrelbc.com.au", 10.0),
-    ("ACC-1240", "Metro Surveying and Certification", "metrosc.com.au", 0.0),
-    ("ACC-1263", "Pinnacle Certifiers", "pinnaclecert.com.au", 15.0),
+    ("ACC-1191", "Murrumbong Compliance Partners", "murrumbong.com.au", 12.5),
+    ("ACC-1224", "Kestrel Ridge Building Certification", "kestrelridgebc.com.au", 10.0),
+    ("ACC-1240", "Quandong Surveying and Certification", "quandongsc.com.au", 0.0),
+    ("ACC-1263", "Ironbark Hill Certifiers", "ironbarkhill.com.au", 15.0),
 ]
 MAILS = ["gmail.com", "outlook.com", "bigpond.com", "hotmail.com", "icloud.com", "yahoo.com.au"]
 

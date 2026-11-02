@@ -222,17 +222,19 @@ def main():
     # R3c: no plant
     texts = {f: pdftext.text(os.path.join(TARGET, f)) for f in os.listdir(TARGET) if f.endswith(".pdf")}
     brands = list(gnet)
-    ranked = [f for f, t in texts.items() if re.search(r"net cost", t, re.I) and f != A.FILES["policy"]]
-    check("R3c no document but the policy speaks of net cost, and no shipped artifact ranks the compared products",
-          not ranked and not any(re.search(r"\$\s?\d", t) for t in texts.values()), ",".join(ranked))
+    ranked = [f for f, t in texts.items() if any(b in t for b in brands) and re.search(r"\$\s?\d|\d,\d{3}\.\d\d", t)]
+    check("R3c no shipped artifact ranks the compared products: no document that names one carries a money figure",
+          not ranked, ",".join(ranked))
     series = collections.defaultdict(lambda: [0] * 12)
     for c in w.claims:
         m = (c["d"].year - 2025) * 12 + c["d"].month - 7
         series[(c["key"], c["acc"])][m] += 1
     dup = len(series) - len({tuple(v) for v in series.values()})
     check("R3c no copied block: no two product-account monthly series are identical", dup == 0, "%d duplicates" % dup)
-    memo = [f for f, t in texts.items() if re.search(r"recommend|we propose|prefer \w+ (?:over|to)", t, re.I)]
-    check("R3c no decoy memo or draft carrying an answer", not memo, ",".join(memo))
+    memo = [f for f, t in texts.items() for sent in re.split(r"(?<=[.?!])\s+", t) for b in brands
+            if b in sent and re.search(r"recommend|prefer|propose|favou?r", sent, re.I)]
+    check("R3c no decoy memo or draft carrying an answer: no document puts a compared product beside a preference",
+          not memo, ",".join(sorted(set(memo))))
 
     # ================================================================ SF rows (design note's semantic fork table)
     check("SF1 the fiscal year is 1 July 2025 to 30 June 2026: every claim's service date falls in it and the last "

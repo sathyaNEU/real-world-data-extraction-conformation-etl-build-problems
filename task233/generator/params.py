@@ -105,8 +105,8 @@ STATUS_REPLACED = 0.012      # quote-months the collector moved to a new variety
 LATE_VISIT = 0.045           # outlet-months first visited after the collection window
 VISIT_WEIGHTS = {"M": [0.26, 0.24, 0.21, 0.16, 0.13], "I": [0.30, 0.25, 0.20, 0.15, 0.10]}
 SPLIT_VISIT = 0.06           # large supermarket outlet-months collected over two visits
-FQT_NOT_FOUND = 0.011        # back-checked items the team could not find on the day
-FQT_TRIES = 20               # candidate draws of each month's back-check sample (generator only)
+FQT_NOT_FOUND = 0.012        # back-checked items the team could not find on the day
+FQT_TRIES = 23               # candidate draws of each month's back-check sample (generator only)
 
 MISSED_VISIT = 0.012         # outlet-months scheduled but not visited at all
 REBRAND_DATE = dt.date(2026, 8, 1)   # Lifeline Chemists' branches trade as CareMed Pharmacy from this day

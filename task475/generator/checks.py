@@ -272,8 +272,10 @@ def main():
           "standing value is within 0.15 of a rounding line", not np.array_equal(trunc, golden) and
           min(edges.values()) >= 0.15, str(trunc.tolist()))
     tot_nocap = np.nansum(np.where(np.isnan(m), np.nan, m + golden[None, :]), axis=1)
-    check("SF5 the 0 to 20 limits of regulation 14.2: the pass count is 393 with or without them",
-          int((tot_nocap >= 50).sum()) == M["n_pass"], "%d" % int((tot_nocap >= 50).sum()))
+    tot_cap = np.nansum(E.apply_moves(m, golden), axis=1)
+    check("SF5 the 0 to 20 limits of regulation 14.2: no candidate's result changes with or without them",
+          int((tot_nocap >= 50).sum()) == M["n_pass"] and np.array_equal(tot_nocap >= 50, tot_cap >= 50),
+          "%d" % int((tot_nocap >= 50).sum()))
     tot = np.nansum(E.apply_moves(m, golden), axis=1)
     check("SF6 '50 or more': regulation 12's sentence is shipped; 'more than 50' would file another count",
           "total of 50 or more" in flat(Pk.regs_text) and int((tot > 50).sum()) != M["n_pass"], "%d" % int((tot > 50).sum()))
@@ -312,8 +314,10 @@ def main():
     for r in Pk.nov_reg:
         if r["applicant_id"] in last_to:
             tr_ok &= r["centre_code"] == last_to[r["applicant_id"]]
-    check("SF16 a candidate is counted at the entry's centre after any transfer (regulation 18)", tr_ok,
-          "%d transfers" % len(last_to))
+    late_tr = [q for q in Pk.requests if q["type"] == "Centre transfer" and
+               A.utc_to_sydney(q["submitted"]).date() > dt.date(2026, 10, 24)]
+    check("SF16 a candidate is counted at the entry's centre after any transfer, every transfer sent by 24 October "
+          "(regulation 18)", tr_ok and not late_tr, "%d transfers" % len(last_to))
     may_entered = A.may_people(Pk, "register")
     may_sat_p = A.may_people(Pk, "golden")
     check("SF17 'had sat Paper 2 in May' is marked present (MAY26 marks), not entered", len(may_entered) > len(may_sat_p),

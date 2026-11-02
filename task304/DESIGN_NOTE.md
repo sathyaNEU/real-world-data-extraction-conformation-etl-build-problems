@@ -159,7 +159,8 @@ worker's own sessions, joined to people through the badge register, show.
   figure. Standing family (each worker's own hours, under every licensed convention: the automatic log-off's ten
   minutes kept or trimmed, sessions placed by local or UTC date, shifts from the roster or from days signed on,
   energy or arithmetic averaging over shifts): Kewdale 102 every time, spread 0 workers, asserted (SF5 to SF9). The
-  ruling-out is loud: no worker within 0.9 dB of 85 under any member of the standing family.
+  ruling-out is loud: no worker within 0.9 dB of 85 under the filed conventions, and none within 0.6 dB under any
+  member of the standing family (the arithmetic mean of daily levels comes nearest at 0.66, breaks on the floor at 0.61).
 - **Analyst test:** a strong analyst who reads every field and rule correctly and assesses by job title, the
   field's job-based strategy, files Larapinta (66 workers brought below, Kewdale none); only each worker's own hours
   from the sessions file Kewdale (102). Executed in checks.py R3a and R3b on the clean truth and the cut pack.
@@ -202,7 +203,7 @@ worker's own sessions, joined to people through the badge register, show.
 | SF6 | the shifts a worker worked | the roster's and timesheets' worked shifts | days with a session | same call, figures move (Kewdale 106) | Schedule 2.3 (energy-averaged over those shifts, the shifts they worked) |
 | SF7 | averaging over shifts | energy average of daily LAeq,8h | arithmetic mean of daily levels; the median shift | same counts | Schedule 2.3 (energy-averaged); asserted same counts |
 | SF8 | the hour of breaks | in the amenities at its level | on the floor | same counts | Schedule 2.3 (breaks in the amenities); asserted same counts |
-| SF9 | at or above | 85.0 dB(A) or more | above 85 | same counts | no worker within 0.9 dB of 85, asserted |
+| SF9 | at or above | 85.0 dB(A) or more | above 85 | same counts | no worker within 0.9 dB of 85 under the filed conventions, 0.6 under any licensed one (asserted at 0.5) |
 | SF10 | after the enclosure | induct area at the supplier's predicted level, every other place unchanged | the floor a decibel lower too | same call | Schedule 2.5 |
 | SF11 | the place levels | the 2026 survey's zone LAeq | the survey's highest position | same call | Schedule 2.3 (its LAeq in the 2026 survey) |
 | SF12 | the hub chosen | most workers brought below | most at or above; largest share | Eastern Creek (pool) | Schedule 2.1 |
@@ -246,7 +247,7 @@ L6) lands every reflex off Kewdale.
 | 6 Denominator | the shifts a worker worked | filed (2.3); SF6 asserted |
 | 7 Weighting | each worker once | filed (2.1) |
 | 8 Window length | four weeks | filed (2.2) |
-| 9 Boundary inclusivity | 85 dB(A) or more | filed (2.4); SF9, nothing within 0.9 dB |
+| 9 Boundary inclusivity | 85 dB(A) or more | filed (2.4); SF9, nothing within 0.9 dB (0.6 under every licensed convention) |
 | 10 Rounding path | whole workers, counted after each exposure | C1 |
 | 11 Tie-break | none needed | C1, Kewdale 1.48x clear |
 | 12 Maturity and censoring | every reference shift is in the export | C1 |

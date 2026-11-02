@@ -163,7 +163,7 @@ def minutes(path, w):
     mv = ["%+d" % v if v else "0" for v in w.may_moves]
     b = [
         ("title", "Examinations Committee: minutes of meeting"),
-        ("small", "%s. Thursday 18 June 2026, 10.00 am, Sussex Street boardroom and online. Minutes "
+        ("small", "%s. Thursday 18 June 2026, 10.00 am, the Institute's boardroom and online. Minutes "
                   "(draft for confirmation, circulated to members on 22 June 2026)." % P.ORG),
         ("p", "<b>Present:</b> %s (Chair); %s (Chief Examiner, Paper 2); the Chief Examiner, Paper 1; two Council "
               "nominees. <b>In attendance:</b> %s (Assessment Analyst, Examinations Office); the Manager, "

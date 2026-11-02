@@ -13,8 +13,8 @@ reset; architecture 1 is summarised under `## Architecture 1 record` and its wor
    (ETL). The task type serves ETL and DD in the taxonomy. The deliverable is the sitting's results file conformed to
    the examination regulations: each candidate's marks on the questions they chose, moved onto one scale as
    regulation 14 requires, totalled and classified.
-3. **Niche:** the Institute of Accredited Building Certifiers (a fictional national professional institute in
-   Australia) runs the Certifier Accreditation Examination twice a year; its Paper 2 is a three-hour written paper of
+3. **Niche:** the Institute of Building Certification Practitioners (a fictional national professional institute
+   in Australia) runs the Certifier Accreditation Examination twice a year; its Paper 2 is a three-hour written paper of
    eight optional questions of 20 marks, of which each candidate answers five. The November 2026 sitting was marked on
    the new e-marking platform; the May 2026 sitting's marks were migrated into it from the legacy system.
 4. **Objective and facing:** ETL. The decision faces forward (the committee approves results not yet issued, on 10

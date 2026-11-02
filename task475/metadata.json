@@ -20,91 +20,91 @@
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC finance system, accounts receivable invoices to corporate accounts, 2026"
+   "source": "IBCP finance system, accounts receivable invoices to corporate accounts, 2026"
   },
   "cae_candidates_may2026.xlsx": {
    "covers": "candidates entered for the May 2026 sitting, either paper",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC legacy examinations system, candidate register for the May 2026 sitting, exported 3 August 2026 at the portal migration"
+   "source": "IBCP legacy examinations system, candidate register for the May 2026 sitting, exported 3 August 2026 at the portal migration"
   },
   "cae_entries_nov2026.csv": {
    "covers": "one row per paper entered for the November 2026 sitting",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC candidate portal, entries for the November 2026 sitting, pulled 30 November 2026"
+   "source": "IBCP candidate portal, entries for the November 2026 sitting, pulled 30 November 2026"
   },
   "cae_examination_regulations_2026.pdf": {
    "covers": "the examination regulations and the fee schedule",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC Council, Certifier Accreditation Examination Regulations, version 3"
+   "source": "IBCP Council, Certifier Accreditation Examination Regulations, version 3"
   },
   "cae_marking_export_2026.csv": {
    "covers": "one row per mark of record entered for a part of a question, both 2026 series",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC e-marking platform, export of Paper 2 marks of record for the May and November 2026 series, pulled 30 November 2026"
+   "source": "IBCP e-marking platform, export of Paper 2 marks of record for the May and November 2026 series, pulled 30 November 2026"
   },
   "cae_paper2_nov2026.pdf": {
    "covers": "the November 2026 Paper 2 question paper",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC Examinations Office, Paper 2 question paper, November 2026 sitting"
+   "source": "IBCP Examinations Office, Paper 2 question paper, November 2026 sitting"
   },
   "cae_results_history_2019_2026.csv": {
    "covers": "candidates examined and accredited at past sittings",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "distractor",
-   "source": "IABC Examinations Office, accreditation results by sitting, 2019 to May 2026"
+   "source": "IBCP Examinations Office, accreditation results by sitting, 2019 to May 2026"
   },
   "centre_directory.csv": {
    "covers": "examination centres, open and closed",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC Examinations Office, examination centre directory"
+   "source": "IBCP Examinations Office, examination centre directory"
   },
   "corporate_accounts.csv": {
    "covers": "corporate accounts and their agreed rates",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC finance system, corporate account register"
+   "source": "IBCP finance system, corporate account register"
   },
   "examinations_committee_minutes_2026-06-18.pdf": {
    "covers": "the May 2026 results meeting",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC Examinations Committee, minutes of the meeting of 18 June 2026 (draft for confirmation)"
+   "source": "IBCP Examinations Committee, minutes of the meeting of 18 June 2026 (draft for confirmation)"
   },
   "portal_requests_nov2026.json": {
    "covers": "requests candidates sent through the portal for the November 2026 sitting",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC candidate portal, candidate request log (API export), 3 August to 30 November 2026"
+   "source": "IBCP candidate portal, candidate request log (API export), 3 August to 30 November 2026"
   },
   "results_review_requests_2026.csv": {
    "covers": "review requests on May 2026 Paper 2 results, with payment details",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "evidence",
-   "source": "IABC enquiries CRM, results review requests for the May 2026 sitting"
+   "source": "IBCP enquiries CRM, results review requests for the May 2026 sitting"
   },
   "venue_holds_2027.xlsx": {
    "covers": "venues held for the May and November 2027 sittings",
    "date": "2026-11-30",
    "license": "synthetic, CC0, built for this task",
    "role": "distractor",
-   "source": "IABC Examinations Office, venue holds for the 2027 sittings"
+   "source": "IBCP Examinations Office, venue holds for the 2027 sittings"
   }
  },
  "largest_file": {
