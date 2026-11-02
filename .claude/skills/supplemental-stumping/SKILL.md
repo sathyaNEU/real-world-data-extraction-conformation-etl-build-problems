@@ -115,7 +115,12 @@ call's own construction and measured 65.5). **Test every ask against the pin the
 the call must file resolves the ask, re-site it onto quantities the call never reads.
 
 **1.2 Four bans.** 1 **No filed rule adjudicates a device on the ask's path, and nothing narrates one**: only an
-internal inconsistency finds it (a wrong cardinality, an impossible row, a rollup above its parts). 2 **No
+internal inconsistency finds it (a wrong cardinality, an impossible row, a rollup above its parts). Run every filed
+rule and every field's plain meaning over the device's rows before building it: where any gives them a coherent
+reading of their own, the judge files that reading and the device forks, so the rows must make the literal reading
+impossible, not merely unusual (task501: a same-day second GP line meant as the co-twin's dose was read, under the
+filed 28-day interval rule, as an invalid second dose, and dates of birth keyed a decade low were read as held,
+since a child registered and first vaccinated late is unusual but possible; both devices died at the judge). 2 **No
 marker**: no batch id, source value, load stamp, flag or single column isolates device rows; blend benign rows
 into every batch touched, give each classifier column a benign twin. 3 **No oracle**: no control tying only
 under the golden or only on the wrong read; no identity, total, name agreement, confirming round number or

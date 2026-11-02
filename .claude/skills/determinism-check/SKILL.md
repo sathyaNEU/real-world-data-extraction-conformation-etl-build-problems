@@ -123,6 +123,17 @@ the realistic spread at plus or minus 50 on a 400 figure reported to the nearest
 Nothing forcing it: two methods survive (`underspecified_objective`). The method itself filed: the step
 is rule application and the stump is gone.
 
+**A golden assumption the data contradict is a rival the data license.** List every assumption the golden's
+method makes (no background, a zero baseline, no offset, a constant rate, a clean start) and test each against
+the pack before the ladder is fixed, asserted in `checks.py`: a quantity the data carry that a rigorous analyst
+would subtract or model is a second method, and the judge files it. task154's second architecture grew each
+corrosion pit at its whole reported depth over the days since its zone's protection failed, while the zones that
+never failed carried old metal loss up to 29 per cent; the re-judge took that background off first as an equally
+defensible rate, which moved the digs from 34 to 29, 24 or 17 and flipped the call. Filing the basis files the
+method, and data with no old metal loss make the protection record announce the step, so the architecture was
+spent. A rate or trend read from one observation per unit is where this lives: the single observation carries
+the background and the growth together, and nothing in the pack separates them.
+
 **Never file a procedure, basis or formula whose literal application gives another answer**: an official
 decoy and a fork at once. **And a pin added to close one fork can open a larger one**, so read every
 new pin's literal execution against the graded quantity and not only against the fork it was written for.
