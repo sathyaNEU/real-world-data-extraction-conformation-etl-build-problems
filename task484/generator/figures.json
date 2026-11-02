@@ -55,6 +55,16 @@
  "hgv_WRA843": 440,
  "hgv_WRA872": 1740,
  "hgv_WRA898": 1120,
+ "hgv_channels_legacy": [
+  5,
+  6,
+  7
+ ],
+ "hgv_channels_native": [
+  6,
+  7,
+  8
+ ],
  "length_352234": "1.48",
  "length_410389": "0.88",
  "length_424332": "0.52",
