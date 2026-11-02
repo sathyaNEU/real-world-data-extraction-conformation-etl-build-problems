@@ -362,7 +362,8 @@ def main():
     check("ask A hazard: remittances read by statement differ from the service-period sums in every quarter",
           all(round(stmt_rem[k]["remitted"]) != round(gq[k]["remitted"]) for k in fqs[:3]))
     edge = [abs(v - round(v)) for k in fqs for v in (gq[k]["remitted"], gq[k]["shortfall"])]
-    check("ask A dollar figures sit away from the half-dollar", max(edge) < 0.49 and all(abs(e - 0.5) > 0.01 for e in edge))
+    check("ask A dollar figures sit at least five cents from a half dollar", all(abs(e - 0.5) > 0.05 for e in edge),
+          str([round(e, 2) for e in edge]))
     roster = D["roster"]
     fam_rows = collections.defaultdict(list)
     for r in roster:

@@ -199,9 +199,13 @@ def _people(rng, w):
                             "F" if fam[0][2] == "M" else "M"))
             if acc != "RET":
                 for _ in range(int(rng.choice([0, 0, 1, 1, 2, 2, 3], p=[.18, .14, .17, .14, .2, .1, .07]))):
-                    c_age = float(np.clip(rng.normal(max(2, age - 30), 6), 0.3, 25.5))
-                    fam.append(("D", dt.date(2026, 1, 1) - dt.timedelta(days=int(c_age * 365.25 + rng.integers(0, 365))),
-                                "M" if rng.random() < 0.5 else "F"))
+                    while True:
+                        c_age = float(np.clip(rng.normal(max(2, age - 30), 6), 0.3, 25.5))
+                        kid = ("D", dt.date(2026, 1, 1) - dt.timedelta(days=int(c_age * 365.25 + rng.integers(0, 365))),
+                               "M" if rng.random() < 0.5 else "F")
+                        if all((kid[1], kid[2]) != (f[1], f[2]) for f in fam):
+                            break
+                    fam.append(kid)
             # old person codes: employee 01, then the others in the order they were enrolled
             others = fam[1:]
             order_old = list(range(len(others)))
@@ -222,15 +226,19 @@ def _people(rng, w):
             for i, (rel, dob_i, sex) in enumerate(fam):
                 persons.append(dict(acc=acc, rel=rel, dob=dob_i, sex=sex, old_card=old_card, old_pc=old_codes[i],
                                     new_card=new_card, new_pc=new_codes[i], fam=old_card))
-    # a share of members leave before 1 January 2026 (only old ids) and join after it (only new ids)
+    # a share of families leave before 1 January 2026 (only old ids) and join after it (only new ids), the whole
+    # family together
+    when = {}
     for p in persons:
-        r = rng.random()
-        p["term"] = None
-        p["start"] = FY_START
-        if r < 0.045:
-            p["term"] = FY_START + dt.timedelta(days=int(rng.integers(20, 170)))
-        elif r < 0.09:
-            p["start"] = RENUMBER + dt.timedelta(days=int(rng.integers(0, 150)))
+        if p["fam"] not in when:
+            r = rng.random()
+            term, start = None, FY_START
+            if r < 0.045:
+                term = FY_START + dt.timedelta(days=int(rng.integers(20, 170)))
+            elif r < 0.09:
+                start = RENUMBER + dt.timedelta(days=int(rng.integers(0, 150)))
+            when[p["fam"]] = (term, start)
+        p["term"], p["start"] = when[p["fam"]]
     return persons
 
 
@@ -256,8 +264,26 @@ def build():
     w.pharmacies = _pharmacies(rng)
     w.claims = _claims(rng, w)
     _tune(w)
-    w.statements = _statements(rng, w)
+    w.statements = _statements(w)
+    _clear_half_dollars(w)
     return w
+
+
+def _clear_half_dollars(w):
+    """A quarter's remitted rebates are reported to the dollar; where one lands within five cents of a half dollar the
+    tail product Zolvera's rebate share (outside every reviewed class) steps up a tenth of a point until none does."""
+    fq_cal = [f[3] for f in FQ]
+    for _ in range(60):
+        sums = [sum(l["amount"] for l in w.statements if l["svc"] == q) for q in fq_cal]
+        if all(abs(x - math.floor(x) - 0.5) > 0.05 for x in sums):
+            return
+        p = w.products["OTH_12"]
+        p["rshare"] = round(p["rshare"] + 0.001, 3)
+        p["rebate_pkg"] = round(p["wac_pkg"] * p["rshare"], 2)
+        p["rebate_unit"] = p["rebate_pkg"] / p["units"]
+        _price(w, w.claims)
+        w.statements = _statements(w)
+    raise AssertionError("no rebate share clears the half dollars")
 
 
 def _pharmacies(rng):
@@ -502,11 +528,11 @@ def _keep_prob(target, m, mean):
     return float(np.clip(0.80 * target[m] / mean, 0.35, 0.995))
 
 
-def _statements(rng, w):
+def _statements(w):
     """The PBM's quarterly rebate remittances: for each calendar quarter, each manufacturer and each account, the
     rebates on claims filled in the quarter and adjudicated by the invoice cut-off (current), and adjustments for
     earlier quarters' claims paid or reversed after their cut-off (prior period)."""
-    acc_new = {a[0]: a[2] for a in ACCOUNTS}
+    rng = np.random.default_rng(SEED + 11)
     lines = []   # (statement quarter, kind, service quarter, mfr, acc, amount)
     by = {}
     for c in w.claims:

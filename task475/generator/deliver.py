@@ -209,8 +209,9 @@ def committee_paper(P, M, f, path):
          space=6)
     png = chart_png(f)
     doc.add_picture(io.BytesIO(png), width=Cm(15.5))
+    zero = "none" if f["held_at_0"] == 0 else "%d" % f["held_at_0"]
     para("The moves were applied to every answer with regulation 14.2's limits: %d moved marks were held at 20 and "
-         "%d at zero, and neither limit changes any result." % (f["held_at_20"], f["held_at_0"]), space=8)
+         "%s at zero, and neither limit changes any result." % (f["held_at_20"], zero), space=8)
 
     para("3. Results", bold=True, size=11.5, space=2)
     para("%d candidates pass and %d fail. Scripts on 48 or 49 after the moves go to a senior examiner under "

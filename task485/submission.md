@@ -57,17 +57,17 @@ Net cost per 30-day supply, fiscal 2026:
    - Inhaled corticosteroid and LABA combinations: Brezara
    - Adalimumab products: adalimumab-kvrn
 3. Rebate guarantee by fiscal 2026 quarter (brand claims by channel, guarantee, rebates remitted for the quarter's claims, shortfall):
-   - Jul-Sep 2025: retail under 84 days 9,567 claims, retail 84 days or more 692, mail order 806, specialty 594; guarantee $3,524,182; remitted $3,681,439; no shortfall
-   - Oct-Dec 2025: retail under 84 days 9,653 claims, retail 84 days or more 664, mail order 774, specialty 566; guarantee $3,469,398; remitted $3,620,100; no shortfall
-   - Jan-Mar 2026: retail under 84 days 9,663 claims, retail 84 days or more 694, mail order 757, specialty 563; guarantee $3,474,223; remitted $3,530,627; no shortfall
-   - Apr-Jun 2026: retail under 84 days 9,607 claims, retail 84 days or more 667, mail order 749, specialty 651; guarantee $3,560,487; remitted $3,485,236; shortfall $75,251
+   - Jul-Sep 2025: retail under 84 days 9,484 claims, retail 84 days or more 654, mail order 839, specialty 572; guarantee $3,476,679; remitted $3,648,387; no shortfall
+   - Oct-Dec 2025: retail under 84 days 9,570 claims, retail 84 days or more 659, mail order 792, specialty 535; guarantee $3,419,630; remitted $3,589,228; no shortfall
+   - Jan-Mar 2026: retail under 84 days 9,653 claims, retail 84 days or more 685, mail order 818, specialty 466; guarantee $3,373,898; remitted $3,453,527; no shortfall
+   - Apr-Jun 2026: retail under 84 days 9,573 claims, retail 84 days or more 652, mail order 798, specialty 610; guarantee $3,519,558; remitted $3,469,210; shortfall $50,348
 4. Members with a paid claim in each reviewed class, by employer account:
-   - GLP-1 receptor agonists: State Agencies 543, Higher Education 209, Local Government 207, Non-Medicare Retirees 159
-   - SGLT2 inhibitors: State Agencies 393, Higher Education 146, Local Government 155, Non-Medicare Retirees 177
-   - Long-acting insulins: State Agencies 208, Higher Education 73, Local Government 91, Non-Medicare Retirees 115
-   - Direct oral anticoagulants: State Agencies 180, Higher Education 56, Local Government 78, Non-Medicare Retirees 165
-   - Inhaled corticosteroid and LABA combinations: State Agencies 345, Higher Education 186, Local Government 133, Non-Medicare Retirees 93
-   - Adalimumab products: State Agencies 77, Higher Education 36, Local Government 31, Non-Medicare Retirees 20
+   - GLP-1 receptor agonists: State Agencies 533, Higher Education 201, Local Government 203, Non-Medicare Retirees 151
+   - SGLT2 inhibitors: State Agencies 386, Higher Education 147, Local Government 152, Non-Medicare Retirees 175
+   - Long-acting insulins: State Agencies 208, Higher Education 71, Local Government 90, Non-Medicare Retirees 116
+   - Direct oral anticoagulants: State Agencies 181, Higher Education 56, Local Government 78, Non-Medicare Retirees 159
+   - Inhaled corticosteroid and LABA combinations: State Agencies 317, Higher Education 180, Local Government 129, Non-Medicare Retirees 93
+   - Adalimumab products: State Agencies 74, Higher Education 35, Local Government 30, Non-Medicare Retirees 19
 
 ### pdl_2027_trustees.pptx
 

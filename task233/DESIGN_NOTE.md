@@ -1,362 +1,252 @@
 # task233 design note
 
-Architecture 2 (re-rooted 2026-10-16), wave 2, seed DQ06 (whether a register statistic keeps its quality flag
-when the missing field may not be missing at random): the seed's world, decision and quantity only, the pitfall
-re-found from the data under the 10/10 rules. General Statistics & Data Science, missing data, censoring and
-measurement error, Data Quality Monitoring & Alerting. The island's Department of Education publishes the school-leaver
-destinations release each December from the survey a university's Social Survey Unit runs for it; the unit's
-survey director signs a quality flag for each district's NEET rate and higher-education entry rate, the first under
-the revised standard QS-4 v2.0, judged on how far the rate would move if the survey's nonrespondents departed from
-the destination model's allocation as the 2025 nonresponse follow-up found.
-
-Architecture 1 (same world and decision, follow-up in the five middle and deprived districts) was sent back by the
-judge at stage 4: inside each attainment band its follow-up allocations barely varied, so a points gap or a ratio
-per band fitted the follow-up within 1 to 4 log-likelihood units of the odds scale and gave other flags, and the
-prompt's "rate the release will publish" was open for suppressed statistics (`determinism_check_report_arch1.md`,
-the card's lineage, `## Tried and rejected`). Architecture 2 follows up five districts chosen across the island's
-range, so within every band the follow-up's allocations differ by district and only the odds scale fits them, and
-defines the headline rate as a computation made whatever the flag.
+Architecture 3 (re-rooted 2026-11-01 at the Batch 3 queue reset). Data Quality Monitoring & Alerting, Survey Research
+& Official Statistics, nonresponse, calibration and measurement-error adjustment. The school-leaver survey world of
+architectures 1 and 2 is closed (their records are at the end of this note). A fictional English-speaking country's
+national statistics office (NSO) contracts its consumer price index field collection to Tallis Field Research Ltd. Each
+quarter the Head of Prices assesses the contractor's collection in each of fourteen collection regions under the Price
+Collection Quality Standard (PCQS v3.0, new from 1 July 2026): compliant, corrective action (accompanied collection next
+quarter) or a service credit, on each region's collection accuracy, the share of recorded prices that were the price on
+offer when the collector recorded them. The Field Quality Team (FQT) estimates it by re-collecting the prices at a
+monthly sample of outlets, on a fixed regional circuit: within a day of collection in the capital, four to six days
+after it in the far regions.
 
 ## Draw
 
-Card `cards/task233.json` (architecture v2, re-registered 2026-10-16). Guard verdict WARN, one line each:
-`three_rules.strategy_risk` (grain_or_unit) is answered by the analyst test below, which `checks.py` runs on the
-clean truth; `repeat.gate_g` (task463) and `overuse.gate_g` (method_or_model_selection, 5 of the last 12) are
-accepted because the mechanism, the task type and the forum differ from every neighbour (task463 chooses a seasonal
-adjustment model for price index series);
-`test.same_puzzle_older` (task458) and `test.same_driver_older` (task256, task262, task54) are differentiated on the
-card; `driver.near` against this slot's v1 (0.57) is differentiated (the follow-up design and the forcing evidence
-changed, the flags changed) and task446 v2 (0.13) is differentiated.
+Card `.claude/skills/fingerprint/cards/task233.json` (architecture v3, registered 2026-11-01T23:41:28Z), guard PASS at
+draft and again on the registered card; one NOTE, `test.same_puzzle_older` against task270's v9 lineage, differentiated
+on the card (a dispersion read at a chosen lag from ratings at other lags, against an error share at delay zero split
+from genuine change). Axes redrawn during the draw because the window moved under parallel builds: shape 07 to 10
+(task304 v4 and task475 v2 registered shapes 14 and 07 an hour before), context artifact filed_standard to
+close_out_summary (task475 v2 filed_standard), question form what to where (task475's prompt), personas redrawn to
+clear two first-name WARNs. The honest labels: the call is a scorecard of one metric against two thresholds per region
+(shape 10), and the stakeholder's file beside the standard is the contractor's quarterly close-out return.
 
-- **Pairing.** General Statistics & Data Science / missing-data-censoring-measurement-error, serving Data
-  Quality Monitoring & Alerting (the domain index lists this task type under DD and DQ).
-- **Niche.** The destinations survey, run by a university's Social Survey Unit for the Department of
-  Education, asks every school leaver in October where they went; about one in six do not answer. The release allocates each nonrespondent across the five destinations in
-  proportion to the previous year's respondents of the same district and attainment band (a missing-at-random
-  allocation). In 2025 the unit's field team followed up a random sample of nonrespondents in five districts
-  chosen across the island's range and found where they really went. The survey director flags each 2026 statistic
-  standard, caution or suppressed on the sensitivity shift the revised quality standard defines.
-- **The call.** For each of the twelve districts' NEET rate and higher-education entry rate (24 statistics),
-  the flag: standard (shift under 1.0 point), caution (1.0 to under 3.0) or suppression (3.0 or more).
-- **Shape.** 10, a scorecard against thresholds: each statistic's sensitivity shift in each district checked
-  against the standard's two thresholds, each check graded. Decision designation_set, answer set_of_items, question
-  form what.
-- **Strategy.** grain_or_unit with G14 decisive (the departure measured in the followed-up pool does not carry
-  as points to every pool) and G17 supporting (each shift judged against the flag bands); Gate G
-  method_or_model_selection; calibration gold_standard_subsample; context artifact close_out_summary; layer 2
-  family estimand_identification, pattern general-statistics-data-science/missing-data-censoring-measurement-error/3.
-- **Forum, event, organisation.** customer_or_counterparty (the Department of Education, which commissions the
-  survey and publishes the release, receives the flagged tables), launch_or_rollout (the 2026 release is the first
-  under QS-4 v2.0, which replaced a flag on the nonresponse share alone), university_or_school (the Social Survey
-  Unit). Redrawn at stage 3 with the role and the shape: task189, task463 and task152, filed before this card's
-  re-registration, had taken the earlier statistics-office head, grid, panel, statutory filing and government agency.
-- **People** (`guard.py names --geo Ireland --seed 233`): Polly Ganley, the survey director, who signs the
-  flags; Emmett Phelan, field manager who ran the 2025 follow-up; Leanne Henebry, survey methodologist who
-  keeps the allocation and the quality standard.
-- **Deliverables.** `leaver_destinations_2026_quality_flags.xlsx`: each statistic's flag beside its headline
-  rate, and the attainment-band table.
-- **Data-native sentence.** A nonrespondent's allocation is the previous year's respondents' share in its own
-  district and attainment band, so NEET allocations run from under 1 per cent (a high attainer in an affluent
-  district) to over 55 (a low attainer in a deprived one), and the follow-up found nonrespondents departing from
-  them by one factor on the odds in every district and band it covered (a 3 per cent allocation became about 7 and
-  a 35 per cent one about 57), so the same departure is a few points at one end of the island and twenty at the
-  other, and differs between two districts inside the same band.
+- **Pairing.** survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment (DD, DQ):
+  the object is the measurement error in the CPI's field-collected prices, the call each region's monitoring outcome.
+  Not retaggable: no real-world event is detected (not AD) and nothing is predicted (not Forecasting).
+- **The call.** For each region: Compliant, Corrective action or Service credit; and the quarter's total credit.
+- **Shape 10 arithmetic.** 14 outcomes + 1 credit + chart parts (about 5) + 14 timeliness + 14 missed visits + 14
+  replacement acceptance + 2 files = about 64 criteria.
+- **Strategy and labels.** decomposition_attribution (each disagreement split between the collector's error and a
+  genuine price change), Gate G decomposition_attribution, gap objective then time (the agreement metric is correct and
+  is not what the standard scores), generators G13 (the check's moment is not the recording's), G3, G16; calibration
+  gold_standard_subsample (the back-checks); layer 2 estimand_identification; forum customer_or_counterparty (the
+  contractor receives the assessment and the credit), forcing event period_close (the quarterly assessment), org
+  research_or_statistics_office, role statistical_office_head.
+- **World.** A fictional country of about 5.1 million, its NSO, contractor, regions, outlets and people invented;
+  personas from `guard.py names --locale en_NZ --seed 233`: Joanne MacDonald (Head of Prices, signs the letter), Lucia
+  Morrison (the contractor's contract manager), Steven Rowe (FQT lead, initials only in the register).
+- **Sources.** A fully constructed operating layer: the NSO's price database extract, outlet register, item list, code
+  list, collection calendar, back-check register, decisions log, standard and fee schedule; the contractor's visit
+  log, schedule, quarterly return and roster; the published regional indices. Every file is declared synthetic in
+  `metadata.json`.
+- **Data-native sentence.** The FQT drives a fixed circuit, re-collecting in the three Halbrook regions within a day of
+  collection and in the far regions four to six days after it, while the price database shows every item class's shelf
+  prices moving in 6 to 21 per cent of months: the back-check's delay is a property of this team's operating calendar
+  that no column states, and it is what turns a correctly recorded price into a disagreement.
+- **Abstraction sentence.** Against the nearest approved builds a reviewer would say "a capture share read against an
+  independent fixed-protocol index" (task236) and "a validation figure carried to each site through a latent device
+  mix" (task281); this build's sentence, "a check made later than the reading measures error plus genuine change, so
+  the error share nets each check's own chance of change over its delay", is neither, and no card on file carries it
+  (`guard.py slots` on the mechanism and the setting nouns returned no screened ground).
+- **Candidates written before choosing** (each dropped one has a line in `## Tried and rejected`): (1) this back-check
+  delay; (2) a seismic catalogue's completeness under station outages; (3) a land-cover map's accuracy with the
+  reference sample stratified on the previous edition; (4) a survey's response rate with the unresolved addresses'
+  eligibility to estimate; (5) blood-pressure digit preference under a device-resolution mix; (6) a retailer's
+  inventory record accuracy against counts taken mid-trading; (7) calibration intervals under a renew-if-failed policy.
 
-Sources, one line each (what it teaches; how this build differs):
-- Client pattern missing-data-censoring-measurement-error/3 (delta-adjust for nonignorable missingness;
-  shortcut: complete-case agrees with the imputation, so robust): the frame; here the delta is not swept over a
-  grid but calibrated on a gold-standard follow-up and carried to districts it never covered, and the shortcut is
-  this build's rung 0.
-- Seed DQ06: the world, the decision and the quantity only; its decoy architecture is not used.
-- Hansen and Hurwitz (1946), the nonresponse follow-up subsample; Little and Rubin, Statistical Analysis with
-  Missing Data, pattern-mixture models; Carpenter and Kenward (2013), Multiple Imputation and its Application,
-  delta adjustment on the logit scale for binary outcomes: the field's method. No card or ledger row on file
-  carries it.
-- Spent on this objective (`guard.py mechanisms`): task228 (a ratio metric's variance at the randomisation unit),
-  task229 (a daily mean through a convex rating), task230 (net coding bias of a late channel), task231 (a rate over
-  units still active, exits reported late), task232 (a transmission rate from delayed, mixed outcomes). None
-  carries a missing-not-at-random departure or a scale of transport.
-- task446 v2 (nearest other driver, 0.13): a screen's yield carried across pools through its error rates; this
-  build has no screen and no base rate to recover.
+## Survivor anatomy
+
+- Actor: the deciding property is whether each back-checked item's shelf price changed between the collector's visit and the officer's re-collection, and no file has a column for it: the back-check register holds two prices and a re-collection date, the visit log visit times, the price database monthly prices.
+- Link: the signal is read through a comparison no key offers and no sentence invites: each back-check's own delay (its re-collection date against the visit date in the contractor's visit log, crosswalked from NSO outlet code to contractor outlet number through the register) set against its item class's month-on-month frequency of price change in the price database, a different file, grain and system.
+- Reflex: the field's QA measure for collection accuracy, the share of back-checked prices that agree with the re-collection, sits at rung 0 and files ten regions wrong (seven compliant regions under corrective action, three corrective regions on credits, a $7,049 credit).
+- Back-test: the textbook route validates: in the three Halbrook regions the officers re-collect within a day (mean delay 0.6 to 1.0 days), so agreement and accuracy agree there; each region's agreement is steady across the three months; and nothing in the pack reports an accuracy that could contradict it.
+- Second use: every file the decisive step reads has its own job: the visit log carries the timeliness ask, the price database the index and the replacement ask, the register the crosswalk and the outlet types, the back-check register the accuracy measure itself; delete the decisive step and every file stays in the pack.
+- Shock: the movement reads as ordinary: the far regions' collectors look about two points less accurate than the capital's, a familiar rural pattern; sorted on agreement, delay, back-check count or region size the flagged set is not an interval (Harlow Plains, Northreach, Greywater, Eastwick Coast and Corran Peninsula sit between the four lowest and Halbrook North, asserted C13).
+- Pins: PCQS v3.0 files the WHAT in the division's own genre (the quarter, every price recorded at the region's outlets, the price on offer at the time the collector recorded it, items not found left out, the bands unrounded, the credit on Schedule 4's fee); no filed sentence names a delay, a re-collection date, a price change, a frequency or a hazard; deleting 3.1's time clause unfixes the estimand, it never hands over the step.
 
 ## Default path
 
-1. Read the quality standard (QS-4): the flag bands on the sensitivity shift (under 1.0 point standard, 1.0 to
-   under 3.0 caution, 3.0 or more suppression), the headline rate, and the counterfactual the shift measures (each
-   nonrespondent's allocation moved as the most recent nonresponse follow-up found followed-up nonrespondents'
-   destinations departing from their allocations, worked for each nonrespondent in turn and summed to the
-   district).
-2. Conform the 2026 survey frame: map school codes to the 2026 districts (two schools moved), count leavers and
-   nonrespondents per district, and total each district's NEET and HE allocations over its nonrespondents.
-3. Conform the 2025 follow-up: join its outcomes to the 2025 frame through the case crosswalk (references
-   prefixed L), keep one outcome per case, drop unresolved cases and the cases whose leaver has a form in the final
-   file, and map the field team's codes to destinations: 3,134 comparable cases.
-4. Measure the departure the follow-up found: the comparable cases' NEET share minus their mean NEET allocation,
-   14.5 points, and the same for higher-education entry, minus 11.1.
-5. Each district's shift: its nonrespondent share times the gap.
-6. Flag each statistic against the bands.
+1. Read pcqs_price_collection_quality_standard_v3.pdf: accuracy is the share of recorded prices that were the price on
+   offer when recorded, estimated from the FQT's back-checks; Compliant at 98.0 or more, Corrective action below 98.0
+   and at least 96.0, Service credit below 96.0 with 4 per cent of the region's Schedule 4 fee.
+2. Read the three monthly sheets of fqt_backcheck_register_2026q3.xlsx (header block, July dates typed as text,
+   September columns reordered) and keep the 6,310 prices the officer found.
+3. Take the field's QA measure of collection accuracy, the share of each region's back-checked prices whose collector
+   price equals the FQT price: Halbrook Central 98.85, Halbrook North 97.07, Halbrook South 98.74, Eastwick Coast 96.95,
+   Belmont Valley 92.87, Harlow Plains 96.54, Tamsin Bay 95.01, Greywater 96.64, Ardmore Uplands 97.33, Fenwick 94.58,
+   Corran Peninsula 97.01, Westholm 95.02, Rookby Downs 97.20, Northreach 96.62.
+4. Apply section 4 and pcsa_schedule4_collection_fees.pdf.
 
-Ends on: 11 of the 24 flags wrong. It cautions the NEET rates of Southern Shore, Upper Valley and Glen Villages
-(standard), suppresses the NEET rates of Hill Country and Northern Plains (caution), cautions the NEET rates of City
-West and City East (suppression), cautions the higher-education entry rates of Hill Country and Northern Plains
-(suppression) and cautions those of Old Docks and Mill Towns (standard).
+Ends on: corrective action for Halbrook North, Eastwick Coast, Harlow Plains, Greywater, Ardmore Uplands, Corran Peninsula, Rookby Downs and Northreach; service credit for Belmont Valley, Tamsin Bay, Fenwick and Westholm; a $7,049 credit.
 
-Golden: suppression for the NEET rates of Riverside, City West and City East and the higher-education entry rates
-of Hill Country and Northern Plains; the standard flag for the NEET rates of Southern Shore, Upper Valley and Glen
-Villages and the higher-education entry rates of Old Docks and Mill Towns; caution for the other fourteen.
+Golden: corrective action for Halbrook North, Tamsin Bay, Fenwick and Westholm; service credit for Belmont Valley; the other nine compliant; a $1,775 credit.
 
 ## Stump sentence
 
-A competent solver adds the 2025 follow-up's pooled points gap to each district's nonrespondents in proportion to
-their share and files 11 of the 24 flags wrong (Ends on: caution for three affluent NEET rates that stay standard,
-suppression for the Hill Country and Northern Plains NEET rates, caution for the City West and City East NEET rates
-and the Hill Country and Northern Plains higher-education rates that are suppressed, caution for the Old Docks and
-Mill Towns higher-education rates that stay standard); the step that lands it there is carrying a departure measured
-across allocations from under 1 to over 55 per cent as a fixed number of points instead of nonrespondent by
-nonrespondent on the odds scale, the one scale on which the follow-up's districts and bands agree.
+A competent solver takes each region's accuracy as the share of its back-checked prices that agree with the officer's
+re-collection and files corrective action for Eastwick Coast, Harlow Plains, Greywater, Ardmore Uplands, Corran
+Peninsula, Rookby Downs and Northreach and service credits for Tamsin Bay, Fenwick and Westholm, a $7,049 credit; the
+step that lands it there is counting every disagreement as a collector's error when the officers re-collected the far
+regions' prices four to six days after the visits and a share of those prices, set by each item's frequency of price
+change and each re-collection's delay, had genuinely changed in between.
 
 ## Three rules
 
-- **Task type:** general-statistics-data-science / missing-data-censoring-measurement-error, which serves
-  Data Quality Monitoring & Alerting: a published statistic's sensitivity to nonignorable nonresponse, judged
-  against a quality flag's bands, the departure calibrated on a gold-standard follow-up.
-- **Domain test:** the quantity that decides is each statistic's shift under a departure from missing-at-random,
-  the pattern-mixture delta adjustment the missing-data field calibrates on a nonresponse follow-up and applies to
-  each nonrespondent on the logit scale for a binary outcome.
-- **Swap:** in this domain the setting is another field's and the swap is of the method. Put a generic summary in
-  place of the delta adjustment (the follow-up's points gap times the nonresponse share, the same gap per band, or
-  the agreement between the respondent-only rate and the allocated rate) and 9 to 11 flags change; the call stands
-  on the missing-data object, not on the education nouns. Swapping the nouns alone ("hospitals' readmission rates,
-  patients lost to follow-up") keeps the method and is the same task, which is what a General Statistics draw is
-  meant to be.
-- **Layer 1:** the 2026 survey came back on paper and online forms with different code lists, and the online form's
-  2026 edition went live a day into fieldwork, as the form change of 2026 produced; the follow-up's outcomes are
-  keyed by the field team's case numbers and reach the survey through a crosswalk that drops the reference's letter
-  prefix, with 174 cases found by two routes; the follow-up sample was drawn from the nonrespondents at the close, so
-  358 resolved cases answered late and sit in the final 2025 file as respondents; the district map was revised for
-  2026 and two schools moved. None is placed to be caught, and on the clean truth the default path and the golden
-  are unchanged.
-- **Layer 2:** estimand_identification, missing-data-censoring-measurement-error/3: the departure found on the
-  follow-up has to be carried to nonrespondents the follow-up never reached, on the scale on which it is stable;
-  the follow-up's free-slope calibration on the logit of the allocation returns slope 0.99 for NEET and 1.03 for
-  higher education, while a points gap or a ratio, pooled or per band, misfits it.
-- **Decisive step:** carrying the follow-up's departure nonrespondent by nonrespondent on the odds scale (the
-  logit delta, or any model of the departure on each nonrespondent's own allocation that fits the follow-up),
-  because allocations run from under 1 to over 55 per cent and differ by district inside each band, and the
-  follow-up's districts and bands agree on one odds ratio, not on a points gap or a ratio.
-- **Not semantics:** the default path reads every field, code and definition right (the five destinations, the
-  code lists, the allocation columns, the 2026 district map, the crosswalk, the headline rate) and computes the
-  right gap; the wrong flags come from the scale the gap is carried on, which no field, code or unit names.
-- **Not rule application:** the standard files the bands, the rounding, the headline rate and the counterfactual
-  (each nonrespondent's allocation moved as the follow-up found, the rate recomputed); no filed sentence says on what
-  scale the departure moves, so executing every stated rule with the gap the follow-up gives still files the eleven
-  wrong flags.
-- **Analyst test:** with every field read and every rule applied, a strong analyst takes the follow-up's departure
-  as its pooled points gap (14.5 points for NEET, minus 11.1 for HE entry), adds it to each district's
-  nonrespondents and files the default path's Ends on: 11 of the 24 flags wrong; stratifying the gap by band keeps
-  the same 11; `checks.py` runs that route on the generator's clean truth and asserts it, then changes the scale
-  alone and asserts the golden.
-- **Estimand:** the quality standard (QS-4, in the pack) fixes the population (all leavers of the 2025-26 school
-  year on the 2026 frame, by 2026 district, respondents and nonrespondents), the outcome (the headline NEET and HE
-  rates), the comparison (the headline rate against the rate with each nonrespondent's allocation moved as the 2025
-  follow-up found followed-up nonrespondents departing from theirs), the unit (percentage points) and the bands.
-- **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure states a gap, a ratio or a flag;
-  the follow-up report gives its design and completion, not a headline departure; no rule is withheld and no block
-  is copied; no shipped artifact ranks or flags the statistics.
-- **No certified replay:** no certified or published figure exists for the method to reproduce; the follow-up's
-  outcomes are field findings per case, and the scale is read from how those findings vary with the allocation, not
-  recovered by matching a stated number.
-- **Lesson:** a departure from missing-at-random measured on a follow-up transports on the scale on which the
-  follow-up shows it constant; for a binary outcome whose allocations run from under 1 per cent to over a half that
-  is the odds scale, so one departure moves a 3 per cent allocation by 4.1 points and a 35 per cent one by 22.0, and
-  a pooled or per-band points gap flags the statistics least exposed to it and clears the ones most exposed. No
-  build on file teaches nonignorable-nonresponse sensitivity carried on the logit scale.
+- Task type: survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment, which serves Data Quality Monitoring & Alerting: the object is the measurement error in the CPI's field-collected prices and the call is each region's monitoring outcome under the quality standard.
+- Domain test: the deciding quantity is each region's price-collection accuracy at the moment of recording, the error rate of a survey's field measurement estimated from a re-measurement sample, read in price statistics, where the measured price is itself a quantity that moves at each item's own frequency of change.
+- Swap: "which hospital wards code accurately, judged on coding audits done a week later" keeps the arithmetic, but a diagnosis code does not move between the coding and the audit, so the step that clears ten regions here has nothing to act on.
+- Layer 1: re-sent uploads in the price database (the handheld retries a failed upload; same rows, a later load batch); letter status codes replaced by numeric codes from August (the handheld software update, mapped by the code list); NSO outlet codes in the price database and back-check register against contractor outlet numbers in the visit log and schedule (crosswalked by the register); the back-check register's monthly sheets with a header block, July dates typed as text and September's columns reordered (the team's new form); visit stamps carrying the +12:00 offset; contractor area names against NSO region names; split and late visits; items the officer could not find; each produced by the system named, none placed to be caught.
+- Layer 2: estimand identification, the right counterfactual: accuracy is about the price on offer at the moment of recording, so a later re-collection is evidence about that price only net of the chance the price moved over the delay; estimating accuracy net of genuine change, not as raw agreement, flips ten regions.
+- Decisive step: recognising that a re-collection made days after the visit disagrees with a correctly recorded price whenever the outlet changed that price in between, and netting each back-check's chance of such a change, from its delay and its item class's daily hazard of a price change read off the price database's month-on-month changes, before setting accuracy against the bands.
+- Not semantics: every field read correctly (both prices, the re-collection date, the found flag, the visit times, the status codes, the crosswalk) still leaves the easy route on the raw agreement, and on the clean truth's records the agreement files the same ten regions wrong (R3a).
+- Not rule application: no filed rule says how the price at the time of recording is estimated from a later re-collection, and executing PCQS 3.1 to section 4 on the agreement files the default; the enumerated family (raw agreement, agreement with fruit and vegetables set aside, quote-by-quote persistence, netting by class, item, outlet type or pooled frequency, exponential or linear in the delay, three frequency windows, visit-day or index-day delays, calendar or consistent working days, a frequency netted of the collectors' own errors) spans outcome vectors from ten regions wrong to none; the standing family (every netting member) spreads zero on the outcomes and the credit, its nearest figure 0.41 points from a band edge against the golden's 0.67; the ruling-out is quiet, reached only by reading the visit log and the price database against the register.
+- Analyst test: a strong analyst who reads the standard and every file correctly takes each region's accuracy as the share of its back-checked prices that agree with the officer's re-collection and files ten regions wrong: Eastwick Coast, Harlow Plains, Greywater, Ardmore Uplands, Corran Peninsula, Rookby Downs and Northreach under corrective action, Tamsin Bay, Fenwick and Westholm on service credits, a $7,049 credit.
+- Estimand: PCQS v3.0 sections 3.1, 3.3 and 4 (pcqs_price_collection_quality_standard_v3.pdf): the population is every price recorded by the contractor's collectors at the region's outlets in July to September 2026, the outcome whether it was the price on offer at the time the collector recorded it, estimated from the back-checks (3.2) with items not found left out, compared unrounded with 98.0 and 96.0, the credit 4 per cent of the region's Schedule 4 fee.
+- No decoy: nothing is planted: no memo, earlier assessment, draft or stakeholder figure states an accuracy or an outcome; the contractor's return reports activity counts only; the back-check register is the team's own record, with no block copied or withheld.
+- No certified replay: no published or certified accuracy, outcome or credit exists in the pack to reproduce; the method is not hidden behind a figure the solver backs out.
+- Lesson: a check made after a reading measures the reading's error plus whatever the measured thing did in between, so before charging a disagreement to the recorder, net the chance the quantity moved over the check's own delay, read from the quantity's own record of change; no build on file teaches a re-measurement whose delay lets the truth move.
 
 ## Readability screen
 
-Six tests per rung (stumping 2.1): 1 a filed sentence names the decisive quantity or sends the solver to it; 2 a
-column, key or marker makes it a row predicate or a header-found join; 3 an opponent reflex reaches it; 4 a control
-or corpus scores the rules or refutes the naive read; 5 the hygiene battery finds it; 6 one subtraction, ratio or
-half of a reported figure.
-
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 the allocation's own shift (headline rate minus respondent-only rate): 9 flags wrong | QS-4 s.3 names the follow-up's departure, so a reader of the standard leaves it | the allocation columns sit beside the forms | yes, complete case against the imputed rate | the follow-up shows nonrespondents unlike respondents | no | one subtraction | readable |
-| 1 the follow-up's pooled points gap times each district's nonrespondent share: 11 flags wrong | QS-4 s.3 "as the follow-up found" invites the gap | the follow-up's outcome beside the 2025 allocation | yes, the first summary of a follow-up | the follow-up rejects it (54.4 and 242.0 log-likelihood units worse than one odds ratio, NEET and HE) for a solver who fits it | no | one subtraction and one product | readable |
-| 2 the points gap per attainment band, carried by each district's band mix: 11 wrong | none | the band column on both frames | yes, holding the pool to a visible attribute | the follow-up rejects it (17.8 and 98.3 worse, four parameters against one): inside a band the gap still moves with the district's allocation | no | a group-by | readable |
-| 2 a ratio of rates, pooled or per band: 2 wrong | none | none | yes, when the gap is seen to grow with the allocation | the follow-up rejects it (60.0 and 36.6 pooled, 22.8 and 14.2 per band) | no | one division | readable |
-| 3 (decisive) the departure carried nonrespondent by nonrespondent on the odds scale, the scale on which the followed-up districts and bands agree | no sentence names a scale, a model or a link; QS-4 s.3 says only that each allocation moves as the follow-up found | no column names a scale or an odds ratio; the follow-up has outcomes and allocations only | no: the reflexes stratify, borrow or take a ratio | only the follow-up's own cases, which show it to a solver who asks on what scale its districts and bands agree | no | not linear: the shift per nonrespondent runs from 4.1 points at a 3 per cent allocation to 22.0 at 35 | silent |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 raw agreement | fires: 3.2 points at the back-checks | fires: collector and FQT price side by side | fires: the field's QA measure | no | no | fires: one ratio | no | readable |
+| R1 fruit and vegetables set aside | no | fires: the class column | fires: a common QA exclusion of volatile items | no | no | fires | no | readable |
+| R2 persistence read quote by quote | no | fires: next and previous month's prices in the database | no | no | no | no | no | readable |
+| R3 net each back-check's chance of a genuine change over its delay (decisive) | silent: 3.1 names the moment of recording, no delay, change or frequency | silent: no column holds a delay, a visit date beside a back-check or a change frequency | silent: the field's measure is agreement | silent: no control scores accuracy | silent: no hygiene item finds it | silent: a per-back-check product across two files and a crosswalk | silent: every file it reads has its own job | silent |
 
 ## Semantic fork table
 
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "NEET rate" | the release's NEET destination (unemployed and seeking work, or not working or studying) | unemployed only | same call: the shift reads the NEET allocation column, never a respondent's code | same call (asserted: the shift uses no activity code) |
-| SF2 | "higher-education entry rate" | higher-education courses on or off the island | island courses only | same call: the shift reads the HE allocation column | same call (asserted) |
-| SF3 | "district" | the 2026 map | the 2025 map (two schools) | every flag unchanged | QS-4 s.1 (the map in force on the census date); same call (asserted) |
-| SF4 | the rate's denominator | every leaver on the 2026 frame | respondents only | shifts about a fifth larger, flags move | QS-4 s.2 (a rate over all leavers on the frame) |
-| SF5 | "nonrespondent" | no form returned by the close (allocation present) | none on the frame | one reading: every row with an allocation has no form and every row without one has a form | C1 (asserted) |
-| SF6 | "allocation" | the frame's allocation columns (the previous year's respondents in the same district and band) | current-year respondents' shares recomputed | every flag unchanged | QS-4 s.2 and methodology s.4 (the destination model's allocation is the frame's); same call (asserted) |
-| SF7 | "shift" and its sign | sensitivity rate minus headline rate, banded on its size | signed bands | HE shifts are negative, so a signed reading clears every HE rate | QS-4 s.4 (bands on the size of the shift) |
-| SF8 | "the most recent nonresponse follow-up" | the 2025 follow-up | none | one follow-up in the pack | C1 |
-| SF9 | "followed-up nonrespondents" | resolved cases whose leaver has no form in the final 2025 file | with late returners or unresolved cases | late returners carry no allocation and unresolved cases no outcome, so neither can be compared | QS-4 s.6 (resolved cases of leavers who remained nonrespondents); C1 (asserted) |
-| SF10 | cases found by two routes | one outcome per case | each row counted | every flag unchanged | follow-up report s.3 (one outcome per case); same call (asserted) |
-| SF11 | grain of the counterfactual | each nonrespondent's own allocation moved, summed to the district | the departure applied once to the district's mean allocation | one flag moves (Riverside HE) | QS-4 s.3 ("worked for each nonrespondent in turn") |
-| SF12 | rounding path | the unrounded shift banded | the shift rounded to one decimal, then banded | same call (no shift within 0.2 points of an edge) | QS-4 s.5; same call (asserted) |
-| SF13 | band edges | 1.0 and 3.0 belong to the higher flag | strict | same call | QS-4 s.4; same call (asserted) |
-| SF14 | as-of | the 2026 frame extract of 10 November 2026 | none | one 2026 frame | C1 |
-| SF15 | case references | the crosswalk's references with the frame's letter prefix | raw strings | the raw join matches no case | C1: every resolved case matches after the prefix (asserted) |
-| SF16 | headline rate of a suppressed statistic | the rate computed under QS-4 s.2 | the suppression mark | the four suppressed rates' figures | QS-4 s.2 ("computed for every district whatever its flag") and s.4 ("headline rate withheld") |
-| SF17 | activity codes of online returns made on build 7 | the 2025 edition's order (the 2025 final file's build-7 returns with their processed destinations) | the reference list's 2026 order | ask figures move (no flag) | data dictionary (the list is the 2026 edition's); C1: every 2025 online return is build 7 and no build-7 return carries the 2026 edition's code 8 (asserted) |
+| SF1 | the prices recorded | every back-checked price found, both outlet types, all three months | one stratum or one month | different | PCQS 3.1 "the prices recorded ... during the quarter"; asserted |
+| SF2 | at the time the collector recorded it | the visit date from the visit log | the index day | same call | asserted (index-day delays converge, nearest edge 0.41) |
+| SF3 | a replacement variety's price | a recorded price | dropped | same call | PCQS 3.1 last sentence; asserted |
+| SF4 | items the officer cannot find | left out | counted as disagreements | different | PCQS 3.2; asserted |
+| SF5 | compared with the bands | unrounded | rounded to one decimal | same call | PCQS 3.3; asserted |
+| SF6 | a price in the register | once | twice | same call | the register holds each price once; asserted |
+| SF7 | a re-sent upload | one row per quote and month | both rows | same call | asserted |
+| SF8 | status 30 | a replacement variety's price | a same-variety price | same call | handheld_status_codes.csv; asserted |
+| SF9 | days of delay | calendar days (shops trade every day) | working days over a working month | same call | asserted |
+| SF10 | the visit date | the local date of the +12:00 stamp | the UTC date | same call | asserted (S4 and R2) |
+| SF11 | the change frequency's grouping and form | COICOP class by outlet type, exponential, twelve months | item, type, pooled; linear; other windows; error-netted | same call | asserted (C5, C6b) |
+| SF12 | the credit | 4 per cent of each credit region's fee, summed, rounded once to the dollar | rounded per region | same call | Schedule 4 and PCQS section 4; asserted (C10) |
+| SF13 | a region's prices | the outlet's region in the register | the collector's contractor area | same call | the back-check register's region equals the register's; asserted |
 
 ## Ladder
 
-Four rungs, each a defensible analysis, each dying to one shipped fact (shifts in points; flags S standard, C
-caution, X suppression).
+| Rung | Construction | Outcome vector (CR01 to CR14: C compliant, A corrective, S credit) | Credit | Wrong | Dies to |
+|---|---|---|---|---|---|
+| R0 | raw agreement (default path) | CACASASAASASAA | $7,049 | 10 | the visit log's dates against the back-check dates, and the price database's monthly changes |
+| R1 | agreement with fruit and vegetables set aside | CACCSCSAASAAAA | $5,334 | 7 | PCQS 3.1's population (every price recorded); every other class also moves |
+| R2 | a disagreement read as genuine where the collector's price is the previous month's and the FQT's the next month's | CACASASACACSCC | $5,302 | 5 | stale pre-filled prices read as changes, September with no next month |
+| R3 | each back-check's chance of no change, (1 minus its class frequency) to the power delay/30.4, divided into agreement (golden) | CACCSCACCACACC | $1,775 | 0 | none |
 
-| Rung | Construction | Answer | Dies to |
-|---|---|---|---|
-| 0 | the allocation's own shift (headline minus respondent-only) | 9 wrong | QS-4 s.3: the shift is under the follow-up's departure |
-| 1 (default) | pooled points gap (NEET 14.5, HE minus 11.1) times each district's nonrespondent share | 11 wrong (above) | the follow-up's cases: one odds ratio fits them 54.4 and 242.0 log-likelihood units better |
-| 2 | the gap per band carried by band mix; a ratio of rates, pooled or per band | 11, 2 and 2 wrong | the follow-up's cases inside each band: a gap per band misfits by 17.8 and 98.3 units, a ratio by 60.0 and 36.6 pooled and 22.8 and 14.2 per band |
-| 3 (golden) | the follow-up's odds ratio (NEET 2.46, HE 0.41), fitted with the allocation as offset, applied to each nonrespondent's allocation | the golden grid | |
-
-- **Margins.** Every logit-scale estimator (pooled offset, fixed-effects logistic on the followed-up districts,
-  Mantel-Haenszel over district and band, band-specific odds ratios, district-own odds ratios, a logistic
-  calibration with free slope) gives the golden grid, every shift at least 0.29 points from a band edge; the
-  default path's shifts sit at least 0.22 from an edge. A quadratic points model, a probit shift, a straight line in
-  the allocation and the nearest followed-up district's band gaps also give the golden grid.
-- **Position and dominance.** The default path is wrong in 11 cells across both statistics and all three flags;
-  the per-band gap is wrong in the same 11 and the ratio in two others; no correction short of conditioning the
-  departure on each nonrespondent's own allocation reaches the golden, and the follow-up rejects every one that
-  does not.
-- **Grid.** The decisive choice moves 11 of 24 cells; the rung-2 constructions move 2 to 11.
-- **Worth.** The flags are the graded call; worth is counted on flags, never on an intermediate.
+- Margins: the golden's nearest band edge 0.67 points (Halbrook North 97.34, Fenwick 96.91); the default's 0.34
+  (Harlow Plains 96.54); every standing-family member at least 0.41 (index-day delays, Westholm 97.60). The decisive
+  step's worth on the flipped regions is 1.86 to 2.62 points (golden minus agreement), against a standing-family
+  spread of at most 0.66 on any region (C12).
+- Golden estimates: Halbrook Central 99.13, Halbrook North 97.34, Halbrook South 99.18, Eastwick Coast 99.22, Belmont
+  Valley 94.85, Harlow Plains 99.15, Tamsin Bay 96.88, Greywater 99.19, Ardmore Uplands 99.55, Fenwick 96.91, Corran
+  Peninsula 99.28, Westholm 97.02, Rookby Downs 99.35, Northreach 99.24; the generator's truth over every price
+  recorded in the quarter names the same outcomes (C11).
+- Pricing sequence. (1) The residue the filed WHAT leaves is a method (how a later re-collection estimates the price at
+  recording), not a knob. (2) The move: netting lifts the far regions by 1.9 to 2.6 points against bands two points
+  wide, and crosses one in ten regions. (3) The one-group-by route is the default and lands wrong; a one-line lag route
+  (agreement among back-checks within a day of the visit) exists only in the capital, since the far regions' delays are
+  at least three days. (4) The estimate's own sampling error is about 0.7 points per region; the standard rules on the
+  estimate as it stands (3.3) and every licensed construction prints the same outcomes. (5) Not a ranking: banded
+  verdicts, each at least 0.67 from its edge. (6) Not a change call. (7) The capital's same-day back-checks print
+  accuracy directly, and exist nowhere else. (8) Every reflex is run as code in `generator/checks.py`.
+- Free parameter at the naive value: a pooled frequency (all items and outlets) names the golden set, as do the item,
+  outlet-type and class groupings, linear and exponential forms and three windows (C5).
 
 ## Closure table
 
-| # | Axis | Reading in this build | Closure |
-|---|---|---|---|
-| 1 | Population | every leaver on the 2026 frame, respondents and nonrespondents, by 2026 district | QS-4 s.2; C1 |
-| 2 | Unit of account | the leaver; the statistic is a district rate | QS-4 s.2 |
-| 3 | Attribution window | the 2025-26 school year's leavers, destination on 1 October 2026 | methodology s.1; one frame |
-| 4 | As-of dating | the frame extract of 10 November 2026 after the allocation run of 9 November | manifest and dictionary |
-| 5 | Version basis | the 2025 final file (31 March 2026) for the follow-up's allocations | QS-4 s.6; C1 (the only 2025 file) |
-| 6 | Denominator | all leavers on the frame | QS-4 s.2 (SF4) |
-| 7 | Weighting | none: a census of leavers, each counts once | methodology s.1 |
-| 8 | Window length | one survey year | QS-4 s.3 |
-| 9 | Boundary inclusivity | bands closed at 1.0 and 3.0 on the higher flag | QS-4 s.4; C1 (no shift within 0.2 of an edge, asserted) |
-| 10 | Rounding path | flags on the unrounded shift; rates shown to one decimal | QS-4 s.5 (SF12) |
-| 11 | Tie-break | none needed: each statistic gets its own flag | QS-4 s.4 |
-| 12 | Maturity and censoring | nonrespondents' true destinations unknown; the follow-up's resolved cases only | QS-4 s.6 (SF9) |
-| 13 | Order of operations | move each allocation, sum to the district, subtract, band | QS-4 s.3 and s.4 (SF11) |
-| 14 | Row order | irrelevant to sums | C1 |
-| 15 | Duplicate resolution | one outcome per follow-up case | follow-up report s.3; C1 (SF10) |
-| 16 | Identity normalisation | case references given the frame's letter prefix | C1 (SF15) |
-| 17 | Netting against gross | none: each statistic's shift stands alone | QS-4 s.3 |
-| 18 | Dimensional units | allocations as fractions, rates and shifts in percentage points | dictionary; QS-4 s.3 |
-| 19 | Code and status semantics | field team codes mapped to release destinations; build-7 online returns in the 2025 edition | follow-up report s.5 (SF1, SF2); dictionary (SF17) |
-| 20 | Integerisation | none | not applicable to a rate |
-| 21 | Clause scope | QS-4 applies from the 2026 release to each district's NEET and HE rate; the headline rate whatever the flag | QS-4 s.1 and s.2 (SF16) |
-| 22 | Forward window contents | the 2026 nonrespondents, whose destinations no follow-up has reached | QS-4 s.3; the 2026 frame |
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | every price recorded at the region's outlets in the quarter, estimated from the back-checks | PCQS 3.1, 3.2; C1 over strata, months and replacements (SF1, SF3) |
+| 2 Unit of account | the recorded price; the outcome per region | PCQS 3.1 and section 4 |
+| 3 Attribution window | July to September 2026 by reference month | the register's monthly sheets; C1 |
+| 4 As-of dating | the visit's local date, the re-collection's date | the visit log and register; SF2, SF10 converge |
+| 5 Version basis | PCQS v3.0, Schedule 4 variation 3, the price database pulled 14 October 2026 | filed in each document |
+| 6 Denominator | back-checked prices the officer found | PCQS 3.2 (SF4) |
+| 7 Weighting | an unweighted share of prices | PCQS 3.1 "the share of the prices"; C1 |
+| 8 Window length | the frequency's window | C1 over twelve months, the quarter and January to September (SF11) |
+| 9 Boundary inclusivity | 98.0 or more, below 96.0 | section 4; nothing within 0.41 of an edge (C6) |
+| 10 Rounding path | accuracy unrounded; the credit rounded once to the dollar | PCQS 3.3; SF12 |
+| 11 Tie-break | none arises | outcomes are banded |
+| 12 Maturity and censoring | September's prices complete in the 14 October extract | the extract date; only the persistence rung lacks a next month |
+| 13 Order of operations | estimate, band, credit | section 4 order |
+| 14 Row order | no result depends on file order | sums and shares only |
+| 15 Duplicate resolution | one row per quote and month; each back-check once | SF6, SF7 converge |
+| 16 Identity normalisation | NSO outlet code to contractor outlet number | the register's crosswalk; S4 asserts one visit per back-check |
+| 17 Netting against gross | not applicable | shares of prices |
+| 18 Dimensional units | dollars; delays in calendar days; a month of 30.4 days | SF9 converges |
+| 19 Code and status semantics | P and 10 priced, R and 30 replacements, U and 20 not available | the code list (SF8 converges) |
+| 20 Integerisation | the credit to the nearest dollar | 1,775.20 clears its edge by 0.3 (C10) |
+| 21 Clause scope | section 4's bands apply to accuracy; timeliness and acceptance are reported (section 7) | PCQS sections 4 and 7 |
+| 22 Forward window contents | corrective action applies next quarter; nothing forecast | section 4 |
 
 ## Literal reader
 
-Executed word for word, QS-4 and the prompt fix the population (every leaver on the 2026 frame by 2026 district),
-the statistic (the headline NEET and HE rate, allocations included, computed whatever the flag), the counterfactual
-(each nonrespondent's allocation moved as the 2025 follow-up found followed-up nonrespondents' destinations
-departing from their allocations, worked nonrespondent by nonrespondent and summed), the bands and the rounding. No
-sentence fixes the scale on which a departure moves an allocation; the follow-up does. Its five districts were chosen
-across the island's range of area deprivation (the field report's design section), and QS-4 s.6 has them stand for
-every district, so
-inside every band its 3,134 comparable cases carry allocations that differ by district; regressing the found
-destination on the logit of the allocation returns slope 0.99 for NEET and 1.03 for higher education, a pure shift
-on the odds scale, and one odds ratio fits the cases better than a pooled points gap (by 54.4 and 242.0
-log-likelihood units), a pooled ratio (60.0 and 36.6), a points gap per band (17.8 and 98.3, with four parameters
-against one) or a ratio per band (22.8 and 14.2), while odds ratios per band add under one unit. A points departure
-would also put 1,915 of the 7,641 nonrespondents' HE allocations below zero. Every model that fits the cases (the
-logit offset, a free-slope calibration, a quadratic or a line in the allocation) gives the golden grid. The default
-path reads every term the same way and differs only in the scale, so the stump is analysis, never a reading.
+Executing PCQS 3.1 to section 4 word for word: the population is every price recorded at the region's outlets in July
+to September, the outcome whether it was the price on offer at the time the collector recorded it, estimated from the
+back-checks with items not found left out, compared unrounded with 98.0 and 96.0. The back-check register's dates
+follow the visit log's visit dates by 0 to 10 days and the price database shows each item class's shelf prices moving
+in 6 to 21 per cent of months, so the re-collected price is the price on the re-collection day, and a literal reader
+cannot take it for the price at recording without allowing for the chance it moved; every allowance the records
+license names CACCSCACCACACC and $1,775 (SF2, SF9, SF11 converge), while the raw agreement executes a different quantity
+and is not compliant with 3.1 read literally.
 
 ## Oracles
 
-- The follow-up's own cases (resolved nonrespondents against their allocations, by district and band): under every
-  scale they are what the departure is measured on; they reject the points gap and the ratio only for a solver who
-  fits them by allocation and asks on what scale they agree, which is the decisive insight. They are the field's
-  bench, not a figure that ties only under the golden.
-- The 2025 release tables (a distractor) give 2025 rates on the 2025 map; they flag nothing and tie with nothing in
-  2026.
-- No published shift, flag, odds ratio or control total ships; no artifact ranks or flags the statistics.
+None ties only under the golden. The contractor's quarterly return reports activity counts and no accuracy; the two
+distractors carry no accuracy; the capital's same-day back-checks agree with both routes because their delays are near
+zero; no published or earlier assessment ships.
 
 ## Ask sheet
 
-Two asks, 36 figures, decoupled from the call: the call reads the frame's allocation columns, the leaver count and
-the follow-up; the asks read the returned forms' activity codes and the attainment bands, columns the call never
-reads.
+The asks sit on the contractor's schedule and visit log and on the commodity team's decisions log, quantities the main
+call's files cannot compute (no schedule or decision in them). Ask 1: by region, timeliness (PCQS 5.2) and missed visits
+(28 figures). Ask 2: by region, replacement acceptance (PCQS 6.1, 14 figures). H18 home: measures every region carries
+in the quarterly assessment (PCQS section 7) that the accuracy call does not turn on.
 
-**Main population (zero device rows, asserted):** the 2026 frame's school codes, nonrespondent rows and their
-allocation columns; the 2025 final file's nonrespondent rows and allocations for followed-up districts; the
-follow-up's resolved cases and the crosswalk. Devices live in the returned forms' `activity_code` and `form_build`
-and in `attainment_band`, which the call does not read (asserted: every flag unchanged when every activity code and
-band is scrambled).
+- Pair ceiling: 32.4 (cracker 46.3 on the call with 1 of 42 ask figures, mirror 18.4 with 1 of 42).
+- Mirror leakage: 2.4 per cent of the ask weight (nothing in the asks comes from the call).
+- Measured by: generator/ceiling.py on the cut pack.
 
-| Ask | Figures | H18 home | Primary device (family) | Hazards | Path (files, columns) | Stops |
-|---|---|---|---|---|---|---|
-| A: each district's headline NEET rate and HE entry rate | 24 | a component of the call: the figure each flag attaches to | D3, meaning set per form build: online returns made before the 2026 edition went live (build 7) carry the 2025 edition's codes, whose order the 2026 edition shifted when it inserted "higher education outside the island" as code 2; the reference list holds the 2026 edition. Read with it, early further-education returns become higher education and early unemployed returns become employment. The 2025 order is recoverable from the 2025 final file, whose build-7 returns carry their processed destinations | the two schools that moved district (main-path mess, neutral there) | 2026 frame (school_code, return_form, form_build, activity_code, the five allocation columns), activity code list, school register, 2025 frame (activity_code, form_build, destination) | natural read with the 2026 list (every rate off by 0.09 to 1.37 points); the old order applied to every online return; the answer |
-| B: for each attainment band across the island, the number of leavers and the headline NEET and HE entry rates | 12 | a component of the release: the band table published beside the district flags | D2, a label stored before a silent switch: the frame's attainment band came with the schools' September leaver returns, before the October appeals raised about one leaver in twenty-five into a higher band; the release bands on the examination points as finalised, which the points file carries | ask A's form-build device (every band rate moves with it) | 2026 frame (attainment_band, activity_code, form_build, allocations), examination points file, methodology s.5 band cut-offs | frame bands (counts and rates off in every band); final bands with the 2026 code list (rates off); the answer |
+| Ask | Primary device | Hazards | Cracker's handling | Cracker |
+|---|---|---|---|---|
+| Ask 1 timeliness | Lifeline Chemists' branches sold to CareMed Pharmacy on 1 August: the schedule agreed on 26 June lists the Lifeline outlet numbers for August and September, the visit log records the visits under CareMed's new numbers, and the link is the shared address in the register or the quote numbers that continue at the new outlet code in the price database (one branch per region, every figure moves 1.5 to 6.1 points) | the August window runs to 18 August (17 August a holiday); a supermarket collected over two days with the second row after the window; the +12:00 stamps read in UTC | the schedule against the visit log by outlet number with the holiday-aware window and every visit row | miss |
+| Ask 1 missed visits | the same sale: each sold branch's August and September schedule rows find no visit under the old number (every figure moves by two) | the same | the same | miss |
+| Ask 2 replacement acceptance | the decisions log keys a decision by quote only, and one quote per region was replaced twice in the quarter with opposite decisions, so a decision belongs to the latest replacement of its quote visited before it was decided (13 regions move when decisions are read per quote) | queries to the contractor ahead of a decision; senior re-checks dated after a first decision; September replacements decided in October; June replacements decided in July | the quarter's replacement rows in the price database with the latest decision per quote | miss |
 
-- **Span:** nine files and 16 column uses across the two asks; no shared primary.
-- **Shared hazard:** the form-build device moves every figure in both asks; the band device moves ask B only.
-- **Realism:** a web form whose new edition went live a day into fieldwork while the processing reference table
-  holds only the current edition, and a leaver return whose bands were filled before appeals, are both records a
-  survey unit's systems make with no task in mind.
-- **Referee:** none; nothing ties only under the golden (the allocations come from the previous year's respondents,
-  so the 2026 forms cannot be checked against them).
-
-| Ask figure | Where the cracker's path goes | Mirror (stops at rung 1) | Cracker (lands the call, runs the battery) |
-|---|---|---|---|
-| A NEET rate (12) | maps every online code with the activity code list it is given, which is the 2026 edition | misses the same way | miss |
-| A HE entry rate (12) | the same mapping turns early further-education returns into higher education | misses the same way | miss |
-| B leavers per band (4) | counts the frame's attainment band | misses the same way | miss |
-| B NEET and HE rate per band (8) | the frame's band and the 2026 code list; a solver who rebands on the final points still carries the code device | misses the same way | miss |
-
-- **Cracker keeps:** about 0.11 of the ask weight at most (a cracker that rebands on final points keeps the four band
-  counts; no single habit keeps a rate).
-- Mirror leakage: 11 per cent of ask weight (the mirror's ask path is the cracker's; the asks do not touch the
-  call's construction).
-- Pair ceiling: 34.6 (the cracker keeps the four band counts, 4 of 36 figures, about 0.11 of the ask weight: C = 38 + 7 + 55 x 0.11 = 51.1; the mirror's ask path is the cracker's: S = 5 + 7 + 55 x 0.11 = 18.1; mean 34.6; 28.5 when no figure is kept).
+The full includer (the sale followed, each decision dated to its replacement) keeps 42 of 42 (stress row). Zero device
+rows sit in the main call's population: no back-check at a sold branch or its successor, at an outlet carrying a
+repeated replacement, or at a split, late or missed visit (S1 to S3).
 
 ## Pre-ship check
 
-1. Domain: the call stands on each statistic's shift under a missing-not-at-random departure calibrated on a
-   gold-standard nonresponse follow-up and carried nonrespondent by nonrespondent on the logit scale (the
-   missing-data task type's pattern-mixture delta); with the follow-up's points gap in its place 11 flags change,
-   with the allocation's own shift 9: the method, not the education nouns, decides.
-2. Two layers: Layer 1 (the paper and online code lists, the crosswalk's reference form, route duplicates, late
-   returners in the follow-up sample, the 2026 map) is neutral on the call, each item asserted (R2); Layer 2 is the
-   scale of transport, asserted alone to move the default to the golden (R3b).
-3. No banned stump decides: nothing is planted (R3c); not semantics (every activity code and band scrambled leaves
-   every flag, asserted); not rule application (QS-4 files no scale; the default path executes every filed rule and
-   files 11 wrong flags, asserted on the clean truth, R3a).
-4. Gate G: no shipped artifact ranks or flags the statistics; the 2025 release table (a distractor) holds 2025 rates
-   on the 2025 map.
-5. Determinism: the follow-up rejects the pooled and per-band points gaps and ratios (asserted at 8 log-likelihood
-   units or more); every model that fits it gives the golden grid with every shift at least 0.29 points from a band
-   edge; graded rates sit at least 0.02 from a rounding edge, the odds ratios and slopes mid-bin at two decimals.
-6. Asks: A (24 figures) and B (12) are moved by the form-build device in every figure and B by the band device too;
-   the call reads neither column (asserted).
-7. Input gates: 15 files in four formats, the 2026 frame at 47,734 rows, three distractors named in metadata.json;
-   two builds byte-identical; figures_check 57 of 57.
+Stage 3 gates on the final cut are recorded in `pipeline.json`. The three rules re-read against the built pack: the
+deciding quantity is still each region's accuracy net of genuine change; the mess is Layer 1 only and every item is
+asserted neutral (R2); the decisive step reads the visit log and the price database against the register (R1).
 
-## Leak check
+## Architecture 2 record
 
-Architecture 1: leak.py REVIEW, no LEAK (--asof 2026-11-10); reader pass 1: Q1 to Q4 none, Q6 analytical, all seven
-REVIEW lines harmless; realism notes fixed in the generator (careers counts, the field report's late-form sentence,
-school names, QS-4's history line and the "own allocation" phrase). Architecture 2 (2026-10-16, after the furniture
-redraw): leak.py REVIEW, no LEAK; reader on a fresh cut: Q1 to Q4 none, Q5 the headline rate (the golden's
-definition), Q6 an analytical choice, all nine REVIEW lines harmless; realism notes fixed in the generator (the
-methodology dated after the allocation run, its reason for the previous year's shares, the field report's
-"most affluent" phrase) and QS-4 s.6 now says the follow-up stands for every district (scope only, no scale).
+Architecture 2 (2026-10-16, shipped 2026-10-16, no portal result): a university social survey unit's quality flags on
+an island state's school-leaver destinations release under QS-4 v2.0, each district's NEET and higher-education entry
+rates flagged on their shift under a missing-not-at-random departure measured by a 2025 nonresponse follow-up across
+the island's range and carried nonrespondent by nonrespondent on the odds scale; the default carried the pooled points
+gap and filed 11 of 24 flags wrong. Re-rooted 2026-11-01 at the Batch 3 queue reset; reports kept as
+`determinism_check_report_arch2.md` and `leak_check_report_arch2.md`.
+
+## Architecture 1 record
+
+Architecture 1 (2026-10-16): the same world with the follow-up in the five middle and deprived districts; judge
+SEND_BACK (underspecified_objective), report `determinism_check_report_arch1.md`.
 
 ## Tried and rejected
 
@@ -378,3 +268,32 @@ methodology dated after the allocation run, its reason for the previous year's s
 - Released rates and the follow-up's odds ratios and gaps on a rounding edge (stage 3, 2026-10-16): one or two
   recorded destinations changed between a graded and an ungraded destination (the generator's mid-bin step),
   leaving every shift and flag where it was.
+- Architecture 2, the school-leaver destinations world (shipped 2026-10-16, no portal result): re-rooted 2026-11-01 at
+  the Batch 3 queue reset; one architecture per world, so the survey world is closed.
+- 2026-11-01 draw, candidate: a seismic network's catalogue completeness under station outages (Physical &
+  Environmental Sciences): the DQ task types there are exceedance and sensor calibration, neither a catalogue's
+  detection threshold, and the completeness estimators (maximum curvature, goodness of fit, entire-range) spread 0.2
+  to 0.4 magnitude units on the graded figure.
+- 2026-11-01 draw, candidate: a land-cover map's accuracy with the reference sample stratified on the previous edition:
+  the sampling design document names the strata, so the design-based estimator is a reflex once read, and Gate H reads
+  analyse-as-designed as rule application.
+- 2026-11-01 draw, candidate: a survey's response rate with the unresolved addresses' eligibility to estimate:
+  proportional allocation, survival extrapolation and covariate models each defensible (Gate C), and a second source
+  listing occupancy turns the estimate into a join (task445 v2).
+- 2026-11-01 draw, candidate: blood-pressure digit preference under a mix of 2 mmHg and 1 mmHg devices: the device's
+  scale resolution is a reading of a unit (data semantics) and the swap reads the same for any instrument.
+- 2026-11-01 draw, candidate: a retailer's inventory record accuracy against cycle counts taken during trading: the
+  same mechanism as the chosen draw in a house domain whose deciding quantity is less native than a price's frequency
+  of change.
+- 2026-11-01 draw, candidate: calibration intervals under a renew-if-failed policy: the age that drives drift restarts
+  only at some recorded events, the abstraction of task132's approved replacement that restarts the wear curve.
+- 2026-11-01 prototype: far-region delays of seven to nine days at monthly change frequencies near 0.3 put the far
+  regions' agreement at 89 to 94 per cent, the pack's largest anomaly, and the golden's sampling noise past a point;
+  delays cut to four to six days and frequencies to realistic CPI levels (6 to 21 per cent a month).
+- 2026-11-01 prototype: index-day delays a knife-edge from the golden (Westholm 98.02 under a 98.0 edge) with bands at
+  98.0 and 96.5; the corrective band widened to 96.0 and visits front-loaded so every licensed netting names the same
+  set with 0.41 points to spare.
+- 2026-11-01 build: a form keyed twice in the back-check register (a copied block a reader can take for a plant) cut;
+  the price database's re-sent uploads, which differ in their load batch, kept and asserted neutral.
+- 2026-11-01 build: two regions with identical back-check counts (a realism tell) cleared by the FQT sample draw's
+  candidate count (23), every outcome and margin unchanged or wider.

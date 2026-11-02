@@ -109,13 +109,13 @@
  },
  "largest_file": {
   "name": "cae_marking_export_2026.csv",
-  "rows": 26040
+  "rows": 26027
  },
  "row_counts": {
-  "ar_invoices_2026.csv": 59,
+  "ar_invoices_2026.csv": 60,
   "cae_candidates_may2026.xlsx": 836,
   "cae_entries_nov2026.csv": 1438,
-  "cae_marking_export_2026.csv": 26040,
+  "cae_marking_export_2026.csv": 26027,
   "cae_results_history_2019_2026.csv": 14,
   "centre_directory.csv": 8,
   "corporate_accounts.csv": 10,

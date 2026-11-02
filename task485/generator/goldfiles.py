@@ -125,8 +125,9 @@ def workbook(path, pk, g, gq, mem):
                 cell.number_format = "#,##0"
     for i, wd in enumerate([16, 15, 15, 13, 12, 18, 22, 15], 1):
         s2.column_dimensions[get_column_letter(i)].width = wd
-    s2.cell(row=10, column=1, value="Channel is the dispensing pharmacy's network on the date of service; the three "
-            "hospital outpatient pharmacies that joined the specialty network on 1 March 2026 are retail before it.")
+    s2.cell(row=10, column=1, value="Channel is the dispensing pharmacy's network on the date of service. The three "
+            "hospital outpatient pharmacies the October 2026 network file lists as specialty billed on retail terms "
+            "until 1 May 2026 and are retail before that date.")
     s2.cell(row=10, column=1).font = Font(italic=True, size=9)
 
     s3 = wb.create_sheet("Members")
@@ -255,8 +256,8 @@ def slides(path, pk, g):
         pt.format.fill.fore_color.rgb = RGBColor(0x2E, 0x7D, 0x32) if i == 0 else RGBColor(0xA6, 0xA6, 0xA6)
     note = s2.shapes.add_textbox(Inches(9.3), Inches(4.8), Inches(3.6), Inches(2.0)).text_frame
     note.word_wrap = True
-    note.text = "Green: preferred for 2027. Net cost is the ingredient cost the Plan paid less the manufacturer's " \
-                "rebates on those claims, per 30-day supply, fiscal 2026."
+    note.text = "Green: preferred for 2027. Net cost is the ingredient cost paid on the product's fiscal 2026 " \
+                "claims, before member cost sharing, less its manufacturer's rebates on those claims, per 30-day supply."
     note.paragraphs[0].runs[0].font.size = Pt(10)
     prs.save(path)
 

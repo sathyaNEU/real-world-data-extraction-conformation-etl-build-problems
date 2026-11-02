@@ -9,14 +9,14 @@
 
 ## 2. Critical Components
 
-1. The Field Quality Team re-collected **6,310** prices it found on the shelf; the share whose re-collected price differs from the collector's runs from **1.1 per cent** in Halbrook Central to **7.1 per cent** in Belmont Valley.
+1. The Field Quality Team re-collected **6,260** prices it found on the shelf; the share whose re-collected price differs from the collector's runs from **1.1 per cent** in Halbrook Central to **7.1 per cent** in Belmont Valley.
 2. Net of the chance that each item's shelf price changed between the visit and its re-collection, Belmont Valley's collection accuracy is **95 per cent** and Halbrook North, Tamsin Bay, Fenwick and Westholm each sit at **97 per cent**.
 3. The service credit is 4 per cent of Belmont Valley's quarterly collection fee of $44,380: **$1,775**.
 
 ## 3. Step-by-Step Solution
 
 1. Read pcqs_price_collection_quality_standard_v3.pdf: accuracy is the share of recorded prices that were the shelf price when the collector recorded it (3.1), estimated from the back-checks (3.2) and set against 98.0 and 96.0 per cent without rounding (3.3, section 4).
-2. Took the back-checked prices the officer found from the three monthly sheets of fqt_backcheck_register_2026q3.xlsx (6,310 prices) and compared each collector price with the FQT price.
+2. Took the back-checked prices the officer found from the three monthly sheets of fqt_backcheck_register_2026q3.xlsx (6,260 prices) and compared each collector price with the FQT price.
 3. Dated each collector's visit from tallis_visit_log_2026-07_2026-09.csv (the local date of started), joined through cpi_outlet_register_2026-10.xlsx (outlet code to contractor outlet no.), and took each back-check's delay in calendar days to its Re-collected on date.
 4. From cpi_field_quotes_2025-10_2026-09.csv, one row per quote and month with statuses read through handheld_status_codes.csv, took each COICOP class's monthly frequency of price change at multiples and at independents (outlet type in the register) over consecutive months priced on the same variety.
 5. Gave each back-check its chance of no shelf-price change, (1 minus that frequency) to the power delay/30.4, and estimated each region's accuracy as its agreeing back-checks over the sum of those chances.

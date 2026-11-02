@@ -22,30 +22,30 @@ import common as K
 # code, name, class, area (ha), designed season angler-hours per hectare, route position (Vellacott lake number),
 # elevation (m), access, campground, launch, main-access share of parties, Vellacott's own lake name spelling
 LAKES = [
-    ("PP-03", "Tessaly Lake", "general", 31.4, 820, 4, 1185, "paved", "yes", "concrete ramp", 0.71),
-    ("PP-07", "Kesterway Lake", "general", 46.2, 760, 9, 1240, "gravel", "yes", "concrete ramp", 0.66),
-    ("PP-11", "Brackwater Lake", "general", 27.9, 700, 7, 1150, "paved", "yes", "concrete ramp", 0.74),
-    ("PP-14", "Galloran Lake", "general", 18.6, 392, 10, 1210, "gravel", "yes", "gravel ramp", 0.69),
-    ("PP-18", "Nockell Lake", "general", 35.8, 388, 12, 1265, "gravel", "yes", "gravel ramp", 0.63),
-    ("PP-22", "Ostrum Lake", "general", 22.4, 395, 13, 1195, "paved", "yes", "concrete ramp", 0.72),
-    ("PP-24", "Farrowdale Lake", "general", 40.7, 370, 11, 1230, "gravel", "yes", "gravel ramp", 0.61),
-    ("PP-27", "Pillory Lake", "general", 26.3, 228, 18, 1290, "gravel", "no", "gravel ramp", 0.58),
-    ("PP-31", "Saddlebank Lake", "general", 33.1, 215, 21, 1320, "4x4", "no", "car-top", 0.55),
-    ("PP-33", "Copperjack Lake", "general", 19.8, 255, 15, 1275, "gravel", "yes", "gravel ramp", 0.64),
-    ("PP-05", "Ellerdine Lake", "fly", 24.9, 665, 5, 1305, "gravel", "yes", "gravel ramp", 0.68),
-    ("PP-09", "Quorrin Lake", "fly", 29.6, 750, 6, 1340, "gravel", "yes", "gravel ramp", 0.66),
-    ("PP-16", "Ravensky Lake", "fly", 17.3, 690, 16, 1380, "4x4", "no", "car-top", 0.62),
-    ("PP-20", "Inverkeld Lake", "fly", 21.8, 735, 19, 1355, "gravel", "yes", "gravel ramp", 0.70),
-    ("PP-26", "Kittiwake Lake", "fly", 15.6, 1150, 2, 1295, "paved", "yes", "concrete ramp", 0.75),
-    ("PP-29", "Mosswater Lake", "fly", 30.9, 205, 22, 1410, "4x4", "no", "car-top", 0.57),
-    ("PP-35", "Driftpine Lake", "fly", 23.7, 235, 24, 1425, "walk-in", "no", "none", 0.60),
-    ("PP-37", "Merganser Lake", "fly", 12.4, 165, 23, 1395, "walk-in", "no", "none", 0.62),
-    ("PP-02", "Corriemore Lake", "quality", 19.2, 720, 3, 1260, "gravel", "yes", "gravel ramp", 0.70),
-    ("PP-12", "Pinewhistle Lake", "quality", 22.0, 790, 8, 1285, "gravel", "yes", "gravel ramp", 0.67),
-    ("PP-19", "Kelloran Lake", "quality", 25.3, 330, 14, 1310, "gravel", "no", "gravel ramp", 0.60),
-    ("PP-28", "Bufflehead Lake", "quality", 41.6, 300, 17, 1345, "gravel", "yes", "gravel ramp", 0.59),
-    ("PP-30", "Canvasback Lake", "quality", 21.4, 345, 20, 1330, "4x4", "no", "car-top", 0.61),
-    ("PP-34", "Thornhollow Lake", "quality", 37.5, 260, 1, 1220, "paved", "yes", "concrete ramp", 0.68),
+    ("PP-03", "Tessaly Lake", "general", 31.4, 820, 4, 1185, "paved", "yes", "concrete ramp", 0.46),
+    ("PP-07", "Kesterway Lake", "general", 46.2, 760, 9, 1240, "gravel", "yes", "concrete ramp", 0.42),
+    ("PP-11", "Brackwater Lake", "general", 27.9, 700, 7, 1150, "paved", "yes", "concrete ramp", 0.50),
+    ("PP-14", "Galloran Lake", "general", 18.6, 400, 10, 1210, "gravel", "yes", "gravel ramp", 0.92),
+    ("PP-18", "Nockell Lake", "general", 35.8, 404, 12, 1265, "gravel", "yes", "gravel ramp", 0.90),
+    ("PP-22", "Ostrum Lake", "general", 22.4, 242, 13, 1195, "paved", "yes", "concrete ramp", 0.88),
+    ("PP-24", "Farrowdale Lake", "general", 51.2, 331, 11, 1230, "gravel", "yes", "gravel ramp", 0.86),
+    ("PP-27", "Pillory Lake", "general", 26.3, 205, 18, 1290, "gravel", "no", "gravel ramp", 0.90),
+    ("PP-31", "Saddlebank Lake", "general", 33.1, 206, 21, 1320, "4x4", "no", "car-top", 0.93),
+    ("PP-33", "Copperjack Lake", "general", 19.8, 227, 15, 1275, "gravel", "yes", "gravel ramp", 0.90),
+    ("PP-05", "Ellerdine Lake", "fly", 24.9, 595, 5, 1305, "gravel", "yes", "gravel ramp", 0.45),
+    ("PP-09", "Quorrin Lake", "fly", 29.6, 678, 6, 1340, "gravel", "yes", "gravel ramp", 0.40),
+    ("PP-16", "Ravensky Lake", "fly", 17.3, 818, 16, 1380, "4x4", "no", "car-top", 0.47),
+    ("PP-20", "Inverkeld Lake", "fly", 21.8, 800, 19, 1355, "gravel", "yes", "gravel ramp", 0.44),
+    ("PP-26", "Kittiwake Lake", "fly", 15.6, 1150, 2, 1295, "paved", "yes", "concrete ramp", 0.38),
+    ("PP-29", "Mosswater Lake", "fly", 30.9, 205, 22, 1410, "4x4", "no", "car-top", 0.92),
+    ("PP-35", "Driftpine Lake", "fly", 23.7, 235, 24, 1425, "walk-in", "no", "none", 0.95),
+    ("PP-37", "Merganser Lake", "fly", 12.4, 165, 23, 1395, "walk-in", "no", "none", 0.95),
+    ("PP-02", "Corriemore Lake", "quality", 19.2, 760, 3, 1260, "gravel", "yes", "gravel ramp", 0.55),
+    ("PP-12", "Pinewhistle Lake", "quality", 22.0, 790, 8, 1285, "gravel", "yes", "gravel ramp", 0.50),
+    ("PP-19", "Kelloran Lake", "quality", 25.3, 278, 14, 1310, "gravel", "no", "gravel ramp", 0.90),
+    ("PP-28", "Bufflehead Lake", "quality", 54.8, 300, 17, 1345, "gravel", "yes", "gravel ramp", 0.88),
+    ("PP-30", "Canvasback Lake", "quality", 21.4, 290, 20, 1330, "4x4", "no", "car-top", 0.91),
+    ("PP-34", "Thornhollow Lake", "quality", 47.9, 260, 1, 1220, "paved", "yes", "concrete ramp", 0.90),
 ]
 REG_TEXT = {"general": "General", "fly": "Fly fishing only", "quality": "Electric motor only; single barbless hook"}
 
@@ -113,13 +113,14 @@ def party_hours_mean(cls):
 
 
 def simulate_trips():
-    """every party on every lake on every season day"""
+    """every party on every lake on every season day; each day's party count and each party's attributes come from
+    their own streams, so a lake's level can be set without reshuffling the parties already drawn"""
+    from scipy.stats import poisson
     W = weather()
     J = lake_jitter()
     mph = {c: party_hours_mean(c) for c in PROFILE}
     trips = {}
     for code, name, cls, area, target, pos, elev, access, *_ in LAKES:
-        g = K.rng_for("trips", code)
         dmult = 1.55 if access == "walk-in" else 1.0
         dayw = np.array([DAYTYPE_F[K.day_type(d)] * MONTH_F[d.month] * W[d] for d in K.SEASON_DAYS])
         base = target * area / (dayw.sum() * mph[cls] * (1.42 if access == "walk-in" else 1.0))
@@ -130,37 +131,36 @@ def simulate_trips():
         wts[-1] -= dw
         wts = np.clip(wts, 0.02, None)
         wts /= wts.sum()
+        cw = np.cumsum(wts)
+        mu, cap = BOAT_SIZE[cls]
         rows = []
         for j, d in enumerate(K.SEASON_DAYS):
-            lam = base * dayw[j] * math.exp(g.normal(0, 0.12))
-            n = g.poisson(lam)
+            gd = K.rng_for("day", code, d.isoformat())
+            lam = base * dayw[j] * math.exp(gd.normal(0, 0.12))
+            n = int(poisson.ppf(gd.random(), lam))
             if n == 0:
                 continue
             sr, ss = K.sun_times(d)
-            k = g.choice(len(comps), size=n, p=wts)
-            st = np.empty(n)
-            du = np.empty(n)
-            for idx in range(len(comps)):
-                m = k == idx
-                if not m.any():
-                    continue
-                cen = _centre(comps[idx][0], sr, ss) + shift
-                st[m] = g.normal(cen, comps[idx][1], m.sum())
-                du[m] = g.lognormal(math.log(comps[idx][3] * dmult) - 0.06, 0.35, m.sum())
-            st = np.clip(st, K.DAY_OPEN, K.DAY_CLOSE - 0.6)
-            du = np.clip(du, 0.6, 9)
-            en = np.minimum(st + du, K.DAY_CLOSE)
-            shore = g.random(n) < SHORE_SHARE[cls]
-            mu, cap = BOAT_SIZE[cls]
-            size = np.where(shore, g.choice([1, 1, 1, 2, 2, 3], n), np.clip(g.poisson(mu - 1, n) + 1, 1, cap))
-            hrs = (en - st) * size
-            caught = g.poisson(np.maximum(hrs * CPUE[cls] * math.exp(g.normal(0, 0.1)), 0.01))
-            kept = g.binomial(caught, KEEP[cls])
-            clipped = g.binomial(kept, CLIPPED[cls])
-            exit_main = g.random(n)
+            cpue_day = math.exp(gd.normal(0, 0.1))
             for q in range(n):
-                rows.append((d, float(st[q]), float(en[q]), bool(shore[q]), int(size[q]), int(caught[q]),
-                             int(kept[q]), int(clipped[q]), float(exit_main[q]), int(k[q])))
+                g = K.rng_for("party", code, d.isoformat(), q)
+                k = int(np.searchsorted(cw, g.random()))
+                k = min(k, len(comps) - 1)
+                cen = _centre(comps[k][0], sr, ss) + shift
+                st = min(max(g.normal(cen, comps[k][1]), K.DAY_OPEN), K.DAY_CLOSE - 0.6)
+                du = min(max(g.lognormal(math.log(comps[k][3] * dmult) - 0.06, 0.35), 0.6), 9.0)
+                en = min(st + du, K.DAY_CLOSE)
+                shore = bool(g.random() < SHORE_SHARE[cls])
+                if shore:
+                    size = int([1, 1, 1, 2, 2, 3][int(g.integers(0, 6))])
+                else:
+                    size = int(min(max(g.poisson(mu - 1) + 1, 1), cap))
+                hrs = (en - st) * size
+                caught = int(g.poisson(max(hrs * CPUE[cls] * cpue_day, 0.01)))
+                kept = int(g.binomial(caught, KEEP[cls]))
+                clipped = int(g.binomial(kept, CLIPPED[cls]))
+                rows.append((d, float(st), float(en), shore, size, caught, kept, clipped, float(g.random()), k,
+                             float(g.random()), float(g.random())))
         trips[code] = rows
     return trips
 
@@ -229,47 +229,51 @@ def count_lake(rows, d, t):
 
 
 def interview_days():
-    """the clerks' rotation: each clerk on duty works one lake's main access for the day, the lake that has had the
-    fewest interview days so far (weekend days counted apart), never two clerks at one lake"""
+    """the clerks' rotation: the clerks on duty pair up, one on the early shift (06:00 to 14:00) and one on the late
+    shift (14:00 to 22:00), at one lake's main access each pair, the lake that has had the fewest interview days so
+    far (weekend days counted apart), never two pairs at one lake"""
     g = K.rng_for("idays")
     codes = [L[0] for L in LAKES]
-    off = {c: (i * 2) % 7 for i, c in enumerate(K.CLERKS)}     # each clerk's two days off a week, staggered
+    off = {c: (i * 3) % 7 for i, c in enumerate(K.CLERKS)}     # each clerk's two days off a week, staggered
     done = {c: {"weekday": 0, "weekend": 0} for c in codes}
     sched = {}
     for d in K.SEASON_DAYS:
         dtp = K.day_type(d)
+        on = [c for c in K.CLERKS if d.weekday() not in (off[c], (off[c] + 1) % 7)]
+        rot = (d - K.SEASON_START).days % len(on)
+        on = on[rot:] + on[:rot]
         taken = set()
-        for clerk in K.CLERKS:
-            if d.weekday() in (off[clerk], (off[clerk] + 1) % 7):
-                continue
+        for p in range(len(on) // 2):
+            early, late = on[2 * p], on[2 * p + 1]
             free = [c for c in codes if c not in taken]
             least = min(done[c][dtp] for c in free)
             cand = [c for c in free if done[c][dtp] == least]
             pick = cand[int(g.integers(0, len(cand)))]
             taken.add(pick)
             done[pick][dtp] += 1
-            sched[(pick, d)] = clerk
+            sched[(pick, d)] = (early, late)
     return sched
 
 
 def interviews(trips, idays):
     out = []
-    g = K.rng_for("interviews")
     access = {L[0]: L[10] for L in LAKES}
     for code, rows in trips.items():
         dset = {d for (c, d) in idays if c == code}
         for r in rows:
-            d, st, en, shore, size, caught, kept, clipped, u, comp = r
+            d, st, en, shore, size, caught, kept, clipped, u, comp, u_consent, u_spare = r
             if d not in dset:
                 continue
             if u >= access[code]:
                 continue          # left by another access
             if en < 6.0 or en > 22.0:
                 continue
-            if g.random() > 0.92:
+            if u_consent > 0.92:
                 continue          # declined
+            early, late = idays[(code, d)]
             out.append({"lake": code, "date": d, "start": st, "end": en, "shore": shore, "size": size,
-                        "caught": caught, "kept": kept, "clipped": clipped, "clerk": idays[(code, d)]})
+                        "caught": caught, "kept": kept, "clipped": clipped, "clerk": early if en < 14.0 else late,
+                        "u": u_spare})
     return out
 
 

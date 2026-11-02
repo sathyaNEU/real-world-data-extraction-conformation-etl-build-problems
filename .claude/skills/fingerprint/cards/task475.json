@@ -6,12 +6,12 @@
   "domain": "education-learning-sciences",
   "subdomain": "item-response-theory-test-equating",
   "client_domain": "education-learning-sciences",
-  "niche": "a professional institute of building certifiers conforming its November 2026 accreditation examination, where each candidate answers any five of eight written questions, into the results its examination regulations require, every question moved by the whole marks it proved harder or easier than the paper's average question for the sitting's candidates as a whole, before the examination committee approves the pass list",
+  "niche": "the Institute of Building Certification Practitioners, a professional institute of building certifiers, conforming its November 2026 accreditation examination, where each candidate answers any five of eight written questions, into the results its examination regulations require, every question moved by the whole marks it proved harder or easier than the paper's average question for the sitting's candidates as a whole, before the examination committee approves the pass list",
   "objective": "etl",
   "shape": "14",
   "decision_type": "conformed_dataset",
   "answer_unit": "dataset",
-  "answer": "Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +3, Q7 -1, Q8 -3 marks; 393 of the 714 candidates who sat Paper 2 pass (the question means give Q6 +1, Q8 -1 and 417)",
+  "answer": "Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +3, Q7 -1, Q8 -3 marks; 401 of the 714 candidates who sat Paper 2 pass (the question means give Q6 +1, Q8 -1 and 422)",
   "answer_source": "submission.md block 1; generator/figures.json",
   "gap": [
     "population"
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the marking export correctly and applies Regulation 14 the way results meetings read question difficulty, each question's mean mark among the candidates who answered it set against the paper's mean, moves the fire safety question by +1 and the consent conditions question by -1 and files 417 passes of 714; the stronger candidates chose the hard question and the weaker the easy one, so only each question's difficulty read on the same candidates across the questions they chose gives the regulation's moves (+3 and -3) and 393 passes.",
+  "analyst_test": "A strong analyst who conforms the marking export correctly and applies Regulation 14 the way results meetings read question difficulty, each question's mean mark among the candidates who answered it set against the paper's mean, moves the fire safety question by +1 and the consent conditions question by -1 and files 422 passes of 714; the stronger candidates chose the hard question and the weaker the easy one, so only each question's difficulty read on the same candidates across the questions they chose gives the regulation's moves (+3 and -3) and 401 passes.",
   "domain_test": "Assessment practice sets optional questions on one scale by reading each question's difficulty from the answers given to it, and examinee choice is the case where the candidates answering a question are not the cohort, so a question's facility mixes its difficulty with its choosers' standing; with another field's nouns there is no optional question, no choice of five from eight and no mark scale for the adjustment to move.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:optional-question difficulty under self-selected choice",
@@ -62,7 +62,7 @@
     "currency": "AUD",
     "org_type": "professional institute running the accreditation examination for building certifiers",
     "invented_names": [
-      "Institute of Accredited Building Certifiers",
+      "Institute of Building Certification Practitioners",
       "Certifier Accreditation Examination"
     ],
     "people": [
@@ -78,8 +78,8 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "Each unit answers a few of several alternative items it chooses itself, and the items differ in difficulty while the units choosing each differ in standing, so an item's mean outcome mixes its difficulty with its choosers' standing; the difficulty for the whole population is read by comparing the same units across the items they chose, and correcting by the mean outcome leaves the hardest and the easiest items well short of their difficulty.",
-  "driver_concrete": "The November 2026 paper's new fire safety question was chosen mostly by the stronger candidates and the plain consent conditions question by the weaker, so the fire question's mean mark sits mid-pack while its answerers scored 3.3 marks less on it than on their other answers; read on the same candidates across the questions they chose, the fire question is the hardest (+3) and the consent question the easiest (-3), where the means give +1 and -1 and pass 24 more candidates.",
-  "stump": "A competent analyst sets each question's mean mark among those who answered it against the paper's mean, moves the fire safety question by +1 and the consent conditions question by -1, and files 417 passes where regulation 14 gives 393; the step that lands it there is reading a question's mean as its difficulty when the candidates who chose it are not the sitting.",
+  "driver_concrete": "The November 2026 paper's new fire safety question was chosen mostly by the stronger candidates and the plain consent conditions question by the weaker, so the fire question's mean mark sits mid-pack while its answerers scored 3.4 marks less on it than on their other answers; read on the same candidates across the questions they chose, the fire question is the hardest (+3) and the consent question the easiest (-3), where the means give +1 and -1 and pass 21 more candidates.",
+  "stump": "A competent analyst sets each question's mean mark among those who answered it against the paper's mean, moves the fire safety question by +1 and the consent conditions question by -1, and files 422 passes where regulation 14 gives 401; the step that lands it there is reading a question's mean as its difficulty when the candidates who chose it are not the sitting.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [

@@ -53,4 +53,4 @@
 
 ### placements_2025-26.svg
 
-5. One stacked bar for each month from October 2025 to September 2026, split into Fend Spit and Wenning Deep, each month's total in thousand wet tonnes above its bar.
+5. One stacked bar for each month from October 2025 to September 2026 in thousand wet tonnes, split into Fend Spit and Wenning Deep, with December to February shaded as the months Fend Spit is closed.

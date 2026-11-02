@@ -415,7 +415,7 @@ def main(tdir):
     check("realism: every persona is from guard.py names", all(n in json.load(open(os.path.join(os.path.dirname(os.path.dirname(HERE)), ".claude/skills/fingerprint/cards/task134.json")))["world"]["people"] for n in P.PEOPLE.values()))
     check("realism: no document states a date after its own file date",
           "2027" not in notice.replace("2027", "") and "3 February 2026" in notice and "11 January 2027" in basis)
-    check("realism: no em or en dash in any document", not any(ch in notice + licence + basis for ch in ("—", "–")))
+    check("realism: no em or en dash in any document", not any(ch in notice + licence + basis for ch in ("\u2014", "\u2013")))
     for f in files:
         if f.endswith((".xlsx", ".docx")):
             with zipfile.ZipFile(os.path.join(tdir, f)) as z:

@@ -30,7 +30,7 @@ PEOPLE = {
     "creel": "Luis Thomas",         # creel survey coordinator: the protocol, the counts and the interviews
     "hatchery": "Robin Fields",     # hatchery manager: trip sheets, raceway samples, the drop crew
 }
-CLERKS = ["JMK", "SRP", "AWT", "NLB"]   # the 2026 creel clerks' initials as their tablets record them
+CLERKS = ["JMK", "SRP", "AWT", "NLB", "KDG", "TRV", "EBH", "MCL"]   # the 2026 creel clerks' initials as their tablets record them
 OBSERVERS = ["L. Thomas", "D. Okafor"]
 
 # ------------------------------------------------------------------------------------------------- calendar

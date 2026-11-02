@@ -110,14 +110,14 @@ def main():
     for (c, q), v in qm.items():
         totals[c] = totals.get(c, 0) + min(20, max(0, v + moves[q]))
     n_pass = sum(1 for v in totals.values() if v >= 50)
-    ok("main call: sitters and passes", (len(cands), n_pass) == (714, 393), "%d sat, %d pass" % (len(cands), n_pass))
+    ok("main call: sitters and passes", (len(cands), n_pass) == (714, 401), "%d sat, %d pass" % (len(cands), n_pass))
     means = np.zeros(8)
     for q in range(8):
         vs = [v for (c, qq), v in qm.items() if qq == q]
         means[q] = np.mean(vs)
     fac = [int(np.floor(v + 0.5)) for v in (means.mean() - means)]
     fac_pass = sum(1 for c in cands if sum(min(20, max(0, qm[(c, q)] + fac[q])) for q in range(8) if (c, q) in qm) >= 50)
-    ok("ladder: the means rung files Q6 +1, Q8 -1 and 417 passes", fac[5] == 1 and fac[7] == -1 and fac_pass == 417,
+    ok("ladder: the means rung files Q6 +1, Q8 -1 and 422 passes", fac[5] == 1 and fac[7] == -1 and fac_pass == 422,
        "%s %d" % (fac, fac_pass))
 
     # golden CSV read back and compared row by row

@@ -286,7 +286,7 @@ def build_pack(w, out):
                      "papers": r["paper"], "submitted": iso_utc(r["created"]), "detail": r["detail"],
                      "status": r["state"], "actioned_on": r["closed"].isoformat()})
     with open(fp("requests"), "w", encoding="utf-8") as f:
-        json.dump({"export": "candidate-requests", "generated": "2026-11-30T06:05:00Z", "count": len(reqs),
+        json.dump({"export": "candidate-requests", "exported_at": "2026-11-30T06:05:00Z", "count": len(reqs),
                    "requests": reqs}, f, indent=1)
         f.write("\n")
     counts["requests"] = len(reqs)

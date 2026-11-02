@@ -176,11 +176,13 @@ by about a quarter.
 - Not rule application: no filed rule says how infill answers to depth; the basis fixes the window, the depths and the
   measure, and the notice the areas. The enumerated family spans 1,291,401 (the record carried) to 2,321,573 (one line
   of infill per square metre on held depth), with the depth ratio at 1,494,781 and the trapping efficiency at 1,413,699;
-  the standing family (the natural bed from margin cells beyond 0, 25, 50 or 100 m of the maintained width, by mean or
-  median, from either contractor's surveys or both; the certificates on licence or financial years; the re-issue in place
-  of the original or beside it; each part's own coefficient, one coefficient through the origin or by least squares, or
-  the fitted power 0.99) spans 1,736,964 to 1,767,770, inside one 50,000 bin; what rules the rest out is the data: each
-  part's yearly infill per square metre is proportional to its depth below the natural bed (0.110 to 0.118 a year per
+  the standing family of 48 members (the natural bed from margin cells beyond 0, 25, 50 or 100 m of the maintained width
+  out to 300 m, by mean or median, from either contractor's surveys or both; an outer edge of 150, 200 or 250 m; one side
+  of the channel; the latest, the first, the April or the October surveys, the last or first two years; the mean of
+  per-survey means; chainage segments of 0.25 or 0.5 km; each part's own coefficient, one coefficient through the origin
+  or by least squares, or the fitted power 0.98) spans 1,736,964 to 1,768,633, inside one 50,000 bin, and the financial
+  years and the re-issue summed beside the original each file the call alone; what rules the rest out is the data: each
+  part's yearly infill per square metre is proportional to its depth below the natural bed (0.1095 to 0.1183 a year per
   metre), which neither the depth ratio nor a trapping efficiency reproduces, and Berth 2 has relaxed toward its natural
   bed at the same coefficient since 2019.
 - Analyst test: a strong analyst who reads the surveys, the certificates, the notice and the planning basis correctly
@@ -224,7 +226,7 @@ by about a quarter.
 | SF6 | the record's measure | the certificates' in-situ volume | dry solids over a density: not the basis's measure | the basis |
 | SF7 | the re-issued October 2024 certificate | the re-issue replaces the original | both summed: same call | asserted |
 | SF8 | the 2021 area codes | the crosswalk sheet | the codes' own order: the same mapping | asserted |
-| SF9 | the natural bed beside a part | margin cells 50 to 300 m beyond the maintained width, mean | 0, 25 or 100 m, median: same call | asserted (every band and statistic) |
+| SF9 | the natural bed beside a part | margin cells 50 to 300 m beyond the maintained width, mean | 0, 25 or 100 m, median, an outer edge of 150 to 250 m, one side, a subset of the surveys, per-survey means, chainage segments: same call | asserted (every band and statistic); a band from the edge to 100 or 200 m keeps the batter, the cut's own slope in the surveys, and files 1,800,000 (asserted as a mishandling) |
 | SF10 | the second contractor's datum | elevations converted, chart datum 2.90 m below ODN | the first contractor's surveys alone, or the second's alone: same call | the notice; asserted |
 | SF11 | the infill coefficient | each part's own | one coefficient through the origin or by least squares, the fitted power: same call | asserted |
 | SF12 | the depth held now | 12.3 m, the notice | the surveys' in-channel mean: same call | asserted |
@@ -252,10 +254,10 @@ by about a quarter.
 
 The nearest wrong total is R1, 14.6 per cent under the golden; every rung misses every deepened part's bin. Pricing on
 the clean truth: the residue the WHAT leaves is how infill answers to a deeper hold, a method, not a knob; the decisive
-step is worth 255,845 against R1 (5.1 bins of 50,000), while the standing family spans 30,806 (0.6 of a bin) and the
+step is worth 255,845 against R1 (5.1 bins of 50,000), while the standing family spans 31,669 (0.6 of a bin) and the
 record's own sampling (ten licence years, storminess sd 3 per cent) moves the total about 1 per cent; the one-group-by
 route (average by area, times 14.3 over 12.3) is R1; no shipped column proxies the depth below the natural bed (the
-coefficient per part ranges 0.110 to 0.118 against depths below the natural bed of 4.0 to 7.6 m); the answer is
+coefficient per part ranges 0.1095 to 0.1183 against depths below the natural bed of 4.0 to 7.6 m); the answer is
 bracketed (R0 to R2 under, R3 over).
 
 ## Closure table
@@ -294,8 +296,11 @@ does not answer the clause as written; the depth ratio and the trapping efficien
 estimand that the record refutes, since the parts' yearly infill per square metre is proportional to each part's depth
 below the natural bed beside it and Berth 2 has relaxed toward its natural bed at the same coefficient. No filed
 sentence names a method, and every licensed reading of the conventions (SF5 to SF12) files 1,750,000 and the same six
-components, the tightest component 3,550 m3 inside its bin and the total 17,230 inside its edge. The ask readings are
-closed by the licence (SF15 to SF21) and the lab's units (SF22).
+components, the tightest component 3,499 m3 inside its bin and the total 6,367 inside its edge. One construction is not a
+reading: a band that starts at the channel edge and stops at 100 or 200 m keeps the batter, the cut's own slope, which the
+surveys show 1.6 to 5.0 m deeper than the bed beyond over the first 20 m outside each width, and files 1,800,000 (both
+asserted as a mishandling); the natural bed is the bed the dredging has not cut. The ask readings are closed by the
+licence (SF15 to SF21) and the lab's units (SF22).
 
 ## Oracles
 
@@ -341,6 +346,20 @@ closed by the licence (SF15 to SF21) and the lab's units (SF22).
 |---|---|---|---|---|
 | A placements by site and quarter (8) | the log's route column, every filed rule applied | A1 dump positions, A2 the revision's key | 0 of 8 | miss |
 | B metal means by area (20) | the station plan's areas, duplicates dropped, units converted | B1 sampled positions, B2 duplicates by position and time | 4 of 20 | miss |
+
+## Leak review
+
+`leak.py --asof 2027-01-18` on the final cut: REVIEW, no LEAK (the licence's file name carried a version suffix and was
+renamed to the licensing authority's own reference form, marine_licence_L2021-00317-2.pdf). Each REVIEW line:
+- Sweep 3, the basis carries four of the call's five words (year, maintenance, contract, situ): it is the document that
+  defines the year 1 quantity of the maintenance contract in situ, and it states no quantity; harmless.
+- Sweep 4, the basis (notice, certificates, quantity, depths), the licence (notice, dredged, quantity) and the notice
+  (notice, depths, surveys): the words of the world, not the move; none of the three names a natural bed, a depth below
+  it, a relaxation or an uplift (read in full after the rebuild); harmless.
+- Sweep 6, the certificates, the notice and the sampling workbook name the parts beside numbers: past monthly volumes,
+  today's widths and depths, and each area's dry-solids fraction by campaign; none ranks the parts on the year 1
+  quantity, and the certificates are the raw record the field's method reads (R1); harmless.
+- The present depth 12.3 m and the conversion 2.90 m are filed inputs the notice states, listed under stated_inputs.
 
 ## Architecture 3 record
 
@@ -814,4 +833,4 @@ The stage 4 judge returned DETERMINISTIC and APPROVE, with every figure reproduc
 - Architecture 4 build, a search over the ask layers' sub-seeds for every figure clear of its rounding edge (40 tries) found none (a joint chance near one in a hundred thousand); replaced by re-reading one ordinary measurement per near-edge figure, a load's dry solids or a sample's value by one reporting step.
 - Architecture 4 build, the quarter-boundary clock hazard measured nil on the first cut (no dump fell in the last UTC hour of a quarter end); loads working through midnight at the quarter ends were added, as a round-the-clock dredger works.
 - Architecture 4 build, three relocated stations left the Outer Channel's four means to the cracker; a fourth (OC-05 into Fend Roads) and a field-duplicate spread of 8 per cent took the cracker from 6 to 4 of 20.
-- Architecture 4 build, the first infill coefficients put Fend Roads, Middle Reach and the basin within 3,000 m3 of their bin edges under the slope-band and least-squares variants; the coefficients were moved inside 0.110 to 0.118 so every standing member sits inside every bin.
+- Architecture 4 build, the first infill coefficients put Fend Roads, Middle Reach and the basin within 3,000 m3 of their bin edges under the slope-band and least-squares variants; the coefficients were moved to 0.1095 to 0.1183 so every standing member sits inside every bin.

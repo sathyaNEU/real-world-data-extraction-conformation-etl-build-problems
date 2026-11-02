@@ -12,7 +12,7 @@ PAPER2 = "Paper 2: Building Assessment and Certification Practice"
 # seeds: one stream per sitting and one for the operating records
 SEED_PEOPLE = 475_001
 SEED_MAY = 475_249
-SEED_NOV = 477_238
+SEED_NOV = 477_368
 SEED_OPS = 476_065
 
 ASOF = D(2026, 12, 1)

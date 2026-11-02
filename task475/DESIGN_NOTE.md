@@ -56,9 +56,9 @@ reset; architecture 1 is summarised under `## Architecture 1 record` and its wor
 11. **Abstraction test** against the nearest drivers (task479 v4 at 0.05: a unit's level from its answers through a
     known response model; task186 v2 at 0.04: a person's hit rate on items drawn again and again): both estimate a
     person; this build estimates the items, and the step is that the persons answering each item selected it.
-12. **Data-native sentence:** the November paper's new fire safety question was answered by 325 candidates who
-    averaged 13.5 on their other answers and 10.1 on it, and the plain consent conditions question by 499 who averaged
-    9.0 elsewhere and 12.1 on it; the export holds every candidate's part marks on the five questions each chose, so
+12. **Data-native sentence:** the November paper's new fire safety question was answered by 321 candidates who
+    averaged 13.5 on their other answers and 10.1 on it, and the plain consent conditions question by 481 who averaged
+    8.9 elsewhere and 12.1 on it; the export holds every candidate's part marks on the five questions each chose, so
     the same candidates can be read across questions, while each question's mean mixes its difficulty with who chose
     it.
 
@@ -66,10 +66,10 @@ reset; architecture 1 is summarised under `## Architecture 1 record` and its wor
 
 - Actor: the deciding property is each question's difficulty for the whole sitting, and no file has a column for it: the export carries part marks by candidate and item, the minutes carry only May's approved moves, and the property exists only as a relation between the same candidate's marks on different questions.
 - Link: the signal is read through a comparison the field's question statistics never ask for: each candidate's mark on a question set against the same candidate's marks on the other questions they chose; the question means read one column at a time, and nothing in the regulations or the question paper invites a comparison across a candidate's answers.
-- Reflex: the field's question-level statistic (each question's mean mark among those who answered it, set against the paper mean) sits at rung 1 and files Q6 +1, Q8 -1 and 417 of 714 passing.
+- Reflex: the field's question-level statistic (each question's mean mark among those who answered it, set against the paper mean) sits at rung 1 and files Q6 +1, Q8 -1 and 422 of 714 passing.
 - Back-test: the textbook route validates: on the May marks as they stood at the committee's 18 June meeting, the question means reproduce every move in the minutes and its 433 passes of 698 (May's choices did not sort the candidates, so the fit agrees there too).
 - Second use: the export is every route's source for the results file, the minutes carry May's moves for the reviews ask, and the registers, request log, review requests, ledger and account register carry the asks; delete the decisive step and every file keeps its job.
-- Shock: nothing stands out: Question 6's mean (10.1) sits mid-pack, Question 8's (12.1) is the highest but close to Questions 1 and 7, the means' moves (+1 and -1) read as ordinary adjustments, and no sort of any shipped column puts Questions 6 and 8 together.
+- Shock: nothing stands out: Question 6's mean (10.1) sits among the others (9.7 to 12.1), Question 8's (12.1) is the highest but close to Questions 1 and 7 (11.6 each), the means' moves (+1 and -1) read as ordinary adjustments, and no sort of any shipped column puts Questions 6 and 8 together.
 - Pins: the examination regulations file the WHAT (14.1 the move, each question against the average question counted once, for the candidates who sat; 2 defines those candidates as every candidate marked present; 14.2 the limits; 12 the pass mark; 11.2 the mark of record); no filed sentence names a method, a comparison across a candidate's answers, the choice or the candidates' standing.
 
 ## Default path
@@ -88,17 +88,17 @@ A strong analyst with every field read correctly:
    its 433 passes of 698.
 5. Applies the moves held within 0 and 20, totals and passes 50 or more.
 
-Ends on: Q6 +1 and Q8 -1, 417 of the 714 candidates pass.
+Ends on: Q6 +1 and Q8 -1, 422 of the 714 candidates pass.
 
-Golden: Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +3, Q7 -1, Q8 -3; 393 of the 714 candidates pass.
+Golden: Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +3, Q7 -1, Q8 -3; 401 of the 714 candidates pass.
 
 ## Stump sentence
 
 The default path sets each question's mean mark among its answerers against the paper's mean, moves Question 6 by +1
-and Question 8 by -1 and files 417 passes of 714; but the stronger candidates chose Question 6 and the weaker chose
-Question 8 (their answerers averaged 13.5 and 9.0 on their other answers), so only each question read on the same
+and Question 8 by -1 and files 422 passes of 714; but the stronger candidates chose Question 6 and the weaker chose
+Question 8 (their answerers averaged 13.5 and 8.9 on their other answers), so only each question read on the same
 candidates across the questions they chose gives its difficulty for the candidates who sat, Question 6 +3 and
-Question 8 -3, and 393 passes.
+Question 8 -3, and 401 passes.
 
 ## Three rules
 
@@ -109,8 +109,8 @@ Question 8 -3, and 393 passes.
 - Layer 2: estimation under a violated precondition (selection on the outcome's driver): a question's mean mark estimates its difficulty for the sitting only if its answerers stand for the sitting; under examinee choice they do not, and the difficulty must be read with each candidate's own standing held fixed.
 - Decisive step: recognising that each question's answerers chose it, so its mean mark carries its choosers' standing, and reading its difficulty from the same candidates' marks across the questions they chose: a candidate effect and a question effect fitted together, each question's effect set against the average question.
 - Not semantics: every field, code and unit can be read correctly (series, item codes, part maxima, no-response parts, the mark of record, regulation 14's population, comparison and rounding) and the analyst still takes each question's mean as its difficulty; no field, code or definition holds a candidate's standing or flags a choice.
-- Not rule application: regulation 14.1 names what is measured (the difficulty for the candidates who sat, against the average question counted once, rounded) and not how; executing every filed rule with the question means files 417. Enumerated family: no moves (433 passes), question means (417), means against an answer-weighted average (417), medians (430), the fit of candidate and question (393), its one-step form, each question's answerers' mark less their own mean on their other answers (393), the regression adjustment on the answerers' other marks (393), a random-intercept model (393), the fit on the logit scale carried back to marks (393): spread 393 to 433 over four distinct pass counts. Standing family once the choice is seen (alternating means, least squares, one-step differences, regression adjustment, random intercept, logit scale, a part-level fit, four-answer candidates in or out, an answer-weighted average): the same eight moves and 393 passes, every value at least 0.2 from a rounding line (checks.py L3, SF2, SF9, SF10). What rules the means out is the data, loudly for anyone who reads across a candidate's answers and silently for the column means: Question 6's answerers average 13.5 on their other answers and 10.1 on it, Question 8's 9.0 and 12.1.
-- Analyst test: a strong analyst who conforms the export correctly and applies regulation 14 with each question's mean among its answerers against the paper mean files Q6 +1, Q8 -1 and 417 of 714 passing, against the golden's Q6 +3, Q8 -3 and 393.
+- Not rule application: regulation 14.1 names what is measured (the difficulty for the candidates who sat, against the average question counted once, rounded) and not how; executing every filed rule with the question means files 422. Enumerated family: no moves (432 passes), question means (422), means against an answer-weighted average (422), medians (435), the fit of candidate and question (401), its one-step form, each question's answerers' mark less their own mean on their other answers (401), the regression adjustment on the answerers' other marks (401), a random-intercept model (401), the fit on the logit scale carried back to marks (401): spread 401 to 435 over four distinct pass counts. Standing family once the choice is seen (alternating means, least squares, one-step differences, regression adjustment, random intercept, logit scale, a part-level fit, four-answer candidates in or out, an answer-weighted average): the same eight moves and 401 passes, every value at least 0.2 from a rounding line (checks.py L3, SF2, SF9, SF10). What rules the means out is the data, loudly for anyone who reads across a candidate's answers and silently for the column means: Question 6's answerers average 13.5 on their other answers and 10.1 on it, Question 8's 8.9 and 12.1.
+- Analyst test: a strong analyst who conforms the export correctly and applies regulation 14 with each question's mean among its answerers against the paper mean files Q6 +1, Q8 -1 and 422 of 714 passing, against the golden's Q6 +3, Q8 -3 and 401.
 - Estimand: regulations 2, 12, 14.1 and 14.2 in cae_examination_regulations_2026.pdf: the population is every candidate marked present for Paper 2 at the November 2026 sitting (whichever questions they answered), the outcome each optional question's mark of record, the comparison the average of the optional questions each counted once, the unit whole marks rounded to the nearest, the window the November sitting's marks of record, and a pass at 50 or more of 100 after the moves.
 - No decoy: nothing is planted: no memo, draft, briefing or stakeholder figure argues a move or a pass count; the minutes report May's approved moves, which every route reproduces; no file computes a November question statistic; the two distractors (the results history and the 2027 venue holds) answer other questions.
 - No certified replay: no November move, difficulty or pass count exists anywhere in the pack, and May's certified moves are reproduced alike by the means and by the fit, so nothing certified can be backed out into the method.
@@ -130,11 +130,11 @@ Question 8 -3, and 393 passes.
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | "moved" | a whole-mark constant added to every answer to the question | a proportional scaling | another call | regulation 14.1 "moved by a whole number of marks", 14.2 "applied to the mark of record of every candidate who answered" |
-| SF2 | "the average of the paper's optional questions, each counted once" | the eight question effects averaged equally | an average weighted by answers | same call (Q6 +3, Q8 -3, 393) | same call, and 14.1 "each counted once" |
-| SF3 | "the candidates who sat the paper" | every candidate marked present (714) | those who answered the question | the means' answer, 417 | regulation 2 "every candidate marked present for that paper at the sitting" |
-| SF4 | "rounded to the nearest whole mark" | round each move once | truncate toward zero | Q6 +2, Q8 -2, another count | 14.1 "rounded to the nearest whole mark"; no standing value within 0.2 of a rounding line |
-| SF5 | the limits of 14.2 | moved marks held within 0 and 20 | no limits | same call (393) | same call |
-| SF6 | the pass | 50 or more | more than 50 | 380 | regulation 12 "a total of 50 or more" |
+| SF2 | "the average of the paper's optional questions, each counted once" | the eight question effects averaged equally | an average weighted by answers | same call (Q6 +3, Q8 -3, 401) | same call, and 14.1 "each counted once" |
+| SF3 | "the candidates who sat the paper" | every candidate marked present (714) | those who answered the question | the means' answer, 422 | regulation 2 "every candidate marked present for that paper at the sitting" |
+| SF4 | "rounded to the nearest whole mark" | round each move once | truncate toward zero | Q2 0, Q7 0, Q8 -2, 415 passes | 14.1 "rounded to the nearest whole mark"; no standing value within 0.2 of a rounding line |
+| SF5 | the limits of 14.2 | moved marks held within 0 and 20 | no limits | same call (401) | same call |
+| SF6 | the pass | 50 or more | more than 50 | 388 | regulation 12 "a total of 50 or more" |
 | SF7 | the mark of record | the last mark entered for a part | the first | same call (one November mark per part) | same call, and regulation 11.2 |
 | SF8 | a no-response part ('-') | counts nothing | dropped from the question | same call | same call |
 | SF9 | candidates who answered four questions | in the results and the fit | out of the fit | same call | same call; in the results under regulation 2 |
@@ -157,19 +157,19 @@ Built values from the cut pack (checks.py L1 to L7, verify.py).
 
 | Rung | Route | Q6 | Q8 | Passing of 714 |
 |---|---|---|---|---|
-| 0 | no moves | 0 | 0 | 433 |
-| 1 (default path) | each question's mean among its answerers against the paper mean | +1 | -1 | 417 |
-| 1b | the same against an answer-weighted average | +1 | -1 | 417 |
-| 1c | medians against the median | +1 | -1 | 430 |
-| golden | candidate and question fitted together, each question against the average question | +3 | -3 | 393 |
+| 0 | no moves | 0 | 0 | 432 |
+| 1 (default path) | each question's mean among its answerers against the paper mean | +1 | -1 | 422 |
+| 1b | the same against an answer-weighted average | +1 | -1 | 422 |
+| 1c | medians against the median | +1 | -1 | 435 |
+| golden | candidate and question fitted together, each question against the average question | +3 | -3 | 401 |
 
-- The rungs agree on Q1, Q3, Q4, Q5 and Q7 (-1, 0, +1, 0, -1) and on Q2 except the medians (+2); they part on the
-  two questions the choice sorted.
-- Standing family values for Q6 and Q8: alternating means and least squares 2.98 and -2.93, one-step differences 3.16
-  and -3.29, regression adjustment 2.73 and -2.75, random intercept 2.76 and -2.78, logit scale 3.23 and -2.98;
+- The rungs agree with the golden on Q2, Q3, Q4, Q5 and Q7 (+1, 0, +1, 0, -1) and on Q1 except the medians (0);
+  they part on the two questions the choice sorted.
+- Standing family values for Q6 and Q8: alternating means and least squares 3.04 and -2.94, one-step differences 3.22
+  and -3.29, regression adjustment 2.85 and -2.72, random intercept 2.80 and -2.78, logit scale 3.28 and -2.94;
   smallest distance to a rounding line over all eight questions 0.21 (the one-step form), verify.py's own least
   squares 0.42.
-- Evidence: Question 6's answerers score 3.34 marks less on it than on their other answers, Question 8's 3.12 more
+- Evidence: Question 6's answerers score 3.39 marks less on it than on their other answers, Question 8's 3.12 more
   (L6).
 
 ## Closure table
@@ -203,10 +203,10 @@ Built values from the cut pack (checks.py L1 to L7, verify.py).
 
 Executed word for word, regulation 14.1 asks how much harder each question proved than the average question, each
 counted once, for the candidates who sat the paper, which regulation 2 defines as every candidate marked present: all
-714, each of whom answered five questions (17 answered four). No file holds a candidate's mark on a question they did
+714, each of whom answered five questions (18 answered four). No file holds a candidate's mark on a question they did
 not choose, so every literal reader has to estimate each question's difficulty for the 714 from the marks that exist.
 The question means estimate it only if a question's answerers stand for the 714, and the records show they do not;
-the easy answer (417) therefore comes from an easier method on the same literal estimand, never from another reading.
+the easy answer (422) therefore comes from an easier method on the same literal estimand, never from another reading.
 Every term and convention has a fork-table row, every alternative reading gives the golden or violates a quoted
 sentence, and every write-up step names the file and the regulation it executes.
 

@@ -184,13 +184,13 @@ def main():
     # ---------------- R3: the three rules on the clean truth
     fac_t = E.facility(w.nov_m)
     check("R3a analyst test: each question's mean among its answerers against the paper mean, every filed rule "
-          "applied, files Q6 +1 and Q8 -1 and 417 passes on the clean truth",
-          np.rint(fac_t[5]) == 1 and np.rint(fac_t[7]) == -1 and E.passes(w.nov_m, fac_t) == 417
+          "applied, files Q6 +1 and Q8 -1 and 422 passes on the clean truth",
+          np.rint(fac_t[5]) == 1 and np.rint(fac_t[7]) == -1 and E.passes(w.nov_m, fac_t) == 422
           and E.passes(w.nov_m, fac_t) != M["n_pass"], np.round(fac_t, 2).tolist())
     fe_t = E.fe(w.nov_m)
     check("R3b decisive step alone: the same route with the fit of candidate and question in place of the means "
           "files the golden; no moves and the means each stay wrong",
-          E.passes(w.nov_m, fe_t) == M["n_pass"] == 393 and E.passes(w.nov_m, np.zeros(8)) == 433,
+          E.passes(w.nov_m, fe_t) == M["n_pass"] == 401 and E.passes(w.nov_m, np.zeros(8)) == 432,
           "%d / %d / %d" % (E.passes(w.nov_m, np.zeros(8)), E.passes(w.nov_m, fac_t), E.passes(w.nov_m, fe_t)))
     seen = set()
     dup = 0
@@ -211,8 +211,8 @@ def main():
 
     # ---------------- L: ladder, standing family, back-test, evidence, cheap routes
     pz = M["passes"]
-    check("L1 rungs separate: unmoved 433, the means 417, the golden 393",
-          (pz["R0 no moves"], pz["R1 facility"], pz["golden"]) == (433, 417, 393), str(pz))
+    check("L1 rungs separate: unmoved 432, the means 422, the golden 401",
+          (pz["R0 no moves"], pz["R1 facility"], pz["golden"]) == (432, 422, 401), str(pz))
     check("L2 golden moves Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +3, Q7 -1, Q8 -3; the means differ at Q6 and Q8 only",
           golden.tolist() == GOLD_MOVES and [j for j in range(8) if M["rungs"]["R1 facility"][j] != golden[j]] == [5, 7],
           str(M["rungs"]["R1 facility"].tolist()))
@@ -247,7 +247,7 @@ def main():
         "facility per cent": (pct.mean() - pct) * 20.0,
     }
     landing = [k for k, v in cheap.items() if E.passes(m, v) == M["n_pass"]]
-    check("L7 Gate F: no cheap route that skips the comparison across the same candidates lands 393", not landing,
+    check("L7 Gate F: no cheap route that skips the comparison across the same candidates lands 401", not landing,
           json.dumps({k: E.passes(m, v) for k, v in cheap.items()}))
 
     # ---------------- SF: the semantic fork table

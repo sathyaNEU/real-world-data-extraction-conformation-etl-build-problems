@@ -15,7 +15,7 @@
    "source": "Halcroft Pharmacy Solutions, paid claims extract for the Employees' Group Health Plan, brand drugs, dates of service 1 July 2025 to 30 June 2026, paid through 30 September 2026, pulled 9 October 2026",
    "date": "pulled 9 October 2026",
    "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
-   "rows": 50164
+   "rows": 49787
   },
   {
    "path": "target/pbm_drug_file_202610.xlsx",
@@ -39,7 +39,7 @@
    "source": "Office of Employee Benefits eligibility system, member roster at 9 October 2026",
    "date": "member roster at 9 October 2026",
    "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
-   "rows": 79956
+   "rows": 79886
   },
   {
    "path": "target/pdl_policy_eb-rx-04.pdf",
@@ -82,7 +82,7 @@
    "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2025 Q2, remitted 19 September 2025",
    "date": "remitted 19 September 2025",
    "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
-   "rows": 94
+   "rows": 96
   },
   {
    "path": "target/rebate_remittance_2025Q3.xlsx",
@@ -90,7 +90,7 @@
    "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2025 Q3, remitted 19 December 2025",
    "date": "remitted 19 December 2025",
    "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
-   "rows": 94
+   "rows": 96
   },
   {
    "path": "target/rebate_remittance_2025Q4.xlsx",
@@ -98,7 +98,7 @@
    "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2025 Q4, remitted 20 March 2026",
    "date": "remitted 20 March 2026",
    "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
-   "rows": 58
+   "rows": 62
   },
   {
    "path": "target/rebate_remittance_2026Q1.xlsx",
@@ -106,7 +106,7 @@
    "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2026 Q1, remitted 19 June 2026",
    "date": "remitted 19 June 2026",
    "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
-   "rows": 61
+   "rows": 57
   },
   {
    "path": "target/rebate_remittance_2026Q2.xlsx",
@@ -114,7 +114,7 @@
    "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2026 Q2, remitted 18 September 2026",
    "date": "remitted 18 September 2026",
    "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
-   "rows": 58
+   "rows": 59
   }
  ],
  "distractor_files": [

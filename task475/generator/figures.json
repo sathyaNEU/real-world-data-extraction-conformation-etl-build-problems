@@ -1,13 +1,13 @@
 {
  "answered": {
-  "Q1": 465,
-  "Q2": 452,
-  "Q3": 479,
-  "Q4": 424,
-  "Q5": 437,
-  "Q6": 325,
-  "Q7": 472,
-  "Q8": 499
+  "Q1": 474,
+  "Q2": 448,
+  "Q3": 459,
+  "Q4": 430,
+  "Q5": 464,
+  "Q6": 321,
+  "Q7": 475,
+  "Q8": 481
  },
  "centre_totals": {
   "absentees": 31,
@@ -46,7 +46,7 @@
    "withdrawals": 4
   }
  },
- "facility_extra_passes": 24,
+ "facility_extra_passes": 21,
  "facility_moves": {
   "Q1": -1,
   "Q2": 1,
@@ -57,11 +57,11 @@
   "Q7": -1,
   "Q8": -1
  },
- "facility_passed": 417,
- "failed": 321,
- "four_answer": 17,
- "held_at_0": 1,
- "held_at_20": 11,
+ "facility_passed": 422,
+ "failed": 313,
+ "four_answer": 18,
+ "held_at_0": 0,
+ "held_at_20": 20,
  "may_moves_minutes": [
   0,
   -1,
@@ -87,10 +87,10 @@
   "Q8": -3
  },
  "pass_mark": 50,
- "passed": 393,
+ "passed": 401,
  "q6_choosers_other_mean": 13.5,
  "q6_mean": 10.1,
- "q8_choosers_other_mean": 9.0,
+ "q8_choosers_other_mean": 8.9,
  "q8_mean": 12.1,
  "references": {
   "mark_limits": [
@@ -121,5 +121,5 @@
  "reviews_declined": 4,
  "reviews_rekeyed": 3,
  "sat": 714,
- "unmoved_passed": 433
+ "unmoved_passed": 432
 }

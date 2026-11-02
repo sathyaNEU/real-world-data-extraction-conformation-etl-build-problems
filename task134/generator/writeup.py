@@ -116,11 +116,11 @@ def emit(tdir, task_dir):
     L.append("")
     L.append("### placements_2025-26.svg")
     L.append("")
-    L.append("5. One stacked bar for each month from October 2025 to September 2026, split into Fend Spit and Wenning Deep, each "
-             "month's total in thousand wet tonnes above its bar.")
+    L.append("5. One stacked bar for each month from October 2025 to September 2026 in thousand wet tonnes, split into Fend Spit "
+             "and Wenning Deep, with December to February shaded as the months Fend Spit is closed.")
     L.append("")
     text = "\n".join(L)
-    assert "—" not in text and "–" not in text
+    assert "\u2014" not in text and "\u2013" not in text
     with open(os.path.join(task_dir, "submission.md"), "w", encoding="utf-8") as fh:
         fh.write(text)
     with open(os.path.join(HERE, "figures.json"), "w", encoding="utf-8") as fh:
