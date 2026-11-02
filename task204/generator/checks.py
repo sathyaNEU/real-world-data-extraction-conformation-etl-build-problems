@@ -316,6 +316,11 @@ def main():
     check("Z-dates-rms: no RMS record reported after the 11 May 2026 pull", mx <= dt.datetime(2026, 5, 11, 6, 15), mx)
     tmax = max(A.utc_to_local(r["Logged (UTC)"]) for r in tpo)
     check("Z-dates-tpo: no transit log entry after its 11 May 2026 export", tmax <= dt.datetime(2026, 5, 11, 23, 59), tmax)
+    fg_early = [r for r in rms if r["location_text"].startswith("FAIRGROUNDS") and A.parse_local(r["occurred_from_local"]).date() < P.SPRING_CHANGE]
+    fg_codes = {g[2] for g in P.GATES["FG"]}
+    tpo_early = [r for r in tpo if A.utc_to_local(r["Logged (UTC)"]).date() < P.SPRING_CHANGE and not r["Station Code"]]
+    check("Z-opening: nothing is recorded at Fairgrounds before it opened on 29 March 2026, and every transit report carries a station code",
+          not fg_early and not tpo_early and all(r["Station Code"] for r in tpo), (len(fg_early), len(tpo_early)))
     check("Z-note-dates: the planning note (4 May) names the extract pull as still to come",
           "11 May" in note and "pulled this morning" not in note)
     card = json.load(open(os.path.join(ROOT, ".claude", "skills", "fingerprint", "cards", "task204.json")))

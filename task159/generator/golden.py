@@ -105,6 +105,12 @@ def chart(path, F):
     fig.tight_layout()
     fig.savefig(path, format="svg", metadata={"Date": None, "Creator": None})
     plt.close(fig)
+    import re
+    svg = open(path, encoding="utf-8").read()
+    svg = re.sub(r'id="matplotlib\.', 'id="', svg)
+    svg = re.sub(r"<!--[^>]*[Mm]atplotlib[^>]*-->\n?", "", svg)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(svg)
 
 
 def build(out, F):

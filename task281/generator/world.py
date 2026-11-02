@@ -160,6 +160,7 @@ class Licence:
     lapsed_at: list = field(default_factory=list)   # per copy, UTC instant of lapse or None
     renewal_of: str = ""
     order_type: str = "Firm order"
+    busy: bool = False                              # a 40-loan licence is on loan
 
 
 @dataclass
@@ -509,9 +510,10 @@ def simulate_title(W, t, rng, holds, loans):
 
     def renew(L, time):
         k = len([x for x in W.licences if x.title == L.title]) + 1
+        pr = random.Random("%s-%d" % (L.lic_id, k))     # the re-licence price, off the platform's own stream
         rn = Licence(lic_id="L%06d" % ((int(L.lic_id[1:]) * 7 + k * 131) % 999983), title=L.title, model="1U-M",
                      copies=1, bought=to_uk(time).date(), po_line="",
-                     price_gbp=round(L.price_gbp * rng.uniform(1.0, 1.08), 2), currency=L.currency,
+                     price_gbp=round(L.price_gbp * pr.uniform(1.0, 1.08), 2), currency=L.currency,
                      renewal_of=L.lic_id, order_type="Renewal")
         rn.ordered_by = L.ordered_by
         rn.remaining = [P.METER_LOANS]
@@ -527,16 +529,22 @@ def simulate_title(W, t, rng, holds, loans):
             return P.RECORD_START - dt.timedelta(days=1)
         return dt.datetime(L.bought.year, L.bought.month, L.bought.day, 9, 0, tzinfo=UTC)
 
+    def purchased(L):
+        if L.order_type == "Renewal":
+            return L.created_at
+        return dt.datetime(L.bought.year, L.bought.month, L.bought.day, 9, 0, tzinfo=UTC)
+
     def meter_loan(time):
-        """count a loan against the earliest-purchased 40-loan licence held at the time that has loans left"""
-        cands = sorted([L for L in lics if L.model == "1U-M" and held_since(L) <= time],
-                       key=lambda L: (held_since(L), L.lic_id))
-        for L in cands:
-            for i, r in enumerate(L.remaining):
-                if L.lapsed_at[i] is None and r and r > 0:
-                    L.remaining[i] = r - 1
-                    return (L, i)
-        return None
+        """make a loan on the earliest-purchased 40-loan licence held at the time that is not on loan and has
+        loans left"""
+        cands = sorted([L for L in lics if L.model == "1U-M" and held_since(L) <= time and not L.busy
+                        and L.lapsed_at[0] is None and L.remaining[0] > 0], key=lambda L: (purchased(L), L.lic_id))
+        if not cands:
+            return None
+        L = cands[0]
+        L.remaining[0] -= 1
+        L.busy = True
+        return (L, 0, L.remaining[0] == 0)
 
     def start_loan(time, stu, hold=None):
         days = rng.choices([d for d, _ in P.LOAN_DAYS], weights=[w for _, w in P.LOAN_DAYS])[0]
@@ -623,11 +631,14 @@ def simulate_title(W, t, rng, holds, loans):
             loan, m = payload
             in_use -= 1
             active_by_student.discard(loan.student)
-            if m and m[0].remaining[m[1]] == 0 and m[0].lapsed_at[m[1]] is None:
-                m[0].lapsed_at[m[1]] = time
-                rn = renew(m[0], time)
-                lics.append(rn)
-                W.licences.append(rn)
+            if m:
+                m[0].busy = False
+                if m[2]:
+                    # the licence's fortieth loan has ended: it lapses and the platform re-licenses the title
+                    m[0].lapsed_at[0] = time
+                    rn = renew(m[0], time)
+                    lics.append(rn)
+                    W.licences.append(rn)
             offer_heads(time)
         elif kind == "lic":
             capacity += readers(payload)

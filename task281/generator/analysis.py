@@ -480,12 +480,15 @@ def ask_c(target, variant="golden", trace=None):
                 c["held"] = c["held"] or cutoff
             continue
         for l in sorted(loans_by_title.get(plat, []), key=lambda x: x["start"]):
-            live = sorted([c for c in cps if c["held"] is not None and c["held"] <= l["start"] and c["lapsed"] is None
-                           and c["left"] > 0], key=lambda c: (c["held"], c["date"], c["lic"]))
+            free = [c for c in cps if c["held"] is not None and c["held"] <= l["start"] and c["lapsed"] is None
+                    and c["left"] > 0 and (variant == "ignore_busy" or c.get("busy_until") is None
+                                           or c["busy_until"] <= l["start"])]
+            live = sorted(free, key=lambda c: (c["held"], c["date"], c["lic"]))
             if not live:
                 continue
             c = live[0]
             c["left"] -= 1
+            c["busy_until"] = l["ended"] if l["ended"] else dt.datetime(2099, 1, 1, tzinfo=UTC)
             if trace is not None:
                 trace[l["id"]] = c["lic"]
             if c["left"] == 0:

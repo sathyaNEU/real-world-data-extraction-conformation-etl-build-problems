@@ -33,7 +33,7 @@
    - 31 December 2023: 3,629,000 t, 45,500 oz
    - 31 December 2024: 5,417,000 t, 68,200 oz
    - 31 December 2025: 7,196,000 t, 90,700 oz
-   - 31 October 2026: 8,802,000 t, 110,900 oz
+   - 31 October 2026: 8,803,000 t, 110,900 oz
 4. Hours the ball mill ran, by quarter (local time):
    - 2025 Q1: 2,045 hours
    - 2025 Q2: 2,094 hours

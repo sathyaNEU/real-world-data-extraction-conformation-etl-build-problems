@@ -337,14 +337,14 @@ def _write_dispatch(out, loads):
     rng = W._rng("phantom")
     recs = []
     for _, l in loads.iterrows():
-        recs.append((l["time_local"], l, False))
+        recs.append((l["time_utc"], l, False))
         if rng.random() < P.PHANTOM_RATE:
-            recs.append((l["time_local"] + dt.timedelta(seconds=int(rng.integers(60, 360))), l, True))
+            recs.append((l["time_utc"] + dt.timedelta(seconds=int(rng.integers(60, 360))), l, True))
     recs.sort(key=lambda x: (x[0], x[1]["truck"]))
     rows = []
     lid = 2_310_000
     for n, (t, l, ph) in enumerate(recs):
-        u = O.local_to_utc(t)
+        u = t
         lid += int(rng.integers(3, 19))
         rows.append(["%07d" % lid, u.strftime("%Y-%m-%dT%H:%M:%SZ"), l["truck"],
                      l["shovel"], l["poly"], "LGSP", "LG", "%.2f" % l["grade"]])

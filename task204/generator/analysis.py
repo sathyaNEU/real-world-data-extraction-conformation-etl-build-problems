@@ -86,7 +86,7 @@ def code_on(fare_codes, arrays, code, d):
         for dd in (d - dt.timedelta(days=k), d + dt.timedelta(days=k)):
             a = fare_codes.get((code, dd))
             if a:
-                return arrays.get(a)
+                return arrays.get(a.replace("-", "").lower())
     return None
 
 

@@ -3,12 +3,17 @@ import datetime as dt
 import json
 import os
 
+import params as P
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 NAMES = {101: "Quinpool Road", 102: "Spryfield", 103: "Clayton Park", 104: "Bedford Place",
          105: "Dartmouth - Portland St", 106: "Cole Harbour", 107: "Lower Sackville", 201: "Truro (Prince St)",
          202: "New Glasgow", 203: "Antigonish", 204: "Kentville", 205: "Bridgewater", 206: "Yarmouth",
          207: "Amherst"}
+
+
+WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}
 
 
 def pct(x):
@@ -53,29 +58,30 @@ def main():
     L.append("")
     L.append("## 3. Step-by-Step Solution")
     L.append("")
+    fl = P.FILES
     steps = [
-        "Totalled each store's item scans from 1 October to 31 December 2026 in pos_hourly_item_scans_2026Q4.csv.",
+        "Totalled each store's item scans from 1 October to 31 December 2026 in %s." % fl["hourly"],
         "For each changeover Thursday took each store's completed PCB batch (print time read in local time, label "
-        "count) from label_printer_fleet_jobs_2026-10-01_2026-12-31.jsonl and the units its price-changed items "
-        "scanned that Thursday from price_change_item_movement_2026Q4.csv.",
-        "Read the hanging pace from thursday_changeover_checks_Q4-2026.xlsx: the share of checked labels still at "
-        "the old price falls from all of them at the print to none once the batch is up, at one pace for every "
-        "store.",
+        "count) from %s and the units its price-changed items scanned that Thursday from %s."
+        % (fl["printer"], fl["movement"]),
+        "Read the hanging pace from %s: the share of checked labels still at the old price falls from all of them "
+        "at the print to none once the batch is up, at one pace for every store." % fl["checks"],
         "Spread each changeover's changed-item units over that Thursday's hours as the store's own hourly scans, "
         "and counted as off the label the units scanned before the batch printed and, while it was going up, the "
         "share of its labels not yet hung.",
-        "Added stray labels at the share price_audit_results_2026Q4.csv finds outside changeovers, and took price "
-        "accuracy as one minus the off-label scans over the item scans (PI-2 s.3.1): %s below 99.0%%, %s (%d) "
-        "nearest above at %s (s.4.1)." % (names, NAMES[near], near, pct(F["nearest_off_acc"])),
-        "Scanner Code payouts: SC overrides in pos_price_overrides_2026Q4.csv (original less override price, UTC "
-        "converted to local, in the quarter) plus Scanner Code refunds in service_desk_adjustments_Q4_2026.xlsx, a "
-        "desk refund dropped only when it repeats a register payout of the same amount on the same receipt line "
-        "and kept when it pays the rest of the Code remedy (s.5.1).",
-        "Flyer prices: every advertised UPC of flyer_ad_plan_wk40-wk53_2026.csv (an assorted line's varieties "
-        "matched by brand, product and size among the week's AD START items) against the REVISED sheet of "
-        "weekly_price_change_releases_2026Q4.xlsx in each zone, per unit for multi-buys, with the price paid above "
-        "the flyer times that zone's units in flyer_item_weekly_units_2026Q4.csv.",
-        "Put the five stores below 99.0% on Price Watch.",
+        "Added stray labels at the share %s finds outside changeovers, and took price accuracy as one minus the "
+        "off-label scans over the item scans (PI-2 s.3.1): %s below 99.0%%, %s (%d) nearest above at %s (s.4.1)."
+        % (fl["audits"], names, NAMES[near], near, pct(F["nearest_off_acc"])),
+        "Scanner Code payouts: SC overrides in %s (original less override price, UTC converted to local, in the "
+        "quarter) plus Scanner Code refunds in %s, a desk refund dropped only when it repeats a register payout of "
+        "the same amount on the same receipt line and kept when it pays the rest of the Code remedy (s.5.1)."
+        % (fl["overrides"], fl["desk"]),
+        "Flyer prices: every advertised UPC of %s (an assorted line's varieties matched by brand, product and size "
+        "among the week's AD START items) against the register price in force each day in each zone, the REVISED "
+        "sheet of %s until a correction in %s takes effect at opening on its date, per unit for multi-buys, with "
+        "the price paid above the flyer times that day's units in that zone from %s."
+        % (fl["adplan"], fl["pricefile"], fl["corrections"], fl["adsales"]),
+        "Put the %s stores below 99.0%% on Price Watch." % WORDS[F["n_watch"]],
     ]
     for i, s in enumerate(steps, start=1):
         L.append("%d. %s" % (i, s))

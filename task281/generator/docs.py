@@ -123,8 +123,8 @@ def lending_terms(path):
                                            "three borrowers at a time for the subscription period.", SMALL)]]
     s.append(_table(rows, [40 * mm, 130 * mm]))
     s.append(Spacer(1, 4))
-    s.append(Paragraph("3.2 Where a customer holds more than one 40-loan licence for a title, each loan is counted "
-                       "against the earliest-purchased of those licences that has loans left.", BODY))
+    s.append(Paragraph("3.2 Where a customer holds more than one 40-loan licence for a title, each loan is made on the "
+                       "earliest-purchased of those licences that is not on loan and has loans left.", BODY))
     s.append(Paragraph("3.3 Where automatic re-licensing is enabled, a 40-loan licence that lapses is replaced when it "
                        "lapses by a new 40-loan licence for the title, invoiced at the current price on the following "
                        "monthly invoice.", BODY))

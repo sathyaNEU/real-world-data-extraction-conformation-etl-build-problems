@@ -41,18 +41,23 @@ def exponent(lrr, lqt, clock, method):
         return _within(lrr[m], lqt[m], np.zeros(m.sum()))
     if method == "day_night":                   # day and night levels apart
         return _within(lrr, lqt, ((clock >= 8) & (clock < 22)).astype(int))
-    if method == "linear_pooled":               # QT = a + b RR, converted at RR 1 s
-        rr = np.exp(lrr)
+    if method == "linear_pooled":               # QT = a + b RR, as the exponent at the subject's mean RR
+        rr = np.exp(lrr) / 1000.0
         qt = np.exp(lqt)
-        A = np.column_stack([np.ones(len(rr)), rr])
-        a, b = np.linalg.lstsq(A, qt, rcond=None)[0]
-        return float(b / (a + b))
+        b = _within(rr, qt, np.zeros(len(rr)))
+        return float(b * rr.mean() / qt.mean())
     if method == "linear_hour":
-        rr = np.exp(lrr)
+        rr = np.exp(lrr) / 1000.0
         qt = np.exp(lqt)
-        g = np.floor(clock).astype(int)
-        b = _within(rr, qt, g)
-        return float(b / qt.mean())
+        b = _within(rr, qt, np.floor(clock).astype(int))
+        return float(b * rr.mean() / qt.mean())
+    if method in ("four_hour", "six_hour", "eight_hour"):
+        w = {"four_hour": 4, "six_hour": 6, "eight_hour": 8}[method]
+        return _within(lrr, lqt, np.floor(clock / w).astype(int))
+    if method == "stable":                      # steady-rate segments only, one line
+        d = np.abs(np.diff(lrr, prepend=lrr[0]))
+        m = d < 0.02
+        return _within(lrr[m], lqt[m], np.zeros(m.sum()))
     raise ValueError(method)
 
 

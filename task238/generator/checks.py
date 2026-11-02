@@ -341,6 +341,10 @@ def main():
     gb = os.path.join(TASK, "golden")
     ok(sorted(os.listdir(gb)) == sorted(["price_watch_2027q1.xlsx", "price_accuracy_q4_2026.svg"]),
        "golden.files_named_in_prompt")
+    sub = open(os.path.join(TASK, "submission.md")).read()
+    named = set(re.findall(r"[\w.-]+\.(?:csv|jsonl|xlsx|pdf|svg)\b", sub))
+    unknown = sorted(n for n in named if n not in files and n not in os.listdir(gb))
+    ok(not unknown, "writeup.names_only_shipped_files", ", ".join(unknown) or "%d files named" % len(named))
     from openpyxl import load_workbook
     wb = load_workbook(os.path.join(gb, "price_watch_2027q1.xlsx"), data_only=True)
     ws = wb["Price Watch Q1 2027"]

@@ -32,6 +32,12 @@ def local_to_utc(loc):
     return loc - dt.timedelta(hours=local_offset(loc))
 
 
+def real_local(loc):
+    """A wall-clock time that exists: a time inside the spring-forward hour moves on an hour, as the clocks do."""
+    a, _ = _dst_bounds(loc.year)
+    return loc + dt.timedelta(hours=1) if a <= loc < a + dt.timedelta(hours=1) else loc
+
+
 def utc_to_local(u):
     loc = u - dt.timedelta(hours=5)
     if local_offset(loc) == -4:
@@ -105,7 +111,7 @@ def ball_mill_stops():
         start = d.replace(hour=6) + dt.timedelta(minutes=int(rng.integers(0, 95)))
         reline = m.month in (2, 8)
         hours = rng.uniform(52, 64) if reline else rng.uniform(13, 31)
-        end = (start + dt.timedelta(hours=float(hours))).replace(second=0, microsecond=0)
+        end = real_local((start + dt.timedelta(hours=float(hours))).replace(second=0, microsecond=0))
         planned.append(dict(start=start, end=end, kind="RELINE" if reline else "SHUTDOWN"))
     pl = pd.DataFrame(planned)
     # historian outages: each opens some hours before one planned shutdown and closes some hours after it
@@ -119,8 +125,8 @@ def ball_mill_stops():
     t = dt.datetime(2023, 1, 1) + dt.timedelta(hours=float(rng.exponential(160)))
     while t < dt.datetime(2026, 11, 1):
         dur = float(np.exp(rng.normal(math.log(1.25), 0.85)))
-        trips.append(dict(start=t.replace(second=0, microsecond=0),
-                          end=(t + dt.timedelta(hours=dur)).replace(second=0, microsecond=0), kind="TRIP"))
+        trips.append(dict(start=real_local(t.replace(second=0, microsecond=0)),
+                          end=real_local((t + dt.timedelta(hours=dur)).replace(second=0, microsecond=0)), kind="TRIP"))
         t += dt.timedelta(hours=float(rng.exponential(160)) + dur)
     tr = pd.DataFrame(trips)
     s = pd.concat([pl, tr]).sort_values("start").reset_index(drop=True)
@@ -393,17 +399,18 @@ def lg_loads(blocks_hist, gc_by_block):
         day = blk["mined"]
         trucks = fleet_on(day)
         remaining = blk["tonnes"]
-        t = dt.datetime(day.year, day.month, day.day, 7 if rng.random() < 0.55 else 19) + \
-            dt.timedelta(minutes=float(rng.uniform(20, 300)))
+        t = local_to_utc(dt.datetime(day.year, day.month, day.day, 7 if rng.random() < 0.55 else 19)) + \
+            dt.timedelta(minutes=float(rng.uniform(20, 300)))          # dispatch runs on UTC
         shovel = "EX-%02d" % int(rng.choice([1, 2, 3], p=[0.45, 0.4, 0.15]))
         poly = "%d-%03d-%02d" % (blk["bench"], blk["i"], blk["j"])
         while remaining > 30:
             no, model, pay = trucks[int(rng.integers(0, len(trucks)))]
             if free.get(no) is not None and free[no] > t:
                 t = free[no]
-            rows.append(dict(time_local=t.replace(microsecond=0), truck=no, payload=pay, model=model, poly=poly,
+            tu = t.replace(microsecond=0)
+            rows.append(dict(time_utc=tu, time_local=utc_to_local(tu), truck=no, payload=pay, model=model, poly=poly,
                              shovel=shovel, grade=round(float(blk["gc"]), 2), block=int(blk["ijk"])))
             free[no] = t + dt.timedelta(minutes=float(rng.uniform(22, 38)))
             remaining -= pay
             t += dt.timedelta(minutes=float(rng.uniform(2.5, 6.0)))
-    return pd.DataFrame(rows).sort_values(["time_local", "truck"]).reset_index(drop=True)
+    return pd.DataFrame(rows).sort_values(["time_utc", "truck"]).reset_index(drop=True)

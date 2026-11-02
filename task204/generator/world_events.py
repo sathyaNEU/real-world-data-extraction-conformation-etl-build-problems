@@ -239,6 +239,8 @@ class Events:
                         t = dt.datetime(d.year, d.month, d.day, h, int(r.integers(0, 60)), int(r.integers(0, 60)))
                         if at_station:
                             code = stations_by_d[dist][int(r.integers(0, len(stations_by_d[dist])))]
+                            if code == "FG" and d < P.SPRING_CHANGE:
+                                code = "MB"          # Fairgrounds opened on 29 March 2026
                             x, y = N.STN[code]["x"] + float(r.normal(0, 22)), N.STN[code]["y"] + float(r.normal(0, 22))
                             if year == 2026 and code in ("RV", "AR", "MB", "UY") and not self.clear_of_trips(d, code, t, 12):
                                 continue
