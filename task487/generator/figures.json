@@ -37,9 +37,10 @@
  "schedule_b.R11.h2_t": 3.9,
  "schedule_b.R12.h1_t": 5.7,
  "schedule_b.R12.h2_t": 4.8,
- "schedule_b.contract_orders": 251,
+ "schedule_b.contract_orders": 226,
  "schedule_b.moved_jan": 12,
  "schedule_b.moved_jul": 12,
  "schedule_b.rechecked_tags": 36,
- "schedule_b.sessions": 318
+ "schedule_b.sessions": 357,
+ "schedule_b.two_day_surveys": 152
 }

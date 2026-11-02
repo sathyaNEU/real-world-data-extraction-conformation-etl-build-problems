@@ -252,7 +252,38 @@ def ldar(w):
                 # a packing or stuffing box that was only tightened often leaks again within months
                 if not deferred and ("packing" in name or "stuffing" in name) and r.random() < REPEAT:
                     again = fix + dt.timedelta(days=float(r.uniform(12, 110)))
-    w.ldar = dict(surveys=surveys, turnaround=turn, leaks=leaks)
+    w.ldar = dict(surveys=surveys, turnaround=turn, leaks=leaks, split=split_days(w, surveys, leaks))
+
+
+SPLIT_WELLS = 4          # a battery with this many wells or more is surveyed over two days in 2026: the plant, then
+                         # the wellheads
+
+
+def split_days(w, surveys, leaks):
+    """in the 2026 rounds the crews survey a large battery over two working days, its plant on the first and the
+    wellheads producing to it on the next; the survey log records each day's session. In the spring round only the
+    batteries from whose spring survey no leak's window runs are surveyed that way, so a leak's start never turns on
+    which day of a survey it is taken from"""
+    nw = {}
+    for x in w.wells:
+        nw[x["bat"]] = nw.get(x["bat"], 0) + 1
+    runs_from = set()
+    for lk in leaks:
+        sv = sorted(surveys[lk["bat"]])
+        prev = [s for s in sv if s < lk["seen"][0]]
+        if prev:
+            runs_from.add((lk["bat"], prev[-1]))
+    out = {}
+    for code in sorted(surveys):
+        for d in sorted(surveys[code]):
+            if d.year != 2026 or (code, d) in runs_from:
+                continue
+            if nw.get(code, 0) >= (SPLIT_WELLS if d.month >= 8 else SPRING_WELLS):
+                out[(code, d)] = workday(d + dt.timedelta(days=1))
+    return out
+
+
+SPRING_WELLS = 3
 
 
 # ---------------------------------------------------------------- who repaired, and when the system completed it
@@ -270,7 +301,7 @@ def approval(d):
 def contract(w):
     """a survey's routine repairs at a battery are done on one visit, by the field's own maintainer or by the mechanical
     contractor's crew; the shutdowns' repairs are the turnaround contractor's. The tracker closes a visit's tags when its
-    work order is completed: the day of the work for the field's own maintainers, the approval for contract work"""
+    work order is completed on the day of the work"""
     import world as W
     r = np.random.default_rng(W.SEED + CON_SEED)
     con = {}
@@ -282,7 +313,7 @@ def contract(w):
             u = r.random()
             con[k] = lk["deferred"] or (u < CONTRACT and lk["fix"] < CONTRACT_OFF)
     w.ldar["contract"] = con
-    w.ldar["closure"] = {k: (approval(k[1]) if c else k[1]) for k, c in con.items()}
+    w.ldar["closure"] = {k: k[1] for k in con}
 
 
 def sessions(w):

@@ -1,9 +1,99 @@
-# task487 determinism check, re-check under the new gates (2026-11-02)
+# task487 determinism check, re-check and Schedule B rework (2026-11-02)
 
-Two isolated judge threads (sonnet, medium) on the repaired cuts; the shipped zip 3556c4e7 is unchanged on the portal and in the repo.
+Three isolated judge threads (sonnet, medium).
 
-- Pass 1, zip 3568be1c: NOT_DETERMINISTIC, SEND_BACK, on Schedule B only (contract repair day; survey sessions). Main call forced, band C, CAD 171,000; Gate G method_or_model_selection; Gate H pass.
-- Pass 2, zip 74e32011 (Reference values name the field ticket; directive 5.2 defines a survey; 3.1 files the per-event unit and clock): NOT_DETERMINISTIC, FIX_NOW, on Schedule B only (contract repair day; the July run change on R06 and R10 H2). Main call forced; survey sessions, Received in tracker, the clock, BT-0907 closed; Gate G statistical_rigor analytical; Gate H pass.
+- Pass 1, zip 3568be1c (notes out): NOT_DETERMINISTIC, SEND_BACK, Schedule B only (contract repair day; survey sessions). Call forced.
+- Pass 2, zip 74e32011: NOT_DETERMINISTIC, FIX_NOW, Schedule B only (contract repair day; the July run change). Call forced.
+- Pass 3, zip 246c562d (the shipped cut, Schedule B reworked): DETERMINISTIC on the call (band C, CAD 171,000) and on Schedule B (all 24 cells reproduced exactly; survey sessions, two-day surveys, the tag's survey, the same leak found again, the repair day, the runs, BT-0907 and the clock each forced). Disposition FIX_NOW on grading only, no pack change: the 54.5 t total and the per-event methane depend on the expected-start estimator inside band C (the judge's fits 51.3 to 54.7 t), so they are graded with a tolerance, the band and the levy exact. Gate G analytical; Gate H domain, layers and decisive step pass.
+
+## Pass 3 verdict
+
+# Determinism verdict, task487 r3
+
+**Verdict:** DETERMINISTIC on the main call (band C, CAD 171,000) and on Schedule B. One graded figure is method-dependent: the year's release-event methane of 54.5 t, and with it the per-event methane in release_events_2026.csv. Append SOLUTION_WRONG for that figure only.
+
+**Disposition:** FIX_NOW. Grade the 54.5 t and the per-event methane as "band C, about 54 t" or with a tolerance of roughly 1.5 t, or add the tolerance to the rubric. The pack stays byte-identical, so no rerun is needed.
+
+**Why:** Band C and the CAD 171,000 levy hold under every defensible start-time fit I tried (51.3 to 54.9 t, band C is 48 to under 60). The two shortcuts both land in other bands: starting every undated event halfway through its window gives about 44.8 t (band B), and starting it at the previous departure gives about 88.8 t (band E). Schedule B reproduces to the golden to one decimal, all 24 cells, from the shipped files alone. The only open point is the exact tonnes of the year total. Directive 17 s.3.2 says only "expected value given those records", so the fitted model is not pinned (taxonomy label: underspecified_objective, narrow, supplementary only).
+
+## Evidence
+
+Recomputed from /tmp/determinism-check-task487-r3/target/.
+
+**Schedule B (R01 to R12, H1 and H2): reproduced exactly, all 24 cells.** Unrounded values are in the table below.
+
+| Route | H1 t | H2 t |
+|---|---|---|
+| R01 | 8.821 | 7.795 |
+| R02 | 10.592 | 3.163 |
+| R03 | 8.237 | 3.677 |
+| R04 | 11.227 | 11.144 |
+| R05 | 4.312 | 3.293 |
+| R06 | 6.139 | 4.048 |
+| R07 | 12.699 | 4.294 |
+| R08 | 6.181 | 4.236 |
+| R09 | 7.363 | 3.701 |
+| R10 | 12.271 | 7.850 |
+| R11 | 10.318 | 3.869 |
+| R12 | 5.702 | 4.827 |
+
+R10 H2 is 7.8497, which sits 0.0003 below the rounding boundary. It is exact arithmetic, since leak hours are whole days times 24, so it is forced. Any solver who rounds a leak or a day count loosely can flip it to 7.9, so grade it with care.
+
+**Schedule B forks, each resolved by the shipped text:**
+- **Survey-log sessions.** The survey log (ldar_surveys_2025_2026.csv) holds 357 re-check rows. Each has 20 or fewer points screened, against at least 54 for a real survey, and every one tagged zero leaks, so the split is clean. The 802 tracker tags equal the LeaksTagged sum on the 692 full-survey rows, and the per-survey counts match tag for tag.
+- **Two-day surveys.** There are exactly 152 same-battery pairs on consecutive working days (135 one day apart, 4 two days, 13 three days over a weekend), which matches the claim of 152. Taking the first day or the second as the survey date gives identical Schedule B to one decimal, so this is not a fork.
+- **Which survey finds a leak.** I used the last survey on or before the "Received in tracker" date. The lag is 0 to 4 days and surveys are at least 84 days apart, so the mapping is unique.
+- **Same leak found again.** Directive s.5.2 is operational: an earlier tag on the same battery and component not repaired by the later survey. In all 159 same-component pairs the earlier repair is at least 66 days from the later survey, so there is no boundary case. 52 pairs are the same leak.
+- **Leak start.** The start is the previous full survey's day, clipped to 1 January for leaks found in 2025. The clip removes any question about a missing earlier survey.
+- **Repair day, in-house orders.** For the EHS (in-house) work orders, Completed is the repair day. It differs from the date in the reference number by 0 to 59 days, and from the tracker's Closed by 32 to 75 days only for the 36 re-check cases.
+- **Repair day, contract orders.** For the Field-ticket (contract) work orders, Completed equals the ticket date and the tracker's Closed in all 333 cases, so there is no fork.
+- **Repair day, 36 repeat repairs.** The directive's rule is the last repair that names the tag. Using the tracker's first-repair Closed instead gives different numbers, for example R01 H2 7.3, R02 H2 3.1 and R07 H2 3.7. The prompt does not state this, but the work-order text ("did not hold") and s.5.2 force it.
+- **Same-leak merge.** Not merging same-leak tags gives much larger numbers, for example R01 H2 10.7 and R04 H2 14.2. s.5.2 states the rule, so this is closed.
+- **Route in each half.** There is one route per battery per half, with no mixed rows. Route-app routes cover H1 and check-in runs from 1 July cover H2. 12 batteries change on 1 July 2026 and a different 12 on 4 January 2027. Check-in rows from January 2027 must be excluded from H2, and the register's 2027 routes must not be used. A solver who uses the register's route gets 12 batteries wrong.
+- **BT-0907 and BT-0907A.** They are one battery (renamed). Records exist under both names in surveys, the tracker, production and work orders, and merging them is necessary and unique.
+- **Clock.** Directive s.1 fixes local time (UTC-7 until 8 March 2026 02:00, UTC-6 after). Schedule B is date-based, so DST does not touch it. The check-in app stamps are -06:00 throughout.
+
+**Main figure, 54.5 t, band C.** Recomputed independently:
+- **Visits.** 1,660 events matched one-to-one to a visit. Kinds split 1,425 HATCH, 58 COMBUSTOR, 177 RELIEF, as claimed. I took check-in re-entries within ten minutes once and dropped the 430 June check-ins that duplicate the route app.
+- **Alarm start.** For the 54 relief events at telemetered batteries I took the first alarm of the last lift, with lifts separated at 10 minutes. Within-lift chatter gaps are 1.4 minutes or less and distinct lifts are 28 minutes or more apart, so the lift definition is data-separated. Starting on the RTU clock or the journal clock differs by 0.0002 t, so the clock choice does not move the answer.
+- **Fit.** Share-plus-rate, maximum likelihood per kind, with each hour at the day's oil volume times GOR times C1 times 0.6785 kg a cubic metre. The totals follow.
+
+| Convention | Total |
+|---|---|
+| No-event windows end at arrival, per visit | 53.97 t |
+| No-event windows end at departure, per visit | 54.74 t |
+| Per-tank variants, before the alarm swap (arrival, then departure) | 51.3 t, 52.0 t |
+| Per-visit variants, before the alarm swap (arrival, then departure) | 53.7 t, 54.5 t |
+
+I reproduce the claimed 54.5 t only approximately, and not under any one convention. Across all variants the band does not change.
+
+**Competing answers that fail.**
+- **Band B (44.8 t).** Starting every undated event halfway through its window. It is wrong, as the fit shows hatches left open at departure.
+- **Band E (88.8 t).** Starting every undated event at the previous departure. It is wrong.
+
+## Files/Hygiene
+
+PASS. There are 14 files in five formats (csv, jsonl, xlsx, pdf, xml). The production file has 68,760 rows and the SCADA journal 46,538. hauler_load_tickets_2026.csv and sales_gas_meter_statements_2026.xml are unused distractors with no bearing on the answer. The release register carries mixed timestamp formats (870 ISO with offset, 790 plain) and the check-in app logs are visibly system output. I saw no authoring leakage and no benchmark language, and the dates sit inside the fiction (latest file 13 January 2027, after the 2026 year). Nothing exclusion-level.
+
+## Stump power
+
+Good. A strong solver who cleans the data still files band B or band E on the easy start-time conventions, or a wrong Schedule B on the first-repair, no-merge or register-route shortcut. The band split rests on the share of hatches left open at departure, which the fit finds in the data.
+
+## Stumping type
+
+mechanism: forecasting/method_or_model_selection (the expected start of an undated event, fitted to all 2026 windows), plus etl_conformance for the filing. stumping_family: analytical_non_defect. surface_read_dependency: no. sole_data_defect: no.
+
+The reported numbers are fine and the difficulty is the choice of how to estimate an unobserved start, so it passes Gate G.
+
+## Three rules
+
+domain: pass, layers: pass, decisive_step: analytical.
+
+The field's own analysis is estimating the start of an undated emission event from visit windows. The easy route is starting events at the window midpoint (band B, about 44.8 t) or at the previous departure (band E, about 88.8 t). Layer 1 is the two-app merge, the BT-0907 rename, the DST change and the tracker lag. Layer 2 is the window-based start estimate.
+
+## Fix
+
+Where: solution/rubric. Do not change the pack. Grade the year total as band C at about 54 t (51 to 55), not as exactly 54.5, and grade the per-event methane with the same tolerance. Keep Schedule B to one decimal, and note that R10 H2 is 7.8 (7.8497). Do not file the fit model, because that would turn the decisive step into rule application.
 
 ## Pass 2 verdict
 

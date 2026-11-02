@@ -20,7 +20,8 @@ BANDS = [("A", 0, 36, 330), ("B", 36, 48, 640), ("C", 48, 60, 950), ("D", 60, 72
 KIND_CODE = {"TH": "HATCH", "CP": "COMBUSTOR", "PV": "RELIEF"}
 DEFAULT = dict(rename=True, utc=True, merge_split=True, dedupe_parallel=True, rtu_time=True, start="expected",
                fit_group=None, fg_chain="chain", fg_survey="log", fg_rate="first", fg_prev="log", fg_clip=True,
-               fg_repair="work", fg_route="apps", fg_sessions="full")
+               fg_repair="work", fg_route="apps", fg_sessions="full",
+               fg_spring_day="first")
 Y0, Y1 = dt.date(2026, 1, 1), dt.date(2027, 1, 1)
 HALVES = (("h1", dt.date(2026, 1, 1), dt.date(2026, 7, 1)), ("h2", dt.date(2026, 7, 1), dt.date(2027, 1, 1)))
 
@@ -320,6 +321,9 @@ def leak_wos(p, mode="work"):
     return out
 
 
+LAST_DAY = {}
+
+
 def surveys(p, o, cur):
     """each battery's surveys: the sessions that screened its points, not the re-checks of a few repaired ones"""
     rows = {}
@@ -328,9 +332,23 @@ def surveys(p, o, cur):
     sv = {}
     for b, rs in rows.items():
         top = max(int(r["PointsScreened"]) for r in rs)
-        keep = {"full": lambda r: int(r["PointsScreened"]) >= top / 2, "all": lambda r: True,
+        keep = {"full": lambda r: int(r["PointsScreened"]) >= top / 4, "nomerge": lambda r: int(r["PointsScreened"]) >= top / 4,
+                "half": lambda r: int(r["PointsScreened"]) >= top / 2, "all": lambda r: True,
                 "tagged": lambda r: int(r["LeaksTagged"]) > 0}[o["fg_sessions"]]
-        sv[b] = sorted(dt.date.fromisoformat(r["Surveyed"]) for r in rs if keep(r))
+        ds = sorted(dt.date.fromisoformat(r["Surveyed"]) for r in rs if keep(r))
+        if o["fg_sessions"] == "full":
+            # a survey screens the whole battery: sessions on consecutive working days that together screen it are one
+            # survey, dated from its first day
+            out = []
+            for d in ds:
+                if out and (d - out[-1][-1]).days <= 3:
+                    out[-1].append(d)
+                else:
+                    out.append([d])
+            for x in out:
+                LAST_DAY[(b, x[0])] = x[-1]
+            ds = [x[0] for x in out]
+        sv[b] = ds
     return sv
 
 
@@ -391,6 +409,8 @@ def fugitives(p, o, reg, cur):
         days = sorted(set(sv.get(b, []) if o["fg_prev"] == "log" else seen.get(b, [])))
         prev = [d for d in days if d < lk["first"]]
         a = prev[-1] if prev else (Y0 if o["fg_clip"] else lk["first"])
+        if o["fg_spring_day"] == "last":
+            a = LAST_DAY.get((b, a), a)
         e = lk["repaired"] if lk["repaired"] is not None else Y1
         rate = lk["rate"] if o["fg_rate"] == "first" else lk["last_rate"]
         for h, lo, hi in HALVES:

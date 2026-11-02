@@ -41,10 +41,15 @@ def compute(p=None):
     f["schedule_b.rechecked_tags"] = sum(1 for r in p["ldar_tags"] if wos.get(r["Tag"]) and (
         G.as_date(r["Closed"]) is None or max(wos[r["Tag"]]) > G.as_date(r["Closed"])))
     sv = G.surveys(p, g["opts"], cur)
-    f["schedule_b.sessions"] = sum(1 for r in p["ldar_surveys"] if dt.date.fromisoformat(r["Surveyed"]) not in
-                                   sv[cur.get(r["Battery"], r["Battery"])])
+    top = {}
+    for r in p["ldar_surveys"]:
+        b = cur.get(r["Battery"], r["Battery"])
+        top[b] = max(top.get(b, 0), int(r["PointsScreened"]))
+    f["schedule_b.sessions"] = sum(1 for r in p["ldar_surveys"]
+                                   if int(r["PointsScreened"]) < top[cur.get(r["Battery"], r["Battery"])] / 4)
     f["schedule_b.contract_orders"] = sum(1 for r in p["workorders"] if r["Description"].startswith("Leak repair") and
                                           r["Reference"].startswith("Field ticket "))
+    f["schedule_b.two_day_surveys"] = sum(1 for b, ds in sv.items() for d in ds if G.LAST_DAY.get((b, d), d) != d)
     return p, g, f, fam
 
 
@@ -156,12 +161,12 @@ def workbook(path, p, g, f):
         "Methane in each hour is the battery's tank vapour methane that day (s.3.3): the day's oil, the flash gas-oil "
         "ratio and methane mole fraction of the latest tank vapour analysis on or before the day, 0.6785 kg a cubic "
         "metre, over 24 hours. BT-0907A carries BT-0907's records to 16 August 2026.",
-        "Fugitive emissions (s.5): a battery's surveys are the camera sessions that screened its points; the crews' "
-        "re-checks of a few repaired fittings in the same log are not surveys. Each tag belongs to its battery's last "
+        "Fugitive emissions (s.5): a survey screens all of a battery's components, so the crews' re-checks of a few "
+        "repaired fittings are not surveys, and a battery surveyed over two working days (the plant, then the "
+        "wellheads) has one survey, dated from its first day. Each tag belongs to its battery's last "
         "survey on or before the day the tag reached the tracker; a tag hung on a component whose earlier tag had not "
         "been repaired by that survey is the same leak found again. A leak is repaired on the day of the last leak "
-        "repair that names its tag: a contract work order on its field ticket's day (the maintenance system completes "
-        "a contract order when the foreman approves its tickets, on the 10th of the next month), and a tag closed on "
+        "repair that names its tag, and a tag closed on "
         "a first repair that a re-check found still leaking runs to the later repair. Each leak vents from its "
         "battery's last survey before it was first found to its repair, at the rate measured then, split at 1 July "
         "and kept inside 2026.",

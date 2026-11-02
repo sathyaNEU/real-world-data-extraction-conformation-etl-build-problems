@@ -168,9 +168,14 @@ def main():
     lt["bat"] = lt.Battery.map(alias)
     ls = pd.read_csv(os.path.join(T, "ldar_surveys_2025_2026.csv"))
     ls["bat"] = ls.Battery.map(alias)
-    sessions = ls[ls.PointsScreened * 2 < ls.groupby("bat").PointsScreened.transform("max")]
+    sessions = ls[ls.PointsScreened * 4 < ls.groupby("bat").PointsScreened.transform("max")]
     ls = ls.drop(sessions.index)
     ls["s"] = pd.to_datetime(ls.Surveyed)
+    # a survey screens the whole battery: a session the working day after another at the battery is its second day
+    ls = ls.sort_values(["bat", "s"])
+    second = ls.groupby("bat").s.diff().dt.days <= 3
+    two_day = int(second.sum())
+    ls = ls[~second]
     lt["t"] = pd.to_datetime(lt["Received in tracker"])
     lt = pd.merge_asof(lt.sort_values("t"), ls[["bat", "s"]].sort_values("s"), left_on="t", right_on="s", by="bat",
                        direction="backward")
@@ -221,6 +226,7 @@ def main():
     checks.append(("re-checked tags", len(redo), f["schedule_b.rechecked_tags"]))
     checks.append(("re-check sessions", len(sessions), f["schedule_b.sessions"]))
     checks.append(("contract leak orders", int(ticket.notna().sum()), f["schedule_b.contract_orders"]))
+    checks.append(("two-day surveys", two_day, f["schedule_b.two_day_surveys"]))
     bad = [c for c in checks if c[1] != c[2]]
     for c in checks:
         print("%s  %-16s %s %s" % ("PASS" if c[1] == c[2] else "FAIL", c[0], c[1], c[2]))

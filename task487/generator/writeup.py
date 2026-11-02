@@ -51,15 +51,14 @@ def main():
            "battery's tank vapour methane that day (s.3.3) from battery_daily_production_20251215_20261231.csv and "
            "tank_vapour_analyses_2025_2026.xlsx: %.1f t, band %s." % (f["methane_t"], c["band"]),
            "4. Placed each tag in ldar_leak_tracker_20270112.xlsx at its battery's survey in ldar_surveys_2025_2026.csv, "
-           "the last on or before the day it reached the tracker, reading a battery's surveys as the sessions that "
-           "screened its points (the %d re-checks of a few repaired fittings are not surveys), and took a tag hung on a "
-           "component whose earlier tag had not been repaired by that survey as the same leak found again (Directive 17 "
-           "s.5.2)." % f["schedule_b.sessions"],
-           "5. Took each leak's repair from the last leak repair in maintenance_work_orders_2026.csv that names its tag, "
-           "a contract order's on its field ticket's day (the %d contract orders were completed when the foreman "
-           "approved their tickets, on the 10th of the next month or the next working day): %d tags the tracker closed on a first repair were "
-           "still leaking at a re-check, and their leaks run to the later work order." % (
-               f["schedule_b.contract_orders"], f["schedule_b.rechecked_tags"]),
+           "the last on or before the day it reached the tracker, reading a survey as the screening of all of a battery's "
+           "components (Directive 17 s.5.2): the %d re-checks of a few repaired fittings are not surveys, and the %d "
+           "surveys done over two working days, the plant one day and the wellheads the next, are one survey each. A tag "
+           "hung on a component whose earlier tag had not been repaired by that survey is the same leak found again "
+           "(s.5.2)." % (f["schedule_b.sessions"], f["schedule_b.two_day_surveys"]),
+           "5. Took each leak's repair from the last leak repair in maintenance_work_orders_2026.csv that names its tag: "
+           "%d tags the tracker closed on a first repair were still leaking at a re-check, and their leaks run to the "
+           "later work order." % f["schedule_b.rechecked_tags"],
            "6. Vented each leak from its battery's last survey before it was first found to its repair, at the rate "
            "measured then, split at 1 July and kept inside 2026, and carried each half by the run that served the "
            "battery then: the route app's Route to 30 June and the check-in app's run from 1 July, not the 2027 runs "

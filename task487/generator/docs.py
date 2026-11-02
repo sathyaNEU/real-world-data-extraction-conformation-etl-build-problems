@@ -94,8 +94,8 @@ def directive(path):
            "starts until the component is repaired. An optical gas imaging (OGI) survey of a battery screens every "
            "component of the battery and of the wells producing to it. A survey of the battery finds the leak, and a "
            "later survey that finds it again before it is repaired has found the same leak. A leak vents at the methane "
-           "rate measured when it was first found, from the start of the day of the battery's last survey before it was "
-           "first found until the start of the day it was repaired, or to the end of the year if it was not repaired in "
+           "rate measured when it was first found, from the start of the day of the battery's last survey before the one "
+           "that first found it until the start of the day it was repaired, or to the end of the year if it was not repaired in "
            "the year."),
          P("5.3 Schedule B gives each battery's fugitive methane in each half of the year, January to June and July to "
            "December, in tonnes."),

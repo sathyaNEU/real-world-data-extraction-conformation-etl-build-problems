@@ -5,10 +5,10 @@ decimal), and the pair ceiling those keeps imply.
 
     python3 task487/generator/ceiling.py
 
-The cracker lands the call, executes every filed rule and the hygiene battery, and works Schedule B the way both round 3
-readers did: each half's runs from the two apps, each repair from the last work order naming its tag, every session in
-the survey log as a survey and each work order's Completed day as its repair. The mirror stops at the same rung and also
-counts every tag as a leak of its own."""
+The cracker lands the call, executes every filed rule and the hygiene battery, and works Schedule B the way the stage 4
+readers did: each half's runs from the two apps, each repair from the last work order naming its tag, the crews'
+re-checks of a few points set aside as no survey of the battery, and every other session in the survey log taken as a
+survey of its own. The mirror stops at the same rung and also counts every tag as a leak of its own."""
 import os
 import sys
 
@@ -20,11 +20,11 @@ import pack_read as PR  # noqa: E402
 
 ROUTES = ["R%02d" % i for i in range(1, 13)]
 HANDLINGS = {
-    "cracker": dict(fg_sessions="all", fg_repair="completed"),
-    "mirror": dict(fg_sessions="all", fg_repair="completed", fg_chain="none"),
+    "cracker": dict(fg_sessions="nomerge"),
+    "mirror": dict(fg_sessions="nomerge", fg_chain="none"),
     "naive": dict(fg_sessions="all", fg_repair="tracker", fg_route="register"),
-    "sessions_right_completed_days": dict(fg_repair="completed"),
-    "tickets_right_every_session": dict(fg_sessions="all"),
+    "every_session_a_survey": dict(fg_sessions="all"),
+    "sessions_over_half_the_battery": dict(fg_sessions="half"),
     "tagged_sessions_only": dict(fg_sessions="tagged"),
     "reference_dates_everywhere": dict(fg_repair="refdate"),
     "tracker_closure_only": dict(fg_repair="tracker"),

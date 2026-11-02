@@ -1,7 +1,7 @@
 {
  "task": "task487",
  "title": "Vennholt Energy's 2026 release-event return and its 2027 levy under the Provincial Energy Board's Directive 17",
- "setting": "A fictional upstream oil producer's 180 tank batteries in a fictional western Canadian province, whose energy board levies release-event methane in bands: the province, the board, the operator, its field and its people are fictional, and every record is synthetic.",
+ "setting": "A fictional upstream oil producer's tank batteries in a fictional western Canadian province, whose energy board levies release-event methane in bands: the province, the board, the operator, its field and its people are fictional, and every record is synthetic.",
  "as_of": "2027-01-14",
  "deliverables": [
   "release_events_2026.csv",
@@ -9,7 +9,7 @@
  ],
  "distractor_files": [
   "target/hauler_load_tickets_2026.csv",
-  "target/sales_gas_meter_statements_2026.csv"
+  "target/sales_gas_meter_statements_2026.xml"
  ],
  "stated_inputs": [
   "calendar 2026",
@@ -53,13 +53,6 @@
    "rows": 26495
   },
   {
-   "file": "kesmere_field_data_notes.txt",
-   "source": "Vennholt Energy Ltd., Kesmere field, production data team, notes on the exports (fictional, synthetic records)",
-   "date": "2027-01-13",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
    "file": "ldar_leak_tracker_20270112.xlsx",
    "source": "Vennholt Energy Ltd., Kesmere field, EHS office, leak tracker (fictional, synthetic records)",
    "date": "2027-01-12",
@@ -71,14 +64,14 @@
    "source": "Vennholt Energy Ltd., Kesmere field, EHS office, OGI leak survey log (fictional, synthetic records)",
    "date": "2027-01-12",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 858
+   "rows": 1049
   },
   {
    "file": "maintenance_work_orders_2026.csv",
    "source": "Vennholt Energy Ltd., Kesmere field, maintenance system, work orders completed in 2026 (fictional, synthetic records)",
    "date": "2027-01-08",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 3694
+   "rows": 3669
   },
   {
    "file": "peb_directive_17_release_event_return_2025.pdf",
@@ -102,11 +95,11 @@
    "rows": 27082
   },
   {
-   "file": "sales_gas_meter_statements_2026.csv",
+   "file": "sales_gas_meter_statements_2026.xml",
    "source": "Vennholt Energy Ltd., Kesmere field, gas marketing, sales meter monthly statements (fictional, synthetic records)",
    "date": "2027-01-11",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 36
+   "rows": null
   },
   {
    "file": "scada_alarm_journal_20251215_20270112.csv",

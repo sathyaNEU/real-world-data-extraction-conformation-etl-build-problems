@@ -18,6 +18,7 @@ TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 sys.path.insert(0, HERE)
 
+import asks as A        # noqa: E402
 import ceiling as C     # noqa: E402
 import family as FAM    # noqa: E402
 import golden as G      # noqa: E402
@@ -219,9 +220,19 @@ def main():
     gold, keeps = C.measure(p)
     n = len(gold)
     check("asks: 24 graded Schedule B figures", n == 24)
-    for k in ("cracker", "sessions_right_completed_days", "tickets_right_every_session", "register_runs_only",
-              "tags_as_leaks_only", "received_as_survey_day", "one_leak_a_work_order", "tracker_closure_only"):
+    for k in ("cracker", "every_session_a_survey", "tagged_sessions_only", "register_runs_only",
+              "tags_as_leaks_only", "received_as_survey_day", "one_leak_a_work_order"):
         check("asks: %s keeps at most one" % k, keeps[k][0] <= 1, "%d of %d" % (keeps[k][0], n))
+    check("asks: sessions over half their battery taken as surveys keep half or less",
+          keeps["sessions_over_half_the_battery"][0] <= 12, "%d of %d" % (keeps["sessions_over_half_the_battery"][0], n))
+    base = G.compute(p)["sched"]
+    crk = G.compute(p, fg_sessions="nomerge")["sched"]
+    dmin = min(abs(crk[r][h] - base[r][h]) for r in C.ROUTES for h in ("h1", "h2"))
+    check("asks: the cracker's path moves every figure by 0.15 t or more", dmin >= .15, "%.2f t" % dmin)
+    alt = C.figures(G.compute(p, fg_spring_day="last")["sched"])
+    check("asks: the day of a two-day survey a leak starts from moves no figure (inert)", alt == gold)
+    check("asks: the tracker's closures as repairs (the re-checks that did not hold) move a third or more",
+          keeps["tracker_closure_only"][0] <= 16, "%d of %d" % (keeps["tracker_closure_only"][0], n))
     check("asks: the mirror keeps a fifth or less", keeps["mirror"][0] <= 4, "%d of %d" % (keeps["mirror"][0], n))
     check("asks: every reference's date taken as the repair keeps a quarter or less",
           keeps["reference_dates_everywhere"][0] <= 6, "%d of %d" % (keeps["reference_dates_everywhere"][0], n))
@@ -317,11 +328,26 @@ def main():
     rows_by = collections.defaultdict(list)
     for r in p["ldar_surveys"]:
         rows_by[cur.get(r["Battery"], r["Battery"])].append(r)
-    is_full = lambda b, r: dt.date.fromisoformat(r["Surveyed"]) in full[b]
+    sdays = {b: set(ds) | {G.LAST_DAY.get((b, d), d) for d in ds} for b, ds in full.items()}
+    is_full = lambda b, r: dt.date.fromisoformat(r["Surveyed"]) in sdays[b]
     small = [(b, r) for b, rs in rows_by.items() for r in rs if not is_full(b, r)]
     check("asks: three surveys at every battery, autumn 2025, spring and autumn 2026",
           all(len(v) == 3 for v in full.values()) and len(full) == 180)
-    check("asks: every re-check session screened under a third of its battery's smallest survey", all(
+    two = [(b, d, G.LAST_DAY[(b, d)]) for b, ds in full.items() for d in ds if G.LAST_DAY.get((b, d), d) != d]
+    pts = {(cur.get(r["Battery"], r["Battery"]), r["Surveyed"]): int(r["PointsScreened"]) for r in p["ldar_surveys"]}
+    one = {b: [pts[(b, d.isoformat())] for d in ds if G.LAST_DAY.get((b, d), d) == d] for b, ds in full.items()}
+    check("asks: two-day surveys in both 2026 rounds, on most routes",
+          len({(d.month < 8) for b, d, e in two}) == 2 and len({h1.get(b) for b, d, e in two}) >= 10, "%d surveys" % len(two))
+    check("asks: each two-day survey's days are consecutive working days, neither alone the battery's whole survey",
+          all(A.workday(d + dt.timedelta(days=1)) == e and max(pts[(b, d.isoformat())], pts[(b, e.isoformat())]) <
+              min(one[b] or [10 ** 6]) - 15 for b, d, e in two))
+    check("asks: the two days together screen what the battery's one-day surveys screen (within 25 points)",
+          all(abs(pts[(b, d.isoformat())] + pts[(b, e.isoformat())] - np.mean(one[b])) <= 25 for b, d, e in two if one[b]))
+    check("asks: wellhead tags of a two-day survey reach the tracker on or after its second day", all(
+        G.as_date(r["Received in tracker"]) >= e for r in p["ldar_tags"] for b, d, e in two
+        if cur.get(r["Battery"], r["Battery"]) == b and r["Component"].startswith("Wellhead") and
+        [x for x in full[b] if x <= G.as_date(r["Received in tracker"])][-1] == d))
+    check("asks: every re-check session screened under a third of its battery's smallest survey session", all(
         3 * max([int(r["PointsScreened"]) for r in rs if not is_full(b, r)] or [0]) <
         min(int(r["PointsScreened"]) for r in rs if is_full(b, r)) for b, rs in rows_by.items()), "%d sessions" % len(small))
     check("asks: no session tags a leak, and surveys that tagged none are a fifth of all (the twin)",
@@ -329,23 +355,22 @@ def main():
           sum(1 for b, rs in rows_by.items() for r in rs if is_full(b, r) and int(r["LeaksTagged"]) == 0) >= 100)
     check("asks: no session within a week of a survey", not any(
         abs((dt.date.fromisoformat(r["Surveyed"]) - d).days) <= 7 for b, r in small for d in full[b]))
-    every = {b: sorted(dt.date.fromisoformat(r["Surveyed"]) for r in rs) for b, rs in rows_by.items()}
+    every = {b: sorted(set(full[b]) | {dt.date.fromisoformat(r["Surveyed"]) for r in rs if not is_full(b, r)})
+             for b, rs in rows_by.items()}
     off = sum(1 for r in p["ldar_tags"] if [x for x in every[cur.get(r["Battery"], r["Battery"])] if x <= G.as_date(
         r["Received in tracker"])][-1] != [x for x in full[cur.get(r["Battery"], r["Battery"])] if x <= G.as_date(r["Received in tracker"])][-1])
-    check("asks: every tag lands on the same survey whether or not sessions are read as surveys", off == 0, "%d" % off)
+    check("asks: every tag lands on the same survey whether or not re-checks are read as surveys", off == 0, "%d" % off)
     on = {(b, r["Surveyed"]) for b, r in small}
     wo2 = [r for r in p["workorders"] if "did not hold" in r["Description"]]
     check("asks: every repair at a re-check falls on a session at its battery", all(
         (cur.get(r["Battery"], r["Battery"]), r["Completed"]) in on for r in wo2), "%d work orders" % len(wo2))
-    check("asks: sessions in both halves on every route",
-          {h1.get(b) for b, r in small if "2026-01-01" <= r["Surveyed"] < "2026-07-01"} >= set(C.ROUTES) and
+    check("asks: re-check sessions in the first half on most routes and in the second on every route",
+          len({h1.get(b) for b, r in small if "2026-01-01" <= r["Surveyed"] < "2026-07-01"}) >= 10 and
           {h2.get(b) for b, r in small if r["Surveyed"] >= "2026-07-01"} >= set(C.ROUTES))
-    # the second device: a contract work order is completed when its field tickets are approved
-    import asks as A
+    # contract work: the maintenance system completes an order on the day of the work, its field ticket's day
     ft = [r for r in p["workorders"] if r["Reference"].startswith("Field ticket ")]
-    check("asks: every contract order completes on the 10th of the month after its ticket, or the next working day",
-          all(dt.date.fromisoformat(r["Completed"]) == A.approval(G.ref_day(r["Reference"])) for r in ft),
-          "%d orders" % len(ft))
+    check("asks: every contract order completes on its field ticket's day",
+          all(dt.date.fromisoformat(r["Completed"]) == G.ref_day(r["Reference"]) for r in ft), "%d orders" % len(ft))
     check("asks: every field ticket outside a shutdown is dated on a working day", all(
         A.workday(G.ref_day(r["Reference"])) == G.ref_day(r["Reference"]) for r in ft if "shutdown" not in
         r["Description"]))

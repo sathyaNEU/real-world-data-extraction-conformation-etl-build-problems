@@ -1,10 +1,10 @@
 {
  "task": "task487",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences/emissions-inventory",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-02",
  "stump": "The default path starts every event the records do not date halfway through its window, which the alarm-timed relief valves appear to confirm, and files band B at 45.2 t for a 2027 levy of CAD 115,200; 0.85 per cent of departing visits leave a thief hatch open that vents its whole window, read from hatches rising only 2.1 times from a weekday window to a weekend one for 3.0 times the hours, and the hatches' expected starts given their windows put the return in band C at 54.5 t, CAD 171,000",
  "architecture": 1,
@@ -15,7 +15,7 @@
   "mirror_leakage": 0.0
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-26, zip 3556c4e7; dates clean at 14 January 2027)",
+  "leak_py": "REVIEW, no LEAK, sweeps 12 and 13 clean (2026-11-02, zip 246c562d)",
   "reader": "round 4 (zip 3556c4e7): readers G and H missed the call (band B, 45.1 and 45.2 t) and kept 4 of 29 each, the event counts, Schedule B 0 of 24 (score_reader exit 0 twice); round 3 (zip c216be49): E and F missed the call and kept 28 of 29, re-sited; round 2 (zip 5b6b5f54): C and D missed the call, 5 of 31; round 1 (zip b85062d5): A and B missed the call, A kept 31 of 47, re-sited"
  },
  "duplicate_check": {
@@ -24,20 +24,24 @@
   "surface": "personas none, golden clean (zip 3556c4e7)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (round 4 re-judge of round 3's FIX_NOW, zip 3556c4e7, order kept)",
-  "disposition": "APPROVE",
-  "gates": "Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical",
-  "residual": "R10 July to December 7.8497 t, 272 g under its rounding edge (only a fall-back hour the notes rule out moves it alone); the survey and repair cut-offs read from the data, weighed as data-supported",
-  "earlier": "round 1 DETERMINISTIC on the call with FIX_NOW; round 2 NOT_DETERMINISTIC on Schedule B only, an ask-layer repair; round 3 DETERMINISTIC with FIX_NOW on the stated methane range",
+  "verdict": "DETERMINISTIC (pass 3, zip 246c562d)",
+  "disposition": "FIX_NOW on grading only, no pack change",
   "report": "determinism_check_report.md"
  },
- "returned": [],
- "resume": "Schedule B ask-layer rework (/fix-rubric scale, the main call frozen): the repaired cut (zip 74e32011, the data notes out, every free gate green, freeze.py determinism PASS) has the judge's FIX_NOW open on the contract repair day and the July run change (R06, R10 H2); re-site the ask's device so it is determinate without a filed HOW, re-measure ceiling.py, re-judge, then RESHIPPED. The shipped zip 3556c4e7 stays the portal's cut until then.",
+ "returned": [
+  {
+   "date": "2026-11-02",
+   "portal": "none (in-house re-check under the new gates)",
+   "repair": "leak and rubric: the data notes out, Schedule B re-sited onto two-day surveys",
+   "commit": ""
+  }
+ ],
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-26",
  "portal": null,
  "source_note": "seed ET44 (analytical_tasks/07_data_extraction_conformation/ET44_online-retail-net-spend-loyalty-tier-cuts.md), header and situation only; world not carried",
- "zip": "3556c4e75dcdeac2f2dac0823508443e",
+ "zip": "246c562db3e51e667297859073388b73",
  "gates": {
   "checks": "129 PASS, 0 FAIL",
   "verify": "33 of 33",
@@ -51,14 +55,17 @@
   "rebuild": "3556c4e7 reproduced byte for byte",
   "analyst_test": "midpoint 45.18 t B, constant-rate interval-censored 45.53 t B, last known good 87.46 t E, decisive fit 54.54 t C",
   "reflex": "golden not the field's reflex: the midpoint, last known good and the uninformative fit sit at rung 0",
-  "cut": "74e32011 (not shipped)",
+  "cut": "246c562d (shipped)",
   "precut": "61 checks, 0 FAIL, 0 WARN",
   "leak_py": "REVIEW, sweeps 12 and 13 clean",
-  "reader": "two reads, questions 1 to 4 none, question 6 analytical",
+  "reader": "three reads, questions 1 to 4 none, question 6 analytical, the Schedule B device silent",
   "heart": "WARN repeat.gate_g against task121 v6",
   "surface": "exit 0",
   "figures_check": "50 of 50",
-  "freeze": "determinism PASS",
-  "judge": "pass 1 SEND_BACK, pass 2 FIX_NOW, both on Schedule B only, call forced"
+  "freeze": "rubric PASS (three step counts moved); determinism mode lists those counts",
+  "judge": "pass 1 SEND_BACK and pass 2 FIX_NOW on Schedule B (contract repair day, July run change); after the Schedule B rework pass 3 DETERMINISTIC on the call and Schedule B, FIX_NOW on grading only (the 54.5 t total and per-event methane graded with a tolerance inside band C; no pack change)",
+  "ceiling": "28.5, cracker and mirror 0 of 24",
+  "checks": "138 PASS",
+  "verify": "34 of 34"
  }
 }

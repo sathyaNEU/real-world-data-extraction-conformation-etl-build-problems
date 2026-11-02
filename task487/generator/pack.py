@@ -407,7 +407,14 @@ CM = ["Replaced dump valve trim", "Repaired flowline leak", "Replaced packing on
 
 def received(w, x):
     """the day a tag reached the tracker: in 2026 the second crew's tablet syncs at the end of its week"""
-    return synced(x["survey"]) if w.ldar_crew[(x["bat"], x["survey"])] == "ogi08" else x["survey"]
+    d = day_screened(w, x["bat"], x["survey"], x["point"])
+    return synced(d) if w.ldar_crew[(x["bat"], x["survey"])] == "ogi08" else d
+
+
+def day_screened(w, code, survey, point):
+    """the day a survey screened a point: a two-day survey screens the wellheads on its second day"""
+    d2 = w.ldar["split"].get((code, survey))
+    return d2 if (d2 is not None and point.startswith("Wellhead")) else survey
 
 
 CONTRACTOR = "Brantham Field Services Ltd."
@@ -471,7 +478,7 @@ def work_orders(path, w):
             row.append("%s %s-%02d" % (pre, on.strftime("%y%m%d"), seq[(pre, on)]))
         else:
             row.append(plan[(b, txt)])
-        done = A.approval(d) if con else d
+        done = d
         row.append(done)
         if key is not None:
             w.ldar_wo_no[key] = n
@@ -552,7 +559,11 @@ def ldar_surveys(path, w):
     r = np.random.default_rng(W.SEED + 42)
     tagged = {}
     for x in w.ldar_rows:
-        tagged[(x["bat"], x["survey"])] = tagged.get((x["bat"], x["survey"]), 0) + 1
+        k = (x["bat"], day_screened(w, x["bat"], x["survey"], x["point"]))
+        tagged[k] = tagged.get(k, 0) + 1
+    nwell = {}
+    for x in w.wells:
+        nwell[x["bat"]] = nwell.get(x["bat"], 0) + 1
     npts = {}
     for lk in w.ldar["leaks"]:
         npts.setdefault(lk["bat"], set()).add(lk["point"])
@@ -562,8 +573,14 @@ def ldar_surveys(path, w):
         base = 70 + 30 * sum(1 for x in w.wells if x["bat"] == code) + (60 if b["cls"] != "mwf" else 0) + \
             (90 if b["cls"] == "twice" else 0)
         for d in sorted(w.ldar["surveys"][code]):
-            rows.append([d, code_at(code, d), base + int(r.integers(-12, 13)), tagged.get((code, d), 0),
-                         w.ldar_crew[(code, d)]])
+            n = base + int(r.integers(-12, 13))
+            d2 = w.ldar["split"].get((code, d))
+            if d2 is None:
+                rows.append([d, code_at(code, d), n, tagged.get((code, d), 0), w.ldar_crew[(code, d)]])
+                continue
+            wh = 30 * nwell[code] + int(r.integers(-6, 7))
+            rows.append([d, code_at(code, d), n - wh, tagged.get((code, d), 0), w.ldar_crew[(code, d)]])
+            rows.append([d2, code_at(code, d2), wh, tagged.get((code, d2), 0), w.ldar_crew[(code, d)]])
     # the crew's re-checks of repaired points: each repaired point and the fittings beside it, nothing tagged
     pts_of = {}
     for lk in w.ldar["leaks"]:

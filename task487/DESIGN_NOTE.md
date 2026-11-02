@@ -248,54 +248,57 @@ the sales gas meter statements ship as distractors: the vapour rate is read from
 gas is no part of the return; no golden figure opens them.
 
 - **Ask A, each route's 2026 fugitive methane in January to June and in July to December, from the leaks at the
-  batteries it ran in that half, tonnes to one decimal (24 figures).** H18 home: Schedule B of the same return
-  (directive s.5), the fugitive emissions the Board records beside the levied events, half-yearly like the surveys, rolled
-  up by the runs the field manages its leaks by. User: the regulatory analyst who files the return. The directive files
-  what a leak is (one component's escape from when it starts until the component is repaired, the same leak however
-  many surveys find it before then), its rate (measured when first found) and its window; the tracker's own headers say
-  its dates are the day a tag was received in the tracker and the day it was closed, the survey log's headers give the
-  points each session screened, and the work orders name the vendor on contract work beside each Reference. Primary device (silent, D6 a log read as a roster): the
-  survey log holds, beside each battery's three surveys, 318 re-checks of repaired fittings that the crews ran 30 to 75
-  days after the tracker closed their tags, each screening 2 to 20 points and tagging nothing; a leak vents from its
-  battery's last survey before it was found, so a reader who takes every session as a survey starts most of the year's
-  autumn leaks weeks late. Only the points screened, read against the battery's own surveys, say which sessions are
-  surveys. Twin: 124 of the 540 surveys tagged nothing either, so an empty tag count does not mark a re-check. Second
-  device (silent, D8 a settlement date for the event date): a contract work order is completed in the maintenance system
-  when the field foreman approves the contractor's field tickets, on the 10th of the next month or the next working day,
-  and the tracker closes its tags that day; the day of the repair sits only in the field ticket's number in the Reference
-  column (251 contract leak orders). The field's own maintainers complete theirs on the day of the work, and their
-  references are the notifications the orders were raised on, so every reference's date read as the repair dates the
-  field's own repairs at their notification. Twin: contract work outside the leak program completes the same way. The
-  two devices pull opposite ways (a late start cuts a leak, a late repair adds to it), so their seeds (136 and 139) put
-  the reader path and each half-fix off every cell. Hazards, each seen or filed in round 3: the runs redrawn on 1 July
-  and 4 January (the register carries the 2027 runs), 36 re-checks that found a first repair still leaking (a later
-  work order naming the tag), a deferred leak tagged again, the second crew's Friday sync, autumn 2025 leaks clipped at
-  1 January, the battery's old code before its re-licensing. Stops, measured on the cut pack: the round 3 readers' path
-  (every session a survey, each work order's Completed day: the cracker) 0 of 24, the same with every tag a leak (the
-  mirror) 0, the register's runs with the tracker's closures and every session (the naive handling) 0, the sessions read
-  right with Completed days 0, the field tickets read right with every session 0, the empty sessions dropped instead of
-  the small ones 20, every reference's date as the repair 5, the tracker's closures 1, every tag a leak 0, Received as
-  the survey day 0, one leak a component 2, the latest rate 4, the golden.
+  batteries it ran in that half, each battery's whole half counted to the one route that ran it then, tonnes to one
+  decimal (24 figures).** H18 home: Schedule B of the same return (directive s.5), the fugitive emissions the Board
+  records beside the levied events, half-yearly like the surveys, rolled up by the runs the field manages its leaks by.
+  User: the regulatory analyst who files the return. The directive files the WHAT: a leak is one component's escape
+  from when it starts until the component is repaired, the same leak however many surveys find it before then; a survey
+  of a battery screens every component of the battery and of its wells; a leak vents at the rate measured when first
+  found from the start of the day of the battery's last survey before the one that first found it. The prompt files the
+  attribution (each battery's whole half to the one route that ran it then: every battery has one run in each half's
+  visits, asserted). Pin test: each sentence names a population, a unit or a window, and none says that a survey can
+  take more than one session, how the log records one, or how sessions are grouped. Primary device (silent, D6 one
+  event logged at a finer grain, a reconstruction of survey identity): in the 2026 rounds the crews survey a battery
+  with four or more wells (three in the spring) over two working days, the plant on the first and the wellheads on the
+  next, and the survey log records each day's session (152 two-day surveys); the wellhead tags reach the tracker on the
+  second day. A reader who takes each session as a survey dates a second-day leak from the first day's session, so the
+  leak loses its months since the previous survey: the cracker's path moves every figure by 0.17 to 3.85 t. Only the
+  points each session screened, set against the battery's one-day surveys (the two days together screen what one day
+  screens elsewhere, neither alone does), say which sessions are one survey. Twins: one-day surveys at neighbouring
+  batteries fall on consecutive days in every round; the crews' re-checks of a few repaired fittings (357 sessions of
+  2 to 20 points, tagging nothing) sit in the same log, and 124 one-day surveys tagged nothing either. Forcing figure:
+  under the filed survey definition the two sessions are one survey in every case (asserted: consecutive working days,
+  each under the battery's one-day surveys by 15 points or more, together within 25 points of them). The spring round
+  splits only where no later leak's window runs from it, so which day of a two-day survey a leak starts from moves no
+  figure (asserted inert). Hazards: the re-check sessions (now named by the survey definition, seen), the runs redrawn on
+  1 July and 4 January, 36 re-checks that found a first repair still leaking (a later work order naming the tag), a
+  deferred leak tagged again, the second crew's Friday sync, autumn 2025 leaks clipped at 1 January, the battery's old
+  code before its re-licensing. Contract work orders complete on the day of the work (their Field ticket reference and
+  Vendor are texture, every Completed day is the ticket's), so no repair day is open. Stops, measured on the cut pack:
+  the stage 4 readers' path with the re-checks set aside and every other session a survey (the cracker) 0 of 24, the
+  same with every tag a leak (the mirror) 0, the register's runs with the tracker's closures and every session (the
+  naive handling) 0, every session a survey 0, sessions over half their battery taken as surveys 11, sessions that
+  tagged a leak taken as surveys 1, the tracker's closures 15, every reference's date as the repair 5, every tag a leak
+  0, Received as the survey day 0, one leak a component 2, the latest rate 4, the golden.
 
 | Ask | What the cracker does | Cracker |
 |---|---|---|
-| A | as both round 3 readers did: the filed leak, rate and window rules, each half's runs from the two apps and each repair from the last work order naming its tag, with every session in the survey log a survey and each work order's Completed day its repair | misses |
+| A | as the stage 4 readers did: the filed leak, survey, rate and window rules, each half's runs from the two apps, each repair from the last work order naming its tag, the re-checks of a few points set aside, and every other session taken as a survey of its own | misses |
 
-Measured by: `generator/ceiling.py` on the cut pack (zip 3556c4e7).
+Measured by: `generator/ceiling.py` on the cut pack (zip 246c562d).
 
 | Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps | Cracker |
 |---|---|---|---|---|---|
 | A fugitive methane by route in each half of 2026 | 24 | 0 | 0 | 0 | misses |
 
 Over the 24 figures the cracker keeps 0.0 per cent of ask weight (scores 45.0 with the call), the mirror 0.0 per cent
-(12.0), the naive handling 0.0 per cent; a reader who reads one device right and not the other keeps none, and one who
-drops the survey log's empty sessions in place of its small ones keeps 20 (only 16 spring surveys tagged nothing).
+(12.0), the naive handling 0.0 per cent; the half-fix that keeps the larger session of each two-day survey keeps 11.
 
 Pair ceiling: 28.5.
 Mirror leakage: 0.0 per cent of ask weight.
 The construction layer is the event file and the band, which the cracker has with the call and the mirror misses with
-it. This is the paper measurement of the cracker the script models, built on round 3's two readers' own path; the stage
-4 readers measure the real one.
+it. The full includer, who sets the sessions against each battery's one-day surveys and joins the two days, lands the
+ask: this is a single device, and the portal measures whether the readers' path holds.
 
 ## Leak sweep rulings
 
@@ -419,14 +422,23 @@ the last cut (zip 74e32011): checks 131 PASS, verify 33 of 33, byte-identical re
 voice-check PASS, leak.py REVIEW (sweeps 12 and 13 clean), figures_check 50 of 50, heart WARN (repeat.gate_g against
 task121 v6, as shipped), surface exit 0, freeze.py determinism PASS, pair ceiling 28.5.
 
-Stage 4: both readers quoted nothing for questions 1 to 4 and read the decisive step as analytical. The judge returned
-SEND_BACK on zip 3568be1c and FIX_NOW on zip 74e32011, each on Schedule B alone with the call forced: with the notes gone,
-nothing shipped says a contract order's repair is its field ticket's day rather than its Completed day (every Completed
-reading moves all 24 cells, by up to 1.3 t), and a battery whose run changed on 2 or 3 July can be counted to either run
-for the days before its first new-run visit (R06 and R10 in July to December; R10's 7.8497 t is 0.3 kg from its rounding
-edge). Closing either needs a sentence naming the device itself (the repair day's source, the run's change day), which
-hands the ask's last silent device to every reader, so this is an ask-layer rework, not a re-check repair. The repo
-keeps the shipped zip 3556c4e7; the generator builds the repaired cut 74e32011.
+Stage 4 on the leak-only repair: both readers quoted nothing for questions 1 to 4 and read the decisive step as
+analytical; the judge returned SEND_BACK (zip 3568be1c) and FIX_NOW (zip 74e32011), each on Schedule B alone with the call
+forced, on the contract repair day (nothing shipped said a contract order's Completed day was its approval) and the July
+run change (the days before a moved battery's first visit on its new run).
+
+Schedule B rework (supplemental-stumping, the main call frozen): the contract lag withdrawn (every order completes on the
+day of the work); the July reading closed by the asking sentence (each battery's whole half to the one route that ran
+it then); the device re-sited onto two-day surveys logged as two sessions, closed by the WHAT in directive 5.2 (a survey
+screens every component; a leak runs from the survey before the one that found it), which names no session, grouping or
+day. Every graded Schedule B figure is unchanged; freeze.py rubric PASS (three step counts moved: the re-check sessions
+318 to 357, the contract-order count dropped, the two-day surveys 152 added), determinism mode lists those same counts.
+Final cut zip 246c562d: checks 138 PASS, verify 34 of 34, byte-identical rebuilds, ceiling 28.5 with the cracker and
+mirror at 0 of 24. Stage 4 on it: the reader quoted nothing for questions 1 to 4, read the decisive step as
+analytical and found no sentence on how the survey log's sessions are handled; the judge (pass 3) returned DETERMINISTIC on
+the call and on Schedule B, all 24 cells reproduced, with a FIX_NOW on grading only: the 54.5 t total and the per-event
+methane depend on the expected-start estimator inside band C (its fits 51.3 to 54.7 t), so they are graded with a
+tolerance and the band and levy exactly. Shipped on zip 246c562d.
 
 ## Tried and rejected
 
@@ -510,3 +522,11 @@ keeps the shipped zip 3556c4e7; the generator builds the repaired cut 74e32011.
 - 2026-11-02, re-check: the contract-order device without the notes: the Field ticket label and the Vendor column
   leave the repair day an inference from the Completed days' pattern, which both judge passes refused; filing the
   ticket's day as the repair hands the device over, so Schedule B owes a new device on data the call never reads.
+- 2026-11-02, Schedule B rework: two-day surveys in every 2026 round at random batteries: a later leak's start then
+  turns on which day of a two-day spring survey it runs from (the second day moved R04, R05, R09 and R10 in January to
+  June, by up to 35 kg), no split draw over five shares and twelve seeds left all 24 cells unmoved, and filing the
+  survey's first day as its date tells a reader that surveys span days; the spring round now splits only where no
+  later leak's window runs from it, which leaves the convention with no row to move.
+- 2026-11-02, Schedule B rework: the contract approval lag kept with a Field ticket label and a Vendor column: the
+  judge read every Completed day as the repair on the literal text; withdrawn, every contract order completes on the
+  day of the work.
