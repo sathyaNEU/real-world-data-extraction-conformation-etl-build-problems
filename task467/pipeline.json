@@ -1,55 +1,75 @@
 {
  "task": "task467",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-02",
- "stump": "The default path restates Velmont's 2025 fee-liable taxi pickups by their whole 22 per cent fall when the temporary rank opened on 4 November 2024 and sets the 2027 fee at $5.75; the analyst who sees that the Airport Line opened the same day and controls for it with all of the airport's taxi drop-offs finds the rank cost only about 3 per cent and sets $7.00; measured within the taxi zones the line serves and within the zones it does not, the rank cost about 11 per cent in each, and the fee is $6.50.",
- "architecture": 1,
+ "stump": "(at the draw) Pairing the 2026 goods-in scans with the processing records in arrival order (the cumulative curves, which reproduce 2025's tracked late counts) puts late refunds in the peak month only and files a goodwill payment several times too small; replaying the picking behaviour the 2025 labelled returns measure over 2026's own arrivals and picks puts several times as many refunds past 14 days and a second month in breach (figures fixed at build).",
+ "architecture": 2,
  "loops": 0,
- "precut": {
-  "exit": 1,
-  "date": "2026-11-02",
-  "fails": "the ask sheet's honest rows only: pair ceiling 83.5, mirror leakage 100.0, the cracker keeps both asks; the ceiling is now measured by generator/ceiling.py and the survivor anatomy is written"
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-17 on the ship build: Schedule A's 2025 fee, generic vocabulary; no LEAK",
-  "reader": "rounds 1 and 2 nothing quoted, Q6 analytical, the reader's estimate on the $7.00 rung; round 1 realism findings fixed in the generator"
- },
+ "precut": null,
+ "leak": null,
  "duplicate_check": {
-  "heart": "WARN 2026-10-17 after the redraw (shape 07, composition_mix): Gate G, decision type and question form repeat task238, answered in the design note's Draw",
-  "nearest": "task463 0.06 (guard check at the draw, WARN only: Gate G repeats task266)",
-  "surface": "0 promoted; nearest task453 0.100"
+  "check": "WARN on the registered card 2026-11-02T19:00:47Z (strategy risk identity_resolution; repeat.gate_g and overuse.gate_g method_or_model_selection), answered in the note's Draw"
  },
- "judge": {
-  "verdict": "pass 1 NOT_DETERMINISTIC (ledger only), pass 2 DETERMINISTIC",
-  "disposition": "pass 1 FIX_NOW (by-law s.3(2) now counts each trip once), pass 2 APPROVE",
-  "report": "task467/determinism_check_report.md, task467/determinism_check_report_pass2.md"
- },
- "returned": [
-  {
-   "date": "2026-11-01",
-   "portal": "none: in-house re-check under the new leak gate (LEAK: vfh_trip_records_data_dictionary.pdf, a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3); the same file named 5 columns of the data files verbatim, REVIEW)",
-   "repair": "leak",
-   "move": "Stopped writing the Office's data dictionary and the folder list (docs.py's write_dictionary and write_index removed, world.FILES without them; 21 files in four formats): folder_contents.csv gave every file's source, date, description and rows, an extract manifest under section 3. What they carried went home: each file's provenance (source, date, what it covers, rows) to metadata.json, whose subdomain no longer narrates the Airport Line's opening; the annual files' clock to the files themselves (the 2025 annual file now writes its meter times with the local zone, America/Toronto, beside the 2026 files' UTC; the 2024 file's unzoned times, read as UTC, file the same 84,000, 11 per cent, $6.50 and the same surplus and shortfall, C1); the void and late-record conventions to the rows (each 2024 reversal mirrors exactly one record; the 2025 file is the pack's only 2025 trip file and the 2026 files hold no 2025 trip); the version 2 names to themselves. No sentence was added to any document and no document's text changed. checks.py asserts that no shipped file describes the data (by name, by listing the others, by naming any data field) and re-homes SF6, SF12 and closures 4 and 19 with positive controls through the verifier's reader (76 checks); verify.py reads no dictionary. No graded figure moved: freeze determinism PASS, figures.json, the goldens, submission.md and prompt.txt unchanged; leak.py REVIEW, no LEAK; target.zip md5 4bc57ac524f1a47d809272f5bca911e6 on two consecutive builds. The reship is held on the ask layer: generator/ceiling.py (new), the careful-solver cracker, keeps 240 of 240 ask figures (ask_audit_2026_11_01).",
-   "commit": ""
-  }
- ],
- "resume": "ASK LAYER owed before the build ships again (honest-cracker audit, 2026-11-02): the shipped Ask sheet's crackers were narrowed; generator/ceiling.py's careful solver keeps 240 of 240 ask figures (pair 83.5), and the ask rework stopped at step 5 with no passing device, the step 4b full replacement included (candidate table: the design note's last Tried and rejected line). Cutting Ask A leaves 21 criteria with Ask B spent, cutting both 8, each under 25. Next, the author's call: a new ask layer on records this world would hold, designed at stage 2 and screened as code against the careful-solver cracker before any data is cut, or a re-root. The leak repair is done on the cut 4bc57ac524f1a47d809272f5bca911e6 (no LEAK; every gate green but precut's three ask rows); the leak reader owes a re-read (two files dropped, metadata.json changed).",
+ "judge": null,
+ "returned": [],
+ "resume": "Stage 2 (design) of architecture 2: default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles, the ask sheet screened as code against the careful-solver cracker, prompt.txt; then precut.py.",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": null,
  "portal": null,
- "source_note": "seed ET24 (an airport ground transportation team budgets next year's per-trip taxi fee revenue from monthly trip-record drops; a fee column that changed case and a fee that changed price): the world, the decision and the quantity kept; the seed's mechanisms kept only as Layer 1; the pitfall re-found in the series' own structure",
- "target_zip_md5": "4bc57ac524f1a47d809272f5bca911e6",
- "ask_audit_2026_11_01": {
-  "verdict": "SPENT on Asks A and B",
-  "careful_cracker_keeps": "240 of 240 ask figures (26 of 26 criteria) against the recorded 0 of 240",
-  "pair": "83.5 (82.5 with r = 3; mirror leakage 100.0 per cent; two careful responses on the call 100.0 each)",
-  "why": "the sheet's crackers were narrowed: Ask A's grouped the 2025 file by its own brokerage column, but the careful solver executes by-law s.3(2) as worded through the register's effective dates and bills Schedule A's fee whatever the meter charged (144 of 144); Ask B's dropped exact duplicates only, but the careful solver's near-exact check (one licence, zones, fare and total, start and stop minute) removes the 1,683 re-sent copies the exact check leaves, beside 315 reversal pairs, UTC converted, months by meter start (96 of 96); Ask A is computed over the call's own population, so it cannot carry a primary",
-  "probe": "task467/generator/ceiling.py on target.zip md5 4bc57ac524f1a47d809272f5bca911e6 (the full includer, golden.py's route, reproduces figures.json)",
-  "status_before": "SHIPPED",
-  "rework": "stopped 2026-11-02 under the ask-rework brief (steps 4b and 5), no ask data changed: the re-site in the 2026 drops (a Corvane unit under its serial after a power cycle in the lot, linked by timing) is a fork (other licences silent through every run, 9 of 47 runs with a second tight fit), its counter or odometer variant is spent, and the full replacement on a new ask-only record (the Authority's rank dispatch log with off-meter loads, the ledger cut to 2026) is spent (the battery's re-keyed match recovers 262 of 262 loads, 48 of 48 brokerage-months); the candidate table is the design note's last Tried and rejected line"
+ "source_note": "no seed: a draw outside the seeds in General Statistics & Data Science (data integration, record linkage and entity resolution), objective ETL, re-rooted from architecture 1 (seed ET24, survey research), which stays delivered on the portal",
+ "architecture_1": {
+  "domain": "survey-research-official-statistics",
+  "status": "PAUSED",
+  "stage": 5,
+  "stage_name": "ship",
+  "stump": "The default path restates Velmont's 2025 fee-liable taxi pickups by their whole 22 per cent fall when the temporary rank opened on 4 November 2024 and sets the 2027 fee at $5.75; the analyst who sees that the Airport Line opened the same day and controls for it with all of the airport's taxi drop-offs finds the rank cost only about 3 per cent and sets $7.00; measured within the taxi zones the line serves and within the zones it does not, the rank cost about 11 per cent in each, and the fee is $6.50.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+   "exit": 1,
+   "date": "2026-11-02",
+   "fails": "the ask sheet's honest rows only: pair ceiling 83.5, mirror leakage 100.0, the cracker keeps both asks; the ceiling is now measured by generator/ceiling.py and the survivor anatomy is written"
+  },
+  "leak": {
+   "leak_py": "REVIEW 2026-10-17 on the ship build: Schedule A's 2025 fee, generic vocabulary; no LEAK",
+   "reader": "rounds 1 and 2 nothing quoted, Q6 analytical, the reader's estimate on the $7.00 rung; round 1 realism findings fixed in the generator"
+  },
+  "duplicate_check": {
+   "heart": "WARN 2026-10-17 after the redraw (shape 07, composition_mix): Gate G, decision type and question form repeat task238, answered in the design note's Draw",
+   "nearest": "task463 0.06 (guard check at the draw, WARN only: Gate G repeats task266)",
+   "surface": "0 promoted; nearest task453 0.100"
+  },
+  "judge": {
+   "verdict": "pass 1 NOT_DETERMINISTIC (ledger only), pass 2 DETERMINISTIC",
+   "disposition": "pass 1 FIX_NOW (by-law s.3(2) now counts each trip once), pass 2 APPROVE",
+   "report": "task467/determinism_check_report.md, task467/determinism_check_report_pass2.md"
+  },
+  "returned": [
+   {
+    "date": "2026-11-01",
+    "portal": "none: in-house re-check under the new leak gate (LEAK: vfh_trip_records_data_dictionary.pdf, a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3); the same file named 5 columns of the data files verbatim, REVIEW)",
+    "repair": "leak",
+    "move": "Stopped writing the Office's data dictionary and the folder list (docs.py's write_dictionary and write_index removed, world.FILES without them; 21 files in four formats): folder_contents.csv gave every file's source, date, description and rows, an extract manifest under section 3. What they carried went home: each file's provenance (source, date, what it covers, rows) to metadata.json, whose subdomain no longer narrates the Airport Line's opening; the annual files' clock to the files themselves (the 2025 annual file now writes its meter times with the local zone, America/Toronto, beside the 2026 files' UTC; the 2024 file's unzoned times, read as UTC, file the same 84,000, 11 per cent, $6.50 and the same surplus and shortfall, C1); the void and late-record conventions to the rows (each 2024 reversal mirrors exactly one record; the 2025 file is the pack's only 2025 trip file and the 2026 files hold no 2025 trip); the version 2 names to themselves. No sentence was added to any document and no document's text changed. checks.py asserts that no shipped file describes the data (by name, by listing the others, by naming any data field) and re-homes SF6, SF12 and closures 4 and 19 with positive controls through the verifier's reader (76 checks); verify.py reads no dictionary. No graded figure moved: freeze determinism PASS, figures.json, the goldens, submission.md and prompt.txt unchanged; leak.py REVIEW, no LEAK; target.zip md5 4bc57ac524f1a47d809272f5bca911e6 on two consecutive builds. The reship is held on the ask layer: generator/ceiling.py (new), the careful-solver cracker, keeps 240 of 240 ask figures (ask_audit_2026_11_01).",
+    "commit": ""
+   }
+  ],
+  "resume": "ASK LAYER owed before the build ships again (honest-cracker audit, 2026-11-02): the shipped Ask sheet's crackers were narrowed; generator/ceiling.py's careful solver keeps 240 of 240 ask figures (pair 83.5), and the ask rework stopped at step 5 with no passing device, the step 4b full replacement included (candidate table: the design note's last Tried and rejected line). Cutting Ask A leaves 21 criteria with Ask B spent, cutting both 8, each under 25. Next, the author's call: a new ask layer on records this world would hold, designed at stage 2 and screened as code against the careful-solver cracker before any data is cut, or a re-root. The leak repair is done on the cut 4bc57ac524f1a47d809272f5bca911e6 (no LEAK; every gate green but precut's three ask rows); the leak reader owes a re-read (two files dropped, metadata.json changed).",
+  "delivered": "2026-10-17",
+  "source_note": "seed ET24 (an airport ground transportation team budgets next year's per-trip taxi fee revenue from monthly trip-record drops; a fee column that changed case and a fee that changed price): the world, the decision and the quantity kept; the seed's mechanisms kept only as Layer 1; the pitfall re-found in the series' own structure",
+  "target_zip_md5": "4bc57ac524f1a47d809272f5bca911e6",
+  "ask_audit_2026_11_01": {
+   "verdict": "SPENT on Asks A and B",
+   "careful_cracker_keeps": "240 of 240 ask figures (26 of 26 criteria) against the recorded 0 of 240",
+   "pair": "83.5 (82.5 with r = 3; mirror leakage 100.0 per cent; two careful responses on the call 100.0 each)",
+   "why": "the sheet's crackers were narrowed: Ask A's grouped the 2025 file by its own brokerage column, but the careful solver executes by-law s.3(2) as worded through the register's effective dates and bills Schedule A's fee whatever the meter charged (144 of 144); Ask B's dropped exact duplicates only, but the careful solver's near-exact check (one licence, zones, fare and total, start and stop minute) removes the 1,683 re-sent copies the exact check leaves, beside 315 reversal pairs, UTC converted, months by meter start (96 of 96); Ask A is computed over the call's own population, so it cannot carry a primary",
+   "probe": "task467/generator/ceiling.py on target.zip md5 4bc57ac524f1a47d809272f5bca911e6 (the full includer, golden.py's route, reproduces figures.json)",
+   "status_before": "SHIPPED",
+   "rework": "stopped 2026-11-02 under the ask-rework brief (steps 4b and 5), no ask data changed: the re-site in the 2026 drops (a Corvane unit under its serial after a power cycle in the lot, linked by timing) is a fork (other licences silent through every run, 9 of 47 runs with a second tight fit), its counter or odometer variant is spent, and the full replacement on a new ask-only record (the Authority's rank dispatch log with off-meter loads, the ledger cut to 2026) is spent (the battery's re-keyed match recovers 262 of 262 loads, 48 of 48 brokerage-months); the candidate table is the design note's last Tried and rejected line"
+  },
+  "fate": "spent 2026-11-02 on its ask layer (honest-cracker audit, 240 of 240 ask figures kept, pair 83.5); delivered 2026-10-17 and stays on the portal as delivered; re-rooted to architecture 2"
  }
 }
