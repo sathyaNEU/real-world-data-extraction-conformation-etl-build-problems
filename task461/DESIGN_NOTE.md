@@ -133,6 +133,34 @@ weather years, carried to the node through the proportional relationship their o
   No build on file teaches it: task229 fitted one source's error rate, task501 weighted a mixture's regimes, task457
   aligned reference periods.
 
+## Survivor anatomy
+
+Written at the 2026-11-02 re-check, from measurement on the rebuilt pack (which reproduced the shipped target.zip,
+6f9be072, byte for byte).
+
+- **Actor:** pass. What decides is the node's year being one windy draw: the share of flat days across the hub's years
+  (34 per cent in 2026 against 11 to 16 per cent, 31 per cent in 2020) is a relation among rows that no column stores.
+- **Link:** fail. The node and the hub share the operating day as a key, and the overlap comparison is the one the
+  field's record-extension method asks for by name; the join is one line of code.
+- **Reflex:** fail. The golden is the field's own method for a short record (the long-term correction of a short site
+  record through its overlap with a long correlated reference, here a ratio through the origin), the reflex stumping
+  Part 0 lists as the opponent's first move (the cover-conditioned extension); the field's method sits at the top of
+  the ladder, not at rung 0 or 1 (1.1b). The precut method-term check passes on wording only.
+- **Back-test:** fail. Nothing in the pack validates the easy route: the hub's own years show 2026's tail as the record's
+  most extreme, so a solver who back-tests the node's year against the hub sees it refuted.
+- **Second use:** pass. The hub file feeds the conformed daily-spread deliverable on its own account.
+- **Shock:** fail. 2026's flat-day share is the highest year in the hub's record, the pack's largest anomaly on the
+  statistic that decides.
+- **Pins:** pass as shipped, but the only sentence that would close the node's-own-year reading (the expectation over
+  the price years in the extracts, the judge's optional pin) names the record the decisive step recognises.
+- **Measured by:** the node's-own-year reading, measured 2026-11-02: every window ending 2 November 2026 that starts in
+  January 2025 or earlier gives $20 ($15 at 303 to 329 days); only windows inside the current windy stretch give $15. A
+  two-state monthly persistence model fitted to the hub's record (windy cut 0.20 to 0.35, staying windy 0.62 to 0.67)
+  started from the windy November 2026 puts $15 at 316 to 320 days and $20 at 265 to 269: $20. $15 needs the windy
+  state through August 2027, a 23-month stretch against its one precedent of 13 months (October 2019 to October 2020);
+  but the current stretch is already 14 months long and still at 48 and 50 per cent flat days in October and November
+  2026. No shipped sentence rules the reading out.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -388,3 +416,11 @@ setting for 2027; the settlement point list's note on the hub-priced days and th
   energy at the BMS's usable-energy denominator, a second recovery that disagreed with warranty 4.3 at two decimals.
 - 2026-10-15, design: the node's spread exactly 2.2 times the hub's every day (correlation 1.000). Replaced by a daily
   congestion variation (the ratio's spread 0.25), which reads as a market and leaves every rung where it was.
+- 2026-11-02, re-check under the new gates: architecture 1 found spent, no repair made. The node's-own-year reading is
+  either refuted by the data, and then the standing family (every pooled extension, every persistence model fitted
+  to the record) is unanimous on $20 and the golden is the field's textbook long-term correction applied as stated
+  (the Reflex line fails, standing spread zero), or it stays open on the current stretch's persistence and is a fork
+  whose only closing sentence names the record the step recognises (the fork-is-the-stump test). Either way a gate
+  fails; the shipped cut also fails leak.py (the data dictionary and the manifest by name; metadata.json carrying 300)
+  and precut (no Measured by line on the ask sheet), and guard heart now BLOCKs (same puzzle and same driver against
+  task174, task178, task242 and task476, not caused by this re-check). The re-root is the orchestrating session's call.
