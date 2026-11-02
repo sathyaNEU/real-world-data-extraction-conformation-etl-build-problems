@@ -236,7 +236,7 @@ whole trays show, a pack's chance is 5.5 per cent and the reserve 400 packs (398
 | SF6 | the reserve | the expected number | a high percentile of the count | above 398.9 | FIN-RS-04 3.2: "The reserve is the expected number" |
 | SF7 | rounding | the expected number to the nearest 50, once | per composition class | 400 | FIN-RS-04 3.4 and the prompt |
 | SF8 | the release model of record | RL-3 as QM-07 rev. 4 files it | refitted on the life tests | 400.2, same call | same call (asserted) |
-| SF9 | the protocol's cycle 1 | fleet A's cycle 0, fleet B's cycle 1 | fleet A's 0 read as the protocol's first | 387.5, same call | QM-07 section 2 ("Cycle 1 is the protocol's first full cycle") and the lab's extracts note |
+| SF9 | the protocol's cycle 1 | fleet A's cycle 0, fleet B's cycle 1 | fleet A's 0 read as the protocol's first | 387.5, same call | QM-07 section 2 ("Cycle 1 is the protocol's first full cycle") and the exports' own numbering: each fleet A test runs from 0, each fleet B test from 1, every cell's tests stitch to 100 cycles (asserted through the verifier's reader); same call (R2 asserted) |
 | SF10 | F1's logarithm | natural | common | 0, a miss | QM-07 section 3: "the natural logarithm" |
 | SF11 | the life tests | the twenty finished lots' EOL cells | the open lots' running tests | not shipped | same call |
 | SF12 | the packs' composition | genealogy and tray map: 7,063 three tray-mates, 136 two and one, one pack three trays | every pack three tray-mates | 397.6, same call | same call (asserted) |
@@ -284,7 +284,7 @@ whole trays show, a pack's chance is 5.5 per cent and the reserve 400 packs (398
 | 1 Population | every Model K pack built from the lot by the release day, the genealogy's 7,200 | FIN-RS-04 2.2, the prompt; C1 (Model J apart) |
 | 2 Unit of account | the pack | FIN-RS-04 3.2 sums packs' probabilities; the prompt counts packs |
 | 3 Attribution window | a pack's first 600 cycles | FIN-RS-04 3.2; C1 at 599.5 and 600.5 cycles (SF2, SF3) |
-| 4 As-of dating | the lab pull of 12 October 2026: the release test finished, the twenty finished lots' life tests | the extracts note; nothing later ships |
+| 4 As-of dating | the lab pull of 12 October 2026: the release test finished, the twenty finished lots' life tests | the records themselves: every extract's latest record falls on or before its pull, each pull dated in `metadata.json` (asserted); nothing later ships |
 | 5 Version basis | RL-3 rev. 4 of 30 September 2026 | QM-07; the refit converges (SF8) |
 | 6 Denominator | the 7,200 packs for the expected share | FIN-RS-04 2.2; C1 |
 | 7 Weighting | each EOL cell once in the error split, trays by the analysis of variance | C3: restricted maximum likelihood and pooled trays converge (396.0, 397.4) |
@@ -296,10 +296,10 @@ whole trays show, a pack's chance is 5.5 per cent and the reserve 400 packs (398
 | 13 Order of operations | predict, integrate over the shared error, sum over packs, round last | FIN-RS-04 3.2 and 3.4; C4 n.a. |
 | 14 Row order | a continued test stitched in time order | C1: Bielefeld time read as UTC changes no order (asserted) |
 | 15 Duplicate resolution | fleet B's repeated rows once | C1: cycles picked by number give the same features (399.0, asserted) |
-| 16 Identity normalisation | three serial forms to the supplier's | the lab's extracts note; every join complete (asserted) |
+| 16 Identity normalisation | three serial forms to the supplier's | C1: each system's form maps one to one onto the supplier's serial and every join is complete (asserted through the verifier's reader) |
 | 17 Netting against gross | none | n.a. |
 | 18 Dimensional units | mAh, milliohm, QP-3 cycles; F1 a natural logarithm | QM-07 sections 3 and 4 (SF10) |
-| 19 Code and status semantics | EOL and STOPPED; the tray key's two formats | the lab's extracts note; never the stump |
+| 19 Code and status semantics | EOL and STOPPED; the tray key's two formats | the systems' own labels: a STOPPED test carries its reason and an EOL test none, QM-07 section 4 leaves the stopped ones out; the tray key's two formats never meet inside a lot (each asserted); never the stump |
 | 20 Integerisation | cycles whole, the line at 600 inside a continuous model | C1 (SF3) |
 | 21 Clause scope | FIN-RS-04 3.2 per pack, 2.2 every built pack | the policy's own clauses |
 | 22 Forward window contents | the packs' first 600 cycles, ahead of release | the release test and the finished lots' life tests ship; FIN-RS-04 3.3 |
@@ -330,11 +330,13 @@ answer comes from an easy method on the same literal estimand, never from anothe
 ## Ask sheet
 
 **Main call's declared row population:** the two cycler exports, the release register, the life monitoring results,
-Zelvora's cell data package and the Model K genealogy, with QM-07, FIN-RS-04, the pack specification and the lab's
-extracts note. Device and hazard rows in it: 0 (asserted: the call opens no service or costing file, and computed with
-every ask file removed it is the golden; the asks computed with every main-call file removed are the asks). Both asks
-read the service case system, the DACH depot's SAP export, the returns depot log, the carrier statement, the four
-partners' invoices, treasury's rates, the cost sheet and the service extracts note, outside the call's population.
+Zelvora's cell data package and the Model K genealogy, with QM-07, FIN-RS-04 and the pack specification. Device and
+hazard rows in it: 0 (asserted: the call opens no service or costing file, and computed with every ask file removed it
+is the golden; the asks computed with every main-call file removed are the asks). Both asks read the service case
+system, the DACH depot's SAP export, the returns depot log, the carrier statement, the four partners' invoices,
+treasury's rates and the cost sheet, outside the call's population. No shipped file describes the data (asserted by
+name and by content): the SAP export writes each order type and damage code with its own short text, the case
+system's codes are its own labels, and each file's provenance and pull date sit in `metadata.json`.
 Neither is keyed to the call, its construction or its figures; they share no primary device.
 
 **Ask A. For each of the four repair partners, the capacity replacements under the warranty carried out from October
@@ -363,17 +365,18 @@ the golden euro, each 0.23 or more from an edge (asserted).
   year's handling fee and one job billed twice; HA2 (D3) GBP and SEK lines at treasury's month-end rate for the service
   period; HA3 (D2) the service pack's standard cost lowered from 1 January 2026; HA4 (D5) goodwill replacements after
   600 cycles and no-fault-found diagnoses on the same invoices, a goodwill case's gauge count above 600 against every
-  warranty case's at or below it (the service extracts note says the gauge counts the cycle in which it learns a
-  capacity fault); HA5 (D4) a battery scrapped where it was removed (swollen, or failing the transport check) is not
-  shipped, has no row and carries no freight, its repair standing as any other (filed in the service extracts note, 7
-  of 317 partner lines).
+  warranty case's at or below it (asserted, the code and the count agreeing on every capacity case and SAP order); HA5
+  (D4) a battery scrapped where it was removed (swollen, or failing the transport check) is not shipped, has no row and
+  carries no freight, its repair standing as any other (7 of 317 partner lines; closed by convergence, no freight, the
+  line dropped and the partner's mean freight each rounding to the golden euro, asserted; no shipped document files
+  it).
 - Stops (computed and asserted): S1 freight on every row: 99 at 153, 81 at 159, 58 at 156, 79 at 149; S2 closing
-  days: 87 at 100, 69 at 103, 51 at 113, 69 at 97; S3 both (the cracker): 87 at 149, 69 at 156, 51 at 154, 69 at 147;
+  days: 87 at 100, 69 at 103, 51 at 113, 69 at 97; S3 both (the stage-3 sheet's narrowed cracker): 87 at 149, 69 at 156, 51 at 154, 69 at 147;
   S4 no freight: 95, 96, 102, 91; S5 goodwill kept: 279, 225, 158 and 223 replacements. HA1, HA2, HA3 and HA5 alone
   stay inside the euro (Tolley Marsh 102.01 with both invoices, 101.99 at the invoice date's rate; the current pack
   cost throughout 98.77, 101.60, 111.33, 95.77; the never-shipped readings above): texture.
-- Span: the case system, the four invoice workbooks, the returns log, the carrier statement, treasury's rates, the cost
-  sheet and the service extracts note (10 files); case_no, region, partner, fault_code, warranty, action, closed_utc;
+- Span: the case system, the four invoice workbooks, the returns log, the carrier statement, treasury's rates and the
+  cost sheet (9 files); case_no, region, partner, fault_code, warranty, action, closed_utc;
   the invoice number, the invoice it replaces, the period, the currency, the line's case, labour and handling;
   Reference, Consignment, Freight EUR; consignment, pieces, charge_eur; month_end, currency, units_per_eur; Part, Valid
   from, Valid to, Standard cost EUR.
@@ -393,10 +396,10 @@ differs from every other's).
   repairs approved in it and loses its own, and September 2026's repairs are still open at the extract.
 - Hazards: HB1 (D1) DACH orders created from 1 September 2025 carried into the case system with their SAP number in
   legacy_ref; HB2 (D5) goodwill replacements on the same cases; HB3 (D8) the extract's cut on 30 September.
-- Stops (computed and asserted): the cracker's closing months 12, 7, 17, 31, 16, 46, 31, 39, 61, 52, 53, 83 (every
-  month off by 4 or more); the carried-over orders twice 11, 21, 29, 37, 35 from October to February, then the golden;
+- Stops (computed and asserted): the closing months of the stage-3 sheet's narrowed cracker 12, 7, 17, 31, 16, 46, 31,
+  39, 61, 52, 53, 83 (every month off by 4 or more); the carried-over orders twice 11, 21, 29, 37, 35 from October to February, then the golden;
   goodwill kept 21, 30, 34, 56, 57, 76, 82, 111, 113, 140, 168, 168.
-- Span: the case system, the SAP export, the four invoice workbooks and the service extracts note (7 files).
+- Span: the case system, the SAP export and the four invoice workbooks (6 files).
 - Realism: as Ask A.
 
 **Hazard table**
@@ -414,18 +417,33 @@ differs from every other's).
 a source the golden reads, neither a control that ties only under the golden. No filed sentence says when a partner
 case closes or that the log's freight is the consignment's (asserted for the first).
 
+**Careful-solver audit (2026-11-01).** `generator/ceiling.py` on the cut pack (target.zip md5
+a17eacf5d77d3a5ca774152187b2e053). The cracker lands the call (398.9, 400), runs the hygiene battery on the ask files,
+executes the cost sheet's costing rule as worded and reads every field by its plain meaning. Each device is a battery
+item: D6 is a repeated total on every line of a bulk receipt (1,878 of 1,918 log rows carry their consignment's whole
+charge, pieces equal the log's rows in 222 of 222 consignments), so the battery's share is the charge over its pieces;
+D8 is both clocks on a partner case (276 of 276 closing days fall after the invoice's service period, on 52 approval
+days, with 49 billed replacements still open), so the job's month is the invoice's service period read plainly; HA1
+(the reissue in force), HA2 and HA3 (the costing rule and the cost sheet's validity), HA4 and HB2 (the codes), HA5
+(convergence) and HB1 (legacy_ref) are each a battery item or a filed rule. Both asks are spent. The sheet recorded at
+stage 3 was a narrowed cracker's (closing days and the log's freight: 0 of 20); the careful solver keeps 20 of 20.
+
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
-| A replacements (4) | partner cases CAP, WTY, REPLACED closed in the twelve months | 87, 69, 51, 69 against 99, 81, 58, 79 | miss |
-| A average cost (4) | the invoice line at the closing month's rate, the log's freight on the battery's row, the pack at the closing day's cost | 149, 156, 154, 147 against 99, 102, 112, 96 | miss |
-| B the twelve months (12) | the depot's orders and cases by repair day (carried-over orders once), the partners' cases by closing month | 12, 7, 17, 31, 16, 46, 31, 39, 61, 52, 53, 83 against the golden | miss |
-| the chart | the cracker's month counts drawn as the golden draws them | its bars carry Ask B's miss | outside |
+| A replacements (4) | partner cases CAP, WTY, REPLACED in the service period of the invoice line billing each, the reissue in force | 99, 81, 58, 79 against 99, 81, 58, 79 | keeps |
+| A average cost (4) | the line at the service period's month-end rate, the consignment's charge over its pieces, the pack at the cost valid in the repair month | 99.09, 101.89, 111.73, 95.93 against 99, 102, 112, 96 | keeps |
+| B the twelve months (12) | the depot by Techn. Abschluss and its closing day (carried-over orders once through legacy_ref), the partners by service period | every month on the golden | keeps |
+| the chart | the golden's form on the cracker's months | its three form criteria | outside |
 
-Mirror leakage: 12 per cent of the ask weight. The mirror (R0, 500 packs) runs the same ask paths as the cracker, so it
-misses every Ask A and Ask B figure the cracker misses and keeps only the chart's form (one bar a month, the regions,
-the totals).
-Pair ceiling: 36 (the cracker about 50 with the call, its components, the instructions and the chart's form; the
-mirror about 22 with the instructions, the chart's form and part of the components).
+Mirror leakage: 24.0 per cent of ask weight on the mirror's natural read without the battery (100.0 running the
+battery). The mirror (R0, 500 packs) dates partner cases by their closing day, takes the log's freight on the battery's
+row, keeps both March invoices and counts the carried-over orders in both systems: it keeps December's 23 and the
+chart's three form criteria.
+Pair ceiling: 83.5 (the sheet's formula: 38, 7 and 55 over 23 ask criteria with an 8 per cent method credit, a
+response off the call keeping 5 of the 38; the measured pair is 62.6, and 83.5 with the mirror running the battery;
+two careful responses on the call score 100.0 each).
+Measured by: generator/ceiling.py (the careful-solver cracker, the mirror and the full includer, which reproduces
+figures.json, on target.zip).
 
 ## Gate record (stage 3)
 
@@ -498,6 +516,19 @@ mirror about 22 with the instructions, the chart's form and part of the componen
   moved: `build.py` 143 assertions, verify 6 of 6, two builds byte-identical, freeze PASS, figures_check 58/0, precut
   49/0/0, voice-check PASS, leak.py REVIEW with no LEAK, guard surface 0 promoted and heart WARN, container clean;
   `target.zip` sha256 f51980cb99be1f9d8173729dc96bc8fceed56f864148a1bd706f601b722cc939.
+- **Leak re-check (2026-11-01, `leak.py --asof 2026-10-12`, after the extract notes were dropped): REVIEW, no LEAK.**
+  Each REVIEW line, ruled:
+  - "the model" in FIN-RS-04 (four) and QM-07 (two): the fiction's own nouns, the Model K pack and the release model.
+  - "2.4" in FIN-RS-04: the clause number (Release), not the cell chance.
+  - four of the call's five words in FIN-RS-04 and three in QM-07: the lot, its packs and its release are their subject;
+    neither states a reserve or a pack's chance (R3c asserted).
+  - stump-paragraph terms in FIN-RS-04 (seven), the specification (four) and QM-07 (six): the documents' own vocabulary;
+    none names a shared error, a tray effect or a joint chance (R1 asserted).
+  - the cost sheet names the partners beside contract rates (labour, handling, diagnosis), one part of an invoice line;
+    no average cost and no ranking.
+  - the prompt's "each of the four" and "each of those twelve" (a count the data hold) and its 'put' opener (35 per cent
+    of the corpus against a 20 per cent cap): both predate this repair and sit in the ask sentences, which a leak
+    repair leaves frozen; voice-check PASS; owed with the ask layer's re-site.
 
 ## Pre-ship check
 
@@ -581,3 +612,36 @@ mirror about 22 with the instructions, the chart's form and part of the componen
   extracts note files; the case reads 601, and no warranty case sits above 600 or goodwill case at or below it.
 - Extract notes named `README_battery_extracts.txt` and `README_service_extracts.txt`: the judge read the name as a
   build artifact; renamed for the system that wrote each.
+- The two extract notes shipped (`extract_note_battery_lab_2026-10-12.txt`, `extract_note_service_operations_2026-10-09.txt`):
+  the re-check of 2026-11-01 under the new leak gate read the service note as a LEAK (16 of the case export's columns,
+  44 per cent) and the lab note as a REVIEW (10 columns), a file that describes the data by its genre. Both dropped:
+  each file's provenance and pull date went to `metadata.json`, the SAP depot's order types and damage codes to the
+  export's own short texts (Auftragsartentext, Schadenstext), SF9 and closures 4, 16 and 19 to the exports' own
+  numbering, labels, serial forms and dates (each asserted through the verifier's readers), the never-shipped battery
+  and the 600-cycle line to the convergence already asserted, and the column glosses and file list nowhere;
+  `metadata.json`'s subdomain no longer narrates the method. No graded figure moved (freeze determinism PASS,
+  figures.json unchanged); the pack is 21 files in three formats.
+- The stage-3 ask ceiling (36, the cracker 0 of 20): a narrowed cracker's, dating partner jobs by the case's closing
+  day and taking the log's freight on the battery's row. `generator/ceiling.py`'s careful solver keeps 20 of 20 (the
+  invoice's service period read plainly against 276 of 276 closings after it; the log's freight its consignment's whole
+  charge, pieces equal to the log's rows), the pair 62.6, 83.5 with the mirror running the battery: D6 and D8 spent.
+- Asks A and B re-sited under the ask-rework brief, stopped (2026-11-02), no data changed: no candidate passes both tests
+  on Ask A, whose count is pinned by the partners' own invoice lines and each cost part by a filed rule or a field's
+  plain meaning. Intake duplicates on partner cases (the hotline's and the business portal's case for one repair) fork
+  "what one cost us" when both are billed, and when one is billed the unbilled twin falls off the cracker's own path (no
+  service period). Intake duplicates on depot cases, the identity in the returns depot's one received battery a
+  replacement with genuine repeat replacements (dead-on-arrival service packs) as the over-cleaning half, are forced
+  and off the careful path, but the depot carries 3 to 12 replacements a month from October to February (no mass on
+  every month) and Ask A stays whole: a half. Partner-region repairs escalated to the Bielefeld depot are found by the
+  anti-joins (an unbilled case or consignment, the log's Sender, a forwarding-only line). Batch claims (one portal case,
+  several notebooks) show as join fan-out on the lines and the log, both on the cost path. Reconditioned service packs
+  (a fitted pack received earlier above the limit) at a second part's cost fork, since no field says which part a job
+  fitted and a sentence would file it. Late-billed jobs (a battery received before the invoice's period) are forced only
+  where the case opened and the battery arrived in one earlier month, so the generator would pick which jobs are late.
+  Re-billed rejected lines leave a coin between the first and the latest line, with mass only at the window's start.
+  Pieces as parcels for one partner, own-account freight recharged by consignment or week, case numbers written without
+  the year, carried-over orders without legacy_ref and a fault-code switch are each a battery item (a header amount
+  over its items, fan-out resolved by the system serial, re-keyed records, a code re-derived from fcc_pct). New ask-only
+  records fail too: the warranty desk's claims register hands over the paid amounts, a service stock ledger is pinned by
+  the costing rule's fitting day, a pack register for each lot's true-up was dropped at stage 2 for mass, and an
+  installed base de-duplicates on the pack serial.

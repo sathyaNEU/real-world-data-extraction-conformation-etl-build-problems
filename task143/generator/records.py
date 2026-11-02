@@ -186,10 +186,14 @@ def case_rows(W):
     return rows
 
 
-SAP_COLS = ["Auftrag", "Auftragsart", "Erstellt am", "Techn. Abschluss", "Equipment", "Material", "Schadenscode",
-            "Zykluszähler", "Ausbau-SN", "Einbau-SN", "Arbeit Ist (Min)", "Bemerkung"]
+SAP_COLS = ["Auftrag", "Auftragsart", "Auftragsartentext", "Erstellt am", "Techn. Abschluss", "Equipment", "Material",
+            "Schadenscode", "Schadenstext", "Zykluszähler", "Ausbau-SN", "Einbau-SN", "Arbeit Ist (Min)", "Bemerkung"]
 SAP_CODE = {"CAP": "B10", "SWL": "B20", "CON": "B30", "BMS": "B40", "NFF": "B90"}
 SAP_TYPE = {"WTY": "ZS01", "GW": "ZS02", "OOW": "ZS03"}
+# the depot's SAP customising writes each code with its own short text
+SAP_CODE_TEXT = {"B10": "Kapazität unter 80 %", "B20": "Akku aufgebläht", "B30": "Kontaktfehler",
+                 "B40": "Ladeelektronik / Gauge", "B90": "Kein Fehler festgestellt"}
+SAP_TYPE_TEXT = {"ZS01": "Garantiereparatur", "ZS02": "Kulanzreparatur", "ZS03": "Reparatur auf Kundenkosten"}
 MATERIAL = {"K14": "4100-2214", "K15": "4100-2215"}
 
 
@@ -202,9 +206,9 @@ def sap_rows(W):
     for ev in sorted(W.sap_orders, key=lambda e: e.sap):
         nb = ev.nb
         replaced = ev.code != "NFF" and ev.closed is not None
-        rows.append([ev.sap, SAP_TYPE[ev.warranty], ev.opened.strftime("%d.%m.%Y"),
+        rows.append([ev.sap, SAP_TYPE[ev.warranty], SAP_TYPE_TEXT[SAP_TYPE[ev.warranty]], ev.opened.strftime("%d.%m.%Y"),
                      ev.closed.strftime("%d.%m.%Y") if (ev.closed is not None and ev.closed.date() < K.MIGRATION)
-                     else "", nb.serial, MATERIAL[nb.model], SAP_CODE[ev.code], ev.cycles,
+                     else "", nb.serial, MATERIAL[nb.model], SAP_CODE[ev.code], SAP_CODE_TEXT[SAP_CODE[ev.code]], ev.cycles,
                      ev.removed if replaced else "", ev.fitted or "", ev.labour_min if ev.closed is not None else "",
                      notes[ev.code][int(r.integers(0, len(notes[ev.code])))]])
     return rows
@@ -229,7 +233,7 @@ def write_sap(path, rows):
         c.fill = HEAD_FILL
     for r in rows:
         ws.append([None if v == "" else v for v in r])
-    _autowidth(ws, [12, 11, 11, 15, 14, 11, 13, 12, 17, 17, 15, 38])
+    _autowidth(ws, [12, 11, 26, 11, 15, 14, 11, 13, 24, 12, 17, 17, 15, 38])
     ws.freeze_panes = "A2"
     wb.save(path)
 

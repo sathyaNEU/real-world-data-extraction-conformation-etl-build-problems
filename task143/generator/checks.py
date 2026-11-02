@@ -28,8 +28,14 @@ import world as WD
 BIN = 50
 GOLD_BIN = 400
 DEFAULT_BIN = 500
-MAIN_FILES = [K.F_POLICY, K.F_MEMO, K.F_SPEC, K.F_README, K.F_CYC_A, K.F_CYC_B, K.F_REG, K.F_LIFE, K.F_CELLS, K.F_GEN]
-ASK_FILES = [K.F_README_SVC, K.F_CASES, K.F_SAP, K.F_RETURNS, K.F_CARRIER, K.F_FX, K.F_COST] + list(K.F_INV.values())
+MAIN_FILES = [K.F_POLICY, K.F_MEMO, K.F_SPEC, K.F_CYC_A, K.F_CYC_B, K.F_REG, K.F_LIFE, K.F_CELLS, K.F_GEN]
+ASK_FILES = [K.F_CASES, K.F_SAP, K.F_RETURNS, K.F_CARRIER, K.F_FX, K.F_COST] + list(K.F_INV.values())
+# a file whose name says it describes the data (dataset-generation section 3): none ships
+DESCRIBING_NAME = re.compile(r"(?<![a-z])(read_?me|dictionar\w*|codebook|field_?notes?|field_?guide|manifest|glossary|"
+                             r"definitions?|schema|layouts?|file_?list|how_to_read|about_this|notes?|extract_notes?|"
+                             r"export_notes?|column_\w+|fields?_\w+)(?![a-z])", re.I)
+DESCRIBING_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                              r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
 
 
 class Checks:
@@ -316,6 +322,37 @@ def run(target, golden, W=None, meta_path=None):
                                                     r"error|jointly|independen|weakest of", t, re.I)],
       [f for f, t in texts.items() if re.search(r"tray effect|correlat|intraclass|random effect|independen", t, re.I)])
 
+    # ------------------------------------------------------------------ no shipped file describes the data
+    # dataset-generation section 3: no readme, dictionary, notes, manifest or extract note, by name or by content; each
+    # export carries its own conventions and provenance lives in metadata.json
+    named = [f for f in files if DESCRIBING_NAME.search(f.rsplit(".", 1)[0]) or f.endswith((".txt", ".md"))]
+    sheets = []
+    for f in files:
+        if f.endswith(".xlsx"):
+            for ws in openpyxl.load_workbook(os.path.join(target, f), read_only=True).worksheets:
+                if DESCRIBING_SHEET.match(ws.title.strip()):
+                    sheets.append("%s[%s]" % (f, ws.title))
+    A("no shipped file or sheet describes the data, by name (no readme, dictionary, notes, manifest or text note)",
+      not named and not sheets, named + sheets)
+    data_cols = set()
+    for f in files:
+        pth = os.path.join(target, f)
+        if f.endswith(".csv"):
+            with open(pth, encoding="utf-8") as fh:
+                data_cols |= set(next(csv.reader(fh, delimiter=";" if f == K.F_CYC_A else ",")))
+        elif f.endswith(".xlsx"):
+            for ws in openpyxl.load_workbook(pth, read_only=True).worksheets:
+                for r in ws.iter_rows(max_row=14, values_only=True):
+                    cells_ = [x for x in r if x is not None]
+                    if len(cells_) >= 3 and all(isinstance(x, str) for x in cells_):
+                        data_cols |= set(cells_)
+                        break
+    ident = {c for c in data_cols if c and ("_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c))}
+    naming = {f: sorted(c for c in ident if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t))
+              for f, t in texts.items()}
+    A("no shipped document describes the data, by content (none names four or more of the data files' field names)",
+      all(len(v) < 4 for v in naming.values()), {f: v for f, v in naming.items() if v})
+
     # ------------------------------------------------------------------ R2: every mess item neutral on the call
     m = c["model"]
     reg = CA.register(target)
@@ -458,9 +495,24 @@ def run(target, golden, W=None, meta_path=None):
     m2 = {"b0": beta[0], "b1": beta[1], "b2": beta[2], "rmse": m["rmse"]}
     r_, _, _ = CA.reserve_from(m2, feat, lifes, reg, new_cells, comp)
     A("SF8 RL-3 as QM-07 publishes it and as refitted on the life tests: same call", b50(r_) == GOLD_BIN, "%.1f" % r_)
-    A("SF9 the protocol's first cycle: fleet A's 0, fleet B's 1 (QM-07 section 2, the extracts note)",
-      "Cycle 1 is the protocol's first full cycle" in docs[K.F_MEMO] and "numbers a test's first cycle 0" in
-      texts[K.F_README], "")
+    # SF9 closed by QM-07 section 2 and the exports themselves, read through the verifier's own pandas readers: every
+    # fleet A test numbers its cycles from 0 and every fleet B test from 1, each run consecutive, and every cell's
+    # tests stitch to exactly the protocol's 100 cycles, so fleet A's 0 is the protocol's cycle 1 (the other reading
+    # is R2's "fleet A's first cycle numbered 0 read as the protocol's", the same call, asserted above)
+    import pandas as pd
+    import verify as V
+    fa = pd.read_csv(os.path.join(target, K.F_CYC_A), sep=";", dtype=str)
+    fb = pd.read_csv(os.path.join(target, K.F_CYC_B), dtype=str).drop_duplicates()
+    ga_ = fa.assign(n=fa["Zyklus"].astype(int)).groupby("Test").n
+    gb_ = fb.assign(n=fb["cycle"].astype(int)).groupby("test_id").n
+    runs_ok = all((g.min() == lo and g.max() - g.min() + 1 == g.size and g.is_unique)
+                  for gr, lo in ((ga_, 0), (gb_, 1)) for _, g in gr)
+    vf = V.features(target)
+    same = all(abs(vf.loc[cl, "f1"] - feat[cl][0]) < 1e-9 and abs(vf.loc[cl, "f2"] - feat[cl][1]) < 1e-9
+               for cl in feat)
+    A("SF9 the protocol's first cycle: fleet A's 0, fleet B's 1 (QM-07 section 2; each export's own numbering, every "
+      "cell 100 cycles through the verifier's reader)", "Cycle 1 is the protocol's first full cycle" in docs[K.F_MEMO]
+      and runs_ok and len(vf) == len(feat) and same, "%s %d %d" % (runs_ok, len(vf), len(feat)))
     f10 = {k: (math.log10(math.exp(v[0])), v[1]) for k, v in feat.items()}
     r_, _, _ = CA.reserve_from(m, f10, lifes, reg, new_cells, comp)
     A("SF10 F1 on a common logarithm (QM-07 files the natural logarithm) misses", b50(r_) != GOLD_BIN and
@@ -492,6 +544,57 @@ def run(target, golden, W=None, meta_path=None):
       c["reml"][0] < 0.002 and b50(var["REML, the lot level shared too"]) == GOLD_BIN, c["reml"])
     A("SF16 FIN-RS-04 counts packs falling below the line, not claims: no claim rate enters",
       "probability that its full charge capacity falls below 80 per cent" in docs[K.F_POLICY], "")
+    # the closures that rest on the exports themselves (no shipped note carries them), each through the verifier's own
+    # pandas readers: closure 4, every extract's latest record on or before its pull (metadata.json's date); closure
+    # 16, every serial form one to one onto the supplier's serial; closure 19, the life results' EOL and STOPPED
+    # labels and the SAP depot's codes, each written with one text of its own
+    pulls = {x["path"]: dt.date.fromisoformat(x["date"]) for x in meta.get("files", [])}
+    latest = {
+        K.F_CYC_A: pd.to_datetime(fa["Zyklusende"], format="%d.%m.%Y %H:%M:%S").max().date(),
+        K.F_CYC_B: pd.to_datetime(fb["cycle_end_utc"], format="%Y-%m-%dT%H:%M:%SZ").max().date(),
+        K.F_REG: pd.to_datetime(pd.read_csv(os.path.join(target, K.F_REG), dtype=str)["test_start_local"]).max().date(),
+        K.F_GEN: pd.to_datetime(pd.read_csv(os.path.join(target, K.F_GEN), dtype=str)["built"]).max().date(),
+        K.F_CELLS: pd.to_datetime(pd.read_csv(os.path.join(target, K.F_CELLS), dtype=str)["formation_end"]).max().date(),
+        K.F_CASES: max(pd.to_datetime(pd.read_csv(os.path.join(target, K.F_CASES), dtype=str)[k]).max().date()
+                       for k in ("opened_utc", "closed_utc")),
+        K.F_CARRIER: pd.to_datetime(pd.read_csv(os.path.join(target, K.F_CARRIER), dtype=str)["pickup_date"]).max().date(),
+        K.F_FX: pd.to_datetime(pd.read_csv(os.path.join(target, K.F_FX), dtype=str)["month_end"]).max().date(),
+    }
+    sapdf = pd.read_excel(os.path.join(target, K.F_SAP), dtype=str)
+    latest[K.F_SAP] = max(pd.to_datetime(sapdf[k], format="%d.%m.%Y").max().date()
+                          for k in ("Erstellt am", "Techn. Abschluss"))
+    retdf = pd.read_excel(os.path.join(target, K.F_RETURNS))
+    latest[K.F_RETURNS] = pd.to_datetime(retdf["Received"]).max().date()
+    for f in K.F_INV.values():
+        ds = [CA._d(r[1]) for ws in openpyxl.load_workbook(os.path.join(target, f), data_only=True).worksheets
+              for r in ws.iter_rows(max_row=10, values_only=True)
+              if r and r[0] in ("Date de facture", "Invoice date", "Fakturadatum", "Data fattura")]
+        latest[f] = max(ds)
+    late_ = {f: (str(d), str(pulls.get(f))) for f, d in latest.items() if f not in pulls or d > pulls[f]}
+    A("closure 4: every extract's latest record falls on or before its pull (metadata.json), nothing later ships",
+      not late_ and len(latest) == 14, (late_, len(latest)))
+    forms = {K.F_CYC_A: fa["Zelle"], K.F_CYC_B: fb["cell_id"],
+             K.F_GEN: pd.read_csv(os.path.join(target, K.F_GEN), dtype=str)["cell_scan"]}
+    known = set(pd.read_csv(os.path.join(target, K.F_REG), dtype=str)["cell_serial"]) | \
+        set(pd.read_csv(os.path.join(target, K.F_CELLS), dtype=str)["cell_sn"])
+    one_one = all(pd.DataFrame({"raw": v, "key": v.map(V.cell_key)}).drop_duplicates().groupby("key").raw.nunique().max()
+                  == 1 and set(v.map(V.cell_key)) <= known for v in forms.values())
+    A("closure 16: each system's serial form maps one to one onto the supplier's serial, every one known", one_one, "")
+    lr = pd.read_csv(os.path.join(target, K.F_LIFE), dtype=str, keep_default_na=False)
+    A("closure 19: the life results label each test EOL or STOPPED, a STOPPED test with its reason and an EOL test none",
+      set(lr.status) == {"EOL", "STOPPED"} and (lr[lr.status == "STOPPED"].reason != "").all() and
+      (lr[lr.status == "EOL"].reason == "").all(), sorted(set(lr.status)))
+    pairs_t = sapdf[["Auftragsart", "Auftragsartentext"]].drop_duplicates()
+    pairs_c = sapdf[["Schadenscode", "Schadenstext"]].drop_duplicates()
+    A("closure 19: the SAP export writes each order type and damage code with one short text of its own (ZS01 the "
+      "warranty repair, B10 the capacity fault)",
+      pairs_t.Auftragsart.is_unique and pairs_c.Schadenscode.is_unique and
+      dict(pairs_t.values.tolist()).get("ZS01") == "Garantiereparatur" and
+      dict(pairs_c.values.tolist()).get("B10", "").startswith("Kapazität unter 80"), (len(pairs_t), len(pairs_c)))
+    cs_df = pd.read_csv(os.path.join(target, K.F_CASES), dtype=str, keep_default_na=False)
+    capf = cs_df[(cs_df.fault_code == "CAP") & (cs_df.fcc_pct != "")].fcc_pct.astype(float)
+    A("closure 19: the case system's CAP cases all report a full charge capacity below 80 per cent (the label's own "
+      "evidence)", len(capf) > 0 and (capf < 80.0).all(), "%d, max %.1f" % (len(capf), capf.max()))
 
     # ------------------------------------------------------------------ the asks
     A_, B_ = CA.ask_stops(target)
@@ -501,11 +604,9 @@ def run(target, golden, W=None, meta_path=None):
       all(ga[p][0] == at[p][0] and abs(ga[p][1] - at[p][1]) < 1e-6 for p in CA.PARTNERS),
       {p: (ga[p], at[p]) for p in CA.PARTNERS})
     A("ask B fair: the golden handling reproduces the field's own month counts exactly", gb == bt, (gb, bt))
-    # the battery that never travelled: the service extracts note files it (no row, no freight, the repair stands);
-    # and every reading of it (nothing billed, the line dropped, the partner's mean freight) rounds to the golden euro
-    A("ask A: the service extracts note files a battery scrapped where it was removed (no row, no freight, the repair "
-      "stands)", "Battery scrapped where removed (swollen, or failed the transport check): not shipped, no returns-log "
-      "row, no carrier charge; case and invoice line unaffected." in texts[K.F_README_SVC], "")
+    # the battery that never travelled (no returns-log row, no carrier charge): closed by convergence (C1), every
+    # reading of it (nothing billed, the line dropped, the partner's mean freight) rounds to the golden euro, and no
+    # shipped document files it
     fv = freight_variants(target)
     for p in CA.PARTNERS:
         z, d_, m_ = fv[p][:3]
@@ -564,8 +665,9 @@ def run(target, golden, W=None, meta_path=None):
            dt.date(e["ym"][0] + e["ym"][1] // 12, e["ym"][1] % 12 + 1, 1)]
     A("device D8: every closed partner case closed after its service period ended",
       len(lag) == sum(1 for e in late if cs[e["case"]]["closed_utc"]), (len(lag), len(late)))
-    A("device D8: no filed sentence says when a partner case closes",
-      not re.search(r"clos\w* when|approv", texts.get(K.F_README_SVC, ""), re.I), "")
+    A("device D8: no shipped document says when a partner case closes",
+      not [f for f, t in texts.items() if re.search(r"clos\w* when|approv", t, re.I)],
+      [f for f, t in texts.items() if re.search(r"clos\w* when|approv", t, re.I)])
     with Reads(target) as rd2:
         CA.ask_a(target)
         CA.ask_b(target)
@@ -577,7 +679,7 @@ def run(target, golden, W=None, meta_path=None):
           abs(CA.main_call(d)["golden"] - g) < 1e-9, "")
     finally:
         shutil.rmtree(d)
-    d = copy_without(target, set(MAIN_FILES) - {K.F_README})
+    d = copy_without(target, set(MAIN_FILES))
     try:
         A("separation: the asks computed with every main-call file removed are the asks",
           CA.ask_a(d) == ga and CA.ask_b(d) == gb, "")

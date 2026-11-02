@@ -1,20 +1,21 @@
 {
  "task": "task143",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-15",
+ "updated": "2026-11-02",
  "stump": "A competent solver computes RL-3's features for lot ZC2638's 120 release-test cells, predicts each cell's life with the model's validation error, averages each cell's chance of falling below 80 per cent within 600 cycles (2.4 per cent) and compounds it over a pack's three cells as if they were independent, filing 500 packs (514); the step that lands it there is treating a pack's three cells as independent draws when they are tray-mates and the release model's error is mostly a formation-tray effect they share: carried through the tray effect the finished lots' whole trays show, a pack's chance is 5.5 per cent and the reserve 400 packs (398.9).",
  "architecture": 1,
  "loops": 1,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-15"
+  "exit": 1,
+  "date": "2026-11-02",
+  "fails": "pair ceiling 83.5 (ceiling 60); cracker keeps A replacements (4), A average cost (4), B the twelve months (12): the honest measurement of generator/ceiling.py"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (10-15, final rebuild, --asof 2026-10-12); every line ruled harmless in leak_check_report.md",
+  "leak_py": "REVIEW, no LEAK (11-02, the cut after the extract notes were dropped, --asof 2026-10-12); every line ruled in the design note's gate record; the reader owes a re-read (two documents dropped, two SAP columns added); earlier: REVIEW, no LEAK on 10-15",
   "reader": "round 1 clean; round 2 (targeted re-read after the FIX_NOW) clean on Q1 to Q4, Q6 analytical, one realism tell (the two repair sentences in the service extracts note) reworded in the system owner's voice; both reads appended to leak_check_report.md"
  },
  "duplicate_check": {
@@ -27,8 +28,16 @@
   "disposition": "APPROVE on the re-judge (round 1 FIX_NOW of low severity applied in one generator pass)",
   "report": "task143/determinism_check_report.md (round 1 in git history at 5151981)"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK: extract_note_service_operations_2026-10-09.txt names 16 column(s) of the data files verbatim, 44% of service_cases_2024-09_2026-09.csv; REVIEW, the same genre: extract_note_battery_lab_2026-10-12.txt names 10 column(s) of the data files verbatim)",
+   "repair": "leak",
+   "move": "Both extract notes dropped from the pack (docs.py, build.py, common.py), and checks.py now asserts that no shipped file or sheet describes the data, by name and by content. What they carried went home: each file's provenance and pull date to metadata.json, whose subdomain no longer narrates the method; the SAP depot's order types and damage codes to the export's own short texts (two new columns, Auftragsartentext and Schadenstext); SF9 and closures 4, 16 and 19 to the exports' own numbering, labels, serial forms and dates, each asserted through the verifier's readers; the never-shipped battery and the 600-cycle line to the convergence already asserted. No graded figure moved (freeze determinism PASS, figures.json unchanged); 21 files in three formats; checks 149 assertions, 0 failed; verify 6 of 6; two builds byte-identical. The reship is held: generator/ceiling.py, written for precut's Measured by line, finds both asks spent under the careful solver (ask_audit_2026_11_01), and the ask rework stopped with no passing device, so precut fails on the honest pair ceiling (83.5) and the cracker's keeps.",
+   "commit": ""
+  }
+ ],
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the stage-3 ceiling was a narrowed cracker's; generator/ceiling.py's careful solver keeps 20 of 20 (pair 83.5), and the /fix-rubric pass of 2026-11-02 stopped with no passing device on Ask A inside the frozen scope (candidate table: the design note's last Tried and rejected line). Next, the author's call: the asks moved onto new ask-only records under new asking sentences, designed at stage 2 and screened as code against the careful-solver cracker before any data is cut (an identity across two systems that no field announces, the form that held on task501 and task447), or the ask layer cut back; the leak repair, the figures and the determinism record stand, and the leak reader re-reads the pack (two documents dropped, two SAP columns added).",
  "approved": null,
  "delivered": "2026-10-15",
  "portal": null,
@@ -53,5 +62,15 @@
    "z2638_warranty_reserve.xlsx",
    "z2638_reserve_note.docx"
   ]
+ },
+ "target_zip_md5": "a17eacf5d77d3a5ca774152187b2e053",
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Asks A and B",
+  "careful_cracker_keeps": "20 of 20 against the recorded 0 of 20",
+  "pair": "62.6 (83.5 with the mirror running the battery; two careful responses on the call 100.0 each)",
+  "why": "D8 is both clocks on a partner case: the invoice's service period read by its plain meaning, 276 of 276 closing days after it on 52 approval days, 49 billed replacements still open; D6 is a repeated total on every line of a bulk receipt, the carrier's charge over its pieces (pieces equal the log's rows in 222 of 222 consignments); every hazard a battery item or a filed rule",
+  "probe": "task143/generator/ceiling.py on target.zip md5 a17eacf5d77d3a5ca774152187b2e053 (the full includer reproduces figures.json)",
+  "status_before": "SHIPPED",
+  "rework": "stopped 2026-11-02 under the ask-rework brief, no data changed: no device passes both tests on Ask A inside /fix-rubric's scope (its count pinned by the partners' own invoice lines, each cost part by a filed rule or a field's plain meaning); the candidate table is the design note's last Tried and rejected line"
  }
 }

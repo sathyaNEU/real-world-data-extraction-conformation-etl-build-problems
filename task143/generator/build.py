@@ -27,43 +27,6 @@ import world as WD          # noqa: E402
 TASK = os.path.dirname(HERE)
 EXPORT_STAMP = dt.datetime(2026, 10, 12, 14, 25, tzinfo=dt.timezone.utc)   # 16:25 in Bielefeld, the pack assembled
 
-FILES = [
-    (K.F_POLICY, "FIN-RS-04 Battery warranty reserve at lot release, revision 3", "Product Finance, Notebook Division"),
-    (K.F_MEMO, "QM-07 Release model RL-3 for Zelvora ZP-4820 cells, revision 4 of 30 September 2026",
-     "Battery Reliability Lab"),
-    (K.F_SPEC, "Model K battery pack specification, revision D", "Product Engineering, Battery Plant"),
-    (K.F_CYC_A, "First 100 QP-3 cycles of every release-test cell run on cycler fleet A, lots ZC2437 to ZC2638",
-     "Battery Reliability Lab, fleet A cycler software export"),
-    (K.F_CYC_B, "First 100 QP-3 cycles of every release-test cell run on cycler fleet B, lots ZC2506 to ZC2638",
-     "Battery Reliability Lab, fleet B cycler software export"),
-    (K.F_REG, "Release test register: every release-test cell, its lot, formation tray, fleet, channel and start",
-     "Battery Reliability Lab"),
-    (K.F_LIFE, "Life test results of the release-test cells of the lots whose life tests have finished (ZC2437 to "
-     "ZC2614)", "Battery Reliability Lab, life monitoring"),
-    (K.F_CELLS, "Zelvora cell data package for lot ZC2638: every cell formed, its formation tray and formation "
-     "measurements", "Zelvora Cell s.r.o."),
-    (K.F_GEN, "Genealogy of the Model K packs built from lot ZC2638, one row per cell", "Battery Plant, line MES"),
-    (K.F_MODEL_J, "Genealogy of the Model J packs built from lot ZC2638, one row per cell", "Battery Plant, line MES"),
-    (K.F_COA, "Zelvora certificate of analysis for lot ZC2638", "Zelvora Cell s.r.o., Quality"),
-    (K.F_CASES, "Service cases on K14 and K15 batteries, September 2024 to September 2026", "Service case system"),
-    (K.F_SAP, "DACH depot service orders on K14 and K15 batteries, September 2024 to 1 March 2026",
-     "DACH service depot, SAP"),
-    (K.F_RETURNS, "Batteries received at the Bielefeld returns depot, September 2024 to October 2026",
-     "Returns depot, Bielefeld"),
-    (K.F_CARRIER, "Carrier statement: inbound consignments of returned batteries, September 2025 to October 2026",
-     "Carrier statement to Service Operations"),
-    (K.F_INV["FRB"], "Dauvergne Réparation invoices, September 2025 to September 2026", "Dauvergne Réparation SAS"),
-    (K.F_INV["UKI"], "Tolley Marsh Repair invoices, September 2025 to September 2026", "Tolley Marsh Repair Ltd"),
-    (K.F_INV["NOR"], "Ljungqvist Service invoices, September 2025 to September 2026", "Ljungqvist Service AB"),
-    (K.F_INV["SOU"], "Ferrucci Assistenza invoices, September 2025 to September 2026", "Ferrucci Assistenza S.r.l."),
-    (K.F_FX, "Treasury month-end exchange rates, January 2025 to September 2026", "Treasury"),
-    (K.F_COST, "Service cost sheet FY2026", "Service Operations controlling"),
-]
-
-
-LAB_FILES = {K.F_POLICY, K.F_MEMO, K.F_SPEC, K.F_CYC_A, K.F_CYC_B, K.F_REG, K.F_LIFE, K.F_CELLS, K.F_GEN, K.F_MODEL_J,
-             K.F_COA}
-
 
 def world():
     W = WD.simulate()
@@ -133,8 +96,6 @@ def build(out, quiet=False, W=None):
     model, table, n_cells, n_stop, rng_err = fit_memo(out)
     W.memo = (model, table, n_cells, n_stop, rng_err)
     DOC.write_memo(p(K.F_MEMO), model, table, n_cells, n_stop, rng_err)
-    DOC.write_readme(p(K.F_README), [f for f in FILES if f[0] in LAB_FILES and f[0] != K.F_POLICY])
-    DOC.write_service_readme(p(K.F_README_SVC), [f for f in FILES if f[0] not in LAB_FILES])
     P = K.PEOPLE
     PP.normalize_ooxml(p(K.F_SAP), "SAP Export", P["service"], "2026-10-05T07:12:41Z", "2026-10-05T07:12:41Z",
                        excel=True, company=K.COMPANY)

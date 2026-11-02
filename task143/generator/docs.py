@@ -1,6 +1,6 @@
 """The pack's documents: Product Finance's reserve policy FIN-RS-04, the reliability lab's qualification memo QM-07
 (the release model of record RL-3), the Model K pack specification, Zelvora's certificate of analysis for ZC2638
-(a distractor), and the extracts note."""
+(a distractor). No shipped document describes the data: each export carries its own conventions."""
 from __future__ import annotations
 
 import datetime as dt
@@ -236,68 +236,3 @@ def write_coa(path, W):
     d = _doc(path, "Certificate of analysis ZC2638", "Zelvora Quality")
     f = _footer("Zelvora Cell s.r.o.", "CoA ZC2638")
     d.build(s, onFirstPage=f, onLaterPages=f)
-
-
-# ---------------------------------------------------------------------------------------------------- the extracts notes
-def _write_note(path, head, files, notes):
-    lines = list(head) + [""]
-    for f, desc, src in files:
-        lines.append(f)
-        lines.append("    " + desc)
-        lines.append("    Source: " + src)
-        lines.append("")
-    lines += ["Notes"] + notes
-    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write("\n".join(lines) + "\n")
-
-
-def write_readme(path, files):
-    head = ["Kalvenhorst Systeme GmbH: extracts for the release of Zelvora lot ZC2638",
-            "Pulled for Product Finance on 12 October 2026 by the battery reliability lab and the battery plant."]
-    notes = [
-        "- Cell serials: Zelvora writes ZC2638-3111526; cycler fleet A writes 2638.3111526; fleet B and the pack line's",
-        "  scanner write ZC26383111526.",
-        "- Fleet A's export separates fields with semicolons, writes decimal commas and Bielefeld wall time, and numbers",
-        "  a test's first cycle 0. Fleet B's export writes UTC (ISO 8601, ending Z) and numbers a test's first cycle 1;",
-        "  it is assembled from weekly pulls.",
-        "- The release test register has a row for each test. A test stopped by a channel fault and continued on another",
-        "  channel is a new test on that channel; the register lists it under the same cell with a note.",
-        "- Life test results: EOL gives the cycles to 80 per cent of rated capacity, the first QP-3 cycle whose",
-        "  discharge capacity is below 3,856 mAh; STOPPED gives the cycle at which the test stopped first.",
-        "- Zelvora's tray key, in the cell data package and the register: T and five digits before lot %s; FT, the" %
-        K.TRAY_KEY_CHANGE,
-        "  lot's four digits and the tray number from %s." % K.TRAY_KEY_CHANGE,
-        "- The genealogy has one row for each cell in a Model K pack; position 1 to 3 is the cell's place in the series",
-        "  string.",
-    ]
-    _write_note(path, head, files, notes)
-
-
-def write_service_readme(path, files):
-    head = ["Kalvenhorst Systeme GmbH: service and costing extracts, Model K batteries",
-            "Pulled for Product Finance by Service Operations on 5 October 2026 (case system, depot orders) and on",
-            "9 October 2026 (returns depot log, carrier statement, partner invoices, rates and cost sheet)."]
-    notes = [
-        "- Service case system: one row per case in its latest state, times in UTC. fault_code: CAP the gauge reported",
-        "  full charge capacity below 80 per cent; SWL swollen battery; CON contact fault; BMS charging electronics or",
-        "  gauge fault; NFF no fault found. warranty: WTY battery warranty, GW goodwill, OOW at the customer's cost.",
-        "  action REPLACED: a battery was fitted. cycle_count: gauge cycle count when the fault was logged, the fault's",
-        "  own cycle included. battery_sn: the battery in the notebook when the case closed. legacy_ref: order number",
-        "  in the DACH depot's former system.",
-        "- The DACH depot (Bielefeld) kept its service orders in SAP until 1 March 2026 and has recorded its repairs in",
-        "  the service case system since 2 March 2026. SAP fields: Auftragsart ZS01 warranty repair, ZS02 goodwill,",
-        "  ZS03 at the customer's cost; Schadenscode B10 capacity below 80 per cent, B20 swollen, B30 contact fault,",
-        "  B40 charging electronics or gauge, B90 no fault found; Zykluszähler the gauge's cycle count with the fault,",
-        "  as in the case system; Ausbau-SN battery removed, Einbau-SN battery fitted; Techn. Abschluss the day the",
-        "  repair was completed.",
-        "- Service regions: DACH (DE, AT, CH), the Bielefeld depot (KVD); FRB (FR, BE, NL, LU), Dauvergne Réparation",
-        "  (DVG); UKI (GB, IE), Tolley Marsh Repair (TMR); NOR (SE, NO, DK, FI), Ljungqvist Service (LJQ); SOU (ES, IT,",
-        "  PT), Ferrucci Assistenza (FRC).",
-        "- Partner invoices: one workbook per partner, one sheet per invoice, a line per job in the invoice's service",
-        "  period, in the partner's own layout and currency.",
-        "- Returns depot log: one row for each battery received at the Bielefeld returns depot; Reference is the case or",
-        "  order it came from. Battery scrapped where removed (swollen, or failed the transport check): not shipped, no",
-        "  returns-log row, no carrier charge; case and invoice line unaffected.",
-        "- Treasury rates are units of each currency per euro at each month end.",
-    ]
-    _write_note(path, head, files, notes)
