@@ -1,10 +1,10 @@
 {
  "task": "task307",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "opportunity-sizing-decision",
  "stage": 2,
- "stage_name": "design",
+ "stage_name": "design (architecture 2 spent on its prototype)",
  "updated": "2026-11-02",
  "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
  "architecture": 2,
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 2 drawn 2026-11-02 (card registered, DRAWN committed). Next: stage 2 design (readability screen, fork table, ladder, closure, literal reader, oracles, asks, prompt), then the generator at stage 3; precut sits at exit 1 until generator/checks.py and the pair script exist.",
+ "resume": "PAUSED on the orchestrating session's rule: the architecture 2 re-root screened fourteen candidates across eleven task types on 11-02 and none clears (every line in DESIGN_NOTE.md's Tried and rejected). The carded draw (the side-room shadow price at Stourleigh General, DRAWN c0b4346) died on its prototype analyst test: freed side rooms are refilled by the next patient who needs one, so the honest replays file the modular ward (FIFO 858, infection-first 1,029 against 1,284) and only the naive per-closure check (1,615) files the partnership; the call turns on unrecorded allocation rules. Architecture 1's generator, prompt and target.zip are in the folder unchanged and its pack stays at the portal, pending. Next step is the orchestrator's or author's call: a third architecture in another world, or leave architecture 1 to the portal.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -37,5 +37,10 @@
  "architecture_1": {
   "status": "SHIPPED, pending at the portal (delivered 2026-10-27, zip 549ae906954d0ec4)",
   "spent": "2026-11-01 re-check: rule application through documentation 6.1 (generator/analyst_test.py in its tree, commit bd291a3)"
+ },
+ "architecture_2": {
+  "status": "spent at stage 2 on its prototype (no pack cut)",
+  "card": "registered 2026-11-02T01:11:13Z, architecture_spent",
+  "measured": "FIFO replay 858, infection-first replay 1,029, naive per-closure check 1,615 bed-days for the partnership against 1,284 for the modular ward; 73 to 119 blocked room takes"
  }
 }

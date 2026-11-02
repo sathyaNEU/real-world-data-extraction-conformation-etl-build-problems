@@ -7,6 +7,18 @@ its documentation 6.1 filed the HOW, so executing the scoring guidance gave the 
 Actor held on the survivor anatomy. Its shipped pack stays at the portal, pending, untouched. This architecture moves to
 another client domain, world, dataset and prompt shell, away from transport networks and trip assignment.
 
+**Status (2026-11-02): architecture 2 spent at stage 2, on its own prototype; the number is PAUSED.** The draw below
+cleared guard.py and the three rules on paper and was committed DRAWN, but the analyst test run as code on the
+prototype world (a year of the medical bed base simulated minute by minute: 14,200 admissions, 145 winter bay
+closures) refuted its golden. A side room freed early is refilled by the next patient who needs one, so the
+counterfactual is a queue whose outcome turns on unrecorded allocation rules: the FIFO replay files the palliative
+partnership at 858 bed-days and an infection-first replay at 1,029, both under the modular ward's 1,284, while
+only the naive per-closure check files it at 1,615; both replays also block 73 to 119 recorded room takes, closures
+the record never priced. The call flips with the allocation convention, and the sentence that would close it
+names how freed side rooms are given out, which is the decisive step. Architecture 1's files (generator, prompt,
+target.zip) are back in the folder unchanged: its pack stays at the portal, pending. The sections below are the
+architecture 2 draw as filed.
+
 ## Draw
 
 - **Card.** `.claude/skills/fingerprint/cards/task307.json`, architecture v2, v1 moved into the lineage with its fate
@@ -242,3 +254,11 @@ a sub-pool shortage that closes blocks of the main pool.
   discharge-to-assess) sit on task127's.
 - 2026-11-02: a side-room pod as one of the candidate schemes dropped at the draw: a scheme that adds side rooms names
   the decisive step.
+- 2026-11-02: architecture 2 (the side-room shadow price: a scheme credited with the bays it keeps open by freeing side
+  rooms when every medical side room is full) spent at stage 2 on its own prototype, before any pack was cut: the
+  counterfactual of a freed room is a queue, refilled by whoever needs a room next, so the honest replays (FIFO 858,
+  infection-first 1,029 bed-days) file the modular ward (1,284), the default path's answer, and block 73 to 119
+  recorded room takes the record cannot price, while only the naive per-closure check (1,615) files the partnership.
+  The call depends on unrecorded allocation rules, so closing the fork files the HOW (a withheld rule either way).
+  With this the number has screened fourteen candidates across eleven task types at the 11-02 re-root and none
+  clears; PAUSED on the orchestrating session's rule.
