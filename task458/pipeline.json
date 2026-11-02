@@ -1,88 +1,100 @@
 {
- "task": "task458",
- "status": "DESIGN",
- "domain": "general-statistics-data-science",
- "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-02",
- "stump": "(draft) The default path expands each neighborhood zone's midday paid occupancy by the ratio of all vehicles to paid vehicles at its mid-morning and mid-afternoon enforcement passes and moves the wrong zones' rates; only the unpaid vehicles read on both of a day's passes, added to the complete paid record, place each zone against 60 and 85 per cent (figures fixed at build).",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": "0.06 task243 at registration"
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [],
- "resume": "Architecture 2 drawn and registered 2026-11-02 (card task458 v2, WARN overuse.objective only). Next: stage 2 design (default path, survivor anatomy, readability screen, fork table, ladder, closure, the two ask devices screened as code against the honest cracker before any data is cut), then precut.py.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "source_note": "no seed: a draw outside the seeds in General Statistics & Data Science (data integration), objective ETL, re-rooted from architecture 1 (seed ET15, healthcare delivery)",
- "architecture_1": {
-  "domain": "healthcare-delivery-health-economics",
-  "stump": "The default path carries the prevalence the members enrolled all year show, eligibility group by group, to every member and files Adams, Douglas, Franklin, Grant, Okanogan and Yakima, because the farmworkers in Yakima's short seasonal spells have the conditions about half as often as the members who stay; counted for the months each identified member was enrolled (1 over the share of full-year members identified within the same number of months), Yakima meets all three standards and the five are designated.",
-  "architecture": 1,
-  "loops": 1,
+  "task": "task458",
+  "status": "PAUSED",
+  "domain": "general-statistics-data-science",
+  "objective": "etl",
+  "stage": 1,
+  "stage_name": "re-root owed (architecture 2 spent at the judge)",
+  "updated": "2026-11-02",
+  "stump": "The default path adds each zone's mean unpaid count on its enforcement runs to the complete paid record, a model downtown's in-window 12:30 run confirms, and raises Alder Row, Cascade Avenue and Hollis Street (95, 95 and 91 per cent) and holds Fernwood and Irvine Market (71 and 71); only the vehicles read unpaid on both the last run before noon and the first after 2 p.m. were parked through the window, which holds the three at 79 and lowers the two at 55 and 53.",
+  "architecture": 2,
+  "loops": 0,
   "precut": {
-   "exit": 0,
-   "date": "2026-10-15"
+    "exit": 0,
+    "date": "2026-11-02"
   },
   "leak": {
-   "leak_py": "REVIEW (no LEAK), 2026-10-15 on the shipped pack",
-   "reader": "pass 1 (first design) filed the five by standardizing the full-year prevalence by eligibility group; stump re-centred; passes 2 and 3 (re-centred) filed six, Yakima added, question 1 none, question 6 analytical"
+    "leak_py": "REVIEW (no LEAK), 2026-11-02 on the final cut, each REVIEW ruled in the note",
+    "reader": ""
   },
   "duplicate_check": {
-   "heart": "WARN (overuse.objective; the slot's first design differentiated)",
-   "nearest": "0.08 task73 lineage, 0.07 task180 lineage",
-   "note": "surface promotes task457 and task456, both differentiated on the card"
+    "heart": "WARN (overuse.objective; repeat.deliverables csv+docx against task454 v2, same-day build in flight; same_driver_older NOTE differentiated)",
+    "nearest": "0.06 task243; surface 0 promoted"
   },
   "judge": {
-   "verdict": "r1 DETERMINISTIC (first design); r2 DETERMINISTIC; r3 DETERMINISTIC",
-   "disposition": "r1 APPROVE; r2 FIX_NOW (Okanogan reach on a rounding edge, an untruncated hazard moving counts), fixed; r3 APPROVE",
-   "report": "task458/determinism_check_report.md"
+    "verdict": "arch 2 pass 1 on cut 950254e3: NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK: the unpaid-to-window imputation unfiled and not forced by the data (the mean-count reading moves five zones); the pilot-street conventions forked; Gate H3",
+    "report": "determinism_check_report.md"
   },
-  "returned": [
-   {
-    "date": "2026-11-01",
-    "portal": "none: in-house re-check under the new leak gate (LEAK: extract_manifest_2026-11-12.csv and network_analytics_data_dictionary.xlsx, files whose names say they describe the data)",
-    "repair": "leak",
-    "move": "The generator no longer writes the export manifest or the data dictionary (pack.py's writers and FILES entries removed, build.py's two writes and the dictionary's container step removed); provenance stays in metadata.json, whose two entries for them are gone and whose subdomain now says what the task decides instead of the first design's method. Nothing the files carried moved into a document: closure row 16 (persons by client identifier) now cites NP-31 2.2 and row 19 (frequency codes, eligibility groups) cites NP-31 2.4 and the producing systems' own codes; the dictionary's column glosses, file list and the fee schedule's lesser-of sentence (Ask A's referee) were dropped. checks.py asserts no shipped file or sheet describes the data (by name, sheet name and header, each with a positive control) and the two closure rows' new homes; verify.py now reads NP-31 back from the PDF (its thresholds, 2.2 and 2.4) on its own reader. The call, the stump, the ladder and every figure are unchanged (freeze determinism PASS, figures.json unchanged). Measuring the ask layer for the first time with a careful-solver cracker (generator/ceiling.py) found Ask A spent: the cracker keeps 132 of 132 ask figures, pair 81.8; the reship waits on the ask rework.",
-    "commit": ""
-   }
-  ],
-  "delivered": "2026-10-15",
-  "target_zip_md5": "3eeae116705fd8fc3e72cd4f9c1b3aad",
-  "ask_audit_2026_11_01": {
-   "date": "2026-11-02",
-   "script": "generator/ceiling.py",
-   "pack_md5": "3eeae116705fd8fc3e72cd4f9c1b3aad",
-   "cracker_keeps": "132 of 132 ask figures",
-   "mirror_leakage_pct": 34.1,
-   "pair_ceiling": 81.8,
-   "two_careful_on_call": 100.0,
-   "spent": [
-    "A quarterly payments",
-    "A group payments"
-   ],
-   "why": "D6 (the claim's paid amount repeated on each of its lines) is the battery's header-to-items check, and its tells sit in the claims file itself: 3,756 of 3,756 multi-line fee-for-service claims carry one paid amount on every line, 4,729 lines are paid above their own charge",
-   "holds": "nothing: the conformed members and the four counties' rows are the call's construction (52 of 52 kept)",
-   "rework": "STOP at the candidate table (2 November report): no re-site (the claims file is read by the call and frozen), no cut (construction only), no full replacement passed both tests and the suspicion test (Tried and rejected)"
+  "returned": [],
+  "resume": "RE-ROOT at stage 1, architecture 3 (2026-11-02): architecture 2 (a city's meter rates from midday occupancy, unpaid vehicles imputed from the enforcement runs either side of the window) is spent at the judge, SEND_BACK: the golden's imputation over a window no record covers was argued, not forced, and the mean-count reading was licensed (Tried and rejected, last line). Architecture 3 takes a new world, a new dataset, a new generator and a new shell, in another client domain, under the same objective (ETL) and number; its golden method must be validated by the data where it applies (a back-test on records that observe what the method imputes), never only argued. The working tree holds architecture 2's uncommitted build, which architecture 3 replaces.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "no seed: a draw outside the seeds in General Statistics & Data Science (data integration), objective ETL, re-rooted from architecture 1 (seed ET15, healthcare delivery)",
+  "architecture_1": {
+    "domain": "healthcare-delivery-health-economics",
+    "stump": "The default path carries the prevalence the members enrolled all year show, eligibility group by group, to every member and files Adams, Douglas, Franklin, Grant, Okanogan and Yakima, because the farmworkers in Yakima's short seasonal spells have the conditions about half as often as the members who stay; counted for the months each identified member was enrolled (1 over the share of full-year members identified within the same number of months), Yakima meets all three standards and the five are designated.",
+    "architecture": 1,
+    "loops": 1,
+    "precut": {
+      "exit": 0,
+      "date": "2026-10-15"
+    },
+    "leak": {
+      "leak_py": "REVIEW (no LEAK), 2026-10-15 on the shipped pack",
+      "reader": "pass 1 (first design) filed the five by standardizing the full-year prevalence by eligibility group; stump re-centred; passes 2 and 3 (re-centred) filed six, Yakima added, question 1 none, question 6 analytical"
+    },
+    "duplicate_check": {
+      "heart": "WARN (overuse.objective; the slot's first design differentiated)",
+      "nearest": "0.08 task73 lineage, 0.07 task180 lineage",
+      "note": "surface promotes task457 and task456, both differentiated on the card"
+    },
+    "judge": {
+      "verdict": "r1 DETERMINISTIC (first design); r2 DETERMINISTIC; r3 DETERMINISTIC",
+      "disposition": "r1 APPROVE; r2 FIX_NOW (Okanogan reach on a rounding edge, an untruncated hazard moving counts), fixed; r3 APPROVE",
+      "report": "task458/determinism_check_report.md"
+    },
+    "returned": [
+      {
+        "date": "2026-11-01",
+        "portal": "none: in-house re-check under the new leak gate (LEAK: extract_manifest_2026-11-12.csv and network_analytics_data_dictionary.xlsx, files whose names say they describe the data)",
+        "repair": "leak",
+        "move": "The generator no longer writes the export manifest or the data dictionary (pack.py's writers and FILES entries removed, build.py's two writes and the dictionary's container step removed); provenance stays in metadata.json, whose two entries for them are gone and whose subdomain now says what the task decides instead of the first design's method. Nothing the files carried moved into a document: closure row 16 (persons by client identifier) now cites NP-31 2.2 and row 19 (frequency codes, eligibility groups) cites NP-31 2.4 and the producing systems' own codes; the dictionary's column glosses, file list and the fee schedule's lesser-of sentence (Ask A's referee) were dropped. checks.py asserts no shipped file or sheet describes the data (by name, sheet name and header, each with a positive control) and the two closure rows' new homes; verify.py now reads NP-31 back from the PDF (its thresholds, 2.2 and 2.4) on its own reader. The call, the stump, the ladder and every figure are unchanged (freeze determinism PASS, figures.json unchanged). Measuring the ask layer for the first time with a careful-solver cracker (generator/ceiling.py) found Ask A spent: the cracker keeps 132 of 132 ask figures, pair 81.8; the reship waits on the ask rework.",
+        "commit": ""
+      }
+    ],
+    "delivered": "2026-10-15",
+    "target_zip_md5": "3eeae116705fd8fc3e72cd4f9c1b3aad",
+    "ask_audit_2026_11_01": {
+      "date": "2026-11-02",
+      "script": "generator/ceiling.py",
+      "pack_md5": "3eeae116705fd8fc3e72cd4f9c1b3aad",
+      "cracker_keeps": "132 of 132 ask figures",
+      "mirror_leakage_pct": 34.1,
+      "pair_ceiling": 81.8,
+      "two_careful_on_call": 100.0,
+      "spent": [
+        "A quarterly payments",
+        "A group payments"
+      ],
+      "why": "D6 (the claim's paid amount repeated on each of its lines) is the battery's header-to-items check, and its tells sit in the claims file itself: 3,756 of 3,756 multi-line fee-for-service claims carry one paid amount on every line, 4,729 lines are paid above their own charge",
+      "holds": "nothing: the conformed members and the four counties' rows are the call's construction (52 of 52 kept)",
+      "rework": "STOP at the candidate table (2 November report): no re-site (the claims file is read by the call and frozen), no cut (construction only), no full replacement passed both tests and the suspicion test (Tried and rejected)"
+    },
+    "source_note": "seed ET15 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a Medicaid program's behavioral-health prescriber pilot designating counties on workforce ratios, the provider master rebuilt from NPPES monthly and weekly files); the decoy-era traps are not used; pairing in Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics (see ## Draw)",
+    "fate": "spent 2026-11-02: main call sound, ask layer spent (careful-solver cracker 132 of 132, pair 81.8), no re-site, cut or replacement passed; re-rooted to architecture 2. The delivered version stays on the portal as delivered."
   },
-  "source_note": "seed ET15 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a Medicaid program's behavioral-health prescriber pilot designating counties on workforce ratios, the provider master rebuilt from NPPES monthly and weekly files); the decoy-era traps are not used; pairing in Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics (see ## Draw)",
-  "fate": "spent 2026-11-02: main call sound, ask layer spent (careful-solver cracker 132 of 132, pair 81.8), no re-site, cut or replacement passed; re-rooted to architecture 2. The delivered version stays on the portal as delivered."
- }
+  "answer": "Raise D01 Courthouse to 3.25, D05 Union Depot to 2.50, N05 Eastbank to 2.00; lower D04 Market Hall to 2.00 and N02 Birch Hill, N06 Fernwood, N09 Irvine Market to 1.00; hold the other eleven, from 1 January 2027.",
+  "gates": {
+    "checks": "45 assertions, 0 failures",
+    "verify": "26 of 26 golden rows from target/ alone, 0 failures",
+    "rebuild": "two consecutive builds byte-identical (internal second build sha256 046ccd8b11192628); target.zip md5 950254e395d9d1265e94a2fab7f2ccc2 on both consecutive builds",
+    "figures_check": "exit 0 (141 figures)",
+    "voice_check": "PASS",
+    "surface": "exit 0",
+    "heart": "WARN",
+    "ceiling": "cracker 0 of 16, pair 28.5, mirror leakage 0.0; two careful responses each handling one device 72.5",
+    "leak_py": "REVIEW (no LEAK): sweeps 3, 4 and 6, each ruled in the note"
+  }
 }

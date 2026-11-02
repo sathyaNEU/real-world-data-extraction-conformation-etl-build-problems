@@ -1,36 +1,195 @@
 # task458 design note
 
-Architecture 2, drawn 2026-11-02 as a re-root (architecture 1, a Medicaid plan's county designation in healthcare delivery, sound on its main call but spent on its ask layer: see `## Architecture 1 record` and `## Tried and rejected`). A new world, dataset, generator and shell in another client domain: the City of Elsworth (Oregon, fictional) parking services division's 2027 performance-based meter rates, each metered zone's rate moved by its fiscal 2026 weekday noon-to-2 p.m. occupancy, which no system records whole.
+Architecture 2, drawn 2026-11-02 as a re-root (architecture 1, a Medicaid plan's county designation in healthcare delivery, sound on its main call but spent on its ask layer: see `## Architecture 1 record` and `## Tried and rejected`). A new world, dataset, generator and shell in another client domain: the City of Elsworth (Oregon, fictional) Parking Services division's 2027 performance-based meter rates, each metered zone's rate moved by its weekday noon-to-2 p.m. occupancy over the fall 2026 measurement period, which no system records whole.
 
 ## Draw
 
-Ten-line summary (sent to the main thread at registration):
+Ten-line summary (sent to the main thread at registration; the lines below are the build as cut):
 
 1. **Pairing:** General Statistics & Data Science, `data-integration-record-linkage-entity-resolution`, objective Data Extraction & Conformation (ETL); client domain general-statistics-data-science (architecture 1 was healthcare delivery).
-2. **Niche:** the City of Elsworth (Oregon, fictional) parking services division's 2027 performance-based meter rates: each metered zone's rate moves by its fiscal 2026 (July 2025 to June 2026) weekday noon-to-2 p.m. occupancy, which no system records whole.
-3. **Default path against golden:** the default expands each zone's midday paid occupancy by the ratio of all vehicles to paid vehicles at its enforcement passes (the parking study's expansion) and raises or lowers the wrong neighborhood zones; the golden adds to the complete paid record only the unpaid vehicles read on both of a day's passes (zones and rates fixed at build).
-4. **Stump sentence (draft):** the neighborhood passes come only mid-morning and mid-afternoon, when the unpaid vehicles include residents' overnight cars and school-run stops that are gone by midday, and the all-day unpaid vehicles (disability placard holders) are a fixed number, not a multiple of the paid lunch crowd, so the passes' ratio or mean unpaid count misplaces the zones against 60 and 85 per cent.
+2. **Niche:** the City of Elsworth (Oregon, fictional) Parking Services division's 2027 performance-based meter rates: each of its meter zones moves its hourly rate by its weekday noon-to-2 p.m. occupancy over the fall 2026 measurement period (8 September to 30 October), counting every parked vehicle, paid or not, which no system records whole.
+3. **Default path against golden:** the default adds to the apps' complete paid record the mean count of unpaid vehicles on each zone's enforcement runs (validated on downtown, whose 12:30 run sits inside the window) and raises Alder Row, Cascade Avenue and Hollis Street and holds Fernwood and Irvine Market; the golden adds only the vehicles read unpaid on both the last run before noon and the first after 2 p.m., and holds the three, lowers the two.
+4. **Stump sentence:** below.
 5. **Shape:** 10, a scorecard against thresholds (each zone's occupancy against 60 and 85 per cent sets its 2027 rate); decision `dial_setting`, question form `what`.
-6. **Deliverables:** `elsworth_2027_meter_rates.docx` (the council memo, with the rate table and a chart of every zone against the two lines) and `zone_midday_occupancy_fy2026.csv`.
+6. **Deliverables:** `elsworth_2027_meter_rates.docx` (the council memo, rate table and a chart of every zone against the two lines) and `fall_2026_curb_occupancy.csv` (the zone figures and the sensor-pilot streets' figures by month).
 7. **Nearest driver (`guard.py mechanisms`, `check`):** 0.06 task243 (a register's exit share), 0.05 task250 v3, task274 v1, task130, task265 v0; none moves a window's unrecorded part from members counted on both sides of it.
 8. **Guard:** WARN, `overuse.objective` only (the ETL lane); `test.same_driver_older` NOTE, differentiated against task107's v3-etl lineage on the card.
-9. **Ask records:** the residential parking permit registry (pricing: calendar-year permits prorated by month and renewed from December, so a permit's term shows only in its amount) and the impound lot's tow and release log (pricing: storage charged by the day held, readable from the fee where the release stamp is missing); both screened as code against the honest cracker before any data is cut.
-10. **Layer 1:** two parking-app vendors either side of the 1 February 2026 change (local-time zone codes against UTC location numbers through a crosswalk), camera-read plates against typed plates, GPS-placed block faces, meters added and spaces removed mid-year, bagged meters, city holidays.
+9. **Ask records:** the curb-sensor pilot on four free two-hour streets beside meter zones (its platform's events and heartbeats), a system the call never reads; devices: sensors whose batteries died read as empty spaces, and the magnetometer's four-hourly re-baselining read as departures.
+10. **Layer 1:** two app vendors either side of 1 October (StallPay local 12-hour times and zone codes, CurbTrack UTC times and location numbers through a crosswalk), camera misreads of confusable characters, an inventory with a new Eastbank face and a cut Cascade Avenue face, bagged faces, the holiday calendar as an iCalendar file, the sensor platform's UTC export, Saturdays and the days outside the period in every extract.
 
 - **Card:** `.claude/skills/fingerprint/cards/task458.json`, architecture v2, registered 2026-11-02 with `check` run on the registered card (WARN `overuse.objective`, answered: the slot is in the author's ETL lane). Architecture 1's identity is in the card's lineage with `architecture_spent` and its fate, and its shell in `lineage_shells`.
-- **Axes redrawn against the window, each to the honester label, never to a passing one:** strategy `composition_mix` (BLOCK against task453) to `population_selection`, the honest family here: the passes count a different unpaid population from the one parked at midday, and the window's population has to be built from the vehicles' own reads. Decisive generator G6 (BLOCK against task453) and G13 (BLOCK against task154) to G12: the window has no read, and a vehicle with no midday read is not a vehicle absent at midday. Forcing event `statutory_or_regulatory_filing` (task154) and `period_close` (task453) to `launch_or_rollout`: the 2027 schedule rolls out on 1 January as a new set of rates. Gate G `method_or_model_selection` (overused in the last twelve) to `etl_conformance`: the call is a conformed zone table judged against the city's pricing rule. Personas Jessica Barron and Kenneth Benton (first names on older builds) redrawn to Kelsey Solis (parking program manager) and Andrew Ward (enforcement supervisor), both from `guard.py names --geo "United States" --seed 458`, skipping the two architecture 1 used.
-- **Why this cell:** ETL is served by six task types. Healthcare delivery (architecture 1), physical and environmental sciences, survey research and official statistics are out for this re-root, and test equating (Education) is spent on file (non-equivalent groups, retest gain, contaminated calibration, optional items, position effects, rapid guessing, mode effects, anchor drift, pre-equating). Data integration in General Statistics remains; its library cards (linkage error, field weighting, entity resolution) are reflexes or identity resolution, so the deciding object is the integration estimator itself: a complete record of one part of a population joined to periodic censuses of all of it.
-- **The ETL move (guide-to-prompt section 1):** complete a record the process could not make. The forcing file, the enforcement plate-read log, pins an overlap: which unpaid vehicles were read on both sides of the window. Reading every file correctly is not sufficient: the sessions, reads, inventory and rule read right still leave the analyst choosing how the window's unpaid vehicles follow from reads taken outside it, and the field's expansion (the all-to-paid ratio at the passes) or the mean unpaid count at the passes files a wrong schedule.
-- **Shape and shell:** shape 10; question form `what`, second sentence opening on the memo (`the`), rounding sentence opening on occupancy, deliverable set docx+csv, all under the corpus quotas (`voice-check.py`), and none of architecture 1's (which, put, round, csv+xlsx).
-- **World:** the City of Elsworth, Oregon (fictional, about 210,000 people), Department of Transportation, Parking Services. About twenty-two metered zones: downtown zones with hourly enforcement passes (two of them in an in-ground sensor pilot) and neighborhood business districts whose routes pass mid-morning and mid-afternoon. Payment is by plate through the city's parking app or text, charged by the minute; the app vendor changed on 1 February 2026. Parking Administrative Rule 12 (the filed WHAT): occupancy is the share of a zone's metered spaces in service occupied by parked vehicles, averaged over weekday minutes from 12:00 to 14:00 in the fiscal year, city holidays out; above 85 per cent the rate rises 50 cents, below 60 per cent it falls 50 cents (floor and ceiling filed), otherwise it holds, the new rates taking effect on 1 January. Forum `council_or_assembly` (the council adopts the schedule by resolution in December), forcing event `launch_or_rollout`, organisation `local_government`, role `policy_adviser` (the parking program manager).
-- **Data-native sentence:** the neighborhood districts' enforcement routes pass only mid-morning and mid-afternoon, when the vehicles parked without paying include residents' cars left from the night (gone by about half past ten) and school-run stops after three, while at midday the only unpaid vehicles are disability placard holders parked all day, a fixed number that does not rise and fall with the paid lunch crowd; so the passes' unpaid share or count describes the pass times, not the window.
+- **Axes redrawn against the window at the draw, each to the honester label:** strategy `composition_mix` (BLOCK against task453) to `population_selection` (the runs count a different unpaid population from the one parked at midday); generators G6 and G13 (BLOCK against task453 and task154) to G12 (the window has no read, and a vehicle with no midday read is not a vehicle absent at midday); forcing event to `launch_or_rollout` (the 2027 schedule rolls out on 1 January); Gate G to `etl_conformance`. Personas Kelsey Solis (Parking Services Manager) and Andrew Ward (enforcement and pilot lead) from `guard.py names --geo "United States" --seed 458`.
+- **Why this cell:** ETL is served by six task types; healthcare delivery (architecture 1), physical and environmental sciences, survey research and official statistics were out for this re-root and test equating is spent on file. Data integration remains, and its deciding object here is the integration estimator itself: a complete record of one part of a population joined to periodic counts of all of it.
+- **The ETL move (guide-to-prompt section 1):** complete a record the process could not make. The forcing file, the enforcement plate reads, pins an overlap: which unpaid vehicles were read on both sides of the window. Reading every file correctly is not sufficient: the sessions, reads, inventory and rule read right still leave the analyst choosing how the window's unpaid vehicles follow from reads taken outside it.
+- **Shape and shell:** shape 10; question form `what`, second sentence opening on the memo, rounding sentence opening on occupancy, deliverable set docx+csv, all under the corpus quotas (`voice-check.py` PASS), none of architecture 1's (which, put, round, csv+xlsx).
+- **World:** the City of Elsworth, Department of Transportation, Parking Services. Six downtown zones whose enforcement routes run at about 8:30, 10:30, 12:30, 2:30 and 4:30, and twelve neighbourhood business districts whose routes run once between 8:45 and 10:45 and once between 2:45 and 3:45. Payment is by plate through an app or text, pay as you go, the app ending the session when the car leaves; the vendor changed on 1 October 2026. Parking Administrative Rule 12 (the filed WHAT): the measurement period, the weekday and window, occupancy as the share of in-service metered space-minutes a parked vehicle occupied whether or not it paid, bagged faces out of service, the 85 and 60 per cent lines, the 50-cent step, the floor and ceiling, Schedule A with the 2026 rates. Forum `council_or_assembly`, forcing event `launch_or_rollout`, organisation `local_government`, role `policy_adviser`.
+- **Data-native sentence:** the neighbourhood districts' routes run only mid-morning and mid-afternoon, when the vehicles parked without paying include residents' cars left from the night (gone by half past eleven) and parents' school-run stops (from about 2:40), while at midday the only unpaid vehicles are disability placard holders parked all day, a fixed number that neither run's unpaid count describes; downtown, whose routes include a 12:30 run and whose blocks have neither, shows the mean of its runs agreeing with the window.
 - **Abstraction sentence (stumping Part 6), and the approved builds it is not:** "a window no count covers is filled from a complete record of one part of a population and counts of all of it taken outside the window, the other part entering only through the members counted on both sides of it." No approved build says it: task275 rebuilds unobserved effort from a catch per hour, task120 subtracts a storage gain, task196 corrects a self-produced overlap, task303 removes simultaneous sibling events; the delivered task473 and architecture 1 complete a count by a capture rate, which this build has none of.
-- **Lessons 7, 9, 10 and 11 at the draw:** no shipped file states an occupancy, a paid-to-total factor, a compliance rate or a typical unpaid share for any zone (9, 11); the sensor pilot's readings are correct and sit in downtown zones where every route agrees; the filed WHAT names occupancy by every parked vehicle over the window and nothing about paid or unpaid vehicles or how to estimate them (10); the golden's assumptions go into `checks.py` as assertions on the shipped rows (7): a paid session is a vehicle present (no paid plate missing at a pass inside its session), an unpaid vehicle read on both passes stayed through the window (continuity checked on the hourly downtown passes), no unpaid vehicle in a neighborhood window goes unread in a way that moves a rate, and short unpaid stays and camera misses move no rate.
+- **Lessons 7, 9, 10 and 11:** no shipped file states an occupancy, a paid-to-total factor, a compliance rate, an unpaid share or an expansion for any zone, and no shipped document reports a figure computed by one (9, 11); the default path is the analyst's own additive model, refuted by the runs' own unpaid mix by time of day; the filed WHAT names occupancy by every parked vehicle over the window and nothing about how unpaid vehicles are known (10; `checks.py` LK2 asserts the rule names no record, system or unpaid group); the golden's assumptions are asserted on the clean truth and through the verifier's readers (7: L7a, L7b, SF6 to SF9).
 - **Sources, one line each:**
-  - `stumping/references/client/layer2-rigor-patterns.md`, data integration card 1 (propagate integration error into the estimate): this build's own pattern, `own:unrecorded-group-in-a-window-from-its-own-sightings-on-both-sides`, the error being the expansion of a complete partial record by counts taken at the wrong times.
-  - `stumping/references/client/two-layer-task-design.md`, estimation_fit (weighting, ratio estimators): the ratio of all to paid vehicles is the expansion a parking study uses and the one this window refutes.
-  - `stumping/references/strategies.md` F7 population (the population the decision funds is not the counted one): the passes count the unpaid vehicles present at pass times; the window's are a subset only both passes identify.
-  - `dataset-generation/references/layer1-messiness.md`: several sources for one picture, layouts changing across the year, imperfect keys, genuine overlap, real coverage, documentation to read; none on the decisive step.
+  - `stumping/references/client/layer2-rigor-patterns.md`, data integration card 1 (propagate integration error into the estimate): this build's own pattern, `own:unrecorded-group-in-a-window-from-its-own-sightings-on-both-sides`.
+  - `stumping/references/client/two-layer-task-design.md`, estimation_fit (weighting, ratio estimators): the ratio of all to paid vehicles at the counts is the field's expansion and rung 1 here.
+  - `stumping/references/strategies.md` F7 population (the population the decision funds is not the counted one).
+  - `dataset-generation/references/layer1-messiness.md`: several sources for one picture, layouts changing at a vendor switch, imperfect keys, real coverage; none on the decisive step.
+- **Leak REVIEW rulings:** recorded under `## Leak check` once `leak.py` has run on the final cut.
+
+## Default path
+
+The pipeline a strong analyst builds from the prompt's words and the files' grain, every field read right and Rule 12 executed:
+
+1. Conform the two vendors' sessions: StallPay's 12-hour local times and zone codes; CurbTrack's UTC times converted to Pacific and its location numbers mapped through the crosswalk to block faces and, through the effective-dated inventory, to zones.
+2. Take the counted weekdays from Rule 12.03 and the holiday calendar (8 September to 30 October, 12 October out) and each zone's in-service spaces per day from the inventory less the faces bagged that day (Rule 12.04).
+3. Paid occupancy minute by minute in the noon-to-2 window from the sessions (pay as you go, so a session is the car's presence).
+4. For the vehicles that did not pay, the field's count-based method: take each zone's enforcement runs that day, count the reads with no matching session, and add the mean unpaid count over the day's runs to the window's paid minutes (the ratio of all to paid vehicles at the runs, rung 1, gives districts over 100 per cent and is dropped).
+5. Validate on downtown: its 12:30 run sits inside the window, and its unpaid count there equals the mean of its other runs, zone after zone (`checks.py` R3e); the model holds.
+6. Apply Rule 12.05 to each zone's occupancy.
+
+- **Ends on:** raise six zones (Courthouse, Union Depot, Eastbank, Alder Row at 95 per cent, Cascade Avenue at 95, Hollis Street at 91, each to its rate plus 50 cents), lower two (Market Hall, Birch Hill), hold ten (Fernwood at 71, Irvine Market at 71 among them).
+- **Golden:** raise three (D01 Courthouse to 3.25, D05 Union Depot to 2.50, N05 Eastbank to 2.00), lower four (D04 Market Hall to 2.00, N02 Birch Hill to 1.00, N06 Fernwood to 1.00, N09 Irvine Market to 1.00), hold eleven; Alder Row 79, Cascade Avenue 79, Hollis Street 79, Fernwood 55, Irvine Market 53 per cent.
+
+## Stump sentence
+
+The default path adds each zone's mean unpaid count on its enforcement runs to the complete paid record, a model downtown's in-window 12:30 run confirms, and so raises Alder Row, Cascade Avenue and Hollis Street (95, 95 and 91 per cent) and holds Fernwood and Irvine Market (71 and 71 per cent); but the neighbourhood runs come only mid-morning and mid-afternoon, when the unpaid vehicles include residents' cars left from the night and school-run stops, so only the vehicles read unpaid on both the last run before noon and the first after 2 p.m. were parked through the window, which puts the three at 79 per cent (hold) and the two at 55 and 53 (lower).
+
+## Three rules
+
+- **Task type:** `data-integration-record-linkage-entity-resolution` (General Statistics & Data Science), which serves Data Extraction & Conformation: two vendors' session records and the routes' plate reads are integrated into one conformed table of zone occupancy, and the integration estimator is what decides.
+- **Domain test:** the deciding quantity is each zone's window occupancy estimated from a complete record of paid presence plus periodic counts of every vehicle; the field's own estimator is the count-based expansion (the paid record raised by the counts' all-to-paid ratio, or the counts' unpaid stock added), as parking occupancy studies do with survey counts.
+- **Swap:** "the share of a ward's beds occupied at noon from the admissions system plus the night porters' bed counts" keeps the arithmetic but loses the call: the call turns on which unpaid parkers stay through a lunchtime window that no route covers, a structure of placard holders, overnight cars and school-run stops the swap does not carry.
+- **Layer 1:** the vendor switch on 1 October (StallPay's local 12-hour times and zone codes, CurbTrack's UTC times and location numbers through a crosswalk), confusable characters in camera reads, the effective-dated inventory (a new Eastbank face from 5 October, Cascade Avenue's face 2 cut to three spaces from 21 September), bagged faces under street-use permits, the iCalendar holidays, Saturdays and days outside the period in every extract; each produced by its own system and none carrying the call.
+- **Layer 2:** population selection in a stock estimate: the unpaid stock at a count is not the window's unpaid stock when the unpaid population turns over by time of day; the choice that flips the call is to identify the window's unpaid vehicles by their presence across it rather than to transfer a count taken outside it.
+- **Decisive step:** reading the unpaid plates on the runs either side of the window as a panel of vehicles, and counting in the window only those parked through it (unpaid on both the last run before noon and the first after 2 p.m.), because the mid-morning unpaid set holds overnight cars and the mid-afternoon set school-run stops that are gone at midday.
+- **Not semantics:** every field read by its plain meaning (the payment check, both vendors' clocks, the zone keys, the inventory's dates, the rule's definitions) still leaves the analyst choosing how a count outside the window becomes the window's unpaid stock; the default path reads all of them right and files the wrong schedule (R3a).
+- **Not rule application:** Rule 12 files what occupancy is and the lines, never how unpaid vehicles at midday are found; the enumerated family (paid only, the all-to-paid ratio, the mean unpaid count, the morning run, the afternoon run, the smaller of the two counts, the runs' mean, a flat uplift from downtown's in-window share, interpolation of totals) spans Alder Row 45 to 180 per cent and none lands the call (R3b, 0 of 9); the standing family (the plates read unpaid on both runs, by exact or near match, with or without each plate's own session minutes, downtown read at 12:30 or bracketed) spreads 0.0 whole per cents on every zone (SF6 to SF9), and the ruling-out is the runs' own unpaid mix, plate by plate, which nothing announces.
+- **Analyst test:** a strong analyst who cleans every file and executes Rule 12 adds the mean unpaid count on each zone's runs to the paid record, sees it confirmed by downtown's 12:30 run, and files Alder Row, Cascade Avenue and Hollis Street raised (95, 95 and 91 per cent) with Fernwood and Irvine Market held (71 and 71 per cent).
+- **Estimand:** Rule 12.03 and 12.04 in `Parking_Administrative_Rule_12.pdf`: the in-service metered space-minutes from noon to 2 p.m. on every weekday of 8 September to 30 October 2026 (holidays out), occupied by a parked vehicle whether or not it paid, over all in-service space-minutes in those windows, bagged faces out on their permit days, by zone.
+- **No decoy:** nothing is planted: no memo, study, factor, compliance rate, occupancy table or stakeholder figure is shipped; the overnight cars, school-run stops and placard holders are the parking world's own, and the distractors (the garages' monthly summary, the 311 requests) rank no zone.
+- **No certified replay:** no certified or published occupancy exists in the pack, so no method is recovered by reproducing one; downtown's 12:30 run is a raw count the default path validates against, not a certified figure.
+- **Lesson:** a count of a population taken outside a window describes the population at that time; when the population turns over by time of day, the window's members are the ones present on both sides of it, found plate by plate, and no build on file teaches transferring a stock across a window by its members' presence on both sides.
+
+## Survivor anatomy
+
+- **Actor:** the unpaid vehicle parked through the window has rows (its reads on each run) but no column says it stayed: the property is a relation between a plate's reads on two runs, stored nowhere.
+- **Link:** the signal is the same unpaid plate on the morning and the afternoon run of one zone-day, a within-file comparison across runs that no key offers (the read rows carry no vehicle or stay identifier) and no sentence invites.
+- **Reflex:** the field's count-based expansion sits at rung 1 (the all-to-paid ratio, over 100 per cent in districts) and the additive count model at rung 2, the default path, which files the wrong schedule (`## Default path`).
+- **Back-test:** downtown's 12:30 run inside the window confirms the default path: the mean unpaid count of downtown's other runs matches it in every downtown zone (R3e), because downtown has no overnight cars or school-run stops.
+- **Second use:** every file the decisive step reads is in the pack for the paid record or the in-service spaces anyway: the reads give the unpaid count the default path also uses; nothing is shipped only for the step.
+- **Shock:** the golden's raise and lower sets are not an interval of any sort on a shipped statistic: by paid occupancy the bottom four hold Linden Square, not Fernwood, and the top three hold Kittredge, not Eastbank (R3d); the five districts the step moves are ordinary lunch and flat-profile zones.
+- **Pins:** the WHAT is filed in Rule 12 (the city's administrative rule, its genre) and no filed sentence names a run, a read, a session, an unpaid group or how midday unpaid vehicles are known (LK2); deleting any sentence of 12.03 to 12.05 unforces only what it files.
+
+## Readability screen
+
+| Rung | What reads it | Verdict |
+|---|---|---|
+| 0 paid only (sessions alone) | Rule 12.04 "whether or not that vehicle paid" rules it out on reading | readable |
+| 1 the all-to-paid ratio at the runs | districts at 110 to 180 per cent, impossible on reading the result | readable |
+| 2 the mean unpaid count at the runs (default path) | nothing: downtown's 12:30 run confirms it | silent |
+| 3 (decisive) the plates read unpaid on both runs either side of the window | nothing in any file or sentence names it; only the runs' plates, compared across runs, show the turnover | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the window's clock | noon to 2 p.m. Pacific; CurbTrack's times are UTC (each carries Z) | CurbTrack read as local | every zone moves | the Z on every CurbTrack time; positive control in checks.py (18 zones move) |
+| SF2 | above 85, below 60 | the unrounded share | the whole-per-cent figure | same call | no zone within 4.2 points of a line (R3f) |
+| SF3 | weekday | Monday to Friday in the period, not a City holiday | 12 October kept | same call | Rule 12.03's definition and the holiday calendar |
+| SF4 | a day without a run on one side | none occurs | fill or skip | same call | every counted zone-day has both runs (asserted) |
+| SF5 | in-service space | inventory face on the day, less faces bagged that day | nominal spaces | figures move | Rule 12.04's sentence and the permits' bag dates |
+| SF6 | a read's paid status | a session for that plate (or one confusable character off) active at the read | the system's payment check | same figure, every zone | asserted through the verifier's reader |
+| SF7 | the same vehicle on two runs | the plate, or one confusable character off | exact plate only | same figure, every zone | asserted |
+| SF8 | a both-run unpaid vehicle's window minutes | the window less its own session minutes | the whole window | same figure, every zone | asserted |
+| SF9 | downtown's window | bracketed by its 10:30 and 2:30 runs | its 12:30 run read directly | same figure, every zone | asserted |
+| SF10 | occupancy | every parked vehicle, paid or not | paid vehicles only | seven zones move | Rule 12.04 "whether or not that vehicle paid" |
+| SF11 | the pilot's months | the measurement period's weekdays in September and in October | whole calendar months | figures move | the prompt's "each month of the measurement period" and Rule 12.03 |
+| SF12 | a pilot stay's day | the local date the stay began | the UTC date | figures move | the Z on every pilot time; positive control asserted |
+
+## Ladder
+
+| Rung | Construction | Alder Row | Fernwood | Call |
+|---|---|---|---|---|
+| 0 | paid sessions only | 67 | 47 | lowers eight, raises none |
+| 1 | paid record times the all-to-paid ratio at the runs | 180 | 74 | raises N01, N03, N07, N08 and holds N06, N09 |
+| 2 (default) | paid record plus the mean unpaid count at the runs | 95 | 71 | raises N01, N03, N08; holds N06, N09 |
+| 2b | plus the afternoon run's, the morning run's, the smaller run's or the two runs' mean unpaid count | 90 to 96 | 66 to 73 | the same five flips |
+| 3 (golden) | paid record plus the vehicles read unpaid on both runs either side | 79 | 55 | raise D01, D05, N05; lower D04, N02, N06, N09 |
+
+Gate F on the clean truth (R3b): 0 of 9 cheap routes land the call; every count-based route flips exactly the five districts with both overnight and school-run cars (R3c).
+
+## Closure table
+
+| Axis | Reading here | Closure |
+|---|---|---|
+| 1 Population | every vehicle parked on an in-service metered space in the window, paid or not | filed (Rule 12.04); SF10 |
+| 2 Unit of account | space-minutes, summed by zone | filed (12.04) |
+| 3 Attribution window | noon to 2 p.m. on the period's weekdays | filed (12.03); SF1, SF3 |
+| 4 As-of dating | the inventory on each day, the permits' bag dates | the files' own effective dates; SF5 |
+| 5 Version basis | the rule as amended 9 December 2025, the inventory as of 6 October | one version each |
+| 6 Denominator | in-service space-minutes | filed (12.04) |
+| 7 Weighting | pooled space-minutes over the period's days, by zone | filed ("over the measurement windows of all weekdays") |
+| 8 Window length | one measurement period | filed (12.03) |
+| 9 Boundary inclusivity | above 85, below 60 | C1: no zone within 4.2 points (SF2) |
+| 10 Rounding path | the unrounded share decides; reported in whole per cents | C1 (SF2) |
+| 11 Tie-break | none needed | C1 |
+| 12 Maturity and censoring | every window closed before the extracts | C1: extracts run to 31 October |
+| 13 Order of operations | conform, then occupancy, then the rate step | filed (12.05) |
+| 14 Row order | none matters | C1 |
+| 15 Duplicate resolution | one session per paid stay; reads per run | C1: no duplicate rows shipped |
+| 16 Identity normalisation | CurbTrack locations to faces to zones; plates across runs | the crosswalk and inventory; SF7 |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | minutes, spaces, dollars | the files' own columns |
+| 19 Code and status semantics | the payment check, StallPay zone codes | SF6; the inventory's zone column |
+| 20 Integerisation | whole per cents, cents | filed in the prompt |
+| 21 Clause scope | 12.05's floor and ceiling | filed; no zone reaches either |
+| 22 Forward window contents | the 2027 rates need no forecast | filed: the rate moves by the 2026 measurement |
+
+## Literal reader
+
+Executed word for word on the cut pack: Rule 12.03 and 12.04 fix the period, the weekdays, the window, the in-service spaces and occupancy by every parked vehicle; the prompt fixes the units and rounding. Silent on how unpaid vehicles are known, and every licensed way of using the plate reads either lands the golden (the standing family, SF6 to SF9, 0.0 whole per cents apart) or is ruled out by the runs' own rows (the turnover of unpaid plates between runs, L7a). The pilot figures follow the prompt's period and weekday words and Rule 12.03; the device readings (silence as vacancy, a four-second blip as a departure) are each contradicted by the feed's own rows (a sensor that stopped heartbeating, a vacancy no car could make), so no literal reading of a field gives them (PA1, PB1, PB2).
+
+## Oracles
+
+None shipped. No document states an occupancy, a factor, a share or a compliance rate; downtown's 12:30 run is a raw count the default path also passes; the golden memo and CSV never ship.
+
+## Ask sheet
+
+Two device families on disjoint figure blocks of the pilot ask, on a system the call never reads (the free streets carry no meter, no session and no route; PS3), so with every pilot file deleted the main files yield no ask figure.
+
+**Ask A, the pilot streets' weekday noon-to-2 occupancy by month (8 figures). Device: a sensor's silence read as an empty space (D4/D9, a state no event records, read from its trace).** Two sensors on each street ran down their batteries in September (at night, while their spaces were empty) and sent nothing after: no events and no heartbeats, their battery readings falling to about 2,600 mV before the last one. Read as recorded, each silent space is empty every weekday for the rest of the period and the street's occupancy falls 2 to 7 points. The rows force one reading: a working sensor heartbeats every hour whatever its space holds, so after the last heartbeat the space is unmeasured, and the occupancy is that of the spaces measured (excluding the space from both sides equals imputing the street's mean). Over-cleaning half: the gateway outages, when a street's heartbeats stop for hours but its occupancy events arrive afterwards with their own times; treating those hours as unmeasured moves figures (PO). Lesson 8: no filed rule or field's plain meaning makes a silent sensor an empty space, since the feed's own heartbeat rows say the sensor stopped; the space's last event is a departure, and the battery trace shows the cause.
+
+| Reading | Ostrander Oct | Wexford Oct | Where the rows put it |
+|---|---|---|---|
+| silence is an empty space (cracker) | 71 | 46 | contradicted by the heartbeats stopping |
+| unmeasured from the last heartbeat (golden) | 77 | 52 | the only reading the rows allow |
+| outage hours unmeasured too (over-cleaner) | 78 | 53 | contradicted by the late-delivered events |
+
+**Ask B, the pilot streets' average weekday stay by month (8 figures). Device: the magnetometer's re-baselining read as departures (D1/D6, one stay recorded as several).** Under a long-parked car each sensor re-baselines every four hours from the car's arrival, sending VACANT then OCCUPIED two to five seconds apart. Read as recorded, every overnight resident's car becomes three or four stays and the average stay falls from about 140 to 190 minutes to about 115 to 125. The rows force one reading: no car leaves and another takes the space in five seconds (every real swap in the feed takes twelve seconds or more), and the blips fall at four-hour multiples of the stay's start; any merge threshold from 6 to 11 seconds gives the golden (PB2). Over-cleaning half: merging every gap under a minute joins real quick swaps on busy streets (PO). Lesson 8: no field or rule says a VACANT event is not a departure; the impossibility of the gap and the four-hour rhythm make the literal reading impossible, not merely unlikely. Separation: the blips move no occupancy figure (PS1) and the dead sensors no stay (PS2).
+
+| Reading | Tamarack Oct | Ostrander Oct | Where the rows put it |
+|---|---|---|---|
+| every VACANT is a departure (cracker) | 117 | 113 | contradicted by the 2 to 5 second gaps at four-hour multiples |
+| blips under 6 to 11 seconds merged (golden) | 151 | 139 | the only reading the rows allow |
+| gaps under a minute merged (over-cleaner) | 154 | 143 | contradicted by the real swaps of 12 to 60 seconds |
+
+**Cracker sheet** (`generator/ceiling.py` on the cut pack: UTC converted, holidays out, exact duplicates and orphan sensors checked, the OCCUPIED/VACANT alternation checked, spells merged across touching gaps, event time used over received time, heartbeat rows read as status rows):
+
+| Ask figure block | Cracker route | Result |
+|---|---|---|
+| A, occupancy, 4 streets by 2 months | events as recorded, silent spaces empty | miss |
+| B, average stay, 4 streets by 2 months | spells from every OCCUPIED/VACANT transition | miss |
+
+- **Pair ceiling:** 28.5 (cracker on the call 45.0 with 0 of 16 ask figures, mirror off the call 12.0); two careful responses on the call each handling one device, 72.5; the full includer reproduces all 16.
+- **Mirror leakage:** 0.0 per cent of ask weight.
+- **Measured by:** `generator/ceiling.py` on the cut pack (target/), figures.json as the key.
+
+## Leak check
+
+`leak.py task458 --asof 2026-11-06 --quiet` on the final cut: REVIEW, no LEAK. Each REVIEW ruled:
+
+- Sweep 3, rates in `Parking_Administrative_Rule_12.pdf` (1.00 to 2.75): Schedule A's 2026 rates and 12.05's floor, inputs the memo owes as its 2026 column; no 2027 rate or occupancy appears, and which zones move is not derivable from the rule.
+- Sweep 3, 24 of 30 words of the call in the rule: the zone names, "hourly rate", "50 cents" and "1 January" are the rule's own step and schedule; it names no zone that moves.
+- Sweep 4, window, downtown and vehicle in the rule: 12.03's window, Schedule A's area column and 12.04's "parked vehicle"; it names no run, read, session or unpaid group (`checks.py` LK2).
+- Sweep 6, zones or streets beside numbers in the rule, the inventory, the crosswalk, the sensor list and the 311 requests: 2026 rates and time limits, metered spaces by face, location numbers, sensor space numbers and request ids; none carries an occupancy or ranks a zone on the decision question.
+- Heart WARN `repeat.deliverables` (csv+docx against task454 v2, drawn and built 2026-11-02, the same day as this build): a window artifact of two builds in flight; the shells differ (question form `what` and memo opener here). `overuse.objective` answered at the draw.
 
 ## Architecture 1 record (spent 2026-11-02)
 
@@ -231,3 +390,11 @@ None. No control, published figure or reconciliation column confirms any rung: t
 - Full replacement on an appointment availability survey of the directory's prescriber offices, duplicate and stale listings reaching one scheduler (design, 2 November): the link is the identical offered slot, a shared value, and coincident slots at two offices give it a second explanation; the listing's prescriber checked against NPPES is the battery's finer-key check; offices carry no eligibility group.
 - Full replacement on community reinvestment grants against the disbursements that pay them, and on encounter valuation at a fee schedule priced per hour for a code billed in quarter hours (design, 2 November): matching disbursements to installments and pricing units against the schedule are both reconciliations to a filed schedule, battery items; the grants carry no eligibility group, and the valuation reads the call's own encounter rows.
 - Architecture 1 as a whole, re-rooted 2026-11-02 (main thread's order): the Medicaid county designation's main call held up, but its ask layer was spent under the careful-solver cracker (132 of 132 kept, pair 81.8) and no re-site, cut or replacement passed; one architecture per world, so the slot moves to a new world, dataset, generator and shell in General Statistics & Data Science (the City of Elsworth's 2027 meter rates). Screened at this draw and set aside before the card, each on file or on the rules: test equating (every mechanism spent in the corpus), length-biased snapshots and rapid guessing (dead on file), a garage's overnight stock as the main call (a storage term, task120's lesson, and a careful reader walks each permit card across midnight), the ski lift's queue from lap times (a strong reader estimates waits from laps by reflex), journeys linked across a hub by passed-up departures (the filed WHAT would name the step, lesson 10), the parcel zone that reveals a shipping node (a reading), and composition_mix, G6, G13, statutory_or_regulatory_filing and period_close (window bans against task453 and task154 at `check`).
+- The parking study's expansion (all vehicles over paid vehicles at the passes) as the default path, stated in a shipped study or memo (draw, 2 November; coordinator's lesson 11): a shipped document stating or applying the expansion is a licensed literal method against the golden; no document states one, and the default path is the analyst's own additive count model, refuted by the runs' unpaid mix by time of day.
+- The sensor pilot in two downtown meter zones as the back-test (design, 2 November): sensors in meter zones give the judge a direct in-window measurement for those zones and tie any sensor fault to a graded figure; the back-test is downtown's own 12:30 run, and the pilot moved to four free streets, where it carries the asks on a system the call never reads.
+- Residential permits in force on the first of each month (a term readable only from a prorated fee), impound storage days from the fee, garages' free spaces at noon (an overnight carry-over), card chargebacks by parking month (design, 2 November): the asks' nouns invite the question each device turns on, or the careful state walk finds it; a permit registry with plates would also have named the residents' overnight cars on the call's own runs.
+- First contamination setting (screen, 2 November): school-run stops on an afternoon run starting as late as 4:45, and residents gone by 10:30, left the afternoon run's and the smaller run's unpaid counts on the golden for two of the five districts (two cheap routes landing); the afternoon district run starts by 3:45 and overnight cars leave by 11:30, so every count-based route flips the same five (R3c).
+- Missed district runs (screen, 2 November): a day with one run forced a fill convention, and filling with the zone's mean or skipping the day split Delmont's whole-per-cent figure (66 against 67); the routes run every weekday, so no zone-day lacks a run either side.
+- Lower-flip districts on an afternoon profile (screen, 2 November): at the 3 p.m. peak the blocks were full, the school-run stops found no space, and the afternoon run's count landed Fernwood and Irvine Market; both now have flat profiles.
+- Straddling vehicles recorded on two adjacent sensors as the second pilot device (design, 2 November): a count-once rule the rows do not force (the family the judge sent back as unforced); the re-baselining blip replaces it, whose gap no car can make.
+- 2026-11-02, stage 4 (architecture 2 spent): the judge (cut 950254e3) returned NOT_DETERMINISTIC, SEND_BACK. Every golden figure reproduced (all 18 zones, the rates, the pilot streets), but Rule 12.04 counts a vehicle "whether or not that vehicle paid" and no shipped text says how point-in-time enforcement reads become occupied minutes inside a window no neighbourhood run covers. The judge licensed the mean unpaid count on a zone's runs, which moves Alder Row, Cascade Avenue and Hollis Street to raises and Fernwood and Irvine Market to holds, and read the golden's both-runs panel as an unfiled imputation (Gate H3). The design's own validation, downtown's in-window run, supported the mean-count model downtown and nothing inside the window tested the panel in the neighbourhoods, so the golden's imputation was argued, not forced by the data. The pilot-street asks forked too: the flicker merge, the silent sensors and which stays count. Re-rooted at stage 1 into another world and dataset.
