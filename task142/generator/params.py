@@ -51,10 +51,10 @@ DISTRACTORS = ["prelim", "tariff", "scada"]
 
 # heating limit (C) of the post-1985 residential and the non-residential connections, and the 2024-25 gas year's
 # mean temperature and late-September anomaly: world parameters of consumption and weather that move no drop
-TB_LT = 15.0
-TB_UTIL = 16.5
-W2425_BASE = 11.0
-W2425_LATE = 2.0
+TB_LT = 15.16
+TB_UTIL = 16.40
+W2425_BASE = 11.04
+W2425_LATE = 0.5
 
 # headroom and phase loads are tuned in world.tune(); these are the search ranges, not the answer
 HEADROOM_RANGE = (138, 166)

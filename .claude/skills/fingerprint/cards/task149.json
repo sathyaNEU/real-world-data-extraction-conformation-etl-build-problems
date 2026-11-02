@@ -10,7 +10,7 @@
  "shape": "02",
  "decision_type": "quantity_figure",
  "answer_unit": "count",
- "answer": "About 1,300 commuter boardings on an average ordinary weekday in 2029 at Rathgarvan (1,312.0 from the shipped files), below the 1,400 that justifies the full scheme, so the reduced scheme; counting each census commuter as a boarding every weekday gives about 2,400 (2,374.6).",
+ "answer": "About 1,300 commuter boardings on an average ordinary weekday in 2029 at Rathgarvan (1,311.6 from the shipped files), below the 1,400 that justifies the full scheme, so the reduced scheme; counting each census commuter as a boarding every weekday gives about 2,400 (2,374.6).",
  "answer_source": "task149/submission.md block 1; generator/figures.json total_boardings",
  "gap": [
   "objective",
@@ -32,7 +32,7 @@
  "validated_decoy": false,
  "context_artifact": "other",
  "stump_class": "analytical",
- "analyst_test": "With every field read and every rule applied, a strong analyst takes the census usual-workplace commuters from the station's catchment to each zone, applies the refresh's station share and counts each commuter as one boarding every weekday (the journey-to-work convention the 2020 Lisnagry review validated at the last new station), filing about 2,400 weekday commuter boardings (2,374.6) for 2029 and the full scheme, against about 1,300 (1,312.0) and the reduced scheme.",
+ "analyst_test": "With every field read and every rule applied, a strong analyst takes the census usual-workplace commuters from the station's catchment to each zone, applies the refresh's station share and counts each commuter as one boarding every weekday (the journey-to-work convention the 2020 Lisnagry review validated at the last new station), filing about 2,400 weekday commuter boardings (2,374.6) for 2029 and the full scheme, against about 1,300 (1,311.6) and the reduced scheme.",
  "domain_test": "The deciding quantity is the new station's weekday trip generation from its catchment's journey-to-work flows, the transport planner's own demand estimate, read through how many weekdays each workplace's commuters actually travel; with another field's nouns (patients and a clinic) there is no census place-of-work table, no station share by destination and no working week to read from a mobility panel, so the task stops reading.",
  "layer2_family": "estimand_identification",
  "layer2_pattern": "own:commuting-days-per-workplace-from-a-stay-panel",
@@ -50,7 +50,7 @@
  "scoring_unit": "per boarded entity",
  "spine": {
   "file": "mobility_stays_2027w36_w47.csv",
-  "rows": 136684,
+  "rows": 136688,
   "entity": "one daytime or night stay of one panel device at one network cell",
   "grain": "device x stay",
   "source": "synthetic"
@@ -85,7 +85,7 @@
  "question_form": "how-many",
  "driver": "The decisive quantity is how many trips a counted population makes in a week, which the count never records: a census tallies each worker once at a usual workplace, and turning that tally into daily trips at one trip per worker per day, or at one network-wide factor, ignores that each workplace's own working pattern sets how many of its five weekdays its workers actually travel, which only a panel of the workers' own daily stays shows workplace by workplace.",
  "driver_concrete": "Rathgarvan's 2029 weekday commuter boardings are the census catchment commuters to each workplace zone times the refresh's station share times the share of ordinary weekdays those commuters actually travel there, and the operator's resident panel shows the hospital's and Carrigboy's twelve-hour rosters and the Docklands' hybrid weeks put them on the line on about half of weekdays (50 to 79 per cent across zones), so counting every commuter every weekday files about 2,400 against about 1,300.",
- "stump": "A competent solver multiplies the census commuters from Rathgarvan's catchment to each zone by the refresh's station share and counts each as a boarding every weekday, filing about 2,400 weekday commuter boardings (2,374.6) and the full scheme for 2029 against about 1,300 (1,312.0) and the reduced scheme; the step that lands it there is reading a usual-workplace count as daily journeys when the panel shows each zone's commuters travel on a zone-specific share of ordinary weekdays.",
+ "stump": "A competent solver multiplies the census commuters from Rathgarvan's catchment to each zone by the refresh's station share and counts each as a boarding every weekday, filing about 2,400 weekday commuter boardings (2,374.6) and the full scheme for 2029 against about 1,300 (1,311.6) and the reduced scheme; the step that lands it there is reading a usual-workplace count as daily journeys when the panel shows each zone's commuters travel on a zone-specific share of ordinary weekdays.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task482": "task482 splits one meter's fuel among products by each process's own running pattern; here nothing is split or attributed: a census count of workers is turned into weekday trips by each workplace's own share of weekdays travelled, read from a panel of the workers' daily stays.",

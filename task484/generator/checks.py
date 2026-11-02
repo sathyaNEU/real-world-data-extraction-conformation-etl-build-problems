@@ -319,13 +319,38 @@ def main():
 
     # ---------------------------------------------------------------- bin edges for every graded figure
     worst = 1.0
-    for r in R["secs"]:
-        fam = list(r["own"].values()) if r["dets"] else list(r["tmg"].values())
+    for r in sorted(R["secs"], key=lambda r: r["road"]):
+        fam = dict(r["own"]) if r["dets"] else dict(r["tmg"])
         g = round(est.bin01(r["gold_aadf"]), 1)
-        for v in fam:
-            b = est.bin01(v)
-            worst = min(worst, est.edge(b) if round(b, 1) == g else -1)
-    check("BE1 every section's figure sits inside its 0.1 million bin under every licensed form", worst >= 0.012, "closest edge %.4f" % worst)
+        edges = {k: (est.edge(est.bin01(v)) if round(est.bin01(v), 1) == g else -1.0) for k, v in fam.items()}
+        k_min = min(edges, key=edges.get)
+        zero_ok = all(round(est.bin01(v), 1) == g for v in r.get("own_zero", {}).values())
+        worst = min(worst, edges[k_min])
+        check("BE1 %s: every licensed treatment (%d) prints %.1f, the tightest %.3f from the edge (%s)%s" % (
+            r["road"], len(fam), g, edges[k_min], k_min, "; zero-filled blanks print it too" if r["dets"] else ""),
+            edges[k_min] >= 0.02 and zero_ok, "")
+    check("BE1 every section's figure clears its 0.1 million edge by 0.02 or more under every treatment", worst >= 0.02,
+          "tightest edge %.4f" % worst)
+    # the rungs' answers, as the design note's ladder files them
+    def rset(f):
+        return set(r["road"] for r in R["secs"] if est.bin01(f(r)) > 3.0)
+    want = {
+        "R0 counters' same-day factors": ({"Ashfield Road", "College Road", "Grange Road", "Holloway Hill", "Kingsway", "Priory Road",
+                                            "Station Street", "Wharf Street"}, lambda r: r["tmg"]["T1 same-day, ratio of sums"]),
+        "R2 detector mean read as the flow": ({"Ashfield Road", "Holloway Hill", "Priory Road", "Wharf Street"},
+                                              lambda r: r["raw_detector"] if r["dets"] else r["default_aadf"]),
+        "R3 nearest junction's whole flow": ({"Ashfield Road", "Castlegate Road", "College Road", "Grange Road", "Holloway Hill", "Kingsway",
+                                             "Priory Road", "Station Street", "Wharf Street"}, lambda r: R["near"][r["cp"]]),
+        "R4 detectors pooled as a counter group": ({"Ashfield Road", "College Road", "Grange Road", "Holloway Hill", "Kingsway",
+                                                   "Priory Road", "Station Street", "Wharf Street"}, lambda r: R["pooled"][r["cp"]]),
+        "R5 own approach with the counters' 24/12": ({"Ashfield Road", "Brookfield Way", "Holloway Hill", "Kingsway", "Priory Road",
+                                                     "Station Street", "Wharf Street"},
+                                                    lambda r: r["own_group_2412"] if r["dets"] else r["default_aadf"]),
+        "golden": (set(WD.GOLD_IN), lambda r: r["gold_aadf"]),
+    }
+    for name, (ws, f) in want.items():
+        got = rset(f)
+        check("LD %s files its designed set (%d)" % (name, len(ws)), got == ws, "differs: %s" % sorted(got ^ ws))
     check("BE2 every licensed figure stays 0.12 million or more from the line (SF4)", dmin >= 0.12, "")
     eA = min(est.edge(c["hgv_raw"], 10.0) for c in G["counters"])
     check("BE3 every counter's heavy goods figure sits two vehicles or more inside its bin", eA >= 2.0, "closest %.2f" % eA)

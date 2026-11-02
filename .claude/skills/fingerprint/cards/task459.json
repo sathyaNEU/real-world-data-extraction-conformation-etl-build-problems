@@ -1,106 +1,165 @@
 {
   "task": "task459",
-  "architecture": "v1",
-  "drawn": "2026-10-14",
-  "slot_note": "Seed ET16 (a planning team's list of the most efficient gas plants from EIA-923) sits in power generation, a domain whose task types serve no ETL objective, so the pairing is the client's emissions-inventory task type: each offered gas unit's carbon dioxide per net megawatt-hour, conformed from hourly emissions monitoring, the generation survey and the unit-generator crosswalk. Kept: the world (gas units in one footprint, a planning team's list), the decision (which units make the list) and the quantity (efficiency, read as CO2 per net MWh).",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a public power utility's emissions performance standard determination for a baseload request for offers: each offered gas plant's carbon dioxide per net megawatt-hour while delivering its contract capacity in every hour, built from the plants' hourly emissions monitoring records and revenue meters, against the state standard of 925 pounds, and the utility's 1,000 MW need filled from the complying offers in order of capacity price",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
+  "slot_note": "Re-rooted at the Batch 3 queue reset (2026-11-02): architecture 1 (a public utility district's baseload offers screened against the emissions performance standard, physical-environmental-sciences/emissions-inventory) moves to lineage and its world is closed. Physical & Environmental Sciences is crowded in this batch and Survey Research's two ETL cells now hold task484 and task449, so the slot moves to Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics, the one ETL task type whose only batch build (task485) has shipped. Kept: the ETL lane. Nothing of the old world, mechanism or shell is kept.",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "a regional health plan's 2027 in-home care contracts for its members aged 75 and over: the board's fixed home-care budget divided among seven regional home-care agencies in proportion to the members who lived in each agency's region for the greater part of 2025, each member's region conformed from the member file and the plan's own medical, pharmacy and laboratory claims, when members who spend the cooler months in the low desert keep their high-country address and high-country doctor on file",
   "objective": "etl",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
-  "answer_unit": "set_of_items",
-  "answer": "Juniper Draw, Kessling Creek and Ashby Gulch: 990 MW of the 1,000 MW need",
-  "answer_source": "generator/figures.json (slate, slate_mw)",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
-    "E"
+    "none"
   ],
   "generators": [
-    "G14",
     "G13",
+    "G3",
     "G17"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "classification_error",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "none",
-  "stakeholder_role": "manager of resource planning at a public power utility",
-  "role_family": "capacity_planner",
-  "scoring_unit": "other",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the agreement's residence clause, keeps the members aged 75 and over enrolled all year, places each in the region of the address on file (or of the plurality of primary care visits, the plan's own attribution rule, or of most of the year's claims) and divides the budget gives the high-country agencies the members who live in the low desert from October to May; reading each member's year from the dates and places of the claims moves those members and their share of the budget to the desert agencies.",
+  "domain_test": "The deciding quantity is each member's region of residence for the contract year, which health plans determine from the member file and the claims stream when they attribute members to regions and providers for capitation; put a school district's pupils and library loans in its place and there is no claim type, no mail-order pharmacy, no primary care attribution rule and no capitation contract, so the task stops reading.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:residence-region-from-the-dated-places-of-a-members-claims",
+  "layer1": [
+    "medical claims from the plan's claims system with service dates and rendering provider NPIs, resubmitted claims carrying a frequency code and the original claim number, and denied lines left in the extract",
+    "pharmacy claims from the PBM's file with the pharmacy's NCPDP number, days supply and reversals, mail-order and specialty pharmacies located out of state",
+    "laboratory claims from the national laboratory vendor keyed by patient service centre",
+    "provider, pharmacy and draw-site registers each naming the region its own way (a county, a ZIP code, a service-centre code), with a 2025 practice relocation and an agency renamed",
+    "the member file's address history with notified dates and a region assigned from the ZIP code, ZIP codes that straddle two counties",
+    "dates in the claims system's YYYYMMDD and the PBM's MM/DD/YYYY"
+  ],
+  "stakeholder_role": "the plan's director of provider contracting and payment, who prepares the 2027 home-care allocation for the board",
+  "role_family": "finance_controller",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "camd_hourly_emissions_offered_units_2024_2025.csv",
+    "file": "medical_claims_2025.csv",
     "rows": 0,
-    "entity": "one monitored unit's operation in one clock hour",
-    "grain": "unit x hour",
-    "source": "synthetic (constructed in the layout of EPA's Clean Air Markets hourly emissions export)"
+    "entity": "one adjudicated medical claim line: member, service date, rendering provider, place of service",
+    "grain": "claim line",
+    "source": "synthetic"
   },
   "forum": "board_of_directors",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "utility_or_infrastructure",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "United States: Washington and Oregon (the Pacific Northwest)",
+    "geography": "United States, Arizona (a fictional regional health plan, its seven home-care regions, agencies, providers and people are invented; counties, ZIP codes and the climate are real)",
     "currency": "USD",
-    "org_type": "a public utility district buying baseload capacity, the sellers' gas-fired plants, the state emissions performance standard",
-    "invented_names": [
-      "Calder County Public Utility District No. 1",
-      "Sorrel Butte Energy Center",
-      "Kessling Creek Generating Station",
-      "Tamarack Landing Power Project",
-      "Ochre Flat Energy Facility",
-      "Brenmoor Mill Generating Plant",
-      "Juniper Draw Power Station",
-      "Lindgren Hill Generating Station",
-      "Ashby Gulch Energy Center",
-      "Moraine Point Generating Station",
-      "Coldbrook Combined Cycle"
-    ],
+    "org_type": "regional health plan with a seniors' managed-care product and contracted regional home-care agencies",
+    "invented_names": [],
     "people": [
-      "Victor Carr",
-      "Adrian Dunn",
-      "Julie Jackson"
+      "Nicholas Castillo",
+      "Willie Flores",
+      "Lisa Howell"
     ]
   },
   "deliverables": [
-    "eps_determination_rfo_2027.pdf",
-    "offered_plants_eps_2027.xlsx"
+    "member_regions_2025.csv",
+    "home_care_allocation_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
-  "driver": "The decisive quantity is a ratio of input to output that depends on the operating level, falling as output rises and rising again once a supplementary stage is engaged above a unit's base capability, so the ratio over a closed period reflects the levels the unit happened to run at; the decision commits each unit to one stated level in every interval, a level some units rarely held and others can reach only with the supplementary stage, so the ratio has to be read at that level from the interval records, not carried from the period average.",
-  "driver_concrete": "Each offered gas unit's CO2 per net MWh under the baseload commitment is its rate at the contract capacity in every hour: cycling combined cycles whose 2024 and 2025 records are full of starts and part-load hours look above 925 pounds on their annual averages yet sit well under it at full output, while a base-loaded unit offered at a contract capacity above its unfired capability will run its duct burners in every contract hour and lands above 925 though its annual average is under it.",
-  "stump": "The default path rates each offered plant on its 2025 annual pounds of CO2 per net MWh, which fails the cycling combined cycles Sorrel Butte, Kessling Creek and Ashby Gulch on their starts and part-load hours and passes Tamarack Landing, whose annual average is mostly unfired base operation, so the price-ordered fill takes Tamarack Landing and Moraine Point for 905 MW; read at each offer's contract capacity, the rate passes the three cycling plants and fails Tamarack Landing, offered at a capacity it reaches only with its duct burners firing in every hour, and the fill takes Juniper Draw, Kessling Creek and Ashby Gulch for 990 MW.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the hourly emissions records to the plants, aligns them with the metered net generation, computes each plant's 2025 pounds of CO2 per net MWh against 925 and fills the 1,000 MW need by the request for offers' rule takes Tamarack Landing and Moraine Point for 905 MW; reading each plant's rate at its offered contract capacity, the same rule takes Juniper Draw, Kessling Creek and Ashby Gulch for 990 MW.",
-  "domain_test": "The deciding quantity is each unit's carbon dioxide per net megawatt-hour at the committed output, which emissions accounting for generating units builds from hourly heat input against load because a gas unit's heat rate falls with load, carries start-up fuel and rises with supplementary duct firing; with a hospital's or a school's nouns there is no heat input, no part-load penalty, no duct burner and no gross-to-net station service, so the task stops reading.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:emission-rate-at-committed-operating-level",
-  "layer1": [
-    "hourly emissions monitoring records per combustion-turbine stack in local standard time, with partial operating hours, gross load in MW, heat input in mmBtu, CO2 in short tons and substitute-data hours under their method codes",
-    "combined cycles monitored per turbine stack but metered and surveyed per plant and generator (combustion turbines and the steam turbine), joined through the EPA-EIA unit-to-generator crosswalk, many-to-many",
-    "the balancing authority's revenue-meter net generation per plant per hour in local prevailing time (daylight saving), negative while a plant sits idle and draws station service",
-    "the generation and fuel survey's monthly net generation and fuel by prime mover at plant level, with combined-cycle steam turbines (CA) carrying generation and no fuel",
-    "offers in net MW at the point of delivery under sellers' trade names, against the survey's plant names and codes",
-    "a plant's monitoring units renumbered at a mid-2025 monitor replacement, carried in the monitoring plan history",
-    "the sellers' outage-log entries per unit in the GADS event format and UTC, against the evaluation's Pacific year: plant trips on every unit's line, re-entries under new numbers (extensions, and three first estimates of return that ran long), maintenance, planned and reserve records beside the forced (the asks' rows, not the call's)"
-  ],
+  "driver": "The decisive quantity is each member's place of residence over a year, defined as where the member lived for the greater part of it; the address on file and the place of most of the member's routine contacts both stay at a home the member leaves for most of the year, so the place is read from the dated places of every contact the member made, which run unbroken through the months spent elsewhere, rather than from the record's address, the contact count or the latest contact.",
+  "driver_concrete": "Each member's 2025 region is where the plan's claims place them for most of the year: members who live from October to May in the low desert keep their high-country address and high-country doctor, whose summer visits, specialists and laboratory draws outnumber the desert's pharmacy fills and urgent care, but every desert month carries a desert claim, so only the claims' dates and places, read day by day, move them.",
+  "stump": "A competent analyst places each member aged 75 and over in the region of the address on file at 31 December 2025, or of the plurality of primary care visits, and leaves the high-country agencies their snowbirds' share of the 2027 budget; the step that lands it there is taking the address or the doctor for the residence, when the claims' dates and places show those members living in the desert for most of 2025.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task230": "task230's forward residual turns on a detection rate that falls as targets grow rare in a pool shared across units; here each plant's emission rate is a physical function of its own output level, read at the committed output from its own hourly records, with no shared pool and no detection step",
-    "task114": "task114's demand appears only when parties share a site, so merging sites creates it; here nothing merges or appears: each plant's rate depends on the output level the commitment fixes, read from its own interval records",
-    "task33": "task33's forward yield stops at a filed intervention and is recovered by back-testing closed actions against an acceptance bar; here there is no intervention and no back-test: the committed output differs from the levels the plant ran at, and the rate is read at that level",
-    "task452": "task452 prices unsampled days through a concentration-discharge curve because the samples miss the storms; here every hour is recorded and nothing is sampled: the error is carrying a closed period's average to an operating level the commitment fixes and the plant rarely held, and the duct-fired plants reverse it",
-    "task445": "task445 completes a still-open quarter's unreported 13F holders, where index sponsors keep a fixed fraction of each company so their shares move with its share count, and a filed back-test selects the completion basis; here nothing is unreported or completed and nothing is back-tested: each plant's hourly records are complete, its emission rate is a non-linear function of its own output (part load, starts, duct firing), and the commitment fixes the output the rate is read at, with the duct-fired plant moving the other way",
-    "task256": "task256 standardises a fit rate to a user population's body-size mix; here the mix is of a plant's own operating hours, and the commitment replaces it with one fixed output level that some plants reach only by duct firing"
+    "task306": "task306 v1 sized next year's refurbishment demand by the used imports still to arrive outside the current roll; here every member is on file and enrolled all year, nothing arrives, and the deciding step reads where each member lived from the dated places of their own claims rather than their address",
+    "task468": "task468 v2 and v3 priced a group's coming-year cost on how long each unit's current spell of activity had run; here no cost is projected and no spell length enters: each member's region for a closed year is read from where their claims fall day by day",
+    "task247": "task247 refilled a monitoring record's gap-filled days from the observations on both sides of each gap; here no record is missing or filled: the address on file is correct as the member's notified home, and the claims show where the member actually lived for most of the year"
   },
-  "lineage": [],
-  "notes": "Redesigned before any review from shape 10 (the megawatts that comply) to shape 01 (the 1,000 MW need filled from the complying offers in price order) after task230 v3 took shape 10 and the capacity report artifact the draw before. The analysis, the pack and the asks are unchanged; the call adds the request for offers' fill rule, stated once (RFO 5.2), after the decisive step. The sellers' capability tests were cut, so the pack carries no context artifact: the offers log is an operating extract the call reads, and the generator inventory a lookup. Stage 4 (2026-10-14): the judge passed the call, Gates F to H and hygiene and returned the workbook asks as unfiled readings; repaired in place (rates graded on their ranges, the dictionary's Pacific year and plant outage, clock hours and CO2 resting on substitute data in the ask, RP-7 5.3 as the evidence relied on, the request for offers' baseload sentence and three-item data package), with a records-forced re-entry device at three plants so the cracker's union path still misses every Ask A figure; re-judged once.",
-  "registered": "2026-10-14T00:30:01Z"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "re-rooted 2026-11-02 at the Batch 3 queue reset: shipped 2026-10-14 with no portal result; one architecture per world, so the baseload-capacity world (Calder County PUD's emissions performance standard determination) is closed",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "objective": "etl",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G13",
+        "G17"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "layer2_pattern": "own:emission-rate-at-committed-operating-level",
+      "forum": "board_of_directors",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "utility_or_infrastructure",
+      "role_family": "capacity_planner",
+      "context_artifact": "none",
+      "spine": {
+        "file": "camd_hourly_emissions_offered_units_2024_2025.csv",
+        "rows": 0,
+        "entity": "one monitored unit's operation in one clock hour",
+        "grain": "unit x hour",
+        "source": "synthetic (constructed in the layout of EPA's Clean Air Markets hourly emissions export)"
+      },
+      "world": {
+        "geography": "United States: Washington and Oregon (the Pacific Northwest)",
+        "currency": "USD",
+        "org_type": "a public utility district buying baseload capacity, the sellers' gas-fired plants, the state emissions performance standard",
+        "invented_names": [
+          "Calder County Public Utility District No. 1",
+          "Sorrel Butte Energy Center",
+          "Kessling Creek Generating Station",
+          "Tamarack Landing Power Project",
+          "Ochre Flat Energy Facility",
+          "Brenmoor Mill Generating Plant",
+          "Juniper Draw Power Station",
+          "Lindgren Hill Generating Station",
+          "Ashby Gulch Energy Center",
+          "Moraine Point Generating Station",
+          "Coldbrook Combined Cycle"
+        ],
+        "people": [
+          "Victor Carr",
+          "Adrian Dunn",
+          "Julie Jackson"
+        ]
+      },
+      "deliverables": [
+        "eps_determination_rfo_2027.pdf",
+        "offered_plants_eps_2027.xlsx"
+      ],
+      "driver": "The decisive quantity is a ratio of input to output that depends on the operating level, falling as output rises and rising again once a supplementary stage is engaged above a unit's base capability, so the ratio over a closed period reflects the levels the unit happened to run at; the decision commits each unit to one stated level in every interval, a level some units rarely held and others can reach only with the supplementary stage, so the ratio has to be read at that level from the interval records, not carried from the period average.",
+      "driver_concrete": "Each offered gas unit's CO2 per net MWh under the baseload commitment is its rate at the contract capacity in every hour: cycling combined cycles whose 2024 and 2025 records are full of starts and part-load hours look above 925 pounds on their annual averages yet sit well under it at full output, while a base-loaded unit offered at a contract capacity above its unfired capability will run its duct burners in every contract hour and lands above 925 though its annual average is under it.",
+      "stump": "The default path rates each offered plant on its 2025 annual pounds of CO2 per net MWh, which fails the cycling combined cycles Sorrel Butte, Kessling Creek and Ashby Gulch on their starts and part-load hours and passes Tamarack Landing, whose annual average is mostly unfired base operation, so the price-ordered fill takes Tamarack Landing and Moraine Point for 905 MW; read at each offer's contract capacity, the rate passes the three cycling plants and fails Tamarack Landing, offered at a capacity it reaches only with its duct burners firing in every hour, and the fill takes Juniper Draw, Kessling Creek and Ashby Gulch for 990 MW.",
+      "shell": null
+    }
+  ],
+  "lineage_shells": [],
+  "notes": "Architecture 2 drawn 2026-11-02 at the Batch 3 queue reset. Decisive generator G13 (the agreement covers residence over the whole 2025 year while the member file's address speaks for the day it was notified), with G3 (the record against where the member actually lived) supporting; G3 first would also be honest and is held behind G13 because the year-long horizon is what the address cannot answer. gate_g method_or_model_selection: the inputs are correct and the step is choosing how residence for the greater part of a year is estimated (address, attribution plurality, claim majority, or the claims' dated places read day by day). Differentiation lines answer the older structural NOTEs (task306 v1, task468 v2 and v3, task247), none of which shares the mechanism.",
+  "registered": "2026-11-02T03:04:50Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "the",
+    "rounding opener": "give",
+    "deliverable set": "pdf+xlsx"
+  }
 }

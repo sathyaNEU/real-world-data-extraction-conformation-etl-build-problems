@@ -4,6 +4,7 @@ place-of-work tables and the Ardnagree line's gate entries since 2018.
 Everything the pack ships is drawn here; pack.py only writes it out. Times are naive local (Europe/Dublin)
 until pack.py converts the panel's stays to UTC."""
 import datetime as dt
+import hashlib
 import math
 
 import numpy as np
@@ -195,7 +196,7 @@ def build_panel(rng):
     order = rng.permutation(len(devices))
     devices = [devices[i] for i in order]
     for i, dev in enumerate(devices):
-        dev.did = "D%07d" % (3104071 + i * 37)
+        dev.did = hashlib.sha1(("rmp114-%d" % i).encode()).hexdigest()[:16]
 
     for dev in devices:
         if dev.kind in ("worker", "outside"):
@@ -247,8 +248,8 @@ def build_panel(rng):
     for dev in devices:
         if rng.random() < 0.04:
             cut = P.PANEL_START + int(rng.integers(12, 70)) * DAY
-            twin = Device("D%07d" % (8200000 + int(rng.integers(0, 99999)) * 3), dev.home, dev.kind, dev.dest,
-                          dev.regime)
+            twin = Device(hashlib.sha1(("rmp114-sim-%s" % dev.did).encode()).hexdigest()[:16], dev.home, dev.kind,
+                          dev.dest, dev.regime)
             twin.work_cell, twin.travel, twin.parent = dev.work_cell, dev.travel, dev.parent
             cut_t = _t(cut, 0)
             twin.acts = [a for a in dev.acts if a[1] >= cut_t]

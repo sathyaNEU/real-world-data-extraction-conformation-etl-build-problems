@@ -87,8 +87,10 @@ def lab_stream(hd):
 # The ball mill's stops, the mill's feed and daily records
 # ---------------------------------------------------------------------------------------------------------------
 
-OUTAGE_SHUTDOWNS = [(2025, 3), (2025, 8), (2025, 11), (2026, 3)]   # the planned shutdowns the historian missed
-TAG_SWITCH_UTC = dt.datetime(2026, 5, 12, 14, 0)
+OUTAGE_SHUTDOWNS = [(2025, 2), (2025, 5), (2025, 8), (2025, 11), (2026, 2), (2026, 5), (2026, 8)]
+# the DCS migration ran through the May 2026 shutdown: the upgraded system stored its first values when the
+# historian came back (the end of that outage)
+TAG_SWITCH_OUTAGE = 5
 
 
 def ball_mill_stops():
@@ -179,7 +181,8 @@ def mill_months(blocks_hist, gc_by_block):
     b = b[b["gc"] >= P.OLD_ORE_CUT]
     rng = _rng("millmonth")
     out = []
-    carry_t, carry_au = 0.0, 0.0
+    first = b[b["month_idx"] == 0]
+    carry_t, carry_au = 0.15 * first["tonnes"].sum(), 0.15 * (first["tonnes"] * first["gc"]).sum()
     for mi in range(P.HIST_MONTHS):
         mb = b[b["month_idx"] == mi]
         t, au = mb["tonnes"].sum(), (mb["tonnes"] * mb["gc"]).sum()
@@ -244,7 +247,7 @@ def gold_room(md):
             pieces = [("REG", fine_total - cl), ("CLN", cl)] if fine_total - cl > 250 else [("CLN", fine_total)]
         for kind, fine in pieces:
             fness = float(rng.uniform(0.835, 0.905)) if kind == "REG" else float(rng.uniform(0.58, 0.74))
-            seq[day.year] = seq.get(day.year, 0) + 1
+            seq[day.year] = seq.get(day.year, 0) + 1 + (1 if rng.random() < 0.03 else 0)   # a voided number
             hour = int(rng.integers(8, 16)) if kind == "REG" else int(rng.integers(16, 20))
             bars.append(dict(year=day.year, seq=seq[day.year], pour_day=day,
                              pour_time=dt.time(hour, int(rng.integers(0, 60))), kind=kind, fine=fine,
@@ -296,16 +299,30 @@ def gold_room(md):
             b.loc[i, "gross"] = b.loc[i, "fine"] / b.loc[i, "fineness"]
     ship_date = dict(zip(sh["ship"], sh["date"]))
     rec_day = {s_: ship_date[s_] + dt.timedelta(days=int(rng.integers(3, 6))) for s_ in ship_date}
+    # pieces: a bar heavier than the refinery's 1,600 oz melt limit is cut and melted as two lots
+    pieces = []
+    next_lot = int(b["lot"].max()) + 1
+    solo = b.groupby("lot")["lot"].transform("size") == 1
+    for i, r in b.iterrows():
+        if solo[i] and r["gross"] > 1600:
+            u = float(rng.uniform(0.44, 0.56))
+            f1 = r["fine"] * u * (1 + float(rng.normal(0, 0.0025)))
+            pieces.append(dict(lot=int(r["lot"]), bar=i, gross=r["gross"] * u, fine=f1))
+            pieces.append(dict(lot=next_lot, bar=i, gross=r["gross"] * (1 - u), fine=r["fine"] - f1))
+            next_lot += 1
+        else:
+            pieces.append(dict(lot=int(r["lot"]), bar=i, gross=r["gross"], fine=r["fine"]))
+    pc = pd.DataFrame(pieces)
     lots = []
-    for lt, g in b.groupby("lot"):
-        s_ = int(g["ship"].iloc[0])
+    for lt, g in pc.groupby("lot"):
+        s_ = int(b.loc[g["bar"].iloc[0], "ship"])
         received = rec_day[s_]
         settled = received + dt.timedelta(days=int(rng.integers(7, 15)))
         gross_rec = g["gross"].sum() * (1 - float(rng.uniform(0.0004, 0.0016)))
         fine = g["fine"].sum()
         lots.append(dict(lot=lt, ship=s_, received=received, settled=settled, gross_rec=gross_rec,
                          fineness=fine / gross_rec, fine=fine, ag=gross_rec * float(rng.uniform(0.07, 0.12))))
-    return b, sh, pd.DataFrame(lots)
+    return b, sh, pd.DataFrame(lots), pc
 
 
 def quarter_fine(b):

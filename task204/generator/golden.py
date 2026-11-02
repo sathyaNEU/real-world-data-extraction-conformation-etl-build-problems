@@ -136,10 +136,11 @@ def write_memo(path, res):
         "evenings two or three of these snatches fell on the departures of a single westbound train, so the same "
         "people rode the line and struck as the doors closed. Their team needs ground in %s."
         % (", ".join(e["stations"][:-1]) + " and " + e["stations"][-1], len(res["runs"]), district_text(e["districts"])))
+    sim = max((len(v) for v in res["simultaneous"].values()), default=0)
     d.add_paragraph(
         "The Cobb Street group is a different group with the same method. None of its snatches sits on one of those "
-        "trains, and on six evenings it struck at Cobb Street within minutes of the Eastline group striking at Union "
-        "Yards, which one group cannot do.")
+        "trains, and on %s evenings it struck at Cobb Street within three minutes of the Eastline group striking at "
+        "Union Yards, two stops and more than eight minutes apart by train." % _word(sim))
     covered = sorted({x for t in rows for x in t["districts"]}, key=lambda s: int(s[1:]))
     none = [x for x in ["D%d" % k for k in range(1, 11)] if x not in covered]
     d.add_paragraph("Districts %s have no series in the review period; their phone offences stay with district "

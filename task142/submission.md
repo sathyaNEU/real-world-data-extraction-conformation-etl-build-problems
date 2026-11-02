@@ -49,4 +49,4 @@
    - Phase 6: 45,000
 6. Heat taken by the connections, MWh (residential to the nearest 1,000, utility to the nearest 100):
    - Residential: 67,000 in the 2024-25 gas year, +8,000 in 2025-26
-   - Utility: 11,800 in the 2024-25 gas year, +900 in 2025-26
+   - Utility: 11,700 in the 2024-25 gas year, +900 in 2025-26

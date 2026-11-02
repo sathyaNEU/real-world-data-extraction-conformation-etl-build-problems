@@ -29,7 +29,7 @@ SOURCES = {
               "evidence"),
     "register": ("Ardnagree line operator, station register", "evidence"),
     "calendar": ("KMTA, public holiday and school break calendar 2018 to 2027", "evidence"),
-    "panel_note": ("Vantra Insights, RMP-2027-114 extract notes", "evidence"),
+    "panel_note": ("Vantra Mobile Ireland and KMTA, data licence 2027-114, Schedule 2 service description", "evidence"),
     "housing": ("Kilcarrow City and County Council Planning Department, Rathgarvan residential pipeline, October 2027",
                 "distractor"),
     "jobs": ("Kilcarrow City and County Council Economic Development Unit, employment outlook to 2030", "distractor"),
@@ -55,6 +55,7 @@ def metadata(n, R):
                                    "not enter the commuter count",
         },
         "largest_file": {"name": PK.FILES["stays"], "rows": n["stays"]},
+        "stated_inputs": ["1,400", "1400"],
         "row_counts": {PK.FILES[k]: v for k, v in sorted(n.items()) if v},
     }
 

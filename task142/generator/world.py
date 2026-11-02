@@ -435,6 +435,8 @@ def legacy_and_open(rng, conns, wx):
     """The 2024-25 gas year as the drive-by system read it (GJ for generation A, MWh for generation B), the summer
     2025 migration, and each meter's AMR opening register on 1 October 2025 00:00 UTC."""
     t24 = weather_2425(rng)
+    clock = np.random.default_rng(P.SEED + 5000)     # the reading system's clock times, drawn on their own stream
+    route_time = {}
     reads = []
     route_day = {w: {} for w in WIJKEN_OLD + WIJKEN_NEW}
     for c in conns:
@@ -472,6 +474,7 @@ def legacy_and_open(rng, conns, wx):
             return base_
         ser = c["serial_legacy"]
         c["cons_oct1_2024"] = cons[D(2024, 10, 1)] if c["aansluitdatum"] < D(2024, 10, 1) else 0.0
+        c["cons_sep30_2025"] = cons[D(2025, 9, 30)]
         if c["aansluitdatum"] < D(2024, 10, 1):
             reads.append([ser, D(2024, 10, 1), fmt(reg_at(D(2024, 10, 1), 0.42)), unit, "J"])
             c["leg_annual_kwh"] = reg_at(D(2024, 10, 1), 0.42)
@@ -499,6 +502,12 @@ def legacy_and_open(rng, conns, wx):
             open_reg = reg_at(D(2025, 9, 30), 1.0) + (2 / 24) * cons[D(2025, 9, 30)]
         c["amr_open_true"] = open_reg
         c["gy2425_true"] = (reg_at(D(2025, 9, 30), 1.0) + (2 / 24) * cons[D(2025, 9, 30)]) - c["leg_annual_kwh"]
+    for r in reads:
+        key = (r[1], r[4])
+        if key not in route_time:
+            route_time[key] = (int(clock.integers(8, 12)), int(clock.integers(0, 60)))
+        h, m = route_time[key]
+        r.append("%02d:%02d" % (h, (m + int(clock.integers(0, 9))) % 60))
     reads.sort(key=lambda r: (r[1], r[0]))
     return reads
 

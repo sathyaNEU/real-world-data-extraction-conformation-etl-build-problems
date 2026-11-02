@@ -25,8 +25,8 @@ def standard(path):
               "customer is charged at a register and the price the store shows the customer. It applies to every "
               "store in both price zones."),
         ("h", "2. Definitions"),
-        ("p", "<b>2.1 Item scan.</b> One unit rung up at a store register by scanning its barcode. Items rung up by "
-              "weight or by a keyed product code, voided lines and returns are not item scans."),
+        ("p", "<b>2.1 Item scan.</b> One unit sold at a store register by scanning its barcode. Items sold by weight "
+              "or by a keyed product code, voided lines and returns are not item scans."),
         ("p", "<b>2.2 Shelf-edge label.</b> The label on the shelf edge at the item's home location in the store "
               "planogram, showing the item's price."),
         ("p", "<b>2.3 Flyer week.</b> The seven days from the Thursday on which a weekly flyer starts to the Wednesday "

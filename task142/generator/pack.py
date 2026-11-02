@@ -328,7 +328,7 @@ def build(target):
 
 def legacy(path, w):
     rows = []
-    for ser, d, val, unit, kind in w["legacy"]:
-        rows.append([ser, d.strftime("%d-%m-%Y"), ("%.3f" % val).replace(".", ","), unit, kind])
-    write_csv(path, ["meternummer", "opnamedatum", "stand", "eenheid", "soort"], rows, delim=";")
+    for ser, d, val, unit, kind, tm in w["legacy"]:
+        rows.append([ser, d.strftime("%d-%m-%Y"), tm, ("%.3f" % val).replace(".", ","), unit, kind])
+    write_csv(path, ["meternummer", "opnamedatum", "opnametijd", "stand", "eenheid", "soort"], rows, delim=";")
     return len(rows)

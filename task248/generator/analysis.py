@@ -330,16 +330,43 @@ def r0_monthly(pk, tid, inv, dls, bls, sales):
 
 
 # ---------------- the asks ----------------
-def ask_days(pk, inv):
-    out = {}
+def ask_days(pk, inv=None, redate=True, by_current=False, utc_days=False):
+    """local days of 2026 with no inventory reading per register tank"""
+    raw = rcsv(os.path.join(pk.t, "atg_inventory_2026.csv"))
+    by_ct = {}
+    for r in raw:
+        by_ct.setdefault((r["console_sn"], int(r["tank"])), []).append(r)
+    latest = {}
+    for s in pk.setup:
+        key = (s["site_id"], int(s["tank"]))
+        if key not in latest or s["in_service_from"] > latest[key]["in_service_from"]:
+            latest[key] = s
+    seen = {}
+    for (cs, tn), rows in by_ct.items():
+        rows.sort(key=lambda r: int(r["record_seq"]))
+        times = [loc(r["reading_utc"]) for r in rows]
+        utcs = [dt.datetime.strptime(r["reading_utc"], "%Y-%m-%dT%H:%M:%SZ") for r in rows]
+        bad = [i for i, t in enumerate(times) if t.year != 2026]
+        if bad and redate:
+            i1 = bad[-1]
+            off = (times[i1 + 1] - dt.timedelta(hours=2)) - times[i1]
+            for i in bad:
+                times[i] = times[i] + off
+                utcs[i] = utcs[i] + off
+        for r, t, u in zip(rows, times, utcs):
+            day = (u if utc_days else t)
+            if day.year != 2026:
+                continue
+            if by_current:
+                tid = latest[(r["site_id"], tn)]["marina_tank_ref"]
+            else:
+                tid = pk.tid_for(cs, tn, t)
+            seen.setdefault(tid, set()).add(day.date())
     year = {dt.date(2026, 1, 1) + dt.timedelta(days=i) for i in range(365)}
-    for tid in pk.reg:
-        seen = {r[0].date() for r in inv.get(tid, [])}
-        out[tid] = len(year - seen)
-    return out
+    return {tid: len(year - seen.get(tid, set())) for tid in pk.reg}
 
 
-def ask_tests(pk, redate=True, dedupe=True):
+def ask_tests(pk, redate=True, dedupe=True, utc_months=False):
     rows = rcsv(os.path.join(pk.t, "atg_leak_tests_2026.csv"))
     by = {}
     for r in rows:
@@ -367,9 +394,11 @@ def ask_tests(pk, redate=True, dedupe=True):
                 anchor[no] = t
         for no, r, rs in lst:
             t = loc(r["logged_utc"])
+            if utc_months:
+                t = dt.datetime.strptime(r["logged_utc"], "%Y-%m-%dT%H:%M:%SZ")
             if not redate:
                 d = t
-            elif no in anchor:
+            elif no in anchor and not utc_months:
                 d = anchor[no]
             else:
                 prev = [a for a in anchor if a < no]
@@ -393,23 +422,44 @@ def ask_tests(pk, redate=True, dedupe=True):
     return out
 
 
-def ask_gallons(pk, drop_shadow=True, local_new=True):
-    out = {}
-    for r in rcsv(os.path.join(pk.t, "dock_sales_legacy_2026.csv")):
-        key = (r["store_name"], POSK[r["product"]])
-        out[key] = out.get(key, 0.0) + float(r["gallons"])
-    last_legacy = max(dt.datetime.strptime(r["sale_time"], "%m/%d/%Y %H:%M:%S") for r in rcsv(os.path.join(pk.t, "dock_sales_legacy_2026.csv")))
-    grades = {(r["site"], int(r["grade"])): (r["site_name"], POSK[r["description"]]) for r in rcsv(os.path.join(pk.t, "pos_grades.csv"))}
+def ask_gallons(pk, shadow="match", grade_basis="price", settle=True):
+    """2026 dock gallons by marina and product. shadow: 'match' drops the new system's rows before the legacy
+    export ends (its shadow copy of the card sales), 'both' keeps both, 'new' drops the legacy rows from the
+    shadow start. grade_basis: 'price' reads each new row's product from its price, 'table' from the grade table"""
+    leg = rcsv(os.path.join(pk.t, "dock_sales_legacy_2026.csv"))
+    price_of = {}
+    for r in leg:
+        price_of[round(float(r["price"]), 2)] = POSK[r["product"]]
+    newrows = []
     with open(os.path.join(pk.t, "dock_sales_2026-11-09_2026-12-31.jsonl"), encoding="utf-8") as f:
         for line in f:
-            j = json.loads(line)
-            t = loc(j["ts"]) if local_new else dt.datetime.strptime(j["ts"], "%Y-%m-%dT%H:%M:%SZ")
-            if drop_shadow and t <= last_legacy:
-                continue
-            if t.year != 2026:
-                continue
-            key = grades[(j["site"], j["grade"])]
-            out[key] = out.get(key, 0.0) + float(j["gal"])
+            newrows.append(json.loads(line))
+    def sale_time(j):
+        t = loc(j["ts"])
+        if settle and j["tender"] == "CARD":
+            return dt.datetime(t.year, t.month, t.day) - dt.timedelta(days=1) + dt.timedelta(hours=12)
+        return t
+    first_new = min(sale_time(j) for j in newrows)
+    last_legacy = max(dt.datetime.strptime(r["sale_time"], "%m/%d/%Y %H:%M:%S") for r in leg)
+    out = {}
+    for r in leg:
+        t = dt.datetime.strptime(r["sale_time"], "%m/%d/%Y %H:%M:%S")
+        if shadow == "new" and t >= first_new:
+            continue
+        key = (r["store_name"], POSK[r["product"]])
+        out[key] = out.get(key, 0.0) + float(r["gallons"])
+    grades = {(r["site"], int(r["grade"])): (r["site_name"], POSK[r["description"]]) for r in rcsv(os.path.join(pk.t, "pos_grades.csv"))}
+    for j in newrows:
+        t = sale_time(j)
+        if shadow == "match" and t <= last_legacy:
+            continue
+        if t.year != 2026:
+            continue
+        name, prod = grades[(j["site"], j["grade"])]
+        if grade_basis == "price":
+            prod = price_of[round(float(j["ppg"]), 2)]
+        key = (name, prod)
+        out[key] = out.get(key, 0.0) + float(j["gal"])
     return out
 
 
@@ -456,9 +506,19 @@ def analyse(target):
     res["R2p_list"] = sorted(t for t in T if T[t]["R2p_largest"] > LIMIT)
     for v in ("v_hat6", "v_dlvpts", "v_geom_exact", "v_geom_first", "v_cycles"):
         res[v + "_list"] = sorted(t for t in T if np.nanmax(np.abs(T[t][v])) > LIMIT)
-    res["A1"] = ask_days(pk, inv)
+    res["A1"] = ask_days(pk)
     res["A2"] = ask_tests(pk)
     res["A3"] = {"%s|%s" % k: v for k, v in ask_gallons(pk).items()}
+    res["stops"] = {
+        "A1_drop_reset": ask_days(pk, redate=False), "A1_current_setup": ask_days(pk, by_current=True),
+        "A1_utc_days": ask_days(pk, utc_days=True),
+        "A2_every_row": ask_tests(pk, redate=False, dedupe=False), "A2_no_redate": ask_tests(pk, redate=False),
+        "A2_utc_months": ask_tests(pk, utc_months=True),
+        "A3_both": {"%s|%s" % k: v for k, v in ask_gallons(pk, shadow="both").items()},
+        "A3_new_overlap": {"%s|%s" % k: v for k, v in ask_gallons(pk, shadow="new").items()},
+        "A3_grade_table": {"%s|%s" % k: v for k, v in ask_gallons(pk, grade_basis="table").items()},
+        "A3_stamp_dates": {"%s|%s" % k: v for k, v in ask_gallons(pk, settle=False).items()},
+    }
     return res, pk
 
 

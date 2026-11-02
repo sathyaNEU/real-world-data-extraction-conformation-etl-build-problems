@@ -6,7 +6,7 @@
  "stage": 3,
  "stage_name": "build",
  "updated": "2026-11-02",
- "stump": "A competent solver multiplies each zone's census commuters by the refresh's station share and counts every commuter as a boarding each weekday, filing about 2,400 (2,374.6) and the full scheme; the step that lands it there is reading a usual-workplace count as daily journeys, when the panel shows each zone's commuters going in on 50 to 79 per cent of ordinary weekdays, which puts Rathgarvan at about 1,300 (1,312.0) and the reduced scheme.",
+ "stump": "A competent solver multiplies each zone's census commuters by the refresh's station share and counts every commuter as a boarding each weekday, filing about 2,400 (2,374.6) and the full scheme; the step that lands it there is reading a usual-workplace count as daily journeys, when the panel shows each zone's commuters going in on 50 to 79 per cent of ordinary weekdays, which puts Rathgarvan at about 1,300 (1,311.6) and the reduced scheme.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -15,12 +15,12 @@
   "checks": 61
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-11-02, cut 9a1150f3, --asof 2027-12-06); REVIEW lines read in the design note's Build record",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (overuse.org_family, repeat.deliverables, repeat.question_form; answered in the Build record)",
+  "surface": "exit 0, personas Colum Curtis, Deaglan Gilmore, Eve Dunne"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "Stage 3 complete on cut 9a1150f3: the main session runs stage 4 (the isolated leak reader and the determinism judge) on this pack; fix any finding in the generator (task149/generator/build.py rebuilds everything) and re-run the free gates.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -49,5 +49,14 @@
     "leak_check_report_arch1.md"
    ]
   }
- ]
+ ],
+ "gates": {
+  "checks": "77 of 77",
+  "verify": "agrees on its own path (total 1,311.6, 10 zones, 6 arrival shares, 7 station ratios, golden read back)",
+  "rebuilds": "two byte-identical over 20 files; target.zip 9a1150f3",
+  "figures_check": "60 figures, 0 absent",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "exit 0 (871 characters)",
+  "ceiling": "pair 41.2, mirror leakage 23.1 per cent (generator/ceiling.py)"
+ }
 }

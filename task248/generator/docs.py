@@ -24,6 +24,16 @@ def pos_grades():
     return tab
 
 
+def pos_grades_current():
+    """the grade table as the point of sale holds it at export: Ashby Hollow and Gilliam Creek run their former E10
+    grade on REC-90 since 1 December"""
+    tab = pos_grades()
+    for (m, g), pr in list(tab.items()):
+        if m in ("AH", "GC") and pr == "E10":
+            tab[(m, g)] = "REC90"
+    return tab
+
+
 def normalize_zip(path):
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]

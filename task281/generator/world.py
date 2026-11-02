@@ -296,12 +296,17 @@ def build(seed=P.SEED):
                 lines.append((1, dt.date(2024, rl.randint(1, 12), rl.randint(1, 28))))
         else:
             left = n
+            used_dates = set()
             while left > 0:
-                q = min(left, rl.choice([1, 1, 1, 2, 2, 3]))
+                # a 40-loan licence is one copy per order line; perpetual lines may carry several
+                q = 1 if model == "1U-M" else min(left, rl.choice([1, 1, 1, 2, 2, 3]))
                 y = rl.choice([2023, 2024, 2024, 2025])
                 d = dt.date(y, rl.randint(1, 12), rl.randint(1, 28))
                 if d > dt.date(2025, 8, 20):
                     d = dt.date(2025, 8, rl.randint(1, 20))
+                while d in used_dates:
+                    d = d - dt.timedelta(days=1)
+                used_dates.add(d)
                 lines.append((q, d))
                 left -= q
         pub = t["publisher"]
@@ -427,6 +432,12 @@ def biblio(W, rb):
         t["package"] = None
         if pub in pkg_pub and t["school"] in pkg_pub[pub][2] and rb.random() < 0.55:
             t["package"] = pkg_pub[pub][0]
+        # a newer print edition the platform does not yet lend, which some lists have moved to
+        t["next"] = None
+        if t["sem"] in ("S26", "both") and rb.random() < 0.07:
+            t["year"] = min(t["year"], 2021)
+            t["next"] = dict(edition=t["edition"] + 1, p_isbn=new_isbn("9780" + str(rb.randint(0, 9))),
+                             mms="99%08d03606" % rb.randint(10 ** 7, 10 ** 8 - 1), year=2025)
         # an earlier edition some reading lists still cite
         t["prev"] = None
         if t["edition"] > 1 and rb.random() < 0.35:

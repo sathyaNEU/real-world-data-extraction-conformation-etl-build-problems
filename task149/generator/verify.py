@@ -101,22 +101,22 @@ def main():
               .drop_duplicates("cell_id").set_index("cell_id")["zone_code"]
     for c in ("stay_start_utc", "stay_end_utc"):
         st[c] = pd.to_datetime(st[c], utc=True).dt.tz_convert("Europe/Dublin").dt.tz_localize(None)
-    st = st.merge(dv[["device_id", "home_cell"]], on="device_id")
+    st = st.merge(dv[["hashed_imsi", "home_cell"]], on="hashed_imsi")
     st["mins"] = (st["stay_end_utc"] - st["stay_start_utc"]).dt.total_seconds() / 60
     st["zone"] = st["cell_id"].map(major)
     lng = st[(st["cell_id"] != st["home_cell"]) & (st["mins"] >= 240) & st["zone"].notna()].copy()
-    cnt = lng.groupby(["device_id", "zone"]).size().reset_index(name="n")
-    cnt = cnt.sort_values(["device_id", "n", "zone"], ascending=[True, False, True])
-    tot_long = lng.groupby("device_id").size()
-    usual = cnt.drop_duplicates("device_id").set_index("device_id")
+    cnt = lng.groupby(["hashed_imsi", "zone"]).size().reset_index(name="n")
+    cnt = cnt.sort_values(["hashed_imsi", "n", "zone"], ascending=[True, False, True])
+    tot_long = lng.groupby("hashed_imsi").size()
+    usual = cnt.drop_duplicates("hashed_imsi").set_index("hashed_imsi")
     usual = usual[tot_long.reindex(usual.index) >= 3]
     lng["day"] = lng["stay_start_utc"].dt.date
-    first = pd.to_datetime(dv.set_index("device_id")["first_seen_utc"], utc=True).dt.tz_convert("Europe/Dublin").dt.date
-    last = pd.to_datetime(dv.set_index("device_id")["last_seen_utc"], utc=True).dt.tz_convert("Europe/Dublin").dt.date
+    first = pd.to_datetime(dv.set_index("hashed_imsi")["first_seen_utc"], utc=True).dt.tz_convert("Europe/Dublin").dt.date
+    last = pd.to_datetime(dv.set_index("hashed_imsi")["last_seen_utc"], utc=True).dt.tz_convert("Europe/Dublin").dt.date
     num, den = {}, {}
     for did, row in usual.iterrows():
         z = row["zone"]
-        sub = lng[(lng["device_id"] == did) & (lng["zone"] == z)]
+        sub = lng[(lng["hashed_imsi"] == did) & (lng["zone"] == z)]
         cd = {d for d in sub["day"] if d in dayset}
         obs = [d for d in days if first[did] <= d <= last[did]]
         num[z] = num.get(z, 0) + len(cd)
@@ -132,7 +132,7 @@ def main():
     eq("total boardings", int(round(tot / 100.0)) * 100, F["total_boardings"])
     eq("scope", "reduced scheme" if tot < thr else "full scheme", F["scope"])
     # ask B: arrival at the workplace 07:30 to 09:30, local time, journeys to the usual zone on ordinary weekdays
-    lng2 = lng.merge(usual[["zone"]].rename(columns={"zone": "uz"}), left_on="device_id", right_index=True)
+    lng2 = lng.merge(usual[["zone"]].rename(columns={"zone": "uz"}), left_on="hashed_imsi", right_index=True)
     lng2 = lng2[(lng2["zone"] == lng2["uz"]) & lng2["day"].isin(dayset)]
     m = lng2["stay_start_utc"].dt.hour * 60 + lng2["stay_start_utc"].dt.minute
     lng2["hit"] = (m >= 450) & (m <= 570)

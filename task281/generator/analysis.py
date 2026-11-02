@@ -64,40 +64,31 @@ def load(target):
     d.loans = [dict(id=r[ix["checkout_id"]], title=r[ix["title_id"]], patron=r[ix["patron_id"]],
                     start=parse_ts(r[ix["checked_out_at"]]), days=int(r[ix["loan_days"]]), due=parse_ts(r[ix["due_at"]]),
                     ended=parse_ts(r[ix["ended_at"]]), reason=r[ix["end_reason"]]) for r in rows]
-    # Schedule 1 and 2 of the Court's terms
+    # Schedule 1 and 2 of the Court's terms, read line by line from the PDF
     txt = IO.pdf_text(os.path.join(target, F["terms"]))
     d.terms_text = txt
+    lines = [x.strip() for x in txt.split("\n") if x.strip()]
+    i1 = lines.index("Schedule 1. Faculties from 1 August 2026")
+    i2 = lines.index("Schedule 2. Course texts fund codes")
     d.school_fac = {}
-    for name, code in FAC_NAME.items():
-        pass
-    lines = txt.split("\n")
-    flat = " ".join(lines)
-    for name, code in sorted(FAC_NAME.items(), key=lambda x: -len(x[0])):
-        pass
-    # every "School name (CODE)" pair, assigned to the faculty whose row it sits in
-    sched1 = flat.split("Schedule 1. Faculties from 1 August 2026")[1].split("Schedule 2.")[0]
-    pos = []
-    for name, code in FAC_NAME.items():
-        for m in re.finditer(re.escape(name) + r"(?=\s)", sched1):
-            pos.append((m.start(), code))
-    pos.sort()
-    for m in re.finditer(r"\(([A-Z]{4})\)", sched1):
-        owner = [c for p, c in pos if p < m.start()]
-        d.school_fac[m.group(1)] = owner[-1]
-    sched2 = flat.split("Schedule 2. Course texts fund codes")[1]
-    d.fund_fac = {}
-    for m in re.finditer(r"(CT-[A-Z]{2,4})\s", sched2):
-        code = m.group(1)
-        after = sched2[m.end():m.end() + 160]
-        if code == "CT-CORE":
+    cur = None
+    for x in lines[i1 + 1:i2]:
+        if x in FAC_NAME:
+            cur = FAC_NAME[x]
             continue
-        cands = [(after.rfind(n), c) for n, c in FAC_NAME.items() if n in after]
-        if code[3:] in FAC_ORDER:
-            d.fund_fac[code] = code[3:]
-        else:
-            # the last faculty named on the row is the faculty from 1 August 2026
-            best = max((after.find(n) + len(n), c) for n, c in FAC_NAME.items() if n in after.split("CT-")[0])
-            d.fund_fac[code] = best[1]
+        for code in re.findall(r"\(([A-Z]{4})\)", x):
+            d.school_fac[code] = cur
+    d.fund_fac = {}
+    groups = []
+    for x in lines[i2 + 1:]:
+        if re.fullmatch(r"CT-[A-Z]+", x):
+            groups.append([x])
+        elif groups:
+            groups[-1].append(x)
+    for g in groups:
+        if g[0] == "CT-CORE":
+            continue
+        d.fund_fac[g[0]] = FAC_NAME[g[-1]]
     _CACHE[target] = d
     return d
 

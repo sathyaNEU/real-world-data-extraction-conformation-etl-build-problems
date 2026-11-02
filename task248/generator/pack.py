@@ -177,10 +177,15 @@ def build(target, o):
         if t >= shadow0 and (t >= golive or tender == "CARD"):
             txn_n += int(rng.integers(1, 3))
             lag = int(rng.integers(8, 95)) if t < golive else int(rng.integers(30, 160))
+            stamp = t + dt.timedelta(seconds=lag)
+            if tender == "CARD":
+                # card sales post with the overnight batch settlement
+                stamp = dt.datetime(t.year, t.month, t.day) + dt.timedelta(days=1, hours=2, minutes=int(rng.integers(5, 50)), seconds=int(rng.integers(0, 60)))
             newpos.append({"site": idm["newsite"][m], "txn": "T%d" % txn_n,
-                           "ts": (t + dt.timedelta(seconds=lag)).replace(tzinfo=CHI).astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                           "ts": stamp.replace(tzinfo=CHI).astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
                            "pump": int(s["hose"][0]), "hose": "ABCDEF".index(s["hose"][1]) + 1,
-                           "grade": rev_grade[(m, prod)], "gal": round(s["gal_reg"], 3), "ppg": PRICE[prod],
+                           "grade": rev_grade[(m, "E10")] if s.get("moved") or (m in ("AH", "GC") and prod == "E10") else rev_grade[(m, prod)],
+                           "gal": round(s["gal_reg"], 3), "ppg": PRICE[prod],
                            "amt": amt, "tender": "CARD" if tender == "CARD" else ("ACCT" if tender == "SLIP ACCT" else "CASH")})
     write_csv(os.path.join(target, "dock_sales_legacy_2026.csv"),
               ["store_name", "store_no", "txn_no", "sale_time", "disp_hose", "product", "gallons", "price", "amount",
@@ -189,7 +194,7 @@ def build(target, o):
         for rec_ in newpos:
             f.write(json.dumps(rec_, separators=(",", ":")) + "\n")
     write_csv(os.path.join(target, "pos_grades.csv"), ["site", "site_name", "grade", "description"],
-              [(idm["newsite"][m], P.MARINAS[m][0], g, POS_PROD[p]) for (m, g), p in sorted(grade_tab.items(), key=lambda kv: (idm["newsite"][kv[0][0]], kv[0][1]))])
+              [(idm["newsite"][m], P.MARINAS[m][0], g, POS_PROD[p]) for (m, g), p in sorted(docs.pos_grades_current().items(), key=lambda kv: (idm["newsite"][kv[0][0]], kv[0][1]))])
 
     # ---- bills of lading (the distributor's export) ----
     rows = []

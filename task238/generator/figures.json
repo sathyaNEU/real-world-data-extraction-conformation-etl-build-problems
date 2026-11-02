@@ -150,6 +150,22 @@
   "206": 25059.67126104619,
   "207": 1159.5690512178828
  },
+ "store_labels": {
+  "101": "101 Quinpool Road",
+  "102": "102 Spryfield",
+  "103": "103 Clayton Park",
+  "104": "104 Bedford Place",
+  "105": "105 Dartmouth - Portland St",
+  "106": "106 Cole Harbour",
+  "107": "107 Lower Sackville",
+  "201": "201 Truro (Prince St)",
+  "202": "202 New Glasgow",
+  "203": "203 Antigonish",
+  "204": "204 Kentville",
+  "205": "205 Bridgewater",
+  "206": "206 Yarmouth",
+  "207": "207 Amherst"
+ },
  "stray_share_pct": 0.02,
  "total_scans": {
   "101": 2240827,

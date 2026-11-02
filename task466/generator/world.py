@@ -21,7 +21,7 @@ import common as C
 
 SEED = 466
 T0 = C.utc(2024, 1, 1)
-NH = 26304                      # hours, 2024-01-01 00:00 UTC to 2027-01-01 00:00 UTC
+NH = 26376                      # hours, 2024-01-01 00:00 UTC to 2027-01-04 00:00 UTC (the export runs into January)
 YEARS = (2024, 2025, 2026)
 
 # rule constants (filed in the rule extract)
@@ -33,7 +33,7 @@ RHO_S = RHO_N * 273.15 / 293.15  # kg per standard cubic metre at 20 C (the flar
 TIERS = ((375.0, 0, "Tier 1"), (450.0, 118000, "Tier 2"), (1e9, 312000, "Tier 3"))
 
 # generation and capture
-G0 = 437.0                      # kg CH4 per hour at 2024-01-01
+G0 = 462.0                      # kg CH4 per hour at 2024-01-01
 K_DECAY = 0.046                 # per year
 W_PHI, W_SD = 0.95, 0.011       # hourly AR(1) wobble of the steady capture (barometric and wellfield)
 KAPPA, D_STORE, CE_REC, TAU = 0.95, 10.0, 0.90, 3.0
@@ -63,13 +63,13 @@ def year_index(times):
 # ------------------------------------------------------------------------------------------------ outages
 OUTAGE_TYPES = [
     # (cause text in the contractor's words, count per year, duration range h, planned?)
-    ("Utility power failure", 9, (1.0, 5.5), False),
-    ("Blower trip - high bearing temperature", 5, (0.8, 3.8), False),
-    ("Condensate knockout high level - plant ESD", 4, (1.5, 6.0), False),
-    ("Gas analyser fault - plant ESD", 3, (0.7, 2.6), False),
-    ("Planned shutdown - blower and valve maintenance", 4, (8.0, 21.0), True),
-    ("Storm - damage to plant supply line", 2, (14.0, 29.0), False),
-    ("Annual shutdown - flare and header inspection", 1, (41.0, 57.0), True),
+    ("Utility power failure", 12, (1.0, 5.5), False),
+    ("Blower trip - high bearing temperature", 7, (0.8, 3.8), False),
+    ("Condensate knockout high level - plant ESD", 5, (1.5, 6.0), False),
+    ("Gas analyser fault - plant ESD", 4, (0.7, 2.6), False),
+    ("Planned shutdown - blower and valve maintenance", 5, (9.0, 22.0), True),
+    ("Storm - damage to plant supply line", 4, (18.0, 36.0), False),
+    ("Annual shutdown - flare and header inspection", 1, (55.0, 72.0), True),
 ]
 
 
@@ -124,7 +124,7 @@ def build():
     e = r.normal(0, innov, NH)
     for i in range(1, NH):
         w[i] = W_PHI * w[i - 1] + e[i]
-    for y in YEARS:
+    for y in YEARS + (2027,):
         m = yrs == y
         w[m] -= w[m].mean()
     steady = CE * G * (1 + w)

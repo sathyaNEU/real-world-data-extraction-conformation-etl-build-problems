@@ -5,15 +5,16 @@ from scipy.optimize import minimize_scalar
 from scipy.special import gammaln
 
 
-def _irls(X, y, alpha, beta0=None, iters=60):
+def _irls(X, y, alpha, beta0=None, iters=60, off=None):
+    off = np.zeros(len(y)) if off is None else off
     beta = np.zeros(X.shape[1]) if beta0 is None else beta0.copy()
     if beta0 is None:
-        beta[0] = np.log(max(y.mean(), 1e-3))
+        beta[0] = np.log(max(y.mean(), 1e-3)) - float(np.mean(off))
     for _ in range(iters):
-        eta = X @ beta
+        eta = X @ beta + off
         mu = np.exp(eta)
         w = mu / (1.0 + alpha * mu)
-        z = eta + (y - mu) / mu
+        z = eta - off + (y - mu) / mu
         XtW = X.T * w
         new = np.linalg.solve(XtW @ X, XtW @ z)
         if np.max(np.abs(new - beta)) < 1e-10:
@@ -28,21 +29,22 @@ def _loglik(y, mu, alpha):
     return float((gammaln(y + r) - gammaln(r) - gammaln(y + 1) + r * np.log(r / (r + mu)) + y * np.log(mu / (r + mu))).sum())
 
 
-def nb2(X, y):
-    """Maximum likelihood NB2: returns (beta, alpha, loglik)."""
+def nb2(X, y, off=None):
+    """Maximum likelihood NB2 with an optional offset: returns (beta, alpha, loglik)."""
     X = np.asarray(X, dtype=float)
     y = np.asarray(y, dtype=float)
-    start = _irls(X, y, 1e-6)
+    off = np.zeros(len(y)) if off is None else np.asarray(off, dtype=float)
+    start = _irls(X, y, 1e-6, off=off)
     cache = {}
 
     def negprof(la):
         a = float(np.exp(la))
-        b = _irls(X, y, a, start)
+        b = _irls(X, y, a, start, off=off)
         cache[la] = b
-        return -_loglik(y, np.exp(X @ b), a)
+        return -_loglik(y, np.exp(X @ b + off), a)
 
     res = minimize_scalar(negprof, bounds=(np.log(1e-4), np.log(5.0)), method="bounded",
                           options={"xatol": 1e-7, "maxiter": 500})
     a = float(np.exp(res.x))
-    b = _irls(X, y, a, cache.get(res.x, start))
-    return b, a, _loglik(y, np.exp(X @ b), a)
+    b = _irls(X, y, a, cache.get(res.x, start), off=off)
+    return b, a, _loglik(y, np.exp(X @ b + off), a)

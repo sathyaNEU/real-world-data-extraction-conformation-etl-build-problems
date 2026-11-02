@@ -86,7 +86,10 @@ def read_events(tgt):
     o = pd.read_csv(os.path.join(tgt, "workshore_board_events_2025-10-01_2026-02-01.csv"), dtype=str)
     kind_old = {"PUBLISHED": "PUBLISHED", "RENEWED": "RENEWED", "REMOVED_BY_EMPLOYER": "REMOVED",
                 "EXPIRED": "EXPIRED", "CLOSED_ES": "CLOSED"}
-    rows = [(p, pd.Timestamp(t).date(), kind_old[k]) for t, p, k in zip(o["event_time"], o["posting_no"], o["event"])]
+    conc = read_concordance(tgt)
+    rows = [(p, pd.Timestamp(t).date(), kind_old[k], conc.get(nc) if isinstance(nc, str) else None,
+             {"SS": "S", "ES": "E"}.get(ch) if isinstance(ch, str) else None)
+            for t, p, k, nc, ch in zip(o["event_time"], o["posting_no"], o["event"], o["noc_2016"], o["channel"])]
     legacy = {}
     recs = []
     with open(os.path.join(tgt, "workshore_board_events_2026-02-02_2026-11-14.jsonl"), encoding="utf-8") as f:
@@ -100,8 +103,9 @@ def read_events(tgt):
     for r in recs:
         if r["type"] == "migrated":
             continue
-        rows.append((legacy.get(r["job_id"], r["job_id"]), utc_to_local(r["ts"]).date(), kind_new[r["type"]]))
-    ev = pd.DataFrame(rows, columns=["pid", "date", "kind"])
+        rows.append((legacy.get(r["job_id"], r["job_id"]), utc_to_local(r["ts"]).date(), kind_new[r["type"]],
+                     r.get("noc"), {"self_service": "S", "employer_services": "E"}.get(r.get("source"))))
+    ev = pd.DataFrame(rows, columns=["pid", "date", "kind", "occ", "channel"])
     return ev
 
 
@@ -209,7 +213,7 @@ def weibull_table(durs, events):
 
 
 def S_any(tab, a):
-    if isinstance(tab, tuple) and tab and tab[0] == "weibull":
+    if isinstance(tab, tuple) and isinstance(tab[0], str) and tab[0] == "weibull":
         _, k, lam = tab
         return math.exp(-((max(a, 0.0) / lam) ** k))
     return S_at(tab, a)
@@ -237,22 +241,18 @@ def es_durations(snap, ev, source="board", tgt=None):
                     out[occ][0].append((EXTRACT - opened).days)
                     out[occ][1].append(0)
         return out
-    pub = ev[ev["kind"] == "PUBLISHED"].drop_duplicates("pid").set_index("pid")["date"]
+    pub = ev[ev["kind"] == "PUBLISHED"].drop_duplicates("pid").set_index("pid")
     clo = ev[ev["kind"] == "CLOSED"].drop_duplicates("pid").set_index("pid")["date"]
-    info = snap.drop_duplicates("pid").set_index("pid")[["occ", "channel"]]
-    # postings published in the window that never reached a month-end snapshot are known from the events only;
-    # their occupation comes from the next snapshot they appear in, so they are read from the snapshots or skipped
     out = defaultdict(lambda: ([], []))
-    for pid, pdate in pub.items():
-        if pid not in info.index or info.at[pid, "channel"] != "E":
+    for pid, r in pub.iterrows():
+        if r["channel"] != "E":
             continue
-        occ = info.at[pid, "occ"]
         if pid in clo.index:
-            out[occ][0].append((clo[pid] - pdate).days)
-            out[occ][1].append(1)
+            out[r["occ"]][0].append((clo[pid] - r["date"]).days)
+            out[r["occ"]][1].append(1)
         else:
-            out[occ][0].append((EXTRACT - pdate).days)
-            out[occ][1].append(0)
+            out[r["occ"]][0].append((EXTRACT - r["date"]).days)
+            out[r["occ"]][1].append(0)
     return out
 
 
@@ -271,7 +271,7 @@ def survival_tables(durs, kind="km", pooled=False):
 # ---------------------------------------------------------------------------------------------- weights
 def next_events(ev):
     by = defaultdict(list)
-    for pid, d, k in ev.itertuples(index=False):
+    for pid, d, k, _o, _c in ev.itertuples(index=False):
         by[pid].append((d, k))
     for pid in by:
         by[pid].sort()

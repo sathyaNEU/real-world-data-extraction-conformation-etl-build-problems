@@ -158,15 +158,12 @@ def sections(P):
         r["tmg"]["T5 same-day, every counter pooled"] = est.tmg_sameday_ratio_of_sums(c12, di, group(P))
         ref, dets = link_section(P, cp)
         r["junction"], r["dets"] = ref, dets
-        r["own"] = {}
+        r["own"], r["own_zero"] = {}, {}
         if dets:
             d24, d12, av = own_arrays(P, dets)
-            for k, f in est.OWN.items():
-                r["own"][k] = f(c12, di, d24, d12, av) if "month" not in k else f(c12, di, d24, d12, av, BANK_HOLIDAYS)
-            if len(dets) == 2:
-                for dd in dets:
-                    x = P["utc"][dd]
-                    r["own"]["G1 lane %s alone" % P["detectors"][dd]["lane"]] = est.own_exact_day(c12, di, x["d24"], x["d12"], x["av"])
+            lanes = [(P["utc"][dd]["d24"], P["utc"][dd]["d12"], P["utc"][dd]["av"])
+                     for dd in sorted(dets, key=lambda k: P["detectors"][k]["lane"])]
+            r["own"], r["own_zero"] = est.own_family(c12, di, lanes, BANK_HOLIDAYS)
             # the counters' 24/12 with the own detector's year: licensed where the section's own 07:00-19:00 share
             # agrees with the counters', a rung where the section's record refutes it
             r["own_group_2412"] = est.own_group_2412(c12, di, d24, d12, av, grp)

@@ -199,8 +199,42 @@ REFURBISHED = {"J19": dt.date(2025, 4, 14), "J23": dt.date(2025, 7, 21)}   # con
 DARK_DAYS = 3                                                               # detectors dark during the swap
 
 
+CENTRE = (389850.0, 279400.0)          # British National Grid, the town centre
+
+
 class World:
     pass
+
+
+def layout(W):
+    """Positions in metres: junctions, then each counted section's ends and count point."""
+    rng = np.random.default_rng([SEED, 101])
+    pos = {}
+    for j in W.junctions:
+        while True:
+            p = (rng.uniform(-2300, 2300), rng.uniform(-1700, 1700))
+            if all(math.hypot(p[0] - q[0], p[1] - q[1]) > 380 for q in pos.values()):
+                pos[j["id"]] = p
+                break
+    W.jpos = pos
+    W.cp = {}
+    for s in W.sections:
+        L = s["length"] * 1000.0
+        ang = rng.uniform(0, 2 * math.pi)
+        if s["end_j"]:
+            a = pos[s["end_j"]]
+        elif s["setting"] == "rural":
+            r = rng.uniform(3400, 4600)
+            a = (r * math.cos(ang), r * math.sin(ang))
+        else:
+            while True:
+                a = (rng.uniform(-2600, 2600), rng.uniform(-1900, 1900))
+                if all(math.hypot(a[0] - q[0], a[1] - q[1]) > 300 for q in pos.values()):
+                    break
+        b = (a[0] + L * math.cos(ang), a[1] + L * math.sin(ang))
+        f = rng.uniform(0.38, 0.62)
+        m = (a[0] + f * (b[0] - a[0]), a[1] + f * (b[1] - a[1]))
+        W.cp[s["name"]] = (int(round(CENTRE[0] + m[0])), int(round(CENTRE[1] + m[1])))
 
 
 def section_heading(name):
@@ -323,7 +357,9 @@ def make_detectors(W):
                 l1 = rng.uniform(0.50, 0.60)
                 shares = [l1, rng.uniform(0.955, 0.985) - l1]
             for li, sh in enumerate(shares):
-                eps = rng.normal(0.0, 0.012 if lanes == 2 else 0.006, len(DAYS))
+                # a counted section's own lanes split its stream steadily; other arms' lanes less so
+                sig = (0.005 if own else 0.012) if lanes == 2 else 0.006
+                eps = rng.normal(0.0, sig, len(DAYS))
                 d24 = sh * a24 * (1.0 + eps)
                 d12 = sh * a12 * (1.0 + eps + rng.normal(0.0, 0.003, len(DAYS)))
                 chans.append({"junction": jid, "arm": letter, "road": road, "heading": head, "lane": li + 1,
@@ -358,6 +394,9 @@ def make_detectors(W):
                 if c["section"] is None and rng.random() < 0.10:      # a longer loop fault on a few channels
                     st = int(rng.integers(20, 330))
                     av[st:st + int(rng.integers(9, 26))] = 0.0
+            if c["section"] is not None:   # the counted sections' stop-line loops lose minutes, not hours, on a bad day
+                av = np.where((av > 0) & (av < 100), np.round(100.0 - (100.0 - av) * 0.25), av)
+                av = np.where(av == 0, 97.0, av)
             c["avail"] = av
             obs24 = np.where(av > 0, np.round(c["d24"] * av / 100.0 * (1.0 + np.where(av < 100, rng.normal(0, 0.02, len(DAYS)), 0.0))), np.nan)
             obs12 = np.where(av > 0, np.round(c["d12"] * av / 100.0 * (1.0 + np.where(av < 100, rng.normal(0, 0.02, len(DAYS)), 0.0))), np.nan)
@@ -466,108 +505,151 @@ def tmg_group(W, setting=None):
     return [(a["obs24"], a["obs12"]) for a in W.atcs if setting is None or a["setting"] == setting]
 
 
+GOLD_IN = {"Ashfield Road", "Brookfield Way", "Hollins Lane", "Holloway Hill", "Infirmary Road", "Kingsway", "Priory Road",
+           "Station Street", "Wharf Street"}
+R0_IN = {"Ashfield Road", "College Road", "Grange Road", "Holloway Hill", "Kingsway", "Priory Road", "Station Street",
+         "Wharf Street"}
+R3_IN = {"Ashfield Road", "Castlegate Road", "College Road", "Grange Road", "Holloway Hill", "Kingsway", "Priory Road",
+         "Station Street", "Wharf Street"}
+R5_IN = {"Ashfield Road", "Brookfield Way", "Holloway Hill", "Kingsway", "Priory Road", "Station Street", "Wharf Street"}
+EDGE_FLOOR = 0.02
+EDGE_GOOD = 0.03
+
+
+def nearest_junctions(W):
+    """The junction nearest each count point, measured as the analysis measures it (latitude and longitude)."""
+    import common as C
+    jl = {}
+    for j in W.junctions:
+        x, y = W.jpos[j["id"]]
+        lat, lon = C.bng_to_wgs84(CENTRE[0] + x, CENTRE[1] + y)
+        jl[j["id"]] = (round(lat, 6), round(lon, 6))
+    out = {}
+    for s in W.sections:
+        lat, lon = C.bng_to_wgs84(*W.cp[s["name"]])
+        out[s["name"]] = min(jl, key=lambda k: (jl[k][0] - lat) ** 2 + ((jl[k][1] - lon) * math.cos(math.radians(lat))) ** 2)
+    W.near_j = out
+    W.jtot = {}
+    for j in W.junctions:
+        ch = [c for c in W.detectors if c["junction"] == j["id"]]
+        av = np.min([c["avail"] for c in ch], axis=0)
+        t24 = np.where(av > 0, np.nansum([c["obs24"] for c in ch], axis=0), np.nan)
+        t12 = np.where(av > 0, np.nansum([c["obs12"] for c in ch], axis=0), np.nan)
+        W.jtot[j["id"]] = (t24, t12, av)
+
+
 def families(W, s, si, di, base_mult=1.0):
     rows, _ = count_rows(s, si, di, base_mult)
     c12 = count_total(rows)
     grp = tmg_group(W, s["setting"])
     tm = {k: f(c12, di, grp) if "same-day" in k else f(c12, di, grp, BANK_HOLIDAYS) for k, f in est.TMG.items()}
     tm["T5 same-day, every counter pooled"] = est.tmg_sameday_ratio_of_sums(c12, di, tmg_group(W))
-    own = {}
+    own, zero, rungs = {}, {}, {}
     if s["end_j"]:
         ch = lane_arrays(W, s["name"])
-        d24 = np.nansum([c["obs24"] for c in ch], axis=0)
-        d12 = np.nansum([c["obs12"] for c in ch], axis=0)
+        lanes = [(np.where(c["avail"] > 0, c["obs24"], np.nan), np.where(c["avail"] > 0, c["obs12"], np.nan), c["avail"]) for c in ch]
+        own, zero = est.own_family(c12, di, lanes, BANK_HOLIDAYS)
         av = np.min([c["avail"] for c in ch], axis=0)
-        d24 = np.where(av > 0, d24, np.nan)
-        d12 = np.where(av > 0, d12, np.nan)
-        for k, f in est.OWN.items():
-            own[k] = f(c12, di, d24, d12, av) if "month" not in k else f(c12, di, d24, d12, av, BANK_HOLIDAYS)
-        if len(ch) == 2:
-            for c in ch:
-                own["G1 lane %d alone" % c["lane"]] = est.own_exact_day(c12, di, c["obs24"], c["obs12"], c["avail"])
-        # the counters' 24/12 ratio is a licensed form only where the section's own 07:00-19:00 share agrees with theirs
+        d24 = np.where(av > 0, np.nansum([c["obs24"] for c in ch], axis=0), np.nan)
+        d12 = np.where(av > 0, np.nansum([c["obs12"] for c in ch], axis=0), np.nan)
         full = av >= 100
         own_share = float(np.nansum(d12[full]) / np.nansum(d24[full]))
         shares = [float(np.nansum(a[1]) / np.nansum(a[0])) for a in grp]
+        g5 = est.own_group_2412(c12, di, d24, d12, av, grp)
         if min(shares) - 0.01 <= own_share <= max(shares) + 0.01:
-            own["G5 counters' 24/12 with the own detector's year"] = est.own_group_2412(c12, di, d24, d12, av, grp)
-    return c12, tm, own
+            own["G5 counters' 24/12 with the own detector's year"] = g5
+        rungs["R5"] = g5
+    else:
+        rungs["R5"] = tm["T1 same-day, ratio of sums"]
+    t24, t12, tav = W.jtot[W.near_j[s["name"]]]
+    if np.isnan(t12[di]):
+        rungs["R3"] = tm["T1 same-day, ratio of sums"]
+    else:
+        rungs["R3"] = c12 * float(np.mean(t24[tav >= 100])) / float(t12[di])
+    return c12, tm, own, zero, rungs
 
 
-def ok_day(W, s, si, di, base_mult, strict_controls=True):
+def score_day(W, s, si, di, base_mult):
+    """None when a hard constraint fails, else the tightest edge distance over the licensed family."""
     if s["end_j"]:
-        ch = lane_arrays(W, s["name"])
-        if any(c["avail"][di] < 100 for c in ch):
-            return False
+        if any(c["avail"][di] < 100 for c in lane_arrays(W, s["name"])):
+            return None
     for a in W.atcs:
         if np.isnan(a["obs12"][di]):
-            return False
-    c12, tm, own = families(W, s, si, di, base_mult)
-    gold_fam = own if s["end_j"] else tm
-    gkey = "G1 counted day, full days" if s["end_j"] else "T1 same-day, ratio of sums"
-    g = est.bin01(gold_fam[gkey])
+            return None
+    c12, tm, own, zero, rungs = families(W, s, si, di, base_mult)
+    fam = own if s["end_j"] else tm
+    g = est.bin01(fam["G1 counted day, full days"] if s["end_j"] else fam["T1 same-day, ratio of sums"])
     gb = round(g, 1)
-    side_gold = "in" if g > 3.0 else "out"
-    for v in gold_fam.values():
+    want = "in" if s["name"] in GOLD_IN else "out"
+    worst = 1.0
+    for v in fam.values():
         b = est.bin01(v)
-        if round(b, 1) != gb or est.edge(b) < 0.014 or abs(b - 3.0) < 0.12:
-            return False
-        if ("in" if b > 3.0 else "out") != side_gold:
-            return False
-    if s["end_j"]:
-        want_g, want_d = SECTION_SIDE[s["name"]]
-        if side_gold != want_g:
-            return False
-        for v in tm.values():
-            b = est.bin01(v)
-            if ("in" if b > 3.0 else "out") != want_d or abs(b - 3.0) < 0.08:
-                return False
-            if s["name"] in CONTROLS:
-                if strict_controls and (round(b, 1) != gb or est.edge(b) < 0.01):
-                    return False
-            elif abs(b - g) < 0.2:
-                return False
-    return True
+        if round(b, 1) != gb or abs(b - 3.0) < 0.12 or ("in" if b > 3.0 else "out") != want:
+            return None
+        worst = min(worst, est.edge(b))
+    for v in zero.values():          # the zero-filled readings stay in the bin too, though the fork table rules them out
+        if round(est.bin01(v), 1) != gb:
+            return None
+    want_d = "in" if s["name"] in R0_IN else "out"
+    for v in tm.values():
+        b = est.bin01(v)
+        if ("in" if b > 3.0 else "out") != want_d or abs(b - 3.0) < 0.08:
+            return None
+        if s["end_j"] and s["name"] not in CONTROLS and abs(b - g) < 0.2:
+            return None
+    for rk, rset, m in (("R3", R3_IN, 0.04), ("R5", R5_IN, 0.05)):
+        b = est.bin01(rungs[rk])
+        if ("in" if b > 3.0 else "out") != ("in" if s["name"] in rset else "out") or abs(b - 3.0) < m:
+            return None
+    return worst
 
 
 def choose_count_days(W):
     pool = neutral_pool()
     W.count_day = {}
     W.base_mult = {}
+    W.edge = {}
+    bms = (1.0, 0.996, 1.004, 0.992, 1.008, 0.988, 1.012, 0.984, 1.016, 0.98, 1.02, 0.976, 1.024, 0.972, 1.028)
     for si, s in enumerate(W.sections):
         rng = np.random.default_rng([SEED, 53, si])
         order = list(pool)
         rng.shuffle(order)
-        found = None
-        for strict in (True, False):
-            for bm in (1.0, 0.996, 1.004, 0.992, 1.008, 0.988, 1.012, 0.984, 1.016, 0.98, 1.02, 0.976, 1.024):
-                for d in order:
-                    if ok_day(W, s, si, DIDX[d], bm, strict):
-                        found = (d, bm)
-                        break
-                if found:
+        best = None
+        for bm in bms:
+            for d in order:
+                sc = score_day(W, s, si, DIDX[d], bm)
+                if sc is None or sc < EDGE_FLOOR:
+                    continue
+                if best is None or sc > best[0] + 1e-9:
+                    best = (sc, d, bm)
+                if sc >= EDGE_GOOD:
                     break
-            if found:
+            if best is not None and best[0] >= EDGE_GOOD:
                 break
-        if not found:
+        if best is None:
             raise RuntimeError("no count day for %s" % s["name"])
-        W.count_day[s["name"]], W.base_mult[s["name"]] = found
-        rows, tot = count_rows(s, si, DIDX[found[0]], found[1])      # the count exactly as tested
+        sc, d, bm = best
+        W.count_day[s["name"]], W.base_mult[s["name"]], W.edge[s["name"]] = d, bm, sc
+        rows, tot = count_rows(s, si, DIDX[d], bm)      # the count exactly as tested
         s["count_rows"], s["count_total"] = rows, count_total(rows)
-        if found[1] != 1.0:          # the section's level is the tuned free parameter: rescale its flows
-            s["q24"] = s["q24"] * found[1]
-            s["q12"] = s["q12"] * found[1]
+        if bm != 1.0:          # the section's level is the tuned free parameter: rescale its flows
+            s["q24"] = s["q24"] * bm
+            s["q12"] = s["q12"] * bm
             for c in lane_arrays(W, s["name"]):
                 for k in ("d24", "d12", "obs24", "obs12"):
-                    c[k] = c[k] * found[1]
+                    c[k] = c[k] * bm
                 c["obs24"] = np.round(c["obs24"])
                 c["obs12"] = np.round(c["obs12"])
+            nearest_junctions(W)       # the rescaled lanes change their junction's totals
 
 
 def build():
     W = build_world()
     make_detectors(W)
     atc_channels(W)
+    layout(W)
+    nearest_junctions(W)
     choose_count_days(W)
     return W
 
@@ -576,8 +658,8 @@ if __name__ == "__main__":
     W = build()
     for si, s in enumerate(W.sections):
         d = W.count_day[s["name"]]
-        c12, tm, own = families(W, s, si, DIDX[d], 1.0)
+        c12, tm, own, zero, rungs = families(W, s, si, DIDX[d], 1.0)
         g = own.get("G1 counted day, full days") or tm["T1 same-day, ratio of sums"]
-        print("%-17s %s x%.3f c12 %5d true %6.0f gold %6.0f (%.2fM) tmg %6.0f (%.2fM)" % (
-            s["name"], d, W.base_mult[s["name"]], c12, s["q24"].mean(), g, est.bin01(g),
-            tm["T1 same-day, ratio of sums"], est.bin01(tm["T1 same-day, ratio of sums"])))
+        print("%-17s %s x%.3f edge %.4f gold %.3f default %.3f R3 %.3f R5 %.3f" % (
+            s["name"], d, W.base_mult[s["name"]], W.edge[s["name"]], est.bin01(g),
+            est.bin01(tm["T1 same-day, ratio of sums"]), est.bin01(rungs["R3"]), est.bin01(rungs["R5"])))

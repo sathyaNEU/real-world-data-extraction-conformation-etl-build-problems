@@ -20,15 +20,15 @@
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g against task301, answered in the Draw), 2026-11-02",
   "nearest": "task273 v6 at 0.08",
-  "surface": "5 pairs promoted for the author's adjudication, differentiation lines on the card, 2026-11-02"
+  "surface": "6 pairs promoted for the author's adjudication, differentiation lines on the card, 2026-11-02"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE, two thin ask cells widened before ship (re-judge pending)",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: the determinism judge (held by the main session until the rev2 realism fix); fix any finding in the generator",
+ "resume": "one short re-judge on 313a7c32 (main session), then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -49,7 +49,7 @@
  "call": "2028-29 heating season (about 200 m3/h against 168 available, short by about 30; 2027-28 holds at about 150)",
  "asof": "2026-10-16",
  "gates_final_cut": {
-  "checks": "88 of 88",
+  "checks": "96 of 96",
   "verify": "0 failed",
   "byte_identical": "two builds, 17 files",
   "figures_check": "59 of 59",
@@ -57,8 +57,8 @@
   "voice_check": "PASS",
   "leak_py": "REVIEW (8 lines ruled in the note)",
   "heart": "WARN (repeat.gate_g vs task301)",
-  "surface": "5 pairs promoted for adjudication (task140 two apart on gap, G1, capacity report; task134, task133, task167, task261 on surface similarity 0.10); differentiation lines on the card",
-  "target_zip": "be1ed248",
+  "surface": "6 pairs promoted for adjudication (task140, task134, task133, task149, task167, task261), each with a differentiation line on the card",
+  "target_zip": "313a7c32",
   "zip_fresh": true,
   "pair_ceiling": 28.5,
   "mirror_leakage": 0.0

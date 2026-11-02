@@ -36,11 +36,11 @@
  "gas_total_m3": 895000,
  "headroom_2027_28": 20,
  "heat_2425_MWh": {
-  "Utiliteit": 11800,
+  "Utiliteit": 11700,
   "Woningen": 67000
  },
  "heat_2526_MWh": {
-  "Utiliteit": 12700,
+  "Utiliteit": 12600,
   "Woningen": 75000
  },
  "heat_change_MWh": {
@@ -49,12 +49,12 @@
  },
  "heat_exact": {
   "2425": {
-   "Utiliteit": 11783.2,
-   "Woningen": 66901.4
+   "Utiliteit": 11679.8,
+   "Woningen": 67283.8
   },
   "2526": {
-   "Utiliteit": 12691.4,
-   "Woningen": 74604.7
+   "Utiliteit": 12598.1,
+   "Woningen": 75003.9
   }
  },
  "like_n": 19,

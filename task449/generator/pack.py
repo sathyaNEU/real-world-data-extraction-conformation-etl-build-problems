@@ -183,25 +183,31 @@ def write_activity(posts, tgt):
             if day < a0 or day > ext:
                 continue
             if day < mig:
-                old_ev.append((day, minute, p["old_no"], kind, p["employer_no"]))
+                old_ev.append((day, minute, p["old_no"], kind, p["employer_no"],
+                               p["noc16"] if kind == "PUBLISHED" else "", ("SS" if p["channel"] == "S" else "ES") if kind == "PUBLISHED" else "",
+                               p["positions"] if kind == "PUBLISHED" else ""))
             else:
                 if p["new_id"] is None:
                     continue
-                new_ev.append((day, minute, p["new_id"], kind, p["employer_no"], p["old_no"] if p["migrated"] else None))
+                new_ev.append((day, minute, p["new_id"], kind, p["employer_no"], p["old_no"] if p["migrated"] else None, p))
         if p["migrated"]:
-            new_ev.append((mig, 2, p["new_id"], "MIGRATED", p["employer_no"], p["old_no"]))
+            new_ev.append((mig, 2, p["new_id"], "MIGRATED", p["employer_no"], p["old_no"], p))
     old_ev.sort(key=lambda e: (e[0], e[1], e[2]))
-    new_ev.sort(key=lambda e: (e[0], e[1], e[2]))
+    new_ev.sort(key=lambda e: (e[0], e[1], e[2], e[3]))
     old_code = {"PUBLISHED": "PUBLISHED", "RENEWED": "RENEWED", "REMOVED": "REMOVED_BY_EMPLOYER",
                 "EXPIRED": "EXPIRED", "CLOSED_ES": "CLOSED_ES"}
     C.write_csv(os.path.join(tgt, "workshore_board_events_2025-10-01_2026-02-01.csv"),
-                ["event_time", "posting_no", "event", "employer_no"],
-                [[ts_local(d, m), n, old_code[k], e] for d, m, n, k, e in old_ev])
+                ["event_time", "posting_no", "event", "employer_no", "noc_2016", "channel", "positions"],
+                [[ts_local(d, m), n, old_code[k], e, noc, ch, ps] for d, m, n, k, e, noc, ch, ps in old_ev])
     new_code = {"PUBLISHED": "posted", "RENEWED": "renewed", "REMOVED": "taken_down_by_employer",
                 "EXPIRED": "expired", "CLOSED_ES": "closed_by_employer_services", "MIGRATED": "migrated"}
     recs = []
-    for d, m, n, k, e, leg in new_ev:
+    for d, m, n, k, e, leg, p in new_ev:
         r = {"ts": ts_utc(d, m), "job_id": n, "type": new_code[k], "employer": e}
+        if k in ("PUBLISHED", "MIGRATED"):
+            r["noc"] = p["occ"]
+            r["openings"] = p["positions"]
+            r["source"] = "self_service" if p["channel"] == "S" else "employer_services"
         if k == "MIGRATED":
             r["legacy_ref"] = leg
         recs.append(r)
@@ -223,7 +229,7 @@ def write_cases(posts, emps, rng, tgt):
             continue
         if p["listing_end"] < lo or p["start"] > ext:
             continue
-        opened = p["start"] - int(rng.integers(0, 4))
+        opened = p["start"] - (1 if rng.random() < 0.15 else 0)
         while True:
             cn = "ES-%06d" % int(rng.integers(100000, 999999))
             if cn not in used:
@@ -252,14 +258,16 @@ def write_cases(posts, emps, rng, tgt):
         ws.append(["Case no.", "Job ref.", "Employer no.", "NOC", "Openings", "Case opened", "Outcome", "Outcome date"])
         for c in ws[4]:
             c.font = Font(bold=True)
+        rix = 4
         for opened, cn, ref, en, occ, npos, outc, od, p in rows:
             od_open = W.i2d(opened)
             if not (a <= od_open <= b):
                 continue
             ws.append([cn, ref, en, occ, npos, od_open, outc, od])
-            ws.cell(row=ws.max_row, column=6).number_format = "yyyy-mm-dd"
+            rix += 1
+            ws.cell(row=rix, column=6).number_format = "yyyy-mm-dd"
             if od is not None:
-                ws.cell(row=ws.max_row, column=8).number_format = "yyyy-mm-dd"
+                ws.cell(row=rix, column=8).number_format = "yyyy-mm-dd"
         ws.column_dimensions["A"].width = 12
         ws.column_dimensions["B"].width = 12
         ws.column_dimensions["G"].width = 28

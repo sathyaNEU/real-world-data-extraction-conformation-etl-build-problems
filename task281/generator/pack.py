@@ -146,10 +146,9 @@ def write(W, A, target):
     for L in sorted([L for L in W.licences if L.model == "1U-M" and L.bought <= P.RECORD_START.date()],
                     key=lambda L: L.lic_id):
         t = tby[L.title]
-        for i in range(L.copies):
-            rows.append([L.lic_id, i + 1, t["platform_id"], "1 user, 40 loans", L.remaining0[i], "2025-09-01"])
+        rows.append([L.lic_id, t["platform_id"], "1 user, 40 loans", L.remaining0[0], "2025-09-01"])
     IO.write_csv(os.path.join(target, FILES["status"]),
-                 ["licence_id", "copy", "title_id", "model", "loans_remaining", "as_at"], rows)
+                 ["licence_id", "title_id", "model", "loans_remaining", "as_at"], rows)
 
     # reading list items
     period = {"A25": "2025-26 Semester 1", "S26": "2025-26 Semester 2", "A26": "2026-27 Semester 1"}

@@ -28,8 +28,8 @@
  "network_ratio_pct": 67.8,
  "network_route": 1610.1,
  "ordinary_weekdays": 55,
- "pooled_route": 1483.3,
- "pooled_weekday_share_pct": 62.5,
+ "pooled_route": 1482.9,
+ "pooled_weekday_share_pct": 62.4,
  "scope": "reduced scheme",
  "station_means_2019": {
   "ARD": 1650,
@@ -60,7 +60,7 @@
  },
  "threshold": 1400,
  "total_boardings": 1300,
- "total_boardings_exact": 1312.0,
+ "total_boardings_exact": 1311.6,
  "zone_boardings": {
   "KW01": 310,
   "KW02": 290,
@@ -114,11 +114,11 @@
   "KW02": 50.4,
   "KW03": 55.6,
   "KW04": 53.9,
-  "KW05": 54.7,
+  "KW05": 54.6,
   "KW06": 73.5,
-  "KW07": 78.1,
+  "KW07": 78.2,
   "KW08": 74.6,
-  "KW09": 78.8,
+  "KW09": 78.7,
   "KW11": 72.0
  }
 }

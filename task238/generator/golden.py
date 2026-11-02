@@ -33,12 +33,12 @@ def compute(target):
     acc = {s: half_up(R["golden"][s], 1) for s in pk.stores}
     watch = [s for s in pk.stores if R["golden"][s] < A.LINE]
     off = [s for s in pk.stores if s not in watch]
-    nearest = max(off, key=lambda s: -R["golden"][s] if False else -(R["golden"][s] - A.LINE))
     nearest = min(off, key=lambda s: R["golden"][s] - A.LINE)
     F = {
         "line": A.LINE,
         "watch": watch,
         "watch_names": [NAMES[s] for s in watch],
+        "store_labels": {str(s): "%d %s" % (s, NAMES[s]) for s in pk.stores},
         "n_watch": len(watch),
         "accuracy": {str(s): acc[s] for s in pk.stores},
         "accuracy_unrounded": {str(s): R["golden"][s] for s in pk.stores},

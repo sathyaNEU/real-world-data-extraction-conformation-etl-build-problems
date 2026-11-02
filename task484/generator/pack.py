@@ -9,38 +9,10 @@ import common as C
 import docs
 import world as WD
 
-CENTRE = (389850.0, 279400.0)          # British National Grid, the town centre
+CENTRE = WD.CENTRE
 
 
-def layout(W):
-    """Positions in metres: junctions, then each counted section's ends and count point."""
-    rng = np.random.default_rng([WD.SEED, 101])
-    pos = {}
-    for j in W.junctions:
-        while True:
-            p = (rng.uniform(-2300, 2300), rng.uniform(-1700, 1700))
-            if all(math.hypot(p[0] - q[0], p[1] - q[1]) > 380 for q in pos.values()):
-                pos[j["id"]] = p
-                break
-    W.jpos = pos
-    W.cp = {}
-    for s in W.sections:
-        L = s["length"] * 1000.0
-        ang = rng.uniform(0, 2 * math.pi)
-        if s["end_j"]:
-            a = pos[s["end_j"]]
-        elif s["setting"] == "rural":
-            r = rng.uniform(3400, 4600)
-            a = (r * math.cos(ang), r * math.sin(ang))
-        else:
-            while True:
-                a = (rng.uniform(-2600, 2600), rng.uniform(-1900, 1900))
-                if all(math.hypot(a[0] - q[0], a[1] - q[1]) > 300 for q in pos.values()):
-                    break
-        b = (a[0] + L * math.cos(ang), a[1] + L * math.sin(ang))
-        f = rng.uniform(0.38, 0.62)
-        m = (a[0] + f * (b[0] - a[0]), a[1] + f * (b[1] - a[1]))
-        W.cp[s["name"]] = (int(round(CENTRE[0] + m[0])), int(round(CENTRE[1] + m[1])))
+layout = WD.layout          # positions are part of the world (the tuning reads the nearest junctions)
 
 
 def ids(W):

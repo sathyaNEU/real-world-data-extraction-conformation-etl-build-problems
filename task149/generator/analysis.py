@@ -74,10 +74,10 @@ def load(target):
     for r in rd(T("cells")):
         cells[r["cell_id"]].append((r["zone_code"], float(r["area_share"])))
     out["cells"] = cells
-    out["devices"] = {r["device_id"]: r for r in rd(T("devices"))}
+    out["devices"] = {r["hashed_imsi"]: r for r in rd(T("devices"))}
     st = collections.defaultdict(list)
     for r in rd(T("stays")):
-        st[r["device_id"]].append((r["cell_id"], loc(r["stay_start_utc"]), loc(r["stay_end_utc"]),
+        st[r["hashed_imsi"]].append((r["cell_id"], loc(r["stay_start_utc"]), loc(r["stay_end_utc"]),
                                    utc(r["stay_start_utc"]).replace(tzinfo=None), utc(r["stay_end_utc"]).replace(tzinfo=None)))
     for k in st:
         st[k].sort(key=lambda x: x[1])

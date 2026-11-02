@@ -116,3 +116,41 @@ def bin01(aadf):
 def edge(v, unit=0.1):
     """Distance of v from the nearest rounding edge at this unit (positive inside the bin)."""
     return unit / 2.0 - abs(v - round(v / unit) * unit)
+
+
+def own_family(c12, di, lanes, holidays=()):
+    """Every licensed treatment of the section's own approach detectors, and the zero-filled readings the
+    semantic fork table rules out. lanes: list of (d24, d12, avail) arrays, one per lane detector. The approach is
+    the lanes summed (a day counts as recorded when every lane recorded it, in full when every lane is at 100), and
+    on a two-lane approach each lane alone is read the same ways. Bases: the annual mean over full days, over
+    every recorded day as recorded, or over every recorded day scaled up by its availability. Denominators: the
+    detectors' own 07:00-19:00 flow on the counted day, or their mean on the same weekday in the same month."""
+    d = DAYS[di]
+    sets = [("", lanes)]
+    if len(lanes) == 2:
+        sets += [("lane 1 alone: ", [lanes[0]]), ("lane 2 alone: ", [lanes[1]])]
+    forms, zero = {}, {}
+    for tag, ls in sets:
+        av = np.min([np.asarray(x[2], dtype=float) for x in ls], axis=0)
+        d24 = np.sum([np.asarray(x[0], dtype=float) for x in ls], axis=0)
+        d12 = np.sum([np.asarray(x[1], dtype=float) for x in ls], axis=0)
+        full, rec = av >= 100, av > 0
+        bases = {"full days": float(np.mean(d24[full])), "every recorded day as recorded": float(np.mean(d24[rec])),
+                 "partial days scaled up": float(np.mean(d24[rec] * 100.0 / av[rec]))}
+        idx = [i for i, x in enumerate(DAYS) if x.month == d.month and x.weekday() == d.weekday() and full[i] and x not in holidays]
+        dens = {"counted day": float(d12[di]), "month-and-weekday mean": float(np.mean(d12[idx]))}
+        for bk, bv in bases.items():
+            for dk, dv in dens.items():
+                forms["%s%s, %s" % (tag, dk, bk)] = c12 * bv / dv
+        zb = float(np.sum(np.where(rec, d24, 0.0)) / len(DAYS))
+        for dk, dv in dens.items():
+            zero["%szero-filled blanks, %s" % (tag, dk)] = c12 * zb / dv
+    named = {"G1 counted day, full days": forms["counted day, full days"],
+             "G2 counted day, partial days scaled up": forms["counted day, partial days scaled up"],
+             "G3 counted day, every recorded day as recorded": forms["counted day, every recorded day as recorded"],
+             "G4 month-and-weekday mean of its 12 hours": forms["month-and-weekday mean, full days"]}
+    for k, v in forms.items():
+        if k not in ("counted day, full days", "counted day, partial days scaled up",
+                     "counted day, every recorded day as recorded", "month-and-weekday mean, full days"):
+            named["G" + ("6 " if k.startswith("lane") else "4 ") + k] = v
+    return named, zero

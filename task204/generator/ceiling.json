@@ -1,0 +1,31 @@
+{
+ "ask_figures": 48,
+ "asks": {
+  "A": {
+   "cracker_hits": 13,
+   "figures": 30,
+   "full_includer_hits": 30,
+   "mirror_hits": 2
+  },
+  "B": {
+   "cracker_hits": 3,
+   "figures": 9,
+   "full_includer_hits": 9,
+   "mirror_hits": 0
+  },
+  "C": {
+   "cracker_hits": 0,
+   "figures": 9,
+   "full_includer_hits": 0,
+   "mirror_hits": 0
+  }
+ },
+ "cracker_keep": 0.3333,
+ "full_includer_keep": 0.8125,
+ "landed_score": 63.3,
+ "mirror_keep": 0.0417,
+ "mirror_leakage_pct": 4.2,
+ "missed_score": 14.3,
+ "pair_ceiling": 38.8,
+ "pair_if_both_land": 55.3
+}

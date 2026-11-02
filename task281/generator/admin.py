@@ -65,7 +65,8 @@ def build(W, seed=P.SEED):
             for c in ra.sample(own, min(len(own), ra.choice([1, 1, 2]))):
                 imp = "Essential" if ra.random() < 0.45 else ra.choice(["Recommended", "Background"])
                 isbn = b["p_isbn"] if ra.random() < 0.8 else WD.isbn10_from13(b["p_isbn"])
-                items.append(dict(course=c["code"], sem=sem, title=b["title"], edition=b["edition"],
+                items.append(dict(course=c["code"], sem=sem, title=_cite_title(ra, b["title"], b["edition"]),
+                                  edition=b["edition"],
                                   isbn=_style(ra, isbn), importance=imp, work=b["work"], kind="print",
                                   cited_edition_isbn=b["p_isbn"]))
     ra.shuffle(items)
@@ -87,6 +88,11 @@ def build(W, seed=P.SEED):
             p = t["prev"]
             cat.append(dict(mms=p["mms"], title=t["title"], edition=p["edition"], year=p["year"], isbn=p["p_isbn"],
                             rtype="Book (print)", platform="", linked="", preceded_by="", publisher=t["publisher"]))
+        if t.get("next"):
+            x = t["next"]
+            cat.append(dict(mms=x["mms"], title=t["title"], edition=x["edition"], year=x["year"], isbn=x["p_isbn"],
+                            rtype="Book (print)", platform="", linked="", preceded_by=t["mms_print"],
+                            publisher=t["publisher"]))
     for b in W.print_only:
         cat.append(dict(mms=b["mms"], title=b["title"], edition=b["edition"], year=b["year"], isbn=b["p_isbn"],
                         rtype="Book (print)", platform="", linked="", preceded_by="", publisher=b["publisher"]))
@@ -97,8 +103,7 @@ def build(W, seed=P.SEED):
     status = []
     for L in W.licences:
         if L.model == "1U-M" and L.bought <= P.RECORD_START.date():
-            for i in range(L.copies):
-                status.append(dict(lic=L.lic_id, copy=i + 1, left=L.remaining0[i] if hasattr(L, "remaining0") else None))
+            status.append(dict(lic=L.lic_id, left=L.remaining0[0]))
     A.status = status
 
     # ---------------------------------------------------------------- Finance Office monthly rates (GBP per unit)
@@ -182,9 +187,34 @@ def _style(ra, isbn):
     return isbn
 
 
+def _cite_title(ra, title, edition):
+    """a title as a course leader types it into the reading-list tool"""
+    u = ra.random()
+    if u < 0.18 and ": " in title:
+        return title.split(": ")[0]
+    if u < 0.30:
+        return title.lower().capitalize() if ra.random() < 0.5 else title.upper()
+    if u < 0.40:
+        return "%s (%s edn)" % (title, _ord_short(edition))
+    if u < 0.46:
+        return title.replace(" and ", " & ")
+    return title
+
+
+def _ord_short(n):
+    suf = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return "%d%s" % (n, suf)
+
+
 def _item(ra, c, t, imp):
-    """a reading-list item citing a platform title: the print or e-book ISBN, or an earlier edition's"""
-    if t["prev"] and ra.random() < 0.4:
+    """a reading-list item citing a platform title: the print or e-book ISBN, an earlier edition's, or a newer
+    print edition the course leader has moved to"""
+    if t.get("next") and c["sem"] in ("S26", "A26") and ra.random() < 0.55:
+        isbn = t["next"]["p_isbn"]
+        ed = t["next"]["edition"]
+        if ra.random() < 0.2:
+            isbn = WD.isbn10_from13(isbn)
+    elif t["prev"] and ra.random() < 0.4:
         isbn = t["prev"]["p_isbn"]
         ed = t["prev"]["edition"]
         if ra.random() < 0.2:
@@ -193,5 +223,5 @@ def _item(ra, c, t, imp):
         u = ra.random()
         isbn = t["p_isbn"] if u < 0.55 else (WD.isbn10_from13(t["p_isbn"]) if u < 0.68 else t["e_isbn"])
         ed = t["edition"]
-    return dict(course=c["code"], sem=c["sem"], title=t["title"], edition=ed, isbn=_style(ra, isbn), importance=imp,
-                work=t["work"], kind="title", title_id=t["id"])
+    return dict(course=c["code"], sem=c["sem"], title=_cite_title(ra, t["title"], ed), edition=ed,
+                isbn=_style(ra, isbn), importance=imp, work=t["work"], kind="title", title_id=t["id"])

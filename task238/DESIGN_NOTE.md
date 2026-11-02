@@ -356,6 +356,24 @@ Measured by: generator/ceiling.py on the cut pack (target/ of the final build)
 - Free gates on the final cut: generator checks, verify, two byte-identical builds, figures_check.py, precut.py,
   voice-check.py, leak.py, guard.py heart and surface (results in pipeline.json and the hand-back).
 
+## Leak sweep
+
+leak.py --asof 2027-01-15 on the final cut: REVIEW, no LEAK (sweep 2's one LEAK, the standard's "rung up" in s.2.1, was
+reworded in docs.py to "sold"). Each REVIEW line, ruled:
+
+- PI-2 standard, 4 stump terms (thursday, effect, weekly, report): harmless. They come from s.2.3 (the flyer week),
+  s.2.4 (price changes take effect at the registers at 00:00 on the Thursday that opens the flyer week) and s.6.1, the
+  standard's own calendar, which the flyer price ask also needs; the standard says nothing of labels being printed,
+  hung or checked, and no sentence relates a changeover to the accuracy.
+- price_audit_results_2026Q4.csv, 8 of 11 candidates beside numbers: harmless. One row per label checked (shelf price,
+  register price, result), never a store figure; the audit route is the analyst's own computation (rung 0), not a
+  shipped ranking.
+- service_desk_adjustments_Q4_2026.xlsx: harmless. One row per desk adjustment on a receipt line, ask A's file; it ranks
+  nothing and the main call does not read it.
+- store_directory_2027-01.xlsx: harmless. Store number, name, zone, address and hours; no measure of accuracy.
+- thursday_changeover_checks_Q4-2026.xlsx: harmless. One row per check visit (time, labels checked, labels still at the
+  old price), raw spot checks; no store figure or ranking.
+
 ## Tried and rejected
 
 - A mode change read across rotation groups (the newest groups moved to web first, a difference in differences

@@ -49,7 +49,7 @@ def pdf_text(path):
     strings out of the Tj and TJ operators."""
     data = open(path, "rb").read()
     out = []
-    for m in re.finditer(rb"<<(.*?)>>\s*stream\r?\n(.*?)\r?\nendstream", data, re.S):
+    for m in re.finditer(rb"<<((?:(?!<<).)*?)>>\s*stream\r?\n(.*?)endstream", data, re.S):
         head, body = m.group(1), m.group(2)
         try:
             if b"ASCII85Decode" in head:
@@ -61,7 +61,7 @@ def pdf_text(path):
                 import base64
                 body = base64.a85decode(b, adobe=False)
             if b"FlateDecode" in head:
-                body = zlib.decompress(body)
+                body = zlib.decompress(body.strip() if b"ASCII85Decode" not in head else body)
         except Exception:
             continue
         for s in re.findall(rb"\((.*?)(?<!\\)\)\s*Tj", body, re.S):

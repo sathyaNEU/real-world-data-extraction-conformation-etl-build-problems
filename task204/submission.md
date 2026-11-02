@@ -52,10 +52,10 @@ The Eastline group's 43 offences are one series because 18 westbound trains each
    - Union Yards: 194,321 entries, 16,556 departures
    - Millbrook: 311,291 entries, 16,640 departures
    - Fairgrounds: 45,586 entries, 7,220 departures
-   - Cobb Street: 171,545 entries, 15,268 departures
-   - Ashford Road: 158,588 entries, 14,466 departures
-   - Ridgeview: 276,132 entries, 13,896 departures
-   - Prairie Gate: 235,756 entries, 6,948 departures
+   - Cobb Street: 171,545 entries, 15,364 departures
+   - Ashford Road: 158,588 entries, 14,610 departures
+   - Ridgeview: 276,132 entries, 14,088 departures
+   - Prairie Gate: 235,756 entries, 7,044 departures
 
 ### summer_series_deployment_memo.docx
 

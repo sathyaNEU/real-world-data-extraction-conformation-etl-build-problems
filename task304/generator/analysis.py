@@ -86,7 +86,7 @@ class Pack:
 
     def screening_list(self):
         txt = pdf_text(self.p("network_screening_2026.pdf"))
-        nodes = re.findall(r"\b(J\d{4})\b", txt)
+        nodes = re.findall(r"\b(J\d{4,5})\b", txt)
         return [n for n in nodes if n in self.nodes]
 
     def reference(self):
@@ -158,6 +158,88 @@ class Pack:
                              traffic_obs_benefit=obs / 5.0 * mu26 / (musum / 5.0) * (1 - cmf),
                              rate_mev=obs / (aadt_win * 365 / 1e6))
         return out
+
+    # ------------------------------------------------------------------ the licensed family of fits
+    FAMILY = [
+        ("junction-year, year terms (the golden)", dict()),
+        ("junction-year, no year terms", dict(yeardum=False)),
+        ("junction-year, 2025 year level", dict(level="last")),
+        ("junction-year, moment overdispersion", dict(kmode="moments")),
+        ("junction-year, staggered pooled with T", dict(stx=False)),
+        ("five-year site totals", dict(unit="total")),
+        ("five-year site totals, staggered pooled with T", dict(unit="total", stx=False)),
+        ("layout-split junction-year (crossroads; T and staggered)", dict(groups=[("X",), ("T", "ST")])),
+        ("layout-split junction-year (each layout)", dict(groups=[("X",), ("T",), ("ST",)])),
+        ("layout-split five-year totals (crossroads; T and staggered)", dict(unit="total", groups=[("X",), ("T", "ST")])),
+    ]
+
+    def _fit_group(self, layouts, unit, stx, yeardum, kmode):
+        rows = []
+        for n in self.reference():
+            v = self.nodes[n]
+            if v["layout"] not in layouts:
+                continue
+            if unit == "year":
+                for y in WINDOW:
+                    rows.append(dict(layout=v["layout"], maj=v["maj"][y], mnr=v["mnr"][y], year=y, n=self.counts[(n, y)],
+                                     off=0.0))
+            else:
+                rows.append(dict(layout=v["layout"], maj=float(np.mean([v["maj"][y] for y in WINDOW])),
+                                 mnr=float(np.mean([v["mnr"][y] for y in WINDOW])), year=None,
+                                 n=sum(self.counts[(n, y)] for y in WINDOW), off=float(np.log(len(WINDOW)))))
+        present = sorted(set(r["layout"] for r in rows))
+        terms = []
+        if "X" in present and len(present) > 1:
+            terms.append("X")
+        if stx and "ST" in present and len(present) > 1:
+            terms.append("ST")
+        years = WINDOW if (unit == "year" and yeardum) else []
+
+        def X_(rr):
+            cols = [np.ones(len(rr))] + [np.array([r["layout"] == t for r in rr], dtype=float) for t in terms]
+            cols += [np.log([r["maj"] for r in rr]), np.log([r["mnr"] for r in rr])]
+            cols += [np.array([r["year"] == y for r in rr], dtype=float) for y in years[1:]]
+            return np.column_stack(cols)
+        X = X_(rows)
+        y = np.array([r["n"] for r in rows], dtype=float)
+        off = np.array([r["off"] for r in rows])
+        b, a, ll = nb2(X, y, off)
+        if kmode == "moments":
+            fit = np.exp(X @ b + off)
+            a = max(float((((y - fit) ** 2 - fit)).sum() / (fit ** 2).sum()), 1e-3)
+        return dict(b=b, a=a, X_=X_, years=years, terms=terms)
+
+    def family_benefits(self, unit="year", stx=True, yeardum=True, kmode="mle", level="mean", groups=None):
+        groups = groups or [("T", "ST", "X")]
+        out = {}
+        for g in groups:
+            m = self._fit_group(g, unit, stx, yeardum, kmode)
+
+            def mu(v, traffic_year, level_year, mean_traffic=False):
+                maj = float(np.mean([v["maj"][y] for y in WINDOW])) if mean_traffic else v["maj"][traffic_year]
+                mnr = float(np.mean([v["mnr"][y] for y in WINDOW])) if mean_traffic else v["mnr"][traffic_year]
+                r = dict(layout=v["layout"], maj=maj, mnr=mnr, year=level_year)
+                return float(np.exp(m["X_"]([r]) @ m["b"])[0])
+            for node in self.listed:
+                v = self.nodes[node]
+                if v["layout"] not in g:
+                    continue
+                if unit == "year":
+                    mus = [mu(v, y, y) for y in WINDOW]
+                    lev = WINDOW if level == "mean" else [WINDOW[-1]]
+                    mu26 = float(np.mean([mu(v, PRESENT, ly) for ly in lev])) if m["years"] else mu(v, PRESENT, None)
+                    musum = sum(mus)
+                else:
+                    musum = len(WINDOW) * mu(v, None, None, mean_traffic=True)
+                    mu26 = mu(v, PRESENT, None)
+                obs = sum(self.counts[(node, y)] for y in WINDOW)
+                w = 1.0 / (1.0 + m["a"] * musum)
+                eb = (w * musum + (1 - w) * obs) / musum * mu26
+                out[v["name"]] = dict(benefit=eb * (1 - self.cmf[v["layout"]]), expected=eb, k=m["a"], w=w)
+        return out
+
+    def family(self):
+        return {label: self.family_benefits(**spec) for label, spec in self.FAMILY}
 
     def ladder(self, figs=None):
         figs = figs or self.junction_figures()

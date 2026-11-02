@@ -23,7 +23,7 @@ FILES = {
     "gates": "ardnagree_line_gate_entries_20180101_20271130.csv",
     "register": "ardnagree_line_station_register.csv",
     "calendar": "kilcarrow_calendar_2018_2027.csv",
-    "panel_note": "vantra_resident_panel_extract_notes.pdf",
+    "panel_note": "kmta_vantra_licence_2027-114_schedule2.pdf",
     "housing": "rathgarvan_housing_pipeline_oct2027.xlsx",
     "jobs": "kilcarrow_employment_outlook_2030.docx",
     "timetable": "ardnagree_line_draft_timetable_2028.csv",
@@ -195,11 +195,11 @@ def write_case(path):
         ("p", "Commuter boardings are the journeys to work that residents of the station's catchment begin at "
               "Rathgarvan on an average ordinary weekday in 2029, the station's first full year. An ordinary weekday "
               "is a Monday to Friday in school term that is not a public holiday."),
-        ("p", "The catchment's commuters are the persons the Census 2022 place-of-work tables (final release) count "
-              "in the seven small areas of Table 1, by zone of usual workplace, held at the 2022 base. Each workplace "
-              "zone contributes the journeys to work its commuters make, at the station share the authority's 2026 "
-              "mode choice model gives that zone (Table 2). Persons who work mainly at or from home, have no fixed "
-              "place of work or work outside County Kilcarrow are outside the station's commuter market."),
+        ("p", "The catchment's commuters are those the Census 2022 place-of-work tables (final release) count in the "
+              "seven small areas of Table 1, by zone of usual workplace, held at the 2022 base. Each workplace zone "
+              "contributes the journeys to work its commuters make, at the station share the authority's 2026 mode "
+              "choice model gives that zone (Table 2). Residents who work mainly at or from home, have no fixed place "
+              "of work or work outside County Kilcarrow are outside the station's commuter market."),
         ("table", sas),
         ("p", "Table 1. Catchment small areas (within 1.2 km walk of the station entrances)."),
         ("table", shares),
@@ -228,37 +228,36 @@ def write_case(path):
 
 def write_panel_note(path):
     blocks = [
-        ("t", "Resident Mobility Panel: extract notes"),
-        ("s", "Vantra Insights (Vantra Mobile Ireland). Extract RMP-2027-114 for the Kilcarrow Metropolitan Transport "
-              "Authority, delivered 1 December 2027. Contact: Eve Dunne, Data Products."),
-        ("h", "Population"),
-        ("p", "Devices on the Vantra network whose home cell lies in the Rathgarvan catchment cells listed in the "
-              "licence schedule and which were active on at least 20 days of the extract weeks. Panel penetration in "
-              "the catchment is about one resident adult in eleven. No expansion weights are supplied with this "
-              "extract."),
-        ("h", "Files"),
-        ("table", [["File", "Contents"],
-                   ["mobility_devices_2027w36_w47.csv", "device_id; home_cell; first_seen_utc and last_seen_utc "
-                    "(the first stay start and last stay end in the extract)"],
-                   ["mobility_stays_2027w36_w47.csv", "device_id; cell_id; stay_start_utc; stay_end_utc"],
-                   ["cell_zone_lookup_v3.csv", "cell_id; zone_code; zone_name; area_share (share of the cell's "
-                    "coverage area lying in the zone)"]]),
-        ("h", "Definitions"),
-        ("p", "A stay is a period of 20 minutes or more in which the device's location resolved to one cell. Stays "
-              "are cut where the device's location changes cell or the device is inactive for more than 90 minutes. "
-              "Stay times are in UTC to the minute. The extract holds every stay that starts on a local weekday from "
-              "Monday 6 September to Friday 26 November 2027 (ISO weeks 36 to 47), each stay running to its end "
-              "even where that falls after the window."),
-        ("p", "The home cell is the cell where the device spent the most time between 22:00 and 06:00 local time "
-              "over the extract weeks. A device_id is reissued when a SIM card is replaced; reissued identifiers "
-              "are not linked to the earlier identifier. Device identifiers are not stable across extracts."),
-        ("h", "Use"),
-        ("p", "Licensed to the Kilcarrow Metropolitan Transport Authority for transport planning under licence "
-              "2027-114. Counts of fewer than ten devices may not be published."),
+        ("t", "Licence 2027-114, Schedule 2: Service description"),
+        ("s", "Data licence between Vantra Mobile Ireland Limited and the Kilcarrow Metropolitan Transport Authority for "
+              "the Resident Mobility Panel, Rathgarvan catchment. Schedule 2 as agreed 14 September 2027; delivery "
+              "contact Eve Dunne, Vantra Insights."),
+        ("h", "2.1 Panel"),
+        ("p", "The panel consists of devices on the Vantra network whose home cell lies within the catchment cells "
+              "listed in Schedule 1 and which are active on at least 20 days of the delivery weeks. Panel penetration in "
+              "the catchment is about one resident adult in eleven. No expansion weights are supplied under this "
+              "licence."),
+        ("h", "2.2 Stays"),
+        ("p", "A stay is a period of 20 minutes or more in which a device's location resolves to one cell. A stay ends "
+              "where the device's location changes cell or the device is inactive for more than 90 minutes. Start and "
+              "end times are given in Coordinated Universal Time to the minute."),
+        ("p", "The delivery contains every stay that begins on a weekday in Irish time from Monday 6 September to "
+              "Friday 26 November 2027 (ISO weeks 36 to 47), each running to its end even where that falls after the "
+              "delivery window. Stays beginning on a Saturday or a Sunday are not delivered."),
+        ("h", "2.3 Home cell and identifiers"),
+        ("p", "A device's home cell is the cell where it spent the most time between 22:00 and 06:00 Irish time over "
+              "the delivery weeks. Devices are identified by a one-way hash of the SIM identity; a replacement SIM card "
+              "receives a new hash, which is not linked to the earlier one. Hashes are not stable between deliveries."),
+        ("h", "2.4 Cells and census zones"),
+        ("p", "Each cell's coverage area is related to the census zones it overlaps by the share of that area lying in "
+              "each zone, as estimated by Vantra radio planning (lookup version 3)."),
+        ("h", "2.5 Use and disclosure"),
+        ("p", "The data may be used for transport planning by the Authority. Results describing fewer than ten devices "
+              "may not be published."),
     ]
-    IO.write_pdf(path, "Resident Mobility Panel extract notes RMP-2027-114", "Eve Dunne", "Vantra Insights reporting",
-                 blocks, "Vantra Insights | RMP-2027-114 | Commercial in confidence", "D:20271201103000Z",
-                 "D:20271201103000Z", widths={2: [62 * 2.835, 108 * 2.835]})
+    IO.write_pdf(path, "Licence 2027-114 Schedule 2", "Eve Dunne", "Microsoft Word for Microsoft 365",
+                 blocks, "Vantra Mobile Ireland | Licence 2027-114 | Schedule 2 | Commercial in confidence",
+                 "D:20270914110000Z", "D:20271201103000Z")
 
 
 def calendar_rows():
@@ -373,9 +372,9 @@ def build(target, seed=P.SEED):
     n = {}
     stays, devs = panel_rows(w["devices"])
     n["stays"] = IO.write_csv(os.path.join(target, FILES["stays"]),
-                              ["device_id", "cell_id", "stay_start_utc", "stay_end_utc"], stays)
+                              ["hashed_imsi", "cell_id", "stay_start_utc", "stay_end_utc"], stays)
     n["devices"] = IO.write_csv(os.path.join(target, FILES["devices"]),
-                                ["device_id", "home_cell", "first_seen_utc", "last_seen_utc"], devs)
+                                ["hashed_imsi", "home_cell", "first_seen_utc", "last_seen_utc"], devs)
     n["cells"] = IO.write_csv(os.path.join(target, FILES["cells"]),
                               ["cell_id", "zone_code", "zone_name", "area_share"], cell_rows())
     write_census(os.path.join(target, FILES["census"]), w["census_final"], w["census_prov"])

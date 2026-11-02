@@ -11,7 +11,7 @@
 
 1. Over the line on their own detectors: Brookfield Way 3.4 million; Hollins Lane 3.2 million; Infirmary Road 3.2 million.
 2. Under it on their own detectors: College Road 2.5 million; Grange Road 2.7 million; Castlegate Road 2.6 million.
-3. The other sections over 3.0 million: Ashfield Road 3.8; Holloway Hill 3.5; Kingsway 4.2; Priory Road 3.3; Station Street 3.6; Wharf Street 4.7.
+3. The other sections over 3.0 million: Ashfield Road 3.8; Holloway Hill 3.5; Kingsway 4.3; Priory Road 3.5; Station Street 3.6; Wharf Street 4.7.
 
 ## 3. Step-by-Step Solution
 
@@ -38,11 +38,11 @@
    - Hollins Lane (count point 440787, 0.81 km): 3.2, yes
    - Holloway Hill (count point 352234, 1.48 km): 3.5, yes
    - Infirmary Road (count point 929104, 0.47 km): 3.2, yes
-   - Kingsway (count point 477800, 0.69 km): 4.2, yes
-   - Lower Heath Road (count point 699061, 1.92 km): 1.4, no
+   - Kingsway (count point 477800, 0.69 km): 4.3, yes
+   - Lower Heath Road (count point 699061, 1.92 km): 1.6, no
    - Mill Lane (count point 410389, 0.88 km): 2.6, no
-   - Oakhill Road (count point 578667, 0.79 km): 1.9, no
-   - Priory Road (count point 705957, 0.66 km): 3.3, yes
+   - Oakhill Road (count point 578667, 0.79 km): 1.8, no
+   - Priory Road (count point 705957, 0.66 km): 3.5, yes
    - Sandy Lane (count point 528367, 0.57 km): 2.5, no
    - Station Street (count point 424332, 0.52 km): 3.6, yes
    - Tanhouse Lane (count point 526023, 0.84 km): 2.7, no

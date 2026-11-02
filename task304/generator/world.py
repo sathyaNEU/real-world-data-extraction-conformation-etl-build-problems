@@ -148,11 +148,12 @@ class World:
                         n[y] = c
                     break
                 ref = j["layout"] in ("T", "ST", "X")
-                if not ref or sum(n[y] for y in win) < P.SCREEN_MIN:
+                if not ref or sum(n[y] for y in win) < P.SCREEN_MIN or not getattr(P, "REDRAW_TAIL", True):
                     break
                 j["theta"] = float(rng.gamma(1 / P.K_TRUE, P.K_TRUE))
             j["n"] = n
-        self._steady_years()
+        if getattr(P, "STEADY_YEARS", True):
+            self._steady_years()
 
     def _steady_years(self):
         """The network's give-way junction collisions held near the window's year-on-year level: a few collisions

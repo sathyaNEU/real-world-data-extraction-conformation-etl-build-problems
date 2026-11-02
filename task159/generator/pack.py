@@ -67,11 +67,11 @@ def build(out):
         legacy = r["received"] < mig
         if legacy:
             sid = "BH%06d" % leg_no
-            leg_no += 1
+            leg_no += 1 + (1 if rngp.random() < 0.012 else 0)
             job = ""
         else:
             yy = r["received"].year % 100
-            new_no[yy] = new_no.get(yy, 0) + 1
+            new_no[yy] = new_no.get(yy, 0) + 1 + (1 if rngp.random() < 0.012 else 0)
             sid = "KS%02d-%06d" % (yy, new_no[yy] + (4000 if yy == 25 else 100))
             bkey = (yy, int(r["batch"]))
             if bkey not in job_no:
@@ -156,9 +156,9 @@ def build(out):
             for d, r_wet, mo, h, tl in zip(md["day"], md["wet_t"], md["moist"], md["head"], md["tails"])]
     write_csv(os.path.join(out, F_MILL), ["PROD_DAY_0600", "WET_TONNES", "H2O_PCT", "HEAD_AU_GPT", "TAILS_AU_GPT"],
               rows)
-    bars, ships, lots = O.gold_room(md)
-    truth["bars"], truth["lots"] = bars, lots
-    _write_goldroom(out, bars, ships, lots)
+    bars, ships, lots, pieces = O.gold_room(md)
+    truth["bars"], truth["lots"], truth["pieces"] = bars, lots, pieces
+    _write_goldroom(out, bars, ships, lots, pieces)
 
     # ---------------- dispatch, fleet, inventory ----------------
     loads = O.lg_loads(hist, gc_by_block)
@@ -228,8 +228,9 @@ def _hole_ids(hd):
     key = hd["bench"].astype(str) + "|" + hd["drilled"].map(lambda d: "%d-%02d" % d.isocalendar()[:2])
     pat_no = {}
     n = 400
+    rg = W._rng("patterns")
     for k in sorted(set(key), key=lambda s: (s.split("|")[1], -int(s.split("|")[0]))):
-        n += 1
+        n += int(rg.integers(1, 5))
         pat_no[k] = n
     counter = {}
     for idx, k in zip(hd.index, key):
@@ -300,7 +301,7 @@ def _write_plan(path, plan):
     save_xlsx(wb, path, "2027 mine plan v3", "Jeffrey Russell", "2026-11-09T21:12:00Z")
 
 
-def _write_goldroom(out, bars, ships, lots):
+def _write_goldroom(out, bars, ships, lots, pieces):
     ship_name = {s: "SH-%s-%03d" % (str(d.year)[2:], k) for k, (s, d) in enumerate(zip(ships["ship"], ships["date"]), start=1)}
     rows = []
     for _, b in bars.sort_values(["pour_day", "pour_time"]).iterrows():
@@ -311,14 +312,21 @@ def _write_goldroom(out, bars, ships, lots):
     rng = W._rng("outturn")
     stmt_no = {}
     rows = []
-    for lot_id, g in bars.sort_values(["pour_day", "pour_time"]).groupby("lot", sort=False):
+    lot_name = {}
+    for lot_id in sorted(lt.index, key=lambda x: (lt.loc[x, "received"], x)):
         L = lt.loc[lot_id]
+        lot_name[lot_id] = "L%s%05d" % (str(L["received"].year)[2:], 11000 + len(lot_name) + 1)
+    for _, pce in pieces.iterrows():
+        L = lt.loc[int(pce["lot"])]
+        b = bars.loc[int(pce["bar"])]
         st = L["settled"]
-        stmt_no.setdefault(st, "RS-%d" % (40812 + len(stmt_no) * 3 + int(rng.integers(0, 3))))
-        for _, b in g.iterrows():
-            rows.append([stmt_no[st], st.isoformat(), "L%s%05d" % (str(L["received"].year)[2:], 11000 + int(lot_id)),
-                         "KL %d" % b["seq"], L["received"].isoformat(), "%.3f" % L["gross_rec"],
-                         "%.1f" % (L["fineness"] * 1000.0), "%.3f" % L["fine"], "%.3f" % L["ag"]])
+        if st not in stmt_no:
+            stmt_no[st] = None
+        rows.append([st, lot_name[int(pce["lot"])], "KL %d" % b["seq"], L["received"].isoformat(), "%.3f" % L["gross_rec"],
+                     "%.1f" % (L["fineness"] * 1000.0), "%.3f" % L["fine"], "%.3f" % L["ag"]])
+    for k, st in enumerate(sorted(stmt_no)):
+        stmt_no[st] = "RS-%d" % (40812 + k * 3 + int(rng.integers(0, 3)))
+    rows = [[stmt_no[r[0]], r[0].isoformat()] + r[1:] for r in rows]
     rows.sort(key=lambda r: (r[1], r[2], r[3]))
     write_csv(os.path.join(out, F_REF), ["STATEMENT_NO", "STATEMENT_DATE", "LOT_NO", "CLIENT_REF", "RECEIVED_DATE",
                                          "LOT_GROSS_RECEIVED_OZT", "LOT_AU_FINENESS", "LOT_FINE_AU_OZT",
@@ -334,9 +342,11 @@ def _write_dispatch(out, loads):
             recs.append((l["time_local"] + dt.timedelta(seconds=int(rng.integers(60, 360))), l, True))
     recs.sort(key=lambda x: (x[0], x[1]["truck"]))
     rows = []
+    lid = 2_310_000
     for n, (t, l, ph) in enumerate(recs):
         u = O.local_to_utc(t)
-        rows.append(["%07d" % (2_310_000 + n * 7 + (n % 5)), u.strftime("%Y-%m-%dT%H:%M:%SZ"), l["truck"],
+        lid += int(rng.integers(3, 19))
+        rows.append(["%07d" % lid, u.strftime("%Y-%m-%dT%H:%M:%SZ"), l["truck"],
                      l["shovel"], l["poly"], "LGSP", "LG", "%.2f" % l["grade"]])
     write_csv(os.path.join(out, F_DISP), ["LOAD_ID", "TIME_UTC", "TRUCK", "LOADER", "SOURCE", "DESTINATION",
                                           "MATERIAL", "SOURCE_AU_GPT"], rows)
@@ -386,8 +396,10 @@ def _write_dcs(path, stops, outages):
     t0 = dt.datetime(2025, 1, 1, 5, 0)        # export window, UTC
     t1 = dt.datetime(2026, 11, 1, 4, 0)
 
+    switch = outages[O.TAG_SWITCH_OUTAGE][1]
+
     def tag(old, new, t):
-        return old if t < O.TAG_SWITCH_UTC else new
+        return old if t < switch else new
     TAGS = {"BM": ("BM101.RUNNING", "GRD.BM01.RUN_STS", "Ball mill 101 running", "Ball mill 1 run status"),
             "SAG": ("SAG101.RUNNING", "GRD.SAG01.RUN_STS", "SAG mill 101 running", "SAG mill 1 run status"),
             "PA": ("PP301A.RUNNING", "GRD.CYC_PP01A.RUN_STS", "Cyclone feed pump 301A running",
@@ -421,15 +433,15 @@ def _write_dcs(path, stops, outages):
     for t, k, v in sorted(ev, key=lambda x: x[0]):
         if not (t0 < t < t1):
             continue
-        if t >= O.TAG_SWITCH_UTC and "switched" not in state:
+        if t >= switch and "switched" not in state:
             state["switched"] = True
             for kk in ("BM", "SAG", "PA", "PB"):
-                rows.append((O.TAG_SWITCH_UTC, TAGS[kk][1], TAGS[kk][3], state[kk], "INITIAL"))
+                rows.append((switch, TAGS[kk][1], TAGS[kk][3], state[kk], "INITIAL"))
         state[k] = v
         if any(a <= t <= b for a, b in outages):
             continue
         old, new = TAGS[k][0], TAGS[k][1]
-        rows.append((t, tag(old, new, t), TAGS[k][2] if t < O.TAG_SWITCH_UTC else TAGS[k][3], v, "GOOD"))
+        rows.append((t, tag(old, new, t), TAGS[k][2] if t < switch else TAGS[k][3], v, "GOOD"))
     # the historian re-sends a few events after collector restarts
     dup = [r for r in rows if r[4] == "GOOD" and rng.random() < 0.006]
     rows += dup
@@ -442,13 +454,14 @@ def _write_cmms(path, stops):
     rng = W._rng("cmms")
     rows = []
     n = 0
+    wo_rng = W._rng("wonumbers")
     s = stops[(stops["end"] > dt.datetime(2025, 1, 1)) & (stops["start"] < dt.datetime(2026, 11, 1))]
     for _, r in s.iterrows():
         if r["kind"] in ("SHUTDOWN", "RELINE"):
             n += 1
             desc = ("BM-101 liner change and mill shutdown" if r["kind"] == "RELINE" else
                     "Grinding circuit planned shutdown - BM-101 isolated")
-            rows.append([r["start"], "WO-%d" % (251004 + n * 13), "BM-101", "Ball mill 101", "SD", desc,
+            rows.append([r["start"], "WO-%d" % 0, "BM-101", "Ball mill 101", "SD", desc,
                          r["start"], r["end"], "CLOSED"])
         elif rng.random() < 0.45:
             n += 1
@@ -458,17 +471,21 @@ def _write_cmms(path, stops):
                 b = a + dt.timedelta(minutes=5)
             desc = rng.choice(["BM-101 trip - lube oil pressure low", "BM-101 trip - motor overload",
                                "BM-101 trip - mill discharge chute blocked", "BM-101 trip - trunnion bearing temp"])
-            rows.append([r["start"], "WO-%d" % (251004 + n * 13), "BM-101", "Ball mill 101", "CM", str(desc), a, b,
+            rows.append([r["start"], "WO-%d" % 0, "BM-101", "Ball mill 101", "CM", str(desc), a, b,
                          "CLOSED"])
     # weekly lube routes and inspections done with the mill running
     d = dt.datetime(2025, 1, 7, 9, 0)
     while d < dt.datetime(2026, 10, 31):
         n += 1
-        rows.append([d, "WO-%d" % (251004 + n * 13), "BM-101", "Ball mill 101", "PM",
+        rows.append([d, "WO-%d" % 0, "BM-101", "Ball mill 101", "PM",
                      "Weekly lube route and walk-down (mill running)", d, d + dt.timedelta(minutes=int(rng.integers(50, 110))),
                      "CLOSED"])
         d += dt.timedelta(days=7, minutes=int(rng.integers(-90, 90)))
     rows.sort(key=lambda x: x[0])
+    wo = 250_870
+    for r in rows:
+        wo += int(wo_rng.integers(6, 41))
+        r[1] = "WO-%d" % wo
     write_csv(path, ["WO_NUMBER", "ASSET_ID", "ASSET_DESC", "WO_TYPE", "DESCRIPTION", "ACTUAL_START",
                      "ACTUAL_FINISH", "STATUS"],
               [[r[1], r[2], r[3], r[4], r[5], r[6].strftime("%Y-%m-%d %H:%M"), r[7].strftime("%Y-%m-%d %H:%M"), r[8]]

@@ -347,6 +347,34 @@ def main():
        not any("—" in open(os.path.join(TARGET, f), encoding="utf-8").read() for f in files if f.endswith(".csv"))
        and "—" not in open(os.path.join(TASK, "submission.md")).read(), "")
 
+    # the heat cells under every reading of the gas-year boundaries: the 1 October 2024 annual read taken at any time
+    # of that day (00:00 to 24:00, the read itself at its stamped time), the 1 October 2025 boundary at local midnight
+    # rather than the AMR's 00:00 UTC; and the day-late slip (the first AMR row's register as the opening) lands wrong
+    for k, u, lim in (("Woningen", 1000, 150), ("Utiliteit", 100, 15)):
+        cs = [cc for cc in w["conns"] if cc["cat"] == k]
+        e1 = sum(cc["cons_oct1_2024"] for cc in cs) / 1000.0
+        two_h = sum(cc["cons_sep30_2025"] for cc in cs) / 1000.0 * 2 / 24
+        R, C_ = h1[k], h2[k] - h1[k]
+        vR = [R, R + 0.42 * e1, R - 0.58 * e1, R - two_h]
+        vC = [C_, C_ - 0.42 * e1, C_ + 0.58 * e1, C_ + two_h]
+        mR = min(W.dist_to_edge(v, u) for v in vR)
+        mC = min(W.dist_to_edge(v, u) for v in vC)
+        ok("H1 %s 2024-25 heat holds its bin under every boundary reading" % k,
+           len({A.rnd(v, u) for v in vR}) == 1 and A.rnd(R, u) == F["heat_2425_MWh"][k] and mR >= lim,
+           "%d MWh, %.1f from the edge at worst" % (F["heat_2425_MWh"][k], mR))
+        ok("H2 %s change holds its bin under every boundary reading" % k,
+           len({A.rnd(v, u) for v in vC}) == 1 and A.rnd(C_, u) == F["heat_change_MWh"][k] and mC >= lim,
+           "%+d MWh, %.1f from the edge at worst" % (F["heat_change_MWh"][k], mC))
+        ok("H3 %s 2025-26 heat sits well inside its bin" % k, W.dist_to_edge(h2[k], u) >= (300 if u == 1000 else 25),
+           "%.1f MWh, %.1f from the edge" % (h2[k], W.dist_to_edge(h2[k], u)))
+    slip = first_day_energy(T, M)
+    ok("H4 the day-late slip lands wrong on the residential change",
+       A.rnd(h2["Woningen"] - h1["Woningen"] - 2 * slip["Woningen"], 1000) != F["heat_change_MWh"]["Woningen"],
+       "slip %.1f MWh a side" % slip["Woningen"])
+    tm = {r["opnametijd"] for r in T["legacy"]}
+    ok("H5 the drive-by reads carry the reading system's clock time", all(re.fullmatch(r"\d{2}:\d{2}", t) for t in tm),
+       "%d distinct times" % len(tm))
+
     rv = T["rev2"]
     sums = all(int(r["transmissie_kw"]) + int(r["ventilatie_kw"]) + int(r["opwarmtoeslag_kw"]) ==
                int(r["ontwerpwarmteverlies_kw"]) for r in rv)
@@ -366,6 +394,15 @@ def main():
 
 def D(s):
     return dt.date.fromisoformat(s)
+
+
+def first_day_energy(T, M):
+    owner = {str(m["meternummer"]): m["aansluitnummer"] for m in T["meters"]}
+    out = defaultdict(float)
+    for r in T["amr"]:
+        if r["datum_utc"] == "2025-10-01" and r["energie_kwh"]:
+            out[M["cat"][owner[r["meternummer"]]]] += float(r["energie_kwh"]) / 1000.0
+    return out
 
 
 if __name__ == "__main__":

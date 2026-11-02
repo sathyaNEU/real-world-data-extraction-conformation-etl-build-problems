@@ -126,8 +126,16 @@ def simulate(seed=P.SEED):
                     if when.minute == 0 and when.second < 20:
                         when = when + dt.timedelta(seconds=int(rng.integers(25, 300)))
                     sales_by_tank[tid].append((when, g, k))
+    # winter: Ashby Hollow and Gilliam Creek retire E10 on 1 December and run its hoses on REC-90
+    for e10, rec in (("AH-3", "AH-1"), ("GC-2", "GC-1")):
+        keep, move = [], []
+        for s in sales_by_tank[e10]:
+            (move if s[0] >= local(dt.date(2026, 12, 1), 0.0) else keep).append(s)
+        sales_by_tank[e10] = keep
+        for (when, g, k) in move:
+            sales_by_tank[rec].append((when, g, ("X", k)))
     for tid in tanks:
-        sales_by_tank[tid].sort()
+        sales_by_tank[tid].sort(key=lambda s: s[0])
 
     # ---- the systems' own events, drawn first (they shape what the consoles log) ----
     rng2 = np.random.default_rng(seed + 7)
@@ -192,15 +200,23 @@ def simulate(seed=P.SEED):
             t_cur = when
             if kind == "S":
                 g_true, k = payload
+                moved = isinstance(k, tuple)
                 min_net = float(vol(0.06 * t.D, t.D, t.Lt))
                 g_true = min(g_true, max((net - min_net) / (1 - t.beta * (T - 60.0)), 0.0))
                 if g_true <= 0.5:
                     continue
                 net -= g_true * (1 - t.beta * (T - 60.0))
                 daily[when.date()] = daily.get(when.date(), 0.0) + g_true
-                reg = round(g_true * (1 + t.hose_err[k]), 3)
-                out["sales"].append({"tank": tid, "marina": m, "local": when, "hose": hose_ids[tid][k],
-                                     "product": t.product, "gal_true": g_true, "gal_reg": reg})
+                if moved:
+                    src = {"AH-1": "AH-3", "GC-1": "GC-2"}[tid]
+                    hk = k[1]
+                    reg = round(g_true * (1 + tanks[src].hose_err[hk]), 3)
+                    hose = hose_ids[src][hk]
+                else:
+                    reg = round(g_true * (1 + t.hose_err[k]), 3)
+                    hose = hose_ids[tid][k]
+                out["sales"].append({"tank": tid, "marina": m, "local": when, "hose": hose,
+                                     "product": t.product, "gal_true": g_true, "gal_reg": reg, "moved": moved})
             elif kind == "DS":
                 gross_now = net * (1 + t.beta * (T - 60.0))
                 h0 = t.h_of_gross(gross_now)
@@ -341,7 +357,7 @@ def simulate(seed=P.SEED):
         for a, b in outs:
             poll = b + dt.timedelta(minutes=int(rng2.integers(4, 40)))
             for tid in [k for k, t in tanks.items() if t.marina == m]:
-                prior = [x for x in tests if x["tank"] == tid and x["end"] < b]
+                prior = [x for x in tests if x["tank"] == tid and x["end"] < b and x["result"] == "PASS"]
                 if not prior:
                     continue
                 last = prior[-1]

@@ -59,6 +59,12 @@
    "role": "distractor",
    "source": "Kilcarrow City and County Council Economic Development Unit, employment outlook to 2030; synthetic, built for this task"
   },
+  "kmta_vantra_licence_2027-114_schedule2.pdf": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Vantra Mobile Ireland and KMTA, data licence 2027-114, Schedule 2 service description; synthetic, built for this task"
+  },
   "lisnagry_opening_review_apr2020.pdf": {
    "date": "2027-12-06",
    "license": "synthetic, CC0",
@@ -88,17 +94,11 @@
    "license": "synthetic, CC0",
    "role": "distractor",
    "source": "Kilcarrow City and County Council Planning Department, Rathgarvan residential pipeline, October 2027; synthetic, built for this task"
-  },
-  "vantra_resident_panel_extract_notes.pdf": {
-   "date": "2027-12-06",
-   "license": "synthetic, CC0",
-   "role": "evidence",
-   "source": "Vantra Insights, RMP-2027-114 extract notes; synthetic, built for this task"
   }
  },
  "largest_file": {
   "name": "mobility_stays_2027w36_w47.csv",
-  "rows": 136684
+  "rows": 136688
  },
  "row_counts": {
   "ardnagree_line_draft_timetable_2028.csv": 92,
@@ -107,8 +107,12 @@
   "cell_zone_lookup_v3.csv": 35,
   "census2022_pow_rathgarvan_catchment.xlsx": 196,
   "kilcarrow_calendar_2018_2027.csv": 717,
-  "mobility_devices_2027w36_w47.csv": 1372,
-  "mobility_stays_2027w36_w47.csv": 136684
+  "mobility_devices_2027w36_w47.csv": 1371,
+  "mobility_stays_2027w36_w47.csv": 136688
  },
+ "stated_inputs": [
+  "1,400",
+  "1400"
+ ],
  "task": "task149"
 }
