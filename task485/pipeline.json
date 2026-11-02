@@ -1,18 +1,18 @@
 {
  "task": "task485",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-02",
  "architecture": 5,
  "loops": 0,
  "stump": "Spreading each manufacturer's fiscal 2026 remittances over its products by ingredient cost files Liraquent, insulin glargine-qmrt and Saltiva as preferred, because each manufacturer's contract terms differ by product and its average moves the contested products' deep rebates onto its sole-source spend; solving each manufacturer's remittances by account and quarter of service for one rebate per 30-day supply of every product it supplies files Velantro, Glarvia and Bevoria (with Empriva, Apiqor and adalimumab-kvrn in the other classes)",
  "returned": [],
- "resume": "stage 4: the isolated leak reader and the determinism judge (main session); then ship",
+ "resume": "Shipped 2026-11-02 (architecture 5, ETL): prefer Velantro, Empriva, Glarvia, Apiqor, Bevoria and adalimumab-kvrn on the 2027 preferred drug list; target.zip 28ce0e20 (MD5 8e364099). Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "source_note": "re-rooted 2026-11-01 at the Batch 3 queue reset: architecture 4 (island migration completion) closed with its world; architectures 1 to 3 spent at stage 4; the slot's seed ET42 set aside at the first draw",
  "as_of": "2026-10-19",
@@ -153,5 +153,18 @@
   },
   "source_note": "re-root to a fresh world; architecture 1 (a boundary commission's electoral review), architecture 2 (cattle-manure ammonia by region) and architecture 3 (coal boiler scrubbers' limestone balance) spent at stage 4; the slot's seed ET42 set aside at the first draw",
   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-26, no portal result; the island migration world closed)"
+ },
+ "leak": {
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2026-10-19)",
+  "reader": "clean in round 1; question 6 analytical (attributing manufacturer-level rebates to products); appended to task485/leak_check_report.md"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-11-02 at the ship gate, no BLOCK",
+  "nearest": "surface promoted nine pairs, task65, task84 and task482 on the same-driver signature, each answered by the card's differentiation lines"
+ },
+ "judge": {
+  "verdict": "round 1 DETERMINISTIC, APPROVE (order kept; Gate F strong; Gate G decomposition_attribution / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; F1 to F4 Gate C residuals on the asks accepted (F1 derivable from the dispensing fee, F2 closed by the policy wording and the exact fit)",
+  "report": "task485/determinism_check_report.md"
  }
 }

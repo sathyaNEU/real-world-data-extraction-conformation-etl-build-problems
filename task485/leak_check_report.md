@@ -44,3 +44,14 @@ Stump terms swept: manufacturer, architecture, remittances, supplies, reader, in
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (the isolated leak reader)
+
+1. Decisive step: none stated; the nearest is policy EB-RX-04 3.2 (net cost per 30-day supply is the ingredient cost paid on the product's claims less the rebates the product's manufacturer paid the Plan on those claims, divided by the 30-day supplies dispensed), the estimand and not a step; no file says how a manufacturer-level rebate splits across its products.
+2. Nothing ranks or scores the candidates (remittances by manufacturer and account only; the FY2025 reconciliation covers the guarantee, not the classes).
+3. Nothing exists only to help the analyst (the pharmacy network export and the drug file are lookups the claims need).
+4. Nothing reads as the answer (the only product-level figures are the clinical review's 30-day quantities).
+5. Policy 3.1 and 3.2 read literally: per product, the ingredient cost on its non-reversed fiscal-year claims less the rebates its manufacturer paid on those claims, over the 30-day supplies dispensed, lowest in each class; 3.3 fixes the fiscal year as the latest with all four remittances received; which product's claims carry which share of a manufacturer's rebate is left to the analyst.
+6. An analytical choice (attributing manufacturer-level rebates to individual products); nothing planted.
+Sweep flags: the clinical review is harmless (compared products, packs and 30-day quantities; no preferred product, cost, rank or step); the remittance workbooks are harmless (manufacturers by account and line type, no product, no net cost, no per-product rebate); the pharmacy network text file is the organisation's own pipe-delimited export with a header and no prose; Exhibit C, the policy, the implementation messages and the FY2025 reconciliation are harmless (guarantee terms for the asks, the estimand and fiscal-year rule, scheduling chatter, a prior-year table showing no shortfall; none says how to split a manufacturer's rebate).
+Realism: none generated (memo, contract and policy prose; remittance header blocks, summaries and prior-period lines; an account code change and a legacy cardholder id read as real-system mess); minor: the clinical review's comparability notes are slightly tidy but read as a pharmacist's memo.
