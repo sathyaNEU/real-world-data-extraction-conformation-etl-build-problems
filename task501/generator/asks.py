@@ -1,9 +1,7 @@
-"""The asks computed from the ask files as the pack carries them (pandas frames read from the shipped CSVs): the
-golden for each and every stop of its ladder. The generator's golden and checks use these; verify.py recomputes the
-golden on its own code path."""
-import datetime as dt
-import re
-
+"""The ask computed from the register's files as the pack carries them (pandas frames read from the shipped CSVs): the
+golden for each option's people the register holds in the region, and of those the people with no valid MMR dose and
+with exactly one, and every stop of their ladder. The generator's golden and checks use these; verify.py recomputes
+the golden on its own code path."""
 import pandas as pd
 
 import world as W
@@ -12,6 +10,13 @@ REGION_CODES = set(W.REGION_LHO_NEW)          # LH20-LH26, the same areas under 
 OPTION_YEARS = {k: W.OPTIONS[k]["years"] for k in W.OPTION_KEYS}
 AS_AT = pd.Timestamp(W.AS_AT)
 CUT = pd.Timestamp(W.CUTOVER)
+GP_LINE = "GPR-"
+# a registration's household as the register holds it: twins registered together from one birth notification share
+# every one of these
+HOUSEHOLD = ("date_of_birth", "sex", "gp_practice", "registered_on", "lho_code", "lho_recorded", "postcode")
+DECADE = 10
+REG_WINDOW = (6, 45)            # days from a birth to its registration from the birth notification
+FIRST_DOSE_WINDOW = (365, 525)  # days from a birth to the GP's first dose at the schedule's age (12 months, or 15)
 
 
 def _yob(df):
@@ -64,16 +69,16 @@ def _union(ids, links):
     return {i: find(i) for i in ids}
 
 
-GP_LINE = "GPR-"
-LINKS = ("golden", "none", "any_ref", "dob_sex_area", "dob_sex_postcode")
+LINKS = ("golden", "none", "any_ref", "dob_sex_area", "dob_sex_postcode", "household")
 
 
 def persons(f, link="golden", merge_how="chain"):
-    """Which registrations in the people extract are one person, as a map from registration to person. golden:
-    registrations holding the same GP return line, once merges are followed, are one child's (a return line is one
-    dose given to one child). Stops: none (every registration a person); any_ref (any shared source reference joins,
-    and a school session's is every pupil's there); dob_sex_area and dob_sex_postcode (a person key over the
-    registrations' own fields, the postcode only where one was recorded)."""
+    """Which registrations in the people extract are one person, as a map from registration to person. golden: every
+    registration is one child (registrations holding one GP return line once the merges are followed would be one
+    child's; none does). Stops: none (every registration a person, the same map); any_ref (any shared source
+    reference joins, and a school session's is every pupil's there); dob_sex_area and dob_sex_postcode (a person key
+    over the registrations' own fields, the postcode only where one was recorded); household (registrations sharing
+    every field of HOUSEHOLD joined as one child: twins merged)."""
     people = f["people"]
     ids = list(people["person_id"])
     if link == "none":
@@ -84,7 +89,9 @@ def persons(f, link="golden", merge_how="chain"):
         ev = ev[ev["person_id"].isin(set(ids))]
         if link == "golden":
             ev = ev[ev["source_ref"].str.startswith(GP_LINE)]
-        for _, grp in ev.groupby("source_ref")["person_id"]:
+        held = ev.groupby("source_ref")["person_id"].nunique()
+        shared = ev[ev["source_ref"].isin(set(held[held > 1].index))]
+        for _, grp in shared.groupby("source_ref")["person_id"]:
             u = sorted(set(grp))
             links.extend((u[0], x) for x in u[1:])
         return _union(ids, links)
@@ -94,6 +101,9 @@ def persons(f, link="golden", merge_how="chain"):
     elif link == "dob_sex_postcode":
         key = people["date_of_birth"] + "|" + people["sex"] + "|" + people["postcode"].fillna("")
         keep = list(people["postcode"].fillna("") != "")
+    elif link == "household":
+        key = people[list(HOUSEHOLD)].fillna("").agg("|".join, axis=1)
+        keep = [True] * len(people)
     else:
         raise ValueError(link)
     first = {}
@@ -114,11 +124,68 @@ def _population(people, how, unlisted):
     return m
 
 
-def ask1(f, how="golden", link="golden", unlisted="keep"):
-    """Each option's people the register holds as living in the region, one per person: how reads the area code
-    (in_region), link joins the registrations that are one person (persons), unlisted="drop" leaves out registrations
-    no practice lists (a stop)."""
+def _plus_years(s, n):
+    """ISO dates n years on (no date of birth on the register falls on 29 February)."""
+    return (s.str[:4].astype(int) + n).astype(str) + s.str[4:]
+
+
+def decade_early(f, events=None, rule="both"):
+    """Registrations whose date of birth the register holds ten years early. The child was registered from the birth
+    notification, 6 to 45 days after the date ten years on, and had the GP's first dose 12 to 17 months after that
+    date (its events re-pointed through the merges, less the lines replaced or withdrawn). rule: both (the golden),
+    registration (the registration alone), first_dose (the first GP dose alone)."""
     people = f["people"]
+    ten = pd.to_datetime(_plus_years(people["date_of_birth"], DECADE))
+    off = (pd.to_datetime(people["registered_on"]) - ten).dt.days
+    by_reg = set(people.loc[off.between(*REG_WINDOW), "person_id"])
+    ev = clean_events(resolve_merges(f["events"] if events is None else events, f["merges"]), f["log"])
+    gp = ev[ev["source_ref"].str.startswith(GP_LINE)]
+    first = pd.to_datetime(gp.groupby("person_id")["date_given"].min())
+    tenmap = dict(zip(people["person_id"], ten))
+    lag = {p: (d - tenmap[p]).days for p, d in first.items() if p in tenmap}
+    by_dose = {p for p, x in lag.items() if FIRST_DOSE_WINDOW[0] <= x <= FIRST_DOSE_WINDOW[1]}
+    if rule == "registration":
+        return by_reg
+    if rule == "first_dose":
+        return by_dose
+    if rule == "both":
+        return by_reg & by_dose
+    raise ValueError(rule)
+
+
+DOB_HOWS = ("corrected", "held", "registration", "first_dose", "any_birthday")
+
+
+def people_as_born(f, dob_how="corrected"):
+    """The people extract with each date of birth as the child was born. corrected (the golden): a date of birth held
+    ten years early read ten years on (decade_early). Stops: held (as the register holds it); registration and
+    first_dose (one signature alone, the same registrations); any_birthday (every registration made 6 to 45 days after
+    any birthday read as a birth registration: over-cleaning)."""
+    people = f["people"]
+    if dob_how == "held":
+        return people
+    p = people.copy()
+    if dob_how == "any_birthday":
+        reg = pd.to_datetime(p["registered_on"])
+        shift = pd.Series(0, index=p.index)
+        for n in range(1, 21):
+            off = (reg - pd.to_datetime(_plus_years(p["date_of_birth"], n))).dt.days
+            shift = shift.where(shift > 0, n * off.between(*REG_WINDOW))
+        for n in sorted(set(shift) - {0}):
+            m = shift == n
+            p.loc[m, "date_of_birth"] = _plus_years(p.loc[m, "date_of_birth"], n)
+        return p
+    shifted = decade_early(f, rule="both" if dob_how == "corrected" else dob_how)
+    m = p["person_id"].isin(shifted)
+    p.loc[m, "date_of_birth"] = _plus_years(p.loc[m, "date_of_birth"], DECADE)
+    return p
+
+
+def ask1(f, how="golden", link="golden", unlisted="keep", dob_how="corrected"):
+    """Each option's people the register holds as living in the region, one per person, by the year each was born:
+    how reads the area code (in_region), link joins the registrations that are one person (persons), dob_how reads
+    the date of birth (people_as_born), unlisted="drop" leaves out registrations no practice lists (a stop)."""
+    people = people_as_born(f, dob_how)
     sel = people[_population(people, how, unlisted)]
     y = _yob(sel)
     who = sel["person_id"].map(persons(f, link))
@@ -141,6 +208,36 @@ def clean_events(events, log, how="golden"):
         ev = ev[~ev["source_ref"].isin(set(log.loc[~stands, "line_ref"]))]
     elif how != "all":
         raise ValueError(how)
+    return ev
+
+
+def reattribute(people, ev):
+    """A child has one MMR dose at a visit. Where one registration holds two GP return lines given on one day, the
+    second is its co-twin's: the one other registration of its household (HOUSEHOLD, as the register holds it) with
+    no GP line that day. ev: events already re-pointed through the merges and cleaned of replaced and withdrawn
+    lines."""
+    gp = ev[ev["source_ref"].str.startswith(GP_LINE)]
+    n = gp.groupby(["person_id", "date_given"])["source_ref"].transform("nunique")
+    dbl = gp[n >= 2].sort_values(["person_id", "date_given", "source_ref"])
+    if not len(dbl):
+        return ev
+    cols = list(HOUSEHOLD)
+    pk = people[["person_id"] + cols].fillna("")
+    homes = pk[pk["person_id"].isin(set(dbl["person_id"]))][cols].drop_duplicates()
+    cand = pk.merge(homes, on=cols)
+    mates = {}
+    for _, grp in cand.groupby(cols)["person_id"]:
+        ms = list(grp)
+        for m in ms:
+            mates[m] = [x for x in ms if x != m]
+    gpc = gp[gp["person_id"].isin(set(cand["person_id"]))]
+    days = {p: set(d) for p, d in gpc.groupby("person_id")["date_given"]}
+    ev = ev.copy()
+    for (pid, day), grp in dbl.groupby(["person_id", "date_given"]):
+        cand = [c for c in mates.get(pid, []) if day not in days.get(c, set())]
+        if len(cand) == 1:
+            for idx in grp.index[1:]:
+                ev.at[idx, "person_id"] = cand[0]
     return ev
 
 
@@ -197,16 +294,26 @@ def resolve_merges(events, merges, how="chain"):
     return ev
 
 
-def ask2(f, pop="golden", ev_how="golden", merge_how="chain", link="golden", events=None, unlisted="keep"):
-    """Of Ask 1's people (pop, link, unlisted as there), those with no valid dose and with exactly one at 30 June 2027:
-    each person's events are every registration's of theirs, re-pointed through the merges (merge_how) and less the
-    GP return lines the query log shows replaced or withdrawn (ev_how); events, when given, replaces the extract's."""
-    people = f["people"]
+TWINS = ("reattributed", "loaded")
+
+
+def ask2(f, pop="golden", ev_how="golden", merge_how="chain", link="golden", events=None, unlisted="keep",
+         twins="reattributed", dob_how="corrected"):
+    """Of the option's people (pop, link, unlisted and dob_how as in ask1), those with no valid dose and with exactly one
+    at 30 June 2027: each person's events re-pointed through the merges (merge_how), less the GP return lines the
+    query log shows replaced or withdrawn (ev_how), each line a twin's loader put on its co-twin given back to the
+    child it was given to (twins="reattributed"; "loaded" leaves every line where it was loaded), counted under the
+    guidelines' 12.5 from the date each person was born; events, when given, replaces the extract's."""
+    people = people_as_born(f, dob_how)
     who = persons(f, link, merge_how)
     p = people[_population(people, pop, unlisted)]
     p = p.assign(person_id=p["person_id"].map(who)).drop_duplicates("person_id")
     ev = resolve_merges(f["events"] if events is None else events, f["merges"], merge_how)
     ev = clean_events(ev, f["log"], ev_how)
+    if twins == "reattributed":
+        ev = reattribute(f["people"], ev)
+    elif twins != "loaded":
+        raise ValueError(twins)
     ev = ev.assign(person_id=ev["person_id"].map(lambda x: who.get(x, x)))
     counts = valid_counts(p, ev)
     y = _yob(p)
@@ -216,109 +323,3 @@ def ask2(f, pop="golden", ev_how="golden", merge_how="chain", link="golden", eve
         sel = (y >= a) & (y <= b)
         out[k] = {"none": int(((n == 0) & sel).sum()), "one": int(((n == 1) & sel).sum())}
     return out
-
-
-LEGACY_IN_COMMENT = re.compile(r"Legacy no\.\s*(MZ\d{2}/\d{4})")
-
-
-def _components(rows, links):
-    """Union of records into one illness per person: links is a list of (i, j) index pairs."""
-    parent = {i: i for i in rows}
-
-    def find(x):
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-    for i, j in links:
-        a, b = find(i), find(j)
-        if a != b:
-            parent[max(a, b)] = min(a, b)
-    return {i: find(i) for i in rows}
-
-
-def dedup_cases(cases, how="golden", lab=None):
-    """Confirmed cases with rash onset in the window, one per person and illness.
-    golden: a back-entered record whose comments name a legacy number held by a migrated record is that record again,
-    and records with the same date of birth, sex and onset are one illness notified twice; every record joined by
-    either is one case. Stops: none (every row a case); legacy (the comments only); key (date of birth, sex and onset
-    only); dob_sex (one per date of birth and sex); window14 (date of birth and sex with onsets within 14 days); lab
-    (confirmed cases with a positive result in the laboratory file)."""
-    c = cases[(cases["classification"] == "Confirmed")].copy()
-    c["onset"] = pd.to_datetime(c["onset_date"])
-    c = c[(c["onset"] >= pd.Timestamp(W.WINDOW[0])) & (c["onset"] <= pd.Timestamp(W.WINDOW[1]))]
-    if how in ("golden", "legacy", "key"):
-        links = []
-        if how in ("golden", "legacy"):
-            by_legacy = {r: i for i, r in c["legacy_ref"].items() if r}
-            ref = c["comments"].fillna("").str.extract(LEGACY_IN_COMMENT)[0]
-            links += [(i, by_legacy[r]) for i, r in ref.items() if isinstance(r, str) and r in by_legacy]
-        if how in ("golden", "key"):
-            first = {}
-            for i, r in c.iterrows():
-                k = (r["date_of_birth"], r["sex"], r["onset_date"])
-                if k in first:
-                    links.append((i, first[k]))
-                else:
-                    first[k] = i
-        comp = _components(list(c.index), links)
-        keep = sorted({v for v in comp.values()})
-        return c.loc[keep]
-    if how == "none":
-        return c
-    if how == "dob_sex":
-        return c.drop_duplicates(["date_of_birth", "sex"])
-    if how == "window14":
-        c = c.sort_values(["date_of_birth", "sex", "onset"])
-        keep, last = [], {}
-        for i, r in c.iterrows():
-            k = (r["date_of_birth"], r["sex"])
-            if k in last and (r["onset"] - last[k]).days <= 14:
-                continue
-            last[k] = r["onset"]
-            keep.append(i)
-        return c.loc[keep]
-    if how == "lab":
-        pos = set(lab.loc[lab["result"] == "Positive", "case_id"])
-        return c[c["case_id"].isin(pos)]
-    raise ValueError(how)
-
-
-def _by_option(c):
-    y = _yob(c)
-    out = {}
-    for k, (a, b) in OPTION_YEARS.items():
-        sel = (y >= a) & (y <= b)
-        out[k] = {"confirmed": int(sel.sum()), "imported": int((sel & (c["importation"] == "Imported")).sum())}
-    return out
-
-
-def ask3(cases, how="golden", lab=None):
-    return _by_option(dedup_cases(cases, how, lab))
-
-
-PERSON_KEYS = {"date of birth and sex": (("date_of_birth", "sex"), None),
-               "date of birth, sex and onset": (("date_of_birth", "sex", "onset_date"), None),
-               "date of birth and sex, onsets within 14 days": (("date_of_birth", "sex"), 14),
-               "date of birth, sex and county": (("date_of_birth", "sex", "county"), None)}
-
-
-def ask3_person_key(cases, name):
-    """Ask 3 with the back-entries joined to their migrated records through the legacy number in their comments, and
-    records sharing the person key `name` (PERSON_KEYS) joined as one illness (SF27)."""
-    cols, window = PERSON_KEYS[name]
-    c = cases[(cases["classification"] == "Confirmed")].copy()
-    c["onset"] = pd.to_datetime(c["onset_date"])
-    c = c[(c["onset"] >= pd.Timestamp(W.WINDOW[0])) & (c["onset"] <= pd.Timestamp(W.WINDOW[1]))]
-    by_legacy = {r: i for i, r in c["legacy_ref"].items() if r}
-    ref = c["comments"].fillna("").str.extract(LEGACY_IN_COMMENT)[0]
-    links = [(i, by_legacy[r]) for i, r in ref.items() if isinstance(r, str) and r in by_legacy]
-    seen = {}
-    for i, r in c.iterrows():
-        k = tuple(r[x] for x in cols)
-        for j in seen.get(k, []):
-            if window is None or abs((r["onset"] - c.at[j, "onset"]).days) <= window:
-                links.append((i, j))
-        seen.setdefault(k, []).append(i)
-    comp = _components(list(c.index), links)
-    return _by_option(c.loc[sorted(set(comp.values()))])

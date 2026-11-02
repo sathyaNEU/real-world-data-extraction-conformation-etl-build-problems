@@ -39,9 +39,8 @@ def simulate():
     rows = S.queries(people, events, gp)
     other = S.other_queries(len(rows))
     log = S.finish_register(people, events, rows, other)
-    cases, lab = S.cases()
     return dict(nat=nat, reg=reg, reg_total=reg_total, prof=prof, parts=parts, contacts=contacts, opts=opts,
-                people=people, events=events, merges=merges, log=log, cases=cases, lab=lab, stock=S.stock())
+                people=people, events=events, merges=merges, log=log, stock=S.stock())
 
 
 def write_pack(out, w):
@@ -61,8 +60,6 @@ def write_pack(out, w):
     n["merges"] = PK.write_merges(p("merges"), w["merges"])
     n["queries"] = PK.write_queries(p("queries"), w["log"])
     n["lho"] = PK.write_lho(p("lho"))
-    n["cases"] = PK.write_cases(p("cases"), w["cases"])
-    n["lab"] = PK.write_lab(p("lab"), w["lab"])
     n["stock"] = PK.write_stock(p("stock"), w["stock"])
     DOC.standard(p("standard"))
     DOC.options(p("options"), w["opts"], w["reg_total"])

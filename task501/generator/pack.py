@@ -1,6 +1,6 @@
 """Write the evidence pack's data files: the profile, the projection, the survey's public use files and its population
-table (the call's inputs), the register extracts and the query log, the code list, the case export and the laboratory
-results (the asks' inputs) and the stock return (a distractor). What each file is, who issued it and when lives in
+table (the call's inputs), the register extracts, the query log and the code list (the ask's inputs) and the stock
+return (a distractor). What each file is, who issued it and when lives in
 PROVENANCE, which golden.metadata writes to metadata.json outside the pack; no shipped file lists or describes the
 others (dataset-generation section 3)."""
 import csv
@@ -25,14 +25,12 @@ FILES = {
     "lho": "lho_codes_national_2024-07.csv",
     "circular": "lho_revision_circular_2024-04.pdf",
     "guidelines": "immunisation_guidelines_ch12_mmr_excerpt.pdf",
-    "cases": "nds_measles_cases_oriel_2019-2027.csv",
-    "lab": "nmrl_measles_results_2019-2027.csv",
     "uptake": "national_mmr_uptake_report_2027q1.pdf",
     "stock": "mmr_stock_return_2027-06-30.csv",
 }
 DISTRACTORS = ("uptake", "stock")
 CALL_FILES = ("profile", "projection", "participants", "contacts", "population", "options", "standard")
-ASK_FILES = ("people", "events", "merges", "queries", "lho", "circular", "guidelines", "cases", "lab")
+ASK_FILES = ("people", "events", "merges", "queries", "lho", "circular", "guidelines")
 
 
 def iso(d):
@@ -199,7 +197,7 @@ def write_population(path, nat):
 def write_people(path, people, active):
     rows = []
     for p in sorted((p for p in people if p.status in active), key=lambda p: p.pid):
-        rows.append([p.pid, iso(p.dob), p.sex, p.lho, iso(p.lho_recorded), p.postcode, iso(p.registered),
+        rows.append([p.pid, iso(p.dob_rec or p.dob), p.sex, p.lho, iso(p.lho_recorded), p.postcode, iso(p.registered),
                      p.shown_practice])
     return write_csv(path, ["person_number", "date_of_birth", "sex", "lho_code", "lho_recorded", "postcode",
                             "registered_on", "gp_practice"], rows, crlf=True)
@@ -237,24 +235,6 @@ def write_lho(path):
     return write_csv(path, ["lho_code", "lho_name", "county", "health_region", "in_force_from"], rows)
 
 
-def write_cases(path, cases):
-    rows = []
-    for c in cases:
-        rows.append([c["case_id"], c["legacy_ref"], irl(c["notified"]), irl(c["onset_date"]), irl(c["date_of_birth"]),
-                     c["sex"], c["county"], c["classification"], c["importation"], c["outbreak_ref"], c["epi_link"],
-                     c["hospitalised"], c["mmr_doses_reported"], c["comments"]])
-    return write_csv(path, ["case_id", "legacy_ref", "notified", "onset_date", "date_of_birth", "sex", "county",
-                            "classification", "importation", "outbreak_ref", "epi_link", "hospitalised",
-                            "mmr_doses_reported", "comments"], rows, crlf=True)
-
-
-def write_lab(path, lab):
-    rows = [[r["specimen_id"], r["case_id"], irl(r["specimen_date"]), r["specimen_type"], r["test"], r["result"],
-             r["genotype"]] for r in lab]
-    return write_csv(path, ["specimen_number", "case_id", "specimen_date", "specimen_type", "test", "result",
-                            "genotype"], rows, crlf=True)
-
-
 def write_stock(path, stock):
     rows = [[r["store"], r["product"], r["batch"], iso(r["expiry"]), r["doses_on_hand"], iso(r["counted_on"])]
             for r in stock]
@@ -290,10 +270,6 @@ PROVENANCE = [
      "National health service planning unit", "2024-04-12", None),
     ("guidelines", "National immunisation guidelines, chapter 12 (MMR), sections 12.4 to 12.6",
      "National immunisation programme", "2025-11-24", None),
-    ("cases", "Notifiable disease system export: measles cases resident in Oriel Health Region, notified from 2019",
-     "Department of Public Health, surveillance", "2027-07-06", "2027-07-06"),
-    ("lab", "National measles reference laboratory results for those cases", "National measles reference laboratory",
-     "2027-07-06", "2027-07-06"),
     ("uptake", "MMR uptake at 24 months and 5 years, quarter 1 2027", "National immunisation programme", "2027-06-20",
      None),
     ("stock", "MMR stock return at 30 June 2027", "Regional Immunisation Office", "2027-06-30", None),

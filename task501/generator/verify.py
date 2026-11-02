@@ -1,6 +1,7 @@
 """Independent verifier for task501: reads only the shipped bundle (the target folder) with the csv module and pdfplumber,
 shares no code with the generator, recomputes the call (the next-generation matrix from the survey's diaries kept in
-school term) and every ask figure, and compares them with generator/figures.json.
+school term) and every ask figure (each option's people on the register by the year they were born, and their valid
+doses with each twin's dose where it was given), and compares them with generator/figures.json.
 
     python3 task501/generator/verify.py <target> <figures.json>"""
 import csv
@@ -98,7 +99,54 @@ def call(target):
     return out
 
 
-def residents(target):
+def tenth(iso_date):
+    d = dt.date.fromisoformat(iso_date)
+    return dt.date(d.year + 10, d.month, d.day)
+
+
+def merged_events(target, unresolved_out=False):
+    """Every event with the registration it now belongs to (merges followed to the surviving record), less the GP
+    lines the query log shows replaced or withdrawn. unresolved_out: also drop any line whose query is not closed as
+    confirmed by the as-at date (an open query read as not standing; the counts must not move)."""
+    surv = {r["retired_number"]: r["surviving_number"] for r in rows(target, find(target, "register_merges"))}
+    log = rows(target, find(target, "gp_return_queries"))
+    drop = {r["line_ref"] for r in log if r["outcome"] in ("Replaced by corrected line", "Withdrawn by practice")}
+    if unresolved_out:
+        drop |= {r["line_ref"] for r in log if r["outcome"] != "Confirmed as sent" or not r["closed_on"]
+                 or r["closed_on"] > "2027-06-30"}
+    out = []
+    for r in rows(target, find(target, "register_mmr_events")):
+        if r["source_ref"] in drop:
+            continue
+        p = r["person_number"]
+        while p in surv:
+            p = surv[p]
+        out.append((p, dt.date.fromisoformat(r["date_given"]), r["source_ref"]))
+    return out
+
+
+def born(target, ev, rule="both"):
+    """Registration -> the date the child was born. A date of birth held ten years early is read ten years on: the
+    child was registered from the birth notification 6 to 45 days after the date ten years on (rule "registration"),
+    and its first GP dose came 12 to 17 months after that date (rule "first_dose"); the golden takes both."""
+    first = {}
+    for p, d, ref in ev:
+        if ref.startswith("GPR-") and (p not in first or d < first[p]):
+            first[p] = d
+    out = {}
+    for r in rows(target, find(target, "register_people")):
+        p, held = r["person_number"], dt.date.fromisoformat(r["date_of_birth"])
+        t = tenth(r["date_of_birth"])
+        by_reg = 6 <= (dt.date.fromisoformat(r["registered_on"]) - t).days <= 45
+        by_dose = p in first and 365 <= (first[p] - t).days <= 525
+        hit = {"both": by_reg and by_dose, "registration": by_reg, "first_dose": by_dose}[rule]
+        out[p] = t if hit else held
+    return out
+
+
+def residents(target, dob):
+    """Registration -> (date of birth as born, living in the region): an address in the State whose local health
+    office, read in the scheme in force when recorded, is in the region (LH27 before 1 July 2024 is Monaghan West)."""
     cut = dt.date(2024, 7, 1)
     region = {"LH20", "LH21", "LH22", "LH23", "LH24", "LH25", "LH26"}
     codes = {r["lho_code"]: r["health_region"] for r in rows(target, find(target, "lho_codes"))}
@@ -108,63 +156,50 @@ def residents(target):
         code, rec = r["lho_code"], dt.date.fromisoformat(r["lho_recorded"])
         in_state = not r["postcode"].strip().upper().startswith("BT")
         here = in_state and (code in region or (code == "LH27" and rec < cut))
-        people[r["person_number"]] = (dt.date.fromisoformat(r["date_of_birth"]), here)
+        people[r["person_number"]] = (dob[r["person_number"]], here)
     return people
 
 
-def persons(target, people):
-    """One person per child: registrations in the people extract that hold the same GP return line, once the merges
-    are followed, are one child's (a return line is one dose given to one child). Registration -> person, the
-    smallest registration number of the group."""
-    surv = {r["retired_number"]: r["surviving_number"] for r in rows(target, find(target, "register_merges"))}
-    root = {p: p for p in people}
+HOUSE = ("date_of_birth", "sex", "gp_practice", "registered_on", "lho_code", "lho_recorded", "postcode")
 
-    def top(x):
-        while root[x] != x:
-            root[x] = root[root[x]]
-            x = root[x]
-        return x
-    holders = {}
-    for r in rows(target, find(target, "register_mmr_events")):
-        if not r["source_ref"].startswith("GPR-"):
+
+def twins_given_back(target, ev, key=HOUSE):
+    """A child has one MMR dose at a visit: where one registration holds two GP lines given on one day, the second is
+    the dose of the one other registration sharing its key (by default every household field) that holds no GP line
+    that day. Returns the events with those lines given back, and the number given back (None where a key leaves a
+    doubled day with no single match)."""
+    mates = {}
+    for r in rows(target, find(target, "register_people")):
+        mates.setdefault(tuple(r[k] for k in key), []).append(r["person_number"])
+    home = {p: k for k, ps in mates.items() for p in ps}
+    days = {}
+    for p, d, ref in ev:
+        if ref.startswith("GPR-"):
+            days.setdefault((p, d), []).append(ref)
+    out, moved = list(ev), 0
+    give = {}
+    for (p, d), refs in days.items():
+        if len(set(refs)) < 2:
             continue
-        p = r["person_number"]
-        while p in surv:
-            p = surv[p]
-        if p in people:
-            holders.setdefault(r["source_ref"], set()).add(p)
-    for hs in holders.values():
-        hs = sorted(hs)
-        for h in hs[1:]:
-            a, b = top(hs[0]), top(h)
-            if a != b:
-                root[max(a, b)] = min(a, b)
-    return {p: top(p) for p in people}
+        cand = [q for q in mates.get(home.get(p), []) if q != p and (q, d) not in days]
+        if len(cand) != 1:
+            return ev, None
+        for ref in sorted(set(refs))[1:]:
+            give[(p, d, ref)] = cand[0]
+    for i, (p, d, ref) in enumerate(out):
+        if (p, d, ref) in give:
+            out[i] = (give[(p, d, ref)], d, ref)
+            moved += 1
+    return out, moved
 
 
-def doses(target, people, who, unresolved_out=False):
-    """Valid doses per person (who: registration -> person), every registration's events together. unresolved_out:
-    also drop any line whose query is not closed as confirmed by the as-at date (an open query read as not standing);
-    the counts must not move."""
-    surv = {r["retired_number"]: r["surviving_number"] for r in rows(target, find(target, "register_merges"))}
-    log = rows(target, find(target, "gp_return_queries"))
-    drop = {r["line_ref"] for r in log if r["outcome"] in ("Replaced by corrected line", "Withdrawn by practice")}
-    if unresolved_out:
-        drop |= {r["line_ref"] for r in log if r["outcome"] != "Confirmed as sent" or not r["closed_on"]
-                 or r["closed_on"] > "2027-06-30"}
+def doses(people, ev):
+    """Valid doses per person under guidelines 12.5, from the date each was born."""
     asat = dt.date(2027, 6, 30)
     per = {}
-    for r in rows(target, find(target, "register_mmr_events")):
-        if r["source_ref"] in drop:
-            continue
-        d = dt.date.fromisoformat(r["date_given"])
-        if d > asat:
-            continue
-        p = r["person_number"]
-        while p in surv:
-            p = surv[p]
-        if p in people and people[p][1]:
-            per.setdefault(who[p], []).append(d)
+    for p, d, ref in ev:
+        if d <= asat and p in people:
+            per.setdefault(p, []).append(d)
     count = {}
     for q, ds in per.items():
         dob = people[q][0]
@@ -178,41 +213,11 @@ def doses(target, people, who, unresolved_out=False):
     return count
 
 
-def cases(target, key=("date_of_birth", "sex", "onset_date")):
-    """Confirmed cases with onset in the window, one per person and illness: a record carrying a migrated record's legacy
-    number in its comments is that illness again, and so is a record with the same date of birth, sex and onset (key;
-    any person key must give the same counts once the legacy numbers are joined)."""
-    rs = [r for r in rows(target, find(target, "nds_measles_cases")) if r["classification"] == "Confirmed"]
-    rs = [r for r in rs if dt.date(2019, 1, 1) <= dt.datetime.strptime(r["onset_date"], "%d/%m/%Y").date()
-          <= dt.date(2027, 6, 30)]
-    idx = {r["case_id"]: i for i, r in enumerate(rs)}
-    root = list(range(len(rs)))
-
-    def top(i):
-        while root[i] != i:
-            i = root[i]
-        return i
-
-    def join(i, j):
-        a, b = top(i), top(j)
-        if a != b:
-            root[max(a, b)] = min(a, b)
-    by_legacy = {r["legacy_ref"]: i for i, r in enumerate(rs) if r["legacy_ref"]}
-    seen = {}
-    for i, r in enumerate(rs):
-        m = re.search(r"Legacy no\.\s*(MZ\d{2}/\d{4})", r["comments"])
-        if m and m.group(1) in by_legacy:
-            join(i, by_legacy[m.group(1)])
-        k = tuple(r[x] for x in key)
-        if k in seen:
-            join(i, seen[k])
-        else:
-            seen[k] = i
-    assert len(idx) == len(rs)
-    out = []
-    for i, r in enumerate(rs):
-        if top(i) == i:
-            out.append((dt.datetime.strptime(r["date_of_birth"], "%d/%m/%Y").date().year, r["importation"] == "Imported"))
+def figures_of(people, cnt):
+    out = {}
+    for k, (a, b) in OPTS.items():
+        res = [p for p, (dob, here) in people.items() if here and a <= dob.year <= b]
+        out[k] = (len(res), sum(1 for p in res if cnt.get(p, 0) == 0), sum(1 for p in res if cnt.get(p, 0) == 1))
     return out
 
 
@@ -228,28 +233,36 @@ def main(argv):
     below = [k for k, v in r.items() if v < 1]
     if below != ["Option B"] or r["No catch-up"] < 1:
         bad.append(("call", below, "Option B"))
-    people = residents(target)
-    who = persons(target, people)
-    cnt = doses(target, people, who)
-    cnt_u = doses(target, people, who, unresolved_out=True)
-    if any(r["outcome"] not in ("Confirmed as sent", "Replaced by corrected line", "Withdrawn by practice")
-           for r in rows(target, find(target, "gp_return_queries"))):
+    if any(r_["outcome"] not in ("Confirmed as sent", "Replaced by corrected line", "Withdrawn by practice")
+           for r_ in rows(target, find(target, "gp_return_queries"))):
         bad.append(("query log", "an unresolved query", "every query closed"))
-    cs = cases(target)
-    cs_ds = cases(target, ("date_of_birth", "sex"))
-    for k, (a, b) in OPTS.items():
-        res = sorted({who[p] for p, (dob, here) in people.items() if here and a <= dob.year <= b})
-        n0 = sum(1 for p in res if cnt.get(p, 0) == 0)
-        n1 = sum(1 for p in res if cnt.get(p, 0) == 1)
-        if (n0, n1) != (sum(1 for p in res if cnt_u.get(p, 0) == 0), sum(1 for p in res if cnt_u.get(p, 0) == 1)):
-            bad.append(("open-query reading " + k, "moves the dose counts", "no move"))
-        conf = sum(1 for y, imp in cs if a <= y <= b)
-        imp = sum(1 for y, i in cs if a <= y <= b and i)
-        if (conf, imp) != (sum(1 for y, i in cs_ds if a <= y <= b), sum(1 for y, i in cs_ds if a <= y <= b and i)):
-            bad.append(("person key " + k, "date of birth and sex moves the case counts", "no move"))
-        for label, val, key in (("residents", len(res), "ask1_register_residents"), ("none", n0, "ask2_no_valid_dose"),
-                                ("one", n1, "ask2_one_valid_dose"), ("confirmed", conf, "ask3_confirmed_cases"),
-                                ("imported", imp, "ask3_imported")):
+    ev = merged_events(target)
+    holders = {}
+    for p, d, ref in ev:
+        if ref.startswith("GPR-"):
+            holders.setdefault(ref, set()).add(p)
+    if any(len(h) > 1 for h in holders.values()):
+        bad.append(("GP lines", "a line on two registrations", "each line on one registration"))
+    dob = born(target, ev)
+    for rule in ("registration", "first_dose"):
+        if born(target, ev, rule) != dob:
+            bad.append(("date of birth by the %s alone" % rule, "a different set", "the same registrations"))
+    people = residents(target, dob)
+    given, n_moved = twins_given_back(target, ev)
+    for key in (("date_of_birth", "sex", "gp_practice"), ("date_of_birth", "sex", "registered_on"),
+                ("date_of_birth", "sex", "gp_practice", "registered_on")):
+        alt, n_alt = twins_given_back(target, ev, key)
+        if n_alt != n_moved or sorted(alt) != sorted(given):
+            bad.append(("co-twin by " + "/".join(key), "another match", "the household's"))
+    cnt = doses(people, given)
+    cnt_u = doses(people, twins_given_back(target, merged_events(target, unresolved_out=True))[0])
+    got = figures_of(people, cnt)
+    if got != figures_of(people, cnt_u):
+        bad.append(("open-query reading", "moves the dose counts", "no move"))
+    for k in OPTS:
+        n_res, n0, n1 = got[k]
+        for label, val, key in (("residents", n_res, "ask1_register_residents"), ("none", n0, "ask2_no_valid_dose"),
+                                ("one", n1, "ask2_one_valid_dose")):
             if int(figs[key][k].replace(",", "")) != val:
                 bad.append((label + " " + k, val, figs[key][k]))
     if bad:
@@ -257,9 +270,11 @@ def main(argv):
             print("VERIFY MISMATCH", b)
         raise SystemExit(1)
     print("VERIFY   independent recomputation matches figures.json: 6 reproduction numbers from the term-time diaries, "
-          "the call, 25 ask figures (one person per child, registrations holding one GP return line joined); the dose "
-          "counts do not move with unresolved queries read as not standing, nor the case counts with records joined "
-          "on date of birth and sex")
+          "the call, 15 ask figures (%d dates of birth read ten years on, the same under either signature alone; %d "
+          "twins' GP lines given back, the same under every co-twin key); no GP line on two registrations; the dose "
+          "counts do not move with unresolved queries read as not standing"
+          % (sum(1 for r_ in rows(target, find(target, "register_people"))
+                 if dob[r_["person_number"]].isoformat() != r_["date_of_birth"]), n_moved))
 
 
 if __name__ == "__main__":

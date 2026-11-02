@@ -36,8 +36,8 @@ rule: redesign the decisive step, never add a rung above it).
 - **People** (`guard.py names --geo Ireland --seed 501`): Eadaoin Bonner, Nigel Macmillan, Therese McGann, Karl
   McLoughlin; none in the prompt.
 - **Shape 07 (grid of cells):** six scenarios by the winter's reproduction number with the call (1 + 6), the deck's call
-  slide and chart (3), the asks per option: register residents, no-dose and one-dose counts, confirmed and imported cases
-  (25), the two files (2). About 37 criteria, none stacked from simple asks.
+  slide and chart (3), the ask per option: register residents, no-dose and one-dose counts (15; the confirmed and
+  imported cases cut on 2026-11-02), the two files (2). About 27 criteria, none stacked from simple asks.
 - **Gap and generators:** gap time first (the evidence's days against the season the decision bets on), then population
   (who mixes with whom). G13 (the decision's window differs from the evidence's), G16 (the field's estimator for the
   season), G6 (the survey's mix of term and holiday days against the winter's). Gate G `method_or_model_selection`.
@@ -117,10 +117,9 @@ one (0.9).
   proxy diaries, contacts in several settings, participants numbered in release order); immunity by year of birth
   joined to bands through the projection; options by birth years; the register extract loaded as received, with a GP
   query log, a merge table, LH27 reissued in July 2024, pupils living across the border held with no area code,
-  second registrations the school team opened at school entry still unmerged, residents no practice lists, postcodes
-  only since July 2015 and practices cleared when people leave; an NDS migration with the 2019 outbreak
-  back-entered, a few cases notified by both a GP and a hospital, laboratory results keyed to case numbers; an extract
-  run three days after its as-of date; none decides the call.
+  twins whose GP lines one practice's loader put on one registration, a few dates of birth keyed a decade early,
+  residents no practice lists, postcodes only since July 2015 and practices cleared when people leave; an extract run
+  three days after its as-of date; none decides the call.
 - **Layer 2:** the field's method for a season's reproduction number (family field_method, pattern /2 with term-time
   forcing): the capable analyst's route builds the matrix from every diary the survey holds, the right population for
   a single survey; an expert recognises that measles in winter runs on term-time contacts and that the survey's
@@ -152,6 +151,37 @@ one (0.9).
   hides the within-band mixing of a susceptible school-age cohort, and a region above the herd immunity threshold, and
   below one on the pooled survey, can still sustain measles in term; no build on file uses a seasonal contact regime.
 
+## Survivor anatomy
+
+Written 2026-11-02 for the paused build's gate, of the main call as it stands (frozen since round 2), each line a test
+answered on this build.
+
+- **Actor:** the deciding property, which regime each diary was kept in and which regime the winter runs in, has no
+  column: the participants file carries each diary's date and the contacts file each contact's at_school flag, and no
+  file stores term or holiday or ties a regime to December to February (asserted in R3).
+- **Link:** the signal is read through a comparison the field's method never asks for, the survey's two fieldwork
+  periods against the window the estimand runs in (PS-07 3.1, below one throughout December to February); no key, code
+  or clause names term, the holidays or a set of diaries.
+- **Reflex:** the field's named method, the next-generation matrix's dominant eigenvalue built from every diary the
+  survey holds (as computed, transposed, reciprocal on either population or density-adjusted), is rung 2 and files no
+  catch-up at 0.9, the default path's Ends on, not the golden option B.
+- **Back-test:** the easy route validates where a solver would check it: the region is 95.2 per cent immune against the
+  93.3 per cent threshold for R0 15, R0 times the susceptible share gives 0.7 and every textbook treatment of the pooled
+  matrix 0.883 to 0.889, all on no catch-up, and no file publishes a reproduction number or matrix that could refute
+  them.
+- **Second use:** every file the decisive step reads is in the pack for its own reason: the participants and contacts
+  files build every rung's matrix, the population table serves the reciprocity treatment, the profile and projection
+  give each band's susceptibles, PS-07 files the window and R0 and the options paper each option's effect; deleting the
+  step deletes no file.
+- **Shock:** the movement the step recovers reads as ordinary: a contact survey run in two fieldwork periods is a
+  survey's design, the 15 to 19-year-olds' within-band share differs between them as a school band's does, and option B
+  is the extreme of no shipped option statistic (D is the least immune at 88.5 per cent against B's 88.8, E makes the
+  most people immune at 2,250, C costs least).
+- **Pins:** PS-07 files the WHAT in the department's own standard (the region's reproduction number below one
+  throughout December to February, R0 15 over the winter, population and immunity on 1 January 2028, each option for
+  the people the options paper expects it to make immune), and no filed sentence names term, the summer holidays, a
+  set of diaries or the school regime the stump rides on (SF25 closed in the data, asserted).
+
 ## Readability screen
 
 Rungs as climbed (Ladder). The six tests: 1 a filed sentence names the decisive quantity or sends the solver looking;
@@ -164,7 +194,7 @@ reported figure.
 | R1: weight each band's susceptible share by its contacts (refuses R0's even mixing) | no sentence names contacts or mixing | the contacts file is the survey's standard layout | reweighting is a reflex | none | no | one weighted mean | readable |
 | R2: the next-generation matrix on every diary, scaled to R0 15, with any textbook treatment (refuses the averages) | no sentence names it | the microdata are the matrix's raw material | the textbook reflex (both round 1 agents built it unprompted) | none | no | an eigenvalue | readable |
 | R2b: the two fieldwork periods averaged, or the cohort with the widest gap or most people made immune (refuses the pooled count of diaries) | no | the dates show two periods | a reflex on top of R2 | none | no | a mean of two matrices | readable |
-| R3 (decisive): the matrix from the diaries kept in school term, 2 to 26 May 2023, the regime the winter runs in | no sentence names term, holidays, seasons or which diaries; PS-07 files the window (December to February, below one throughout) and the survey's files carry the fieldwork only as each diary's date | no column marks term or holiday; diary_date and at_school are standard survey fields read the same on both paths | not a default: the default pools every diary and every reflex above treats the pooled matrix | no control scores contact regimes: no published reproduction number or matrix, no outbreak model, and the case export is not read by the call | no battery step selects diaries by season | a subset of rows chosen before an eigenvalue | silent |
+| R3 (decisive): the matrix from the diaries kept in school term, 2 to 26 May 2023, the regime the winter runs in | no sentence names term, holidays, seasons or which diaries; PS-07 files the window (December to February, below one throughout) and the survey's files carry the fieldwork only as each diary's date | no column marks term or holiday; diary_date and at_school are standard survey fields read the same on both paths | not a default: the default pools every diary and every reflex above treats the pooled matrix | no control scores contact regimes: no published reproduction number or matrix, no outbreak model, and no case data ships | no battery step selects diaries by season | a subset of rows chosen before an eigenvalue | silent |
 
 The decisive rung holds because the only sentences about the quantity are the standard's aim, window and R0, which read
 the same under every set of diaries, and the survey's diaries carry their dates with nothing saying what the days
@@ -173,7 +203,8 @@ were; the pitfall is the field's own (measles' seasonality is set by the school 
 ## Semantic fork table
 
 One row per term in the main ask and per convention the main computation needs, and the ask conventions a judge could
-open (SF17, SF23 retired, SF24, SF27, SF28, SF29). The stump (which diaries measure the winter's contacts) is not a reading and has no row:
+open (SF17, SF23 retired, SF24 and SF27 retired with the case ask, SF28, SF29 retired, SF30, SF31). The stump (which
+diaries measure the winter's contacts) is not a reading and has no row:
 every set of diaries computes the same literal estimand, and only the survey's two regimes and the estimand's window
 separate them (Literal reader). SF25 records the one premise under that choice that no file states as a calendar, the
 school regime the winter runs in, and how the pack closes it without naming the step.
@@ -203,12 +234,14 @@ school regime the winter runs in, and how the pack closes it without naming the 
 | SF21 | the age grain | the public use file's fifteen five-year bands | none shipped finer | C1: the bands are the only ages the file releases (asserted) |
 | SF22 | R0 over the winter | 15 for the winter's own contacts | 15 set on the survey as a whole and its per-contact rate carried to term contacts: an implied 17.6 over the winter, B 1.05, fallback names B (same call, figures off) | standard 3.2, R0 15 "over the winter" |
 | SF23 | Ask 1: a record with a UK postcode (retired as a fork, 2026-11-01) | not living in the region | living in the region by its area code: no longer a reading, the record carries none | retired by convergence (C1): the register gives a record at an address outside the State no area code, so its code and its address agree it is not in the region (asserted through the verifier's csv read: the 1,091 registrations with a UK postcode are the 1,091 with no area code, and the region holds the same registrations read by code alone or by address as well); nothing filed in any document or the prompt |
-| SF24 | Ask 3: two confirmed records with one date of birth, sex, rash onset and county | one illness notified twice | two cases: every figure up by one or two | the ask counts cases; the six pairs agree on importation and county and neither carries an epi-link to the other, while the 2024 twins, a boy and a girl, differ in sex and onset and the second is epi-linked to the first (asserted) |
+| SF24 | Ask 3 (retired 2026-11-02, the case ask cut): two confirmed records with one date of birth, sex, rash onset and county | not a reading any more: no case figure is asked | none | retired with the case ask: the case export and the laboratory results no longer ship (asserted in checks.py: no nds_ or nmrl_ file ships) |
 | SF25 | the school regime the winter runs in (a premise of "through winter 2027-28" that no file states as a calendar) | the winter is in the school year, schools open apart from the Christmas and February breaks, so its binding weeks carry the regime of the May diaries | the winter read as school holidays (the summer diaries 0.83) or its regime left unknown and every diary pooled (0.88): no catch-up | not a reading of a filed term: the survey's own at_school field identifies the regimes (at-school contacts 17.5 per cent of all contacts in the May diaries against 2.2 in July and August; 15 to 19-year-olds 59.8 against 1.1), the options paper puts the school team's sessions in schools from 15 September to 20 November, and standard 3.1 binds the figure throughout December to February (asserted); a filed calendar or a sentence naming term was refused, since it would make the choice of diaries a rule to execute (Tried and rejected) |
 | SF26 | a contact | every contact the diary lists, each a row of the contacts file whatever its physical flag (Y on 21,996 of the 85,393 listed contacts, an attribute of a contact and never its definition) | physical contacts only: 1.46, B 0.96 (same call, figures off) | the literal reading, every contact a diary lists, with standard 3.1's people one case infects; measles needs no touch (asserted through the verifier's csv and PDF reads) |
-| SF27 | Ask 3: the person key joining one person's records | any person key once the 2019 back-entries are joined through the legacy numbers in their comments: date of birth and sex, with or without onset, a 14-day window or county | a key without sex (date of birth alone, or with county) joins the 2024 twins: B 9 confirmed | C1: every person key gives the golden (asserted in checks.py and verify.py); no two people share date of birth, sex and county among the case records, every such group being one person joined by its legacy number or its single onset (asserted); a key without sex joins a boy and a girl and is no person key |
+| SF27 | Ask 3 (retired 2026-11-02, the case ask cut): the person key joining one person's case records | not a reading any more | none | retired with the case ask: no case file ships (asserted with SF24) |
 | SF28 | Ask 2: the doses' date (14 doses given by 30 June 2027 and loaded after it, 13 given on 1 and 2 July) | the doses had by 30 June 2027, a dose had on the day it was given (date_given) | counted by load date at 30 June: 9 of the 10 figures move; every row the extract holds: 6 move | closed by the prompt as filed: "how many of those have had no valid MMR dose by that date", that date the 30 June 2027 the residents are counted at (asserted, the prompt read as filed); the WHAT only, no device rides on it |
-| SF29 | Ask 1 and Ask 2: two active registrations holding the same GP return line | one child, counted once with every dose either registration holds | two people: Ask 1 15 to 94 high on every option, Ask 2 none 2 to 12 and one 20 to 126 high | C1 in the data: a GP return line is one dose given to one child; 201 lines sit on two registrations each, every pair agreeing on date of birth, sex and area, none on three, no other GP line on two (asserted through the verifier's own read and union); a school session's reference is every pupil's at it and joins no one (22,617 sessions shared by their pupils) |
+| SF29 | Asks 1 and 2 (retired 2026-11-02): two active registrations holding the same GP return line | not a reading any more: the school team's unmerged second registrations no longer ship, and no GP line sits on two registrations | none | retired by convergence (C1, asserted through the verifier's csv read: no GP return line sits on two registrations once the merges are followed, so joining registrations that share a line joins none) |
+| SF30 | the ask: two GP return lines one registration holds from one day (228 registrations) | one is the registration's dose and the other its twin's: the one other registration of its household (date of birth, sex, practice, registration date, area, address date and postcode), registered with it from the same birth notification, which holds no GP line of its own; the line goes to the twin with the dose's date | both the holder's, the second invalid by the interval (the co-twins' figures off: none 4 to 23 high, one 7 to 47 high in every option); the twins merged as one child (every figure off) | C1 in the data, asserted through the verifier's csv read: a child has one MMR dose at a visit; the doubled registrations are exactly the first registrations of the same-sex twin pairs at the practices whose returns carry no register number, every one doubled on every day its GP vaccinated it and its twin holding no GP line; the co-twin read by the whole household, by date of birth, sex and practice, by date of birth, sex and registration date, or by all four, is the same child on every doubled day; the other 1,613 twin pairs with a GP dose (boy and girl at any practice, same-sex where the returns carry the register number) hold one line each on every day the GP vaccinated them; 188 doubled registrations and their twins each hold their own dose at the same school sessions (two pupils' doses at one session, so two children); nothing filed |
+| SF31 | the ask: a date of birth held ten years before the child's birth registration (104 registrations) | born ten years after the date held (the decade keyed one low): the child was registered from the birth notification 6 to 45 days after the date ten years on, and the GP's first dose came 12 to 17 months after it | the date as held (every option's people off: A 42 low, B 36 low, C 16 high, D 26 high, E 62 high, and the one-dose figures with them); every registration made 6 to 45 days after any birthday read as a birth registration (over-cleaning: every figure off) | C1 in the data, asserted through the verifier's csv read: the registration alone, the first GP dose alone and both together read the same 104 registrations; no other registration falls within 60 days after the tenth anniversary of its date of birth or has its first GP dose ten years and 12 to 17 months after it; dating a child by its school session's other pupils (a session one programme's, on one day in one area) moves no registration the golden leaves and moves every keyed-early child with classmates at a session (84 of 104); nothing filed |
 
 ## Ladder
 
@@ -309,165 +342,129 @@ step as a rule to execute.
 - The profile's basis notes and the standard: R0, the aim, the window; no threshold computed, no target by age.
 - The national quarterly uptake report and the stock return (distractors): no reproduction number.
 - No published reproduction number, contact matrix, age-specific target, outbreak model or past catch-up evaluation
-  ships, so nothing ties only under the golden or only under the default, and none of the case data reaches the call.
+  ships, so nothing ties only under the golden or only under the default, and no case data ships.
 
 ## Ask sheet
 
 The main call's declared row population: the profile's rows, the projection's rows, the survey's participants,
-contacts and population table, the options paper's table and the standard. Device and hazard rows in it: 0
-(asserted by file: no ask reads a call file and the call reads no ask file). Each ask is a measure every option carries
-that the call does not turn on, or a reconciliation of a call input (H18 home); none is keyed to the call, its
-construction or the option recommended; the three share no primary device and no primary file. No sentence adjudicates
-a device: each is found only by an inconsistency across files or columns. Every figure needs two independent devices,
-so the strongest response cracking any one device still files every figure of its ask wrong.
+contacts and population table, the options paper's table and the standard. Device and hazard rows in it: 0 (asserted by
+file: no ask reads a call file and the call reads no ask file). The ask is the register's view of each option, a
+measure every option carries that the call does not turn on (H18 home): who the register can invite, and the doses they
+need. It is not keyed to the call, its construction or the option recommended. No sentence adjudicates a device: each
+is found only by a judgment across the register's own records that no field announces, and nothing in any document
+names a twin, a loader, a date of birth or a birth registration (asserted in the leak sweep of checks.py).
 
-**Ask 1. For each option, the people born in its years whom the register holds as living in the region at 30 June 2027
-(5 whole numbers).**
-- H18 home: an input the call consumes (the projection's people by year of birth) reconciled to the register; use: the
-  deck shows how many of each cohort the register can invite.
-- Construction: the people extract by year of birth, one person per child (the registrations that hold the same GP
-  return line are one child's), the local health office read in the code scheme in force when it was recorded, kept
-  where that office is in the region.
-- First device (D7, codes reissued): on 1 July 2024 LH27 Monaghan West merged into LH26 and the code went to a new
-  Portlaoise area; LH27 recorded before July 2024 is Monaghan West (3,440 rows), after it Portlaoise (273 rows). The
-  circular and `lho_recorded` find it.
-- Second device (a reconstruction, one child under two registrations with the identity in a GP return line, the held
-  form of a specimen under two gateway keys): 201 children the school immunisation team did not find at school entry
-  hold a second registration it opened at the session, unmerged at the extract; the school's doses from then on sit on
-  it, and the GP card line keying the school dose was loaded to both registrations (106 of those lines later withdrawn
-  as already returned). No field, comment or code joins the two; only the card line on both, a return line being one
-  dose given to one child, says they are one child (SF29). Children with no earlier dose were missed most often. Every
-  figure moves with every registration a person: A +94, B +53, C +29, D +15, E +25. No column isolates the second
-  registrations: 3,479 registrations in the region show no practice and 23,202 were opened after a first birthday.
-- Over-cleaning half: a person key over the registrations themselves joins different children (date of birth, sex and
-  area code 11,660 to 22,858 too few; with the postcode, where recorded, still 15 to 64 too many), records joined by any
-  shared reference fold whole school sessions together (9,886 to 24,113 too few), and residents no practice lists are
-  real people (left out, 375 to 1,918 too few).
-- Hazards: people who moved away untransferred (out-of-region codes); pupils living in Northern Ireland, held with no
-  area code (every reading leaves them out, SF23 retired); postcodes blank where the address predates July 2015.
-- Span (4 files, 8 columns): people extract (person_number, date_of_birth, lho_code, lho_recorded), events
-  (person_number, source_ref), code list (lho_code, health_region), circular.
-- Stops (measured, asserted): the current code list with every registration a person (the natural path) A -665, B
-  -699, C -641, D -651, E -1,234; the circular cracked, every registration a person +94, +53, +29, +15, +25; the current
-  code list, one person per child -758, -751, -669, -666, -1,259; every LH27 as Monaghan West +55, +56, +52, +56, +110;
-  every active registration +1,132 to +4,594; golden 35,346, 33,217, 29,398, 30,625, 57,865.
-- Realism: national code revisions reuse retired codes; a school team that cannot find a child opens a record at the
-  session, a return loader that matches a child to two registrations loads the line to each, and a register merges its
-  duplicates in batches, so some are always open at an extract.
+**The ask. For each option, the people born in its years whom the register holds as living in the region at 30 June
+2027, how many of those have had no valid MMR dose by that date and how many exactly one (15 whole numbers).**
+- H18 home: an input the call consumes (the projection's people by year of birth) reconciled to the register, and each
+  option's invitation list (no valid dose needs two doses, one needs one); use: the deck's register slide.
+- Construction: the people extract by the year each child was born; the local health office read in the code scheme in
+  force when it was recorded, kept where that office is in the region; each person's events re-pointed through the
+  merge table, less the GP lines the query log shows replaced or withdrawn, each GP line given to the child it was given
+  to, counted under guidelines 12.5 from the date each child was born, given by 30 June 2027 (SF28).
+- First device, D-alpha (a date of birth held ten years early, the true year forced by the child's own records): 104
+  children born in the region in 2003 to 2017 whose date of birth the register holds with the decade one low (held as
+  1993 to 2007). Every other record of the child is its own: registered from the birth notification 6 to 45 days after
+  the date ten years on, the GP's first dose 12 to 17 months after it, the school's dose among classmates born that year
+  (84 of the 104). A later decade could not stand (the loader refuses a dose dated before a birth), so only the early
+  slip survives on the register. Read as held, every option's people move (A 42 low, B 36 low, C 16 high, D 26 high, E
+  62 high) and the one-dose figures with them. No column marks the records: a registration at ten is what every child
+  who moved in at ten shows, and a first dose at eleven what a late starter shows.
+- Second device, D-beta (a twin's GP dose on its co-twin's registration, a cardinality judgment): same-sex twins at the
+  practices whose returns carry no register number. The loader matched each of those practices' lines by surname, date
+  of birth, sex and practice and loaded it to the first registration that matched, so the first registration of each
+  pair holds two GP lines for every GP visit (228 registrations) and the second none. One child has one MMR dose at a
+  visit, so the second line of each visit is the co-twin's: the one other registration of its household (date of
+  birth, sex, practice, registration date, area, address date and postcode), registered with it from the same birth
+  notification, holding no GP line of its own. Read as loaded, the co-twins' figures move in every option (none 4 to 23
+  high, one 7 to 47 high). The hygiene battery sees the doubled days and reads them as one dose (the interval rule
+  counts the second line out anyway); giving the line back takes the judgment that the two lines are two children's.
+- Over-cleaning halves: the twins the person check finds (two registrations of one date of birth, sex, address and
+  registration day) are two children, so merging them as unmerged duplicates files every figure wrong; reading every
+  registration made 6 to 45 days after any birthday as a birth registration moves children who moved in at that age,
+  and files every figure wrong; a person key on date of birth, sex and area code or postcode joins different children.
+- Hazards (work orders the careful solver runs): LH27 reissued on 1 July 2024 (the circular: Monaghan West before,
+  Portlaoise after); merged registrations with chains of two (one hop leaves events on a retired number); replaced and
+  withdrawn GP lines kept as loaded (the query log); pupils living in Northern Ireland held with no area code (every
+  reading leaves them out, SF23); residents no practice lists (real people); doses given on 1 and 2 July 2027 (the
+  prompt's "by that date", SF28); infant doses from the 2014 outbreak response (guidelines 12.5.1); re-sent school
+  sessions and GP card copies of school doses within 28 days (the interval rule).
+- Span (7 files, 17 columns): people extract (person_number, date_of_birth, sex, lho_code, lho_recorded, postcode,
+  registered_on, gp_practice), events (person_number, date_given, source_ref), merges (retired_number,
+  surviving_number), query log (line_ref, outcome), code list (lho_code, health_region), guidelines 12.5, circular.
+- Pin test: the asking sentence pins the population (the register's people living in the region at 30 June 2027, by
+  the years they were born), the unit (people) and the window (doses had by that date); guidelines 12.5 file what a
+  valid dose is. The devices sit in the dimensions the pins leave open, which date of birth is the child's and which
+  registration's child had a dose, and no sentence names either.
+- Realism: a register keyed by hand holds the odd date of birth with the decade one low, and only that slip survives a
+  loader that refuses a dose dated before a birth; a return loader that matches lines by surname, date of birth, sex and
+  practice cannot tell same-sex twins apart, and every register has twins registered from one birth notification.
 
-**Ask 2. For each option, how many of those residents have had no valid MMR dose and how many exactly one (10 whole
-numbers).**
-- H18 home: each option's invitation list (no valid dose needs two, one needs one), on which the call does not turn.
-- Construction: each child's events on every registration of theirs, re-pointed through the merge table, less events
-  loaded from GP return lines the query log shows replaced or withdrawn, counted for Ask 1's people under guidelines
-  12.5, given by 30 June 2027 (SF28, the prompt's "by that date").
-- Primary device (D1, a resubmission that opens no second case): replaced and withdrawn GP return lines stay loaded as
-  doses; the log's `outcome` against the events' `source_ref` finds them (every figure 3 to 19 off).
-- Second device (D7, the true key in a prior-id chain): 3,945 merged duplicate registrations (some in a chain of two)
-  leave their events on retired numbers (none 15 to 39 high, one 495 to 1,030 high joined directly).
-- Third device: Ask 1's people, both its devices: with every registration a person, a child's doses split across its
-  two registrations, and a first registration whose withdrawn card line is out holds no valid dose (none 2 to 12 high,
-  one 20 to 126 high, on every option).
-- Over-cleaning half: lines confirmed as sent are real doses; dropping every queried line puts every figure high.
-- C1: the interval rule read from the previous valid dose or any previous dose gives the same count (asserted); no dose
-  within three days of a first birthday or 24 to 32 days after another. SF17: every query closed by 30 June 2027.
-- Hazards: infant doses from the 2014 outbreak response; a school dose keyed again by the GP within 28 days; pharmacy
-  doses on 1 and 2 July 2027; four school sessions loaded twice.
-- Span (6 files, 13 columns): events (person_number, date_given, source_ref), merges (retired_number,
-  surviving_number), query log (line_ref, outcome, replaced_by), people extract (person_number, date_of_birth, lho_code,
-  lho_recorded), guidelines excerpt, code list.
-- Stops (measured, asserted): the natural path (current code list, every loaded event, no merges, every registration a
-  person) none -50 to -163, one +339 to +862; the cracker (merges followed, replaced and withdrawn lines out, every
-  registration a person) none +2 to +12, one +20 to +126; merges followed and queries ignored, none -5 to -12, one -3 to
-  -19; every queried line dropped, every figure high; one merge followed, not the chain, every one-dose figure high;
-  golden A 3,545 and 4,720, B 4,286 and 6,091, C 2,857 and 3,960, D 4,971 and 7,302, E 8,526 and 11,793.
-- Realism: GP payment returns are corrected by replacement lines and an append-only load keeps the line it replaced;
-  registers record merges in a table.
-
-**Ask 3. For each option, how many of the region's confirmed measles cases with rash onset from 1 January 2019 to 30
-June 2027 were born in its years, and whether any and if so how many of them were imported (10 whole numbers).**
-- H18 home: each cohort's recent measles, on which the call does not turn; use: the deck's activity panel.
-- Construction: confirmed cases with onset in the window, one per person and illness, by year of birth and importation.
-- First device (D1, the same records under two key schemes, with D7 the true key in a reference string): the 2019
-  outbreak's cases back-entered in May 2021 carry the legacy number only in `comments`, some with onset moved 6 to 11
-  days or day and month of birth swapped; only the comments (or the laboratory file) find them.
-- Second device (D1, a report from a second source that opens a second record): six illnesses notified by both a GP and a
-  hospital (2023 to 2027, one in every option's cohort and one imported case in each), two records unlinked, identical
-  on date of birth, sex, onset and county; only a person-level key finds them.
-- Over-cleaning half: the 2024 twins (a boy and a girl born on one day in 2010, onsets 12 days apart, the girl
-  epi-linked to her brother) merge only under a key without sex, which is no person key (SF27); every person key lands
-  the golden once the back-entries are joined, and no key alone lands any figure, because the back-entries' moved dates
-  survive every key.
-- Hazards: probable, possible and discarded cases; hospital-laboratory confirmations with no reference specimen (four
-  of them say so in their own comments); import-related against imported (the export's own labels, asserted).
-- Span (2 files, 10 columns): case export (case_id, legacy_ref, onset_date, date_of_birth, sex, county,
-  classification, importation, epi_link, comments), laboratory results (case_id).
-- Stops (measured, asserted): every row counted A 16 and 4, B 16 and 4, C 18 and 5, D 16 and 5, E 25 and 7; the comments
-  only (the back-entries cracked) 10/3, 12/3, 13/4, 11/4, 17/6; date of birth, sex and onset only (the second notices
-  cracked) 13/3, 13/3, 13/4, 14/4, 23/6; date of birth and sex, or within 14 days, 11/3, 12/3, 12/4, 12/4, 19/6;
-  reference-laboratory positives only 8/1, 9/2, 10/2, 9/3, 14/5 (every confirmed figure off, but B's, D's and E's
-  imported counts land: 3 of 10, measured by ceiling.py); golden 9/2, 10/2, 11/3, 10/3, 16/5.
-- Realism: a migration keeps legacy records, an outbreak team re-keys a line list, and a GP and an emergency department
-  both notify the cases they see.
+| Rival reading (a careful judge's) | People, no valid dose, exactly one | Verdict |
+|---|---|---|
+| the co-twin read by date of birth, sex and practice, by date of birth, sex and registration date, or by all four, rather than the whole household | the golden in every option | same (one child fits on every doubled day, asserted) |
+| either line of a doubled day given to the twin | the golden in every option | same (the two lines carry one date) |
+| a date of birth read ten years on by the registration alone, or by the first GP dose alone | the golden in every option | same (the same 104 registrations, asserted) |
+| a date of birth read ten years on by the school session's other pupils | moves no registration the golden leaves; leaves 20 keyed-early children with no classmates at a session | same where it reads; ruled out as a whole reading by the children's own registrations and first doses |
+| registrations sharing a GP line joined as one child | the golden in every option | same (no GP line sits on two registrations, asserted) |
+| the twins' lines left where they were loaded | none 4 to 23 high, one 7 to 47 high | ruled out: a child has one dose at a visit, the co-twin holds no GP line, and the other 1,613 twin pairs hold one line each a visit |
+| the twins merged as one child | every figure off | ruled out: each twin holds its own dose at the same school session (188 pairs), two children |
+| dates of birth as the register holds them | people A 42 low, B 36 low, C 16 high, D 26 high, E 62 high | ruled out: registered 6 to 45 days after the date ten years on and first dosed by the GP 12 to 17 months after it, and no other registration within 60 days of a tenth birthday (asserted) |
+| every registration 6 to 45 days after any birthday read as a birth registration | every figure off | ruled out: those children hold doses from abroad dated before such a birth, or no first GP dose at the schedule's age |
+| the current code list for every record | people 677 to 1,277 low | ruled out by circular 03/2024 |
+| doses counted by load date, or every row the extract holds | dose figures move | ruled out by the prompt's "by that date" (SF28) |
 
 **Hazard table.**
 
-| Hazard | Asks moved | Per-ask movement (measured) |
+| Hazard | Figures moved | Per-figure movement (measured) |
 |---|---|---|
-| LH27 recorded before and after 1 July 2024 | 1, 2 | Ask 1 every figure 456 to 1,259 with the current list; Ask 2 every figure |
-| Second registrations unmerged, joined by one GP card line | 1, 2 | Ask 1 every figure 15 to 94; Ask 2 none 2 to 12, one 20 to 126 |
-| Residents no practice lists | 1, 2 | Ask 1 every figure 375 to 1,918 when left out |
-| Replaced and withdrawn GP return lines | 2 | every figure 3 to 19 |
-| Merged registrations, events on the retired one | 2 | none 15 to 39, one 495 to 1,030 |
-| Back-entered 2019 outbreak cases | 3 | every figure |
-| Cases notified twice | 3 | every figure by one or two |
-| Twins in the 2024 outbreak | 3 | B's confirmed figure one lower under a key without sex |
+| D-alpha, dates of birth held ten years early | people, one dose | people A -42, B -36, C +16, D +26, E +62 when read as held |
+| D-beta, twins' GP lines on the first registration | no dose, one dose | none +4 to +23, one +7 to +47 when left as loaded |
+| LH27 recorded before and after 1 July 2024 | every figure | people 677 to 1,277 low on the current code list |
+| Merged registrations, events on the retired one | dose figures | every no-dose and one-dose figure with no merges followed |
+| Replaced and withdrawn GP return lines | dose figures | every dose figure with the log ignored |
+| Twins merged as duplicates (over-cleaning) | every figure | every figure |
 
-**Referee.** None needed: no designed disagreement between two systems is arbitrated by a third file.
+**Referee.** None needed: no designed disagreement between two systems is arbitrated by a third file. The twins' own
+school doses and the other twin pairs' GP lines confirm D-beta's reading without handing over a level, and nothing
+publishes a count the answer inverts from.
 
-**The cracker sheet.** The cracker landed B with the six figures, ran the hygiene battery (keys unique, no exact
-duplicates, every join matched, no fan-out) and executed every filed rule (the guidelines' validity rule, the confirmed
-classification, the onset window, the as-of date). Each row assumes it also cracks the most obvious device of the ask:
+**The cracker sheet.** The careful-solver cracker lands B with the six figures, reads every field by its plain
+meaning, executes every filed rule (the circular, guidelines 12.5, the as-at date) and runs the whole hygiene battery
+(keys unique; exact and near-exact duplicates, which finds the doubled GP days and counts each as one dose; re-sent
+sessions; the merge table walked to the surviving record; the query log applied; orphans and anti-joins; GP return
+lines tested for uniqueness across registrations, none shared; a person-duplicate check, which finds the twins and
+keeps them as two children):
 
 | Ask figures | The cracker's path | What keeps it wrong | Cracker result |
 |---|---|---|---|
-| Ask 1, residents per option (5) | the circular read and LH27 placed by its recorded date | 201 children hold a second registration the school team opened, joined to the first only by a GP card line loaded to both; every registration counted a person | miss |
-| Ask 2, no dose and one dose per option (10) | merges followed, replaced and withdrawn lines removed | the people are Ask 1's registrations: a child's doses split across two of them, some first records left with no valid dose | miss |
-| Ask 3, confirmed and imported cases per option (10) | the back-entries removed through the comments, or a person-level key | the other of the two devices still leaves every figure one or two high | miss |
+| People per option (5) | the circular read, LH27 placed by its recorded date, every registration a person | D-alpha: 104 dates of birth held ten years early put children in the wrong option | miss |
+| No valid dose per option (5) | merges walked, replaced and withdrawn lines out, the interval rule, the twins kept as two children | D-beta: the co-twins hold no GP line, so they count with too few doses | miss |
+| Exactly one valid dose per option (5) | the same | D-alpha and D-beta both | miss |
 | Deck chart and call slide (recommendation block) | the six reproduction numbers against one | carried by the call, scored with the recommendation | outside |
 
 The mirror (a response stopped at no catch-up) is scored on ask readings of its own, at their strongest short of
-keeping an ask whole; no ask figure depends on the call, so no ask is coupled to it.
+cracking both devices; no ask figure depends on the call, so no figure is coupled to it.
 
-Mirror leakage: 40.0 per cent of the ask weight (measured on the cut pack: the strongest response off the call that
-cracks at most one device of each ask lands 8 of 25 figures, Ask 2's five no-dose figures on a reading that joins records
-by any shared reference with one merge followed, children with no dose having no reference to be joined through, and
-Ask 3's imported counts for B, D and E on the reference-laboratory reading, plus 8 per cent method credit).
+Mirror leakage: 41.3 per cent of ask weight (measured on the cut pack: the strongest response off the call, over every hazard handling the battery offers and at most one device cracked, lands 5 of 15 figures, either device's own block (the people with D-alpha, the no-dose figures with D-beta), plus 8 per cent method credit; no ask whole).
 
-**Pair arithmetic.** Planning weights 38 recommendation (the call, six reproduction numbers, the deck's call slide and
-chart), 7 instruction following, 55 asks over 25 figures. With r = 5 (the chart and slide structure a wrong call keeps)
-and each response keeping 8 per cent of the ask weight as method credit beside the figures it lands, measured on the
-cut pack: the cracker on the call keeps 0 of 25 figures, C = 38 + 7 + 4.4 = 49.4; the mirror at its strongest keeps 8,
-S = 5 + 7 + 55 x 0.40 = 34.0; pair 41.7. Both top responses on the call (the cracker's routes and the mirror's), 49.4
-and 67.0, pair 58.2. The full includer reproduces figures.json exactly (25 of 25); one more device cracked by the
-cracker prices at a pair of 58.2 (the registrations one GP line holds joined, which makes Ask 1 whole and Ask 2 with
-it) or 52.7 (Ask 3 whole).
-The mirror files none of the six graded reproduction numbers (B 0.81 on every diary against 0.89).
+**Pair arithmetic.** Planning weights 38 recommendation (the call, six reproduction numbers, the deck's call slide and chart), 7 instruction following, 55 for the ask's 15 figures. With r = 5 (the chart and slide structure a wrong call keeps) and each response keeping 8 per cent of the ask weight as method credit beside the figures it lands, measured on the cut pack: the cracker on the call keeps 0 of 15 figures, C = 38 + 7 + 4.4 = 49.4; the mirror at its strongest keeps 5, S = 5 + 7 + 55 x 0.413 = 34.7; pair 42.1. Both top responses on the call (the cracker's route and the mirror's), 49.4 and 67.7, pair 58.6. The full includer reproduces figures.json exactly (15 of 15). One more device cracked by the cracker prices at a pair of 51.2 (either device alone keeps 5 of 15, 67.7); both devices cracked, 67.4. The mirror files none of the six graded reproduction numbers (B 0.81 on every diary against 0.89).
 
-Measured by: generator/ceiling.py, on the cut pack of the 2026-11-01 rubric pass (target.zip md5
-81564f489c1ab10c04582ad74fecb818), reading prompt.txt as filed: every route's figures against figures.json, the cracker
-and the mirror on readings of their own, the full includer as the control.
+Measured by: generator/ceiling.py, on the cut pack of the 2026-11-02 rubric pass (target.zip md5 84e4046b9f27621e5ee921772b7c5a20), reading
+prompt.txt as filed: every route's figures against figures.json, the cracker and the mirror on readings of their own,
+the full includer as the control.
 
-Pair ceiling: 41.7
+Pair ceiling: 42.1
 
 ## Prompt
 
-`prompt.txt` is round 1's with one clause added on 2026-11-01 for SF28, "by that date" after "no valid MMR dose" (904
-characters, voice-check.py PASS): which one of the five options, or none;
-winter_measles_2027.xlsx with the reproduction number without a catch-up and under each option, and per option the
-register residents, the no-dose and one-dose counts, and the confirmed and imported cases; measles_readiness_2027.pptx
-with the call and a chart of the six reproduction numbers against one; reproduction numbers to one decimal, people and
-cases whole, in the last sentence. It names no method, convention, input file, standard, season or person.
+`prompt.txt` is round 1's with one clause added on 2026-11-01 for SF28, "by that date" after "no valid MMR dose", and
+the case clause cut on 2026-11-02 with the case ask (708 characters, voice-check.py PASS; the call sentence untouched):
+which one of the five options, or none; winter_measles_2027.xlsx with the reproduction number without a catch-up and
+under each option, and per option the register residents and the no-dose and one-dose counts;
+measles_readiness_2027.pptx with the call and a chart of the six reproduction numbers against one; reproduction
+numbers to one decimal and people whole, in the last sentence. It names no method, convention, input file, standard,
+season or person. The ask's sentence is the one the 2026-11-01 judge closed SF28 on, word for word.
 
 ## Build record
 
@@ -562,6 +559,19 @@ cases whole, in the last sentence. It names no method, convention, input file, s
   on its own union of registrations, two builds byte-identical (target.zip 81564f489c1ab10c04582ad74fecb818),
   freeze.py rubric PASS (WARN, no ask figure moved) and determinism PASS, ceiling.py cracker 0 of 25, mirror leakage
   40.0, pair 41.7 (both on the call 58.2).
+- **Rubric pass (2026-11-02, the ask layer re-sited; status PAUSED for the main thread's stage 4):** the careful-solver
+  audit of cut 81564f48 spent Ask 3 and Ask 1's second registrations (Tried and rejected). The ask layer is now one ask
+  on the register's own files, 15 figures (each option's people the register holds in the region, and of those no
+  valid dose and exactly one), under the asking sentence the 2026-11-01 judge closed SF28 on, word for word, with the
+  case clause cut (708 characters, voice-check.py PASS, the call sentence untouched). Two new devices, each a judgment
+  across the register's own records that no field announces: D-alpha, 104 dates of birth held ten years early, the
+  true year forced by each child's birth registration and first GP dose (SF31); D-beta, same-sex twins at the
+  practices whose returns carry no register number, both twins' GP lines on the first registration (228
+  registrations), the co-twin forced by one dose a visit (SF30). The second registrations, the case export and the
+  laboratory results no longer ship (SF29, SF24 and SF27 retired); school sessions are keyed by programme; the 2019
+  clinics vaccinate only registered children. Every call file is byte-identical to the shipped cut (the profile, the
+  projection, the survey's three files, the options paper and the standard); the people extract, the events extract,
+  the merge table and the query log changed; no document changed. Gates: generator checks 260 PASS (both devices' forcing through the verifier's csv read, SF30 and SF31 with every rival link, SF24, SF27 and SF29 retired, the golden equal to the simulation's own truth on all 15 figures, every LH27 Eircode agreeing with its code's date); verify.py PASS (its own reading of both devices, the same under either decade signature and under every co-twin key); two builds byte-identical (the full build's rebuild of 16 pack files, 2 goldens and figures.json, and a second build of the pack and its zip, target.zip 84e4046b9f27621e5ee921772b7c5a20 both times); input gates 16 files, 3 formats (csv, pdf, xlsx), the events extract 283,131 rows and the survey's contacts 85,393, 2 distractors; freeze.py rubric PASS (28 ask figures moved; the main call, the stump and every frozen figure unchanged) and determinism FAIL on ask keys only (the 15 re-sited figures, the 10 cut case figures and case_window, and block 4); precut.py exit 0; voice-check.py PASS; figures_check.py exit 0 (63 figures); leak.py --asof 2027-07-12 REVIEW, no LEAK (the four standing lines of sweeps 3, 4, 9 and 11); guard.py surface exit 0 (15 pairs promoted for the adjudicated read, nearest 0.101) and heart BLOCK on the card's two structural tests, every colliding card drawn after this build (H27, as recorded on 2026-11-01); ceiling.py cracker 0 of 15, mirror leakage 41.3, pair 42.1, both careful responses on the call 58.6.
 
 ## Pre-ship check
 
@@ -573,9 +583,9 @@ Written at round 2's stage 3; re-read against the built pack at stage 5, after t
    from the contact survey's term-time diaries and immunity by year of birth, and another field's nouns break it.
 2. Real work, nothing planted: a contact survey released as a public use file with two fieldwork periods, immunity by
    year of birth against bands joined through a projection, a register extract with a query log, a merge table, a code
-   revision, cross-border pupils with no area code, unmerged second registrations and partial postcodes, a case export
-   from a migrated system with back-entered and twice-notified records; each from the organisation's or a national
-   body's own systems, none deciding the call.
+   revision, cross-border pupils with no area code, twins one practice's return loader could not tell apart, a few
+   dates of birth keyed a decade early and partial postcodes; each from the organisation's or a national body's own
+   systems, none deciding the call.
 3. The flip is an analytical choice: the winter's reproduction number needs the winter's contact regime, school term,
    and the survey's pooled diaries are two thirds summer holidays; every rule in the pack is read the same on both paths.
 4. The analyst test holds: R0 times the susceptible share files no catch-up at 0.7, the contact-weighted share 0.7, the
@@ -719,3 +729,10 @@ Written at round 2's stage 3; re-read against the built pack at stage 5, after t
 - The pass 3 judge's Ask 3 unit pin on cut 81564f48 (2026-11-01, DETERMINISTIC with an optional FIX_NOW on Ask 3's unit), drafted and measured, not filed: "how many people born in its years had a confirmed measles case in the region with rash onset from 1 January 2019 to 30 June 2027", with the rounding sentence's "people and cases" as "people" (899 characters, voice-check PASS, the call sentence untouched). ceiling.py reading the draft as filed: the person key becomes the filed WHAT, so the cracker's one device goes to the back-entries' comments and Ask 3 comes whole, 10 of 25 ask figures kept, mirror leakage 68.0, pair 60.4 (both on the call 76.9). The unit is the twice-notified illnesses' own convention, as the address was the UK postcodes': no WHAT closes it without spending that device. Held under the STOP rule for the main thread's call; the record reading (legacy pairing alone, 10/3, 12/3, 13/4, 11/4, 17/6) stays the near miss the judge ruled it.
 - The ceiling recorded on the shipped cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver keeps 10 of 25 against the recorded 0 of 25, SPENT on Ask 3 (Asks 1 and 2 hold, narrowly), pair 52.7 (54.9 with the mirror on the careful ask route; 69.2 if a uniqueness test of source_ref within GP lines also finds Ask 1's second registrations); the reason in one line: the 28 back-entered confirmed records cite 'Legacy no. MZ19/0nnn' in comments, each matching a migrated record's legacy_ref, and the 6 GP-and-hospital double notifications match on birth date, sex, onset and county; the recorded cracker ran only one of the two checks. The ask layer is owed a rework before delivery.
 - Hardening Ask 1's second registrations against a uniqueness test of GP return lines (2026-11-02, after the careful-solver audit of cut 81564f48 found Ask 3 spent), weighed on the pack's rows before cutting Ask 3: the one GP card line on both registrations is the only fact that forces one child per pair, and it is the value that test finds. Hiding it among re-sent returns leaves the same test across registrations isolating the 201; keeping the card line on the first registration alone rests the pair on a school dose 3 to 15 days earlier with the same product, birth date, sex and area code, which 34 pairs of different children in this pack also show; a re-match suffix is a marker reference normalisation strips; benign re-matches to siblings fall to a birth-date check, and same-sex twins reopen the round 2 fork. With Ask 3 cut (15 ask figures) a cracker that tests GP lines across registrations and joins them keeps 15 of 15 (104.4 on the call, pair 69.6), against 0 of 15 without the test (pair 42.1, mirror leakage 41.3). Held under the STOP rule; Ask 3 not cut, nothing shipped.
+
+- The 2026-11-01 ask layer, replaced on 2026-11-02 under the careful-solver cracker: Ask 1's second registrations (one child under two registrations, joined only by the GP card line loaded to both) died to a uniqueness test of source_ref across registrations, which the careful solver runs and which hands it Asks 1 and 2 whole (pair 69.6 with Ask 3 cut); Ask 3's back-entered 2019 records died to the comment column read for what it says (each names its migrated record's legacy number) and its GP-and-hospital double notifications to a date of birth, sex and onset key. The second registrations no longer ship (SF29 retired by convergence: no GP line sits on two registrations); Ask 3 is cut, and the case export and the laboratory results no longer ship (SF24 and SF27 retired); the prompt's case clause is cut with it.
+- Full-replacement candidates weighed on paper on 2026-11-02, each on records the call never reads, and why each died: the outbreak team's contact tracing (one contact listed under several cases, which a date of birth and sex key finds in a set that small); the Navan emergency department's attendance log for the April 2027 index case (exposure counts the two hours after he left, a rule that has to be filed and is then executed); the post-exposure prophylaxis log (the 72-hour window, a filed rule); a practice fridge's cold-chain breach (doses from exposed stock repeated, a filed rule and then a join of practice and dates); vaccine batch deliveries (a GP line on a batch its practice never received: an anti-join of practice and batch); school mop-up sessions (an absent pupil listed at the main session, which a two-dose course explains as well: a fork); a stock balance per practice (a reconciliation to a filed figure); abroad doses keyed with the registration date (an equality of two dates a told reader finds in one line, and 12.5.3's documented date opens a fork); rubella-only products among records from abroad (domain knowledge, a fork); case records back-entered without their legacy numbers, or opened by a laboratory with its specimen date (a date of birth and sex key with a window); twins' GP lines loaded to both twins' registrations (the spent family's own join turned round, too near it to ship). The re-site on the register's own records below passed both tests, so no new file was needed.
+- The re-site, screened as code on a prototype before the build (scratch copy of the generator, 2026-11-02): the careful-solver cracker (circular, merges, query log, interval rule, near-duplicates read as one dose, the twins its person check finds kept as two children, dates of birth as held) kept 0 of 15 figures; the full includer reproduced the simulation's own truth on all 15; the decade signature recovered exactly the keyed-early records under the registration rule, the first-dose rule and both; each doubled registration had exactly one household match, holding no GP line. Weaker co-twin keys were ambiguous on 14 days (date of birth, sex and practice) and 33 (date of birth, sex and registration date), coincidental children of one date at one practice or on one registration day; a pair the loader joins is now the only registration of its date of birth and sex at its practice and on its registration day (C1), and every key converges.
+- School session references keyed by area and day, as built through round 2: a junior-infants session shared its reference with the age-12 programme and with the 2019 outbreak clinics held that day in that area, so dating a child by its session's pupils would have moved 334 registrations the golden leaves; a session is now one programme's (primary or post-primary) and that reading moves none (asserted). The C1 gap's first form moved each moved-in child registered within 60 days after a tenth birthday to exactly 61 days after it, a cluster just outside the window; those registrations are now spread over each child's own span. A 2019 outbreak-clinic dose could precede the child's registration on the register; the clinics now vaccinate only children already registered.
+- Ask 1 kept as the register's people with the second registrations gone and no device of its own (considered, not built): the circular is a work order the careful solver runs, so it would keep all five people figures; the decade-early dates of birth carry them instead, and the twins' lines carry the no-dose figures, so each device alone leaves ten of the fifteen figures wrong.
+- 2026-11-02, stage 4 on the re-sited ask layer (cut 84e4046b, determinism_check_report_pass4.md): NOT_DETERMINISTIC, SEND_BACK on the register asks. The call and all six reproduction numbers were forced and reproduced, but neither device passed the judge's one-reading test: D-alpha's 104 dates of birth keyed a decade low were read as held (A 35,798 and B 33,629 people), and D-beta's 228 same-day second GP lines were read as invalid doses under 12.5.2 rather than as the co-twin's (no dose A 3,581 to E 8,620, one dose A 4,842 to E 12,000). Each device holds only on a rule no file states, and filing either rule hands it to the careful solver, so the ask layer is spent in this world with every earlier layer and full-replacement candidate; re-root owed (new world, dataset and generator).

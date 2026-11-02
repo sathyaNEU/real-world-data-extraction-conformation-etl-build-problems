@@ -1,6 +1,6 @@
 """The goldens, computed from the shipped pack only: the call and the six reproduction numbers (callmodel on the call's
-files), the three asks (asks on the register and case files), written into winter_measles_2027.xlsx and
-measles_readiness_2027.pptx, with generator/figures.json and the task's metadata.json."""
+files), the ask (asks on the register's files), written into winter_measles_2027.xlsx and measles_readiness_2027.pptx,
+with generator/figures.json and the task's metadata.json."""
 import io
 import json
 import os
@@ -38,10 +38,9 @@ def compute(target):
     f = B.ask_frames(target)
     a1 = A.ask1(f)
     a2 = A.ask2(f)
-    a3 = A.ask3(f["cases"])
     return dict(inp=inp, R=R, r1=r1, call="B", share_1519=float(share[3]), region_share=float(region_share),
                 immune_pct=float(100 * (1 - region_share)), R_avg=CM.R_average(inp), R_all=R_all, ask1=a1, ask2=a2,
-                ask3=a3, made={k: sum(p["made"] for p in inp.options[k]) for k in W.OPTION_KEYS},
+                made={k: sum(p["made"] for p in inp.options[k]) for k in W.OPTION_KEYS},
                 own_term=float(inp.P[3, 3] / inp.P[3].sum()), own_summer=float(Ps[3, 3] / Ps[3].sum()),
                 n_term=sum(1 for q in parts if CM.term_diary(q[2])), n_summer=sum(1 for q in parts if CM.summer_diary(q[2])))
 
@@ -72,13 +71,11 @@ def figures(c):
         "ask1_register_residents": {k: "{:,}".format(c["ask1"][k]) for k in W.OPTION_KEYS},
         "ask2_no_valid_dose": {k: "{:,}".format(c["ask2"][k]["none"]) for k in W.OPTION_KEYS},
         "ask2_one_valid_dose": {k: "{:,}".format(c["ask2"][k]["one"]) for k in W.OPTION_KEYS},
-        "ask3_confirmed_cases": {k: str(c["ask3"][k]["confirmed"]) for k in W.OPTION_KEYS},
-        "ask3_imported": {k: str(c["ask3"][k]["imported"]) for k in W.OPTION_KEYS},
         "option_birth_years": {k: "%d to %d" % W.OPTIONS[k]["years"] for k in W.OPTION_KEYS},
         "assessment_date": "1 January 2028",
         "register_as_at": "30 June 2027",
-        "case_window": "1 January 2019 to 30 June 2027",
-        "dates": ["1 July 2024", "28 days", "2 to 26 May 2023", "3 July to 18 August 2023"],
+        "dates": ["1 July 2024", "28 days", "2 to 26 May 2023", "3 July to 18 August 2023", "6 to 45 days",
+                  "12 to 17 months"],
         "age_group_teenagers": "15 to 19",
         "citations": ["PS-07 3.1", "PS-07 3.2", "PS-07 3.3", "PS-07 3.4", "PS-07 3.5", "PS-07 3.6", "guidelines 12.5"],
     }
@@ -163,12 +160,10 @@ def write_xlsx(path, c):
     ws2 = wb.create_sheet("Options")
     ws2["A1"] = "What each option involves"
     ws2["A1"].font = Font(bold=True, size=14, color=navy)
-    ws2["A2"] = ("Register: regional immunisation register at 30 June 2027 (extract run 3 July 2027). Cases: notifiable "
-                 "disease system, cases resident in the region, extract of 6 July 2027.")
+    ws2["A2"] = "Register: regional immunisation register at 30 June 2027 (extract run 3 July 2027)."
     ws2["A2"].font = Font(italic=True, size=10, color="5B6670")
     heads2 = ["Option", "Born", "People the register holds as living in the region, 30 June 2027",
-              "Of whom no valid MMR dose", "Of whom exactly one valid dose",
-              "Confirmed measles cases, rash onset 1 January 2019 to 30 June 2027", "Of which imported"]
+              "Of whom no valid MMR dose", "Of whom exactly one valid dose"]
     for j, h in enumerate(heads2, start=1):
         cell = ws2.cell(row=4, column=j, value=h)
         cell.font = Font(bold=True)
@@ -178,33 +173,31 @@ def write_xlsx(path, c):
     ws2.row_dimensions[4].height = 62
     for i, k in enumerate(W.OPTION_KEYS, start=1):
         r = 4 + i
-        vals = [k, "%d to %d" % W.OPTIONS[k]["years"], c["ask1"][k], c["ask2"][k]["none"], c["ask2"][k]["one"],
-                c["ask3"][k]["confirmed"], c["ask3"][k]["imported"]]
+        vals = [k, "%d to %d" % W.OPTIONS[k]["years"], c["ask1"][k], c["ask2"][k]["none"], c["ask2"][k]["one"]]
         for j, v in enumerate(vals, start=1):
             cell = ws2.cell(row=r, column=j, value=v)
             if isinstance(v, int):
                 cell.number_format = "#,##0"
     rn = 4 + len(W.OPTION_KEYS) + 2
     notes2 = [
-        "Living in the region: people, not registrations. A child held on two active registrations is counted once: "
-        "registrations carrying the same GP return line are one child's. Counted where the local health office, read in "
-        "the scheme in force when it was recorded, is in the region; LH27 recorded before 1 July 2024 is Monaghan West "
-        "(circular 03/2024).",
-        "Valid doses: each person's MMR events on every registration of theirs, re-pointed through the register's merges "
-        "to the registration they now belong to, less GP return lines the query log shows replaced or withdrawn, counted "
-        "under the guidelines' 12.5 (on or after the first birthday, at least 28 days after the previous valid dose), "
-        "given on or before 30 June 2027.",
-        "Cases: confirmed cases, one per person and illness: the 2019 outbreak's cases back-entered to the outbreak "
-        "module in May 2021 (legacy number in the comments) count once with their migrated records, and a case "
-        "notified twice (the same date of birth, sex and rash onset) once. Option E includes option D's birth years.",
+        "Living in the region: counted where the local health office, read in the scheme in force when it was recorded, "
+        "is in the region; LH27 recorded before 1 July 2024 is Monaghan West (circular 03/2024). Each person by the "
+        "year they were born: a date of birth the register holds ten years early (the child registered from the birth "
+        "notification and given the GP's first dose at the schedule's age ten years after it) is read ten years on.",
+        "Valid doses: each person's MMR events re-pointed through the register's merges to the registration they now "
+        "belong to, less GP return lines the query log shows replaced or withdrawn; where one registration holds two GP "
+        "lines from one visit, the second is the dose of its twin (registered with it from the same birth notification, "
+        "at the same address and practice). Counted under the guidelines' 12.5 (on or after the first birthday, at least "
+        "28 days after the previous valid dose), given on or before 30 June 2027. Option E includes option D's birth "
+        "years.",
     ]
     ws2.cell(row=rn, column=1, value="Notes").font = Font(bold=True, color=navy)
     for i, t in enumerate(notes2, start=1):
         cell = ws2.cell(row=rn + i, column=1, value=t)
         cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws2.merge_cells(start_row=rn + i, start_column=1, end_row=rn + i, end_column=7)
-        ws2.row_dimensions[rn + i].height = 44
-    for col, wdt in zip("ABCDEFG", (9, 14, 22, 15, 15, 22, 11)):
+        ws2.merge_cells(start_row=rn + i, start_column=1, end_row=rn + i, end_column=5)
+        ws2.row_dimensions[rn + i].height = 64
+    for col, wdt in zip("ABCDE", (9, 14, 26, 18, 18)):
         ws2.column_dimensions[col].width = wdt
     ws2.freeze_panes = "C5"
     for sh in (ws, ws2):
@@ -321,15 +314,13 @@ def write_pptx(path, c):
     # 4: what each option involves
     s = prs.slides.add_slide(blank)
     textbox(s, 600000, 350000, 11000000, 600000, ["What each option involves"], size=26, bold_first=True)
-    rows, cols = 6, 6
+    rows, cols = 6, 4
     tbl_shape = s.shapes.add_table(rows, cols, Emu(600000), Emu(1250000), Emu(11000000), Emu(3600000))
     tbl = tbl_shape.table
-    from pptx.oxml.ns import qn
     tbl_shape._element.graphic.graphicData.tbl.tblPr.set("bandRow", "0")
-    for j, wdt in enumerate((2500000, 2100000, 1500000, 1600000, 1800000, 1500000)):
+    for j, wdt in enumerate((3200000, 3000000, 2400000, 2400000)):
         tbl.columns[j].width = Emu(wdt)
-    heads = ["Option", "On the register, living in the region", "No valid MMR dose", "Exactly one valid dose",
-             "Confirmed cases since 2019", "Of which imported"]
+    heads = ["Option", "On the register, living in the region", "No valid MMR dose", "Exactly one valid dose"]
     for j, h in enumerate(heads):
         cell = tbl.cell(0, j)
         cell.text = h
@@ -341,8 +332,7 @@ def write_pptx(path, c):
         run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
     for i, k in enumerate(W.OPTION_KEYS, start=1):
         vals = ["%s (born %d to %d)" % ((k,) + W.OPTIONS[k]["years"]), "{:,}".format(c["ask1"][k]),
-                "{:,}".format(c["ask2"][k]["none"]), "{:,}".format(c["ask2"][k]["one"]), str(c["ask3"][k]["confirmed"]),
-                str(c["ask3"][k]["imported"])]
+                "{:,}".format(c["ask2"][k]["none"]), "{:,}".format(c["ask2"][k]["one"])]
         for j, v in enumerate(vals):
             cell = tbl.cell(i, j)
             cell.text = v
@@ -354,9 +344,9 @@ def write_pptx(path, c):
             if j:
                 cell.text_frame.paragraphs[0].alignment = 3
     textbox(s, 600000, 5050000, 11000000, 1300000, [
-        "Register at 30 June 2027; valid doses under the national guidelines (12.5). Cases with rash onset from 1 January "
-        "2019 to 30 June 2027. Option E includes option D's birth years."], size=12, color=grey)
-    footer(s, 4, "Regional immunisation register extract of 3 July 2027; notifiable disease system extract of 6 July 2027")
+        "Register at 30 June 2027; valid doses under the national guidelines (12.5). No valid dose: two doses to offer; "
+        "one: one dose. Option E includes option D's birth years."], size=12, color=grey)
+    footer(s, 4, "Regional immunisation register extract of 3 July 2027")
     # 5: method and sources
     s = prs.slides.add_slide(blank)
     textbox(s, 600000, 350000, 11000000, 600000, ["Method and sources"], size=26, bold_first=True)
@@ -367,11 +357,10 @@ def write_pptx(path, c):
         "Next-generation matrix: contacts per day by age band from the survey's term-time diaries (2 to 26 May 2023) "
         "times each band's susceptible share, scaled so a wholly susceptible region gives 15; the reproduction number "
         "is its dominant eigenvalue, which has to stay below one through the term weeks of the winter (PS-07 3.1).",
-        "Register: addresses in Northern Ireland are outside the region; local health office codes read in the scheme "
-        "in force when recorded; events through the merge table; GP return lines replaced or withdrawn removed; doses "
-        "counted under guidelines 12.5.",
-        "Cases: notifiable disease system extract of 6 July 2027; the 2019 outbreak's back-entered records and cases "
-        "notified twice counted once."],
+        "Register: local health office codes read in the scheme in force when recorded; each person by the year they "
+        "were born, a date of birth held ten years early read ten years on; events through the merge table; GP return "
+        "lines replaced or withdrawn removed; a twin's dose loaded to its twin given back; doses counted under "
+        "guidelines 12.5."],
         size=16)
     footer(s, 5, "PS-07 Measles winter planning standard, version 3.0; options paper of 9 June 2027")
     prs.save(path)
@@ -416,23 +405,23 @@ def metadata(path, target, counts):
     meta = {
         "task": "task501",
         "title": "Which autumn 2027 MMR catch-up, if any, keeps measles' winter reproduction number in Oriel Health "
-                 "Region below one, with each option's register residents, unvaccinated and part-vaccinated people and "
-                 "confirmed cases since 2019",
+                 "Region below one, with each option's register residents and its unvaccinated and part-vaccinated "
+                 "people",
         "domain": "Epidemiology & Public Health",
         "subdomain": "infectious-disease transmission modelling (measles' winter reproduction number under each autumn "
                      "catch-up option)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "07 (grid of cells): the winter reproduction number under no catch-up and each of five options, "
-                        "with each option's register residents, no-dose and one-dose counts, confirmed and imported cases",
+                        "with each option's register residents and its no-dose and one-dose counts",
         "as_of": "2027-07-12",
         "deliverables": [XLSX, PPTX],
         "distractor_files": [PK.FILES[k] for k in PK.DISTRACTORS],
         "input_gates": {"files": len(files), "formats": fmts, "largest_file": PK.FILES[big[0]], "largest_file_rows": big[1]},
         "sources": [{"files": "all files under target/",
                      "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a "
-                               "fictional regional health authority (Oriel Health Region), its immunisation register and "
-                               "case records, a fictional national contact survey and immunity profile; no real person, "
-                               "patient, practice or case is depicted, and the place names are used as geography only.",
+                               "fictional regional health authority (Oriel Health Region), its immunisation register, a "
+                               "fictional national contact survey and immunity profile; no real person, patient or "
+                               "practice is depicted, and the place names are used as geography only.",
                      "date": "2027-07-12", "license": "CC0-1.0 (original work)"}],
         "provenance": provenance(files, counts),
         "created": "2026-10-12",

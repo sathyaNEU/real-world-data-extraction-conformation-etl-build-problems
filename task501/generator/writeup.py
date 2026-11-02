@@ -56,17 +56,17 @@ def render(f):
       % (f["R0"], R["No catch-up"]))
     w("4. Took each option's expected people made immune in mmr_catch_up_options_autumn_2027.pdf off the susceptibles "
       "of its birth years (PS-07 3.5) and recomputed: option B %s; options A, C, D and E %s." % (R["Option B"], R["Option A"]))
-    w("5. Counted each option's residents in register_people_active_born_1993-2017.csv once per child, the "
-      "registrations that carry the same GP return line in register_mmr_events_born_1993-2017.csv being one child's, "
+    w("5. Counted each option's residents in register_people_active_born_1993-2017.csv by the year each was born, "
       "reading each lho_code in the scheme in force on its lho_recorded date (circular 03/2024: LH27 recorded before 1 "
-      "July 2024 is Monaghan West, in the region).")
-    w("6. Counted each child's valid doses across their registrations in register_mmr_events_born_1993-2017.csv, "
-      "re-pointed through register_merges_born_1993-2017.csv and without the GP lines gp_return_queries_mmr_2005-2027.csv "
-      "shows replaced or withdrawn, under guidelines 12.5, given by 30 June 2027.")
-    w("7. Counted confirmed cases with rash onset in the window in nds_measles_cases_oriel_2019-2027.csv by year of "
-      "birth, one per person and illness: each back-entered 2019 outbreak record (its legacy number in the comments) "
-      "with its migrated record, and records with the same date of birth, sex and rash onset once.")
-    w("8. Recommended option B, the only option below one (PS-07 3.6).")
+      "July 2024 is Monaghan West, in the region) and reading a date_of_birth ten years on where the child was "
+      "registered 6 to 45 days after the date ten years on and had its first GP dose 12 to 17 months after it (a birth "
+      "registration and the schedule's first dose, the decade keyed one early).")
+    w("6. Counted each person's valid doses in register_mmr_events_born_1993-2017.csv, re-pointed through "
+      "register_merges_born_1993-2017.csv and without the GP lines gp_return_queries_mmr_2005-2027.csv shows replaced "
+      "or withdrawn, giving the second of two GP lines one registration holds from one day to its twin (the other "
+      "registration with its date of birth, sex, practice, registration date and address, which holds no GP line), "
+      "under guidelines 12.5, given by 30 June 2027.")
+    w("7. Recommended option B, the only option below one (PS-07 3.6).")
     w("")
     w("## 4. Deliverable Answers")
     w("")
@@ -83,11 +83,6 @@ def render(f):
     for k in KEYS:
         w("   - Option %s: %s with no valid dose, %s with exactly one" % (k, f["ask2_no_valid_dose"][k],
                                                                        f["ask2_one_valid_dose"][k]))
-    w("5. Confirmed measles cases with rash onset from 1 January 2019 to 30 June 2027 born in each option's years, and "
-      "how many of them were imported:")
-    for k in KEYS:
-        imp = f["ask3_imported"][k]
-        w("   - Option %s: %s confirmed, %s imported" % (k, f["ask3_confirmed_cases"][k], "none" if imp == "0" else imp))
     w("")
     w("### measles_readiness_2027.pptx")
     w("")

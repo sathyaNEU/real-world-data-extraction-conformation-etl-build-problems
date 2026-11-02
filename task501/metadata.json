@@ -1,10 +1,10 @@
 {
   "task": "task501",
-  "title": "Which autumn 2027 MMR catch-up, if any, keeps measles' winter reproduction number in Oriel Health Region below one, with each option's register residents, unvaccinated and part-vaccinated people and confirmed cases since 2019",
+  "title": "Which autumn 2027 MMR catch-up, if any, keeps measles' winter reproduction number in Oriel Health Region below one, with each option's register residents and its unvaccinated and part-vaccinated people",
   "domain": "Epidemiology & Public Health",
   "subdomain": "infectious-disease transmission modelling (measles' winter reproduction number under each autumn catch-up option)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "07 (grid of cells): the winter reproduction number under no catch-up and each of five options, with each option's register residents, no-dose and one-dose counts, confirmed and imported cases",
+  "prompt_shape": "07 (grid of cells): the winter reproduction number under no catch-up and each of five options, with each option's register residents and its no-dose and one-dose counts",
   "as_of": "2027-07-12",
   "deliverables": [
     "winter_measles_2027.xlsx",
@@ -15,19 +15,19 @@
     "mmr_stock_return_2027-06-30.csv"
   ],
   "input_gates": {
-    "files": 18,
+    "files": 16,
     "formats": [
       "csv",
       "pdf",
       "xlsx"
     ],
     "largest_file": "register_mmr_events_born_1993-2017.csv",
-    "largest_file_rows": 280221
+    "largest_file_rows": 283131
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a fictional regional health authority (Oriel Health Region), its immunisation register and case records, a fictional national contact survey and immunity profile; no real person, patient, practice or case is depicted, and the place names are used as geography only.",
+      "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a fictional regional health authority (Oriel Health Region), its immunisation register, a fictional national contact survey and immunity profile; no real person, patient or practice is depicted, and the place names are used as geography only.",
       "date": "2027-07-12",
       "license": "CC0-1.0 (original work)"
     }
@@ -39,7 +39,7 @@
       "issued_by": "Regional Immunisation Office",
       "as_of": "2027-07-03",
       "extracted": "2027-07-03",
-      "rows": 1973,
+      "rows": 1838,
       "license": "CC0-1.0 (original work)"
     },
     {
@@ -95,24 +95,6 @@
       "license": "CC0-1.0 (original work)"
     },
     {
-      "file": "nds_measles_cases_oriel_2019-2027.csv",
-      "covers": "Notifiable disease system export: measles cases resident in Oriel Health Region, notified from 2019",
-      "issued_by": "Department of Public Health, surveillance",
-      "as_of": "2027-07-06",
-      "extracted": "2027-07-06",
-      "rows": 119,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "nmrl_measles_results_2019-2027.csv",
-      "covers": "National measles reference laboratory results for those cases",
-      "issued_by": "National measles reference laboratory",
-      "as_of": "2027-07-06",
-      "extracted": "2027-07-06",
-      "rows": 89,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
       "file": "nscs_2023_contacts.csv",
       "covers": "National Social Contact Survey 2023, public use file: contacts",
       "issued_by": "National Social Contact Survey",
@@ -157,7 +139,7 @@
       "issued_by": "Regional immunisation register",
       "as_of": "2027-06-30",
       "extracted": "2027-07-03",
-      "rows": 3945,
+      "rows": 3863,
       "license": "CC0-1.0 (original work)"
     },
     {
@@ -166,7 +148,7 @@
       "issued_by": "Regional immunisation register",
       "as_of": "2027-06-30",
       "extracted": "2027-07-03",
-      "rows": 280221,
+      "rows": 283131,
       "license": "CC0-1.0 (original work)"
     },
     {
@@ -175,7 +157,7 @@
       "issued_by": "Regional immunisation register",
       "as_of": "2027-06-30",
       "extracted": "2027-07-03",
-      "rows": 164660,
+      "rows": 166518,
       "license": "CC0-1.0 (original work)"
     }
   ],

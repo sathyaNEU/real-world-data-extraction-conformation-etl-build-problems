@@ -1,4 +1,4 @@
-"""Read the shipped pack back: the call's inputs into callmodel.CallInputs, the asks' files into frames. The golden
+"""Read the shipped pack back: the call's inputs into callmodel.CallInputs, the ask's files into frames. The golden
 and the checks compute from these, never from simulation state."""
 import csv
 import os
@@ -96,8 +96,4 @@ def ask_frames(target):
     events = pd.read_csv(path(target, "events"), dtype=str).rename(columns={"person_number": "person_id"})
     merges = pd.read_csv(path(target, "merges"), dtype=str)
     log = pd.read_csv(path(target, "queries"), dtype=str, keep_default_na=False)
-    cases = pd.read_csv(path(target, "cases"), dtype=str, keep_default_na=False)
-    for c in ("notified", "onset_date", "date_of_birth"):
-        cases[c] = pd.to_datetime(cases[c], format="%d/%m/%Y").dt.strftime("%Y-%m-%d")
-    lab = pd.read_csv(path(target, "lab"), dtype=str, keep_default_na=False)
-    return dict(people=people, events=events, merges=merges, log=log, cases=cases, lab=lab)
+    return dict(people=people, events=events, merges=merges, log=log)

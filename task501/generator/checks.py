@@ -1,8 +1,8 @@
 """The generator's assertions on the shipped pack and goldens: the input gates, the three-rules block (R1 to R3c), the
-main call's golden and every semantic fork row (SF1 to SF27), the rungs below it and every rival route the round 1
-audit measured, the bins, the asks' goldens and every stop of their ladders, the separation of the call's files from
-the asks' devices, the distractors' deletion test, the realism sweep and the container scrub. Every check prints one
-line; any failure raises."""
+main call's golden and every semantic fork row (SF1 to SF31), the rungs below it and every rival route the round 1
+audit measured, the bins, the ask's golden with both its devices' forcing, every rival reading and every stop of its
+ladder, the separation of the call's files from the ask's devices, the distractors' deletion test, the realism sweep
+and the container scrub. Every check prints one line; any failure raises."""
 import csv
 import datetime as dt
 import os
@@ -19,6 +19,7 @@ import bundle as B
 import callmodel as CM
 import golden as G
 import pack as PK
+import sim as S
 import verify as V
 import world as W
 
@@ -417,67 +418,182 @@ def run(target, golden_dir, w, c):
        "SF6: the survey's population table reads back, %d bands summing to its all-ages row %d" % (len(pop_rows) - 2,
                                                                                                 pop_rows[-1][1]))
     ok(abs(c["immune_pct"] - 95.17) < 0.02, "the region is %.2f per cent immune" % c["immune_pct"])
-    # ---------------------------------------------------------------- the asks
+    # ---------------------------------------------------------------- the ask
     f = B.ask_frames(target)
     a1 = c["ask1"]
+    a2 = c["ask2"]
     ppl = f["people"]
-    # Ask 1's silent device: children the school immunisation team did not find at school entry hold a second
-    # registration it opened, unmerged at the extract, the two joined only by the GP card line the loader put on both
-    # (a GP return line is one dose given to one child); the golden counts one person per child. Read through the
-    # verifier's own path (csv and its union of registrations), the generator's second registrations as the control.
+    people_w = {p_.pid: p_ for p_ in w["people"]}
     v_ppl = V.rows(target, PK.FILES["people"])
-    v_people = V.residents(target)
-    v_who = V.persons(target, v_people)
-    groups_ = {}
-    for r_, q_ in v_who.items():
-        groups_.setdefault(q_, []).append(r_)
-    joined = {q_: m_ for q_, m_ in groups_.items() if len(m_) > 1}
-    dups = [p_ for p_ in w["people"] if p_.status == "duplicate"]
-    dup_ids = {p_.pid for p_ in dups}
-    ok(len(joined) == len(dups) > 100 and all(len(m_) == 2 for m_ in joined.values())
-       and {r_ for m_ in joined.values() for r_ in m_} >= dup_ids,
-       "ask 1 device control (verifier's csv read): %d children held on two registrations, each pair joined by a GP "
-       "return line loaded to both, every second registration the generator opened among them" % len(joined))
-    pinfo = {r_["person_number"]: r_ for r_ in v_ppl}
-    ok(all(len({(pinfo[x]["date_of_birth"], pinfo[x]["sex"]) for x in m_}) == 1
-           and len({v_people[x][1] for x in m_}) == 1 for m_ in joined.values()),
-       "SF29 ask 1 device C1: every pair a GP return line joins agrees on date of birth, sex and living in the region")
-    v_ev = V.rows(target, PK.FILES["events"])
-    v_surv = {r_["retired_number"]: r_["surviving_number"] for r_ in V.rows(target, PK.FILES["merges"])}
-    held = {}
-    for r_ in v_ev:
-        x = r_["person_number"]
-        while x in v_surv:
-            x = v_surv[x]
-        held.setdefault(r_["source_ref"], set()).add(x)
-    shared_gp = {ref: hs for ref, hs in held.items() if ref.startswith("GPR-") and len(hs) > 1}
-    shared_sit = sum(1 for ref, hs in held.items() if ref.startswith("SIT-") and len(hs) > 1)
-    ok(len(shared_gp) == len(dups) and all(len(hs) == 2 for hs in shared_gp.values()) and shared_sit > 5000,
-       "SF29 ask 1 device C1: %d GP return lines sit on two registrations, one line per pair and none on three, while %d "
-       "school sessions' references are shared by the pupils at them" % (len(shared_gp), shared_sit))
-    nat = A.ask1(f, how="lh27", link="none")
-    ok(all(nat[k] - a1[k] >= 10 for k in a1), "ask 1 device: the circular read with every registration a person holds "
-       "every option high (%s)" % ", ".join("%s +%d" % (k, nat[k] - a1[k]) for k in a1))
-    inr = ppl[A.in_region(ppl, "golden")]
-    unl = set(inr.loc[inr["gp_practice"].fillna("") == "", "person_id"])
-    late_reg = inr[(pd.to_datetime(inr["registered_on"]) - pd.to_datetime(inr["date_of_birth"])).dt.days > 400]
-    ok(dup_ids <= unl and len(unl) > 5 * len(dup_ids) and len(late_reg) > 5 * len(dup_ids),
-       "ask 1 no marker: %d registrations in the region show no practice and %d were opened after a first birthday, the "
-       "%d second registrations a small part of each" % (len(unl), len(late_reg), len(dup_ids)))
-    stops1 = {"the current code list, every registration a person (the natural path)": dict(how="current", link="none"),
-              "the circular read, every registration a person (the cracker)": dict(how="lh27", link="none"),
-              "the current code list, one person per child": dict(how="current"),
-              "every LH27 read as Monaghan West, one person per child": dict(how="old"),
-              "every active registration": dict(how="all", link="none"),
-              "a person key on date of birth, sex and area code": dict(link="dob_sex_area"),
-              "a person key on date of birth, sex and postcode": dict(link="dob_sex_postcode"),
-              "records joined by any shared source reference": dict(link="any_ref"),
-              "registrations no practice lists left out": dict(link="none", unlisted="drop"),
-              "registrations no practice lists left out, one person per child": dict(unlisted="drop")}
-    for name, kw in stops1.items():
-        st = A.ask1(f, **kw)
-        ok(all(st[k] != a1[k] for k in a1), "ask 1 stop, %s, moves every figure (%s)" % (
-            name, ", ".join("%s %+d" % (k, st[k] - a1[k]) for k in a1)))
+    v_ev = V.merged_events(target)
+    v_dob = V.born(target, v_ev)
+    # The ask's first device (D-alpha): dates of birth the register holds ten years early. Its two signatures, each on
+    # the child's own records, read through the verifier's csv path; the generator's keyed-early records the control.
+    keyed = {p_.pid for p_ in w["people"] if p_.dob_rec is not None}
+    by_both = A.decade_early(f)
+    by_reg = A.decade_early(f, rule="registration")
+    by_dose = A.decade_early(f, rule="first_dose")
+    v_moved = {r_["person_number"] for r_ in v_ppl if v_dob[r_["person_number"]].isoformat() != r_["date_of_birth"]}
+    ok(len(keyed) > 60 and by_both == by_reg == by_dose == keyed == v_moved,
+       "D-alpha control: the %d dates of birth held ten years early are exactly the registrations made 6 to 45 days "
+       "after the date ten years on (%d), exactly those whose first GP dose came 12 to 17 months after it (%d), and the "
+       "verifier's own reading (%d)" % (len(keyed), len(by_reg), len(by_dose), len(v_moved)))
+    ok(all(V.born(target, v_ev, rule) == v_dob for rule in ("registration", "first_dose")),
+       "SF31 C1 (verifier's csv read): either signature alone reads the same dates of birth as both together")
+    tenth = pd.to_datetime(A._plus_years(ppl["date_of_birth"], 10))
+    lag = (pd.to_datetime(ppl["registered_on"]) - tenth).dt.days
+    near = set(ppl.loc[lag.between(0, 60), "person_id"])
+    ok(near == keyed, "SF31 C1: no other registration falls within 60 days after the tenth anniversary of the date of "
+       "birth it holds (%d registrations there, all the keyed-early ones)" % len(near))
+    first_gp = {}
+    for p_, d_, ref_ in v_ev:
+        if ref_.startswith("GPR-") and (p_ not in first_gp or d_ < first_gp[p_]):
+            first_gp[p_] = d_
+    late = {r_["person_number"] for r_ in v_ppl if r_["person_number"] in first_gp
+            and 3650 <= (first_gp[r_["person_number"]] - dt.date.fromisoformat(r_["date_of_birth"])).days <= 4400}
+    ok(late == keyed, "SF31 C1: no other registration had its first GP dose ten years and 12 to 17 months after the date "
+       "of birth it holds (%d such registrations, all the keyed-early ones)" % len(late))
+    born_rec = {p_.pid: (p_.dob, p_.registered) for p_ in w["people"] if p_.pid in keyed}
+    ok(all(6 <= (reg - dob).days <= 45 for dob, reg in born_rec.values()),
+       "D-alpha realism: every keyed-early child was registered from its birth notification")
+    sit = [(p_, d_, ref_) for p_, d_, ref_ in v_ev if ref_.startswith("SIT-") and p_ in v_dob]
+    held = {r_["person_number"]: r_ for r_ in v_ppl}
+    sess_years = {}
+    for p_, d_, ref_ in sit:
+        sess_years.setdefault(ref_, []).append((p_, int(held[p_]["date_of_birth"][:4])))
+    older, seen = set(), set()
+    for p_, d_, ref_ in sit:
+        mates = [y_ for q_, y_ in sess_years[ref_] if q_ != p_]
+        if mates:
+            seen.add(p_)
+            if float(np.median(mates)) - int(held[p_]["date_of_birth"][:4]) >= 8:
+                older.add(p_)
+    ok(older <= keyed and older == seen & keyed and len(older) > 50,
+       "SF31 C1: dating a child by its school session's other pupils (a session one programme's, on one day in one "
+       "area) moves no registration the golden leaves, and moves every keyed-early child that has classmates at a "
+       "session (%d of %d; the rest hold no school dose with classmates)" % (len(older), len(keyed)))
+    p_any = A.people_as_born(f, "any_birthday")
+    any_dob = dict(zip(p_any["person_id"], p_any["date_of_birth"]))
+    moved_any = {p_ for p_, d_ in any_dob.items() if d_ != held[p_]["date_of_birth"]} - keyed
+    ev_all = {}
+    for p_, d_, ref_ in v_ev:
+        ev_all.setdefault(p_, []).append((d_, ref_))
+
+    def refuted_any(p_):
+        b_ = dt.date.fromisoformat(any_dob[p_])
+        evs = ev_all.get(p_, [])
+        early = any(d_ < b_ for d_, _ in evs)
+        sched = any(ref_.startswith("GPR-") and 365 <= (d_ - b_).days <= 525 for d_, ref_ in evs)
+        return early or not sched
+    ok(len(moved_any) > 1000 and all(refuted_any(p_) for p_ in moved_any),
+       "SF31 rival ruled out: reading every registration made 6 to 45 days after any birthday as a birth registration "
+       "would move %d more registrations, and each of them holds a dose dated before such a birth or no GP first dose "
+       "at the schedule's age after it" % len(moved_any))
+    # The ask's second device (D-beta): same-sex twins at a practice whose returns carry no register number, both
+    # twins' GP lines loaded to the first registration of the pair. Read through the verifier's csv path.
+    loaders = {p_.pid for p_ in w["people"] if p_.loader_twin}
+    lower = {p_ for p_ in loaders if people_w[p_].twin.pid > p_}
+    days = {}
+    for p_, d_, ref_ in v_ev:
+        if ref_.startswith("GPR-"):
+            days.setdefault((p_, d_), set()).add(ref_)
+    dbl = {k_: v_ for k_, v_ in days.items() if len(v_) > 1}
+    days_of = {}
+    for (p_, d_) in days:
+        days_of.setdefault(p_, set()).add(d_)
+    holders = {p_ for p_, _ in dbl}
+    gp_owners = {e_.owner for e_ in w["events"] if e_.given_by == "GP" and e_.kind == "dose"}
+    with_gp = {p_ for p_ in lower if p_ in gp_owners or people_w[p_].twin.pid in gp_owners}
+    ok(len(holders) > 150 and holders == with_gp and all(len(v_) == 2 for v_ in dbl.values()),
+       "D-beta control (verifier's csv read): the %d registrations holding two GP lines on one day are exactly the first "
+       "registrations of the same-sex twin pairs at the practices whose returns carry no register number that had a GP "
+       "dose (%d day pairs, two lines each)" % (len(holders), len(dbl)))
+    given, n_moved = V.twins_given_back(target, v_ev)
+    co = {}
+    for (p_, d_), refs in dbl.items():
+        moved_to = {q_ for q_, dd_, rr_ in given if dd_ == d_ and rr_ in refs and q_ != p_}
+        co.setdefault(p_, set()).update(moved_to)
+    ok(n_moved == len(dbl) and all(len(v_) == 1 and next(iter(v_)) == people_w[p_].twin.pid for p_, v_ in co.items()),
+       "SF30 C1: every doubled day's second line goes to the holder's twin, the one other registration of its household "
+       "with no GP line that day (%d lines given back)" % n_moved)
+    for key in (("date_of_birth", "sex", "gp_practice"), ("date_of_birth", "sex", "registered_on"),
+                ("date_of_birth", "sex", "gp_practice", "registered_on")):
+        alt, n_alt = V.twins_given_back(target, v_ev, key)
+        ok(n_alt == n_moved and sorted(alt) == sorted(given),
+           "SF30 C1: the co-twin read by %s finds the same child on every doubled day" % ", ".join(key))
+    co_gp = {q_ for q_ in (people_w[p_].twin.pid for p_ in holders) if q_ in days_of}
+    ok(not co_gp, "SF30: no co-twin of a doubled registration holds a GP line of its own")
+    pairs = [(p_.pid, p_.twin.pid) for p_ in w["people"] if p_.twin is not None and p_.pid < p_.twin.pid]
+    refs_ok = 0
+    split_ok = True
+    for x_, y_ in pairs:
+        if x_ in loaders:
+            continue
+        dx, dy = days_of.get(x_, set()), days_of.get(y_, set())
+        if dx or dy:
+            refs_ok += 1
+            split_ok &= dx == dy and all(len(days[(x_, d_)]) == 1 and len(days[(y_, d_)]) == 1 for d_ in dx)
+    ok(refs_ok > 500 and split_ok,
+       "SF30 referee: the other %d twin pairs with a GP dose (boy and girl at any practice, same-sex at the practices "
+       "whose returns carry the register number) hold one line each on every day the GP vaccinated them" % refs_ok)
+    sess_of = {}
+    for p_, d_, ref_ in v_ev:
+        if ref_.startswith("SIT-"):
+            sess_of.setdefault(p_, set()).add((d_, ref_))
+    both_sess = sum(1 for p_ in holders if sess_of.get(p_) and sess_of.get(p_) == sess_of.get(people_w[p_].twin.pid))
+    ok(both_sess > 100, "SF30: %d doubled registrations and their twins each hold their own dose at the same school "
+       "sessions (two pupils' doses at one session)" % both_sess)
+    held_gp = {}
+    for p_, d_, ref_ in v_ev:
+        if ref_.startswith("GPR-"):
+            held_gp.setdefault(ref_, set()).add(p_)
+    ok(all(len(h_) == 1 for h_ in held_gp.values()),
+       "SF29 retired: no GP return line sits on two registrations once the merges are followed (%d lines)" % len(held_gp))
+    # the ask's stops (each a complete pipeline), every figure against the golden
+    stops = {
+        "the current code list, dates as held, lines as loaded (the natural path)":
+            dict(how="current", dob_how="held", twins="loaded"),
+        "the circular read, dates as held, lines as loaded, merges and queries handled (the cracker)":
+            dict(dob_how="held", twins="loaded"),
+        "the cracker with twins merged as one child (household key)": dict(dob_how="held", twins="loaded",
+                                                                          link="household"),
+        "every device handled but the dates of birth (D-beta cracked alone)": dict(dob_how="held"),
+        "every device handled but the twins' lines (D-alpha cracked alone)": dict(twins="loaded"),
+        "a registration 6 to 45 days after any birthday read as a birth registration (over-cleaning)":
+            dict(dob_how="any_birthday"),
+        "every LH27 read as Monaghan West": dict(how="old"),
+        "every active registration": dict(how="all"),
+        "a person key on date of birth, sex and area code": dict(link="dob_sex_area"),
+        "a person key on date of birth, sex and postcode": dict(link="dob_sex_postcode"),
+        "records joined by any shared source reference": dict(link="any_ref"),
+        "registrations no practice lists left out": dict(unlisted="drop"),
+    }
+    moved_by = {}
+    for name, kw in stops.items():
+        k1 = {x: kw[x] for x in ("how", "link", "unlisted", "dob_how") if x in kw}
+        k2 = {("pop" if x == "how" else x): v for x, v in kw.items()}
+        s1, s2 = A.ask1(f, **k1), A.ask2(f, **k2)
+        hit = sum(s1[k] == a1[k] for k in a1) + sum(s2[k][x] == a2[k][x] for k in a2 for x in ("none", "one"))
+        moved_by[name] = 15 - hit
+        print("      %-100s %2d of 15 figures off" % (name, 15 - hit))
+    ok(moved_by["the circular read, dates as held, lines as loaded, merges and queries handled (the cracker)"] == 15,
+       "ask: the cracker (circular, merges, queries, interval rule, dates of birth as held, lines as loaded) files all 15 "
+       "figures wrong")
+    ok(moved_by["the current code list, dates as held, lines as loaded (the natural path)"] == 15
+       and moved_by["the cracker with twins merged as one child (household key)"] == 15,
+       "ask: the natural path and the twin-merging over-clean each file all 15 figures wrong")
+    ok(moved_by["every device handled but the dates of birth (D-beta cracked alone)"] >= 9
+       and moved_by["every device handled but the twins' lines (D-alpha cracked alone)"] >= 10,
+       "ask: each device alone leaves at least nine figures wrong (dates as held %d, lines as loaded %d)" % (
+           moved_by["every device handled but the dates of birth (D-beta cracked alone)"],
+           moved_by["every device handled but the twins' lines (D-alpha cracked alone)"]))
+    held_r = A.ask1(f, dob_how="held")
+    ok(all(held_r[k] != a1[k] for k in a1), "D-alpha moves every option's people (%s)" % ", ".join(
+        "%s %+d" % (k, held_r[k] - a1[k]) for k in a1))
+    loaded = A.ask2(f, twins="loaded")
+    ok(all(loaded[k]["none"] != a2[k]["none"] and loaded[k]["one"] != a2[k]["one"] for k in a2),
+       "D-beta moves every option's no-dose and one-dose figures (%s)" % ", ".join(
+           "%s %+d/%+d" % (k, loaded[k]["none"] - a2[k]["none"], loaded[k]["one"] - a2[k]["one"]) for k in a2))
     # SF23 retired: the register gives a record at an address outside the State no area code, so the code and the
     # address agree such a record is not in the region (C1); nothing about it is filed
     bt = ppl["postcode"].fillna("").str.startswith("BT")
@@ -502,31 +618,22 @@ def run(target, golden_dir, w, c):
     ok(bool((eircode | ukpc | (pcs == "")).all()) and int(ukpc.sum()) == int(bt.sum()),
        "SF23 retired: every recorded postcode is an Eircode or a BT postcode (%d)" % int(ukpc.sum()))
     rec = ppl.loc[ppl["lho_code"] == "LH27", "lho_recorded"]
-    ok(not rec.between("2024-06-24", "2024-07-08").any(), "ask 1 C1: no LH27 recorded within a week of 1 July 2024")
-    a2 = c["ask2"]
-    stops2 = {"no merges": dict(merge_how="none"), "one hop": dict(merge_how="one_hop"),
-              "every loaded event": dict(ev_how="all"), "every queried line dropped": dict(ev_how="drop_queried"),
-              "the current code list": dict(pop="current"),
-              "every registration a person (the cracker: merges followed, replaced and withdrawn lines out)":
-                  dict(link="none"),
-              "the natural path (loaded events, no merges, every registration a person)":
-                  dict(ev_how="all", merge_how="none", link="none")}
-    for name, kw in stops2.items():
-        st = A.ask2(f, **kw)
-        moved = sum(st[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
-        need = 3 if name == "one hop" else 10
-        ok(moved >= need, "ask 2 stop %s moves %d of 10 figures" % (name, moved))
+    ok(not rec.between("2024-06-24", "2024-07-08").any(), "ask C1: no LH27 recorded within a week of 1 July 2024")
+    lh27 = ppl[(ppl["lho_code"] == "LH27") & (ppl["postcode"].fillna("") != "")]
+    rk = lh27["postcode"].str[:3]
+    old_rk, new_rk = set(W.ROUTING_KEYS["LH27_old"]), set(W.ROUTING_KEYS["LH27"])
+    ok(bool((rk[lh27["lho_recorded"] < W.CUTOVER.isoformat()].isin(old_rk)).all())
+       and bool((rk[lh27["lho_recorded"] >= W.CUTOVER.isoformat()].isin(new_rk)).all()),
+       "ask C1: every LH27 Eircode agrees with the code's date (Monaghan West routing keys before 1 July 2024, "
+       "Portlaoise's after; %d LH27 records with a postcode)" % len(lh27))
+    nat = A.ask1(f, how="current")
+    ok(all(nat[k] != a1[k] for k in a1), "ask hazard: the current code list moves every option's people (%s)" % ", ".join(
+        "%s %+d" % (k, nat[k] - a1[k]) for k in a1))
     log = f["log"]
-    # the cracker's no-dose figures move with the children whose first record holds no valid dose once their
-    # withdrawn card line is out (their school doses sit on the second registration)
-    cr = A.ask2(f, link="none")
-    ok(all(cr[k]["none"] > a2[k]["none"] and cr[k]["one"] > a2[k]["one"] for k in a2),
-       "ask 2 device: with every registration a person, every no-dose and one-dose figure is high (%s)" % ", ".join(
-           "%s %+d/%+d" % (k, cr[k]["none"] - a2[k]["none"], cr[k]["one"] - a2[k]["one"]) for k in a2))
     ext = set(f["events"]["source_ref"])
     lines_in = set(log["line_ref"]) & ext
     reps_needed = set(log.loc[log["line_ref"].isin(lines_in) & (log["outcome"] == "Replaced by corrected line"), "replaced_by"])
-    ok(reps_needed <= ext, "ask 2 fairness: every replaced line in the extract has its corrected line loaded")
+    ok(reps_needed <= ext, "ask fairness: every replaced line in the extract has its corrected line loaded")
     # SF17: a GP return line under a query the office had not closed
     ok(set(log["outcome"]) == {"Confirmed as sent", "Replaced by corrected line", "Withdrawn by practice"},
        "SF17: every query in the log has an outcome, none open")
@@ -534,7 +641,13 @@ def run(target, golden_dir, w, c):
        and log["closed_on"].max() <= W.AS_AT.isoformat(),
        "SF17: every query closed after it was raised and by 30 June 2027 (latest %s)" % log["closed_on"].max())
     st = A.ask2(f, ev_how="drop_unresolved")
-    ok(st == a2, "SF17: lines under a query not closed as confirmed by 30 June 2027 dropped, every ask 2 figure unchanged")
+    ok(st == a2, "SF17: lines under a query not closed as confirmed by 30 June 2027 dropped, every dose figure unchanged")
+    for name, kw in {"no merges": dict(merge_how="none"), "one hop": dict(merge_how="one_hop"),
+                     "every loaded event": dict(ev_how="all"), "every queried line dropped": dict(ev_how="drop_queried")
+                     }.items():
+        st = A.ask2(f, **kw)
+        moved = sum(st[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
+        ok(moved >= (3 if name == "one hop" else 8), "ask hazard %s moves %d of 10 dose figures" % (name, moved))
     # SF28 closed by the prompt as filed: the doses are those had by 30 June 2027 ("by that date"), a dose had on the
     # day it was given (date_given); counting every row the extract holds, or the rows loaded by 30 June, moves figures
     prompt_txt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
@@ -543,7 +656,7 @@ def run(target, golden_dir, w, c):
        "SF28 closed by the prompt as filed: \"how many of those have had no valid MMR dose by that date\", the date the "
        "residents are counted at")
     ev_all = f["events"]
-    late = ev_all[(ev_all["date_given"] <= W.AS_AT.isoformat()) & (ev_all["loaded_on"] > W.AS_AT.isoformat())]
+    late_ld = ev_all[(ev_all["date_given"] <= W.AS_AT.isoformat()) & (ev_all["loaded_on"] > W.AS_AT.isoformat())]
     after = ev_all[ev_all["date_given"] > W.AS_AT.isoformat()]
     by_load = A.ask2(f, events=ev_all[ev_all["loaded_on"] <= W.AS_AT.isoformat()])
     moved_load = sum(by_load[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
@@ -553,27 +666,27 @@ def run(target, golden_dir, w, c):
     finally:
         A.AS_AT = keep_asat
     moved_rows = sum(every_row[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
-    ok(len(late) > 0 and len(after) > 0 and moved_load > 0 and moved_rows > 0,
+    ok(len(late_ld) > 0 and len(after) > 0 and moved_load > 0 and moved_rows > 0,
        "SF28: %d doses given by 30 June 2027 were loaded after it and %d were given after it; counted by load date %d of "
-       "10 figures move, counting every row %d" % (len(late), len(after), moved_load, moved_rows))
+       "10 figures move, counting every row %d" % (len(late_ld), len(after), moved_load, moved_rows))
     chased = [r for r in w["log"] if r.get("chased")]
     on_ext = sorted(r["line_ref"] for r in chased if r["line_ref"] in ext)
     ok(len(chased) >= 3, "SF17: %d confirmed queries still open at the extract were chased and closed, %d on extract "
        "lines" % (len(chased), len(on_ext)))
     m = dict(zip(f["merges"]["retired_number"], f["merges"]["surviving_number"]))
-    ok(not (set(m) & set(f["people"]["person_id"])), "ask 2: no retired registration is active")
-    who = A.persons(f)
+    ok(not (set(m) & set(f["people"]["person_id"])), "ask: no retired registration is active")
+    born_ = A.people_as_born(f)
     ev = A.resolve_merges(f["events"], f["merges"]).copy()
     ev = A.clean_events(ev, log)
+    ev = A.reattribute(f["people"], ev)
     ev = ev[ev["person_id"].isin(set(f["people"]["person_id"]))]
-    ev["person_id"] = ev["person_id"].map(who)
-    dob = dict(zip(f["people"]["person_id"], f["people"]["date_of_birth"]))
+    dob = dict(zip(born_["person_id"], born_["date_of_birth"]))
     d = np.array([dt.date.fromisoformat(x).toordinal() for x in ev["date_given"]])
     fb = np.array([dt.date(int(dob[p][:4]) + 1, int(dob[p][5:7]), int(dob[p][8:10])).toordinal() for p in ev["person_id"]])
-    ok(int(np.sum(np.abs(d - fb) <= 3)) == 0, "ask 2 C1: no dose within three days of a first birthday")
+    ok(int(np.sum(np.abs(d - fb) <= 3)) == 0, "ask C1: no dose within three days of a first birthday")
     ev = ev.assign(o=d).sort_values(["person_id", "o"])
     gaps = ev.groupby("person_id")["o"].diff().dropna()
-    ok(int(((gaps >= 24) & (gaps <= 32)).sum()) == 0, "ask 2 C1: no two of a person's doses 24 to 32 days apart")
+    ok(int(((gaps >= 24) & (gaps <= 32)).sum()) == 0, "ask C1: no two of a person's doses 24 to 32 days apart")
     first = {p_: dt.date(int(v[:4]) + 1, int(v[5:7]), int(v[8:10])).toordinal() for p_, v in dob.items()}
     differ = 0
     asat = dt.date(2027, 6, 30).toordinal()
@@ -587,78 +700,35 @@ def run(target, golden_dir, w, c):
                 nb += 1
             pa = o
         differ += na != nb
-    ok(differ == 0, "ask 2 C1: the interval counted from the previous valid dose or from any previous dose gives the "
+    ok(differ == 0, "ask C1: the interval counted from the previous valid dose or from any previous dose gives the "
        "same count for every person")
     ok(f["people"]["person_id"].is_unique and f["events"]["event_number"].is_unique, "keys: person and event numbers unique")
-    a3 = c["ask3"]
-    for how in ("none", "legacy", "key", "dob_sex", "window14"):
-        st = A.ask3(f["cases"], how)
-        moved = sum(st[k][x] != a3[k][x] for k in a3 for x in ("confirmed", "imported"))
-        ok(moved == 10, "ask 3 stop %s moves all 10 figures" % how)
-    st = A.ask3(f["cases"], "lab", f["lab"])
-    ok(sum(st[k]["confirmed"] != a3[k]["confirmed"] for k in a3) == 5, "ask 3 stop lab-confirmed only moves every confirmed figure")
-    # Ask 3 with no field notes shipped: the export's own labels carry the case classification and the importation
-    # status, Imported a label of its own beside Import-related, blank only where the record is not a case; and the
-    # confirmed records with no reference-laboratory specimen carry their hospital laboratory result on the record
-    v_cases = V.rows(target, PK.FILES["cases"])
-    v_lab = {r["case_id"] for r in V.rows(target, PK.FILES["lab"]) if r["result"] == "Positive"}
-    v_labels = {(r["classification"], r["importation"]) for r in v_cases}
-    ok({c for c, _ in v_labels} == {"Confirmed", "Probable", "Possible", "Discarded"}
-       and {i for _, i in v_labels} == {"Imported", "Import-related", ""}
-       and all((i == "") == (c in ("Possible", "Discarded")) for c, i in v_labels),
-       "ask 3 labels (verifier's csv read): classification and importation as the export writes them, Imported "
-       "distinct from Import-related, blank only on possible and discarded records")
-    v_hosp = [r["case_id"] for r in v_cases if r["classification"] == "Confirmed" and r["case_id"] not in v_lab
-              and "hospital laboratory" in r["comments"].lower()]
-    ok(len(v_hosp) >= 3, "ask 3: %d confirmed records with no reference-laboratory specimen carry their hospital "
-       "laboratory confirmation in their own comments (%s)" % (len(v_hosp), ", ".join(v_hosp)))
-    cs = f["cases"]
-    held = dict(zip(cs["legacy_ref"], range(len(cs))))
-    refs = cs["comments"].str.extract(A.LEGACY_IN_COMMENT)[0].dropna()
-    ok(all(r in held for r in refs), "ask 3 fairness: every back-entered legacy number is held by one migrated record")
-    for i, r in refs.items():
-        a, b = cs.loc[i], cs.iloc[held[r]]
-        ok(a["classification"] == b["classification"] and a["date_of_birth"][:4] == b["date_of_birth"][:4]
-           and a["importation"] == b["importation"], "ask 3: back-entry %s agrees with %s on classification, year of birth "
-           "and importation" % (a["case_id"], b["case_id"]))
-    conf = cs[cs["classification"] == "Confirmed"]
-    dup = conf[conf.duplicated(["date_of_birth", "sex", "onset_date"], keep=False)]
-    legacy_pairs = set(refs.index) | {held[r] for r in refs}
-    renot = dup[~dup.index.isin(legacy_pairs)]
-    ok(len(renot) == 2 * 6, "SF24 ask 3 device: six illnesses notified twice outside the 2019 back-entry (%d records)"
-       % len(renot))
-    for _, grp in renot.groupby(["date_of_birth", "sex", "onset_date"]):
-        ok(len(grp) == 2 and grp["importation"].nunique() == 1 and grp["county"].nunique() == 1
-           and not (set(grp["epi_link"]) & set(grp["case_id"])),
-           "SF24 ask 3 fairness: %s notified twice agrees on importation and county, neither linked to the other"
-           % "/".join(grp["case_id"]))
-    # SF27: one case per person and illness, whatever person key joins the records once the back-entries are joined
-    twins = conf[conf.duplicated(["date_of_birth", "county"], keep=False) & ~conf.index.isin(dup.index)
-                 & ~conf.index.isin(legacy_pairs)]
-    tw_on = sorted(dt.date.fromisoformat(x) for x in twins["onset_date"])
-    ok(len(twins) == 2 and twins["sex"].nunique() == 2 and (tw_on[1] - tw_on[0]).days == 12
-       and set(twins["epi_link"]) == {"", twins.sort_values("onset_date")["case_id"].iloc[0]},
-       "SF27: the 2024 twins, a boy and a girl, share date of birth and county with onsets 12 days apart, the second "
-       "epi-linked to the first (%s)" % "/".join(twins["case_id"]))
-    by_ref = {r: i for i, r in cs["legacy_ref"].items() if r}
-    split = []
-    for key, grp in cs.groupby(["date_of_birth", "sex", "county"]):
-        if len(grp) < 2:
-            continue
-        idx = list(grp.index)
-        links = [(i, by_ref[r]) for i, r in refs.items() if i in idx and by_ref.get(r) in idx]
-        links += [(i, j) for i in idx for j in idx if i < j and cs.at[i, "onset_date"] == cs.at[j, "onset_date"]]
-        if len(set(A._components(idx, links).values())) > 1:
-            split.append("/".join(grp["case_id"]))
-    ok(not split, "SF27: no two people share date of birth, sex and county among the case records: every such group is "
-       "one person, joined by its legacy number or its single onset (%d groups)" %
-       sum(1 for _, g in cs.groupby(["date_of_birth", "sex", "county"]) if len(g) > 1))
-    for name in A.PERSON_KEYS:
-        ok(A.ask3_person_key(cs, name) == a3, "SF27 C1: the back-entries joined through their legacy numbers and "
-           "records joined on %s give every ask 3 figure" % name)
-    on = cs["onset_date"]
-    ok(not on.between("2018-12-25", "2019-01-07").any() and not on.between("2027-06-23", "2027-07-07").any(),
-       "ask 3 C1: no onset within a week of the window's ends")
+    # the golden against the simulation's own truth: each child's own doses (owner), as born
+    truth = {}
+    live = {p_.pid: p_ for p_ in w["people"] if p_.status in S.ACTIVE}
+    reg_here = dict(zip(ppl["person_id"], A.in_region(ppl, "golden")))
+    own = {}
+    for e_ in w["events"]:
+        if e_.kind == "dose":
+            own.setdefault(e_.owner, []).append(e_.date)
+    for k, (lo_, hi_) in A.OPTION_YEARS.items():
+        ids = [p_ for p_, q_ in live.items() if reg_here[p_] and lo_ <= q_.dob.year <= hi_]
+        cnt = {}
+        for p_ in ids:
+            q_ = live[p_]
+            fb_ = dt.date(q_.dob.year + 1, q_.dob.month, q_.dob.day)
+            n_, pv_ = 0, None
+            for d_ in sorted(own.get(p_, [])):
+                if d_ > W.AS_AT or d_ < fb_ or (pv_ is not None and (d_ - pv_).days < 28):
+                    continue
+                n_, pv_ = n_ + 1, d_
+            cnt[p_] = n_
+        truth[k] = (len(ids), sum(1 for p_ in ids if cnt[p_] == 0), sum(1 for p_ in ids if cnt[p_] == 1))
+    ok(not any(fn.startswith(("nds_", "nmrl_")) for fn in files),
+       "SF24 and SF27 retired: the case ask is cut, and no case export or laboratory file ships")
+    ok(all(truth[k] == (a1[k], a2[k]["none"], a2[k]["one"]) for k in a1),
+       "ask fairness: the golden equals the simulation's truth (each child's own doses, from the date it was born) for "
+       "all 15 figures")
     # ---------------------------------------------------------------- separation and distractors
     tmp = tempfile.mkdtemp(prefix="t501sep")
     try:
@@ -676,8 +746,8 @@ def run(target, golden_dir, w, c):
             if fn not in [PK.FILES[k] for k in PK.DISTRACTORS]:
                 shutil.copy(os.path.join(target, fn), tmp)
         c2 = G.compute(tmp)
-        ok(c2["r1"] == c["r1"] and c2["ask1"] == c["ask1"] and c2["ask2"] == c["ask2"] and c2["ask3"] == c["ask3"],
-           "distractors: the golden and every ask unchanged with both deleted")
+        ok(c2["r1"] == c["r1"] and c2["ask1"] == c["ask1"] and c2["ask2"] == c["ask2"],
+           "distractors: the golden and every ask figure unchanged with both deleted")
     finally:
         shutil.rmtree(tmp)
     ok(not (set(PK.CALL_FILES) & set(PK.ASK_FILES)), "separation: no file is read by both the call and an ask")
@@ -686,7 +756,7 @@ def run(target, golden_dir, w, c):
     ok(all(a1[k] % 100 and a2[k]["none"] % 100 and a2[k]["one"] % 100 for k in a1), "realism: no round ask counts")
     banned = ["eigen", "next-generation", "next generation", "herd immunity", "mixing matrix", "assortativ", "well-mixed",
               "random mixing", "contact-adjusted", "term time", "term-time", "school term", "school holiday",
-              "summer holiday", "northern ireland"]
+              "summer holiday", "northern ireland", "twin", "loader", "date of birth", "birth notification", "decade"]
     texts = {}
     for fn in files:
         p = os.path.join(target, fn)
@@ -747,9 +817,6 @@ def run(target, golden_dir, w, c):
         for col, lim in cols.items():
             mx = max(r[col] for r in rd if r[col])
             ok(mx <= lim, "H16: %s %s runs to %s, not past %s" % (PK.FILES[key], col, mx, lim))
-    cs_ = f["cases"]
-    ok(cs_["notified"].max() <= "2027-07-06" and cs_["onset_date"].max() <= "2027-06-30",
-       "H16: the case export's dates stop at its run")
     # realism: the survey's counts are not uniform and no participant id block reveals the fieldwork order
     with open(os.path.join(target, PK.FILES["participants"]), encoding="utf-8") as fh:
         prs = list(csv.DictReader(fh))

@@ -1,13 +1,11 @@
-"""The records the asks read, drawn from the world: the regional immunisation register's people and MMR events for
-births 1993-2017 (with the GP return lines the immunisation office queried), the national notifiable disease
-system's measles cases for the region since 2019 and the reference laboratory's results, and the distractors'
-records (the cold-chain stock return and the European monthly counts). One generator per stream, so a change in one
-stream never re-rolls another."""
+"""The records the ask reads, drawn from the world: the regional immunisation register's people and MMR events for
+births 1993-2017 (with the GP return lines the immunisation office queried and the registrations it merged), and the
+distractor's records (the cold-chain stock return). One generator per stream, so a change in one stream never
+re-rolls another."""
 import datetime as dt
 
 import numpy as np
 
-import callsim as CS
 import world as W
 
 D = dt.date
@@ -46,9 +44,13 @@ MMR2_GIVEN_MMR1 = {1993: .74, 1994: .75, 1995: .72, 1996: .74, 1997: .77, 1998: 
 
 class Person:
     __slots__ = ("pid", "dob", "sex", "lho", "lho_recorded", "registered", "practice", "born_in_region", "status",
-                 "area", "dest", "postcode", "shown_practice")
+                 "area", "dest", "postcode", "shown_practice", "dob_rec", "twin", "loader_twin", "cotwin")
 
     def __init__(self, **k):
+        self.dob_rec = None       # the date of birth as the register holds it (None: as born)
+        self.twin = None          # the co-twin's Person, for a twin pair
+        self.loader_twin = False  # a same-sex pair whose practice returns lines without the register number
+        self.cotwin = False       # the second-born of a pair, whose doses are its twin's visits
         for a, b in k.items():
             setattr(self, a, b)
 
@@ -173,6 +175,7 @@ def register(reg_total):
                 people.append(Person(pid=None, dob=dob, sex=sex, lho=lho, lho_recorded=lho_recorded,
                                      registered=registered, practice=practice, born_in_region=born_here,
                                      status=status, area=area, dest=lho, postcode="", shown_practice=practice))
+    _clear_tenth(people)
     ids = _person_ids(rng, len(people) + 9000)
     order = rng.permutation(len(people))
     for k, i in enumerate(order):
@@ -185,12 +188,97 @@ def register(reg_total):
         q.pid = spare[len(spare) - 1 - k]
     spare = spare[:len(spare) - len(ni)]
     people.extend(ni)
+    # twins born in the region: the second registration of each pair from the end of the spare block
+    twins = _twins(np.random.default_rng(W.SEED + 115), people, practices, spare)
+    spare = spare[:len(spare) - len(twins)]
     _practice_shown(np.random.default_rng(W.SEED + 109), people)
     _practice_unlisted(np.random.default_rng(W.SEED + 114), people)
+    for q in twins:
+        p = q.twin
+        if p.loader_twin:
+            p.shown_practice = p.practice
+        q.shown_practice = p.shown_practice
     events = _doses(rng_dose, people)
     merges = _merges(np.random.default_rng(W.SEED + 106), people, events, spare)
     _postcodes(np.random.default_rng(W.SEED + 107), people)
+    for q in twins:
+        q.postcode = q.twin.postcode
     return people, events, practices, merges
+
+
+def _tenth(dob):
+    return D(dob.year + 10, dob.month, dob.day)
+
+
+def _clear_tenth(people):
+    """C1 for the recorded dates of birth: no child who moved into the region is registered within 60 days after a tenth
+    birthday, so a registration that close to the tenth anniversary of a recorded date of birth is a birth
+    registration whose date of birth was keyed ten years early. A child registered there is given a registration day
+    spread over the rest of its own span (no draw, so no other record moves), the address date kept on or after it and
+    the area code read again for that date (Monaghan West recorded from 1 July 2024 is LH26)."""
+    for p in people:
+        if p.born_in_region:
+            continue
+        t = _tenth(p.dob)
+        if 0 <= (p.registered - t).days <= 60:
+            lo, hi = _birthday(p.dob, 1), D(2027, 6, 20)
+            span = (hi - lo).days + 1 - 61
+            k = (p.dob.toordinal() * 2654435761 + (p.sex == "F")) % span
+            day = lo + dt.timedelta(days=k)
+            p.registered = day if day < t else day + dt.timedelta(days=61)
+            if p.lho_recorded < p.registered:
+                p.lho_recorded = p.registered
+            if D(2024, 6, 24) <= p.lho_recorded <= D(2024, 7, 8):
+                p.lho_recorded = p.lho_recorded + dt.timedelta(days=15)
+            if p.status == "resident" and p.area == "LH27":
+                p.lho = p.dest = "LH27" if p.lho_recorded < W.CUTOVER else "LH26"
+
+
+TWIN_SHARE = 0.016        # born-in-region residents with a co-twin (about one baby in thirty is a twin)
+TWIN_SAME_SEX = 0.65
+
+
+def loader_practices(practices):
+    """The practices whose MMR returns carry no register number: the return loader matches each of their lines by
+    surname, date of birth, sex and practice, and loads it to the first registration that matches."""
+    allp = sorted(x for ps in practices.values() for x in ps)
+    return set(allp[2::4])
+
+
+def _twins(rng, people, practices, spare):
+    """Twins born in the region, registered together at birth from the same birth notification, at one address and one
+    practice. Twins are brought to every visit together, so each has a dose at the same GP visit and at the same school
+    session. Same-sex twins at a practice whose returns carry no register number are matched by the loader to the
+    first registration of the pair, so both twins' GP lines are loaded there (applied in finish_register)."""
+    loader = loader_practices(practices)
+    out = []
+    base = [p for p in people if p.status == "resident" and p.born_in_region]
+    held = {}
+    for p in people:
+        for k in ((p.dob, p.sex, p.practice), (p.dob, p.sex, p.registered)):
+            held[k] = held.get(k, 0) + 1
+    for p in sorted(base, key=lambda q: q.pid):
+        if rng.random() >= TWIN_SHARE:
+            continue
+        same = rng.random() < TWIN_SAME_SEX
+        alone = held[(p.dob, p.sex, p.practice)] == 1 and held[(p.dob, p.sex, p.registered)] == 1
+        if same and p.practice in loader and not alone:
+            continue          # C1: a pair the loader joins is the only registration of its birth date and sex at its
+            # practice, and on its registration day, so every reading of who the co-twin is finds the same child
+        sex = p.sex if same else ("M" if p.sex == "F" else "F")
+        q = Person(pid=None, dob=p.dob, sex=sex, lho=p.lho, lho_recorded=p.lho_recorded, registered=p.registered,
+                   practice=p.practice, born_in_region=True, status="resident", area=p.area, dest=p.dest, postcode="",
+                   shown_practice=p.shown_practice)
+        q.twin, p.twin, q.cotwin = p, q, True
+        if same and p.practice in loader:
+            p.loader_twin = q.loader_twin = True
+        for k in ((q.dob, q.sex, q.practice), (q.dob, q.sex, q.registered)):
+            held[k] = held.get(k, 0) + 1
+        out.append(q)
+    for k, q in enumerate(out):
+        q.pid = spare[len(spare) - 1 - k]
+    people.extend(out)
+    return out
 
 
 def _ni_pupils(rng, practices):
@@ -288,7 +376,7 @@ def _merges(rng, people, events, spare):
         by_pid.setdefault(e.pid, []).append(e)
     rows = []
     k = 0
-    cands = [p for p in people if p.born_in_region and p.status in ACTIVE + ("transferred",)]
+    cands = [p for p in people if p.born_in_region and p.status in ACTIVE + ("transferred",) and p.twin is None]
     pick = rng.random(len(cands)) < W.DUPLICATE_SHARE
     for p, chosen in zip(cands, pick):
         if not chosen:
@@ -343,10 +431,13 @@ def _school_session_date(rng, dob, age_years):
 
 
 def _doses(rng, people):
-    """True doses as the register received them, one event each, before any return-line query."""
+    """True doses as the register received them, one event each, before any return-line query. Each dose is a visit;
+    a twin's co-twin was vaccinated at the same visits (the schedule's doses, the outbreak clinics), so its doses are
+    its twin's visits and take no draws of their own, and a twin of a loader pair has no single GP visit."""
     ev = []
+    joint = {}
     for p in people:
-        if p.status == "ni":
+        if p.status == "ni" or p.cotwin:
             continue
         y = p.dob.year
         doses = []
@@ -354,57 +445,63 @@ def _doses(rng, people):
             sched = 15 if y <= 2007 else 12
             if rng.random() < MMR1_UPTAKE[y]:
                 d1 = p.dob + dt.timedelta(days=int(sched * 30.4 + rng.gamma(2.0, 28)))
-                doses.append((d1, "GP"))
+                doses.append((d1, "GP", True))
                 if rng.random() < MMR2_GIVEN_MMR1[y]:
                     if y <= 1994:
                         d2 = _school_session_date(rng, p.dob, 12)
                     else:
                         d2 = _school_session_date(rng, p.dob, 5)
-                    doses.append((d2, "School team"))
+                    doses.append((d2, "School team", True))
             else:
                 # catch-up for the scare cohorts (2013 GP catch-up) and late starters; the school team offers a dose at
                 # school entry to children with none
                 late = 0.30 if 2008 <= y <= 2011 else 0.12
                 u = rng.random()
                 if u >= late and u < late + 0.16:
-                    doses.append((_school_session_date(rng, p.dob, 5 if y > 1994 else 12), "School team"))
+                    doses.append((_school_session_date(rng, p.dob, 5 if y > 1994 else 12), "School team", True))
                 elif u < late:
                     if 2008 <= y <= 2011:
                         d1 = _rand_date(rng, D(2013, 2, 1), D(2013, 11, 30))
                     else:
                         d1 = p.dob + dt.timedelta(days=int(rng.integers(500, 1900)))
-                    doses.append((d1, "GP"))
+                    doses.append((d1, "GP", True))
                     if rng.random() < 0.55:
-                        doses.append((_school_session_date(rng, p.dob, 5 if y > 1994 else 12), "School team"))
+                        doses.append((_school_session_date(rng, p.dob, 5 if y > 1994 else 12), "School team", True))
         else:
             # moved in: records from abroad at registration
             if rng.random() < 0.58:
                 n = 2 if rng.random() < 0.68 else 1
                 d1 = p.dob + dt.timedelta(days=int(rng.integers(370, 560)))
                 if d1 < p.registered:
-                    doses.append((d1, "Abroad"))
+                    doses.append((d1, "Abroad", False))
                     if n == 2:
                         d2 = p.dob + dt.timedelta(days=int(rng.integers(1300, 2300)))
                         if d2 < p.registered:
-                            doses.append((d2, "Abroad"))
+                            doses.append((d2, "Abroad", False))
         # adult and teenage extra doses
         if y <= 2007 and len(doses) < 2 and rng.random() < 0.10:
             d = _rand_date(rng, max(_birthday(p.dob, 18), D(2011, 1, 1)), D(2027, 6, 26))
-            doses.append((d, "GP" if rng.random() < 0.6 else ("Pharmacy" if d >= D(2019, 1, 1) else "GP")))
+            doses.append((d, "GP" if rng.random() < 0.6 else ("Pharmacy" if d >= D(2019, 1, 1) else "GP"), False))
         if y <= 2002 and rng.random() < 0.012:
             d = _rand_date(rng, max(_birthday(p.dob, 20), D(2012, 1, 1)), D(2027, 6, 26))
-            doses.append((d, "Occupational health"))
+            doses.append((d, "Occupational health", False))
         # 2019 outbreak response clinics for teenagers and young adults in the outbreak areas
         if 2003 <= y <= 2010 and p.area in ("LH21", "LH22") and len(doses) < 2 and rng.random() < 0.10:
-            doses.append((_rand_date(rng, D(2019, 4, 8), D(2019, 6, 14)), "School team"))
+            d = _rand_date(rng, D(2019, 4, 8), D(2019, 6, 14))
+            if p.registered < d:
+                doses.append((d, "School team", True))
         # 2014 outbreak response: infants aged six to eleven months in Navan and Trim-Kells
         if p.born_in_region and p.area in ("LH22", "LH24") and D(2013, 4, 15) <= p.dob <= D(2013, 10, 31) \
                 and rng.random() < 0.34:
-            doses.append((_rand_date(rng, D(2014, 3, 17), D(2014, 5, 16)), "Hospital"))
+            doses.append((_rand_date(rng, D(2014, 3, 17), D(2014, 5, 16)), "Hospital", True))
+        if p.loader_twin:
+            doses = [x for x in doses if x[2] or x[1] != "GP"]    # no GP visit of one twin alone
+        if p.twin is not None:
+            doses = [x for x in doses if x[2]]                     # a twin's own extras stay its own
         fb = _birthday(p.dob, 1)
         doses.sort()
         spaced = []
-        for d, by in doses:
+        for d, by, jt in doses:
             # C1: no two doses 20 to 36 days apart (the 28-day minimum interval never sits on an edge)
             if spaced and 20 <= (d - spaced[-1][0]).days <= 36:
                 d = spaced[-1][0] + dt.timedelta(days=45 + int(rng.integers(0, 21)))
@@ -417,8 +514,14 @@ def _doses(rng, people):
                 continue
             ev.append(Event(eid=None, pid=p.pid, product=None, date=d, given_by=by, source_ref=None, loaded=None,
                             kind="dose", owner=p.pid))
+            joint.setdefault(p.pid, []).append((d, by))
+    for q in people:
+        if q.cotwin:
+            for d, by in joint.get(q.twin.pid, []):
+                ev.append(Event(eid=None, pid=q.pid, product=None, date=d, given_by=by, source_ref=None, loaded=None,
+                                kind="dose", owner=q.pid))
     # a few doses given on 1 and 2 July 2027, loaded before the 3 July run
-    adults = [p for p in people if p.dob.year <= 2009 and p.status != "ni"]
+    adults = [p for p in people if p.dob.year <= 2009 and p.status != "ni" and p.twin is None]
     for k in range(13):
         p = adults[int(rng.integers(0, len(adults)))]
         ev.append(Event(eid=None, pid=p.pid, product=None, date=D(2027, 7, 1 + (k % 2)),
@@ -467,7 +570,7 @@ def references(rng, people, events, practices):
             e.loaded = _next_month(ret) + dt.timedelta(days=int(rng.integers(4, 31)))
             gp_lines[e.source_ref] = e
         elif e.given_by == "School team":
-            skey = (e.date, p.area)
+            skey = (e.date, p.area, (e.date - p.dob).days >= 9 * 365)
             if skey not in sessions:
                 sess_no[e.date.year] = sess_no.get(e.date.year, 0) + 1
                 sessions[skey] = "SIT-%04d-%04d" % (e.date.year, sess_no[e.date.year] + int(rng.integers(0, 3)))
@@ -524,8 +627,10 @@ def queries(people, events, gp_lines):
     pmap = {p.pid: p for p in people}
     by_practice = {}
     for p in people:
-        by_practice.setdefault(p.practice, []).append(p)
-    lines = sorted((r for r, e in gp_lines.items() if e.date >= W.QUERY_LOG_START), key=lambda r: (gp_lines[r].date, r))
+        if p.twin is None:
+            by_practice.setdefault(p.practice, []).append(p)
+    lines = sorted((r for r, e in gp_lines.items() if e.date >= W.QUERY_LOG_START and pmap[e.owner].twin is None),
+                   key=lambda r: (gp_lines[r].date, r))
     rows = []
     new_events = []
     qn = 0
@@ -675,9 +780,10 @@ def finish_register(people, events, rows_ext, rows_other):
                                kind="resent", owner=e.owner))
     events.extend(extra)
     # a school-team dose also keyed by the GP from the child's card, dated the day the card was seen
-    school = [e for e in events if e.given_by == "School team" and e.kind == "dose" and e.date.year >= 2006]
-    pick = rng.choice(len(school), size=min(220, len(school)), replace=False)
     pmap = {p.pid: p for p in people}
+    school = [e for e in events if e.given_by == "School team" and e.kind == "dose" and e.date.year >= 2006
+              and pmap[e.owner].twin is None]
+    pick = rng.choice(len(school), size=min(220, len(school)), replace=False)
     for i in sorted(pick.tolist()):
         e = school[i]
         p = pmap[e.owner]
@@ -698,7 +804,13 @@ def finish_register(people, events, rows_ext, rows_other):
             e.source_ref = "GPR-%04d%02d-%s-%03d" % (ret.year, ret.month, p.practice, counters[key])
             e.loaded = _next_month(ret) + dt.timedelta(days=int(rng.integers(4, 31)))
     events[:] = [e for e in events if e.loaded <= W.RUN]
-    rows_ext = rows_ext + _unmerged_duplicates(people, events, rows_ext + rows_other, resent)
+    # same-sex twins at a practice whose returns carry no register number: the loader matched each GP line to the
+    # first registration of the pair, so both twins' lines are loaded there
+    for e in events:
+        p = pmap.get(e.pid)
+        if e.given_by == "GP" and p is not None and p.loader_twin:
+            e.pid = min(p.pid, p.twin.pid)
+    _typos(np.random.default_rng(W.SEED + 116), people, events, rows_ext + rows_other)
     events.sort(key=lambda e: (e.loaded, e.pid, e.date))
     for k, e in enumerate(events):
         e.eid = "EV%08d" % (31_000_000 + k * 7 + int(rng.integers(0, 6)))
@@ -708,324 +820,29 @@ def finish_register(people, events, rows_ext, rows_other):
     return log
 
 
-DUP_RATE_THIN = 0.09      # children with no dose before school entry: the team's search found no record to match
-DUP_RATE = 0.0065         # children with an earlier dose on their record
-DUP_CARD_QUERIED = 0.5    # card lines the office queried and the practice withdrew as already returned
+TYPO_SHARE = 0.0016       # birth registrations whose date of birth was keyed with the decade one early
 
 
-def _unmerged_duplicates(people, events, log_rows, resent):
-    """Children the school immunisation team did not find on the register at school entry. It opened a second
-    registration at the session, and the school's doses from then on are loaded to that one, while the first stays
-    with the child's practice; the register's duplicate checks have not matched the two by the extract. When the
-    practice keyed the school dose from the child's card, the return loader matched the child to both registrations
-    and loaded the line to each; for half, the office queried the card line and the practice withdrew it as a dose
-    already returned. Children with no earlier dose were missed most often, their first record being the thinnest.
-    The second registration, its events and the card lines are added here on streams of their own, so no other
-    record moves; returns the query rows added."""
-    rng = np.random.default_rng(W.SEED + 112)
+def _typos(rng, people, events, log_rows):
+    """Children born in the region whose date of birth the register holds ten years early: the decade keyed one low
+    when the record was keyed by hand (a later date could not stand, since the loader refuses a dose dated before the
+    birth). The child's records are the child's own: registered from the birth notification, the first dose from the
+    GP at the schedule's age, the school's dose with its class. Only the date of birth the extract shows moves."""
+    queried = {r["line_ref"] for r in log_rows}
     by_owner = {}
     for e in events:
         by_owner.setdefault(e.owner, []).append(e)
-    queried = {r["line_ref"] for r in log_rows}
-    used = {e.source_ref for e in events}
-    taken = {p.pid for p in people} | {e.pid for e in events}
-    picks = []
     for p in sorted(people, key=lambda q: q.pid):
-        if p.status != "resident" or not p.born_in_region or not p.shown_practice:
+        if p.status != "resident" or not p.born_in_region or p.twin is not None or not 2003 <= p.dob.year <= 2017:
             continue
-        evs = sorted(by_owner.get(p.pid, []), key=lambda e: (e.date, e.source_ref))
-        if any(e.pid != p.pid or e.kind != "dose" or e.source_ref in queried for e in evs):
-            continue          # a record already merged, queried or carrying a card, re-sent or phantom line
-        school = [e for e in evs if e.given_by == "School team"]
-        if not school or school[0].source_ref in resent or school[0].date > D(2027, 4, 30):
+        evs = by_owner.get(p.pid, [])
+        if not evs or any(e.pid != p.pid or e.kind != "dose" or e.source_ref in queried for e in evs):
             continue
-        s0 = school[0]
-        if any(e is not s0 and abs((e.date - s0.date).days) < 60 for e in evs):
-            continue          # the school dose stands on its own interval, whichever record holds it
-        if p.lho_recorded > s0.date - dt.timedelta(days=21):
-            continue          # the address the team took is the one the first record holds
-        thin = not any(e.date < s0.date for e in evs)
-        if rng.random() < (DUP_RATE_THIN if thin else DUP_RATE):
-            picks.append((p, s0))
-    numbers = [n for n in _person_ids(np.random.default_rng(W.SEED + 113), 3 * len(picks) + 50) if n not in taken]
-    rows = []
-    for (p, s0), pid in zip(picks, numbers):
-        opened = s0.date - dt.timedelta(days=int(rng.integers(0, 21)))
-        rec = opened + dt.timedelta(days=15) if D(2024, 6, 24) <= opened <= D(2024, 7, 8) else opened
-        code = ("LH27" if rec < W.CUTOVER else "LH26") if p.area == "LH27" else p.area
-        if rec < W.EIRCODE_FROM or rng.random() < 0.5:
-            pc = ""
-        elif p.postcode:
-            pc = p.postcode
-        else:
-            keys = W.ROUTING_KEYS["LH27_old" if p.area == "LH27" else p.area]
-            pc = "%s %s" % (keys[int(rng.integers(0, len(keys)))],
-                            "".join(EIRCODE_CHARS[int(rng.integers(0, len(EIRCODE_CHARS)))] for _ in range(4)))
-        people.append(Person(pid=pid, dob=p.dob, sex=p.sex, lho=code, lho_recorded=rec, registered=opened,
-                             practice=p.practice, born_in_region=False, status="duplicate", area=p.area, dest=code,
-                             postcode=pc, shown_practice=""))
-        for e in by_owner[p.pid]:
-            if e.given_by == "School team" and e.date >= opened:
-                e.pid = pid
-        card = s0.date + dt.timedelta(days=int(rng.integers(3, 16)))
-        ret = D(card.year, card.month, 1)
-        n = 501
-        while "GPR-%04d%02d-%s-%03d" % (ret.year, ret.month, p.practice, n) in used:
-            n += 1
-        ref = "GPR-%04d%02d-%s-%03d" % (ret.year, ret.month, p.practice, n)
-        used.add(ref)
-        loaded = _next_month(ret) + dt.timedelta(days=int(rng.integers(4, 31)))
-        for holder in (p.pid, pid):
-            events.append(Event(eid=None, pid=holder, product=s0.product, date=card, given_by="GP", source_ref=ref,
-                                loaded=loaded, kind="dupcard", owner=p.pid))
-        if rng.random() < DUP_CARD_QUERIED:
-            raised = loaded + dt.timedelta(days=int(rng.integers(5, 41)))
-            took = int(rng.integers(6, 76))
-            closed = raised + dt.timedelta(days=took)
-            if closed > W.AS_AT:
-                closed = _chased(raised, took)
-            if closed is not None:
-                rows.append(dict(query_ref=None, line_ref=ref, practice=p.practice, raised=raised,
-                                 reason=QUERY_REASONS["duplicate"], outcome="Withdrawn by practice", replaced_by="",
-                                 closed=closed, kind="withdrawn", chased=False))
-    return rows
-
-
-# =================================================================================================================
-# The case export and the laboratory results
-# =================================================================================================================
-def _case(cid, onset, dob, sex, county, cls, imp, outbreak="", epi="", hosp="N", doses="0", comments="", legacy="",
-          notified=None, kind="case", key=None):
-    return dict(case_id=cid, legacy_ref=legacy, notified=notified or onset + dt.timedelta(days=4), onset_date=onset,
-                date_of_birth=dob, sex=sex, county=county, classification=cls, importation=imp, outbreak_ref=outbreak,
-                epi_link=epi, hospitalised=hosp, mmr_doses_reported=doses, comments=comments, kind=kind, key=key)
-
-
-RENOTIFIED = [  # (onset, date of birth, the second notifier's note, days after the first notification, outbreak record)
-    (D(2023, 7, 19), D(2017, 2, 9), "GP notification", 2, None),
-    (D(2024, 2, 22), D(2011, 9, 7), "Hospital notification, Drogheda", 1, ""),
-    (D(2024, 3, 6), D(2006, 2, 18), "Hospital notification, Drogheda", 2, ""),
-    (D(2025, 1, 15), D(2012, 10, 11), "GP notification", 3, None),
-    (D(2026, 2, 9), D(2005, 7, 27), "Hospital notification, Cavan", 1, None),
-    (D(2027, 4, 2), D(1996, 5, 21), "GP notification", 2, None),
-]
-
-
-def cases():
-    """The region's measles notifications since 2019, written case by case: the 2019 outbreak (legacy system,
-    migrated in March 2021 and back-entered by the outbreak team in May 2021), sporadic imports, the 2024 outbreak
-    (with a twin pair) and the April 2027 incident. Returns the export rows and the laboratory rows."""
-    rng = np.random.default_rng(W.SEED + 201)
-    C = []
-    lab = []
-
-    def L(cid, d, typ, test, res, geno=""):
-        lab.append(dict(case_id=cid, specimen_date=d, specimen_type=typ, test=test, result=res, genotype=geno))
-
-    # ---- 2019 outbreak (legacy MZ19 numbers), migrated records ------------------------------------------------
-    # (legacy number, onset, dob, sex, county, classification, importation, doses, hosp, swap_dob, shift_onset_days)
-    ob19 = [
-        ("MZ19/0107", D(2019, 3, 4), D(2014, 6, 9), "M", "Louth", "Confirmed", "Imported", "0", "Y", True, 0),
-        ("MZ19/0111", D(2019, 3, 14), D(1995, 4, 2), "F", "Louth", "Confirmed", "Imported", "0", "N", True, 0),
-        ("MZ19/0114", D(2019, 3, 19), D(2016, 1, 23), "F", "Louth", "Confirmed", "Import-related", "0", "N", False, 6),
-        ("MZ19/0118", D(2019, 3, 22), D(2010, 11, 5), "M", "Louth", "Confirmed", "Imported", "1", "N", True, 0),
-        ("MZ19/0121", D(2019, 3, 27), D(2004, 3, 7), "F", "Meath", "Confirmed", "Imported", "0", "N", True, 0),
-        ("MZ19/0124", D(2019, 3, 30), D(1987, 8, 19), "M", "Louth", "Confirmed", "Import-related", "0", "Y", False, 0),
-        ("MZ19/0127", D(2019, 4, 3), D(2015, 2, 14), "M", "Louth", "Confirmed", "Import-related", "0", "N", False, 0),
-        ("MZ19/0130", D(2019, 4, 6), D(2009, 10, 2), "F", "Meath", "Confirmed", "Import-related", "0", "N", True, 0),
-        ("MZ19/0133", D(2019, 4, 9), D(2003, 5, 28), "M", "Meath", "Confirmed", "Import-related", "1", "N", False, 9),
-        ("MZ19/0135", D(2019, 4, 11), D(2018, 9, 16), "F", "Louth", "Confirmed", "Import-related", "0", "Y", False, 0),
-        ("MZ19/0138", D(2019, 4, 14), D(1997, 12, 21), "M", "Meath", "Confirmed", "Import-related", "0", "N", False, 8),
-        ("MZ19/0140", D(2019, 4, 16), D(2016, 7, 30), "F", "Meath", "Confirmed", "Import-related", "0", "N", False, 0),
-        ("MZ19/0142", D(2019, 4, 17), D(2005, 9, 13), "F", "Louth", "Probable", "Import-related", "0", "N", False, 0),
-        ("MZ19/0143", D(2019, 4, 19), D(1994, 1, 26), "M", "Louth", "Confirmed", "Import-related", "1", "N", False, 0),
-        ("MZ19/0146", D(2019, 4, 22), D(2011, 6, 18), "M", "Meath", "Confirmed", "Import-related", "0", "N", False, 10),
-        ("MZ19/0148", D(2019, 4, 24), D(2005, 2, 27), "F", "Meath", "Confirmed", "Import-related", "0", "N", False, 0),
-        ("MZ19/0149", D(2019, 4, 25), D(1999, 7, 15), "F", "Louth", "Confirmed", "Import-related", "1", "N", False, 11),
-        ("MZ19/0151", D(2019, 4, 28), D(2013, 12, 3), "M", "Louth", "Probable", "Import-related", "0", "N", False, 0),
-        ("MZ19/0153", D(2019, 4, 30), D(2007, 8, 22), "M", "Meath", "Confirmed", "Import-related", "0", "N", False, 0),
-        ("MZ19/0156", D(2019, 5, 3), D(2001, 4, 17), "F", "Meath", "Confirmed", "Import-related", "0", "Y", False, 7),
-        ("MZ19/0158", D(2019, 5, 5), D(2014, 10, 29), "F", "Louth", "Confirmed", "Import-related", "0", "N", False, 9),
-        ("MZ19/0161", D(2019, 5, 8), D(1979, 3, 30), "F", "Louth", "Confirmed", "Import-related", "1", "N", False, 0),
-        ("MZ19/0163", D(2019, 5, 10), D(2012, 2, 8), "M", "Meath", "Probable", "Import-related", "0", "N", False, 0),
-        ("MZ19/0165", D(2019, 5, 13), D(2006, 11, 26), "M", "Louth", "Discarded", "", "2", "N", False, 0),
-        ("MZ19/0168", D(2019, 5, 15), D(2003, 1, 31), "F", "Meath", "Confirmed", "Import-related", "0", "N", False, 0),
-        ("MZ19/0170", D(2019, 5, 18), D(1993, 9, 24), "F", "Meath", "Confirmed", "Import-related", "0", "N", False, 8),
-        ("MZ19/0173", D(2019, 5, 21), D(2019, 1, 11), "M", "Meath", "Confirmed", "Import-related", "0", "Y", False, 0),
-        ("MZ19/0175", D(2019, 5, 24), D(2008, 4, 7), "F", "Louth", "Possible", "", "0", "N", False, 0),
-        ("MZ19/0178", D(2019, 5, 27), D(1990, 6, 20), "M", "Meath", "Confirmed", "Import-related", "0", "N", False, 0),
-        ("MZ19/0180", D(2019, 5, 30), D(2016, 5, 6), "M", "Meath", "Confirmed", "Import-related", "0", "N", True, 0),
-        ("MZ19/0183", D(2019, 6, 3), D(2001, 10, 9), "M", "Louth", "Confirmed", "Import-related", "1", "N", True, 0),
-        ("MZ19/0185", D(2019, 6, 6), D(2017, 3, 2), "F", "Louth", "Probable", "Import-related", "0", "N", False, 0),
-        ("MZ19/0188", D(2019, 6, 10), D(1996, 2, 11), "F", "Louth", "Confirmed", "Import-related", "0", "N", True, 0),
-        ("MZ19/0190", D(2019, 6, 14), D(2010, 9, 27), "F", "Meath", "Confirmed", "Import-related", "0", "N", False, 0),
-    ]
-    legacy_ids = {}
-    k = 4400
-    for row in ob19:
-        ref, onset, dob, sex, county, cls, imp, doses, hosp, swap, shift = row
-        k += int(rng.integers(3, 17))
-        cid = "NDS-L%06d" % k
-        legacy_ids[ref] = cid
-        C.append(_case(cid, onset, dob, sex, county, cls, imp, doses=doses, hosp=hosp, legacy=ref,
-                       comments="Migrated from legacy system 01/03/2021", key=ref, kind="legacy"))
-        if cls in ("Confirmed", "Discarded"):
-            if not (ref == "MZ19/0124"):     # one case confirmed by the hospital laboratory, specimen not referred
-                L(cid, onset + dt.timedelta(days=int(rng.integers(2, 6))), "Serum", "Measles IgM",
-                  "Positive" if cls == "Confirmed" else "Negative")
-                if cls == "Confirmed" and rng.random() < 0.5:
-                    L(cid, onset + dt.timedelta(days=int(rng.integers(2, 6))), "Throat swab", "Measles PCR", "Positive",
-                      "D8")
-    # sporadic legacy-era cases (2019 to February 2021), migrated
-    spor = [
-        ("MZ19/0231", D(2019, 8, 12), D(1998, 5, 3), "M", "Meath", "Confirmed", "Imported", "1", "N"),
-        ("MZ19/0262", D(2019, 10, 2), D(2016, 12, 14), "F", "Cavan", "Discarded", "", "1", "N"),
-        ("MZ19/0288", D(2019, 11, 21), D(1984, 7, 1), "F", "Louth", "Confirmed", "Imported", "0", "Y"),
-        ("MZ20/0012", D(2020, 1, 9), D(2006, 4, 30), "M", "Cavan", "Confirmed", "Imported", "0", "N"),
-        ("MZ20/0019", D(2020, 1, 28), D(2007, 1, 15), "F", "Cavan", "Confirmed", "Import-related", "0", "N"),
-        ("MZ20/0047", D(2020, 2, 25), D(1991, 9, 8), "M", "Meath", "Possible", "", "Unknown", "N"),
-        ("MZ20/0101", D(2020, 9, 16), D(2012, 6, 3), "F", "Monaghan", "Discarded", "", "2", "N"),
-    ]
-    for ref, onset, dob, sex, county, cls, imp, doses, hosp in spor:
-        k += int(rng.integers(40, 160))
-        cid = "NDS-L%06d" % k
-        C.append(_case(cid, onset, dob, sex, county, cls, imp, doses=doses, hosp=hosp, legacy=ref,
-                       comments="Migrated from legacy system 01/03/2021", key=ref, kind="legacy"))
-        if cls in ("Confirmed", "Discarded"):
-            L(cid, onset + dt.timedelta(days=int(rng.integers(2, 6))), "Oral fluid", "Measles IgM",
-              "Positive" if cls == "Confirmed" else "Negative")
-    # ---- the back-entry: the outbreak team keyed the 2019 line list into the outbreak module in May 2021 ---------
-    seq = 211
-    for row in ob19:
-        ref, onset, dob, sex, county, cls, imp, doses, hosp, swap, shift = row
-        if cls not in ("Confirmed", "Probable"):
+        gp = sorted(e.date for e in evs if e.given_by == "GP")
+        if not gp or not 365 <= (gp[0] - p.dob).days <= 365 + 150 or not 6 <= (p.registered - p.dob).days <= 45:
             continue
-        seq += int(rng.integers(1, 4))
-        cid = "NDS-21-%06d" % (2100 + seq)
-        b_dob = D(dob.year, dob.day, dob.month) if swap else dob
-        b_onset = onset + dt.timedelta(days=shift)
-        entered = _rand_date(rng, *W.BACK_ENTRY)
-        C.append(_case(cid, b_onset, b_dob, sex, county, cls, imp, outbreak="OB-NE-2019-01", doses=doses, hosp=hosp,
-                       notified=onset + dt.timedelta(days=shift + 2 if shift else 4),
-                       comments="Entered from OCT line list (2019 outbreak). Legacy no. %s" % ref,
-                       kind="backentry", key=ref))
-    # ---- new-system cases: sporadic imports, the 2024 outbreak, the April 2027 incident ------------------------------
-    new = []
-
-    def N_(onset, dob, sex, county, cls, imp, **kw):
-        new.append((onset, dob, sex, county, cls, imp, kw))
-    N_(D(2021, 11, 8), D(1988, 2, 22), "M", "Meath", "Discarded", "", doses="2")
-    N_(D(2022, 6, 14), D(2015, 8, 20), "F", "Louth", "Discarded", "", doses="1")
-    N_(D(2023, 3, 3), D(2000, 6, 12), "F", "Meath", "Confirmed", "Imported", doses="0",
-       comments="Travel to Romania, rash three days after return")
-    N_(D(2023, 7, 19), D(2017, 2, 9), "M", "Louth", "Confirmed", "Imported", doses="0",
-       comments="Family holiday abroad; hospital laboratory IgM positive, specimen not referred", lab=False)
-    N_(D(2023, 9, 30), D(1999, 11, 4), "F", "Cavan", "Possible", "", doses="Unknown")
-    N_(D(2023, 12, 11), D(1975, 5, 17), "M", "Louth", "Confirmed", "Imported", doses="Unknown")
-    # the 2024 outbreak (Drogheda and Navan): entered directly by the outbreak team
-    ob24 = [
-        (D(2024, 2, 5), D(1994, 8, 30), "F", "Louth", "Confirmed", "Imported", "0"),
-        (D(2024, 2, 18), D(2010, 4, 16), "M", "Louth", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 1), D(2010, 4, 16), "F", "Louth", "Confirmed", "Import-related", "0"),   # his twin sister, epi-linked
-        (D(2024, 2, 22), D(2011, 9, 7), "F", "Louth", "Confirmed", "Import-related", "0"),
-        (D(2024, 2, 27), D(2012, 1, 29), "M", "Meath", "Confirmed", "Import-related", "1", False),
-        (D(2024, 3, 4), D(2013, 7, 5), "F", "Louth", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 6), D(2006, 2, 18), "M", "Louth", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 9), D(2021, 10, 2), "F", "Louth", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 11), D(2004, 12, 9), "F", "Meath", "Confirmed", "Import-related", "1"),
-        (D(2024, 3, 14), D(1997, 3, 3), "M", "Meath", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 15), D(2016, 11, 24), "M", "Meath", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 18), D(1986, 1, 13), "F", "Louth", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 20), D(2002, 5, 26), "M", "Louth", "Confirmed", "Import-related", "0", False),
-        (D(2024, 3, 22), D(2023, 4, 18), "M", "Meath", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 25), D(2007, 6, 1), "F", "Meath", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 27), D(2009, 7, 23), "F", "Louth", "Probable", "Import-related", "0"),
-        (D(2024, 3, 29), D(1996, 10, 14), "F", "Meath", "Confirmed", "Import-related", "1"),
-        (D(2024, 4, 2), D(2018, 3, 27), "F", "Louth", "Confirmed", "Import-related", "0"),
-        (D(2024, 4, 5), D(1992, 12, 2), "M", "Louth", "Probable", "Import-related", "0"),
-        (D(2024, 4, 9), D(2014, 1, 19), "M", "Meath", "Discarded", "", "2"),
-        (D(2024, 4, 12), D(2011, 3, 30), "M", "Meath", "Confirmed", "Import-related", "0"),
-    ]
-    for row in ob24:
-        onset, dob, sex, county, cls, imp, doses = row[:7]
-        if len(row) > 7:
-            N_(onset, dob, sex, county, cls, imp, doses=doses, outbreak="OB-NE-2024-02", lab=False,
-               comments="Reported via OCT line list 2024; hospital laboratory IgM positive, specimen not referred")
-        else:
-            N_(onset, dob, sex, county, cls, imp, doses=doses, outbreak="OB-NE-2024-02",
-               comments="Reported via OCT line list 2024")
-    N_(D(2024, 10, 21), D(2003, 9, 19), "M", "Monaghan", "Discarded", "", doses="2")
-    N_(D(2025, 1, 15), D(2012, 10, 11), "F", "Meath", "Confirmed", "Imported", doses="0",
-       comments="School trip abroad; IgM and PCR positive")
-    N_(D(2025, 5, 2), D(1981, 4, 8), "M", "Cavan", "Confirmed", "Imported", doses="Unknown")
-    N_(D(2025, 8, 26), D(2019, 6, 30), "F", "Louth", "Confirmed", "Imported", doses="0")
-    N_(D(2025, 11, 3), D(2016, 3, 12), "M", "Meath", "Possible", "", doses="1")
-    N_(D(2026, 2, 9), D(2005, 7, 27), "F", "Louth", "Confirmed", "Imported", doses="0", lab=False,
-       comments="Returned from a festival abroad; IgM positive at the hospital laboratory, not referred")
-    N_(D(2026, 4, 30), D(1989, 9, 1), "F", "Meath", "Confirmed", "Imported", doses="1")
-    N_(D(2026, 6, 18), D(2024, 9, 13), "M", "Meath", "Confirmed", "Import-related", doses="0",
-       comments="Household contact of NDS-26 imported case")
-    N_(D(2026, 9, 7), D(2010, 2, 3), "M", "Cavan", "Discarded", "", doses="2")
-    # April 2027: an imported case who attended a GP surgery and the emergency department in Navan, two adults infected
-    N_(D(2027, 4, 2), D(1996, 5, 21), "M", "Meath", "Confirmed", "Imported", doses="0", hosp="Y",
-       comments="Attended GP surgery and Navan ED before diagnosis", tag="index27")
-    N_(D(2027, 4, 15), D(1995, 8, 6), "F", "Meath", "Confirmed", "Import-related", doses="0", tag="sec27a", lab=False)
-    N_(D(2027, 4, 17), D(1992, 1, 24), "M", "Meath", "Confirmed", "Import-related", doses="Unknown", hosp="Y",
-       tag="sec27b")
-    N_(D(2027, 5, 29), D(2020, 8, 5), "F", "Louth", "Probable", "Import-related", doses="0")
-    # a case notified twice, by the GP and by a hospital, and not linked on the system: two records, one illness
-    for onset, dob, note, later, outbreak in RENOTIFIED:
-        o = next(r for r in new if r[0] == onset and r[1] == dob)
-        kw = dict(o[6])
-        kw.pop("tag", None)
-        kw.update(comments=note, lab=False, notified=onset + dt.timedelta(days=4 + later))
-        if outbreak is not None:
-            kw["outbreak"] = outbreak
-        new.append(o[:6] + (kw,))
-    new.sort(key=lambda r: (r[0], r[1]))
-    cnt = {}
-    tags = {}
-    twin_first = None
-    for onset, dob, sex, county, cls, imp, kw in new:
-        yr = onset.year
-        cnt[yr] = cnt.get(yr, int(rng.integers(30, 90))) + int(rng.integers(5, 60))
-        cid = "NDS-%02d-%06d" % (yr % 100, cnt[yr])
-        comments = kw.get("comments", "")
-        epi = ""
-        if dob == D(2010, 4, 16) and onset == D(2024, 2, 18):
-            twin_first = cid
-        if dob == D(2010, 4, 16) and onset == D(2024, 3, 1):
-            epi = twin_first
-            comments = "Household contact"
-        if kw.get("tag") in ("sec27a", "sec27b"):
-            epi = tags["index27"]
-            comments = "Contact of index case in Navan ED waiting area"
-        if kw.get("tag"):
-            tags[kw["tag"]] = cid
-        if "Household contact of NDS-26" in comments:
-            prev = [c for c in C if c["onset_date"] == D(2026, 4, 30)]
-            epi = prev[0]["case_id"] if prev else ""
-            comments = "Household contact of imported case"
-        row = _case(cid, onset, dob, sex, county, cls, imp, outbreak=kw.get("outbreak", ""), epi=epi,
-                    hosp=kw.get("hosp", "N"), doses=kw.get("doses", "0"), comments=comments, kind="new",
-                    notified=kw.get("notified"))
-        C.append(row)
-        if cls in ("Confirmed", "Discarded") and kw.get("lab", True):
-            L(cid, onset + dt.timedelta(days=int(rng.integers(1, 5))), "Oral fluid" if rng.random() < 0.5 else "Serum",
-              "Measles IgM", "Positive" if cls == "Confirmed" else "Negative")
-            if cls == "Confirmed" and rng.random() < 0.6:
-                L(cid, onset + dt.timedelta(days=int(rng.integers(1, 5))), "Throat swab", "Measles PCR", "Positive",
-                  "B3" if onset.year >= 2023 else "D8")
-    # epi links for the 2019 outbreak's new-system contacts: none; a 2021 discarded case links to a legacy one
-    # specimen numbers in date order
-    lab.sort(key=lambda r: (r["specimen_date"], r["case_id"], r["test"]))
-    n = {}
-    for r in lab:
-        y = r["specimen_date"].year
-        n[y] = n.get(y, int(rng.integers(100, 400))) + int(rng.integers(1, 30))
-        r["specimen_id"] = "NMRL-%02d-%05d" % (y % 100, n[y])
-    C.sort(key=lambda c: c["case_id"])
-    return C, lab
+        if rng.random() < TYPO_SHARE:
+            p.dob_rec = D(p.dob.year - 10, p.dob.month, p.dob.day)
 
 
 # =================================================================================================================
