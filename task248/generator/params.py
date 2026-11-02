@@ -38,29 +38,29 @@ TANKS = {
     "AH-2": ("AH", "DSL", 6000, -0.08, -0.0003, -0.0006, 2),
     "AH-3": ("AH", "E10", 8000, 0.04, 0.0004, 0.0004, 2),
     "BP-1": ("BP", "REC90", 12000, -0.05, -0.0002, 0.0007, 3),
-    "BP-2": ("BP", "E10", 10000, 1.40, 0.0001, -0.0004, 2),
+    "BP-2": ("BP", "E10", 10000, 1.44, 0.0001, -0.0004, 2),
     "BP-3": ("BP", "DSL", 6000, 0.07, 0.0003, -0.0008, 2),
     "CF-1": ("CF", "DSL", 8000, -0.06, -0.0004, 0.0005, 2),
-    "CF-2": ("CF", "REC90", 10000, 0.05, 0.0062, 0.0013, 3),
-    "DH-1": ("DH", "REC90", 10000, -1.50, -0.0002, 0.0003, 2),
-    "DH-2": ("DH", "REC90", 8000, 0.60, 0.0001, 0.0052, 2),
-    "EB-1": ("EB", "REC90", 10000, 0.47, 0.0003, 0.0046, 3),
+    "CF-2": ("CF", "REC90", 10000, 0.05, 0.0067, 0.0013, 3),
+    "DH-1": ("DH", "REC90", 10000, -1.32, -0.0002, 0.0003, 2),
+    "DH-2": ("DH", "REC90", 12000, 0.30, 0.0001, 0.0052, 3),
+    "EB-1": ("EB", "REC90", 12000, 0.30, 0.0002, 0.0050, 3),
     "EB-2": ("EB", "E10", 10000, -0.07, 0.0002, 0.0050, 2),
     "EB-3": ("EB", "DSL", 6000, 0.05, -0.0004, 0.0006, 2),
-    "FL-1": ("FL", "REC90", 12000, 1.55, -0.0001, 0.0002, 3),
+    "FL-1": ("FL", "REC90", 12000, 1.374, -0.0001, 0.0002, 3),
     "FL-2": ("FL", "DSL", 6000, -0.04, 0.0003, -0.0007, 2),
-    "GC-1": ("GC", "REC90", 10000, -0.05, -0.0063, -0.0046, 3),
+    "GC-1": ("GC", "REC90", 10000, -0.05, -0.0067, -0.0050, 3),
     "GC-2": ("GC", "E10", 8000, 0.08, -0.0002, 0.0008, 2),
     "GC-3": ("GC", "DSL", 6000, -0.03, 0.0004, -0.0005, 2),
     "HS-1": ("HS", "REC90", 10000, 0.05, -0.0003, -0.0044, 3),
-    "HS-2": ("HS", "E10", 8000, 1.70, 0.0002, 0.0005, 2),
+    "HS-2": ("HS", "E10", 8000, 1.27, 0.0002, 0.0005, 2),
 }
 PRODUCT_SHARE = {"REC90": 1.0, "E10": 0.46, "DSL": 0.42}   # relative daily draw by product
 
 # register heights as fractions of diameter (rounded to whole inches in the register)
-REORDER_FRAC = 0.18
+REORDER_FRAC = 0.15
 FILL_FRAC = 0.80          # the register's normal fill height
-DELIVER_TO = (0.84, 0.88)  # true product height a delivery stops at, fraction of diameter
+DELIVER_TO = (0.855, 0.885)  # true product height a delivery stops at, fraction of diameter
 
 # January ice storm: consoles whose clocks reset (marina: reset hours after the cut, days until the tech re-set)
 STORM_DAY = dt.date(2026, 1, 24)

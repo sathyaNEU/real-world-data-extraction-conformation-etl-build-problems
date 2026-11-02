@@ -125,7 +125,7 @@ def write(target, w, r):
                         qty, pq = w.keyed[(k, i, zone, rel)]
                     else:
                         qty, pq = 1, float(c["new"][j])
-                    ws.append([relid, issued, d, ean13(w.upc[i]), w.desc[i].upper(), zone, c["kind"][j], pq, qty])
+                    ws.append([relid, issued, d, ean13(w.upc[i]), W.abbrev(w.parts[i]), zone, c["kind"][j], pq, qty])
         for rr in ws.iter_rows(min_row=2):
             rr[1].number_format = "yyyy-mm-dd"
             rr[2].number_format = "yyyy-mm-dd"
@@ -137,10 +137,33 @@ def write(target, w, r):
     n["pricefile"] = sum(2 * 2 * len(c["items"]) for c in w.co)
 
     rows = []
-    for (k, i, zone), u in sorted(w.ad_units.items()):
-        rows.append([w.co[k]["date"].isoformat(), w.upc[i], "Z%d" % zone, u])
-    write_csv(os.path.join(target, F["adsales"]), ["flyer_start", "upc", "price_zone", "units"], rows)
+    for (k, i, zone, j), u in sorted(w.ad_units.items()):
+        d = w.co[k]["date"] + dt.timedelta(days=j)
+        rows.append([w.co[k]["date"].isoformat(), d.isoformat(), w.upc[i], "Z%d" % zone, u])
+    write_csv(os.path.join(target, F["adsales"]), ["flyer_start", "sales_date", "upc", "price_zone", "units"], rows)
     n["adsales"] = len(rows)
+
+    rows = []
+    cid = 5100
+    for (k, i, zone), (j, q, pq) in sorted(w.corr.items()):
+        d = w.co[k]["date"] + dt.timedelta(days=j)
+        cid += int(r.integers(1, 4))
+        rows.append(["PC-%d" % cid, ean13(w.upc[i]), "Zone %d" % zone, d.isoformat(), "%.2f" % pq, q,
+                     (d - dt.timedelta(days=1)).isoformat()])
+    for _ in range(int(r.integers(30, 45))):      # ordinary mid-week corrections to regular prices
+        k = int(r.integers(len(w.co)))
+        c = w.co[k]
+        regs = [j for j in range(len(c["items"])) if c["kind"][j] == "REG"]
+        j = regs[int(r.integers(len(regs)))]
+        day = int(r.integers(1, 6))
+        d = c["date"] + dt.timedelta(days=day)
+        cid += int(r.integers(1, 4))
+        rows.append(["PC-%d" % cid, ean13(w.upc[c["items"][j]]), "Zone %d" % int(r.integers(1, 3)), d.isoformat(),
+                     "%.2f" % float(c["new"][j]), 1, (d - dt.timedelta(days=1)).isoformat()])
+    rows.sort(key=lambda x: (x[3], x[0]))
+    write_csv(os.path.join(target, F["corrections"]),
+              ["correction_id", "ean", "zone", "effective_at_open", "price", "price_qty", "labels_sent"], rows)
+    n["corrections"] = len(rows)
 
     # ---------------- distractors ----------------
     rows = []

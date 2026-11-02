@@ -2,6 +2,7 @@
 changeovers, every changeover label's print and hang time, the random audits, the Thursday changeover checks, the
 Scanner Code claims and the flyer keying record. Nothing here reads target/; pack.py writes the files from it."""
 import datetime as dt
+import re
 from zoneinfo import ZoneInfo
 
 import numpy as np
@@ -107,7 +108,8 @@ class World:
                 seen.add(body)
                 upc = body + upc_check(body)
                 desc = " ".join(x for x in (brand, noun, v, size) if x)
-                rows.append((upc, dep, desc, price, float(np.exp(r.normal(0, 1.1))), fid, "%s %s %s" % (brand, noun, size)))
+                rows.append((upc, dep, desc, price, float(np.exp(r.normal(0, 1.1))), fid, "%s %s %s" % (brand, noun, size),
+                             (brand, noun, v, size)))
         self.upc = np.array([x[0] for x in rows])
         self.dept = np.array([x[1] for x in rows])
         self.desc = np.array([x[2] for x in rows])
@@ -115,6 +117,7 @@ class World:
         self.pop = np.array([x[4] for x in rows])
         self.fam = np.array([x[5] for x in rows])
         self.famname = {x[5]: x[6] for x in rows}
+        self.parts = [x[7] for x in rows]
         n = len(rows)
         self.stocked = {}
         big = max(s[6] for s in P.STORES)
@@ -405,7 +408,8 @@ class World:
         r = self.r
         self.ad_lines = []    # (k, line_no, [item indexes], qty, ad_price_for_qty, lead item)
         self.keyed = {}       # (k, item, zone, release) -> (qty, price_for_qty)
-        self.ad_units = {}    # (k, item, zone) -> units in the flyer week
+        self.corr = {}        # (k, item, zone) -> (day offset 1..4 the fix takes effect at opening, qty, price)
+        self.ad_units = {}    # (k, item, zone, day offset 0..6) -> units
         for k, c in enumerate(self.co):
             fams = list(self.co_families[k])
             order = r.permutation(len(fams))
@@ -436,8 +440,31 @@ class World:
                             revised = (qty, round(price_q + 0.20, 2))
                         self.keyed[(k, int(i), zone, "PRELIM")] = prelim
                         self.keyed[(k, int(i), zone, "REVISED")] = revised
+                        if revised != good and r.random() < 0.55:
+                            self.corr[(k, int(i), zone)] = (int(r.integers(1, 5)), good[0], good[1])
                         zw = 0.6 if zone == 1 else 0.4
-                        self.ad_units[(k, int(i), zone)] = int(r.poisson(self.pop[i] * 180 * zw) + 3)
+                        lam = self.pop[i] * 26 * zw
+                        dayw = np.array([1.45, 1.1, 1.25, 1.35, 0.8, 0.75, 0.8])
+                        for j in range(7):
+                            self.ad_units[(k, int(i), zone, j)] = int(r.poisson(lam * dayw[j]) + (1 if j == 0 else 0))
+
+
+def abbrev(parts):
+    """the POS short description the pricing system holds: brand, product, variety and size as one token each"""
+    brand, noun, v, size = parts
+    vowels = set("AEIOU")
+
+    def squeeze(word, n):
+        w = re.sub(r"[^A-Z0-9]", "", word.upper())
+        if len(w) <= n:
+            return w
+        keep = w[0] + "".join(ch for ch in w[1:] if ch not in vowels)
+        return (keep if len(keep) >= 3 else w)[:n]
+    b = squeeze(brand, 6)
+    nn = squeeze(noun, 6)
+    vv = squeeze(v, 5) if v else ""
+    sz = size.upper().replace(" ", "")
+    return " ".join(x for x in (b, nn, vv, sz) if x)
 
 
 def build_world():

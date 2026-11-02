@@ -67,7 +67,8 @@ FILES = {
     "overrides": "pos_price_overrides_2026Q4.csv",
     "adplan": "flyer_ad_plan_wk40-wk53_2026.csv",
     "pricefile": "weekly_price_change_releases_2026Q4.xlsx",
-    "adsales": "flyer_item_weekly_units_2026Q4.csv",
+    "adsales": "flyer_item_daily_units_2026Q4.csv",
+    "corrections": "price_corrections_2026Q4.csv",
     "contacts": "customer_care_price_contacts_2026Q4.csv",
     "markdowns": "clearance_markdown_labels_2026Q4.csv",
 }

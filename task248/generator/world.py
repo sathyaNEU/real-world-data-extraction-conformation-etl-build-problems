@@ -228,5 +228,104 @@ def simulate(seed=P.SEED):
                         heapq.heappush(q, (local(dd, float(rng.uniform(8.3, 13.2))), 0, "DS", None))
                         pending = True
         out["true_closing"][tid] = net
+
+    # ---- the systems' own events: what reaches the exports ----
+    rng2 = np.random.default_rng(seed + 7)
+    # storm power cuts and clock resets: (cut start, restore, tech re-set) per marina
+    resets = {}
+    for m, days_to_tech in P.CLOCK_RESETS.items():
+        cut = local(P.STORM_DAY, 1.5 + float(rng2.uniform(0, 5)))
+        restore = cut + dt.timedelta(hours=float(rng2.uniform(6, 20)))
+        tech = restore + dt.timedelta(days=days_to_tech, hours=float(rng2.uniform(-3, 5)))
+        resets[m] = (cut, restore, tech)
+    out["resets"] = resets
+    swap_m, swap_day = P.CONSOLE_SWAP
+    swap_at = local(swap_day, 11.0)
+    out["swap_at"] = swap_at
+
+    def in_any(t_, spans):
+        return any(a <= t_ < b for a, b in spans)
+
+    # readings: drop power-cut hours (console off), probe faults, and readings lost beyond the 48 h buffer
+    kept = []
+    for r in out["readings"]:
+        m = r["marina"]; t_ = r["local"]
+        if m in resets and resets[m][0] <= t_ < resets[m][1]:
+            continue
+        if any(f[0] == r["tank"] and f[1] <= t_ < f[2] for f in out["probe_faults"]):
+            continue
+        lost = False
+        for a, b in out["outages"][m]:
+            if a <= t_ < b - dt.timedelta(hours=48):
+                lost = True; break
+        if lost:
+            continue
+        kept.append(r)
+    out["readings_kept"] = kept
+
+    # weekly leak tests: Sunday 21:00 local, 2 h 40 min; PASS needs no sale in the window, no delivery in the
+    # six hours before, and the product above 35 per cent of capacity (gauge net volume)
+    tests = []
+    sales_t = {}
+    for s in out["sales"]:
+        sales_t.setdefault(s["tank"], []).append(s["local"])
+    for k in sales_t:
+        sales_t[k].sort()
+    import bisect
+    readings_by_tank = {}
+    for r in out["readings"]:
+        readings_by_tank.setdefault(r["tank"], []).append(r)
+    test_no = {}
+    for tid, t in tanks.items():
+        m = t.marina
+        test_no[tid] = int(rng2.integers(200, 900))
+        rs = readings_by_tank[tid]
+        rtimes = [r["local"] for r in rs]
+        for d in days:
+            if d.weekday() != 6:
+                continue
+            st0 = local(d, 21.0)
+            en = st0 + dt.timedelta(minutes=160)
+            if any(f[0] == tid and f[1] <= st0 < f[2] for f in out["probe_faults"]):
+                continue
+            if m in resets and resets[m][0] <= st0 < resets[m][1]:
+                continue
+            i = bisect.bisect_right(rtimes, st0) - 1
+            lvl = rs[i]["tc"] if i >= 0 else 0.0
+            sl = sales_t.get(tid, [])
+            j = bisect.bisect_left(sl, st0)
+            sale_in = j < len(sl) and sl[j] < en
+            deliv = any(x["tank"] == tid and st0 - dt.timedelta(hours=6) <= x["end"] < en for x in out["deliveries"])
+            test_no[tid] += 1
+            if lvl < 0.35 * t.cap:
+                res, rate = "ABORT LOW LEVEL", None
+            elif sale_in:
+                res, rate = "ABORT DISPENSE", None
+            elif deliv:
+                res, rate = "ABORT DELIVERY", None
+            else:
+                rate = round(float(rng2.normal(0.0, 0.018)), 3)
+                res = "PASS"
+            tests.append({"tank": tid, "marina": m, "test_no": test_no[tid], "start": st0, "end": en,
+                          "result": res, "rate": rate})
+    # which test results reach the export: buffered 48 h through outages; after each outage the monitor
+    # re-polls and logs each tank's last stored result again (a reprint at the poll time)
+    exported = []
+    for x in tests:
+        m = x["marina"]
+        lost = any(a <= x["end"] < b - dt.timedelta(hours=48) for a, b in out["outages"][m])
+        if not lost:
+            exported.append(dict(x, print_at=x["end"] + dt.timedelta(seconds=int(rng2.integers(20, 240))), reprint=False))
+    for m, outs in out["outages"].items():
+        for a, b in outs:
+            poll = b + dt.timedelta(minutes=int(rng2.integers(4, 40)))
+            for tid in [k for k, t in tanks.items() if t.marina == m]:
+                prior = [x for x in tests if x["tank"] == tid and x["end"] < b]
+                if not prior:
+                    continue
+                last = prior[-1]
+                exported.append(dict(last, print_at=poll, reprint=True))
+    out["tests"] = tests
+    out["tests_exported"] = exported
     out["hose_ids"] = hose_ids
     return out

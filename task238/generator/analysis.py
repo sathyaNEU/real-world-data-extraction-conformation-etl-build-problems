@@ -31,7 +31,8 @@ FILES = {
     "overrides": "pos_price_overrides_2026Q4.csv",
     "adplan": "flyer_ad_plan_wk40-wk53_2026.csv",
     "pricefile": "weekly_price_change_releases_2026Q4.xlsx",
-    "adsales": "flyer_item_weekly_units_2026Q4.csv",
+    "adsales": "flyer_item_daily_units_2026Q4.csv",
+    "corrections": "price_corrections_2026Q4.csv",
 }
 
 
@@ -367,13 +368,17 @@ def unit_price(qty, price):
     return price / qty
 
 
-def ask_flyer(target, lead_only=False, release="REVISED", qty_aware=True, zone_units=True):
+def ask_flyer(target, lead_only=False, release="REVISED", qty_aware=True, zone_units=True, corr="dated",
+              match="family"):
     """ask B: for each flyer week, the advertised UPCs that rang up at a price other than the flyer price, and the
-    dollars customers paid above the flyer price that week"""
+    dollars customers paid above the flyer price that week. corr: 'dated' (a correction fixes the register from its
+    effective date), 'none' (the release price all week), 'whole' (the correction taken for the whole week).
+    match: how an assorted line's varieties are found ('family' by brand, product and size; 'price' by the lead's
+    keyed price)."""
     ad = rows(os.path.join(target, FILES["adplan"]))
     rel = xlsx_rows(os.path.join(target, FILES["pricefile"]), release)
     keyed = {}
-    adstart = defaultdict(list)   # week -> [(upc11, description)]
+    adstart = defaultdict(list)
     for r in rel:
         d = r["Effective"]
         d = (d.date() if isinstance(d, dt.datetime) else d).isoformat()
@@ -381,9 +386,13 @@ def ask_flyer(target, lead_only=False, release="REVISED", qty_aware=True, zone_u
         keyed[(d, u11, int(r["Zone"]))] = (int(r["Price qty"]), float(r["Price"]))
         if r["Change"] == "AD START" and int(r["Zone"]) == 1:
             adstart[d].append((u11, str(r["Description"])))
+    fixes = defaultdict(list)
+    for r in rows(os.path.join(target, FILES["corrections"])):
+        fixes[(r["ean"][1:12], int(r["zone"].split()[1]))].append(
+            (dt.date.fromisoformat(r["effective_at_open"]), int(r["price_qty"]), float(r["price"])))
     units = defaultdict(int)
     for r in rows(os.path.join(target, FILES["adsales"])):
-        units[(r["flyer_start"], r["upc"][:11], int(r["price_zone"][1:]))] += int(r["units"])
+        units[(r["flyer_start"], r["sales_date"], r["upc"][:11], int(r["price_zone"][1:]))] += int(r["units"])
     advertised = {}
     for r in ad:
         txt = r["ad_price"]
@@ -400,11 +409,15 @@ def ask_flyer(target, lead_only=False, release="REVISED", qty_aware=True, zone_u
         members = [r["upc_11"]]
         copy = r["ad_copy"]
         if copy.endswith(", assorted") and not lead_only:
-            fam = copy[:-len(", assorted")].upper().split()
-            size2 = " ".join(fam[-2:])
-            head = " ".join(fam[:2])
-            members = [u for (u, desc) in adstart[d] if desc.startswith(head + " ") and desc.endswith(" " + size2)
-                       and len(desc.split()) > len(fam)]
+            lead_desc = dict(adstart[d]).get(r["upc_11"], "").split()
+            if match == "family" and len(lead_desc) == 4:
+                members = [u for (u, desc) in adstart[d] if len(desc.split()) == 4 and
+                           desc.split()[0] == lead_desc[0] and desc.split()[1] == lead_desc[1] and
+                           desc.split()[3] == lead_desc[3]]
+            elif match == "price":
+                lead_k = keyed[(d, r["upc_11"], 1)]
+                members = [u for (u, desc) in adstart[d] if keyed[(d, u, 1)] == lead_k and
+                           desc.split()[0] == lead_desc[0]]
             if r["upc_11"] not in members:
                 members.append(r["upc_11"])
         for u in members:
@@ -412,17 +425,27 @@ def ask_flyer(target, lead_only=False, release="REVISED", qty_aware=True, zone_u
     cnt = defaultdict(int)
     over = defaultdict(float)
     for (d, u11), (q, p) in advertised.items():
+        d0 = dt.date.fromisoformat(d)
         bad = False
-        tot_units = units[(d, u11, 1)] + units[(d, u11, 2)]
         for z in (1, 2):
-            kq, kp = keyed[(d, u11, z)]
-            ku = kp / kq if qty_aware else kp
-            au = p / q if qty_aware else p
-            if abs(ku - au) > 0.004:
-                bad = True
-                if ku > au + 0.004:
-                    zu = units[(d, u11, z)] if zone_units else tot_units / 2.0
-                    over[d] += (ku - au) * zu
+            kq0, kp0 = keyed[(d, u11, z)]
+            fx = [f for f in fixes.get((u11, z), []) if d0 < f[0] <= d0 + dt.timedelta(days=6)]
+            for j in range(7):
+                day = d0 + dt.timedelta(days=j)
+                kq, kp = kq0, kp0
+                if fx and corr == "whole":
+                    kq, kp = fx[-1][1], fx[-1][2]
+                elif fx and corr == "dated" and day >= fx[-1][0]:
+                    kq, kp = fx[-1][1], fx[-1][2]
+                ku = kp / kq if qty_aware else kp
+                au = p / q if qty_aware else p
+                if abs(ku - au) > 0.004:
+                    bad = True
+                    if ku > au + 0.004:
+                        n_ = units[(d, day.isoformat(), u11, z)]
+                        if not zone_units:
+                            n_ = (units[(d, day.isoformat(), u11, 1)] + units[(d, day.isoformat(), u11, 2)]) / 2.0
+                        over[d] += (ku - au) * n_
         cnt[d] += bad
     weeks = sorted({r["flyer_start"] for r in ad})
     return {d: cnt[d] for d in weeks}, {d: round(over[d], 2) for d in weeks}

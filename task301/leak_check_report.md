@@ -4,10 +4,10 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: measure, claims, claimed, register, launch, record, decisive, call-only, history, sentence, widening, status, golden, decision, cohort, coverage, recorded, reader, probes, coastal, hinterland, recordings, smoker, survey, readable
+Stump terms swept: measure, claimed, record, register, launch, status, patient, decisive, claims, call-only, extract, coverage, history, golden, smoker, cohort, recorded, sub-region, recordings, decision, survey, sentence, widening, reader, probes
 
 ## 4 design-note vocabulary (REVIEW 5)
-- **REVIEW** `appraisal_guidance_child_poverty_2027.docx`: 3 of 25 stump-paragraph terms appear (measure, record, survey); read whether the document names the move
+- **REVIEW** `appraisal_guidance_child_poverty_2027.docx`: 4 of 25 stump-paragraph terms appear (measure, claimed, record, survey); read whether the document names the move
 - **REVIEW** `complemento_familiar_coverage_2025.pdf`: 3 of 25 stump-paragraph terms appear (claimed, coverage, survey); read whether the document names the move
 - **REVIEW** `complemento_familiar_rules_2026.pdf`: 3 of 25 stump-paragraph terms appear (claims, history, decision); read whether the document names the move
 - **REVIEW** `ecvv2026_main_results.pdf`: 3 of 25 stump-paragraph terms appear (measure, register, survey); read whether the document names the move

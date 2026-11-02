@@ -60,7 +60,7 @@ class Events:
         return kw
 
     def report_time(self, ev_time):
-        return ev_time + dt.timedelta(seconds=int(self.rng.integers(-50, 71)))
+        return ev_time + dt.timedelta(seconds=int(self.rng.integers(-40, 41)))
 
     # ---- group G1: rides the Eastline inbound and snatches as the doors close ---------------------
     def make_g1(self):
@@ -86,7 +86,7 @@ class Events:
             for s_i in pat:
                 code = g1_st[s_i]
                 dep = at(d, stop_dep(trip, code))
-                ev = dep + dt.timedelta(seconds=int(r.integers(0, 76)))
+                ev = dep + dt.timedelta(seconds=int(r.integers(0, 46)))
                 e = self.add(group="G1", date=d, station=code, t_event=ev, t_occ=self.report_time(ev),
                              x=N.STN[code]["x"] + float(r.normal(0, 18)), y=N.STN[code]["y"] + float(r.normal(0, 18)),
                              mo="SNATCH", suspects=int(r.choice([2, 3], p=[0.55, 0.45])),
@@ -109,6 +109,25 @@ class Events:
         for p in self.g1_passing(d, code):
             if abs((t - p).total_seconds()) < margin_min * 60:
                 return False
+        return self.clear_of_runs(d, code, t)
+
+    def clear_of_runs(self, d, code, t, tol_min=7):
+        """No train (either direction) leaving `code` near t also leaves a G1 station near a G1 offence that day."""
+        g1 = [e for e in self.events if e["group"] == "G1" and e["date"] == d]
+        if not g1:
+            return True
+        for tr in N.trips_on(self.tidx, d):
+            if tr["line"] != "EL":
+                continue
+            dep = stop_dep(tr, code)
+            if dep is None or abs((at(d, dep) - t).total_seconds()) > tol_min * 60:
+                continue
+            for e in g1:
+                if e["station"] == code:
+                    continue
+                d2 = stop_dep(tr, e["station"])
+                if d2 is not None and abs((at(d, d2) - e["t_occ"]).total_seconds()) <= tol_min * 60:
+                    return False
         return True
 
     # ---- group G2: Cobb Street evenings ------------------------------------------------------------
@@ -121,10 +140,14 @@ class Events:
         sim = [uy_runs[i] for i in sorted(r.choice(len(uy_runs), size=min(6, len(uy_runs)), replace=False))]
         for run in sim:
             uy = next(e for e in run["events"] if e["station"] == "UY")
-            for _ in range(50):
+            ok = False
+            for _ in range(400):
                 ev = uy["t_event"] + dt.timedelta(seconds=int(r.integers(-180, 181)))
                 if self.clear_of_trips(run["date"], "CB", ev, 7):
+                    ok = True
                     break
+            if not ok:
+                continue
             self._g2(run["date"], ev)
             made += 1
         cands = [d for d in dates(*P.W26) if d.weekday() < 6 and d not in P.HOLIDAYS]
