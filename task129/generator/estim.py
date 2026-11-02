@@ -2,6 +2,7 @@
 interruption, the major event days (IEEE 1366 2.5 beta), the tree-caused outage rate per 100 miles in service, the
 regrowth clock behind each outage and each mile-day, the drivers' shares of the cooperative's rise, and the asks"""
 import os
+import re
 from datetime import date
 
 import numpy as np
@@ -24,7 +25,7 @@ def load(target):
                 T=rd("row_trim_completions_2012-2025.csv"),
                 S=pq.read_table(f("row_tree_survey_2023-2024.parquet")).to_pandas(),
                 W=rd("weather_daily_2016-2025.csv"), M=rd("member_counts_2015-2025.csv"),
-                I=rd("ap_invoices_row_trimming_2024-12_2025-12.csv"))
+                I=rd("ap_trimming_invoice_lines_2024-12_2026-01.csv"))
 
 
 # ------------------------------------------------------------------------------------------------ outages
@@ -35,11 +36,12 @@ def outage_table(X):
     x["rest"] = pd.to_datetime(x.step_restored_local)
     x["mins"] = (x.rest - x.start).dt.total_seconds() / 60.0
     x["cm"] = x.members_restored.astype(int) * x.mins
-    g = x.groupby("outage_id", sort=False)
+    g = x.groupby("ticket_no", sort=False)
     O = g.agg(start=("start", "first"), end=("rest", "max"), level=("level", "first"),
               district=("service_area", "first"), circuit=("circuit", "first"), unit_id=("unit_id", "first"),
               device_type=("device_type", "first"), device_id=("device_id", "first"), cause=("cause_code", "first"),
               members=("members_out", "first"), cm=("cm", "sum"), steps=("step", "count")).reset_index()
+    O = O.rename(columns={"ticket_no": "outage_id"})
     O["members"] = O.members.astype(int)
     O["dur"] = (O.end - O.start).dt.total_seconds() / 60.0
     O["cm_naive"] = O.members * O.dur
@@ -354,53 +356,173 @@ def golden_call(ev):
 
 
 # ------------------------------------------------------------------------------------------------ the asks
-def ask_billing(D, mode="golden"):
-    """miles each contractor billed for trimming done in each quarter of 2025; a credit memo carries the service
-    month of the invoice it reverses"""
+MONTHS = {m: i + 1 for i, m in enumerate(("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV",
+                                           "DEC"))}
+SLASH_PERIOD = re.compile(r"(\d{2})/(\d{2})/(\d{4})-(\d{2})/(\d{2})/(\d{4})")
+MONTH_PERIOD = re.compile(r"\b(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) (\d{4})\b")
+
+
+def stated_month(text):
+    """the month of the work a line states in its own text, where the firm typed one"""
+    m = SLASH_PERIOD.search(text)
+    if m:
+        return "%s-%s" % (m.group(3), m.group(1))
+    m = MONTH_PERIOD.search(text)
+    if m:
+        return "%s-%02d" % (m.group(2), MONTHS[m.group(1)])
+    return ""
+
+
+def trim_lines(D, mode="golden"):
+    """the trimming lines in miles, each with the month of the work it bills under the reading named by mode:
+    golden, the month the line states, else the keyed service month, a paper credit memo at its reversed invoice's
+    month; service_month (the cracker), every credit memo netted against the invoice it reverses and the rest at their
+    service month; own_month, every signed line at its own service month (a blank credit at its invoice's); lag, the
+    invoice month less one with credits netted; positive, invoices only at their service month"""
     I = D["I"].copy()
     I["q"] = I.quantity.astype(float)
-    trim = I[I.item_code.str.startswith("TRIM")].copy()
-    trim["mi"] = np.where(trim.uom == "LF", trim.q / FT, trim.q)
+    tr = I[I.item_code.str.startswith("TRIM")].copy()
+    tr["mi"] = np.where(tr.uom == "LF", tr.q / FT, tr.q)
+    reversed_ = set(tr.applies_to_invoice[tr.doc_type == "CREDIT MEMO"])
     if mode == "golden":
-        month_of = dict(zip(I.invoice_no, I.service_month))
-        trim["svc"] = [m if m else month_of.get(a, "") for m, a in zip(trim.service_month, trim.applies_to_invoice)]
+        stated = tr.description.map(stated_month)
+        own = np.where(stated != "", stated, tr.service_month)
+        month_of = dict(zip(tr.invoice_no, own))
+        tr["svc"] = [o if o else month_of.get(a, "") for o, a in zip(own, tr.applies_to_invoice)]
+    elif mode == "service_month":
+        tr = tr[(tr.doc_type != "CREDIT MEMO") & ~tr.invoice_no.isin(reversed_)].copy()
+        tr["svc"] = tr.service_month
+    elif mode == "own_month":
+        month_of = dict(zip(tr.invoice_no, tr.service_month))
+        tr["svc"] = [m if m else month_of.get(a, "") for m, a in zip(tr.service_month, tr.applies_to_invoice)]
+    elif mode == "lag":
+        tr = tr[(tr.doc_type != "CREDIT MEMO") & ~tr.invoice_no.isin(reversed_)].copy()
+        p = pd.to_datetime(tr.invoice_date).dt.to_period("M") - 1
+        tr["svc"] = p.astype(str)
     elif mode == "positive":
-        trim = trim[trim.doc_type == "INVOICE"]
-        trim["svc"] = trim.service_month
-    elif mode == "signed_by_month":
-        trim["svc"] = trim.service_month
-    elif mode == "wo_month":
-        trim = trim[trim.doc_type == "INVOICE"].drop_duplicates(["vendor", "work_order", "service_month"])
-        trim["svc"] = trim.service_month
-    elif mode == "invoice_date":
-        trim["svc"] = trim.invoice_date.str[:7]
-    trim = trim[trim.svc.str.startswith(str(YEAR))]
-    trim["quarter"] = "Q" + ((trim.svc.str[5:7].astype(int) - 1) // 3 + 1).astype(str)
-    g = trim.groupby(["vendor", "quarter"]).mi.sum()
+        tr = tr[tr.doc_type == "INVOICE"].copy()
+        tr["svc"] = tr.service_month
+    return tr
+
+
+def ask_billing(D, mode="golden"):
+    """miles each contractor billed for trimming done in each quarter of 2025"""
+    tr = trim_lines(D, mode)
+    tr = tr[tr.svc.str.startswith(str(YEAR))].copy()
+    tr["quarter"] = "Q" + ((tr.svc.str[5:7].astype(int) - 1) // 3 + 1).astype(str)
+    g = tr.groupby(["vendor", "quarter"]).mi.sum()
     return {(v, q): float(g.get((v, q), 0.0)) for v in (OUTGOING, INCOMING) for q in ("Q1", "Q2", "Q3", "Q4")}
 
 
+def wo_district(D):
+    """each work order's district, through its trimmed units in the completions and the unit register"""
+    T = D["T"][["work_order", "unit_id"]].drop_duplicates()
+    m = T.merge(D["R"][["unit_id", "district"]], on="unit_id", how="left")
+    return m.groupby("work_order").district.agg(lambda s: sorted(set(s)))
+
+
+def ask_district(D, mode="golden"):
+    """miles billed for trimming done in each district in 2025"""
+    tr = trim_lines(D, mode)
+    tr = tr[tr.svc.str.startswith(str(YEAR))]
+    wd = wo_district(D)
+    dist = tr.work_order.map(lambda w: wd[w][0] if w in wd.index and len(wd[w]) == 1 else "")
+    g = tr.mi.groupby(dist).sum()
+    return {d: float(g.get(d, 0.0)) for d in DISTRICTS}
+
+
+def openings(X, mode="golden"):
+    """the device openings an export's tickets hold, each with its ticket, device, start, end, members and
+    customer-minutes. golden: a ticket's steps split at each step whose members restored are negative (the device off
+    again after its members were restored: a new opening, its members the step's, its minutes from that step);
+    literal: one opening a ticket, customer-minutes added over every step as the steps stand; net: a negative step
+    netted against the restoration it reverses (the battery's reading of a reversal); drop: negative steps dropped"""
+    x = X[["ticket_no", "start_local", "level", "service_area", "device_id", "cause_code", "members_out", "step",
+           "step_restored_local", "members_restored"]].copy()
+    x["s"] = pd.to_datetime(x.start_local)
+    x["t"] = pd.to_datetime(x.step_restored_local)
+    x["r"] = x.members_restored.astype(int)
+    x["k"] = x.step.astype(int)
+    x = x.sort_values(["ticket_no", "k"])
+    out = []
+    for tk, g in x.groupby("ticket_no", sort=False):
+        f = g.iloc[0]
+        head = dict(ticket=tk, level=f.level, district=f.service_area, device_id=f.device_id, cause=f.cause_code)
+        steps = list(zip(g.t, g.r))
+        if mode == "drop":
+            steps = [(t, r) for t, r in steps if r >= 0]
+        if mode == "net":
+            kept = []
+            for t, r in steps:
+                if r < 0:
+                    for j in range(len(kept) - 1, -1, -1):
+                        if kept[j][1] == -r:
+                            kept.pop(j)
+                            break
+                else:
+                    kept.append((t, r))
+            steps = kept
+        if mode == "golden":
+            segs, cur = [], [(f.s, int(f.members_out), [])]
+            for t, r in steps:
+                if r < 0:
+                    cur.append((t, -r, []))
+                else:
+                    cur[-1][2].append((t, r))
+            segs = cur
+        else:
+            segs = [(f.s, int(f.members_out), steps)]
+        for start, mem, st in segs:
+            end = max(t for t, _ in st) if st else start
+            cm = sum(r * (t - start).total_seconds() / 60.0 for t, r in st)
+            out.append(dict(head, start=start, end=end, members=mem, cm=cm))
+    O = pd.DataFrame(out)
+    O["dur"] = (O.end - O.start).dt.total_seconds() / 60.0
+    O["sustained"] = O.dur > 5
+    O["date"] = O.start.dt.normalize()
+    return O
+
+
+def fold(O):
+    """policy 2.1: a device is in one outage at a time, so an opening that starts before its device's latest
+    restoration so far is that outage"""
+    O = O.sort_values(["device_id", "start", "ticket"])
+    keep = np.ones(len(O), bool)
+    last = {}
+    for i, (dev, s, e) in enumerate(zip(O.device_id.values, O.start.values, O.end.values)):
+        open_end = last.get(dev)
+        if open_end is not None and s <= open_end:
+            keep[i] = False
+            last[dev] = max(open_end, e)
+        else:
+            last[dev] = e
+    return O[keep]
+
+
 def ask_med(D, mode="golden"):
-    """for each district: outages, members interrupted and customer-minutes on 2025's major event days (unplanned
-    sustained outages on primary and secondary)"""
+    """for each district: outages, members interrupted and customer-minutes 2025's major event days took out of the
+    reliability figures (unplanned sustained outages on primary and secondary). Stops: cracker (folded, a negative
+    step netted as a reversal), literal (folded, one outage a ticket, steps as they stand), drop (negative steps
+    dropped), records (every ticket, steps as they stand), primary_only, tree_only, outage_minutes (members times the
+    last restoration's minutes)"""
     O = outage_table(D["X"])
     Ou = one_per_interruption(O)
     meds = major_event_days(Ou, D["M"])
     days = set(meds[YEAR][1])
-    base = O if mode in ("records", "naive") else Ou
-    u = base[(base.cause != "PLANNED") & base.sustained & base.date.isin(days)]
+    X = D["X"][pd.to_datetime(D["X"].start_local).dt.normalize().isin(days)]
+    how = {"golden": "golden", "cracker": "net", "literal": "literal", "drop": "drop", "records": "literal",
+           "primary_only": "golden", "tree_only": "golden", "outage_minutes": "literal"}[mode]
+    P_ = openings(X, how)
+    if mode != "records":
+        P_ = fold(P_)
+    u = P_[(P_.cause != "PLANNED") & P_.sustained & P_.date.isin(days)]
     if mode == "primary_only":
         u = u[u.level == "PRIMARY"]
     if mode == "tree_only":
         u = u[u.cause == "TREE"]
-    cm = "cm_naive" if mode in ("naive", "outage_minutes") else "cm"
     out = {}
     for d in DISTRICTS:
         x = u[u.district == d]
-        out[d] = (int(len(x)), int(x.members.sum()), int(round(x[cm].sum())))
+        cm = (x.members * x.dur).sum() if mode == "outage_minutes" else x.cm.sum()
+        out[d] = (int(len(x)), int(x.members.sum()), int(round(cm)))
     return out, sorted(days)
-
-
-def ask_miles(D, mode="golden"):
-    m = miles_end(D["R"], YEAR, mode)
-    return {d: float(m.get(d, 0.0)) for d in DISTRICTS}

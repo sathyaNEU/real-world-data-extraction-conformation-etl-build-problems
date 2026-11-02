@@ -4,7 +4,7 @@
   "domain": "Energy Systems & Utilities",
   "subdomain": "grid reliability and outage analysis (vegetation outage root cause on overhead primary)",
   "objective": "Root-Cause Analysis",
-  "prompt_shape": "07: the call over four programmes with the cooperative's rate, then grids of contractor x quarter billing, district x major-event-day outages, members and customer-minutes, and district miles",
+  "prompt_shape": "07: the call over four programmes with the cooperative's rate, then grids of contractor x quarter billing, district x major-event-day outages, members and customer-minutes, and district billing for 2025",
   "as_of": "2026-01-13",
   "deliverables": [
     "tree_outage_root_cause_2025.docx",
@@ -16,7 +16,7 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 14,
+    "files": 12,
     "formats": [
       "csv",
       "docx",
@@ -41,8 +41,8 @@
     {
       "path": "oms_outage_export_2016-2025.csv",
       "format": "csv",
-      "bytes": 3515535,
-      "rows": 30934,
+      "bytes": 3519024,
+      "rows": 30965,
       "source": "Constructed (seeded generator)",
       "date": "2026-01-13",
       "license": "CC0-1.0 (original work)"
@@ -93,10 +93,10 @@
       "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "ap_invoices_row_trimming_2024-12_2025-12.csv",
+      "path": "ap_trimming_invoice_lines_2024-12_2026-01.csv",
       "format": "csv",
-      "bytes": 32002,
-      "rows": 209,
+      "bytes": 38238,
+      "rows": 222,
       "source": "Constructed (seeded generator)",
       "date": "2026-01-13",
       "license": "CC0-1.0 (original work)"
@@ -124,24 +124,6 @@
       "format": "docx",
       "bytes": 36416,
       "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2026-01-13",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "data_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 11375,
-      "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2026-01-13",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 1677,
-      "rows": 13,
       "source": "Constructed (seeded generator)",
       "date": "2026-01-13",
       "license": "CC0-1.0 (original work)"

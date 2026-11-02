@@ -5,7 +5,9 @@ service level, shipped 2026-10-13) sat in a house domain (business operations, c
 though its decisive method was web performance engineering, which no client domain carries, so its domain read as a
 backdrop; its record is kept under the Architecture 1 record heading below and its identity in the card's lineage.
 Architecture 2 keeps Root-Cause Analysis and moves to Energy Systems & Utilities, grid reliability outage analysis,
-with two analytical layers on the call.
+with two analytical layers on the call. Its ask layer was rebuilt on 2026-11-02 against the 10-30 gates with the main
+call frozen (`freeze.py` rubric mode): the describing files are gone, the three asks ride devices the careful path
+misses, and the ceiling is measured by `generator/ceiling.py` on the cut pack (the ask sheet below).
 
 ## Draw
 
@@ -50,6 +52,14 @@ with two analytical layers on the call.
   `population` shared on the cards; banking collections and opportunity sizing, another mechanism and decision) and
   task230 (the corpus top 1 per cent on surface vocabulary; census coding quality and data quality monitoring,
   another mechanism); no shared invented name; the adjudicated clone check is the author's call.
+  2026-11-02 re-check: `heart` BLOCKed on test.same_puzzle_older and test.same_driver_older against task121 v6
+  (drawn 10-26), task232 v2 (11-01) and task243 (10-18), all drawn after this card and each already carrying a
+  differentiation line against it; answered by three honest differentiation lines on this card (rest exposure built
+  from a roster against a coincident release; an interviewer effect from households seen by two interviewers; a
+  census growth balance missing its migration term, none of them a handover read at matched time since servicing),
+  and `heart` reads PASS with both tests as NOTEs (nearest 0.06, task159). `surface` promotes task128 (back to back,
+  as on 10-14) and task121, task232 and task243 on the same card signature, each answered by those lines; no persona
+  of another build in the pack.
 - **Sources, one line each.** The client's two-layer standard: its canonical expert move is a staggered rollout read
   against units not yet treated; here the not-yet-treated units are the outgoing contractor's units of the same
   months, and the move is only half the call, because the shift it uncovers still has to be read on the regrowth
@@ -109,8 +119,9 @@ span-level right-of-way survey by species group with a 2024 re-survey of rebuilt
 forester's survey tools); overhead mileage that changes as units are converted to underground (the trim-unit
 register); daily peak gusts and rainfall in UTC from three weather stations; the IEEE 1366 major event day rule
 applied from each year's five prior years (the reliability reporting policy); contractor invoices with credit memos
-and re-issued invoice numbers (accounts payable). Nothing is placed to be caught; each mishandling is asserted to
-leave the call where it is.
+and re-issued invoice numbers, keyed by AP on paper and then sent through a supplier portal that files the document's
+month as the service month (accounts payable); storm-mode re-trips logged under the open ticket (the outage system).
+Nothing is placed to be caught; each mishandling is asserted to leave the call where it is.
 
 Layer 2: `estimand_identification`: the right comparison for a rise that begins with a handover is each
 contractor's units read at their own time since trim (the outgoing contractor's units of the same months, and every
@@ -123,7 +134,7 @@ the ash standing within falling distance, which shows a shift that no trim remov
 right-of-way) where the district series shows a step at the handover, and sizing it against East's overdue units and
 South's storms.
 
-Not semantics: every outage's cause code (TREE) is right, every field reads as the dictionary says, and no field
+Not semantics: every outage's cause code (TREE) is right, every field reads as its own system records it, and no field
 separates a tree growing into the line from one falling onto it; read correctly, the district series and the contract
 register still point at the new contractor.
 
@@ -152,6 +163,16 @@ Lesson: a rise that begins with a change of provider is read against the outgoin
 and on the asset's own clock before it is booked to the newcomer; no build on file teaches vegetation outage
 attribution or a handover read against concurrent outgoing work.
 
+## Survivor anatomy
+
+Actor: the deciding property has no column: each unit's time since its last accepted trim is built from the trimming history against each outage's date (a rebuilt unit's from its in-service date), and the ash share among the trees within falling distance from the span survey's species rows under two code lists, summed by unit; no file stores either.
+Link: the comparison no key invites: each contractor's North units set against North's own 2025 rate at the same time since trim, and North's rise read by quartile of ash share, a join of the export, the completions, the survey and the register that the contract register never asks for.
+Reflex: the field's first move, the event study at each handover read against the contract register over the district series per 100 miles, sits at rung 0 and files a re-bid of the trimming contract (Ends on: a re-bid of the trimming contract).
+Back-test: the easy route validates on the pack's own records: North's rate steps up in the year its handover took effect, East's in the year of its own, South's (no handover) least, the storm days are each year's major event days, and the overdue share and the gusts line up with each district's story.
+Second use: every file the decisive step reads has its own use: the completions date the handovers' work and carry the work orders the two billing asks place, the survey is the forester's falling-distance inventory (OPS-ROW-01 5), the register is the rate's denominator, and the export is the rate and the major event day ask.
+Shock: North's rise reads as a new contractor's first two years, an ordinary step at a handover; no unit, circuit or district is present only in the later years, and the units each firm trimmed fail at North's rate for their time since trim.
+Pins: the WHAT is filed in ENG-REL-02 (the rate, the major event days, what an outage is) and OPS-ROW-01 (clearance, the cycle, what each programme answers); no filed sentence names time since trim as the comparison, the ash, the fall-in from beyond the right-of-way or the standardisation against North's own rate.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -167,8 +188,8 @@ attribution or a handover read against concurrent outgoing work.
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | "tree-caused outages" | sustained outages (over five minutes) on overhead primary with cause TREE, outside major event days | with secondary and service outages; with major event days; with momentary events | same call | reliability reporting policy 2.1 (asserted for each) |
-| SF2 | "per 100 miles of overhead primary" | miles in service averaged over the year's days, a unit out of service from its retirement date | miles at year end; miles at year start; every unit ever on the register; a unit still in service on its retirement date | same call; the last gives the same one-decimal rates | policy 2.2 and the dictionary's "date the unit leaves service" (asserted) |
-| SF3 | an outage | one device opening: a ticket's restoration-step rows, and a second ticket of a device already open, are one outage | each step row an outage; each ticket an outage | same call (the second tickets fall on major event days, outside the rate; the ticket reading moves only ask B) | reliability policy 2.1, "a device is in one outage at a time", and the dictionary's grain line (asserted) |
+| SF2 | "per 100 miles of overhead primary" | miles in service averaged over the year's days, a unit out of service from its retirement date | miles at year end; miles at year start; every unit ever on the register; a unit still in service on its retirement date | same call; the last gives the same one-decimal rates | policy 2.2, "from each trim unit's in-service and retirement dates" (convergent, asserted) |
+| SF3 | an outage | one device opening: a ticket's restoration-step rows are one outage, a second ticket of a device already open is that outage, and a ticket whose device tripped again after its members were restored holds two | each step row an outage; each ticket an outage | same call (the second tickets and the storm-mode re-trips fall on major event days, outside the rate; the ticket reading moves only ask B) | reliability policy 2.1, "one device opening ... a device is in one outage at a time", and the export's ticket_no (asserted) |
 | SF4 | "2025" | the calendar year of the outage's start in local time | UTC start; restoration date | same call | policy 2.1 (asserted) |
 | SF5 | "the rise" | 2025 against the 2021 to 2023 average | against 2024; against 2021 to 2024 | same call | policy 4.1, the root-cause clause (asserted for each) |
 | SF6 | "drove" | the driver accounting for most of the rise | any driver with a material share | same call | policy 4.1, and the prompt asks for one programme |
@@ -176,6 +197,8 @@ attribution or a handover read against concurrent outgoing work.
 | SF8 | "past the cycle" | more than four years since the unit's last accepted trim | by completion date rather than acceptance; four and a half years | same call | policy 3.1 (asserted) |
 | SF9 | major event days | IEEE 1366 2.5 beta on system daily SAIDI of unplanned sustained outages, the five prior years | with planned outages; the year's own days | same call | reliability reporting policy 3.2 (asserted) |
 | SF10 | a district's outage | the outage's trim unit's district | the member's billing district | same call | the trim-unit register (every unit in one district) |
+| SF11 | ask B: a storm-day ticket whose restoration steps go negative and then restore again | two outages, the second opening at the negative step with its members | one outage a ticket (the steps as they stand, or the negative step netted as a reversal) | same call (2025's major event days, outside the rate; moves ask B only) | 2.1, "one device opening", "a device that has opened stays open until it is restored": every member had been restored when the device opened again (asserted per ticket) |
+| SF12 | asks A and C: the month of the trimming a portal invoice line bills | the period of the work the line states | the line's service month (its own document's month) | same call (the call never reads the invoices; moves asks A and C only) | the prompt's "trimming done in each quarter" and OPS-ROW-01 4.3 "by the month of the work": the line states the work's period, and its service month is its own date's month on every portal line (asserted) |
 
 ## Ladder
 
@@ -205,9 +228,9 @@ the overdue share (catch-up), the storm check (nothing new for South, no change 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
 | 1 | Population | sustained TREE outages on overhead primary, outside major event days, 2021 to 2025 | policy 2.1; C1 for secondary and momentary rows (asserted) |
-| 2 | Unit of account | the outage, not the restoration step | dictionary grain line; asserted same call |
+| 2 | Unit of account | the outage, not the restoration step | policy 2.1 and the export's ticket_no and step columns; asserted same call |
 | 3 | Attribution window | the outage's start date, local time | policy 2.1; C1 at the year edges |
-| 4 | As-of dating | the trim history and unit register as of 31 December 2025 | export manifest dates; static after |
+| 4 | As-of dating | the trim history and unit register as of 31 December 2025 | the extracts' own dates (nothing in them after the January 2026 run); static after |
 | 5 | Version basis | the unit register as it stood each day (in-service and retirement dates) | policy 2.2 |
 | 6 | Denominator | miles in service averaged over the year's days | policy 2.2; C4 against year-end miles (same call, asserted) |
 | 7 | Weighting | outages over mile-years, pooled within a district | policy 2.2; same call under per-unit means (asserted) |
@@ -215,14 +238,14 @@ the overdue share (catch-up), the storm check (nothing new for South, no change 
 | 9 | Boundary inclusivity | over five minutes is sustained | policy 2.1; C1, no outage between 5 and 6 minutes moves the call |
 | 10 | Rounding path | rates per 100 miles on unrounded counts and miles | the prompt's rounding sentence; asserted |
 | 11 | Tie-break | none needed: the drivers' shares are apart | C4 |
-| 12 | Maturity and censoring | 2025 complete at the January 2026 export | export manifest; no outage after 31 December |
+| 12 | Maturity and censoring | 2025 complete at the January 2026 export | the export's span (2016 to 2025); no outage after 31 December |
 | 13 | Order of operations | major event days found on the whole system before the TREE filter | policy 3.2; asserted same call |
 | 14 | Row order | none | asserted over shuffles |
 | 15 | Duplicate resolution | step rows collapse to outages; no outage repeats | C1 |
 | 16 | Identity normalisation | renumbered units carry their district | trim-unit register; asserted |
 | 17 | Netting against gross | none on the call | n/a: no netting enters the call |
 | 18 | Dimensional units | miles everywhere on the call | the register in miles |
-| 19 | Code and status semantics | cause TREE; outage level PRIMARY; trim status ACCEPTED | dictionary; never the stump |
+| 19 | Code and status semantics | cause TREE; outage level PRIMARY; trim status ACCEPTED | the codes as each system records them; never the stump |
 | 20 | Integerisation | none | n/a: outages are whole by construction |
 | 21 | Clause scope | the root-cause clause covers the cooperative's rate | policy 4.1 |
 | 22 | Forward window contents | the 2027 programme answers the driver of 2025's rise | right-of-way maintenance policy 6 |
@@ -237,119 +260,187 @@ and the records alone separate them. Every alternative in the fork table returns
 ## Oracles
 
 - The trimming contract register: dates the handovers; it ties to every reading and names no cause.
-- The contractor invoices: billing only; they feed one ask and never the call.
+- The contractor invoices: billing only; they feed two asks and never the call.
 - none ties only under the golden.
 
 ## Ask sheet
 
-Three asks, each on rows outside the main call's population or in columns the call never reads, each carrying a
-silent device against the careful solver's path. Figures, stops and deltas are design targets until the build
-measures them; `checks.py` asserts each stop's direction and that the golden sits outside every stop's bin.
+Three asks, each on rows the call never reads or on files it never opens, each with a primary device the careful
+solver's route misses, rebuilt on 2026-11-02 after the honest ceiling of the 10-14 layer measured 20 of 20 kept (pair
+83.5; `## Tried and rejected`). Every figure below is measured on the cut pack and asserted in `checks.py`.
 
-**Ask A, contractor billing.** For each trimming contractor, the miles of right-of-way it billed the cooperative for
-trimming done in each quarter of 2025 (2 contractors x 4 quarters, miles to one decimal). H18 home: the audit trail of
-the contractor rival (what each contractor delivered in the year the handover reading blames). Use: the manager
-checks delivered miles before any re-bid. File: `ap_invoices_row_trimming_2024-12_2025-12.csv` (14 columns). Primary device
-(D1, a replay under fresh ids beside genuine pairs): a disputed invoice is voided by a credit memo and re-issued under
-a new invoice number with the same work order, service month and miles, while long work orders are billed in two
-genuine progress invoices. Hazards: the new contractor bills trimming in linear feet, the outgoing one in miles (D3,
-visible in `uom`); non-trimming lines (hazard-tree removal each, herbicide acres, mobilisation lump sums) carry other
-units (D5); the quarter is the service month's, invoices dated the month after (D8). Stops: positive trimming lines
-only (the natural read) overstates every quarter holding a re-issue; one invoice a work order (the over-clean)
-understates every quarter holding a progress invoice; the invoice date's quarter shifts every quarter's miles; the
-golden nets credit memos against their invoices. Realism: accounts payable extracts carry credit memos and re-issued
-invoices, and contractors bill in their own units.
+**Ask A, contractor billing (8 figures, miles to one decimal).** For each trimming contractor, the miles of right-of-way
+it billed the cooperative for trimming done in each quarter of 2025. H18 home: the audit trail of the contractor rival
+(what each firm delivered in the year the handover reading blames). Use: the manager checks delivered miles before any
+re-bid. Path: `ap_trimming_invoice_lines_2024-12_2026-01.csv` (vendor, invoice number and date, document type, the
+invoice a credit memo names, work order, service month, item, description, quantity, unit: 11 of its 14 columns) and
+OPS-ROW-01 4.3; two files. Golden figures unchanged from 10-14 (Hollenbeck 66.5, 80.9, 84.4, 56.6; Garrity 94.7,
+136.3, 114.9, 178.5); the path moved.
+- **Primary (D8, a recorded date for the event date, with D7, the true key in a reference string): the portal's service
+  month.** AP keys a paper invoice with the month of the work as its service month. Hollenbeck sent its invoices through
+  the cooperative's supplier portal from its first invoice of 2025, Garrity from its first dated on or after 1 April
+  2025; the portal fills the service month from the document's own date when the firm leaves the service period blank,
+  and each firm types the work order and the period of the work into the line (Hollenbeck "ROW TRIM OH PRI, WO-25-0117,
+  MAR 2025", Garrity "Trimming OH primary ROW | WO-25-0123 | 03/16/2025-03/31/2025"). 110 of the 129 trimming lines
+  came through the portal; on every one the service month is the document's month and the work it bills is the period
+  its text states, a month before the service month on every invoice dated in the month after that period. Read by the service month (the
+  cracker, credits netted as the battery nets them), every cell misses by 9.4 to 47.6 miles: December 2024's work billed
+  in January 2025 lands in Hollenbeck's Q1, each quarter's last month moves into the next, and December 2025's work
+  billed in January 2026 leaves the year. Silent: every invoice carries a service month, no service month is blank
+  except a paper credit memo's, the keys are unique, the credits tie to the invoices they name, and the paper invoices
+  dated before each firm's first portal invoice keep the month of the work; the period shows only in the line text,
+  which nothing invites a solver to read once the item code has found the trimming lines.
+- **Forcing (asserted on the shipped rows):** every portal trimming line states one month of work and the golden
+  reading recovers the generator's month of the work on all 129 trimming lines; every paper invoice's service month is
+  the month of the work and states no period; every portal line's service month is its own document's month.
+- **Hazards:** H1 linear feet against miles (Garrity bills feet; read as miles, its four cells run 499,919 to 942,422
+  high); H2 credit memos (a disputed invoice voided by a credit memo naming it and re-issued under a new number at 0.97
+  of the price; ignored, the re-issues double: Hollenbeck 6.7 to 25.5 high, Garrity 3.2 to 42.1); H3 hazard-tree,
+  herbicide and mobilization lines in each, ash and acre units; H4 progress invoices (two genuine invoices for one work
+  order and month, the first dated the 15th).
+- **Stops (measured):** the cracker's service month misses 8 of 8 (Hollenbeck 98.1, 40.8, 106.5, 30.9; Garrity 63.6,
+  161.6, 105.5, 131.0); every signed line at its own service month misses 8 of 8; invoices only (credits ignored) at
+  the service month misses 8 of 8; the invoice month less one misses 7 of 8 (Hollenbeck's Q4 holds, its Q4 work all in
+  December); the golden.
+- **Pin test:** the asking sentence pins the contractor, the miles billed, trimming and the quarter of the work done in
+  2025, and OPS-ROW-01 4.3 bills by the month of the work; the device sits in which month each portal line's work falls,
+  which the service month misstates, the line's own text states and no filed sentence adjudicates (nothing names the
+  portal or the service month's source).
+- **Realism:** supplier portals fill an optional service period from the document date when a vendor leaves it blank,
+  and vendors type the work period into the line; each firm onboarded at its own date.
 
-**Ask B, major event day reconciliation.** For each district, how many outages, members interrupted and
-customer-minutes of interruption 2025's major event days took out of the reliability figures (3 districts x 3, whole
-numbers). H18 home: a
-reconciliation of the rates the call reads (what the major event day rule removed). Use: the reliability report's
-footnote. File: `oms_outage_export_2016-2025.csv` (rows on major event days only, outside the call's population).
-Primary device (D6, an event's quantity on every line it covers): customer-minutes come from the restoration steps
-(each step's restored members times the minutes to that step); the outage's total members times its final
-restoration minutes overstates every district. Second device (D1, a resubmission that opens no second case): in storm
-mode the outage system opens a ticket per cluster of member calls, so some device outages carry a second ticket with
-its own number, a start a few minutes apart and the same restoration steps; the policy's outage is one device opening,
-and a device is in one outage at a time (2.1, the WHAT, filed after the stage 4 judge), so the second ticket is the same
-outage, and counting every ticket overstates the outages and members. No column flags the second ticket; the
-generator keeps genuine outages off a device that is already open, so the fold removes exactly the second tickets
-(asserted). Hazards: the reliability figures count
-unplanned sustained outages on primary and secondary alike (a primary-only or TREE-only count understates); planned
-outages are not in them. Stops: every ticket (overstates outages and members), outage-level
-customer-minutes (overstates minutes), primary only and TREE only (understate all three), the golden. Realism: storm-mode duplicates and staged
-restoration are how outage systems record a storm.
+**Ask B, major event day reconciliation (9 figures, whole numbers).** For each district, how many outages, members
+interrupted and customer-minutes of interruption 2025's major event days took out of the reliability figures. H18
+home: a reconciliation of the figures the call's rates leave out. Use: the reliability report's footnote. Path:
+`oms_outage_export_2016-2025.csv` (rows of 2025's two major event days only), the member counts for the days, ENG-REL-02
+2.1, 3.1 to 3.3; three files, 13 columns.
+- **Primary (one ticket holding two device openings, the battery's reversal repair wrong): storm-mode re-trips.** In
+  storm mode a ticket stays open until the dispatcher releases the device, so when a device the crew has restored trips
+  again on the storm day the outage system logs it under the same ticket: a restoration step whose members restored are
+  negative (every member the device had restored off again, at the time it tripped), then the steps that restore them.
+  Fifteen tickets on 18 June and 9 December 2025 carry one (North 4, East 5, South 6). ENG-REL-02 2.1 makes each a
+  second outage: an outage is one device opening, and a device that has opened stays open until it is restored, which
+  it was. The battery reads a negative step as a reversal and nets it against the restoration it reverses (the cracker:
+  one outage a ticket, North 160, East 123, South 112 outages; members 5,956, 3,559, 3,598; customer-minutes 1,843,580,
+  1,231,404, 1,195,010, every figure off). Silent: each re-trip ticket's members restored add to its members out, every
+  key is unique, and no column marks a re-trip.
+- **Forcing (asserted):** each re-trip takes off exactly the members out the device had restored; split at the negative
+  step, each ticket holds two openings and their customer-minutes add to the steps' own total; every re-trip opens and
+  re-trips on the same major event day.
+- **Hazards:** H5 storm-mode second tickets of a device already out (kept, North 22, East 12, South 16 outages over, and
+  their members and minutes); H6 primary only or TREE only (every figure under); H7 members times the last
+  restoration's minutes (customer-minutes 161,101 to 178,272 over); planned outages are not in the figures (3.1).
+- **Stops (measured):** the cracker (folded, the negative step netted) misses 9 of 9; negative steps dropped as
+  impossible misses 9 of 9; every ticket kept misses 9 of 9; primary only, TREE only and outage-level minutes miss 9 of
+  9 each; one outage a ticket with the steps as they stand misses the six outage and member figures and keeps the three
+  customer-minutes figures (a negative restoration subtracts its own minutes); the golden.
+- **Pin test:** the asking sentence pins the days, the three quantities and the reliability figures' scope; 2.1 files
+  what an outage is and 3.1 how its minutes add; the device sits in how many device openings a storm-mode ticket holds,
+  which no pin names and no filed sentence adjudicates (2.1 defines an outage, never a ticket's re-trip).
+- **Realism:** storm-mode tickets held open until release, re-trips after restoration on storm days, and step tables
+  logging customers off again as a negative restoration are how outage systems record a storm.
 
-**Ask C, miles in service.** For each district, the miles of overhead primary in service at the end of 2025 (3
-districts, miles to one decimal). H18 home: the audit trail of the rate's denominator. Use: the reliability report's
-system description. File: `trim_unit_register.csv` (9 columns). Primary device (D4, absence as the signal, its
-over-clean half): units scheduled for conversion to underground in 2026 already carry their planned retirement date,
-so "retired date blank" drops units still in service on 31 December 2025; the careless read keeps units retired in
-2024 and 2025. Hazard: renumbered units (an old id retired and a new id in service days later). Stops: every overhead
-unit (overstates), blank retirement only (understates), the golden.
+**Ask C, district billing (3 figures, miles to one decimal).** For each district, the miles of right-of-way the
+contractors billed for trimming done there in 2025. H18 home: each district's trimming delivered in the year the 2027
+programme is set against. Use: the programme's district base. Path: the invoice lines (A's eleven columns), the
+completions (work order, unit) and the unit register (unit, district); four files, 15 columns.
+- **Primary: the portal's service month at the year's edges, through each work order's district.** Read by the service
+  month, December 2024's work billed in January 2025 comes into 2025 (Hollenbeck's last North and East orders among it)
+  and December 2025's billed in January 2026 leaves it: the cracker's North 399.9, East 92.8, South 245.3 against 441.8,
+  89.7 and 281.3. Each work order's district comes from its trimmed units (every order sits in one district, asserted).
+- **Stops (measured):** the cracker misses 3 of 3; every signed line at its own month 3 of 3; invoices only 3 of 3; the
+  invoice month less one 2 of 3 (East holds); the golden.
+- **Pin test:** the sentence pins the district, the miles billed, trimming and the year of the work; the device sits in
+  the year each line's work falls, which the service month misstates at both edges.
 
-**The main population's zero-counts** (asserted in `checks.py`): no second storm-mode ticket, planned outage or major event day
-row among the call's outages; no invoice row in any file the call reads; the survey's re-surveyed and retired spans
-leave every unit's ash share for the years it was in service unchanged (Layer 1, no ask carries them).
+**The main population's zero-counts (asserted in `checks.py`):** every file the call reads other than the export and
+the completions is the 10-14 file byte for byte (the register, the survey, the weather, the member counts, the contracts
+register, both policies, and both distractors); the completions less their record numbers (a column the call never
+reads, renumbered after the 11-02 leak read) are the 10-14 file byte for byte; the export less the re-trip steps,
+under its 10-14 header, is the 10-14 export byte for byte; the negative steps sit on the fifteen re-trip tickets only, every one opened and re-tripped
+on a 2025 major event day; the re-trips read every way (split, as they stand, netted, dropped) leave every year's major
+event days; the call never reads the invoices.
 
 **Hazard table.**
 
-| Hazard | Asks moved | Per-ask delta (design target) |
+| Hazard | Asks moved | Per-ask delta (measured) |
 |---|---|---|
-| retirements and renumbering in the unit register | C | about 2 per cent |
-| restoration steps | B | customer-minutes about 30 per cent |
-| local time against UTC | B | at most a few outages a district |
+| H1 linear feet read as miles | A (Garrity's four cells), C | 499,919 to 942,422 miles high |
+| H2 credit memos ignored | A (all eight), C | 3.2 to 42.1 miles a cell |
+| H5 second tickets kept | B (all nine) | 12 to 22 outages, 300 to 742 members, 85,770 to 186,478 customer-minutes over |
+| H6 primary only | B (all nine) | 10 to 12 outages under |
+| H7 outage-level minutes | B (customer-minutes) | 161,101 to 178,272 over |
 
-**Referee:** none; every control ties under every handling.
+**Referee:** none; each contractor's and each vendor's totals tie under every reading of the months, and nothing ties
+only under the golden or only on the wrong read.
 
 **Cracker sheet** (the response that lands the call, runs the hygiene battery and executes every filed rule it
 points at):
 
-| Ask figure | Cracker's path | Result |
-|---|---|---|
-| A, outgoing contractor, four quarters | positive trimming lines, units converted, service quarter | miss |
-| A, new contractor, four quarters | the same | miss |
-| B, outages by district | every ticket on the major event days | miss |
-| B, members interrupted by district | every ticket's members on the major event days | miss |
-| B, customer-minutes by district | the outage's members times its final minutes | miss |
-| C, miles by district | overhead units with a blank retirement date | miss |
+| Ask figure | Cracker (lands the call, runs the battery, executes every filed rule) | Cracker against the golden | Verdict |
+|---|---|---|---|
+| A, Hollenbeck, four quarters | trimming lines, feet converted, each credit memo netted against the invoice it names, the rest at their service month | 98.1, 40.8, 106.5, 30.9 against 66.5, 80.9, 84.4, 56.6 | miss |
+| A, Garrity, four quarters | the same | 63.6, 161.6, 105.5, 131.0 against 94.7, 136.3, 114.9, 178.5 | miss |
+| B, outages by district | one outage per device opening as 2.1 folds the second tickets, each negative restored step netted against the restoration it reverses | 160, 123, 112 against 164, 128, 118 | miss |
+| B, members interrupted by district | the same | 5,956, 3,559, 3,598 against 6,059, 3,674, 3,802 | miss |
+| B, customer-minutes by district | the same, minutes over the steps left | 1,843,580, 1,231,404, 1,195,010 against 1,830,630, 1,217,472, 1,181,773 | miss |
+| C, miles by district | A's lines at their service month's year, each work order's district from its units | 399.9, 92.8, 245.3 against 441.8, 89.7, 281.3 | miss |
 
-**Mirror sheet.** The response stopping on R0 or R1 files the same ask values as the cracker (the asks are
-decoupled from the call).
+**Mirror sheet.** The response stopping on R0 (a re-bid) or R1 walks the same ask paths and files the cracker's values
+(the asks are decoupled from the call).
 
-Mirror leakage: 0 per cent of ask weight (every row above misses for the mirror as for the cracker).
+Mirror leakage: 0.0 per cent of ask weight (the mirror keeps no ask figure).
 
-Pair ceiling: 31.0 (the one-cracker case at the 0.10 allowance a top response, r about 5: (38 + 7 + 5.5 + 5 + 7 + 5.5) / 2 with the two components banked by both).
+Pair ceiling: 28.5 (the cracker 38 + 7 + 55 x 0/20 = 45.0; the mirror on R0, 5 + 7 + 55 x 0/20 = 12.0).
+
+Measured by: generator/ceiling.py on the cut pack (target.zip 3871de01b7e4a634), its own code throughout (it imports
+nothing from the generator); its full-includer route reproduces all twenty golden figures, so each is recoverable
+from the pack by a second path.
+
+- **Stress rows, not the gate (ceiling.py prints them).** One outage a ticket with the steps as they stand keeps B's
+  three customer-minutes figures (3 of 20, pair 36.8 if both top responses take it); the invoice month less one with
+  those steps keeps 5 of 20 (pair 42.2); every signed line at its own month with negative steps dropped keeps none; the
+  full includer, who reads each portal line's stated period and opens a new outage at each negative step, keeps 20 of
+  20, which with the call landed puts the pair at 83.5. The layer stands on two primaries from two systems, the
+  residual risk recorded here: the includer has to read the line text against the service month and see a negative
+  restoration as the device opening again, judgments the battery does not make.
 
 ## Leak check
 
-`leak.py --asof 2026-01-13`: REVIEW, no LEAK. Each REVIEW line:
-- `reliability_reporting_policy.docx`, six stump-paragraph terms: harmless; they are the policy's own vocabulary, and
-  4.1 files the review's task (name the driver of most of the difference and its programme), never the move.
-- `right_of_way_maintenance_policy.pdf`, six terms: harmless; it defines clearance, the cycle, hazard trees and the
-  programme each driver calls for, as a real policy does, and says nothing about which driver acts.
+`leak.py --asof 2026-01-13` on the 2026-11-02 cut: REVIEW, no LEAK (the dictionary and manifest LEAKs gone with the
+files). Each REVIEW line:
+- `reliability_reporting_policy.docx`, seven stump-paragraph terms (byte for byte the 10-14 policy): harmless; the
+  policy's own vocabulary, and 4.1 files the review's task (name the driver of most of the difference and its
+  programme), never the move.
+- `right_of_way_maintenance_policy.pdf`, eight terms (unchanged): harmless; it defines clearance, the cycle, hazard
+  trees and the programme each driver calls for, as a real policy does, and says nothing about which driver acts.
 - `oms_outage_export_2016-2025.csv`, `device_type` and `device_id`: harmless; outage systems export the device that
   opened.
-- `trim_unit_register.csv`, dates after 2026-01-13: the allow-list, conversions to underground scheduled for 2026
-  (ask C's device), asserted in `checks.py` (H16).
+- `trim_unit_register.csv`, dates after 2026-01-13: the allow-list, conversions to underground scheduled for 2026,
+  asserted in `checks.py` (H16).
 - `trimming_contracts_register.xlsx`, dates after 2026-01-13: contract end dates, validity windows.
 
-Isolated reader (stage 4, one read): question 1 none (the nearest sentences, reliability policy 4.1 and right-of-way
-policy 6, file the review's task and the programme each driver calls for, not how to apportion the rise); question 2
-none; question 3 the dictionary and the manifest (the extracts' registers); question 4 none; question 5, policy 2.1,
-2.2 and 3.1 to 3.3 executed literally give 21.9 in 2025 and 11.2 on average over 2021 to 2023, the golden; question
-6 an analytical choice (decomposing the rise into its drivers). Its realism tells, fixed in the generator: every
-original unit in service on 1 January 1968 (each circuit now carries its energising date and some units a later
-extension's); constant peer miles in the statewide survey (now drifting with conversions); the retirement date read
-as exclusive (counting a unit in service on its retirement date gives the same one-decimal rates, asserted under SF2).
-Kept as true to the fiction: three-decimal GIS lengths, round contract unit rates, one extract date for the batch.
+Isolated reader, 2026-11-02 (one read of the cut pack, Sonnet at medium, a scratch copy of `prompt.txt` and `target/`
+only): question 1 nothing beyond the filed standard, quoting reliability policy 4.1 (the review names the driver of most
+of the difference and its programme) and right-of-way policy 6.1 to 6.4 (the programme each driver calls for) as the
+framework, not the finding, both the 10-14 documents byte for byte; questions 2, 3 and 4 none (no describing file
+left); question 5, policy 2.2 with 2.1, 3.2 and 3.3 read literally counts the sustained TREE outages on overhead primary
+outside major event days over the day-averaged miles in service, the golden's population and denominator (its gloss
+that an outage is a ticket gives the same count off the major event days, where no ticket holds a re-trip or a second
+ticket; on ask B the judge rules 2.1's one device opening forces the split, SF11); question 6, the counting is rule
+execution and the apportioning of the rise among the drivers an analytical choice the data separates, which the
+judge's decisive_step analytical agrees with (no split: the default path executes every filed rule and still files the
+re-bid, R3a). Its three REVIEW rulings harmless. Its realism tells: the completions' record numbers stepping +4, +4, +1,
+fixed (renumbered from their own stream with uneven steps, the column the call never reads, every other byte asserted
+the shipped file's); kept as true to the fiction, in files the call reads and so the 10-14 bytes: the scheduled 2026
+conversions carrying their planned retirement dates in the register, per-year sequential ticket numbers, one extract
+date on the batch, a policy restating IEEE 1366's method, the PDF's metadata naming its owner, the contracts register
+created in 2016 and kept since, and steady member growth; and in the invoices, the three description styles (AP's item
+text on paper invoices, each firm's own text in the portal), which are the portal's record.
 
-Second read (policy 2.1 and the dictionary changed after the judge's pass 1): questions 1, 2 and 4 none, question 3
-the registers; question 5 executes to 21.9 and 11.2 and, under 2.1's "a device is in one outage at a time", folds the
-second tickets as the golden does (North 160, East 123, South 112 outages on 2025's major event days); question 6 an
-analytical choice. Its realism tell, the statewide survey's fourteen peers running alphabetically A to N with smooth
-growth, is fixed: fourteen invented names with uneven initials, none shared with another card, and roughened member
-growth and miles. Its "borderline" on right-of-way policy 6 (the programme each driver calls for tells the solver what
-to test, not which driver wins) is the filed standard the question needs.
+The 10-14 reads (two, on the pack with the dictionary and manifest): question 1 none, question 2 none, question 3 the
+dictionary and the manifest, question 5 executing to 21.9 and 11.2, question 6 an analytical choice; their realism
+tells were fixed in the generator then (energising dates, peer miles and names, the retirement-date reading).
 
 ## Determinism judge
 
@@ -367,28 +458,39 @@ the golden: policy 4.3 bills by the month of the work, and the dictionary's `ser
 and `applies_to_invoice` (invoice a credit memo reverses) put a credit at the reversed invoice's month; ignoring it
 counts a voided invoice beside its re-issue.
 
+Pass 3 (`determinism_check_report_pass3.md`, 2026-11-02, on the cut d9d05fe6, which differs from the shipped cut only
+in the completions' record numbers): DETERMINISTIC, APPROVE. Every graded figure reproduced from the bundle: the call
+(21.92 and 11.17; North 30.21 and 11.08), 2025's major event days, and all twenty ask figures (Hollenbeck 66.49,
+80.87, 84.44, 56.57; Garrity 94.70, 136.34, 114.88, 178.52; ask B exactly; the districts 441.81, 89.71 and 281.29).
+Its two optional pins, a clause in 2.1 saying a negative restoration opens a new outage and one in 4.3 saying the work
+month is the line's own period, are declined: each states a device's handling (the pin test), and the judge rates both
+goldens forced by the filed WHAT (2.1's one device opening; the prompt's trimming done and 4.3's month of the work), so
+both readings are closed in the fork table (SF11, SF12) and asserted, never filed in the pack. Its hygiene note, 67
+scheduled conversions dated in 2026, is the register's furniture since 10-14 and moves no figure.
+
 Gate G: `decomposition_attribution`, `analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
 Gate H: domain pass, layers pass, decisive_step analytical.
 
 ## Pre-ship check
 
-The 10/10 rules re-read against the built pack (seed 129227):
+The 10/10 rules re-read against the 2026-11-02 cut (seed 129227, main call frozen):
 - Domain: the deciding quantity is the tree-caused outage rate read on the regrowth clock and against the ash within
   falling distance, each contractor's units against North's rate at the same time since trim; with a hospital's nouns
   there is no regrowth after a trim, no cleared corridor with trees standing beyond it and nothing dying outside it.
-  Both judge passes: Gate H domain pass.
-- Layer 1 stays Layer 1: restoration-step rows, storm-mode second tickets, audits pending at the extract, renumbered
-  rebuilt units, two survey code lists, mileage changing with conversions, UTC weather, credit memos and linear feet;
-  each mishandling asserted to leave the call (R2, SF1 to SF10), and the second tickets fall on major event days only.
+- Layer 1 stays Layer 1: restoration-step rows, storm-mode second tickets and re-trips (2025's major event days only),
+  audits pending at the extract, renumbered rebuilt units, two survey code lists, mileage changing with conversions,
+  UTC weather, credit memos, linear feet and the supplier portal's service month (the invoices, which the call never
+  reads); each mishandling asserted to leave the call (R2, SF1 to SF10).
 - Layer 2 decides: the default path files the re-bid on the generator's clean truth and on the bundle (R3a); the
-  decisive step alone files hazard-tree removal (R3b); both reader reads and both judge passes named the decisive step
-  an analytical choice.
+  decisive step alone files hazard-tree removal (R3b); the 11-02 leak reader named the apportioning of the rise an
+  analytical choice and quoted nothing that hands it over.
 - Gate G: no artifact ranks the programmes; the statewide survey and the AMI blink counts are distractors named in
   `metadata.json` and unused by the golden route (asserted).
-- Asks decoupled: no ask device in the call's population (the call never reads the invoices; the second tickets sit on
-  major event days), asserted.
-- Figures: `figures_check.py` exit 0; the verifier recomputes every stated figure from the bundle; two builds
-  byte-identical; containers clean.
+- Asks decoupled: every file the call reads is the 10-14 file byte for byte except the export (its ticket column named
+  ticket_no and the re-trip steps on 2025's major event days) and the completions (record numbers renumbered, every
+  other byte the same), asserted; the call recomputes unchanged (`freeze.py check --mode rubric` PASS).
+- Figures: `figures_check.py` exit 0; the verifier recomputes every stated figure from the bundle with its own code;
+  two builds byte-identical; containers clean; `generator/ceiling.py` on the cut pack: cracker 0 of 20, pair 28.5.
 
 ## Architecture 1 record (re-rooted 2026-10-14)
 
@@ -877,3 +979,15 @@ Pair ceiling: 33.0 (the one-cracker case at a 0.10 ask allowance per top respons
 - Seed 129215 (stage 3, measured): it passed every check then in force, but North's 2025 rise grew with time since trim (16 to 26 per 100 miles, a 2.7 standard-error draw against a flat mean over eight seeds) and would have blurred the decisive chart; the additive check now holds each band within a quarter of the mean rise and the rise within two years of a trim within 0.85 to 1.18 of the rise two to four years after.
 - Credit memos and audit acceptances dated after the 13 January 2026 extract (stage 3, H16): a trim not yet audited at the extract now reads PENDING with no acceptance date, and a late invoice's credit memo follows within the days left before the extract.
 - Policy 2.1's "the outage management system records each outage under an outage number" beside "one device opening" (stage 4, judge pass 1 FIX_NOW): read as one ticket, one outage, it counted the storm-mode second tickets and moved ask B (182, 135 and 128 outages against 160, 122 and 112); 2.1 now files that a device is in one outage at a time and records outages under ticket numbers, the dictionary's grain line says ticket, and eighteen pairs of genuine outages the generator had put on one recloser or breaker at once now take a free device (East's ask B moved to 123 outages; the call and every other figure unchanged).
+
+- The 10-14 ask layer measured honestly on the shipped pack (2026-11-02, a scratch ceiling script run before any document work, sharing no code with the generator): the cracker that lands the call, runs the battery and executes the filed rules kept 20 of 20 ask figures, pair 83.5, against the sheet's paper 31.0. Ask A's credit memos are netted by the battery's reversal and its feet converted by the units check; ask B's fold, members and step minutes are ENG-REL-02 2.1 and 3.1 executed; ask C's miles in service at the end of 2025 is the call's own denominator (2.2's in-service rule). All three devices replaced.
+- The data dictionary and the export manifest (2026-11-02, `leak.py` LEAK on both names): removed; the one fact the frozen figures and ask B lean on, that the export's id is a ticket, now sits in the export's own header (`ticket_no`) beside 2.1; nothing else the main call needs lived only there (asserted: the call recomputes unchanged with both files gone).
+- Ask C kept as miles in service with a device in the register (2026-11-02, design): every register row feeds the day-averaged denominators, so a device there either moves the call or forks the year-end boundary; re-sited to each district's 2025 billed trimming miles, three figures in miles to one decimal as before.
+- A nested-members device for ask B, a breaker opening over a fuse already out with its members out larger than its steps restore (2026-11-02, design): the members interrupted would turn on members out against the steps, a counting convention no filed sentence settles, the judge's failure on task189 and task195; not built.
+- A cost-centre renumbering read at the current chart as ask C's own device (2026-11-02, design): every line carries a work order whose units name the district, so the battery's repair from the finer key is right on every line; not built.
+- Equal progress halves as an ask A device, genuine near-duplicate invoices the battery would deduplicate (2026-11-02, design): whether a careful response removes two invoices with distinct numbers is not forced either way; not built.
+- The storm-mode re-trips on every major event day since 2016 (2026-11-02, design): they would move rows of 2016 to 2024 that the thresholds read; confined to 2025's two days, which no threshold and no rate reads.
+- The portal from one date for both firms (2026-11-02, measured on paper): Hollenbeck billed no March work, so a go-live after its December 2024 bills leaves its Q1 untouched, and one from January for Garrity puts every service month on its own document's month, a column a solver sees through; the go-lives follow each firm (Hollenbeck with its first 2025 invoice, Garrity from 1 April), and every cell moves.
+- Customer-minutes from the re-trip split alone (2026-11-02, measured): split or not, a ticket's steps add to the same minutes (a negative restoration subtracts its own), so one outage a ticket with the steps as they stand keeps the three customer-minutes figures; recorded as a stress row (pair 36.8 if both top responses take it), while the battery's netting, the cracker, misses them.
+- The judge's two optional pins (2026-11-02, pass 3): a 2.1 clause that a negative restoration opens a new outage and a 4.3 clause that the work month is an invoice line's own period; each names a device's handling and would make asks A, B and C executable, while the judge rated both goldens forced by the filed WHAT, so both readings are closed in the fork table (SF11, SF12) and asserted instead.
+- The completions' record numbers stepping +4, +4, +1 (2026-11-02, leak reader): a generator's pattern in a column the call never reads; renumbered from their own stream with uneven steps, every other byte of the file asserted the 10-14 file's.

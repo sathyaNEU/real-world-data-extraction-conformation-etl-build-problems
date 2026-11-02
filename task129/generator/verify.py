@@ -5,6 +5,7 @@ the generator's estimators), and compares each with figures.json at the stated r
 """
 import json
 import os
+import re
 import sys
 
 import numpy as np
@@ -30,11 +31,11 @@ def outages(target):
     s = pd.to_datetime(X.start_local)
     r = pd.to_datetime(X.step_restored_local)
     X = X.assign(s=s, r=r, cmin=X.members_restored.astype(int) * (r - s).dt.total_seconds() / 60.0)
-    O = X.groupby("outage_id").agg(s=("s", "min"), e=("r", "max"), dev=("device_id", "first"), lvl=("level", "first"),
+    O = X.groupby("ticket_no").agg(s=("s", "min"), e=("r", "max"), dev=("device_id", "first"), lvl=("level", "first"),
                                    d=("service_area", "first"), cause=("cause_code", "first"), unit=("unit_id", "first"),
                                    mem=("members_out", "first"), cm=("cmin", "sum")).reset_index()
     O["mem"] = O.mem.astype(int)
-    O = O.sort_values(["dev", "s", "outage_id"]).reset_index(drop=True)
+    O = O.sort_values(["dev", "s", "ticket_no"]).reset_index(drop=True)
     prior = O.groupby("dev").e.transform(lambda z: z.cummax().shift())
     O = O[~(O.s <= prior)].copy()
     O["sus"] = (O.e - O.s).dt.total_seconds() > 300
@@ -152,30 +153,67 @@ def main(target, fig_path):
         kc = [k for k in k25 if k[2] == c]
         expected = sum(expo[k] * pooled[k[1]] for k in kc)
         eq("contractor ratio %s" % c, "{:.2f}".format(o25[kc].sum() / expected), fig["contractor_ratio"][c])
-    # ask A: trimming miles billed by contractor and quarter of the work, credit memos at the reversed invoice's month
-    I = read(target, "ap_invoices_row_trimming_2024-12_2025-12.csv")
-    svc = I.drop_duplicates("invoice_no").set_index("invoice_no").service_month
+    # ask A: trimming miles billed by contractor and quarter of the work: a portal line's own stated period, a paper
+    # line's keyed service month, a paper credit memo at the month of the invoice it reverses
+    I = read(target, "ap_trimming_invoice_lines_2024-12_2026-01.csv")
+    mon = {m: k + 1 for k, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
+
+    def said(t):
+        a = re.search(r"(\d\d)/\d\d/(\d{4})-\d\d/\d\d/\d{4}", t)
+        if a:
+            return "%s-%s" % (a.group(2), a.group(1))
+        b = re.search(r"\b([A-Z]{3}) (20\d\d)\b", t)
+        return "%s-%02d" % (b.group(2), mon[b.group(1)]) if b and b.group(1) in mon else ""
+
     tr = I[I.item_code.str.startswith("TRIM")].copy()
-    tr["m"] = np.where(tr.service_month != "", tr.service_month, tr.applies_to_invoice.map(svc))
+    tr["own"] = [said(t) or sm for t, sm in zip(tr.description, tr.service_month)]
+    inv_month = tr[tr.doc_type == "INVOICE"].groupby("invoice_no").own.first()
+    tr["m"] = [o if o else inv_month.get(a, "") for o, a in zip(tr.own, tr.applies_to_invoice)]
     tr["mi"] = tr.quantity.astype(float) / np.where(tr.uom == "LF", 5280.0, 1.0)
-    tr = tr[tr.m.str.startswith("2025")]
+    tr = tr[tr.m.str.startswith("2025")].copy()
     tr["q"] = "Q" + ((tr.m.str[5:].astype(int) + 2) // 3).astype(str)
     g = tr.groupby(["vendor", "q"]).mi.sum()
     for v in (OC, NC):
         for q in ("Q1", "Q2", "Q3", "Q4"):
             eq("billing %s %s" % (v, q), f1(g.get((v, q), 0.0)), fig["billing"]["%s %s" % (v, q)])
-    # ask B: 2025's major event days by district (unplanned sustained outages, primary and secondary)
-    m25 = O[(O.cause != "PLANNED") & O.sus & O.day.isin(set(md[2025]))]
+    # ask C: the same lines by the district of each work order's trimmed units
+    T = read(target, "row_trim_completions_2012-2025.csv")
+    unit_d = dict(zip(R.unit_id, R.district))
+    wo_d = T.assign(d=T.unit_id.map(unit_d)).groupby("work_order").d.agg(lambda z: z.iloc[0] if z.nunique() == 1 else "?")
+    gd = tr.mi.groupby(tr.work_order.map(wo_d)).sum()
     for d in DIST:
-        x = m25[m25.d == d]
+        eq("district billing %s" % d, f1(gd.get(d, 0.0)), fig["district_billing"][d])
+    # ask B: 2025's major event days by district (unplanned sustained outages, primary and secondary): each ticket's
+    # steps split where the members restored go negative (the device off again after restoration, ENG-REL-02 2.1),
+    # then an opening of a device already out folded into that outage
+    X = read(target, "oms_outage_export_2016-2025.csv")
+    X["s"] = pd.to_datetime(X.start_local)
+    X["t"] = pd.to_datetime(X.step_restored_local)
+    X = X[X.s.dt.normalize().isin(set(md[2025]))]
+    X = X.assign(n=X.members_restored.astype(int), k=X.step.astype(int)).sort_values(["ticket_no", "k"])
+    ops = []
+    for tk, z in X.groupby("ticket_no", sort=False):
+        top = z.iloc[0]
+        cur = [top.s, int(top.members_out), 0.0, top.s]
+        for t, n in zip(z.t, z.n):
+            if n < 0:
+                ops.append(cur)
+                cur = [t, -n, 0.0, t]
+            else:
+                cur[2] += n * (t - cur[0]).total_seconds() / 60.0
+                cur[3] = max(cur[3], t)
+        ops.append(cur)
+        for o in ops[len(ops) - (z.n < 0).sum() - 1:]:
+            o += [top.device_id, top.service_area, top.cause_code]
+    B = pd.DataFrame(ops, columns=["s", "mem", "cm", "e", "dev", "d", "cause"]).sort_values(["dev", "s"])
+    prior = B.groupby("dev").e.transform(lambda z: z.cummax().shift())
+    B = B[~(B.s <= prior)]
+    B = B[(B.cause != "PLANNED") & ((B.e - B.s).dt.total_seconds() > 300) & B.s.dt.normalize().isin(set(md[2025]))]
+    for d in DIST:
+        x = B[B.d == d]
         eq("MED outages %s" % d, "{:,}".format(len(x)), fig["med"][d]["outages"])
         eq("MED members %s" % d, "{:,}".format(int(x.mem.sum())), fig["med"][d]["members"])
         eq("MED customer-minutes %s" % d, "{:,}".format(int(round(x.cm.sum()))), fig["med"][d]["customer_minutes"])
-    # ask C: overhead primary in service on 31 December 2025
-    end = pd.Timestamp(2025, 12, 31)
-    on = R[(R.a <= end) & (R.b > end)].groupby("district").mi.sum()
-    for d in DIST:
-        eq("miles %s" % d, f1(on[d]), fig["miles"][d])
     # the call: North carries the rise, and its 2025 shift on units within two years of a trim is most of it
     rise = {d: rate[2025][d] - np.mean([rate[y][d] for y in (2021, 2022, 2023)]) for d in DIST}
     if max(rise, key=rise.get) != "North":

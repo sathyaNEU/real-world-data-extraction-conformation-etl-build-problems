@@ -37,29 +37,29 @@
  },
  "med": {
   "North": {
-   "outages": "160",
-   "members": "5,956",
-   "customer_minutes": "1,821,820"
+   "outages": "164",
+   "members": "6,059",
+   "customer_minutes": "1,830,630"
   },
   "East": {
-   "outages": "123",
-   "members": "3,559",
-   "customer_minutes": "1,203,168"
+   "outages": "128",
+   "members": "3,674",
+   "customer_minutes": "1,217,472"
   },
   "South": {
-   "outages": "112",
-   "members": "3,598",
-   "customer_minutes": "1,150,972"
+   "outages": "118",
+   "members": "3,802",
+   "customer_minutes": "1,181,773"
   }
  },
  "med_days": [
   "18 June 2025",
   "9 December 2025"
  ],
- "miles": {
-  "North": "1,773.3",
-  "East": "1,237.8",
-  "South": "1,138.3"
+ "district_billing": {
+  "North": "441.8",
+  "East": "89.7",
+  "South": "281.3"
  },
  "years": [
   "2021",
@@ -96,8 +96,10 @@
   "6.1",
   "6.2",
   "6.3",
-  "6.4"
+  "6.4",
+  "4.3"
  ],
+ "feet_per_mile": "5,280",
  "north_rate_2025": "30.2",
  "north_rate_base": "11.1",
  "north_young_shift": "18.8",

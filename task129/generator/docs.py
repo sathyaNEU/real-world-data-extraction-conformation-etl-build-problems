@@ -1,5 +1,5 @@
-"""task129 documents: the reliability reporting policy (docx), the right-of-way maintenance policy (pdf), the
-trimming contracts register (xlsx) and the data dictionary (xlsx)"""
+"""task129 documents: the reliability reporting policy (docx), the right-of-way maintenance policy (pdf) and the
+trimming contracts register (xlsx)"""
 import os
 
 from docx import Document
@@ -205,69 +205,8 @@ def contracts(path):
     _save(wb, path, "Lori Rodriguez", "2016-06-14T13:20:00Z", "2025-03-27T16:05:00Z")
 
 
-# ------------------------------------------------------------------------------------------------ data dictionary (xlsx)
-DICT = {
-    "outages": ("One row per restoration step of an outage ticket; a ticket's rows share its outage_id.", [
-        ("outage_id", "Ticket number in the outage management system"),
-        ("start_local", "When the outage began, Central local time"),
-        ("level", "PRIMARY (overhead primary line) or SECONDARY (transformer or service drop)"),
-        ("service_area", "District"), ("circuit", "Circuit (substation and feeder)"),
-        ("unit_id", "Trim unit the opened device or the transformer sits on"),
-        ("device_type", "FUSE, RECLOSER, BREAKER, SWITCH, TRANSFORMER or SERVICE"),
-        ("device_id", "The device or equipment that opened"),
-        ("cause_code", "TREE, ANIMAL, EQUIPMENT, LIGHTNING, VEHICLE, UNKNOWN or PLANNED"),
-        ("members_out", "Members the outage took out"), ("step", "Restoration step number"),
-        ("step_restored_local", "When power returned to the members restored at this step, Central local time"),
-        ("members_restored", "Members restored at this step")]),
-    "register": ("One row per trim unit.", [
-        ("unit_id", "Trim unit"), ("district", "District"), ("substation", "Substation"), ("circuit", "Circuit"),
-        ("miles", "Overhead primary in the unit, miles"), ("in_service_date", "Date the unit entered service"),
-        ("retired_date", "Date the unit leaves service"), ("retire_reason", "REBUILT or UNDERGROUND"),
-        ("replaced_by", "Unit that replaced a rebuilt unit")]),
-    "completions": ("One row per trim of a unit.", [
-        ("record_id", "Completion record"), ("work_order", "Work order (one circuit campaign)"),
-        ("unit_id", "Trim unit"), ("contractor", "Contractor that did the work"), ("crew", "Crew"),
-        ("completed_date", "Date the crew completed the unit"), ("audit_status", "ACCEPTED or REJECTED at the forester's audit; PENDING until the audit is done"),
-        ("accepted_date", "Date the trim was accepted")]),
-    "survey": ("One row per span and species group with trees found.", [
-        ("span_id", "Span (circuit and the pole it starts from)"), ("unit_id", "Trim unit"),
-        ("survey_date", "Date surveyed"), ("species_code", "Species group as recorded by the survey tool"),
-        ("trees_within_falling_distance", "Trees that would reach the line if they fell")]),
-    "weather": ("One row per station and day.", [
-        ("station_id", "Station"), ("station_name", "Station name"), ("date_utc", "Day, UTC"),
-        ("peak_gust_mph", "Peak gust, miles per hour"), ("precipitation_in", "Precipitation, inches")]),
-    "members": ("One row per district and year.", [
-        ("district", "District"), ("year", "Year"), ("members_at_year_end", "Members served at 31 December")]),
-    "invoices": ("One row per invoice line.", [
-        ("vendor", "Contractor"), ("invoice_no", "Invoice or credit memo number"), ("invoice_date", "Document date"),
-        ("doc_type", "INVOICE or CREDIT MEMO"), ("applies_to_invoice", "Invoice a credit memo reverses"),
-        ("work_order", "Work order billed"), ("service_month", "Month of the work billed"),
-        ("line_no", "Line"), ("item_code", "Contract item"), ("description", "Item description"),
-        ("quantity", "Quantity billed"), ("uom", "Unit of measure"), ("unit_price", "Unit price, USD"),
-        ("amount", "Line amount, USD")]),
-}
-DICT_FILES = {"outages": "oms_outage_export_2016-2025.csv", "register": "trim_unit_register.csv",
-              "completions": "row_trim_completions_2012-2025.csv", "survey": "row_tree_survey_2023-2024.parquet",
-              "weather": "weather_daily_2016-2025.csv", "members": "member_counts_2015-2025.csv",
-              "invoices": "ap_invoices_row_trimming_2024-12_2025-12.csv"}
-
-
-def dictionary(path):
-    wb = Workbook()
-    first = True
-    for name, (grain, fields) in DICT.items():
-        ws = wb.active if first else wb.create_sheet()
-        first = False
-        ws.title = name[:31]
-        ws["A1"] = DICT_FILES[name] + ": " + grain
-        ws["A1"].font = Font(name="Calibri", italic=True)
-        _sheet(ws, ["Field", "Description"], [list(f) for f in fields], widths=[30, 90], start=3)
-    _save(wb, path, "Dennis Garcia", "2021-02-01T14:00:00Z", "2026-01-13T17:30:00Z")
-
-
 def write_all(target, FILES, U, T, M):
     reliability_policy(os.path.join(target, FILES["rel_policy"]))
     row_policy(os.path.join(target, FILES["row_policy"]))
     contracts(os.path.join(target, FILES["contracts"]))
-    dictionary(os.path.join(target, FILES["dictionary"]))
     return {"counts": {}}
