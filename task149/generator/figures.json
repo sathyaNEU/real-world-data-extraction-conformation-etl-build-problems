@@ -10,6 +10,19 @@
  "census_commuters_served": 9310,
  "census_daily_route": 2374.6,
  "census_daily_route_rounded": 2400,
+ "conventions": {
+  "arrival_window": [
+   "07:30",
+   "09:30"
+  ],
+  "panel_first_day": 6,
+  "panel_last_day": 26,
+  "rounding_steps": [
+   10,
+   100
+  ],
+  "share_table": 2
+ },
  "gap_to_threshold": 88,
  "lisnagry_route": 1758.2,
  "network_ratio_pct": 67.8,
