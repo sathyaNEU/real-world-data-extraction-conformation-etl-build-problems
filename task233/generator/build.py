@@ -75,7 +75,7 @@ def one(base):
 def zip_target(src, dst):
     with zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(os.listdir(src)):
-            zi = zipfile.ZipInfo("target/" + f, date_time=(2026, 10, 15, 8, 30, 0))
+            zi = zipfile.ZipInfo(f, date_time=(2026, 10, 15, 8, 30, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(src, f), "rb").read())

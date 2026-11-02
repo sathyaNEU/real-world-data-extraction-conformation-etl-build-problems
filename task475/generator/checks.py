@@ -220,8 +220,8 @@ def main():
           str(M["rungs"]["R1 facility"].tolist()))
     edges = {k: float(E.edge(v).min()) for k, v in M["family"].items()}
     check("L3 standing family: alternating means, least squares, one-step differences, the regression adjustment, "
-          "the random intercept and the logit-scale fit each round to the golden, every value at least 0.15 from a "
-          "rounding line", all(np.array_equal(np.rint(v).astype(int), golden) for v in M["family"].values())
+          "the random intercept, the logit-scale fit and pairwise comparisons each round to the golden, every value at "
+          "least 0.15 from a rounding line", all(np.array_equal(np.rint(v).astype(int), golden) for v in M["family"].values())
           and min(edges.values()) >= 0.15, json.dumps({k: round(v, 3) for k, v in edges.items()}))
     check("L4 the means rung is stable (every value at least 0.1 from a rounding line)",
           E.edge(M["facility"]).min() >= 0.1, "%.3f" % E.edge(M["facility"]).min())
@@ -361,6 +361,40 @@ def main():
     check("SF20 the fee paid on an account is the agreed rate, equal to the request's share of its invoice to the "
           "cent; declined requests are those received after 21 July", ok20 and len(alloc) > 0,
           "%d account requests" % len(alloc))
+    same_sentence = "compared on the same candidates, whichever questions each candidate chose" in flat(Pk.regs_text)
+    means_moves = np.rint(M["facility"]).astype(int)
+    off = [k for k, v in M["family"].items() if np.array_equal(np.rint(v).astype(int), means_moves)]
+    check("SF22 'compared on the same candidates, whichever questions each candidate chose' (regulation 14.1): every "
+          "estimator that compares the same candidates gives the golden, and the question means, which compare each "
+          "question on its own answerers, match none of them", same_sentence and not off and
+          np.array_equal(np.rint(M["family"]["pairwise"]).astype(int), golden), str(means_moves.tolist()))
+    # every cross-sitting link rests on a member number or a full name with the date of birth, and no unlinked pair
+    # of sitters is one name away from a match
+    may_rows = []
+    for r in Pk.may_reg:
+        if "2" not in str(r["Papers"]) or str(r["Cand No"]) not in sat_may:
+            continue
+        fam, giv = [s.strip() for s in r["Candidate Name"].split(",", 1)]
+        may_rows.append((A.norm(fam), A.norm(giv.split()[0]), A.norm(giv),
+                         dt.datetime.strptime(r["Date of Birth"], "%d/%m/%Y").date(), str(r["Member No"] or "")))
+    near, weak = [], 0
+    for r in Pk.nov_reg:
+        if r["paper"] != "P2" or r["candidate_no"] not in sat:
+            continue
+        fam, first, full = A.norm(r["family_name"]), A.norm(r["given_names"].split()[0]), A.norm(r["given_names"])
+        dob = dt.date.fromisoformat(r["date_of_birth"])
+        for mf, mg, mfull, mdob, mmem in may_rows:
+            by_member = bool(r["member_no"]) and r["member_no"] == mmem
+            by_name = (fam, first, dob) == (mf, mg, mdob)
+            if by_name and not by_member and full != mfull and not (full.startswith(mfull) or mfull.startswith(full)):
+                weak += 1
+            swapped = dob.day <= 12 and dob.month != dob.day and (dob.year, dob.day, dob.month) == (mdob.year, mdob.month, mdob.day)
+            if not (by_member or by_name) and (dob == mdob or swapped) and (fam == mf or first == mg):
+                near.append("%s %s %s" % (r["family_name"], r["given_names"], dob))
+    check("SF23 every link between the sittings rests on a member number or a full name with the date of birth, and "
+          "no unlinked pair of sitters shares a family name or a first given name with the same date of birth, or with "
+          "its day and month exchanged",
+          not near and weak == 0, ", ".join(near[:4]) or "none")
     cents = R["refund"] - int(R["refund"])
     check("SF21 the refund to the nearest dollar is clear of the half dollar", abs(cents - 0.5) >= 0.1, "%.2f" % R["refund"])
 

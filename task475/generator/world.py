@@ -111,7 +111,22 @@ def make_people(n=2600):
     for p, num in zip(people, nums):
         p["member_no"] = str(int(num)) if rng.random() < 0.5 else ""
         p["firm"] = pick(rng, FIRMS)[0] if rng.random() < 0.3 else ""
+    distinct_birthdays(people)
     return people
+
+
+def distinct_birthdays(people):
+    """No two people share a date of birth with either their family name or their first given name, so a person is
+    never one name away from somebody else born the same day."""
+    taken = set()
+    for p in people:
+        fam, first = norm(p["family"]), norm(p["given"].split()[0])
+        d = p["dob"]
+        while ("f", fam, d) in taken or ("g", first, d) in taken:
+            d += TD(days=41)
+        p["dob"] = d
+        taken.add(("f", fam, d))
+        taken.add(("g", first, d))
 
 
 def norm(s):

@@ -37,8 +37,8 @@ REL = {"R": "reference person", "P": "spouse or partner", "C": "son or daughter"
        "O": "other relative"}
 OUTCOME = {11: "complete interview", 12: "partial interview", 21: "refusal", 22: "no contact",
            23: "unable to interview", 31: "empty dwelling", 32: "not a dwelling", 33: "address not found"}
-TYPE = {"I": "INITIAL", "R": "RENEWAL", "T": "CHANGE OF CLAIMANT"}
-DECISION = {"C": "GRANTED", "D": "REFUSED", "A": "WITHDRAWN", "P": "PENDING", "X": "EXTINGUISHED"}
+TYPE = {"I": "INITIAL", "R": "RENEWAL", "T": "CHANGE OF CLAIMANT", "V": "REVOCATION"}
+DECISION = {"C": "GRANTED", "D": "REFUSED", "A": "WITHDRAWN", "P": "PENDING", "X": "EXTINGUISHED", "V": "REVOKED"}
 INCIDENT = {"SUS": "Payment suspended (documents outstanding)", "LEV": "Suspension lifted",
             "EXT": "Award extinguished", "NAC": "Birth", "MAY": "Child reached 18", "DOM": "Change of address"}
 
@@ -166,11 +166,11 @@ def write_survey(W, rng, target):
 def write_fieldwork(W, rng, target):
     cases = W["cases"]
     nums = ids(rng, len(cases), 100000, 999999)
-    order = sorted(range(len(cases)), key=lambda i: (cases[i]["closed"], cases[i]["dwelling"]["ref"], cases[i]["issue"]))
+    order = sorted(range(len(cases)), key=lambda i: (cases[i]["closed"], cases[i]["ref"], cases[i]["issue"]))
     rows = []
     for k, i in enumerate(order):
         c = cases[i]
-        rows.append(["C26-%06d" % nums[k], c["dwelling"]["ref"], c["dwelling"]["office"], c["interviewer"], c["issue"],
+        rows.append(["C26-%06d" % nums[k], c["ref"], c["dwelling"]["office"], c["interviewer"], c["issue"],
                      OUTCOME[c["outcome"]], c["visits"], c["closed"].strftime("%d/%m/%Y")])
     IO.write_csv(os.path.join(target, FILES["fieldwork"]),
                  ["case", "dwelling", "office", "interviewer", "issue", "result", "visits", "closed"], rows)
@@ -197,7 +197,8 @@ def write_register(R, W, rng, target):
         if a["res"] == "C" and a["first"] is not None:
             amt = ("%.2f" % (a["rate"] * a["kids"])).replace(".", "," if legacy else ".")
         rows.append([a["ex"], "UF%07d" % fnum[a["fid"]], TYPE[a["tipo"]], dfmt(a["claim"]),
-                     dfmt(a["dec"]) if a["dec"] is not None else "", DECISION[a["res"]], a["ejercicio"], inc, a["kids"],
+                     dfmt(a["dec"]) if a["dec"] is not None else "", "REVOKED" if a.get("revoked") else DECISION[a["res"]],
+                     a["ejercicio"], inc, a["kids"],
                      a["muni"], office[munis[a["muni"]]["office"]],
                      ym(a["first"], legacy) if a["first"] is not None else "",
                      ym(a["last"], legacy) if a["last"] is not None else "", amt])
@@ -307,10 +308,10 @@ def coverage_figures(W, R):
         monthly.append(len(fams))
         for k in (1, 2, 3):
             kidsmix[k].append(sum(1 for v in fams.values() if (v == k if k < 3 else v >= 3)))
-    avg = int(round(sum(monthly) / 12.0))
-    by_kids = [("One", int(round(sum(kidsmix[1]) / 12.0))), ("Two", int(round(sum(kidsmix[2]) / 12.0))),
-               ("Three or more", int(round(sum(kidsmix[3]) / 12.0)))]
-    return take_up, by_kids, avg
+    tot = float(sum(monthly))
+    shares = [("One", 100.0 * sum(kidsmix[1]) / tot), ("Two", 100.0 * sum(kidsmix[2]) / tot),
+              ("Three or more", 100.0 * sum(kidsmix[3]) / tot)]
+    return take_up, shares
 
 
 def results_figures(W):
@@ -346,9 +347,9 @@ def build_all(W, R, target, seed):
     docs.guidance(os.path.join(target, FILES["guidance"]), W["line"])
     docs.proposals(os.path.join(target, FILES["proposals"]), W["line"], costs(W))
     docs.rules(os.path.join(target, FILES["rules"]))
-    take_up, by_kids, avg = coverage_figures(W, R)
+    take_up, shares = coverage_figures(W, R)
     W["take_up_published"] = round(take_up, 1)
-    docs.coverage(os.path.join(target, FILES["coverage"]), take_up, by_kids, avg)
+    docs.coverage(os.path.join(target, FILES["coverage"]), take_up, shares)
     med, thr, rates = results_figures(W)
     docs.results(os.path.join(target, FILES["results"]), med, thr, rates)
     stamp = STAMP.timestamp()

@@ -26,6 +26,7 @@ PACE_WIDENING = [0.04, 0.075, 0.11, 0.145, 0.18, 0.21, 0.24, 0.27, 0.30, 0.33, 0
                  0.76, 0.79, 0.82, 0.85, 0.88, 0.905, 0.93, 0.95, 0.965, 0.98, 0.99, 1.0]
 EVENTUAL = 0.82
 SUSPEND_P = 0.075
+REVOKE_P = 0.045
 
 T0 = (2022, 10)
 
@@ -275,8 +276,40 @@ def build(rng, W):
             if a["fid"] == r["fid"] and ((a["first"] is not None and a["first"] >= eff)
                                          or (a["first"] is None and a["claim"] > r["date"])):
                 a["muni"] = r["dato"]
-    # case numbers run in registration order within each year; an appeal keeps its claim's number
-    firsts = [a for a in awards if not a["appeal"]]
+    # awards found in 2026 to rest on understated income: the award and every later award of the family take the
+    # status REVOKED, each gets a revocation resolution on its own case number, and payment stops with the month of
+    # the revocation
+    by_fam = {}
+    for a in awards:
+        by_fam.setdefault(a["fid"], []).append(a)
+
+    def covers25(a):
+        return a["res"] == "C" and a["first"] is not None and a["first"] <= T25B and (a["last"] is None or a["last"] >= T25A)
+    for fid in sorted(by_fam):
+        starts = [a for a in by_fam[fid] if a["tipo"] == "R" and not a["appeal"] and covers25(a)]
+        if not starts or rng.random() >= REVOKE_P:
+            continue
+        start = starts[int(rng.integers(0, len(starts)))]
+        chain = sorted([a for a in by_fam[fid] if a["res"] == "C" and a["first"] is not None and a["dec"] >= start["dec"]],
+                       key=lambda a: a["dec"])
+        lo = max(dt.date(2026, 1, 8), max(a["dec"] for a in chain) + dt.timedelta(days=20))
+        hi = dt.date(2026, 10, 20)
+        if lo >= hi:
+            continue
+        vdec = lo + dt.timedelta(days=int(rng.integers(0, (hi - lo).days)))
+        vclaim = vdec - dt.timedelta(days=int(rng.integers(15, 60)))
+        for a in chain:
+            a["revoked"] = vdec
+            limit = P.CFV_LIMIT_OLD if (a["first"] or 0) < RISE_T else P.CFV_LIMIT
+            found = max(limit + 40.0, (a["inc"] or limit) * float(np.exp(rng.normal(0.22, 0.06))))
+            awards.append(dict(ex=a["ex"], fid=fid, tipo="V", claim=vclaim, dec=vdec, res="V",
+                               ejercicio=tax_year(vclaim), inc=found, kids=a["kids"], muni=a["muni"], appeal=False,
+                               first=None, last=None, rate=None))
+        tail = chain[-1]
+        if tail["last"] is None or tail["last"] > tm(vdec):
+            tail["last"] = tm(vdec)
+    # case numbers run in registration order within each year; an appeal or a revocation keeps its award's number
+    firsts = [a for a in awards if not a["appeal"] and a["tipo"] != "V"]
     order = sorted(range(len(firsts)), key=lambda i: (firsts[i]["claim"], i))
     new_no, count = {}, {}
     for i in order:

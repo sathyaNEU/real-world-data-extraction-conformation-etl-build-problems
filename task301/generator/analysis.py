@@ -369,8 +369,14 @@ def incidents(target):
 
 def ask_families(target):
     """Families the Complemento was paying for each quarter's last month of 2025, as its decisions stood at 31
-    December 2025, by the province the family lived in that month."""
+    December 2025, by the province the family lived in that month. An award whose status now reads REVOKED stood
+    granted at the cut-off when its revocation was decided later."""
     reg = register(target)
+    codes = territorial(target)
+    revoked_on = {}
+    for r in reg:
+        if r["type"] == "REVOCATION" and r["dec"] is not None:
+            revoked_on[r["case"]] = min(r["dec"], revoked_on.get(r["case"], r["dec"]))
     moves = collections.defaultdict(list)
     for r in incidents(target):
         if r["type"] == "Change of address":
@@ -380,9 +386,19 @@ def ask_families(target):
         m = mi(ym)
         fams = {}
         for r in reg:
-            if r["res"] != "GRANTED" or r["first"] is None or r["dec"] is None or r["dec"] > CUTOFF:
+            if r["type"] == "REVOCATION" or r["first"] is None or r["dec"] is None or r["dec"] > CUTOFF:
                 continue
-            if mi(r["first"]) <= m and (r["last"] is None or mi(r["last"]) >= m):
+            if r["res"] == "GRANTED":
+                last = r["last"]
+            elif r["res"] == "REVOKED" and r["case"] in revoked_on:
+                if revoked_on[r["case"]] <= CUTOFF:
+                    v = revoked_on[r["case"]]
+                    last = (v.year, v.month)
+                else:
+                    last = r["last"]
+            else:
+                continue
+            if mi(r["first"]) <= m and (last is None or mi(last) >= m):
                 prev = fams.get(r["fam"])
                 if prev is None or r["dec"] > prev["dec"]:
                     fams[r["fam"]] = r
@@ -392,46 +408,42 @@ def ask_families(target):
             for d, new in sorted(moves.get(fam, [])):
                 if mi((d.year, d.month)) + 1 <= m:
                     muni = new
-            cnt[muni[:2]] += 1
+            cnt[codes[muni]] += 1
         out[ym] = dict(cnt)
     return out
 
 
-def ask_decisions(target):
-    """Claims granted or refused in 2025, each counted once at its final decision, by type of claim."""
-    reg = register(target)
-    fin = final_decisions(reg)
-    out = {}
-    for t in ("INITIAL", "RENEWAL", "CHANGE OF CLAIMANT"):
-        dec = [r for r in fin.values() if r["type"] == t and r["res"] in ("GRANTED", "REFUSED")
-               and dt.date(2025, 1, 1) <= r["dec"] <= CUTOFF]
-        out[t] = (len(dec), sum(1 for r in dec if r["res"] == "GRANTED"))
-    return out
+def territorial(target):
+    h, rows = IO.read_csv(p(target, "codes"))
+    ix = {k: i for i, k in enumerate(h)}
+    return {r[ix["municipality_code"]]: r[ix["province_code"]] for r in rows}
 
 
 NOT_ELIGIBLE = ("empty dwelling", "not a dwelling", "address not found")
 
 
 def ask_fieldwork(target):
-    """Eligible sample dwellings and the response rate by the province the dwelling is in; a dwelling issued twice
-    counts once, with the result of its last issue."""
+    """Eligible sample dwellings, complete interviews and the response rate by the province the dwelling is in. A
+    dwelling is its municipality and serial in the dwelling register (its census section was renumbered for cases
+    issued from April 2026); a dwelling issued twice counts once, with the result of its last issue."""
     h, rows = IO.read_csv(p(target, "fieldwork"))
     ix = {k: i for i, k in enumerate(h)}
+    codes = territorial(target)
     last = {}
     for r in rows:
-        d = r[ix["dwelling"]]
+        ref = r[ix["dwelling"]]
+        key = (ref.split("-")[0], ref.split("-")[2])
         iss = int(r[ix["issue"]])
-        if d not in last or iss > last[d][0]:
-            last[d] = (iss, r[ix["result"]])
+        if key not in last or iss > last[key][0]:
+            last[key] = (iss, r[ix["result"]])
     out = {}
-    for d, (iss, res) in last.items():
-        pc = d[:2]
-        e = out.setdefault(pc, [0, 0])
+    for (muni, _), (iss, res) in last.items():
+        e = out.setdefault(codes[muni], [0, 0])
         if res not in NOT_ELIGIBLE:
             e[0] += 1
             if res == "complete interview":
                 e[1] += 1
-    return {pc: (v[0], round(100.0 * v[1] / v[0], 1), v[1]) for pc, v in out.items()}
+    return {pc: (v[0], v[1], round(100.0 * v[1] / v[0], 1), 100.0 * v[1] / v[0]) for pc, v in out.items()}
 
 
 # ---------------------------------------------------------------- the golden
@@ -447,6 +459,6 @@ def golden(target):
     G = {"call": call, "A_total": A_tot, "A_total_r": round_to(A_tot, 100),
          "A_by_prov": {pc: L["A_by_prov"].get(pc, 0.0) for pc in PROV_NAMES},
          "A_by_prov_r": {pc: round_to(L["A_by_prov"].get(pc, 0.0), 100) for pc in PROV_NAMES},
-         "families": ask_families(target), "decisions": ask_decisions(target), "fieldwork": ask_fieldwork(target),
+         "families": ask_families(target), "fieldwork": ask_fieldwork(target),
          "ladder": L}
     return G

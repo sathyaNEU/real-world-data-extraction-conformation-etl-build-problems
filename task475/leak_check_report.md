@@ -4,16 +4,16 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: choice, questions, difficulty, answerers, standing, average, conformed, decisive, export, minutes, reader, architecture, member, conversion, record, examination, regulations, reviews, carries, examinee, closed, planted, shipped, comparison, analyst
+Stump terms swept: questions, difficulty, choice, average, answerers, member, standing, conformed, decisive, export, minutes, reader, architecture, conversion, record, comparison, examination, regulations, reviews, analyst, carries, examinee, closed, planted, shipped
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `cae_examination_regulations_2026.pdf`: carries 9 of 10 distinctive words of the committed call: 'Approve the November 2026 Paper 2 results with the optional questions moved Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +3, Q7 -'
 - **REVIEW** `examinations_committee_minutes_2026-06-18.docx`: carries 7 of 10 distinctive words of the committed call: 'Approve the November 2026 Paper 2 results with the optional questions moved Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +3, Q7 -'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `cae_examination_regulations_2026.pdf`: 8 of 25 stump-paragraph terms appear (choice, questions, average, member, record, examination); read whether the document names the move
+- **REVIEW** `cae_examination_regulations_2026.pdf`: 8 of 25 stump-paragraph terms appear (questions, choice, average, member, record, examination); read whether the document names the move
 - **REVIEW** `cae_paper2_nov2026.pdf`: 5 of 25 stump-paragraph terms appear (questions, minutes, record, examination, carries); read whether the document names the move
-- **REVIEW** `examinations_committee_minutes_2026-06-18.docx`: 8 of 25 stump-paragraph terms appear (choice, questions, minutes, member, examination, reviews); read whether the document names the move
+- **REVIEW** `examinations_committee_minutes_2026-06-18.docx`: 8 of 25 stump-paragraph terms appear (questions, choice, member, minutes, examination, reviews); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `corporate_accounts.csv`: 10 ISO dates after 2026-12-01, e.g. 2027-06-30

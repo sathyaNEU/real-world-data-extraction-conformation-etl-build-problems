@@ -173,17 +173,15 @@ def rules(path):
                  "D:20261001090000+02'00'")
 
 
-def coverage(path, take_up, avg_by_kids, avg_total):
-    rows = [["Children in the family", "Families paid, average month of 2025"]]
-    for k, v in avg_by_kids:
-        rows.append([k, "{:,}".format(v)])
-    rows.append(["All families", "{:,}".format(avg_total)])
+def coverage(path, take_up, shares_by_kids):
+    rows = [["Children in the family", "Share of families paid, average month of 2025 (%)"]]
+    for k, v in shares_by_kids:
+        rows.append([k, "%.1f" % v])
     blocks = [
         ("title", "Complemento Familiar: coverage report 2025"),
         ("sub", "%s, Servicio de Estudios y Evaluación. 16 March 2026. English working version." % DEPT),
         ("h", "1. Families paid"),
-        ("p", "The Complemento Familiar was paid in 2025 to an average of {:,} families a month. Families with two "
-              "children were the largest group.".format(avg_total)),
+        ("p", "Families with two children were the largest group the Complemento Familiar paid in 2025."),
         ("table", rows),
         ("h", "2. Coverage"),
         ("p", "The department's coverage rate compares the families the Complemento was paying at the end of the "

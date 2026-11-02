@@ -105,6 +105,9 @@ SD = {"single": .52, "couple": .48, "couple_kids": .50, "lone": .52, "multi_kids
 PROV_EFFECT = {"81": 0.035, "82": -0.020, "83": -0.055}
 
 
+RESECTION = dt.date(2026, 4, 1)
+
+
 def fieldwork(rng, munis):
     """The 2026 sample of dwellings, first issue and reissue cases, with each case's outcome; the dwellings whose
     final outcome is a complete interview become the survey's households."""
@@ -126,12 +129,29 @@ def fieldwork(rng, munis):
             dwellings.append({"muni": m["code"], "prov": m["prov"], "office": m["office"],
                               "ref": "%s-%03d-%04d" % (m["code"], section, int(rng.integers(1, 9999))),
                               "order": seq})
-    # unique dwelling references
+    # a dwelling's serial is unique within its municipality in the dwelling register
     seen = set()
     for d in dwellings:
         while d["ref"] in seen:
             d["ref"] = d["ref"][:-4] + "%04d" % int(rng.integers(1, 9999))
         seen.add(d["ref"])
+    rs = np.random.default_rng(P.SEED + 4401)
+    serials = set()
+    for d in dwellings:
+        while (d["muni"], d["ref"][-4:]) in serials:
+            d["ref"] = d["ref"][:-4] + "%04d" % int(rs.integers(1, 9999))
+        serials.add((d["muni"], d["ref"][-4:]))
+    # the register's census sections were renumbered from 1 April 2026 in part of each municipality; a case issued
+    # from that date carries the dwelling's new section
+    renum = {}
+    for m in munis:
+        for sec in range(1, 40):
+            if rs.random() < 0.50:
+                renum[(m["code"], sec)] = 40 + int(rs.integers(0, 30))
+    for d in dwellings:
+        sec = int(d["ref"].split("-")[1])
+        new_sec = renum.get((d["muni"], sec))
+        d["ref_new"] = None if new_sec is None else "%s-%03d-%s" % (d["muni"], new_sec, d["ref"][-4:])
     rng.shuffle(dwellings)
     cases = []
     out_p = {"81": [0.630, 0.010, 0.150, 0.110, 0.019, 0.047, 0.021, 0.013],     # the capital's flats: more no-contact
@@ -144,7 +164,7 @@ def fieldwork(rng, munis):
         iv = str(rng.choice(interviewers[d["office"]]))
         start = dt.date(2026, 2, 2) + dt.timedelta(days=int(rng.integers(0, 120)))
         visits = 1 if o1 in (11, 12) and rng.random() < 0.55 else int(rng.integers(1, 6))
-        c1 = {"dwelling": d, "issue": 1, "outcome": o1, "interviewer": iv, "visits": visits,
+        c1 = {"dwelling": d, "issue": 1, "outcome": o1, "interviewer": iv, "visits": visits, "issued": start,
               "closed": start + dt.timedelta(days=int(rng.integers(3, 28)))}
         cases.append(c1)
         d["final"] = o1
@@ -153,9 +173,13 @@ def fieldwork(rng, munis):
             o2 = int(rng.choice([11, 21, 22], p=[0.44, 0.27, 0.29]))
             iv2 = str(rng.choice([x for x in interviewers[d["office"]] if x != iv]))
             c2 = {"dwelling": d, "issue": 2, "outcome": o2, "interviewer": iv2, "visits": int(rng.integers(1, 5)),
+                  "issued": c1["closed"] + dt.timedelta(days=2),
                   "closed": min(dt.date(2026, 6, 30), c1["closed"] + dt.timedelta(days=int(rng.integers(10, 30))))}
             cases.append(c2)
             d["final"] = o2
+    for c in cases:
+        d = c["dwelling"]
+        c["ref"] = d["ref_new"] if (d["ref_new"] and c["issued"] >= RESECTION) else d["ref"]
     return dwellings, cases
 
 

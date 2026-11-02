@@ -83,6 +83,35 @@ def workbook(res, path):
     for col, w in zip("ABCDEF", (9, 20, 19, 14, 13, 18)):
         ws.column_dimensions[col].width = w
     ws.freeze_panes = "A5"
+    ws.print_title_rows = "4:4"
+    ws.page_setup.orientation = "landscape"
+    ws.page_setup.fitToWidth = 1
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ns = wb.create_sheet("Notes")
+    notes = [
+        ["Notes"],
+        ["Outcome", "PCQS v3.0 section 4, on each region's estimated collection accuracy for the quarter (sections 3.1 to 3.3): "
+                    "compliant at %.1f per cent or more, corrective action below %.1f and at least %.1f, service credit below %.1f."
+                    % (p.band_compliant, p.band_compliant, p.band_credit, p.band_credit)],
+        ["Timeliness", "PCQS 5.2: scheduled outlet visits completed within the collection window, as a share of the visits "
+                       "scheduled in tallis_collection_schedule_2026q3. A visit at an outlet that took over a scheduled outlet "
+                       "completes the scheduled visit (5.1)."],
+        ["Missed visits", "PCQS 5.2: scheduled visits at which no price was recorded during the month."],
+        ["Replacement acceptance", "PCQS 6.1: replacements made in the quarter whose latest decision is Comparable; a "
+                                   "replacement with no decision is not accepted."],
+        ["Sources", "Prices Division: cpi_field_quotes_2025-10_2026-09, commodity_replacement_decisions_2026 and "
+                    "cpi_outlet_register_2026-10. Tallis Field Research: tallis_visit_log_2026-07_2026-09 and "
+                    "tallis_collection_schedule_2026q3. Field Quality Team: fqt_backcheck_register_2026q3."],
+    ]
+    for row in notes:
+        ns.append(row)
+    ns["A1"].font = Font(bold=True, size=12)
+    ns.column_dimensions["A"].width = 24
+    ns.column_dimensions["B"].width = 100
+    for row in ns.iter_rows(min_row=2):
+        row[0].font = Font(bold=True)
+        row[0].alignment = Alignment(vertical="top")
+        row[1].alignment = Alignment(wrap_text=True, vertical="top")
     wb.save(path)
     repack_xlsx(path, "Prices Division", "2026-10-15T20:10:00Z", "2026-10-16T01:35:00Z",
                 "PCQS assessment Q3 2026", "National Statistics Office")
@@ -151,8 +180,8 @@ def letter(res, path, png):
         ("p", "<b>Service credit.</b> The credit for the quarter is $%s, %d per cent of the quarterly collection fee in "
               "Schedule 4 for %s ($%s). It will be deducted from the invoice for the October to December quarter." %
          (money(res["credit"]), round(p.credit_rate * 100), andlist([nm[r] for r in cred]), ", $".join(money(p.fees[r]) for r in cred))),
-        ("p", "<b>How accuracy was estimated.</b> The Field Quality Team's officers re-collected prices from one to "
-              "several days after your collectors' visits, so a re-collected price can differ because the outlet "
+        ("p", "<b>How accuracy was estimated.</b> The Field Quality Team's officers re-collected prices from the same "
+              "day to a week after your collectors' visits, so a re-collected price can differ because the outlet "
               "changed the price in between. Each re-collection was allowed the chance that its item's price had "
               "moved since the visit, from the item's monthly frequency of price change in the price database and the "
               "days between the visit and the re-collection, before the share of correctly recorded prices was set "

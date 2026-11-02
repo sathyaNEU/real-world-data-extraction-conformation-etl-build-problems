@@ -42,7 +42,8 @@ def regulations(path):
         ("p", "14.1 Where a paper offers a choice of questions, each optional question is moved by a whole number of "
               "marks, rounded to the nearest whole mark, equal to how much harder (marks added) or easier (marks "
               "taken away) the question proved than the average of the paper's optional questions, each counted "
-              "once, for the candidates who sat the paper."),
+              "once, for the candidates who sat the paper. The question and the average question are compared on "
+              "the same candidates, whichever questions each candidate chose."),
         ("p", "14.2 A question's move is applied to the mark of record of every candidate who answered the question. "
               "A moved mark is not taken below zero or above the marks available for the question."),
         ("p", "14.3 The Committee approves the moves for a sitting with that sitting's results, and the moves it "

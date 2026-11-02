@@ -9,6 +9,7 @@ returns the moves: marks added to each question, how much harder it proved than 
     ancova        facility adjusted by regressing the mark on the answerers' mean on their other answers
     random_int    random-intercept model for candidates, variance components by moments, GLS for questions
     logit_fe      the additive fit on the logit of the mark, carried back to expected marks over every candidate
+    pairwise      each pair of questions compared on the candidates who answered both, reconciled by least squares
 """
 import numpy as np
 
@@ -129,8 +130,34 @@ def logit_fe(m, top=20.0):
     return E.mean() - E
 
 
+def pairwise(m):
+    """Each pair of questions compared on the candidates who answered both, the pair differences reconciled by least
+    squares (each pair weighted by its candidates), each question against the average question."""
+    m = _rows(m)
+    q = m.shape[1]
+    rows, ys, ws = [], [], []
+    for a in range(q):
+        for b in range(a + 1, q):
+            both = ~np.isnan(m[:, a]) & ~np.isnan(m[:, b])
+            k = int(both.sum())
+            if k == 0:
+                continue
+            r = np.zeros(q)
+            r[a], r[b] = 1.0, -1.0
+            rows.append(r)
+            ys.append(float(np.mean(m[both, a] - m[both, b])))
+            ws.append(np.sqrt(k))
+    X = np.array(rows) * np.array(ws)[:, None]
+    y = np.array(ys) * np.array(ws)
+    C = np.zeros((q, q - 1))
+    C[:q - 1] = np.eye(q - 1)
+    C[q - 1] = -1.0
+    e = C @ np.linalg.lstsq(X @ C, y, rcond=None)[0]
+    return -(e - e.mean())
+
+
 FAMILY = {"fe": fe, "fe_ols": fe_ols, "diff_simple": diff_simple, "ancova": ancova, "random_int": random_int,
-          "logit_fe": logit_fe}
+          "logit_fe": logit_fe, "pairwise": pairwise}
 
 
 def edge(v):

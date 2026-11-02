@@ -187,10 +187,10 @@ def committee_paper(P, M, f, path):
     para("Candidates answer five of the eight questions, and they did not choose at random. The stronger candidates "
          "took Question 6 (fire safety performance solutions) and the weaker took Question 8 (development consent "
          "conditions), so a question's mean mark says as much about who chose it as about how hard it was. "
-         "Regulation 14.1 asks how hard each question proved for the candidates who sat the paper, so I read each "
-         "question's difficulty from the same candidates' marks across the questions they chose: a fit of a "
-         "candidate effect and a question effect over all %d scripts, centred on the average question, each "
-         "question counted once." % f["sat"])
+         "Regulation 14.1 compares each question with the average question on the same candidates, whichever "
+         "questions each chose, so I read each question's difficulty from the same candidates' marks across the "
+         "questions they chose: a fit of a candidate effect and a question effect over all %d scripts, centred on "
+         "the average question, each question counted once." % f["sat"])
     para("The candidates who answered Question 6 averaged %.1f on their other questions and %.1f on Question 6; "
          "those who answered Question 8 averaged %.1f on their other questions and %.1f on Question 8. Set against "
          "the paper's mean marks alone, Question 6 would move by %s and Question 8 by %s, and %d candidates would "
