@@ -153,6 +153,23 @@ def docx_text(path):
     return re.sub(r"<[^>]+>", "", x)
 
 
+def pdf_text(path):
+    """a shipped PDF's text, every page, whitespace folded to single spaces (the reader the checks' document assertions
+    use as well)"""
+    import pypdf
+    r = pypdf.PdfReader(path)
+    return " ".join(" ".join((p.extract_text() or "").split()) for p in r.pages)
+
+
+def document_text(path):
+    """a shipped document's text through the reader its format needs"""
+    if path.endswith(".pdf"):
+        return pdf_text(path)
+    if path.endswith(".docx"):
+        return " ".join(docx_text(path).split())
+    return " ".join(open(path, encoding="utf-8").read().split())
+
+
 def main(target, golden, figpath, subpath):
     fig = json.load(open(figpath))
     sub = open(subpath, encoding="utf-8").read()

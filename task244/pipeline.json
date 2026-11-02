@@ -1,21 +1,22 @@
 {
  "task": "task244",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-11-02",
  "stump": "Multiplying the reinterview's predictive values of a counted move's two recorded statuses puts every rate at 18.1 per cent of its counted moves not real and files no warning; taking the reconciled reinterview's classification error out of the published flows at both quarters of each pair gives the true flows and puts 13 of the 24 district job-finding and job-loss rates at a third or more (45.1 to 69.0 per cent).",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-18"
+  "exit": 1,
+  "date": "2026-11-02",
+  "fails": "pair ceiling 84.2 (ceiling 60); mirror leakage 100.0; cracker keeps Ask A persons, Ask A match rate and Ask B mean days (36 of 36): the honest measurement of generator/ceiling.py; and the prompt gate's no data count disclosed (\"which of the 24\", the call's second sentence), a WARN while SHIPPED and a FAIL on a paused build"
  },
  "leak": {
-  "leak_py": "REVIEW (sweeps 3, 4 and 6; every line answered in the design note; no LEAK since the request's rename)",
-  "reader": "three reads: Q1 to Q4 none, Q6 analytical; realism notes taken in generator passes, no graded figure moved"
+  "leak_py": "REVIEW, no LEAK (2026-11-02 on target.zip 57fbe577, --asof 2028-02-02; every line ruled in the design note's Leak check); LEAK on the shipped pack at the 2026-11-01 re-check (DATA_DICTIONARY.md, README.md, the methodology note's field names)",
+  "reader": "owes a re-read: two files dropped, the methodology note and the protocol changed; earlier, three reads on the 2026-10-18 cut: Q1 to Q4 none, Q6 analytical"
  },
  "duplicate_check": {
   "heart": "PASS on the corpus pulled at ship (forum redrawn to executive_team after task170's draw reached this checkout)",
@@ -26,12 +27,31 @@
   "disposition": "APPROVE (pass 2 FIX_NOW on Ask A's unfiled split-household link, filed in section 8.2)",
   "report": "task244/determinism_check_report.md"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK: DATA_DICTIONARY.md and README.md, files whose names say they describe the data; DATA_DICTIONARY.md names 35 column(s) of the data files verbatim, 100% of elfs_2026q4_persons.csv; elfs_methodology_note_2027.pdf names 17 column(s) of the data files verbatim, 76% of elfs_2026q4_persons.csv)",
+   "repair": "leak",
+   "move": "Stopped writing DATA_DICTIONARY.md and README.md (docs.py's dictionary() and readme() and their FILES entries removed; 15 files in four formats). The methodology note keeps its methodology and names no field: resp_line, the five questionnaire items and lfs_status left sections 3 to 5, the codebook annex was dropped, and the codes SF16 rests on are filed once in section 4 (\"The survey codes the three statuses 1 employed, 2 unemployed and 3 outside the labour force.\") in the dictionary's place; the visit numbering is section 2's rotation fact (\"four visits, numbered 1 to 4 from its entry\"). The protocol's section 6, a list of the log's and the results file's columns, is now the reinterview's confidentiality (\"Reinterview answers are confidential, as the survey's own answers are, and are used only to measure the quality of the survey's interviews.\"), and section 5's window reads \"within 14 days of each person's own original interview\". Each file's provenance (what it covers, its issuer, its date where the file states one) moved to metadata.json, whose subdomain, prompt shape and origin no longer narrate the method. checks.py asserts that no shipped file or sheet describes the data, by name and by content (each document read back through the verifier's new PDF reader with a positive control), and SF16's new home with the data's convergence; checks 205, verify 258, two builds byte-identical. No graded figure moved: freeze determinism PASS, figures.json unchanged; leak.py REVIEW, no LEAK. The reship is held: generator/ceiling.py, the careful-solver cracker, keeps all 36 ask figures (ask_audit_2026_11_01), and the ask rework stopped with no passing device, so precut fails on the honest pair ceiling (84.2), the mirror's leakage and the cracker's keeps.",
+   "commit": ""
+  }
+ ],
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the stage-3 ceiling was a narrowed cracker's; generator/ceiling.py's careful solver keeps 36 of 36 (pair 84.2), and the ask rework of 2026-11-02 stopped with no passing device, the full replacement included (candidate table: the design note's last Tried and rejected line). Next, the author's call: an ask layer on new records the call does not read, designed and screened as code against the careful-solver cracker before data is cut, or the asks re-rooted; the leak repair, every figure and the determinism record stand, and the leak reader and the judge re-read the pack (two files dropped, the methodology note and the protocol changed).",
  "approved": null,
  "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "target_zip_md5": "57fbe5772616d029fd7f375e99f49a3f",
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Asks A and B",
+  "careful_cracker_keeps": "36 of 36 against the recorded 0 of 36",
+  "pair": "84.2 (83.5 with r = 5; mirror leakage 100.0 per cent; two careful responses on the call 100.0 each)",
+  "why": "D1's 714 restore copies differ from their originals only in the household number: the near-exact duplicate check isolates them, and they break the one person per sex and month and year of birth in a dwelling's quarter that section 8.2's own link reads; D2's true date is visit_start on the same row: the two clocks agree on all 5,268 calls before each tablet's update and on none of the 3,752 after, every later attempt_date a Friday, and attempt_date puts 1,122 results outside protocol 5's window; every hazard is a filed rule or a battery item",
+  "probe": "task244/generator/ceiling.py on target.zip md5 57fbe5772616d029fd7f375e99f49a3f (the full includer reproduces figures.json; the stage-3 pair.py cracker keeps 0, and 12 or 24 when it runs one of the two checks it skipped)",
+  "status_before": "SHIPPED",
+  "rework": "stopped 2026-11-02 under the ask-rework brief (step 4b included), no data changed: no re-site inside the person files or the log passes both tests, and the full replacement (each district's household response rate on a new CAPI case-outcome register, a moved-away household closed as Non-contact beside the household found in its place), built as a prototype and measured, keeps 11 of 12 for a careful solver who checks each Non-contact for a household new to the dwelling at that visit; the candidate table is the design note's last Tried and rejected line"
+ },
+ "main_call_concern_2026_11_02": "the reship agent observed that within each flow the warned rates are exactly the lowest published rates (job-loss 1.0 to 1.5 against 3.9 to 4.8; job-finding 11.9 to 20.7 against 38.9 to 43.4); if a plain sort of the published rates lands the call, the stump is a backdrop (CLAUDE.md rule 1); weigh at the re-root"
 }

@@ -164,6 +164,30 @@ to 69.0 per cent.
   independent chances; no build on file spends a change manufactured by misreading either of two readings (task233
   carries a gold-standard follow-up across base rates for one reading, task246 a measurer's error out of one tail).
 
+## Survivor anatomy
+
+- **Actor:** the deciding property, how much of each counted move is misreading, has no column in any file: no file
+  holds a true flow, a share of counted moves or a warning; it is a relation between each district's nine Table F1
+  cells and the state's reinterview crosstab that nothing stores.
+- **Link:** the signal is read by applying the reconciled reinterview's classification error, a state crosstab of
+  persons, to each district's published flows at both quarters of the pair: a comparison across two files and two
+  grains that no key offers and no sentence invites.
+- **Reflex:** the field's everyday reinterview statistic, each recorded status's chance of being right, multiplied
+  for the two ends of a counted move, sits at rung 0 and files no warning (every rate at 18.1 per cent).
+- **Back-test:** nothing in the pack refutes the easy route: no prior warning, adjusted flow or back-test ships, and
+  the checks a solver can run (Table F2 against Table F1 on all 24 rates, the reinterview's original statuses against
+  the person files') pass under every route.
+- **Second use:** every file the decisive step reads ships for its own reason: Table F1 is the release being cleared,
+  the reinterview results are the bureau's standing measure of classification error, and the methodology note and
+  the protocol govern the release and the reinterview.
+- **Shock:** the warned rates read as the districts' ordinary labour markets (farm districts where few lose work,
+  districts where few of the unemployed find it), not as an anomaly; within each flow they are the lowest published
+  rates (job-loss 1.0 to 1.5 against 3.9 to 4.8, job-finding 11.9 to 20.7 against 38.9 to 43.4), so a sort on the
+  published rate within a flow separates them, though nothing filed warns a low rate and the default path warns none.
+- **Pins:** section 8.1 files the WHAT (a third or more of the persons a rate counts as moving whose reconciled
+  statuses in the two quarters were not that pair) and protocol section 7 the reinterviews (five quarters, each person
+  once, unweighted, the state); no filed sentence names true flows, an inversion or a correction at both quarters.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -193,7 +217,7 @@ to 69.0 per cent.
 | SF13 | each person reinterviewed | once, one row each | none: no person twice in a quarter | protocol section 7; asserted |
 | SF14 | the rounding path | Table F1's persons as published | the bureau's unrounded flows: the same 13, every share within 0.2 points (same call) | same call |
 | SF15 | the annual flows | the average of the four quarter pairs (Table F1) | the mean of the four pairs' own shares: the same 13 (same call) | section 7; same call |
-| SF16 | the codes 1 to 3 | employed, unemployed, outside the labour force (the dictionary) | any other mapping puts most persons off the diagonal | the dictionary; asserted |
+| SF16 | the codes 1 to 3 | employed, unemployed, outside the labour force | a mapping that takes code 2 off the unemployed puts a stock out by a factor of two or more against Table F1; codes 1 and 3 swapped make the status never asked about looking for work, the only one whose persons worked, "outside the labour force" | methodology note section 4: "The survey codes the three statuses 1 employed, 2 unemployed and 3 outside the labour force." (filed once; no dictionary ships); the data agree (C1); asserted through the verifier's PDF reader |
 
 ## Ladder
 
@@ -238,7 +262,7 @@ figures); R0 and R1 keep 11 of the 24 warnings and none of the figures.
 | 16 | Identity normalisation | the call reads Table F1; the asks link a person on the dwelling, household and line, or a new household's sex and month and year of birth |
 | 17 | Netting against gross | the persons counted, gross (section 8.1, SF1) |
 | 18 | Dimensional units | persons; per cent; days |
-| 19 | Code and status semantics | orig_status 1 to 3 against the reconciled status's words (SF11, SF16); the reconciled status as the truth (section 8.1, SF2) |
+| 19 | Code and status semantics | orig_status and reconciled on the codes 1 to 3 of methodology note section 4 (SF11, SF16); the reconciled status as the truth (section 8.1, SF2) |
 | 20 | Integerisation | none for the call; Table F1's persons as published |
 | 21 | Clause scope | section 8.1 applies to each of the 24 rates; protocol section 7's state error to every district (SF5) |
 | 22 | Forward window contents | the 2027 annual tables stand until the 2028 tables replace them; nothing is forecast |
@@ -274,7 +298,7 @@ number differs, dwelling, household and line stay unique), and the copies, never
 district's base (36 to 65 a district). Hazards: Market Towns area 5's batch received twice (exact, 261 rows), the six
 areas moved on 1 April 2027 (2,005 earlier records under the Industrial Corridor's codes; section 6 reports every
 quarter on the 2027 districts), the fourth visit's dwellings not due another visit, the split households (filed).
-Path: the five person files, the gazetteer, sections 6 and 8.2, the dictionary (8 files, 12 columns). Stops: the
+Path: the five person files, the gazetteer, sections 6 and 8.2 (7 files, 12 columns). Stops: the
 filed link over identical rows taken once (the cracker): bases 36 to 65 persons larger and rates 0.29 to 0.54 points
 lower, all 24 missed; the rows as received: bases 36 to 276 larger, every rate lower; the line key alone: every rate
 0.17 to 0.67 lower; the recorded codes: the Fringe 1,490 persons smaller, the Corridor 1,490 larger. Realism: a server
@@ -289,11 +313,11 @@ attempt_date is the date the tablet next synchronised with the server (the super
 for the sync and make Friday's calls in the evening), while visit_start keeps the time the reinterview form was opened;
 nothing marks the change, and the log shows it (the two dates agree on all 5,268 calls before each tablet's update and on
 none of the 3,752 after, every later attempt_date a Friday) as does the results file (by attempt_date 1,122
-reinterviewed persons would fall outside the 14-day window that protocol sections 5 and 6 say every result is inside; by
+reinterviewed persons would fall outside the 14-day window that protocol section 5 says every result is inside; by
 visit_start none does). Hazards: callbacks (a person's own interview date after the household's first, section 8.3's
 "a person's original interview"), the late reinterviews (in, section 8.3), the 2026Q4 selections (out), the boundary,
-the batch received twice. Path: the log, the person files, the results file, the protocol's sections 5 and 6, section
-8.3, the gazetteer (10 files, 12 columns). Stops: the call's date as recorded (the cracker): 1.94 to 2.42 days more,
+the batch received twice. Path: the log, the person files, the results file, the protocol's section 5, section 8.3,
+the gazetteer (10 files, 12 columns). Stops: the call's date as recorded (the cracker): 1.94 to 2.42 days more,
 all 12 missed; the household's first interview: 0.14 to 0.22 more, all 12; the late reinterviews left out: 0.27 to 1.24
 fewer, all 12; 2026Q4 kept: 10 of 12 moved. Realism: a tablet app that stamps a record when it reaches the server
 rather than when it was made is a common update side effect, and a field team that syncs weekly from an area office
@@ -316,20 +340,33 @@ gazetteer row is among them, and no device or hazard row of either ask sits in T
 Referee: the person files' birth details for the splits and the protocol's window for the log's dates; neither names a
 split, a key or a date column.
 
-| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+Audit (2026-11-01, the careful-solver cracker, `generator/ceiling.py` on the leak-repaired cut): both primaries are
+battery items, so the stage-3 sheet above was a narrowed cracker's. D1's 714 copies repeat their originals in every
+field but the household number, so the near-exact duplicate check (each field left out in turn) isolates exactly them,
+and they break the one-person-per-sex-and-month-and-year-of-birth-in-a-dwelling test that section 8.2's own link reads
+(1,428 records in 296 dwellings, one household number of each pair never seen at another visit). D2's true date sits on
+the same row: the two clocks agree on all 5,268 calls before each tablet's update and on none of the 3,752 after, every
+later attempt_date a Friday 1 to 7 days after its visit_start, and by attempt_date 1,122 results fall outside the window
+protocol section 5 puts every result inside (none by visit_start). With both found and every filed rule executed, the
+careful solver keeps all 36 figures; the stage-3 cracker (identical rows once, the call's date as recorded) keeps none,
+and keeps 12 or 24 when it runs one of the two checks it skipped.
+
+| Ask row | The careful cracker (lands the call, runs the battery, executes sections 6, 8.2 and 8.3 and protocol 5 as worded) | Verdict |
 |---|---|---|
-| Ask A, the persons each rate is based on, all twelve districts | section 8.2's link, identical rows once (the batch received twice), the 2027 districts; the records taken in again under new household numbers kept | miss |
-| Ask A, match rate, all twelve districts | the same | miss |
-| Ask B, mean days, all twelve districts | the call's date as the log records it, each person's own interview, late reinterviews in, 2027 selections | miss |
+| Ask A, the persons each rate is based on, all twelve districts | identical rows once, the restore's copies taken once by the near-exact check, the 2027 districts, 8.2's link | kept |
+| Ask A, match rate, all twelve districts | the same | kept |
+| Ask B, mean days, all twelve districts | the form's start (visit_start) for the visit's date, each person's own interview, late reinterviews in, 2027 selections | kept |
 
-Measured by: generator/pair.py on the cut pack (--asks prints every stop, device and hazard count above): the cracker keeps 0 of the 36 ask figures; every lazier path keeps 0
-(the rows as received, the recorded codes, the household's first interview, the late reinterviews left out, the line
-key alone); the mirror (stopped at the counted flow's excess, which warns the same 13 with none of the 24 shares)
-keeps 14.2 of the 38 recommendation points and none of the ask figures.
+Measured by: generator/ceiling.py on target.zip (md5 57fbe5772616d029fd7f375e99f49a3f): the cracker's ask code is its own, apart from
+solve.py; the full includer (solve.py's golden route) reproduces figures.json exactly, 36 of 36; the cracker keeps 36 of
+36 and the mirror (the default path on the call, the asks read the same way) 36 of 36.
 
-Pair ceiling: 33.1 ((38 + 7 + 55 x 0) and (14.2 + 7 + 55 x 0), averaged)
+Pair ceiling: 84.2 (the cracker 38 + 7 + 55 = 100.0 and the mirror 6.5 + 7 + 55 = 68.5 with r measured from the default
+path's per-rate criteria; 83.5 with r = 5; two careful responses on the call 100.0 each). Over 60: the ask layer is owed
+(Tried and rejected, the last line).
 
-Mirror leakage: 0.0 per cent of ask weight
+Mirror leakage: 100.0 per cent of ask weight (the asks consume nothing the call's construction produces, so the mirror
+keeps whatever the careful route keeps)
 
 ## Pre-ship check
 
@@ -422,6 +459,22 @@ clock times run as a daytime spread and an evening peak about 18:00, with Friday
 office day. It also read the bimodal job-loss rates (1.0 to 1.5 against 3.9 to 4.8) as designed; they are the
 districts' labour markets (farming districts where few lose work, urban districts with high turnover), left as drawn.
 
+Re-check under the new gate (2026-11-01, `leak.py --asof 2028-02-02`): LEAK on DATA_DICTIONARY.md and README.md (files
+whose names say they describe the data), the dictionary's 35 column names (every column of elfs_2026q4_persons.csv) and
+the methodology note's seven field names (resp_line, q_work, q_absent, q_look, q_future, q_avail, lfs_status: 17 column
+names in all, 76 per cent of a person file's). Repaired in the generator (Tried and rejected): neither file ships, the
+note names no field, its codebook annex and protocol section 6's column list are gone, and each file's provenance is in
+metadata.json. On the repaired cut, REVIEW and no LEAK; the lines new to this cut:
+- Sweep 12, the methodology note names ten plain words that also head columns (district, dwelling, interviewer, line,
+  persons, quarter, reconciled, supervisor, visit, year): the survey design's own nouns, no field name, code list
+  gloss or file. Harmless.
+- Sweep 11, the prompt's "which of the 24": the release's own extent, which section 8.1 states ("The check covers the 24
+  rates of the annual tables"), in the call sentence a reship never changes; voice-check passes. Harmless.
+- Sweeps 3, 4 and 6 return the lines ruled above (the bulletin's 11.9 and district names, the field's nouns in the note
+  and the protocol, the districts beside numbers in the tables, the bulletin and the registers); the dictionary and
+  README lines are gone with the files. Sweep 13 is clean (metadata.json's subdomain and origin no longer narrate the
+  method).
+
 ## Tried and rejected
 
 - 2026-10-18, architecture 0 (the seed's own world, coded write-ins and a recode): the net against gross difference
@@ -457,3 +510,36 @@ districts' labour markets (farming districts where few lose work, urban district
   so the link is filed in section 8.2 as a paid pin and the primary moved to the server's restore of 17 May, which took
   in the uploads of 14 May again under the dwelling's next household numbers (D1, a replay under fresh ids); the ask's
   second figure moved from the persons interviewed again to the persons the rate is based on, which the replay moves.
+- 2026-11-01, the pack as shipped on 2026-10-18 (target.zip c35db89f): DATA_DICTIONARY.md glossed every column of every
+  data file (SF16's codes among them) and README.md listed every file, and the methodology note named seven of a person
+  file's fields (resp_line, the five questionnaire items, lfs_status) beside a codebook annex, so the re-check under the
+  new leak gate returned LEAK (dataset-generation section 3). Replaced on target.zip 57fbe577: neither file ships; the
+  note keeps its methodology and names no field, the codes filed once in section 4 (SF16, asserted through the
+  verifier's PDF reader with the data's convergence), the annex dropped; protocol section 6's list of the log's and the
+  results file's columns is now the reinterview's confidentiality; each file's provenance (what it covers, its issuer,
+  its date where the file states one) is in metadata.json, whose subdomain, prompt shape and origin no longer narrate
+  the method; checks.py asserts that no shipped file or sheet describes the data, by name and by content, every document
+  read back with a positive control. No graded figure moved (freeze determinism PASS, figures.json unchanged).
+- 2026-11-01 and 02, the ask layer under the careful-solver cracker (generator/ceiling.py, written for precut's Measured
+  by line): both primaries are battery items, and the stage-3 0 of 36 was a narrowed cracker's (pair.py ran identical
+  rows once and the call's date as recorded). D1's restore copies differ from their originals only in the household
+  number (the near-exact check, and the person test on section 8.2's own attributes, find all 714), and D2's true date
+  is visit_start on the same row (both clocks; every later attempt_date a Friday; 1,122 results outside protocol 5's
+  window by attempt_date): the careful solver keeps 36 of 36, pair 84.2, mirror leakage 100.0. The rework (the
+  ask-rework brief, its step 4b included) stopped with no passing device, data unchanged. Re-sites inside the person
+  files and the log: copies with re-derived fields (a dwelling's person key stays unique, so any copy in a dwelling
+  breaks it), twins as an over-cleaning half (the near-exact check still isolates the copies), lines renumbered after a
+  leaver (count-neutral), household numbers recycled (a link check on sex and birth year finds them, against section
+  2's filed numbering), corrected birth months in split households (a fork with 8.2's filed link), the log's date alone
+  or an irregular sync lag (unrecoverable, or an offset late logging also explains), late calls under the call's
+  quarter (negative days). The full replacement, built as a prototype outside the pack and measured: each district's
+  household response rate over the visits of 2027 on a new ask-only record, the CAPI case-outcome register, the WHAT
+  drafted as a new 8.4, the device a household that moved away closed as Non-contact beside the unrelated household
+  found in its place (D5); the plain read misses all 12 districts (-0.6 to -0.9) and the over-clean (Non-contacts never
+  seen again) all 12 (+0.9 to +1.4), but checking each Non-contact for a household new to the dwelling at that visit
+  keeps 11 of 12, discovery and remedy one act (supplemental-stumping 1.0), and an over-cleaning half strong enough to
+  stop that check (unrelated households moving in beside ones that stay) leaves the 154 device rows at a dwelling's
+  fourth visit with two readings. Screened and not built: reinterview coverage on the processing team's selection lists
+  (its numerator is the results file's households, the call's own population), refusal conversions on a fresh case
+  (one household under two keys), a stock-to-flow switch in the job centre registers (the magnitudes show it). Owed: an
+  ask layer on records the call does not read whose device passes both tests, or the author's call to re-root the asks.

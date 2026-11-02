@@ -18,6 +18,15 @@ import solve
 S = P.STATUS
 GOLD = [("D03", "EU"), ("D04", "UE"), ("D05", "EU"), ("D05", "UE"), ("D06", "EU"), ("D06", "UE"), ("D07", "EU"),
         ("D07", "UE"), ("D08", "EU"), ("D08", "UE"), ("D09", "EU"), ("D10", "UE"), ("D12", "EU")]
+SF16_SENTENCE = "The survey codes the three statuses 1 employed, 2 unemployed and 3 outside the labour force."
+# the file and sheet names that describe the data (dataset-generation section 3), as the leak check's own sweep reads them
+DESCRIBE_NAME = re.compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|fields?_(guide|notes|list|"
+    r"descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|column_(notes|descriptions?)|"
+    r"data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|desk_notes|data_team_notes|definitions|"
+    r"schema|layouts?_notes|handling_notes|release_notes)(?![a-z])", re.I)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|about|"
+                            r"about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
 
 
 class Count:
@@ -160,6 +169,26 @@ def run(target, W, R, fig, golden):
        "SF15 the mean of the four pairs' own shares gives the same rates")
     q = A["M"]
     ok(abs(q.sum(1) - 1).max() < 1e-12 and (np.diag(q) > 0.8).all(), "SF16 each status's readings sum to one")
+    # SF16's home is methodology note section 4 (the dictionary no longer ships), read back through the verifier's own
+    # PDF reader; the data agree with it (C1): the reinterview's code shares sit on Table F1's first-quarter stocks in the
+    # filed order, any mapping that takes code 2 off the unemployed puts a stock out by a factor of two or more, and
+    # code 1 is the one status the questionnaire never asks about looking for work, its persons the only ones who worked
+    import itertools
+    import verify as V
+    meth = V.document_text(os.path.join(target, F["method"]))
+    ok(SF16_SENTENCE in meth, "SF16 the codes 1 to 3 are filed once, in methodology note section 4")
+    ok(meth.count("1 employed") == 1, "SF16 the codes are stated once in the note")
+    codes = r["orig_status"].value_counts(normalize=True).reindex([1, 2, 3]).values
+    stock = sum(A["O"][d].sum(1) for d in P.DCODES)
+    stock = stock / stock.sum()
+    ok(np.abs(codes / stock - 1).max() < 0.35, "SF16 the code shares sit on Table F1's stocks (%s against %s)"
+       % (np.round(codes, 3), np.round(stock, 3)))
+    ok(all(np.max(np.maximum(codes[list(pm)] / stock, stock / codes[list(pm)])) >= 2.0
+           for pm in itertools.permutations(range(3)) if pm[1] != 1),
+       "SF16 any mapping that takes code 2 off the unemployed puts a stock out by a factor of two or more")
+    pf = pd.read_csv(os.path.join(target, F["persons_2027q1"]), dtype={"dwelling": str})
+    ok(set(pf.loc[pf.q_look.isna(), "lfs_status"]) == {1} and set(pf.loc[pf.q_work == 1, "lfs_status"]) == {1},
+       "SF16 code 1 is the status never asked about looking for work, and the only one whose persons worked")
 
     # ---------------------------------------------------------------- ask A: the match rate
     df = solve.persons(target, F)
@@ -204,7 +233,8 @@ def run(target, W, R, fig, golden):
     ok(not keys.duplicated().any(), "A the copies pass the key check (dwelling, household and line unique)")
     crack = solve.ask_match(target, F, exact)
     ok(all(crack[d][2] != mA[d][2] and round(crack[d][1], 1) != round(mA[d][1], 1) for d in P.DCODES),
-       "A the cracker (every filed rule, identical rows once) misses every district's base and rate")
+       "A the identical-rows-once route (pair.py's stage-3 cracker, which skips the near-exact duplicate check) misses "
+       "every district's base and rate")
     line = solve.ask_match(target, F, df, key="line")
     ok(all(round(line[d][1], 1) != round(mA[d][1], 1) for d in P.DCODES), "A the line key alone misses every rate")
     keep = solve.persons(target, F, dedupe="none")
@@ -282,8 +312,43 @@ def run(target, W, R, fig, golden):
        "3,700 persons)")
     ok(log.groupby("supervisor").size().nunique() == len(P.SUPERVISORS), "realism: supervisors' workloads differ")
 
-    # ---------------------------------------------------------------- the input gates and the dates
+    # ---------------------------------------------------------------- no shipped file describes the data (section 3)
+    import verify as V
     files = [B.FILES[k] for k in B.PACK]
+    shipped = sorted(os.listdir(target))
+    ok(shipped == sorted(files), "pack: exactly build.PACK's %d files ship (%s)" % (len(files), sorted(set(shipped) ^ set(files))))
+    ok(not [f for f in shipped if DESCRIBE_NAME.search(os.path.splitext(f)[0])], "no shipped file describes the data, by "
+                                                                                 "name")
+    ok(DESCRIBE_NAME.search("DATA_DICTIONARY") and DESCRIBE_NAME.search("README"), "the name rule catches the files the "
+                                                                                     "pack used to ship (control)")
+    for f in shipped:
+        if f.endswith(".xlsx"):
+            sheets = load_workbook(os.path.join(target, f), read_only=True).sheetnames
+            ok(sheets and not [s_ for s_ in sheets if DESCRIBE_SHEET.match(s_.strip())], "no notes or readme sheet: %s %s"
+               % (f, sheets))
+    fields = set()
+    for f in shipped:
+        if f.endswith(".csv"):
+            fields |= {c for c in pd.read_csv(os.path.join(target, f), nrows=0).columns if "_" in c or re.search(r"\d", c)}
+    ok(len(fields) >= 15, "the data files' field names gathered for the content sweep (%d)" % len(fields))
+    controls = {F["method"]: SF16_SENTENCE,
+                F["protocol"]: "Reinterviews completed after the window are recorded in the fieldwork log but their "
+                               "results are not used.",
+                F["request"]: "Section 8 of the methodology note has what the note covers.",
+                F["bulletin"]: "Estimates use the cross-sectional weights."}
+    documents = [f for f in shipped if f.endswith((".pdf", ".eml", ".docx", ".md", ".txt"))]
+    ok(sorted(documents) == sorted(controls), "every shipped document carries a positive control")
+    for f in documents:
+        txt = V.document_text(os.path.join(target, f))
+        ok(len(txt) > 200 and controls[f] in txt, "document read back through the verifier's reader: %s (%d characters, "
+                                                  "control found)" % (f, len(txt)))
+        named = sorted(c for c in fields if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), txt))
+        ok(not named, "no shipped document names the data files' fields: %s %s" % (f, named))
+    proto = V.document_text(os.path.join(target, F["protocol"]))
+    ok("as the tablet recorded it" not in proto and "form was opened" not in proto,
+       "the protocol no longer describes the fieldwork log's columns")
+
+    # ---------------------------------------------------------------- the input gates and the dates
     ok(len(files) >= 10 and all(os.path.exists(os.path.join(target, f)) for f in files), "gate: 10 or more files")
     ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "gate: 3 or more formats")
     big = max(sum(1 for _ in open(os.path.join(target, f))) - 1 for f in files if f.endswith(".csv"))

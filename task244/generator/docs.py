@@ -1,6 +1,6 @@
 """task244 documents: the Director's request (eml), the survey's methodology note and the reinterview protocol (pdf), the
-published 2027 flows tables (xlsx), the third-quarter labour market bulletin (pdf), the job centres' register (xlsx), the
-data dictionary and the readme (md)."""
+published 2027 flows tables (xlsx), the third-quarter labour market bulletin (pdf) and the job centres' register (xlsx).
+No file describes the data: each file's provenance is in metadata.json, outside the pack."""
 import os
 
 from openpyxl import Workbook
@@ -123,29 +123,28 @@ def methodology(path, F):
          ["Each district's sample is drawn from its enumeration areas, and every district's sample is the same size "
           "(320 dwellings enter it each quarter), so that each district's estimates carry similar precision. A "
           "dwelling stays in the sample for four "
-          "consecutive quarters (four visits) and then leaves it; each quarter about a quarter of each district's "
-          "dwellings are new to the sample and about a quarter take their fourth and last interview. The visit "
-          "number on each record is the dwelling's visit (1 to 4). Every household living in a sampled dwelling at a "
+          "consecutive quarters (four visits, numbered 1 to 4 from its entry) and then leaves it; each quarter about "
+          "a quarter of each district's dwellings are new to the sample and about a quarter take their fourth and "
+          "last interview. Every household living in a sampled dwelling at a "
           "visit is interviewed. A household that moves away is not followed; the household found in the dwelling at "
           "the next visit is interviewed in its place under the next household number."]),
         ("3. Fieldwork",
          ["Interviews run over the first eleven weeks of each quarter, Monday to Saturday, on tablets. Household "
           "members absent at the visit are interviewed on a later call where possible, otherwise another adult of "
-          "the household answers for them; each record carries the line of the person who answered "
-          "(resp_line). The bureau rotates its interviewers between enumeration areas each quarter, so a dwelling is "
-          "interviewed by a different interviewer at each visit."]),
+          "the household answers for them. The bureau rotates its interviewers between enumeration areas each "
+          "quarter, so a dwelling is interviewed by a different interviewer at each visit."]),
         ("4. Labour force status",
          ["Status follows the international standard for the reference week before the interview. A person is "
-          "employed who worked for pay or profit for at least one hour in the reference week (q_work) or had a job "
-          "from which they were temporarily absent (q_absent). A person not employed is unemployed who looked for "
-          "work in the last four weeks (q_look) or has found a job to start within three months (q_future), and is "
-          "available to start within two weeks (q_avail). Everyone else is outside the labour force. The derived "
-          "status is on each record (lfs_status: 1 employed, 2 unemployed, 3 outside the labour force)."]),
+          "employed who worked for pay or profit for at least one hour in the reference week or had a job from which "
+          "they were temporarily absent. A person not employed is unemployed who looked for work in the last four "
+          "weeks or has found a job to start within three months, and is available to start within two weeks. "
+          "Everyone else is outside the labour force. The survey codes the three statuses 1 employed, 2 unemployed "
+          "and 3 outside the labour force."]),
         ("5. Weights",
-         ["Each quarter's records carry a cross-sectional weight (wt), the design weight adjusted for household "
-          "non-response and calibrated to the bureau's projections of the district's population aged 15 and over by "
-          "sex and age group. The flows tables use longitudinal weights, computed for the persons linked across two "
-          "quarters and calibrated to the same projections; they are held on the bureau's processing server."]),
+         ["Quarterly estimates use cross-sectional weights: the design weight adjusted for household non-response "
+          "and calibrated to the bureau's projections of the district's population aged 15 and over by sex and age "
+          "group. The flows tables use longitudinal weights, computed for the persons linked across two quarters "
+          "and calibrated to the same projections; they are held on the bureau's processing server."]),
         ("6. Districts",
          ["From 1 April 2027 six enumeration areas of the Industrial Corridor (D04) belong to the Metropolitan Fringe "
           "(D02), where they are numbered 17 to 22; the district gazetteer lists each area's code before and after. "
@@ -181,18 +180,6 @@ def methodology(path, F):
           "quarters (2027Q1 to 2027Q4)."]),
     ]
     _sections(s, sec, h2, body)
-    s.append(Paragraph("Annex: questionnaire items on the person records", h2))
-    rows = [["Item", "Question", "Codes"],
-            ["q_work", "Last week, did you do any work for pay or profit, for at least one hour?", "1 yes, 2 no"],
-            ["q_absent", "Do you have a job or business from which you were temporarily absent last week?",
-             "1 yes, 2 no (asked if q_work is 2)"],
-            ["q_look", "In the last four weeks, did you look for work or try to start a business?",
-             "1 yes, 2 no (asked if not employed)"],
-            ["q_future", "Have you found a job or business that you will start within three months?",
-             "1 yes, 2 no (asked if q_look is 2)"],
-            ["q_avail", "If a job were offered now, could you start within two weeks?",
-             "1 yes, 2 no (asked if not employed)"]]
-    s.append(_grid(rows, [18 * mm, 104 * mm, 48 * mm], cell))
     foot = "%s: %s methodology note, 2027 edition" % (P.BUREAU, P.SURVEY_SHORT)
     doc.build(s, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
     postprocess.scrub(path, P.BUREAU, "2027-04-14")
@@ -226,15 +213,12 @@ def protocol(path, F):
           "respondent and records the status they agree is right. The status recorded after that review is the "
           "reconciled status."]),
         ("5. The window",
-         ["A reinterview must be completed within 14 days of each person's original interview (the person's own "
-          "interview date on the survey record). A supervisor makes up to three calls. Reinterviews completed after "
-          "the window are recorded in the fieldwork log but their results are not used."]),
-        ("6. Records",
-         ["The fieldwork log holds one row for each call on a selected household: the supervisor, the household, "
-          "the call number, the call's date as the tablet recorded it, the tablet clock time at which the household's "
-          "reinterview form was opened, and the result. The reinterview results file "
-          "holds every person reinterviewed within the window: the status the original interview recorded, the "
-          "status of the supervisor's own reading before review, and the reconciled status."]),
+         ["A reinterview must be completed within 14 days of each person's own original interview. A supervisor "
+          "makes up to three calls. Reinterviews completed after the window are recorded in the fieldwork log but "
+          "their results are not used."]),
+        ("6. Confidentiality",
+         ["Reinterview answers are confidential, as the survey's own answers are, and are used only to measure the "
+          "quality of the survey's interviews."]),
         ("7. What the reinterview measures",
          ["The reinterview is designed to measure the survey's classification error for the state over a year. Each "
           "annual release uses the reinterviews of every quarter whose interviews enter its tables; for the 2027 "
@@ -368,76 +352,6 @@ def jobcentre_workbook(path, R):
                               "Esinmi State Ministry of Labour and Productivity")
 
 
-# ------------------------------------------------------------------ the registers
-def dictionary(F):
-    pfiles = ", ".join(F["persons_" + q.lower()] for q in P.QUARTERS)
-    return f"""# Data dictionary
-
-## {pfiles}
-The survey's quarterly person files, one per quarter: one row per person aged 15 and over interviewed. quarter;
-district and ea (the survey district and enumeration area codes in force on the interview date); dwelling (the sampled
-dwelling's number); hh (the household's number in the dwelling); line (the person's line in the household); visit (the
-dwelling's visit, 1 to 4); int_date (the person's interview date, yyyy-mm-dd); interviewer; resp_line (the line of the
-person who answered); sex (1 male, 2 female); birth_month; birth_year; age (completed years); relation (to the
-household head: 1 head, 2 spouse, 3 child, 4 other relative); q_work, q_absent, q_look, q_avail, q_future (the
-questionnaire items in the methodology note's annex; blank where not asked); lfs_status (1 employed, 2 unemployed, 3
-outside the labour force); wt (the cross-sectional weight).
-
-## {F["reint_results"]}
-The supervisors' reinterview results: one row per person reinterviewed within the window. reint_id; quarter (of the
-original interview); district and ea (codes in force on the original interview date); dwelling; hh; line; supervisor;
-orig_status (the status the original interview recorded: 1 employed, 2 unemployed, 3 outside the labour force);
-reint_status (the supervisor's own reading before review, same codes); reconciled (the status agreed with the
-respondent after review, same codes); outcome (same: no difference to review; reconciled: a difference reviewed).
-
-## {F["reint_log"]}
-The supervisors' fieldwork log: one row per call on a selected household. log_row; supervisor; quarter (of the
-original interview); district and ea (codes in force on the original interview date); dwelling; hh; attempt (the call
-number); attempt_date (the call's date as the tablet recorded it, yyyy-mm-dd); visit_start (the tablet clock time at
-which the household's reinterview form was opened, yyyy-mm-dd hh:mm); result (no contact, refused, completed).
-
-## {F["flows"]}
-The 2027 annual flows tables as tabulated: sheet F1 flows (Table F1, persons in each pair of statuses in two
-consecutive quarters, by district) and sheet F2 rates (Table F2, job-finding and job-loss rates).
-
-## {F["gazetteer"]}
-The survey districts' enumeration areas as they stand from 1 April 2027: district; district_name; ea; and, for the
-areas renumbered on that date, district_before, ea_before and effective.
-
-## {F["projections"]}
-The bureau's projections of the population aged 15 and over: district, year, sex (1 male, 2 female), age_group,
-persons.
-
-## {F["jobcentre"]}
-The Ministry of Labour and Productivity's job centre registers, 2027: registered job seekers at the end of each month
-by district.
-
-## {F["bulletin"]}
-The bureau's labour market bulletin for the third quarter of 2027.
-"""
-
-
-def readme(F):
-    pq = "\n".join("- %s: the survey's person file for %s." % (F["persons_" + q.lower()], q) for q in P.QUARTERS)
-    return f"""# {P.SURVEY_SHORT} 2027 annual flows
-
-The {P.DIVISION}'s folder for the 2027 annual labour market flows release.
-
-- {F["request"]}: the Director's request for the release's quality note.
-- {F["method"]}: the survey's methodology note, 2027 edition.
-- {F["protocol"]}: the supervisors' reinterview protocol, version 3.
-{pq}
-- {F["reint_results"]}: the reinterview results.
-- {F["reint_log"]}: the reinterview fieldwork log.
-- {F["flows"]}: the 2027 annual flows tables as tabulated.
-- {F["gazetteer"]}: the district gazetteer.
-- {F["projections"]}: population projections, 2026 to 2028.
-- {F["jobcentre"]}: the Ministry of Labour and Productivity's job centre registers, 2027.
-- {F["bulletin"]}: the labour market bulletin for the third quarter of 2027.
-- DATA_DICTIONARY.md: the fields of each file.
-"""
-
-
 def write_all(target, F, R):
     p = lambda k: os.path.join(target, F[k])
     request(p("request"), F)
@@ -446,7 +360,3 @@ def write_all(target, F, R):
     bulletin(p("bulletin"), F, R)
     flows_workbook(p("flows"), R)
     jobcentre_workbook(p("jobcentre"), R)
-    with open(p("dict"), "w") as fh:
-        fh.write(dictionary(F))
-    with open(p("readme"), "w") as fh:
-        fh.write(readme(F))
