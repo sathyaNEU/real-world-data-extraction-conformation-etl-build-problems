@@ -358,6 +358,33 @@ def main():
                 core += z.read("docProps/app.xml").decode("utf-8") if "docProps/app.xml" in z.namelist() else ""
             check("Z-container-%s: no comments, tracked people or macros; no tool signature in core properties" % os.path.basename(f),
                   not bad and not re.search(r"openpyxl|python-docx|python", core.lower()), bad)
+    # H25 and H13: every PDF opens alike in a strict reader, a lenient one and pdftotext; dates distinct and in order
+    import logging
+    import subprocess
+    import warnings
+    logging.getLogger("pypdf").setLevel(logging.ERROR)
+    import pypdf
+    stamps = []
+    for f in sorted(x for x in files if x.endswith(".pdf")):
+        with warnings.catch_warnings(record=True) as wr:
+            warnings.simplefilter("always")
+            ts = " ".join(pg.extract_text() for pg in pypdf.PdfReader(f, strict=True).pages)
+            tl = " ".join(pg.extract_text() for pg in pypdf.PdfReader(f, strict=False).pages)
+            meta_ = pypdf.PdfReader(f).metadata
+        pt = subprocess.run(["pdftotext", "-layout", f, "-"], capture_output=True, text=True) if shutil.which("pdftotext") else None
+        ok_pt = pt is None or (pt.returncode == 0 and "Error" not in pt.stderr and len(pt.stdout.split()) > 40)
+        stamps.append(meta_.get("/CreationDate"))
+        check("Z-readers-%s: strict and lenient readers agree, no parser warning, pdftotext reads it" % os.path.basename(f),
+              ts == tl and not wr and ok_pt and meta_.get("/CreationDate") == meta_.get("/ModDate"), (len(wr), ok_pt))
+    check("Z-pdf-dates: every PDF carries its own creation date", len(set(stamps)) == len(stamps), stamps)
+    for f in files + gfiles:
+        if f.endswith((".xlsx", ".docx")):
+            with zipfile.ZipFile(f) as z:
+                core = z.read("docProps/core.xml").decode("utf-8")
+            c_ = re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1)
+            m_ = re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+            check("Z-office-dates-%s: created on or before modified, inside 2025-06 to 2026-05-15" % os.path.basename(f),
+                  c_ <= m_ and "2025-06-01" <= c_[:10] <= "2026-05-15", (c_, m_))
     shutil.rmtree(tmp)
 
     fails = [r for r in RESULTS if not r[1]]
