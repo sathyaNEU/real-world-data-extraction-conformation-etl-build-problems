@@ -10,7 +10,7 @@ import zipfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 ZIP_TIME = (2026, 3, 18, 9, 0, 0)
-AS_OF = dt.date(2026, 3, 20)
+AS_OF = dt.date(2026, 3, 23)
 
 
 def write_csv(path, header, rows):

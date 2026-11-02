@@ -479,7 +479,7 @@ def legacy_and_open(rng, conns, wx):
     return reads
 
 
-def gas_truth(rng, blks, wx):
+def gas_truth(rng, blks, wx, scale=None):
     """Monthly telemetry reads of the blocks' boiler-room gas meters (06:00 local on the first of the month), the
     grid operator's meter master data, and the true gas-year consumption per block."""
     tg = {d: t / 10.0 for d, t in zip(wx["days"], wx["tg"])}
@@ -487,7 +487,7 @@ def gas_truth(rng, blks, wx):
     for b in blks:
         w = {d: max(0.0, 18.0 - t) + 0.45 for d, t in tg.items()}
         tot_w = sum(w.values())
-        annual = b["dwellings"] * b["gas_per_dw"]
+        annual = b["dwellings"] * b["gas_per_dw"] * ((scale or {}).get(b["code"], 1.0))
         daily = {d: annual * w[d] / tot_w * float(np.exp(rng.normal(0, 0.05))) for d in w}
         b["gas_true"] = sum(daily.values())
         ean = "8716%014d" % int(rng.integers(10**12, 10**13 - 1))
@@ -777,6 +777,33 @@ def tune(blks, fam):
     return H, dl
 
 
+def tune_gas(blks, wx, seed):
+    """The boiler rooms' gas use per dwelling is the free parameter of the gas world: the largest block of a phase whose
+    total would sit within 200 m3 of its 1,000 m3 rounding edge has its use per dwelling moved by the smallest step
+    (in 0.1 per cent) that clears it; the reads are then generated once more from the same seed."""
+    import copy
+    probe = copy.deepcopy(blks)
+    gas_truth(np.random.default_rng(seed + 2000), probe, wx)
+    scale = {}
+    for ph in range(1, 7):
+        bl = [b for b in probe if b["phase"] == ph]
+        tot = sum(b["gas_true"] for b in bl)
+        if dist_to_edge(tot, 1000) >= 200:
+            continue
+        big = max(bl, key=lambda b: b["gas_true"])
+        for k in range(1, 60):
+            for sgn in (1, -1):
+                f = 1 + sgn * 0.001 * k
+                t2 = tot + big["gas_true"] * (f - 1)
+                if dist_to_edge(t2, 1000) >= 250:
+                    scale[big["code"]] = f
+                    break
+            if big["code"] in scale:
+                break
+    reads, master = gas_truth(np.random.default_rng(seed + 2000), blks, wx, scale)
+    return reads, master, scale
+
+
 def build(seed=P.SEED):
     rng = np.random.default_rng(seed)
     wx = weather(rng)
@@ -790,14 +817,13 @@ def build(seed=P.SEED):
     fam = families(rows, conns, wx)
     H, dl = tune(blks, fam)
     committed, per = committed_flow(conns, rows, wx)
-    rng3 = np.random.default_rng(seed + 2000)
-    gas_reads, gas_master = gas_truth(rng3, blks, wx)
-    sc, E, V, loss = scada(rng3, wx, conns, amr)
+    gas_reads, gas_master, gscale = tune_gas(blks, wx, seed)
+    sc, E, V, loss = scada(np.random.default_rng(seed + 3000), wx, conns, amr)
     w = {"wx": wx, "conns": conns, "amr": amr, "blocks": blks, "legacy": legacy, "amr_rows": rows, "fam": fam,
          "H": H, "tune": dl, "committed": committed, "capacity": int(round(committed)) + H,
          "committed_int": int(round(committed)), "committed_by_conn": per,
          "cold_days": int(sum(1 for t in wx["tg"] if t / 10.0 <= P.TG_WINDOW)),
-         "gas_reads": gas_reads, "gas_master": gas_master, "scada": sc}
+         "gas_reads": gas_reads, "gas_master": gas_master, "gas_scale": gscale, "scada": sc}
     return w
 
 

@@ -13,7 +13,7 @@ from openpyxl.styles import Font
 
 import docs
 import params as P
-from world import TRUNK, World, road_user
+from world import World, road_user
 
 OLD_CASUALTY_TYPE = {"Car": "Car occupant", "Taxi or private hire car": "Car occupant", "Pedal cycle": "Pedal cyclist",
                      "Motorcycle 125cc and under": "Motorcyclist", "Motorcycle 125cc to 500cc": "Motorcyclist",
@@ -143,18 +143,26 @@ class Pack:
         save_xlsx(wb, self.p("junction_inventory_2026.xlsx"), "Ardleshire County Council Network Management")
 
     def road_register(self):
-        rows = [["A4600", "Ardle Bypass", 452000, 470000, "A", "Strategic road network", "01/04/2009"],
-                ["A4600", "Kestermoor Road East", 470000, 486000, "A", "Ardleshire County Council", "01/04/2019"],
-                ["A6510", "Wold Road", 441000, 470000, "A", "Strategic road network", "01/04/2009"]]
-        seen = set()
-        for road, name in sorted(set((j["road"], j["road_name"]) for j in self.W.junctions)):
-            if road in TRUNK or road in seen or road.startswith("C"):
-                continue
-            seen.add(road)
-            rows.append([road, name, 441000, 486000, road[0], "Ardleshire County Council", "01/04/1996"])
-        rows.sort(key=lambda r: (r[0], r[2]))
+        """The county's network register: classified roads by section between inventory nodes, with the highway
+        authority for each section."""
+        W = self.W
+        bynode = sorted(W.junctions, key=lambda j: (j["road"], j["easting"]))
+        rows = []
+        for road in sorted(set(j["road"] for j in W.junctions if not j["road"].startswith("C"))):
+            nodes = [j for j in bynode if j["road"] == road]
+            name = nodes[0]["road_name"]
+            if road == "A4600":
+                b = W.boundary_node
+                rows.append([road, "Ardle Bypass", nodes[0]["node"], b["node"], "A", "Strategic road network", "01/04/2009"])
+                rows.append([road, "Kestermoor Road East", b["node"], nodes[-1]["node"], "A", "Ardleshire County Council",
+                             "01/04/2019"])
+            elif road == "A6510":
+                rows.append([road, name, nodes[0]["node"], nodes[-1]["node"], "A", "Strategic road network", "01/04/2009"])
+            else:
+                rows.append([road, name, nodes[0]["node"], nodes[-1]["node"], road[0], "Ardleshire County Council",
+                             "01/04/1996"])
         write_csv(self.p("road_network_register_2026.csv"),
-                  ["road_number", "section_name", "easting_from", "easting_to", "road_class", "highway_authority",
+                  ["road_number", "section_name", "from_node", "to_node", "road_class", "highway_authority",
                    "authority_from"], rows)
 
     # ------------------------------------------------------------------ the 2026 provisional police data

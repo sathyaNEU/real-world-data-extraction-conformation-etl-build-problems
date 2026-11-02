@@ -84,6 +84,29 @@ def load(target):
     return T
 
 
+def load_main_only(target):
+    """The files the main call reads (no gas telemetry, gas master data or drive-by reads)."""
+    T = {}
+    T["weather"] = read_csv(find(target, "weerstation_"))
+    T["amr"] = read_csv(find(target, "amr_warmtemeters_"))
+    wb = openpyxl.load_workbook(find(target, "aansluitregister_"))
+    T["conns"] = [dict(zip([c.value for c in wb["Aansluitingen"][1]], r)) for r in
+                  wb["Aansluitingen"].iter_rows(min_row=2, values_only=True)]
+    T["meters"] = [dict(zip([c.value for c in wb["Meters"][1]], r)) for r in
+                   wb["Meters"].iter_rows(min_row=2, values_only=True)]
+    wb = openpyxl.load_workbook(find(target, "weidehaven_aardgasvrij_fasering"))
+    ws = wb["Fasering"]
+    head = [c.value for c in ws[4]]
+    T["schedule"] = [dict(zip(head, r)) for r in ws.iter_rows(min_row=5, values_only=True) if r[0] is not None]
+    wb = openpyxl.load_workbook(find(target, "warmteverliesberekening_weidehaven_rev2"))
+    ws = wb["Resultaten"]
+    head = [c.value for c in ws[4]]
+    T["rev2"] = [dict(zip(head, r)) for r in ws.iter_rows(min_row=5, values_only=True) if r[0] is not None]
+    T["hydraulic"] = pdf_text(find(target, "hydraulische_toets"))
+    T["concept"] = pdf_text(find(target, "warmteverliesberekening_weidehaven_concept"))
+    return T
+
+
 def asdate(x):
     if isinstance(x, dt.datetime):
         return x.date()

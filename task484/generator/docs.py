@@ -134,7 +134,7 @@ def ops_log(W, out):
                      "Controller replaced under the signal renewal contract. Junction on all-red flashing and police control %s to %s; "
                      "detectors re-terminated to the new controller and recommissioned %s." % (
                          (sw - dt.timedelta(1)).strftime("%d %B").lstrip("0"), (sw + dt.timedelta(1)).strftime("%d %B").lstrip("0"),
-                         (sw + dt.timedelta(1)).strftime("%d %B").lstrip("0")), "CD"))
+                         (sw + dt.timedelta(1)).strftime("%d %B").lstrip("0")), "IG"))
     # longer loop faults on channels away from the counted sections
     for c in W.detectors:
         av = c["avail"]
@@ -151,10 +151,10 @@ def ops_log(W, out):
                     if a1 - a0 >= 8:
                         rows.append((WD.DAYS[a0], "WRN%s channel %d" % (W.refs[c["junction"]], c["channel"]),
                                      "Loop fault reported by the UTC fault monitor; repaired by the maintenance contractor %s." %
-                                     WD.DAYS[a1 + 1].strftime("%d %B").lstrip("0") if a1 + 1 < 365 else "repaired in the new year", "CD"))
+                                     WD.DAYS[a1 + 1].strftime("%d %B").lstrip("0") if a1 + 1 < 365 else "repaired in the new year", "IG"))
     rows.append((dt.date(2025, 3, 3), "Count programme", "2025 manual classified count programme starts (Heathside Survey Services).", "MW"))
     rows.append((dt.date(2025, 10, 24), "Count programme", "2025 count programme complete; count sheets received and keyed.", "MW"))
-    rows.append((dt.date(2025, 12, 19), "UTC", "Christmas timing plans loaded at the shopping centre and retail park junctions.", "CD"))
+    rows.append((dt.date(2025, 12, 19), "UTC", "Christmas timing plans loaded at the shopping centre and retail park junctions.", "IG"))
     rows.sort(key=lambda r: (r[0], r[1]))
     t = doc.add_table(rows=1, cols=4)
     t.style = "Table Grid"

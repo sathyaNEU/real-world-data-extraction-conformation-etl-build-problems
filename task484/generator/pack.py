@@ -161,7 +161,7 @@ def write_pack(W, out):
             for cell in row:
                 if isinstance(cell.value, dt.date):
                     cell.number_format = "dd/mm/yyyy"
-    C.save_workbook(wb, os.path.join(out, "utc_asset_register_2025.xlsx"), dt.datetime(2026, 1, 12, 10, 4), "Cheryl Dixon")
+    C.save_workbook(wb, os.path.join(out, "utc_asset_register_2025.xlsx"), dt.datetime(2026, 1, 12, 10, 4), "Melanie Watts")
 
     # 3. permanent counter daily export and site list
     atc_rows = []

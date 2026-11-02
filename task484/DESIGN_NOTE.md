@@ -1,9 +1,274 @@
-# task484 design note: Halvard County's 2025-26 wood smoke zone determinations after a propane price spike (architecture 3)
+# task484 design note: Wrenford's road sections over three million vehicles in 2025 (architecture 4)
+
+Architecture 4, drawn 2026-11-02 at the Batch 3 re-root. Architecture 3 (Halvard County's wood smoke zones,
+physical-environmental-sciences) is closed with its world and kept below as `## Architecture 3 record`; the
+append-only `## Tried and rejected` closes the note.
+
+## Draw
+
+- **Pairing.** `survey-research-official-statistics` / `seasonal-adjustment-official-time-series-production`
+  (serves ETL), objective Data Extraction & Conformation (ETL). Shape 15, decision `conformed_dataset`: the
+  conformed supply of every section counted in 2025 for the noise mapping round, with the sections over the line.
+  The objective fixes the slot's lane; the domain moved because every other ETL client domain is held (task123
+  general statistics, task485 healthcare claims, task475 education, task452 and the brief close physical sciences).
+- **World.** Wrenford, a fictional unitary borough in the West Midlands. Its transport data and monitoring team
+  (local government, a statistics function: it publishes the borough's traffic estimates) supplies the 2026 noise
+  mapping round with the 2025 annual traffic of every section it counted in 2025; Environmental Protection fixes
+  the mapping contractor's scope on the sections over three million vehicle passages. Personas from
+  `guard.py names --geo England --locale en_GB --seed 484`: Irene Griffiths (head of transport data and
+  monitoring), Melanie Watts (traffic data analyst), Beth King (Environmental Protection, contract manager); the
+  draw's other names were already first names in older builds (people.first), Cheryl Dixon among them once
+  task304's fresh card took the name.
+- **The call.** How many, and which, of the 18 sections counted in 2025 carried more than three million vehicles
+  (8,219 a day). Golden: nine. The call is forward facing in use (the contract scope for the 2026 round) and
+  retrospective in quantity by the round's own definition (the round models the closed year 2025), the reason
+  the window is closed.
+- **Candidates written before choosing** (the dropped ones are in `## Tried and rejected`): (1) a short count
+  taken to the year by the section's own partial record, chosen; (2) domestic gas meter reads re-timed to the
+  month with heat pump installations from the certification register; (3) VAT turnover calendarised from three
+  staggered quarterly panels; (4) long-term migration under the 12 of 16 months rule from border crossings;
+  (5) small solar generation re-timed from feed-in meter reads by irradiance; (6) vehicle kilometres from
+  odometer readings at inspections; (7) household waste tonnage per round from bin lifts and weighbridge tickets;
+  (8) bus passenger kilometres by tap-on trip chaining; (9) the honey e-mark draw carried from the first screen.
+- **Why (1).** The field's named method for the deciding quantity, the short-count expansion with same-day factors
+  from the permanent counters by setting, sits at rung 0 and files a wrong set; the precondition it needs (the
+  section shares its group's weekly and seasonal rhythm) is what this dataset violates at the six sections whose
+  ends are a campus, a school, an industrial estate, a retail park, a leisure park and a hospital; and the
+  violation is recoverable only through a record kept in another system for another reason.
+- **The ETL pincer, named.** The forcing file (the UTC system's daily detector summaries) pins an overlap: the
+  counted day, which the manual count and the section's approach detectors both recorded. Reading it correctly is
+  not sufficient: the detectors see one lane of one direction, a different grain from the section's two-way flow,
+  so no detector figure is the section's traffic; the section's year enters only as the ratio of the detectors'
+  mean full day to their own 07:00 to 19:00 flow on the counted day, and the detectors are tied to the section
+  only by junction and arm names that the two registers write differently.
+- **Data-native sentence.** Signal-controlled minor sections in a town of retail parks, a campus and an
+  industrial estate carry traffic whose week and year follow the shops, the terms and the shifts at their ends
+  rather than the commuter roads the permanent counters sit on, and the town's signal detectors record that year
+  on one approach lane of each such section.
+- **Axes against the window** (last three at registration: task123, task301, task142): forum
+  customer_or_counterparty, forcing event purchase_order_or_contract, org family local_government, role
+  statistical_office_head, context artifact monitoring_export, calibration none, strategy grain_or_unit, decisive
+  generator G2 (G14 and G13 behind it), shape 15. Registered WARN only (strategy risk, objective use); the
+  registered card re-checked as the last act of the draw.
+- **Strategy-risk WARN, answered.** grain_or_unit here is not a field read: no column states a detector's share of
+  a section or a section's factor; the grain bridge (one lane of one direction to the section's two-way year) is
+  an estimate through the overlap day, and the analyst test below files the wrong set with every field read.
+- **Shape arithmetic.** 18 sections' 2025 traffic (18), each section's over-or-under mark (18), the count and the
+  set (2), the chart's parts (bars, labels, the line at 3.0, the highlight, the title stating the finding: 5),
+  three files (3), ask A's 11 counters and ask B's 8 approaches (19): 65 criteria.
+
+## Survivor anatomy
+
+- **Actor:** the counted section has rows (its 12-hour count by hour, direction and class) and the property that
+  decides, its own week and year as the school, campus, shops, shifts or wards at its end set them, has no column:
+  the count register holds road class and urban or rural only, and no file stores a section's factor.
+- **Link:** the section's year sits on the UTC detectors of its own approach at the signalised junction at one
+  end: the count register names the section by its road and its end roads in full, the UTC register names
+  junctions with abbreviated street types and detectors by junction reference, channel and approach; no key or
+  sentence ties a count point to a detector, and the detectors see one lane, so the link carries the year only as
+  a ratio through the day both recorded.
+- **Reflex:** the field's named method for the deciding quantity, the short-count expansion with same-day factors
+  from the permanent counters of the section's setting, is rung 0 and files 8 sections over the line (College Road
+  and Grange Road in, Brookfield Way, Hollins Lane and Infirmary Road out).
+- **Back-test:** the textbook route validates: the council's expansion factor review reproduces every counter's own
+  annual flow from its single weekdays with its group's same-day ratio, leave-one-out, largest error 7.0 per cent
+  against a 10 per cent target.
+- **Second use:** every file the decisive step reads has its own reason: the detector summaries and the UTC asset
+  register carry ask B (the approaches at the two junctions renewed in 2025), the counts and the count register
+  carry the supply's own fields, and the counter export carries ask A and the sections with no detector.
+- **Shock:** the six sections the step moves are ordinary: their counts (5,384 to 8,647 vehicles in 12 hours) sit
+  inside the others' range on ordinary neutral weekdays, and sorted on count, length, class or the default figure
+  the golden set is no interval (Hollins Lane at 5,384 and Brookfield Way at 6,722 are over while Grange Road at
+  8,647 and College Road at 8,318 are under).
+- **Pins:** the WHAT is filed in the council's own genres: the terms note (a count point stands for the whole
+  section between its two junctions; annual traffic is every motor vehicle passing along it, both directions,
+  on all the days of the year) and Environmental Protection's scope note (every section counted in 2025; more
+  than three million vehicle passages). No filed sentence names an expansion, a counter group, a detector, a
+  factor, a pattern or a window; deleting any of them leaves the call forced by the records.
+
+## Default path
+
+1. Read the terms note and the scope note: the population is every section with a 2025 manual count, annual
+   traffic is all motor vehicles both directions on all days of 2025, the line is 3,000,000 vehicle passages.
+2. Sum each section's 12-hour count in manual_counts_2025.csv (07:00 to 19:00, both directions, all motor vehicles).
+3. Expand each count with the permanent counters of the section's setting (atc_daily_2025.csv, atc_sites_2025.csv):
+   the group's annual mean daily flow over its 07:00 to 19:00 flow on the counted day (the textbook same-day
+   factor; month-and-weekday factor tables and pooling every counter give the same figures).
+4. Check the factors against expansion_factor_review_2025.xlsx: every counter inside the 10 per cent target.
+5. Annual traffic is the daily flow times 365; mark the sections over 3.0 million.
+
+Ends on: 8 sections over 3.0 million, Ashfield Road, College Road, Grange Road, Holloway Hill, Kingsway, Priory Road, Station Street and Wharf Street, with Grange Road at 3.3 and College Road at 3.1 over and Brookfield Way at 2.6, Hollins Lane at 2.0 and Infirmary Road at 2.6 under.
+
+Golden: 9 sections over 3.0 million, Ashfield Road 3.8, Brookfield Way 3.4, Hollins Lane 3.2, Holloway Hill 3.4, Infirmary Road 3.2, Kingsway 4.3, Priory Road 3.4, Station Street 3.6 and Wharf Street 5.0, with Grange Road 2.7, College Road 2.5 and Castlegate Road 2.6 under.
+
+## Stump sentence
+
+A strong analyst expands each section's 12-hour count to the year with the permanent counters' same-day factors,
+the textbook expansion the council's own review validates on every counter, and files 8 sections over three
+million, College Road and Grange Road in and Brookfield Way, Hollins Lane and Infirmary Road out, because the
+counters sit on commuter roads while those sections' weeks and years follow the campus, the school, the retail
+park, the leisure park and the hospital at their ends; each section's own year is on the signal detectors of its
+approach, which see one lane and so give that year only through the day the count and the detectors both recorded.
+
+## Three rules
+
+- **Task type:** survey-research-official-statistics, seasonal adjustment official time series production: short-period observations conformed into an official annual series with the weekly and seasonal factors of continuous records, which serves Data Extraction & Conformation.
+- **Domain test:** the deciding quantity is each section's expansion factor, the ratio of its annual average daily flow to its counted 12-hour flow, which official traffic statistics estimate from continuous counts and apply to short counts; replacing it with a stated figure or a sort changes the call.
+- **Swap:** put ward admissions for vehicles and the call loses its object: no short count is carried to a year by the factor of a recorder that sits on one lane of the same unit, and no threshold of vehicle passages decides a mapping scope.
+- **Layer 1:** street types abbreviated in the UTC register and written in full in the count register; British National Grid against latitude and longitude; the detector export in two half-year parts with its header repeated; detector days with partial or no availability from loop faults; one counter's six January days lost to a modem failure; register points not counted in 2025; section ends written in either order; per-system date formats. Each is the producing system's own and none moves the call (checks L1a to L1j).
+- **Layer 2:** field method: the expansion factor of a short count taken from the section's own continuous record through the day both observed, where the field's group factors assume a rhythm the section does not share.
+- **Decisive step:** recognising that a counted section is recorded through the year by the signal detectors of its own approach, and taking the section's own year from them as their mean full day over their own 07:00 to 19:00 flow on the counted day, so that their level, one lane of one direction, cancels and only the section's week and year remain.
+- **Not semantics:** every field, code, unit and definition read correctly (the counts, the counters, the settings, the terms note's annual traffic) still files the 8 sections: the error is the counters' rhythm standing in for the section's, and no field, code or unit states either.
+- **Not rule application:** no filed sentence names a method, a record, a factor or a window, so executing the terms and scope notes leaves the expansion open; the enumerated family on Brookfield Way (counter forms, the detectors' raw mean, the nearest junction's whole flow, the detectors pooled as a counter group, the own approach with the counters' 24/12 ratio, the own-approach forms) spans 1.66 to 3.59 million, the standing family (the own-approach forms on the nine detector sections, the counter forms on the other nine) spans at most 0.06 million inside one 0.1 million bin on every section, and the ruling out is quiet: the terms note's section definition and the counted day's own detector reading.
+- **Analyst test:** a strong analyst who cleans the data and reads every rule expands each count with the permanent counters' same-day factors by setting, checks them against the factor review (every counter inside 10 per cent) and files 8 sections over three million: College Road and Grange Road in, Brookfield Way, Hollins Lane and Infirmary Road out.
+- **Estimand:** traffic_estimate_terms_2025.pdf files a section as the road between its two named junctions and its annual traffic as every motor vehicle passing along it, both directions together, on all the days of the calendar year; noise_mapping_2026_scope.pdf files the population (every section counted in 2025) and the line (more than three million vehicle passages).
+- **No decoy:** nothing is planted: no memo, draft or figure argues the counters' answer, the one context artifact (the factor review) answers another question correctly for counters only and recomputes from the counter export at zero tolerance, and no file carries a section's annual figure.
+- **No certified replay:** no published section figure, prior-year estimate or certified table ships, so the method is not recovered by reproducing figures; the factor review's numbers are about counters and agree with every route.
+- **Lesson:** a short count's expansion factor belongs to the section, and a continuous record that sees only part of the section still carries the section's year through the day both observed; the corpus's traffic builds (task251's station errors, task307's re-routing) teach neither.
+
+## Readability screen
+
+| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | 7 dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 counters' same-day factors by setting | no | no | fires (the textbook) | no | no | no | no | readable |
+| R1 counter forms: month-and-weekday tables, every counter pooled | no | no | fires | no | no | no | no | readable |
+| R2 the approach detectors' mean day read as the section's flow | no | no | fires once the detectors are seen | no | no | fires | no | readable |
+| R3 the nearest junction's whole detected flow as the section's record | no | coordinates | no | no | no | no | no | readable |
+| R4 every detector pooled as one more counter group | no | no | fires | no | no | no | no | readable |
+| R5 the own approach with the counters' 24/12 ratio | no | no | partly | no | no | no | no | readable |
+| R6 (decisive) the section's own approach detectors through the counted day | no: the terms note's definitions are the field's standard ones and name no record | no: no key, junction names abbreviated | no: linking signal detectors to count points is not the textbook expansion | no: the review validates R0 | no | no: the ratio is over a record no key joins to the section | no: the detectors carry ask B and the signal renewal review | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "the road sections we counted in 2025" | sections with a 2025 manual count (18) | every point in the register (30) | other population | the scope note: every section the Council counted in 2025; others come from the national dataset |
+| SF2 | vehicles | motor vehicles | pedal cycles included | same call | terms note section 3; asserted same call |
+| SF3 | in the year | calendar 2025, 365 days | a financial year | other window | terms note section 4: the calendar year |
+| SF4 | more than three million | strictly over 3,000,000 passages | at or over | same call | no licensed figure within 0.12 million of the line, asserted |
+| SF5 | traffic of a section | both directions together | one direction | other call | terms note section 4: both directions together |
+| SF6 | the counted 12 hours | sum over both directions, 07:00 to 19:00 | per direction | other call | terms note section 5; the count rows |
+| SF7 | the detectors' counted-day reading | the counted day's own 07:00 to 19:00 flow | the month-and-weekday mean | same call, same figures | asserted (checks SF7) |
+| SF8 | partial detector days | full days only | scaled up, or kept as recorded | same call, same figures | asserted (checks SF8) |
+| SF9 | two-lane approaches | both lanes summed | one lane alone | same call, same figures | asserted (checks SF9) |
+| SF10 | days a detector did not record | left out of the annual mean | filled with zero | other figures | the export leaves those days blank; zero is not a reading |
+| SF11 | counter group off the detectors | the section's setting | every counter pooled | same call, same figures | asserted (checks SF11) |
+| SF12 | counter factor form off the detectors | same-day ratio | month-and-weekday factors | same call, same figures | asserted (checks SF12) |
+| SF13 | the section's own junction | the junction named by its road and one of its end roads | a junction on the same road elsewhere | other figures | terms note section 2: a count point stands for the road between its two junctions |
+| SF14 | annual traffic | daily flow times 365 | times 366 | same call | 2025 has 365 days |
+| SF15 | rounding path | one decimal on the annual figure | the daily flow to 10 first | same call, same figures | asserted (checks SF15) |
+| SF16 | heavy goods vehicles (ask A) | goods vehicles over 3.5 t: legacy classes 5 to 7, TX-8 classes 6 to 8 | buses or light vans included | other figures | terms note section 3 and the class tables |
+| SF17 | a counter's missing days (ask A) | the recorded days' mean | filled from its own weekdays | same figures | asserted (checks SF17) |
+| SF18 | an approach (ask B) | road and heading, its lanes summed, abbreviations read as the road | lanes as approaches | other figures | the register's approach and heading columns |
+| SF19 | vehicles recorded (ask B) | sum of the recorded daily flows | imputed dark days | other figures | the prompt asks what the detectors recorded |
+| SF20 | the renewal day (ask B) | read from the dark days, matching the log | the register's commissioning date | same day | asserted (checks SF20) |
+
+## Ladder
+
+| Rung | Route | Sections over 3.0 million | What moves |
+|---|---|---|---|
+| R0 | counters' same-day factors by setting (the field's method) | 8 | College Road 3.1 and Grange Road 3.3 in; Brookfield Way 2.6, Hollins Lane 2.0, Infirmary Road 2.6 out |
+| R1 | counter forms T2 to T5 (mean of ratios, month-and-weekday tables, every counter pooled) | 8, the same | every form inside 0.1 million of R0 |
+| R2 | the approach detectors' mean day read as the section's flow | 4 | every detector section under (1.2 to 2.1 million: one lane of one direction) |
+| R3 | the nearest junction's whole detected flow as the section's record | 9, another nine | Castlegate Road 3.1, College Road 3.3, Grange Road 3.1 in; Brookfield Way, Hollins Lane, Infirmary Road out |
+| R4 | every detector pooled as one more counter group | 8 | as R0 |
+| R5 | own approach with the counters' 24/12 ratio | 7 | Brookfield Way 3.6 in; Hollins Lane 2.6 and Infirmary Road 2.9 out (the leisure park's evenings and the hospital's shifts fall outside 07:00 to 19:00) |
+| Golden | own approach detectors through the counted day | 9 | Brookfield Way 3.4, Hollins Lane 3.2, Infirmary Road 3.2 in; Grange Road 2.7, College Road 2.5, Castlegate Road 2.6 under |
+
+Separation: every rung names a different set; the decisive sections move by 0.23 million or more between R0 and
+the golden (BE5); on the three commuter sections with detectors (Station Street, Kingsway, Mill Lane) R0 and the
+golden print the same figure (BE6), so the method moves only the sections whose rhythm differs.
+
+## Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | every section with a 2025 manual count | filed in the scope note; C1 (18 sections, one count each) |
+| 2 | Unit of account | the section between its two named junctions | filed in the terms note section 2 |
+| 3 | Attribution window | calendar 2025 | filed; the detectors and counters cover 2025 only |
+| 4 | As-of dating | the exports pulled January 2026 | static: every 2025 day closed before the pull |
+| 5 | Version basis | one export per system | C1: no re-issued figures |
+| 6 | Denominator | days in 2025 (365) | filed: annual traffic over the days in the year |
+| 7 | Weighting | the setting group's ratio of sums | C1: mean of ratios and pooled inside the bin (SF11, SF12) |
+| 8 | Window length | the detectors' whole year | C1: full days, scaled or kept as recorded inside the bin (SF8) |
+| 9 | Boundary inclusivity | strictly over three million | C1: nothing within 0.12 million of the line (SF4) |
+| 10 | Rounding path | one decimal on the annual figure | asserted (SF15) |
+| 11 | Tie-break | none needed | C1: no two sections share a figure at the line |
+| 12 | Maturity and censoring | none: the year is closed | C1 |
+| 13 | Order of operations | sum the count, then expand | C1: expansion is linear in the count |
+| 14 | Row order | file order irrelevant | C1: sums and means only |
+| 15 | Duplicate resolution | the repeated header line dropped | C1: no duplicated data rows (L1b) |
+| 16 | Identity normalisation | street types read in full | C4: the abbreviated join finds nothing, the read-in-full join finds one junction per section (SF13, L1a) |
+| 17 | Netting against gross | none | n/a, asserted no negative flows |
+| 18 | Dimensional units | vehicles per day and per year | units in the column names and the terms note |
+| 19 | Code and status semantics | detector availability per cent | the export's own column; SF8 shows it inert |
+| 20 | Integerisation | none | the figures are rounded once at the end |
+| 21 | Clause scope | the round's line applies per section | filed in the scope note |
+| 22 | Forward window contents | none: the round maps 2025 | closed year, nothing projected |
+
+## Literal reader
+
+Executed word for word on paper and again on the cut pack: the scope note's population is the 18 sections with a
+2025 count; the terms note's annual traffic is every motor vehicle passing along the section, both directions, on
+all the days of 2025. For a section whose own approach detectors record every day of 2025, the default's figure
+stands other roads' days in for 364 of the section's days that the section's own record holds, so it does not
+execute "passing along it on all the days" on the evidence shipped; the golden takes those days from the section's
+own record and only the detectors' level, which the counted day measures, from the count. For the nine sections
+with no detector, nothing but the counted day records the section, and every licensed counter form prints the same
+figure (SF11, SF12). Every term and convention has a row above, each closed by a sentence or shown inert, and no
+reading of a sentence moves the set; the easy answer comes from an easier method on the same literal estimand.
+
+## Oracles
+
+- The expansion factor review: answers how well the counters' group ratios reproduce a counter's own year; it
+  validates R0 on counters and says nothing of sections (the back-test, never a referee for the call).
+- The operations log: dates the two junction renewals and the firmware push as facts (no mapping, no effect named),
+  so each ask's device is confirmable by a grader from the data and the log together.
+- Nothing arbitrates the main call: no published, prior-year or certified section figure ships.
+
+## Ask sheet
+
+**Ask A: each permanent counter's average daily heavy goods vehicles in 2025 (11 figures, nearest 10).** Use: the
+noise model's heavy vehicle inputs are calibrated on the counters. H18: a component of the round's supply on rows
+the call never reads (the class channels; the call reads the all-vehicle columns). Primary device (D2, a label
+stored before a silent switch): every counter got a TX-200 outstation in March to June 2025 (the site list's
+installed date and the log), but the outstations kept the legacy class output until the firmware push of
+8 September, when channel 5 changed from two-axle rigid lorries to buses; the site list carries only the current
+TX-8 table, so the install-date reading and the current-table reading both miss every counter by three bins or
+more (BE7). The switch is in the data (channel 5 over channel 8 flips on that weekday at every counter) and the
+push is in the log without its effect. Stops: current table all year 244 to 1,302; install-date switch 309 to
+1,433; legacy table all year; golden 350 to 1,740.
+
+**Ask B: the vehicles the detectors recorded in 2025 on each approach to the Western Avenue / Fenwick Road and Ring
+Road / Tanyard Lane junctions (8 figures, thousands).** Use: the signal renewal review. H18: a reconciliation on
+detectors no counted section uses (S1). Primary device (D7, codes reissued): both controllers were replaced in 2025
+and the detectors re-terminated, so before the renewal each channel number carried another lane; the register
+holds the current assignment only. The repair groups the pre-renewal channels into approaches by their day-to-day
+co-movement and matches each group to the current approach on level, weekend shares and 07:00 to 19:00 share
+across the dark days. Hazard: the register's abbreviated approach names split an approach in two unless read in
+full. Stops: register mapping all year; pre-renewal days dropped; golden.
+
+| Ask | Figures | Cracker's handling | Cracker's result |
+|---|---|---|---|
+| A | 11 counters' heavy goods vehicles a day | each counter's table switched on its installed date (the site list and the log) | miss |
+| B | 8 approaches' recorded vehicles | channels joined to the register's current approaches, pre-renewal days kept or dropped | miss |
+
+Pair ceiling: 33.6 (cracker 45.0 with no ask figure kept; mirror 22.2, sharing 12 of the 18 section figures with the golden and no ask figure).
+
+Mirror leakage: 0.0 per cent of the ask weight.
+
+Measured by: generator/ceiling.py on the cut pack.
+
+## Architecture 3 record
+
+Architecture 3 as shipped on 2026-10-24 (zip 87a0101c91c1a4ef), kept as history; its headings are demoted so this note carries each required section once.
+
+**task484 design note: Halvard County's 2025-26 wood smoke zone determinations after a propane price spike (architecture 3)**
 
 Drawn 2026-10-24 on the author's standing rule (no retirement) after architecture 2 was spent at stage 4 on the
 judge's SEND_BACK; a fresh world and mechanism. The candidates screened before it are in Tried and rejected.
 
-## Draw
+**Architecture 3, Draw.**
 
 - **Pairing:** Physical & Environmental Sciences / `emissions-inventory`, drawn for Data Extraction & Conformation
   (ETL). The task type builds an inventory from activity data and emission factors. ETL because the deliverable is
@@ -63,7 +328,7 @@ judge's SEND_BACK; a fresh world and mechanism. The candidates screened before i
   tons in every zone; the comparison in gallons fails the 2023-24 to 2024-25 check at z 4.3 to 14.8 where the ratio
   passes at |z| 1.3 or less.
 
-## Three rules
+**Architecture 3, Three rules.**
 
 Task type: Physical & Environmental Sciences, emissions-inventory, which serves ETL in the taxonomy.
 Domain test: the quantity that decides is each burn zone's 2025-26 PM2.5 from residential wood combustion, the wood its appliances burned that winter times the 2023 emission factors, estimated for a season the household survey did not cover; a winter's fuel switching is measured where the displaced fuel is metered, a difference-in-differences on propane deliveries between the homes with and without a registered heating appliance, checked on the earlier pair of winters, carried through the heat balance at the furnace's and each appliance's seasonal efficiency.
@@ -79,7 +344,7 @@ No decoy: nothing is planted; the registry, survey, exports, readings and conver
 No certified replay: no certified or published figure is reproduced to recover the method; the construction follows from the estimand and from the data.
 Lesson: an unmetered fuel's use in a season the survey missed can be read off the metered fuel the households left, but only against the households that could not switch and only in proportion, as the earlier winters show; no build on file teaches recovering one fuel's use from another fuel's deliveries by appliance ownership.
 
-## Default path
+**Architecture 3, Default path.**
 
 1. Conform the registry, the survey responses, the three distributors' exports, the station's readings and the state's
    tables: device codes to SCCs, survey units to cords and tons, accounts to parcels and burn zones.
@@ -94,11 +359,11 @@ Ends on: Valley Floor South alone exceeds its allotment and takes the whole fund
 
 Golden: Valley Floor South, East Bench and West Bench exceed their allotments and share the fund at USD 155,000 each.
 
-## Stump sentence
+**Architecture 3, Stump sentence.**
 
 The default path carries the 2024-25 survey's wood per appliance into 2025-26 (the two winters had the same degree days) and reads the propane exports only for the commercial category, so the benches' appliances burn at last winter's rate, their PM2.5 sits at 78 and 68 tons under allotments of 89.9 and 77.6, and Valley Floor South alone exceeds its allotment and takes the whole fund, where the benches' propane homes with a heating appliance took 26 to 32 per cent less propane in 2025-26 while their neighbours without one took the same, and the wood burned in its place puts both benches over.
 
-## Readability screen
+**Architecture 3, Readability screen.**
 
 Measured on the cut pack (`generator/golden.py`); zones Valley Floor North, Valley Floor South, East Bench, West
 Bench and Upper Valley, allotments 63.9, 52.6, 89.9, 77.6 and 58.6 tons.
@@ -114,7 +379,7 @@ Bench and Upper Valley, allotments 63.9, 52.6, 89.9, 77.6 and 58.6 tons.
 L2 never lands the golden set: Valley Floor North goes over at an 11.1 per cent uplift, before the West Bench
 (13.8) and the East Bench (15.5), so any uniform uplift that puts a bench over puts Valley Floor North over first.
 
-## Semantic fork table
+**Architecture 3, Semantic fork table.**
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -137,7 +402,7 @@ L2 never lands the golden set: Valley Floor North goes over at an 11.1 per cent 
 | SF17 | a home whose 2025-26 gallons exceed its expectation | netted in its class's sum | floored at zero | same call and whole tons (asserted) | 14 of 3,813 homes; the records converge |
 | SF18 | the fund's split | equally among the zones over their allotments | in proportion to the excess | USD 155,000 each | the ordinance's B |
 
-## Ladder
+**Architecture 3, Ladder.**
 
 Measured in the generator (`golden.py` on the cut pack, `checks.py` on the world's clean truth; allotments 63.9,
 52.6, 89.9, 77.6 and 58.6 tons for Valley Floor North, Valley Floor South, East Bench, West Bench and Upper Valley).
@@ -155,7 +420,7 @@ The golden's margins are 4.70 tons under, 6.37 over, 8.19 over, 5.39 over and 4.
 under, 3.72 over, 12.03 under, 9.38 under and 11.26 under. The correction tracks each zone's propane homes with a
 heating appliance (184, 262, 1,586, 1,218 and 563 accounts), not its size.
 
-## Closure table
+**Architecture 3, Closure table.**
 
 | # | Axis | Reading | Move |
 |---|---|---|---|
@@ -182,7 +447,7 @@ heating appliance (184, 262, 1,586, 1,218 and 563 accounts), not its size.
 | 21 | Clause scope | plan 4.3 covers residential wood combustion; 4.4's other categories do not count | filed; SF1 |
 | 22 | Forward window contents | the determination governs the 2026-27 changeout season; nothing forward is estimated | not applicable |
 
-## Literal reader
+**Architecture 3, Literal reader.**
 
 Executing the prompt and every filed sentence word for word: the plan's 4.3 measures each zone's PM2.5 as what the
 appliances in use emitted from the wood they burned in the 2025-26 season at the 2023 factors, and the ordinance
@@ -194,7 +459,7 @@ registered heating appliance taking 26 to 32 per cent less propane while the zon
 they took in 2024-25. Carrying the survey into 2025-26 unchanged assumes those homes heated the same way, which the
 exports contradict; the golden is the burning those records imply.
 
-## Oracles
+**Architecture 3, Oracles.**
 
 No file ties only under the golden or only on a wrong read. No shipped file states a zone's 2025-26 wood burned or
 PM2.5, or ranks the zones; the survey states 2024-25 burning per device, the exports state deliveries per account,
@@ -202,7 +467,7 @@ the curtailment calls and the forest's permits carry no zone's burning, and the 
 asks' referees: the Coldwater ticket reference carries each delivery's date (the device's evidence, never an answer),
 and the Census relationship file carries the 2010 block groups to 2020.
 
-## Ask sheet
+**Architecture 3, Ask sheet.**
 
 The call's declared population is each zone's appliances in use in 2025-26 (the registry's devices in the zones),
 the survey's respondents and the residential propane accounts on parcels in the zones in all three seasons. No ask
@@ -360,3 +625,47 @@ models; the stage 4 readers measure the real one.
   Scored 17 of 37 (ask B's 12 and the five determination figures the default gets right). The assessor file renamed to
   its housing units by block group as the assessor issues it, and the two commercial accounts whose parcel draw landed
   on a home's geocode (reader A found one) given parcels of their own; no figure moved (zip 87a0101c91c1a4ef).
+- 2026-11-02, Batch 3 re-root: architecture 3 (Halvard County's wood smoke zones, shipped 2026-10-24 with no portal
+  result) re-rooted at the Batch 3 queue reset; its world is closed and its card entry moved to the lineage.
+- 2026-11-02, first screen (before architecture 4's draw): casino, whisky, grape, lead service line, minimum night
+  flow, rule-out diagnosis, item response, claims, rail season ticket, plausible value and censored demand ideas
+  were screened against the ETL pincer and the window; each reduced to a filed rule, a field read, a reflex or a
+  held pairing, and none reached a card.
+- 2026-11-02, architecture 4 draw: a honey packer's e-mark batches, the packaging tare placed from depalletiser
+  scans and goods-in jar weights. The best candidate of the first screen, but general statistics with ETL is held
+  by task123's re-root and routing it through a house domain would game the ban. Not drawn.
+- 2026-11-02, architecture 4 draw: domestic gas meter reads re-timed to calendar months with heat pump
+  installations dated in the certification register. Residential heating sits next to architecture 3's closed
+  world, and the per-meter base and heating slope is the field's own weather normalisation, a reflex at the top.
+  Not drawn.
+- 2026-11-02, architecture 4 draw: VAT turnover calendarised from three staggered quarterly panels. The staggered
+  three-month sums leave a zero-sum period-three pattern unidentified, and that pattern is the within-quarter shape
+  the calendarisation needs, so no data separate the candidates. Not drawn.
+- 2026-11-02, architecture 4 draw: long-term migration under the 12 of 16 months rule from border crossings. The
+  recent arrivals' undecided stays make it maturity censoring, banned in the window (task301), and linking each
+  traveller's crossings is identity resolution. Not drawn.
+- 2026-11-02, architecture 4 draw: small solar generation from feed-in meter reads re-timed by irradiance. Over a
+  calendar year the two ends' re-timing errors cancel for steady installations, and pro-rata against a profile is
+  an estimator fork the data barely separate. Not drawn.
+- 2026-11-02, architecture 4 draw: vehicle kilometres from odometer readings at inspections. Interpolation errors
+  cancel over a year, and a keeper change joins on the registration number (a key). Not drawn.
+- 2026-11-02, architecture 4 draw: household waste tonnage per collection round from bin lifts against weighbridge
+  tickets. The per-round density from paired tickets is task133's architecture. Not drawn.
+- 2026-11-02, architecture 4 draw: bus passenger kilometres from tap-on records by trip chaining. Trip chaining is
+  the transit field's named method, so the golden would be the reflex; transfers need identity across two ticket
+  systems. Not drawn.
+- 2026-11-02, stage 3: Station Street and Kingsway first drawn with their far ends at the College Road and Grange
+  Road junctions, both signalised, which gave each a second approach record generated apart from the section (a
+  fork between two own records); their far ends moved to priority junctions.
+- 2026-11-02, stage 3: street names first drawn read as one real town's (its ring of radial roads); replaced with
+  generic names.
+- 2026-11-02, stage 3: the renewed junctions' channels first matched on level and weekend shares alone. Ring Road's
+  two approaches carried near-equal flows and the match swapped their lanes; the approaches now differ in level as
+  a gyratory's do, and the pre-renewal channels are first grouped by their day-to-day co-movement.
+- 2026-11-02, stage 3: ask B first asked each approach's average daily flow. Dropping the pre-renewal days moved it
+  under one bin, so that over-correction kept the ask; it now asks the vehicles recorded in 2025, which the drop
+  misses by months and the register join misses by tens of thousands.
+- 2026-11-02, stage 3: ask A's counters first carried bus shares near their two-axle rigid shares, so the current
+  table landed one counter inside its bin; the two-axle share now runs at about half of heavy goods vehicles, as on
+  urban roads, and each counter's share is tuned so its figure sits two vehicles inside its bin and the
+  install-date reading three bins away.

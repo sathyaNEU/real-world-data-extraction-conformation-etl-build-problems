@@ -167,17 +167,35 @@ class Pack:
 
     # ------------------------------------------------------------------ the asks (2026 provisional data)
     def road_register(self):
+        """Sections of classified roads between inventory nodes, each with its highway authority; a section spans the
+        eastings of its end nodes."""
         head, body = read_csv(self.p("road_network_register_2026.csv"))
         ix = {h: i for i, h in enumerate(head)}
-        return [dict(road=r[ix["road_number"]], e0=int(r[ix["easting_from"]]), e1=int(r[ix["easting_to"]]),
-                     auth=r[ix["highway_authority"]]) for r in body]
+        east = self.node_easting()
+        reg = []
+        for r in body:
+            e0, e1 = east[r[ix["from_node"]]], east[r[ix["to_node"]]]
+            reg.append(dict(road=r[ix["road_number"]], e0=min(e0, e1), e1=max(e0, e1), auth=r[ix["highway_authority"]]))
+        return reg
+
+    def node_easting(self):
+        head, body = read_xlsx(self.p("junction_inventory_2026.xlsx"), "Junctions")
+        ix = {h: i for i, h in enumerate(head)}
+        return {r[ix["node"]]: int(r[ix["easting"]]) for r in body}
 
     def county_road(self, road, easting, reg=None):
+        """A collision is on the county's roads unless its road has a section another authority holds that covers
+        its easting; the end sections run on to the county boundary."""
         reg = reg or self.road_register()
-        for s in reg:
-            if s["road"] == road and s["e0"] <= easting < s["e1"]:
+        secs = sorted((s for s in reg if s["road"] == road), key=lambda s: s["e0"])
+        if not secs:
+            return True                               # unclassified and C roads are the county's
+        for i, s in enumerate(secs):
+            lo = -1e9 if i == 0 else s["e0"]
+            hi = 1e9 if i == len(secs) - 1 else s["e1"]
+            if lo <= easting < hi:
                 return s["auth"] == "Ardleshire County Council"
-        return True                               # unclassified and C roads are the county's
+        return True
 
     def provisional(self, dedupe="match", deaths="match", trunk="register"):
         """Collisions January to September 2026 (one record each), with casualties and the true quarter."""

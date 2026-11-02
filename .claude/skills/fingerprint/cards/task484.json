@@ -1,145 +1,144 @@
 {
-  "task": "task484",
-  "architecture": "v4",
-  "drawn": "2026-11-02",
-  "slot_note": "Batch 3 re-root of the ETL slot: architecture 3 (a county's residential wood combustion inventory, physical-environmental-sciences) closed with its world; the slot moves to survey-research-official-statistics, the one ETL client domain no live build holds",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "seasonal-adjustment-official-time-series-production",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a unitary borough council's 2025 traffic estimates for the road sections it counted for the national noise mapping round: each section's annual traffic conformed from one 12-hour manual classified count, the borough's permanent automatic counters and the urban traffic control system's daily detector summaries, and the sections that carried more than three million vehicles in the year",
-  "objective": "etl",
-  "shape": "15",
-  "decision_type": "conformed_dataset",
-  "answer_unit": "dataset",
-  "answer": "Provisional at the draw: the sections over three million vehicles in 2025 are the retail park, leisure park and hospital access roads with the commuter sections over the line, while the school, industrial estate and campus roads stay under it; the conformed file carries every counted section's 2025 traffic (figures set by the generator)",
-  "answer_source": "golden/noise_round_sections_2025.csv",
-  "gap": [
+ "task": "task484",
+ "architecture": "v4",
+ "drawn": "2026-11-02",
+ "slot_note": "Batch 3 re-root of the ETL slot: architecture 3 (a county's residential wood combustion inventory, physical-environmental-sciences) closed with its world; the slot moves to survey-research-official-statistics, the one ETL client domain no live build holds",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "seasonal-adjustment-official-time-series-production",
+ "client_domain": "survey-research-official-statistics",
+ "niche": "a unitary borough council's 2025 traffic estimates for the road sections it counted for the national noise mapping round: each section's annual traffic conformed from one 12-hour manual classified count, the borough's permanent automatic counters and the urban traffic control system's daily detector summaries, and the sections that carried more than three million vehicles in the year",
+ "objective": "etl",
+ "shape": "15",
+ "decision_type": "conformed_dataset",
+ "answer_unit": "dataset",
+ "answer": "Provisional at the draw: the sections over three million vehicles in 2025 are the retail park, leisure park and hospital access roads with the commuter sections over the line, while the school, industrial estate and campus roads stay under it; the conformed file carries every counted section's 2025 traffic (figures set by the generator)",
+ "answer_source": "golden/noise_round_sections_2025.csv",
+ "gap": [
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G2",
+  "G14",
+  "G13"
+ ],
+ "gate_g": "etl_conformance",
+ "calibration_form": "none",
+ "stump_strategy": "grain_or_unit",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "monitoring_export",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every file correctly expands each section's 12-hour count to a year with same-day factors from the borough's permanent counters (the 24-hour to 12-hour ratio and the day's ratio to the annual average, the textbook short-count expansion, which the council's own factor review validates on every counter) and files the wrong set: it puts the school, industrial estate and campus roads over three million and leaves the retail park, leisure park and hospital roads under it, because those sections' weeks and years follow the shops, the shifts and the terms at their ends rather than the commuter roads the counters sit on.",
+ "domain_test": "The deciding quantity is each section's expansion factor, the ratio of its annual average daily flow to the flow in its counted 12 hours, which official traffic statistics estimate from continuous counts and apply to short counts; the decisive estimate pairs a continuous recorder that sees only one approach lane of the section with the counted window, so the section's own factor is read without the recorder ever giving the flow. Swap ward admissions for vehicles and the task loses its object: there is no short count, no expansion factor and no partial-grain recorder whose year carries the unit's own rhythm.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:short-count-expansion-by-the-section-own-partial-record",
+ "layer1": [
+  "coordinates in British National Grid on the count register and in latitude and longitude on the UTC asset register",
+  "road and junction names written differently by the two registers",
+  "detector channels renumbered at a junction refurbishment",
+  "detector fault days carried as low availability",
+  "permanent counter days re-polled with a later poll stamp",
+  "a manual count abandoned for rain and re-counted on another day",
+  "vehicle class columns that differ between counter equipment",
+  "bank holidays and mixed date formats across exports"
+ ],
+ "stakeholder_role": "head of transport data and monitoring, Wrenford Borough Council",
+ "role_family": "statistical_office_head",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "utc_detector_daily_2025.csv",
+  "rows": 40000,
+  "entity": "one urban traffic control detector's flow on one day, in the 07:00 to 19:00 window and over the whole day, with the day's availability",
+  "grain": "detector x day",
+  "source": "synthetic"
+ },
+ "forum": "customer_or_counterparty",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "local_government",
+ "world": {
+  "geography": "England (the fictional unitary borough of Wrenford, West Midlands)",
+  "currency": "GBP",
+  "org_type": "unitary borough council, transport data and monitoring team, with its urban traffic control system and permanent counter network",
+  "invented_names": [
+   "Wrenford Borough Council",
+   "Wrenford",
+   "Kingsway",
+   "Mill Lane",
+   "Brookfield Retail Park",
+   "Hollins Park",
+   "Wrenford General Hospital",
+   "Castlegate Industrial Estate",
+   "Wrenford University"
+  ],
+  "people": [
+   "Irene Griffiths",
+   "Melanie Watts",
+   "Beth King"
+  ]
+ },
+ "deliverables": [
+  "noise_round_sections_2025.csv",
+  "section_traffic_2025.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "The decisive quantity is each unit's ratio of its whole-period mean to the single short window in which it was measured; the standard method borrows that ratio from a pooled group of continuous recorders whose weekly and seasonal rhythm many units do not share, while a continuous recorder in a separate system sits on the unit itself but sees only part of its flow at another grain, so the unit's own ratio is read by pairing that recorder's value in the measured window with the measurement and carrying the recorder's whole-period mean through the pair.",
+ "driver_concrete": "Each counted road section's 2025 traffic is its 12-hour manual count times the section's own expansion factor; the borough's permanent counters sit on commuter roads, so their factors misstate sections ending at a retail park, a leisure park, a hospital, a school, an industrial estate or a campus, whose own year is recorded only by the signal detectors on one approach lane at the junction the section ends at, joinable only by junction and arm names and usable only through the counted day both recorded.",
+ "stump": "The textbook expansion with same-day factors from the permanent counters files a set over three million vehicles that includes the school, industrial estate and campus roads and omits the retail park, leisure park and hospital roads; reading the detectors' annual mean as the section's flow drops every signalised section under the line, and taking the nearest detector by distance puts some sections on the cross street's rhythm.",
+ "mechanism_source": "own: the short-count expansion of official traffic statistics, with the section's own factor recovered from an urban traffic control detector on one approach lane through the counted day",
+ "differentiation": {},
+ "lineage": [
+  {
+   "version": "v1",
+   "fate": "spent at stage 4, 2026-10-20: an isolated reader built the lease-up curve from the utility's new premises and landed the call and 24 of 24 asks",
+   "driver": "A unit's count of occupied places is its places times the share occupied, the share read from the unit's whole stock; places added in the last two years fill over many months after they open, so applying the stock's share to them counts as occupied places that stand empty, most where the stock grew most; a partial record of how earlier additions filled, month by month after opening, measures the fill and carries it to every unit's recent additions.",
+   "stump": "The default path applies each city's ACS occupancy to every housing unit and puts Ashford, Carver Springs, Eastlake, Fairhaven, Harlow, Juniper Falls and Linden in the upper tier; apartment buildings opened since 2024 are still filling, about half occupied at six months in the utility's account history, and only counting each new building at the occupancy of its age puts Fairhaven and Linden alone over the line.",
+   "domain": "demographic-social-science",
+   "subdomain": "housing",
+   "niche": "a state population unit's 1 April 2026 housing-unit-method estimates for the cities near the 50,000 line of the state's revenue-sharing tiers, conformed from 2020 census counts, certificates of occupancy, demolitions, ACS occupancy and a utility's residential account history",
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "other"
+  },
+  {
+   "driver": "A class's base-period total is rebuilt for the stock that existed then, each member at the current sample's rate for its own kind within the class, because removal took one kind first and the current sample holds the class at the survivors' mix; the kind of each member removed since is recorded only in the removal records, so carrying the current class mean back, or the current sample's mix of kinds, understates the base and every reduction measured from it.",
+   "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 4 to 33 points, and all six areas trigger the contingency measure where only two do.",
+   "domain": "physical-environmental-sciences",
+   "subdomain": "emissions-inventory",
+   "niche": "a regional clean air agency's 2025-26 periodic residential wood combustion inventory for six PM2.5 maintenance areas, each area's 2014 base year recalculated on the household survey method to test its contingency trigger after a decade of stove changeouts",
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "composition_mix",
+   "version": "v2",
+   "fate": "spent at stage 4, 2026-10-24 (zip 79bf825cac69ff18): both scored readers missed the call and kept none of the 54 ask figures, but the judge returned NOT_DETERMINISTIC SEND_BACK, competing_defensible_answer: the provision's class-based recalculation executed literally licensed the reflex"
+  },
+  {
+   "version": "v3",
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-24 with no portal result; the wood combustion inventory world is closed)",
+   "driver": "A period's use of one fuel is read from a survey of the period before, but a price shock on a competing fuel moved part of the households' heat onto it; the move shows only where the competing fuel is metered, as its deliveries falling further at the households that own the appliance than at those that do not, against an earlier pair of periods in which the two moved alike in proportion, and only that difference, carried into heat and back at the appliances' efficiencies, gives the period's use and every share of the budget split on it.",
+   "stump": "The default path carries the 2024-25 survey's wood per appliance into 2025-26 (the two winters had the same degree days) and reads the propane exports only for the commercial category, so the benches' appliances burn at last winter's rate, their PM2.5 sits at 78 and 68 tons under allotments of 89.9 and 77.6, and Valley Floor South alone takes the fund, where the benches' propane homes with a heating appliance took 26 to 32 per cent less propane while those without one took the same, and the wood burned in its place puts both benches over.",
+   "domain": "physical-environmental-sciences",
+   "subdomain": "emissions-inventory",
+   "niche": "a mountain valley county's 2025-26 residential wood combustion inventory for the five burn zones of its PM2.5 maintenance area, each zone's wood burned in a winter of a propane price spike read through the propane distributors' delivery tickets, to name the zones whose wood smoke exceeded their allotment and take the 2026-27 stove changeout funds",
+   "gate_g": "decomposition_attribution",
+   "stump_strategy": "causal_design",
+   "gap": [
     "time"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G2",
-    "G14",
+   ],
+   "generators": [
+    "G4",
     "G13"
-  ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly expands each section's 12-hour count to a year with same-day factors from the borough's permanent counters (the 24-hour to 12-hour ratio and the day's ratio to the annual average, the textbook short-count expansion, which the council's own factor review validates on every counter) and files the wrong set: it puts the school, industrial estate and campus roads over three million and leaves the retail park, leisure park and hospital roads under it, because those sections' weeks and years follow the shops, the shifts and the terms at their ends rather than the commuter roads the counters sit on.",
-  "domain_test": "The deciding quantity is each section's expansion factor, the ratio of its annual average daily flow to the flow in its counted 12 hours, which official traffic statistics estimate from continuous counts and apply to short counts; the decisive estimate pairs a continuous recorder that sees only one approach lane of the section with the counted window, so the section's own factor is read without the recorder ever giving the flow. Swap ward admissions for vehicles and the task loses its object: there is no short count, no expansion factor and no partial-grain recorder whose year carries the unit's own rhythm.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:short-count-expansion-by-the-section-own-partial-record",
-  "layer1": [
-    "coordinates in British National Grid on the count register and in latitude and longitude on the UTC asset register",
-    "road and junction names written differently by the two registers",
-    "detector channels renumbered at a junction refurbishment",
-    "detector fault days carried as low availability",
-    "permanent counter days re-polled with a later poll stamp",
-    "a manual count abandoned for rain and re-counted on another day",
-    "vehicle class columns that differ between counter equipment",
-    "bank holidays and mixed date formats across exports"
-  ],
-  "stakeholder_role": "head of transport data and monitoring, Wrenford Borough Council",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "utc_detector_daily_2025.csv",
-    "rows": 40000,
-    "entity": "one urban traffic control detector's flow on one day, in the 07:00 to 19:00 window and over the whole day, with the day's availability",
-    "grain": "detector x day",
-    "source": "synthetic"
-  },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "local_government",
-  "world": {
-    "geography": "England (the fictional unitary borough of Wrenford, West Midlands)",
-    "currency": "GBP",
-    "org_type": "unitary borough council, transport data and monitoring team, with its urban traffic control system and permanent counter network",
-    "invented_names": [
-      "Wrenford Borough Council",
-      "Wrenford",
-      "Kingsway",
-      "Mill Lane",
-      "Brookfield Retail Park",
-      "Hollins Park",
-      "Wrenford General Hospital",
-      "Castlegate Industrial Estate",
-      "Wrenford University"
-    ],
-    "people": [
-      "Irene Griffiths",
-      "Cheryl Dixon",
-      "Melanie Watts",
-      "Beth King"
-    ]
-  },
-  "deliverables": [
-    "noise_round_sections_2025.csv",
-    "section_traffic_2025.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is each unit's ratio of its whole-period mean to the single short window in which it was measured; the standard method borrows that ratio from a pooled group of continuous recorders whose weekly and seasonal rhythm many units do not share, while a continuous recorder in a separate system sits on the unit itself but sees only part of its flow at another grain, so the unit's own ratio is read by pairing that recorder's value in the measured window with the measurement and carrying the recorder's whole-period mean through the pair.",
-  "driver_concrete": "Each counted road section's 2025 traffic is its 12-hour manual count times the section's own expansion factor; the borough's permanent counters sit on commuter roads, so their factors misstate sections ending at a retail park, a leisure park, a hospital, a school, an industrial estate or a campus, whose own year is recorded only by the signal detectors on one approach lane at the junction the section ends at, joinable only by junction and arm names and usable only through the counted day both recorded.",
-  "stump": "The textbook expansion with same-day factors from the permanent counters files a set over three million vehicles that includes the school, industrial estate and campus roads and omits the retail park, leisure park and hospital roads; reading the detectors' annual mean as the section's flow drops every signalised section under the line, and taking the nearest detector by distance puts some sections on the cross street's rhythm.",
-  "mechanism_source": "own: the short-count expansion of official traffic statistics, with the section's own factor recovered from an urban traffic control detector on one approach lane through the counted day",
-  "differentiation": {},
-  "lineage": [
-    {
-      "version": "v1",
-      "fate": "spent at stage 4, 2026-10-20: an isolated reader built the lease-up curve from the utility's new premises and landed the call and 24 of 24 asks",
-      "driver": "A unit's count of occupied places is its places times the share occupied, the share read from the unit's whole stock; places added in the last two years fill over many months after they open, so applying the stock's share to them counts as occupied places that stand empty, most where the stock grew most; a partial record of how earlier additions filled, month by month after opening, measures the fill and carries it to every unit's recent additions.",
-      "stump": "The default path applies each city's ACS occupancy to every housing unit and puts Ashford, Carver Springs, Eastlake, Fairhaven, Harlow, Juniper Falls and Linden in the upper tier; apartment buildings opened since 2024 are still filling, about half occupied at six months in the utility's account history, and only counting each new building at the occupancy of its age puts Fairhaven and Linden alone over the line.",
-      "domain": "demographic-social-science",
-      "subdomain": "housing",
-      "niche": "a state population unit's 1 April 2026 housing-unit-method estimates for the cities near the 50,000 line of the state's revenue-sharing tiers, conformed from 2020 census counts, certificates of occupancy, demolitions, ACS occupancy and a utility's residential account history",
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "other"
-    },
-    {
-      "driver": "A class's base-period total is rebuilt for the stock that existed then, each member at the current sample's rate for its own kind within the class, because removal took one kind first and the current sample holds the class at the survivors' mix; the kind of each member removed since is recorded only in the removal records, so carrying the current class mean back, or the current sample's mix of kinds, understates the base and every reduction measured from it.",
-      "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 4 to 33 points, and all six areas trigger the contingency measure where only two do.",
-      "domain": "physical-environmental-sciences",
-      "subdomain": "emissions-inventory",
-      "niche": "a regional clean air agency's 2025-26 periodic residential wood combustion inventory for six PM2.5 maintenance areas, each area's 2014 base year recalculated on the household survey method to test its contingency trigger after a decade of stove changeouts",
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "composition_mix",
-      "version": "v2",
-      "fate": "spent at stage 4, 2026-10-24 (zip 79bf825cac69ff18): both scored readers missed the call and kept none of the 54 ask figures, but the judge returned NOT_DETERMINISTIC SEND_BACK, competing_defensible_answer: the provision's class-based recalculation executed literally licensed the reflex"
-    },
-    {
-      "version": "v3",
-      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-24 with no portal result; the wood combustion inventory world is closed)",
-      "driver": "A period's use of one fuel is read from a survey of the period before, but a price shock on a competing fuel moved part of the households' heat onto it; the move shows only where the competing fuel is metered, as its deliveries falling further at the households that own the appliance than at those that do not, against an earlier pair of periods in which the two moved alike in proportion, and only that difference, carried into heat and back at the appliances' efficiencies, gives the period's use and every share of the budget split on it.",
-      "stump": "The default path carries the 2024-25 survey's wood per appliance into 2025-26 (the two winters had the same degree days) and reads the propane exports only for the commercial category, so the benches' appliances burn at last winter's rate, their PM2.5 sits at 78 and 68 tons under allotments of 89.9 and 77.6, and Valley Floor South alone takes the fund, where the benches' propane homes with a heating appliance took 26 to 32 per cent less propane while those without one took the same, and the wood burned in its place puts both benches over.",
-      "domain": "physical-environmental-sciences",
-      "subdomain": "emissions-inventory",
-      "niche": "a mountain valley county's 2025-26 residential wood combustion inventory for the five burn zones of its PM2.5 maintenance area, each zone's wood burned in a winter of a propane price spike read through the propane distributors' delivery tickets, to name the zones whose wood smoke exceeded their allotment and take the 2026-27 stove changeout funds",
-      "gate_g": "decomposition_attribution",
-      "stump_strategy": "causal_design",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G4",
-        "G13"
-      ],
-      "decision_type": "designation_set",
-      "objective": "etl"
-    }
-  ],
-  "notes": "",
-  "architecture_spent": false,
-  "registered": "2026-11-02T01:33:54Z"
+   ],
+   "decision_type": "designation_set",
+   "objective": "etl"
+  }
+ ],
+ "notes": "",
+ "architecture_spent": false,
+ "registered": "2026-11-02T01:33:54Z"
 }

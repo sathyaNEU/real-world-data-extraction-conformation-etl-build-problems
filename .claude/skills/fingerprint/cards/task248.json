@@ -1,89 +1,137 @@
 {
   "task": "task248",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
   "slot_note": "",
-  "domain": "epidemiology-public-health",
-  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
-  "niche": "a regional public health service's wastewater surveillance of SARS-CoV-2 at 24 treatment plants, whose verification desk checks every high-level alert episode on the dashboard: how many episodes last winter's samples raise once the dashboard reads each sample on the shed load (the RNA the sewer destroyed on the way to the plant restored), the basis it moves to on 1 May 2028",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "sensor-calibration-measurement",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a marina group's fuel docks on two reservoirs and the underground gasoline and diesel tanks behind them: which tanks' gauge charts (each automatic tank gauge's inches-to-gallons table) must be redone over the winter before the marinas move onto a statistical inventory reconciliation service for the 2027 season, judged on the gallons each chart misstates between product heights the tank works through, read from a year of gauge readings set against the dock pumps' metered sales and the fuel distributor's bills of lading",
   "objective": "data-quality-monitoring",
-  "shape": "03",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "Plan the verification desk for 26 alert episodes this winter: last winter's samples raise 26 on the shed load against the 30 the dashboard published (Ardenmouth South, Ardenmouth East, Tarnbrook, Cleaveland Flat and Saltmarsh Point one fewer each, Ardenmouth West one more).",
-  "answer_source": "task248/submission.md, Final Recommendation",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
-    "population"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G9",
+    "G3",
     "G16",
-    "G4"
+    "G2"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "physical_verification",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "counterparty_acknowledgement",
   "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "the wastewater surveillance coordinator who rosters the verification desk",
-  "role_family": "capacity_planner",
-  "scoring_unit": "per episode",
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the tank register, the gauge export, the dock sales and the bills of lading correctly sets each tank's gauge rise against the gallons delivered, the trade's chart check, and files only the tanks whose charts were built on the wrong dimensions, passing every tank whose chart is off through the middle of its range because each delivery runs from near the reorder height to near full, where a probe offset or tilt misstates little at either end.",
+  "domain_test": "The quantity that decides is each tank's chart error between product heights, which tank gauging recovers by reconciling the gauge's change in gallons against metered flows: in a horizontal cylinder a probe offset or tilt misstates gallons in proportion to the width of the product surface, largest through the middle of the range, while a chart built on wrong dimensions misstates every gallon alike; with another field's nouns there is no cylinder, no gauge chart and no metered delivery to reconcile against, so the task stops making sense.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:gauge-chart-error-shape-from-sub-cycle-intervals-scale-from-deliveries",
+  "layer1": [
+    "the gauge export in UTC beside dock sales in local time across both daylight saving changes",
+    "the dock point-of-sale system replaced in June, its two exports overlapping for a cut-over week under different transaction numbers",
+    "one marina's dock hoses re-piped to another tank at a dated refit",
+    "bills of lading in gross and net gallons at 60 F against the gauge's gross and temperature-compensated volumes",
+    "delivery reports the gauge opens and closes itself, with dock sales running during a delivery",
+    "tank charts as quarter-inch tables under the register's chart numbers",
+    "winter weeks with fuel docks closed and only temperature moving the gross volume"
+  ],
+  "stakeholder_role": "the group's fuel systems and underground tank compliance manager, who signs the winter re-charting list before the cutover",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
   "spine": {
-    "file": "phl_wastewater_results_2026-01_2028-04.csv: the Public Health Laboratory's results export for the 24 plants, one row per sample, target and analysis run, January 2026 to April 2028 (with the 475,268-row inlet historian beside it)",
-    "rows": 11511,
-    "entity": "one composite sample, target and analysis run (SARS-CoV-2 N1 or PMMoV, gene copies per litre)",
-    "grain": "site x sample x target x analysis",
+    "file": "atg_inventory_2026.csv: the marinas' automatic tank gauges' inventory and delivery reports for every tank, 2026",
+    "rows": 0,
+    "entity": "one gauge reading of one tank",
+    "grain": "tank x reading",
     "source": "synthetic"
   },
   "forum": "line_manager_or_team",
   "forcing_event": "cutover_or_migration",
-  "org_family": "government_agency",
+  "org_family": "hospitality_or_tourism",
   "world": {
-    "geography": "New Zealand, a fictional region (the public health service, its plants, towns and people are fictional; the decay of SARS-CoV-2 RNA in sewers is modelled on published wastewater studies)",
-    "currency": "NZD",
-    "org_type": "regional public health service",
+    "geography": "United States, south-central Kentucky (two fictional Corps of Engineers reservoirs; the marina group, its marinas, fuel distributor, contractors and people are fictional)",
+    "currency": "USD",
+    "org_type": "marina management group (eight marinas with fuel docks)",
     "invented_names": [],
     "people": [
-      "Fiona Chandler",
-      "Luke Jefferies",
-      "Craig Stuart",
-      "Alana Costello"
+      "Theresa Shelton",
+      "Harold Mathis",
+      "Miranda Collins",
+      "Lucas Walter"
     ]
   },
   "deliverables": [
-    "winter_2027_episodes_shed_load.xlsx",
-    "verification_desk_winter_2028.docx"
+    "tank_chart_programme_2027.csv",
+    "chart_review_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "The decisive quantity is each unit's level against its own baseline, read from a measurement that loses part of what it carries in transit at a rate that rises with a covariate moving over the year, so any correction constant over the year cancels against the baseline and leaves every level as recorded, a covariate term added beside the transit length corrects the short transits as much as the long, and only the loss rate as a function of the covariate multiplied by each unit's transit length, recovered from paired measurements at both ends of the transit, moves the levels.",
-  "driver_concrete": "Each plant's winter 2027 alert episodes on the shed load need the sewer's RNA decay rate as a function of the wastewater's temperature, fitted to the paired upstream study and applied over each plant's population-weighted travel time: a correction constant over the year (the study's average loss, or one rate over each travel time) cancels against each plant's own baseline and leaves the episodes as published, PMMoV normalization leaves the target's own decay in, and a temperature term beside travel time corrects the short sewers as much as the long, while the winter samples at the long trunk sewers lost far less RNA than the summer samples that set their baselines.",
-  "stump": "A competent solver restores each sample's shed load with the paired study's single decay rate over the plant's travel time (or reads the levels on PMMoV-normalized concentrations) and files the dashboard's published count of winter 2027 alert episodes, because a correction constant over the year cancels against each plant's own baseline; the RNA's decay rate rises with the water's temperature, so the winter samples at the long trunk sewers lost far less than the summer samples that set their baselines, and only the temperature-dependent rate applied over each travel time removes the episodes the colder water alone raised.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the methods note and the paired study correctly fits one decay rate to the study's ratios of plant to upstream concentration against travel time, restores every sample's shed load with it, recomputes the baselines and levels and files the published episode count, because a rate that does not move over the year scales a plant's winter samples and its baseline alike.",
-  "domain_test": "The quantity that decides is each plant's level on the shed load, which wastewater-based epidemiology recovers by treating the RNA's decay in the sewer as first order over the population-weighted travel time at a rate that rises with the water's temperature; with another field's nouns there is no sewer travel time, no temperature-driven decay of a virus's RNA and no faecal marker that survives the trip, so the task stops making sense.",
+  "driver": "The decisive quantity is each unit's conversion error between two levels of its working range, which every complete fill-and-draw cycle cancels: its shape through the middle of the range shows only in the short intervals' residuals against metered outflow set against the levels each interval spans, where a proportional error looks exactly like the outflow meters' own error, and its proportional part only in the large inflows checked against an independent document, which run from near one end of the range to near the other and so miss the middle; the period reconciliation passes every unit, the inflow check finds only the proportional errors, and the interval fit alone either drops them or charges the meters' errors to the conversion.",
+  "driver_concrete": "Each tank's chart error between product heights from its reorder height to its maximum fill is read from the gauge's gallon change against the sales its dock hoses metered between readings (the shape: a probe offset or tilt misstates most through the middle of the cylinder) anchored by each bill of lading's net gallons against the gauge's net rise (the proportional part: a chart built on wrong dimensions), because within the sales intervals a proportional chart error looks exactly like a dispenser meter's error, each delivery spans from near the reorder height to near full where an offset misstates little at both ends, and every fill-and-draw cycle cancels both in the monthly reconciliation.",
+  "stump": "A competent analyst checks each tank's gauge against its deliveries, the trade's chart check, or reads the passing monthly reconciliations, and files only the tanks whose charts were built on the wrong dimensions or no tank at all, because each delivery runs from near the reorder height to near full where a probe offset or tilt misstates little, and a fit to the sales intervals alone either charges the dock meters' errors to the charts or absorbs the proportional chart errors into the meters; only the intervals' shape anchored by the deliveries' scale files the list.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task133": "there a filed outcome curve is conditioned on each unit's own survival to date (a division by survival in a credit book); here a measurement loses part of what it carries in transit at a rate that moves with the season, read against each unit's own baseline, so the only correction that moves anything is the season-dependent part of the loss over each unit's transit length, recovered from paired measurements at both ends"
+    "task445": "there deaths that occurred but are not yet registered are added from a second register that lists them, a coverage completion; here no record is missing or added: each tank's chart error is estimated from complete records reconciled at two grains, the fueling intervals for its shape through the middle of the range and the deliveries for its proportional part, which no single reconciliation separates from the dispensers' meter error"
   },
-  "lineage": [],
-  "notes": "Drawn 2026-10-18 for perssathya's lane (wave 4, the last of six). The seed DQ21 re-found: its air quality duty desk and alert episodes kept as a wastewater dashboard's verification desk and its alert episodes, its environmental-monitoring pairing banned against task247, and its gap rule (rule application) replaced by the shed-load reconstruction. stump_strategy other: a measurement's in-transit loss whose rate moves with the season, read against each unit's own baseline (neither censoring nor composition).",
-  "client_domain": "epidemiology-public-health",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:temperature-dependent-in-sewer-decay-over-travel-time-against-own-baseline",
-  "layer1": [
-    "the laboratory's results kept by analysis run, rejected and check runs beside the accepted run",
-    "the composite's flow written on the chain-of-custody form from the autosampler's controller, one inlet channel where a plant has two",
-    "the paired upstream study reported by the field team in gene copies per millilitre in triplicate, the laboratory in gene copies per litre",
-    "the water company's hourly inlet historian in New Zealand local time across both daylight saving changes, with drop-outs, blank and held readings, meter faults and re-sent duplicate rows since its outstations changed network",
-    "the population-weighted travel times in minutes in the network modeller's memo table",
-    "the contract laboratory's January results in gene copies per microlitre of extract under its own site names"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-18",
+      "fate": "re-rooted 2026-11-02 at the Batch 3 queue reset (shipped 2026-10-18 with no portal result; judge DETERMINISTIC on 4733488b; the regional wastewater surveillance world is closed, one architecture per world)",
+      "domain": "epidemiology-public-health",
+      "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+      "objective": "data-quality-monitoring",
+      "niche": "a regional public health service's wastewater surveillance of SARS-CoV-2 at 24 treatment plants, whose verification desk checks every high-level alert episode on the dashboard: how many episodes last winter's samples raise once the dashboard reads each sample on the shed load (the RNA the sewer destroyed on the way to the plant restored), the basis it moves to on 1 May 2028",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G16",
+        "G4"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "other",
+      "decision_type": "quantity_figure",
+      "shape": "03",
+      "forum": "line_manager_or_team",
+      "forcing_event": "cutover_or_migration",
+      "org_family": "government_agency",
+      "driver": "The decisive quantity is each unit's level against its own baseline, read from a measurement that loses part of what it carries in transit at a rate that rises with a covariate moving over the year, so any correction constant over the year cancels against the baseline and leaves every level as recorded, a covariate term added beside the transit length corrects the short transits as much as the long, and only the loss rate as a function of the covariate multiplied by each unit's transit length, recovered from paired measurements at both ends of the transit, moves the levels.",
+      "driver_concrete": "Each plant's winter 2027 alert episodes on the shed load need the sewer's RNA decay rate as a function of the wastewater's temperature, fitted to the paired upstream study and applied over each plant's population-weighted travel time: a correction constant over the year (the study's average loss, or one rate over each travel time) cancels against each plant's own baseline and leaves the episodes as published, PMMoV normalization leaves the target's own decay in, and a temperature term beside travel time corrects the short sewers as much as the long, while the winter samples at the long trunk sewers lost far less RNA than the summer samples that set their baselines.",
+      "stump": "A competent solver restores each sample's shed load with the paired study's single decay rate over the plant's travel time (or reads the levels on PMMoV-normalized concentrations) and files the dashboard's published count of winter 2027 alert episodes, because a correction constant over the year cancels against each plant's own baseline; the RNA's decay rate rises with the water's temperature, so the winter samples at the long trunk sewers lost far less than the summer samples that set their baselines, and only the temperature-dependent rate applied over each travel time removes the episodes the colder water alone raised.",
+      "answer": "Plan the verification desk for 26 alert episodes this winter: last winter's samples raise 26 on the shed load against the 30 the dashboard published (Ardenmouth South, Ardenmouth East, Tarnbrook, Cleaveland Flat and Saltmarsh Point one fewer each, Ardenmouth West one more).",
+      "shell": {
+        "question form": "how-many",
+        "second-sentence opener": "read",
+        "rounding opener": "counts",
+        "deliverable set": "docx+xlsx"
+      }
+    }
   ],
-  "registered": "2026-10-18T16:32:19Z"
+  "notes": "Architecture 2, drawn 2026-11-02 at the Batch 3 queue reset; architecture 1 (the regional wastewater surveillance world) is in lineage. stump_strategy other: a level-dependent conversion error identified by combining two observation designs that each see a different part of it. Domain moved from epidemiology-public-health (its data-quality cell holds five surveillance-feed worlds) to physical-environmental-sciences / sensor-calibration-measurement: tank gauging is a sensor and its calibration, and release detection protects the reservoirs and the groundwater. The world moved off retail fuel when task238 v2 (a grocery chain) registered in parallel, and off fleet yards because task153 holds a fleet-yard fuel world.",
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "read",
+      "rounding opener": "counts",
+      "deliverable set": "docx+xlsx"
+    }
+  ],
+  "registered": "2026-11-02T02:12:12Z"
 }

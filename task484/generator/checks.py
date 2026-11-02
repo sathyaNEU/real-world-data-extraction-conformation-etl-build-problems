@@ -292,7 +292,7 @@ def main():
     for f in files:
         if f.endswith((".pdf", ".docx", ".xlsx")):
             t = doc_text(os.path.join(TGT, f))
-            for p in ["Irene Griffiths", "Cheryl Dixon", "Melanie Watts", "Beth King"]:
+            for p in ["Irene Griffiths", "Melanie Watts", "Beth King"]:
                 if p in t:
                     named.add(p)
     check("RS4 every persona in the documents is on the card", named and named <= people, str(sorted(named)))

@@ -62,6 +62,24 @@ def cracker_heat(T):
     return {k: v / 1000.0 for k, v in y1.items()}, y2
 
 
+def extrapolating_heat(T):
+    """A stricter cracker for 2024-25: extends each drive-by meter from its last two reads to 1 October 2025."""
+    cat = {c["aansluitnummer"]: c["categorie"] for c in T["conns"]}
+    owner = {str(m["meternummer"]): m["aansluitnummer"] for m in T["meters"]}
+    leg = defaultdict(list)
+    for r in T["legacy"]:
+        f = 277.7778 if r["eenheid"] == "GJ" else 1000.0
+        leg[r["meternummer"]].append((dt.datetime.strptime(r["opnamedatum"], "%d-%m-%Y").date(),
+                                      A.fnum(r["stand"]) * f))
+    out = defaultdict(float)
+    for ser, rs in leg.items():
+        rs.sort()
+        (da, va), (db, vb) = rs[-2], rs[-1]
+        rate = (vb - va) / max(1, (db - da).days)
+        out[cat[owner[ser]]] += vb + rate * (dt.date(2025, 10, 1) - db).days - rs[0][1]
+    return {k: v / 1000.0 for k, v in out.items()}
+
+
 def score(F, gas, h1, h2):
     figs = []
     for ph in range(1, 7):

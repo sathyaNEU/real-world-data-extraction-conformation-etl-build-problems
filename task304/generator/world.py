@@ -21,8 +21,8 @@ A_ROADS = [("A5207", "Ardle Road"), ("A5207", "London Road"), ("A6118", "Brindha
            ("A6510", "Wold Road")]
 B_ROADS = [("B4419", "Saxby Road"), ("B4421", "Mill Lane"), ("B4433", "Kestermoor Road"), ("B4450", "Thorpe Road"),
            ("B4467", "Ings Road"), ("B4480", "Carlby Road"), ("B4492", "Hollin Road"), ("B4512", "Stow Road")]
-TRUNK = {"A4600": (452000, 470000), "A6510": None}     # A6510 trunk throughout; A4600 trunk west of easting 470000
-#                                                          (the section east of it was detrunked to the county in 2019)
+TRUNK = {"A4600": None, "A6510": None}   # A6510 trunk throughout; A4600 trunk west of its Brindham East node (the
+#                                          section east of that node was detrunked to the county in 2019); set by World
 DISTRICT_BOX = {"Ardle Vale": (440000, 456000), "Brindham": (456000, 470000), "Kestermoor": (470000, 486000)}
 
 
@@ -33,11 +33,12 @@ def district_of(e):
     return "Kestermoor"
 
 
-def is_trunk(road, easting):
-    if road not in TRUNK:
-        return False
-    span = TRUNK[road]
-    return True if span is None else (span[0] <= easting < span[1])
+def is_trunk(road, easting, boundary=None):
+    if road == "A6510":
+        return True
+    if road == "A4600":
+        return easting < boundary
+    return False
 
 
 class World:
@@ -48,6 +49,9 @@ class World:
         self.rp = np.random.default_rng(seed + 3)         # the 2026 provisional data
         self.junctions = []
         self._network()
+        a46 = sorted((j for j in self.junctions if j["road"] == "A4600"), key=lambda j: abs(j["easting"] - 470000))
+        self.boundary_node = a46[0]
+        self.trunk_boundary = a46[0]["easting"]
         self._counts()
         self.collisions = []
         self._records()
@@ -285,7 +289,7 @@ class World:
                 c["sev"] = 1 if r < 0.012 else (2 if r < 0.22 else 3)
                 c["recorded"] = c["sev"]
             out.append(dict(date=d, hour=hour, minute=minute, road=road, easting=e, northing=nn, vehicles=vehicles,
-                            casualties=cas, trunk=is_trunk(road, e), district=district_of(e)))
+                            casualties=cas, trunk=is_trunk(road, e, self.trunk_boundary), district=district_of(e)))
         # deaths within 30 days that came after the police record was made (serious in the police data), two serious
         # casualties who died after 30 days (not killed on the national definition), and one 30-day death on a trunk road
         late = [c for c in out if not c["trunk"] and any(k["sev"] == 2 for k in c["casualties"])]
@@ -307,9 +311,12 @@ class World:
                     k["died_day"] = int(rng.integers(0, 3))
         # collisions before the migration that were amended after it and re-sent under the new system's references
         pre = [c for c in out if c["date"] < P.MIGRATION]
-        n_re = int(round(P.RESEND_SHARE * len(pre)))
-        for i in sorted(int(x) for x in rng.choice(len(pre), size=n_re, replace=False)):
-            c = pre[i]
+        for c in pre:
+            worst = min(k["recorded"] for k in c["casualties"])
+            # fatal and serious files stay open longest (investigations, inquests), so more of them were amended
+            # after the new system went live and came across under its references
+            if rng.random() >= {1: 0.45, 2: 0.12, 3: 0.05}[worst]:
+                continue
             c["resent"] = dict(dmin=int(rng.choice([0, 0, 0, 2, 5, 9, 14])), de=int(rng.integers(-22, 23)),
                                dn=int(rng.integers(-22, 23)), sev_change=bool(rng.random() < 0.18))
             if c["resent"]["sev_change"]:
