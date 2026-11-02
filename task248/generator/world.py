@@ -27,7 +27,7 @@ class Tank:
         self.beta = P.BETA[prod]
         self.chart_no = "HC%d-%02dK" % (int(self.D), cap // 1000)
         # hose meters: tank-level bias plus small spread
-        self.hose_err = [meter + rng.normal(0, 0.0003) for _ in range(nh)]
+        self.hose_err = [meter + rng.normal(0, 0.0003 * P.NOISE) for _ in range(nh)]
         self.reorder_h = float(round(P.REORDER_FRAC * self.D))
         self.half_h = float(round(self.D / 2.0))
         self.fill_h = float(round(P.FILL_FRAC * self.D))
@@ -207,10 +207,10 @@ def simulate(seed=P.SEED):
                 target_net = float(vol(h_to, t.D, t.Lt)) * (1 - t.beta * (T - 60.0))
                 del_net = max(round((target_net - net) / 50.0) * 50.0, 1500.0)
                 Tdel = float(ground_temp(when) + rng.normal(0.8, 1.2))
-                true_net = del_net * (1 + rng.normal(0, 0.0007))
+                true_net = del_net * (1 + rng.normal(0, 0.0007 * P.NOISE))
                 dur = float(rng.uniform(0.40, 0.85))
-                T_meas0 = T + rng.normal(0, 0.06)
-                hread0 = h0 + t.delta + rng.normal(0, 0.004)
+                T_meas0 = T + rng.normal(0, 0.06 * P.NOISE)
+                hread0 = h0 + t.delta + rng.normal(0, 0.004 * P.NOISE)
                 gr0 = t.chart_gal(hread0)
                 V_old = net
                 net += true_net
@@ -225,8 +225,8 @@ def simulate(seed=P.SEED):
             elif kind == "DE":
                 gross_end = net * (1 + t.beta * (T - 60.0))
                 h1 = t.h_of_gross(gross_end)
-                T_meas1 = T + rng.normal(0, 0.06)
-                hread1 = h1 + t.delta + rng.normal(0, 0.004)
+                T_meas1 = T + rng.normal(0, 0.06 * P.NOISE)
+                hread1 = h1 + t.delta + rng.normal(0, 0.004 * P.NOISE)
                 gr1 = t.chart_gal(hread1)
                 dstate.update({"end": when, "h1": round(hread1, 3), "g1": round(gr1, 1),
                                "n1": round(gr1 * (1 - t.beta * (T_meas1 - 60.0)), 1), "T1": round(T_meas1, 1)})
@@ -236,8 +236,8 @@ def simulate(seed=P.SEED):
             else:   # reading
                 gross_true = net * (1 + t.beta * (T - 60.0))
                 h_true = t.h_of_gross(gross_true)
-                T_meas = T + rng.normal(0, 0.05)
-                hread = h_true + t.delta + rng.normal(0, 0.004)
+                T_meas = T + rng.normal(0, 0.05 * P.NOISE)
+                hread = h_true + t.delta + rng.normal(0, 0.004 * P.NOISE)
                 gr = t.chart_gal(hread)
                 netc = gr * (1 - t.beta * (T_meas - 60.0))
                 seq += 1

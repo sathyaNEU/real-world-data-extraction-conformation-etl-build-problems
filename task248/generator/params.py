@@ -69,3 +69,4 @@ CONSOLE_SWAP = ("DH", dt.date(2026, 2, 17))
 POS_SHADOW = (dt.date(2026, 11, 9), dt.date(2026, 11, 15))
 POS_GOLIVE = dt.datetime(2026, 11, 16, 6, 0)
 READ_EVERY_H = 2
+NOISE = 1.0   # measurement noise scale (1.0 in the build)
