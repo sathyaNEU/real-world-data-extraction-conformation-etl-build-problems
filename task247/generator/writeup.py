@@ -19,23 +19,6 @@ def _list(vals):
     return ", ".join(vals[:-1]) + " and " + vals[-1] if len(vals) > 1 else vals[0]
 
 
-def repeat_runs(target, F):
-    """runs of a wide colony written on consecutive metres with the same genus, diameter and condition, by observer"""
-    df = pd.read_csv(os.path.join(target, F["survey"]))
-    df = df[(df.sheet == "S") & (df.max_diameter_cm >= 100)]
-    runs = {}
-    for (site, tr, sh, who), g in df.groupby(["site_code", "transect", "sheet", "observer"]):
-        g = g.sort_values(["metre", "line"])
-        prev = []
-        for r in g.itertuples(index=False):
-            key = (r.genus, r.max_diameter_cm, r.condition)
-            if any(k == key and m == r.metre - 1 for k, m in prev):
-                runs[who] = runs.get(who, 0) + 1
-            prev.append((key, r.metre))
-    wide = df.groupby("observer").size().to_dict()
-    return runs, wide
-
-
 def gps_offsets(target, F):
     """for each trip, the hours between the logged retrieval time and the logger's own step out of the water (the first
     reading of the cooler on deck): the reading-to-reading jump nearest the retrieval"""
@@ -46,7 +29,7 @@ def gps_offsets(target, F):
     for r in dep.itertuples(index=False):
         if not isinstance(r.retrieved, str):
             continue
-        z = pd.Timestamp(r.retrieved)
+        z = solve.log_time(r.retrieved, read_mark=False)    # the digits as written, against the loggers' local clock
         x = rd[(rd.serial == r.serial) & (rd.t >= z - pd.Timedelta(hours=9)) & (rd.t <= z + pd.Timedelta(hours=3))]
         if len(x) < 4:
             continue
@@ -65,8 +48,17 @@ def figures(target, F):
     ru, c = pk.rungs()
     var = pk.variants(b)
     bt = pk.backtest(b)
-    S = pk.survey()
     H = pk.logger_hours()
+    dep, reg = pk.logger_log()
+    where = pk.pin_sites()
+    earlier = {}
+    for r, site in zip(dep.itertuples(index=False), where):
+        if reg[r.pin] != site:
+            earlier.setdefault(r.pin, set()).add(site)
+    assert all(len(v) == 1 for v in earlier.values()), earlier
+    trips = pk.service_trips()
+    north = list(pk.sites.sort_values("latitude", ascending=False).site_code)
+    follow = sum([reg[x] for x in t["stops"]] == north for t in trips)
     decl_dhw = {}
     wb = pd.read_excel(os.path.join(target, F["bulletins"]), header=3)
     wb = wb[(wb["Analysis day"] >= solve.SEASON[0].isoformat()) & (wb["Analysis day"] <= solve.SEASON[1].isoformat())]
@@ -78,22 +70,20 @@ def figures(target, F):
         sites.append(dict(code=r["site"], name=r["name"], region=r["region"], declared=r["declared"],
                           declared_dhw=round(decl_dhw[r["site"]], 1), dhw=r["dhw_round"], dhw_exact=round(r["dhw"], 2),
                           dhw_range=[round(min(vals), 2), round(max(vals), 2)], level=r["level"], verdict=r["verdict"],
-                          survey=r["level"] == "Alert Level 2",
-                          prevalence=round(S[r["site"]][0], 1), colonies=S[r["site"]][1], hours=H[r["site"]]))
+                          survey=r["level"] == "Alert Level 2", hours=H[r["site"]]))
     call = [s["code"] for s in sites if s["survey"]]
     rung_lists = {k: [pk.codes[i] for i in range(len(pk.codes)) if v[i] >= P.AL2] for k, v in ru.items()}
     rung_dhw = {k: [round(x, 2) for x in v] for k, v in ru.items()}
-    runs, wide = repeat_runs(target, F)
     return dict(call=call, count=len(call), sites=sites, clear_sky=round(b, 2), clear_sky_exact=round(b, 4),
                 rungs=rung_lists, rung_dhw=rung_dhw, constants=dict(b_fill=round(c["b_fill"], 3),
                                                                     b_all=round(c["b_all"], 3), k1=round(c["k1"], 2)),
                 backtest={k: dict(rmse=round(v[0], 3), hot_mean=round(v[1], 3), days=v[2], hot_days=v[3])
                           for k, v in bt.items()},
-                repeats=dict(runs=runs, wide=wide, total=sum(runs.values())), gps=gps_offsets(target, F),
+                gps=gps_offsets(target, F), pins_before_retag={k: next(iter(v)) for k, v in sorted(earlier.items())},
+                service_trips=dict(trips=len(trips), follow_register=follow, before_retag=len(trips) - follow),
                 hot_low={k: round(-v[1], 3) for k, v in bt.items()}, hot_low_2dp={k: round(-v[1], 2) for k, v in bt.items()},
                 conventions=dict(overlap_years=[2018, 2026], hot_anomaly_c=0.6, kelvin=273.15, window_days=P.WINDOW,
-                                 wide_colony_cm=100, small_colony_cm=10, depth_band_m=2, gps_hours=5,
-                                 hotspot_min_c=P.HS_MIN, levels=[P.AL1, P.AL2]))
+                                 gps_hours=5, sites_a_day=4, hotspot_min_c=P.HS_MIN, levels=[P.AL1, P.AL2]))
 
 
 def write_figures(path, fig):
@@ -127,8 +117,8 @@ def golden_content(fig):
         "later. Over 2018 to 2026 that refill reproduces the reprocessed record on the days the analysis did not observe "
         "to %.3f degrees (root mean square), against %.3f for the record corrected by its mean differences." % (
             fig["clear_sky"], fig["backtest"]["refill"]["rmse"], fig["backtest"]["flag"]["rmse"]),
-        "%s more sites rise from no alert to Alert Level 1 (%s); no site is lowered. The 2023 survey baseline and the "
-        "loggers' hours at or above each site's maximum monthly mean are in the workbook." % (
+        "%s more sites rise from no alert to Alert Level 1 (%s); no site is lowered. Each site's hours at or above its "
+        "maximum monthly mean at its logger, 2024 to 2026, are in the workbook." % (
             WORD[len(up1)].capitalize(), _list(["%s %s" % (s["code"], s["name"]) for s in up1])),
     ]
     return dict(sites=sites, call=fig["call"], paras=paras, clear_sky=fig["clear_sky"], backtest=fig["backtest"],
@@ -211,15 +201,18 @@ def submission(fig):
         "Levels at 4 and 8 and each site's verdict against the highest level its season bulletins gave (sections 5 and "
         "6): %s confirmed, %s raised, none lowered." % (WORD[sum(s["verdict"] == "confirms" for s in sites)],
                                                        WORD[sum(s["verdict"] == "raises" for s in sites)]),
-        "The 2023 survey: sheets S, transects within 2 m of the register's survey depth, annex genera of 10 cm or more; "
-        "a colony of 100 cm or more written on consecutive metres of one sheet with the same genus, diameter and "
-        "condition is one colony (the protocol records each colony once: %s wrote %d such repeats, the other observers "
-        "none); prevalence is pale, partly bleached and bleached over all colonies." % (
-            _list(sorted(fig["repeats"]["runs"])), sum(fig["repeats"]["runs"].values())),
-        "Loggers: each logger's readings while it was in the water, the log's times being the boat's GPS (the Cozumel "
-        "II's showed UTC on its trips of August 2025 and April 2026, five hours ahead of the loggers' local clocks: its "
-        "loggers leave the water five hours before the logged time), June to October 2024 to 2026 in local time, one "
-        "reading an hour, at or above the register's maximum monthly mean.",
+        "Loggers: each log row is placed at its site by its pin. The pin register holds the tags as the divers last "
+        "checked them (April 2027), and on the "
+        "four service trips from 18 August 2025 the boat's stops read through it as the sites north to south, four a "
+        "day; on the five trips before, the tags are the pins' earlier ones (%s), the site being the stop's place in the "
+        "trip's route north to south, the same on every one of those trips. The times the log marks UTC (the Cozumel "
+        "II's trips of August 2025 and April 2026) are five hours ahead of the loggers' local clocks. Then each "
+        "logger's readings while in "
+        "the water, June to October 2024 to 2026 in local time, one reading an hour, at or above the register's maximum "
+        "monthly mean: from %s hours at %s to %s at %s." % (
+            "; ".join("%s %s" % (k, v) for k, v in sorted(fig["pins_before_retag"].items())),
+            "{:,}".format(min(s["hours"] for s in sites)), min(sites, key=lambda s: s["hours"])["code"],
+            "{:,}".format(max(s["hours"] for s in sites)), max(sites, key=lambda s: s["hours"])["code"]),
         "The survey list is the %s sites at Alert Level 2." % WORD[len(on)],
     ]
     for j, st in enumerate(steps, 1):
@@ -234,10 +227,8 @@ def submission(fig):
     for s in sites:
         w("   - %s %s: %d; %s; %s (declared %s)" % (s["code"], s["name"], s["dhw"], s["level"], s["verdict"],
                                                   s["declared"]))
-    w("2. Each site's bleaching prevalence in the 2023 survey (per cent to one decimal) and the colonies it rests on:")
-    for s in sites:
-        w("   - %s: %.1f, %d colonies" % (s["code"], s["prevalence"], s["colonies"]))
-    w("3. Each site's hours at or above its maximum monthly mean at its logger, June to October 2024 to 2026:")
+    w("2. Each site's hours at or above its maximum monthly mean at its logger while in the water, June to October 2024 "
+      "to 2026:")
     for s in sites:
         w("   - %s: %d" % (s["code"], s["hours"]))
     w("")

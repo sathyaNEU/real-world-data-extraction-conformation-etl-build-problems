@@ -1,6 +1,7 @@
 """task247 documents: the watch's methods note, the near-real-time product guide, the reprocessed record's release note
-and the 2023 survey protocol (pdf), the head of reef monitoring's request (eml), the 2027 bulletins (xlsx), the data
-dictionary and the readme (md)."""
+and the 2023 survey protocol (pdf), the head of reef monitoring's request (eml) and the 2027 bulletins (xlsx). No file
+that describes the data ships: each file carries its own conventions the way its producer writes them, and provenance
+lives in metadata.json outside the pack."""
 import os
 
 from openpyxl import Workbook
@@ -96,10 +97,9 @@ and the climatology. Please give me each site's season maximum as the reprocesse
 record will show it, its level and how that compares with the level the bulletins
 declared, and a chart I can put in front of the directorate.
 
-For the survey note I also need each site's bleaching prevalence from the 2023
-survey, which the report compares against, and the hours each site's logger has read
-at or above the site's maximum monthly mean while in the water over the 2024 to 2026
-seasons. The loggers in the water now went in in April and come back with the survey.
+For the survey note I also need the hours each site's logger has read at or above
+the site's maximum monthly mean while in the water over the 2024 to 2026 seasons. The
+loggers in the water now went in in April and come back with the survey.
 
 Alfredo
 
@@ -315,79 +315,6 @@ def bulletins_workbook(path, B):
     postprocess.finish_office(path, "2027-05-04T13:40:00Z", "2027-11-02T14:05:00Z", UNI)
 
 
-# ------------------------------------------------------------------ the registers
-def dictionary(F):
-    return f"""# Data dictionary
-
-## {F["sites"]}
-The watch's site register, one row per site: site_code; site_name; region (north, central, south); pixel_id (the
-satellite pixel the watch reads for the site); latitude and longitude (decimal degrees, WGS84); survey_depth_m (the
-depth of the site's transects and logger, metres); mmm_c (the site's maximum monthly mean, degrees Celsius).
-
-## {F["clim"]}
-The daily SST climatology of each pixel: pixel_id; month; day; clim_sst_c (degrees Celsius).
-
-## {F["nrt"]}
-The station's extract of the near-real-time analysis, one row per pixel, day and issue: pixel_id; date (the UTC day the
-analysis is for, yyyy-mm-dd); sst_c (degrees Celsius); obs_flag (the observation flag, coded as the row's product
-version codes it, product guide section 4); product_version; issued_utc (when the issue was made).
-
-## {F["rep"]}
-The reprocessed analysis, May 2027 release: pixel_id; time (the UTC day, yyyy-mm-dd); analysed_sst_k (kelvin).
-
-## {F["bulletins"]}
-The watch's weekly bulletins for 2027, one row per bulletin and site: the bulletin's number, the date it was issued
-(station local date), the analysis day it reports (UTC day), the site, its SST and HotSpot (degrees Celsius), its DHW
-(degree Celsius weeks) and the alert level.
-
-## {F["survey"]}
-The 2023 post-bleaching survey as entered from the dive slates, one row per slate line: site_code; date; transect (1
-to 4); sheet (S survey, QA quality assurance repeat); observer (initials); depth_m (the transect's depth); metre (the
-metre of tape the line is written on, 1 to 20); line (the line's order on the sheet); genus (code); max_diameter_cm;
-condition (protocol section 4).
-
-## {F["deployments"]}
-The dive team's logger log, one row per deployment: site_code; serial; model; depth_m; deployed and retrieved (the date
-and time the logger went into and came out of the water, as noted from the boat's GPS on the trip, yyyy-mm-dd hh:mm);
-deployed_from and retrieved_from (the boat); notes.
-
-## {F["readings"]}
-The station's logger database, every reading downloaded from 1 April 2024: serial; datetime_local (the logger's clock,
-station local time, UTC-5); temperature_c (degrees Celsius). A logger records from its launch in the lab to its download.
-
-## {F["kd490"]}
-Monthly diffuse attenuation of light at 490 nm from the {CENTRE_SHORT} ocean colour product: pixel_id; month (yyyy-mm);
-kd490_per_m (per metre).
-
-## {F["tide"]}
-The port tide gauge: datetime_local (station local time); sea_level_m (metres above the gauge's mean sea level).
-"""
-
-
-def readme(F):
-    return f"""# {P.WATCH}: November 2027 survey list
-
-Files gathered by the reef monitoring group of the {STATION} ({UNI}) for the November 2027 post-bleaching survey.
-
-- {F["request"]}: the head of reef monitoring's request.
-- {F["methods"]}: the watch's methods note (version 3).
-- {F["guide"]}: the near-real-time analysis user guide (version 3.2).
-- {F["repnote"]}: the reprocessed analysis release note (May 2027).
-- {F["sites"]}: the site register.
-- {F["clim"]}: the daily climatology.
-- {F["nrt"]}: the near-real-time extract, 1 January 2018 to 2 November 2027.
-- {F["rep"]}: the reprocessed analysis, 1 January 2018 to 31 December 2026.
-- {F["bulletins"]}: the 2027 weekly bulletins.
-- {F["protocol"]}: the 2023 post-bleaching survey protocol.
-- {F["survey"]}: the 2023 post-bleaching survey.
-- {F["deployments"]}: the logger log.
-- {F["readings"]}: the logger readings.
-- {F["kd490"]}: monthly light attenuation, 2024 to 2027.
-- {F["tide"]}: the port tide gauge, 2027.
-- DATA_DICTIONARY.md: the fields of each file.
-"""
-
-
 def write_all(target, F, R, B):
     p = lambda k: os.path.join(target, F[k])
     request(p("request"), F)
@@ -396,7 +323,3 @@ def write_all(target, F, R, B):
     repnote(p("repnote"), F)
     protocol(p("protocol"), F)
     bulletins_workbook(p("bulletins"), B)
-    with open(p("dict"), "w") as fh:
-        fh.write(dictionary(F))
-    with open(p("readme"), "w") as fh:
-        fh.write(readme(F))

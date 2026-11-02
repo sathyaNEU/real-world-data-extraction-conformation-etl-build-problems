@@ -17,16 +17,15 @@ FILES = {
     "protocol": "post_bleaching_survey_protocol_2023.pdf",
     "survey": "post_bleaching_survey_2023_slates.csv",
     "deployments": "logger_log_2023-08_2027-04.csv",
+    "pins": "logger_pin_register.csv",
     "readings": "logger_readings_from_2024-04-01.csv",
     "kd490": "srao_kd490_monthly_watch_pixels_2024_2027.csv",
     "tide": "port_tide_gauge_hourly_2027.csv",
-    "dict": "DATA_DICTIONARY.md",
-    "readme": "README.md",
     "deliv_xlsx": "reef_heat_stress_2027.xlsx",
     "deliv_pdf": "survey_list_note_2027.pdf",
 }
 PACK = [k for k in FILES if not k.startswith("deliv_")]
-DISTRACTORS = ["kd490", "tide"]
+DISTRACTORS = ["kd490", "tide", "survey", "protocol"]   # read by no step of the call or the ask
 
 
 def run(target, documents=True):
@@ -40,6 +39,7 @@ def run(target, documents=True):
     csv(R.reprocessed(), "rep")
     csv(R.survey_colonies(), "survey")
     csv(R.logger_deployments(), "deployments")
+    csv(R.logger_pins(), "pins")
     csv(R.logger_readings(), "readings")
     csv(R.kd490(), "kd490")
     csv(R.tide(), "tide")

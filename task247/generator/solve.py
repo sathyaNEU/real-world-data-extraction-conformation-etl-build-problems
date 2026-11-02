@@ -1,6 +1,6 @@
 """task247 golden pipeline, run on the shipped files: each site's 2027 season maximum degree heating weeks as the
 reprocessed record will give it, the level and the verdict against the bulletins; the default path's and the other
-rungs' figures; the 2023 survey's prevalence and colonies; the loggers' hours at or above the MMM."""
+rungs' figures; each site's hours at or above the MMM at its logger while in the water, June to October 2024 to 2026."""
 import datetime as dt
 import os
 
@@ -12,9 +12,17 @@ import params as P
 
 SEASON = (dt.date(2027, 6, 1), dt.date(2027, 10, 31))
 LEVELS = ["No alert", "Alert Level 1", "Alert Level 2"]
-STONY = ["OFAV", "OANN", "OFRA", "MCAV", "CNAT", "DLAB", "PSTR", "SSID", "SINT", "AAGA", "PAST", "PPOR", "MMEA",
-         "DSTO", "EFAS", "APAL"]
 GPS_UTC = ("Cozumel II", dt.date(2026, 6, 1))     # that boat's GPS showed UTC on its trips before this date
+LOCAL_H = 5                                         # the station keeps UTC-5 all year (the bulletins' 09:00 local, 14:00 UTC)
+
+
+def log_time(s, read_mark=True):
+    """a log time as written: a time the log marks UTC is converted to station local time (read_mark False reads its
+    digits as local, the misreading)"""
+    if s.endswith(" UTC"):
+        t = pd.Timestamp(s[:-4])
+        return t - pd.Timedelta(hours=LOCAL_H) if read_mark else t
+    return pd.Timestamp(s)
 
 
 def level(x):
@@ -202,51 +210,77 @@ class Pack:
             out[c] = max(lv, key=LEVELS.index)
         return out
 
-    # ------------------------------------------------------------ ask A: the 2023 survey
-    def survey(self, collapse=True, filters=True, any_size=False):
-        df = pd.read_csv(os.path.join(self.t, self.F["survey"]))
-        if filters:
-            depth = dict(zip(self.sites.site_code, self.sites.survey_depth_m))
-            df = df[(df.sheet == "S") & ((df.depth_m - df.site_code.map(depth)).abs() <= 2.0)
-                    & df.genus.isin(STONY) & (df.max_diameter_cm >= 10)]
-        n_col, n_bl = {}, {}
-        for (site, tr, sh), g in df.groupby(["site_code", "transect", "sheet"]):
-            g = g.sort_values(["metre", "line"])
-            seen = []
-            count = 0
-            bleached = 0
-            for r in g.itertuples(index=False):
-                key = (r.genus, r.max_diameter_cm, r.condition)
-                if collapse and (any_size or r.max_diameter_cm >= 100) and any(k == key and m == r.metre - 1
-                                                                                for k, m in seen):
-                    seen.append((key, r.metre))
-                    continue
-                seen.append((key, r.metre))
-                count += 1
-                bleached += r.condition in ("P", "PB", "BL")
-            n_col[site] = n_col.get(site, 0) + count
-            n_bl[site] = n_bl.get(site, 0) + bleached
-        return {c: (100.0 * n_bl[c] / n_col[c], n_col[c]) for c in self.codes}
-
-    # ------------------------------------------------------------ ask B: the loggers
-    def logger_hours(self, gps=True, trim=True):
+    # ------------------------------------------------------------ the ask: the loggers
+    def logger_log(self):
         dep = pd.read_csv(os.path.join(self.t, self.F["deployments"]), dtype={"serial": str})
+        reg = pd.read_csv(os.path.join(self.t, self.F["pins"]))
+        return dep, dict(zip(reg.pin, reg.site_code))
+
+    def service_trips(self):
+        """the log's stops grouped into service trips (no two events of a trip more than three days apart): for each
+        trip its pins in the order the boat reached them, and the log rows deployed or retrieved on it"""
+        dep, reg = self.logger_log()
+        ev = []
+        for i, r in enumerate(dep.itertuples(index=False)):
+            ev.append((log_time(r.deployed), r.pin, i, "deployed"))
+            if isinstance(r.retrieved, str):
+                ev.append((log_time(r.retrieved), r.pin, i, "retrieved"))
+        ev.sort()
+        trips, cur = [], []
+        for e in ev:
+            if cur and e[0] - cur[-1][0] > pd.Timedelta(days=3):
+                trips.append(cur)
+                cur = []
+            cur.append(e)
+        trips.append(cur)
+        out = []
+        for trip in trips:
+            first = {}
+            for t, pin, i, kind in trip:
+                first.setdefault(pin, t)
+            out.append(dict(stops=sorted(first, key=first.get), events=trip))
+        return out
+
+    def pin_sites(self, how="route"):
+        """each log row's site. 'register': its pin's tag through the current pin register. 'route': on a trip whose
+        stops follow the register north to south the register's site, and on a trip whose stops do not, the site at the
+        stop's place in the boat's route (the sites north to south, as the register's trips run); 'drop': the register's
+        trips only, every other row left out"""
+        dep, reg = self.logger_log()
+        north = list(self.sites.sort_values("latitude", ascending=False).site_code)
+        site = {}
+        for trip in self.service_trips():
+            follows = [reg[p] for p in trip["stops"]] == north
+            for t, pin, i, kind in trip["events"]:
+                if how == "register":
+                    s = reg[pin]
+                elif follows:
+                    s = reg[pin]
+                elif how == "drop":
+                    s = None
+                else:
+                    s = north[trip["stops"].index(pin)]
+                if kind == "deployed":
+                    site[i] = s
+                else:
+                    assert site[i] == s, ("a row's retrieval reads another site than its deployment", i)
+        return [site[i] for i in range(len(dep))]
+
+    def logger_hours(self, gps=True, trim=True, pins="route"):
+        dep, reg = self.logger_log()
+        where = self.pin_sites(pins)
         rd = pd.read_csv(os.path.join(self.t, self.F["readings"]), dtype={"serial": str})
         rd["t"] = pd.to_datetime(rd.datetime_local)
         out = {c: 0 for c in self.codes}
-        for r in dep.itertuples(index=False):
-            if not isinstance(r.retrieved, str):
+        for r, site in zip(dep.itertuples(index=False), where):
+            if not isinstance(r.retrieved, str) or site is None:
                 continue
-            a, z = pd.Timestamp(r.deployed), pd.Timestamp(r.retrieved)
-            if gps and r.deployed_from == GPS_UTC[0] and a.date() < GPS_UTC[1]:
-                a -= pd.Timedelta(hours=5)
-            if gps and r.retrieved_from == GPS_UTC[0] and z.date() < GPS_UTC[1]:
-                z -= pd.Timedelta(hours=5)
+            a, z = log_time(r.deployed, gps), log_time(r.retrieved, gps)
             x = rd[rd.serial == r.serial]
             if trim:
                 x = x[(x.t >= a) & (x.t <= z)]
             x = x[x.t.dt.year.isin([2024, 2025, 2026]) & x.t.dt.month.between(6, 10)]
-            out[r.site_code] += int((x.temperature_c >= self.mmm[r.site_code]).sum())
+            out[site] += int((x.temperature_c >= self.mmm[site]).sum())
         return out
 
 

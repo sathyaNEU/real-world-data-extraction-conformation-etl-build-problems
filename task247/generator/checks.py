@@ -1,9 +1,10 @@
 """task247 generator checks, run by make.py on the built pack: the call, its refill variants and conventions, the
 rungs, the analyst test on the simulator's clean truth (R3), every row of the design note's semantic fork table (SF1 to
-SF16), the separation of the ask files from the call (S1), the asks' devices and stops, the input gates and the pack's
-dates."""
+SF18), the separation of the ask files from the call (S1), the ask's device, its forcing and its stops, the input gates,
+the pack's dates and that no shipped file describes the data."""
 import datetime as dt
 import os
+import re
 import shutil
 import tempfile
 
@@ -142,24 +143,21 @@ def fork_checks(target, pk, b, rows):
     raw = pk.nrt_raw
     late_v32 = raw[(raw.product_version == "3.2") & (raw.date < "2027-07-15")]
     ok(len(late_v32) > 0 and set(late_v32.obs_flag) <= {1, 2}, ("SF12", len(late_v32)))
-    # SF17 (an ask's convention) the logger seasons on the loggers' local clock against UTC: the same hours
-    dep = pd.read_csv(os.path.join(target, F["deployments"]), dtype={"serial": str})
+    # SF17 (the ask's convention) the logger seasons on the loggers' local clock against UTC: the same hours
+    dep, reg = pk.logger_log()
+    where = pk.pin_sites()
     rd = pd.read_csv(os.path.join(target, F["readings"]), dtype={"serial": str})
     rd["t"] = pd.to_datetime(rd.datetime_local)
     rd["u"] = rd.t + pd.Timedelta(hours=5)
     h = pk.logger_hours()
     hu = {c: 0 for c in pk.codes}
-    for r in dep.itertuples(index=False):
+    for r, site in zip(dep.itertuples(index=False), where):
         if not isinstance(r.retrieved, str):
             continue
-        a, z = pd.Timestamp(r.deployed), pd.Timestamp(r.retrieved)
-        if r.deployed_from == solve.GPS_UTC[0] and a.date() < solve.GPS_UTC[1]:
-            a -= pd.Timedelta(hours=5)
-        if r.retrieved_from == solve.GPS_UTC[0] and z.date() < solve.GPS_UTC[1]:
-            z -= pd.Timedelta(hours=5)
+        a, z = solve.log_time(r.deployed), solve.log_time(r.retrieved)
         x = rd[(rd.serial == r.serial) & (rd.t >= a) & (rd.t <= z)]
         x = x[x.u.dt.year.isin([2024, 2025, 2026]) & x.u.dt.month.between(6, 10)]
-        hu[r.site_code] += int((x.temperature_c >= pk.mmm[r.site_code]).sum())
+        hu[site] += int((x.temperature_c >= pk.mmm[site]).sum())
     ok(hu == h, ("SF17", hu, h))
     # SF13 kelvin: the reprocessed record less 273.15 (release note 3)
     ok(abs(pk.rep_raw.analysed_sst_k.mean() - 273.15 - np.nanmean(pk.rep)) < 1e-9, "SF13")
@@ -173,58 +171,113 @@ def fork_checks(target, pk, b, rows):
 
 
 def separation(target):
-    """S1: the call computed from the pack without the survey, logger and distractor files"""
+    """S1: the call computed from the pack without the logger files and the distractors; and the ask computed without
+    the call's documents and every distractor (each deleted file read by no step of the other)"""
     F = B.FILES
-    tmp = tempfile.mkdtemp()
-    for k in B.PACK:
-        if k not in ("survey", "deployments", "readings", "protocol", "kd490", "tide"):
-            shutil.copy(os.path.join(target, F[k]), tmp)
-    try:
-        pk, b, rows = solve.solve(tmp, F)
-        ok([r["site"] for r in rows if r["level"] == "Alert Level 2"] == GOLD, "S1: the call without the ask files")
-    finally:
-        shutil.rmtree(tmp)
+    for drop, what in ((("deployments", "pins", "readings") + tuple(B.DISTRACTORS), "the call"),
+                       (tuple(B.DISTRACTORS), "the ask")):
+        tmp = tempfile.mkdtemp()
+        for k in B.PACK:
+            if k not in drop:
+                shutil.copy(os.path.join(target, F[k]), tmp)
+        try:
+            pk, b, rows = solve.solve(tmp, F)
+            if what == "the call":
+                ok([r["site"] for r in rows if r["level"] == "Alert Level 2"] == GOLD, "S1: the call without the ask files")
+            else:
+                full = solve.Pack(target, F).logger_hours()
+                ok(pk.logger_hours() == full, "S1: the ask without the distractors")
+        finally:
+            shutil.rmtree(tmp)
 
 
 def ask_checks(target, pk):
-    F = B.FILES
-    g = pk.survey()
-    c = pk.survey(collapse=False)
-    r = pk.survey(collapse=False, filters=False)
-    for k in pk.codes:
-        ok(round(c[k][0], 1) != round(g[k][0], 1) and c[k][1] != g[k][1], ("ask A, the cracker", k))
-        ok(round(r[k][0], 1) != round(g[k][0], 1) and r[k][1] != g[k][1], ("ask A, nothing filtered", k))
-        ok(0.05 - abs(g[k][0] - round(g[k][0], 1)) >= 0.01, ("ask A, edge", k, g[k][0]))
-    # the hazards the ask sheet counts: QA lines, fire corals, colonies under 10 cm, PB03's off-depth transect
-    sl = pd.read_csv(os.path.join(target, F["survey"]))
-    ok((sl.sheet == "QA").sum() == 692 and sl.genus.isin(["MALC", "MCOM"]).sum() == 48 and
-       (sl.max_diameter_cm < 10).sum() == 33 and len(sl[(sl.site_code == "PB03") & (sl.transect == 2) & (sl.sheet == "S") &
-                                                       (sl.depth_m < 5)]) > 0, "the ask sheet's hazard counts")
-    # the device's evidence: repeats only on the two volunteers' sheets
+    """the ask: each site's hours at or above its MMM at its logger while in the water, June to October 2024 to 2026.
+    The log names each deployment by the tag on the site's pin as the divers read it; the dive team re-tagged the pins
+    north to south on the Cozumel II's retrieval trip of August 2025 and the pin register holds the current tags. The
+    device is silent to the hygiene battery, moves every figure under the register's reading and under the over-clean,
+    and the rows leave one reading: the stop order of every trip and the logger pairs that stay on one pin across the
+    re-tag. Every acceptable reconstruction files the golden."""
+    import verify as V
     import writeup as WU
-    runs, wide = WU.repeat_runs(target, F)
-    ok(set(runs) == {"KT", "DW"} and sum(runs.values()) == 153, ("the repeats", runs))
-    # the collapse agrees with the generator's own colony ids
-    W = B.RC.Records().S
-    truth = {}
-    for row in W["rows"]:
-        if row["sheet"] != "S" or row["genus"] not in solve.STONY or row["dia"] < 10:
-            continue
-        if abs(row["depth"] - P.SITE_DEPTH[row["site"]]) > 2:
-            continue
-        truth.setdefault(P.SITES[row["site"]][0], set()).add((row["transect"], row["colony"]))
-    for k in pk.codes:
-        ok(len(truth[k]) == g[k][1], ("ask A, the collapse is the colonies", k, len(truth[k]), g[k][1]))
-    h = pk.logger_hours()
-    hn = pk.logger_hours(gps=False)
-    ha = pk.logger_hours(trim=False)
-    for k in pk.codes:
-        ok(hn[k] != h[k] and ha[k] != h[k], ("ask B, the cracker and the untrimmed", k))
+    F = B.FILES
+    dep, reg = pk.logger_log()
+    H = pk.logger_hours()
+    rd = pd.read_csv(os.path.join(target, F["readings"]), dtype={"serial": str})
+    trips = pk.service_trips()
+    north = list(pk.sites.sort_values("latitude", ascending=False).site_code)
+    # the battery passes: nothing is orphaned, repeated, overlapping or out of sequence
+    ok(sorted(reg) == sorted(set(dep.pin)) and sorted(reg.values()) == sorted(pk.codes), "battery: every pin joins the register")
+    ok(not dep.duplicated().any() and not rd.duplicated(["serial", "datetime_local"]).any(), "battery: no repeated rows")
+    ok(set(rd.serial) == set(dep.serial), "battery: every serial in the log and in the readings")
+    ok(len(trips) == 9 and all(len(t["stops"]) == 16 for t in trips), "battery: every pin once on every trip")
+    for key in ("pin", "serial"):
+        for k, g in dep.groupby(key):
+            g = g.assign(a=g.deployed.map(solve.log_time)).sort_values("a")
+            ok(all(solve.log_time(g.retrieved.iloc[j]) <= g.a.iloc[j + 1] for j in range(len(g) - 1)),
+               ("battery: no overlap", key, k))
+    ok(not dep.notes.fillna("").str.contains(r"PB\d\d|E\d\d").any(), "battery: no note names a site or a pin")
+    # the device moves every figure: the register's reading (the careful solver's) and the over-clean
+    reg_h, drop_h = pk.logger_hours(pins="register"), pk.logger_hours(pins="drop")
+    for c in pk.codes:
+        ok(reg_h[c] != H[c] and drop_h[c] != H[c], ("the ask: the register and the over-clean miss", c))
+    ok(min(abs(reg_h[c] - H[c]) for c in pk.codes) >= 5, ("the register's reading moves every figure by several bins", reg_h))
+    # the rows force the golden: every trip's stops run north to south, four a day, on the golden's reading; on the
+    # register's only the four trips from the re-tag do
+    where = pk.pin_sites()
+    rows_of = {}
+    for t in trips:
+        for when, pin, i, kind in t["events"]:
+            rows_of.setdefault(id(t), {})[pin] = where[i]
+    follow_gold = sum([rows_of[id(t)][x] for x in t["stops"]] == north for t in trips)
+    follow_reg = sum([reg[x] for x in t["stops"]] == north for t in trips)
+    ok(follow_gold == 9 and follow_reg == 4, ("the stop order forces the earlier tags", follow_gold, follow_reg))
+    ok(all(t["events"][0][0] >= pd.Timestamp("2025-08-18") for t in trips if [reg[x] for x in t["stops"]] == north) and
+       all(t["events"][-1][0] <= pd.Timestamp("2025-08-15") for t in trips if [reg[x] for x in t["stops"]] != north),
+       "the register's trips are exactly those from the re-tag")
+    # the logger pairs that stay on one pin across the re-tag: one site on the golden's reading, two on the register's
+    pairs = {}
+    for r, site in zip(dep.itertuples(index=False), where):
+        pairs.setdefault(r.serial, set()).add((site, reg[r.pin], solve.log_time(r.deployed) >= pd.Timestamp("2025-08-16")))
+    across = [s for s, v in pairs.items() if {x[2] for x in v} == {True, False}]
+    ok(len(across) >= 6 and all(len({x[0] for x in pairs[s]}) == 1 for s in across) and
+       all(len({x[1] for x in pairs[s]}) == 2 for s in across), ("the pairs across the re-tag", across))
+    # rival readings: the verifier's day-by-day reconstruction and the golden's trip-by-trip one agree row by row;
+    # every earlier tag reads as one site on all five trips (asserted inside pin_sites); the register's reading and the
+    # over-clean are ruled out above
+    vw, old = V.pin_site(target, list(pd.read_csv(os.path.join(target, F["sites"])).to_dict("records")))
+    ok(vw == where, "rival: the day-by-day reconstruction files the golden's placement")
+    ok(len(old) == 16 and all(reg[p] != c for p, c in old.items()), ("every pin carried another tag before", old))
+    # hazards: the Cozumel II's GPS clock (found from the loggers' own step out of the water) and the trimming
     off = WU.gps_offsets(target, F)
     for trip, (lo, hi, n) in off.items():
         utc = trip in ("Cozumel II 2025-08", "Cozumel II 2026-04")
-        ok((3.0 <= lo and hi <= 5.0) if utc else (-2.0 <= lo and hi <= 0.0), ("ask B, the GPS offsets", trip, lo, hi))
-        ok(n == 16, ("ask B, every site on every trip", trip))
+        ok((3.0 <= lo and hi <= 5.0) if utc else (-2.0 <= lo and hi <= 0.0), ("the ask, the GPS offsets", trip, lo, hi))
+        ok(n == 16, ("the ask, every site on every trip", trip))
+    hn, ha = pk.logger_hours(gps=False), pk.logger_hours(trim=False)
+    for c in pk.codes:
+        ok(hn[c] != H[c] and ha[c] != H[c], ("the ask, the clock and the untrimmed", c))
+    # the clock is the log's own: a time carries the GPS's UTC mark exactly when that boat's GPS kept UTC (the Cozumel
+    # II before its unit was replaced in June 2026), and the verifier's reader of the mark agrees with the golden's
+    for r in dep.itertuples(index=False):
+        for when, boat in ((r.deployed, r.deployed_from), (r.retrieved, r.retrieved_from)):
+            if not isinstance(when, str):
+                continue
+            utc = boat == solve.GPS_UTC[0] and when[:10] < solve.GPS_UTC[1].isoformat()
+            ok(when.endswith(" UTC") == utc, ("SF19 the log's UTC mark", when, boat))
+            ok(pd.Timestamp(V.local_time(when)) == solve.log_time(when), ("the two readers of the mark", when))
+    ok(sum(dep.retrieved.fillna("").str.endswith(" UTC")) == 32 and sum(dep.deployed.str.endswith(" UTC")) == 16,
+       "the marked times: the Cozumel II's August 2025 retrievals and its April 2026 swap")
+    # the pin register is the list as the divers last checked it: each pin's checked date is its stop on the last
+    # service trip, so the register states the tags as they stood from August 2025 on and says nothing of a tag written
+    # before; the earlier tags are the rows' (the stop order and the pairs above)
+    rg = pd.read_csv(os.path.join(target, F["pins"]))
+    last = {r.pin: solve.log_time(r.deployed).date().isoformat() for r in dep.itertuples(index=False)
+            if solve.log_time(r.deployed) >= pd.Timestamp("2027-04-01")}
+    ok(list(rg.columns) == ["pin", "site_code", "checked"] and dict(zip(rg.pin, rg.checked)) == last,
+       ("SF18 the register's checked dates are the April 2027 stops", dict(zip(rg.pin, rg.checked)), last))
+    ok(max(solve.log_time(x) for x in list(dep.deployed) + list(dep.retrieved.dropna())) <
+       pd.Timestamp(max(rg.checked)) + pd.Timedelta(days=1), "no log time after the register was last checked")
 
 
 def gates(target):
@@ -244,6 +297,44 @@ def gates(target):
     ok(n.issued_utc.max() < asof + "T14", "nrt issues")
     rd = pd.read_csv(os.path.join(target, F["readings"]))
     ok(rd.datetime_local.max() < "2027-04-17", ("the readings end with the April 2027 downloads", rd.datetime_local.max()))
+
+
+def no_describing(target):
+    """no shipped file describes the data (dataset-generation section 3): none by name (no readme, dictionary, codebook,
+    manifest, field notes, definitions or file list, no notes file), and no document that lists a data file's columns,
+    read through the verifier's own extractor (positive control first) and judged by the leak sweep's own rule (eight
+    identifier-like column names, or two fifths of one file's columns with three identifiers)"""
+    import verify as V
+    F = B.FILES
+    shipped = sorted(os.listdir(target))
+    describing = ("readme", "dictionary", "codebook", "manifest", "field_notes", "fieldnotes", "definitions",
+                  "file_list", "data_notes", "extract_notes", "export_notes", "schema")
+    ok(not [f for f in shipped if any(w in f.lower().replace("-", "_") for w in describing)],
+       ("a file whose name says it describes the data", shipped))
+    ok(not [f for f in shipped if f.lower().endswith((".md", ".txt", ".docx", ".rtf", ".html"))], ("a notes file", shipped))
+    cols = {}
+    for f in shipped:
+        if f.endswith(".csv"):
+            head = open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
+            cols[f] = {c for c in head if len(c) >= 4}
+    text = {}
+    for f in shipped:
+        if f.endswith(".pdf"):
+            text[f] = " ".join(V.pdf_text(os.path.join(target, f)).split())
+        elif f.endswith(".eml"):
+            text[f] = open(os.path.join(target, f), encoding="utf-8").read()
+    # the positive control, through the same extractor and the same search: the methods note names two register fields
+    find = lambda c, t: re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t) is not None
+    ok(find("pixel_id", text[F["methods"]]) and find("mmm_c", text[F["methods"]]) and
+       find("genus", text[F["protocol"]]), "control: the extractor and the search see the field names a document carries")
+    every = set().union(*cols.values())
+    for d, t in text.items():
+        found = {c for c in every if find(c, t)}
+        ident = {c for c in found if "_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c)}
+        worst = max((len(found & cs) / len(cs) for cs in cols.values() if len(cs) >= 5 and len(found & cs) >= 5),
+                    default=0.0)
+        ok(len(ident) < 8 and not (worst >= 0.4 and len(ident) >= 3), ("a document lists the data's columns", d,
+                                                                       sorted(found), round(worst, 2)))
 
 
 def three_rules(target, W, pk, b, rows):
@@ -283,11 +374,8 @@ def three_rules(target, W, pk, b, rows):
             worst = max(worst, run)
         ok(worst <= 4, ("R3c: no observed value held for days on end", pk.codes[k], worst))
     hours = [pk.logger_hours()[c] for c in pk.codes]
-    sv = pk.survey()
-    cols = [sv[c][1] for c in pk.codes]
     ok(len(set(hours)) == 16, "realism: the loggers' hours all differ")
-    ok(len(set(cols)) >= 13, "realism: the colony counts mostly differ")
-    ok(all(h % 100 for h in hours) and all(x % 10 for x in cols[:3]), "realism: no round headline counts")
+    ok(all(h % 100 for h in hours), "realism: no round headline counts")
     ok(round(b, 4) not in (0.05, 0.06, 0.1), "realism: the clear-sky difference is not a round number")
 
 
@@ -299,6 +387,7 @@ def run(target, W, fig, golden):
     separation(target)
     ask_checks(target, pk)
     gates(target)
+    no_describing(target)
     S = {s["code"]: s for s in fig["sites"]}
     for r in rows:
         ok(S[r["site"]]["survey"] == (r["site"] in GOLD), ("figures.json", r["site"]))

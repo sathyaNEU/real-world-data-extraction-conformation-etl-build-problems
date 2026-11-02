@@ -17,11 +17,9 @@ TASK = os.path.dirname(HERE)
 F = {"sites": "watch_sites_register.csv", "clim": "srao_sst_daily_climatology_watch_pixels.csv",
      "nrt": "srao_nrt_sst_extract_watch_pixels_2018-01-01_2027-11-02.csv",
      "rep": "srao_reprocessed_sst_watch_pixels_2018_2026.csv", "bulletins": "heat_stress_bulletins_2027.xlsx",
-     "survey": "post_bleaching_survey_2023_slates.csv", "deployments": "logger_log_2023-08_2027-04.csv",
+     "deployments": "logger_log_2023-08_2027-04.csv", "pins": "logger_pin_register.csv",
      "readings": "logger_readings_from_2024-04-01.csv"}
 LEVELS = ["No alert", "Alert Level 1", "Alert Level 2"]
-ANNEX = {"OFAV", "OANN", "OFRA", "MCAV", "CNAT", "DLAB", "PSTR", "SSID", "SINT", "AAGA", "PAST", "PPOR", "MMEA", "DSTO",
-         "EFAS", "APAL"}
 
 
 def fail(msg):
@@ -116,39 +114,64 @@ def declared(target, codes):
     return {c: LEVELS[v] for c, v in best.items()}
 
 
-def survey(target, sites):
-    depth = {s["site_code"]: float(s["survey_depth_m"]) for s in sites}
-    by = {}
-    for r in rows(target, "survey"):
-        if r["sheet"] != "S" or r["genus"] not in ANNEX or int(r["max_diameter_cm"]) < 10:
-            continue
-        if abs(float(r["depth_m"]) - depth[r["site_code"]]) > 2.0:
-            continue
-        by.setdefault((r["site_code"], r["transect"]), []).append(r)
-    n, b = {}, {}
-    for (site, tr), lines in by.items():
-        lines.sort(key=lambda r: (int(r["metre"]), int(r["line"])))
-        prev = set()
-        for r in lines:
-            key = (r["genus"], r["max_diameter_cm"], r["condition"], int(r["metre"]))
-            again = int(r["max_diameter_cm"]) >= 100 and (r["genus"], r["max_diameter_cm"], r["condition"],
-                                                          int(r["metre"]) - 1) in prev
-            prev.add(key)
-            if again:
-                continue
-            n[site] = n.get(site, 0) + 1
-            b[site] = b.get(site, 0) + (r["condition"] in ("P", "PB", "BL"))
-    return {c: (100.0 * b[c] / n[c], n[c]) for c in n}
+def local_time(x):
+    """a log time as written: one the log marks UTC is five hours ahead of the station's local time"""
+    if x.endswith(" UTC"):
+        return dt.datetime.strptime(x[:-4], "%Y-%m-%d %H:%M") - dt.timedelta(hours=5)
+    return dt.datetime.strptime(x, "%Y-%m-%d %H:%M")
 
 
-def loggers(target, mmm):
+def pin_site(target, sites):
+    """each log row's site, rebuilt day by day: on a service day the boat reaches four sites, north to south; a day whose
+    pins read through the register as four consecutive sites in that order keeps the register, and on any other day
+    the k-th pin reached is the k-th site of that day's stretch of coast, the stretch being the day's place in its
+    trip. Returns the row's site and the tag map each scheme gives."""
     dep = rows(target, "deployments")
+    reg = {r["pin"]: r["site_code"] for r in rows(target, "pins")}
+    north = [s["site_code"] for s in sorted(sites, key=lambda s: -float(s["latitude"]))]
+    P = local_time
+    ev = []
+    for i, r in enumerate(dep):
+        ev.append((P(r["deployed"]), r["pin"], i, 0))
+        if r["retrieved"]:
+            ev.append((P(r["retrieved"]), r["pin"], i, 1))
+    ev.sort()
+    days = {}
+    for t, pin, i, k in ev:
+        days.setdefault(t.date(), []).append((t, pin, i, k))
+    order = sorted(days)
+    trip_day = {}
+    for j, d in enumerate(order):
+        trip_day[d] = 0 if j == 0 or (d - order[j - 1]).days > 3 else trip_day[order[j - 1]] + 1
+    site, old = {}, {}
+    for d in order:
+        seq = []
+        for t, pin, i, k in days[d]:
+            if pin not in seq:
+                seq.append(pin)
+        stretch = north[4 * trip_day[d]:4 * trip_day[d] + 4]
+        here = [reg[p] for p in seq] == stretch
+        for t, pin, i, k in days[d]:
+            s = reg[pin] if here else stretch[seq.index(pin)]
+            if not here:
+                old.setdefault(pin, set()).add(s)
+            if k == 0:
+                site[i] = s
+            check(k == 0 or site[i] == s, ("a row's two stops read two sites", i))
+    check(all(len(v) == 1 for v in old.values()), ("an earlier tag read as two sites", old))
+    return [site[i] for i in range(len(dep))], {p: next(iter(v)) for p, v in old.items()}
+
+
+def loggers(target, mmm, sites):
+    dep = rows(target, "deployments")
+    where, old = pin_site(target, sites)
     reads = {}
     for r in rows(target, "readings"):
         reads.setdefault(r["serial"], []).append((dt.datetime.strptime(r["datetime_local"], "%Y-%m-%d %H:%M"),
                                                   float(r["temperature_c"])))
-    P = lambda s: dt.datetime.strptime(s, "%Y-%m-%d %H:%M")
-    # each trip's clock: the logger's step out of the water against the logged retrieval
+    P = lambda s: dt.datetime.strptime(s.replace(" UTC", ""), "%Y-%m-%d %H:%M")
+    # each trip's clock: the logger's step out of the water against the logged retrieval, read from the digits as
+    # written; it has to agree with the log's own UTC mark
     lag = {}
     for r in dep:
         if not r["retrieved"]:
@@ -160,17 +183,23 @@ def loggers(target, mmm):
         j = max(range(1, len(x)), key=lambda i: x[i][1] - x[i - 1][1])
         lag.setdefault((r["retrieved_from"], r["retrieved"][:7]), []).append((z - x[j][0]).total_seconds() / 3600)
     offset = {k: (5 if np.median(v) > 3 else 0) for k, v in lag.items()}
-    hours = {}
+    marked = {}
     for r in dep:
+        for when, boat in (("deployed", "deployed_from"), ("retrieved", "retrieved_from")):
+            if r[when]:
+                marked.setdefault((r[boat], r[when][:7]), set()).add(5 if r[when].endswith(" UTC") else 0)
+    check(all(len(v) == 1 for v in marked.values()), ("a trip with marked and unmarked times", marked))
+    check(all(offset[k] == next(iter(marked[k])) for k in offset), ("the loggers' step against the UTC mark", offset))
+    hours = {}
+    for r, site in zip(dep, where):
         if not r["retrieved"]:
             continue
-        a = P(r["deployed"]) - dt.timedelta(hours=offset.get((r["deployed_from"], r["deployed"][:7]), 0))
-        z = P(r["retrieved"]) - dt.timedelta(hours=offset.get((r["retrieved_from"], r["retrieved"][:7]), 0))
-        m = mmm[r["site_code"]]
-        hours[r["site_code"]] = hours.get(r["site_code"], 0) + sum(
+        a, z = local_time(r["deployed"]), local_time(r["retrieved"])
+        m = mmm[site]
+        hours[site] = hours.get(site, 0) + sum(
             1 for t, v in reads.get(r["serial"], []) if a <= t <= z and t.year in (2024, 2025, 2026)
             and 6 <= t.month <= 10 and v >= m)
-    return hours, offset
+    return hours, offset, old
 
 
 def pdf_text(path):
@@ -202,15 +231,9 @@ def main(target, golden, figpath, subpath):
         check("   - %s %s: %d; %s; %s (declared %s)" % (c, names[c], int(round(est[c])), lv, v, decl[c]) in sub,
               ("submission line", c))
         n += 5
-    sv = survey(target, sites)
-    for c in codes:
-        p, k = sv[c]
-        check(round(p, 1) == S[c]["prevalence"] and k == S[c]["colonies"], ("ask A", c, p, k))
-        check(0.05 - abs(p - round(p, 1)) >= 0.01, ("ask A edge", c, p))
-        check("   - %s: %.1f, %d colonies" % (c, round(p, 1), k) in sub, ("ask A line", c))
-        n += 3
-    hrs, off = loggers(target, mmm)
+    hrs, off, old = loggers(target, mmm, sites)
     check(sorted(k for k, v in off.items() if v) == [("Cozumel II", "2025-08"), ("Cozumel II", "2026-04")], ("offsets", off))
+    check(len(old) == 16 and old == {p: c for p, c in fig["pins_before_retag"].items()}, ("the earlier tags", old))
     for c in codes:
         check(hrs[c] == S[c]["hours"], ("ask B", c, hrs[c]))
         check("   - %s: %d" % (c, hrs[c]) in sub, ("ask B line", c))
@@ -223,36 +246,42 @@ def main(target, golden, figpath, subpath):
         r = got[c]
         check(r[3] == decl[c] and r[5] == int(round(est[c])) and r[6] == level(est[c]) and
               (r[8] == "Yes") == (est[c] >= 8), ("golden row", c))
-    a = {r[0]: r for r in wb["2023 survey"].iter_rows(min_row=4, values_only=True) if r[0] in codes}
     h = {r[0]: r for r in wb["Loggers"].iter_rows(min_row=4, values_only=True) if r[0] in codes}
+    check("2023 survey" not in wb.sheetnames, "the golden carries no cut ask")
     for c in codes:
-        check(abs(a[c][2] - round(sv[c][0], 1)) < 1e-9 and a[c][3] == sv[c][1], ("golden ask A", c))
-        check(h[c][2] == hrs[c], ("golden ask B", c))
-    n += 48
+        check(h[c][2] == hrs[c], ("golden ask", c))
+    n += 32
     # the shipped documents carry the filed sentences the call and the asks lean on
     docs = {"reef_heat_stress_watch_methods_v3.pdf": ["when that difference is positive", "HotSpots of 1.0 degree Celsius or more",
                                                      "84 days ending on that day", "Alert Level 1 when a site's DHW reach 4",
                                                      "runs from 1 June to 31 October", "highest alert level any of the bulletins",
-                                                     "every site at Alert Level 2 for the season", "the day being the UTC day"],
-            "srao_nrt_sst_user_guide_v3_2.pdf": ["A later issue of a day replaces the earlier one", "from the issues of 15 July 2027"],
-            "srao_reprocessed_sst_release_note_2027-05.pdf": ["analysed_sst, in kelvin"],
-            "post_bleaching_survey_protocol_2023.pdf": ["is recorded once", "QA sheets are not part of the site's figures",
-                                                        "more than 2 m above or below", "10 cm or more",
-                                                        "pale, partly bleached or bleached"]}
+                                                     "every site at Alert Level 2 for the season", "the day being the UTC day",
+                                                     "the register's pixel_id", "the register's mmm_c"],
+            "srao_nrt_sst_user_guide_v3_2.pdf": ["A later issue of a day replaces the earlier one", "from the issues of 15 July 2027",
+                                                 "the day is the UTC day", "Values are in degrees Celsius",
+                                                 "one row per pixel, day and issue"],
+            "srao_reprocessed_sst_release_note_2027-05.pdf": ["analysed_sst, in kelvin"]}
     for f, phrases in docs.items():
         t = " ".join(pdf_text(os.path.join(target, f)).split())
+        check(len(t) > 400, ("the extractor read the document", f, len(t)))
         for ph in phrases:
             check(ph in t, ("filed sentence", f, ph))
             n += 1
-    dct = open(os.path.join(target, "DATA_DICTIONARY.md"), encoding="utf-8").read()
-    check("as noted from the boat's GPS" in " ".join(dct.split()) and "station local time, UTC-5" in dct, "the dictionary")
+    # no shipped file describes the data (dataset-generation section 3): no readme, dictionary, codebook, manifest,
+    # field notes or file list ships, by name; the documents above are the organisation's own and were read
+    describing = ("readme", "dictionary", "codebook", "manifest", "field_notes", "fieldnotes", "definitions", "file_list",
+                  "data_notes", "extract_notes", "export_notes", "schema")
+    shipped = sorted(os.listdir(target))
+    check(not [f for f in shipped if any(w in f.lower().replace("-", "_") for w in describing)], ("a describing file ships", shipped))
+    check(not [f for f in shipped if f.lower().endswith((".md", ".txt"))], ("a notes file ships", shipped))
     eml = open(os.path.join(target, "survey_list_request_2027-11-03.eml"), encoding="utf-8").read()
     check("Alert Level 2 for the season" in " ".join(eml.split()), "the request")
-    n += 2
+    check("Date: Wed, 3 Nov 2027 08:05:12 -0500" in eml, "the request's own clock, the station's UTC-5")
+    n += 4
     note = pdf_text(os.path.join(golden, "survey_list_note_2027.pdf"))
     for c in on:
         check(c in note, ("the note names", c))
-    check("—" not in sub and "–" not in sub, "no dashes")
+    check("\u2014" not in sub and "\u2013" not in sub, "no dashes")
     n += len(on) + 1
     print("verify: %d checks passed" % n)
     return n

@@ -1,5 +1,5 @@
 """task247 goldens: the survey workbook (each site's declared level, expected season maximum on the reprocessed record,
-level and verdict; the 2023 survey baseline; the loggers' hours at or above the maximum monthly mean) and the note to
+level and verdict; the loggers' hours at or above the maximum monthly mean) and the note to
 the head of reef monitoring with its chart."""
 import io
 import os
@@ -83,27 +83,6 @@ def _workbook(path, A):
         ws.column_dimensions[col].width = w
     ws.freeze_panes = "C5"
 
-    sv = wb.create_sheet("2023 survey")
-    sv["A1"] = "Bleaching prevalence in the November 2023 post-bleaching survey (baseline for this survey)"
-    sv["A1"].font = Font(bold=True, size=11)
-    _head(sv, 3, ["Site", "Name", "Bleaching prevalence (%)", "Colonies"], 44)
-    for i, s in enumerate(A["sites"], 4):
-        for j, v in enumerate([s["code"], s["name"], s["prevalence"], s["colonies"]], 1):
-            c = sv.cell(row=i, column=j, value=v)
-            c.number_format = "0.0" if j == 3 else ("0" if j == 4 else "General")
-            c.alignment = Alignment(horizontal="left" if j <= 2 else "right")
-    m = 4 + len(A["sites"])
-    c = sv.cell(row=m + 1, column=1, value="Survey protocol 2023: the site's four transects at its survey depth, stony "
-                                           "colonies of 10 cm or more, each colony once (a colony of 100 cm or more "
-                                           "written on every metre it crosses counted once); prevalence is pale, partly "
-                                           "bleached and bleached over all colonies. QA sheets excluded.")
-    c.font = Font(size=8.5, italic=True)
-    c.alignment = Alignment(wrap_text=True, vertical="top")
-    sv.merge_cells(start_row=m + 1, start_column=1, end_row=m + 1, end_column=4)
-    sv.row_dimensions[m + 1].height = 44
-    for col, w in zip("ABCD", [7, 21, 14, 10]):
-        sv.column_dimensions[col].width = w
-
     bs = wb.create_sheet("Basis")
     bs["A1"] = "Basis of the expected season maxima"
     bs["A1"].font = Font(bold=True, size=11)
@@ -141,13 +120,14 @@ def _workbook(path, A):
             c = lg.cell(row=i, column=j, value=v)
             c.alignment = Alignment(horizontal="left" if j <= 2 else "right")
     m = 4 + len(A["sites"])
-    c = lg.cell(row=m + 1, column=1, value="Hourly readings while the logger was in the water (the log's times, with "
-                                           "the Cozumel II's GPS times of August 2025 and April 2026 five hours ahead of "
-                                           "local time), station local time.")
+    c = lg.cell(row=m + 1, column=1, value="Hourly readings while the logger was in the water, station local time (the "
+                                           "log's UTC times five hours ahead). Each deployment placed by its pin: tags "
+                                           "written before the August 2025 re-tag read as the pins' earlier tags, from "
+                                           "the order of each trip's stops.")
     c.font = Font(size=8.5, italic=True)
     c.alignment = Alignment(wrap_text=True, vertical="top")
     lg.merge_cells(start_row=m + 1, start_column=1, end_row=m + 1, end_column=3)
-    lg.row_dimensions[m + 1].height = 44
+    lg.row_dimensions[m + 1].height = 58
     for col, w in zip("ABC", [7, 21, 10]):
         lg.column_dimensions[col].width = w
     wb.save(path)

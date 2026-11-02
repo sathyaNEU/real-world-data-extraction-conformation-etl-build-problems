@@ -198,6 +198,8 @@ a reported figure.
 | SF15 | confirms, raises or lowers | the level for the season against the declared level | none differs | converge | methods section 6 |
 | SF16 | the clear-sky difference | every observed day of 2018 to 2026 | each site's own, the heat seasons' only | same call | same call and figures (asserted, variants) |
 | SF17 | the loggers' seasons (an ask) | June to October on the loggers' local clock | in UTC | same figures | the same hours at every site (asserted) |
+| SF18 | a log row's site (the ask) | the site of the stake its tag named when the row was written: the pin register on the trips whose stops follow it, the stop's place in the route north to south on the five trips before the August 2025 re-tag | each tag through the pin register | the call unchanged; the ask's 16 figures differ | the stop order (9 of 9 trips north to south on the golden's reading, 4 of 9 on the register's) and the nine loggers carried across the re-tag (one stake each, against two sites), asserted; the Ask sheet's rival readings; the pin register states each tag as the divers last checked it (its `checked` date, each stake's stop on the April 2027 trip, asserted), so it says nothing of a tag written before |
+| SF19 | a logged time (the ask) | as written, a time with the GPS's UTC mark five hours ahead of station local time | the marked times read as local | the call unchanged; the ask +5 hours at every site | the log's own UTC mark on exactly the Cozumel II's times before its unit was replaced (asserted), the loggers' own step out of the water agreeing; the bulletins' 09:00 local, 14:00 UTC |
 
 ## Ladder
 
@@ -276,74 +278,105 @@ mean correction) on the same literal estimand, never from another reading.
 None for the call: no 2027 figure on the record of reference, earlier survey list or ranking on it ships; the
 bulletins are the declared levels the call checks; the 2018 to 2026 overlap matches the mean correction on average by
 construction and shows its failure only conditional on the anomaly; the loggers end with the April 2027 downloads (the
-season's readings are still on the reef) and the 2023 survey is another season. For the asks, the protocol's "recorded
-once, on the slate line for the metre of tape its centre lies in" and the metre lines referee the repeats, and the
-loggers' own step out of the water referees the boats' clocks; neither names a row, a boat or a zone.
+season's readings are still on the reef) and the 2023 survey (a distractor) is another season. For the ask, nothing
+ties only under the golden: the boat's own route (four sites a day, north to south, as every trip from the re-tag reads
+through the pin register) and the loggers carried across the re-tag referee the earlier tags, and the loggers' own step
+out of the water referees the boats' clocks; none names a row, a tag, a date or a zone.
 
 ## Ask sheet
 
-**Ask A, each site's bleaching prevalence in the 2023 survey (per cent, one decimal) and the colonies it rests on (whole
-numbers)** (32 figures). H18: the survey's baseline, a measure every site carries that the call does not turn on (the
-request: "which the report compares against"); the call reads no survey row. Use: the November survey report sets each
-site's 2027 bleaching against its 2023 prevalence. Primary device D6 (an event's quantity on every line it covers, grain
-unstated): two of the 2023 volunteers (KT and DW) wrote a colony of 100 cm or more on the slate line of every metre of
-tape it crossed, with its full diameter and condition each time, while the protocol records each colony once, on the
-metre its centre lies in; nothing marks a repeat (every line keeps its own line number, so site, transect, sheet and
-line stay unique), the hygiene battery's exact-duplicate and key checks pass, and the repeats show only as wide
-colonies of one genus, diameter and condition on consecutive metres of one sheet: 153 on KT's and DW's sheets, none on
-the four staff observers' (asserted). Hazards: the QA sheets (protocol section 5, 692 lines), PB03's transect 2 laid at
-4.2 m (section 2), fire corals (MALC and MCOM, not in the annex, 48 lines), colonies under 10 cm (33 lines). Path: the
-slates, the protocol's sections 2, 3, 5 and 6 and its annex, the register's survey depth, the dictionary (4 files, 10
-columns: site_code, transect, sheet, observer, depth_m, metre, line, genus, max_diameter_cm, condition). Stops: every
-filed rule with every slate line a colony (the cracker): prevalence -0.9 to +4.8 points and colonies +5 to +15, all 32
-missed; nothing filtered: colonies +43 to +96, all 32 missed; every identical neighbour collapsed whatever its size:
-four sites moved. Realism: volunteers new to a belt transect write a large colony on each metre line it covers, and
-slate entry keeps every line as written.
+**The ask, each site's hours at or above its maximum monthly mean at its logger while in the water, June to October
+2024 to 2026 (whole numbers)** (16 figures). H18: the reef's recent heat at the corals, a measure every site carries
+that the call does not turn on (the request asks for it for the survey note); the call reads no log, tag or reading row.
+Use: the survey report reads this year's bleaching against each site's recent heat at depth. The 2023 survey's
+prevalence and colonies, the old Ask A, is cut (Tried and rejected); the criteria stay well over 25 (the 48 per-site
+call criteria, the list, its count and the chart, and these 16).
 
-**Ask B, each site's hours at or above its maximum monthly mean at its logger while in the water, June to October 2024
-to 2026 (whole numbers)** (16 figures). H18: the reef's recent heat at the corals, a measure every site carries that
-the call does not turn on (the request asks for it beside the baseline); the call reads no logger row. Use: the survey
-report reads this year's bleaching against each site's recent heat at depth. Primary device D8 (a clock against a
-filed cutoff): the log's times are the boat's GPS, which on the Ixchel shows local time and on the Cozumel II showed UTC
-until its unit was replaced between the April and August 2026 trips, so on the Cozumel II's August 2025 retrieval trip
-and its April 2026 trip every logged time runs five hours ahead of the loggers' local clocks; nothing marks it (the
-dictionary gives the times "as noted from the boat's GPS"), and the loggers show it (on those two trips every logger
-steps out of the water 4.0 to 4.9 hours before the logged time, on every other trip within two hours after it,
-asserted). Read as local time, the August 2025 retrievals keep five readings from the cooler on deck and the lab's
-seawater tank, all at or above the MMM. Hazards: the readings before deployment and after retrieval at every trip
-(the log's times), the seasons on the loggers' clock (SF17, the same hours either way), the April 2026 trip's shifted
-times (outside the seasons). Path: the readings, the log, the register's MMM, the dictionary (4 files, 9 columns:
-serial, datetime_local, temperature_c, site_code, deployed, deployed_from, retrieved, retrieved_from, mmm_c). Stops: the log's
-times as local (the cracker): +5 hours at every site, all 16 missed; no trimming: +33 to +82, all 16 missed.
-Realism: field GPS units default to UTC until someone sets them to local time, and a station with two boats logs what
-each screen shows.
+Primary device (D7, a re-keyed asset read through a current-state register, linked by the trips' own timing): each
+site's logger is fixed to a stainless stake on the reef, and the divers write the stake's tag in the log (the `pin`
+column) as they read it. The stakes were tagged in the order they went in (the twelve sites of the watch's first issue
+in 2019, then the four added in 2022, methods note history); on the Cozumel II's retrieval trip of August 2025, with no
+logger to put in, the dive team re-tagged them north to south, and the pin register is the dive team's list as the divers
+last checked it (each stake's `checked` date, its stop on the April 2027 trip). So every row written before 18 August 2025 carries a tag that now names another site, and every one of them
+joins the register. Nothing marks it: no column, note, date or boat isolates those rows (both boats and both models
+sit on both sides of the re-tag), every battery item passes (no orphan tag or serial, no repeated row, one stop per tag
+on every trip, no overlapping interval per tag or per serial, no note naming a site or a tag, the log's UTC mark on the
+Cozumel II's GPS times moves no placement), and read through the register every row holds plausible sea readings.
+Only a relationship between values shows it: the boat reaches four sites a day north to south, so a trip's stops in
+time order are the sites in order; read through the register the four trips from 18 August 2025 run so and the five
+before do not, while the earlier tags read as one set of sites, the same on all five trips; and the nine loggers
+carried across the re-tag (a pair at each of the three sites with an MX2203 on trial from August 2024, one at each of
+the three that kept a TidbiT to April 2026) stay on one stake under that reading and split between two sites under the
+register's. A logger read against its site's satellite record does not settle it (the true site fits best in 18 of the
+64 earlier deployments) and the noise step at August 2025 coincides with the model change, so the in situ check a
+careful solver might run neither finds nor forces it. Fair handling (`solve.pin_sites`; the verifier's day-by-day
+reconstruction agrees row by row; both asserted against the generator's own placement): the register on the trips
+whose stops follow it, the stop's place in the route on the trips before.
+
+Over-cleaning half: a careful solver who sees the earlier trips do not follow the register and drops them as
+unplaceable halves every site (all 16 figures 1,341 to 2,199 low); placing only the nine carried loggers and leaving
+the rest on the register misses all 16 as well (255 to 1,513 off).
+
+Hazards: the Cozumel II's GPS showed UTC on its trips of August 2025 and April 2026 (the log writes those
+times with the GPS's own UTC mark, SF19, and the loggers' own step out of the water agrees; read as local they put +5
+hours at every site); the readings before deployment and after retrieval at every trip (the log's times; untrimmed, 2,452 to 6,270
+high); the seasons on the loggers' clock (SF17, the same hours either way).
+
+Path: four files (the logger log, the pin register, the readings, the site register) and eleven columns (pin, serial,
+deployed, deployed_from, retrieved, retrieved_from, site_code, datetime_local, temperature_c, latitude, mmm_c).
+
+Pin test: the asking sentence fixes the site's logger, the threshold (its maximum monthly mean), in the water, the June
+to October seasons of 2024 to 2026 and whole hours; the request adds nothing; the device sits in the one dimension no
+sentence touches, which stake a row's tag named when it was written. No document mentions tags, stakes or the re-tag.
+
+Stops (checks.py asserts each, ceiling.py scores each, in hours against the golden): the register with the clock checked
+(the cracker): -778 to +524, every site moved, the smallest by 9; the register with the log's times as marked (the
+mirror, the cracker's reading without its battery): -778 to +524, every site; the earlier trips dropped: every site, 1,341 to 2,199 low; the carried loggers
+placed, the rest on the register: every site; the earlier tags placed but the UTC mark ignored: +5 at every
+site; nothing trimmed: every site.
+
+Realism: a dive team that re-tags its stakes to follow the route and keeps one list of them as they stand, and a log
+that keeps what the divers read underwater, are what a station's records look like.
+
+Rival readings (asserted in checks.py):
+
+| Reading | Ask figures | Verdict |
+|---|---|---|
+| each tag through the pin register, every row | all 16 differ | ruled out: five trips' stops out of route order, the nine carried loggers split across two sites |
+| the earlier tags from each trip's stop order (`solve.pin_sites`) | the golden | accepted |
+| the earlier tags from each day's four stops (`verify.pin_site`) | the golden, row by row | accepted |
+| the five earlier trips dropped | all 16 differ | ruled out: the rows are deployments the stop order places |
+| the carried loggers placed, the rest by the register | all 16 differ | ruled out: ten sites' earlier rows left on the register's reading |
 
 Main population zero-counts: the call reads the near-real-time extract, the reprocessed record, the register's pixels
-and MMM, the climatology and the bulletins; no slate, log or logger row is among them, no device or hazard row of
-either ask sits in those files, and the call computes identically with the survey, logger and distractor files removed
-(S1 in checks.py).
+and MMM, the climatology and the bulletins; no log, tag or reading row is among them, no device or hazard row sits in
+those files, the call computes identically with the logger files and the distractors removed, and the ask computes
+identically with the distractors removed (S1 in checks.py).
 
 | Hazard | Asks moved | Per-ask deltas (largest) |
 |---|---|---|
-| wide colonies written on every metre crossed (D6, primary) | A | prevalence +4.8, colonies +15 |
-| QA sheets, the off-depth transect, fire corals, small colonies kept | A | colonies +96 |
-| the Cozumel II's GPS times read as local (D8, primary) | B | +5 hours |
-| no trimming to the log's times | B | +82 hours |
+| the stakes re-tagged in August 2025, the earlier tags read through the register (primary) | the ask | 778 hours |
+| the earlier trips dropped (the over-clean) | the ask | 2,199 hours |
+| the Cozumel II's GPS times read as local | the ask | 5 hours |
+| no trimming to the log's times | the ask | 6,270 hours |
 
-Referee: the protocol's "recorded once, on the slate line for the metre of tape its centre lies in" with the metre
-lines for Ask A, and the loggers' own step out of the water for Ask B; neither names a row, a boat's clock or a zone.
+Referee: the boat's own route (four sites a day, north to south, as every trip from the re-tag reads through the
+register) and the loggers carried across the re-tag; neither names a row, a tag or a date.
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
 |---|---|---|
-| Ask A, prevalence, all sixteen sites | S sheets, transects at the survey depth, annex genera of 10 cm or more, each slate line a colony | miss |
-| Ask A, colonies, all sixteen sites | the same | miss |
-| Ask B, hours, all sixteen sites | each logger's readings between the log's deployed and retrieved times read as local time, June to October 2024 to 2026, at or above the register's MMM | miss |
+| the ask, hours, all sixteen sites | each row at the site its tag names in the pin register, the times the log marks UTC moved five hours back (the clock check agrees), the readings trimmed to the logged times, June to October 2024 to 2026 local time, at or above the register's MMM | miss |
 
-Measured by: generator/pair.py on the cut pack: the cracker keeps 0 of the 48 ask figures; the lazier paths keep 0
-(nothing filtered, no trimming); the mirror (stopped at the regression of filled days' anomalies, six sites) keeps 17.2
-of the 38 recommendation points (29 of 48 per-site criteria) and none of the ask figures.
+Routes on the cut pack (ceiling.py): the cracker keeps 0 of 16; the mirror (the default path on the call, the register
+and the log's times as marked) 0; the full includer 16, the control (figures.json reproduced); the earlier trips dropped
+0; the carried loggers placed 0; the earlier tags with the UTC mark ignored 0; nothing trimmed 0. Two careful
+responses on the call score 45.0 each; were the cracker to read the earlier tags, the pair would be 62.1.
 
-Pair ceiling: 34.6 ((38 + 7 + 55 x 0) and (17.2 + 7 + 55 x 0), averaged)
+Measured by: generator/ceiling.py on target.zip (md5 a84fab8e0c0491b4930ac9cf942b8dc4): the cracker keeps 0 of the 16
+ask figures and the mirror 0.
+
+Pair ceiling: 34.6 (the cracker 45.0 on 38, 7 and 55 with no ask figure, the mirror at the regression rung 24.2 with
+r = 17.2; with the mirror at the default path, r = 8.9, the pair is 30.4)
 
 Mirror leakage: 0.0 per cent of ask weight
 
@@ -366,8 +399,9 @@ Mirror leakage: 0.0 per cent of ask weight
    tide gauge) give no site a heat-stress figure.
 5. Determinism: the refill's six variants (the anomaly or the temperature interpolated, a shape-preserving curve, each
    site's own or the heat seasons' clear-sky difference, the last observed anomaly carried, the nearer observed day)
-   give the same sixteen whole numbers; 17 fork rows asserted; the verifier recomputes every graded figure by its own
-   code (239 checks); two builds byte-identical.
+   give the same sixteen whole numbers; 18 fork rows asserted; the verifier recomputes every graded figure by its own
+   code (177 checks); two builds byte-identical; the ask's earlier tags rebuilt two ways (trip by trip in solve.py,
+   day by day in verify.py), agreeing row by row.
 6. Fingerprint: heart WARN (overuse.gate_g, repeat.deliverables, repeat.question_form, answered in the Draw); the
    people screen reads the four card personas and no other. The surface screen promotes five pairs, all in this
    author's wave: task245 on the same pairing two builds apart (legal at the draw, its three newest neighbours being
@@ -386,21 +420,26 @@ Mirror leakage: 0.0 per cent of ask weight
    pattern pin; and the write-up's regression rival not reproduced because the pack carries no specification for it.
    Fixed: block 1's regression clause and its six sites removed (determinism-check section 5), and the workbook's Basis
    label for that route corrected to the direction fitted (the reprocessed anomaly regressed on the filled days'
-   near-real-time anomaly). The two remaining rivals reproduce (four and three sites).
+   near-real-time anomaly). The two remaining rivals reproduce (four and three sites). The ask figures it reproduced were
+   the shipped asks (the 32 survey figures and the 16 hour counts on the boats' clocks); the ask was re-sited at the
+   November re-check (the Ask sheet), so its next pass reads the new device.
 
 ## Leak check
 
-`leak.py --asof 2027-11-03`: REVIEW, no LEAK. Each REVIEW line:
-- Sweep 4, the dictionary, README, survey protocol, methods note, user guide and release note: the shared terms are the
-  field's nouns (analysis, near-real-time, observation, reference, temperature, station); none names a refill, an
-  interpolation or the filled days' conditional error. The user guide's section 6 (differences larger where cloud keeps
-  satellites from the sea; the reprocessed analysis for the best estimate of a past period) is the provider's ordinary
-  statement of its two products and says nothing of how to anticipate the later one. Harmless.
+`leak.py --asof 2027-11-03` on the re-sited cut: REVIEW, no LEAK. The pack ships no file that describes the data (no
+dictionary, readme, manifest or notes file; asserted by name and by content in checks.py and by name in verify.py);
+each file's provenance is in metadata.json. Each REVIEW line:
+- Sweep 4, the protocol, methods note, user guide and release note: the field's nouns (analysis, near-real-time,
+  observation, reference, temperature, station); none names a refill, an interpolation or the filled days' conditional
+  error, and no document mentions tags, stakes or the re-tag. Harmless.
 - Sweep 6, the bulletins: each site's near-real-time DHW and level week by week, the declared basis the prompt asks the
-  verdicts against; they rank nothing on the reference record. Harmless (the reader and the judge read them the same
-  way).
-- Sweep 8, `obs_flag`: the provider's column, documented in its user guide section 4, as satellite products carry
-  quality and observation flags. Harmless.
+  verdicts against; they rank nothing on the reference record. Harmless.
+- Sweep 8, `obs_flag`: the provider's column, documented in its user guide section 4. Harmless.
+- Sweep 11, "Which of our 16": the call sentence, frozen in a reship (freeze.py); the sixteen is the watch's own site
+  count, which the methods note's section 1 states. Left as shipped.
+- Sweep 11, the 'which' quota: the same frozen call sentence; the decision is a pick of sites. Left as shipped.
+- Sweep 12, the protocol naming slate columns: the station's own 2023 field protocol, now a distractor, naming the
+  observables a protocol names. Harmless.
 
 Reader (one isolated agent, Sonnet, medium, the prompt and the pack only), on the first cut: Q1 to Q4 none; Q5 methods
 sections 3 to 6 fix the estimand and leave open how the 2027 reprocessed record is anticipated (the design's open
@@ -433,3 +472,29 @@ prevalences run that wide, in no order of the register. A data-only repair, so l
 - 2026-10-18, a season's calibration-function change as one draw, the rule judged over the draws on record: which
   seasons stand for the coming one is the estimand's population, so filing it hands the step over and leaving it open
   is not determinate.
+- 2026-11-02, the pack's DATA_DICTIONARY.md and README.md (a file list, every file's columns, the logger log's times "as
+  noted from the boat's GPS", the readings' "station local time, UTC-5"): the describing-file rule of the November
+  leak gate (dataset-generation section 3). Replaced by each file's provenance in metadata.json; every definition the
+  call needs was already filed by its owner (the guide's UTC day and degrees Celsius, the release note's kelvin, the
+  methods note's pixel_id and mmm_c), the station's UTC-5 is the request's own Date header, and no fork or closure row
+  cited the dictionary; no figure moved.
+- 2026-11-02, Ask A, the 2023 survey's prevalence and colonies with two volunteers' wide colonies written on every metre
+  they crossed: the careful solver's near-duplicate check (identical lines on consecutive metres of one sheet, 153 wide
+  ones, all on the volunteers' sheets, against 11 small coincidences) lands all 32 figures, because the link is a
+  shared value; a slate line can be tied to another only by shared values, so no device holds in the slates. Cut; the
+  slates and the protocol stay as distractors.
+- 2026-11-02, Ask B's device, the Cozumel II's GPS in UTC on two trips: the careful solver's clock check against the
+  loggers' own step out of the water lands all 16 figures (pair.py's cracker had read the log as local, a narrowed
+  cracker). Kept as a hazard; the device re-sited onto the logger stakes re-tagged north to south in August 2025, the
+  log's earlier tags read through the current pin register (the Ask sheet).
+- 2026-11-02, the cut Ask A's figures.json keys: freeze.py's rubric mode reads `conventions.depth_band_m` (2) and
+  `conventions.small_colony_cm` (10) as main-call figures because their values equal block 1's "Alert Level 2" and
+  PB09's 10 degree-weeks; they are the 2023 protocol's depth band and minimum diameter, owed only by the cut ask, and
+  leave figures.json with it, so the rubric check names those two keys with `--allow`; every other moved key is an
+  Ask A figure (prevalence, colonies, the repeats) and no main-call value moved.
+- 2026-11-02, judge pass 2 FIX_NOW on the logger ask (the main call and the 16 DHW figures deterministic): the pin
+  register carried no date, so its literal reading applied to every row, and the log's times carried no zone. Closed in
+  the data, no document touched: the register carries each stake's `checked` date (its stop on the April 2027 trip),
+  so it states the tags as they stand and nothing of a tag written before, and the log writes the Cozumel II's GPS
+  times with the GPS's own UTC mark (SF18, SF19). Filing the re-tag or a dated mapping was rejected: it hands the
+  careful solver the device (the pair would be 62.1). ceiling.py on the new cut: the cracker 0 of 16, the mirror 0.

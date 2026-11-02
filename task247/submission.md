@@ -26,9 +26,8 @@ Not the bulletins' four (PB06, PB07, PB09 and PB10), which leave out the souther
 3. On a day it did not observe, the near-real-time value is the climatology plus the last observed anomaly fading day by day, so it understates a lasting warm anomaly: on 2018 to 2026 hot days it did not observe it reads 0.270 low, and 0.263 after the flag-mean correction, while refilling from the observed days either side leaves -0.001 (root mean square 0.065 against 0.142).
 4. Each site's 2027 record: the observed days less 0.06, every other day (not observed, or not issued) by straight-line interpolation of the anomaly against the climatology file between the observed days either side; HotSpots of 1.0 degree or more above the register's maximum monthly mean, DHW the 84-day sum over 7, the season maximum over 1 June to 31 October (methods note sections 3 and 4).
 5. Levels at 4 and 8 and each site's verdict against the highest level its season bulletins gave (sections 5 and 6): eight confirmed, eight raised, none lowered.
-6. The 2023 survey: sheets S, transects within 2 m of the register's survey depth, annex genera of 10 cm or more; a colony of 100 cm or more written on consecutive metres of one sheet with the same genus, diameter and condition is one colony (the protocol records each colony once: DW and KT wrote 153 such repeats, the other observers none); prevalence is pale, partly bleached and bleached over all colonies.
-7. Loggers: each logger's readings while it was in the water, the log's times being the boat's GPS (the Cozumel II's showed UTC on its trips of August 2025 and April 2026, five hours ahead of the loggers' local clocks: its loggers leave the water five hours before the logged time), June to October 2024 to 2026 in local time, one reading an hour, at or above the register's maximum monthly mean.
-8. The survey list is the nine sites at Alert Level 2.
+6. Loggers: each log row is placed at its site by its pin. The pin register holds the tags as the divers last checked them (April 2027), and on the four service trips from 18 August 2025 the boat's stops read through it as the sites north to south, four a day; on the five trips before, the tags are the pins' earlier ones (E01 PB07; E02 PB06; E03 PB09; E04 PB10; E05 PB02; E06 PB01; E07 PB03; E08 PB05; E09 PB11; E10 PB12; E11 PB15; E12 PB14; E13 PB04; E14 PB08; E15 PB16; E16 PB13), the site being the stop's place in the trip's route north to south, the same on every one of those trips. The times the log marks UTC (the Cozumel II's trips of August 2025 and April 2026) are five hours ahead of the loggers' local clocks. Then each logger's readings while in the water, June to October 2024 to 2026 in local time, one reading an hour, at or above the register's maximum monthly mean: from 2,565 hours at PB09 to 4,678 at PB04.
+7. The survey list is the nine sites at Alert Level 2.
 
 ## 4. Deliverable Answers
 
@@ -51,24 +50,7 @@ Not the bulletins' four (PB06, PB07, PB09 and PB10), which leave out the souther
    - PB14 Bajo Rompiente: 9; Alert Level 2; raises (declared Alert Level 1)
    - PB15 Punta Gorgonia: 11; Alert Level 2; raises (declared Alert Level 1)
    - PB16 Arrecife Sargazo: 6; Alert Level 1; raises (declared No alert)
-2. Each site's bleaching prevalence in the 2023 survey (per cent to one decimal) and the colonies it rests on:
-   - PB01: 78.4, 148 colonies
-   - PB02: 75.5, 151 colonies
-   - PB03: 67.2, 128 colonies
-   - PB04: 40.8, 147 colonies
-   - PB05: 34.6, 185 colonies
-   - PB06: 5.9, 186 colonies
-   - PB07: 20.6, 126 colonies
-   - PB08: 49.7, 173 colonies
-   - PB09: 37.4, 190 colonies
-   - PB10: 32.0, 172 colonies
-   - PB11: 50.6, 166 colonies
-   - PB12: 9.3, 161 colonies
-   - PB13: 54.1, 170 colonies
-   - PB14: 25.0, 156 colonies
-   - PB15: 32.7, 165 colonies
-   - PB16: 62.1, 161 colonies
-3. Each site's hours at or above its maximum monthly mean at its logger, June to October 2024 to 2026:
+2. Each site's hours at or above its maximum monthly mean at its logger while in the water, June to October 2024 to 2026:
    - PB01: 3584
    - PB02: 2783
    - PB03: 3333

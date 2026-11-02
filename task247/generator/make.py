@@ -26,6 +26,31 @@ GOLDEN = os.path.join(TASK, "golden")
 STAMP = (2027, 11, 3, 8, 0, 0)        # the morning the folder was put together
 
 
+# what each shipped file is, who keeps it and what span it covers (provenance only: dataset-generation section 9; nothing
+# here says what a column means, how the files fit together or how any figure is reached)
+COVERS = {
+    "request": "the request for the November survey list, from the head of reef monitoring to the survey coordinator, "
+               "3 November 2027",
+    "methods": "the watch's methods note, version 3, May 2027",
+    "guide": "the regional ocean analysis centre's user guide to its daily SST product, version 3.2, July 2027",
+    "repnote": "the regional ocean analysis centre's release note for its reprocessed daily SST record, May 2027",
+    "sites": "the watch's register of its sixteen reef sites",
+    "clim": "the centre's daily SST climatology at the sixteen watch pixels",
+    "nrt": "the watch's extract of the centre's daily SST product at the sixteen watch pixels, every issue, 1 January "
+           "2018 to 2 November 2027",
+    "rep": "the centre's reprocessed daily SST record at the sixteen watch pixels, 2018 to 2026 (the May 2027 release)",
+    "bulletins": "the watch's weekly bulletins for 2027",
+    "protocol": "the post-bleaching survey protocol issued for the November 2023 survey",
+    "survey": "the November 2023 post-bleaching survey as entered from the dive slates",
+    "deployments": "the dive team's logger log, August 2023 to April 2027",
+    "pins": "the dive team's register of the stakes the site loggers are fixed to, as last checked on the April 2027 "
+            "service trip",
+    "readings": "the logger readings database export, readings from 1 April 2024",
+    "kd490": "the centre's monthly light attenuation at 490 nm at the sixteen watch pixels, January 2024 to October 2027",
+    "tide": "the port's hourly tide gauge record, January to October 2027",
+}
+
+
 def metadata(target):
     files = []
     for k in B.PACK:
@@ -33,24 +58,23 @@ def metadata(target):
         p = os.path.join(target, f)
         rows = sum(1 for _ in open(p, encoding="utf-8")) - 1 if f.endswith(".csv") else None
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
-                      "source": "Constructed (seeded generator)", "date": "2027-11-03",
+                      "covers": COVERS[k], "source": "Constructed (seeded generator)", "date": "2027-11-03",
                       "license": "CC0-1.0 (original work)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task247",
-        "title": "Which of a reef station's sixteen sites the November 2027 post-bleaching survey visits: each site's "
-                 "2027 season maximum degree heating weeks as the reprocessed sea surface temperature record will "
-                 "give it, against the alert levels the weekly bulletins declared on the near-real-time record, with "
-                 "the 2023 survey baseline and the loggers' hours at or above the maximum monthly mean",
+        "title": "Which of sixteen reef sites the November 2027 post-bleaching survey visits: each site's 2027 season "
+                 "maximum degree heating weeks as the reprocessed record will give it, its alert level and how that "
+                 "compares with the level the weekly bulletins declared, with the hours each site's logger read at or "
+                 "above its maximum monthly mean over the 2024 to 2026 seasons",
         "domain": "Physical & Environmental Sciences",
         "subdomain": "environmental-monitoring-exceedance (coral bleaching heat stress: HotSpots above the maximum "
-                     "monthly mean, degree heating weeks, alert levels, on near-real-time and reprocessed satellite "
-                     "sea surface temperature)",
+                     "monthly mean, degree heating weeks and alert levels at a reef watch's sites)",
         "objective": "Data Quality Monitoring & Alerting",
         "prompt_shape": "01: a ranked list under a line, each site's expected season maximum degree heating weeks on "
                         "the reprocessed record, its alert level and its verdict against the declared level, the "
                         "survey list and its count, a chart of declared and expected heat stress against the alert "
-                        "levels, beside each site's 2023 bleaching prevalence and colonies and its logger's hours",
+                        "levels, beside each site's hours at its logger at or above its maximum monthly mean",
         "as_of": "2027-11-03",
         "deliverables": [GD.XLSX, GD.PDF],
         "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
@@ -61,13 +85,12 @@ def metadata(target):
         "sources": [{"files": "all files under target/",
                      "origin": "generated by task247/generator/make.py (seeded, deterministic) around a fictional "
                                "public university's reef station on the Caribbean coast of Quintana Roo: sixteen reef "
-                               "sites' daily sea, cloud and two satellite analyses of sea surface temperature from 2018 "
-                               "(a near-real-time analysis that fills a cloudy day from the last observed anomaly and a "
-                               "reprocessed record of reference), the watch's 2027 weekly bulletins, the dive team's "
-                               "loggers and log, the 2023 post-bleaching survey's slates, the documents and the "
-                               "request; the university, the station, its sites, the analysis centre and every person "
-                               "are invented, the coral bleaching heat stress method (HotSpots, degree heating weeks, "
-                               "alert levels) is real, and no real dataset is reproduced.",
+                               "sites, a regional analysis centre's two daily SST products from 2018, the watch's 2027 "
+                               "weekly bulletins, the dive team's loggers and log, the 2023 post-bleaching survey's "
+                               "slates, the documents and the request; the university, the station, its sites, the "
+                               "analysis centre and every person are invented, the coral bleaching heat stress measures "
+                               "(HotSpots, degree heating weeks, alert levels) are the field's own, and no real dataset "
+                               "is reproduced.",
                      "date": "2027-11-03", "license": "CC0-1.0 (original work)"}],
         "created": "2026-10-18",
         "generator": "task247/generator/make.py",

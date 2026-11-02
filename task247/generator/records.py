@@ -182,8 +182,7 @@ class Records:
         deps = sorted(self.X["deps"], key=lambda d: (d["deployed"], d["site"]))
         notes = [""] * len(deps)
         trial = [i for i, d in enumerate(deps) if d["model"] == "MX2203" and d["site"] in insitu.MX_TRIAL]
-        notes[trial[0]] = "MX2203 on trial here and at %s" % " and ".join(
-            P.SITES[s][0] for s in insitu.MX_TRIAL if s != deps[trial[0]]["site"])
+        notes[trial[0]] = "MX2203 on trial, two more out on this trip"
         only = [i for i, d in enumerate(deps) if d["retrieved"] is not None and d["retrieved_boat"] == "Cozumel II"
                 and d["retrieved"].date() < dt.date(2025, 8, 18) and d["retrieved"].year == 2025]
         notes[only[0]] = "retrieved only; new loggers went in from the Ixchel on 18 to 21 August"
@@ -199,11 +198,20 @@ class Records:
         for d, n in zip(deps, notes):
             dep = insitu.logged(d["deployed"], d["deployed_utc"])
             ret = insitu.logged(d["retrieved"], d["retrieved_utc"]) if d["retrieved"] else None
-            rows.append((P.SITES[d["site"]][0], d["serial"], d["model"], P.SITE_DEPTH[d["site"]],
-                         dep.strftime("%Y-%m-%d %H:%M"), d["deployed_boat"],
-                         ret.strftime("%Y-%m-%d %H:%M") if ret else "", d["retrieved_boat"], n))
-        return pd.DataFrame(rows, columns=["site_code", "serial", "model", "depth_m", "deployed", "deployed_from",
-                                           "retrieved", "retrieved_from", "notes"])
+            # a time is written as the boat's GPS showed it, with the GPS's own UTC mark when it kept UTC
+            rows.append((insitu.pin_tag(d["site"], d["deployed"].date()), d["serial"], d["model"],
+                         insitu.written(dep, d["deployed_utc"]), d["deployed_boat"],
+                         insitu.written(ret, d["retrieved_utc"]) if ret else "", d["retrieved_boat"], n))
+        return pd.DataFrame(rows, columns=["pin", "serial", "model", "deployed", "deployed_from", "retrieved",
+                                           "retrieved_from", "notes"])
+
+    def logger_pins(self):
+        """the dive team's pin register: each pin's current tag, its site and the day the divers last checked it (its
+        stop on the last service trip)"""
+        last = [t for t in insitu.TRIPS if t[2][0] <= P.ASOF][-1]
+        rows = sorted((insitu.pin_tag(s, P.ASOF), P.SITES[s][0], last[2][insitu.DAY_OF_SITE[s]].isoformat())
+                      for s in range(P.NSITE))
+        return pd.DataFrame(rows, columns=["pin", "site_code", "checked"])
 
     def logger_readings(self):
         rows = [(serial, t.strftime("%Y-%m-%d %H:%M"), "%.2f" % v) for serial, t, v in self.X["readings"]

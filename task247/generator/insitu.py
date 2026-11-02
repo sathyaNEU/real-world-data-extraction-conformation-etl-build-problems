@@ -5,7 +5,9 @@ retrieval.
 The water at the logger is the site's sea (the simulator's truth for the day) a little cooler at depth while the
 summer stratifies, with a small afternoon swing. A logger reads the lab and the boat before it goes in and the deck
 and the lab after it comes out. The service trips' times are written down from the boat's GPS: the Ixchel's shows
-local time, the Cozumel II's showed UTC until its unit was replaced in June 2026."""
+local time, the Cozumel II's showed UTC until its unit was replaced in June 2026. The log names each deployment by the
+tag on the site's pin as the divers read it; the pins were re-tagged north to south in August 2025 and the pin register
+holds the current tags only (pin_tag)."""
 import datetime as dt
 
 import numpy as np
@@ -44,6 +46,21 @@ TIDBIT_KEPT = (4, 10, 15)                                # PB05, PB11, PB16
 # each model's deliveries: the date from which its loggers went in and the delivery's first serial
 LOTS = {"TidbiT v2": [(dt.date(2023, 1, 1), 20581406)],
         "MX2203": [(dt.date(2024, 8, 1), 21143210), (dt.date(2025, 8, 1), 21166031), (dt.date(2026, 4, 1), 21190557)]}
+# each site's logger sits on a stainless pin drilled into the reef, and the divers write the pin's tag in the log. The
+# pins were tagged in the order they went in (the twelve sites of the first issue of the watch in 2019, then the four
+# added in 2022); on the Cozumel II's retrieval trip of August 2025, with no loggers to put in, the dive team re-tagged
+# them north to south so the tags follow the route. The pin register is the dive team's current list.
+PINS_INSTALLED = ["PB07", "PB06", "PB09", "PB10", "PB02", "PB01", "PB03", "PB05", "PB11", "PB12", "PB15", "PB14",
+                  "PB04", "PB08", "PB16", "PB13"]
+RETAGGED = dt.date(2025, 8, 11)
+
+
+def pin_tag(site, when):
+    """the tag on site's pin on a date: its place in the installation order before the re-tag, its place north to south
+    after"""
+    code = P.SITES[site][0]
+    n = PINS_INSTALLED.index(code) + 1 if when < RETAGGED else site + 1
+    return "E%02d" % n
 
 
 def _site_times(rng, n, start_h=8.4):
@@ -153,6 +170,11 @@ def make(W, seed=P.LOGGER_SEED):
             rows.append((d["serial"], t, round(float(v), 2)))
             t += dt.timedelta(hours=1)
     return dict(deps=deps, readings=rows, visits=visits, cool=cool, swing=swing)
+
+
+def written(t, utc):
+    """a logged time as the log carries it: the GPS's UTC mark after the time when that boat's GPS kept UTC"""
+    return t.strftime("%Y-%m-%d %H:%M") + (" UTC" if utc else "")
 
 
 def logged(t, utc):

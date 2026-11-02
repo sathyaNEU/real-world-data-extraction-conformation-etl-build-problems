@@ -5,34 +5,65 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-11-02",
  "stump": "Correcting the 2027 near-real-time sea surface temperature record by the past seasons' mean differences from the reprocessed record, observed and filled days apart (+0.060 and -0.007), files three sites at Alert Level 2 (PB07, PB09, PB10); refilling each cloud gap from the observed days either side, as the reprocessed analysis will, files nine (PB06, PB07, PB09, PB10 confirmed and PB11 to PB15 raised).",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18"
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "REVIEW (sweeps 4, 6 and 8; every line answered in the design note; no LEAK)",
-  "reader": "one read: Q1 to Q4 none, Q6 analytical, its attempt filed the bulletins' four; realism notes taken in one data pass"
+  "leak_py": "REVIEW, no LEAK on the final cut (a84fab8e), --asof 2027-11-03 (sweeps 4, 6, 8, 11 and 12; every line ruled in the design note's Leak check)",
+  "reader": "reship read on the c4e68804 cut (no document or prompt changed since): Q1 to Q5 none or the filed estimand, Q6 an analytical choice; no shipped sentence says which site a deployment belongs to when the tag and the register disagree, and the reader saw no disagreement (the device silent); the logger clock zone the one undefined item, since closed by the log's UTC mark; earlier: one read at the first ship"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.gate_g, repeat.deliverables, repeat.question_form; no BLOCK)",
   "nearest": "task138 v1 lineage 0.06; task458 v1 lineage, task245, task70 v1, task123 v2 at 0.05",
-  "surface": "five promoted pairs in the wave (task245 the same pairing two apart, differentiated on the card; task246, task243, task244, task242 on the shared README name and gap)"
+  "surface": "five promoted pairs in the wave (task245 the same pairing two apart, differentiated on the card; task246, task243, task244, task242 on the shared README name and gap)",
+  "heart_2026_11_02": "BLOCK read against the dates: ban.forum against task244 and ban.forcing_event against task167, both drawn 2026-10-18, the day of this build's own draw, which registered with heart WARN and no BLOCK (H27); surface exit 0"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (pass 1)",
+  "verdict": "DETERMINISTIC (pass 3)",
   "disposition": "APPROVE",
-  "report": "task247/determinism_check_report.md"
+  "report": "task247/determinism_check_report_pass3.md",
+  "pass1": "DETERMINISTIC, APPROVE (task247/determinism_check_report.md)",
+  "pass2": "DETERMINISTIC on the main call and the 16 DHW figures; FIX_NOW on the logger ask (the pin register undated, so its literal reading applied to every row; the log's clock unlabelled), task247/determinism_check_report_pass2.md",
+  "pass3": "DETERMINISTIC, APPROVE: every committed figure reproduced; the site of every deployment forced by the data (the earlier pins' logger temperatures matched to the reprocessed SST recover the golden site for 16 of 16, the register 0 of 16) and the clock by the log's UTC mark; residual risk recorded: the earlier pin map is established by the data, not by a filed sentence (the ask's device)",
+  "gate_g": "analytical_non_defect (mechanism method_or_model_selection, surface_read_dependency no, sole_data_defect no)",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK sweep 1: DATA_DICTIONARY.md and README.md, a file whose name says it describes the data; LEAK sweep 12: DATA_DICTIONARY.md names 38 columns of the data files, 100 per cent of logger_log_2023-08_2027-04.csv)",
+   "repair": "leak",
+   "move": "The generator no longer writes DATA_DICTIONARY.md or README.md. Their provenance (what each file is, who keeps it, its span, its rows) moved to metadata.json, written by make.py, whose title, subdomain and sources text were also rewritten to say what the task decides and never the mechanism. Nothing else needed a new home: no fork or closure row cited the dictionary, every definition the call needs was already filed by its owner (the user guide's UTC day, degrees Celsius and one row per pixel, day and issue; the release note's kelvin; the methods note's pixel_id and mmm_c), and the station's UTC-5 stands on the request's own Date header; the dictionary's logger-time gloss rode an ask device and was left unstated. checks.py asserts that no shipped file describes the data (by name, and by content through the verifier's own PDF extractor with a positive control and the leak sweep's own thresholds); verify.py checks the owning documents' sentences and the names. With only the leak repair applied, every other pack file was byte-identical to the shipped one and freeze.py --mode determinism passed.",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "none: in-house careful-solver ceiling at the leak reship (the shipped asks' careful cracker kept 48 of 48: Ask A by the near-duplicate check, Ask B by the clock check against the loggers' own step out of the water)",
+   "repair": "rubric",
+   "move": "Ask A (the 2023 survey's prevalence and colonies) cut: its link was a shared value no slate can avoid; the slates and the protocol stay as distractors and the prompt's and the request's ask sentences lost it. The logger ask re-sited: the log names each deployment by the tag on the site's stake as read, the stakes were re-tagged north to south on the Cozumel II's retrieval trip of August 2025, and the new pin register (logger_pin_register.csv) holds the current tags, so every earlier row joins it and names another site; the trips' stop order and the loggers carried across the re-tag force the earlier tags. The GPS clock stays as a hazard. The ask's 16 golden figures are unchanged. Measured by generator/ceiling.py on target.zip: the cracker keeps 0 of 16, mirror leakage 0.0 per cent, pair ceiling 34.6, two careful responses on the call 45.0 each.",
+   "md5": "c4e68804715e9c56d6463d7721d8f91f",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "none: in-house determinism judge pass 2 on the reship cut (FIX_NOW on the logger ask: the pin register undated and read literally over every row; the log's times without a zone)",
+   "repair": "determinism",
+   "move": "Closed in the data, no document and no graded figure touched: logger_pin_register.csv carries each stake's checked date (its stop on the April 2027 service trip), so the register states the tags as they stand and nothing of a tag written before; the logger log writes the times the Cozumel II's GPS kept in UTC with the GPS's own UTC mark. checks.py asserts both (SF18, SF19) through the verifier's readers; ceiling.py on the new cut: the cracker 0 of 16, the mirror 0, pair 34.6. Re-judged once (pass 3): DETERMINISTIC, APPROVE.",
+   "md5": "a84fab8e0c0491b4930ac9cf942b8dc4",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "target_zip_md5": "a84fab8e0c0491b4930ac9cf942b8dc4"
 }
