@@ -1,331 +1,484 @@
-"""Generator assertions for task274, run on every build: the three rules executed on the clean truth (R1 to R3), every
-Layer 1 item neutral, the semantic fork rows, the ladder, the asks and their devices, the realism sweep and the house
-checks. Prints one line per check; returns the number failed."""
-from __future__ import annotations
+"""task274 generator checks: the assertions the build ships on.
 
-import collections
-import copy
+    python3 task274/generator/checks.py
+
+Runs on the generator's clean truth (world, records) and on the cut pack (verify, ceiling). Every semantic
+fork row of the design note (SF1 ...) and every client rule (R1, R2, R3) has its own assertion. Exit 0 only
+when every assertion holds.
+"""
+import csv
 import datetime as dt
+import glob
 import json
 import os
 import re
-import subprocess
+import shutil
+import sys
+import tempfile
+import zipfile
+from collections import Counter, defaultdict
 
 import numpy as np
 
-import analysis as A
-import asks as AS
-import common as K
-import pack as PK
-import seedsearch as SS
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+TARGET = os.path.join(TASK, "target")
+sys.path.insert(0, HERE)
 
-FAILS = []
+import world as W          # noqa: E402
+import records as R        # noqa: E402
+import verify as V         # noqa: E402
+import ceiling as CL       # noqa: E402
 
-
-def check(name, ok, detail=""):
-    print("%s  %s  %s" % ("ok  " if ok else "FAIL", name, detail if not ok else ""))
-    if not ok:
-        FAILS.append(name)
+RESULTS = []
 
 
-def sets(v):
-    return [x + 1 for x in A.designated(v)]
+def check(label, ok, detail=""):
+    RESULTS.append((label, bool(ok), detail))
 
 
-def edit(a, b):
-    if abs(len(a) - len(b)) > 2:
-        return 3
-    prev = list(range(len(b) + 1))
-    for i, ca in enumerate(a, 1):
-        cur = [i]
-        for j, cb in enumerate(b, 1):
-            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
-        prev = cur
-    return prev[-1]
+def edge(v):
+    return 0.5 - abs(v - round(v))
 
 
-def run(task, w, P):
-    target = os.path.join(task, "target")
-    fig = json.load(open(os.path.join(task, "generator", "figures.json")))
-    rd = PK.Read(target)
-    R, pairs, chk = rd.records()
-    g, info = A.golden(R, pairs, chk)
-    G = A.designated(g)
-    names = [n for _, n in K.COUNTIES]
+def tier(x):
+    return "full" if x >= W.FULL_AT else ("pilot" if x >= W.PILOT_AT else "lapse")
 
-    # ------------------------------------------------------------ the call from the pack equals the world's
-    Rw, pw, cw = SS.records(w)
-    gw, _ = A.golden(Rw, pw, cw)
-    check("G the call recomputed from the pack equals the world's", A.designated(gw) == G and np.allclose(gw, g), "")
-    check("G figures.json carries the call", fig["call"]["counties"] == [names[i] for i in G], "")
-    truth = np.zeros(A.NC)
-    den = np.zeros(A.NC)
-    for p in w["P"]:
-        if p.get("result") is None:
+
+def main():
+    F = json.load(open(os.path.join(HERE, "figures.json")))
+    A = R.build_all()
+    rows = A["main_rows"]
+    o = W.routes(rows)
+    m = V.main_call(TARGET)
+    cases = A["cases"]
+    lot_cases = [c for c in cases if c.lottery]
+
+    # ---------------------------------------------------------------- the chosen world and its family
+    check("seed: the main seed passes the convergence and clearance screen", W.main_seed_ok(o), "seed %d" % R.MAIN_SEED)
+    check("golden: the pack's cut equals the generator's", abs(m["cut"] - o["golden"]) < 1e-9, "%.4f" % m["cut"])
+    check("golden: the call is the pilot's scale", tier(o["golden"]) == "pilot" and F["call"].endswith("pilot's scale"),
+          "%.3f" % o["golden"])
+    check("golden: the cut clears both thresholds by 3 points or more",
+          o["golden"] - W.PILOT_AT >= 3 and W.FULL_AT - o["golden"] >= 3, "%.3f" % o["golden"])
+
+    # ---------------------------------------------------------------- the semantic fork table
+    check("SF1 the cut is the not-offered share less the offered share, in points",
+          abs(o["golden"] - (o["not_offered"] - o["offered"])) < 1e-9 and o["golden"] > 0
+          and tier(100 * (o["not_offered"] - o["offered"]) / o["not_offered"]) == "full",
+          "relative reading %.1f per cent would file full scale" % (100 * (o["not_offered"] - o["offered"]) / o["not_offered"]))
+    check("SF2 every listed defendant is in a denominator",
+          o["n_offered"] + o["n_not_offered"] == o["n"] == m["n"] == len(lot_cases), "%d listed" % o["n"])
+    check("SF3 the outcome at final disposition, not by the evaluation date",
+          tier(o["naive"]) == "full" and tier(o["golden"]) == "pilot", "at the cut %.1f" % o["naive"])
+    check("SF4 offered counts decliners: the participants-only contrast is another figure",
+          round(o["participants_only"]) != round(o["golden"]), "participants only %.2f" % o["participants_only"])
+    first_disp = Counter()
+    for c in lot_cases:
+        kinds = [k for d, k, t in c.events if k in R.DISPOSITION_CODES]
+        if kinds:
+            first_disp[kinds[0]] += 1
+    check("SF5 every first disposition of a listed case is one of the coded kinds",
+          set(first_disp) <= R.DISPOSITION_CODES and first_disp["DSR"] > 0, str(dict(first_disp)))
+    last_leg = max(dt.datetime.strptime(r[2], "%m/%d/%Y").date() for r in A["legacy_ev"])
+    last_cms = max(V.central_date(r[2]) for r in A["cms_ev"])
+    check("SF6 no event after the evaluation date in either extract",
+          last_leg < W.CUTOVER and last_cms <= W.CUT, "%s, %s" % (last_leg, last_cms))
+    leg_dates = defaultdict(set)
+    for r in A["legacy_ev"]:
+        leg_dates[V.key(r[0])].add((dt.datetime.strptime(r[2], "%m/%d/%Y").date(), r[3]))
+    mism = 0
+    migrated = 0
+    for r in A["cms_ev"]:
+        if r[5] == "MIGRATED":
+            migrated += 1
+            if (V.central_date(r[2]), V.CMS_TO_KIND[r[3]]) not in leg_dates[V.key(r[0])]:
+                mism += 1
+    check("SF7 every migrated event carries its legacy date", migrated > 5000 and mism == 0,
+          "%d migrated, %d off" % (migrated, mism))
+    shift = 0
+    for r in A["cms_ev"]:
+        if r[3] in ("Pretrial Diversion Terminated - Restored to Calendar",) or r[3].startswith("Disposition") \
+                or r[3].startswith("Dismissed"):
+            if r[5] != "MIGRATED" and r[2][:10] != V.central_date(r[2]).isoformat():
+                shift += 1
+    check("SF8 terminations and dispositions are entered in office hours: UTC and local dates agree", shift == 0,
+          "%d shifted" % shift)
+    check("SF9 the not-offered arm's estimators agree to the whole per cent",
+          len({round(o[k]) for k in ("not_offered", "not_offered_aj", "not_offered_matured")}) == 1,
+          "%.3f %.3f %.3f" % (o["not_offered"], o["not_offered_aj"], o["not_offered_matured"]))
+    check("SF10 the termination chance agrees across every participant's months and the matured terms",
+          round(o["p_term"]) == round(o["p_term_matured"]), "%.3f %.3f" % (o["p_term"], o["p_term_matured"]))
+    check("SF11 the terminated cases' conviction rate agrees across estimators",
+          round(o["c_term"]) == round(o["c_term_aj"]), "%.3f %.3f" % (o["c_term"], o["c_term_aj"]))
+    check("SF12 pooled and lottery-by-lottery contrasts agree to the whole point",
+          round(o["fam_by_lottery"]) == round(o["golden"]), "%.3f %.3f" % (o["fam_by_lottery"], o["golden"]))
+    check("SF13 case-by-case completion equals the arm-level construction (product-limit identity)",
+          abs(o["fam_case_by_case"] - o["golden"]) < 1e-9, "%.6f" % (o["fam_case_by_case"] - o["golden"]))
+    check("SF14 the cut from rounded shares equals the rounded cut",
+          round(o["not_offered"]) - round(o["offered"]) == round(o["golden"]) == F["cut_points"],
+          "%d - %d" % (round(o["not_offered"]), round(o["offered"])))
+    bad = [c for c in lot_cases if sum(1 for d, k, t in c.events if k in R.DISPOSITION_CODES) > 1]
+    check("SF15 every referred case ends once, on its own number", not bad, "%d with two endings" % len(bad))
+    term_mis = 0
+    for p in A["parts"]:
+        c = p["case"]
+        dva = [t for d, k, t in c.events if k == "DVA"]
+        if not dva or R.fmt_term(c) not in dva[0]:
+            term_mis += 1
+    check("SF16 the docket's term equals the provider's term for every participant", term_mis == 0,
+          "%d off" % term_mis)
+    check("SF17 the decliners complete at their own disposed rate under every estimator",
+          round(o["offered"]) == round(o["offered_aj"]) == round(o["offered_matured"]),
+          "%.3f %.3f %.3f" % (o["offered"], o["offered_aj"], o["offered_matured"]))
+    # SF18: the clock. Day-based product limit from the term start agrees; from the agreement filing it does not.
+    parts = [r for r in rows if r["path"] in ("terminated", "completed")]
+
+    def km_from(origin):
+        T, E = [], []
+        for r in parts:
+            t0 = r[origin]
+            if r["path"] == "terminated" and r["term_date"] <= W.CUT:
+                T.append((r["term_date"] - t0).days)
+                E.append(1)
+            elif r["path"] == "completed" and r["term_end"] <= W.CUT:
+                T.append((r["term_end"] - t0).days)
+                E.append(0)
+            else:
+                T.append((W.CUT - t0).days)
+                E.append(0)
+        ordr = np.argsort(T, kind="stable")
+        t = np.array(T)[ordr]
+        e = np.array(E)[ordr]
+        S = 1.0
+        i = 0
+        while i < len(t):
+            j = i
+            while j < len(t) and t[j] == t[i]:
+                j += 1
+            S *= 1 - e[i:j].sum() / (len(t) - i)
+            i = j
+        return 100 * (1 - S)
+
+    def cut_with(pt):
+        return o["not_offered"] - (o["p_decline"] / 100 * o["c_declined"] + (1 - o["p_decline"] / 100) * pt / 100 * o["c_term"])
+
+    pt_ts, pt_ag = km_from("term_start"), km_from("agree")
+    check("SF18 the termination chance on the term's clock agrees in days and months",
+          round(pt_ts) == round(o["p_term"]) and round(cut_with(pt_ts)) == round(o["golden"]), "%.3f" % pt_ts)
+    check("SF18 timed from the agreement filing, completions censored at uneven term ends, it files another tier",
+          tier(cut_with(pt_ag)) != "pilot", "%.2f points" % cut_with(pt_ag))
+
+    # SF23: a term that ends on the cut. Its final reviews are in the docket before the cut and the provider's
+    # August report shows every other member completed on the term's last day, so the review is behind them.
+    from openpyxl import load_workbook
+    p_ev = V.read_events(TARGET)
+    p_recs = [dict(r, **V.case_state(p_ev[r["key"]])) for r in V.read_roster(TARGET)]
+    p_par = [x for x in p_recs if x["offered"] and x["term_start"]]
+    last = [x for x in p_par if V.months_between(x["term_start"], W.CUT) + 1 == 12]
+    rev = [x for x in last if x["terminated_on"] and V.months_between(x["term_start"], x["terminated_on"]) + 1 == 12]
+    rest = {x["key"] for x in last if not x["terminated_on"]}
+    ws = load_workbook(os.path.join(TARGET, "nethercote_reports", "NCJS_Larkmoor_Participants_2026-08.xlsx"),
+                       read_only=True).active
+    rws = [list(r) for r in ws.iter_rows(values_only=True)]
+    hi = next(i for i, r in enumerate(rws) if r and r[0] == "Participant ID")
+    seen = {}
+    for r in rws[hi + 1:]:
+        if r and r[0] and str(r[0]).startswith("P"):
+            d = dict(zip(rws[hi], r))
+            seen[V.key(d["Case Number"])] = (d["Status"], str(d["Discharge Date"])[:10])
+    done = [k for k in rest if seen.get(k) == ("Completed", W.CUT.isoformat())]
+    hz = [t[3] for t in m["table"]]
+
+    def p_term_cases(review_ahead):
+        tot = 0.0
+        for x in p_par:
+            if x["terminated_on"]:
+                tot += 1
+                continue
+            e = V.months_between(x["term_start"], W.CUT) + 1
+            if review_ahead and x["key"] in rest:
+                e = 11
+            S = 1.0
+            for j in range(e + 1, 13):
+                S *= 1 - hz[j - 1]
+            tot += 1 - S
+        return 100 * tot / len(p_par)
+
+    ahead, behind = cut_with(p_term_cases(True)), cut_with(p_term_cases(False))
+    check("SF23 the cohort whose term ends on the cut has its final reviews in the docket before the cut",
+          rev and max(x["terminated_on"] for x in rev) <= W.CUT, "%d of %d terminated at the review" % (len(rev), len(last)))
+    check("SF23 the provider's August report shows every other member of that cohort completed on 31 August 2026",
+          rest and len(done) == len(rest), "%d of %d" % (len(done), len(rest)))
+    check("SF23 case by case with the review behind them equals the golden; with it still ahead, the same call",
+          abs(behind - o["golden"]) < 1e-3 and tier(ahead) == "pilot",
+          "behind %.4f, golden %.4f, ahead %.2f" % (behind, o["golden"], ahead))
+
+    # ---------------------------------------------------------------- R1, R2, R3: the client's three rules
+    hdrs = {}
+    for f in ("legacy_docket_events_2025_2026.csv", "cms_docket_events_2026.csv", "legacy_case_charges.csv",
+              "cms_case_charges.csv"):
+        with open(os.path.join(TARGET, f)) as fh:
+            hdrs[f] = next(csv.reader(fh))
+    flat = " ".join(" ".join(h) for h in hdrs.values()).lower()
+    check("R1 the raw material ships: lottery assignment records and dated case events, no outcome column",
+          os.path.exists(os.path.join(TARGET, "diversion_lottery_draws_2025_2026.xlsx"))
+          and not re.search(r"convict|outcome|final|eventual|terminat", flat), str(list(hdrs)))
+    check("R1 the golden's decisive computation reads the docket's own events (the verifier rebuilds it from them)",
+          abs(m["p_term"] - o["p_term"]) < 1e-9 and m["table"][11][2] > 20, "month 12: %s" % (m["table"][11],))
+    # R2: each mess item, mishandled the natural way, leaves the call and its components where they were
+    tmp = tempfile.mkdtemp()
+    try:
+        shutil.copytree(TARGET, os.path.join(tmp, "p"))
+        P = os.path.join(tmp, "p")
+        # clerk re-entries kept twice: the verifier's per-case logic already ignores repeats
+        rows_leg = list(csv.reader(open(os.path.join(P, "legacy_docket_events_2025_2026.csv"))))
+        n_dup = len(rows_leg) - 1 - len({tuple(r) for r in rows_leg[1:]})
+        check("R2 clerk re-entries are present and real (duplicate legacy rows)", 200 < n_dup < 1500, "%d" % n_dup)
+        # the UTC clock read as local time
+        rows_cms = list(csv.reader(open(os.path.join(P, "cms_docket_events_2026.csv"))))
+        orig = V.central_date
+        V.central_date = lambda s: dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").date()
+        try:
+            m_utc = V.main_call(P)
+        finally:
+            V.central_date = orig
+        check("R2 the new system's UTC stamps read as local dates leave the call and components unchanged",
+              all(round(m_utc[k]) == round(m[k]) for k in ("cut", "c_no", "offered", "p_term", "c_term")),
+              "cut %.3f" % m_utc["cut"])
+        # migrated duplicates kept (no dedup across extracts): count both copies as separate events
+        check("R2 events in both extracts carry one date, so keeping both copies changes no case's ending",
+              mism == 0, "migrated %d" % migrated)
+        # case numbers left unnormalised: the roster's legacy numbers find none of the new system's numbers
+        cms_nums = {r[0] for r in rows_cms[1:]}
+        ros = V.read_roster(P)
+        hits = 0
+        from openpyxl import load_workbook
+        wb = load_workbook(os.path.join(P, "diversion_lottery_draws_2025_2026.xlsx"), read_only=True)
+        listed = [r[0] for ws in wb.worksheets for r in ws.iter_rows(values_only=True)
+                  if r and r[0] and re.match(r"^(LC|BW|WM|SH)\d", str(r[0]))]
+        hits = sum(1 for x in listed if x in cms_nums)
+        check("R2 an exact-string join of the roster to the new system matches no legacy-numbered case, so the "
+              "unnormalised join cannot pass silently", hits == 0 and len(listed) > 2500, "%d listed" % len(listed))
+        # the legacy date format read day-first fails outright on days above twelve
+        fails = 0
+        sample = rows_leg[1::97]
+        for r in sample:
+            try:
+                dt.datetime.strptime(r[2], "%d/%m/%Y")
+            except ValueError:
+                fails += 1
+        check("R2 legacy dates read day-first fail to parse on most rows", fails > 0.5 * len(sample),
+              "%d of %d" % (fails, len(sample)))
+        # the provider's workbooks, the charges files and the distractors deleted: the call does not move
+        for f in ("legacy_case_charges.csv", "cms_case_charges.csv", "county_jail_population_2025_2026.csv",
+                  "district_court_annual_statistics_fy2025.pdf", "penal_code_conversion_table_2026.csv"):
+            os.remove(os.path.join(P, f))
+        shutil.rmtree(os.path.join(P, "nethercote_reports"))
+        m_del = V.main_call(P)
+        check("R2 the call and every component are identical with every ask file and distractor deleted",
+              all(abs(m_del[k] - m[k]) < 1e-9 for k in ("cut", "c_no", "offered", "p_term", "c_term")), "")
+    finally:
+        shutil.rmtree(tmp)
+    # distractor deletion for the asks
+    tmp = tempfile.mkdtemp()
+    try:
+        shutil.copytree(TARGET, os.path.join(tmp, "p"))
+        P = os.path.join(tmp, "p")
+        for f in ("county_jail_population_2025_2026.csv", "district_court_annual_statistics_fy2025.pdf"):
+            os.remove(os.path.join(P, f))
+        a_del = V.asks(P)
+        check("distractors: every ask figure is unchanged with both distractors deleted",
+              a_del["cls"] == F["filings_by_class"] and a_del["div"] == F["filings_by_division"]
+              and a_del["hours"] == F["hours_by_site"] and a_del["rest"] == F["restitution_by_site"], "")
+    finally:
+        shutil.rmtree(tmp)
+        CL.PACK = TARGET
+    meta = json.load(open(os.path.join(TASK, "metadata.json")))
+    check("distractors: two named in metadata.json and present in the pack",
+          len(meta["distractors"]) >= 2 and all(os.path.exists(os.path.join(TARGET, d)) for d in meta["distractors"]),
+          str(meta["distractors"]))
+    # R3a: the analyst test on the clean truth
+    check("R3a the easy route, recorded convictions by lottery result, files full scale", tier(o["naive"]) == "full",
+          "%.2f" % o["naive"])
+    check("R3a the field's censoring reflex, cumulative incidence at the longest follow-up, files full scale",
+          tier(o["cif_max"]) == "full" and tier(o["cif_365"]) == "full", "%.2f, %.2f" % (o["cif_max"], o["cif_365"]))
+    check("R3a cases that have ended, taken alone, file a lapse", tier(o["complete_case"]) == "lapse",
+          "%.2f" % o["complete_case"])
+    # R3b: the decisive step alone moves the easy route to the golden; each lower correction alone does not
+    check("R3b completing the offered arm through the program's own stages files the golden tier",
+          tier(o["golden"]) == "pilot" and tier(o["fam_case_by_case"]) == "pilot", "")
+    for k in ("terminated_so_far", "terminated_like_not_offered", "term_without_final_review", "terminated_convicted_so_far",
+              "matured_lotteries_at_cut", "exits_so_far"):
+        check("R3b the partial correction '%s' stays off the golden tier" % k, tier(o[k]) != "pilot", "%.2f" % o[k])
+    cheap = [k for k in ("naive", "complete_case", "cif_365", "cif_425", "cif_max", "matured_lotteries_at_cut",
+                         "terminated_so_far", "terminated_like_not_offered", "term_without_final_review",
+                         "terminated_convicted_so_far", "exits_so_far") if tier(o[k]) == "pilot"]
+    check("Gate F: no route that skips the stage-wise completion lands the call", not cheap, str(cheap))
+    # R3c: no plant
+    sizes = [len(v) for v in A["roster"].values()]
+    nums = [x[0] for v in A["roster"].values() for x in v]
+    flags = ["".join(x[5] for x in v) for v in A["roster"].values()]
+    check("R3c no copied block: no case on two lists, no offer pattern repeated, list sizes vary",
+          len(nums) == len(set(nums)) and len(set(flags)) == len(flags) and len(set(sizes)) >= 10, str(sorted(sizes)))
+    docs = V.documents(TARGET)
+    planted = [n for n, t in docs.items() if re.search(r"percentage points? (?:lower|reduction) of \d|recommend", t, re.I)]
+    check("R3c no document states an effect or argues a tier", not planted, str(planted))
+
+    # ---------------------------------------------------------------- ladder margins and edges
+    for k in ("naive", "cif_365", "cif_max", "terminated_so_far", "terminated_like_not_offered",
+              "term_without_final_review", "terminated_convicted_so_far", "matured_lotteries_at_cut"):
+        check("ladder: '%s' clears the full-scale threshold by 2 points or more" % k, o[k] >= W.FULL_AT + 2, "%.2f" % o[k])
+    for k in ("complete_case", "exits_so_far"):
+        check("ladder: '%s' sits 4 points or more below the pilot floor" % k, o[k] <= W.PILOT_AT - 4, "%.2f" % o[k])
+    for name, v in (("cut", o["golden"]), ("not offered", o["not_offered"]), ("offered", o["offered"]),
+                    ("termination chance", o["p_term"]), ("terminated convicted", o["c_term"]),
+                    ("declined share", o["p_decline"]), ("declined convicted", o["c_declined"]),
+                    ("final review", o["final_review_rate"]),
+                    ("recorded not offered", o["recorded_not_offered"]), ("recorded offered", o["recorded_offered"])):
+        check("edge: %s sits 0.15 or more from its whole-per-cent edge" % name, edge(v) >= 0.15, "%.3f" % v)
+
+    # ---------------------------------------------------------------- asks: devices forced, separated, measured
+    fy = lambda d: W.FY_START <= d <= W.FY_END
+    truth_cls = Counter(c.charges[0][1] for c in cases if fy(c.filed) and c.charges[0][1])
+    check("ask F: the golden reading of the sections recovers the true class counts",
+          {W.CLASS_NAME[k]: v for k, v in truth_cls.items()} == F["filings_by_class"], "")
+    reps_jan_all = [r for r in CL.load_reports() if r["month"] == dt.date(2026, 1, 1)]
+    conv = {o_[2]: o_[3] for o_ in W.OFFENCES}
+    leg = {V.key(r[0]): r for r in A["legacy_ch"] if r[8] == "1"}
+    def as_2026(lr):
+        offence = dt.datetime.strptime(lr[7], "%m/%d/%Y").date()
+        return conv[lr[9]] if offence < W.RECODE else lr[9]
+    agree_conv = sum(1 for r in A["cms_ch"] if r[7] == "1" and V.key(r[0]) in leg and r[8] == as_2026(leg[V.key(r[0])]))
+    both = sum(1 for r in A["cms_ch"] if r[7] == "1" and V.key(r[0]) in leg)
+    check("SF19 ask F: every case in both charge extracts carries the conversion of its legacy section in the new system",
+          both > 1500 and agree_conv == both, "%d of %d" % (agree_conv, both))
+    old_set, new_set = set(conv), set(conv.values())
+    bad_num = 0
+    n_2026 = 0
+    for r in A["legacy_ch"]:
+        filed = dt.datetime.strptime(r[3], "%m/%d/%Y").date()
+        if filed < W.RECODE:
             continue
-        den[p["county"]] += p["wtmec"]
-        truth[p["county"]] += p["wtmec"] * (p["true"] < K.CUTOFF)
-    check("G the golden set is the truth's set", A.designated(truth / den) == G, sets(truth / den))
-    check("G every county at least 1.5 points from the line under every family member",
-          min(A.margin(v) for v in A.family(R, pairs, chk).values()) >= 0.015, "")
+        n_2026 += 1
+        offence = dt.datetime.strptime(r[7], "%m/%d/%Y").date()
+        if (offence < W.RECODE and r[9] not in old_set) or (offence >= W.RECODE and r[9] not in new_set):
+            bad_num += 1
+    check("SF19 legacy filings of 2026 carry the numbering in force on their offense date, without exception",
+          n_2026 > 1000 and bad_num == 0, "%d rows, %d off" % (n_2026, bad_num))
+    jan = Counter()
+    for p_ in A["parts"]:
+        jan[p_["site"]] += sum(a_ for d_, a_ in p_["pays"] if d_.year == 2026 and d_.month == 1)
+    jan_rep = Counter()
+    for rep in reps_jan_all:
+        for x in rep["recs"]:
+            jan_rep[x["site"]] += x["rest"] / (0.95 if rep["system"] == "new" else 1.0)
+    check("SF22 each January payment sits in exactly one of the two January reports",
+          all(abs(jan_rep[s_] - jan[s_]) < 0.01 for s_ in W.SITES), str({k: round(v, 2) for k, v in jan_rep.items()}))
+    old_only = set(conv) - set(conv.values())
+    late = sum(1 for r in A["legacy_ch"] if dt.datetime.strptime(r[3], "%m/%d/%Y").date() >= W.RECODE and r[9] in old_only)
+    check("ask F: some cases filed in 2026 cite a section only the 2025 numbering has (the offense-date tell)",
+          late > 20, "%d rows" % late)
+    shared = set(conv) & set(conv.values())
+    check("ask F: reused section numbers reach every eligible class",
+          {W.NEW_CLASS.get(s) for s in shared} >= set("ABCDE"), str(sorted(shared)))
+    for label, rule in (("the dated mapping (cracker)", CL.rule_filing_date),
+                        ("the conversion alone", CL.rule_conversion_aware),
+                        ("the offense date alone", CL.rule_offence_date)):
+        c_, d_ = CL.filings(rule)
+        moved_c = sum(1 for k, v in F["filings_by_class"].items() if c_.get(k) != v)
+        moved_d = sum(1 for k, v in F["filings_by_division"].items() if d_.get(k) != v)
+        check("ask F: %s moves every class and every division" % label, moved_c == 5 and moved_d == 4,
+              "%d classes, %d divisions" % (moved_c, moved_d))
+    h_c, r_c = CL.provider(dict(hours="as_given"))
+    h_d, _ = CL.provider(dict(hours="difference"))
+    _, r_j = CL.provider(dict(hours="cumulative", sum_january=True))
+    _, r_g = CL.provider(dict(hours="cumulative", gross_up=True))
+    check("ask H: the running totals summed as given miss every site", all(h_c[s] != F["hours_by_site"][s] for s in W.SITES), "")
+    check("ask H: the running totals differenced within the new system miss every site",
+          all(h_d[s] != F["hours_by_site"][s] for s in W.SITES), str(h_d))
+    check("ask R: the January halves deduplicated miss every site", all(r_c[s] != F["restitution_by_site"][s] for s in W.SITES), "")
+    check("ask R: the January halves summed without the gross-up miss every site",
+          all(r_j[s] != F["restitution_by_site"][s] for s in W.SITES), str(r_j))
+    check("ask R: the gross-up with the January halves deduplicated misses every site",
+          all(r_g[s] != F["restitution_by_site"][s] for s in W.SITES), str(r_g))
+    # the provider's tells, as the files carry them
+    reps = CL.load_reports()
+    jan_old = [r for r in reps if r["system"] == "old" and r["month"] == dt.date(2026, 1, 1)]
+    new_reps = [r for r in reps if r["system"] == "new"]
+    cum_ok = True
+    last = {}
+    for rep in sorted(new_reps, key=lambda r: r["month"]):
+        for x in rep["recs"]:
+            if x["hours"] + 1e-9 < last.get(x["key"], 0):
+                cum_ok = False
+            last[x["key"]] = x["hours"]
+    check("SF21 ask H: the new system's hours never fall for a participant and never pass 40", cum_ok and max(last.values()) <= 40,
+          "max %.1f" % max(last.values()))
+    cents = [x["rest"] for rep in new_reps for x in rep["recs"] if x["rest"]]
+    exact = all(abs(round(v / 0.95, 6) - round(v / 0.95)) < 1e-6 for v in cents)
+    check("SF20 ask R: every new-system restitution amount is 95 per cent of a whole-dollar payment", exact and len(cents) > 500,
+          "%d amounts" % len(cents))
+    check("SF22 ask R: one old-system January report ships beside the new system's January report",
+          len(jan_old) == 1 and len(jan_old[0]["recs"]) > 500
+          and len([r for r in new_reps if r["month"] == dt.date(2026, 1, 1)]) == 1, "%d rows" % len(jan_old[0]["recs"]))
+    # the separation line: the call reads none of the asks' files and none of their columns
+    check("separation: the verifier's main call opens only the roster and the two docket extracts",
+          set(re.findall(r'"([a-z_0-9]+\.(?:csv|xlsx))"', open(os.path.join(HERE, "verify.py")).read().split("def asks")[0]))
+          == {"diversion_lottery_draws_2025_2026.xlsx", "legacy_docket_events_2025_2026.csv", "cms_docket_events_2026.csv"}, "")
 
-    # ------------------------------------------------------------ R1: the field's raw material ships
-    check("R1 the bridging run pairs one stored duplicate with each of %d examined adults' primary results" % len(pairs),
-          len(pairs) >= 800 and all(s in rd.persons for s in pairs), len(pairs))
-    heads = []
-    for k in ("results", "bridge", "tracking", "persons", "events", "instruments", "counties"):
-        with open(os.path.join(target, K.FILES[k]), encoding="utf-8") as f:
-            heads += f.readline().strip().split(",")
-    bad = [h for h in heads if re.search(r"BIAS|SHIFT|CORRECT|STANDARD|REFERENCE_SCALE|ADJ", h)]
-    check("R1 no shipped column holds a bias, shift or corrected value", not bad, bad)
-    cals_used = sorted({r["cal"] for r in R})
-    check("R1 every calibration the results were measured under has at least two bridging pairs",
-          min(info["n"].get(c, 0) for c in cals_used) >= 2, min(info["n"].get(c, 0) for c in cals_used))
+    # ---------------------------------------------------------------- input gates and the realism sweep
+    files = [p for p in glob.glob(os.path.join(TARGET, "**", "*"), recursive=True) if os.path.isfile(p)]
+    exts = Counter(os.path.splitext(p)[1] for p in files)
+    big = max(sum(1 for _ in open(p)) for p in files if p.endswith(".csv"))
+    check("gate: ten or more files", len(files) >= 10, "%d files" % len(files))
+    check("gate: three or more formats", len(exts) >= 3, str(dict(exts)))
+    check("gate: a file of 25,000 rows or more", big >= 25000, "%d rows" % big)
+    describing = [p for p in files if re.search(r"readme|dictionary|codebook|manifest|field.?notes|notes", os.path.basename(p), re.I)]
+    check("gate: no describing file ships", not describing, str(describing))
+    check("realism: client numbers are not an arithmetic sequence",
+          len({b - a for a, b in zip(*(lambda s: (s, s[1:]))(sorted(int(p["client_no"][1:]) for p in A["parts"])))}) > 1, "")
+    seqs = defaultdict(list)
+    for c in cases:
+        if c.number_legacy:
+            seqs[c.number_legacy[:6]].append(int(c.number_legacy[6:]))
+    big_series = [v for v in seqs.values() if len(v) >= 200]
+    gapped = sum(1 for v in big_series if len(set(np.diff(sorted(v)))) > 1)
+    check("realism: every case number series of 200 or more carries the gaps of sealed cases",
+          gapped == len(big_series) and len(big_series) >= 8, "%d of %d series" % (gapped, len(big_series)))
+    tot = [F["filings_total"]] + list(F["filings_by_class"].values()) + list(F["hours_by_site"].values()) + list(F["restitution_by_site"].values())
+    check("realism: no headline total is round", all(v % 100 != 0 for v in tot), str(tot))
+    ref = {l.strip().lower() for l in open(os.path.join(HERE, "h21_reference_places.txt")) if l.strip()}
 
-    # ------------------------------------------------------------ R3a: the analyst test and the ladder
-    rt = A.routes(R, pairs, chk)
-    want = {"R0_reported": [], "R1_check_on_all": [1, 2], "R3_lot_analyzer": [1, 2], "R3d_lot_plus_analyzer": [1, 2],
-            "R3c_lot_only": [1, 2], "R3b_lot_analyzer_bridge_as_check": [2], "R2_overall_shift": [1, 2],
-            "R4_calibration_bridge_as_check": [1]}
-    for k, s in want.items():
-        check("R3a %s files %s, not the golden %s" % (k, s, sets(g)), sets(rt[k]) == s and A.designated(rt[k]) != G,
-              sets(rt[k]))
-    for k, v in rt.items():
-        if k == "R5_month_analyzer":
-            continue
-        dif = [i for i in range(A.NC) if (v[i] > A.LINE) != (g[i] > A.LINE)]
-        far = max([abs(v[i] - A.LINE) for i in dif], default=0.0)
-        check("R3a %s misplaces a county by at least a point" % k, far >= 0.01, round(far, 4))
-    # the analyst test: the lot-and-analyzer route is not one sort away from the golden
-    o = list(np.argsort(-rt["R3_lot_analyzer"]))
-    check("R3a the golden set is not a top set of the lot-and-analyzer route's ordering",
-          set(G) not in [set(o[:q]) for q in range(9)], "")
+    def near(a, b):
+        if abs(len(a) - len(b)) > 2:
+            return False
+        prev = list(range(len(b) + 1))
+        for i, ca in enumerate(a, 1):
+            cur = [i]
+            for j, cb in enumerate(b, 1):
+                cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+            prev = cur
+        return prev[-1] <= 2
 
-    # ------------------------------------------------------------ R3b: the decisive step alone
-    PL = A.pair_logs(R, pairs)
-    a = A.anchor(chk)
-    cal, _ = A.group_shift(PL, lambda r: r["cal"])
-    alone = A.shares(R, [a + cal[r["cal"]] - cal[chk["cal"]] for r in R])
-    check("R3b the lot-and-analyzer route with only its grouping moved to the calibration files the golden",
-          A.designated(alone) == G, sets(alone))
-    cell, _ = A.group_shift(PL, lambda r: (r["lot"], r["analyzer"]))
-    half = A.shares(R, [a + cal[r["cal"]] - cell[(chk["lot"], chk["analyzer"])] for r in R])
-    check("R3b each calibration's shift but the check read at its lot and analyzer files another set",
-          A.designated(half) != G, sets(half))
-    calo = {c["id"]: c for c in rd.cals}
-    k3, _ = A.group_shift(PL, lambda r: (r["lot"], calo[r["cal"]]["calot"], r["analyzer"]))
-    cc = calo[chk["cal"]]
-    lk = A.shares(R, [a + k3[(r["lot"], calo[r["cal"]]["calot"], r["analyzer"])] -
-                      k3[(chk["lot"], cc["calot"], chk["analyzer"])] for r in R])
-    check("R3b reagent lot by calibrator lot by analyzer, routine recalibrations pooled, files another set",
-          A.designated(lk) != G, sets(lk))
+    inv = ["larkmoor", "bramwick", "wendmoor", "strandham", "nethercote"]
+    clash = [n for n in inv for r in ref if near(n, r) or (len(r) > 4 and r in n)]
+    check("realism: invented places clear the place register (edit distance two, containment)", not clash, str(clash[:5]))
+    card = json.load(open(os.path.join(TASK, "..", ".claude", "skills", "fingerprint", "cards", "task274.json")))
+    people = card["world"]["people"]
+    alltext = " ".join(docs.values())
+    named = [p for p in ("Melanie Nielsen", "Roy Goodwin", "Natalie Hansen") if p in alltext or p.split()[1] in alltext]
+    check("realism: every persona named in the pack is a drawn persona", all(n in people for n in named), str(named))
+    check("realism: the resolution predates the pilot and the policy predates the 2026 lists",
+          "Adopted 22 April 2025" in docs["board_resolution_2025_31.pdf"] and "Effective 1 January 2026" in docs["policy"], "")
+    check("verify: the independent verifier reproduces every figure from the pack", V.main(["--pack", TARGET]) == 0, "")
 
-    # the family: three estimators of a calibration's shift, three readings of the check, trimmed means, and the
-    # finer time windows that sit inside calibrations
-    fam = A.family(R, pairs, chk)
-    check("F every family member names the golden set", all(A.designated(v) == G for v in fam.values()),
-          {k: sets(v) for k, v in fam.items() if A.designated(v) != G})
-    sp = np.max(list(fam.values()), axis=0) - np.min(list(fam.values()), axis=0)
-    check("F the family's spread on any county is under the smallest margin",
-          float(np.max(sp)) < min(A.margin(v) for v in fam.values()) + 0.01, round(float(np.max(sp)), 4))
-    by = collections.defaultdict(list)
-    for r, y in PL:
-        by[r["cal"]].append(y)
-    sd = float(np.std([y - np.mean(by[r["cal"]]) for r, y in PL]))
-    trim = {k: float(np.mean([y for y in v if abs(y - np.mean(v)) <= 3 * sd])) for k, v in by.items()}
-    tr = A.shares(R, [a + trim[r["cal"]] - trim[chk["cal"]] for r in R])
-    check("F calibration means after a 3 SD trim name the golden set", A.designated(tr) == G, sets(tr))
-    # the data refute pooling by lot and analyzer: calibration effects inside each lot and analyzer cell
-    ss_cell = sum((y - cell[(r["lot"], r["analyzer"])]) ** 2 for r, y in PL)
-    ss_cal = sum((y - cal[r["cal"]]) ** 2 for r, y in PL)
-    k_cal, k_cell = len(cal), len(cell)
-    Fst = ((ss_cell - ss_cal) / (k_cal - k_cell)) / (ss_cal / (len(PL) - k_cal))
-    check("F calibrations inside lot and analyzer cells differ (F at least 10)", Fst >= 10, round(Fst, 1))
-    print("    within-cell F for calibrations: %.1f on %d and %d df" % (Fst, k_cal - k_cell, len(PL) - k_cal))
+    fails = [r for r in RESULTS if not r[1]]
+    for label, ok, detail in RESULTS:
+        print("%s  %s%s" % ("PASS" if ok else "FAIL", label, ("  [" + detail + "]") if detail else ""))
+    print("%d assertions, %d failed" % (len(RESULTS), len(fails)))
+    return 1 if fails else 0
 
-    # ------------------------------------------------------------ R2: Layer 1 items are neutral
-    # L1: the event log's UTC read as local time
-    naive = []
-    for c in rd.cals:
-        c2 = dict(c)
-        c2["time"] = c["time"] + dt.timedelta(hours=7 if not (dt.datetime(2025, 3, 9) <= c["time"] < dt.datetime(2025, 11, 2)) else 6)
-        naive.append(c2)
-    rd2 = copy.copy(rd)
-    rd2.cals = naive
-    R2, p2, c2 = rd2.records()
-    s2, _ = A.group_shift(A.pair_logs(R2, p2), lambda r: r["cal"])
-    for c in sorted({r["cal"] for r in R2}):
-        if c not in s2:          # a calibration left with no bridging pair takes the one before it on its analyzer
-            prev = max(k for k in s2 if k < c and rd2.cals[k]["serial"] == rd2.cals[c]["serial"])
-            s2[c] = s2[prev]
-    g2 = A.shares(R2, [a + s2[r["cal"]] - s2[c2["cal"]] for r in R2])
-    check("R2 L1 the event log's UTC read as local time leaves the call", A.designated(g2) == G, sets(g2))
-    # L2: voided rows kept beside the finals
-    h, rs = PK.rows(os.path.join(target, K.FILES["results"]))
-    i = {c: j for j, c in enumerate(h)}
-    extra = []
-    for r in rs:
-        if r[i["RESULT_STATUS"]] == "X":
-            seqn = rd.barcode[r[i["SPECIMEN_ID"]]]
-            t = dt.datetime.strptime(r[i["RESULTED_AT"]], "%m/%d/%Y %H:%M")
-            ser = rd.serial[r[i["INSTRUMENT"]]]
-            c = rd.cal_at(ser, t)
-            pp = rd.persons[seqn]
-            extra.append(dict(seqn=-seqn, county=pp["county"], w=pp["w"], value=PK.value(r[i["RESULT"]]),
-                              analyzer=[K.ANALYZERS[0][1], K.ANALYZERS[1][1]].index(ser),
-                              lot=sorted({x["lot"] for x in rd.results}).index(r[i["REAGENT_LOT"]]),
-                              cal=c["id"], month=t.month))
-    check("R2 L2 the LIS carries voided runs", len(extra) >= 40, len(extra))
-    g3, _ = A.golden(R + extra, pairs, chk)
-    check("R2 L2 voided rows kept beside the finals leave the call", A.designated(g3) == G, sets(g3))
-    # L3: results reported below the range read as missing
-    R4 = [r for r in R if r["value"] >= K.REPORT_LOW]
-    g4, _ = A.golden(R4, pairs, chk)
-    check("R2 L3 results below the reportable range dropped leave the call", A.designated(g4) == G, sets(g4))
-    # L4: the bridging run's second day read as another run (two calibrations of the bridging run): no change
-    # possible since one calibration covers both days
-    days = {b["time"].date() for b in rd.bridge.values()}
-    bc = {rd.cal_at(b["serial"], b["time"])["id"] for b in rd.bridge.values()}
-    check("R2 L4 the bridging run's %d days sit under one calibration" % len(days), len(bc) == 1, bc)
-    # L5: failed calibration attempts taken as calibrations
-    h, rs = PK.rows(os.path.join(target, K.FILES["events"]))
-    failed = [r for r in rs if r[2] == "CALIBRATION" and r[7] == "FAILED"]
-    allc = sorted(rd.cals + [dict(serial=r[1], time=PK.utc_to_local(r[0]), lot=r[4], calot=r[5]) for r in failed],
-                  key=lambda c: (c["serial"], c["time"]))
-    moved = 0
-    for c in allc:
-        for r in rd.results:
-            if r["serial"] == c["serial"] and c.get("id") is None and abs((r["time"] - c["time"]).total_seconds()) < 3600:
-                moved += 1
-    check("R2 L5 no result falls between a failed calibration attempt and the accepted one (%d failed)" % len(failed),
-          moved == 0, moved)
 
-    # ------------------------------------------------------------ semantic fork rows
-    check("SF1 one final result per examined adult", len({r["seqn"] for r in R}) == len(R), "")
-    check("SF2 every result's adult is in the examined persons file with a weight", all(r["seqn"] in rd.persons for r in R), "")
-    nb = sum(1 for p in w["P"] if p.get("blood") and p.get("result") is None and not p.get("reject"))
-    check("SF3 every drawn primary vial not rejected has a final result", nb == 0, nb)
-    check("SF4 no IA1 calibration on the check's day after the morning",
-          not [c for c in rd.cals if c["serial"] == K.ANALYZERS[0][1] and c["time"].date() == K.CHECK_RUN.date()
-               and c["time"].time() > dt.time(9, 0)], "")
-    check("SF5 the check's reagent lot is the lot in force on IA1 that day",
-          rd.cals[chk["cal"]]["lot"] == rd.check["lot"], "")
-    check("SF6 no corrected result sits exactly at 20.0", all(abs(r["value"] / np.exp(a + cal[r["cal"]] - cal[chk["cal"]]) - 20.0) > 1e-6 for r in R), "")
-    check("SF7 no county share sits exactly at 30.0", all(abs(x - 0.30) > 1e-9 for x in g), "")
-    ages = [p["age"] for p in w["P"]]
-    check("SF8 every examined adult is 20 or over", min(ages) >= 20, min(ages))
-    wsum = collections.defaultdict(float)
-    for s, p in rd.persons.items():
-        wsum[p["county"]] += p["w"]
-    check("SF9 each county's exam weights sum to its adults",
-          all(abs(wsum[c] - K.ADULTS[c]) < 1.0 for c in range(A.NC)), dict(wsum))
-
-    # ------------------------------------------------------------ the asks
-    lines = rd.supplements()
-    status, scr = rd.status()
-    aa = AS.ask_a(status, lines)
-    ab = AS.ask_b(status, scr)
-    check("A figures.json carries ask A", [fig["asks"]["supplements_1000"][n] for n in names] == aa[1000.0] and
-          [fig["asks"]["supplements_2000"][n] for n in names] == aa[2000.0], "")
-    check("B figures.json carries ask B", [fig["asks"]["interview_rr"][n] for n in names] == ab["interview"] and
-          [fig["asks"]["exam_rr"][n] for n in names] == ab["exam"], "")
-    ca = AS.ask_a(status, lines, "cracker")
-    cb = AS.ask_b(status, scr, "cracker")
-    hit_a = sum(x == y for t in (1000.0, 2000.0) for x, y in zip(ca[t], aa[t]))
-    hit_b = sum(x == y for k in ("interview", "exam") for x, y in zip(cb[k], ab[k]))
-    check("A the cracker (every product line) misses every ask A figure", hit_a == 0, hit_a)
-    check("B the cracker (every sample person) misses every ask B figure", hit_b == 0, hit_b)
-    oa = AS.ask_a(status, lines, "overclean")
-    ob = AS.ask_b(status, scr, "overclean")
-    hit_oa = sum(x == y for t in (1000.0, 2000.0) for x, y in zip(oa[t], aa[t]))
-    hit_ob = sum(x == y for k in ("interview", "exam") for x, y in zip(ob[k], ab[k]))
-    check("A the over-cleaner (every generic line beside a label line dropped) keeps at most 4 of 16", hit_oa <= 4, hit_oa)
-    check("B the over-cleaner (every dwelling screened twice dropped) keeps at most 2 of 16", hit_ob <= 2, hit_ob)
-    dups = sum(1 for x in P.dsq if x["dup"])
-    check("A the appended label lines number %d" % dups, 100 <= dups <= 400, dups)
-    # fairness: no genuine GENERIC and label pair shares strength, days and units
-    gen = [x for x in P.dsq if x["generic"]]
-    lab = collections.defaultdict(list)
-    for x in P.dsq:
-        if not x["generic"] and not x["dup"]:
-            lab[x["seqn"]].append(x)
-    import fieldwork as FW
-    clash = [x for x in gen for y in lab[x["seqn"]] if abs(FW._iu_per_unit(x["p"]) - FW._iu_per_unit(y["p"])) < 1e-6
-             and x["days"] == y["days"] and x["qty"] == y["qty"]]
-    check("A every generic line's twin in strength, days and units is the appended line", not clash, len(clash))
-    # the golden asks equal the world's truth: no appended line, no superseded sample person
-    import fieldwork as FW2
-    tavg = collections.defaultdict(float)
-    for x in P.dsq:
-        if not x["dup"]:
-            tavg[x["seqn"]] += FW2._iu_per_unit(x["p"]) * x["qty"] * x["days"] / 30.0
-    num = {t: [0.0] * A.NC for t in (1000.0, 2000.0)}
-    den = [0.0] * A.NC
-    for s in P.fw["SP"]:
-        if s["kind"] in ("EX", "INT") and s["wtint"] is not None:
-            den[s["county"]] += s["wtint"]
-            for t in num:
-                if tavg.get(s["seqn"], 0.0) >= t - 1e-9:
-                    num[t][s["county"]] += s["wtint"]
-    ta = {t: [round(100.0 * num[t][c] / den[c] + 1e-9, 1) for c in range(A.NC)] for t in num}
-    check("A the golden equals the world's truth", ta[1000.0] == aa[1000.0] and ta[2000.0] == aa[2000.0], (ta, aa))
-    el = [0] * A.NC
-    it = [0] * A.NC
-    ex = [0] * A.NC
-    for s in P.fw["SP"]:
-        if s["kind"] in ("VOID", "INEL"):
-            continue
-        el[s["county"]] += 1
-        it[s["county"]] += s["int_status"] in AS.INT_DONE
-        ex[s["county"]] += s["exam_status"] == "EXAMINED"
-    check("B the golden equals the world's truth",
-          [round(100.0 * it[c] / el[c] + 1e-9, 1) for c in range(A.NC)] == ab["interview"] and
-          [round(100.0 * ex[c] / el[c] + 1e-9, 1) for c in range(A.NC)] == ab["exam"], "")
-    voids = sum(1 for s in P.fw["screenings"] if s["void"])
-    check("B the dwellings screened twice number %d" % voids, 80 <= voids <= 400, voids)
-    # separation: no ask device or hazard row in the call's files
-    seq_call = {r["seqn"] for r in R}
-    void_seqn = {s["seqn"] for s in P.fw["SP"] if s["kind"] == "VOID"}
-    check("S no superseded screening's sample person is in the call's population", not (void_seqn & seq_call), "")
-    check("S the call reads none of the asks' files", True, "")
-
-    # ------------------------------------------------------------ realism sweep
-    counts = [fig["counties"][n]["adults_with_result"] for n in names]
-    check("H no two counties share a result count", len(set(counts)) == len(counts), counts)
-    shares_ = [fig["counties"][n]["share_below_20"] for n in names]
-    check("H no county share is a round number", all(abs(x - round(x)) > 0.05 for x in shares_), shares_)
-    vals = [r["value"] for r in R]
-    check("H results are not heaped on whole numbers", sum(abs(v - round(v)) < 1e-9 for v in vals) / len(vals) < 0.15, "")
-    per_day = collections.Counter(p["exam"] for p in w["P"])
-    check("H exams a day vary", len(set(per_day.values())) >= 10, len(set(per_day.values())))
-    # H16: nothing dated after the request
-    late = []
-    for k in ("results", "bridge", "tracking", "events", "status", "rosters"):
-        with open(os.path.join(target, K.FILES[k]), encoding="utf-8") as f:
-            for line in f:
-                for m in re.finditer(r"(20\d\d)-(\d\d)-(\d\d)", line):
-                    if m.group(0) > K.REQUEST_DATE.isoformat():
-                        late.append(m.group(0))
-                        break
-    check("H16 no date in the data files after the request", not late, late[:3])
-    ref = [x.strip().lower() for x in open(os.path.join(task, "generator", "h21_reference_places.txt"), encoding="utf-8")
-           if x.strip() and not x.startswith("#")]
-    invented = ["merrivane", "wexmoor", "corvale", "lassiter", "ulverne", "vellance", "quennel", "yarrowmere",
-                "inskeep", "brennick", "varnholt", "northpine", "purevane", "everhale", "kestra", "oakbriar",
-                "lumivita", "dawnmere", "sollenra", "vitamora", "teskara"]
-    bad = [(n, r) for n in invented for r in ref if edit(n, r) <= 2 or n in r or (len(r) >= 5 and r in n)]
-    check("H21 invented names clear of the reference register", not bad, bad[:5])
-    em = [n for n in os.listdir(target) if n.endswith((".csv", ".txt")) and "—" in
-          open(os.path.join(target, n), encoding="utf-8").read()]
-    check("H no em dash in the shipped text files", not em, em)
-    pdf_em = []
-    for n in os.listdir(target):
-        if n.endswith(".pdf"):
-            txt = subprocess.run(["pdftotext", os.path.join(target, n), "-"], capture_output=True, text=True).stdout
-            if "—" in txt:
-                pdf_em.append(n)
-    check("H no em dash in the shipped PDFs", not pdf_em, pdf_em)
-    n_track = sum(1 for _ in open(os.path.join(target, K.FILES["tracking"]), encoding="utf-8")) - 1
-    check("H the tracking export holds at least 25,000 rows", n_track >= 25000, n_track)
-    print("checks: %d failed" % len(FAILS))
-    return len(FAILS)
+if __name__ == "__main__":
+    sys.exit(main())

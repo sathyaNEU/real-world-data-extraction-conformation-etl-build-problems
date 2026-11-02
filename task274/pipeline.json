@@ -1,66 +1,71 @@
 {
- "task": "task274",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics",
- "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-11-01",
- "stump": "A competent analyst pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names the wrong counties, or divides every result by the check's bias and names fewer; the immunoassay's bias is set at each calibration, the calibrator lot changed on its own dates and every recalibration moved it, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
- "architecture": 3,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-23",
-  "checks": 51,
-  "fail": 0,
-  "warn": 0
- },
- "leak": {
-  "leak_py": "REVIEW (6 lines: county names in the plan; world vocabulary in five documents; none names the move)",
-  "reader": "a2r1 and a2r2 (architecture 2) both landed the call: each result under its own calibration's ratio from the December re-assays, anchored at the October check's calibration; asks held (0 of 32 figures each)"
- },
- "duplicate_check": {
-  "heart": "WARN (no BLOCK)",
-  "nearest": "task478 v5 0.10"
- },
- "judge": {
-  "verdict": null,
-  "disposition": null,
-  "report": "none: the judge thread (run a2r1) was stopped once both scored readers had landed the call, which spends the architecture whatever the verdict"
- },
- "returned": [],
- "resume": "PAUSED 2026-11-01 at the draw of architecture 3. Reopened 2026-10-25 at the author's direction to re-root in a fresh world; the second re-root pass on 2026-11-01 ran guard.py recent, coverage and mechanisms --objective descriptive-distribution, and slots on every candidate's mechanism and setting nouns, read the sibling slots' notes and resume lines, and found no candidate that clears them: each was spent in another slot or on a card, landed by the field's method as a reflex, priced by a model of the measurement or an open form, an instrument artefact (Layer 1), unidentified, a WHAT, a reading or a stated rule, or banned in the window (DESIGN_NOTE.md's last Tried and rejected line lists each with its record). No card was registered and the v2 card keeps architecture_spent. Next action, the author's call: retire the number, move it to another objective, or name ground to draw from. A session resuming the draw reads both architecture-3 lines first and starts only from ground neither lists, with guard.py check run on the registered card as the last act of stage 1.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)",
- "build": {
-  "seed": 893,
-  "checks_failed": 0,
-  "verify": "PASS",
-  "byte_identical": true,
-  "figures_check": "50 of 50",
-  "cracker": "0 of 32, pair ceiling 28.5"
- },
- "architectures": [
-  {
-   "architecture": 1,
-   "drawn": "2026-10-23",
-   "fate": "spent 2026-10-23 at stage 4: Gate F failed, the scored reader fitted a survivor curve to the plant ledger and committed the golden 33,000"
+  "task": "task274",
+  "status": "SHIPPED",
+  "domain": "criminology-justice/intervention-policing-policy-evaluation",
+  "objective": "experiment-causal",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-11-02",
+  "stump": "A competent analyst analyses the lottery as randomised, reads each arm's cumulative incidence of conviction at the longest follow-up and renews at full scale on a cut of 31 points (the recorded shares give 36); the offer defers its own outcome, since a participant is convicted only after the program terminates them and a terminated case is then tried on the stipulated record months later, and the program terminates almost a quarter of those who reach its final review, so only completing every open offered case through the program's month-by-month termination chance, the final review included, and the conviction rate terminated cases reach files a cut of 18 points and renewal at the pilot's scale.",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-02"
   },
-  {
-   "architecture": 2,
-   "drawn": "2026-10-23",
-   "fate": "spent 2026-10-23 at stage 4: Gate F failed, both scored readers built the per-calibration bridge anchored at the check and committed the golden four counties"
+  "leak": {
+    "leak_py": "REVIEW 2026-11-02 on the final cut (no LEAK): the resolution lists all three tiers; generic vocabulary in the resolution and agreement; an offense title read as a boolean; scheduled program end dates past the export date; each ruled in the design note",
+    "reader": "pass 1: no decisive-step sentence, no ranking or describing file, no answer figure; Q6 rule-application concern settled by measurement (R3a, R3b); realism tells fixed. Re-read after the resolution edit: nothing names the decisive step (the nearest sentence is the filed WHAT), Q6 an analytical choice, the restitution flag is SF20; no fix"
   },
-  {
-   "architecture": 3,
-   "drawn": null,
-   "fate": "not drawn 2026-10-23, and not drawn again 2026-11-01: a second re-root pass screened about seventy more candidates and none cleared the screens, the window and the three rules (DESIGN_NOTE.md, the last two Tried and rejected lines); no card was registered"
+  "duplicate_check": {
+    "heart": "WARN 2026-11-02 on the final cut (question form against task456 in the local window, pushed out by the siblings registered before this card); nearest task266 v1 stump 0.07, task172 v2 driver 0.07",
+    "surface": "303 builds screened, 0 promoted, nearest 0.040",
+    "nearest": "task172 v2 0.07"
+  },
+  "judge": {
+    "verdict": "pass 1: DETERMINISTIC (thread APPROVE), judge agent FIX_NOW on the estimand wording, repaired at authority; pass 2: DETERMINISTIC",
+    "disposition": "APPROVE (pass 2); residual reading of the cohort ending on the cut closed by the data as SF23 (17.36, same call)",
+    "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "report": "determinism_check_report.md, determinism_check_report_pass2.md"
+  },
+  "returned": [],
+  "resume": "",
+  "approved": null,
+  "delivered": "2026-11-02",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)",
+  "architectures": [
+    {
+      "architecture": 1,
+      "drawn": "2026-10-23",
+      "fate": "spent 2026-10-23 at stage 4: Gate F failed, the scored reader fitted a survivor curve to the plant ledger and committed the golden 33,000"
+    },
+    {
+      "architecture": 2,
+      "drawn": "2026-10-23",
+      "fate": "spent 2026-10-23 at stage 4: Gate F failed, both scored readers built the per-calibration bridge anchored at the check and committed the golden four counties"
+    },
+    {
+      "architecture": 3,
+      "drawn": "2026-11-02",
+      "fate": "shipped 2026-11-02, pending the portal",
+      "objective": "experiment-causal",
+      "note": "drawn 2026-11-02, re-registered 00:52:16Z after the sibling check (context artifact, deliverables, question form and four personas redrawn)"
+    }
+  ],
+  "retask": "2026-11-01, the author: objective moved from descriptive-distribution to experiment-causal (retirement not taken); START_HERE.md not edited, the range fixes which objective a number belongs to and nothing else",
+  "gates": {
+    "checks": "98 of 98",
+    "verify": "0 problems",
+    "rebuild": "byte-identical (two rebuilds, identical to the judged pack)",
+    "figures_check": "exit 0, 51 figures",
+    "precut": "exit 0, 61 checks",
+    "voice_check": "exit 0",
+    "ceiling": "pair 28.5, mirror 0.0",
+    "container_audit": "clean on target and golden"
   }
- ]
 }

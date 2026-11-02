@@ -1,69 +1,63 @@
+# task274 submission
+
 ## Tags
 
-**Domain:** Survey Research & Official Statistics (nonresponse, calibration and measurement-error adjustment).
-**Analytical objective:** Descriptive & Distribution Analysis.
+**Domain:** Criminology & Justice (intervention, policing and policy evaluation).  
+**Analytical objective:** Experiment & Causal Analysis.
 
 ## 1. Final Recommendation
 
-**Open the 2027 vitamin D programme first in Wexmoor, Corvale, Lassiter and Inskeep: in each, more than 30 per cent of adults had serum 25(OH)D below 20 ng/mL on the reference measurement procedure's scale in the 2025 wave.**
-Each 2025 result is put on the reference scale through the calibration it was measured under: the October accuracy check fixes the bias of IA1's calibration of 2025-10-12, and the December bridging run carries it to every calibration of both analyzers.
+**We should renew Nethercote's pretrial diversion agreement for 2027 at the pilot's scale.**
+Being offered a place lowers the share of listed defendants convicted in the referred case by 18 percentage points, 56% not offered against 38% offered, above the resolution's 15-point floor and short of its 25 points for full scale. Not full scale on the shares the docket records by 31 August 2026 (53% against 18%) or on each group's cumulative incidence of conviction at the longest follow-up (31 points), which count open offered cases as unconvicted while most of them are participants the program has not yet terminated or completed. Not a lapse on the cases already ended, which keep the terminated participants and leave out those still in the program.
 
 ## 2. Critical Components
 
-1. Accuracy-based check, event 2025-B (IA1, reagent lot 43012, 15 October 2025): mean difference **+13.4 per cent** from the reference values, under the IA1 calibration of 2025-10-12 07:50.
-2. Bridging run: **959** stored duplicates paired with the same adults' primary results; the run reads about **20 per cent** above the reference scale.
-3. The 4,861 final primary results were measured under **35** calibrations (17 on IA1, 18 on IA2), each with its own shift against the bridging run.
-4. Share of adults below 20 ng/mL on the reference scale, to the nearest whole per cent: Wexmoor 36, Corvale 34, Lassiter 32, Ulverne 24, Vellance 20, Quennel 20, Yarrowmere 26, Inskeep 33.
-5. Every county stands at least **1.6 points** from 30 per cent.
+1. Share convicted at final disposition among defendants not offered a place: **56%**
+2. Share convicted at final disposition among defendants offered a place: **38%**
+3. Chance a participant is terminated within the twelve-month term: **39%**
+4. Share of terminated cases ending in conviction: **91%**
 
 ## 3. Step-by-Step Solution
 
-1. Kept the final results (RESULT_STATUS F) in lis_vitd_results_2025.csv and joined each to its adult through the tracking export's labels (hyphen removed) and to county and WTMEC2025 through the examined persons file.
-2. Placed each result under the calibration accepted on its analyzer most recently before it was run (analyzer_event_log_2025.csv in UTC, converted to Mountain time; LIS codes to serial numbers through the instrument register).
-3. Paired each bridging result with the same adult's primary result and took, for each calibration, the mean of the log of the primary result over the bridging result.
-4. Took the check's mean difference as the bias of the IA1 calibration in force on 15 October, so the bridging run's bias is that bias less the calibration's mean log ratio.
-5. Divided each result by the bridging run's bias times its own calibration's ratio, weighted with WTMEC2025 and read each county's share below 20 ng/mL against 30 per cent.
-6. Ask A: per adult, summed each product's vitamin D per unit (label amount in IU, mcg times 40, divided by the serving size; GENERIC lines as typed) times units a day times days taken, over 30; a GENERIC line that repeats one of the adult's labelled lines in strength per unit, days and units a day is that bottle's line appended by product matching and counts once; weighted with WTINT2025 over interviewed adults.
-7. Ask B: where a dwelling was screened twice, kept the sample persons of its later screening only (the earlier screening's people were selected again); left out persons found ineligible; counted complete, partial and proxy interviews and persons examined at the MEC.
+1. Took each draw's list and result from diversion_lottery_draws_2025_2026.xlsx and joined both docket extracts (legacy_docket_events_2025_2026.csv and cms_docket_events_2026.csv) on the case number in either format, with the new system's UTC stamps on Central dates and one event per date and kind: 1,801 defendants offered a place and 1,807 not offered.
+2. Ended each case at its first disposition event (a guilty plea, a guilty verdict or a guilty finding on the stipulated record convicted; a dismissal, nolle prosequi, acquittal or dismissal on completion not) and completed open not-offered and declined cases at their own group's disposed rate: 56% not offered, and 55% for the 12% of offered defendants who declined.
+3. Built a life table of terminations by program month from each agreement's term in its docket entry and each termination's date: the final review terminates 23% of the participants who reach it, and the chance of termination within the term is 39%.
+4. Took the conviction rate of terminated cases already disposed: 91%.
+5. Completed the offered group through those rates, as Resolution 2025-31 section 3 counts every listed defendant at final disposition: 38% convicted, a reduction of 18 percentage points.
+6. Classed each case filed in fiscal 2026 by its count 1 under PDU-2026-01's 2026 sections, reading a section in the new system's record of a case converted at go-live as a 2026 section and every other section in the numbering in force on its offense date through penal_code_conversion_table_2026.csv, giving the class and division counts in block 4.
+7. Took each Nethercote site's fiscal 2026 hours as each participant's last running total in the new system's workbooks plus the old system's monthly hours for participants who left before 16 January 2026, and its restitution as the old system's receipts plus the new system's amounts divided by 0.95 (agreement clause 6), both January 2026 reports included, giving the site figures in block 4.
+8. Applied Resolution 2025-31 section 5: 18 points is at least 15 and under 25, so the agreement is renewed at the pilot's scale.
 
 ## 4. Deliverable Answers
 
-### vitamin_d_status_2025.xlsx
+### diversion_renewal_memo_2027.docx
 
-1. Counties where the programme opens first: Wexmoor, Corvale, Lassiter, Inskeep; not Ulverne, Vellance, Quennel, Yarrowmere.
-2. Interviewed adults whose supplements averaged at least 1,000 IU of vitamin D a day (per cent):
-   - Wexmoor: 23.4
-   - Corvale: 20.2
-   - Lassiter: 20.3
-   - Ulverne: 19.9
-   - Vellance: 21.0
-   - Quennel: 21.7
-   - Yarrowmere: 22.1
-   - Inskeep: 22.1
-3. At least 2,000 IU a day (per cent):
-   - Wexmoor: 9.0
-   - Corvale: 8.3
-   - Lassiter: 6.8
-   - Ulverne: 6.4
-   - Vellance: 8.5
-   - Quennel: 9.6
-   - Yarrowmere: 9.1
-   - Inskeep: 8.7
-4. Interview response rate (per cent):
-   - Wexmoor: 80.1
-   - Corvale: 81.9
-   - Lassiter: 83.6
-   - Ulverne: 77.7
-   - Vellance: 80.4
-   - Quennel: 78.3
-   - Yarrowmere: 77.7
-   - Inskeep: 80.9
-5. Examination response rate (per cent):
-   - Wexmoor: 62.6
-   - Corvale: 63.7
-   - Lassiter: 65.5
-   - Ulverne: 68.7
-   - Vellance: 66.5
-   - Quennel: 64.3
-   - Yarrowmere: 66.1
-   - Inskeep: 60.2
+1. Call: renew Nethercote's pretrial diversion agreement for 2027 at the pilot's scale.
+2. Reduction in the share convicted from being offered a place: 18 percentage points.
+3. Share convicted among defendants offered a place: 38%.
+4. Share convicted among defendants not offered a place: 56%.
+5. Cases filed in fiscal 2026 by eligible class of the lead charge, whole cases:
+   - Theft and fraud: 1,962
+   - Criminal damage: 655
+   - Drug possession: 1,219
+   - Public order: 1,125
+   - License and driving: 947
+6. Eligible cases filed in fiscal 2026 by court division, whole cases:
+   - Larkmoor City: 2,325
+   - Bramwick: 1,445
+   - Wendmoor: 1,219
+   - Strandham: 919
+7. Community service hours participants worked in fiscal 2026 by Nethercote site, whole hours:
+   - Larkmoor City: 8,051
+   - Bramwick: 5,194
+   - Wendmoor: 4,926
+   - Strandham: 3,339
+8. Restitution participants paid in fiscal 2026 by Nethercote site, whole dollars:
+   - Larkmoor City: 37,165
+   - Bramwick: 33,175
+   - Wendmoor: 25,530
+   - Strandham: 19,325
+
+### conviction_by_arm_2027.png
+
+1. Line chart of each group's share convicted in the referred case by month since its draw, months 0 to 14, as recorded to 31 August 2026, with each group's share at final disposition (56% not offered, 38% offered) as a dashed line and the 18-point reduction marked between them.
