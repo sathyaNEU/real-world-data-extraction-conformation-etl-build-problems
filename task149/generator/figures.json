@@ -1,0 +1,111 @@
+{
+ "arrival_share": {
+  "KW01": 83,
+  "KW02": 93,
+  "KW03": 92,
+  "KW04": 97,
+  "KW05": 40,
+  "KW09": 99
+ },
+ "census_commuters_served": 9310,
+ "census_daily_route": 2374.6,
+ "census_daily_route_rounded": 2400,
+ "gap_to_threshold": 88,
+ "lisnagry_route": 1758.2,
+ "network_ratio_pct": 67.8,
+ "network_route": 1610.1,
+ "ordinary_weekdays": 55,
+ "pooled_route": 1483.3,
+ "pooled_weekday_share_pct": 62.5,
+ "scope": "reduced scheme",
+ "station_means_2019": {
+  "ARD": 1650,
+  "CBY": 1442,
+  "KCN": 6426,
+  "KDK": 4099,
+  "KUH": 2293,
+  "LINE": 16968,
+  "LSG": 1058
+ },
+ "station_means_2027": {
+  "ARD": 1209,
+  "CBY": 1142,
+  "KCN": 4174,
+  "KDK": 2298,
+  "KUH": 1899,
+  "LINE": 11505,
+  "LSG": 783
+ },
+ "station_ratio": {
+  "ARD": 73,
+  "CBY": 79,
+  "KCN": 65,
+  "KDK": 56,
+  "KUH": 83,
+  "LINE": 68,
+  "LSG": 74
+ },
+ "threshold": 1400,
+ "total_boardings": 1300,
+ "total_boardings_exact": 1312.0,
+ "zone_boardings": {
+  "KW01": 310,
+  "KW02": 290,
+  "KW03": 360,
+  "KW04": 80,
+  "KW05": 150,
+  "KW06": 40,
+  "KW07": 10,
+  "KW08": 20,
+  "KW09": 50,
+  "KW11": 10
+ },
+ "zone_commuters": {
+  "KW01": 1430,
+  "KW02": 1210,
+  "KW03": 2000,
+  "KW04": 540,
+  "KW05": 1330,
+  "KW06": 750,
+  "KW07": 630,
+  "KW08": 420,
+  "KW09": 510,
+  "KW11": 490
+ },
+ "zone_days_per_week": {
+  "KW01": 2.72,
+  "KW02": 2.52,
+  "KW03": 2.78,
+  "KW04": 2.69,
+  "KW05": 2.73,
+  "KW06": 3.67,
+  "KW07": 3.91,
+  "KW08": 3.73,
+  "KW09": 3.94,
+  "KW11": 3.6
+ },
+ "zone_share": {
+  "KW01": 0.4,
+  "KW02": 0.47,
+  "KW03": 0.32,
+  "KW04": 0.28,
+  "KW05": 0.21,
+  "KW06": 0.07,
+  "KW07": 0.03,
+  "KW08": 0.05,
+  "KW09": 0.12,
+  "KW11": 0.02
+ },
+ "zone_weekday_share": {
+  "KW01": 54.4,
+  "KW02": 50.4,
+  "KW03": 55.6,
+  "KW04": 53.9,
+  "KW05": 54.7,
+  "KW06": 73.5,
+  "KW07": 78.1,
+  "KW08": 74.6,
+  "KW09": 78.8,
+  "KW11": 72.0
+ }
+}

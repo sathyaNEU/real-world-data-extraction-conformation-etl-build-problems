@@ -316,6 +316,7 @@ def build(seed=P.SEED):
                 # copies bought before the record have already lent some of their loans
                 age_days = (P.RECORD_START.date() - d).days
                 L.remaining = [max(6, P.METER_LOANS - int(age_days / 365.0 * rl.uniform(6, 13))) for _ in range(q)]
+            L.remaining0 = list(L.remaining)
             L.lapsed_at = [None for _ in range(q)]
             lic.append(L)
             lic_by_title.setdefault(t["id"], []).append(L)
@@ -327,6 +328,7 @@ def build(seed=P.SEED):
             L = Licence(lic_id="L%06d" % (po * 3 % 999983), title=t["id"], model=model, copies=1, bought=d,
                         po_line="POL-%d-1" % po, price_gbp=unit, currency=cur)
             L.remaining = [P.METER_LOANS if model == "1U-M" else None]
+            L.remaining0 = list(L.remaining)
             L.lapsed_at = [None]
             lic.append(L)
             lic_by_title.setdefault(t["id"], []).append(L)
@@ -488,6 +490,7 @@ def simulate_title(W, t, rng, holds, loans):
                      price_gbp=round(L.price_gbp * rng.uniform(1.0, 1.08), 2), currency=L.currency,
                      renewal_of=L.lic_id, order_type="Renewal")
         rn.remaining = [P.METER_LOANS]
+        rn.remaining0 = [P.METER_LOANS]
         rn.lapsed_at = [None]
         return rn
 

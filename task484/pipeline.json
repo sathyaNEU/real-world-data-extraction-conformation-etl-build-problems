@@ -11,7 +11,7 @@
  "stump": "The textbook expansion with the permanent counters' same-day factors files 8 sections over three million (College Road and Grange Road in; Brookfield Way, Hollins Lane and Infirmary Road out); each section's own year is on the signal detectors of its own approach, which see one lane and give that year only through the day the count and the detectors both recorded: 9 sections.",
  "source_note": "Batch 3 re-root (2026-11-02): architecture 3 (wood combustion inventory, physical-environmental-sciences) closed with its world; architecture 4 drawn in survey-research-official-statistics / seasonal-adjustment-official-time-series-production",
  "returned": [],
- "resume": "stage 4: the main session spawns the isolated leak reader and the determinism judge on zip 56c16c6a86aa119b; fix any finding in the generator and rebuild",
+ "resume": "stage 4: re-judge once on zip sha256 39174925 (the FIX_NOW repair)",
  "history": {
   "architecture_3": {
    "status": "SHIPPED",
@@ -78,19 +78,29 @@
   "date": "2026-11-02"
  },
  "gates": {
-  "generator_checks": "73 of 73",
-  "verify": "8 of 8",
+  "generator_checks": "74 of 74",
+  "verify": "11 of 11",
   "byte_identical": "two builds, 13 target and 3 golden files",
   "figures_check": "90 figures, 0 absent",
   "voice_check": "PASS",
   "leak_py": "REVIEW, no LEAK (asof 2026-03-23)",
   "heart": "WARN (strategy risk, objective use), no BLOCK",
-  "surface": "exit 0; 7 pairs promoted for adjudication: G2 label shared with task485 (back to back) and task482 (two apart), drivers unrelated; survey-research x etl pairing with PAUSED task483 and task486 by number; top-1% surface proximity with task134, task229, task261 (gap time)",
-  "zip": "56c16c6a86aa119b"
+  "surface": "exit 0 on the repaired cut; the same 7 pairs promoted for adjudication as before the repair",
+  "zip": "6816119c94383f92",
+  "zip_sha256": "3917492588afc764"
  },
  "duplicate_check": {
   "heart": "WARN (strategy risk grain_or_unit, answered in the note; objective use), no BLOCK",
-  "surface": "exit 0, 7 promoted pairs listed for the main session's adjudication",
+  "surface": "exit 0 on the repaired cut; the same 7 pairs promoted for adjudication as before the repair",
+  "date": "2026-11-02"
+ },
+ "judge": {
+  "pass": 1,
+  "zip_sha256": "ec5ec5c188fe804d",
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "findings": "container hygiene (openpyxl app.xml AppVersion 3.1, python-docx template parts); ask B 'each approach' (Gate E): the register's approach column held the road alone",
+  "repair": "every xlsx and docx finalised as its application saves it (asserted H1, verify); each register arm entered as road and side (asserted SF18); no graded figure moved",
   "date": "2026-11-02"
  }
 }

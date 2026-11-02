@@ -303,7 +303,8 @@ class World:
             r = np.random.default_rng([P.SEED, no, 13])
             for k, c in enumerate(self.co[:13]):
                 d0 = c["date"]
-                cands = [d0 + dt.timedelta(days=j) for j in range(7) if hours_of(d0 + dt.timedelta(days=j))]
+                # Thursdays are changeover check days, so the weekly random audit runs on another trading day
+                cands = [d0 + dt.timedelta(days=j) for j in range(1, 7) if hours_of(d0 + dt.timedelta(days=j))]
                 d = cands[r.integers(len(cands))]
                 hrs = hours_of(d)
                 start = r.uniform(hrs[0] + 0.25, hrs[-1] + 0.5)
@@ -377,7 +378,7 @@ class World:
         for s in P.STORES[:9]:
             no = s[0]
             if r.random() < 0.8:
-                t = local(dt.date(2026, 9, 30), r.uniform(20.1, 21.9))
+                t = local(dt.date(2026, 9, 30), r.uniform(21.05, 21.95))
                 i = int(r.integers(len(self.upc)))
                 sh = float(self.reg[i])
                 pool.append((no, t, i, round(sh + 0.40, 2), sh))
@@ -403,6 +404,40 @@ class World:
                 if later.date() in P.CLOSED or not hours_of(later.date()):
                     later = later + dt.timedelta(days=1)
                 self.claim_rows.append((no, t, i, sc, sh, "desk", reg_no, txn[no], ("desk", later)))
+        for s in P.STORES:
+            no = s[0]
+            for _ in range(30):
+                v = self.store_payout(no)
+                if abs((v % 1.0) - 0.5) > 0.05:
+                    break
+                rows = [k for k, x in enumerate(self.claim_rows) if x[0] == no and x[5] == "till"]
+                if not rows:
+                    break
+                k = rows[int(r.integers(len(rows)))]
+                x = self.claim_rows[k]
+                kind = x[8][0]
+                new = {"plain": "dup", "dup": "partial", "partial": "plain"}[kind]
+                self.claim_rows[k] = x[:8] + ((new, x[8][1]),)
+
+    def store_payout(self, no):
+        """the dollars store `no` paid out under the Code in the quarter (the clean truth)"""
+        q0 = dt.datetime(2026, 10, 1, tzinfo=TZ)
+        q1 = dt.datetime(2027, 1, 1, tzinfo=TZ)
+        tot = 0.0
+        for (s, t, i, sc, sh, chan, reg_no, txn, (kind, later)) in self.claim_rows:
+            if s != no:
+                continue
+            pay_now = max(0.0, round(sh - 10.00, 2))
+            refund = round(sc - pay_now, 2)
+            if chan == "till":
+                charged = sh if kind == "partial" else pay_now
+                if q0 <= t < q1:
+                    tot += sc - charged
+                if kind == "partial" and q0 <= later < q1:
+                    tot += refund - (sc - sh)
+            elif q0 <= later < q1:
+                tot += refund
+        return tot
 
     # ------------------------------------------------------------------ flyer keying (ask B)
     def flyer_keying(self):
@@ -443,11 +478,42 @@ class World:
                         self.keyed[(k, int(i), zone, "REVISED")] = revised
                         if revised != good and r.random() < 0.55:
                             self.corr[(k, int(i), zone)] = (int(r.integers(1, 5)), good[0], good[1])
-                        zw = 0.6 if zone == 1 else 0.4
-                        lam = self.pop[i] * 26 * zw
-                        dayw = np.array([1.45, 1.1, 1.25, 1.35, 0.8, 0.75, 0.8])
-                        for j in range(7):
-                            self.ad_units[(k, int(i), zone, j)] = int(r.poisson(lam * dayw[j]) + (1 if j == 0 else 0))
+            self.draw_units(k, r)
+            for _ in range(20):
+                v = self.week_over(k)
+                if abs((v % 1.0) - 0.5) > 0.05:
+                    break
+                self.draw_units(k, r)
+
+    def draw_units(self, k, r):
+        dayw = np.array([1.45, 1.1, 1.25, 1.35, 0.8, 0.75, 0.8])
+        for (kk, line, members, qty, pq, lead) in self.ad_lines:
+            if kk != k:
+                continue
+            for i in members:
+                for zone in (1, 2):
+                    zw = 0.6 if zone == 1 else 0.4
+                    lam = self.pop[i] * 26 * zw
+                    for j in range(7):
+                        self.ad_units[(k, int(i), zone, j)] = int(r.poisson(lam * dayw[j]) + (1 if j == 0 else 0))
+
+    def week_over(self, k):
+        """the dollars customers paid above the flyer price in flyer week k (the clean truth)"""
+        tot = 0.0
+        for (kk, line, members, qty, pq, lead) in self.ad_lines:
+            if kk != k:
+                continue
+            au = pq / qty
+            for i in members:
+                for zone in (1, 2):
+                    kq, kp = self.keyed[(k, int(i), zone, "REVISED")]
+                    fx = self.corr.get((k, int(i), zone))
+                    for j in range(7):
+                        q_, p_ = (fx[1], fx[2]) if fx and j >= fx[0] else (kq, kp)
+                        ku = p_ / q_
+                        if ku > au + 0.004:
+                            tot += (ku - au) * self.ad_units[(k, int(i), zone, j)]
+        return tot
 
 
 def abbrev(parts):

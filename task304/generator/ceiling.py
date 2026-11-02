@@ -2,7 +2,7 @@
 
 The cracker lands the call, runs the hygiene battery and executes every filed rule: on the annex it de-duplicates on
 the reference (each record's own key), applies the fatal collision unit's 30-day deaths and leaves out the roads the
-register gives to the strategic road network (by road number, the whole road). The mirror stops at the cluster-site
+register gives to the strategic road network, section by section as its grid references place them. The mirror stops at the cluster-site
 route on the call (each listed junction's 2021 to 2025 count as its expected count) and handles the annex as the
 cracker does. Scores use the 38 / 7 / 55 weights: C = 38 + 7 + 55 Lc, S = r + 7 + 55 Ls, r the mirror's share of the
 main side."""
@@ -25,8 +25,8 @@ def score():
     pk = AN.Pack(os.path.join(TASK, "target"))
     F = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
     gold_a, gold_b = pk.ask_a(), pk.ask_b()
-    crack_a = pk.ask_a(dedupe="ref", deaths="match", trunk="road")
-    crack_b = pk.ask_b(dedupe="ref", deaths="match", trunk="road")
+    crack_a = pk.ask_a(dedupe="ref", deaths="match", trunk="register")
+    crack_b = pk.ask_b(dedupe="ref", deaths="match", trunk="register")
     hits_a = sum(crack_a[k] == gold_a[k] for k in gold_a)
     hits_b = sum(crack_b[k] == gold_b[k] for k in gold_b)
     n_ask = len(gold_a) + len(gold_b)
@@ -45,7 +45,7 @@ def score():
 
 def main():
     s = score()
-    print("ask A cracker hits: %d of %d (re-sends kept twice, trunk by road number)" % (s["hits_a"], s["n_a"]))
+    print("ask A cracker hits: %d of %d (re-sends kept twice; register applied by section)" % (s["hits_a"], s["n_a"]))
     print("ask B cracker hits: %d of %d" % (s["hits_b"], s["n_b"]))
     print("mirror main-side hits: %d of %d -> r = %.1f" % (s["mirror_hits"], s["main_crit"], s["r"]))
     print("cracker C = %.1f, mirror S = %.1f" % (s["C"], s["S"]))

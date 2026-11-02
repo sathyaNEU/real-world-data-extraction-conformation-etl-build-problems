@@ -1,0 +1,114 @@
+{
+ "architecture": 2,
+ "as_of": "2027-12-06",
+ "decision": "the commuter boardings the new Rathgarvan station will carry on an average ordinary weekday in 2029, and on that figure whether the full or the reduced scheme is built",
+ "deliverables": [
+  "rathgarvan_boardings_2029.xlsx",
+  "rathgarvan_demand_note.docx"
+ ],
+ "distractor_files": [
+  "rathgarvan_housing_pipeline_oct2027.xlsx",
+  "kilcarrow_employment_outlook_2030.docx",
+  "ardnagree_line_draft_timetable_2028.csv"
+ ],
+ "distractors": {
+  "ardnagree_line_draft_timetable_2028.csv": "the draft 2028 departures from Rathgarvan: service frequency and train length do not enter the commuter count",
+  "kilcarrow_employment_outlook_2030.docx": "jobs growth by employment area to 2030: the refresh holds the catchment's commuters at the 2022 census base",
+  "rathgarvan_housing_pipeline_oct2027.xlsx": "new homes in the catchment: every expected completion falls in 2030 or later, and the refresh holds the census base at 2022"
+ },
+ "files": {
+  "ardnagree_line_draft_timetable_2028.csv": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Ardnagree line operator, draft 2028 timetable, departures from Rathgarvan; synthetic, built for this task"
+  },
+  "ardnagree_line_gate_entries_20180101_20271130.csv": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Ardnagree line operator, daily gate entries by location code, 1 January 2018 to 30 November 2027; synthetic, built for this task"
+  },
+  "ardnagree_line_station_register.csv": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Ardnagree line operator, station register; synthetic, built for this task"
+  },
+  "cell_zone_lookup_v3.csv": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Vantra Insights, cell to census zone lookup v3; synthetic, built for this task"
+  },
+  "census2022_pow_rathgarvan_catchment.xlsx": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Census 2022 place of work tables, Rathgarvan catchment small areas, KMTA GIS extract; synthetic, built for this task"
+  },
+  "kilcarrow_calendar_2018_2027.csv": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "KMTA, public holiday and school break calendar 2018 to 2027; synthetic, built for this task"
+  },
+  "kilcarrow_employment_outlook_2030.docx": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Kilcarrow City and County Council Economic Development Unit, employment outlook to 2030; synthetic, built for this task"
+  },
+  "lisnagry_opening_review_apr2020.pdf": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "KMTA Rail Planning, Lisnagry Station post-opening review, April 2020; synthetic, built for this task"
+  },
+  "mobility_devices_2027w36_w47.csv": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Vantra Insights, Resident Mobility Panel extract RMP-2027-114, devices; synthetic, built for this task"
+  },
+  "mobility_stays_2027w36_w47.csv": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Vantra Insights, Resident Mobility Panel extract RMP-2027-114, stays; synthetic, built for this task"
+  },
+  "rathgarvan_fbc_demand_refresh_dec2027.pdf": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "KMTA Rail Planning, Rathgarvan Station Final Business Case demand refresh, draft v0.4; synthetic, built for this task"
+  },
+  "rathgarvan_housing_pipeline_oct2027.xlsx": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Kilcarrow City and County Council Planning Department, Rathgarvan residential pipeline, October 2027; synthetic, built for this task"
+  },
+  "vantra_resident_panel_extract_notes.pdf": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Vantra Insights, RMP-2027-114 extract notes; synthetic, built for this task"
+  }
+ },
+ "largest_file": {
+  "name": "mobility_stays_2027w36_w47.csv",
+  "rows": 136684
+ },
+ "row_counts": {
+  "ardnagree_line_draft_timetable_2028.csv": 92,
+  "ardnagree_line_gate_entries_20180101_20271130.csv": 28196,
+  "ardnagree_line_station_register.csv": 8,
+  "cell_zone_lookup_v3.csv": 35,
+  "census2022_pow_rathgarvan_catchment.xlsx": 196,
+  "kilcarrow_calendar_2018_2027.csv": 717,
+  "mobility_devices_2027w36_w47.csv": 1372,
+  "mobility_stays_2027w36_w47.csv": 136684
+ },
+ "task": "task149"
+}

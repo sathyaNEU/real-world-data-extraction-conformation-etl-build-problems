@@ -160,7 +160,8 @@ def main():
         fam[lab] = {r["name"]: r["benefit"] for r in f.values()}
     fam["layouts fitted apart"] = separate_fits(pk)
     same_call = all(top(v)[0] == best and top(v)[1] >= 1.18 for v in fam.values())
-    check("R3d every member of the standing family files Mill Lane Crossroads (margin 1.18 or more)", same_call,
+    check("R3d every licensed estimator of the filed quantity (the record weighed against a performance function with a "
+          "layout term, across specifications) files Mill Lane Crossroads (margin 1.18 or more)", same_call,
           str({k: "%s %.2f" % top(v) for k, v in fam.items()}))
     bins_ok = all(len({r1(v[n]) for v in fam.values()}) == 1 for n in gold)
     check("R3e every member of the standing family prints every listed junction's benefit at the same one-decimal value",
@@ -205,8 +206,30 @@ def main():
           a_recv != pk.ask_a())
     check("SF13 severity follows A1's 30-day definition: without the unit's notifications fatal and serious move",
           pk.ask_a(deaths="none") != pk.ask_a())
-    check("SF14 roads the county is highway authority for: the register's sections by node; the whole of a road with a "
-          "trunk section left out would move the figures", pk.ask_a(trunk="road") != pk.ask_a())
+    check("SF14 roads the county is highway authority for: the register's sections by their grid references; the whole of a "
+          "road with a trunk section left out would move the figures", pk.ask_a(trunk="road") != pk.ask_a())
+    reg = pk.road_register()
+    u = [x for x in reg if x["road"] == "U"]
+    check("SF17 unclassified roads: the register's own entry gives them to the county; leaving them out moves every cell",
+          len(u) == 1 and u[0]["auth"] == "Ardleshire County Council"
+          and all(v != pk.ask_a()[k] for k, v in pk.ask_a(trunk="classified").items()))
+    a46 = sorted((x for x in reg if x["road"] == "A4600"), key=lambda x: x["e0"])
+    placed = [c for c in pk.provisional(trunk="none") if c["road"] in ("A4600", "A6510")]
+    check("SF18 the A4600 handover is pinned at one grid easting on the register rows (the Brindham East node's) and every "
+          "A4600 and A6510 collision falls in exactly one section",
+          len(a46) == 2 and a46[0]["e1"] == a46[1]["e0"] == W.trunk_boundary
+          and all(len(pk.sections_hit(c["road"], c["e"], reg)) == 1 for c in placed), str(len(placed)))
+    gtxt = " ".join(pdf_text(os.path.join(TARGET, "junction_safety_fund_guidance_2027.pdf")).split())
+    check("L1 clause 3.3 files the quantity: the long-run yearly average the junction would have as it stands, its recorded "
+          "count part of the evidence and not the average, and names no model, comparison group or weighting",
+          "long-run yearly average that junction would have as it stands" in gtxt
+          and "are part of the evidence on that average and are not the average itself" in gtxt
+          and not re.search(r"model|performance function|empirical|bayes|weight|comparable|similar junctions|shrink", gtxt, re.I))
+    check("L2 the literal reader with the own-count input (the record, scaled to 2026 traffic or not) executes the quantity "
+          "clause 3.3 excludes and files Saxby Cross; the model alone leaves out the record 3.3 makes evidence and files "
+          "Tollgate Crossroads; only the record weighed against the model files Mill Lane Crossroads",
+          lad["observed"][0] == lad["traffic_observed"][0] == "Saxby Cross" and lad["model_only"][0] == "Tollgate Crossroads"
+          and lad["golden"][0] == best)
     check("SF15 road user groups as A2 defines them (motorcycles of any size, taxis and private hire cars with cars)",
           set(k[1] for k in pk.ask_b()) == set(AN.GROUPS))
     check("SF16 A2 counts the casualties of the A1 collisions (same scope, same quarters)",
@@ -230,8 +253,8 @@ def main():
     check("A3 every third-quarter cell of ask A holds a collision on the detrunked section of the A4600",
           all((3, s) in a46 for s in (1, 2, 3)))
     check("A4 every notification of a death within 30 days matches one collision", pk.notif_matched >= 9)
-    check("A5 the cracker's annex route (re-sends kept, trunk by road number) misses every cell of ask A",
-          sum(pk.ask_a(dedupe="ref", trunk="road")[k] == ga[k] for k in ga) == 0)
+    check("A5 a response that de-duplicates on the reference (each re-send kept twice) misses every first- and "
+          "second-quarter cell of ask A", all(pk.ask_a(dedupe="ref")[k] != ga[k] for k in ga if k[0] in (1, 2)))
     check("A6 the main call's files carry no ask device: the validated record and inventory hold no 2026 collision, no "
           "re-send and no fatality notification", True)
 

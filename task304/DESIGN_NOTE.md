@@ -98,9 +98,11 @@ card's lineage. Everything above `## Architecture 4 record` is architecture 5.
   order, Mill Lane Crossroads is first on none of them (Saxby Cross leads the count and the rate, Coppice Way
   Junction the traffic, Tollgate Crossroads the model's prediction).
 - **Pins:** the WHAT is filed in the fund's guidance in its own genre (the benefit as expected annual injury
-  collisions as the junction stands at its 2026 traffic, times one less the Table 2 factor; the validated record
-  2021 to 2025; the listed junctions); no filed sentence names a performance function, a weighting, chance or
-  selection, and deleting any sentence unfixes the quantity, the window or the factor, never the step.
+  collisions as the junction stands at its 2026 traffic, times one less the Table 2 factor; clause 3.3's expectation as
+  the long-run yearly average the junction would have with its own layout and traffic, its recorded count part of the
+  evidence and not the average; the validated record 2021 to 2025; the listed junctions); no filed sentence names a
+  performance function, a comparison group, a weighting or a blend, and deleting any sentence unfixes the quantity, the
+  window or the factor, never the step.
 
 ## Default path
 
@@ -168,7 +170,10 @@ junctions shows.
 - **Estimand:** the fund's guidance (junction_safety_fund_guidance_2027.pdf, clauses 3.1 to 3.4 and Table 2): one
   roundabout at one listed give-way or stop-controlled junction; its benefit the junction's expected annual injury
   collisions as it stands at its 2026 traffic times one less the factor for its layout (0.52 crossroads, 0.70 T or
-  staggered); expectations estimated from the validated record for 2021 to 2025; the junction with the largest benefit.
+  staggered); the expectation the long-run yearly average the junction would have as it stands, with its own layout
+  and traffic, the collisions it recorded in the years it was listed for part of the evidence and not the average
+  (clause 3.3); expectations estimated from the validated record for 2021 to 2025; the junction with the largest
+  benefit.
 - **No decoy:** nothing is planted: no memo, draft or stakeholder figure argues for a junction; the screening note
   lists the junctions alphabetically without counts; no shipped artifact ranks the junctions on the benefit.
 - **No certified replay:** no shipped figure certifies an expected count, a model or a benefit; nothing is recovered by
@@ -207,9 +212,11 @@ junctions shows.
 | SF11 | the comparable junctions | the inventory's give-way and stop-controlled T, staggered and crossroads junctions | every layout with its own terms | same call | asserted (R2.7) |
 | SF12 | the quarter of a collision | its date | the date the force received it | figures move | the asking sentence (collisions in each quarter) |
 | SF13 | severity | A1's 30-day definition, the most severely injured casualty | the police record as submitted | figures move | guidance A1 |
-| SF14 | the county's roads | sections the register gives the county, between its nodes | every road with a trunk section left out whole | figures move | guidance A1 and the register |
+| SF14 | the county's roads | sections the register gives the county, placed by their grid references | every road with a trunk section left out whole | figures move | guidance A1 and the register |
 | SF15 | road user | A2's four groups (motorcycles of any size; cars with taxis and private hire) | e-scooters with cyclists; vans with cars | figures move | guidance A2 |
 | SF16 | the casualties | the casualties of the A1 collisions | every casualty in the extracts | figures move | guidance A2 (those collisions) |
+| SF17 | unclassified roads | the county's, by the register's own entry | left out as unregistered | every cell moves | the register's U entry |
+| SF18 | the A4600 handover | the grid easting on the register's section rows (the Brindham East node's) | the nearest inventory node's section | figures move | the register's grid references; asserted one section per collision |
 
 ## Ladder
 
@@ -263,13 +270,19 @@ expectation; (8) the reflex sweep as code (checks.py R3a to R3c) lands every ref
 
 Executed word for word: the prompt asks which listed junction takes the roundabout and the collisions a year a
 roundabout would prevent at each; clause 3.2 defines the benefit as the junction's expected annual injury collisions
-as it stands at its 2026 traffic times one less its Table 2 factor, clause 3.3 says the expectation is estimated from
-the validated record for 2021 to 2025, and clause 3.4 names the screening's list. A literal reader must estimate an
-expectation; the five-year count is not one for a junction the screening listed on that count (the note states the
-rule: twelve or more in 2021 to 2025), and the function alone is not the junction's own expectation. SF1 to SF11 show
-every convention converges or is ruled out by a quoted sentence. The asks read the same way: the asking sentences fix
-the quarters, the severities and the road user groups, and Annex A fixes the 30-day definition, the county's roads and
-the groups (SF12 to SF16).
+as it stands at its 2026 traffic times one less its Table 2 factor; clause 3.3 defines that expectation as the
+long-run yearly average the junction would have as it stands, with its own layout and traffic, says the collisions it
+recorded in the years it was listed for are part of the evidence on that average and are not the average itself, and
+files the validated record for 2021 to 2025; clause 3.4 names the screening's list. Run with the own-count input (each
+junction's 2021 to 2025 count a year, scaled to 2026 traffic or not), the literal reader is executing exactly what 3.3
+says the average is not, so it does not comply (it files Saxby Cross at 2.1); run with the model alone it leaves out
+the junction's own record that 3.3 makes part of the evidence, so it does not comply either (Tollgate Crossroads);
+only an estimate that uses the junction's record without taking it as the average complies, and every such estimate
+the record licenses (the record weighed against a performance function with a layout term, across specifications)
+files Mill Lane Crossroads at the same figures (R3d, R3e, L1, L2). SF1 to SF11 show every convention converges or is
+ruled out by a quoted sentence. The asks read the same way: the asking sentences fix the quarters, the severities and
+the road user groups, and Annex A and the register fix the 30-day definition, the county's roads (unclassified roads
+by the register's own entry, sections by their grid references) and the groups (SF12 to SF18).
 
 ## Oracles
 
@@ -296,10 +309,11 @@ Home: the fund's Annex A table A1, the county's current casualty picture behind 
   killed; the fatal collision unit's notifications carry the collision date, road, approximate time and the casualty's
   sex and age but no reference, nine deaths came after the police record was made, two came after 30 days and one is
   on a trunk road.
-- Primary device 3 (D5, out-of-scope rows known by structure): the register gives the A4600 west of its Brindham East
-  node and the whole A6510 to the strategic road network and the A4600 east of that node to the county since 2019; the
-  sections are between inventory nodes, so the split is placed only by reading the nodes' eastings in the inventory.
-  A response that leaves out every road with a trunk section drops the county's own A4600 collisions in every quarter.
+- Hazard (D5, out-of-scope rows known by structure): the register gives the A4600 west of its Brindham East handover
+  point and the whole A6510 to the strategic road network and the A4600 east of the handover to the county since 2019,
+  each section with its start and end grid references, and gives the county C-class and unclassified roads by their own
+  entries; a response that leaves out every road with a trunk section drops the county's own A4600 collisions in every
+  quarter, and one that leaves out unclassified roads moves every cell.
 - Hazards: the old system's receipt dates beside the collision dates; severity text against codes; the JSON's local
   time offsets.
 
@@ -317,16 +331,16 @@ the validated record and the inventory, and neither holds a 2026 collision (asse
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
 |---|---|---|
-| A, every quarter and severity (re-sends in Q1 and Q2, the county's A4600 in Q3) | de-duplicates on the reference and leaves out every road with a trunk section | miss |
-| B, quarter by road user except Q2 pedal cyclists (re-sent casualties in Q1 and Q2, the county's A4600 in Q3) | the same handling | miss |
+| A, the first and second quarters by severity (re-sends) | de-duplicates on the reference, applies the deaths and the register by section | miss |
+| B, the first and second quarters by road user (re-sent casualties) | the same handling | miss |
 
-The cracker keeps ask B's pedal cyclists in the second quarter, where no re-sent or A4600 casualty falls; that one of
-twelve cells is counted in the leakage below.
+No re-send falls in the third quarter, so the cracker keeps both asks' third-quarter cells (three of ask A, four of ask
+B); those seven of 21 cells are counted in the leakage below.
 
-Pair ceiling: 28.6 (the cracker 38 + 7 + 55 x 0.048 = 47.6; the mirror 0 + 7 + 55 x 0.048 = 9.6, the cluster-site
+Pair ceiling: 44.3 (the cracker 38 + 7 + 55 x 0.333 = 63.3; the mirror 0 + 7 + 55 x 0.333 = 25.3, the cluster-site
 route printing none of the six benefits; averaged)
-Mirror leakage: 4.8 per cent of ask weight
-Measured by: generator/ceiling.py (run on the cut pack: ask A 0 of 9 to the cracker, ask B 1 of 12)
+Mirror leakage: 33.3 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack: ask A 3 of 9 to the cracker, ask B 4 of 12)
 
 ## Build record
 
@@ -338,13 +352,20 @@ Measured by: generator/ceiling.py (run on the cut pack: ask A 0 of 9 to the crac
   clean truth in all 21 cells (A0, A0'). Every member of the standing family prints every benefit at the same
   one-decimal value (R3e); the nearest any member comes to a rounding edge is 0.025 (Fen Lane Junction, family 0.412
   to 0.425; Tollgate Crossroads 1.006 to 1.024; Mill Lane Crossroads 1.277 to 1.309, its expectation 2.691 to 2.727).
-- **Gates on the final cut (2026-11-02):** generator checks 58 of 58; verify 14 of 14 (its own NB2 fit by joint
-  quasi-Newton, overdispersion 0.260); two byte-identical builds, target.zip 1a624630; figures_check 37 figures, 0
+- **Stage 4 repair (2026-11-02, on 1a624630):** the leak reader was clean (question 6 analytical); the judge reproduced
+  every figure (overdispersion 0.260; the six benefits; A1 and A2 cell for cell) and returned NOT_DETERMINISTIC on
+  Gates C and E with G and H passing: clause 3.3 only said how expectations are estimated, so the own count scaled to
+  2026 traffic complied; the register listed no unclassified roads; the A4600 handover needed a placement convention.
+  Repaired in one pass by filing the WHAT: clause 3.3 now defines the expectation as the long-run yearly average the
+  junction would have as it stands, its recorded count part of the evidence and not the average (no model, comparison
+  group or blend named); the register gives the county C-class and unclassified roads by their own entries and carries
+  every section's start and end grid references, the A4600 handover at the Brindham East node's easting (SF17, SF18,
+  L1, L2 asserted). The call and every graded figure are unchanged.
+- **Gates on the final cut (2026-11-02):** generator checks 62 of 62; verify 15 of 15 (its own NB2 fit by joint
+  quasi-Newton, overdispersion 0.260); two byte-identical builds, target.zip 32a9da59; figures_check 37 figures, 0
   absent; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (710 characters); leak.py REVIEW, no LEAK (ruled below);
-  guard heart WARN (repeat.question_form against task484 v4, a card registered after this one: the prompt opens on which and how many because the call is a pick sized by a count; nearest driver 0.07); guard surface: no hard tell (no shared file, seed table or invented name;
-  personas Alison Hartley and Cheryl Gregory, the card's), two pairs promoted on surface similarity alone (corpus top 1
-  per cent) against task231 and task271, each sharing only the decisive gap label (time), for the author's adjudicated
-  clone check. Pair ceiling 28.6, mirror leakage 4.8 per cent (generator/ceiling.py).
+  guard heart and surface as recorded in the gate line below. Pair ceiling 44.3, mirror leakage 33.3 per cent
+  (generator/ceiling.py): with the handover on the register rows the careful route keeps the third quarter.
 
 **leak.py REVIEW lines, ruled:**
 - Sweep 3 on the screening note (all five of the call's distinctive words): it lists all six junctions alphabetically
@@ -1215,3 +1236,8 @@ task122, task136 and task264 on corpus-top-percent surface similarity, and task1
 - Second architecture 5 tuning (2026-11-02): Tollgate Crossroads's layouts-fitted-apart member sat 0.005 above the 1.05
   edge (family 1.055 to 1.079), so its traffic was lowered into the 1.0 bin (family 1.006 to 1.024), which also widened
   the golden margin to 1.28x; the model-alone rung still names it at 1.19x.
+- Architecture 5 stage 4 (2026-11-02, on 1a624630): NOT_DETERMINISTIC on Gates C and E, a repair: clause 3.3 named only
+  the record the expectation is estimated from, so a literal reader's own count scaled to 2026 traffic complied (Saxby
+  Cross 2.1); the register named no authority for unclassified roads (634 against 471 collisions in the first quarter);
+  the A4600 handover was placed by an inventory node, which a nearest-node reading splits differently on 6 of 144.
+  Closed by filing the quantity in 3.3, a U and a C entry in the register, and grid references on every section row.

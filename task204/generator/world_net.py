@@ -77,8 +77,11 @@ def build_timetable(rng):
                     if line == "EL" and direction == 0:
                         seq = seq_out                # WG -> PG is outbound (east)
                     off = ORIGIN_OFFSET[(line, direction)]
+                    day_trips = []
                     for (a, b, h) in HEADWAYS[(tab, daytype)]:
                         t = a + off
+                        k_band = 0
+                        peak = daytype == "WKD" and h <= 8 * 60
                         while t < b + off:
                             stimes = []
                             cur = t
@@ -87,18 +90,42 @@ def build_timetable(rng):
                                     stimes.append((s, cur, cur))
                                 else:
                                     cur += run_time(line, seq[i - 1], s, direction == 1)
-                                    arr = cur
-                                    dep = cur + (0 if i == len(seq) - 1 else DWELL)
-                                    stimes.append((s, arr, dep))
-                                    cur = dep
-                            while True:
-                                tid = str(int(rng.integers(30000000, 39999999)))
-                                if tid not in used_ids:
-                                    used_ids.add(tid)
-                                    break
-                            trips.append({"trip_id": tid, "line": line, "period": period, "daytype": daytype,
-                                          "direction": direction, "stops": stimes})
+                                    stimes.append((s, cur, cur + DWELL))
+                                    cur = cur + DWELL
+                            # peak short turns on the Eastline: every other eastbound trip turns at Cobb Street; every
+                            # other westbound trip starts at Ashford Road in the morning peak, at Cobb Street in the evening
+                            if line == "EL" and peak and k_band % 2 == 1:
+                                codes = [x[0] for x in stimes]
+                                if direction == 0:
+                                    stimes = stimes[:codes.index("CB") + 1]
+                                else:
+                                    turn = "AR" if a < 12 * 3600 else "CB"
+                                    stimes = stimes[codes.index(turn):]
+                            k_band += 1
+                            day_trips.append(stimes)
                             t += h
+                    # depot pull-outs and pull-ins: the first and last trips of the day start or end at the depot
+                    depot = {"EL": "UY", "NL": "KP"}[line]
+                    n_out, n_in = {("EL", 0): (3, 2), ("EL", 1): (2, 3), ("NL", 0): (2, 1), ("NL", 1): (1, 2)}[(line, direction)]
+                    for k, stimes in enumerate(day_trips):
+                        codes = [x[0] for x in stimes]
+                        if depot in codes:
+                            di = codes.index(depot)
+                            if k < n_out and di > 0:
+                                stimes = stimes[di:]
+                            elif k >= len(day_trips) - n_in and di < len(stimes) - 1:
+                                stimes = stimes[:di + 1]
+                        last = stimes[-1]
+                        stimes = stimes[:-1] + [(last[0], last[1], last[1])]
+                        first = stimes[0]
+                        stimes = [(first[0], first[2], first[2])] + stimes[1:]
+                        while True:
+                            tid = str(int(rng.integers(30000000, 39999999)))
+                            if tid not in used_ids:
+                                used_ids.add(tid)
+                                break
+                        trips.append({"trip_id": tid, "line": line, "period": period, "daytype": daytype,
+                                      "direction": direction, "stops": stimes})
     _assign_blocks(trips, rng)
     return trips
 

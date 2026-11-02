@@ -1,94 +1,130 @@
 {
   "task": "task185",
-  "architecture": "v1",
-  "drawn": "2026-10-12",
-  "slot_note": "wave 2, seed AD08 (weather-index heat cover priced off one station with a break); the world and decision kept, the pitfall re-found from the station record; secondary domain physical-environmental-sciences (the station record's own mess)",
-  "domain": "general-statistics-data-science",
-  "subdomain": "exploratory-data-analysis-distribution-assessment",
-  "niche": "pricing a vineyard heat-day index cover off one weather station whose 1995 change from glass thermometers in a large wooden screen to an electronic probe in a small plastic shield matches the old readings on cool days and reads hot afternoons warmer, the old register kept to the half degree",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
+  "slot_note": "Batch 3 re-root (architecture v2): new world, dataset, generator and shell; objective kept (anomaly detection); the weather-station world is closed",
+  "domain": "energy-systems-utilities",
+  "subdomain": "grid-reliability-outage-analysis",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a state utility commission's pipeline safety division auditing which operating areas a gas distribution company's 2027 service line replacement rider should fund, ranked on the service line failures the lines' own deterioration produced, when lines crossed by other parties' trenches crack weeks after the dig and the repair crews record the mechanism they find",
   "objective": "anomaly-detection",
-  "shape": "14",
-  "decision_type": "quantity_figure",
-  "answer_unit": "currency",
-  "answer": "Quote Merrin Valley Winegrowers $525 a hectare for its 2027/28 heat-day cover, a premium that assumes 16.7 heat days and 4.1 severe heat days at Merrin Flat.",
-  "answer_source": "task185/submission.md, Final Recommendation; golden heat_cover_quote_2027_28.pdf",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "rule",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
-    "G14"
+    "G3",
+    "G7"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "population_selection",
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
-  "stakeholder_role": "the mutual's weather portfolio manager, who quotes the growers' co-operative its heat-day cover for the 2027/28 season",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "index points",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the repair orders to service line failures, sets aside the excavation damage the crews recorded and divides each area's remaining failures by its active services ranks the fibre-build area among the four, because the cracks and coupling failures that surface weeks after other parties trench along a street carry the mechanism codes of deterioration.",
+  "domain_test": "The deciding quantity is each operating area's deterioration-driven service line failure rate, the pipeline integrity engineer's replacement metric, once the failures that other parties' excavations induce are taken out by the excess failure rate on lines inside recent dig areas over the weeks after the dig, estimated across the whole system; with another field's nouns there is no trench settling under a buried line weeks after the locate ticket closes, so the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:excavation-induced-failures-separated-by-the-excess-rate-in-the-weeks-after-nearby-digs",
+  "layer1": [
+    "811 dig areas given as street address ranges, matched to service addresses",
+    "ticket revisions and remarks re-issued under suffixed numbers",
+    "one-call times in UTC against local repair dates",
+    "repair orders mixing main, service and meter-set leaks, with recheck orders for the same leak",
+    "active services rebuilt from install and retirement dates",
+    "area codes in the register against area names in the work system",
+    "state plane feet in the GIS against latitude and longitude in the ticket system"
+  ],
+  "stakeholder_role": "the commission's pipeline safety analyst preparing the staff audit of the rider's area selection",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
   "spine": {
-    "file": "ncs_daily_041391_19951101_20270827.csv",
-    "rows": 34404,
-    "entity": "one automatic weather station reading of one element on one day",
-    "grain": "station x day x element",
+    "file": "one_call_tickets_2021_2025.csv",
+    "rows": 60000,
+    "entity": "one 811 locate ticket revision",
+    "grain": "ticket x revision",
     "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "financial_institution",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "government_agency",
   "world": {
-    "geography": "fictional southern-hemisphere country, inland winegrowing valley",
-    "currency": "local dollar",
-    "org_type": "agricultural mutual insurer",
+    "geography": "United States, a fictional Midwestern state (the commission, the utility, its operating areas and contractors are fictional)",
+    "currency": "USD",
+    "org_type": "a state utility commission's pipeline safety division",
     "invented_names": [
-      "Merrin Flat",
-      "Merrin Valley Winegrowers Co-operative",
-      "Southward Mutual",
-      "National Climate Service"
+      "Tamarack Utility Commission",
+      "Kessler Valley Gas Company"
     ],
     "people": [
-      "Rachel Ballard",
-      "Jack Castro",
-      "Richard Strickland",
-      "Bonnie Barr"
+      "Lisa Kent",
+      "Jose Ayala"
     ]
   },
   "deliverables": [
-    "heat_cover_quote_2027_28.pdf",
-    "heat_cover_payouts.csv"
+    "slr_area_audit_2027.xlsx",
+    "slr_area_audit_2027.pptx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The decisive quantity is the conversion between an old and a new measuring device sized at the value being converted, because the new device agrees with the old at ordinary values and departs only at high ones, so any single conversion, the average or one high-value offset, leaves a threshold count on the wrong basis and lets the changeover step pass into the fitted trend.",
-  "driver_concrete": "Each glass-era daily maximum is brought to the present probe's basis by the probe-minus-glass difference at that reading in the paired comparison readings, +0.72 C at 34.5 C and +1.35 C at 39.0 C against +0.13 C on average, so the half-degree 34.5 C days cross the 35.0 C trigger and the 39.0 C days the 40.0 C trigger, the glass seasons gain 54 heat days and 29 severe heat days, the heat-day line falls from 0.74 to 0.30 days a decade and the 2027/28 premium from $567 to $525 a hectare.",
-  "stump": "A competent solver brings the glass era to the probe's basis with the comparison readings' mean difference (+0.13 C, +0.25 C on summer days), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and the quote is the raw record's premium, $567 a hectare against $525; a solver who sizes one hot-day offset moves the 34.5 C days but not the 39.0 C days ($542), or the 34.0 C days as well ($506).",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the two station numbers, reshapes the register, keeps approved readings, reads the station history and applies the pricing manual exactly still converts the glass era with the comparison's average probe-minus-glass difference and quotes the raw record's premium.",
-  "domain_test": "The deciding quantity is a distribution assessment of a paired-instrument difference, how the new device's readings depart from the old across the range of the reading rather than in the mean, estimated conditionally or by quantile matching; with the method swapped for a mean or one pooled offset the call changes, and with another field's nouns there is no instrument pair whose difference grows with the reading, no half-degree register and no threshold count whose trend the changeover inflates.",
+  "question_form": "where",
+  "driver": "A unit's failures are read as its own deterioration, but some surface weeks after other parties work beside it and carry the mechanism codes of deterioration, so a same-day coincidence check clears the outside work; only the excess failure rate in the weeks after nearby work, estimated across every unit, separates the deterioration a replacement removes.",
+  "driver_concrete": "Each operating area's service line failures are read net of those that other parties' trenches induced, the excess failure rate on lines inside a dig area over the weeks after its locate ticket estimated across the system, so the fibre-build area drops out of the four the 2027 rider funds.",
+  "stump": "A competent solver sets aside the recorded excavation damage, divides each area's remaining service line failures by its active services and funds the four highest areas with the fibre-build area among them; the step that lands it there is reading the cracks and coupling failures that surface weeks after nearby digs as deterioration.",
   "mechanism_source": "design_note",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:reading-dependent-instrument-conversion",
-  "layer1": [
-    "station history with a documented instrument and screen change",
-    "station number changed at the automatic station install",
-    "old register digitised as one wide sheet per year (days by months) with header blocks",
-    "half-degree readings in the old register",
-    "provisional and approved automatic-station records overlapping outside the cover window",
-    "neighbour stations' monthly series with gaps and their own changes",
-    "term sheet whose deductible and day rates changed by season",
-    "member schedule with endorsements and cancellations"
-  ],
   "differentiation": {
-    "task80": "task80 v2 certifies a served-student count by dating each fixed-term designation from its criterion event, a time rule executed over records; here the filed basis selects a conversion between two instruments sized at each reading because their paired difference grows with the reading, a distributional estimate with no dated status anywhere in it."
+    "task101": "task101 keeps a funder's own top-ups out of a cold-spot baseline; here delayed failures on buried lines inside other parties' dig areas are taken out of a deterioration rate by the excess rate in the weeks after the dig",
+    "task121": "task121 v2 reads signed-out club-app customers; here the units are gas service lines and the separated failures surface weeks after outside trenching",
+    "task464": "task464 prices a feeder section's I2R loss on its own net flow with solar export; here the quantity is a service line failure rate net of excavation-induced failures",
+    "task455": "task455 separates establishment births from re-registrations in an employer register; here the separated records are buried-line failures induced by outside digging, found by their timing after nearby locate tickets",
+    "task173": "task173 forecasts the leaks a planned meter exchange will add on the services it visits (the utility's own work, carried forward); here failures already recorded are attributed, out of a deterioration ranking, to other parties' digs that preceded them by weeks, and the call is which areas a rider funds",
+    "task181": "task181 traces each operation's tray to a shared steriliser's loads; here no record links a failure to its cause and the separation is statistical, the excess failure rate after nearby digs across the system",
+    "task303": "task303 removes losses of supply that every sibling feeder records in the same minute; here the outside cause precedes the failures by weeks, so a same-time coincidence check finds nothing"
   },
-  "lineage": [],
-  "notes": "Secondary domain physical-environmental-sciences: the client's own Layer 1 technique 'station histories with moves and instrument swaps', documented in station metadata as real networks do. The decisive step is not finding the change (it is documented) but sizing it where the index counts.\narchitecture_spent set 2026-10-21 on measurement. The premium is linear in the glass era's trigger-crossing day counts at $0.34 a heat day and $0.73 a severe day, so a construction's lever is only how many days it moves across a trigger; the instrument conversion moves 83 and every other construction ten or fewer, worth 2 to 3 per cent, inside its own estimator family's spread. The conversion is caught both ways by the documented-transformation pincer: stated in clause 3.1 it is rule application, and unstated the parallel observations file announces it by schema and cannot be cut, being the only file that identifies it. Ten admissible per-reading estimators file premium $525 and 16.658 and 4.134 days with a spread of exactly $0. The best re-root reached (a count of a counterfactual reading as a sum of exceedance probabilities rather than a count of conditional means) has a lever never above 1.021x and inverts, the plug-in being nearer the simulated truth at every deductible. The ask layer is independently spent at 44 of 45. Re-root at stage 1, not on a threshold count of a measured value whose artifact is an instrument or exposure change.",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-12",
+      "domain": "general-statistics-data-science",
+      "subdomain": "exploratory-data-analysis-distribution-assessment",
+      "niche": "pricing a vineyard heat-day index cover off one weather station whose 1995 change from glass thermometers in a large wooden screen to an electronic probe in a small plastic shield matches the old readings on cool days and reads hot afternoons warmer, the old register kept to the half degree",
+      "objective": "anomaly-detection",
+      "shape": "14",
+      "decision_type": "quantity_figure",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G14"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "driver": "The decisive quantity is the conversion between an old and a new measuring device sized at the value being converted, because the new device agrees with the old at ordinary values and departs only at high ones, so any single conversion, the average or one high-value offset, leaves a threshold count on the wrong basis and lets the changeover step pass into the fitted trend.",
+      "stump": "A competent solver brings the glass era to the probe's basis with the comparison readings' mean difference (+0.13 C, +0.25 C on summer days), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and the quote is the raw record's premium, $567 a hectare against $525; a solver who sizes one hot-day offset moves the 34.5 C days but not the 39.0 C days ($542), or the 34.0 C days as well ($506).",
+      "shell": null,
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-12, no portal result; spent on paper 2026-10-21: the conversion was a documented transformation, readable by its clause or its parallel archive, and the ask layer measured over the bar)"
+    }
+  ],
+  "notes": "",
+  "registered": "2026-11-02T02:49:55Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "send",
+    "rounding opener": "give",
+    "deliverable set": "csv+pdf"
+  }
 }

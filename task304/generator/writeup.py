@@ -48,7 +48,8 @@ def write(path, F):
              "June, kept each collision the migration re-sent once (the new record on the same date and road within %d "
              "minutes and %d metres of an old one replaces it), applied the deaths within %d days in "
              "fatal_casualty_notifications_2026.xlsx matched on date, road, time and casualty, and left out the trunk "
-             "sections in road_network_register_2026.csv, placed by their end nodes' eastings in the inventory." % (
+             "sections of road_network_register_2026.csv (each collision in the section whose grid references span its "
+             "easting, unclassified roads the county's by the register's own entry)." % (
                  F["match_minutes"], F["match_metres"], F["death_days"]))
     L.append("7. Took a collision's severity from its most severely injured casualty and each casualty's road user from "
              "casualty_type (old system) or class and the vehicle they were in (new system), by quarter of the collision date.")

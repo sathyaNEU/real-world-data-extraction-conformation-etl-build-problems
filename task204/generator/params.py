@@ -51,7 +51,7 @@ NORTH = [
     ("HL", "Hollin", 329120, 5941110),
     ("LM", "Larchmont", 328880, 5943240),
 ]
-UNIVERSITY = (333780, 5937230)   # centre of the corridor north of Millbrook
+UNIVERSITY = (334320, 5937260)   # centre of the corridor north of Millbrook
 
 # Patrol districts, 2026 layout (in force 1 January 2026): rectangles in UTM metres (xmin, ymin, xmax, ymax).
 BOX = (319000, 5929000, 347000, 5947000)

@@ -143,7 +143,7 @@
    "objective": "etl"
   }
  ],
- "notes": "Architecture 4 built 2026-11-02: free gates green on the final cut; stage 4 (leak reader, judge) with the main session.",
+ "notes": "Architecture 4 built 2026-11-02; judge pass 1 DETERMINISTIC FIX_NOW (container hygiene, ask B approach naming) repaired with no graded figure moved; re-judge pending.",
  "architecture_spent": false,
  "registered": "2026-11-02T01:33:54Z"
 }

@@ -84,7 +84,8 @@ class Events:
                     patterns[j] = sorted(patterns[j] + [s])
         for d_i, pat in zip(pick, patterns):
             d = cands[d_i]
-            trips = [t for t in self.inbound_el(d) if 16 * 3600 + 35 * 60 <= stop_dep(t, "PG") <= 18 * 3600 + 10 * 60]
+            trips = [t for t in self.inbound_el(d)
+                     if stop_dep(t, "PG") is not None and 16 * 3600 + 35 * 60 <= stop_dep(t, "PG") <= 18 * 3600 + 10 * 60]
             trip = trips[int(r.integers(0, len(trips)))]
             run = {"date": d, "trip_id": trip["trip_id"], "events": []}
             for s_i in pat:

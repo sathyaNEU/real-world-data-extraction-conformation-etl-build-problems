@@ -29,7 +29,7 @@ F = {
 }
 PANEL = (dt.date(2027, 9, 6), dt.date(2027, 11, 26))
 LONG_MIN = 240
-AM = (7 * 60, 9 * 60 + 30)
+ARR = (7 * 60 + 30, 9 * 60 + 30)
 
 
 def rd(path):
@@ -176,8 +176,9 @@ def boardings(D, f):
     return rows, tot
 
 
-def departures(D, W):
-    """Per destination: share of commuting days on which the commuter left home between 07:00 and 09:30."""
+def arrivals(D, W, clock="local", first=False, win=None):
+    """Per destination: share of journeys to work (commuting days) that reached the workplace in the window."""
+    lo, hi = win or ARR
     hit, tot = collections.Counter(), collections.Counter()
     days_all = set(ordinary_days(D))
     for did, wz, cd, obs in W:
@@ -189,55 +190,43 @@ def departures(D, W):
                 continue
             if s.date() not in days_all:
                 continue
-            prev = [x for x in stays[:i] if x[0] == home and x[2] <= s]
-            if not prev:
-                continue
-            dep = prev[-1][2]
-            m = dep.hour * 60 + dep.minute
+            t = s if clock == "local" else (su if clock == "utc" else su + dt.timedelta(hours=1))
+            if first:
+                day = [x for x in stays if x[0] != home and x[1].date() == s.date() and x[1] <= s]
+                if day:
+                    t = day[0][1] if clock == "local" else day[0][3]
+            m = t.hour * 60 + t.minute
             tot[z] += 1
-            if AM[0] <= m <= AM[1]:
+            if lo <= m <= hi:
                 hit[z] += 1
     return {z: hit[z] / tot[z] for z in tot}, tot
 
 
-def departures_utc(D, W):
-    hit, tot = collections.Counter(), collections.Counter()
-    days_all = set(ordinary_days(D))
-    for did, wz, cd, obs in W:
-        z = max(wz.items(), key=lambda x: x[1])[0]
-        stays = D["stays"][did]
-        home = D["devices"][did]["home_cell"]
-        for i, (cell, s, e, su, eu) in enumerate(stays):
-            if cell == home or (e - s).total_seconds() < LONG_MIN * 60 or zone_major(D, cell) != z:
-                continue
-            if s.date() not in days_all:
-                continue
-            prev = [x for x in stays[:i] if x[0] == home and x[2] <= s]
-            if not prev:
-                continue
-            dep = prev[-1][4]
-            m = dep.hour * 60 + dep.minute
-            tot[z] += 1
-            if AM[0] <= m <= AM[1]:
-                hit[z] += 1
-    return {z: hit[z] / tot[z] for z in tot}
+def station_no(D):
+    return {r["station_code"]: r["station_no"] for r in D["register"]}
 
 
-def station_ratios(D, codes_map=None, naive=False):
-    """Average ordinary-weekday entries, September to November 2027 over September to November 2019."""
+def station_ratios(D, mode="golden"):
+    """Average ordinary-weekday entries, September to November 2027 over September to November 2019, by station
+    (a station and the station it replaced, with every gateline whose location code carries its number)."""
     hol = D["nonordinary"]
-    succ = {"KUH": ["UHK", "KUH"], "CBY": ["CBH", "CBY"], "ARD": ["ARD", "G0213"], "LSG": ["LSG"],
-            "KCN": ["KCN", "G0305"], "KDK": ["KDK", "G0417"]}
-    if naive == "register":
-        succ = dict(succ, KDK=["KDK"], ARD=["ARD"], KCN=["KCN"])
-    elif naive:
-        succ = {k: [k] for k in succ}
+    nos = station_no(D)
+    groups = {"ARD": "02", "LSG": "09", "KCN": "03", "KDK": "04", "KUH": "06", "CBY": "07"}
+
+    def belongs(code, no):
+        if no is None:
+            return True if mode != "register" else not code.startswith("G")
+        if code.startswith("G") and len(code) == 5:
+            return mode == "golden" and code[1:3] == no
+        if mode == "codes_only":
+            return code in [k for k, v in groups.items() if v == no]
+        return nos.get(code) == no
     out = {}
-    for st, codes in succ.items():
+    for st, no in list(groups.items()) + [("LINE", None)]:
         def mean(y):
             by = collections.Counter()
             for d, c, n in D["gates"]:
-                if c in codes and d.year == y and 9 <= d.month <= 11 and d.weekday() < 5 and d not in hol:
+                if belongs(c, no) and d.year == y and 9 <= d.month <= 11 and d.weekday() < 5 and d not in hol:
                     by[d] += n
             v = list(by.values())
             return (sum(v) / len(v)) if v else None, len(v)
@@ -248,14 +237,7 @@ def station_ratios(D, codes_map=None, naive=False):
 
 
 def network_ratio(D):
-    hol = D["nonordinary"]
-    def tot(y):
-        days = sorted({d for d, c, n in D["gates"] if d.year == y and 9 <= d.month <= 11 and d.weekday() < 5
-                       and d not in hol})
-        s = sum(n for d, c, n in D["gates"] if d.year == y and 9 <= d.month <= 11 and d.weekday() < 5 and d not in hol
-                and c != "LSG")
-        return s / len(days)
-    return tot(2027) / tot(2019)
+    return station_ratios(D)["LINE"][0]
 
 
 def run(target):
@@ -270,8 +252,10 @@ def run(target):
     net = network_ratio(D)
     sr = station_ratios(D)
     lsg = sr["LSG"][0]
-    dep, dep_n = departures(D, W)
-    dep_u = departures_utc(D, W)
+    arr, arr_n = arrivals(D, W)
+    arr_u = arrivals(D, W, clock="utc")[0]
+    arr_ist = arrivals(D, W, clock="ist")[0]
+    arr_first = arrivals(D, W, first=True)[0]
     # Variants the fork table licenses
     var = {}
     for name, kw in (("long210", dict(long_min=210)), ("long270", dict(long_min=270)), ("long300", dict(long_min=300)),
@@ -308,9 +292,10 @@ def run(target):
         "network_ratio": net, "network_route": census_daily * net, "lisnagry_ratio": lsg,
         "lisnagry_route": census_daily * lsg, "station_ratios": {k: v[0] for k, v in sr.items()},
         "station_means": {k: (v[1], v[2], v[3], v[4]) for k, v in sr.items()},
-        "station_ratios_naive": {k: v[0] for k, v in station_ratios(D, naive=True).items()},
-        "station_ratios_register": {k: v[0] for k, v in station_ratios(D, naive="register").items()},
-        "departures": dep, "departure_days": dict(dep_n), "departures_utc": dep_u,
+        "station_ratios_register": {k: v[0] for k, v in station_ratios(D, mode="register").items()},
+        "station_ratios_codes": {k: v[0] for k, v in station_ratios(D, mode="codes_only").items()},
+        "arrivals": arr, "arrival_days": dict(arr_n), "arrivals_utc": arr_u, "arrivals_ist": arr_ist,
+        "arrivals_first": arr_first,
         "variants": {k: {"total": v[1], "rows": v[0]} for k, v in var.items()},
         "scope": "reduced" if golden < D["threshold"] else "full",
         "ordinary_days": full55,
@@ -327,6 +312,7 @@ if __name__ == "__main__":
                                "f_pooled", "network_ratio", "scope", "ordinary_days")}, indent=1))
     for z in sorted(r["boardings"]):
         print(z, round(r["freq"].get(z, 0), 4), r["n_devices"].get(z), round(r["boardings"][z], 2),
-              round(r["departures"].get(z, 0), 4), round(r["departures_utc"].get(z, 0), 4))
+              round(r["arrivals"].get(z, 0), 4), round(r["arrivals_utc"].get(z, 0), 4),
+              round(r["arrivals_first"].get(z, 0), 4))
     print({k: round(v["total"], 1) for k, v in r["variants"].items()})
     print({k: round(v, 4) for k, v in r["station_ratios"].items()})

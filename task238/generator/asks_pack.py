@@ -72,6 +72,7 @@ def write(target, w, r):
         amt = round(float(w.reg[i]) * (1.0 if reason != "Price Match" else 0.15), 2)
         desk.append([STORE[no][2], t, "%d-%02d-%d" % (no, int(r.integers(1, 9)), int(r.integers(4000, 9999))),
                      ean13(w.upc[i]), w.desc[i], reason, amt])
+    ov = [x for x in ov if "2026-10-01T00:00:00Z" <= x[3] < "2027-01-01T00:00:00Z"]   # the export's UTC window
     ov.sort(key=lambda x: (x[3], x[0]))
     write_csv(os.path.join(target, F["overrides"]),
               ["store_no", "register", "transaction", "override_utc", "upc", "orig_price_cents",
