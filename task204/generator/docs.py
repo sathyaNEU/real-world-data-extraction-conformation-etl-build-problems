@@ -140,7 +140,7 @@ def planning_note_docx(path):
                     % (P.PEOPLE["deputy_chief"], P.PEOPLE["cau_supervisor"]))
     paras = [
         "The summer deployment plan runs from 1 June to 27 September and I sign it on 28 May. Please have the OPS-41 "
-        "series assessment to me by 22 May, dated 11 May so that its review period is the twelve weeks to Sunday 3 May.",
+        "series assessment to me by 22 May, dated today, 4 May, so that its review period is the twelve weeks to Sunday 3 May.",
         "Series team overtime is held in the seasonal allocation. Patrol and community response staffing for the "
         "summer is set separately and does not wait on the assessment.",
         "The Police Commission's June report compares each district's phone robbery and theft figures with the same "

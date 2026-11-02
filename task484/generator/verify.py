@@ -108,6 +108,8 @@ def pdf_text(path):
 
 def canon(road):
     road = road.strip().lower()
+    if len(road) > 2 and road[-2] == " " and road[-1] in "nsew":
+        road = road[:-2]
     for a, b in ((" ave", " avenue"), (" rd", " road"), (" st", " street"), (" la", " lane"), (" wy", " way"), (" hl", " hill")):
         if road.endswith(a):
             road = road[: -len(a)] + b
@@ -234,7 +236,8 @@ def main():
 
         arms = {}
         for k in ds:
-            arms.setdefault((canon(dreg[k]["approach"]), dreg[k]["heading"]), []).append(k)
+            arms.setdefault(dreg[k]["approach"], []).append(k)
+        ok("ask B: the register's approach column names %d arms at %s" % (len(arms), jname), len(arms) == 4)
         res = {k: detr(k, pre) for k in ds}
 
         def corr(a, b):
@@ -271,10 +274,31 @@ def main():
                 total += sum(v24 for d, (v12, v24, av) in det[k].items() if d < sw2 and v24 is not None)
             for k in arms[a]:
                 total += sum(v24 for d, (v12, v24, av) in det[k].items() if d >= sw2 and v24 is not None)
-            label = "%s %s" % (a[0].title(), a[1])
-            mB[(jname, label)] = int(math.floor(total / 1000 + 0.5))
+            mB[(jname, a)] = int(math.floor(total / 1000 + 0.5))
     ok("ask B: every approach's recorded vehicles recompute", mB == gB, str({k: (mB.get(k), gB.get(k)) for k in set(mB) | set(gB) if mB.get(k) != gB.get(k)}))
 
+    # containers: the producing application's own properties, no writer-template parts, entries at the document's date
+    bad = []
+    for d in (TGT, GLD):
+        for fn in sorted(os.listdir(d)):
+            if not fn.endswith((".xlsx", ".docx")):
+                continue
+            z = zipfile.ZipFile(os.path.join(d, fn))
+            names = z.namelist()
+            app = z.read("docProps/app.xml").decode("utf-8")
+            core = z.read("docProps/core.xml").decode("utf-8")
+            created = re.search(r"<dcterms:created[^>]*>(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)", core).groups()
+            stamp = tuple(int(x) for x in created)
+            if not re.search(r"<AppVersion>16\.\d{4}</AppVersion>", app) or "Microsoft" not in app:
+                bad.append(fn + " app.xml")
+            if any(n in names for n in ("docProps/thumbnail.jpeg", "word/stylesWithEffects.xml")) or any(n.startswith("customXml/") for n in names):
+                bad.append(fn + " template parts")
+            if any(i.date_time[:5] != stamp for i in z.infolist()):
+                bad.append(fn + " entry dates")
+            blob = b"".join(z.read(n) for n in names)
+            if any(t in blob for t in (b"openpyxl", b"python-docx", b"python-pptx")):
+                bad.append(fn + " writer name")
+    ok("containers: every xlsx and docx carries its application's own properties, no template parts, entries at its own date", not bad, str(bad))
     fails = [r for r in RES if not r[1]]
     for label, c, detail in RES:
         print("%s  %s%s" % ("PASS" if c else "FAIL", label, ("  [" + detail + "]") if detail and not c else ""))

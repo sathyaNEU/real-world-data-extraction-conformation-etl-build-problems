@@ -67,11 +67,11 @@
    - WRA872 (Ring Road North): 1700
    - WRA898 (Fenwick Road): 980
 2. Vehicles recorded on each approach in 2025, thousands:
-   - Ring Road / Tanyard Lane, Ring Road EB: 4,349
-   - Ring Road / Tanyard Lane, Ring Road WB: 3,253
-   - Ring Road / Tanyard Lane, Tanyard Lane NB: 1,399
-   - Ring Road / Tanyard Lane, Tanyard Lane SB: 1,674
-   - Western Avenue / Fenwick Road, Fenwick Road EB: 2,674
-   - Western Avenue / Fenwick Road, Fenwick Road WB: 1,861
-   - Western Avenue / Fenwick Road, Western Avenue NB: 3,886
-   - Western Avenue / Fenwick Road, Western Avenue SB: 4,974
+   - Ring Road / Tanyard Lane, Ring Rd E: 3,253
+   - Ring Road / Tanyard Lane, Ring Rd W: 4,349
+   - Ring Road / Tanyard Lane, Tanyard La S: 1,399
+   - Ring Road / Tanyard Lane, Tanyard Lane N: 1,674
+   - Western Avenue / Fenwick Road, Fenwick Rd E: 1,861
+   - Western Avenue / Fenwick Road, Fenwick Rd W: 2,674
+   - Western Avenue / Fenwick Road, Western Ave N: 4,974
+   - Western Avenue / Fenwick Road, Western Avenue S: 3,886

@@ -38,8 +38,12 @@ def stop_dep(trip, code):
 SCHOOL_BREAK_26 = (dt.date(2026, 3, 30), dt.date(2026, 4, 3))
 
 
+NO_SCHOOL_26 = {dt.date(2026, 2, 26), dt.date(2026, 2, 27)}
+
+
 def school_day(d):
-    return d.weekday() < 5 and d not in P.HOLIDAYS and not (SCHOOL_BREAK_26[0] <= d <= SCHOOL_BREAK_26[1])
+    return (d.weekday() < 5 and d not in P.HOLIDAYS and d not in NO_SCHOOL_26
+            and not (SCHOOL_BREAK_26[0] <= d <= SCHOOL_BREAK_26[1]))
 
 
 class Events:

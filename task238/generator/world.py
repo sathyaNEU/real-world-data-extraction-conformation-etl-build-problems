@@ -391,10 +391,11 @@ class World:
                 # Halifax stores: a supervisor approves the Code payout and logs it in the desk app as well.
                 # Zone 2 stores: the cashier often takes the line back to the shelf price only, and the desk
                 # pays the free item (or the 10.00) when the customer asks for the Code's remedy.
+                u = r.random()
                 if zone[no] == 1:
-                    kind = "dup" if r.random() < 0.55 else "plain"
+                    kind = "dup" if u < 0.45 else ("partial" if u < 0.65 else "plain")
                 else:
-                    kind = "partial" if r.random() < 0.45 else "plain"
+                    kind = "dup" if u < 0.15 else ("partial" if u < 0.60 else "plain")
                 later = t + dt.timedelta(minutes=float(r.uniform(2, 35)))
                 self.claim_rows.append((no, t, i, sc, sh, "till", reg_no, txn[no], (kind, later)))
             else:

@@ -215,8 +215,15 @@ def main():
           all(GO.r10(alt_hgv[c["site"]]) == c["hgv"] for c in G["counters"]), "")
     check("SF17 a counter's missing days left out or filled from its own weekdays give the same figures",
           all(GO.r10(alt_hgv[c["site"]]) == c["hgv"] for c in G["counters"]), "")
-    check("SF18 an approach is a road and heading, its lane detectors summed, the register's abbreviations read as the same road",
-          len(G["approaches"]) == 8, str([a["approach"] for a in G["approaches"]]))
+    groups = {}
+    for d, x in P["detectors"].items():
+        if x["junction_ref"] in {AN.junction_ref(P, n) for n in AN.ASK_B}:
+            groups.setdefault((x["junction_ref"], x["approach"]), []).append(d)
+    labels = {(AN.junction_ref(P, a["junction"]), a["approach"]) for a in G["approaches"]}
+    check("SF18 an approach is the register's approach entry (its road and the side it comes in from), its lanes summed: "
+          "grouping by that column gives exactly the golden's eight approaches",
+          len(groups) == 8 and set(groups) == labels and all(len(set(P["detectors"][d]["arm"] for d in v)) == 1 for v in groups.values()),
+          str(sorted(a["approach"] for a in G["approaches"])))
     check("SF19 vehicles recorded are the sum of the recorded daily flows; the dark days carry none",
           all(a["raw"] == float(int(a["raw"])) for a in G["approaches"]), "")
     check("SF20 the renewal day is read from the dark days in the data and matches the log",
@@ -353,6 +360,32 @@ def main():
     check("BE9 wherever the counters' 07:00-19:00 share would move a section's figure, the section's own share lies outside "
           "every urban counter's (R5's premise refuted by the record); where it agrees, that form is licensed and lands in the bin",
           bool(moved) and not off, "counters %.3f to %.3f; moved %s; %s" % (lo, hi, moved, ", ".join("%s %.3f" % (k, v) for k, v in sorted(own_share.items()))))
+    # containers (H1): the producing application's properties, no writer-template parts, entries at the document's date
+    cont_bad = []
+    for d in (TGT, GLD):
+        for fn in sorted(os.listdir(d)):
+            if not fn.endswith((".xlsx", ".docx")):
+                continue
+            z = zipfile.ZipFile(os.path.join(d, fn))
+            names = z.namelist()
+            app = z.read("docProps/app.xml").decode("utf-8")
+            core = z.read("docProps/core.xml").decode("utf-8")
+            cdt = dt.datetime.strptime(re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1), "%Y-%m-%dT%H:%M:%SZ")
+            if "<AppVersion>3.1</AppVersion>" in app or not re.search(r"<AppVersion>16\.\d{4}</AppVersion>", app):
+                cont_bad.append("%s: AppVersion" % fn)
+            if not re.search(r"<Application>Microsoft (Excel|Office Word)</Application>", app):
+                cont_bad.append("%s: Application" % fn)
+            if [n for n in names if n in ("docProps/thumbnail.jpeg", "word/stylesWithEffects.xml") or n.startswith("customXml/")]:
+                cont_bad.append("%s: template parts" % fn)
+            if any(dt.datetime(*i.date_time) != cdt.replace(second=cdt.second - cdt.second % 2) for i in z.infolist()):
+                cont_bad.append("%s: entry dates" % fn)
+            if any(t in z.read(n) for n in names for t in (b"openpyxl", b"python-docx")):
+                cont_bad.append("%s: writer name" % fn)
+            ct = z.read("[Content_Types].xml").decode("utf-8")
+            if "stylesWithEffects" in ct or "thumbnail" in ct or "customXml" in ct:
+                cont_bad.append("%s: content types" % fn)
+    check("H1 every xlsx and docx carries its application's own app.xml (AppVersion 16), no thumbnail, stylesWithEffects or "
+          "template customXml, and every zip entry at the document's own date", not cont_bad, str(cont_bad))
     # figures.json agrees with the golden files
     figs = json.load(open(os.path.join(HERE, "figures.json")))
     gcsv = list(csv.DictReader(open(os.path.join(GLD, "noise_round_sections_2025.csv"), encoding="utf-8")))

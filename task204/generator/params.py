@@ -17,7 +17,7 @@ X26 = (dt.date(2026, 2, 2), dt.date(2026, 5, 10))
 X25 = (dt.date(2025, 2, 3), dt.date(2025, 5, 11))
 PULL_LOCAL = dt.datetime(2026, 5, 11, 6, 14, 52)        # RMS extract pulled
 TPO_PULL_LOCAL = dt.datetime(2026, 5, 11, 9, 40, 11)    # transit occurrence log exported
-ASSESS_DATE = dt.date(2026, 5, 11)
+ASSESS_DATE = dt.date(2026, 5, 4)
 PLAN_SIGN = dt.date(2026, 5, 28)
 FICTION_ASOF = dt.date(2026, 5, 15)                      # every file dated on or before this
 
