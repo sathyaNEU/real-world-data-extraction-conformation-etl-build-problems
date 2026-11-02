@@ -56,6 +56,7 @@ class Pack:
             node = r[ix["node"]]
             self.nodes[node] = dict(node=node, name=r[ix["junction_name"]], layout=r[ix["layout"]],
                                     control=r[ix["control"]], district=r[ix["district"]],
+                                    roads="%s / %s" % (r[ix["major_road"]], r[ix["minor_road"]]),
                                     maj={y: float(r[ix["aadt_major_%d" % y]]) for y in self.years},
                                     mnr={y: float(r[ix["aadt_minor_%d" % y]]) for y in self.years})
             if r[ix["former_node"]]:

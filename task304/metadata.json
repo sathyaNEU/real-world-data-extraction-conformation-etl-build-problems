@@ -1,0 +1,111 @@
+{
+ "task": "task304",
+ "decision": "which junction on Ardleshire's 2026 screening list takes the roundabout in the county's 2027 Junction Safety Fund bid, and the injury collisions a year a roundabout would prevent at each listed junction",
+ "deliverables": [
+  "junction_bid_2027.docx",
+  "bid_annex_2026.xlsx"
+ ],
+ "distractor_files": [
+  "target/skid_resistance_survey_2025.csv",
+  "target/community_speedwatch_2026.csv"
+ ],
+ "as_of": "2026-12-04",
+ "files": [
+  {
+   "path": "target/collision_records_2016_2025.csv",
+   "source": "Ardleshire County Council collision system, validated injury collision record, extract 14 October 2026",
+   "covers": "police-reported injury collisions in Ardleshire 2016 to 2025, with the county's junction node links",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/community_speedwatch_2026.csv",
+   "source": "Ardleshire community speedwatch groups, 2026 sessions",
+   "covers": "volunteer speed checks by location and session",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/fatal_casualty_notifications_2026.xlsx",
+   "source": "Ardleshire Police Fatal Collision Investigation Unit, notifications to the county road safety team",
+   "covers": "casualties who died after road collisions in 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/junction_inventory_2026.xlsx",
+   "source": "Ardleshire County Council network management, junction inventory 2026",
+   "covers": "principal road network junctions: layout, control and traffic estimates by year 2016 to 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/junction_safety_fund_guidance_2027.pdf",
+   "source": "Junction Safety Fund programme team, bid guidance 15 September 2026",
+   "covers": "the 2027 fund: eligibility, the benefit, crash modification factors and the supporting tables",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/network_screening_2026.pdf",
+   "source": "Halberd Transport Planning for Ardleshire County Council, junction screening note 9 October 2026",
+   "covers": "the junctions listed for treatment study",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/police_casualties_2026_jan_may.csv",
+   "source": "Ardleshire Police collision system (to 31 May 2026), provisional extract",
+   "covers": "casualties of those collisions",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/police_collisions_2026_jan_may.csv",
+   "source": "Ardleshire Police collision system (to 31 May 2026), provisional extract",
+   "covers": "injury collisions January to May 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/police_export_2026_jun_sep.json",
+   "source": "Ardleshire Police collision recording system (from 1 June 2026), export 20 November 2026",
+   "covers": "injury collisions from June 2026 and records amended in the new system, with casualties and vehicles",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/police_vehicles_2026_jan_may.csv",
+   "source": "Ardleshire Police collision system (to 31 May 2026), provisional extract",
+   "covers": "vehicles in those collisions",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/road_network_register_2026.csv",
+   "source": "Ardleshire County Council network register",
+   "covers": "classified roads and sections with their highway authority",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  },
+  {
+   "path": "target/skid_resistance_survey_2025.csv",
+   "source": "Ardleshire County Council skid resistance survey 2025",
+   "covers": "sideway-force coefficients and investigatory levels by road section",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-27"
+  }
+ ]
+}

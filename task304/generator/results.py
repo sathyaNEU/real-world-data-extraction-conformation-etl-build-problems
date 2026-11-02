@@ -24,6 +24,7 @@ def compute(target):
         "junctions": [r["name"] for r in order],
         "nodes": {r["name"]: r["node"] for r in order},
         "layout": {r["name"]: r["layout"] for r in order},
+        "roads": {r["name"]: pk.nodes[r["node"]]["roads"] for r in order},
         "cmf": {r["name"]: r["cmf"] for r in order},
         "benefit": {r["name"]: r1(r["benefit"]) for r in order},
         "expected": {r["name"]: r1(r["expected"]) for r in order},

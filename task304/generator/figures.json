@@ -1,0 +1,124 @@
+{
+ "ask_a": {
+  "Q1": {
+   "Fatal": 15,
+   "Serious": 142,
+   "Slight": 477
+  },
+  "Q2": {
+   "Fatal": 10,
+   "Serious": 158,
+   "Slight": 472
+  },
+  "Q3": {
+   "Fatal": 11,
+   "Serious": 150,
+   "Slight": 492
+  }
+ },
+ "ask_b": {
+  "Q1": {
+   "Car occupant": 472,
+   "Motorcyclist": 73,
+   "Pedal cyclist": 71,
+   "Pedestrian": 91
+  },
+  "Q2": {
+   "Car occupant": 462,
+   "Motorcyclist": 56,
+   "Pedal cyclist": 47,
+   "Pedestrian": 95
+  },
+  "Q3": {
+   "Car occupant": 511,
+   "Motorcyclist": 55,
+   "Pedal cyclist": 56,
+   "Pedestrian": 100
+  }
+ },
+ "benefit": {
+  "Church Street Junction": 0.9,
+  "Coppice Way Junction": 0.5,
+  "Fen Lane Junction": 0.4,
+  "Mill Lane Crossroads": 1.3,
+  "Saxby Cross": 0.8,
+  "Tollgate Crossroads": 1.1
+ },
+ "call": "Mill Lane Crossroads",
+ "call_benefit": 1.3,
+ "call_expected": 2.7,
+ "call_observed": 18,
+ "cmf": {
+  "Church Street Junction": 0.52,
+  "Coppice Way Junction": 0.7,
+  "Fen Lane Junction": 0.7,
+  "Mill Lane Crossroads": 0.52,
+  "Saxby Cross": 0.52,
+  "Tollgate Crossroads": 0.52
+ },
+ "expected": {
+  "Church Street Junction": 1.9,
+  "Coppice Way Junction": 1.7,
+  "Fen Lane Junction": 1.4,
+  "Mill Lane Crossroads": 2.7,
+  "Saxby Cross": 1.7,
+  "Tollgate Crossroads": 2.2
+ },
+ "junctions": [
+  "Church Street Junction",
+  "Coppice Way Junction",
+  "Fen Lane Junction",
+  "Mill Lane Crossroads",
+  "Saxby Cross",
+  "Tollgate Crossroads"
+ ],
+ "layout": {
+  "Church Street Junction": "X",
+  "Coppice Way Junction": "ST",
+  "Fen Lane Junction": "T",
+  "Mill Lane Crossroads": "X",
+  "Saxby Cross": "X",
+  "Tollgate Crossroads": "X"
+ },
+ "model_route": "Tollgate Crossroads",
+ "model_route_benefit": 0.8,
+ "nodes": {
+  "Church Street Junction": "J4452",
+  "Coppice Way Junction": "J1628",
+  "Fen Lane Junction": "J3183",
+  "Mill Lane Crossroads": "J1672",
+  "Saxby Cross": "J4038",
+  "Tollgate Crossroads": "J3156"
+ },
+ "observed_2021_2025": {
+  "Church Street Junction": 14,
+  "Coppice Way Junction": 12,
+  "Fen Lane Junction": 13,
+  "Mill Lane Crossroads": 18,
+  "Saxby Cross": 22,
+  "Tollgate Crossroads": 12
+ },
+ "observed_route": "Saxby Cross",
+ "observed_route_benefit": 2.1,
+ "overdispersion": 0.26,
+ "present": 2026,
+ "quarters": {
+  "1": "January to March",
+  "2": "April to June",
+  "3": "July to September"
+ },
+ "rate_route": "Saxby Cross",
+ "reference_junctions": 1436,
+ "roads": {
+  "Church Street Junction": "B4433 Kestermoor Road / Church Street",
+  "Coppice Way Junction": "A5207 London Road / Coppice Way",
+  "Fen Lane Junction": "A6118 Station Road / Fen Lane",
+  "Mill Lane Crossroads": "A5207 Ardle Road / B4421 Mill Lane",
+  "Saxby Cross": "B4419 Saxby Road / Holt Lane",
+  "Tollgate Crossroads": "A6118 Brindham Road / Tollgate Road"
+ },
+ "runner_up": "Tollgate Crossroads",
+ "runner_up_benefit": 1.1,
+ "screen_minimum": 12,
+ "window": "2021 to 2025"
+}

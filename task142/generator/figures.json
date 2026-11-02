@@ -1,0 +1,123 @@
+{
+ "KAB_kW": 5533,
+ "KA_kW": 4240,
+ "available_m3h": 167,
+ "blocks_n": 15,
+ "call": "2028-29",
+ "capacity_m3h": 1120,
+ "cold_days": 36,
+ "committed_m3h": 953,
+ "cp": 1.163,
+ "design_drop": 40,
+ "drop_K": 24.1,
+ "drop_K_rounded": 24,
+ "drop_family_hi": 24.2,
+ "drop_family_lo": 23.7,
+ "flow_2027_28": 150,
+ "flow_2027_28_exact": 151.3,
+ "flow_2028_29": 200,
+ "flow_2028_29_exact": 197.5,
+ "gas_m3": {
+  "1": 238000,
+  "2": 219000,
+  "3": 231000,
+  "4": 90000,
+  "5": 72000,
+  "6": 45000
+ },
+ "gas_m3_exact": {
+  "1": 238228,
+  "2": 219292,
+  "3": 230520,
+  "4": 89604,
+  "5": 71960,
+  "6": 44872
+ },
+ "gas_total_m3": 894000,
+ "headroom_2027_28": 20,
+ "heat_2425_MWh": {
+  "Utiliteit": 11800,
+  "Woningen": 66000
+ },
+ "heat_2526_MWh": {
+  "Utiliteit": 12700,
+  "Woningen": 74000
+ },
+ "heat_change_MWh": {
+  "Utiliteit": 900,
+  "Woningen": 8000
+ },
+ "heat_exact": {
+  "2425": {
+   "Utiliteit": 11783.2,
+   "Woningen": 65997.5
+  },
+  "2526": {
+   "Utiliteit": 12691.4,
+   "Woningen": 73591.2
+  }
+ },
+ "like_n": 19,
+ "net_flow": 38.8,
+ "phase_flow": {
+  "1": 45,
+  "2": 50,
+  "3": 55,
+  "4": 20,
+  "5": 15,
+  "6": 10
+ },
+ "phase_flow_exact": {
+  "1": 46.0,
+  "2": 50.6,
+  "3": 54.8,
+  "4": 19.3,
+  "5": 16.4,
+  "6": 10.5
+ },
+ "phase_load_kW": {
+  "1": 1288,
+  "2": 1418,
+  "3": 1534,
+  "4": 540,
+  "5": 460,
+  "6": 293
+ },
+ "pre_mean": 35.8,
+ "pre_res_harm": 31.1,
+ "r0_f3": 91.1,
+ "r0_f6": 118.9,
+ "r1_f3": 94.0,
+ "r1_f6": 122.6,
+ "r2_f3": 117.2,
+ "r2_f6": 152.9,
+ "r2m_f3": 101.9,
+ "r2m_f6": 133.0,
+ "return_gap_C": [
+  54.7,
+  63.7
+ ],
+ "return_like_hi": 66.3,
+ "return_like_lo": 63.7,
+ "return_other_hi": 54.7,
+ "return_other_lo": 33.8,
+ "rounding_units": [
+  5,
+  10,
+  100,
+  1000
+ ],
+ "rung_drops": {
+  "r0_design": 40.0,
+  "r1_network": 38.8,
+  "r2_pre_hi": 41.6,
+  "r2_pre_lo": 31.1,
+  "side_textbook": 20.0
+ },
+ "sections": "3.2 3.3 3.4",
+ "shortfall_2028_29": 30,
+ "shortfall_exact": 30.5,
+ "side_f3": 182.3,
+ "side_f6": 237.9,
+ "textbook_drop": 20
+}

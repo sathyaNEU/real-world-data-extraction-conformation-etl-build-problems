@@ -34,6 +34,10 @@ def owed(F, M, gas_block):
         f["%s_f3" % name] = round(M["KA"] / (A.CP * d), 1)
         f["%s_f6" % name] = round(M["KAB"] / (A.CP * d), 1)
     f["committed_m3h"] = (F["capacity_m3h"] or 0) - H
+    f["cp"] = A.CP
+    f["shortfall_exact"] = round(F["flow_2028_29_exact"] - H, 1)
+    f["sections"] = "3.2 3.3 3.4"
+    f["rounding_units"] = [5, 10, 100, 1000]
     f["gas_total_m3"] = A.rnd(sum(F["gas_m3_exact"].values()), 1000)
     f["blocks_n"] = len(M["loads"])
     return f
