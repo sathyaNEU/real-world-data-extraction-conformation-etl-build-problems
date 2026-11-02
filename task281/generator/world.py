@@ -125,8 +125,8 @@ class World:
 
 def weekly_shape(rng):
     """Relative request intensity by week of a semester's demand window."""
-    base = [0.55, 1.0, 0.95, 0.8, 0.6, 0.5, 0.45, 0.55, 0.62, 0.55, 0.42, 0.3, 0.22, 0.32, 0.38, 0.30, 0.18,
-            0.12, 0.08]
+    base = [0.55, 1.0, 0.95, 0.8, 0.6, 0.5, 0.45, 0.55, 0.62, 0.55, 0.42, 0.3, 0.22, 0.34, 0.44, 0.46, 0.40,
+            0.28, 0.12]
     return [b * rng.uniform(0.85, 1.15) for b in base]
 
 
@@ -284,6 +284,10 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
         push(dt.datetime(L.bought.year, L.bought.month, L.bought.day, 9, 0, tzinfo=UTC), "lic", L)
     sys_cancel = dt.datetime(2026, 7, 1, 2, 15, tzinfo=UTC)
     push(sys_cancel, "sys", None)
+    d = dt.date(2025, 9, 1)
+    while d < P.EXTRACT.date():
+        push(uk_local_to_utc(d, 8, 0) + dt.timedelta(seconds=rng.randint(0, 900)), "email", None)
+        d += dt.timedelta(days=7)
 
     active_by_student = set()
     lapsing = []
@@ -337,12 +341,21 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
                 push(time + dt.timedelta(hours=P.OFFER_HOURS), "expire", h)
 
     def hazard(pos, h):
-        cap = max(1, capacity)
-        ahead_weeks = (pos - 1) / cap * 0.75
-        hz = beh["base"]
-        if W.students[h.student]["imp"]:
-            hz += P.IMPATIENT_SENS * max(0.0, ahead_weeks - 1.0)
-        return hz
+        return beh["base"]
+
+    def estimate_weeks(pos):
+        """what the platform shows a student: place in the queue over copies, a week a loan"""
+        return pos / max(1, capacity)
+
+    def decide(time, h, pos, at_placement=False):
+        """an impatient student weighs the shown estimate when placing a hold and at each Monday email"""
+        if not W.students[h.student]["imp"]:
+            return
+        est = estimate_weeks(pos)
+        k = P.IMPATIENT_PLACE if at_placement else P.IMPATIENT_EMAIL
+        q = min(0.92, k * max(0.0, est - 1.0))
+        if q > 0 and rng.random() < q:
+            push(time + dt.timedelta(seconds=rng.randint(240, 6 * 3600)), "cancel", h)
 
     now = None
     while ev:
@@ -385,6 +398,7 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
                 holds.append(h)
                 queue.append(h)
                 active_by_student.add(stu)
+                decide(time, h, len(queue), at_placement=True)
         elif kind == "borrow":
             h = payload
             h.status = "fulfilled"
@@ -415,6 +429,16 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
         elif kind == "lic":
             capacity += payload.copies
             offer_heads(time)
+        elif kind == "email":
+            for i, h in enumerate(list(queue)):
+                decide(time, h, i + 1)
+        elif kind == "cancel":
+            h = payload
+            if h in queue:
+                queue.remove(h)
+                h.status = "cancelled_user"
+                h.closed = time
+                active_by_student.discard(h.student)
         elif kind == "sys":
             keep = []
             for h in queue:

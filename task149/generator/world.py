@@ -211,7 +211,7 @@ def build_panel(rng):
                     continue
                 dev.acts.append((dev.work_cell, _t(d, s), _t(d, e), "work"))
                 worked.add(d)
-                if kind == "night" and rng.random() < 0.5:
+                if s - dev.travel > 630 and rng.random() < 0.5:
                     a = rng.uniform(485, 530)
                     dev.acts.append((str(rng.choice(P.LOCAL_CELLS)), _t(d, a), _t(d, a + rng.uniform(24, 50)), "errand"))
             for d in sim_days:
@@ -355,10 +355,11 @@ def gate_entries(rng):
                 f *= 0.93
             mu = base * dow * season * f
             val = int(max(0, round(rng.normal(mu, 0.028 * mu + 6))))
-            if code == "KDK" and dt.date(2019, 6, 3) <= d <= dt.date(2020, 2, 28):
-                tmp = int(round(val * float(rng.uniform(0.33, 0.39))))
-                rows.append((d, "KDX", tmp))
-                val -= tmp
+            for parent, gid, a, b, lo, hi in P.GATELINES:
+                if code == parent and a <= d <= b:
+                    tmp = int(round(val * float(rng.uniform(lo, hi))))
+                    rows.append((d, gid, tmp))
+                    val -= tmp
             rows.append((d, code, val))
             d += DAY
     return rows

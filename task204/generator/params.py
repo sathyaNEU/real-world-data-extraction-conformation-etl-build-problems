@@ -95,7 +95,7 @@ BG_RATE = {"D1": 0.42, "D2": 0.20, "D3": 0.18, "D4": 0.20, "D5": 0.12, "D6": 0.2
 ONTRAIN_RATE = 0.62      # on-train phone thefts per day across both lines (recorded by the transit officers)
 
 # All-occurrence volume per day city-wide (other offence types fill the RMS extract).
-OTHER_RATE = 125.0
+OTHER_RATE = 134.0
 
 # Fare gates: gate codes before and after the spring service change (codes were reissued when the
 # infill station opened). Station -> list of (entrance, code_before, code_after).

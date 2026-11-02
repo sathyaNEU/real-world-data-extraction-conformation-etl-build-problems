@@ -286,7 +286,8 @@ def main():
         t = AN.mi((r["date"].year, r["date"].month))
         fam_rows = [x for x in reg if x["fam"] == r["fam"] and x["res"] == "GRANTED" and x["first"] is not None]
         cov = [x for x in fam_rows if AN.mi(x["first"]) <= t and (x["last"] is None or AN.mi(x["last"]) >= t)]
-        if cov and max(x["kids"] for x in cov) == 1:
+        births = sum(1 for x in inc_all if x["fam"] == r["fam"] and x["type"] == "Birth" and x["date"] < r["date"])
+        if cov and max(x["kids"] for x in cov) + births == 1:
             if any(x["last"] is None or AN.mi(x["last"]) > t for x in cov) or any(AN.mi(x["first"]) > t for x in fam_rows):
                 ended_bad += 1
     check("SF19 the last child reaching 18 ends the award with that month (rules 8), and the register agrees",

@@ -141,7 +141,7 @@ def write_review(path, gates):
               ("February 2020", dt.date(2020, 2, 1), dt.date(2020, 2, 29))]
     tab = [["Month", "Gate entries, all days (thousands)", "Ordinary weekdays"]]
     for name, a, b in months:
-        tot = sum(nv for d, c, nv in gates if c == "LSG" and a <= d <= b)
+        tot = sum(nv for d, c, nv in gates if c == "LSG" and a <= d <= b)  # Lisnagry has one gateline
         k = sum(1 for d, c, nv in gates if c == "LSG" and a <= d <= b and d.weekday() < 5 and d not in hol)
         tab.append([name, "%.1f" % (tot / 1000.0), str(k)])
     diff = 100.0 * (mean - P.LISNAGRY_FORECAST) / P.LISNAGRY_FORECAST
@@ -382,7 +382,7 @@ def build(target, seed=P.SEED):
     n["census"] = len(w["census_final"]) + len(w["census_prov"])
     write_case(os.path.join(target, FILES["case"]))
     mean, _k = write_review(os.path.join(target, FILES["review"]), w["gates"])
-    n["gates"] = IO.write_csv(os.path.join(target, FILES["gates"]), ["date", "station_code", "entries"],
+    n["gates"] = IO.write_csv(os.path.join(target, FILES["gates"]), ["date", "location_code", "entries"],
                               [(d.isoformat(), c, v) for d, c, v in w["gates"]])
     n["register"] = IO.write_csv(os.path.join(target, FILES["register"]),
                                  ["station_code", "station_name", "opened", "closed", "notes"],

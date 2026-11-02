@@ -49,10 +49,10 @@ def write(F, path):
           "claimed, from the month after its claim is decided (appraisal guidance 3.9 with "
           "complemento_familiar_rules_2026.pdf, payment).",
           "4. From cfv_register_extract_20261102.csv (both date layouts) took the granted initial claims of the "
-          "families the April 2024 rise brought in (computable income from €%s to under €%s, claimed from 1 April "
-          "2024) month by month as a share of the survey's households with children in that band (%s per cent by "
-          "the twelfth month) as C's claims, the claims before the rise under €%s over the households under it (%s "
-          "per cent) as B and D's, and the months from claim to first payment." % (
+          "families the April 2024 rise brought in, claimed from that month with computable income from €%s to "
+          "under €%s, month by month as a share of the survey's households with children in that band (%s per cent "
+          "by the twelfth month) as C's claims, the claims before the rise under €%s over the households under it "
+          "(%s per cent) as B and D's, and the months from claim to first payment." % (
               n(F["cfv_old_limit"]), n(F["C_old"]), "%.1f" % F["pace12_widening"], n(F["cfv_old_limit"]),
               "%.1f" % F["pace12_launch"]),
           "5. Took each household's chance of crossing the line over claim month and decision lag: A %s, B, C and D "
@@ -61,10 +61,10 @@ def write(F, path):
           "December 2025, keeping awards whose status now reads REVOKED because their revocation is dated 2026, in "
           "the province of its municipality (territorial_codes.csv) with the moves in cfv_incidents_2025.xlsx "
           "taking effect the month after: the families in the annex.",
-          "7. Took each sample dwelling in ecvv2026_fieldwork_cases.csv as its municipality and serial (its census "
-          "section changed for cases issued from April 2026), once at its last issue, in the province of its "
-          "municipality, with eligibility, complete interviews and the response rate as ecvv2026_main_results.pdf "
-          "defines them: the fieldwork figures in the annex.", ""]
+          "7. Took each reissue in ecvv2026_fieldwork_cases.csv as the dwelling of the case it reissues (reissue_of, "
+          "which also joins the reissues whose census section was renumbered from April 2026), each dwelling once at "
+          "its last issue, in the province of its municipality, with eligibility, complete interviews and the "
+          "response rate as ecvv2026_main_results.pdf defines them: the fieldwork figures in the annex.", ""]
     L += ["## 4. Deliverable Answers", "", "### cabinet_note_child_poverty_2027.pdf", "",
           "1. Recommends measure A, the Prestación Infancia Directa: %s children above the poverty line in 2027, "
           "Valmesura %s, Las Cuencas %s, Sierra del Alba %s." % (n(F["A_r"]), n(p["81"]), n(p["82"]), n(p["83"])),

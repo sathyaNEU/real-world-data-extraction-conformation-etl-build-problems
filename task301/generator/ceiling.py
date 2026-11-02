@@ -47,7 +47,7 @@ def main():
     print("Ask 2 ladder (eligible dwellings, complete interviews, response rate by province):")
     for name, path in stops2.items():
         print("  %-70s keeps %2d of %d" % (name, kept2(path, fw), n2))
-    print("  %-70s keeps %2d of %d" % ("municipality and serial as the dwelling (the full includer)", n2, n2))
+    print("  %-70s keeps %2d of %d" % ("each reissue joined to the case it reissues (the full includer)", n2, n2))
     crack = kept1(stops1["granted rows, every hazard handled (the careful route)"], fam) + kept2(
         stops2["each reference once at its last issue (the careful route)"], fw)
     lc = crack / float(n1 + n2)

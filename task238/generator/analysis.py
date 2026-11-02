@@ -96,7 +96,7 @@ class Pack:
                 continue
             d = dt.datetime.strptime(m.group(1).title(), "%d%b%y").date()
             s = self.by_dev[j["device"]]
-            t = dt.datetime.strptime(j["printed_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC).astimezone(TZ)
+            t = dt.datetime.fromisoformat(j["printed_local"]).astimezone(TZ)
             self.batch[(s, d)] = (t, int(j["labels"]))
         self.jobs = jobs
         # Thursday changeover checks

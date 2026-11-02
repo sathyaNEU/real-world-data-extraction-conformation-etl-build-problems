@@ -54,7 +54,8 @@ BEHAVIOUR = {
     "MD": dict(demand=1.10, copies=1.15, imp=0.58, base=0.005),
     "NH": dict(demand=1.00, copies=0.95, imp=0.40, base=0.005),
 }
-IMPATIENT_SENS = 0.55     # extra daily cancel probability per week of estimated wait beyond the first
+IMPATIENT_PLACE = 0.45    # chance an impatient student cancels on placing, per shown week of wait beyond the first
+IMPATIENT_EMAIL = 0.12    # the same at each Monday holds email
 
 OFFER_HOURS = 48
 P_BORROW = 0.86

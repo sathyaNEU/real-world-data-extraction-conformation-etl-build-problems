@@ -127,6 +127,12 @@ def zstamp(t):
     return t.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def lstamp(t):
+    """local time with its UTC offset, the way the printer fleet console writes it"""
+    s = t.strftime("%Y-%m-%dT%H:%M:%S%z")
+    return s[:-2] + ":" + s[-2:]
+
+
 def hhmm(t):
     return t.strftime("%H:%M")
 
@@ -177,13 +183,13 @@ def build(target, w=None):
             if b["jam"]:
                 seq += 1
                 tj = b["print"] - dt.timedelta(minutes=b["jam_lead"])
-                jobs.append((tj, {"device": device, "job_id": "J%d-%06d" % (no, seq), "submitted_utc": zstamp(tj - dt.timedelta(seconds=40)),
-                                  "printed_utc": zstamp(tj), "job_name": name, "template": "SEL-STD",
+                jobs.append((tj, {"device": device, "job_id": "J%d-%06d" % (no, seq), "submitted_local": lstamp(tj - dt.timedelta(seconds=40)),
+                                  "printed_local": lstamp(tj), "job_name": name, "template": "SEL-STD",
                                   "labels": int(b["labels"] * r.uniform(0.05, 0.4)), "status": "VOIDED"}))
             seq += 1
             jobs.append((b["print"], {"device": device, "job_id": "J%d-%06d" % (no, seq),
-                                      "submitted_utc": zstamp(b["print"] - dt.timedelta(seconds=int(r.integers(30, 160)))),
-                                      "printed_utc": zstamp(b["print"]), "job_name": name + (" RP" if b["jam"] else ""),
+                                      "submitted_local": lstamp(b["print"] - dt.timedelta(seconds=int(r.integers(30, 160)))),
+                                      "printed_local": lstamp(b["print"]), "job_name": name + (" RP" if b["jam"] else ""),
                                       "template": "SEL-STD", "labels": int(b["labels"]), "status": "COMPLETED"}))
             # the week's other jobs: tag replacements, new items, aisle strips, the odd test page
             for d in [c["date"] + dt.timedelta(days=j) for j in range(7)]:
@@ -199,8 +205,8 @@ def build(target, w=None):
                     tmpl = {"AISLE STRIP": "STRIP-12", "TEST": "CONFIG"}.get(kind, "SEL-STD")
                     seq += 1
                     jobs.append((t, {"device": device, "job_id": "J%d-%06d" % (no, seq),
-                                     "submitted_utc": zstamp(t - dt.timedelta(seconds=int(r.integers(20, 300)))),
-                                     "printed_utc": zstamp(t), "job_name": "%s %s" % (kind, d.strftime("%d%b").upper()),
+                                     "submitted_local": lstamp(t - dt.timedelta(seconds=int(r.integers(20, 300)))),
+                                     "printed_local": lstamp(t), "job_name": "%s %s" % (kind, d.strftime("%d%b").upper()),
                                      "template": tmpl, "labels": nl,
                                      "status": "COMPLETED" if r.random() > 0.015 else "VOIDED"}))
     jobs.sort(key=lambda x: (x[0], x[1]["device"]))

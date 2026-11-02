@@ -82,7 +82,7 @@ def load(target):
     for k in st:
         st[k].sort(key=lambda x: x[1])
     out["stays"] = st
-    out["gates"] = [(dt.date.fromisoformat(r["date"]), r["station_code"], int(r["entries"])) for r in rd(T("gates"))]
+    out["gates"] = [(dt.date.fromisoformat(r["date"]), r["location_code"], int(r["entries"])) for r in rd(T("gates"))]
     out["register"] = rd(T("register"))
     return out
 
@@ -226,10 +226,10 @@ def departures_utc(D, W):
 def station_ratios(D, codes_map=None, naive=False):
     """Average ordinary-weekday entries, September to November 2027 over September to November 2019."""
     hol = D["nonordinary"]
-    succ = {"KUH": ["UHK", "KUH"], "CBY": ["CBH", "CBY"], "ARD": ["ARD"], "LSG": ["LSG"], "KCN": ["KCN"],
-            "KDK": ["KDK", "KDX"]}
+    succ = {"KUH": ["UHK", "KUH"], "CBY": ["CBH", "CBY"], "ARD": ["ARD", "G0213"], "LSG": ["LSG"],
+            "KCN": ["KCN", "G0305"], "KDK": ["KDK", "G0417"]}
     if naive == "register":
-        succ = dict(succ, KDK=["KDK"])
+        succ = dict(succ, KDK=["KDK"], ARD=["ARD"], KCN=["KCN"])
     elif naive:
         succ = {k: [k] for k in succ}
     out = {}
