@@ -22,7 +22,7 @@ ZIP_TIME = (2026, 11, 27, 9, 0, 0)
 
 PROVENANCE = {
     "collision_records_2016_2025.csv": ("Ardleshire County Council collision system, validated injury collision record, extract 14 October 2026", "police-reported injury collisions in Ardleshire 2016 to 2025, with the county's junction node links"),
-    "junction_inventory_2026.xlsx": ("Ardleshire County Council network management, junction inventory 2026", "principal road network junctions: layout, control and traffic estimates by year 2016 to 2026"),
+    "junction_inventory_2026.xlsx": ("Ardleshire County Council network management, junction inventory 2026", "principal road network nodes with their layout codes and yearly vehicle volume estimates, 2016 to 2026"),
     "road_network_register_2026.csv": ("Ardleshire County Council network register", "classified roads and sections with their highway authority"),
     "junction_safety_fund_guidance_2027.pdf": ("Junction Safety Fund programme team, bid guidance 15 September 2026", "the 2027 fund: eligibility, the benefit, crash modification factors and the supporting tables"),
     "network_screening_2026.pdf": ("Halberd Transport Planning for Ardleshire County Council, junction screening note 9 October 2026", "the junctions listed for treatment study"),

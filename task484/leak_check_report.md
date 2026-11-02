@@ -6,8 +6,7 @@ LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's sol
 
 Stump terms swept: architecture, propane, survey, appliance, counters, heating, record, season, factor, comparison, golden, detector, reflex, window, register, factors, exports, burned, degree, sentence, decisive, estimand, readable, vehicle, method
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `network_operations_log_2025.docx`: golden figure 4.2 appears: .../09/2025 ATC network Firmware 4.2.1 deployed to all TX-200 outstations by remote pu...
+## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `traffic_estimate_terms_2025.pdf`: golden figure 3.5 appears: ...les. Heavy goods vehicles are goods vehicles over 3.5 tonnes gross vehicle weight, rigid or articulated...
 
 ## 4 design-note vocabulary (REVIEW 3)

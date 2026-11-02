@@ -56,6 +56,7 @@
   "Saxby Cross": 0.52,
   "Tollgate Crossroads": 0.52
  },
+ "death_days": 30,
  "expected": {
   "Church Street Junction": 1.9,
   "Coppice Way Junction": 1.7,
@@ -80,6 +81,8 @@
   "Saxby Cross": "X",
   "Tollgate Crossroads": "X"
  },
+ "match_metres": 40,
+ "match_minutes": 20,
  "model_route": "Tollgate Crossroads",
  "model_route_benefit": 0.8,
  "nodes": {

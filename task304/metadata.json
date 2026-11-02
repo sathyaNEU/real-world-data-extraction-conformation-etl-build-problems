@@ -38,7 +38,7 @@
   {
    "path": "target/junction_inventory_2026.xlsx",
    "source": "Ardleshire County Council network management, junction inventory 2026",
-   "covers": "principal road network junctions: layout, control and traffic estimates by year 2016 to 2026",
+   "covers": "principal road network nodes with their layout codes and yearly vehicle volume estimates, 2016 to 2026",
    "made": "constructed by the task's seeded generator in the source system's export format",
    "licence": "synthetic, released with the task under CC BY 4.0",
    "date": "2026-11-27"

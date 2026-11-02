@@ -28,6 +28,9 @@ NEW_GROUP = {"Car": "Car occupant", "Taxi or private hire car": "Car occupant", 
              "Motorcycle 125cc and under": "Motorcyclist", "Motorcycle 125cc to 500cc": "Motorcyclist",
              "Motorcycle over 500cc": "Motorcyclist"}
 SEV = {"Fatal": 1, "Serious": 2, "Slight": 3}
+MATCH_MINUTES = 20        # a re-sent record and its old-system copy: same date and road, within these minutes
+MATCH_METRES = 40         # and within these metres
+DEATH_DAYS = 30           # Annex A1: a casualty who dies within 30 days of the collision is killed
 
 
 def d_dmy(s):
@@ -239,7 +242,8 @@ class Pack:
                 if c["date"] >= dt.date(2026, 6, 1):
                     continue
                 cands = [o for o in byday[(c["date"], c["road"])]
-                         if abs((o["t"] - c["t"]).total_seconds()) <= 1200 and np.hypot(o["e"] - c["e"], o["n"] - c["n"]) <= 40]
+                         if abs((o["t"] - c["t"]).total_seconds()) <= MATCH_MINUTES * 60
+                         and np.hypot(o["e"] - c["e"], o["n"] - c["n"]) <= MATCH_METRES]
                 if len(cands) == 1:
                     twins[cands[0]["ref"]] = c["ref"]
         if dedupe == "match":
@@ -259,7 +263,7 @@ class Pack:
             for r in body:
                 cd = d_dmy(r[hx["collision_date"]]) if isinstance(r[hx["collision_date"]], str) else r[hx["collision_date"]].date()
                 dd = d_dmy(r[hx["date_of_death"]]) if isinstance(r[hx["date_of_death"]], str) else r[hx["date_of_death"]].date()
-                if (dd - cd).days > 30:
+                if (dd - cd).days > DEATH_DAYS:
                     continue
                 hh, mm = str(r[hx["approx_time"]]).split(":")[:2]
                 tt = dt.datetime(cd.year, cd.month, cd.day, int(hh), int(mm))

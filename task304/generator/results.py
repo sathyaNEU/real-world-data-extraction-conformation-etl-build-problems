@@ -48,6 +48,9 @@ def compute(target):
         "ask_a": {"Q%d" % q: {SNAME[s]: a[(q, s)] for s in (1, 2, 3)} for q in (1, 2, 3)},
         "ask_b": {"Q%d" % q: {g: b[(q, g)] for g in AN.GROUPS} for q in (1, 2, 3)},
         "quarters": QNAME,
+        "match_minutes": AN.MATCH_MINUTES,
+        "match_metres": AN.MATCH_METRES,
+        "death_days": AN.DEATH_DAYS,
     }
     return F, pk, figs, lad
 

@@ -45,10 +45,11 @@ def write(path, F):
              "junction_safety_fund_guidance_2027.pdf: %s %.1f prevented a year, %s %.1f." % (best, F["call_benefit"], ru,
                                                                                            F["runner_up_benefit"]))
     L.append("6. For Annex A, read the old system's 2026 collisions and casualties to May and the new system's JSON export from "
-             "June, kept each collision the migration re-sent once (the new record on the same date and road within 20 "
-             "minutes and 40 metres of an old one replaces it), applied the 30-day deaths in "
+             "June, kept each collision the migration re-sent once (the new record on the same date and road within %d "
+             "minutes and %d metres of an old one replaces it), applied the deaths within %d days in "
              "fatal_casualty_notifications_2026.xlsx matched on date, road, time and casualty, and left out the trunk "
-             "sections in road_network_register_2026.csv by road and easting.")
+             "sections in road_network_register_2026.csv, placed by their end nodes' eastings in the inventory." % (
+                 F["match_minutes"], F["match_metres"], F["death_days"]))
     L.append("7. Took a collision's severity from its most severely injured casualty and each casualty's road user from "
              "casualty_type (old system) or class and the vehicle they were in (new system), by quarter of the collision date.")
     L.append("8. Placed the roundabout at the junction with the largest benefit: %s." % best)
