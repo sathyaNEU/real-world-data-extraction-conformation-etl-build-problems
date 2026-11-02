@@ -440,6 +440,14 @@ the call and on Schedule B, all 24 cells reproduced, with a FIX_NOW on grading o
 methane depend on the expected-start estimator inside band C (its fits 51.3 to 54.7 t), so they are graded with a
 tolerance and the band and levy exactly. Shipped on zip 246c562d.
 
+Grading precision (after pass 3's FIX_NOW, pack unchanged at zip 246c562d): the submission states the year's total as
+54.5 t graded within 3.0 t (every fit the windows support, 53.9 to 57.0 t, and the per-tank form they reject, 51.3 t on
+the judge's fit, stay within it and inside band C) and the EXPECTED rows' starts, active hours and methane at the fit's
+precision; band C, the CAD 171,000 levy and the 24 Schedule B figures stay exact. figures_check 52 of 52. freeze.py
+check --mode rubric (and with --allow methane_t.tolerance, which reaches only figures.json keys) reports one frozen item
+moved: the Critical Components numbers gained 3.0, the tolerance itself; nothing else on the main side moved. Accepted as
+the ordered change; no re-judge, the judge having asked for no pack change and no rerun.
+
 ## Tried and rejected
 
 - 2026-10-26, draw screen for this number, each dead on file, on the rules or on paper before a card was written: the

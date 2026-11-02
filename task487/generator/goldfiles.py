@@ -26,6 +26,9 @@ def compute(p=None):
     f["methane_t"] = round(g["total"], 1)
     f["methane_t.family_lo"] = round(min(fam.values()), 1)
     f["methane_t.family_hi"] = round(max(fam.values()), 1)
+    # the grading precision the start estimators carry: every fit the windows support, and the per-tank form they
+    # reject, stays within it and inside band C; the band and the levy are exact
+    f["methane_t.tolerance"] = 3.0
     f["events.total"] = len(rows)
     for k, nm in (("TH", "hatch"), ("CP", "pilot"), ("PV", "relief")):
         f["events.%s" % nm] = sum(1 for r in rows if r["kind"] == k)

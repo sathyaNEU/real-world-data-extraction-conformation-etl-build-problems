@@ -21,7 +21,7 @@ def main():
            "emissions schedule from the leak survey log and tracker).",
            "**Analytical objective:** Data Extraction & Conformation (ETL).", "",
            "## 1. Final Recommendation", "",
-           "**Budget CAD %s for Vennholt Energy's 2027 release-event levy: its 2026 return falls in band %s, at %.1f t "
+           "**Budget CAD %s for Vennholt Energy's 2027 release-event levy: its 2026 return falls in band %s, at about %.1f t "
            "of release-event methane, CAD %s for each of its %s batteries.**" % (
                t(c["levy_cad"]), c["band"], f["methane_t"], t(c["rate_per_battery_cad"]), c["batteries"]),
            "The band rests on when the undated events began, read from all of the operator's 2026 windows between visits: "
@@ -35,8 +35,9 @@ def main():
            "not reseated, %s of them timed by a tank pressure alarm)." % (
                t(f["events.total"]), t(f["events.hatch"]), f["events.pilot"], f["events.relief"],
                f["events.relief_alarm_timed"]),
-           "2. Release-event methane for 2026: **%.1f t** on the fit of all the year's windows, band %s." % (
-               f["methane_t"], c["band"]), "",
+           "2. Release-event methane for 2026: **%.1f t** on the fit of all the year's windows, graded within **%.1f t** "
+           "(the start estimator moves the total, never the band), band %s." % (
+               f["methane_t"], f["methane_t.tolerance"], c["band"]), "",
            "## 3. Step-by-Step Solution", "",
            "1. Joined each event in release_event_register_2026.xlsx to the visit that found it in "
            "route_app_visits_20251215_20260630.csv or checkin_app_visits_20260615_20270112.jsonl (check-in app re-entries "
@@ -69,11 +70,12 @@ def main():
            "### release_events_2026.csv", "",
            "1. One row per release event found in 2026 in the Board's schema, %s rows (%s HATCH, %s COMBUSTOR, %s "
            "RELIEF), each with its start, start basis (ALARM for %d, EXPECTED for the rest), find, closure, active hours "
-           "and methane." % (t(f["events.total"]), t(f["events.hatch"]), f["events.pilot"], f["events.relief"],
+           "and methane; the ALARM rows' starts and methane are exact, and the EXPECTED rows' starts, active hours and "
+           "methane are graded at the fit's precision, since they move with the start estimator." % (t(f["events.total"]), t(f["events.hatch"]), f["events.pilot"], f["events.relief"],
                              f["events.relief_alarm_timed"]), "",
            "### release_levy_filing_2026.xlsx", "",
-           "1. Release-event methane for 2026: %.1f t; band %s; 2027 levy CAD %s (CAD %s for each of %s batteries)." % (
-               f["methane_t"], c["band"], t(c["levy_cad"]), t(c["rate_per_battery_cad"]), c["batteries"]),
+           "1. Release-event methane for 2026: %.1f t, graded within %.1f t; band %s; 2027 levy CAD %s (CAD %s for each "
+           "of %s batteries)." % (f["methane_t"], f["methane_t.tolerance"], c["band"], t(c["levy_cad"]), t(c["rate_per_battery_cad"]), c["batteries"]),
            "2. Schedule B, fugitive methane by route, tonnes, January to June and July to December:"]
     for r in ROUTES:
         out.append("   - %s: %.1f and %.1f" % (r, f["schedule_b.%s.h1_t" % r], f["schedule_b.%s.h2_t" % r]))

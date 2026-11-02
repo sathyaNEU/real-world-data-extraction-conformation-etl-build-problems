@@ -5,13 +5,13 @@
 
 ## 1. Final Recommendation
 
-**Budget CAD 171,000 for Vennholt Energy's 2027 release-event levy: its 2026 return falls in band C, at 54.5 t of release-event methane, CAD 950 for each of its 180 batteries.**
+**Budget CAD 171,000 for Vennholt Energy's 2027 release-event levy: its 2026 return falls in band C, at about 54.5 t of release-event methane, CAD 950 for each of its 180 batteries.**
 The band rests on when the undated events began, read from all of the operator's 2026 windows between visits: open hatches turn up more often after long windows than after short ones, but far less than in proportion to the window, because a share of them is left open by the departing visit and vents the whole window. Not band B, which starting every undated event halfway through its window gives: it prices the hatches the departing visit left open at half their windows. Not band E, which starting every hatch at the previous departure gives: most hatches open between visits.
 
 ## 2. Critical Components
 
 1. Release events found in 2026: **1,660** (1,425 open thief hatches, 58 combustor pilots out, 177 relief valves not reseated, 54 of them timed by a tank pressure alarm).
-2. Release-event methane for 2026: **54.5 t** on the fit of all the year's windows, band C.
+2. Release-event methane for 2026: **54.5 t** on the fit of all the year's windows, graded within **3.0 t** (the start estimator moves the total, never the band), band C.
 
 ## 3. Step-by-Step Solution
 
@@ -27,11 +27,11 @@ The band rests on when the undated events began, read from all of the operator's
 
 ### release_events_2026.csv
 
-1. One row per release event found in 2026 in the Board's schema, 1,660 rows (1,425 HATCH, 58 COMBUSTOR, 177 RELIEF), each with its start, start basis (ALARM for 54, EXPECTED for the rest), find, closure, active hours and methane.
+1. One row per release event found in 2026 in the Board's schema, 1,660 rows (1,425 HATCH, 58 COMBUSTOR, 177 RELIEF), each with its start, start basis (ALARM for 54, EXPECTED for the rest), find, closure, active hours and methane; the ALARM rows' starts and methane are exact, and the EXPECTED rows' starts, active hours and methane are graded at the fit's precision, since they move with the start estimator.
 
 ### release_levy_filing_2026.xlsx
 
-1. Release-event methane for 2026: 54.5 t; band C; 2027 levy CAD 171,000 (CAD 950 for each of 180 batteries).
+1. Release-event methane for 2026: 54.5 t, graded within 3.0 t; band C; 2027 levy CAD 171,000 (CAD 950 for each of 180 batteries).
 2. Schedule B, fugitive methane by route, tonnes, January to June and July to December:
    - R01: 8.8 and 7.8
    - R02: 10.6 and 3.2

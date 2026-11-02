@@ -25,7 +25,7 @@
  },
  "judge": {
   "verdict": "DETERMINISTIC (pass 3, zip 246c562d)",
-  "disposition": "FIX_NOW on grading only, no pack change",
+  "disposition": "FIX_NOW on grading only, closed: the year total graded within 3.0 t, band and levy exact (no pack change)",
   "report": "determinism_check_report.md"
  },
  "returned": [
@@ -66,6 +66,7 @@
   "judge": "pass 1 SEND_BACK and pass 2 FIX_NOW on Schedule B (contract repair day, July run change); after the Schedule B rework pass 3 DETERMINISTIC on the call and Schedule B, FIX_NOW on grading only (the 54.5 t total and per-event methane graded with a tolerance inside band C; no pack change)",
   "ceiling": "28.5, cracker and mirror 0 of 24",
   "checks": "138 PASS",
-  "verify": "34 of 34"
+  "verify": "34 of 34",
+  "freeze_grading": "rubric mode FAIL on one item, the Critical Components' added tolerance 3.0 (the ordered change), recorded in the note"
  }
 }
