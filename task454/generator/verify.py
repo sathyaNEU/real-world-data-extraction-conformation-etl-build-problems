@@ -1,131 +1,68 @@
-"""Independent verifier: reads only the shipped bundle (target/ and golden/), on its own code path (csv and openpyxl,
-no pandas, no calc.py), and recomputes the call, the default path's call and every graded figure."""
-import collections
-import csv
-import datetime as dt
-import json
-import os
-import statistics
-import sys
-
-import openpyxl
-
+"""Independent verifier: recomputes the call, every graded figure and both asks from the shipped files alone and
+compares them with figures.json. Exit 1 on any mismatch."""
+import os, sys, json
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-CLASSES = ["Anticonvulsants", "Antipsychotics", "Dementia agents", "Antidepressants, SSRI", "Beta blockers",
-           "Loop diuretics", "Benzodiazepines", "Antiparkinson agents", "Urinary antispasmodics",
-           "Skeletal muscle relaxants", "Antiemetics", "Oral corticosteroids"]
+sys.path.insert(0, HERE)
+import reader
+
+FAIL = []
 
 
-def eleven(ten):
-    a, b, c = ten.split("-")
-    return a.zfill(5) + b.zfill(4) + c.zfill(2)
+def ok(c, label):
+    print(("PASS " if c else "FAIL ") + label)
+    if not c:
+        FAIL.append(label)
 
 
-def sheet(path, name):
-    wb = openpyxl.load_workbook(path, read_only=True)
-    return [r for r in wb[name].iter_rows(values_only=True)]
-
-
-def main(target, golden):
-    f = {n: os.path.join(target, n) for n in os.listdir(target)}
-    find = lambda pre: [p for n, p in f.items() if n.startswith(pre)][0]
-    drug = sheet(find("state_drug_file"), "Drug file")
-    hdr = drug[0]
-    i_ndc, i_gpc, i_pkg = hdr.index("NDC"), hdr.index("GPC"), hdr.index("Package description")
-    prod, pkg = {}, {}
-    for r in drug[1:]:
-        n = eleven(r[i_ndc])
-        prod[n] = r[i_gpc]
-        d = r[i_pkg].upper()
-        pkg[n] = "carton" if ("UNIT-DOSE" in d or "BLISTER" in d) else "bottle"
-    cl_rows = sheet(find("state_drug_class_list"), "Classes")
-    start = [k for k, r in enumerate(cl_rows) if r and r[0] == "Class code"][0]
-    cname = {r[0]: r[1] for r in cl_rows[start + 1:] if r and r[0]}
-    klass = {r[0]: cname[r[4]] for r in sheet(find("state_drug_class_list"), "Products")[1:] if r and r[0]}
-    # rates in effect by month
-    month = lambda d: dt.date(d.year, d.month, 1)
-    mons = [dt.date(2026 + (m > 12), (m - 1) % 12 + 1, 1) for m in range(4, 16)]
-    rate = {}
-    grp = collections.defaultdict(list)
-    with open(find("state_aac_rates"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            e = dt.date.fromisoformat(r["effective_date"])
-            x = dt.date.fromisoformat(r["end_date"]) if r["end_date"] else dt.date(2099, 1, 1)
-            for m in mons:
-                if e <= m <= x:
-                    rate[(r["ndc"], m)] = float(r["aac_per_unit"])
-                    grp[(prod[r["ndc"]], pkg[r["ndc"]], m)].append(float(r["aac_per_unit"]))
-    ratios = [statistics.median(v) / statistics.median(grp[(g, "bottle", m)])
-              for (g, k, m), v in grp.items() if k == "carton" and (g, "bottle", m) in grp]
-    prem = statistics.median(ratios)
-    gold, default = collections.Counter(), collections.Counter()
-    with open(find("corvane_ffs_claims"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            fd = dt.date.fromisoformat(r["fill_date"])
-            if not (dt.date(2026, 4, 1) <= fd <= dt.date(2027, 3, 31)):
-                continue
-            n, m = r["ndc"], month(fd)
-            q, paid = float(r["quantity_dispensed"]), float(r["ingredient_cost_paid"])
-            c = klass[prod[n]]
-            x = rate.get((n, m))
-            if x is not None:
-                gold[c] += paid - x * q
-                default[c] += paid - x * q
-                continue
-            g, k = prod[n], pkg[n]
-            same = grp.get((g, k, m))
-            est = statistics.median(same) if same else statistics.median(grp[(g, "bottle", m)]) * prem
-            gold[c] += paid - est * q
-            anyp = grp.get((g, "bottle", m), []) + grp.get((g, "carton", m), [])
-            default[c] += paid - statistics.median(anyp) * q
-    rank = sorted(CLASSES, key=lambda c: -gold[c])
-    drank = sorted(CLASSES, key=lambda c: -default[c])
-    fails = []
-    if rank[0] != "Anticonvulsants":
-        fails.append("golden call %s" % rank[0])
-    if drank[0] != "Antipsychotics":
-        fails.append("default call %s" % drank[0])
-    figs = json.load(open(os.path.join(HERE, "figures.json")))
-    for c in CLASSES:
-        if int(round(gold[c] / 1000.0)) * 1000 != figs["classes"][c]["spread"]:
-            fails.append("%s spread %.0f against the golden's %s" % (c, gold[c], figs["classes"][c]["spread"]))
-    # the ask: FY2026 by the current class list
-    summ = sheet(find("corvane_generic_utilization"), "Utilization")
-    h = summ[0]
-    tot = collections.defaultdict(lambda: [0, 0.0, 0.0])
-    for r in summ[1:]:
-        c = klass[prod[r[h.index("NDC")]]]
-        t = tot[c]
-        t[0] += r[h.index("Claims")]
-        t[1] += r[h.index("Units")]
-        t[2] += r[h.index("Ingredient cost paid")]
-    # the FY2026 fills' payments after the summary's 20 April 2026 cut sit only in the extract
-    with open(find("corvane_ffs_claims"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            fd, pd_ = dt.date.fromisoformat(r["fill_date"]), dt.date.fromisoformat(r["paid_date"])
-            if dt.date(2025, 4, 1) <= fd <= dt.date(2026, 3, 31) and pd_ > dt.date(2026, 4, 20):
-                t = tot[klass[prod[r["ndc"]]]]
-                t[0] += -1 if r["transaction_code"] == "B2" else 1
-                t[1] += float(r["quantity_dispensed"])
-                t[2] += float(r["ingredient_cost_paid"])
-    gx = sheet(os.path.join(golden, "smac_candidate_classes_fy2026.xlsx"), "Candidate classes")
-    for r in gx[2:]:
-        c = r[1]
-        if c not in CLASSES:
-            continue
-        if (r[2], r[3], r[4]) != (tot[c][0], int(round(tot[c][1])), int(round(tot[c][2]))):
-            fails.append("ask %s %s against %s" % (c, r[2:5], tot[c]))
-        fc = figs["classes"][c]
-        if (fc["claims_fy26"], fc["units_fy26"], fc["ingredient_fy26"]) != (r[2], r[3], r[4]):
-            fails.append("figures.json %s" % c)
-    if fails:
-        raise SystemExit("verify FAILED: %s" % "; ".join(fails))
-    print("verify: from the bundle alone, costing each unpriced NDC from priced NDCs of the same product and package "
-          "proposes %s (%.2f over %s), costing it at the product's rate proposes %s; carton premium %.2f; every "
-          "spread inside its range and every FY2026 figure recomputes" % (rank[0], gold[rank[0]] / gold[rank[1]],
-                                                                          rank[1], drank[0], prem))
+def main():
+    T = os.path.join(os.path.dirname(HERE), "target")
+    P = reader.load(T)
+    f = json.load(open(os.path.join(HERE, "figures.json")))
+    pop = reader.region_pop(P)
+    months, days = reader.presence(P)
+    routine = lambda cid, reg: len(months[(cid, reg)]) >= 6 and days[(cid, reg)] >= 30
+    q = reader.visitor_spend(P, lambda row: not routine(row[0], row[1]))
+    pr = {r: sum(q[r]) / pop[r] for r in q}
+    order = sorted(pr, key=lambda r: (-pr[r], pop[r]))
+    names = P["names"]
+    ok([names[r] for r in order[:5]] == f["call"], "the five regions recompute: " + ", ".join(order[:5]))
+    ok(names[order[5]] == f["first_below"], "the first region below the line recomputes: " + order[5])
+    ok(int(round(pr[order[4]])) - int(round(pr[order[5]])) == f["gap_per_resident"], "the gap recomputes")
+    for r in pr:
+        ok([int(round(x / 1000.0)) * 1000 for x in q[r]] == f["q_%s" % r], "quarterly visitor spending %s" % r)
+        ok(int(round(sum(q[r]) / 1000.0)) * 1000 == f["total_%s" % r], "2026 visitor spending %s" % r)
+        ok(int(round(pr[r])) == f["per_resident_%s" % r], "per resident %s" % r)
+        ok(abs(pop[r] - f["erp_%s" % r]) < 0.01, "estimated resident population %s from the schedule" % r)
+    # positive control: the statement-address route through the verifier's own readers files another set
+    sa2r = P["sa2_region"]
+    def home(sa2):
+        if sa2 in P["shares"] and P["shares"][sa2]:
+            return max(P["shares"][sa2], key=P["shares"][sa2].get)
+        return sa2r.get(sa2, "IS")
+    qd = reader.visitor_spend(P, lambda row: home(row[3]) != row[1])
+    prd = {r: sum(qd[r]) / pop[r] for r in qd}
+    od = sorted(prd, key=lambda r: (-prd[r], pop[r]))
+    ok(set(od[:5]) != set(order[:5]), "positive control: the statement-address route files " + ", ".join(od[:5]))
+    # the filed sentences the figures rest on, read back through the verifier's own PDF reader (positive controls)
+    gt, ct = " ".join(P["guidelines_text"].split()), " ".join(P["closure_text"].split())
+    ok("A visitor has the meaning the International Recommendations for Tourism Statistics 2008 give it." in gt
+       and "raising each sampled card by its selection weight" in gt and "preliminary estimate for 30 June 2026" in gt,
+       "the guidelines' section 4 reads back: the standard's visitor, the sample raised by selection weight, the 2026 population")
+    ok("What remains of an agreement is its approved amount less what the program had paid on it by 31 December 2026." in ct
+       and "Money a council returned to the program in 2026 because it did not spend it is added to the Fund's 2027 round." in ct,
+       "the closure decision reads back: what remains of an agreement, and the unspent money added to the round")
+    ok(len(P["rows"]) == f["sample_rows"] and len(P["weight"]) == f["sample_cards"], "the sample's rows and cards read back from the CSV and the register")
+    A, B = reader.program_answers(P, link=True)
+    for r in pr:
+        ok(int(round(A[names[r]])) == f["remaining_%s" % r], "what remains of %s's open agreements" % r)
+        ok(int(round(B[names[r]])) == f["unspent_%s" % r], "unspent money %s's councils returned" % r)
+    total = 12_000_000 + sum(B.values()) - sum(A.values())
+    ok(int(round(total)) == f["round_total"] and int(round(total / 5)) == f["grant_each"], "the round's total and each grant")
+    Ac, Bc = reader.program_answers(P, link=False)
+    ok(all(int(round(Ac[names[r]])) != f["remaining_%s" % r] for r in pr), "positive control: payments booked to the agreement they quote miss every region")
+    print("\n%d failures" % len(FAIL))
+    sys.exit(1 if FAIL else 0)
 
 
 if __name__ == "__main__":
-    main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
+    main()

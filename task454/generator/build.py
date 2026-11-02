@@ -1,156 +1,90 @@
-"""Build task454: the pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json; then the checks and the independent verifier, a second full build into a scratch folder
-inside the task compared byte for byte, and target.zip cut from the final build.
-
-    python3 task454/generator/build.py              everything
-    python3 task454/generator/build.py --out DIR    the pack only, into DIR
-"""
-import argparse
-import datetime as dt
-import hashlib
-import os
-import shutil
-import sys
-import tempfile
-import warnings
-
+"""Builds task454: the world, the pack under target/, the goldens, figures.json and target.zip."""
+import os, sys, json, shutil, zipfile, hashlib
+import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-warnings.filterwarnings("ignore")
-
-import docs as DC           # noqa: E402
-import pack as P            # noqa: E402
-import postprocess as PP    # noqa: E402
-import sim as S             # noqa: E402
-import world as W           # noqa: E402
+from world import *
+import sim, pack, calc, golden, metadata
 
 TASK = os.path.dirname(HERE)
-LOCAL = dt.timezone(dt.timedelta(hours=-4))
-STAMP = dt.datetime(2027, 4, 21, 15, 42, tzinfo=LOCAL)      # the extract as the administrator assembled it
+T = os.path.join(TASK, "target")
+G = os.path.join(TASK, "golden")
+SCRATCH = os.environ.get("T454_SCRATCH", "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/aa89d852-d261-54bf-a8a2-dbdcaa1de391/scratchpad/t454_build")
 
 
-def simulate():
-    prods = S.coverage(S.catalog())
-    rates = S.aac_rates(prods)
-    idx = S.index_rates(rates)
-    cl = S.claims(prods, idx, W.SCALE)
-    return dict(prods=prods, rates=rates, idx=idx, claims=cl, prior=S.prior_year(prods, cl))
-
-
-def build(out, quiet=False, world=None):
-    if os.path.exists(out):
-        shutil.rmtree(out)
-    os.makedirs(out)
-    w = world or simulate()
-    f = lambda k: os.path.join(out, P.FILES[k])
-    n = {}
-    n["claims"] = P.write_claims(w["claims"], f("claims"))
-    n["aac"] = P.write_aac(w["rates"], f("aac"))
-    n["drugs"] = P.write_drugs(w["prods"], f("drugs"))
-    n["classes"] = P.write_classes(w["prods"], f("classes"))
-    n["summary"] = P.write_summary(w["prior"], f("summary"))
-    n["dict"] = P.write_dictionary(f("dict"))
-    n["mco"] = P.write_mco(w["prods"], f("mco"))
-    n["pdl"] = P.write_pdl(w["prods"], f("pdl"))
-    n["trans"] = P.write_transmittal(f("trans"), n)
-    DC.write_terms(f("terms"))
-    DC.write_method(f("method"))
-    DC.write_request(f("request"))
-    PP.normalize_ooxml(f("drugs"), "Drug File Services", "Drug File Services", "2027-04-15T12:02:00Z",
-                       "2027-04-15T12:31:44Z", excel=True, company=W.DEPARTMENT)
-    PP.normalize_ooxml(f("classes"), W.PEOPLE["director"], W.PEOPLE["director"], "2026-11-18T15:20:00Z",
-                       "2026-12-22T21:04:37Z", excel=True, company=W.DEPARTMENT)
-    PP.normalize_ooxml(f("trans"), W.PEOPLE["account"], W.PEOPLE["account"], "2027-04-21T13:25:00Z",
-                       "2027-04-21T15:38:12Z", title="Data delivery note")
-    PP.normalize_ooxml(f("summary"), W.PEOPLE["pricing"], W.PEOPLE["pricing"], "2026-04-23T13:10:00Z",
-                       "2026-04-24T19:55:12Z", excel=True)
-    PP.normalize_ooxml(f("pdl"), "Pharmacy Program", "Pharmacy Program", "2026-12-10T14:00:00Z",
-                       "2026-12-30T16:12:09Z", excel=True, company=W.DEPARTMENT)
-    PP.normalize_pdf(f("terms"), b"D:20260618101500-04'00'", b"D:20260618103210-04'00'")
-    PP.normalize_pdf(f("method"), b"D:20260112090500-05'00'", b"D:20260112091740-05'00'")
-    PP.normalize_pdf(f("request"), b"D:20270308143000-05'00'", b"D:20270308143412-05'00'")
-    stamp = STAMP.timestamp()
-    for name in os.listdir(out):
-        os.utime(os.path.join(out, name), (stamp, stamp))
-    w["counts"] = n
-    if not quiet:
-        print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in n.items())))
-    return w
-
-
-def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
-
-
-def cut_zip(root):
-    import zipfile
-    folder = os.path.join(root, "target")
-    stamp = (2027, 4, 21, 15, 42, 0)
-    zp = os.path.join(root, "target.zip")
-    with zipfile.ZipFile(zp, "w") as z:
-        for name in sorted(os.listdir(folder)):
-            zi = zipfile.ZipInfo(name, date_time=stamp)
-            zi.compress_type = zipfile.ZIP_DEFLATED
-            zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(folder, name), "rb").read())
-    return zp
-
-
-def everything(root, quiet=False, world=None):
-    import golden as G
-    import metadata as MD
-    world = build(os.path.join(root, "target"), quiet=quiet, world=world)
-    if os.path.exists(os.path.join(root, "golden")):
-        shutil.rmtree(os.path.join(root, "golden"))
-    world["golden"] = G.main(os.path.join(root, "target"), os.path.join(root, "golden"),
-                             os.path.join(root, "generator", "figures.json"))
-    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"))
-    return world
+def world():
+    rng = np.random.default_rng(SEED)
+    sa2s = sim.geography(rng)
+    cards, n, weight, popc = sim.sample(rng, sa2s)
+    sim.routine_rows(rng, cards)
+    sim.trips(rng, cards, weight, sim.region_erp(sa2s))
+    sim.addresses(np.random.default_rng(SEED + 13), cards, sa2s)
+    sim.publish_erp(np.random.default_rng(SEED + 29), sa2s)
+    rpop = sim.region_erp(sa2s)
+    rng2 = np.random.default_rng(SEED + 7)
+    agreements, claims, payments, receipts, vendor_ref = sim.program(rng2)
+    return dict(rng=rng, sa2s=sa2s, rpop=rpop, cards=cards, n=n, weight=weight, popc=popc, agreements=agreements,
+                claims=claims, payments=payments, receipts=receipts, vendor_ref=vendor_ref)
 
 
 def main():
-    import checks as CK
-    import verify as V
-    world = everything(TASK)
-    ok = CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), world=world,
-                meta_path=os.path.join(TASK, "metadata.json"))
-    V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
-    tmp = tempfile.mkdtemp(dir=TASK, suffix=".tmp")
-    try:
-        os.makedirs(os.path.join(tmp, "generator"))
-        everything(tmp, quiet=True)
-        same_t = digest(os.path.join(TASK, "target")) == digest(os.path.join(tmp, "target"))
-        same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
-        same = {}
-        for f in ("metadata.json", os.path.join("generator", "figures.json")):
-            same[f] = open(os.path.join(TASK, f), "rb").read() == open(os.path.join(tmp, f), "rb").read()
-        if not (same_t and same_g and all(same.values())):
-            raise SystemExit("second build differs: target %s, golden %s, %s" % (same_t, same_g, same))
-    finally:
-        shutil.rmtree(tmp)
-    allh = hashlib.sha256("".join(v for _, v in sorted(digest(os.path.join(TASK, "target")).items())).encode() +
-                          "".join(v for _, v in sorted(digest(os.path.join(TASK, "golden")).items())).encode() +
-                          open(os.path.join(TASK, "metadata.json"), "rb").read() +
-                          open(os.path.join(HERE, "figures.json"), "rb").read()).hexdigest()
-    print("two builds byte-identical: %d target files, %d golden files, metadata.json and figures.json (sha256 %s)" % (
-        len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))), allh[:16]))
-    import zipfile
-    zp = cut_zip(TASK)
-    with zipfile.ZipFile(zp) as z:
-        inside = {i.filename: hashlib.sha256(z.read(i.filename)).hexdigest() for i in z.infolist()}
-    if inside != digest(os.path.join(TASK, "target")):
-        raise SystemExit("target.zip differs from target/")
-    print("target.zip cut from this build: %d files, each identical to target/ (sha256 %s)" % (
-        len(inside), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]))
-    if not ok:
-        raise SystemExit("checks failed")
+    os.makedirs(SCRATCH, exist_ok=True)
+    W = world()
+    for d in (T, G):
+        shutil.rmtree(d, ignore_errors=True)
+        os.makedirs(d)
+    rng = np.random.default_rng(SEED + 11)
+    nrows = pack.write_sample(T, W["cards"], W["weight"], rng, W["sa2s"])
+    pack.write_erp(T, W["sa2s"])
+    pack.write_totals(T, W["cards"], W["weight"], rng)
+    pack.guidelines(T, W["sa2s"])
+    pack.program_files(T, W["agreements"], W["claims"], W["payments"], W["receipts"], rng)
+    pack.closure(T)
+    # the golden's quantities (weights as shipped, rounded to four decimals)
+    w4 = {h: round(v, 4) for h, v in W["weight"].items()}
+    gold = calc.golden(W["cards"], w4, W["rpop"])
+    A, B, total, grant = calc.asks(W["agreements"], W["claims"], W["payments"], W["receipts"])
+    golden.write_csv(G, gold, W["rpop"])
+    golden.paper(G, gold, W["rpop"], A, B, total, grant, SCRATCH)
+    figs = figures(gold, W["rpop"], A, B, total, grant, nrows)
+    # the separation the classification rests on, measured on the sample
+    pairs = [(len(c.months_in(r)), c.days_in(r)) for c in W["cards"] for r in {rr for (rr, m) in c.rows}]
+    rout = [(k, d) for k, d in pairs if calc.routine_pair(k, d)]
+    trip = [(k, d) for k, d in pairs if not calc.routine_pair(k, d)]
+    figs.update({"trip_max_months": max(k for k, d in trip), "trip_max_days": max(d for k, d in trip),
+                 "routine_min_months": min(k for k, d in rout), "routine_min_days": min(d for k, d in rout),
+                 "sample_cards": len(W["cards"]), "appropriation": ROUND_BUDGET})
+    json.dump(figs, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
+    metadata.write(TASK, T)
+    z = os.path.join(TASK, "target.zip")
+    with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
+        for fn in sorted(os.listdir(T)):
+            zi = zipfile.ZipInfo(fn, date_time=(2027, 2, 5, 9, 0, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            zf.writestr(zi, open(os.path.join(T, fn), "rb").read())
+    print("built", nrows, "sample rows;", hashlib.md5(open(z, "rb").read()).hexdigest())
+    return W, gold
+
+
+def figures(gold, rpop, A, B, total, grant, nrows):
+    f = {"call": [NAME[r] for r in gold["set"]], "call_codes": gold["set"],
+         "first_below": NAME[gold["sixth"]], "fifth": NAME[gold["fifth"]],
+         "gap_per_resident": int(round(gold["per_resident"][gold["fifth"]])) - int(round(gold["per_resident"][gold["sixth"]])),
+         "margin": round(gold["margin"], 4), "sample_rows": nrows, "round_total": int(round(total)), "grant_each": int(round(grant))}
+    for r in ELIGIBLE:
+        q = gold["q"][r]
+        f["q_%s" % r] = [golden.r1000(x) for x in q]
+        f["total_%s" % r] = golden.r1000(sum(q))
+        f["per_resident_%s" % r] = int(round(gold["per_resident"][r]))
+        f["erp_%s" % r] = round(rpop[r], 2)
+        f["remaining_%s" % r] = int(round(A[r]))
+        f["unspent_%s" % r] = int(round(B[r]))
+    f["remaining_all"] = sum(int(round(A[r])) for r in ELIGIBLE)
+    f["unspent_all"] = sum(int(round(B[r])) for r in ELIGIBLE)
+    f["round_total"] = ROUND_BUDGET + f["unspent_all"] - f["remaining_all"]
+    return f
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", help="build the pack only, into this folder")
-    a = ap.parse_args()
-    if a.out:
-        build(a.out)
-    else:
-        main()
+    main()

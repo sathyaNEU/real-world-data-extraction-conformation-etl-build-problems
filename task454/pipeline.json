@@ -1,46 +1,53 @@
 {
- "task": "task454",
- "status": "DESIGN",
- "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
- "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-02",
- "stump": "The default path awards the five grants to a set holding the mining region and the university region, because it counts every card whose statement postcode lies outside a region as a visitor there, so the everyday spending of rostered workers, students and people who moved there is booked as trips; reading each sampled card's usual environment from its own months and days of presence before splitting its spending awards a set without either.",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": "0.09 (task306 v2)",
-  "note": "drawn 2026-11-02: guard WARN (org family and objective overuse, Gate G and question form against task183, same_driver_older against task253 differentiated), answered in the Draw",
-  "surface": ""
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [],
- "resume": "",
- "approved": null,
- "delivered": null,
- "portal": null,
- "history": [
-  {
-   "architecture": 1,
-   "domain": "general-statistics-data-science",
-   "delivered": "2026-10-13",
-   "judge": "DETERMINISTIC, APPROVE (2026-10-13)",
-   "fate": "spent 2026-11-02 after the in-house audit (a group-by of the claims extract landed the call and the FY2026 summary agreed; two files described the data; the ask spent under the careful-solver cracker); stays on the portal as delivered",
-   "source_note": "seed ET11 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; its mechanisms (NDC formats, effective dates, the fee inside the total) are Layer 1 here"
-  }
- ]
+  "task": "task454",
+  "status": "SHIPPED",
+  "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
+  "objective": "etl",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-11-02",
+  "stump": "The default path funds Jabiru Coast, Lyrebird Peninsula, Gidgee Basin ($5,410 per resident), Spinifex Gorges and Carisbrook Tablelands ($5,027), because it places each card at the region of its statement address and counts everything a card spends outside that region as a visitor's, so the everyday spending of the Gidgee Basin's rostered mine workers, Carisbrook's students and the people who moved to Carisbrook and the coast without changing their address is booked as trips; reading each card's usual environment from its own months and days of presence, every region a card is in month after month taken as part of it, leaves only the trips and funds Tingle Ranges and Yallambee Valley in their place.",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-02"
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (as of 2027-02-05, cut e43ad2c2; six REVIEW lines ruled in the design note's Build gates)",
+    "reader": "arch 2 on cut e43ad2c2: no leak (Q6 an analytical estimand choice)"
+  },
+  "duplicate_check": {
+    "heart": "BLOCK, same-day window artifact (H27): ban.role, ban.forum, ban.org_family against task266 v2 (registered 2026-11-02T08:16Z), ban.artifact against task154 v3 (08:33Z); this card 12:59Z",
+    "nearest": "0.09 (task485 lineage; task306 v2)",
+    "note": "drawn 2026-11-02: guard WARN (org family and objective overuse, Gate G and question form against task183, same_driver_older against task253 differentiated), answered in the Draw",
+    "surface": "exit 0 (2026-11-02), 12 pairs promoted for adjudication, nearest task455 back to back on the same task type and objective, differentiated on the card"
+  },
+  "judge": {
+    "verdict": "arch 2 pass 1 on cut e43ad2c2: DETERMINISTIC",
+    "disposition": "APPROVE; Gate G method_or_model_selection, analytical_non_defect; Gate H analytical",
+    "report": "determinism_check_report.md"
+  },
+  "returned": [],
+  "resume": "",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "history": [
+    {
+      "architecture": 1,
+      "domain": "general-statistics-data-science",
+      "delivered": "2026-10-13",
+      "judge": "DETERMINISTIC, APPROVE (2026-10-13)",
+      "fate": "spent 2026-11-02 after the in-house audit (a group-by of the claims extract landed the call and the FY2026 summary agreed; two files described the data; the ask spent under the careful-solver cracker); stays on the portal as delivered",
+      "source_note": "seed ET11 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; its mechanisms (NDC formats, effective dates, the fee inside the total) are Layer 1 here"
+    }
+  ],
+  "cut": {
+    "target_zip_md5": "e43ad2c2633626240b22af0dd9792283",
+    "date": "2026-11-02",
+    "byte_identical_rebuilds": 2
+  },
+  "ceiling": "cracker 0 of 23 ask figures, full includer 23 of 23, pair 28.0, two careful on-call 45.0 each, mirror leakage 0.0; best stops 4 (Ask A) and 8 (Ask B)",
+  "shipped": "2026-11-02"
 }

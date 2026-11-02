@@ -1,33 +1,27 @@
 # leak check, task454
 
-**Verdict: REVIEW.** 12 files read, 47 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 90 golden figures and 13 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: product, survey, reversals, pharmacies, package, priced, asserted, acquisition, cartons, prompt, pattern, method, unpriced, carton, records, integration, pharmacy, decisive, administrator, pricing, antipsychotics, record, missed, domain, generic
+Stump terms swept: address, sample, environment, presence, routine, standard, asserted, population, sentence, golden, nothing, scheme, months, gidgee, carisbrook, section, claims, statement, jabiru, register, rejected, method, lyrebird, record, generator
 
 ## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `smac_program_terms_2026.pdf`: carries 14 of 19 distinctive words of the committed call: 'We propose Anticonvulsants for the State Maximum Allowable Cost list from 1 July 2027: its ingredient spread over fills '
+- **REVIEW** `rvif_2027_round_guidelines.pdf`: carries 23 of 28 distinctive words of the committed call: 'Fund Jabiru Coast, Lyrebird Peninsula, Spinifex Gorges, Tingle Ranges and Yallambee Valley in the 2027 round, each recei'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `corvane_data_delivery_note_2027-04-21.docx`: 4 of 25 stump-paragraph terms appear (reversals, pharmacy, record, generic); read whether the document names the move
-- **REVIEW** `smac_program_terms_2026.pdf`: 8 of 25 stump-paragraph terms appear (product, reversals, pharmacies, package, acquisition, pharmacy); read whether the document names the move
-- **REVIEW** `smac_update_request_2027-03-08.pdf`: 3 of 25 stump-paragraph terms appear (pharmacy, administrator, antipsychotics); read whether the document names the move
-- **REVIEW** `state_aac_survey_methodology_2026.pdf`: 7 of 25 stump-paragraph terms appear (survey, pharmacies, priced, acquisition, method, pharmacy); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `rvif_2027_round_guidelines.pdf`: 6 of 25 stump-paragraph terms appear (sample, population, gidgee, carisbrook, jabiru, lyrebird); read whether the document names the move
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+## 6 ranking artifacts (REVIEW 4, INFO 2)
+- **REVIEW** `ap_payments_rtip_2026.csv`: names 5 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `ar_receipts_rtip_2026.csv`: names 5 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `rtip_agreements_2026-12-31.xlsx`: names 11 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `rtip_claims_2026.csv`: names 5 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `erp_sa2_30jun2026_preliminary.csv`: names 10 of 13 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `rvif_2027_round_guidelines.pdf`: names 11 of 13 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 11 prompt gate (REVIEW 2)
-- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "Which of the twelve" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); reword at the role level, not the verb
-
-## 13 task metadata (REVIEW 2)
-- **REVIEW** `metadata.json`: title shares the design note's stump vocabulary (survey, pharmacies, acquisition, pharmacy, administrator): say what the task decides, not how
-- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (survey, acquisition, integration, pharmacy, record): say what the task decides, not how
 
 ## 1 file names (clean)
 
@@ -35,29 +29,10 @@ Stump terms swept: product, survey, reversals, pharmacies, package, priced, asse
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
+## 9 dates after the setting (clean)
 
-## Solver's-eye read
-
-Two isolated readers (2026-10-13), each on fresh copies of prompt.txt and target/ only.
-
-First pass:
-1. Decisive step stated: none. The closest sentences are C.4 and C.5, which file what the spread is and never how a unit with no rate is costed.
-2. A file ranking or scoring the candidates: none.
-3. Files that exist only to help the analyst: the record layout and the data delivery note (the administrator's own documentation of the extract); the AAC methodology explains why some NDCs carry no rate (a mild signpost, harmless).
-4. A figure or name that reads as the answer: none.
-5. The filed sentences fixing the figure and population: C.4 (fills April 2026 to March 2027) and C.5 (ingredient cost paid, net of reversals, less what the pharmacies paid their suppliers); the cost of a unit with no rate is left open, as designed.
-6. What decides: mainly an analytical choice, whether the unrated NDCs take another acquisition cost than the rated ones; the reversals, fill against paid dates and effective dates it names are Layer 1, each asserted neutral to the call (R2).
-Mechanical items: all harmless. Realism tells fixed in the generator: the record layout's "(file)" pseudo-rows (the file-level facts moved to the data delivery note); one page frame on three organisations' PDFs (each now carries its own); the managed care summary's class-blind prices (now one class price with small variation).
-
-Second pass, on the rebuilt pack:
-1. Decisive step stated: none (C.4 and C.5 fix the metric and window, not how to value a unit with no rate).
-2. A ranking file: none. 3. Help-only files: the record layout and the delivery note; the note's line on the summary (paid through 20 April 2026) is a mild pointer that states the file's cut and says nothing of what to do with it (the fairness fact the FY2026 device needs). 4. Answer-like figure: none.
-5. Literal result: as designed, the cost of a unit with no rate open.
-6. What decides: the analytical choice of how to value the units with no AAC rate.
-Mechanical items: all harmless or harmless-to-borderline (governing definitions and background, no move named). Realism: the delivery note's sentence limiting claims to the candidate classes read as covering the summary too; it now says the claims extract is limited and the summary is the full generic summary. No further reader pass: that sentence is not near the decisive step.
+## 11 prompt gate (clean)

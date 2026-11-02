@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Jabiru Coast, Lyrebird Peninsula, Spinifex Gorges, Tingle Ranges and Yallambee Valley",
+  "answer_source": "task454/generator/figures.json (call)",
   "gap": [
     "population"
   ],
@@ -32,23 +32,24 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who weights the scheme's research sample, maps statement and merchant postcodes to the tourism regions, divides by each region's estimated resident population and counts every card whose statement postcode lies outside a region as a visitor there awards the grants to a set holding the mining region and the university region, whose spending is lifted by rostered workers, students and people who moved there; the golden set holds neither once each card's usual environment is read from its own presence.",
+  "analyst_test": "A strong analyst who joins the scheme's research extract to the card register's weights, lays Schedule 1 over the 2026 population estimates and counts every card's spending outside the region of its statement SA2 as a visitor's, as card-based destination statistics do, sees the address hold for 94 per cent of cards and funds Jabiru Coast, Lyrebird Peninsula, Gidgee Basin (5,410 dollars per resident), Spinifex Gorges and Carisbrook Tablelands (5,027); reading each card's usual environment from its own months and days of presence funds Tingle Ranges and Yallambee Valley in their place.",
   "domain_test": "Tourism statistics' own analysis decides: a visitor is a person outside their usual environment, so the visitor spending the grants reward has to be rebuilt by placing each card's routine areas from its own pattern of presence before its spending is split into trips; put hospital catchments in place of regions and the trip, the usual environment and the visitor the fund rests on stop existing.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:usual-environment-rebuilt-from-each-card's-presence-not-its-statement-address",
   "layer1": [
-    "statement and merchant postcodes straddling tourism-region boundaries, allocated through a concordance with population shares",
-    "the research sample's per-card weights differing by sampling stratum, beside the scheme's monthly totals by merchant region",
-    "merchant category codes regrouped into the commission's spending categories, with one code reclassified from July",
-    "statement postcodes that change during the year, carried month by month on the card file",
-    "estimated resident population by statistical area, a revised 2025 and a preliminary 2026 release side by side, carried to tourism regions through a correspondence"
+    "statement SA2 codes on the research extract that change during the year where a holder moved their statements, and interstate SA2 codes Schedule 1 does not hold",
+    "the research sample's selection weights on a separate card register under opaque stratum codes",
+    "Schedule 1 as a table inside the guidelines PDF, by SA3, with four SA2s shared between regions at stated shares",
+    "the statistics office's 2026 preliminary population beside its 2025 revised release",
+    "the scheme's monthly regional totals carrying commercial, prepaid and overseas cards beside the research sample",
+    "the closing program's agreements register, claims, accounts payable transfers and receipts at different grains, with year-end timing (approvals in the week the program closed, held payments, returns across both year ends)"
   ],
   "stakeholder_role": "the commission's visitor economy research manager, preparing the grant ranking for the commission's board",
   "role_family": "programme_officer",
   "scoring_unit": "per boarded entity",
   "spine": {
-    "file": "the card scheme's research sample, card-region-month rows for 2026",
-    "rows": 0,
+    "file": "apn_pos_research_extract_2026.csv, the card scheme's research sample, card-region-month rows for 2026",
+    "rows": 148555,
     "entity": "one sampled card's spending at one tourism region's merchants in one month",
     "grain": "card x region x month",
     "source": "synthetic (constructed in the layout of a card scheme's de-identified research sample extract)"
@@ -82,9 +83,12 @@
       "William Gonzalez"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "regional_visitor_spend_2026.csv",
+    "rvif_2027_round_paper.docx"
+  ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "The decisive quantity is the spending of people outside the area they routinely live, work or study in, but each unit carries only a billing area that names where its statements go; units whose own record shows them present in another area week after week, through study terms, work rosters or a move, belong to that area whatever the billing area says, so counting every unit billed outside the area as an outsider books their routine spending as trips and lifts the areas that hold them, while reading each unit's routine areas from its own weeks of presence before splitting its spending leaves only the trips.",
   "driver_concrete": "Card schemes place each card at its statement postcode, which for students, fly-in fly-out and drive-in drive-out workers and people who have moved is not where they routinely are; their everyday spending in the region they study in, work rosters in or now live in is booked as visitor spending there, so the mining region and the university region join the naive five, and only each card's usual environment read from its own months and days of presence in the scheme's research sample ranks the regions on spending by people on trips.",
   "stump": "The default path awards the five grants to a set holding the mining region and the university region, because it counts every card whose statement postcode lies outside a region as a visitor there, so the everyday spending of rostered workers, students and people who moved there is booked as trips; reading each sampled card's usual environment from its own months and days of presence before splitting its spending awards a set without either.",
@@ -94,7 +98,8 @@
     "task470": "task470 v2 reads whether a dwelling was lived in from the daily rise in its own meter over a heating load, a state the register's empties flag gets wrong; here the state is not use or non-use of a unit but where a person routinely is, read from which areas a card is present in week after week, and the record it overturns is a billing address, not a level or a status flag.",
     "task306": "task306 v2 places an induced round of spending where a project's staff live to keep it inside an area; here no spending is induced or moved: the spending stays where it happened, and the decisive step is whether the person spending was on a trip.",
     "task305": "task305 v1 counts short-stay occupants missing from a demand model's resident origins; here the people booked wrongly are residents counted as visitors, the opposite direction, and the record that places them is the card scheme's statement postcode.",
-    "task485": "task485 reads an arrival's chance of staying from its own earlier short stays under the same registration; here no stay is forecast: the presence each card shows in 2026 is observed whole, and only which areas are routine for it decides how its spending is split."
+    "task485": "task485 reads an arrival's chance of staying from its own earlier short stays under the same registration; here no stay is forecast: the presence each card shows in 2026 is observed whole, and only which areas are routine for it decides how its spending is split.",
+    "task455": "task455 v2 shares the task type and objective one number apart: it tells establishment births from existing businesses re-registered under new employer accounts, so its work is continuity across identifiers in an employer register; here no identifier changes and nothing is re-keyed or linked: one card is one token all year, and the step reads which regions are routine for its holder from the card's own months and days of presence against the address its statements go to, while the asks reconcile a closing grants program's transfers and receipts."
   },
   "lineage": [
     {
@@ -150,12 +155,20 @@
     }
   ],
   "architecture_spent": false,
-  "notes": "Architecture 2, re-root drawn 2026-11-02 in another client domain, world, dataset and shell (survey research and official statistics: card-scheme data for regional tourism statistics). Architecture 1 is in lineage, spent.",
+  "notes": "Architecture 2, re-root drawn 2026-11-02 in another client domain, world, dataset and shell (survey research and official statistics: card-scheme data for regional tourism statistics). Architecture 1 is in lineage, spent. Stage 3 closed 2026-11-02: golden Jabiru Coast, Lyrebird Peninsula, Spinifex Gorges, Tingle Ranges, Yallambee Valley (fifth over sixth 1.295); rung 0 Jabiru, Lyrebird, Gidgee, Spinifex, Carisbrook (1.178); pack 11 files, 148,555-row extract; asks on the closing program's transfers and receipts, cracker 0 of 23.",
   "registered": "2026-11-02T12:59:23Z",
   "shell": {
-    "question form": "which",
-    "second-sentence opener": "put",
-    "rounding opener": "round",
-    "deliverable set": "docx+xlsx"
-  }
+    "question form": "whether",
+    "second-sentence opener": "in",
+    "rounding opener": "quarterly",
+    "deliverable set": "csv+docx"
+  },
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "round",
+      "deliverable set": "docx+xlsx"
+    }
+  ]
 }

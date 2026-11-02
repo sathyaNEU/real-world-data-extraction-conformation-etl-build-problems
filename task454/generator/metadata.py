@@ -1,79 +1,29 @@
-"""Write task454/metadata.json from the built pack."""
-import json
-import os
-import sys
+"""metadata.json: source, date and licence of every shipped file, and the declared distractors."""
+import json, os
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import world as W    # noqa: E402
-
-TASK = os.path.dirname(HERE)
-F = W.FILES
-SOURCES = {
-    F["claims"]: "the administrator's extract of the Program's fee-for-service pharmacy claims for the twelve candidate classes, fills April 2026 to March 2027, paid through 20 April 2027",
-    F["aac"]: "the State AAC rates in effect from April 2026 to March 2027, as published to 1 April 2027",
-    F["drugs"]: "the Department's drug file as of 15 April 2027",
-    F["classes"]: "the Department's drug class list in force from 1 January 2027",
-    F["summary"]: "the administrator's FY2026 generic utilization summary of 24 April 2026",
-    F["terms"]: "Attachment C of the pharmacy benefit administration contract, as amended effective 1 July 2026",
-    F["method"]: "the survey contractor's State AAC methodology, revised January 2026",
-    F["request"]: "the Department's letter of 8 March 2027 naming the candidate classes",
-    F["dict"]: "the administrator's record layout for the extract",
-    F["trans"]: "the administrator's data delivery note of 21 April 2027",
-    F["mco"]: "the managed care plans' pharmacy encounter summary by class and quarter",
-    F["pdl"]: "the Department's preferred drug list status as of January 2027",
+FILES = {
+    "apn_pos_research_extract_2026.csv": ("Synthetic, constructed in the layout of a card scheme's de-identified point-of-sale research sample: one row per sampled card, merchant region and month of 2026", "2027-01-22"),
+    "apn_research_cards_2026.xlsx": ("Synthetic card register of the research sample: each sampled card's selection stratum and weight", "2027-01-22"),
+    "apn_regional_totals_2026.csv": ("Synthetic monthly card spending totals by merchant region and issuer location, all card products", "2027-01-22"),
+    "erp_sa2_30jun2026_preliminary.csv": ("Synthetic preliminary estimated resident population by statistical area level 2, in the layout of a national statistics office's regional population release", "2026-12-17"),
+    "erp_sa2_30jun2025_revised.xlsx": ("Synthetic revised estimated resident population by statistical area level 2 for 30 June 2025", "2026-12-17"),
+    "rvif_2027_round_guidelines.pdf": ("Constructed governing document: the Fund's guidelines for the 2027 round", "2026-11-09"),
+    "rtip_agreements_2026-12-31.xlsx": ("Synthetic grants management system export of the older program's agreements", "2027-01-05"),
+    "rtip_claims_2026.csv": ("Synthetic export of the older program's 2026 claims", "2027-01-05"),
+    "ap_payments_rtip_2026.csv": ("Synthetic accounts payable export of the older program's 2026 payments", "2027-01-08"),
+    "ar_receipts_rtip_2026.csv": ("Synthetic accounts receivable export of the older program's 2026 receipts", "2027-01-08"),
+    "rtip_closure_decision_2026.pdf": ("Constructed governing document: the board's decision closing the older program", "2026-10-21"),
+}
+DISTRACTORS = {
+    "apn_regional_totals_2026.csv": "The scheme's monthly totals by merchant region carry every card product and overseas cards and no cardholder; they are a control on the research sample's coverage and no part of the measure or the asks.",
+    "erp_sa2_30jun2025_revised.xlsx": "The 30 June 2025 revised estimates sit beside the 30 June 2026 preliminary release; the guidelines file the 2026 estimates as the denominator.",
 }
 
 
-def rows_of(path):
-    if path.endswith((".csv", ".txt")):
-        with open(path, encoding="utf-8", errors="replace") as fh:
-            return sum(1 for _ in fh) - 1
-    return None
-
-
-def write(target, out_path):
-    files = []
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                      "source": "Constructed: " + SOURCES[f], "date": "2027-04-21",
-                      "license": "CC0-1.0 (original work, constructed for this task)"})
-    big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
-    meta = {
-        "task": "task454",
-        "architecture": 1,
-        "title": "Which drug class a state Medicaid program's pharmacy benefit administrator proposes for the State "
-                 "maximum allowable cost list, ranked on each class's ingredient spread, when the State's acquisition "
-                 "cost survey prices only the NDCs its sampled community pharmacies buy",
-        "domain": "General Statistics & Data Science",
-        "subdomain": "data-integration-record-linkage-entity-resolution (pharmacy claims integrated with an acquisition "
-                     "cost survey that covers only part of the NDCs dispensed, with a drug file and a class list)",
-        "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "07: a grid of the twelve candidate classes, each with its ingredient spread and, for the prior "
-                        "year, its claims, units dispensed and ingredient cost paid",
-        "as_of": "2027-04-21",
-        "deliverables": list(W.DELIVERABLES),
-        "distractor_files": [F[k] for k in W.DISTRACTORS],
-        "stated_inputs": [],
-        "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
-                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
-        "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task454/generator/build.py (seeded, deterministic) in the "
-                               "layouts of a Medicaid fee-for-service pharmacy claims extract, a state acquisition cost "
-                               "rate file, a state drug file and class list, and an administrator's utilization summary; "
-                               "the state, its agencies, the administrator, the labelers, pharmacies and people are "
-                               "fictional.",
-                     "date": "2027-04-21", "license": "CC0-1.0 (original work)"}],
-        "created": "2027-04-21",
-        "generator": "task454/generator/build.py",
-        "files": files,
-    }
-    with open(out_path, "w") as fh:
-        json.dump(meta, fh, indent=2, ensure_ascii=False)
-        fh.write("\n")
-    return meta
-
-
-if __name__ == "__main__":
-    write(os.path.join(TASK, "target"), os.path.join(TASK, "metadata.json"))
+def write(task, T):
+    out = {"task": "task454", "files": {}, "distractors": DISTRACTORS, "generator": "generator/build.py",
+           "licence_note": "Every file is synthetic or constructed for this task and released under CC BY 4.0; no third-party data are included."}
+    for fn in sorted(os.listdir(T)):
+        src, date = FILES[fn]
+        out["files"][fn] = {"source": src, "date": date, "licence": "CC BY 4.0 (constructed for this task)"}
+    json.dump(out, open(os.path.join(task, "metadata.json"), "w"), indent=1, sort_keys=True)

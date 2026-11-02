@@ -1,253 +1,176 @@
-"""The golden deliverables, computed from the shipped files only: smac_class_addition_2027-07.docx (the administrator's
-proposal to the Department: the class, each candidate's ingredient spread, a chart, how the spread was measured) and
-smac_candidate_classes_fy2026.xlsx (each candidate class's claims, units and ingredient cost paid over the twelve
-months of fills before the window, classes as the current list defines them), with figures.json."""
-import io
-import json
-import math
-import os
-import sys
-
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-
-import calc as C        # noqa: E402
-import pack as PK       # noqa: E402
-import world as W       # noqa: E402
-
-DOCX, XLSX = W.DELIVERABLES
+"""The golden deliverables: the conformed region file and the board paper with its chart."""
+import csv, os, io, datetime as dt
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.ticker
+from docx import Document
+from docx.shared import Pt, Mm, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from world import *
+import docs
 
 
-def k1000(v):
-    return int(round(v / 1000.0)) * 1000
+def r0(x):
+    return int(round(x))
 
 
-def compute(target):
-    cl, dr, cls = C.frame(target)
-    X = {"routes": {}}
-    for r in C.ROUTES:
-        X["routes"][r] = C.spreads(target, r, cl, dr, cls)[0]
-    g = X["routes"]["golden"]
-    X["golden"] = g
-    X["rank"] = C.ranking(g)
-    X["default_rank"] = C.ranking(X["routes"]["default"])
-    X["call"] = X["rank"][0]
-    X["lo"] = {c: min(X["routes"][r][c] for r in C.GOLDEN) for c in W.SHORTLIST_NAMES}
-    X["hi"] = {c: max(X["routes"][r][c] for r in C.GOLDEN) for c in W.SHORTLIST_NAMES}
-    net = cl.groupby("cls").agg(claims=("transaction_code", lambda s: int((s == "B1").sum() - (s == "B2").sum())),
-                                ingredient=("ingredient_cost_paid", "sum"))
-    X["fy27"] = {c: (int(net.loc[c, "claims"]), float(net.loc[c, "ingredient"])) for c in W.SHORTLIST_NAMES}
-    X["ask"] = C.ask(target)
-    X["ask_label"] = C.ask(target, by_label=True, late=False)
-    X["ask_summary"] = C.ask(target, late=False)
-    X["ask_overlap"] = C.ask(target, overlap=True)
-    rt = C.rates(target)
-    by_ndc, by_grp = C.in_effect(rt, dr)
-    X["premium"] = C.premium(by_grp, cls, pooled=True)[None]
-    unpriced = cl[[by_ndc.get((n, m)) is None for n, m in zip(cl.ndc, cl.month)]]
-    X["unpriced_share"] = float(unpriced.ingredient_cost_paid.sum() / cl.ingredient_cost_paid.sum())
-    X["unpriced_carton_share"] = float(unpriced[unpriced.pkg == "U"].ingredient_cost_paid.sum() /
-                                       unpriced.ingredient_cost_paid.sum())
-    allx = C.claims(target)
-    early = allx[allx.fill < W.WINDOW[0]]
-    X["extract_rows"], X["window_rows"] = len(allx), len(cl)
-    X["fy26_later"] = int((early.paid > W.SUMMARY_PAID_THROUGH).sum())
-    X["fy26_overlap"] = int((early.paid <= W.SUMMARY_PAID_THROUGH).sum())
-    return X
+def r1000(x):
+    return int(round(x / 1000.0)) * 1000
 
 
-def money(v):
-    return "${:,.0f}".format(v)
+def money(x):
+    return "${:,.0f}".format(x)
 
 
-def chart_png(X):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    plt.rcParams["font.family"] = "DejaVu Sans"
-    order = list(reversed(X["rank"]))
-    vals = [X["golden"][c] / 1000.0 for c in order]
-    cols = ["#1f4e5f" if c == X["call"] else "#a9bfc8" for c in order]
-    fig, ax = plt.subplots(figsize=(6.4, 3.9), dpi=150)
-    ax.barh(range(len(order)), vals, color=cols, height=0.62)
-    for k, v in enumerate(vals):
-        ax.text(v + 0.5, k, "$%dk" % int(round(v)), va="center", ha="left", fontsize=7.5)
-    ax.set_yticks(range(len(order)))
-    ax.set_yticklabels(order, fontsize=8)
-    ax.set_xlabel("Ingredient spread, fills April 2026 to March 2027 (thousand dollars)", fontsize=8)
-    ax.set_xlim(0, max(vals) * 1.15)
-    ax.tick_params(axis="x", labelsize=7.5)
-    for sp in ("top", "right"):
-        ax.spines[sp].set_visible(False)
-    ax.set_title("Ingredient spread by candidate class", fontsize=9.5, loc="left")
+def write_csv(G, gold, rpop):
+    path = os.path.join(G, "regional_visitor_spend_2026.csv")
+    rank = {r: i + 1 for i, r in enumerate(gold["order"])}
+    with open(path, "w", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["region_code", "region", "visitor_spend_q1_aud", "visitor_spend_q2_aud", "visitor_spend_q3_aud",
+                    "visitor_spend_q4_aud", "visitor_spend_2026_aud", "estimated_resident_population",
+                    "visitor_spend_per_resident_aud", "rank", "funded_2027"])
+        for r in gold["order"]:
+            q = gold["q"][r]
+            w.writerow([r, NAME[r]] + [r1000(x) for x in q] + [r1000(sum(q)), r0(rpop[r]), r0(gold["per_resident"][r]),
+                                                             rank[r], "yes" if r in gold["set"] else "no"])
+    return path
+
+
+def chart(gold, path):
+    o = gold["order"][::-1]
+    vals = [gold["per_resident"][r] for r in o]
+    funded = [r in gold["set"] for r in o]
+    fig, ax = plt.subplots(figsize=(7.2, 4.5), dpi=150)
+    fig.patch.set_facecolor("white")
+    bars = ax.barh([NAME[r] for r in o], vals, height=0.62, color=["#2a78d6" if f else "#a9aeb3" for f in funded])
+    line = (gold["per_resident"][gold["fifth"]] + gold["per_resident"][gold["sixth"]]) / 2
+    ax.axvline(line, color="#52514e", lw=1.1, ls=(0, (4, 3)))
+    ax.text(line + 90, 0.15, "Funding line", color="#52514e", fontsize=8, va="bottom")
+    for i, v in enumerate(vals):
+        ax.text(v + 90, i, "${:,.0f}".format(round(v)), va="center", fontsize=7.5, color="#0b0b0b")
+    ax.set_xlabel("Visitor spending per resident, 2026 ($)", fontsize=8.5, color="#52514e")
+    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: "{:,.0f}".format(x)))
+    ax.tick_params(axis="both", labelsize=8, colors="#52514e", length=0)
+    ax.set_title("Five regions clear the funding line", fontsize=10.5, loc="left", color="#0b0b0b")
+    for s in ("top", "right", "left"):
+        ax.spines[s].set_visible(False)
+    ax.spines["bottom"].set_color("#c9c9c4")
+    ax.grid(axis="x", color="#e6e6e1", lw=0.6)
+    ax.set_axisbelow(True)
+    ax.set_xlim(0, max(vals) * 1.13)
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(color="#2a78d6", label="Funded in the 2027 round"), Patch(color="#a9aeb3", label="Below the line")],
+              loc="lower right", fontsize=7.5, frameon=False)
     fig.tight_layout()
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", metadata={"Software": None})
+    fig.savefig(path, metadata={"Software": None})
     plt.close(fig)
-    return buf.getvalue()
 
 
-def write_docx(X, path):
-    import docx
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.shared import Inches, Pt, RGBColor
-    d = docx.Document()
+def para(d, text, size=None, bold=False, italic=False, color=None, after=None):
+    p = d.add_paragraph()
+    run = p.add_run(text)
+    run.bold, run.italic = bold, italic
+    if size:
+        run.font.size = Pt(size)
+    if color:
+        run.font.color.rgb = RGBColor(*color)
+    if after is not None:
+        p.paragraph_format.space_after = Pt(after)
+    return p
+
+
+def table(d, header, rows, widths, right=()):
+    t = d.add_table(rows=1, cols=len(header))
+    t.style = "Light List"
+    for j, h in enumerate(header):
+        t.rows[0].cells[j].text = h
+    for row in rows:
+        cells = t.add_row().cells
+        for j, v in enumerate(row):
+            cells[j].text = v
+    for row in t.rows:
+        for j, c in enumerate(row.cells):
+            c.width = Mm(widths[j])
+            for p in c.paragraphs:
+                if j in right:
+                    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                for r in p.runs:
+                    r.font.size = Pt(9)
+    return t
+
+
+def paper(G, gold, rpop, A, B, total, grant, scratch):
+    png = os.path.join(scratch, "t454_chart.png")
+    chart(gold, png)
+    d = Document()
     st = d.styles["Normal"]
     st.font.name = "Calibri"
     st.font.size = Pt(10.5)
-    call, second = X["rank"][0], X["rank"][1]
-    h = d.add_paragraph()
-    r = h.add_run("Corvane Pharmacy Solutions")
-    r.bold = True
-    r.font.size = Pt(13)
-    r.font.color.rgb = RGBColor(0x1F, 0x4E, 0x5F)
-    d.add_paragraph("Anticonvulsants proposed for the 1 July 2027 State MAC update")
-    for k, v in (("To", "%s, Pharmacy Director, %s" % (W.PEOPLE["director"], W.DEPARTMENT)),
-                 ("From", "%s, MAC Pricing Lead" % W.PEOPLE["pricing"]),
-                 ("Copy", "%s, Account Director" % W.PEOPLE["account"]),
-                 ("Date", "30 April 2027"),
-                 ("Re", "Proposal under Attachment C, section C.4")):
-        p = d.add_paragraph()
-        p.paragraph_format.space_after = Pt(0)
-        a = p.add_run(k + ": ")
-        a.bold = True
-        p.add_run(v)
-    d.add_paragraph()
-    p = d.add_paragraph()
-    p.add_run("We propose %s (%s) for the State MAC list from 1 July 2027. " % (call, PK.class_code(call))).bold = True
-    p.add_run("Its ingredient spread over fills from April 2026 to March 2027 was %s, the largest of the twelve candidate "
-              "classes; %s were next at %s." % (money(k1000(X["golden"][call])), second.lower() if second != call else second,
-                                                money(k1000(X["golden"][second]))))
-    t = d.add_table(rows=1, cols=4)
-    t.style = "Light Grid Accent 1"
-    hdr = ("Candidate class", "Claims", "Ingredient cost paid", "Ingredient spread")
-    for i, x in enumerate(hdr):
-        t.rows[0].cells[i].text = x
-    for c in X["rank"]:
-        row = t.add_row().cells
-        row[0].text = c
-        row[1].text = "{:,}".format(X["fy27"][c][0])
-        row[2].text = money(X["fy27"][c][1])
-        row[3].text = money(k1000(X["golden"][c]))
-        for j in (1, 2, 3):
-            row[j].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    src = d.add_paragraph("Source: Corvane claims extract of 21 April 2027 (claims paid through 20 April 2027); State AAC "
-                          "rates as published to 1 April 2027. Claims net of reversals. Spreads rounded to the nearest "
-                          "thousand dollars; the classes are compared on unrounded figures (C.4).")
-    src.runs[0].font.size = Pt(8.5)
-    d.add_paragraph()
-    d.add_picture(io.BytesIO(chart_png(X)), width=Inches(6.2))
-    cap = d.add_paragraph("Figure 1. Ingredient spread by candidate class, fills April 2026 to March 2027, net of "
-                          "reversals; the proposed class in dark.")
-    cap.runs[0].italic = True
-    d.add_paragraph().add_run("How the spread was measured").bold = True
-    up = X["unpriced_share"] * 100
-    d.add_paragraph(
-        "Claims are the Program's fee-for-service claims for fills from 1 April 2026 to 31 March 2027, reversals netted, "
-        "each NDC placed in its class through the drug file and the class list in force from 1 January 2027. A claim's "
-        "units are costed at the State AAC rate in effect for its NDC on the fill date. %.0f per cent of the candidate "
-        "classes' ingredient cost was paid on NDCs with no rate in effect, %.0f per cent of it on unit-dose cartons and "
-        "the rest mostly on new entrants' bottles; those units are costed at the median rate in effect that month for "
-        "the priced NDCs of the same product and package. Where a product had no priced carton, its cartons are costed "
-        "at its bottles' rate times the carton-to-bottle ratio of the products with both priced (about %.2f)." % (
-            up, X["unpriced_carton_share"] * 100, X["premium"]))
-    d.add_paragraph(
-        "A carton costs more per unit than the bottle of the same product. Costed at the product's bottle rate, the "
-        "cartons would carry a spread they do not have, and %s would appear first at %s." % (
-            X["default_rank"][0].lower(), money(k1000(X["routes"]["default"][X["default_rank"][0]]))))
-    d.add_paragraph("The candidate classes' claims, units and ingredient cost paid for fills from April 2025 to March 2026 "
-                    "are in the attached workbook for the budget: the FY2026 utilization summary, which holds the "
-                    "payments made through 20 April 2026, with the later payments on those fills from this extract, "
-                    "classes as the current list defines them.")
-    d.add_paragraph()
-    d.add_paragraph("%s\nMAC Pricing Lead" % W.PEOPLE["pricing"])
-    d.core_properties.author = W.PEOPLE["pricing"]
-    d.core_properties.title = "State MAC update, 1 July 2027: proposed class"
+    for s in d.sections:
+        s.left_margin = s.right_margin = Mm(22)
+        s.top_margin = s.bottom_margin = Mm(18)
+        f = s.footer.paragraphs[0]
+        f.text = "Tourism Commission  |  Board meeting 18 February 2027  |  Item 6"
+        f.runs[0].font.size = Pt(8); f.runs[0].font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+    names = [NAME[r] for r in gold["set"]]
+    fifth, six = gold["fifth"], gold["sixth"]
+    pr = {r: r0(gold["per_resident"][r]) for r in ELIGIBLE}
+    para(d, "BOARD PAPER  |  ITEM 6  |  FOR DECISION", 8.5, bold=True, color=(0x55, 0x55, 0x55), after=2)
+    para(d, "The 2027 round of the Regional Visitor Infrastructure Fund: %s, %s, %s, %s and %s" % tuple(names), 15, bold=True, after=4)
+    para(d, "Meeting of 18 February 2027. Prepared by %s, Manager, Visitor Economy Research, with %s, Fund Manager, "
+            "5 February 2027." % (PEOPLE["research"], PEOPLE["fund"]), 9, color=(0x55, 0x55, 0x55))
+    d.add_heading("Recommendation", level=2)
+    para(d, "That the board fund %s, %s, %s, %s and %s in the 2027 round, each region receiving %s." % (tuple(names) + (money(r0(grant)),)))
+    d.add_heading("The ranking", level=2)
+    para(d, "Section 4 of the round's guidelines funds the five eligible regions with the highest visitor spending per "
+            "resident in 2026. %s is the first region below the line at %s per resident, %s short of %s at %s (Table 1, "
+            "Figure 1)." % (NAME[six], money(pr[six]), money(pr[fifth] - pr[six]), NAME[fifth], money(pr[fifth])))
+    ordw = {6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth", 11: "eleventh"}
+    pg, pc = gold["order"].index("GID") + 1, gold["order"].index("CAR") + 1
+    para(d, ("Gidgee Basin and Carisbrook Tablelands rank %s and %s although both take a great deal of card " % (ordw[pg], ordw[pc])) +
+            "spending on cards whose statements go to other regions. Those cards belong to the basin's rostered mine "
+            "workforce and, in Carisbrook, to university students, people who travel in from Mulga Plains for work and "
+            "households that moved there with their card statements still going to their old address. They are in the "
+            "region month after month, so the region is part of their holders' usual environment and what they spend "
+            "there is not visitor spending.")
+    rows = [[NAME[r], money(r1000(sum(gold["q"][r]))), money(pr[r]), "Funded" if r in gold["set"] else ""] for r in gold["order"]]
+    para(d, "Table 1. Eligible regions ranked on visitor spending per resident, 2026", 9, bold=True, after=2)
+    table(d, ["Region", "Visitor spending 2026", "Per resident", ""], rows, (58, 42, 30, 20), right=(1, 2))
+    para(d, "Visitor spending is rounded to the nearest $1,000 and per-resident figures to the nearest dollar, each from "
+            "unrounded spending. Residents: preliminary estimated resident population at 30 June 2026, shared areas at "
+            "their Schedule 1 share.", 8, italic=True, color=(0x55, 0x55, 0x55))
+    d.add_picture(png, width=Mm(160))
+    para(d, "Figure 1. Visitor spending per resident, 2026, every eligible region. Source: Austral Payments Network "
+            "research sample for 2026, raised by selection weight.", 8, italic=True, color=(0x55, 0x55, 0x55))
+    d.add_heading("What each funded region receives", level=2)
+    sumA = sum(r0(A[r]) for r in ELIGIBLE)
+    sumB = sum(r0(B[r]) for r in ELIGIBLE)
+    para(d, "The round starts from the 2027 appropriation of $12,000,000. The board's decision of 21 October 2026 closing "
+            "the Regional Tourism Infrastructure Program adds the %s of unspent grant money councils returned to the program "
+            "in 2026 and takes out the %s that remained at 31 December 2026 on the program's open agreements, which the "
+            "Fund now pays (Table 2). The round's total is %s, shared equally among the five regions, so each receives %s."
+         % (money(sumB), money(sumA), money(12_000_000 + sumB - sumA), money(r0(grant))))
+    para(d, "Table 2. The closing program by region", 9, bold=True, after=2)
+    rows = [[NAME[r], money(r0(A[r])), money(r0(B[r]))] for r in ELIGIBLE] + [["All regions", money(sumA), money(sumB)]]
+    table(d, ["Region", "Remaining on open agreements at 31 December 2026", "Unspent money returned in 2026"], rows,
+          (50, 55, 45), right=(1, 2))
+    para(d, "Source: grants management system, agreements at 31 December 2026 and 2026 claims; accounts payable and "
+            "receivable, 2026. Finance pays each council's approved claims in one weekly transfer quoting the agreement "
+            "of the first claim, so each transfer is booked to the claims it paid. Claims approved in the last days of "
+            "December, and a few approved earlier, had not been paid by 31 December 2026 and remain on their agreements. The "
+            "20 March 2026 payments repeated the 19 March run. Money a council sent back for them is not unspent grant "
+            "money, and some councils had not sent theirs back by 31 December 2026.", 8, italic=True, color=(0x55, 0x55, 0x55))
+    d.add_heading("Basis of the visitor figures", level=2)
+    para(d, "A card's spending in a region counts as a visitor's only where the region lies outside its holder's usual "
+            "environment as the International Recommendations for Tourism Statistics 2008 define it. The usual "
+            "environment is read from the card's own year in the sample: a region it is in month after month on many days "
+            "is where its holder lives, works or studies, whatever address its statements go to, and a region it is in "
+            "for a few days in one to three months is a trip.")
+    docs.fix_docx_props(d, PEOPLE["research"], "The 2027 round of the Regional Visitor Infrastructure Fund")
+    path = os.path.join(G, "rvif_2027_round_paper.docx")
     d.save(path)
-
-
-def write_xlsx(X, path):
-    import openpyxl
-    from openpyxl.styles import Font
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Candidate classes"
-    ws.append(["Candidate classes: fills April 2025 to March 2026, claims paid through 20 April 2027 (classes as the "
-               "list in force from 1 January 2027)"])
-    ws["A1"].font = Font(bold=True)
-    ws.append(["Class code", "Class", "Claims", "Units dispensed", "Ingredient cost paid"])
-    for c in range(1, 6):
-        ws.cell(row=2, column=c).font = Font(bold=True)
-    for c in W.SHORTLIST_NAMES:
-        cl, un, ing = X["ask"][c]
-        ws.append([PK.class_code(c), c, cl, int(round(un)), round(ing)])
-    tot = [sum(X["ask"][c][i] for c in W.SHORTLIST_NAMES) for i in range(3)]
-    ws.append([None, "All candidate classes", tot[0], int(round(tot[1])), round(tot[2])])
-    last = ws.max_row
-    for c in range(2, 6):
-        ws.cell(row=last, column=c).font = Font(bold=True)
-    for col, wdt in zip("ABCDE", (11, 30, 10, 16, 20)):
-        ws.column_dimensions[col].width = wdt
-    for row in ws.iter_rows(min_row=3, min_col=3, max_col=5):
-        for cell in row:
-            cell.number_format = "#,##0"
-    ws.freeze_panes = "A3"
-    nt = wb.create_sheet("Notes")
-    for line in ("Notes",
-                 "Claims are fee-for-service claims for fills from 1 April 2025 to 31 March 2026, net of reversals.",
-                 "Source: the FY2026 utilization summary of 24 April 2026 (transactions paid through 20 April 2026), "
-                 "with the later payments on those fills from the claims extract of 21 April 2027.",
-                 "Classes as the Department's drug class list in force from 1 January 2027 defines them, each NDC placed "
-                 "through the drug file of April 2027.",
-                 "Units are metric decimal quantities: each for solid forms, millilitres for liquids. Ingredient cost "
-                 "paid to the nearest dollar."):
-        nt.append([line])
-    nt["A1"].font = Font(bold=True)
-    nt.column_dimensions["A"].width = 110
-    wb.save(path)
-
-
-def figures(X):
-    F = {"call": X["call"], "default_call": X["default_rank"][0], "runner_up": X["rank"][1],
-         "golden_margin": round(X["golden"][X["rank"][0]] / X["golden"][X["rank"][1]], 2),
-         "default_margin": round(X["routes"]["default"][X["default_rank"][0]] /
-                                 X["routes"]["default"][X["default_rank"][1]], 2),
-         "carton_premium": round(X["premium"], 2), "unpriced_share_pct": round(X["unpriced_share"] * 100),
-         "unpriced_carton_share_pct": round(X["unpriced_carton_share"] * 100), "classes": {},
-         "extract_rows": "{:,}".format(X["extract_rows"]), "window_rows": "{:,}".format(X["window_rows"]),
-         "fy26_later_payments": "{:,}".format(X["fy26_later"]), "fy26_overlap": "{:,}".format(X["fy26_overlap"]),
-         "carton_premium_2dp": "%.2f" % X["premium"], "classes_ranked": X["rank"], "update": "1 July 2027",
-         "default_spread_call": "{:,}".format(k1000(X["routes"]["default"][X["default_rank"][0]]))}
-    for c in W.SHORTLIST_NAMES:
-        cl, un, ing = X["ask"][c]
-        lcl, lun, ling = X["ask_label"][c]
-        F["classes"][c] = {
-            "code": PK.class_code(c), "spread": k1000(X["golden"][c]), "spread_exact": round(X["golden"][c]),
-            "spread_range": [int(math.floor(X["lo"][c] / 1000.0)) * 1000, int(math.ceil(X["hi"][c] / 1000.0)) * 1000],
-            "default_spread": k1000(X["routes"]["default"][c]), "claims_fy27": X["fy27"][c][0],
-            "ingredient_fy27": round(X["fy27"][c][1]),
-            "claims_fy26": cl, "units_fy26": int(round(un)), "ingredient_fy26": int(round(ing)),
-            "claims_fy26_label": lcl, "units_fy26_label": int(round(lun)), "ingredient_fy26_label": int(round(ling))}
-    return F
-
-
-def main(target, out, figpath):
-    os.makedirs(out, exist_ok=True)
-    X = compute(target)
-    import postprocess as PP
-    write_docx(X, os.path.join(out, DOCX))
-    write_xlsx(X, os.path.join(out, XLSX))
-    PP.normalize_ooxml(os.path.join(out, DOCX), W.PEOPLE["pricing"], W.PEOPLE["pricing"], "2027-04-28T14:05:00Z",
-                       "2027-04-30T20:12:41Z", title="State MAC update, 1 July 2027: proposed class")
-    PP.normalize_ooxml(os.path.join(out, XLSX), W.PEOPLE["pricing"], W.PEOPLE["pricing"], "2027-04-29T13:40:00Z",
-                       "2027-04-30T19:58:06Z", excel=True)
-    F = figures(X)
-    with open(figpath, "w") as fh:
-        json.dump(F, fh, indent=2)
-        fh.write("\n")
-    return X
-
-
-if __name__ == "__main__":
-    T = os.path.dirname(HERE)
-    main(os.path.join(T, "target"), os.path.join(T, "golden"), os.path.join(HERE, "figures.json"))
+    docs.rezip(path, dt.datetime(2027, 2, 3, 23, 8, 0), dt.datetime(2027, 2, 4, 22, 41, 0),
+               app=docs.docx_app("Tourism Commission", 214), drop=("docProps/thumbnail.jpeg",))
+    return path

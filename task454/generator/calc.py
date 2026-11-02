@@ -1,227 +1,198 @@
-"""Reads the pack and computes the call, the routes and the ask from the shipped files only."""
-import collections
-import datetime as dt
-import os
-import statistics
+"""The golden's construction and every rung, route and ask computed on the generator's clean truth."""
+from collections import defaultdict
+from world import *
 
-import numpy as np
-import openpyxl
-import pandas as pd
-
-import world as W
-
-F = W.FILES
+Q = {m: (m - 1) // 3 + 1 for m in range(1, 13)}
 
 
-def ndc11(ten):
-    """a ten-digit hyphenated NDC to the eleven-digit 5-4-2 form, by its configuration"""
-    a, b, c = ten.split("-")
-    if len(a) == 4:
-        a = "0" + a
-    elif len(b) == 3:
-        b = "0" + b
-    elif len(c) == 1:
-        c = "0" + c
-    return a + b + c
+def routine_pair(months, days, min_months=6, min_days=30):
+    return months >= min_months and days >= min_days
 
 
-def claims(target):
-    df = pd.read_csv(os.path.join(target, F["claims"]), dtype=str, keep_default_na=False)
-    for c in ("quantity_dispensed", "ingredient_cost_paid", "dispensing_fee_paid"):
-        df[c] = df[c].astype(float)
-    df["fill"] = pd.to_datetime(df.fill_date).dt.date
-    df["paid"] = pd.to_datetime(df.paid_date).dt.date
-    df["month"] = df.fill.map(lambda d: dt.date(d.year, d.month, 1))
-    return df
+def routine(c, r, min_months=6, min_days=30):
+    """A region is part of a card holder's usual environment when the card is there routinely: in many months and on
+    many days of the year. Any threshold inside the gap the data leave gives the same classes (asserted in checks)."""
+    return routine_pair(len(c.months_in(r)), c.days_in(r), min_months, min_days)
 
 
-def rates(target):
-    df = pd.read_csv(os.path.join(target, F["aac"]), dtype=str, keep_default_na=False)
-    df["rate"] = df.aac_per_unit.astype(float)
-    df["eff"] = pd.to_datetime(df.effective_date).dt.date
-    df["end"] = df.end_date.map(lambda x: dt.date.fromisoformat(x) if x else dt.date(2099, 12, 31))
-    return df
+def spend_by(cards, weight, is_visitor):
+    q = {r: [0.0, 0.0, 0.0, 0.0] for r in ELIGIBLE}
+    for c in cards:
+        w = weight[c.stratum]
+        for (r, m), v in c.rows.items():
+            if r in q and is_visitor(c, r, m):
+                q[r][Q[m] - 1] += w * v[0]
+    return q
 
 
-def drugs(target):
-    wb = openpyxl.load_workbook(os.path.join(target, F["drugs"]), read_only=True)
-    ws = wb["Drug file"]
-    rows = list(ws.iter_rows(values_only=True))
-    df = pd.DataFrame(rows[1:], columns=rows[0])
-    df["ndc"] = df.NDC.map(ndc11)
-    up = df["Package description"].str.upper()
-    df["pkg"] = np.where(up.str.contains("UNIT-DOSE") | up.str.contains("BLISTER"), "U", "B")
-    return df
+def per_resident(q, rpop):
+    return {r: sum(q[r]) / rpop[r] for r in q}
 
 
-def classes(target):
-    wb = openpyxl.load_workbook(os.path.join(target, F["classes"]), read_only=True)
-    c = list(wb["Classes"].iter_rows(values_only=True))
-    hdr = [i for i, r in enumerate(c) if r and r[0] == "Class code"][0]
-    names = {r[0]: r[1] for r in c[hdr + 1:] if r and r[0]}
-    p = list(wb["Products"].iter_rows(values_only=True))
-    return {r[0]: names[r[4]] for r in p[1:] if r and r[0]}
+def ranking(pr):
+    order = sorted(pr, key=lambda r: (-pr[r], ERP26[r]))
+    return order
 
 
-def summary(target):
-    wb = openpyxl.load_workbook(os.path.join(target, F["summary"]), read_only=True)
-    rows = list(wb["Utilization"].iter_rows(values_only=True))
-    return pd.DataFrame(rows[1:], columns=rows[0])
+def summary(q, rpop):
+    pr = per_resident(q, rpop)
+    o = ranking(pr)
+    return {"per_resident": pr, "order": o, "set": o[:N_FUNDED], "fifth": o[N_FUNDED - 1], "sixth": o[N_FUNDED],
+            "margin": pr[o[N_FUNDED - 1]] / pr[o[N_FUNDED]], "gap": pr[o[N_FUNDED - 1]] - pr[o[N_FUNDED]], "q": q}
 
 
-def frame(target, window=True):
-    """the claims joined to product, package and current class; by default only the fills of the window (the extract
-    is cut by paid date, so it also carries earlier fills paid from 1 April 2026)"""
-    cl, dr, cls = claims(target), drugs(target), classes(target)
-    if window:
-        cl = cl[(cl.fill >= W.WINDOW[0]) & (cl.fill <= W.WINDOW[1])].copy()
-    m = dr.set_index("ndc")
-    cl["gpc"] = cl.ndc.map(m.GPC)
-    cl["pkg"] = cl.ndc.map(m.pkg)
-    cl["cls"] = cl.gpc.map(cls)
-    return cl, dr, cls
+def golden(cards, weight, rpop, mm=6, md=30):
+    return summary(spend_by(cards, weight, lambda c, r, m: not routine(c, r, mm, md)), rpop)
 
 
-def months_list():
-    out, y, mo = [], 2026, 4
-    while (y, mo) <= (2027, 3):
-        out.append(dt.date(y, mo, 1))
-        y, mo = (y + 1, 1) if mo == 12 else (y, mo + 1)
-    return out
+def statement_region(sa2, sa2_region, shared_split):
+    """The region a statement SA2 lies in (shared SA2s: the region holding the larger share)."""
+    if sa2 in shared_split:
+        return max(shared_split[sa2], key=shared_split[sa2].get)
+    return sa2_region.get(sa2, "IS")
 
 
-def in_effect(rt, dr):
-    """{(ndc, month): rate} and {(gpc, pkg, month): [rates of priced NDCs]}"""
-    gpc = dr.set_index("ndc").GPC
-    pkg = dr.set_index("ndc").pkg
-    by_ndc, by_grp = {}, collections.defaultdict(list)
-    for r in rt.itertuples():
-        for m in months_list():
-            if r.eff <= m <= r.end:
-                by_ndc[(r.ndc, m)] = r.rate
-                by_grp[(gpc[r.ndc], pkg[r.ndc], m)].append(r.rate)
-    return by_ndc, by_grp
+def default(cards, weight, rpop, sa2_region, shared_split, by="month"):
+    def home(c, m):
+        if by == "stratum":
+            return c.stratum
+        sa2 = c.sa2_change[1] if (c.sa2_change and m >= c.sa2_change[0]) else c.sa2
+        return statement_region(sa2, sa2_region, shared_split)
+    return summary(spend_by(cards, weight, lambda c, r, m: home(c, m) != r), rpop)
 
 
-def premium(by_grp, cls_of_gpc, pooled=False):
-    rs = collections.defaultdict(list)
-    for (g, k, m), xs in by_grp.items():
-        if k == "U" and (g, "B", m) in by_grp:
-            rs[cls_of_gpc.get(g)].append(statistics.median(xs) / statistics.median(by_grp[(g, "B", m)]))
-    allr = [x for v in rs.values() for x in v]
-    if pooled:
-        return collections.defaultdict(lambda: statistics.median(allr))
-    out = collections.defaultdict(lambda: statistics.median(allr))
-    for k, v in rs.items():
-        out[k] = statistics.median(v)
-    return out
-
-
-ROUTES = ("golden", "golden_mean", "golden_class", "golden_pooled", "golden_pf", "golden_year", "default", "default_mean",
-          "lowest", "highest", "complete_case")
-# the package-type fill however it is implemented: median or mean of the priced NDCs of the same product and package,
-# a carton costed from priced cartons first or always from the bottles times a class or pooled carton premium, month by
-# month or over the whole window
-GOLDEN = ("golden", "golden_mean", "golden_class", "golden_pooled", "golden_pf", "golden_year")
-DEFAULT = ("default", "default_mean", "lowest")
-
-
-def unit_cost(route, g, k, m, by_grp, prem, cls):
-    same = by_grp.get((g, k, m))
-    b = by_grp.get((g, "B", m))
-    allx = (by_grp.get((g, "B", m)) or []) + (by_grp.get((g, "U", m)) or [])
-    if route in ("golden", "golden_pf"):
-        if same:
-            return statistics.median(same)
-        return statistics.median(b) * prem[cls] if (b and k == "U") else None
-    if route == "golden_mean":
-        if same:
-            return float(np.mean(same))
-        return float(np.mean(b)) * prem[cls] if (b and k == "U") else None
-    if route in ("golden_class", "golden_pooled"):
-        if k == "U" and b:
-            return statistics.median(b) * prem[cls]
-        return statistics.median(same) if same else None
-    if not allx:
-        return None
-    if route == "default":
-        return statistics.median(allx)
-    if route == "default_mean":
-        return float(np.mean(allx))
-    if route == "lowest":
-        return min(allx)
-    if route == "highest":
-        return max(allx)
-    raise ValueError(route)
-
-
-def spreads(target, route="golden", cl=None, dr=None, cls=None, latest=False):
-    """each class's ingredient spread: the claims' ingredient cost less the units' acquisition cost, the State AAC
-    rate in effect for the NDC on the fill date where there is one, the route's estimate where there is none"""
-    if cl is None:
-        cl, dr, cls = frame(target)
-    rt = rates(target)
-    by_ndc, by_grp = in_effect(rt, dr)
-    if latest:
-        last = months_list()[-1]
-        lat = {}
-        for r in rt.sort_values("eff").itertuples():
-            lat[r.ndc] = r.rate
-        by_ndc = {(n, m): lat[n] for (n, m) in by_ndc}
-    prem = premium(by_grp, cls, pooled=(route in ("golden_pooled", "golden_pf")))
-    year = collections.defaultdict(list)
-    for (g, k, m), xs in by_grp.items():
-        year[(g, k)].extend(xs)
-    out = collections.Counter()
-    missing = 0
-    cache = {}
-    for r in cl.itertuples():
-        rate = by_ndc.get((r.ndc, r.month))
-        if rate is None:
-            if route == "complete_case":
+def default_split(cards, weight, rpop, sa2_region, shared_split):
+    """Statement-based with a shared statement SA2 split between its regions by the schedule's shares."""
+    q = {r: [0.0, 0.0, 0.0, 0.0] for r in ELIGIBLE}
+    for c in cards:
+        w = weight[c.stratum]
+        for (r, m), v in c.rows.items():
+            if r not in q:
                 continue
-            key = (r.gpc, r.pkg, r.month)
-            if key not in cache:
-                if route == "golden_year":
-                    # the same product and package's priced rates over the whole window, not month by month
-                    same, b = year.get((r.gpc, r.pkg)), year.get((r.gpc, "B"))
-                    cache[key] = (statistics.median(same) if same else
-                                  (statistics.median(b) * prem[r.cls] if (b and r.pkg == "U") else None))
-                else:
-                    cache[key] = unit_cost(route, r.gpc, r.pkg, r.month, by_grp, prem, r.cls)
-            rate = cache[key]
-            if rate is None:
-                missing += 1
-                continue
-        out[r.cls] += r.ingredient_cost_paid - rate * r.quantity_dispensed
-    return {c: out[c] for c in W.SHORTLIST_NAMES}, missing
+            sa2 = c.sa2_change[1] if (c.sa2_change and m >= c.sa2_change[0]) else c.sa2
+            if sa2 in shared_split:
+                local = shared_split[sa2].get(r, 0.0)
+            else:
+                local = 1.0 if sa2_region.get(sa2, "IS") == r else 0.0
+            q[r][Q[m] - 1] += w * v[0] * (1 - local)
+    return summary(q, rpop)
 
 
-def ranking(sp):
-    return sorted(W.SHORTLIST_NAMES, key=lambda c: -sp[c])
+def adjacency(cards, weight, rpop, sa2_region, shared_split):
+    adj = lambda a, b: (a, b) in ADJ or (b, a) in ADJ
+    def vis(c, r, m):
+        sa2 = c.sa2_change[1] if (c.sa2_change and m >= c.sa2_change[0]) else c.sa2
+        h = statement_region(sa2, sa2_region, shared_split)
+        return h != r and not (h in CODES and adj(h, r))
+    return summary(spend_by(cards, weight, vis), rpop)
 
 
-def ask(target, by_label=False, late=True, overlap=False):
-    """each shortlisted class's FY2026 claims (net of reversals), units and ingredient cost paid on the transactions
-    paid through 20 April 2027: the summary (paid through 20 April 2026) plus the extract's FY2026 fills paid after
-    that, classes as the current list defines them. by_label: the summary's stored label for its rows; late=False:
-    the summary alone; overlap: the extract's FY2026 fills added from its first paid date (1 to 20 April 2026 twice)"""
-    sm, dr, cls = summary(target), drugs(target), classes(target)
-    gpc = dr.set_index("ndc").GPC
-    sm["cls"] = sm["Drug class"] if by_label else sm.NDC.map(gpc).map(cls)
-    g = sm.groupby("cls")[["Claims", "Units", "Ingredient cost paid"]].sum()
-    out = {c: [int(g.loc[c, "Claims"]) if c in g.index else 0, float(g.loc[c, "Units"]) if c in g.index else 0.0,
-               float(g.loc[c, "Ingredient cost paid"]) if c in g.index else 0.0] for c in W.SHORTLIST_NAMES}
-    if late:
-        cl = claims(target)
-        cut = W.EXTRACT_FROM - dt.timedelta(days=1) if overlap else W.SUMMARY_PAID_THROUGH
-        x = cl[(cl.fill >= W.PRIOR[0]) & (cl.fill <= W.PRIOR[1]) & (cl.paid > cut)].copy()
-        x["cls"] = x.ndc.map(gpc).map(cls)
-        x["n"] = np.where(x.transaction_code == "B2", -1, 1)
-        h = x.groupby("cls")[["n", "quantity_dispensed", "ingredient_cost_paid"]].sum()
-        for c in W.SHORTLIST_NAMES:
-            if c in h.index:
-                out[c][0] += int(h.loc[c, "n"])
-                out[c][1] += float(h.loc[c, "quantity_dispensed"])
-                out[c][2] += float(h.loc[c, "ingredient_cost_paid"])
-    return {c: tuple(v) for c, v in out.items()}
+def modal_home(cards, weight, rpop):
+    home = {}
+    for c in cards:
+        dd = defaultdict(int)
+        for (r, m), v in c.rows.items():
+            dd[r] += v[2]
+        home[c.cid] = max(sorted(dd), key=lambda r: dd[r]) if dd else None
+    return summary(spend_by(cards, weight, lambda c, r, m: home[c.cid] != r), rpop)
+
+
+def asks(agreements, claims, payments, receipts):
+    """Ask A: what remains of each region's open agreements at 31 December 2026 (approved less paid). Ask B: unspent
+    money each region's councils returned in 2026. The round's total and each funded region's grant."""
+    A = defaultdict(float); B = defaultdict(float)
+    paid = defaultdict(float)
+    for c in claims:
+        if c["paid"]:
+            paid[c["agreement"]] += c["approved_amt"]
+    for a in agreements:
+        if a["status"] == "Open":
+            A[a["region"]] += a["approved"] - a["paid_before"] - paid[a["agreement"]]
+    reg = {c[0]: c[1] for c in COUNCILS}
+    for r in receipts:
+        for kind, ref, amt in r["parts"]:
+            if kind == "unspent":
+                B[reg[r["payer"]]] += amt
+    A = {r: round(A[r], 2) for r in ELIGIBLE}
+    B = {r: round(B[r], 2) for r in ELIGIBLE}
+    total = ROUND_BUDGET + sum(B.values()) - sum(A.values())
+    return A, B, round(total, 2), round(total / N_FUNDED, 2)
+
+
+def asks_cracker(agreements, claims, payments, receipts):
+    """The careful solver's route on the clean truth: the 20 March repeats dropped as duplicates; each transfer paired
+    to the claims it equals where one claim or one agreement's claims equal it, otherwise booked to the agreement it
+    quotes; a receipt equal to a repeat paired off with it and every other receipt read as unspent money."""
+    R = ask_routes(agreements, claims, payments, receipts)
+    A, B = R["cracker"]
+    total = ROUND_BUDGET + sum(B.values()) - sum(A.values())
+    return A, B, round(total, 2), round(total / N_FUNDED, 2)
+
+
+def ask_routes(agreements, claims, payments, receipts):
+    """Every complete pipeline a careful solver could file for the two asks, on the clean truth: route -> (A, B)."""
+    import datetime as dt
+    reg = {c[0]: c[1] for c in COUNCILS}
+    ag = {a["agreement"]: a for a in agreements}
+    cl = {c["claim"]: c for c in claims}
+
+    def remaining(paid):
+        A = defaultdict(float)
+        for a in agreements:
+            if a["status"] == "Open":
+                A[a["region"]] += a["approved"] - a["paid_before"] - paid[a["agreement"]]
+        return {r: round(A[r], 2) for r in ELIGIBLE}
+
+    live = [p for p in payments if not p.get("repeat_of")]
+    # the transfer as booked: a single claim, or one agreement's claims, that it equals; else the agreement it quotes
+    quoted = defaultdict(float)
+    for p in live:
+        cs = [cl[k] for k in p["claims"]]
+        one = {c["agreement"] for c in cs}
+        quoted[cs[0]["agreement"] if len(one) == 1 else p["ref"]] += p["amount"]
+    # claims taken as paid: every 2026 claim; the claims a transfer equals one for one; claims approved four days or
+    # more before the year's last run
+    allc, matched, timing, split = defaultdict(float), defaultdict(float), defaultdict(float), defaultdict(float)
+    last = max(p["paid_on"] for p in live)
+    for c in claims:
+        allc[c["agreement"]] += c["approved_amt"]
+        if c["approved_on"] <= last - dt.timedelta(days=4):
+            timing[c["agreement"]] += c["approved_amt"]
+        if c["paid"]:
+            split[c["agreement"]] += c["approved_amt"]
+    for p in live:
+        if len(p["claims"]) == 1:
+            matched[cl[p["claims"][0]]["agreement"]] += p["amount"]
+    # receipts
+    reps = defaultdict(list)
+    for p in payments:
+        if p.get("repeat_of"):
+            reps[p["payee"]].append(round(p["amount"], 2))
+    whole, paired, golden = defaultdict(float), defaultdict(float), defaultdict(float)
+    for r in receipts:
+        whole[reg[r["payer"]]] += r["amount"]
+        if not (round(r["amount"], 2) in reps[r["payer"]] or abs(r["amount"] - sum(reps[r["payer"]])) < 0.005):
+            paired[reg[r["payer"]]] += r["amount"]
+        golden[reg[r["payer"]]] += sum(x for k, _, x in r["parts"] if k == "unspent")
+    # the register's view: what an agreement closed under budget left unspent (paid less final cost)
+    paid26 = defaultdict(float)
+    for c in claims:
+        if c["paid"]:
+            paid26[c["agreement"]] += c["approved_amt"]
+    rr_all, rr_2026 = defaultdict(float), defaultdict(float)
+    for a in agreements:
+        if a["status"] != "Open" and a["final_cost"] is not None:
+            u = a["paid_before"] + paid26[a["agreement"]] - a["final_cost"]
+            if u > 0.005:
+                rr_all[a["region"]] += u
+                if a["acquitted"].year == 2026:
+                    rr_2026[a["region"]] += u
+    fix = lambda d: {r: round(d[r], 2) for r in ELIGIBLE}
+    return {"golden": (remaining(split), fix(golden)),
+            "cracker": (remaining(quoted), fix(paired)),
+            "every receipt": (remaining(quoted), fix(whole)),
+            "claims all paid": (remaining(allc), fix(paired)),
+            "claims a transfer equals": (remaining(matched), fix(paired)),
+            "claims by payment timing": (remaining(timing), fix(paired)),
+            "register, closed in 2026": (remaining(quoted), fix(rr_2026)),
+            "register, every closure": (remaining(quoted), fix(rr_all))}
