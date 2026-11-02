@@ -1,12 +1,12 @@
 {
  "task": "task202",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences/pollution-source-attribution",
  "objective": "root-cause",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-02",
- "stump": "A competent solver builds each source's June-to-September phosphorus load into Selwith Water from the river record and the two works' returns, applies each programme's removal and files chemical phosphorus removal at the Brathwick works (about 340 kg a season kept out against about 220 kg for the Hollinsby tertiary stage), because it counts every input as reaching the surface water; the step that lands it there is never setting the Lenning's daily temperature against the lake's profile, which shows the river colder than the surface water on every summer day and entering below the thermocline.",
+ "stump": "A competent solver builds each source's June-to-September phosphorus load into Selwith Water from the station, the sampler and the two works' returns, applies each programme's credited reduction and funds chemical phosphorus removal at the Brathwick works (359 kg a season against 222 for the Hollinsby tertiary stage), because it counts every input to the lake as added to the surface water; the step that lands it there is never setting the Lenning's daily temperature against the lake's profile, which shows the river denser than the surface water on every summer day and entering below the thermocline.",
  "architecture": 6,
  "loops": 0,
  "retask": {
@@ -17,26 +17,26 @@
   "retirement": "not taken"
  },
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (--asof 2026-11-09)",
+  "reader": "no leak; question 6 analytical choice"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN 2026-11-02 (nearest driver 0.06; NOTEs differentiated against task308 v1 and task487; surname WARN cleared by the persona redraw)",
   "nearest": "guard.py check PASS on the registered card 2026-11-02; NOTEs differentiated against task487 and task308 v1"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 2: write the readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet; build the generator's clean truth and measure the ladder, the enumerated and standing families and the ask ceiling (ceiling.py, sharing no code with the generator); prompt.txt through voice-check.py; precut.py to exit 0. The spent architecture 2 pack (generator/, golden/, target.zip, submission.md, metadata.json, prompt.txt, reports) is replaced at stage 3, never kept beside the new files.",
+ "resume": "shipped; next: the portal result",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

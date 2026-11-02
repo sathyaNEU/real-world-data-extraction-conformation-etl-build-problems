@@ -1,48 +1,99 @@
-"""Write the task202 pack into a target folder and return the simulated world for the checks."""
+"""Build task202: the pack into <task>/target, the goldens into <task>/golden, metadata.json and
+generator/figures.json; then the checks, the independent verifier, a second full build compared byte for byte,
+and target.zip cut from the final build.
+
+    python3 task202/generator/build.py              everything
+    python3 task202/generator/build.py --out DIR    the pack only, into DIR
+"""
+import argparse
+import hashlib
 import os
+import shutil
+import sys
+import warnings
+import zipfile
 
-import docs
-import records as RC
-import sim
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+warnings.filterwarnings("ignore")
 
-FILES = {
-    "portal": "portal_awards_2025-01_2027-03.csv",
-    "ret2425": "hrg_claim_returns_fy2024-25.xlsx",
-    "ret2526": "hrg_claim_returns_fy2025-26.xlsx",
-    "ret2627": "hrg_claim_returns_fy2026-27.xlsx",
-    "policy": "hrg_operating_policy_2027_edition.pdf",
-    "register": "hrg_partner_accreditation_register.csv",
-    "xwalk": "partner_identifier_crosswalk.csv",
-    "bands": "household_size_bands.csv",
-    "prov": "province_reference.csv",
-    "dict": "DATA_DICTIONARY.md",
-    "manifest": "export_manifest.csv",
-    "request": "referral_ceiling_request.eml",
-    "summary": "hrg_annual_report_partner_summary_fy2025-26.pdf",
-    "treasury": "treasury_disbursement_runs_2026_2027.csv",
-    "followup": "hrg_household_followup_survey_2026.csv",
-    "checks": "hrg_claim_check_register_2024_2025.csv",
-    "archive": "treasury_disbursement_runs_2024_2025.csv",
-}
-PACK = list(FILES)
-DISTRACTORS = ["summary", "treasury", "followup"]
+import pack as P      # noqa: E402
+import world as W     # noqa: E402
+
+TASK = os.path.dirname(HERE)
 
 
-def run(target, documents=True):
-    os.makedirs(target, exist_ok=True)
-    W = sim.make()
-    R = RC.Records(W)
-    p = lambda k: os.path.join(target, FILES[k])
-    out = lambda df, k: df.to_csv(p(k), index=False, lineterminator="\n")
-    out(R.portal_awards(), "portal")
-    out(R.register(), "register")
-    out(R.crosswalk(), "xwalk")
-    out(R.bands(), "bands")
-    out(R.provinces(), "prov")
-    out(R.treasury(), "treasury")
-    out(R.followup(), "followup")
-    out(R.check_register(), "checks")
-    out(R.treasury_archive(), "archive")
-    if documents:
-        docs.write_all(target, FILES, R, W, PACK)
-    return dict(W=W, R=R)
+def state():
+    lk = W.lake()
+    rv = W.river(lk)
+    wk = W.works(lk)
+    ph = W.river_phosphorus(rv, wk)
+    sm = W.sampler(rv, ph)
+    of = W.outfall(lk)
+    sd = W.sondes(lk, rv)
+    S = dict(lake=lk, river=rv, works=wk, phos=ph, sampler=sm, outfall=of, sondes=sd)
+    S["monthly"] = P.works_monthly(wk)
+    S["survey"] = W.survey()
+    S["lab"] = W.lab(lk, sd)
+    S["bathing"] = W.bathing()
+    S["farmyards"] = W.farmyards()
+    return S
+
+
+def cut(out):
+    if os.path.isdir(out):
+        shutil.rmtree(out)
+    S = state()
+    P.cut(out, S)
+    return S
+
+
+def digest(folder):
+    h = hashlib.sha256()
+    for root, _, files in sorted(os.walk(folder)):
+        for fn in sorted(files):
+            p = os.path.join(root, fn)
+            h.update(os.path.relpath(p, folder).encode())
+            h.update(open(p, "rb").read())
+    return h.hexdigest()
+
+
+def zip_target(target, dest):
+    with zipfile.ZipFile(dest, "w", zipfile.ZIP_DEFLATED) as z:
+        for fn in sorted(os.listdir(target)):
+            zi = zipfile.ZipInfo(fn, date_time=(2026, 11, 9, 16, 42, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            z.writestr(zi, open(os.path.join(target, fn), "rb").read())
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out")
+    a = ap.parse_args()
+    if a.out:
+        cut(a.out)
+        return
+    target = os.path.join(TASK, "target")
+    S = cut(target)
+    import golden as G
+    import writeup as WR
+    F, seas, ins = G.all_figures(target)
+    WR.write_all(TASK, target, S, F)
+    import checks as C
+    ok = C.run(TASK, target, S, F)
+    import verify as V
+    vok = V.run(target)
+    scratch = os.path.join(TASK, ".rebuild_check")
+    cut(scratch)
+    same = digest(scratch) == digest(target)
+    shutil.rmtree(scratch)
+    print("byte-identical rebuild:", "PASS" if same else "FAIL")
+    zip_target(target, os.path.join(TASK, "target.zip"))
+    print("target.zip", hashlib.md5(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest()[:8])
+    if not (ok and vok and same):
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

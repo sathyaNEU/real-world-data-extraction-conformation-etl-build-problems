@@ -11,8 +11,8 @@
   "shape": "18",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "programme C, tertiary filtration at the Hollinsby works: 222 kg of phosphorus a season kept out of the surface water, 186 kg ahead of programme D (the Mill Beck outfall wetland, 36 kg); programmes A and B 0 kg",
+  "answer_source": "submission.md block 1; generator/figures.json (call, C_mean, D_mean, gap)",
   "gap": [
     "population",
     "time"
@@ -36,8 +36,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "selwith_buoy_daily_profiles_2024-2026.csv",
-    "rows": 28500,
+    "file": "fellside_buoy_thermistor_daily.csv",
+    "rows": 29328,
     "entity": "one depth on one day at the lake's monitoring buoy",
     "grain": "depth x day",
     "source": "synthetic"
@@ -59,9 +59,9 @@
       "Fellmoor Water"
     ],
     "people": [
-      "Alison Fowler",
+      "Debra Rose",
       "Dominic Davies",
-      "Kathryn Mitchell"
+      "Oliver Thomas"
     ]
   },
   "deliverables": [
@@ -69,24 +69,23 @@
     "selwith_phosphorus_workings.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "how-much",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who conforms every return and reads every field correctly sums each source's June-to-September phosphorus into the lake over 2024 to 2026, applies each programme's removal and funds chemical phosphorus removal at the Brathwick works (about 340 kg a season against about 220 for the Hollinsby tertiary stage), because it treats every input as reaching the water the bloom grows in.",
   "domain_test": "The deciding quantity is each source's phosphorus input to the lake's 0 to 5 m surface water in the stratified season, which physical limnology settles by where each inflow inserts, its density at its own temperature against the lake's temperature profile that day; swap in hospital wards and admissions and there is no stratified receiving body or inflow density, so the task stops making sense.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:inflow-insertion-depth",
   "layer1": [
-    "the buoy's profile export in UTC against the river sonde in local clock time across the BST change",
-    "phosphorus in mg/L on the works' returns against ug/L in the lake laboratory's results",
-    "conductivity in uS/cm at the buoy against mS/m at the river sonde",
-    "a provisional and a validated release of the river sonde record overlapping",
-    "the works' monthly returns on the water company's April-to-March reporting year",
-    "lake results carried as text with below-detection qualifiers",
-    "sampling-point codes renumbered when the laboratory moved databases"
+    "the station logger's UK clock across the clock changes against the buoy's UTC dates and the regulator's UTC stamps",
+    "a validated and a provisional release of the station's record overlapping, with provisional flows revised",
+    "the works' returns on an April-to-March reporting year, the 2025-26 tab onward in a new system's column order",
+    "phosphorus in mg/l on the works' returns against ug/l in the river and lake records; conductivity in mS/m at the station against uS/cm at the buoy",
+    "laboratory results as text with below-detection qualifiers, its site codes changed with its database in April 2025",
+    "the surveyors' abbreviated addresses against the address register's"
   ],
   "driver": "The decisive quantity is how much of each source's input reaches the layer of the receiving body that the response draws on during the window, decided day by day by comparing the input's own physical state with the receiving body's layered state in a second record; an input denser than the responding layer sinks below it and feeds nothing until the window closes, so summing the inputs, or summing them over the window, credits the sources whose water sinks.",
   "driver_concrete": "Each programme's phosphorus kept out of Selwith Water's 0 to 5 m surface water in June to September, counting an inflow's load only on the days its water is no denser than the surface water at the buoy: the spring-fed Lenning runs colder than the surface water on every summer day and plunges below the thermocline (the buoy's conductivity carries it at 8 to 11 m), so the Brathwick works and the farms add nothing to the bloom's water, while the Hollinsby works' warmer effluent enters it.",
-  "stump": "A competent solver sums each source's June-to-September phosphorus into the lake, applies each programme's removal and funds chemical phosphorus removal at the Brathwick works (about 340 kg a season against about 220 for the Hollinsby tertiary stage), because it reads every input as reaching the water the bloom grows in, when the Lenning that carries Brathwick's effluent is colder than the lake's surface water on every summer day and sinks below the thermocline.",
+  "stump": "A competent solver builds each source's June-to-September phosphorus load into Selwith Water from the station, the sampler and the two works' returns, applies each programme's credited reduction and funds chemical phosphorus removal at the Brathwick works (359 kg a season against 222 for the Hollinsby tertiary stage), because it counts every input to the lake as added to the surface water; the step that lands it there is never setting the Lenning's daily temperature against the lake's profile, which shows the river denser than the surface water on every summer day and entering below the thermocline.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task487": "task487 dates undated release events from how often each kind is found against the inspection window's length; here nothing is undated or inspected, each inflow's recorded load is kept or set aside day by day by whether its water is denser than the lake's surface water, a physical comparison of two continuous records.",
@@ -132,9 +131,9 @@
   "notes": "Architecture 6. The author re-tasked task202 from Anomaly Detection & Diagnostics to Root-Cause Analysis on 2026-11-01 (retirement not taken); START_HERE.md is not edited, the card and the ledger carry the real objective. Physical & Environmental Sciences has no client rigor patterns, so layer2_pattern is own:.",
   "registered": "2026-11-02T00:23:09Z",
   "shell": {
-    "question form": "whether",
-    "second-sentence opener": "clause",
-    "rounding opener": "round",
-    "deliverable set": "pdf+xlsx+xlsx"
+    "question form": "how-much",
+    "second-sentence opener": "its",
+    "rounding opener": "phosphorus",
+    "deliverable set": "pdf+xlsx"
   }
 }
