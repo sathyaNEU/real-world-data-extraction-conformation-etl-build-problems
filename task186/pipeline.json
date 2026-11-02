@@ -1,10 +1,10 @@
 {
  "task": "task186",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "human-factors-ergonomics / safety-incident-error-analysis / anomaly-detection",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-02",
  "stump": "A competent analyst reads SCS-04's detection performance on the projections of items each officer had not been shown before, keys the item on the TIP export's image number (or counts showings only from 1 December), and withdraws four casual officers, SC16884, SC17045, SC42948 and SC46133, recertifying every full-time officer; the step that lands it there is taking the image rather than the threat object behind its three orientations as the item, or the screening year rather than the whole CT record as before, when an orientation new to the officer of an object already shown is detected 99.3 per cent of the time and an object first shown before December over 99 per cent, so six full-time officers who detect 56 to 74 per cent of the objects new to them clear 80 per cent.",
  "architecture": 2,
@@ -14,22 +14,22 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK; one sweep-4 line on SCS-04, ruled harmless in the design note), asof 2026-12-02",
-  "reader": "no leak; question 6 analytical; minor note: the projection settings JSON carries one probability and one category list on every lane (left as is, target/ kept byte-identical)"
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2026-12-02)",
+  "reader": "clean in both rounds; question 6 analytical each round; the reader's sections appended to task186/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN (driver.near 0.13 task190 arch 3 lineage; people.first older builds; no BLOCK), 2026-11-01",
+  "heart": "WARN 2026-11-02 at the ship gate (driver.near 0.13 against task190 lineage, first names, repeat.gate_g, overuse.gate_g), no BLOCK",
   "nearest": "task190 (3, lineage) 0.13 driver; surface promoted task462 0.101, task172 0.100, task271 0.100 (differentiation lines on the card)"
  },
  "judge": {
-  "verdict": "re-judge 2026-11-02: everything reproduced; Gate G PASS, Gate F good, Gate H analytical if the novel-item population is forced; main call failed Gates C and E (SCS-04 read word for word is the pooled hit rate); ask 4 Gate C (start-up tests unfiled); ask 3 low (lapse dates unfiled, thin margins)",
-  "disposition": "repair applied 2026-11-02 (WHAT filed, data and write-up regenerated); re-judge owed",
-  "report": ""
+  "verdict": "round 3 DETERMINISTIC, APPROVE (order kept; stump credible; Gate G statistical_rigor / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; round 1's wording FIX_NOW and round 2's main-call fork (closed by filing the novel-item population at the WHAT level) repaired before round 3",
+  "report": "task186/determinism_check_report.md"
  },
  "returned": [],
- "resume": "Re-judge (determinism judge, medium) on the round-2 cut; the leak reader re-runs too, since SCS-04 section 3 changed. Then ship.",
+ "resume": "Shipped 2026-11-02 (architecture 2, Anomaly Detection): ten X-ray screening officers come off duty at the January 2027 recertification; target.zip c1a98fb1. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -90,5 +90,8 @@
    "pair_ceiling": 53.2,
    "mirror_leakage_pct": 45.0
   }
- ]
+ ],
+ "build": {
+  "target_zip": "c1a98fb1 (12 members, each byte-identical to target/)"
+ }
 }
