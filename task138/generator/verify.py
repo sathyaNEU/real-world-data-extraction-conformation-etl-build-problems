@@ -62,7 +62,7 @@ def xlsx_sheets(path):
 def pdf_strings(path):
     data = open(path, "rb").read()
     txt = []
-    for m in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", data, re.S):
+    for m in re.finditer(rb"stream\r?\n(.*?)endstream", data, re.S):
         raw = m.group(1)
         hdr = data[max(0, m.start() - 300):m.start()]
         try:

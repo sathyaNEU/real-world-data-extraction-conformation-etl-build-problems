@@ -1,0 +1,106 @@
+{
+ "architecture": 3,
+ "as_of": "2026-10-19",
+ "decision": "whether Basisschool De Kwikstaart exceeds its buildings' capacity at the 1 October counts of 2027, 2028 or 2029, and from which count",
+ "deliverables": [
+  "kwikstaart_leerlingenprognose_2027-2029.docx"
+ ],
+ "distractor_files": [
+  "wijkprofiel_veenhaven_noord_2026.pdf",
+  "schoolkalender_kwikstaart_2026-2027.pdf"
+ ],
+ "distractor_notes": {
+  "schoolkalender_kwikstaart_2026-2027.pdf": "the school's holidays and study days; relevant to the school year, unused by the solution",
+  "wijkprofiel_veenhaven_noord_2026.pdf": "the municipality's population by age per neighbourhood; relevant to the catchment, unused by the solution"
+ },
+ "files": {
+  "aanvraag_huisvesting_2028_concept.docx": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Stichting Primair Onderwijs Veenhaven, draft accommodation request 2028; synthetic, built for this task"
+  },
+  "brp_uittreksel_veenhaven_noord_2026-10-01.csv": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Gemeente Veenhaven, extract of the municipal population register for Veenhaven-Noord (residents since 1 October 2020); synthetic, built for this task"
+  },
+  "bso_aanwezigheid_oktober_2026.csv": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kinderopvang Het Klavertje, after-school care attendance export, October 2026; synthetic, built for this task"
+  },
+  "bso_locaties_contracten_2026-10.xlsx": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kinderopvang Het Klavertje, locations and contracts, October 2026; synthetic, built for this task"
+  },
+  "gas_telemetrie_kwikstaart_2023-2026.csv": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Gasnet Veenstreek, monthly telemetry reads of the school's gas meters, August 2023 to August 2026; synthetic, built for this task"
+  },
+  "huisvestingsplan_kwikstaart_2026.pdf": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Stichting Primair Onderwijs Veenhaven, accommodation plan De Kwikstaart 2026; synthetic, built for this task"
+  },
+  "leerlingtellingen_kwikstaart_1okt_2020-2026.csv": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Basisschool De Kwikstaart pupil administration, the roll at each 1 October count 2020 to 2026; synthetic, built for this task"
+  },
+  "meterstamgegevens_gas_kwikstaart_2026-10-01.xlsx": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Gasnet Veenstreek, connection and meter master data for the school's gas connections, 1 October 2026; synthetic, built for this task"
+  },
+  "scholenoverzicht_veenhaven_noord_2026.xlsx": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Gemeente Veenhaven, overview of the primary schools in Veenhaven-Noord, 12 October 2026; synthetic, built for this task"
+  },
+  "schoolkalender_kwikstaart_2026-2027.pdf": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Basisschool De Kwikstaart, school calendar 2026-2027; synthetic, built for this task"
+  },
+  "spov_procedure_leerlingenprognose_v2.pdf": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Stichting Primair Onderwijs Veenhaven, procedure PV-2 v2 for pupil forecasts; synthetic, built for this task"
+  },
+  "wijkprofiel_veenhaven_noord_2026.pdf": {
+   "date": "2026-10-19",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Gemeente Veenhaven, district profile Veenhaven-Noord 2026; synthetic, built for this task"
+  }
+ },
+ "largest_file": {
+  "name": "brp_uittreksel_veenhaven_noord_2026-10-01.csv",
+  "rows": 25586
+ },
+ "row_counts": {
+  "brp_uittreksel_veenhaven_noord_2026-10-01.csv": 25586,
+  "bso_aanwezigheid_oktober_2026.csv": 1423,
+  "gas_telemetrie_kwikstaart_2023-2026.csv": 77,
+  "leerlingtellingen_kwikstaart_1okt_2020-2026.csv": 2312
+ },
+ "stated_inputs": [
+  "604",
+  "3841",
+  "3842"
+ ],
+ "task": "task142"
+}

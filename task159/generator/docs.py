@@ -53,7 +53,7 @@ def grid_control(path):
     mons = [("KCM-01", 10120.000, 20085.000, 1311.842), ("KCM-02", 10955.000, 20140.000, 1308.117),
             ("KCM-04", 10510.000, 20610.000, 1314.605), ("KCM-07", 10240.000, 20480.000, 1309.230)]
     lines = ["KELVANNA LAKE MINE - MINE GRID CONTROL",
-             "Survey Department, issue 3, 14 February 2024 (E. Schmitt, Chief Surveyor)",
+             "Survey Department, issue 3, 14 February 2024 (K. Howell, Chief Surveyor)",
              "",
              "Mine grid ........ Kelvanna Mine Grid (KMG), ground scale",
              "Map grid ......... NAD83(CSRS) UTM zone 17N",
@@ -80,7 +80,7 @@ def budget_basis(path, plan_file):
     L.append(("Helvetica-Bold", 12, "AUBRETH GOLD CORPORATION - KELVANNA LAKE MINE", None, 18))
     L.append(("Helvetica-Bold", 11, "Memorandum", None, 18))
     for a, b in (("To:", "Cindy Smith, General Manager"), ("From:", "Jeffrey Russell, Superintendent, Mine Planning"),
-                 ("Copy:", "Brent Peck (Grade Control), Charles Bailey (Mill), Heidi Nichols (Metallurgy)"),
+                 ("Copy:", "Brent Peck (Grade Control), Charles Bailey (Mill), Rachael Ochoa (Metallurgy)"),
                  ("Date:", "12 November 2026"), ("Subject:", "2027 budget: basis of ore and gold")):
         L.append(("Helvetica", 10, [a, b], [52, 120], 14))
     L.append(("Helvetica", 4, "", None, 10))
@@ -152,7 +152,7 @@ def reconciliation_pdf(path, r):
         d["m_g"], d["g_g"], d["k_g"] = (d["m_oz"] * P.TROY / d["m_t"], d["g_oz"] * P.TROY / d["g_t"],
                                         d["k_oz"] * P.TROY / d["k_t"])
         L.append(("Helvetica-Bold", 7.5, fmt_row("%d%s" % (y, " YTD" if y == 2026 else ""), d), xs, 16))
-        L.append(("Helvetica", 7.5, "Prepared by grade control (B. Peck) and metallurgy (H. Nichols); issued "
+        L.append(("Helvetica", 7.5, "Prepared by grade control (B. Peck) and metallurgy (R. Ochoa); issued "
                                     "4 November 2026 with October 2026.", None, 12))
         pages.append(L)
     # summary page

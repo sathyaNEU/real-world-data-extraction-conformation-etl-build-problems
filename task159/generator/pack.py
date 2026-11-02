@@ -390,7 +390,7 @@ def _write_fleet(path):
     for s in (ws, dsp):
         for col, wdt in zip("ABCDEFG", (8, 14, 14, 20, 12, 12, 14)):
             s.column_dimensions[col].width = wdt
-    save_xlsx(wb, path, "Haul fleet register", "Emily Schmitt", "2026-10-30T13:05:00Z")
+    save_xlsx(wb, path, "Haul fleet register", "Katelyn Howell", "2026-10-30T13:05:00Z")
 
 
 def _write_dcs(path, stops, outages):
