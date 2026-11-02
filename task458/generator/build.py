@@ -61,8 +61,6 @@ def build(out, quiet=False, docs=True):
     if docs:
         import docs as DC
         import postprocess as PP
-        n["dict"] = P.write_dictionary(f("dict"))
-        n["manifest"] = P.write_manifest(f("manifest"), {k: v for k, v in n.items() if k not in ("dict",)})
         DC.write_policy(f("policy"))
         PP.normalize_ooxml(f("deact"), "CMS", "CMS", "2026-11-10T14:02:00Z", "2026-11-10T14:02:00Z", excel=True,
                            company="CMS")
@@ -70,8 +68,6 @@ def build(out, quiet=False, docs=True):
                            excel=True, company="HUD")
         PP.normalize_ooxml(f("adequacy"), W.PEOPLE["director"], W.PEOPLE["director"], "2026-08-12T16:20:00Z",
                            "2026-08-14T18:03:51Z", excel=True, company=W.ORG)
-        PP.normalize_ooxml(f("dict"), W.PEOPLE["analyst"], W.PEOPLE["analyst"], "2025-09-03T17:12:00Z",
-                           "2026-11-12T22:41:09Z", excel=True, company=W.ORG)
         PP.normalize_pdf(f("policy"), b"D:20260519141205-07'00'", b"D:20260521093344-07'00'")
     stamp = STAMP.timestamp()
     for name in os.listdir(out):

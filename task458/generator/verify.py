@@ -18,6 +18,22 @@ NAMES = {"53001": "Adams", "53005": "Benton", "53007": "Chelan", "53017": "Dougl
          "53037": "Kittitas", "53047": "Okanogan", "53071": "Walla Walla", "53077": "Yakima"}
 
 
+def pdf_text(path):
+    """A PDF's text, whitespace collapsed (pypdf): the one reader the verifier and the checks share for NP-31."""
+    from pypdf import PdfReader
+    return " ".join(" ".join((p.extract_text() or "").split()) for p in PdfReader(path).pages)
+
+
+def policy(target):
+    """NP-31 read back from the PDF: the thresholds of 3.1 and the person and version sentences of 2.2 and 2.4."""
+    import re
+    txt = pdf_text(os.path.join(target, "np31_prescriber_service_area_designation.pdf"))
+    th = [float(x) for x in re.findall(r"Threshold: (\d+(?:\.\d+)?)", txt)]
+    person = "the client identifier on the enrollment record identifies the person" in txt
+    versions = "A claim that a later claim replaces, and a voided claim, identify nothing; the replacing claim does" in txt
+    return {"text": txt, "thresholds": th, "person": person, "versions": versions}
+
+
 def months_between(a, b):
     out = set()
     y, m = a.year, a.month
@@ -30,6 +46,10 @@ def months_between(a, b):
 
 def main(target, golden):
     t = lambda f: os.path.join(target, f)
+    pol = policy(target)
+    if pol["thresholds"] != [16.5, 23.0, 68.0] or not pol["person"] or not pol["versions"]:
+        raise SystemExit("verify failed: NP-31 could not be read back (%s)" % {k: v for k, v in pol.items() if k != "text"})
+    T_SMI, T_OUD, T_REACH = pol["thresholds"][0], pol["thresholds"][1], pol["thresholds"][2] / 100.0
     # NPPES on 1 November: the monthly file, then each weekly file ending by 1 November, record by record
     files = ["npidata_pfile_wa_20050523-20261011.csv", "npidata_pfile_wa_20261012-20261018.csv",
              "npidata_pfile_wa_20261019-20261025.csv", "npidata_pfile_wa_20261026-20261101.csv"]
@@ -102,7 +122,7 @@ def main(target, golden):
         seen = int((g["smi"] & g["seen"]).sum())
         n = pract.get(county, 0)
         v = {"n": n, "smi": e_smi, "oud": e_oud, "s1": n / e_smi * 1000, "s2": n / e_oud * 1000, "s3": seen / e_smi}
-        v["fails"] = int(v["s1"] < 16.5) + int(v["s2"] < 23.0) + int(v["s3"] < 0.68)
+        v["fails"] = int(v["s1"] < T_SMI) + int(v["s2"] < T_OUD) + int(v["s3"] < T_REACH)
         out[county] = v
     designated = sorted(k for k, v in out.items() if v["fails"] >= 2)
     # payments: final fee-for-service claims rendered by a behavioral-health prescriber, each claim's paid amount once
@@ -131,7 +151,7 @@ def main(target, golden):
         if (abs(r[5] - round(v["n"] / n10 * 1000, 1)) > 1e-9 or abs(r[7] - round(v["n"] / o10 * 1000, 1)) > 1e-9
                 or abs(r[9] - round(seen / n10 * 100) / 100) > 1e-9):
             problems.append(("standards", r[0], r[5], r[7], r[9]))
-        if (r[6] == "Yes") != (v["s1"] >= 16.5) or (r[8] == "Yes") != (v["s2"] >= 23.0) or (r[10] == "Yes") != (v["s3"] >= 0.68):
+        if (r[6] == "Yes") != (v["s1"] >= T_SMI) or (r[8] == "Yes") != (v["s2"] >= T_OUD) or (r[10] == "Yes") != (v["s3"] >= T_REACH):
             problems.append(("verdicts", r[0]))
         if (r[12] == "Yes") != (v["fails"] >= 2):
             problems.append(("designated", r[0]))

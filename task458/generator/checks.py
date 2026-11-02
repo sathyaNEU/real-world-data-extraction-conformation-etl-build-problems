@@ -31,6 +31,49 @@ def pdf_text(path):
     return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
 
 
+DESCRIBE_NAME = re.compile(r"(dictionar|data_?dict|manifest|read_?me|codebook|code_?book|field_?notes|field_?guide|"
+                           r"definitions|file_?list|schema|data_?notes|extract_?notes|export_?notes)", re.I)
+DESCRIBE_SHEET = re.compile(r"^\s*(columns?|fields?|files?|notes|definitions?|dictionary|read ?me|about|schema|layout|"
+                            r"how to read.*)\s*$", re.I)
+COLUMN_CELL = re.compile(r"^\s*(column|field|variable|file)[ _]?(name)?\s*$", re.I)
+GLOSS_CELL = re.compile(r"^\s*(definition|description|meaning|what it holds|record_?count|notes?)\s*$", re.I)
+
+
+def describing_name(name):
+    """True when a file's name says it describes the data (dataset-generation section 3)."""
+    return bool(DESCRIBE_NAME.search(name))
+
+
+def describing_head(cells):
+    """True when a table's header row pairs a column or file name with a gloss (a dictionary or a manifest)."""
+    cells = [str(c) for c in cells if c is not None]
+    return any(COLUMN_CELL.match(c) for c in cells) and any(GLOSS_CELL.match(c) for c in cells)
+
+
+def describing(target, files):
+    """Every shipped file or sheet that describes the data: by name, by sheet name, by header."""
+    from openpyxl import load_workbook
+    names = [f for f in files if describing_name(f)]
+    sheets, heads = [], []
+    for f in files:
+        p = os.path.join(target, f)
+        if f.endswith(".csv"):
+            with open(p, encoding="utf-8", newline="") as fh:
+                if describing_head(next(csv.reader(fh))):
+                    heads.append(f)
+        elif f.endswith(".xlsx"):
+            wb = load_workbook(p, read_only=True, data_only=True)
+            for ws in wb.worksheets:
+                if DESCRIBE_SHEET.match(ws.title):
+                    sheets.append("%s:%s" % (f, ws.title))
+                for row in ws.iter_rows(min_row=1, max_row=6, values_only=True):
+                    if describing_head(row):
+                        heads.append("%s:%s" % (f, ws.title))
+                        break
+            wb.close()
+    return names, sheets, heads
+
+
 def truth_table(world):
     """The clean truth: each person's county, group, months, and whether the generator's claims (final versions)
     identify each condition and in which contract-year month first; the practising prescribers by construction; no
@@ -98,6 +141,33 @@ def run(target, golden_dir, world=None, meta_path=None):
     ok("gate: every file has source, date and license in metadata.json",
        all(x.get("source") and x.get("date") and x.get("license") for x in meta.get("files", [])) and
        {x["path"] for x in meta.get("files", [])} == set(files))
+    # ------------------------------------------------------------------ no shipped file describes the data
+    bad_names, bad_sheets, bad_heads = describing(target, files)
+    ok("leak gate: no shipped file named as a dictionary, manifest, readme, codebook, notes, definitions or file list",
+       not bad_names, bad_names)
+    ok("leak gate (control): the name sweep catches the dictionary and the manifest this pack used to ship",
+       describing_name("network_analytics_data_dictionary.xlsx") and describing_name("extract_manifest_2026-11-12.csv"))
+    ok("leak gate: no shipped workbook has a sheet that describes columns or files", not bad_sheets, bad_sheets)
+    ok("leak gate: no shipped table pairs column or file names with a gloss", not bad_heads, bad_heads)
+    ok("leak gate (control): the header sweep catches the dictionary's and the manifest's own headers",
+       describing_head(["File name", "Column", "Definition"]) and
+       describing_head(["file_name", "record_count", "system_of_record", "as_of_date"]))
+    # closure rows 16 and 19, which cited the dictionary: their homes read back on the verifier's own code path
+    import verify as V
+    pol = V.policy(target)
+    ok("closure 16 (control): NP-31 2.2 read back through the verifier's PDF reader names the client identifier as the "
+       "person key", pol["person"] and len(pol["text"]) > 5000, len(pol["text"]))
+    ok("closure 5 and 19 (control): NP-31 2.4's version sentence read back through the verifier's PDF reader",
+       pol["versions"])
+    import pandas as pd
+    clm = pd.read_csv(os.path.join(target, P.FILES["claims"]), dtype=str, keep_default_na=False)
+    adj = clm[clm["clm_freq_cd"] != "1"]
+    ok("closure 19: the claims system's own frequency codes, 1, 7 and 8, each 7 and 8 naming a claim in the extract",
+       set(clm["clm_freq_cd"]) == {"1", "7", "8"} and adj["orig_icn"].isin(set(clm["clm_icn"])).all() and
+       (clm.loc[clm["clm_freq_cd"] == "1", "orig_icn"] == "").all(), sorted(set(clm["clm_freq_cd"])))
+    spn = pd.read_csv(os.path.join(target, P.FILES["spans"]), dtype=str, keep_default_na=False)
+    ok("closure 19: the enrollment system writes its eligibility groups as its own four labels",
+       set(spn["elig_group_cd"]) == set(P.GROUP_CODE.values()), sorted(set(spn["elig_group_cd"])))
 
     a = CF.analysis(target)
     sc = a["scorecard"]

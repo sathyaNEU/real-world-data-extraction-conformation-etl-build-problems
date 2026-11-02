@@ -3,7 +3,7 @@
  "architecture": 1,
  "title": "Which of a Medicaid managed care plan's ten eastern Washington counties are designated for its 2027 behavioral-health prescriber loan-repayment pilot, each county's members with a serious mental illness and with an opioid use disorder estimated from claims against enrollment",
  "domain": "Healthcare Delivery & Health Economics",
- "subdomain": "payment-claims-health-plan-analytics (claims-based case identification against enrollment: a lasting condition's prevalence measured on the members enrolled all year, by eligibility group, and carried to every member, for need-based workforce ratios over a contract year)",
+ "subdomain": "payment-claims-health-plan-analytics (a Medicaid managed care plan's county designation for a behavioral-health prescriber loan-repayment pilot, from its claims, enrollment and provider records for a closed contract year)",
  "objective": "Data Extraction & Conformation (ETL)",
  "prompt_shape": "10: a scorecard against thresholds (three standards for each of ten counties, two of three to designate), with quarterly payments and the conformed county and eligibility-group file",
  "as_of": "2026-11-12",
@@ -28,7 +28,7 @@
   "68"
  ],
  "input_gates": {
-  "files": 16,
+  "files": 14,
   "formats": [
    "csv",
    "pdf",
@@ -94,29 +94,11 @@
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "extract_manifest_2026-11-12.csv",
-   "format": "csv",
-   "bytes": 1254,
-   "rows": 15,
-   "source": "Constructed: the list of the files Network Analytics pulled on 12 November 2026",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
    "path": "network_adequacy_time_distance_2026q2.xlsx",
    "format": "xlsx",
    "bytes": 6823,
    "rows": null,
    "source": "Constructed: the plan's network adequacy time and distance report for behavioral-health prescribers, second quarter of 2026",
-   "date": "2026-11-12",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "network_analytics_data_dictionary.xlsx",
-   "format": "xlsx",
-   "bytes": 10205,
-   "rows": null,
-   "source": "Constructed: Network Analytics' descriptions of the files and their fields",
    "date": "2026-11-12",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },

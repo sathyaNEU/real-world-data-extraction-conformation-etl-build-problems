@@ -21,10 +21,8 @@ SOURCES = {
     F["nucc"]: "the provider taxonomy codes the NPPES records carry, in the NUCC code set layout (code, grouping, classification, specialization, display name, section)",
     F["fees"]: "the plan's fee schedule for behavioral-health professional services in the contract year",
     F["policy"]: "the plan's Network Policy NP-31, Prescriber Service Area Designation (approved 21 May 2026)",
-    F["dict"]: "Network Analytics' descriptions of the files and their fields",
     F["adequacy"]: "the plan's network adequacy time and distance report for behavioral-health prescribers, second quarter of 2026",
     F["ofm"]: "county population estimates of 1 April 2026 for the ten counties, in the layout of the state Office of Financial Management's estimates",
-    F["manifest"]: "the list of the files Network Analytics pulled on 12 November 2026",
 }
 DISTRACTORS = [F["adequacy"], F["ofm"], F["week4"]]
 DELIVERABLES = ["prescriber_pilot_county_scorecard_2027.xlsx", "county_adult_members_2026_conformed.csv"]
@@ -52,9 +50,9 @@ def write(target, out_path):
                  "behavioral-health prescriber loan-repayment pilot, each county's members with a serious mental illness "
                  "and with an opioid use disorder estimated from claims against enrollment",
         "domain": "Healthcare Delivery & Health Economics",
-        "subdomain": "payment-claims-health-plan-analytics (claims-based case identification against enrollment: a "
-                     "lasting condition's prevalence measured on the members enrolled all year, by eligibility group, and "
-                     "carried to every member, for need-based workforce ratios over a contract year)",
+        "subdomain": "payment-claims-health-plan-analytics (a Medicaid managed care plan's county designation for a "
+                     "behavioral-health prescriber loan-repayment pilot, from its claims, enrollment and provider records "
+                     "for a closed contract year)",
         "objective": "Data Extraction & Conformation (ETL)",
         "prompt_shape": "10: a scorecard against thresholds (three standards for each of ten counties, two of three to "
                         "designate), with quarterly payments and the conformed county and eligibility-group file",
