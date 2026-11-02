@@ -1,0 +1,98 @@
+{
+ "answer": "GB-131 regular; GB-134 regular",
+ "as_of": "2027-01-05",
+ "bundle": "target/",
+ "distractor_files": [
+  "yorkton_daily_weather_2024_2026.csv",
+  "cathodic_protection_survey_2026.pdf",
+  "line_leak_detector_tests_2026.csv",
+  "vacuum_truck_manifests_2024_2026.csv"
+ ],
+ "field_terms": [],
+ "files": {
+  "atg_shift_close_inventory_2024_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 39459,
+   "source": "Tank gauge shift-close inventory readings, gas bars, 2024 to 2026"
+  },
+  "bills_of_lading_2024_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 6986,
+   "source": "Terminal bills of lading for co-op consignees, 2024 to 2026"
+  },
+  "cardlock_gauge_delivery_reports_q4_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 200,
+   "source": "Cardlock console delivery reports pulled through the monitoring service at the month-end closes"
+  },
+  "cardlock_gauge_hourly_inventory_q4_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 18036,
+   "source": "Cardlock hourly inventory from the monitoring service, 30 Sep 2026 to 1 Jan 2027"
+  },
+  "cardlock_transactions_q4_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 28291,
+   "source": "Cardlock host transaction export, 30 Sep 2026 to 1 Jan 2027"
+  },
+  "cathodic_protection_survey_2026.pdf": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Cathodic protection survey report, steel tanks, September 2026"
+  },
+  "forecourt_controller_config_2027-01-05.json": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 72,
+   "source": "Forecourt controller configuration export, all gas bars, 2027-01-05"
+  },
+  "line_leak_detector_tests_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 36,
+   "source": "Annual line leak detector function tests, gas bars, 2026"
+  },
+  "pd07_release_detection_standard.pdf": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": "",
+   "source": "Petroleum Division standard PD-07 Rev. 3, controlled copy"
+  },
+  "pos_fuel_sales_by_hose_2024_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 175812,
+   "source": "Point-of-sale daily hose sales, monthly head-office exports 2024 to 2026 with the December 2026 preliminary"
+  },
+  "service_work_orders_2024_2026.xlsx": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 180,
+   "source": "Service contractor work orders, gas bars, 2024 to 2026"
+  },
+  "tpc_site_tank_register.xlsx": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 44,
+   "source": "Petroleum Division site and tank register (tanks, dispensers, cardlock pumps)"
+  },
+  "vacuum_truck_manifests_2024_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 9,
+   "source": "Vacuum hauler manifests for co-op gas bars, 2024 to 2026"
+  },
+  "yorkton_daily_weather_2024_2026.csv": {
+   "date": "2027-01-05",
+   "licence": "Synthetic record, no third party rights",
+   "rows": 1096,
+   "source": "Daily weather summary, Yorkton area, 2024 to 2026"
+  }
+ }
+}

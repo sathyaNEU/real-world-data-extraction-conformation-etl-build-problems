@@ -1,0 +1,129 @@
+{
+ "ask": {
+  "both, Russell read on wall clock": [
+   15,
+   18
+  ],
+  "both, fills of both products": [
+   0,
+   18
+  ],
+  "both, window widened 15 min": [
+   0,
+   18
+  ],
+  "cracker (plain meaning, hygiene, unreported bill unmeasured)": [
+   0,
+   18
+  ],
+  "cracker, months by bill": [
+   0,
+   18
+  ],
+  "fills during the drop only": [
+   3,
+   18
+  ],
+  "full includer": [
+   18,
+   18
+  ],
+  "full includer, drops dated by the bill's loaded date": [
+   15,
+   18
+  ],
+  "rebuild from hourly only": [
+   0,
+   18
+  ]
+ },
+ "main": {
+  "SIR cumulative": [
+   [
+    "GB-121",
+    "D"
+   ],
+   [
+    "GB-121",
+    "R"
+   ],
+   [
+    "GB-131",
+    "R"
+   ],
+   [
+    "GB-142",
+    "R"
+   ],
+   [
+    "GB-153",
+    "D"
+   ]
+  ],
+  "SIR daily": [
+   [
+    "GB-131",
+    "R"
+   ]
+  ],
+  "SIR weekly": [
+   [
+    "GB-121",
+    "D"
+   ],
+   [
+    "GB-121",
+    "R"
+   ],
+   [
+    "GB-131",
+    "R"
+   ]
+  ],
+  "litres law (golden)": [
+   [
+    "GB-131",
+    "R"
+   ],
+   [
+    "GB-134",
+    "R"
+   ]
+  ],
+  "months law": [
+   [
+    "GB-121",
+    "D"
+   ],
+   [
+    "GB-131",
+    "R"
+   ],
+   [
+    "GB-134",
+    "R"
+   ]
+  ],
+  "total shortfall": [
+   [
+    "GB-121",
+    "D"
+   ],
+   [
+    "GB-131",
+    "R"
+   ],
+   [
+    "GB-134",
+    "R"
+   ],
+   [
+    "GB-142",
+    "R"
+   ]
+  ]
+ },
+ "off_call": 12.0,
+ "on_call": 45.0,
+ "pair": 28.5
+}

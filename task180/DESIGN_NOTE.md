@@ -10,90 +10,383 @@ comparison that decides.
 
 ## Draw
 
-- **Card.** `.claude/skills/fingerprint/cards/task180.json`, architecture v5, registered 2026-11-02. `guard.py check`
-  on the registered card: WARN, no BLOCK. WARN `repeat.decision` (designation_set after task190 v11): the decision unit
-  is the tank system and the January work order covers a set of them, which is what the decision is. NOTE
+- **Card.** `.claude/skills/fingerprint/cards/task180.json`, architecture v5, registered 2026-11-02. `guard.py check`:
+  WARN, no BLOCK. WARN `repeat.decision` (designation_set after task190 v11): the decision unit is the tank system and
+  the January work order covers a set of them, which is what the decision is. WARN `repeat.gate_g` (task232 v2,
+  re-rooted to `decomposition_attribution` on 2026-11-01, after this draw): the label is honest here (a book shortfall
+  assigned to meter wear or a release) and the split is not task232's (an interviewer's roster effect). NOTE
   `test.same_puzzle_older` (task470 v2) and `test.same_driver_older` (task107 v2, task121 v4) carry differentiation
-  lines on the card; each is a different insight (a dwelling's use read from the rhythm in its own meter; a comparison
-  arm contaminated by reassigned practitioners; a satisfaction fall weighed on the conditions each response met).
-  Nearest driver 0.08 (task273 v3). The axis bans read at the draw (last three live cards task154, task190, task232)
-  were cleared on every axis: shape 01 (02 and 10 banned), forum `line_manager_or_team`, forcing
-  `purchase_order_or_contract`, org `cooperative_or_member_body`, role `finance_controller`, strategy
-  `decomposition_attribution`, context `register`, calibration `none`.
+  lines. Nearest driver 0.08 (task273 v3). Axis bans read at the draw (last three live cards task154, task190,
+  task232) cleared: shape 01, forum `line_manager_or_team`, forcing `purchase_order_or_contract`, org
+  `cooperative_or_member_body`, role `finance_controller`, strategy `decomposition_attribution`, context `register`,
+  calibration `none`.
 - **Pairing.** Physical & Environmental Sciences, task type `environmental-monitoring-exceedance` (serves AD),
   objective Anomaly Detection & Diagnostics. The anomaly is an underground tank system releasing petroleum to the
   ground; the artefact it has to be told from is dispenser meters that deliver more than they register as they wear,
-  because both make a tank's book shortfall rise in step with the litres it sells.
-- **Niche.** A prairie retail co-operative (Tamarack Prairie Co-operative, fictional) runs twelve gas bars in
-  east-central Saskatchewan and western Manitoba and four unattended cardlocks. Its release detection standard sends a
-  tank system (the tank and its underground pressurised line) to the contractor's precision tightness test, and
-  reports it to the province as a suspected release, when the product it lost to the ground over the quarter averages
-  more than 0.75 litres an hour. The controller's office reconciles the fuel books; the January 2027 work order is cut
-  from October to December 2026.
-- **Shape 01** (a ranked list against a line): every gas bar tank system's October to December loss to the ground in
-  litres an hour, in or out against 0.75, the first system below the line; the slate's chart; the ask layer on the
-  cardlocks' drops. Arithmetic, to be closed at stage 2: 36 systems give the named set, two named figures, the first
-  below the line and its figure (5), the chart's parts (5), the deliverables (2), and the cardlock drop table
-  (carrier by month and cardlock, 20 or more figures), over 30 criteria.
+  because both make a tank's book shortfall move with the litres it sells.
+- **Niche.** Tamarack Prairie Co-operative (fictional) runs twelve gas bars in east-central Saskatchewan and western
+  Manitoba and four unattended cardlocks. Its standard PD-07 sends a tank system (tank, submersible pump, pressurised
+  piping) to the contractor's precision tightness test, and reports it as a suspected release, when the product it lost
+  to the ground over the quarter averages more than 0.75 litres an hour. The January 2027 work order is cut from
+  October to December 2026.
+- **Shape 01** (a ranked list against a line): every gas bar tank system judged against 0.75, the systems going for
+  testing with their losses, the quarter's chart, and the cardlock drop table. Criteria: the set (the two members and
+  the absence of the four the cheaper routes add, 6), the two losses (2), the chart's parts (5), the deliverables (2),
+  the cardlock table (18 figures): 33.
 - **Decision.** `designation_set`: which tank systems go on the January 2027 tightness-testing work order. Forward
-  facing: the systems are tested and reported in January 2027 for a release still running; the quarter is the
-  latest closed monitoring period the standard reads.
+  facing: the systems are tested and reported in January for releases still running; the quarter is the latest closed
+  monitoring period the standard reads.
 - **Strategy.** `decomposition_attribution`, Gate G `decomposition_attribution`: a book shortfall that moves with sales
   is split between the meters' over-delivery (product that left through a nozzle) and a release (product that left
-  the pressurised line while its pump ran). Gap objective then time; generators G3 (the meter's record against what
-  the nozzle delivered), G7 (a pressurised line loses product only while its pump runs), G13 (each meter's error is
-  read at the window from its use since calibration, not at the calibration). Layer 2 family `estimation_fit`, own
-  pattern `sales-linked-shortfall-split-by-meter-wear-since-calibration`.
-- **The decisive step, an estimate.** Each tank system's expected meter over-delivery in October to December, from
-  the litres its meters have passed since their last calibration at a drift rate per litre read across every tank
-  system's 2025 and 2026 quarters (the slope of each tank-quarter's sales-linked shortfall against its meters' litres
-  since calibration), taken out of its quarter's shortfall; what is left is product lost to the ground. Two systems
-  calibrated in the same February week show the same sales-linked loss (about 0.37 per cent of sales): the Foam Lake
-  truck stop's diesel, whose meters have passed about 1.2 million litres each since, and the Canora regular, whose
-  meters have passed about a quarter of that. One is worn meters; the other is a line releasing about 1.1 litres an
-  hour.
+  the pressurised line while its pump ran). Generators G3, G7, G13. Layer 2 family `estimation_fit`, own pattern
+  `sales-linked-shortfall-split-by-meter-wear-since-calibration`.
+- **The decisive step, an estimate.** Each tank system's expected meter over-delivery in October to December, from the
+  litres each hose has passed since its last calibration or replacement, at one drift rate per litre fitted across
+  every tank system's 2024 to 2026 Q3 quarters (quarter shortfall against quarter exposure, 324 tank-quarters, 6.08 mL
+  per 20 L draft per 100,000 litres), taken out of the quarter's shortfall; the rest is product lost to the ground. The
+  twin: Canora regular loses 0.36 per cent of its sales in step with them, 1.0 L/h, on meters calibrated 2 July 2026
+  that have passed about 124,000 litres a hose since; Kamsack regular loses 0.30 per cent, 1.7 L/h, on meters that have
+  passed about 984,000 litres a hose since April 2025. One is a line releasing 0.9 L/h; the other is worn meters.
 - **Default path's answer against the golden.** Statistical inventory reconciliation, the field's release detection
-  method, files only the Ituna regular (a 1984 steel tank losing about 1.2 litres an hour whatever it sells); the
-  golden files the Ituna regular and the Canora regular. Total shortfall per hour files four systems (Ituna, Canora,
-  Kamsack regular, Foam Lake diesel); a drift law in months since calibration files three (Ituna, Canora, Foam Lake
-  diesel).
-- **Data-native sentence.** Every litre a dispenser delivers beyond its reading is a litre the book counts as lost,
-  and a pressurised line that leaks only while its submersible pump runs loses product in step with sales in exactly
-  the same way, so the tank books alone cannot tell worn meters from a release; what separates them is how far each
-  tank's meters have been used since the service contractor last calibrated them, at the drift per litre the
-  co-op's own two years of tank books show.
+  method, files Ituna regular alone (a 1987 single-wall steel tank losing 1.2 L/h whatever it sells). The golden files
+  Ituna regular (1.2) and Canora regular (0.9). The total shortfall per hour files four (Kamsack regular, Foam Lake
+  diesel, Ituna regular, Canora regular); a drift law in months since calibration files three (Ituna, Foam Lake diesel,
+  Canora).
+- **Data-native sentence.** Every litre a dispenser delivers beyond its reading is a litre the book counts as lost, and
+  a pressurised line that leaks only while its submersible pump runs loses product in step with sales in exactly the
+  same way, so the tank books alone cannot tell worn meters from a release; what separates them is how far each hose's
+  meter has been used since the service contractor last calibrated it, at the drift per litre the co-op's own three
+  years of tank books show.
 - **Abstraction sentence, tested against the approved builds.** "A loss proportional to a unit's throughput is
   measurement drift only up to what the device's throughput since its last adjustment explains; the excess is a real
   loss that operates only while the unit runs." Not writable against task132 (a replacement restarts a wear curve, so
-  a spares forecast must not age a replaced item past its failure): there the reset item IS the forecast quantity;
-  here the drift is the artefact and the decisive quantity is what is left after it. Not writable against task162
-  (pressures replayed through valve settings), task120 (production less storage gain), task303 (tickets every
-  sibling opened in the same minute), task236, task275, task196 or task182. The driver screen's nearest is 0.08.
-- **Uniqueness reads.** `guard.py recent`, `coverage`, `mechanisms --objective anomaly-detection` (35 builds, every
-  driver and lineage driver read) and `slots` on the mechanism nouns (meter calibration, line leak, inventory
-  reconciliation, wetstock, prover, tightness, dispenser) and the setting nouns (underground storage tank, gasoline,
-  fuel station, carcass, curtailment, nacelle): no slot screened this world or mechanism. Neighbouring slots' resume
-  lines read: task182 (the AD lane's fourteen task types all carry cards; the open direction it named, a capitation
-  encounter file, is not this one), task279 (wind-farm fatality estimators set aside as a named-estimator fork),
-  task251 (a wear clock in cumulative load landed by readers in its v2: here the wear law is only the estimation
-  inside the step, reached after the confound is seen), task154 (a corrosion dig plan, the calibration axis it holds
-  is why no meter inspection results ship here).
-- **What each spent driver on the objective teaches this draw**, one line per family (from `mechanisms`): detection
-  completeness by hour (task180 v4, the reflex group-by), capture channels with dependence (task196), coding lag
-  (task194), grouped tests (task188), non-detects with lab limits (task189), length bias from snapshots (task182),
-  saturating indicators (task184), paired-difference uncertainty (task195), validation batches (task192), a shared
-  upstream resource (task181), local cycles within a place (task186), a capped response over a spread (task187),
-  filing volumes (task199), a unit's own response to a shared signal (task197), an unsteady balance across sessions
-  (task204), scheduled occasions moved (task125), exposure-time with reporting delay (task201): none splits a
-  throughput-proportional loss between drift and a real escape.
-- **People** (`guard.py names --geo "Canada, Saskatchewan" --seed 180`): Leah Haynes (controller), Roy Turner
-  (petroleum manager), Antonio Schwartz (the service contractor's technician), Timothy Dudley (the cardlock route
-  driver). No persona appears in the prompt.
-- **Sources, one line each.** `fingerprint` (the re-root, the card, the bans, the slots); `guide-to-prompt` (the
-  pairing, the shape, the prompt rules); `stumping` (1.1 the three rules, 1.1b the field's method at the bottom, 1.1j a
-  decisive step that is a reconstruction or a forced estimate, 1.2 the WHAT screen, 1.4 the survivor anatomy, 1.6a the
-  shape that held); `supplemental-stumping` (the ask layer off the call's rows, devices linked by the world's own
-  mechanics); the main thread's brief (estimation inside the decisive step; device families closed this batch).
+  a spares forecast must not age a replaced item: there the reset item is the forecast quantity; here the drift is the
+  artefact and the decisive quantity is what is left after it), task162, task120, task303, task236, task275, task196 or
+  task182. The driver screen's nearest is 0.08.
+- **Uniqueness reads.** `guard.py recent`, `coverage`, `mechanisms --objective anomaly-detection` and `slots` on the
+  mechanism nouns (meter calibration, line leak, inventory reconciliation, wetstock, prover, tightness, dispenser) and
+  setting nouns (underground storage tank, gasoline, fuel station): no slot screened this world or mechanism. task251's
+  wear clock in cumulative load was landed by readers in its v2; here the clock is the estimation inside the step,
+  reached only after the meters' share of a sales-linked loss is doubted. `guard.py heart` (stage 3): WARN, nearest
+  0.06 (task273 v5); its ledger list shows task272 v3 at 0.04, a dose process drifting with the litres its tubing set
+  has pumped, read run by run to count output past a limit: the same physical clock, a different insight (there the
+  drift is the quantity; here it is the artefact removed to find a release), with a differentiation line on the card.
+- **People** (`guard.py names --geo "Canada, Saskatchewan" --seed 180`, collision-free first names): Leah Haynes
+  (controller), Roy Turner (petroleum manager), Antonio Schwartz and Arthur Curtis (Quill Lakes Petroleum Service),
+  Benjamin Bautista (Carlton Trail Pump & Meter), Jimmy Contreras (vacuum hauler), Joshua Kirk (line leak detector
+  tests), Julia Peterson (cathodic protection survey). No persona appears in the prompt.
+- **Sources, one line each.** `fingerprint` (the re-root, card, bans, slots, names); `guide-to-prompt` (pairing, shape,
+  prompt rules, the `which` quota WARN answered below); `stumping` (1.1 three rules, 1.1b the field's method at the
+  bottom, 1.1j an estimate inside the step, 1.4 anatomy, 2.1 screen); `determinism-check` (the WHAT filed in PD-07,
+  the 22 axes, the estimator family measured, lesson 7); `supplemental-stumping` (the ask off the call's rows, two
+  primaries from different families, the cracker as code); `dataset-generation` (gates, realism, the three rules in
+  `checks.py`); the build brief's lessons 1 to 8.
+- **Shell.** Question form `which` (the decision is a designation set; `voice-check.py` WARNs the corpus quota at 35
+  per cent, answered at the role level: a set of tank systems is a pick, and the verb follows the decision), second
+  sentence led by the deliverable ("The work order, ..."), rounding sentence led by the figures ("Losses are ..."),
+  deliverables pdf+xlsx. Architecture 4's shell (which, answer, give, docx+xlsx) is on the card's `lineage_shells`.
+
+## Default path
+
+The pipeline a competent wetstock analyst builds from the prompt and PD-07, with the field's own method in it.
+
+1. Read PD-07: every gas bar tank system, product lost to the ground over the quarter, litres an hour, more than 0.75.
+2. Build each tank system's daily book for October to December: the gauge's 05:00 close
+   (`atg_shift_close_inventory_2024_2026.csv`), receipts at the bill's net litres on the drop's business day
+   (`bills_of_lading_2024_2026.csv`, `delivered_at`), sales as the point-of-sale volume per hose and grade with the
+   December re-export taken over the preliminary (`pos_fuel_sales_by_hose_2024_2026.csv`).
+3. Run statistical inventory reconciliation on each system: daily book variance on daily sales; the throughput
+   coefficient is the meters' error, the constant is the release rate.
+4. Validate: every throughput coefficient sits inside the meters' in-service tolerance (under 0.5 per cent of
+   sales), the residuals are white, and only one constant is off zero.
+5. Convert the constants to litres an hour and file the systems over 0.75.
+
+Ends on: Ituna regular alone
+Golden: Ituna regular 1.2 and Canora regular 0.9 litres an hour
+
+## Stump sentence
+
+Statistical inventory reconciliation on each tank system's October to December book files Ituna regular alone and
+books Canora regular's 1.0 L/h shortfall, which moves with its sales, to its meters; the step it skips is estimating
+how much a system's meters can over-deliver from the litres each hose has passed since its last calibration, at the
+drift per litre the network's own earlier quarters show, which leaves Canora's pressurised line losing 0.9 L/h to the
+ground.
+
+## Three rules
+
+- Task type: `environmental-monitoring-exceedance` (Physical & Environmental Sciences), serving Anomaly Detection &
+  Diagnostics: a release to the ground told apart from an instrument artefact and judged against a regulatory line.
+- Domain test: the deciding quantity is each underground tank system's release rate to the ground over the quarter,
+  and the field's estimator for it is statistical inventory reconciliation, which fits each tank's daily book
+  variance against throughput and reads the constant as the release and the throughput coefficient as meter error.
+- Swap: "which hospital wards lost more than 0.75 units an hour of oxygen over the quarter" keeps the arithmetic and
+  loses the call: there is no pressurised line that loses product only while its pump runs and no dispenser meter
+  that drifts toward over-delivery with the litres it passes after a calibration, so the split that decides does not
+  exist.
+- Layer 1: point-of-sale exports by month with December exported twice (a preliminary on 2 January missing Roblin's
+  held sales of 14 December, the re-export on 5 January); gauge closes stamped CST in Saskatchewan and CDT or CST in
+  Manitoba; bills of lading with gross and net litres at 15 C and the drop time written only at attended sites;
+  dispensers keyed by serial in the controller's configuration and by number in the register and the work orders;
+  two contractors' wording for a calibration, one visit covering only some dispensers; a dispenser and two meters
+  replaced; spring water draw-offs on the hauler's manifests; a probe replaced with a step in the reading; the odd
+  missed gauge close. On the cardlocks: delivery reports pulled monthly from consoles that keep ten per tank (an
+  October pull missed at two consoles), duplicated across pulls; host times in UTC against the monitoring service's
+  CST; a power cut. Each is what the producing system writes; none is placed to be caught, and none moves the call.
+- Layer 2: `estimation_fit`. The meters' over-delivery in the quarter is estimated from a drift law fitted on the
+  network's own history and taken out of each shortfall; the choice that flips the call is the drift's clock:
+  litres passed since calibration (golden) against SIR's free per-system coefficient (files Ituna alone) or months
+  since calibration (adds Foam Lake diesel).
+- Decisive step: estimating each tank system's meter over-delivery in the quarter from the litres each hose has passed
+  since its last calibration or replacement, at one drift per litre fitted on every tank system's earlier quarters,
+  and reading only the shortfall beyond that as product lost to the ground.
+- Not semantics: reading every field and code right (net litres at 15 C, the drop's business day, the re-export, the
+  CDT stamps, each calibration's dispenser scope, the replacements) and running the field's method still files Ituna
+  alone, because a line that leaks only while its pump runs moves with sales exactly as meter error does, and SIR's
+  coefficient absorbs it.
+- Not rule application: PD-07 files the estimand (product lost other than through a nozzle, per elapsed hour, more
+  than 0.75) and no method; executed on the book shortfall it files four systems, and no filed rule says how much of
+  a sales-linked loss the meters account for. Enumerated family: 44 drift estimators (quarter totals or SIR slopes
+  against litres since calibration; OLS, 1/S or 1/X or precision weights; with or without a per-litre intercept or an
+  hourly constant; fitted from 2024 or 2025, with or without Q4 2026; one-stage daily with tank-quarter intercepts;
+  three-sigma robust; the two flagged systems out; tank-level litres) spanning 1.201 to 1.215 for Ituna and 0.867 to
+  0.916 for Canora, every one filing the same two systems. Standing family: the same 44 (the record refutes none of
+  them), spread 0.049 on Canora, inside one 0.1 print bin. What rules out the rival clocks is loud: months since
+  calibration fits the history with 5.6 times the litres law's residual sum of squares, and SIR's free coefficient
+  leaves Canora's 0.36 per cent unexplained by its 124,000 litres a hose.
+- Analyst test: a strong analyst who cleans the books and runs statistical inventory reconciliation, the field's
+  method, files Ituna regular alone and books Canora's sales-linked 1.0 L/h to its meters, which looks like ordinary
+  wear inside the in-service tolerance; it is wrong because those meters were calibrated on 2 July and have passed
+  too few litres since to give away more than 0.1 L/h.
+- Estimand: PD-07 s.4 and s.5 in `pd07_release_detection_standard.pdf`: every gas bar tank system (s.2); "the product
+  the tank system lost to the ground over the quarter, stated as an average in litres per hour of the hours that
+  elapsed in the quarter", lost to the ground being "product that left the tank system other than through a dispenser
+  nozzle"; more than 0.75 goes on the next month's work order.
+- No decoy: nothing is planted to be caught. The line leak detector tests are the annual 3 gph function tests every
+  site gets, a real pass at a sensitivity far above a weep; the corrosion survey is the routine one and points at
+  Ituna, which both paths file; no memo, draft, briefing or stakeholder figure states or argues an answer.
+- No certified replay: no certified or published figure is reproduced to recover the method; no meter inspection
+  results ship, and the drift is read off the co-op's own tank books.
+- Lesson: a loss that moves with throughput is instrument drift only up to what the instruments' use since their last
+  adjustment can carry, and a release that runs only while the unit runs hides inside the field's throughput
+  coefficient; the population's own history, read on the clock the drift actually runs on (litres, not months),
+  separates them. No build on file splits a throughput-proportional loss between instrument drift and a real escape.
+
+## Survivor anatomy
+
+- Actor: the tank system; the deciding property (its meters' over-delivery in the quarter, from each hose's litres
+  since its last calibration) has no column in any file: it is a relation between the work orders' dates and scopes,
+  the register, the controller configuration and the hose-day sales.
+- Link: the work orders name dispensers ("dispensers 1-3", "D1-D4") or a fuelling point, the sales are keyed by
+  fuelling point and grade, and the link runs from the controller configuration's dispenser serials to the register's
+  dispenser numbers and on to each hose's cumulative litres from the visit; no key joins a work order to a hose.
+- Reflex: statistical inventory reconciliation (daily variance on sales, constant read as the release) sits at rung 0
+  and files Ituna regular alone, as the default path writes it.
+- Back-test: SIR validates: every throughput coefficient is inside the meters' in-service tolerance, its residuals are
+  white, and Ituna's constant is the only one off zero; Canora's 0.36 per cent reads as wear.
+- Second use: the work orders are in the pack because SIR is run between calibrations and the replacements explain
+  book steps; the register and the controller configuration map hoses to tanks for any book; the hose-level sales are
+  the point of sale's own daily export.
+- Shock: Canora's sales-linked loss reads as ordinary wear; on total shortfall, shortfall share, SIR constant, SIR
+  coefficient, sales, exposure and the change on Q4 2025 the golden pair is never the top or bottom two (asserted).
+- Pins: PD-07 files population, outcome, window, unit and comparison; no filed sentence names meters, drift,
+  calibration or litres since calibration (asserted in `checks.py`).
+
+## Readability screen
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| Rung 0, SIR constant (Ituna alone) | no | no | fires: the field's method | no | no | no | no | readable |
+| Rung 1, total shortfall per hour (four systems) | fires: PD-07's quantity read as the book | no | fires | no | no | fires: one division | no | readable |
+| Rung 2, drift in months since calibration (three systems) | no | fires: the work orders' dates | fires once the dates are joined | no | no | no | no | readable |
+| Rung 3, drift in litres since calibration, pooled per litre (decisive) | no: no sentence names meters or calibration | no: no column of litres since calibration or meter error | no: the field reads the throughput coefficient as meter error | no: no meter inspection results ship | no | no: a fitted rate and a per-hose exposure | no: the work orders serve SIR's calibration breaks | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | tank system | a site's tank for one product with its pump and piping | the site as a whole | same call (one tank per product, asserted) | PD-07 s.2; register |
+| SF2 | lost to the ground | shortfall less product that left through a nozzle | the book shortfall | four systems | PD-07 s.4 "other than through a dispenser nozzle" (C4) |
+| SF3 | the quarter | business days 1 October to 31 December, 05:00 closes | midnight to midnight | same call | the gauge reads only at 05:00 (C1) |
+| SF4 | hours | 2,208, and 2,209 at the Manitoba sites | 2,208 everywhere | same call and figures | asserted |
+| SF5 | product received | the bill's net litres at 15 C on the drop's business day | gross litres, or the loading date | gross moves every system by the thermal difference | PD-07 s.3 (C4) |
+| SF6 | product sold | the latest export of each hose-day | the December preliminary | same call and figures | asserted |
+| SF7 | December's two exports | one of each hose-day | both summed | every system shows a gain | identical keys (C4) |
+| SF8 | more than 0.75 | strictly over | 0.75 or more | same call | no system within 0.1 of the line |
+| SF9 | rounding | compare unrounded | compare the printed figure | same call | asserted |
+| SF10 | litres since calibration | from the calibration day | from the day after | same call and figures | asserted |
+| SF11 | calibration scope | the dispensers the work order lists | every meter at every visit | same call and figures | asserted |
+| SF12 | replacements | a replaced dispenser or meter restarts the count | ignored | same call and figures | asserted |
+| SF13 | exposure grain | each hose's litres | the tank's litres over its hoses | same call and figures | asserted |
+| SF14 | the fit's quarters | 2024 Q1 to 2026 Q3 | from 2025, or with Q4 2026 | same call and figures | asserted |
+| SF15 | Manitoba closes | the site's wall clock, CDT in summer | CST throughout | no reading moves | the stamps (C1) |
+| SF16 | boundary closes | the gauge closes of 1 October and 1 January | an interpolated close | same call | every boundary close exists (asserted) |
+| SF17 | draw-offs and probe steps | history only | removed from the quarter | same call | none in Q4 2026 (C1) |
+| SF18 | going on the work order | over 0.75 goes on next month's order | a judgement | same call | PD-07 s.5 |
+| SF19 | a fill during a drop (ask) | a fill that ran inside the report window | by start or end time | same 18 figures | no fill crosses an edge (C1) |
+| SF20 | readings bracketing a rebuilt drop (ask) | the readings either side of the rise | one hour further out | same 18 figures | asserted (C3) |
+| SF21 | rounding of the ask | nearest 10 litres of the summed shortfall | per drop | same 18 figures | every figure clear of an edge by more than any licensed move |
+| SF22 | the day a Russell drop arrived (ask) | the monitoring service's CST | Manitoba's wall clock (CDT to 1 November) | same 18 figures (four Russell drops change day, one of them, a regular drop at 23:42 CST on 30 September, into October with 2.7 L) | asserted (C3) |
+| SF23 | which month a drop belongs to (ask) | the day it arrived | the bill's loaded date | three cells move: CL-401 December 340 (golden 360), Whitesand December 2,030 (2,040), CL-407 November 1,570 (1,580) | the asking sentence, "dating each drop by the day it arrived" (C4, asserted) |
+
+## Ladder
+
+- Rung 0, statistical inventory reconciliation (the default): Ituna regular alone, constant 1.16 L/h against the next
+  system's 0.16 (Preeceville diesel); Canora regular's constant sits near zero, below the sixth.
+- Rung 1, total shortfall per hour: Kamsack regular 1.68, Foam Lake diesel 1.54, Ituna regular 1.35, Canora regular
+  1.02; the next, Kamsack diesel, 0.49. The golden pair is third and fourth, never the top two.
+- Rung 2, drift in months since calibration (quarter shortfall against sales times months, the same quarters): Ituna
+  0.98, Foam Lake diesel 0.88, Canora 0.79. Foam Lake's hoses pass 4,800 litres a day each, so months understate its
+  meters' use; the record refutes the months clock at 5.6 times the litres law's residual sum of squares.
+- Rung 3, the golden: drift 6.08 mL per 20 L per 100,000 litres over 324 tank-quarters; Ituna 1.213 (1.62 times the
+  line), Canora 0.914 (1.22 times); every other system within 0.11 of zero, the highest 0.02. Kamsack regular's meters
+  account for 1.69 of its 1.68 L/h and Foam Lake diesel's for 1.65 of 1.54.
+- Other forms of the field's method also land elsewhere: weekly SIR files Foam Lake diesel, Ituna and Foam Lake
+  regular; cumulative SIR files five.
+- Pricing sequence: the decisive estimate moves Canora from 1.02 (rung 1) to 0.91 and Kamsack regular from 1.68 to
+  -0.01; the family's spread on Canora (0.049) is under half the bin; on the clean truth SIR files Ituna alone and the
+  total files four (asserted), so no planted mess carries the ladder.
+- Dominance: Canora's edge over the line under the golden (0.164 L/h) is 3.5 times the largest move any family member
+  makes on it (0.047), and Kamsack regular's 1.68 L/h total collapses to zero only on the litres clock (the months
+  clock and SIR's constant clear it too, but the months clock files Foam Lake diesel and SIR leaves Canora's line).
+
+## Closure table
+
+| # | Axis | Reading here | Closure |
+|---|---|---|---|
+| 1 | Population | every gas bar tank system (36) | PD-07 s.2 filed; cardlocks outside (s.2) |
+| 2 | Unit of account | the tank system | PD-07 s.2; SF1 asserted |
+| 3 | Attribution window | October to December 2026 by business day; on the ask, the month a drop arrived | PD-07 s.3 and s.4; C1 at 05:00 closes (SF3); the asking sentence for the drops (SF23) |
+| 4 | As-of dating | the extracts pulled by 5 January 2027 | the latest export per hose-day (SF6, SF7) |
+| 5 | Version basis | the re-export over the preliminary | C1: same call either way (SF6) |
+| 6 | Denominator | hours elapsed in the quarter | PD-07 s.4; 2,208 against 2,209 asserted inert (SF4) |
+| 7 | Weighting | the drift fit's weights | C3: 44 estimators, same set and print (family) |
+| 8 | Window length | the fit's history | C3: 2024 or 2025 start, with or without Q4 (SF14) |
+| 9 | Boundary inclusivity | more than 0.75 | C1: no system within 0.1 of the line (SF8) |
+| 10 | Rounding path | compare unrounded, print one decimal | C1 (SF9); print bins asserted over the family |
+| 11 | Tie-break | none needed | C1: margins 0.16 and 0.46 over the line, 0.73 under it |
+| 12 | Maturity and censoring | litres since calibration known only after a hose's first recorded reset | quarters without it are out of the fit; every Q4 hose has a recorded reset (C1) |
+| 13 | Order of operations | book, then exposure, then fit, then residual | C1: the residual is linear in each step |
+| 14 | Row order | file order | C1: keyed joins only |
+| 15 | Duplicate resolution | December's two exports; repeated cardlock reports | latest export (SF7); one row per delivery number (asserted) |
+| 16 | Identity normalisation | work orders by dispenser number, sales by fuelling point | controller serials to register numbers (C4: every fuelling point maps) |
+| 17 | Netting against gross | shortfalls net of drops that came in over (ask) | filed in the prompt |
+| 18 | Dimensional units | litres at 15 C throughout | PD-07 s.3; gauge and pumps temperature-compensated (register) |
+| 19 | Code and status semantics | grades, product names, calibration wording | the register and configuration crosswalks (SF11, SF12) |
+| 20 | Integerisation | none on the call; nearest 10 litres on the ask | C3 (SF21) |
+| 21 | Clause scope | PD-07 covers gas bars only | s.2 puts the cardlocks under PD-09 |
+| 22 | Forward window contents | January's tests act on releases still running | the quarter is the latest closed period; no forward driver needed |
+
+## Literal reader
+
+Executing the prompt and PD-07 word for word: every gas bar tank system's product lost "other than through a dispenser
+nozzle" over the quarter, per elapsed hour, compared with 0.75; the book shortfall alone violates s.4's definition
+(SF2), the shortfall less the meters' over-delivery is the estimand, and every licensed estimate of that
+over-delivery (44 members) files Ituna regular and Canora regular at 1.2 and 0.9. The easy answer (Ituna alone) comes
+from the field's own estimator on the same literal estimand, never from another reading. PASS.
+
+## Oracles
+
+- Line leak detector tests (2026): every mechanical detector passes at 3 gph and 10 psi; the wrong path reads the pass
+  as "no line leak at Canora"; the test's stated sensitivity (11 litres an hour at pressure) is far above the weep, so
+  it arbitrates nothing at 0.75 L/h and favours no basis.
+- Cathodic protection survey: Ituna's tank below criterion; both paths file Ituna, so it separates nothing.
+- The meters' in-service tolerance: not shipped; SIR's coefficients sit inside any tolerance a solver brings.
+- Otherwise none: no control scores a method or confirms a basis.
+
+## Ask sheet
+
+- **Ask A, the cardlock drops (18 figures, about 55 per cent of the rubric).** For each carrier by month (6) and each
+  cardlock by month (12), the litres the drops came in short of their bills, net of any over, to the nearest 10. Rows
+  outside the call's population: cardlock bills, the consoles' delivery reports, the monitoring service's hourly
+  readings and the host's transactions (the call reads none of them; no carrier that short-drops serves a gas bar).
+  Span: bills, reports, hourly readings, transactions, the register's pump sheet, nine columns or more on the path.
+- **Primary 1, fills during the drop (reconstruction across two systems and two clocks).** A drop's received litres
+  are the gauge's increase over its report window plus the litres the fleet drew from that tank inside the window, the
+  host's UTC times read against the service's CST. 87 of 173 drops ran with fills (859 L on average); it moves every
+  one of the 18 figures. Rival readings:
+
+  | Reading | What it does | Figures kept |
+  |---|---|---|
+  | the increase as the received volume (plain meaning) | every drop with fills reads short by them | 0 of 18 |
+  | the window widened 15 minutes | adds the trucks queued after the drop | 0 of 18 |
+  | fills of both products added | adds the regular pump's fills to diesel drops | 0 of 18 |
+  | Russell's UTC read on Manitoba's wall clock (CDT in October) | picks the wrong hour of fills | 15 of 18 |
+  | the tank's own fills inside the report window | the golden | 18 of 18 |
+
+- **Primary 2, drops with no report (absence, rebuilt from another system).** The consoles keep ten reports a tank and
+  the October pull missed two consoles, so 34 drops never reached the office's file, and one went in during
+  Kamsack's power cut with the gauge dark; each is rebuilt from the hourly readings either side of its rise plus the
+  fills between them, dated by the rise. It moves 16 of the 18 figures. Rival readings:
+
+  | Reading | What it does | Figures kept |
+  |---|---|---|
+  | a bill with no report left unmeasured | drops the bill and its shortfall | 0 of 18 (with primary 1 handled: 3) |
+  | the bill taken as delivered in full | zero shortfall on 35 drops | 0 of 18 |
+  | rebuilt without the fills between the readings | the rise understates the drop | 0 of 18 |
+  | rebuilt from readings one hour further out | the same 18 figures (SF20) | 18 of 18 |
+
+- **Hazards.** Reports repeated across pulls (exact copies, one per delivery number); bills dated by loading on the
+  terminal's clock, so two of Whitesand's night drops carry the previous month's date (one loaded 30 November, at
+  Kamsack on 1 December; one loaded 31 December, at Wynyard on 1 January): the asking sentence dates each drop by the
+  day it arrived (SF23), which the stage 4 judge left as its one low-severity residual on cut c5cd86cf; host times in
+  UTC.
+- **Lesson 8 run over the device rows.** The report's column states a volume change (`increase_net_l`), never a
+  delivered or received volume; the gauge carries net litres at 15 C only, so the bill is compared net to net; no
+  fill crosses a report edge or a bracketing reading; no filed rule says how a cardlock drop is measured (PD-07 puts
+  the cardlocks outside its scope); each clock carries its system's label, and a Russell drop dated on Manitoba's
+  wall clock moves no figure (SF22). No literal reading of any field gives the device rows a coherent second answer
+  (asserted in `checks.py`).
+
+| Ask (cracker sheet) | The honest careful cracker's route | Verdict |
+|---|---|---|
+| Carrier by month, 6 figures | bill net less the report's increase, unreported bills unmeasured, reports deduplicated, UTC converted | miss |
+| Cardlock by month, 12 figures | the same | miss |
+
+Pair ceiling: 28.5 (a careful response on the call 45.0, one off it 12.0; two careful on-call responses 45.0 each;
+a response that also adds the fills and lands the call 54.2)
+Mirror leakage: 16.7 per cent of ask weight (the fills-only includer keeps 3 of 18)
+Measured by: generator/ceiling.py on the cut pack (the full includer reproduces all 18 figures or the script exits 1)
+
+## Leak review
+
+`leak.py task180 --asof 2027-01-05`: REVIEW, no LEAK; each line ruled here.
+
+- Sweep 3, `cathodic_protection_survey_2026.pdf` carries 131: the site code GB-131 in a survey that lists every steel
+  tank by site; an identifier, not a figure, and the survey covers ten tanks at four sites. Harmless.
+- Sweep 4, `cathodic_protection_survey_2026.pdf` (regular, method, diesel): product names and the report's own
+  "Method" heading; nothing about meters, drift or calibration. Harmless.
+- Sweep 4, `pd07_release_detection_standard.pdf` (release, dispenser, controller): the standard's title, its outcome
+  clause ("other than through a dispenser nozzle", the filed WHAT) and the Controller's office as the reviewing role;
+  it names no meter, drift, calibration or litres since (asserted in `checks.py`). Harmless.
+- Sweep 6, `bills_of_lading_2024_2026.csv` names the candidate sites beside numbers: consignee names on every drop to
+  every site with the litres delivered; it ranks nothing on the decision question. Harmless.
+- Sweep 11, `prompt.txt` question form `which` over the corpus quota (35 per cent): answered at the role level in
+  `## Draw` (the decision is a designation set). Harmless.
+
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each underground tank system's
+  release rate to the ground over the quarter, the field's statistical inventory reconciliation with its throughput
+  term split into the release and the meters' drift, and the drift estimated per litre a hose has passed since its
+  calibration across the network's own tank-quarters; with a hospital's nouns there is no pressurised line that loses
+  product only while its pump runs and no meter drifting with litres passed (judge: domain pass). Layers: the two
+  provinces' clocks, the preliminary and revised point-of-sale exports, the bills' net litres at 15 C, the work orders
+  and the console reports are the systems' own records and decide nothing on the call (judge: layers pass). Three
+  rules: no decoy, no certified figure and no filed method ship; read correctly, every field still leaves the book
+  shortfall (four systems) or SIR's sales coefficient read as meter error (Ituna alone), and only the drift per litre
+  since calibration files Ituna and Canora (judge: decisive step analytical).
+- **Stage 4.** Leak reader on cut c5cd86cf: no leak (Q1 to Q4 none, Q6 an analytical choice); its realism notes ruled
+  without a change (the bills' round net litres at 15 C are temperature-compensated rack orders, gross varying, every
+  value a multiple of 100; standard tank sizes; the line testers' 3 gph standard). Judge pass 1: DETERMINISTIC,
+  APPROVE, every figure reproduced (Ituna 1.213, Canora 0.914, the next 0.019; all 24 cardlock cells). Its optional
+  residual (a drop dated by the bill's loaded date moves three cells) closed as a WHAT in the asking sentence ("dating
+  each drop by the day it arrived", SF23, asserted), target.zip unchanged. Leak re-read on the pinned prompt: no leak;
+  its note that every delivery report was pulled on 2 November was checked and is wrong (three monthly pulls, each
+  holding the last ten reports per tank, every delivery before its pull).
+- **Every gate re-run on the final cut c5cd86cf** (2026-11-02): precut 61 checks 0 FAIL; voice-check PASS (WARN
+  question form `which` at 35 per cent, answered at the role level in `## Draw`); figures_check 48 figures 0 absent;
+  leak.py REVIEW, no LEAK (the five lines ruled in `## Leak review`); guard surface exit 0; guard heart WARN; guard
+  validate 306 cards 0 invalid.
 
 ## Tried and rejected
 
@@ -554,3 +847,17 @@ comparison that decides.
   tank-system draw separating line leaks from meter error with the weights and measures inspection results (the
   inspections are physical verification, which `ban.calibration` holds against task154, so the meters' state is read
   from the service contractor's calibration dates and the tank books instead, and no inspection results ship).
+- **Stage 2 and 3 of architecture 5, measured on the cut pack (2026-11-02).** Foam Lake diesel as the twin with both
+  sites calibrated in February: its meters carried 4.7 L/h, so a 10 per cent move in the drift rate crossed the line
+  and the estimators (3.9 to 7.1) filed Foam Lake under half of them; Foam Lake now calibrates every six months and
+  Kamsack regular is the twin. Manitoba consoles reading at 05:00 CST, an hour into the summer business day: the
+  shifted hour biased every Manitoba summer SIR coefficient by about -0.6 per cent and lifted two Manitoba constants
+  to 0.6 and 0.7, a sales-linked artefact a rigorous analyst would have to model (lesson 7); the consoles follow the
+  site's clock. Canora at 13,000 litres a day calibrated in June: the family spread 0.96 to 1.07 over two print bins
+  and Canora's shortfall share put the golden pair on top of that sort. Canora calibrated on 29 September: the
+  tightest family, but two days of meter use make "fresh meters cannot give away 0.4 per cent" a one-look read that
+  lands the call without any drift law; 2 July leaves four and a half months of use, where the months clock files
+  Foam Lake. The ask as fills-during-the-drop alone with every report held: a response adding the fills kept 16 of
+  18; the ten-report console memory and the missed October pull now leave 35 drops to rebuild, and that response
+  keeps 3. Cardlock gauge readings to the litre with noise: rebuilt drops moved up to 3 L between bracketing readings
+  inside a whole-litre grade; readings now to 0.1 L and figures to the nearest 10.

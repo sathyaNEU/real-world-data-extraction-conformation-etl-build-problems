@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "GB-131 Ituna regular (1.2 L/h) and GB-134 Canora regular (0.9 L/h) go on the January 2027 tightness-testing work order",
+  "answer_source": "task180/generator/figures.json (designated, loss_lph)",
   "gap": [
     "objective",
     "time"
@@ -32,28 +32,28 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reconciles each gas bar tank system's October to December book against its tank gauge and splits the shortfall the way statistical inventory reconciliation does, the part that moves with litres sold booked to the dispenser meters and the rest to a leak, files only the one tank with a steady loss and misses the premium system whose pressurised line leaks only while its pump runs, because that loss moves with sales like meter error; it is wrong because that system's meters were calibrated in February and have passed too few litres since to explain a sales-linked loss that size.",
+  "analyst_test": "A strong analyst who builds each gas bar tank system's October to December book correctly and runs statistical inventory reconciliation, the field's release detection method, files Ituna regular alone: the reconciliation books Canora regular's 1.0 L/h shortfall, which moves with its sales, to the dispenser meters as ordinary wear inside the in-service tolerance; it is wrong because Canora's meters were calibrated on 2 July 2026 and have passed too few litres since to give away more than 0.1 L/h at the drift the network's own tank books show.",
   "domain_test": "The deciding quantity is each underground tank system's release of product to the ground, estimated the way storage tank release detection estimates it, by reconciling daily tank gauge inventories against metered sales and deliveries; with another field's nouns there is no pressurised product line that loses product only while its submersible pump runs and no dispenser meter that drifts toward over-delivery with the litres it passes, so the separation the call turns on does not exist.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:sales-linked-shortfall-split-by-meter-wear-since-calibration",
   "layer1": [
-    "tank gauge closing inventories taken at the gas bar's business-day close against point-of-sale business days running 05:00 to 05:00",
-    "Saskatchewan sites on Central Standard Time all year and Manitoba sites changing clocks, with the tank gauges exporting local standard time",
-    "bills of lading carrying gross and net litres at 15 C, the books taking net",
-    "dispenser hoses numbered by the forecourt controller's fuelling points against the register's dispenser serials and sides",
-    "a dispenser replaced mid-2025 with its meters' totalisers restarting",
-    "a preliminary point-of-sale export for December and a re-export after corrections",
-    "water drawn off two tanks by a vacuum truck, recorded only on the hauler's manifest",
-    "work orders written by two service contractors with their own wording for a calibration"
+    "point-of-sale exports by month with December exported twice, a preliminary missing one site's held sales and the re-export",
+    "gauge closes at 05:00 on the site's wall clock, stamped CST in Saskatchewan and CDT or CST in Manitoba",
+    "bills of lading with gross and net litres at 15 C, the drop time written only at attended sites",
+    "dispensers keyed by serial in the controller configuration and by number in the register and the work orders",
+    "two contractors' wording for a calibration, one visit covering only some dispensers, a dispenser and two meters replaced",
+    "spring water draw-offs recorded only on the vacuum hauler's manifests, a probe replaced with a step in the reading",
+    "cardlock delivery reports pulled monthly from consoles that keep ten per tank, an October pull missed at two consoles",
+    "cardlock host times in UTC against the monitoring service's CST, and a power cut at one cardlock"
   ],
   "stakeholder_role": "the co-op's controller, whose office reconciles the fuel books and signs the January tightness-testing work order with the petroleum manager",
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "gasbar_hose_sales_2025_2026.csv",
-    "rows": 0,
-    "entity": "one hose's litres sold on one point-of-sale business day at a gas bar",
-    "grain": "hose x business day",
+    "file": "pos_fuel_sales_by_hose_2024_2026.csv",
+    "rows": 175812,
+    "entity": "one hose's litres sold on one point-of-sale business day at a gas bar (December 2026 exported twice)",
+    "grain": "hose x business day x export",
     "source": "synthetic"
   },
   "forum": "line_manager_or_team",
@@ -68,7 +68,11 @@
       "Leah Haynes",
       "Roy Turner",
       "Antonio Schwartz",
-      "Timothy Dudley"
+      "Arthur Curtis",
+      "Benjamin Bautista",
+      "Jimmy Contreras",
+      "Joshua Kirk",
+      "Julia Peterson"
     ]
   },
   "deliverables": [
@@ -78,13 +82,14 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A loss that rises with the volume a unit dispenses is read by the field's reconciliation as its measuring devices over-delivering, but those devices drift only with the volume they have passed since their last adjustment, at a rate the population's own history shows, so a unit whose volume-linked loss runs above what its devices' throughput since adjustment explains is losing product along a path that operates only while it dispenses, and two units with the same volume-linked loss can be one worn and one leaking.",
-  "driver_concrete": "Each gas bar tank system's book shortfall that moves with its litres sold is booked by statistical inventory reconciliation to the dispenser meters, but the co-op's meters drift toward over-delivery with the litres they pass after each calibration, at a rate read across every tank system's 2025 and 2026 quarters, so a premium system calibrated in February whose sales-linked loss is several times what its meters' litres since explain is losing product from its pressurised line while the pump runs, and a regular system at a busier gas bar with the same sales-linked loss on far more litres is only worn meters.",
-  "stump": "A competent analyst reconciles each tank system's October to December 2026 book against its tank gauge, splits the shortfall the way statistical inventory reconciliation does (the part that moves with sales to the meters, the rest to a leak) and files only the steadily leaking regular tank, missing the premium system whose pressurised line leaks only while its pump runs; the step that lands it there is reading that system's sales-linked loss as meter error when its meters, calibrated in February, have passed too few litres since to explain it.",
+  "driver_concrete": "Each gas bar tank system's book shortfall that moves with its litres sold is booked by statistical inventory reconciliation to the dispenser meters, but the co-op's meters drift toward over-delivery with the litres they pass after each calibration, at one rate per litre read across every tank system's 2024 to 2026 quarters, so Canora's regular, calibrated in July with a sales-linked loss several times what its meters' 124,000 litres a hose since explain, is losing product from its pressurised line while the pump runs, and Kamsack's regular, with a like share of sales lost on 984,000 litres a hose since April 2025, is only worn meters; a drift clocked in months instead files Foam Lake's truck-stop diesel, whose hoses pass 4,800 litres a day each.",
+  "stump": "A competent analyst reconciles each tank system's October to December 2026 book against its gauge closes, splits the shortfall the way statistical inventory reconciliation does (the part that moves with sales to the meters, the constant to a release) and files Ituna regular alone, missing Canora regular, whose pressurised line loses product only while its pump runs; the step that lands it there is reading that system's sales-linked loss as meter error when its meters, calibrated on 2 July, have passed too few litres since to explain it.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task470": "task470 reads whether a dwelling was in use from the daily rhythm inside a meter dominated by a standing load; task180 splits a gas bar tank system's sales-linked book shortfall between dispenser meters worn since their last calibration and a pressurised line that leaks while its pump runs, by the meters' drift per litre read across every tank's history",
     "task107": "task107 v2's comparison arm was contaminated by practitioners reassigned from treated units, reached through a timetable and staff join; task180's decisive quantity is a tank system's release rate after the meters' drift since calibration, estimated from the litres they have passed, is taken out of its sales-linked shortfall",
-    "task121": "task121 v4 weighs each candidate driver of a satisfaction fall on the conditions each response was made under; task180 attributes a fuel shortfall that moves with sales to worn meters or a leaking pressurised line by how far the meters have been used since their last calibration"
+    "task121": "task121 v4 weighs each candidate driver of a satisfaction fall on the conditions each response was made under; task180 attributes a fuel shortfall that moves with sales to worn meters or a leaking pressurised line by how far the meters have been used since their last calibration",
+    "task272": "task272 v3 reads a drifting dose process run by run between tubing-set resets to count the output past a tolerance limit (a descriptive tail share); task180 uses the meters' drift with litres since calibration only as the artefact taken out of a sales-linked shortfall, and its decisive quantity is the release left after it, judged against a line"
   },
   "lineage": [
     {
@@ -109,7 +114,7 @@
       "why": "Screen 2 by exact identity: the designed construction equals the one-group-by route at correlation 1.00000000 with a maximum absolute difference of 0.000e+00 over eight world redraws by twenty cells, so nothing is estimated between the group-by and the golden, and in its count form it files the same call reading only two files. The ladder's dominance is the factor by which the located hour profile departs from flat, to 4.441e-16. The lever is not on the dial that moves legibility: the golden's margin stays 1.802 to 1.886 across the whole sweep while legibility runs 1.213 to 3.278, and of 76 settings only 3 are floor-compliant with the shipped pack the quietest. The re-root needs an estimation step inside the decisive step, so that paying the entry price is not the whole of the work."
     }
   ],
-  "notes": "Re-root of task180 to architecture 5, drawn 2026-11-02 in a new world (Canadian prairie retail co-operative, underground fuel tank release detection), new dataset, new generator and a new prompt shell (the architecture 4 shell which | answer | docx+xlsx is carried in lineage_shells). Anomaly Detection & Diagnostics: the anomaly is a tank system releasing product to the ground; the artefact it must be told from is dispenser meters that over-deliver as they wear, because both make the book shortfall move with litres sold. The decisive step is an estimate, not a selection: each tank system's expected meter over-delivery in the window from its meters' litres since their last calibration, at a drift rate read across every tank system's 2025 and 2026 quarters, with the excess sales-linked loss read as a line release. calibration_form none: no calibration organ ships; the pack carries no meter inspection results (physical verification), only the service work orders that date each calibration and the tank books themselves. WARN repeat.decision answered: the decision unit is the tank system and the work order covers a set of them; designation_set is what the decision is. Older structural BLOCKs (test.same_puzzle_older task470, test.same_driver_older task107 v2 and task121 v4) carry differentiation lines; each is a different insight.",
+  "notes": "Re-root of task180 to architecture 5, drawn 2026-11-02 in a new world (a Canadian prairie retail co-operative, underground fuel tank release detection), new dataset, new generator and a new prompt shell (architecture 4's which | answer | give | docx+xlsx is in lineage_shells; this one is which | deliverable-led | figures-led | pdf+xlsx). Anomaly Detection & Diagnostics: the anomaly is a tank system releasing product to the ground; the artefact it must be told from is dispenser meters that over-deliver as they wear, because both make the book shortfall move with litres sold. The decisive step is an estimate: each tank system's expected meter over-delivery in the quarter from each hose's litres since its last calibration, at one drift per litre fitted across every tank system's earlier quarters. calibration_form none: no meter inspection results ship, only the service work orders that date each calibration. WARN repeat.decision answered: the decision unit is the tank system and the work order covers a set. WARN repeat.gate_g (task232 v2, re-rooted to decomposition_attribution on 2026-11-01): the label is honest here, a book shortfall assigned to meter wear or a release, and the split is not task232's interviewer roster effect. Structural NOTEs (task470, task107 v2, task121 v4) carry differentiation lines.",
   "lineage_shells": [
     {
       "question form": "which",
