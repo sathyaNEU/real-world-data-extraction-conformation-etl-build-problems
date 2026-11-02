@@ -233,20 +233,30 @@ def workbook(A, path):
     _sheet(ws, "Miles of right-of-way billed for trimming done in each quarter of 2025",
            ["Contractor", "Q1", "Q2", "Q3", "Q4"], rows, [36, 11, 11, 11, 11], {2: "#,##0.0", 3: "#,##0.0", 4: "#,##0.0",
                                                                                    5: "#,##0.0"},
-           "Trimming lines only, by the month of the work; credit memos taken against the invoices they reverse; "
-           "linear feet converted at 5,280 to the mile.")
+           "Trimming lines only, by the month of the work: the period each portal line states, the keyed service "
+           "month on paper invoices; credit memos taken against the invoices they reverse; linear feet at 5,280 to "
+           "the mile.")
     ws = wb.create_sheet("Major event days")
     rows = [[dist] + list(A["med"][dist]) for dist in E.DISTRICTS]
+    rows.append(["Cooperative"] + [sum(A["med"][dist][i] for dist in E.DISTRICTS) for i in range(3)])
     _sheet(ws, "Taken out of the 2025 reliability figures: the major event days of %s" %
            " and ".join(x.strftime("%-d %B 2025") for x in A["med_days"]),
            ["District", "Outages", "Members interrupted", "Customer-minutes"], rows, [14, 12, 20, 18],
            {2: "#,##0", 3: "#,##0", 4: "#,##0"},
-           "Unplanned sustained outages on primary and secondary, one per device interruption; customer-minutes over "
-           "the restoration steps (ENG-REL-02 3.1 to 3.3).")
-    ws = wb.create_sheet("Miles in service")
-    rows = [[dist, round(A["miles"][dist], 1)] for dist in E.DISTRICTS]
-    _sheet(ws, "Overhead primary in service on 31 December 2025", ["District", "Miles"], rows, [14, 12],
-           {2: "#,##0.0"}, "Trim-unit register: units in service on 31 December 2025, retirements dated after it kept.")
+           "Unplanned sustained outages on primary and secondary, one per device opening: a ticket split where its "
+           "device tripped again after restoration, a second ticket of a device already out folded; customer-minutes "
+           "over the restoration steps (ENG-REL-02 2.1, 3.1 to 3.3).")
+    for c in ws[3 + len(rows)]:
+        c.font = Font(name="Calibri", bold=True)
+    ws = wb.create_sheet("District billing")
+    rows = [[dist, round(A["district_billing"][dist], 1)] for dist in E.DISTRICTS]
+    rows.append(["Cooperative", round(sum(A["district_billing"].values()), 1)])
+    _sheet(ws, "Miles of right-of-way billed for trimming done in each district in 2025", ["District", "Miles"], rows,
+           [14, 12], {2: "#,##0.0"},
+           "Trimming lines by the month of the work each line states, else its keyed service month; credit memos "
+           "against the invoices they reverse; district from each work order's units.")
+    for c in ws[3 + len(rows)]:
+        c.font = Font(name="Calibri", bold=True)
     ws = wb.create_sheet("Tree outage rate")
     rows = [["Cooperative" if dist == "all" else dist] + [round(A["rates"][y][dist], 1) for y in range(2021, 2026)]
             for dist in list(E.DISTRICTS) + ["all"]]

@@ -37,7 +37,7 @@ def answers(target):
     A = dict(call=call, programme=E.PROGRAMMES[call], default=dflt, rates=rt, comp=comp, rise=rise,
              shares=ev["shares"], by_band=ev["by_band"], by_con_band=ev["by_con_band"], same=ev["same"], std=ev["std"],
              by_ash=ev["by_ash"], young=ev["young"], billing=E.ask_billing(D), med=med, med_days=med_days,
-             miles=E.ask_miles(D))
+             district_billing=E.ask_district(D))
     return A, D, ev
 
 
@@ -55,11 +55,12 @@ def figures(A):
         "med": {d: {"outages": "{:,}".format(A["med"][d][0]), "members": "{:,}".format(A["med"][d][1]),
                     "customer_minutes": "{:,}".format(A["med"][d][2])} for d in E.DISTRICTS},
         "med_days": [d.strftime("%-d %B %Y") for d in A["med_days"]],
-        "miles": {d: f1(A["miles"][d]) for d in E.DISTRICTS},
+        "district_billing": {d: f1(A["district_billing"][d]) for d in E.DISTRICTS},
         "years": ["2021", "2022", "2023", "2024", "2025", "2027"], "cycle_years": "4", "per": "100",
         "minutes": "5", "beta": "2.5", "five_years": "5", "standard": "IEEE 1366", "quarters": ["Q1", "Q2", "Q3", "Q4"],
         "handovers": ["1 January 2024", "1 April 2025"], "clauses_cited": ["2.1", "2.2", "3.1", "3.2", "3.3", "4.1",
-                                                                            "3.1", "6.1", "6.2", "6.3", "6.4"],
+                                                                            "3.1", "6.1", "6.2", "6.3", "6.4", "4.3"],
+        "feet_per_mile": "5,280",
         "north_rate_2025": f1(A["rates"][2025]["North"]),
         "north_rate_base": f1(sum(A["rates"][y]["North"] for y in E.BASE) / 3.0),
         "north_young_shift": f1(A["young"]["North"]),
@@ -93,7 +94,8 @@ def metadata(target):
         "subdomain": "grid reliability and outage analysis (vegetation outage root cause on overhead primary)",
         "objective": "Root-Cause Analysis",
         "prompt_shape": "07: the call over four programmes with the cooperative's rate, then grids of contractor x quarter "
-                        "billing, district x major-event-day outages, members and customer-minutes, and district miles",
+                        "billing, district x major-event-day outages, members and customer-minutes, and district "
+                        "billing for 2025",
         "as_of": "2026-01-13",
         "deliverables": [GD.DOCX, GD.XLSX],
         "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],

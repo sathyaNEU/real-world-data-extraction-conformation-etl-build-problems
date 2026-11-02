@@ -5,33 +5,37 @@
  "objective": "root-cause",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-14",
+ "updated": "2026-11-02",
  "stump": "Reading each district's rise against the trimming contract register files a re-bid of the trimming contract (Ends on: a re-bid of the trimming contract); the step that lands it there is booking North's rise, most of the cooperative's, to the new contractor whose freshly trimmed units carry it, when the outages come from ash dying beyond the right-of-way, rising by the same amount at every time since trim and with the ash standing within falling distance, so each contractor's units fail at North's rate for their time since trim and no trimming, sooner or better, removes them.",
  "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-14"
+  "date": "2026-11-02",
+  "pair_ceiling": 28.5,
+  "mirror_leakage": 0.0,
+  "measured_by": "generator/ceiling.py on target.zip 3871de01b7e4a634: cracker 0 of 20 ask figures; stress rows: literal steps 3 of 20 (36.8), invoice month less one 5 of 20 (42.2), full includer 20 of 20 (83.5)",
+  "before": "the 10-14 ask layer measured honestly on the shipped pack: cracker 20 of 20, pair 83.5"
  },
  "leak": {
-  "leak_py": "REVIEW (0 LEAK) at --asof 2026-01-13, every line answered in the design note",
-  "reader": "two isolated reads: question 1 none on both, no ranking file, question 5 executes to 21.9 and 11.2 (and, after the pin, folds the second tickets as the golden: 160, 123, 112), question 6 an analytical choice; realism tells (circuit energising dates, peer miles and names, retirement-date reading) fixed in the generator"
+  "leak_py": "REVIEW (0 LEAK) at --asof 2026-01-13 on the 11-02 cut, every line answered in the design note (the dictionary and manifest LEAKs gone with the files)",
+  "reader": "11-02 isolated read: question 1 nothing beyond the filed standard (policy 4.1, right-of-way policy 6), questions 2 to 4 none, question 5 the golden's population and denominator, question 6 the apportioning of the rise an analytical choice; one realism tell fixed (completion record numbers renumbered with uneven steps)"
  },
  "duplicate_check": {
-  "heart": "PASS (nearest 0.05, task500 v2 lineage)",
-  "surface": "promotes task128 (back to back, gap population shared; banking collections, another mechanism and decision) and task230 (corpus top 1 per cent on surface vocabulary; census coding quality, another mechanism); answered in the design note",
-  "nearest": "0.05 task500 v2 lineage",
+  "heart": "PASS on 2026-11-02 (the BLOCKs on test.same_puzzle_older and test.same_driver_older against task121 v6, task232 v2 and task243, all drawn after this card, answered by three differentiation lines on the card; nearest 0.06, task159)",
+  "surface": "promotes task128 (back to back) and task121, task232, task243 on the same card signature, each answered in the design note's Draw",
+  "nearest": "0.06 task159",
   "clone_check": ""
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "pass 2 DETERMINISTIC; its one FIX_NOW item (a block 4 chart line answering no ask) removed, no figure moved",
-  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
-  "pass": 2,
+  "disposition": "APPROVE (pass 3)",
+  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3, 11-02)",
+  "pass": 3,
   "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
   "gate_h": "domain pass, layers pass, decisive_step analytical",
   "fix_cycles": 1,
-  "notes": "pass 1 FIX_NOW: ask B fork (a second ticket of a device already open folded or counted); closed with policy 2.1's WHAT (a device is in one outage at a time; outages under ticket numbers), the dictionary's grain line, and genuine outages kept off an open device in the generator (East's ask B 123, 3,559, 1,203,168); pass 2 DETERMINISTIC, every figure reproduced, its block 4 chart item removed and its ask 1 note answered by policy 4.3 and the dictionary, so no third judge"
+  "notes": "pass 3 on the rebuilt ask layer: every graded figure reproduced (the call, the major event days, all twenty ask figures); its two optional pins (a 2.1 clause on negative restorations, a 4.3 clause on the line's own period) declined because each states a device's handling and the judge rated both goldens forced by the filed WHAT; closed in the fork table as SF11 and SF12 and asserted"
  },
  "returned": [
   {
@@ -39,6 +43,12 @@
    "portal": "author request",
    "repair": "re-root (domain fit: house domain to a client domain)",
    "commit": "RESHIPPED (task129), 2026-10-14"
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "10-30 gates (leak.py LEAK on the data dictionary and export manifest; precut owed a measured ceiling and survivor anatomy; ask B executable from policy 2.1 and 3.1; guard.py heart BLOCK on test.same_puzzle_older and test.same_driver_older); no portal result yet",
+   "repair": "rubric",
+   "commit": "RESHIPPED (task129), 2026-11-02"
   }
  ],
  "resume": "",
@@ -52,7 +62,7 @@
    "record": {
     "domain": "business-operations-analytics",
     "objective": "root-cause",
-    "stump": "A competent solver aligns the six B\u00f8lge template groups for the joint effect of the ad stack and the front end, separates the two with the puzzles pages (the ad stack alone) and subscribers' ad-free views of the redesigned templates (the front end alone), standardises both groups to the ad-supported views' phone mix through the device registry, which closes the joint ramp to within 0.02 point, and names the ad stack at 1,230,000 views a month with the front end second at 800,000; the step that lands it there is carrying each group's effect to the ad-supported views as one figure per phone class, when the front end costs a view mostly on a device's first view after a release-train deploy and the ad stack mostly on its later views, and both separating groups are about a quarter first views against about three quarters on the ad-supported views, so carried within that state the front end's fix brings back 1,460,000 views a month and the ad stack's 610,000.",
+    "stump": "A competent solver aligns the six Bølge template groups for the joint effect of the ad stack and the front end, separates the two with the puzzles pages (the ad stack alone) and subscribers' ad-free views of the redesigned templates (the front end alone), standardises both groups to the ad-supported views' phone mix through the device registry, which closes the joint ramp to within 0.02 point, and names the ad stack at 1,230,000 views a month with the front end second at 800,000; the step that lands it there is carrying each group's effect to the ad-supported views as one figure per phone class, when the front end costs a view mostly on a device's first view after a release-train deploy and the ad stack mostly on its later views, and both separating groups are about a quarter first views against about three quarters on the ad-supported views, so carried within that state the front end's fix brings back 1,460,000 views a month and the ad stack's 610,000.",
     "precut": {
      "exit": 0,
      "date": "2026-10-13",
@@ -94,9 +104,9 @@
  ],
  "build": {
   "seed": 129227,
-  "checks": 119,
+  "checks": 150,
   "verify": "every stated figure recomputes",
   "byte_identical": true,
-  "target_zip_sha256": "d6bd8f7d65da6edc14046d44f64876af3e8ae6d86c24c521fca774092066e2d8"
+  "target_zip_sha256": "3871de01b7e4a63493b66d97b997b8b524bf21a7f5f07bbfb2b28cb842647960"
  }
 }

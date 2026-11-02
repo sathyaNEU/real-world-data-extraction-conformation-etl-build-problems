@@ -1,6 +1,7 @@
 """task129 checks: the input gates, the three rules executed on the clean truth (R1 to R3c), the ladder's rungs, the
 contractor and regrowth comparisons, the major event days, the semantic fork rows (SF1 to SF10), Layer 1 neutrality,
 the ask devices and their separation from the call, the registers, the distractors and the realism sweep"""
+import hashlib
 import json
 import os
 import re
@@ -13,6 +14,25 @@ import estim as E
 import params as P
 
 PEOPLE = ["Lori Rodriguez", "Dennis Garcia", "Wesley Thomas", "Brian Montgomery"]
+# the 10-14 pack (target.zip d6bd8f7d): the files the main call reads, byte for byte
+SHIPPED = {
+    "trim_unit_register.csv": "7b6aee0f96161681a96f76816dfb21c684f61ee3383a234419d35e381c53e9b5",
+    "row_tree_survey_2023-2024.parquet": "f3f4833ef51450982ee240086c8d197b137c87fa5b49b8695709c2fb2090d36c",
+    "weather_daily_2016-2025.csv": "1e193cec91ab1b3f362cd36701e991a0f6daa2c4bffc63fde0098e3c3aae1b72",
+    "member_counts_2015-2025.csv": "0a5600277dca33551d5c758b1e1176b6e6fafe283bafbdef0654c44ef90e3144",
+    "trimming_contracts_register.xlsx": "ec4ab99d4d546bbbc1cd76b3efd5df08f2b316c65b8730c495220fea3b309c70",
+    "right_of_way_maintenance_policy.pdf": "b68d87ed5d2e4f07786226351f5cd72e5e7e44ded3602a0df6eaebf3ea39a19b",
+    "reliability_reporting_policy.docx": "57810d034e7bf548cff50aa15e48d34fe97596e2448997e22d48bd8c1bbb82bd",
+    "statewide_cooperative_reliability_2020-2024.csv": "74d73e9ddd58368ff6d739a2ab037c3950f063627e1d6fd857ad4a7d3740179b",
+    "ami_momentary_events_2025.csv": "c16acc2b23560a1cd5051a19a5d28fd2a7045f231042d4037e1265ba983ec3f2",
+}
+SHIPPED_EXPORT = "c4115fa1a11ab72e370e17f1c7ca4de90f5a8f7eb62d97b2648a12b4a43c846d"
+# the completions less their record number (the one column the call never reads, renumbered at the 11-02 leak read)
+SHIPPED_COMPLETIONS = "386ee725ab187f2f4ec885f7283bbbfa8271d76f746a7aa05f445b465a904a32"
+
+
+def sha(p):
+    return hashlib.sha256(open(p, "rb").read()).hexdigest()
 
 
 def docx_text(p):
@@ -183,7 +203,7 @@ def run(target, golden, res, A, D, ev, collect=None):
         c_ = t_all[t_all.year == y].groupby("district").size()
         rt_med[y] = {d: 100.0 * c_.get(d, 0) / m_[d] for d in E.DISTRICTS}
     ok(call_under(rt_med) == "North", "SF1: major event days kept leave North carrying the rise")
-    Xs = D["X"].assign(outage_id=D["X"].outage_id + "-" + D["X"].step.astype(str))
+    Xs = D["X"].assign(ticket_no=D["X"].ticket_no + "-" + D["X"].step.astype(str))
     ok(call_under(E.rates(dict(D, X=Xs))) == "North", "SF3: each restoration step read as an outage leaves North carrying the rise")
     top = max(sh, key=sh.get)
     ok(top == "trees beyond the right-of-way (North)" and sh[top] > 0.5,
@@ -229,23 +249,103 @@ def run(target, golden, res, A, D, ev, collect=None):
     ga = E.ash_gradient(ev["t"], ev["E"], sh23)
     g_rise = [ga.loc[E.YEAR, q] - ga.loc[list(E.BASE), q].mean() for q in range(4)]
     ok(g_rise[3] >= 2.0 * max(g_rise[0], 1.0), "R2: the ash gradient holds with the re-survey's codes misread")
+    # ---------------------------------------------------------------- the call's files against the shipped pack
+    # the main call reads the export (every ticket's restoration steps for the major event days, the TREE outages for
+    # the rate), the register, the completions, the survey, the weather, the member counts, the contracts register
+    # and the two policies; every one of them is the 10-14 pack's byte for byte, except that the export names its
+    # ticket column ticket_no and carries the storm-mode re-trip steps on 2025's two major event days
+    for f, h in SHIPPED.items():
+        ok(sha(os.path.join(target, f)) == h, "separation: %s is the shipped file byte for byte" % f)
+    comp = open(os.path.join(target, "row_trim_completions_2012-2025.csv"), encoding="utf-8").read().split("\n")
+    ok(hashlib.sha256("\n".join(",".join(l.split(",")[1:]) if l else l for l in comp).encode("utf-8")).hexdigest()
+       == SHIPPED_COMPLETIONS, "separation: the completions less their record number are the shipped file byte for byte")
+    rid = D["T"].record_id.str[2:].astype(int).diff().dropna()
+    ok(rid.min() >= 1 and rid.nunique() >= 5, "realism: completion record numbers rise with uneven steps")
+    raw = open(os.path.join(target, "oms_outage_export_2016-2025.csv"), encoding="utf-8").read().split("\n")
+    parsed = [r.split(",") for r in raw[1:] if r]
+    first_neg = {}
+    for q in parsed:
+        if int(q[-1]) < 0:
+            first_neg[q[0]] = min(first_neg.get(q[0], 10 ** 9), int(q[-3]))
+    kept = [",".join(q) for q in parsed if not (q[0] in first_neg and int(q[-3]) >= first_neg[q[0]])]
+    reduced = "\n".join([raw[0].replace("ticket_no", "outage_id", 1)] + kept) + "\n"
+    ok(hashlib.sha256(reduced.encode("utf-8")).hexdigest() == SHIPPED_EXPORT,
+       "separation: the export less the re-trip steps, under its 10-14 header, is the shipped export byte for byte")
+    rtk = K[K.storm_retrip]
+    days25 = set(meds[E.YEAR][1])
+    ok(len(rtk) == len(first_neg) and set(rtk.ticket_no) == set(first_neg),
+       "separation: the negative steps sit on the storm-mode re-trip tickets only (%d)" % len(rtk))
+    ok(set(pd.to_datetime(rtk.start).dt.normalize()) <= days25, "separation: every re-trip ticket opened on a 2025 major event day")
+    Xr = D["X"][D["X"].ticket_no.isin(rtk.ticket_no)]
+    negs = Xr[Xr.members_restored.astype(int) < 0]
+    ok(set(pd.to_datetime(negs.step_restored_local).dt.normalize()) <= days25,
+       "separation: every re-trip's second opening starts on the same major event day")
+    ok(all(rtk.groupby("district").size().reindex(list(E.DISTRICTS)).fillna(0) >= 3), "ask B: every district holds three or more re-trips")
+    for mode in ("net", "drop"):
+        by = E.openings(Xr, mode).groupby("ticket").cm.sum()
+        Om = Ot.copy()
+        Om["cm"] = Om.outage_id.map(by).fillna(Om.cm)
+        ok(E.med_set(E.major_event_days(E.one_per_interruption(Om), D["M"])) == ms,
+           "separation: the re-trips read the %s way leave every year's major event days" % mode)
+    g_open = E.openings(Xr, "golden")
+    ok((g_open.groupby("ticket").size() >= 2).all(), "SF11: each re-trip ticket holds two device openings (2.1, one device opening)")
+    lit = Ot[Ot.outage_id.isin(rtk.ticket_no)].set_index("outage_id").cm
+    ok(np.allclose(g_open.groupby("ticket").cm.sum().reindex(lit.index).values, lit.values),
+       "fairness: split at the re-trip, the customer-minutes add to the steps' own total (so the major event days hold)")
+    ok(all(int(g.members_out.iloc[0]) == int(g.members_restored.astype(int).sum()) for _, g in Xr.groupby("ticket_no")),
+       "silence: every re-trip ticket's members restored add to its members out")
+    ok(all((-negs.members_restored.astype(int)).values == negs.members_out.astype(int).values),
+       "SF11: each re-trip takes off every member the device had restored")
     # ---------------------------------------------------------------- asks
     bill = A["billing"]
-    for m in ("positive", "signed_by_month", "wo_month", "invoice_date"):
+    ok(all(abs(E.ask_billing(D, "service_month")[k] - bill[k]) >= 0.15 for k in bill),
+       "ask A: the cracker's read (service month, credits netted) misses every cell")
+    for m in ("own_month", "positive"):
         alt = E.ask_billing(D, m)
         ok(all(abs(alt[k] - bill[k]) >= 0.15 for k in bill), "ask A: the %s read misses every cell" % m)
+    lag = E.ask_billing(D, "lag")
+    ok(sum(abs(lag[k] - bill[k]) >= 0.15 for k in bill) >= 6, "ask A: the invoice month less one misses six or more cells")
     ok(all(bin_dist(v) >= 0.003 for v in bill.values()), "ask A: every cell sits inside its bin")
+    dbill = A["district_billing"]
+    ok(all(abs(E.ask_district(D, "service_month")[d] - dbill[d]) >= 0.15 for d in E.DISTRICTS),
+       "ask C: the cracker's read misses every district")
+    for m in ("own_month", "positive"):
+        alt = E.ask_district(D, m)
+        ok(all(abs(alt[d] - dbill[d]) >= 0.15 for d in E.DISTRICTS), "ask C: the %s read misses every district" % m)
+    ok(all(bin_dist(v) >= 0.003 for v in dbill.values()), "ask C: every district sits inside its bin")
+    ok(abs(sum(dbill.values()) - sum(bill.values())) < 1e-6, "ask C: the districts add to the contractors' 2025 miles")
+    wd = E.wo_district(D)
+    ok(all(len(v) == 1 for v in wd.values), "ask C: every work order sits in one district")
+    I_ = D["I"]
+    IY = res["IY"]
+    J = I_.merge(IY, on=["invoice_no"], how="left", suffixes=("", "_t"))
+    J = J[J.line_no.astype(int) == J.line_no_t.astype(int)]
+    tr = J[J.item_code.str.startswith("TRIM")]
+    stated = tr.description.map(E.stated_month)
+    ok(((stated == tr.work_month) | ~tr.portal).all() and (stated[tr.portal] != "").all(),
+       "SF12: every portal trimming line states the month of the work it bills")
+    pap = tr[~tr.portal & (tr.doc_type == "INVOICE")]
+    ok((pap.service_month == pap.work_month).all() and (stated[~tr.portal] == "").all(),
+       "fairness: every paper invoice carries the month of the work as its service month and states no period")
+    ok((tr[tr.portal].service_month == tr[tr.portal].invoice_date.str[:7]).all(),
+       "SF12: every portal line's service month is its own document's month")
+    gold_m = E.trim_lines(D, "golden").set_index(["invoice_no", "line_no"]).svc
+    ok((gold_m.reindex(pd.MultiIndex.from_frame(tr[["invoice_no", "line_no"]])).values == tr.work_month.values).all(),
+       "fairness: the golden reading recovers the month of the work on every trimming line")
+    ok(I_.service_month.str.len().le(7).all() and (I_.service_month[I_.doc_type == "INVOICE"] != "").all(),
+       "silence: every invoice carries a service month")
+    for v in (E.OUTGOING, E.INCOMING):
+        pv = tr[(tr.vendor == v) & tr.portal]
+        ok(len(pv) > 0 and (tr[(tr.vendor == v) & ~tr.portal].invoice_date.max() < pv.invoice_date.min()),
+           "realism: %s moved to the portal once, its paper invoices all dated before" % v)
     med = A["med"]
-    for m in ("records", "naive", "primary_only", "tree_only", "outage_minutes"):
+    for m in ("cracker", "drop", "records", "primary_only", "tree_only", "outage_minutes"):
         alt, _ = E.ask_med(D, m)
         moved = sum(alt[d][i] != med[d][i] for d in E.DISTRICTS for i in range(3))
-        need = 9 if m in ("records", "primary_only", "tree_only") else 3
-        ok(moved >= need, "ask B: the %s read moves %d of 9 figures" % (m, moved))
-    miles = A["miles"]
-    for m in ("blank_only", "every_unit"):
-        alt = E.ask_miles(D, m)
-        ok(all(abs(alt[d] - miles[d]) >= 0.15 for d in E.DISTRICTS), "ask C: the %s read misses every district" % m)
-    ok(all(bin_dist(v) >= 0.003 for v in miles.values()), "ask C: every district sits inside its bin")
+        ok(moved == 9, "ask B: the %s read moves %d of 9 figures" % (m, moved))
+    alt, _ = E.ask_med(D, "literal")
+    ok(all(alt[d][0] != med[d][0] and alt[d][1] != med[d][1] for d in E.DISTRICTS),
+       "ask B: one outage a ticket undercounts every district's outages and members")
     # separation: no ask device reaches the call's population
     dup = K[K.kind == "duplicate"]
     ok(dup.storm.all() and len(dup) > 0, "separation: the storm-mode tickets fall on storm days only")
@@ -255,20 +355,15 @@ def run(target, golden, res, A, D, ev, collect=None):
     ok(folded == len(dup), "fairness: the records folded are exactly the storm-mode second tickets (%d folded, %d tickets)"
        % (folded, len(dup)))
     ok("a device is in one outage at a time" in rel, "ask B: policy 2.1 files that a device is in one outage at a time")
-    ok(A["call"] == E.golden_call(E.evidence(dict(D, X=D["X"][~D["X"].outage_id.isin(dup.outage_id)]))),
+    ok(A["call"] == E.golden_call(E.evidence(dict(D, X=D["X"][~D["X"].ticket_no.isin(dup.ticket_no)]))),
        "separation: dropping every storm-mode ticket leaves the call")
     import inspect
     src = "".join(inspect.getsource(f) for f in (E.tree_outages, E.rates, E.components, E.evidence, E.trim_history,
                                                    E.exposure, E.clock_at, E.ash_share, E.default_path, E.golden_call))
     ok('D["I"]' not in src and "invoice" not in src, "separation: the call never reads the invoices")
-    # ---------------------------------------------------------------- registers (H9)
-    man = pd.read_csv(os.path.join(target, "export_manifest.csv"), dtype=str)
-    ok(set(man.file) == set(files) - {"export_manifest.csv"}, "H9: the manifest lists every shipped file")
-    with zipfile.ZipFile(os.path.join(target, "data_dictionary.xlsx")) as z:
-        dtext = " ".join(re.findall(r"<t[^>]*>([^<]*)</t>", z.read("xl/sharedStrings.xml").decode("utf-8")))
-    scope = [f for f in files if f.endswith((".csv", ".parquet")) and f not in meta["distractor_files"]
-             and f != "export_manifest.csv"]
-    ok(all(f in dtext for f in scope), "H9: the dictionary names every extract literally")
+    # ---------------------------------------------------------------- no describing file
+    ok(not any(re.search(r"dictionary|manifest|readme|codebook|field_notes|notes", f, re.I) for f in files),
+       "no file describes the data")
     # ---------------------------------------------------------------- H16: nothing dated after the extract
     exp = P.EXPORT.isoformat()
     ok(D["T"].completed_date.max() <= exp and D["T"].accepted_date.max() <= exp, "H16: completions on or before the extract")
