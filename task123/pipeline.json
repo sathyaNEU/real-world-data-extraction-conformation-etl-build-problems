@@ -1,10 +1,10 @@
 {
  "task": "task123",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science / data-integration-record-linkage-entity-resolution",
  "objective": "etl",
- "stage": 4,
- "stage_name": "stage 4 round 2 findings closed: Q5's three Gate C points (governing record, the 253.0 V edge, market-time days) closed in standard section 6 and the generator, the call and Q1 to Q4 frozen; every free gate re-run on the final cut; re-judge for the main session",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-02",
  "stump": "The default carries every single-phase apartment balanced over its riser's three phases because no record names its phase, so each riser's busiest phase is a third of its total and only the risers whose total is over three times the per-phase line are designated; each apartment draws on one phase, and the embedded network meters' hourly voltages, which sag together for the apartments sharing a phase, sort them and show the risers whose apartments bunch on one phase.",
  "architecture": 4,
@@ -17,43 +17,22 @@
   "full_includer": "pair 54.0, mirror 46.3 (ask C kept whole once section 6's cross-check is executed)"
  },
  "leak": {
-  "leak_py": "REVIEW (0 LEAK) at --asof 2026-11-20 on target.zip d39160e5: the standard carries the statutory voltage limits, the call's words (it asks the question) and generic note words (register, record, records, schedule, section); the thermal survey carries annual, schedule, section",
-  "reader_round_1": "clean on target.zip 1e6fa5a6 (main session)",
-  "reader_round_2": "clean on target.zip b5549311 (main session)"
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2026-11-20)",
+  "reader": "clean in both rounds (round 2's reader misread the as-built board code as a phase; checked: it is tower, board and side); appended to task123/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN only (people.first, repeat.decision, repeat.deliverables, repeat.question_form; answered in the note), re-run on target.zip d39160e5",
-  "surface": "2 pairs promoted for adjudication, none a BLOCK: task193 at 0.101 (lexical, corpus top one per cent) and task147 on the same-driver signature (differentiated on the card); personas Kayla Hunt, Alan Herrera; re-run on target.zip d39160e5"
+  "heart": "WARN 2026-11-02 at the ship gate, no BLOCK",
+  "nearest": "surface promoted task193 (lexical 0.101) and task147 (same-driver, differentiated on the card)"
  },
  "judge": {
-  "round_1": {
-   "target_zip": "1e6fa5a6",
-   "verdict": "DETERMINISTIC, APPROVE",
-   "main_call": "forced: A4 109, C3 97, B2 94, C6 89, B3 75 nearest under; Gate G analytical_non_defect; Gate H pass; 72 supplementary figures reproduce",
-   "gate_c_findings": {
-    "F1": "ask 5: a three-phase apartment's time outside the limits read as the union, the average or the sum of its phases; closed by standard section 6 (a three-phase supply is outside the limits while any one of its phases is)",
-    "F2": "ask 3: both registers or the general supply alone; closed by standard section 7 (general supply and controlled load together) and the reads export's register descriptions",
-    "F3": "ask 3: read type E undefined; closed by the reads export's read-type descriptions (A actual, E estimated), every riser holding an estimate asserted out of its bin under the estimate",
-    "F4": "ask 4: five off-site owners' unapproved applications with nothing fixing old or new numbering; closed by each off-site owner's lot, every application asserted to map to one car space"
-   },
-   "fixed_in": "target.zip b5549311"
-  },
-  "round_2": {
-   "target_zip": "b5549311",
-   "verdict": "NOT_DETERMINISTIC on Q5 (a repair by the gate table)",
-   "reproduced": "main call A4 109.19, B2 94.06, C3 96.80, C6 89.24, B3 75.13; Q1 to Q4 (Q4's 97 distinct spaces; Q3 under section 7); Gates G and H pass; Gate F high",
-   "gate_c_findings": {
-    "Q5.1": "section 6's 'time its meter recorded' read word for word keeps the re-sent copies; closed by section 6 filing that a record counts only where the meter's own hourly maximum or minimum, in an hour it covers, is outside the limits",
-    "Q5.2": "eleven event extremes of exactly 253.0 V put C2 on its edge; closed by extremes built as the ten-cycle value (none on a limit, lowest 253.2 V) and section 6 filing outside as above 253 V or below 216 V; every Q5 cell tuned clear of its edges by more than an end second counted inclusively moves it",
-    "Q5.3": "the week's clock unnamed in section 6; closed by section 6 setting a run of days from midnight to midnight in market time"
-   },
-   "fixed_in": "target.zip d39160e5"
-  }
+  "verdict": "round 3 DETERMINISTIC, APPROVE (order kept; Gate F good; Gate G binding_constraint / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; round 1's ask forks and round 2's voltage-share fork closed in the standard's wording and the data, the call unchanged throughout",
+  "report": "task123/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4 re-judge (round 3): the main session re-runs the determinism judge once on target.zip d39160e5 (files changed since b5549311: the standard's section 6, the event log, the register reads export)",
+ "resume": "Shipped 2026-11-02 (architecture 4, ETL): rising mains A4, B2, C3 and C6 need re-phasing or a larger main before the 2027 chargers and cooktop conversions; target.zip d39160e5. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "source_note": "own draw (no seed)",
  "history": {
