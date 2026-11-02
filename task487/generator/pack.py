@@ -348,9 +348,9 @@ def alarm_journal(path, w):
         rows.append((c, pt, "COMM OK", "", "", "RTU communication restored", ""))
     lo, hi = W.h_of(dt.datetime(2025, 12, 15)), W.h_of(dt.datetime(2027, 1, 13))
     rows = sorted((x for x in rows if lo <= x[0] < hi), key=lambda x: (x[0], x[1], x[2]))
-    out = [dict(Time=W.utc_of(t).strftime("%Y-%m-%d %H:%M:%S"), Point=p, State=s, Value=v, Units=u, Message=m,
-                Operator=o) for t, p, s, v, u, m, o in rows]
-    return write_csv(path, out, ["Time", "Point", "State", "Value", "Units", "Message", "Operator"])
+    out = [{"Time (UTC)": W.utc_of(t).strftime("%Y-%m-%d %H:%M:%S"), "Point": p, "State": s, "Value": v, "Units": u,
+            "Message": m, "Operator": o} for t, p, s, v, u, m, o in rows]
+    return write_csv(path, out, ["Time (UTC)", "Point", "State", "Value", "Units", "Message", "Operator"])
 
 
 # ---------------------------------------------------------------- production and analyses
@@ -410,6 +410,9 @@ def received(w, x):
     return synced(x["survey"]) if w.ldar_crew[(x["bat"], x["survey"])] == "ogi08" else x["survey"]
 
 
+CONTRACTOR = "Brantham Field Services Ltd."
+
+
 def work_orders(path, w):
     """the maintenance system's work orders completed in 2026, numbered as they were raised. The field's own
     maintainers complete theirs on the day of the work; a contract work order is completed when the foreman approves
@@ -458,7 +461,7 @@ def work_orders(path, w):
     for row in sorted(rows, key=lambda x: (x[3], x[0], x[7]) if x[5] else (x[4], x[0], x[7])):
         b, typ, txt, d, raised, con, key, n = row
         if con:
-            pre, on = "FT", d
+            pre, on = "Field ticket", d
         elif typ == "Preventive":
             pre, on = None, None
         else:
@@ -476,7 +479,7 @@ def work_orders(path, w):
         b, typ, txt, d, raised, con, key, n, ref, done = row
         if done.year == 2026:
             out.append(dict(WO=n, Battery=code_at(b, d), Type=typ, Description=txt, Reference=ref,
-                            Completed=done.isoformat()))
+                            Vendor=CONTRACTOR if con else "", Completed=done.isoformat()))
     return write_csv(path, out, list(out[0]))
 
 
@@ -611,8 +614,8 @@ def ldar_tracker(path, w):
         status = "Closed" if x["fix"] else ("Deferred" if x["deferred"] else "Open")
         rows.append([x["tag"], code_at(x["bat"], x["survey"]), received(w, x), x["point"], x["rate"], status,
                      wo, x["done"], x["note"]])
-    hdr = ["Tag", "Battery", "Received", "Component", "CH4 rate (g/h)", "Status", "Work order", "Closed", "Note"]
-    write_xlsx(path, [("Leak tags", hdr, rows)], widths={"Component": 36, "Note": 28, "Received": 11, "Closed": 11,
+    hdr = ["Tag", "Battery", "Received in tracker", "Component", "CH4 rate (g/h)", "Status", "Work order", "Closed", "Note"]
+    write_xlsx(path, [("Leak tags", hdr, rows)], widths={"Component": 36, "Note": 28, "Received in tracker": 11, "Closed": 11,
                                                           "Work order": 11, "Status": 10, "CH4 rate (g/h)": 13})
     wb = openpyxl.load_workbook(path)
     ws = wb["Leak tags"]
@@ -641,9 +644,23 @@ def sales_gas(path, w):
             drift[name] = .7 * drift[name] + float(r.normal(0, .22))
             c = c1 + .45 * np.cos(2 * np.pi * (m - 1) / 12) + drift[name]
             hv = 36.95 + .29 * (100 - c) + float(r.normal(0, .04))
-            rows.append(dict(Meter=name, Month="2026-%02d" % m, Volume_e3m3="%.1f" % vol, HHV_MJ_m3="%.2f" % hv,
-                             Energy_GJ="%.0f" % (vol * hv), C1_molpct="%.2f" % c))
-    return write_csv(path, rows, list(rows[0]))
+            rows.append(dict(meter=name, month="2026-%02d" % m, volume="%.1f" % vol, hhv="%.2f" % hv,
+                             energy="%.0f" % (vol * hv), c1="%.2f" % c))
+    # the gas marketer's statement export: one statement per meter and month
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<MeterStatements shipper="Vennholt Energy Ltd." period="2026" issued="2027-01-11">']
+    for x in rows:
+        mid, mname = x["meter"].split(" ", 1)
+        out += ['  <Statement meter="%s" name="%s" month="%s">' % (mid, mname, x["month"]),
+                '    <Volume unit="e3m3">%s</Volume>' % x["volume"],
+                '    <HeatingValue unit="MJ/m3" basis="HHV">%s</HeatingValue>' % x["hhv"],
+                '    <Energy unit="GJ">%s</Energy>' % x["energy"],
+                '    <Methane unit="mol%%">%s</Methane>' % x["c1"],
+                '  </Statement>']
+    out.append('</MeterStatements>')
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(out) + "\n")
+    return len(rows)
 
 
 def hauler(path, w):

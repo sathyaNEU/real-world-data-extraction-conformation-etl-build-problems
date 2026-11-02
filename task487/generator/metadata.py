@@ -23,12 +23,11 @@ SOURCES = {
     "ldar_surveys_2025_2026.csv": (VE + ", EHS office, OGI leak survey log", "2027-01-12"),
     "ldar_leak_tracker_20270112.xlsx": (VE + ", EHS office, leak tracker", "2027-01-12"),
     "hauler_load_tickets_2026.csv": ("Kesmere Fluid Haulers, load tickets for Vennholt Energy", "2027-01-06"),
-    "sales_gas_meter_statements_2026.csv": (VE + ", gas marketing, sales meter monthly statements", "2027-01-11"),
+    "sales_gas_meter_statements_2026.xml": (VE + ", gas marketing, sales meter monthly statements", "2027-01-11"),
     "peb_directive_17_release_event_return_2025.pdf": ("Provincial Energy Board, Directive 17, 2025 edition",
                                                        "2025-03-14"),
-    "kesmere_field_data_notes.txt": (VE + ", production data team, notes on the exports", "2027-01-13"),
 }
-DISTRACTORS = ["target/hauler_load_tickets_2026.csv", "target/sales_gas_meter_statements_2026.csv"]
+DISTRACTORS = ["target/hauler_load_tickets_2026.csv", "target/sales_gas_meter_statements_2026.xml"]
 
 
 def main():
@@ -43,7 +42,7 @@ def main():
         files.append(dict(file=n, source=src + SYN, date=date, license=LIC, rows=rows))
     meta = dict(task="task487", title="Vennholt Energy's 2026 release-event return and its 2027 levy under the "
                                       "Provincial Energy Board's Directive 17",
-                setting="A fictional upstream oil producer's 180 tank batteries in a fictional western Canadian "
+                setting="A fictional upstream oil producer's tank batteries in a fictional western Canadian "
                         "province, whose energy board levies release-event methane in bands: the province, the board, "
                         "the operator, its field and its people are fictional, and every record is synthetic.",
                 as_of="2027-01-14",

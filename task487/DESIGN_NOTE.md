@@ -120,6 +120,16 @@ No decoy: nothing is planted: the visit logs, the event register, the alarm jour
 No certified replay: no certified or published figure sits in the pack to be reproduced, and no method is recovered from one.
 Lesson: an inspection that can start the events it later finds leaves those events running for their whole windows, so the found events' active time is longer than half their windows by a share that falls as the windows lengthen; the share is read from how incidence grows with the window, and an exactly timed record of a kind the inspection cannot start confirms the even spread it misprices. No build on file reads an inspection-started share from incidence against window length (nearest driver 0.16, task476 v2, a seasonal start profile from a second record).
 
+## Survivor anatomy
+
+Actor: The deciding property has no column in any file: whether a hatch found at an arrival was left open by the previous visit is a relation between consecutive visit rows (the departure that opens the window, the arrival that finds the event) and the windows that found nothing, across 50,536 windows; no export, register or journal column holds a start, a cause or a share (asserted, R1), and the register's words never say who opened an event.
+Link: Moderate, named as a risk: the signal is read by setting how often each kind is found against the length of the window since the previous departure, the empty windows included, a comparison across windows the field's practice for an undated start (the window's midpoint, or last known good) never asks for; no key offers it, but the join from each find to the previous departure is on the default path, so a reader who already holds every window is one exposure table from it, and an interval-censored fit with a flexible hazard (Weibull 53.86 t, isotonic 56.98 t) lands band C once that table is built.
+Reflex: The field's practice for an event the records do not date sits at rung 0 and files the wrong band: the window's midpoint gives 45.18 t on the clean truth and on the pack (band B), the constant-rate interval-censored fit, the uninformative estimator a statistician reaches for, gives 45.53 t (band B, checks.py R3a), and last known good gives 87.46 t (band E); the precondition every one of them assumes, that an event's onset is independent of the visit that opens its window, is broken by the 0.85 per cent of departures that leave a hatch open (twice the log-likelihood gain 96.1), so the golden is not the field's method run by reflex.
+Back-test: The textbook route validates: the 54 alarm-timed relief valves, the only events the pack dates exactly, sit across their windows at a mean position of 0.434 (asserted), which confirms the midpoint to anyone who checks it; relief valves are a kind no visit starts (twice the log-likelihood gain 3.3), so the check is true and blesses the wrong placement for hatches without any planted record.
+Second use: Every file the decisive step reads (the two visit apps, the event register, production, the vapour analyses, the battery register) is read by the default path too, to join each find to its window and price each hour; the alarm journal dates the relief valves in both; deleting the decisive step from the design drops no file.
+Shock: The movement the step recovers reads as ordinary: weekend windows find 2.1 times the hatches of weekday ones for 3.0 times the hours, no battery, route or month is the pack's outlier on any shipped count (route event counts 120 to 152), and the graded figure is one total and its band, not a unit picked from a sort.
+Pins: The WHAT is filed in the regulator's own directive (s.3.1 the events found in the year, s.3.2 each start at its expected value given the licensee's records where they do not date it, s.3.3 the hourly methane, Table 1 the bands); no sentence names the visit, the window's length, a share or a fit, but s.3.2's expected-value sentence is necessary (deleted, last known good and the midpoint are both defensible and the call is unforced) and it sends a careful reader to ask what the records make expected, a named risk the round 3 and round 4 judges weighed and found forced on the data.
+
 ## Readability screen
 
 Measured by the generator on the cut pack (`checks.py` restates every figure on each build). Release-event methane by
@@ -242,9 +252,9 @@ gas is no part of the return; no golden figure opens them.
   (directive s.5), the fugitive emissions the Board records beside the levied events, half-yearly like the surveys, rolled
   up by the runs the field manages its leaks by. User: the regulatory analyst who files the return. The directive files
   what a leak is (one component's escape from when it starts until the component is repaired, the same leak however
-  many surveys find it before then), its rate (measured when first found) and its window; the data notes say what the
-  tracker's Received and Closed record, that the survey log holds the camera crews' sessions at the batteries with the
-  points each screened, and what a work order's Reference holds. Primary device (silent, D6 a log read as a roster): the
+  many surveys find it before then), its rate (measured when first found) and its window; the tracker's own headers say
+  its dates are the day a tag was received in the tracker and the day it was closed, the survey log's headers give the
+  points each session screened, and the work orders name the vendor on contract work beside each Reference. Primary device (silent, D6 a log read as a roster): the
   survey log holds, beside each battery's three surveys, 318 re-checks of repaired fittings that the crews ran 30 to 75
   days after the tracker closed their tags, each screening 2 to 20 points and tagging nothing; a leak vents from its
   battery's last survey before it was found, so a reader who takes every session as a survey starts most of the year's
@@ -289,11 +299,12 @@ it. This is the paper measurement of the cracker the script models, built on rou
 
 ## Leak sweep rulings
 
-`leak.py` on zip 3556c4e7 (verdict REVIEW, no LEAK; the dates sweep clean at the as-of 14 January 2027). The answer-figure
+`leak.py` on zip 3568be1c (verdict REVIEW, no LEAK; sweeps 12 and 13 clean; the dates sweep clean at the as-of 14
+January 2027). The answer-figure
 lines: the directive's band table carries each band's rate for each battery (the golden band's rate among them, as every
 band's must be), and two route figures share their digits with the directive's section numbers 3.2 and 3.3; none is an answer,
 and the directive's wording shares the call's vocabulary because the call is the directive's own levy. The
-design-note vocabulary lines, ruled here rather than handed to a reader: the data notes and the directive share the
+design-note vocabulary lines, ruled here rather than handed to a reader: the directive shares the
 pack's own nouns (operator, vapour, relief, register, battery, journal, starts, expected, production) with the stump
 paragraph, and neither says when an undated event began, how a start is placed, or that a visit can start an event; the
 directive's one sentence on an undated start files the estimand (its expected value given the records) and nothing about
@@ -388,6 +399,35 @@ points that tag nothing against surveys of 100 to 410, field tickets against app
 data-supported and not reasonably contested, and pinning what a survey is in the notes would hand the device over.
 Shipped on zip 3556c4e7.
 
+## Re-check under the new gates (2026-11-02)
+
+The rebuild reproduced the shipped zip 3556c4e7 byte for byte (scipy installed into the container). The shipped cut failed
+leak.py (sweeps 1 and 12 on the data notes, which named every export and ten register columns; sweep 13 on
+metadata.json's setting carrying 180) and precut (checks.py's docstring citing SF24, a fork id the table never had; no
+survivor anatomy). Analyst test on the clean truth: the midpoint 45.18 t and the constant-rate interval-censored fit
+45.53 t file band B, last known good 87.46 t band E, the decisive share-plus-rate fit alone 54.54 t band C (R3a, R3b).
+The golden is not the field's reflex: the field's practice for an undated start (the midpoint, last known good, the
+uninformative interval-censored fit) sits at rung 0 and its precondition, onset independent of the visit, is broken by
+the hatches the departing visit leaves open.
+
+Repaired in the generator (not shipped): the data notes left the pack; the province's clock is filed in directive s.1,
+the journal's header reads Time (UTC), the tracker's Received in tracker, the work orders carry each contract order's
+Vendor and name its Field ticket in Reference, directive 3.1 gives each event's times in local time and its methane in
+kilograms, directive 5.2 says a survey of a battery screens every component of it and of its wells; the sales gas
+statements ship as XML so the format set stays unlike any other pack's; metadata.json's setting dropped its count. On
+the last cut (zip 74e32011): checks 131 PASS, verify 33 of 33, byte-identical rebuilds, precut 61 checks 0 FAIL 0 WARN,
+voice-check PASS, leak.py REVIEW (sweeps 12 and 13 clean), figures_check 50 of 50, heart WARN (repeat.gate_g against
+task121 v6, as shipped), surface exit 0, freeze.py determinism PASS, pair ceiling 28.5.
+
+Stage 4: both readers quoted nothing for questions 1 to 4 and read the decisive step as analytical. The judge returned
+SEND_BACK on zip 3568be1c and FIX_NOW on zip 74e32011, each on Schedule B alone with the call forced: with the notes gone,
+nothing shipped says a contract order's repair is its field ticket's day rather than its Completed day (every Completed
+reading moves all 24 cells, by up to 1.3 t), and a battery whose run changed on 2 or 3 July can be counted to either run
+for the days before its first new-run visit (R06 and R10 in July to December; R10's 7.8497 t is 0.3 kg from its rounding
+edge). Closing either needs a sentence naming the device itself (the repair day's source, the run's change day), which
+hands the ask's last silent device to every reader, so this is an ask-layer rework, not a re-check repair. The repo
+keeps the shipped zip 3556c4e7; the generator builds the repaired cut 74e32011.
+
 ## Tried and rejected
 
 - 2026-10-26, draw screen for this number, each dead on file, on the rules or on paper before a card was written: the
@@ -462,3 +502,11 @@ Shipped on zip 3556c4e7.
 - 2026-10-26, fix pass: the band edges at 40, 50, 60 and 75 t left a per-tank form the judge fitted 0.4 t over the
   floor; the windows reject it, but a floor that close to a member anyone fits is margin fragility (task482 v10), so the
   edges moved to 36, 48, 60 and 72 t, the levies unchanged.
+- 2026-11-02, re-check: the data notes as the place for the clock, the journal's zone, the tracker's dates and the
+  work orders' references: a file listing the exports and their columns describes the data (leak.py sweeps 1 and 12);
+  each reading moved into the directive's WHAT or the data's own headers, the notes withdrawn.
+- 2026-11-02, re-check: the pack without the notes at csv, jsonl, pdf and xlsx: the format set of task257, task449 and
+  task456; the sales gas statements, a distractor, ship as XML.
+- 2026-11-02, re-check: the contract-order device without the notes: the Field ticket label and the Vendor column
+  leave the repair day an inference from the Completed days' pattern, which both judge passes refused; filing the
+  ticket's day as the repair hands the device over, so Schedule B owes a new device on data the call never reads.

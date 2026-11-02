@@ -44,7 +44,7 @@ def compute(p=None):
     f["schedule_b.sessions"] = sum(1 for r in p["ldar_surveys"] if dt.date.fromisoformat(r["Surveyed"]) not in
                                    sv[cur.get(r["Battery"], r["Battery"])])
     f["schedule_b.contract_orders"] = sum(1 for r in p["workorders"] if r["Description"].startswith("Leak repair") and
-                                          r["Reference"].startswith("FT "))
+                                          r["Reference"].startswith("Field ticket "))
     return p, g, f, fam
 
 

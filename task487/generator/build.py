@@ -22,7 +22,7 @@ import world as W         # noqa: E402
 NAMES = dict(register=PR.REGISTER, fieldlog=PR.FIELDLOG, sitelink=PR.SITELINK, sites=PR.SITES, events=PR.EVENTS,
              alarms=PR.ALARMS, production=PR.PRODUCTION, vapour=PR.VAPOUR, workorders=PR.WORKORDERS,
              ldar_surveys=PR.LDAR_SURVEYS, ldar_tags=PR.LDAR_TAGS, hauler="hauler_load_tickets_2026.csv",
-             salesgas="sales_gas_meter_statements_2026.csv", directive=PR.DIRECTIVE, notes="kesmere_field_data_notes.txt")
+             salesgas="sales_gas_meter_statements_2026.xml", directive=PR.DIRECTIVE)
 GOLD = dict(events="release_events_2026.csv", workbook="release_levy_filing_2026.xlsx")
 ORG = "Vennholt Energy Ltd."
 OWNERS = {
@@ -50,7 +50,6 @@ def pack():
     w = W.build()
     n = PK.cut({k: t(k) for k in NAMES}, w)
     DOC.directive(t("directive"))
-    DOC.notes(t("notes"))
     for k in OWNERS:
         PP.normalize_ooxml(t(k), excel=True, **OWNERS[k])
     for k, stamp in STAMPS.items():

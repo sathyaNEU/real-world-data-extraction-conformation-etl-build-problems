@@ -1,11 +1,11 @@
 {
  "task": "task487",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences/emissions-inventory",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-26",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-02",
  "stump": "The default path starts every event the records do not date halfway through its window, which the alarm-timed relief valves appear to confirm, and files band B at 45.2 t for a 2027 levy of CAD 115,200; 0.85 per cent of departing visits leave a thief hatch open that vents its whole window, read from hatches rising only 2.1 times from a weekday window to a weekend one for 3.0 times the hours, and the hatches' expected starts given their windows put the return in band C at 54.5 t, CAD 171,000",
  "architecture": 1,
  "loops": 0,
@@ -32,7 +32,7 @@
   "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "",
+ "resume": "Schedule B ask-layer rework (/fix-rubric scale, the main call frozen): the repaired cut (zip 74e32011, the data notes out, every free gate green, freeze.py determinism PASS) has the judge's FIX_NOW open on the contract repair day and the July run change (R06, R10 H2); re-site the ask's device so it is determinate without a filed HOW, re-measure ceiling.py, re-judge, then RESHIPPED. The shipped zip 3556c4e7 stays the portal's cut until then.",
  "approved": null,
  "delivered": "2026-10-26",
  "portal": null,
@@ -45,5 +45,20 @@
   "figures_check": "50 figures, 0 absent",
   "scrub": "golden clean, no producer signature",
   "call_files": "the eight files the call reads byte-identical to rounds 1 to 3"
+ },
+ "recheck": {
+  "date": "2026-11-02",
+  "rebuild": "3556c4e7 reproduced byte for byte",
+  "analyst_test": "midpoint 45.18 t B, constant-rate interval-censored 45.53 t B, last known good 87.46 t E, decisive fit 54.54 t C",
+  "reflex": "golden not the field's reflex: the midpoint, last known good and the uninformative fit sit at rung 0",
+  "cut": "74e32011 (not shipped)",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "leak_py": "REVIEW, sweeps 12 and 13 clean",
+  "reader": "two reads, questions 1 to 4 none, question 6 analytical",
+  "heart": "WARN repeat.gate_g against task121 v6",
+  "surface": "exit 0",
+  "figures_check": "50 of 50",
+  "freeze": "determinism PASS",
+  "judge": "pass 1 SEND_BACK, pass 2 FIX_NOW, both on Schedule B only, call forced"
  }
 }

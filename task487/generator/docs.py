@@ -1,5 +1,4 @@
-"""The pack's documents: the Provincial Energy Board's Directive 17 on the release-event return and levy, and the
-Kesmere field data team's notes on the exports."""
+"""The pack's documents: the Provincial Energy Board's Directive 17 on the release-event return and levy."""
 import reportlab.rl_config
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -63,14 +62,16 @@ def directive(path):
          P("This directive applies to every licensee of an oil battery with atmospheric storage tanks. Each licensee files "
            "a return of its release events for each calendar year by 31 March of the following year, and the Board levies "
            "the licensee for the following year on the release-event methane in the return. Years and days in this "
-           "directive are calendar years and days in local time."),
+           "directive are calendar years and days in local time. Under the province's Time Amendment Act, 2024, local "
+           "time is UTC-7 until 02:00 on 8 March 2026 and UTC-6 from then on; the clocks do not go back in November."),
          P("2. Release events", H),
          P("2.1 A release event is tank vapour vented to the atmosphere through an open thief hatch, through a vapour "
            "combustor whose pilot is out, or through a tank pressure-vacuum relief valve that has not reseated."),
          P("2.2 A relief valve that lifts at its set pressure and reseats is routine venting and not a release event."),
          P("3. Schedule A: the release events", H),
          P("3.1 The return covers each release event found at the licensee's batteries in the calendar year, and gives "
-           "for each event its battery, kind, start, closure and vented methane."),
+           "for each event its battery, kind, start, closure and vented methane, the times in local time and the methane in "
+           "kilograms."),
          P("3.2 An event starts when its venting began. A relief valve that did not reseat starts at the tank pressure "
            "alarm at which it lifted, where the battery's tank pressure is telemetered. Where the licensee's records do "
            "not date an event's start, the return takes the start at its expected value given those records. An event "
@@ -90,7 +91,8 @@ def directive(path):
          P("5.1 Schedule B reports the licensee's fugitive emissions at its batteries and the wells that produce to them. "
            "It is not levied."),
          P("5.2 A leak is gas escaping from one component of a battery, or of a well producing to it, from when it "
-           "starts until the component is repaired. An optical gas imaging (OGI) survey of the battery finds it, and a "
+           "starts until the component is repaired. An optical gas imaging (OGI) survey of a battery screens every "
+           "component of the battery and of the wells producing to it. A survey of the battery finds the leak, and a "
            "later survey that finds it again before it is repaired has found the same leak. A leak vents at the methane "
            "rate measured when it was first found, from the start of the day of the battery's last survey before it was "
            "first found until the start of the day it was repaired, or to the end of the year if it was not repaired in "
@@ -106,70 +108,3 @@ def directive(path):
            SMALL)]
     _pdf(path, "Directive 17: Release-Event Methane Return and Levy", s, "Upstream Emissions Branch",
          "Provincial Energy Board")
-
-
-NOTES = """KESMERE FIELD: DATA NOTES FOR THE 2026 RELEASE-EVENT RETURN
-Vennholt Energy Ltd., production data team. Exports pulled 8 to 13 January 2027.
-
-Local time is UTC-7 until 8 March 2026 and UTC-6 from then on: the province kept its
-clocks at UTC-6 when they would have gone back on 1 November 2026.
-
-battery_register_20270108.csv
-  One row per tank battery as at 8 January 2027: licence, route, visit schedule, tanks,
-  tank pressure telemetry, vapour combustor. BT-0907 was re-licensed as BT-0907A on
-  17 August 2026 (new tanks); systems that keyed it by code changed on that day.
-
-route_app_visits_20251215_20260630.csv
-  The route app, the lease operators' visit app until it was retired on 30 June 2026.
-  One row per site visit as the lease operator tapped in and out, local time.
-  Pulled from 15 December 2025.
-
-checkin_app_visits_20260615_20270112.jsonl
-  The check-in app, in use from 1 July 2026 (routes R03 and R09 from 15 June, beside the
-  route app until 30 June). One record per check-in: geofence entry and exit, or a
-  manual check-in when the phone had no fix. Times are local with their UTC offset.
-  Sites are in checkin_app_sites.csv.
-
-release_event_register_2026.xlsx
-  The office's register of release events found in 2026, imported from the lease
-  operators' event reports in each app; Found and Closed keep the app's time format.
-
-scada_alarm_journal_20251215_20270112.csv
-  SCADA host journal for the telemetered batteries: tank pressure points (PIT-101, high
-  alarm at the relief valves' set pressure) and RTU communications. Time is UTC.
-
-battery_daily_production_20251215_20261231.csv
-  Daily production by battery (production accounting). Volumes at 15 C and 101.325 kPa;
-  gas in thousands of cubic metres; HoursOn is the battery's producing hours.
-
-tank_vapour_analyses_2025_2026.xlsx
-  Laboratory results for tank vapour (flash) samples: flash gas-oil ratio and composition
-  in mole per cent.
-
-maintenance_work_orders_2026.csv
-  The maintenance system's work orders completed in 2026, numbered as they were raised.
-  Reference is the notification the order was raised on (N, or EHS for the leak
-  program), its maintenance plan (PM), or the contractor's field ticket (FT).
-
-ldar_surveys_2025_2026.csv
-  The camera crews' OGI sessions at the batteries and the wells producing to them,
-  September 2025 to December 2026: the points each session screened and the leaks it
-  tagged.
-
-ldar_leak_tracker_20270112.xlsx
-  The leak tracker as at 12 January 2027: one row per tag hung at a survey, with the
-  camera's methane rate estimate. Received is the day the tag reached the tracker from
-  the crew's tablet; Closed is the day the tag was closed against its work order. A
-  repair that needs a shutdown waits for the battery's next one.
-
-hauler_load_tickets_2026.csv
-  Kesmere Fluid Haulers' load tickets from the batteries.
-
-sales_gas_meter_statements_2026.csv
-  Monthly statements for the field's three sales gas meters.
-"""
-
-
-def notes(path):
-    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
-        f.write(NOTES)

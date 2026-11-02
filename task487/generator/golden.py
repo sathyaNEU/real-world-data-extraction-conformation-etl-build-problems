@@ -166,7 +166,7 @@ def journal(p, o):
         if r["State"] not in ("ALARM", "NORMAL"):
             continue
         m = RTU.search(r["Message"])
-        t = h_utc(m.group(1)) if (o["rtu_time"] and m) else h_utc(r["Time"])
+        t = h_utc(m.group(1)) if (o["rtu_time"] and m) else h_utc(r["Time (UTC)"])
         pts.setdefault(r["Point"].split("/")[1], []).append((t, r["State"]))
     for k in pts:
         pts[k].sort()
@@ -244,6 +244,15 @@ def fit(y, w):
                 n=int(y.sum()), windows=int(len(y)))
 
 
+def fit_rate_only(y, w):
+    """P(found by w) = 1 - exp(-b w): a constant rate an hour and no share started by the visit"""
+    def nll(x):
+        F = -np.expm1(-np.exp(x[0]) * w)
+        return -(y * np.log(np.clip(F, 1e-300, 1)) + (1 - y) * np.log(np.clip(1 - F, 1e-300, 1))).sum()
+    r = minimize(nll, [np.log(3e-4)], method="Nelder-Mead", options=dict(xatol=1e-11, fatol=1e-11))
+    return float(np.exp(r.x[0]))
+
+
 def expected_hours(p, b, w):
     """expected hours from the start to the find, given the window w"""
     x = b * w
@@ -292,7 +301,7 @@ def as_date(v):
 
 def ref_day(ref):
     """the day a work order's reference carries: a field ticket's job day, a notification's day raised"""
-    m = re.match(r"(FT|EHS|N) (\d{6})-\d{2}$", ref or "")
+    m = re.match(r"(Field ticket|EHS|N) (\d{6})-\d{2}$", ref or "")
     return dt.datetime.strptime(m.group(2), "%y%m%d").date() if m else None
 
 
@@ -304,7 +313,7 @@ def leak_wos(p, mode="work"):
         if r["Description"].startswith("Leak repair"):
             done = dt.date.fromisoformat(r["Completed"])
             ref = ref_day(r["Reference"])
-            day = {"work": ref if r["Reference"].startswith("FT ") else done, "completed": done,
+            day = {"work": ref if r["Reference"].startswith("Field ticket ") else done, "completed": done,
                    "refdate": ref or done}[mode]
             for t in re.findall(r"\((T-\d{5})\)", r["Description"]):
                 out.setdefault(t, []).append(day)
@@ -336,7 +345,7 @@ def fugitives(p, o, reg, cur):
     tags = []
     for r in p["ldar_tags"]:
         b = cur.get(r["Battery"], r["Battery"]) if o["rename"] else r["Battery"]
-        d = as_date(r["Received"])
+        d = as_date(r["Received in tracker"])
         if o["fg_survey"] == "log":
             d = [x for x in sv.get(b, []) if x <= d][-1]
         rep = max(wos[r["Tag"]]) if wos.get(r["Tag"]) else as_date(r["Closed"])

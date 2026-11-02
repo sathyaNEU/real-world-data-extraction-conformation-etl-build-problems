@@ -1,5 +1,5 @@
 """The generator's assertions on the cut pack and the clean truth: the input gates, the realism sweep, the three rules
-(R1 to R3), the Layer 1 items, the ladder, both families, the semantic fork rows (SF1 to SF24), the separation of the
+(R1 to R3), the Layer 1 items, the ladder, both families, the semantic fork rows (SF1 to SF13), the separation of the
 asks from the call and the fairness of their devices.
 
     python3 task487/generator/checks.py
@@ -75,6 +75,9 @@ def main():
     check("gate: 10 or more files", len(files) >= 10, "%d files" % len(files))
     fmts = {os.path.splitext(f)[1] for f in files}
     check("gate: 3 or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    check("H9: no notes, readme, dictionary, manifest or field guide ships", not any(
+        re.search(r"note|readme|dictionar|manifest|codebook|guide|layout|schema", f, re.I) for f in files)
+        and ".txt" not in fmts, ", ".join(sorted(files))[:80])
     big = max(sum(1 for _ in open(os.path.join(TARGET, f), "rb")) - 1 for f in files if f.endswith((".csv", ".jsonl")))
     check("gate: a file of 25,000 rows or more", big >= 25000, "%d rows" % big)
     meta = json.load(open(os.path.join(TASK, "metadata.json")))
@@ -168,6 +171,17 @@ def main():
           "%.2f and %.2f from %.2f" % (gold_clean, mid_clean, true_clean))
     dep_clean = clean_total(w, rt, evs, lambda e: e["dep"])
     check("R3b lower rung, every start at the departure, stays wrong", G.band(dep_clean)[0] != "C", "%.2f t" % dep_clean)
+    # the interval-censored reflex: a constant rate an hour, no share started by the visit
+    rate_only = {}
+    for k in ("TH", "CP", "PV"):
+        sel = [x for x in win if {"TH": True, "CP": x["comb"], "PV": not x["tel"]}[k]]
+        ww = np.array([x["w"] for x in sel])
+        yy = np.array([1.0 if x["kind"] == k else 0.0 for x in sel])
+        rate_only[k] = G.fit_rate_only(yy, ww)
+    ro_clean = clean_total(w, rt, evs, lambda e: e["arr"] - float(G.expected_hours(
+        0.0, rate_only[e["kind"]], np.array([e["arr"] - e["dep"]]))[0]))
+    check("R3a analyst test, the constant-rate interval-censored fit on the clean truth: band B",
+          G.band(ro_clean)[0] == "B", "%.2f t" % ro_clean)
     vs_share = sum(e["visit_started"] for e in evs) / max(1, sum(e["kind"] == "TH" for e in evs))
     check("R3 the world's hatches are part visit-started, part between visits", .15 < vs_share < .5,
           "%.2f of hatches" % vs_share)
@@ -281,7 +295,7 @@ def main():
         "did not hold" in d for r in p["ldar_tags"] for c, d in texts.get(r["Tag"], [])
         if G.as_date(r["Closed"]) and c == G.as_date(r["Closed"]).isoformat()))
     shipped = " ".join(open(os.path.join(TARGET, f_), encoding="utf-8").read() for f_ in files
-                       if f_.endswith((".csv", ".txt", ".jsonl")))
+                       if f_.endswith((".csv", ".txt", ".jsonl", ".xml")))
     check("asks: no shipped text says a session re-checks, verifies or approves anything", not re.search(
         r"re-?check|verif|approv|re-?screen|follow-?up", shipped, re.I))
     full = G.surveys(p, g["opts"], cur)
@@ -317,7 +331,7 @@ def main():
         abs((dt.date.fromisoformat(r["Surveyed"]) - d).days) <= 7 for b, r in small for d in full[b]))
     every = {b: sorted(dt.date.fromisoformat(r["Surveyed"]) for r in rs) for b, rs in rows_by.items()}
     off = sum(1 for r in p["ldar_tags"] if [x for x in every[cur.get(r["Battery"], r["Battery"])] if x <= G.as_date(
-        r["Received"])][-1] != [x for x in full[cur.get(r["Battery"], r["Battery"])] if x <= G.as_date(r["Received"])][-1])
+        r["Received in tracker"])][-1] != [x for x in full[cur.get(r["Battery"], r["Battery"])] if x <= G.as_date(r["Received in tracker"])][-1])
     check("asks: every tag lands on the same survey whether or not sessions are read as surveys", off == 0, "%d" % off)
     on = {(b, r["Surveyed"]) for b, r in small}
     wo2 = [r for r in p["workorders"] if "did not hold" in r["Description"]]
@@ -328,7 +342,7 @@ def main():
           {h2.get(b) for b, r in small if r["Surveyed"] >= "2026-07-01"} >= set(C.ROUTES))
     # the second device: a contract work order is completed when its field tickets are approved
     import asks as A
-    ft = [r for r in p["workorders"] if r["Reference"].startswith("FT ")]
+    ft = [r for r in p["workorders"] if r["Reference"].startswith("Field ticket ")]
     check("asks: every contract order completes on the 10th of the month after its ticket, or the next working day",
           all(dt.date.fromisoformat(r["Completed"]) == A.approval(G.ref_day(r["Reference"])) for r in ft),
           "%d orders" % len(ft))
@@ -336,7 +350,7 @@ def main():
         A.workday(G.ref_day(r["Reference"])) == G.ref_day(r["Reference"]) for r in ft if "shutdown" not in
         r["Description"]))
     seen_on = {r["Tag"]: at_tag for r, at_tag in ((r, [x for x in full[cur.get(r["Battery"], r["Battery"])]
-                                                     if x <= G.as_date(r["Received"])][-1]) for r in p["ldar_tags"])}
+                                                     if x <= G.as_date(r["Received in tracker"])][-1]) for r in p["ldar_tags"])}
     leak_ft = [r for r in ft if r["Description"].startswith("Leak repair")]
     check("asks: every contract leak repair's ticket falls after the survey that tagged its leaks", all(
         G.ref_day(r["Reference"]) > max(seen_on[t] for t in re.findall(r"\((T-\d{5})\)", r["Description"]))
@@ -346,13 +360,13 @@ def main():
         G.ref_day(r["Reference"]) <= dt.date.fromisoformat(r["Completed"]) for r in ehs), "%d orders" % len(ehs))
     leak26 = [r for r in p["workorders"] if r["Description"].startswith("Leak repair") and "did not hold" not in
               r["Description"]]
-    share = sum(1 for r in leak26 if r["Reference"].startswith("FT ")) / len(leak26)
+    share = sum(1 for r in leak26 if r["Reference"].startswith("Field ticket ")) / len(leak26)
     check("asks: the contractor did between half and four fifths of the leak repairs", .5 <= share <= .8, "%.2f" % share)
     check("asks: contract work outside the leak program completes the same way (the twin)",
           sum(1 for r in ft if not r["Description"].startswith("Leak repair")) >= 100,
           "%d orders" % sum(1 for r in ft if not r["Description"].startswith("Leak repair")))
     own = collections.Counter(dt.date.fromisoformat(r["Completed"]).day for r in p["workorders"]
-                              if not r["Reference"].startswith("FT "))
+                              if not r["Reference"].startswith("Field ticket "))
     check("realism: the field's own work orders complete through the month", len(own) >= 28, "%d days" % len(own))
     check("asks: no contract leak repair in December 2026 (the crews had left)", not any(
         G.ref_day(r["Reference"]) >= dt.date(2026, 12, 1) for r in leak_ft))
@@ -369,7 +383,7 @@ def main():
     def at_survey(b, d):
         return [x for x in sorted(logd[b]) if x <= d][-1]
     tags = sorted(((cur.get(r["Battery"], r["Battery"]), r["Component"], at_survey(cur.get(r["Battery"], r["Battery"]),
-                    G.as_date(r["Received"])), G.as_date(r["Closed"]), r["Status"], G.as_date(r["Received"]))
+                    G.as_date(r["Received in tracker"])), G.as_date(r["Closed"]), r["Status"], G.as_date(r["Received in tracker"]))
                    for r in p["ldar_tags"]), key=lambda x: x[:3])
     again, repeat = collections.Counter(), collections.Counter()
     for x, y in zip(tags[:-1], tags[1:]):
@@ -432,7 +446,7 @@ def main():
           str(sorted(collections.Counter(pm.values()).items())))
     pack_text = ""
     for f in files:
-        if f.endswith((".csv", ".txt", ".jsonl")):
+        if f.endswith((".csv", ".txt", ".jsonl", ".xml")):
             pack_text += open(os.path.join(TARGET, f), encoding="utf-8").read()
     check("realism: no em or en dash in the pack's text files", "—" not in pack_text and "–" not in pack_text)
     sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()

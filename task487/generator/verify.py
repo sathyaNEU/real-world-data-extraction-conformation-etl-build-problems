@@ -171,12 +171,12 @@ def main():
     sessions = ls[ls.PointsScreened * 2 < ls.groupby("bat").PointsScreened.transform("max")]
     ls = ls.drop(sessions.index)
     ls["s"] = pd.to_datetime(ls.Surveyed)
-    lt["t"] = pd.to_datetime(lt.Received)
+    lt["t"] = pd.to_datetime(lt["Received in tracker"])
     lt = pd.merge_asof(lt.sort_values("t"), ls[["bat", "s"]].sort_values("s"), left_on="t", right_on="s", by="bat",
                        direction="backward")
     wo = pd.read_csv(os.path.join(T, "maintenance_work_orders_2026.csv"))
     wo = wo[wo.Description.str.startswith("Leak repair")].copy()
-    ticket = wo.Reference.str.extract(r"^FT (\d{6})-\d{2}$")[0]
+    ticket = wo.Reference.str.extract(r"^Field ticket (\d{6})-\d{2}$")[0]
     wo["day"] = pd.to_datetime(ticket, format="%y%m%d").fillna(pd.to_datetime(wo.Completed))
     named = wo.assign(Tag=wo.Description.str.findall(r"\((T-\d{5})\)")).explode("Tag")
     last_wo = named.groupby("Tag").day.max()
