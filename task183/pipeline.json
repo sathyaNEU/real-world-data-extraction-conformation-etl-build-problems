@@ -1,33 +1,34 @@
 {
   "task": "task183",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "human-factors-ergonomics",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design (architecture 3)",
+  "stage": 1,
+  "stage_name": "re-root owed (architecture 3 spent at the judge)",
   "updated": "2026-11-02",
   "stump": "A competent solver tests each SPAD at the Class 162's rated full-service deceleration of 0.88 metres per second squared and sends the 2027 package to SK112 with three driver braking SPADs, booking CJ58's six to poor adhesion because their trains decelerated at about 0.66 against the rating; the step that lands it there is testing the stop at a level-track rating on an approach whose own routine stops show every 162 achieving about 0.66 in dry weather, so from where those drivers began braking a full-service application could not have stopped them and the six are driver braking SPADs.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-02"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW, no LEAK (5 lines: brake sheet 0.88 and stump terms, SP-07 call words, stump terms and plain register headers; each ruled harmless in ## Leak review)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task231 v2 0.05 (check, 2026-11-02)"
+    "heart": "WARN (overuse.gate_g), 2026-11-02",
+    "nearest": "0.05 (task121 v4, task231 v2, task480 v2)",
+    "surface": "exit 0; task308 promoted on the structural card collision at surface 0.080, differentiated on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "arch 3 pass 1 on cut 2d063320: NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK: the main call rests on an unfiled rate source (the brake sheet's filed 0.88 read literally files SK112; the golden's own-stand rate is directed by no sentence); fork-is-the-stump; two ask forks",
+    "report": "determinism_check_report.md"
   },
   "returned": [],
-  "resume": "Architecture 3 drawn and registered 2026-11-02 (card v3 at WARN: overuse.gate_g and repeat.decision answered in ## Draw; task308 differentiated). Next: stage 2, the world's generator prototype pinning the ladder (rung 0 RV23 on raw counts, rung 1 SK112 at the brake sheet's rating, golden CJ58 at each approach's own routine full-service rate), the cheap-route sweep as code (deceleration thresholds, rates per approach, autumn exclusions, onset-distance cuts, overruns), the fork table, the ask sheet with two device families on disjoint blocks measured by generator/ceiling.py, prompt.txt, precut.py exit 0; then stage 3. Architecture 2's uncommitted build in the working tree is replaced by architecture 3's.",
+  "resume": "RE-ROOT at stage 1, architecture 4 (2026-11-02): architecture 3 (a train operator's SPAD package, each approach's achievable braking from its own routine stops) is spent at the judge, SEND_BACK: the default path applied the brake sheet's filed level-track rate, a reading the judge licensed, and the sentence that would close it names the decisive step (Tried and rejected, last line). Architecture 4 takes a new world, a new dataset, a new generator and a new shell, in another client domain, under the same objective (Anomaly Detection & Diagnostics) and number. Its default path must be the analyst's own model refuted by the data's fit, never a figure a shipped document states. The working tree holds architecture 3's uncommitted build, which architecture 4 replaces.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -143,5 +144,14 @@
       "prior_resume": "RE-ROOT at stage 1 (2026-11-02): architecture 2 (a city electric department's Feeder 14 patrol, trips relocated through the conductor change the DMS locator ignores) is spent at the judge, SEND_BACK on Gate G: the shipped DMS log answered the decision question wrong and refuting it was the stump. Architecture 3 takes a new world, a new dataset, a new generator and a new shell, in another client domain, under the same objective (Anomaly Detection & Diagnostics) and number; its default path is the analyst's own easy method, never a shipped estimate of the decision quantity."
     }
   },
-  "solver_rounds": []
+  "solver_rounds": [],
+  "build": {
+    "target_zip_md5": "2d06332064f8821e4d66aabe523d088b",
+    "checks": "89 of 89",
+    "verify": "every check passed",
+    "byte_identical": true,
+    "figures_check": "21 figures, 0 absent",
+    "voice_check": "PASS",
+    "ceiling": "cracker 0 of 24 asks (45.0), mirror 37.5 per cent (32.6), pair 38.8; one device handled on the call: A 79.4, B 65.6"
+  }
 }

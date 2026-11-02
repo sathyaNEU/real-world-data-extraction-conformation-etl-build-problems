@@ -1,81 +1,54 @@
-# determinism-check report, task183, 2026-11-02
+# determinism-check report, task183 (architecture 3), 2026-11-02
 
 ## Verdict
-DETERMINISTIC
-**Disposition:** SEND_BACK (Gate G: the DMS fault-location log is a wrong-methodology official artifact, and it is the stump, not a declared distractor)
-**Stumping type:** mechanism: planted_defect_flip (wrong-methodology official artifact), stumping_family: surface_read_rejection, surface_read_dependency: yes, sole_data_defect: yes
-
-Runtime note: no `Agent` tool was available. The brief was written to /tmp/determinism-check-task183-1793614319/judge_brief.md. The coordinator spawned the single sonnet thread, and its verdict is /tmp/determinism-check-task183-1793614319/verdict.md. Input: prompt.txt (not legacy), target.zip md5 a11364baec2f5b19cd19ed09cf133325, submission.md.
+NOT_DETERMINISTIC (every golden figure reproduces, so not SOLUTION_WRONG)
+**Disposition:** SEND_BACK
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-Every golden figure reproduces from the shipped files on a literal reading. Main call: 40 TRIP rows in 2026 (36 phase, 4 ground); the 24 section-7 trips sit at mile 6.91 to 7.14, at least 0.3 mi from any boundary. They are unchanged under larger, mean or smaller faulted-phase current, collapsing the 04/18 shots, or any window, ground-trip, duplicate or mile-versus-pole reading. The line model reproduces the study's 3.36 kA and 2.91 kA at mile 1.9. The block fails Gate G, not determinism. `dms_fault_location_log.csv` is an official, validated-looking artifact that locates the same 24 trips in section 9 (mile 8.58 to 8.88). It is right only before mile 3.6, and the main call stumps only because it is wrong. On clean data the DMS log would give section 7 directly, so the clean-data test fails. The DMS log is not named in `metadata.json` as a declared distractor (those are the pole inspection and member contacts files), so the Gate G exception does not apply.
+SP-07 3.5 says only "a full-service application in normal rail conditions" and never says whose deceleration tests it. The only filed rate is the Class 162 data sheet FE-162-07 step 3, 0.88 m/s2 (dry rail, level tangent track). Executed literally with 0.88 the winner is SK112 (3), with CJ53 and SK115 on 2 and CJ58 on 0. The golden (CJ58 6 v SK112 3) holds only on a rate taken from each signal's own routine step 3 stands in the OTMR extract (CJ58 0.667), which no sentence directs. Competing defensible answer on the main call. Both asks also carry an unfiled second reading. Source: judge thread verdict, /tmp/determinism-check-task183-a3r1/verdict.md.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| 2026 trips (r1407_event_history.csv) | 40 (36 phase, 4 ground) | 40 (36, 4) | yes |
-| Section 7 trips / miles | 24, mile 6.9 to 7.1 | 24, mile 6.91 to 7.14 | yes |
-| Next-largest section | at most 4 | section 2, 4 trips | yes |
-| DMS cluster | mile 8.6 to 8.9, section 9 | 8.58 to 8.88, section 9 | yes |
-| Section 7 ends | SW1406 F14-0132 mile 6.4; SW1407 F14-0149 mile 7.5 | same (docx and GIS) | yes |
-| Lateral counts L05..L18 | 34 28 74 39 47 6 44 35 6 6 30 35 25 22 | identical | yes, all 14 |
-| Section net costs S1..S14 (hundreds) | 2500 2200 900 2700 500 400 1100 3700 400 800 1100 400 1300 1100 | identical; all more than 20 dollars from a rounding edge | yes, all 14 |
+| CJ58 step 3 median rate (extract, n=556) | 0.667 | 0.667 | yes |
+| SK112 step 3 median rate (n=282) | 0.88 | 0.880 | yes |
+| Driver braking SPADs CJ58 / SK112 | 6 / 3 | 6 / 3 (CJ58 2,2,2; SK112 1,1,1) | yes, stable p25 to p95 of own stands |
+| Slide 2 other signals | OW4 2, SK115 2, HD69 1, RV17 1, RV20 1, RV23 1, SK108 1 | same | yes |
+| TPWS by box (golden reading) | Helmsdyke 9/11/9, Ravensholme 5/1/5, Cauldwell 6/6/5, Owlsden 5/3/6, Skelby 9/8/11 | same | yes |
+| Hours (golden reading) | Helmsdyke 10,780/10,740/9,850; Skelby 11,000/10,960/10,050; Owlsden 5,810/5,800/5,320; All 27,590/27,490/25,220 | same | yes |
 
 ## Competing answers that survived
-None on the main call.
-
-- **Main call, conductor legend:** no shipped file maps RAVEN to a C-3 row, only by industry convention (RAVEN = 1/0). Read as 4/0, the cluster moves to mile 8.27 to 8.40, section 8, 23 trips; read as #2, to section 6. The thread judged 1/0 forced for an expert. The ground-fault currents at the two crew poles sit nearer the 1/0 values. This is a soft Gate B note, not a surviving fork.
-- **Lateral ask, planned outages:** the prompt says "lost power", not "unplanned". The literal reading gives L07 74. Excluding planned outages gives L07 3, with L11 unchanged. This is a soft fork, with the literal reading as the golden.
-- **Lateral ask, other readings (all rejected by the shipped text):**
-
-| Reading | Result |
-|---|---|
-| No merge of overlapping outages | L13 48, L16 36 |
-| Ignore connect dates | L07 76, L12 36, L16 37, L17 26 |
-| Include finaled meters | L06 29 |
-| Threshold 3 or more | L10 37, L13 48, L14 33 |
-| Threshold 5 or more | L05 1, L07 3, L11 44 |
-| Count momentary shots | no change |
-| AMI log alone | L05 28, L06 24, L07 69, L08 33, L09 37, L10 2, L11 37, L12 27, L13 3, L14 to L18 0 |
-
-- **Section repairs, other readings:**
-
-| Reading | Result |
-|---|---|
-| REPAIR orders only | S1 1,400; S2 1,100; S3 0; S4 1,600; S7 0; S13 minus 2,900 |
-| Positive receipts only (ignore the NSF) | S7 minus 800 |
-| Drop the squirrel-guard job at F14-0010 | S1 2,000 |
+1. Main call, rate source. Fleet sheet 0.88 for every signal gives SK112 3, CJ53 2, SK115 2, five signals on 1, CJ58 0. Winner SK112, runner-up 2. The fleet-wide median of all B3 stands (0.861) also gives SK112 3. No shipped sentence closes it. The sheet's "level tangent track" scope is a condition, not a directive to substitute a measured rate.
+2. TPWS ask. The extract's signal_ref is filled on every event, including those on speed-restriction and buffer-stop loops. Counting by signal_ref gives Helmsdyke 11/12/12, Ravensholme 8/4/7, Cauldwell 10/7/6, Owlsden 6/5/8, Skelby 13/13/15. The prompt's "at its signals" does not rule that out. Golden counts only events on a signal's own loop (99 of 137 within 18 m of a signal loop; 22 on speed-restriction loops, 16 on buffer-stop loops).
+3. Hours ask. No filed sentence extends a turn past its booked off to the last train's arrival plus ten minutes. Booked on to booked off, deduplicated, gives All 27,380/27,300/25,040 (Helmsdyke 10,690/10,660/9,780; Skelby 10,920/10,890/9,990; Owlsden 5,770/5,750/5,280). Arrival plus ten whenever off is earlier gives All 27,680/27,580/25,300; extend to arrival only gives 27,490/27,400/25,130; always arrival plus ten gives 27,640/27,540/25,260.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 16 | yes |
-| Formats | 3 or more | 5 (csv, xlsx, pdf, docx, json) | yes |
-| Large file | 25,000 rows or more | ami_outage_events_2026.csv, 25,701 rows (counted) | yes |
-| Distractors | 2 or more, in metadata, none in a file name | 2 named (f14_pole_inspection_2024.csv, member_contacts_blinks_2026.csv). The thread also found pawnee_ridge_airport_daily_2026.csv unused. File names do not label them | yes |
-| Distractors unused but weighable | relevant, ruled out by a shipped fact | not separately confirmed by the thread; the pole inspection and member contacts files are plausible feeder-relevant context | partial, not verified |
-| Deliverables | 1 to 3, all in golden | 3 (docx, csv, csv), all present in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 14 laterals, 14 sections, miles to one decimal, dollars to the nearest hundred | yes |
-| Prompt shape and 25 criteria | identifiable, 25 or more | shape `other`; the design note's ladder gives about 6 call + 4 chart + 14 + 14 criteria (reaches 25 or more) | yes |
-| Not LLM generated, goldens real | read as real work products | thread found utility-realistic artifacts, nothing exclusion-level; cosmetic PDF title mismatch | yes |
+| Files / formats | 10+ / 3+ | 12 / 5 (pdf, xlsx, docx, csv, json) | yes |
+| Large file | 25,000+ rows | train_running 90,512; extract 26,598 | yes |
+| Distractors | 2+ in metadata.json, none labelled by file name | spad_register_export_20261201.csv, class162_brake_overhaul_history.xlsx; names do not label them | yes |
+| Distractor behaviour | unused, weighs, ruled out by a shipped fact | stale export gives same counts, overhaul history changes no count; neither answers a graded quantity | yes |
+| Deliverables | 1 to 3, all in golden, no format family | 3 (pptx, csv, xlsx), all present in submission | yes |
+| Asks | multi-dimensional, unit and rounding stated | by box/depot by year; whole numbers, nearest ten stated in prompt | yes |
+| Prompt shape / 25 criteria | identifiable, 25+ | shape 08 named in metadata; criterion count not verified (rubric generated downstream) | not verified |
+| Reads as real work | no LLM tells | judge found no authoring disclosures | yes |
+Spec gates pass, but the determinism failure stands on its own.
 
 ## Gate G reconciliation
-- **Thread:** mechanism planted_defect_flip, stumping_family surface_read_rejection, surface_read_dependency yes, sole_data_defect yes.
-- **Design note:** its stump sentence is the same: trust the DMS locator and file section 9, against re-deriving from the currents through the as-built line.
-- **Match:** the two agree. The finding is the design itself: the surface read is the DMS log, which is not the declared distractor, and it is too load-bearing. The note calls it field_method (F2/F6, "a correct monitor blind at its configured grain"), but the shipped DMS artifact is the wrong ranker of candidates. A mismatch with the note is not the problem, so the finding is a design-level send-back.
-- **Card:** the card's `stump_class` / `analyst_test` / `domain_test` lines were not printed, because my cards query returned no fields.
+Thread: mechanism method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no. The design note's stump sentence (rated 0.88 files SK112 3; the approach's own stands give CJ58 6) matches the thread's description of the easy and golden routes, so the stump is the one declared. The declared distractors are not the surface read, so they are not too load-bearing. The finding is that the easy route rests on a figure a shipped document states, so a literal reading licenses it. The design note's own post-verdict entry in Tried and rejected reaches the same conclusion: the sentence that would close the fork names what the decisive step works out, so filing it turns the step into rule application. No pin saves this architecture.
 
 ## Gate H
-`domain: pass`, `layers: pass`, `decisive_step: analytical` (narrowly). Impedance-based fault location is the field's own method, and the thread read the decisive step as a decoy as well as analysis. The design note's Three rules (No decoy / Not semantics / Not rule application) lines are present. The thread's "Honest note" that the decisive step reads as a decoy contradicts the note's claim of no decoy, so the main thread should weigh it.
+domain: pass (braking-distance and deceleration estimation is rail safety analysis; swap test does not read the same). layers: pass (Layer 1 is ID formats, duplicates, UTC, units; Layer 2 is the approach's own achievable rate). decisive_step: analytical, but unfiled.
 
 ## Stump power (Gate F)
-The easy route (trust the DMS log, or use the AMI log or REPAIR orders alone) lands a clean wrong answer on all three deliverables. Asks are hard: many lateral meters sit at exactly four interruptions. Note for the main thread: the thread called the from-scratch impedance relocation real analysis, but the stump depends on a wrong official log. Impedance location is also a textbook route a strong solver can take once it distrusts the log, so the landable-call risk (`stumping` 1.3) should be weighed against the design note's ladder.
+Moderate if the rate source were pinned. As shipped, a miss is a reading of an unfiled definition, not a clean analytical stump. The 0.88 route is textbook and stated in the only brake document.
 
 ## Findings, ranked
-1. Gate G, banned scaffold: the wrong DMS locator, an official artifact not declared in metadata, carries the main-call stump (retired surface-read-rejection strategy).
-2. Soft, Gate B: no file maps RAVEN or SPARROW to a C-3 row. If RAVEN were 4/0, the answer moves to section 8 (23 trips).
-3. Soft fork: "lost power" includes planned outages. L07 is 74 on the literal reading, 3 excluding planned.
-4. Cosmetic: PDF title metadata says "Overhead Conductors" while the heading says "Primary Conductors".
+1. Main call fork on the rate source (0.88 fleet sheet gives SK112 3; golden CJ58 6). Gate C/E.
+2. TPWS ask: signal_ref on speed-restriction and buffer-stop loop events.
+3. Hours ask: unfiled extension of turns to last arrival plus ten minutes.
 
 ## Next action for the author
-Re-root the main-call stump so it does not depend on a wrong shipped locator. Either make the DMS model correct or drop it, and put the difficulty in the engineering (see the verdict's Fix). The solution blocks need no regeneration, since every figure reproduced.
+Re-root at stage 1 into another world and dataset. A pin on the rate source would file the HOW and turn the decisive step into rule application, so the re-root should be designed so that a stated rate cannot be the literal route. Close fork 2 and 3 as asks in the new build.

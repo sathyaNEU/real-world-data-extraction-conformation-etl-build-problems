@@ -11,8 +11,8 @@
   "shape": "08",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "CJ58, Cauldwell Junction down home: 6 driver braking SPADs, 1 January 2024 to 30 November 2026 (runner-up SK112, Skelby station junction, 3)",
+  "answer_source": "task183/submission.md block 1; generator/figures.json call, call_n, runner, runner_n",
   "gap": [
     "objective"
   ],
@@ -37,21 +37,23 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:service-braking-judged-at-the-approach-own-achieved-rate",
   "layer1": [
-    "OTMR clocks kept in GMT all year against the SPAD register's local time across the British Summer Time changes",
-    "overrun distances in yards in the SPAD register against metres in the OTMR downloads",
-    "signal identities carried with the signal box prefix in one system and without it in another",
-    "headcodes reused every day, the unit read from the day's fleet allocation",
-    "a preliminary SPAD register export superseded by a revised one",
-    "routine approach events duplicated where an OTMR card was downloaded twice"
+    "OTMR times in UTC against the SPAD register's local time across the British Summer Time changes",
+    "overrun distances in yards from the infrastructure manager's reports against metres in the company's",
+    "signal identities with the signal box prefix in one system and without it in another",
+    "headcodes reused every day, the unit read from the performance system's running record where the register leaves it blank",
+    "a preliminary SPAD register export superseded by revision 2",
+    "OTMR cards downloaded twice, their events repeated in the extract and two SPAD downloads sent twice",
+    "the infrastructure manager's register in miles and yards against the OTMR extract's kilometres",
+    "dates written three ways across the register, the running record and the crew system"
   ],
   "stakeholder_role": "the train operator's Head of Operational Standards, who sets the SPAD mitigation programme",
   "role_family": "operations_director",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "otmr_approach_events_2024_2026.csv",
-    "rows": 30000,
-    "entity": "one recorded approach of a train to a signal at caution or danger in a routine OTMR download",
-    "grain": "train approach x signal",
+    "file": "otmr_event_extract_2024-01_2026-11.csv",
+    "rows": 26598,
+    "entity": "one OTMR event from a routine download: a brake application on the approach to a signal at caution or danger, or a TPWS brake demand",
+    "grain": "event x unit",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
@@ -64,12 +66,19 @@
     "invented_names": [],
     "people": [
       "Nicholas Reynolds",
-      "Kim Arnold"
+      "Kim Arnold",
+      "Colin Bailey",
+      "Iain Begum",
+      "Julian Randall"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "spad_review_2027.pptx",
+    "signal_box_tpws_2024_2026.csv",
+    "depot_hours_2024_2026.xlsx"
+  ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "Each event is judged against what a unit could have achieved, read from the fleet's rating on a reference condition, when every place sets its own achievable level and only the other units' routine records at that place show it; judged against the rating, the place whose own conditions hold every unit below the rating books the operators' late responses there to the conditions of the moment, and the place whose events lead under the rating is not the one whose operators responded late most often.",
   "driver_concrete": "Each 2024-2026 SPAD is the driver's when, from where braking began, a full-service application could not have stopped the train at the signal, judged at the deceleration full service achieves on that signal's approach in the routine OTMR approach events, not at the fleet's level-track rating; on the falling-gradient approach every train achieves about 0.68 metres per second squared against the rated 0.88, so its late-braking SPADs read as poor adhesion against the rating.",
   "stump": "A competent solver tests each SPAD at the fleet's rated full-service deceleration, books the falling-gradient signal's SPADs to poor adhesion because their trains decelerated at about 0.68 against the rated 0.88, and sends the package to the level junction signal; the step that lands it there is using the level-track rating on an approach whose own routine stops show every train achieving about 0.68 in dry weather, so the late braking there is the drivers'.",
@@ -175,5 +184,6 @@
     "second-sentence opener": "send",
     "rounding opener": "counts",
     "deliverable set": "csv+pptx+xlsx"
-  }
+  },
+  "architecture_spent": true
 }

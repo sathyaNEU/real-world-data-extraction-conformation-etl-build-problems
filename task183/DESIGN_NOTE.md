@@ -32,7 +32,10 @@ domain, the world, the dataset, the generator, the shell and the decisive step a
   safety improvement budget funds one package), organisation `utility_or_infrastructure`, role `operations_director`
   (the Head of Operational Standards sets the programme), context artifact `register` (the SPAD register), opening
   `question-first`. Personas drawn with `guard.py names --geo "United Kingdom" --seed 183` (en_GB): Nicholas Reynolds
-  and Kim Arnold, neither a v1 or v2 persona; the prompt carries none.
+  (Operations Director), Kim Arnold (Head of Operational Standards), Colin Bailey (Fleet Engineer), Iain Begum (crew
+  planning) and Julian Randall (Safety Analyst), none a v1 or v2 persona and none warned by the guard (Ryan Ford, Sara
+  Fox, Patricia Ahmed, David Evans and Mathew Harrison were drawn first and replaced on `people.first` WARNs); the
+  prompt carries none.
 - **Guard result on the filed card:** WARN, no BLOCK. Each WARN answered:
   - `overuse.gate_g` (method_or_model_selection, five of the last twelve): the honest label. Two defensible references
     for what a full-service application achieves stand in the pack (the brake sheet's rating and each approach's routine
@@ -106,6 +109,297 @@ and sends the 2027 package to SK112 with three driver braking SPADs, booking CJ5
 trains decelerated at about 0.66 against the rating; the step that lands it there is testing the stop at a level-track
 rating on an approach whose own routine stops show every 162 achieving about 0.66 in dry weather, so from where those
 drivers began braking a full-service application could not have stopped them and the six are driver braking SPADs.
+
+## Three rules
+
+- **Task type:** safety incident error analysis (Human Factors & Ergonomics, `safety-incident-error-analysis`): the
+  causal classification of a train operator's SPADs from its on-train recorder downloads, which serves Anomaly
+  Detection here by separating driver braking errors from SPADs that read as low adhesion.
+- **Domain test:** the deciding quantity is each signal's count of driver braking SPADs, those in which a full-service
+  application could not have stopped the train from where its driver began braking, worked the way railway SPAD
+  analysis works it: each SPAD's OTMR braking reconstruction (speed and distance at the first application, the
+  stopping distance full service gives) against the room the driver left.
+- **Swap:** "which ward gets the medication-error programme, each nurse's administration errors judged from the
+  infusion logs" keeps the counting and loses the physics: no stopping distance, no full-service rate and no approach
+  that sets what a competent action could achieve, so the construction that decides has nothing to act on.
+- **Layer 1:** the register's local times against the OTMR's UTC across BST (control and the recorder clock);
+  signals keyed with and without their box prefix (control log entries); overruns in yards from the infrastructure
+  manager's reports and in metres from the company's; register rows with no unit or no download reference, the unit
+  read from the performance system by headcode and date (headcodes reused daily); a preliminary register export
+  superseded by revision 2; OTMR cards downloaded twice; the infrastructure manager's register in miles and yards
+  against the extract's kilometres. None moves a SPAD's class (SF8 to SF12, SF24).
+- **Layer 2:** family `field_method`, an achievable-performance reference: the stop each SPAD's driver left room for
+  is judged at the deceleration a step 3 application gives on that signal's own approach, measured from the
+  approach's routine step 3 stands, and not at the Class 162 sheet's level-track 0.88; on the 1 in 46 down to
+  Cauldwell Junction that moves six SPADs from adhesion to driver braking and the package from SK112 to CJ58.
+- **Decisive step:** recognising that the brake sheet's figure holds only on level tangent track and taking each
+  approach's achievable full-service deceleration from that signal's routine step 3 stands in the OTMR extract,
+  which puts CJ58 at 0.667 m/s2 and CJ53 at 1.096, against which the six CJ58 drivers began braking too late.
+- **Not semantics:** every field read correctly leaves the easy route where it was: the sheet's 0.88 is right for
+  level track, the downloads' speeds and distances are right, the register is right, and no file states a gradient,
+  an approach's achievable rate or a deceleration; the per-approach rate exists only as a relation among some 4,600
+  routine step 3 stands.
+- **Not rule application:** SP-07 defines the class by what full service could have done from the first
+  application and files no reference rate, so no stated rule performs the estimate; the enumerated family (the
+  sheet's 0.88, the fleet pool 0.861, a line-and-direction pool, per-signal median, mean and trimmed mean over all
+  months or outside leaf fall, a per-box pool, the SPAD train's own rate) spreads CJ58 from 0 to 7 driver braking
+  SPADs over three calls (SK112, CJ58, RV23); the standing family (per-signal references in six statistics and the
+  pools the stands cannot tell apart) files CJ58 with 6 in every member, spread 0; what rules the rating out is a
+  per-signal grouping of the routine stands the rating test never asks for, quiet because the same stands pooled
+  across the fleet give 0.861 and validate the sheet.
+- **Analyst test:** a strong analyst who cleans the register, links every SPAD to its download and tests each stop at
+  the Class 162 sheet's full-service 0.88 files SK112, Skelby station junction, with three driver braking SPADs, and
+  books CJ58's six to adhesion.
+- **Estimand:** SP-07 sections 3.5 and 6 (the package goes to the signal with the most driver braking SPADs among the
+  category A1 SPADs of 1 January 2024 to 30 November 2026; a driver braking SPAD is one where, from the first brake
+  application, a full-service application in normal rail conditions could not have stopped the train at the signal),
+  filed in `SP-07_SPAD_management_procedure_issue_4.pdf`.
+- **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure argues SK112 or adhesion at CJ58;
+  the brake sheet is a correct fleet document scoped to level tangent track; the register carries no causal class
+  and its formal findings are correct; no shipped artifact classes, scores or ranks the SPADs or the signals.
+- **No certified replay:** the golden reproduces no certified figure; the formal findings (five adhesion SPADs at
+  RV23 and two starts against signal at SK104) agree with both the rating test and the golden, so they confirm the
+  rating where it holds and say nothing about the method that decides.
+- **Lesson:** a deceleration below a rating is evidence of low adhesion only where the rating holds; a model that
+  checks a rated performance against the place's own routine record before blaming the conditions learns to
+  separate what a place allows from what went wrong, and no build on file classes events against the performance a
+  place permits (task186 tests a change against a place's shared noise; task308 corrects a rated availability in a
+  forward valuation).
+
+## Survivor anatomy
+
+- **Actor:** whether full service could have stopped each SPAD train from where its driver began braking on that
+  approach has no column: the downloads give speed and distance, the sheet a level-track rate, and the approach's
+  achievable rate exists only as the median of its own routine step 3 stands, a relation among extract rows.
+- **Link:** each SPAD's onset is read against the same signal's routine full-service stands in another file (the
+  routine OTMR extract against the SPAD downloads), a comparison the braking test never asks for because the brake
+  sheet supplies its rate; the signal reference is shared but nothing invites grouping routine braking by signal.
+- **Reflex:** the field's method, the OTMR braking reconstruction at the train's rated full-service deceleration,
+  is rung 1 and files SK112 with three driver braking SPADs, booking CJ58's six to adhesion at about two thirds of
+  the rating.
+- **Back-test:** the rating validates: the routine step 3 stands pooled across the fleet give 0.861 against the
+  sheet's 0.88, and every formal finding in the register (RV23's five adhesion SPADs, SK104's two starts) is what the
+  rating test classes them.
+- **Second use:** the OTMR extract is the company's driver-monitoring extract and carries the TPWS interventions ask
+  A counts; the downloads and the brake sheet are what the default path reads; the performance system's running
+  record carries the units the register leaves blank and ask B's arrivals; nothing ships only for the decisive step.
+- **Shock:** CJ58's seven SPADs read as an adhesion site's, its six trains decelerating at about two thirds of the
+  rating like HD71's estuary SPADs; CJ58 is fourth by raw count, absent from the rating test's list, second on
+  routine deceleration behind OW4 (with CJ54 level with it), and first on no sort of any shipped statistic.
+- **Pins:** SP-07 files the WHAT (category A1, the window, the class in terms of what full service could have done
+  from the first application in normal rail conditions, the package to the signal with the most); no sentence names
+  a deceleration, the brake sheet, the routine stands, a gradient or a grouping; deleting 3.5 leaves the class
+  undefined (it is the WHAT), deleting anything else leaves the call forced.
+
+## Readability screen
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| Rung 0: every A1 SPAD counted per signal (RV23, 10) | the register lists them | one group-by | yes | none | none | a count | none | readable |
+| Rung 1: the stop tested at the sheet's full-service 0.88 (SK112, 3) | the sheet's table | speed and distance columns | the field's method | the formal findings confirm it | none | one formula | none | readable |
+| Decisive: each approach's full-service rate from its own routine step 3 stands (CJ58, 6) (decisive) | no sentence names a deceleration, gradient, reference or grouping; the sheet's test conditions are every rating's boilerplate | no gradient, deceleration or achievable-rate column; speeds, distances and steps only | the reflex is the rating; comparing with sibling trains is an adhesion check the rating test never prompts | the formal findings and the fleet pool (0.861) both confirm the rating | no battery item groups braking by signal | a median of computed decelerations per signal, then a threshold per SPAD | the extract ships whole as the driver-monitoring extract, its TPWS rows read by ask A | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternatives and the call under each | Ruled out by |
+|---|---|---|---|---|
+| SF1 | "could not have stopped the train" (3.5): the deceleration full service gives | each approach's routine step 3 stands (CJ58 6) | the sheet's 0.88 on every approach: SK112 3; the SPAD train's own achieved rate: RV23 10 | the sheet's own "level tangent track" with CJ58's stands at 0.667; SP-07 3.5 "in normal rail conditions" |
+| SF2 | "full-service application" | step 3 | the emergency rate: another call | SP-07 3.4 |
+| SF3 | the statistic and the season of the stands | median, all months | mean, trimmed mean, outside October and November | same call (six variants asserted) |
+| SF4 | "first applied the brake" | the download's first application | a later step change | same call (every braking SPAD's first application is step 3) |
+| SF5 | the window | 1 January 2024 to 30 November 2026, local dates | UTC dates | same call (no SPAD within three days of an edge) |
+| SF6 | category A1 | A1 only | A3 included | same call |
+| SF7 | starts against signal | not braking SPADs | counted as driver braking | same call |
+| SF8 | the register | revision 2 | the 1 December export | same call; SP-07 7.1 |
+| SF9 | signal identity | box prefix from the location | bare numbers | same call (each maps to one signal) |
+| SF10 | clocks | register local, downloads UTC | either read as the other | same call (one download per SPAD either way) |
+| SF11 | downloads sent twice | one each | both | same call (exact copies) |
+| SF12 | overrun units | not used by the class | yards read as metres | same call |
+| SF13 | the reference's rows | step 3 stands held from the first application | released step 3 approaches added | same call |
+| SF14 | the grouping | per signal | pools the stands cannot tell apart (CJ54 with CJ58; HD11, HD71, HD73) | same call; box and fleet pools rejected (Kruskal-Wallis) |
+| SF15 | tie-break (6.3) | not reached | most recent | same call (6 against 3) |
+| SF16 | brake build-up | in the sheet's mean deceleration | a delay fitted per approach | same call |
+| SF17 | the unit of the call | the signal passed | the signal approached | same call (one signal per SPAD) |
+| SF18 | the chart's year | local date | UTC date | same call |
+| SF19 | normal rail conditions in the stands | all stands, median | lowest tenth trimmed | same call |
+| SF20 | hours on duty | booking on to booking off, the turn's date | midnight or clock-change wraps | same figures (no turn crosses either) |
+| SF21 | the asks' years | 2026 to 30 November | a full 2026 | same figures (every extract ends on 30 November) |
+| SF22 | "TPWS overspeed interventions" | the extract's TPWS_OSS rows | train stop trips added | the asking sentence's "overspeed" |
+| SF23 | a box's signals | the register's Box column | the prefix | same figures (every Box is the prefix) |
+| SF24 | re-sent rows | kept once | kept twice | same figures once deduplicated (exact copies) |
+
+## Ladder
+
+- **Rung 0, every A1 SPAD counted per signal:** RV23 10, HD71 8, SK115 8, CJ58 7, SK112 4. RV23 by 1.25x; the golden
+  fourth. Dies to SP-07 6.3 (the package follows driver braking SPADs).
+- **Rung 1, the field's braking test at the sheet's 0.88:** SK112 3, SK115 2, CJ53 2, then six signals with 1; CJ58
+  0. SK112 by 1.5x. Dies to the sheet's level-track scope against CJ58's own stands.
+- **Decisive, each approach's own full-service rate:** CJ58 6, SK112 3, OW4 2, SK115 2. Final margin 2.0x; dominance
+  3 against the decoy's lead of 1 on rung 1.
+- **Pricing sequence:** (1) the residue SP-07 leaves is the deceleration full service gives on each approach, a
+  physical quantity the stands estimate, not a knob; (2) the move needs 6 SPADs to change class and the affected
+  population holds 6 at CJ58 and 2 at OW4; (3) the one-group-by route to the call does not exist: every uniform
+  reference from 0.60 to 0.95, every own-deceleration threshold, every level-margin cut, overrun cut, speed past the
+  signal, season split, rate per recorded approach and TPWS count per signal files another signal (`checks.py`,
+  Gate F); (4) the standard error of CJ58's median is about 0.003 m/s2 on 556 stands against a threshold margin of
+  4 per cent or more on every SPAD; (5) and (6) not a variance; (7) no subset prints the rate; (8) the reflex sweep
+  is the Gate F list.
+- **Grid:** the decisive count per signal and year (the chart): CJ58 2, 2, 2; SK112 1, 1, 1; OW4 0, 1, 1; SK115 0, 1,
+  1; RV23, RV20, RV17, SK108, HD69 one each.
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling | Effect on the call |
+|---|---|---|---|---|
+| local time against UTC | control (register), the recorder (downloads) | register, downloads | linking by clock time without BST | none (SF10) |
+| box prefix present or absent | control log entries | register | an unmatched signal | none (SF9) |
+| yards against metres | infrastructure manager's reports | register | overruns mixed | none (SF12) |
+| unit or download reference blank | control | register | the SPAD left unlinked | none (linked through the running record) |
+| preliminary export | the register's 1 December pull | prelim CSV | read as the record | none (SF8) |
+| cards downloaded twice | depot download tool | downloads, extract | double counts | none (SF11, SF24) |
+| miles and yards against kilometres | infrastructure manager's register | register, extract | loops misplaced | none on the call |
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | category A1 SPADs by the company's trains, January 2024 to November 2026 | filed (SP-07 2, 3.2, 6.1); C1 |
+| 2 | Unit of account | the signal passed | filed (6.3); C1 (SF17) |
+| 3 | Attribution window | the SPAD's local date | C1, none within three days of an edge (SF5) |
+| 4 | As-of dating | revision 2 of 4 December | filed (7.1); C1 (SF8) |
+| 5 | Version basis | the latest revision | filed (7.1) |
+| 6 | Denominator | none, a count | C1 |
+| 7 | Weighting | none | C1 |
+| 8 | Window length | the filed period | filed (6.1) |
+| 9 | Boundary inclusivity | 1 January and 30 November inclusive | C1 |
+| 10 | Rounding path | whole counts | C1 |
+| 11 | Tie-break | the most recent (6.3) | not reached (SF15) |
+| 12 | Maturity and censoring | every SPAD in the period is in the register | C1 |
+| 13 | Order of operations | link, classify, count | C1 |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | exact copies once | C1 (SF11, SF24) |
+| 16 | Identity normalisation | signal by box and number, SPAD by unit, signal and date | C4 (SF9, SF10) |
+| 17 | Netting against gross | none | C1 |
+| 18 | Dimensional units | metres, km/h, m/s2 | units in the data (SF12) |
+| 19 | Code and status semantics | A1 and A3; steps B1 to B3 and EB | SP-07 3.2 and 3.4 (SF2, SF6) |
+| 20 | Integerisation | none | C1 |
+| 21 | Clause scope | 3.5 for every A1 braking SPAD | filed |
+| 22 | Forward window contents | the 2027 package's placement only | the decision is filed (6.3, 6.4) |
+
+## Literal reader
+
+Executed word for word, SP-07 3.5 asks whether full service in normal rail conditions could have stopped each train
+from its first application; the only rates the pack offers are the sheet's 0.88, filed for level tangent track, and
+the stands each approach records; every reading that keeps to both files files CJ58 with 6 and SK112 with 3 (SF1,
+SF3, SF13, SF14, SF16 asserted), the sheet's rate on a falling approach violates the sheet's own test conditions,
+and the train's own rate violates 3.5's normal rail conditions, so the easy answer comes from the easy method on the
+same estimand and not from another reading.
+
+## Oracles
+
+- The formal findings (seven SPADs): agree with the rating test and the golden alike; none at CJ58; tie on every
+  basis.
+- The fleet-pooled routine rate (0.861): confirms the rating on the wrong path and is consistent with the golden
+  (it pools level approaches); not an oracle.
+- The register's overruns: consistent with the downloads under every reading; not read by the class.
+- The brake sheet's stopping distances: the rating's own arithmetic; tie with 0.88.
+- Ask referee: none; the crew system, the running record and the diagram book tie to nothing the call reads.
+
+## Ask sheet
+
+- **Ask A, each signal box's TPWS overspeed interventions at its signals by year (15 figures, whole numbers).**
+  H18 home: the near misses at each candidate's box, a measure every candidate carries that the call does not turn
+  on. Use: the review group reads each area's precursors beside the SPADs. Rows outside the call's population (the
+  extract's TPWS_OSS rows; the call reads approach rows and the downloads). Files and columns: the extract
+  (event_type, elr, direction, position_km, signal_ref, event_time_utc, unit, speed_kmh), the infrastructure
+  manager's register (Signals, Speed restrictions and Buffer stops: OSS miles, OSS yards, Direction, Box), four
+  sheets and one extract, 11 columns.
+- **Primary A (D5, out-of-scope rows known only by structure).** The analysis software files every TPWS brake demand
+  against the signal nearest its position, and the routes carry overspeed loops at five speed restrictions and the
+  six terminal buffer stops as well as at the signals; an intervention at a restriction's or a buffer's loop sits on
+  that loop's position in the register and is not at the box's signals. It moves all 15 figures (1 to 5 each).
+  Over-cleaning half: the loops of HD71, RV23, CJ57, OW4 and SK112 sit 100 to 140 m from a restriction's loop.
+  Rival readings:
+
+  | Reading | What it does | Figures kept |
+  |---|---|---|
+  | each intervention at the box of the signal the extract files it against (plain meaning) | keeps the restriction and buffer interventions | 0 of 15 |
+  | train stop trips added | adds the SPADs' and authorised passings' trips | 0 of 15 |
+  | re-downloaded cards kept | double counts | 0 of 15 |
+  | interventions within 100 m of a restriction or buffer loop dropped | drops genuine interventions at the near loops | 7 of 15 |
+  | the same within 150 to 400 m | drops more | 2 to 3 of 15 |
+  | each intervention at the loop it sits on, by the register's positions | the golden | 15 of 15 |
+
+- **Ask B, each depot's driver hours on duty by year (9 figures, nearest ten hours).** H18 home: each depot's exposure
+  beside its SPADs. Use: the review group normalises the depots' SPADs. Rows outside the call's population (every
+  crew turn, every turn's last train; no SPAD train ends a device turn, asserted). Files and columns: the crew system's
+  turns (turn_date, depot, diagram, booked_on, booked_off), the diagram book (validity, Diagram, Train, Sign off), the
+  running record (run_date, headcode, recorded_arr, status): three files, 12 columns.
+- **Primary B (D8, a recorded time for the event's time).** Outside a booking office's hours (Helmsdyke and Skelby
+  from 20:00 on weekdays, during the clerk's 13:30 to 14:00 break and from 14:00 on Saturdays; Owlsden after 15:00 on
+  weekdays and 13:00 on Saturdays; no office on a Sunday or bank holiday) a driver books off by telephone and the duty
+  manager's entry carries the diagram's sign-off time. When the turn's last train arrives after that time, the crew
+  system shows the driver booking off before the train they were driving arrived, which cannot be; the turn runs to
+  ten minutes after the arrival, the interval every diagram books between its last train and its sign-off. Rows
+  where the train arrived before the booked time stand as recorded (a quick disposal is possible). It moves all 9
+  figures (by 41 to 86 hours). Over-cleaning half: staffed bookings off run a few minutes past the allowance, early
+  arrivals keep the booked time, and late arrivals inside the allowance keep the record. Rival readings:
+
+  | Reading | What it does | Figures kept |
+  |---|---|---|
+  | booking on to booking off as the crew system records it (plain meaning) | the impossible telephone bookings end at the diagram's time | 0 of 9 |
+  | every end reset to the last train's arrival plus ten minutes | shortens staffed bookings and early arrivals | 1 of 9 |
+  | every end at the later of the booking off and the arrival plus ten | extends possible records too | 0 of 9 |
+  | impossible bookings off moved to the arrival itself | drops the booked disposal time | 0 of 9 |
+  | only bookings off from 20:00 corrected | misses the weekend and midday telephone bookings | 2 of 9 |
+  | a booking off before the last train's arrival moved to ten minutes after it, every other record kept | the golden | 9 of 9 |
+
+- **Hazards.** Re-downloaded cards (exact copies in the extract); the March 2025 crew rows sent twice (exact copies);
+  UTC event times against local years; box prefixes; train stop trips beside overspeed interventions. Each is in the
+  battery and moves no figure once handled.
+- **Pin test.** Ask A's sentence pins the box, the year and overspeed interventions at the box's signals; the device
+  sits in which loop each intervention tripped, named nowhere. Ask B's pins the depot, the year and hours on duty;
+  the device sits in when a telephone booking off really happened, named nowhere.
+- **Lesson 8 run over the device rows.** The extract's signal_ref is the software's nearest signal, and an overspeed
+  intervention can only trip at a loop: a row whose position is a restriction's or a buffer's loop cannot be an
+  intervention at the signal it is filed against. The crew row's booking off before its own last train's arrival is
+  impossible for a driver who drove that train, and only those rows are moved: a booking off between the arrival and
+  the allowance is possible and is kept, and no row books off on its train's arrival minute (asserted). No filed rule
+  speaks to either device.
+- **Main population zero-counts.** No TPWS row enters the reference (asserted); no SPAD train is a device turn's last
+  train (asserted).
+
+| Ask (cracker sheet) | The honest careful cracker's route | Verdict |
+|---|---|---|
+| A, box by year, 15 figures | TPWS_OSS rows, re-downloaded cards removed, signal_ref's box, local year | miss |
+| B, depot by year, 9 figures | booking on to booking off, the re-sent month removed, reconciled to the diagram book | miss |
+
+Pair ceiling: 38.8 (the cracker on the call 45.0 with 0 of 24 asks; the mirror off it 32.6; two careful on-call
+responses 45.0 each; a response on the call that also handles ask A's device 79.4, ask B's 65.6)
+Mirror leakage: 37.5 per cent of ask weight (its best half-handled variants: a 100 m cut keeps 7 of 15, bookings off
+from 20:00 corrected keep 2 of 9)
+Measured by: generator/ceiling.py on the cut pack (the full includer reproduces all 24 figures or the script exits 1)
+
+## Leak review
+
+`leak.py task183 --asof 2026-12-07` on the final cut: REVIEW, no LEAK. Each line ruled:
+
+- Sweep 3, the brake sheet carries 0.88: the sheet's own full-service rating, the input the easy route reads; it
+  answers nothing (the call is a count at a signal) and is harmless.
+- Sweep 3, SP-07 carries four words of the call ("2027", "driver", "SPAD", "package"): the procedure names the package
+  it governs and never a signal; harmless.
+- Sweep 4, the brake sheet holds six stump terms (application, deceleration, service, conditions, distance,
+  performance): a brake data sheet's own vocabulary; it names no approach, gradient or routine record; harmless.
+- Sweep 4, SP-07 holds twelve stump terms: the class definitions (the WHAT) use the field's words; no sentence names
+  a rate, the sheet, a gradient, the routine stands or a grouping (asserted in `checks.py` with a positive control);
+  harmless.
+- Sweep 12, SP-07 names ten register headers as plain words (Category, Driver, Investigation, Line, OTMR download):
+  the procedure's own record-keeping clauses (4.1, 4.2, 5.2, 7.1) say what control enters, not what a column means;
+  no identifier-style name; harmless.
+- `guard.py surface` exit 0 with task308 promoted on the structural card collision (gap objective, G14, pick one,
+  method selection) at surface 0.080 (corpus percentile 52), the pair already differentiated on the card: task308
+  values a capacity offer under a shared failure cause, task183 classes SPADs against the braking each approach
+  permits. `guard.py heart` WARN (overuse.gate_g), nearest driver or stump 0.05.
 
 ## Tried and rejected
 
@@ -301,3 +595,20 @@ drivers began braking a full-service application could not have stopped them and
     so no exposure ships for the call;
   - sun glare on east-west junction approaches: the estimand would have to name glare (test 1) or leave the junction's
     real problem open (a fork); traffic camera or STATS19-style records also carry a dazzling-sun factor (semantics).
+- 2026-11-02, stage 2 and 3 of architecture 3, ask designs set aside before the cut, one line each:
+  - each depot's train miles from the running record and the diagram book: every candidate device (part
+    cancellations, diversions, crew reliefs, empty stock, a depot's diagrams moved at a timetable change) is either a
+    labelled column the careful solver reads or a reconstruction the records do not force;
+  - approaches at danger counted per signal with both units of a formation recording the stand: a two-minute window
+    per signal merges exactly the pairs, since no second train can stand at the same signal inside the headway;
+  - an OTMR recorder fitted to another unit and reporting its old number: the per-depot mass nets out at random and a
+    one-unit-two-places check finds it;
+  - drivers per depot with staff numbers reissued to new drivers: the reissue is this batch's banned family (client
+    ids re-issued with a counter carrying on);
+  - hours on duty corrected to the later of the record and the arrival plus ten minutes on every turn: a booking off
+    a few minutes after a slightly late arrival is possible, so the literal record stands there and the max rule is a
+    second reading; the repair moves only bookings off before the arrival, and the generator's telephone truth was
+    set to match;
+  - the first ask B layout with one weekday closing time: the evening-only partial repair kept five of nine figures
+    and the mirror reached 50 per cent; weekend and midday telephone bookings (the offices' real hours) took it to two.
+- 2026-11-02, stage 4 (architecture 3 spent): the judge (cut 2d063320) returned NOT_DETERMINISTIC, SEND_BACK. Every golden figure reproduced (CJ58 6 against SK112 3, stable from p25 to p95 of each approach's own stands), but SP-07 3.5 says only "a full-service application in normal rail conditions" and never says whose deceleration tests it. The only filed rate, the Class 162 sheet's 0.88 m/s2, read literally files SK112 (3) with CJ58 on 0, and the judge licensed that reading; the golden's rate from each approach's own routine stands (CJ58 0.667) is directed by no sentence. The sentence that would close the fork (the rate full service gives on that approach) names what the decisive step works out, so the fork is the stump and no pin saves it. A default path resting on a figure a shipped document states is a literal reading the judge licenses. The asks forked as well: TPWS events on speed-restriction and buffer-stop loops filed under signal_ref, and turns extended to the last arrival plus ten minutes by no filed sentence. Re-rooted at stage 1 into another world and dataset.
