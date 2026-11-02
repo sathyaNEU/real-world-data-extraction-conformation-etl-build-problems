@@ -1,8 +1,10 @@
 """The clean truth of the Ardmuir University Library world, before any export is written.
 
-Everything here is drawn from one seed. The lending platform is simulated event by event per title:
-requests, holds, offers in the order holds were placed, loans, returns, cancellations whose rate rises
-with how far down the queue a student stands, and metered licences lapsing at their fortieth loan.
+Everything is drawn from one seed, one random stream per component. The lending platform is simulated
+event by event per title: requests, holds, offers made to the earliest hold still waiting, loans, returns,
+cancellations (patient students rarely cancel; students who give up on a long queue weigh the estimate the
+platform shows them when they place a hold and at each Monday holds email), metered licences lapsing at their
+fortieth loan and the platform re-licensing them at once.
 """
 import datetime as dt
 import heapq
@@ -17,9 +19,9 @@ UTC = P.UTC
 
 def uk_offset(t):
     """UK civil time offset from UTC at instant t (hours)."""
-    if P.BST_2026_START <= t < P.BST_2026_END:
-        return 1
     if t < P.BST_2025_END:
+        return 1
+    if P.BST_2026_START <= t < P.BST_2026_END:
         return 1
     return 0
 
@@ -29,9 +31,8 @@ def to_uk(t):
 
 
 def uk_local_to_utc(d, hh=0, mm=0):
-    """A UK local wall-clock time on date d to UTC (no ambiguity for the times used)."""
+    """A UK local wall-clock time on date d to UTC (the record avoids the ambiguous hour)."""
     naive = dt.datetime(d.year, d.month, d.day, hh, mm, tzinfo=UTC)
-    # try BST first
     cand = naive - dt.timedelta(hours=1)
     if uk_offset(cand) == 1:
         return cand
@@ -39,7 +40,7 @@ def uk_local_to_utc(d, hh=0, mm=0):
 
 
 SCHOOLS = [
-    # code, name, old faculty, students
+    # code, name, 2025-26 faculty, students
     ("HIST", "History", "AH", 760), ("ENGL", "English Literature and Creative Writing", "AH", 690),
     ("PHIL", "Philosophy", "AH", 380), ("MLAN", "Modern Languages", "AH", 540),
     ("POLI", "Politics and International Relations", "SS", 880), ("ECON", "Economics", "SS", 1010),
@@ -57,7 +58,6 @@ SCHOOLS = [
     ("NURS", "Nursing and Midwifery", "NH", 1150), ("AHPR", "Allied Health Professions", "NH", 560),
 ]
 
-
 # titles a school owns that other schools' courses also list (owner: (probability, [(school, weight)]))
 CROSS = {
     "ECON": (0.42, [("ACFN", 3), ("MGMT", 3), ("POLI", 1)]),
@@ -73,6 +73,56 @@ CROSS = {
     "SPEX": (0.25, [("AHPR", 2), ("NURS", 1)]),
 }
 
+PUBLISHERS = [
+    # name, invoicing vendor, currency
+    ("Harrowgate Academic", "Shelfmark Lend Ltd", "GBP"), ("Stanwell Press", "Shelfmark Lend Ltd", "GBP"),
+    ("Corran & Lyle", "Shelfmark Lend Ltd", "GBP"), ("Ellesmere University Press", "Shelfmark Lend Ltd", "GBP"),
+    ("Brockhurst Learning", "Shelfmark Lend Ltd", "GBP"), ("Talgarth Books", "Shelfmark Lend Ltd", "GBP"),
+    ("Merrow & Finch", "Shelfmark Lend Ltd", "GBP"), ("Ashdown Scientific", "Shelfmark Lend Ltd", "GBP"),
+    ("Verlag Lindqvist", "Lindqvist Digital GmbH", "EUR"), ("Kessler Fachmedien", "Lindqvist Digital GmbH", "EUR"),
+    ("Quincy Hall Publishing", "Quincy Hall Inc.", "USD"), ("Northfield Medical", "Quincy Hall Inc.", "USD"),
+]
+
+# publisher packages bought for the 2026 calendar year: name, publisher, titles from these schools
+PACKAGES = [
+    ("Stanwell Business and Economics Core 2026", "Stanwell Press", ["ACFN", "MGMT", "MKTG", "ECON"]),
+    ("Corran & Lyle Law Library 2026", "Corran & Lyle", ["LAWS", "CRIM", "POLI"]),
+    ("Northfield Health Sciences Essentials 2026", "Northfield Medical", ["NURS", "AHPR", "MEDI", "DENT", "BMSC"]),
+    ("Ashdown STEM Texts 2026", "Ashdown Scientific", ["ENGN", "COMP", "MATH", "PHYS", "CHEM"]),
+]
+
+DISCIPLINE_WORDS = {
+    "HIST": ["Modern Britain", "Early Modern Europe", "Empire and Decolonisation", "Medieval Scotland", "The Atlantic World"],
+    "ENGL": ["Romantic Poetry", "the Victorian Novel", "Modernist Fiction", "Creative Writing", "Literary Theory"],
+    "PHIL": ["Ethics", "Philosophy of Mind", "Logic", "Political Philosophy", "Epistemology"],
+    "MLAN": ["French Grammar", "Spanish Culture", "German Studies", "Translation", "Italian Literature"],
+    "POLI": ["Comparative Politics", "International Relations", "Public Policy", "Political Theory", "European Union Politics"],
+    "ECON": ["Microeconomics", "Macroeconomics", "Econometrics", "Public Economics", "Development Economics"],
+    "SOCI": ["Social Theory", "Social Policy", "Research Methods", "the Sociology of Health", "Inequality"],
+    "PSYC": ["Cognitive Psychology", "Developmental Psychology", "Social Psychology", "Biological Psychology", "Statistics for Psychology"],
+    "EDUC": ["Learning and Teaching", "Inclusive Education", "Curriculum Studies", "Educational Research"],
+    "ACFN": ["Financial Accounting", "Management Accounting", "Corporate Finance", "Auditing", "Taxation"],
+    "MGMT": ["Organisational Behaviour", "Strategic Management", "Operations Management", "Human Resource Management", "Leadership"],
+    "MKTG": ["Marketing Management", "Consumer Behaviour", "Digital Marketing", "Brand Management"],
+    "LAWS": ["Contract Law", "Tort Law", "Public Law", "Criminal Law", "Property Law", "Evidence", "Company Law"],
+    "CRIM": ["Criminology", "Criminal Justice", "Policing", "Victimology"],
+    "ENGN": ["Engineering Mathematics", "Fluid Mechanics", "Thermodynamics", "Structural Analysis", "Electrical Circuits"],
+    "COMP": ["Algorithms", "Software Engineering", "Databases", "Operating Systems", "Machine Learning"],
+    "PHYS": ["Classical Mechanics", "Electromagnetism", "Quantum Mechanics", "Astrophysics"],
+    "CHEM": ["Organic Chemistry", "Physical Chemistry", "Inorganic Chemistry", "Analytical Chemistry"],
+    "MATH": ["Linear Algebra", "Calculus", "Probability", "Statistical Inference", "Real Analysis"],
+    "BIOL": ["Cell Biology", "Genetics", "Ecology", "Evolution", "Microbiology"],
+    "BMSC": ["Human Physiology", "Pharmacology", "Immunology", "Biochemistry", "Pathology"],
+    "SPEX": ["Exercise Physiology", "Biomechanics", "Sport Psychology", "Strength and Conditioning"],
+    "MEDI": ["Clinical Medicine", "Anatomy", "Clinical Examination", "Medical Ethics", "Pathophysiology"],
+    "DENT": ["Dental Anatomy", "Oral Pathology", "Restorative Dentistry", "Orthodontics"],
+    "NURS": ["Adult Nursing", "Midwifery Practice", "Nursing Skills", "Pharmacology for Nurses", "Mental Health Nursing"],
+    "AHPR": ["Physiotherapy", "Occupational Therapy", "Radiography", "Rehabilitation"],
+}
+TITLE_FORMS = ["Principles of {d}", "{d}: An Introduction", "Essentials of {d}", "{d}: Theory and Practice",
+               "Understanding {d}", "{d} in Context", "A Textbook of {d}", "Foundations of {d}",
+               "{d}: Concepts and Cases", "Introducing {d}", "{d}: A Critical Introduction", "Core Concepts in {d}"]
+
 
 def new_faculty(old):
     for code, name, olds in P.FACULTIES:
@@ -81,17 +131,33 @@ def new_faculty(old):
     raise KeyError(old)
 
 
+def isbn13_check(d12):
+    s = sum((1 if i % 2 == 0 else 3) * int(c) for i, c in enumerate(d12))
+    return str((10 - s % 10) % 10)
+
+
+def isbn10_from13(i13):
+    core = i13[3:12]
+    s = sum((10 - i) * int(c) for i, c in enumerate(core))
+    ch = (11 - s % 11) % 11
+    return core + ("X" if ch == 10 else str(ch))
+
+
 @dataclass
 class Licence:
     lic_id: str
     title: int
-    model: str            # "1U" perpetual, "1U-M" metered, "3U" perpetual (three concurrent)
-    copies: int           # concurrent readers this line grants
+    model: str            # "1U" perpetual, "1U-M" metered, "3U" perpetual (three at once)
+    copies: int           # licences on the line
     bought: dt.date
     po_line: str
     price_gbp: float
+    currency: str = "GBP"
+    price_cur: float = 0.0
     remaining: list = field(default_factory=list)   # per copy, metered loans left
     lapsed_at: list = field(default_factory=list)   # per copy, UTC instant of lapse or None
+    renewal_of: str = ""
+    order_type: str = "Firm order"
 
 
 @dataclass
@@ -115,7 +181,7 @@ class Loan:
     days: int
     due: dt.datetime
     returned: dt.datetime
-    hold_id: str = ""
+    hold: object = None
     meter: tuple = None              # (licence id, copy index) a metered loan was counted against
 
 
@@ -128,125 +194,6 @@ def weekly_shape(rng):
     base = [0.55, 1.0, 0.95, 0.8, 0.6, 0.5, 0.45, 0.55, 0.62, 0.55, 0.42, 0.3, 0.22, 0.34, 0.44, 0.46, 0.40,
             0.28, 0.12]
     return [b * rng.uniform(0.85, 1.15) for b in base]
-
-
-def build(seed=P.SEED):
-    rng = random.Random(seed)
-    W = World()
-    W.schools = SCHOOLS
-    W.school_old = {s[0]: s[2] for s in SCHOOLS}
-    W.school_new = {s[0]: new_faculty(s[2]) for s in SCHOOLS}
-
-    # students: id, school, group, graduates in 2026
-    students = []
-    sid = 0
-    for code, name, old, n in SCHOOLS:
-        for _ in range(n):
-            g = rng.random()
-            grp = "UG" if g < 0.70 else ("PGT" if g < 0.93 else "PGR")
-            imp = rng.random() < P.BEHAVIOUR[old]["imp"]
-            students.append(dict(id=sid, school=code, group=grp, imp=imp,
-                                 leaves=rng.random() < (0.24 if grp == "UG" else 0.62)))
-            sid += 1
-    W.students = students
-    by_school = {}
-    for s in students:
-        by_school.setdefault(s["school"], []).append(s["id"])
-    W.by_school = by_school
-
-    # titles: each owned by a school, some cross-listed
-    titles = []
-    tid = 0
-    for code, name, old, n in SCHOOLS:
-        k = max(14, int(round(n / 34.0 * rng.uniform(0.85, 1.15))))
-        for _ in range(k):
-            sem = rng.choices(["S26", "A", "both"], weights=[0.42, 0.33, 0.25])[0]
-            cross = None
-            aff = CROSS.get(code)
-            if aff and rng.random() < aff[0]:
-                cross = rng.choices([c for c, _ in aff[1]], weights=[x for _, x in aff[1]])[0]
-            elif rng.random() < 0.08:
-                same_fac = [c for c in by_school if W.school_old[c] == old and c != code]
-                if same_fac:
-                    cross = rng.choice(same_fac)
-            pop = rng.lognormvariate(0.0, 0.62)
-            titles.append(dict(id=tid, school=code, cross=cross, sem=sem, pop=pop))
-            tid += 1
-    W.titles = titles
-
-    # licences, bought before the record or before the autumn 2026 semester
-    lic = []
-    lic_by_title = {}
-    po = 410200
-    for t in titles:
-        beh = P.BEHAVIOUR[W.school_old[t["school"]]]
-        exp_peak = t["pop"] * beh["demand"] * 3.0
-        n = max(1, min(6, int(round(exp_peak * beh["copies"] * rng.uniform(0.55, 0.9)))))
-        u = rng.random()
-        model = "1U" if u < 0.55 else ("1U-M" if u < 0.9 else "3U")
-        lines = []
-        if model == "3U":
-            nlines = max(1, int(round(n / 3.0)))
-            for i in range(nlines):
-                lines.append((3, dt.date(2024, rng.randint(1, 12), rng.randint(1, 28))))
-        else:
-            left = n
-            while left > 0:
-                q = min(left, rng.choice([1, 1, 1, 2, 2, 3]))
-                y = rng.choice([2023, 2024, 2024, 2025])
-                d = dt.date(y, rng.randint(1, 12), rng.randint(1, 28))
-                if d > dt.date(2025, 8, 20):
-                    d = dt.date(2025, 8, rng.randint(1, 20))
-                lines.append((q, d))
-                left -= q
-        for q, d in sorted(lines, key=lambda x: x[1]):
-            po += rng.randint(1, 37)
-            unit = round(rng.uniform(58, 260) * (1.5 if model == "3U" else 1.0) * (0.8 if model == "1U-M" else 1.0), 2)
-            L = Licence(lic_id="L%06d" % (po * 3 % 999983), title=t["id"], model=model, copies=q, bought=d,
-                        po_line="POL-%d-%d" % (po, 1), price_gbp=unit)
-            L.remaining = [P.METER_LOANS if model == "1U-M" else None for _ in range(q)]
-            L.lapsed_at = [None for _ in range(q)]
-            lic.append(L)
-            lic_by_title.setdefault(t["id"], []).append(L)
-    W.licences = lic
-    W.lic_by_title = lic_by_title
-
-    # requests per title per semester
-    reqs = {t["id"]: [] for t in titles}
-    for t in titles:
-        beh = P.BEHAVIOUR[W.school_old[t["school"]]]
-        for sname, start, weeks in P.SEMESTERS:
-            active = (t["sem"] == "both") or (t["sem"] == "S26" and sname == "S26") or \
-                     (t["sem"] == "A" and sname in ("A25", "A26"))
-            if not active:
-                continue
-            shape = weekly_shape(rng)[:weeks]
-            scale = t["pop"] * beh["demand"] * P.DEMAND_SCALE
-            for w, f in enumerate(shape):
-                lam = scale * f
-                n = poisson(rng, lam)
-                for _ in range(n):
-                    day = start - dt.timedelta(days=start.weekday()) + dt.timedelta(days=7 * w + rng.randint(0, 6))
-                    hh = rng.choices(range(24), weights=[1, .6, .4, .3, .2, .2, .4, 1, 2, 3.2, 3.6, 3.4, 3, 3.2, 3.4, 3.2,
-                                                         2.9, 2.5, 2.3, 2.5, 2.8, 2.6, 2, 1.4])[0]
-                    t0 = uk_local_to_utc(day, hh, rng.randint(0, 59)) + dt.timedelta(seconds=rng.randint(0, 59))
-                    if t0 >= P.EXTRACT or t0 < P.RECORD_START:
-                        continue
-                    school = t["school"]
-                    if t["cross"] and rng.random() < P.CROSS_SHARE:
-                        school = t["cross"]
-                    stu = rng.choice(by_school[school])
-                    reqs[t["id"]].append((t0, stu))
-    W.requests = reqs
-
-    holds, loans = [], []
-    hcount = [0]
-    lcount = [0]
-    for t in titles:
-        simulate_title(W, t, rng, holds, loans, hcount, lcount)
-    W.holds = holds
-    W.loans = loans
-    return W
 
 
 def poisson(rng, lam):
@@ -263,15 +210,254 @@ def poisson(rng, lam):
         k += 1
 
 
-def simulate_title(W, t, rng, holds, loans, hcount, lcount):
+def build(seed=P.SEED):
+    W = World()
+    rs = random.Random(seed)            # students and titles
+    rb = random.Random(seed * 7 + 1)    # bibliographic layer
+    rl = random.Random(seed * 7 + 2)    # licences
+    rq = random.Random(seed * 7 + 3)    # requests
+    rp = random.Random(seed * 7 + 4)    # platform simulation
+    W.schools = SCHOOLS
+    W.school_name = {s[0]: s[1] for s in SCHOOLS}
+    W.school_old = {s[0]: s[2] for s in SCHOOLS}
+    W.school_new = {s[0]: new_faculty(s[2]) for s in SCHOOLS}
+
+    # ---------------------------------------------------------------- students
+    students = []
+    sid = 0
+    for code, name, old, n in SCHOOLS:
+        for _ in range(n):
+            g = rs.random()
+            grp = "UG" if g < 0.70 else ("PGT" if g < 0.93 else "PGR")
+            imp = rs.random() < P.BEHAVIOUR[old]["imp"]
+            students.append(dict(id=sid, school=code, group=grp, imp=imp,
+                                 leaves=rs.random() < (0.24 if grp == "UG" else 0.62)))
+            sid += 1
+    # staff borrowers (holds by staff are outside the fund)
+    for k in range(240):
+        code = rs.choice([s[0] for s in SCHOOLS])
+        students.append(dict(id=sid, school=code, group="STAFF", imp=rs.random() < 0.2, leaves=False))
+        sid += 1
+    W.students = students
+    by_school = {}
+    staff_by_school = {}
+    for s in students:
+        (staff_by_school if s["group"] == "STAFF" else by_school).setdefault(s["school"], []).append(s["id"])
+    W.by_school = by_school
+    W.staff_by_school = staff_by_school
+
+    # ---------------------------------------------------------------- titles
+    titles = []
+    tid = 0
+    for code, name, old, n in SCHOOLS:
+        k = max(14, int(round(n / 34.0 * rs.uniform(0.85, 1.15))))
+        for _ in range(k):
+            sem = rs.choices(["S26", "A", "both"], weights=[0.42, 0.33, 0.25])[0]
+            cross = None
+            aff = CROSS.get(code)
+            if aff and rs.random() < aff[0]:
+                cross = rs.choices([c for c, _ in aff[1]], weights=[x for _, x in aff[1]])[0]
+            elif rs.random() < 0.08:
+                same_fac = [c for c in by_school if W.school_old[c] == old and c != code]
+                if same_fac:
+                    cross = rs.choice(same_fac)
+            pop = rs.lognormvariate(0.0, 0.62)
+            titles.append(dict(id=tid, school=code, cross=cross, sem=sem, pop=pop))
+            tid += 1
+    W.titles = titles
+    biblio(W, rb)
+
+    # ---------------------------------------------------------------- licences
+    lic = []
+    lic_by_title = {}
+    po = 410200
+    pkg_titles = set()
+    for t in titles:
+        if t.get("package"):
+            pkg_titles.add(t["id"])
+    for t in titles:
+        beh = P.BEHAVIOUR[W.school_old[t["school"]]]
+        if t["id"] in pkg_titles:
+            # licensed through the publisher package: three readers at once, no title line in the register
+            L = Licence(lic_id="PKG-%d" % t["id"], title=t["id"], model="PKG", copies=3,
+                        bought=dt.date(2025, 1, 1), po_line="", price_gbp=0.0)
+            L.remaining = [None] * 3
+            L.lapsed_at = [None] * 3
+            lic_by_title.setdefault(t["id"], []).append(L)
+            continue
+        exp_peak = t["pop"] * beh["demand"] * 3.0
+        n = max(1, min(6, int(round(exp_peak * beh["copies"] * rl.uniform(0.55, 0.9)))))
+        u = rl.random()
+        model = "1U" if u < 0.55 else ("1U-M" if u < 0.9 else "3U")
+        lines = []
+        if model == "3U":
+            nlines = max(1, int(round(n / 3.0)))
+            for i in range(nlines):
+                lines.append((1, dt.date(2024, rl.randint(1, 12), rl.randint(1, 28))))
+        else:
+            left = n
+            while left > 0:
+                q = min(left, rl.choice([1, 1, 1, 2, 2, 3]))
+                y = rl.choice([2023, 2024, 2024, 2025])
+                d = dt.date(y, rl.randint(1, 12), rl.randint(1, 28))
+                if d > dt.date(2025, 8, 20):
+                    d = dt.date(2025, 8, rl.randint(1, 20))
+                lines.append((q, d))
+                left -= q
+        pub = t["publisher"]
+        cur = t["currency"]
+        for q, d in sorted(lines, key=lambda x: x[1]):
+            po += rl.randint(1, 37)
+            unit = round(rl.uniform(58, 260) * (2.4 if model == "3U" else 1.0) * (0.78 if model == "1U-M" else 1.0), 2)
+            L = Licence(lic_id="L%06d" % (po * 3 % 999983), title=t["id"], model=model, copies=q, bought=d,
+                        po_line="POL-%d-1" % po, price_gbp=unit, currency=cur)
+            L.remaining = [P.METER_LOANS if model == "1U-M" else None for _ in range(q)]
+            if model == "1U-M":
+                # copies bought before the record have already lent some of their loans
+                age_days = (P.RECORD_START.date() - d).days
+                L.remaining = [max(6, P.METER_LOANS - int(age_days / 365.0 * rl.uniform(6, 13))) for _ in range(q)]
+            L.lapsed_at = [None for _ in range(q)]
+            lic.append(L)
+            lic_by_title.setdefault(t["id"], []).append(L)
+        # copies added for the autumn 2026 courses (bought in August or September 2026)
+        if t["sem"] in ("A", "both") and rl.random() < 0.22:
+            po += rl.randint(1, 37)
+            d = dt.date(2026, rl.choice([8, 8, 9]), rl.randint(1, 28))
+            unit = round(rl.uniform(58, 260) * (2.4 if model == "3U" else 1.0) * (0.78 if model == "1U-M" else 1.0), 2)
+            L = Licence(lic_id="L%06d" % (po * 3 % 999983), title=t["id"], model=model, copies=1, bought=d,
+                        po_line="POL-%d-1" % po, price_gbp=unit, currency=cur)
+            L.remaining = [P.METER_LOANS if model == "1U-M" else None]
+            L.lapsed_at = [None]
+            lic.append(L)
+            lic_by_title.setdefault(t["id"], []).append(L)
+    W.licences = lic
+    W.lic_by_title = lic_by_title
+
+    # ---------------------------------------------------------------- requests
+    reqs = {t["id"]: [] for t in titles}
+    for t in titles:
+        beh = P.BEHAVIOUR[W.school_old[t["school"]]]
+        for sname, start, weeks in P.SEMESTERS:
+            active = (t["sem"] == "both") or (t["sem"] == "S26" and sname == "S26") or \
+                     (t["sem"] == "A" and sname in ("A25", "A26"))
+            if not active:
+                continue
+            shape = weekly_shape(rq)[:weeks]
+            scale = t["pop"] * beh["demand"] * P.DEMAND_SCALE
+            for w, f in enumerate(shape):
+                n = poisson(rq, scale * f)
+                for _ in range(n):
+                    day = start - dt.timedelta(days=start.weekday()) + dt.timedelta(days=7 * w + rq.randint(0, 6))
+                    hh = rq.choices(range(24), weights=[1, .6, .4, .3, .2, .2, .4, 1, 2, 3.2, 3.6, 3.4, 3, 3.2, 3.4, 3.2,
+                                                        2.9, 2.5, 2.3, 2.5, 2.8, 2.6, 2, 1.4])[0]
+                    t0 = uk_local_to_utc(day, hh, rq.randint(0, 59)) + dt.timedelta(seconds=rq.randint(0, 59))
+                    if t0 >= P.EXTRACT or t0 < P.RECORD_START:
+                        continue
+                    school = t["school"]
+                    if t["cross"] and rq.random() < P.CROSS_SHARE:
+                        school = t["cross"]
+                    if rq.random() < 0.012 and staff_by_school.get(school):
+                        stu = rq.choice(staff_by_school[school])
+                    else:
+                        stu = rq.choice(by_school[school])
+                    reqs[t["id"]].append((t0, stu))
+    W.requests = reqs
+
+    holds, loans = [], []
+    for t in titles:
+        simulate_title(W, t, rp, holds, loans)
+    holds.sort(key=lambda h: (h.placed, h.title, h.student))
+    loans.sort(key=lambda l: (l.start, l.title, l.student))
+    W.holds = holds
+    W.loans = loans
+    return W
+
+
+def biblio(W, rb):
+    """Publishers, works, editions, ISBNs and catalogue records for the platform titles and the
+    print-only books on reading lists."""
+    pub_names = [p[0] for p in PUBLISHERS]
+    pub_cur = {p[0]: p[2] for p in PUBLISHERS}
+    used_isbn = set()
+
+    def new_isbn(prefix):
+        while True:
+            d12 = prefix + "".join(str(rb.randint(0, 9)) for _ in range(12 - len(prefix)))
+            i = d12 + isbn13_check(d12)
+            if i not in used_isbn:
+                used_isbn.add(i)
+                return i
+
+    used_titles = set()
+
+    def title_string(school):
+        for _ in range(200):
+            d = rb.choice(DISCIPLINE_WORDS[school])
+            s = rb.choice(TITLE_FORMS).format(d=d)
+            if s not in used_titles:
+                used_titles.add(s)
+                return s
+        s = "%s %d" % (rb.choice(DISCIPLINE_WORDS[school]), rb.randint(2, 99))
+        used_titles.add(s)
+        return s
+
+    work = 51000
+    pkg_pub = {p[1]: p for p in PACKAGES}
+    for t in W.titles:
+        work += rb.randint(1, 9)
+        t["work"] = "W%06d" % work
+        t["title"] = title_string(t["school"])
+        # publisher: package publishers favour their schools
+        cands = [p for p in pkg_pub if t["school"] in pkg_pub[p][2]]
+        if cands and rb.random() < 0.45:
+            pub = cands[0]
+        else:
+            pub = rb.choice(pub_names)
+        t["publisher"] = pub
+        t["currency"] = pub_cur[pub]
+        t["edition"] = rb.choice([1, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10])
+        t["year"] = rb.randint(2016, 2025)
+        t["e_isbn"] = new_isbn("9781" + str(rb.randint(0, 9)))
+        t["p_isbn"] = new_isbn("9780" + str(rb.randint(0, 9)))
+        t["mms"] = "99%08d03606" % rb.randint(10 ** 7, 10 ** 8 - 1)
+        t["mms_print"] = "99%08d03606" % rb.randint(10 ** 7, 10 ** 8 - 1)
+        t["platform_id"] = "SLD%07d" % rb.randint(10 ** 6, 10 ** 7 - 1)
+        t["package"] = None
+        if pub in pkg_pub and t["school"] in pkg_pub[pub][2] and rb.random() < 0.55:
+            t["package"] = pkg_pub[pub][0]
+        # an earlier edition some reading lists still cite
+        t["prev"] = None
+        if t["edition"] > 1 and rb.random() < 0.35:
+            t["prev"] = dict(edition=t["edition"] - 1, p_isbn=new_isbn("9780" + str(rb.randint(0, 9))),
+                             mms="99%08d03606" % rb.randint(10 ** 7, 10 ** 8 - 1), year=t["year"] - rb.randint(3, 5))
+    # print-only books cited on reading lists (no platform licence)
+    W.print_only = []
+    for code, name, old, n in SCHOOLS:
+        for _ in range(int(n / 70.0 * rb.uniform(0.7, 1.3)) + 3):
+            work += rb.randint(1, 9)
+            W.print_only.append(dict(school=code, work="W%06d" % work, title=title_string(code),
+                                     publisher=rb.choice(pub_names), edition=rb.choice([1, 2, 3, 4, 5]),
+                                     year=rb.randint(2008, 2024), p_isbn=new_isbn("9780" + str(rb.randint(0, 9))),
+                                     mms="99%08d03606" % rb.randint(10 ** 7, 10 ** 8 - 1),
+                                     sem=rb.choice(["S26", "A", "both"])))
+    # titles the packages carry that no Ardmuir list cites (the publisher's wider collection)
+    W.package_extra = []
+    for pname, pub, schools in PACKAGES:
+        for _ in range(rb.randint(18, 40)):
+            school = rb.choice(schools)
+            W.package_extra.append(dict(package=pname, publisher=pub, title=title_string(school),
+                                        e_isbn=new_isbn("9781" + str(rb.randint(0, 9))),
+                                        edition=rb.choice([1, 2, 3, 4]), year=rb.randint(2015, 2025)))
+
+
+def simulate_title(W, t, rng, holds, loans):
     beh = P.BEHAVIOUR[W.school_old[t["school"]]]
     lics = sorted(W.lic_by_title.get(t["id"], []), key=lambda L: (L.bought, L.lic_id))
-    # capacity changes: licences bought during the record (none here) and lapses
     capacity = sum(L.copies for L in lics if L.bought <= P.RECORD_START.date())
     pending_lic = [L for L in lics if L.bought > P.RECORD_START.date()]
     in_use = 0
-    queue = []           # waiting holds, FIFO
-    ev = []              # (time, seq, kind, payload)
+    queue = []
+    ev = []
     seq = [0]
 
     def push(time, kind, payload):
@@ -282,24 +468,22 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
         push(t0, "req", stu)
     for L in pending_lic:
         push(dt.datetime(L.bought.year, L.bought.month, L.bought.day, 9, 0, tzinfo=UTC), "lic", L)
-    sys_cancel = dt.datetime(2026, 7, 1, 2, 15, tzinfo=UTC)
-    push(sys_cancel, "sys", None)
+    push(dt.datetime(2026, 7, 1, 2, 15, tzinfo=UTC), "sys", None)
     d = dt.date(2025, 9, 1)
     while d < P.EXTRACT.date():
         push(uk_local_to_utc(d, 8, 0) + dt.timedelta(seconds=rng.randint(0, 900)), "email", None)
         d += dt.timedelta(days=7)
 
     active_by_student = set()
-    lapsing = []
 
     def renew(L, time):
         k = len([x for x in W.licences if x.title == L.title]) + 1
         rn = Licence(lic_id="L%06d" % ((int(L.lic_id[1:]) * 7 + k * 131) % 999983), title=L.title, model="1U-M",
                      copies=1, bought=time.date(), po_line="AR-%s-%d" % (L.lic_id, k),
-                     price_gbp=round(L.price_gbp * rng.uniform(1.0, 1.08), 2))
+                     price_gbp=round(L.price_gbp * rng.uniform(1.0, 1.08), 2), currency=L.currency,
+                     renewal_of=L.lic_id, order_type="Renewal")
         rn.remaining = [P.METER_LOANS]
         rn.lapsed_at = [None]
-        rn.renewal_of = L.lic_id
         return rn
 
     def meter_loan():
@@ -313,19 +497,15 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
         return None
 
     def start_loan(time, stu, hold=None):
-        nonlocal in_use
-        lcount[0] += 1
         days = rng.choices([d for d, _ in P.LOAN_DAYS], weights=[w for _, w in P.LOAN_DAYS])[0]
         due = time + dt.timedelta(days=days)
         ret = due
         if rng.random() < P.P_EARLY_RETURN:
             ret = time + dt.timedelta(seconds=int(days * 86400 * rng.uniform(0.25, 0.9)))
         m = meter_loan()
-        loan = Loan(loan_id="LN%07d" % lcount[0], title=t["id"], student=stu, start=time, days=days, due=due,
-                    returned=ret, hold_id=hold.hold_id if hold else "", meter=(m[0].lic_id, m[1]) if m else None)
+        loan = Loan(loan_id="", title=t["id"], student=stu, start=time, days=days, due=due, returned=ret,
+                    hold=hold, meter=(m[0].lic_id, m[1]) if m else None)
         loans.append(loan)
-        if m and m[0].remaining[m[1]] == 0:
-            lapsing.append((ret, m[0], m[1]))
         push(ret, "ret", (loan, m))
 
     def offer_heads(time):
@@ -340,15 +520,10 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
             else:
                 push(time + dt.timedelta(hours=P.OFFER_HOURS), "expire", h)
 
-    def hazard(pos, h):
-        return beh["base"]
-
     def estimate_weeks(pos):
-        """what the platform shows a student: place in the queue over copies, a week a loan"""
         return pos / max(1, capacity)
 
     def decide(time, h, pos, at_placement=False):
-        """an impatient student weighs the shown estimate when placing a hold and at each Monday email"""
         if not W.students[h.student]["imp"]:
             return
         est = estimate_weeks(pos)
@@ -360,26 +535,17 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
     now = None
     while ev:
         nxt = ev[0][0]
-        # competing cancellations among waiting holds
         if queue:
-            hz = [hazard(i + 1, queue[i]) for i in range(len(queue))]
-            tot = sum(hz)
-            if tot > 0:
-                gap_days = rng.expovariate(tot)
-                tc = (now or nxt) + dt.timedelta(seconds=int(gap_days * 86400) + 1)
-                if tc < nxt and tc < P.EXTRACT:
-                    r = rng.random() * tot
-                    acc = 0.0
-                    for i, v in enumerate(hz):
-                        acc += v
-                        if acc >= r:
-                            break
-                    h = queue.pop(i)
-                    h.status = "cancelled_user"
-                    h.closed = tc
-                    active_by_student.discard(h.student)
-                    now = tc
-                    continue
+            tot = beh["base"] * len(queue)
+            gap_days = rng.expovariate(tot)
+            tc = (now or nxt) + dt.timedelta(seconds=int(gap_days * 86400) + 1)
+            if tc < nxt and tc < P.EXTRACT:
+                h = queue.pop(rng.randrange(len(queue)))
+                h.status = "cancelled_user"
+                h.closed = tc
+                active_by_student.discard(h.student)
+                now = tc
+                continue
         time, _, kind, payload = heapq.heappop(ev)
         now = time
         if time >= P.EXTRACT:
@@ -393,7 +559,6 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
                 start_loan(time, stu)
                 active_by_student.add(stu)
             else:
-                hcount[0] += 1
                 h = Hold(hold_id="", title=t["id"], student=stu, placed=time)
                 holds.append(h)
                 queue.append(h)
@@ -404,10 +569,7 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
             h.status = "fulfilled"
             h.borrowed = time
             h.closed = time
-            in_use -= 1          # the reservation becomes a loan below
-            in_use += 1
             start_loan(time, h.student, h)
-            # start_loan does not add to in_use; the reserved copy carries the loan
         elif kind == "expire":
             h = payload
             h.status = "expired"
@@ -421,13 +583,12 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
             active_by_student.discard(loan.student)
             if m and m[0].remaining[m[1]] == 0 and m[0].lapsed_at[m[1]] is None:
                 m[0].lapsed_at[m[1]] = time
-                # the platform re-licenses a lapsed metered copy at once (auto-renewal on titles on current lists)
                 rn = renew(m[0], time)
                 lics.append(rn)
                 W.licences.append(rn)
             offer_heads(time)
         elif kind == "lic":
-            capacity += payload.copies
+            capacity += payload.copies * (3 if payload.model == "3U" else 1)
             offer_heads(time)
         elif kind == "email":
             for i, h in enumerate(list(queue)):
