@@ -34,3 +34,14 @@ Stump terms swept: survey, architecture, anglers, dropped, reader, reflex, golde
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (Leak reader, architecture 6 round 1 (2026-11-02, isolated, Sonnet at medium effort, on target.zip 8131c7cd))
+
+1. Decisive step: none stated; the nearest is policy 2.3 (a lake's angler-hours for a season are the number of anglers fishing it in each hour of the angling day, 05:00 to 22:00, added up over every hour of every day of the open-water season, 15 May to 31 August), the estimand; 2.5 says only "estimated from the society's creel survey".
+2. Nothing ranks or scores (the lake register carries stocked yes or no and areas).
+3. Nothing exists only to help the analyst (hatchery files, campground permits and interviews are inputs or distractors; the revision sheets are ordinary governance records).
+4. Nothing reads as the answer (500 angler-hours per hectare is the policy's line).
+5. Policy 2.2 to 2.4 read literally: each stocked lake's season angler-hours (every angler present in each hour of the angling day over the season, boat and shore alike) over the register's hectares, against 500.
+6. An analytical choice: expanding sparse flight counts and access interviews to the whole day and season (the count-to-hours conversion and time-of-day coverage); no sentence states it.
+Sweep flags: the policy gives the line, the tier rule and the estimand, no lake and no method; the protocol is the organisation's own field protocol (instantaneous counts in Pacific time, finished-party interviews at one access), provenance not method; the flight counts and log carry counts, UTC times and weather remarks, no conversion.
+Realism: none generated.

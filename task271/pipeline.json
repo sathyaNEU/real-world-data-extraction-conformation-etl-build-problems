@@ -1,10 +1,10 @@
 {
  "task": "task271",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics",
  "objective": "descriptive-distribution",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-02",
  "stump": "The plain expansion (each flight count times the 17-hour angling day by stratum, each lake's own anglers per boat) files Galloran, Nockell and Farrowdale for the 2027 high-use tier and leaves Ellerdine, Quorrin, Ravensky and Inverkeld out; read against each lake's own hour-by-hour presence from the access interviews, the four fly-only lakes clear 500 angler-hours per hectare and the three general lakes fall under it.",
  "architecture": 6,
@@ -14,21 +14,20 @@
   "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-02 (no LEAK; the policy's 500 line, two governing documents naming survey terms, the protocol naming what clerks record)",
-  "reader": "clean 2026-11-02 (question 6 analytical: expanding sparse counts over the day and season)"
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2026-10-26)",
+  "reader": "clean in round 1 (question 6 analytical); later rounds changed the write-up and two data files with no document text, so the reader was not re-run; appended to task271/leak_check_report.md"
  },
  "duplicate_check": {
-  "check_at_draw": "WARN 2026-11-01 before and after registration (overuse.gate_g, repeat.decision; shell.repeat read off the old prompt)",
-  "heart": "WARN 2026-11-02 (overuse.gate_g, repeat.decision; no BLOCK)",
-  "surface": "2026-11-02: 9 pairs promoted for adjudication, surface similarity at most 0.101 (task272 back to back on G7 and designation_set; card same-driver signatures against task460, task135, task451 and task161); differentiation lines on the card for task451, task135, task161, task460, task272, task193 and task186"
+  "heart": "WARN 2026-11-02 at the ship gate, no BLOCK",
+  "nearest": "surface promoted task272, task304, task186, task460, task161, task135 and task451 at 0.101 or less; differentiation lines on the card"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (round 2, 2026-11-02, on 9ec2a0b9): one SOLUTION_WRONG and one graded-cell fork to close",
-  "disposition": "round 2 fixed 2026-11-02: the bands hold under 74 readings including one shared party size (high use above 510, standard below 480), the plain expansion stated as its list under each lake's own anglers per boat for every blank and strata reading; the paired Brackwater logger moves to Kelloran on 9 July, so no overlap day sits near 20 C under either logger (Brackwater 57 under every choice, the UTC device kept); call and every graded figure unchanged; last judge pass pending",
-  "report": ""
+  "verdict": "round 3 DETERMINISTIC, APPROVE (order kept; Gate F good; Gate G method_or_model_selection / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; rounds 1 and 2 FIX_NOW on write-up precision and one warm-day cell, the call unchanged throughout",
+  "report": "task271/determinism_check_report.md"
  },
  "returned": [],
- "resume": "Re-judge round 2 fixes applied 2026-11-02 (target.zip 1bb0af6b); one last judge pass is the main session's; no git in this run (the main session commits).",
+ "resume": "Shipped 2026-11-02 (architecture 6, Descriptive & Distribution): ten lakes into the 2027 high-use catchable tier; target.zip 1bb0af6b. Next: the portal result.",
  "architectures": [
   {
    "architecture": 1,
@@ -66,7 +65,7 @@
   }
  ],
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
