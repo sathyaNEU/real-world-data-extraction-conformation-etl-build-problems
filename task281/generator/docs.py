@@ -24,6 +24,12 @@ def _doc(path, title, author, story):
                           bottomMargin=18 * mm, title=title, author=author, subject="", creator=author,
                           producer=author)
     d.build(story)
+    # the library's own PDF printer leaves no generator comment: blank it in place so every offset stands
+    data = open(path, "rb").read()
+    for sig in (b"ReportLab Generated PDF document (opensource)", b"ReportLab generated PDF document -- digest "
+                b"(opensource)"):
+        data = data.replace(sig, b" " * len(sig))
+    open(path, "wb").write(data)
 
 
 def _table(rows, widths, head=True):

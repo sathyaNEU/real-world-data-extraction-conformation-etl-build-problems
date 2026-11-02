@@ -341,7 +341,7 @@ LONG_STAYERS = {"COC": 82, "YAV": 236, "RIM": 104}      # live October to May in
 LONG_DEST = {"MAR": 0.44, "PIN": 0.17, "SAZ": 0.23, "CRV": 0.16}
 SHORT_WINTER = {"COC": 60, "YAV": 170, "RIM": 75}       # December to March in the desert
 SUMMERERS = {"MAR": 260, "PIN": 70, "SAZ": 120, "CRV": 45}  # desert address, June to September in the pines
-UNNOTIFIED = {"COC": 22, "YAV": 50, "RIM": 20}          # moved to the desert in 2024, address never changed
+UNNOTIFIED = {}                                          # (none: every address on file is the member's notified home)
 LATE_MOVERS = 74                                        # notified moves between September and November 2025
 EARLY_MOVERS = 112                                      # notified moves between January and April 2025
 
@@ -504,6 +504,28 @@ def build_members(provs_by_region):
                 when = dt.date(2026, 1, 15) + dt.timedelta(days=int(rng.integers(0, 230)))
                 m.moves2026 = (when, pick_zip(rng, to))
                 m.addr_hist.append((when, m.moves2026[1], "MBR"))
+
+    # 2026 events among members enrolled all of 2025: deaths and disenrollments before the October 2026 extract.
+    rng2 = stream("members_2026")
+    for m in members:
+        if m.kind == "partial":
+            continue
+        r = rng2.random()
+        if r < 0.031:
+            m.dod = dt.date(2026, 1, 3) + dt.timedelta(days=int(rng2.integers(0, 270)))
+            m.enroll = [(m.enroll[0][0], m.dod)]
+        elif r < 0.046:
+            end = dt.date(2026, 1 + int(rng2.integers(0, 8)), 28)
+            m.enroll = [(m.enroll[0][0], end)]
+    # A handful of 75+ stayers left the plan for a month or two in 2025 and came back (not enrolled every day).
+    stayers = [m for m in members if m.kind == "stay" and m.dod is None and m.enroll[-1][1] is None]
+    for i in rng2.choice(len(stayers), size=34, replace=False):
+        m = stayers[int(i)]
+        off = dt.date(2025, 2 + int(rng2.integers(0, 8)), 28)
+        back = dt.date(off.year, off.month, 1) + dt.timedelta(days=int(rng2.choice([35, 63])))
+        back = dt.date(back.year, back.month, 1)
+        m.enroll = [(m.enroll[0][0], off), (back, None)]
+        m.notes = {"gap": (off, back)}
     return members
 
 
@@ -518,8 +540,26 @@ def age_on(dob, d):
     return d.year - dob.year - ((d.month, d.day) < (dob.month, dob.day))
 
 
+def alive_end_2025(m):
+    return m.dod is None or m.dod > YEAR_END
+
+
 def counted(m):
-    return enrolled_all_2025(m) and age_on(m.dob, YEAR_END) >= 75 and m.dod is None
+    return enrolled_all_2025(m) and age_on(m.dob, YEAR_END) >= 75 and alive_end_2025(m)
+
+
+def enrolled_on_mask(m):
+    """Boolean per day of 2025: enrolled that day (and alive)."""
+    mask = np.zeros(NDAYS, dtype=bool)
+    for s, e in m.enroll:
+        lo = max(0, doy(s)) if s > YEAR_START else 0
+        hi = NDAYS - 1 if (e is None or e >= YEAR_END) else doy(e)
+        if s > YEAR_END or hi < 0:
+            continue
+        mask[lo:hi + 1] = True
+    if m.dod is not None and m.dod <= YEAR_END:
+        mask[doy(m.dod) + 1:] = False
+    return mask
 
 
 def true_region(m):

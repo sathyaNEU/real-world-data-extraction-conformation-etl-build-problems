@@ -25,7 +25,6 @@ def write(F, sub_path, fig_path):
         "holds": {r["name"]: r["holds"] for r in rows},
         "holds_total": num(F["holds_total"]),
         "hold_weeks": {r["name"]: r["hw100"] for r in rows},
-        "hold_weeks_total": num(F["hw_total100"]),
         "amount_total": num(F["amount_total100"]),
         "cancelled": num(F["n_cancelled"]),
         "offered": num(F["n_offered"]),
@@ -65,8 +64,7 @@ def write(F, sub_path, fig_path):
                                                            num(F["n_cancelled"])))
     out.append("2. Holds by faculty: " + ", ".join("%s **%s**" % (r["name"], num(r["holds"])) for r in rows) + ".")
     out.append("3. Hold-weeks by faculty, to the nearest 100: " +
-               ", ".join("%s **%s**" % (r["name"], num(r["hw100"])) for r in rows) +
-               "; %s in all." % num(F["hw_total100"]))
+               ", ".join("%s **%s**" % (r["name"], num(r["hw100"])) for r in rows) + ".")
     out.append("4. Amounts by faculty, to the nearest £100: " +
                ", ".join("%s **%s**" % (r["name"], money(r["amount100"])) for r in rows) + ".")
     out.append("")
@@ -88,10 +86,11 @@ def write(F, sub_path, fig_path):
                "ISBN taken through the catalogue's related-record and preceding-edition links to its e-book.")
     out.append("7. Spring lists: counted each 2025-26 Semester 2 essential item whose work had no e-book of the cited "
                "edition or later licensed on 12 January 2026, by title line or by a package then in force.")
-    out.append("8. 40-loan licences: started each from its 1 September 2025 status (40 for later purchases), counted "
-               "every checkout to 30 October 2026 against the earliest-purchased licence with loans left, started "
-               "each AR- re-licence when its licence's fortieth loan ended, and counted those in force with ten or "
-               "fewer left by fund code.")
+    out.append("8. 40-loan licences: took each licence bought before 1 September 2025 at its status-report figure "
+               "(one absent from that report had lapsed) and later ones at 40, made every checkout to 30 October 2026 "
+               "on the earliest-purchased licence not on loan with loans left, started a re-licence when a licence's "
+               "fortieth loan ended (the title's re-licence dated that day, lowest reference first) and charged it to "
+               "that licence's faculty, then summed the loans left on licences in force by faculty.")
     out.append("")
     out.append("## 4. Deliverable Answers")
     out.append("")
@@ -115,9 +114,10 @@ def write(F, sub_path, fig_path):
                "2026:")
     for f in AN.FAC_ORDER:
         out.append("   - %s: %d" % (by[f]["name"], F["uncovered"][f]))
-    out.append("4. 40-loan licences in force at the end of 30 October 2026 with ten or fewer loans left:")
+    out.append("4. Loans left on the 40-loan licences charged to each faculty and in force at the end of 30 October "
+               "2026:")
     for f in AN.FAC_ORDER:
-        out.append("   - %s: %d" % (by[f]["name"], F["metered"][f]))
+        out.append("   - %s: %s" % (by[f]["name"], num(F["metered"][f])))
     out.append("")
     with open(sub_path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(out))

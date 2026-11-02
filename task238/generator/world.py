@@ -58,6 +58,24 @@ def hours_of(d):
     return list(range(P.OPEN_H, P.SHORT_CLOSE.get(d, P.CLOSE_H)))
 
 
+def desk_open(x):
+    """the first moment at or after x when the store's service desk is serving (from opening to a quarter of an
+    hour before closing); an entry that would fall overnight is made the next morning, spread by its own minute"""
+    d = x.date()
+    for _ in range(5):
+        hrs = hours_of(d)
+        if hrs:
+            start = local(d, hrs[0] + 0.05)
+            end = local(d, hrs[-1] + 0.75)
+            if x < start:
+                return start + dt.timedelta(minutes=x.minute % 47, seconds=x.second)
+            if x <= end:
+                return x
+        d = d + dt.timedelta(days=1)
+        x = local(d, 0.0) + dt.timedelta(minutes=x.minute, seconds=x.second)
+    raise RuntimeError("no desk hours within five days of %s" % x)
+
+
 def local(d, hour_float):
     base = dt.datetime(d.year, d.month, d.day, tzinfo=TZ)
     naive = dt.datetime(d.year, d.month, d.day) + dt.timedelta(hours=hour_float)
@@ -403,12 +421,10 @@ class World:
                             kind = "dup" if u < 0.45 else ("partial" if u < 0.65 else "plain")
                         else:
                             kind = "dup" if u < 0.15 else ("partial" if u < 0.60 else "plain")
-                        later = t + dt.timedelta(minutes=float(r.uniform(2, 35)))
+                        later = desk_open(t + dt.timedelta(minutes=float(r.uniform(2, 35))))
                         rows.append((no, t, i, sc, sh, "till", reg_no, txn, (kind, later)))
                     else:
-                        later = t + dt.timedelta(hours=float(r.uniform(2, 70)))
-                        if later.date() in P.CLOSED or not hours_of(later.date()):
-                            later = later + dt.timedelta(days=1)
+                        later = desk_open(t + dt.timedelta(hours=float(r.uniform(2, 70))))
                         rows.append((no, t, i, sc, sh, "desk", reg_no, txn, ("desk", later)))
                 keep = self.claim_rows
                 self.claim_rows = rows
@@ -455,8 +471,8 @@ class World:
                 if qty == 2:
                     unit = max(1.00, round(np.floor(unit) + 0.50, 2))
                     price_q = round(unit * 2, 2)
-                elif qty == 3:
-                    price_q = float(max(3, int(np.round(unit * 3))))
+                elif qty == 3:          # three for a whole number of dollars a unit, so a single unit rings exactly
+                    price_q = float(3 * max(1, int(np.round(unit))))
                 else:
                     price_q = unit
                 lead = int(members[int(np.argmax(self.pop[members]))])
@@ -467,20 +483,23 @@ class World:
                         prelim = good
                         u = r.random()
                         if u < 0.030:
-                            prelim = (qty, round(price_q + float(r.choice([0.50, 1.00, 0.30])), 2))
+                            off = float(r.choice([0.50, 1.00, 0.30]))
+                            if qty == 3:        # a three-for price is keyed in steps a unit price can carry
+                                off = {0.50: 0.60, 1.00: 0.90, 0.30: 0.30}[off]
+                            prelim = (qty, round(price_q + off, 2))
                         elif u < 0.040 and qty > 1:
                             prelim = (1, round(price_q, 2))
                         revised = good if r.random() < 0.62 else prelim
                         if prelim == good and r.random() < 0.006:
-                            revised = (qty, round(price_q + 0.20, 2))
+                            revised = (qty, round(price_q + (0.30 if qty == 3 else 0.20), 2))
                         self.keyed[(k, int(i), zone, "PRELIM")] = prelim
                         self.keyed[(k, int(i), zone, "REVISED")] = revised
                         if revised != good and r.random() < 0.55:
                             self.corr[(k, int(i), zone)] = (int(r.integers(1, 5)), good[0], good[1])
             self.draw_units(k, r)
             for _ in range(20):
-                v = self.week_over(k)
-                if abs((v % 1.0) - 0.5) > 0.05:
+                v, vc = self.week_over(k), self.week_over(k, cents=True)
+                if abs((v % 1.0) - 0.5) > 0.05 and abs((vc % 1.0) - 0.5) > 0.05 and int(v + 0.5) == int(vc + 0.5):
                     break
                 self.draw_units(k, r)
 
@@ -496,20 +515,21 @@ class World:
                     for j in range(7):
                         self.ad_units[(k, int(i), zone, j)] = int(r.poisson(lam * dayw[j]) + (1 if j == 0 else 0))
 
-    def week_over(self, k):
-        """the dollars customers paid above the flyer price in flyer week k (the clean truth)"""
+    def week_over(self, k, cents=False):
+        """the dollars customers paid above the flyer price in flyer week k (the clean truth); cents=True takes a
+        multi-buy's unit price to the cent, as a register rings a single unit of it"""
         tot = 0.0
         for (kk, line, members, qty, pq, lead) in self.ad_lines:
             if kk != k:
                 continue
-            au = pq / qty
+            au = round(pq / qty, 2) if cents else pq / qty
             for i in members:
                 for zone in (1, 2):
                     kq, kp = self.keyed[(k, int(i), zone, "REVISED")]
                     fx = self.corr.get((k, int(i), zone))
                     for j in range(7):
                         q_, p_ = (fx[1], fx[2]) if fx and j >= fx[0] else (kq, kp)
-                        ku = p_ / q_
+                        ku = round(p_ / q_, 2) if cents else p_ / q_
                         if ku > au + 0.004:
                             tot += (ku - au) * self.ad_units[(k, int(i), zone, j)]
         return tot

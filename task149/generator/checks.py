@@ -16,7 +16,7 @@ sys.path.insert(0, HERE)
 import analysis as A  # noqa: E402
 import ceiling as C  # noqa: E402
 import io_util as IO  # noqa: E402
-import params as P  # noqa: E402
+import params as P  # noqa: E402,F401
 
 RESULTS = []
 
@@ -104,8 +104,12 @@ def main():
               for z in F["zone_boardings"]), "")
     check("SF3 a cell shared by two zones: majority zone or area-share split give the same figures",
           all(same_bin([V["split"]["rows"][z], R["boardings"][z]], 10) for z in F["zone_boardings"]), "")
-    check("SF4 ratio of totals or mean of each device's share give the same figures",
-          all(same_bin([V["devmean"]["rows"][z], R["boardings"][z]], 10) for z in F["zone_boardings"]), "")
+    check("SF4 ratio of totals, mean of each device's share, or every device over all ordinary weekdays give the same "
+          "figures", all(same_bin([V["devmean"]["rows"][z], V["all_days_den"]["rows"][z], R["boardings"][z]], 10)
+                         for z in F["zone_boardings"]), "")
+    spans = [len(obs) for _d, wz, _cd, obs in A.workers(D) if R["shares"].get(list(wz)[0], 0) > 0]
+    check("SF4 by construction: no served-zone commuter's identifier is reissued inside the weeks (every span covers "
+          "at least 50 of the ordinary weekdays)", min(spans) >= 50, "shortest span %d of %d" % (min(spans), R["ordinary_days"]))
     check("SF5 days by Irish date or by UTC date give the same figures",
           all(same_bin([V["utcdays"]["rows"][z], R["boardings"][z]], 10) for z in F["zone_boardings"]), "")
     check("SF6 ordinary weekdays: the mid-term week and the bank holiday are outside (filed), and including them "
@@ -126,21 +130,35 @@ def main():
           "%.1f" % V["all_days_den"]["total"])
     check("SF12 the census base is held at 2022 (filed); no completions or jobs growth enter",
           "held at the 2022 base" in IO.pdf_text(os.path.join(TARGET, "rathgarvan_fbc_demand_refresh_dec2027.pdf")), "")
-    check("SF13 ask A: a station counts with the code it replaced (UHK with KUH, CBH with CBY)",
-          R["station_ratios_codes"]["KUH"] is None or abs(R["station_ratios_codes"]["KUH"] - R["station_ratios"]["KUH"]) > 0.05,
-          "")
-    check("SF14 ask A: gateline location codes carry their station's register number (G<no><gateline>)",
-          all(c[1:3] in set(P.STATION_NO.values()) for c in {g for _d, g, _n in D["gates"] if g.startswith("G")}), "")
-    check("SF15 ask B: arrival is the start of the workplace stay in Irish time, the window 07:30 to 09:30 inclusive",
+    reg_codes = {r["station_code"] for r in D["register"]}
+    asset_ids = {r["asset_id"] for r in D["assets"]}
+    codes = {g for _d, g, _n in D["gates"]}
+    check("SF13 ask A: a station counts with the code it replaced (UHK with KUH, CBH with CBY), from the register",
+          {"UHK", "KUH", "CBH", "CBY"} <= reg_codes and R["station_ratios"]["KUH"] and R["station_ratios"]["CBY"], "")
+    check("SF14 ask A: every location code in the gate file is a register station or a gate asset, and an asset belongs "
+          "to the station its dated row places it at on the day", codes <= reg_codes | asset_ids, "")
+    moved = [a for a in asset_ids if len({r["station_code"] for r in D["assets"] if r["asset_id"] == a}) > 1]
+    check("SF14 ask A: each of the four gate assets moved between stations, so a static join misplaces one period",
+          len(moved) == 4 and len(asset_ids) == 4, ", ".join(sorted(moved)))
+    check("SF15 ask B: arrival in the zone is the day's first stay in a cell of the workplace zone, Irish time, ordinary "
+          "weekdays, from 07:30 up to and including 09:30 (prompt's words)",
           all(int(round(100 * R["arrivals"][z])) == v for z, v in F["arrival_share"].items()), "")
+    check("SF15 ask B: no stay away from home starts at 07:30 or 09:30, so an inclusive or exclusive window gives the "
+          "same figures", all(abs(R["arrivals"][z] - R["arrivals_exclusive"][z]) < 1e-12 for z in F["arrival_share"]),
+          "")
+    check("SF17 ask A: the line is its total entries, all stations summed by day (prompt's words); the mean of the "
+          "station ratios is another quantity", int(round(100 * R["station_ratios"]["LINE"])) == F["station_ratio"]["LINE"]
+          and int(round(100 * R["line_mean_of_stations"])) != F["station_ratio"]["LINE"],
+          "%.2f against %.2f" % (100 * R["station_ratios"]["LINE"], 100 * R["line_mean_of_stations"]))
     check("SF16 zone boardings to the nearest 10 and the total to the nearest 100 from the same exact figures",
           abs(sum(R["boardings"].values()) - gold) < 1e-6, "")
 
     # ---------------- bin edges for every graded figure
     for z, v in F["zone_boardings"].items():
-        b = R["boardings"][z]
-        check("bin: zone %s boardings %d (edge >= 0.2)" % (z, v), edge(b, 10) >= 0.2 and int(round(b / 10)) * 10 == v,
-              "%.2f, edge %.2f" % (b, edge(b, 10)))
+        vals = [R["boardings"][z]] + [V[k]["rows"][z] for k in V if k != "with_midterm"]
+        check("bin: zone %s boardings %d under every estimator and reading (edge >= 1.5)" % (z, v),
+              same_bin(vals, 10) and min(edge(x, 10) for x in vals) >= 1.5 and int(round(R["boardings"][z] / 10)) * 10 == v,
+              "%.2f to %.2f, nearest edge %.2f" % (min(vals), max(vals), min(edge(x, 10) for x in vals)))
     for z, v in F["arrival_share"].items():
         x = 100 * R["arrivals"][z]
         check("bin: arrival share %s %d%% (edge >= 0.15)" % (z, v), edge(x, 1) >= 0.15, "%.2f" % x)
@@ -149,17 +167,19 @@ def main():
         check("bin: station %s %d%% (edge >= 0.2)" % (s, v), edge(x, 1) >= 0.2, "%.2f" % x)
 
     # ---------------- ask devices
-    reg = R["station_ratios_register"]
-    check("ask A device: the register-only route misses every station figure",
-          all(reg[s] is None or int(round(100 * reg[s])) != F["station_ratio"][s] for s in F["station_ratio"]),
-          ", ".join("%s %s" % (s, "n/a" if reg[s] is None else int(round(100 * reg[s]))) for s in F["station_ratio"]))
+    for mode in ("register", "last", "first"):
+        rr = R["station_ratios_%s" % mode]
+        check("ask A device: a static reading of the gate assets (%s) misses every station figure" % mode,
+              all(rr[s] is None or int(round(100 * rr[s])) != F["station_ratio"][s]
+                  for s in ("ARD", "LSG", "KCN", "KDK", "KUH", "CBY")),
+              ", ".join("%s %s" % (s, "n/a" if rr[s] is None else int(round(100 * rr[s]))) for s in F["station_ratio"]))
     utc = R["arrivals_utc"]
     check("ask B device: UTC stamps read as Irish time move every arrival figure",
           all(int(round(100 * utc[z])) != v for z, v in F["arrival_share"].items()), "")
-    fa = R["arrivals_first"]
-    moved = [z for z, v in F["arrival_share"].items() if int(round(100 * fa[z])) != v]
-    check("ask B device: timing by the day's first stay away from home moves at least three zones", len(moved) >= 3,
-          ", ".join(moved))
+    lg = R["arrivals_long"]
+    check("ask B device: timing the journey by the long workplace stay moves every arrival figure",
+          all(int(round(100 * lg[z])) != v for z, v in F["arrival_share"].items()),
+          ", ".join("%s %d" % (z, int(round(100 * lg[z]))) for z in sorted(F["arrival_share"])))
     pc, ml, crack, n, full = C.main(TARGET)
     check("ceiling: pair at or under 60 and mirror leakage under 50", pc <= 60 and ml < 50, "%.1f, %.1f" % (pc, ml))
     check("ceiling: the full includer reproduces every ask figure", full == n, "%d of %d" % (full, n))

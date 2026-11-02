@@ -26,6 +26,7 @@ F = {
     "cells": "cell_zone_lookup_v3.csv", "census": "census2022_pow_rathgarvan_catchment.xlsx",
     "case": "rathgarvan_fbc_demand_refresh_dec2027.pdf", "gates": "ardnagree_line_gate_entries_20180101_20271130.csv",
     "register": "ardnagree_line_station_register.csv", "calendar": "kilcarrow_calendar_2018_2027.csv",
+    "assets": "ardnagree_line_gate_asset_locations.csv",
 }
 PANEL = (dt.date(2027, 9, 6), dt.date(2027, 11, 26))
 LONG_MIN = 240
@@ -84,6 +85,7 @@ def load(target):
     out["stays"] = st
     out["gates"] = [(dt.date.fromisoformat(r["date"]), r["location_code"], int(r["entries"])) for r in rd(T("gates"))]
     out["register"] = rd(T("register"))
+    out["assets"] = rd(T("assets"))
     return out
 
 
@@ -176,8 +178,10 @@ def boardings(D, f):
     return rows, tot
 
 
-def arrivals(D, W, clock="local", first=False, win=None):
-    """Per destination: share of journeys to work (commuting days) that reached the workplace in the window."""
+def arrivals(D, W, clock="local", mode="zone", win=None):
+    """Per destination: share of journeys to work on ordinary weekdays that arrived in the workplace zone in the window
+    (both ends included). A journey's arrival is its first stay of the day in a cell of the zone (mode "zone"); the
+    cracker's reading is the start of the long workplace stay (mode "long")."""
     lo, hi = win or ARR
     hit, tot = collections.Counter(), collections.Counter()
     days_all = set(ordinary_days(D))
@@ -190,11 +194,15 @@ def arrivals(D, W, clock="local", first=False, win=None):
                 continue
             if s.date() not in days_all:
                 continue
-            t = s if clock == "local" else (su if clock == "utc" else su + dt.timedelta(hours=1))
-            if first:
-                day = [x for x in stays if x[0] != home and x[1].date() == s.date() and x[1] <= s]
-                if day:
-                    t = day[0][1] if clock == "local" else day[0][3]
+            t, tu = s, su
+            if mode == "zone":
+                first = [x for x in stays[:i + 1] if x[1].date() == s.date() and x[0] != home
+                         and zone_major(D, x[0]) == z]
+                t, tu = first[0][1], first[0][3]
+            if clock == "utc":
+                t = tu
+            elif clock == "ist":
+                t = tu + dt.timedelta(hours=1)
             m = t.hour * 60 + t.minute
             tot[z] += 1
             if lo <= m <= hi:
@@ -202,31 +210,56 @@ def arrivals(D, W, clock="local", first=False, win=None):
     return {z: hit[z] / tot[z] for z in tot}, tot
 
 
-def station_no(D):
-    return {r["station_code"]: r["station_no"] for r in D["register"]}
+def station_groups(D):
+    reg = {r["station_code"]: r for r in D["register"]}
+    succ = {"UHK": "KUH", "CBH": "CBY"}
+    return {c: succ.get(c, c) for c in reg}
+
+
+def asset_station(D, code, d, mode):
+    """The station a gate asset stood at on day d: the asset register's dated rows ("golden"), or one row kept for
+    every date ("last", the array's current station; "first", its first station)."""
+    rows = sorted((r for r in D["assets"] if r["asset_id"] == code), key=lambda r: r["installed"])
+    if not rows:
+        return None
+    if mode == "last":
+        return rows[-1]["station_code"]
+    if mode == "first":
+        return rows[0]["station_code"]
+    for r in rows:
+        a = dt.date.fromisoformat(r["installed"])
+        b = dt.date.fromisoformat(r["removed"]) if r["removed"] else dt.date(2099, 1, 1)
+        if a <= d <= b:
+            return r["station_code"]
+    return None
 
 
 def station_ratios(D, mode="golden"):
-    """Average ordinary-weekday entries, September to November 2027 over September to November 2019, by station
-    (a station and the station it replaced, with every gateline whose location code carries its number)."""
+    """Average ordinary-weekday entries, September to November 2027 over September to November 2019, by station (a
+    station and the one it replaced as one, with every gate asset that stood at it on the day), and for the whole line
+    (all location codes summed by day)."""
     hol = D["nonordinary"]
-    nos = station_no(D)
-    groups = {"ARD": "02", "LSG": "09", "KCN": "03", "KDK": "04", "KUH": "06", "CBY": "07"}
+    grp = station_groups(D)
+    stations = ["ARD", "LSG", "KCN", "KDK", "KUH", "CBY"]
+    cache = {}
 
-    def belongs(code, no):
-        if no is None:
-            return True if mode != "register" else not code.startswith("G")
-        if code.startswith("G") and len(code) == 5:
-            return mode == "golden" and code[1:3] == no
-        if mode == "codes_only":
-            return code in [k for k, v in groups.items() if v == no]
-        return nos.get(code) == no
+    def where(code, d):
+        if code in grp:
+            return grp[code]
+        if mode == "register":
+            return None
+        key = (code, d if mode == "golden" else None)
+        if key not in cache:
+            cache[key] = asset_station(D, code, d, "golden" if mode == "golden" else mode)
+        return cache[key]
     out = {}
-    for st, no in list(groups.items()) + [("LINE", None)]:
+    for st in stations + ["LINE"]:
         def mean(y):
             by = collections.Counter()
             for d, c, n in D["gates"]:
-                if belongs(c, no) and d.year == y and 9 <= d.month <= 11 and d.weekday() < 5 and d not in hol:
+                if d.year != y or not (9 <= d.month <= 11) or d.weekday() >= 5 or d in hol:
+                    continue
+                if st == "LINE" or where(c, d) == st:
                     by[d] += n
             v = list(by.values())
             return (sum(v) / len(v)) if v else None, len(v)
@@ -234,6 +267,11 @@ def station_ratios(D, mode="golden"):
         b, nb = mean(2019)
         out[st] = (a / b if (a and b) else None, a, b, na, nb)
     return out
+
+
+def station_ratio_mean_of_stations(D):
+    r = station_ratios(D)
+    return sum(r[s][0] for s in ["ARD", "LSG", "KCN", "KDK", "KUH", "CBY"]) / 6.0
 
 
 def network_ratio(D):
@@ -255,7 +293,8 @@ def run(target):
     arr, arr_n = arrivals(D, W)
     arr_u = arrivals(D, W, clock="utc")[0]
     arr_ist = arrivals(D, W, clock="ist")[0]
-    arr_first = arrivals(D, W, first=True)[0]
+    arr_long = arrivals(D, W, mode="long")[0]
+    arr_excl = arrivals(D, W, win=(ARR[0] + 1, ARR[1] - 1))[0]
     # Variants the fork table licenses
     var = {}
     for name, kw in (("long210", dict(long_min=210)), ("long270", dict(long_min=270)), ("long300", dict(long_min=300)),
@@ -293,9 +332,11 @@ def run(target):
         "lisnagry_route": census_daily * lsg, "station_ratios": {k: v[0] for k, v in sr.items()},
         "station_means": {k: (v[1], v[2], v[3], v[4]) for k, v in sr.items()},
         "station_ratios_register": {k: v[0] for k, v in station_ratios(D, mode="register").items()},
-        "station_ratios_codes": {k: v[0] for k, v in station_ratios(D, mode="codes_only").items()},
+        "station_ratios_last": {k: v[0] for k, v in station_ratios(D, mode="last").items()},
+        "station_ratios_first": {k: v[0] for k, v in station_ratios(D, mode="first").items()},
+        "line_mean_of_stations": station_ratio_mean_of_stations(D),
         "arrivals": arr, "arrival_days": dict(arr_n), "arrivals_utc": arr_u, "arrivals_ist": arr_ist,
-        "arrivals_first": arr_first,
+        "arrivals_long": arr_long, "arrivals_exclusive": arr_excl,
         "variants": {k: {"total": v[1], "rows": v[0]} for k, v in var.items()},
         "scope": "reduced" if golden < D["threshold"] else "full",
         "ordinary_days": full55,
@@ -313,6 +354,6 @@ if __name__ == "__main__":
     for z in sorted(r["boardings"]):
         print(z, round(r["freq"].get(z, 0), 4), r["n_devices"].get(z), round(r["boardings"][z], 2),
               round(r["arrivals"].get(z, 0), 4), round(r["arrivals_utc"].get(z, 0), 4),
-              round(r["arrivals_first"].get(z, 0), 4))
+              round(r["arrivals_long"].get(z, 0), 4))
     print({k: round(v["total"], 1) for k, v in r["variants"].items()})
     print({k: round(v, 4) for k, v in r["station_ratios"].items()})

@@ -46,10 +46,13 @@ PHYS = dict(
 )
 
 # drug effects per ng/mL
-DRUG = dict(s_qt=0.0100, s_hr=0.0180)
+DRUG = dict(s_qt=0.0090, s_hr=0.0190)
 
 # two-compartment oral PK, typical values (L, L/h, 1/h)
-PK = dict(cl=20.0, v1=243.0, q=10.5, v2=323.0, ka=1.0,
-          cv_cl=0.25, cv_v1=0.20, cv_q=0.15, cv_v2=0.15, cv_ka=0.30, assay_cv=0.055)
+PK = dict(cl=20.0, v1=192.0, q=19.8, v2=463.0, ka=1.1,
+          cv_cl=0.22, cv_v1=0.18, cv_q=0.15, cv_v2=0.15, cv_ka=0.30, assay_cv=0.045)
+
+# independent random streams: the late ambulatory samples and the Holter exchange have their own
+STREAMS = dict(late=901, exchange=377)
 
 AS_OF = "2026-10-28"

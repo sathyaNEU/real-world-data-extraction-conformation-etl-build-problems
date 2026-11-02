@@ -297,6 +297,9 @@ def main():
     ok(cnt == F["flyer_count"], "askB.counts_reproduce")
     ok(all(abs((over[d] % 1) - 0.5) > 0.04 for d in over), "askB.no_figure_on_half_dollar",
        "%.3f" % min(abs((over[d] % 1) - 0.5) for d in over))
+    c_cent, o_cent = A.ask_flyer(T, unit_cents=True)
+    ok(c_cent == cnt and all(GD.half_up(o_cent[d], 0) == F["flyer_over"][d] for d in over),
+       "askB.unit_price_to_the_cent_same_figures", "a multi-buy's unit price exact or to the cent")
     c_lead, o_lead = A.ask_flyer(T, lead_only=True)
     c_pre, o_pre = A.ask_flyer(T, release="PRELIM")
     c_qty, o_qty = A.ask_flyer(T, qty_aware=False)

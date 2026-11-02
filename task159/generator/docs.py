@@ -52,10 +52,10 @@ def grid_control(path):
     th = math.radians(P.ROT_DEG)
     mons = [("KCM-01", 10120.000, 20085.000, 1311.842), ("KCM-02", 10955.000, 20140.000, 1308.117),
             ("KCM-04", 10510.000, 20610.000, 1314.605), ("KCM-07", 10240.000, 20480.000, 1309.230)]
-    lines = ["KESSOCK LAKE MINE - MINE GRID CONTROL",
+    lines = ["KELVANNA LAKE MINE - MINE GRID CONTROL",
              "Survey Department, issue 3, 14 February 2024 (E. Schmitt, Chief Surveyor)",
              "",
-             "Mine grid ........ Kessock Mine Grid (KMG), ground scale",
+             "Mine grid ........ Kelvanna Mine Grid (KMG), ground scale",
              "Map grid ......... NAD83(CSRS) UTM zone 17N",
              "Heights .......... mine RL = CGVD2013 orthometric height + 1000.000 m",
              "",
@@ -77,7 +77,7 @@ def grid_control(path):
 
 def budget_basis(path, plan_file):
     L = []
-    L.append(("Helvetica-Bold", 12, "AUBRETH GOLD CORPORATION - KESSOCK LAKE MINE", None, 18))
+    L.append(("Helvetica-Bold", 12, "AUBRETH GOLD CORPORATION - KELVANNA LAKE MINE", None, 18))
     L.append(("Helvetica-Bold", 11, "Memorandum", None, 18))
     for a, b in (("To:", "Cindy Smith, General Manager"), ("From:", "Jeffrey Russell, Superintendent, Mine Planning"),
                  ("Copy:", "Brent Peck (Grade Control), Charles Bailey (Mill), Heidi Nichols (Metallurgy)"),
@@ -138,7 +138,7 @@ def reconciliation_pdf(path, r):
     pages = []
     years = [2023, 2024, 2025, 2026]
     for y in years:
-        L = [("Helvetica-Bold", 11, "Kessock Lake Mine - monthly reconciliation, %d" % y, None, 16),
+        L = [("Helvetica-Bold", 11, "Kelvanna Lake Mine - monthly reconciliation, %d" % y, None, 16),
              ("Helvetica", 8, "Mined volume by month-end survey. Resource model 2026R (AU_OK); grade control per the "
                               "GC system; mill by production day (06:00).", None, 12),
              ("Helvetica", 8, "Model and grade control are reported for ore at the 0.50 g/t cut-off. F1 = grade control / "
@@ -156,7 +156,7 @@ def reconciliation_pdf(path, r):
                                     "4 November 2026 with October 2026.", None, 12))
         pages.append(L)
     # summary page
-    L = [("Helvetica-Bold", 11, "Kessock Lake Mine - reconciliation summary, January 2023 to October 2026", None, 18),
+    L = [("Helvetica-Bold", 11, "Kelvanna Lake Mine - reconciliation summary, January 2023 to October 2026", None, 18),
          ("Helvetica-Bold", 7.5, head1, xs, 11), ("Helvetica-Bold", 7.5, head2, xs, 12)]
     allrows = []
     for y in years:
@@ -174,7 +174,7 @@ def reconciliation_pdf(path, r):
 
 
 def slope_review(path):
-    L = [("Helvetica-Bold", 12, "Kessock Lake - Phase 5 and 6 pit slope review", None, 18),
+    L = [("Helvetica-Bold", 12, "Kelvanna Lake - Phase 5 and 6 pit slope review", None, 18),
          ("Helvetica", 9, "Geotechnical engineering, 15 September 2026 (for mine planning)", None, 18)]
     _para(L, "Scope. Review of the Phase 5 east wall and Phase 6 west wall designs below the 1220 bench against the "
              "2026 core logging, the televiewer surveys of holes KL25-301 to KL25-309 and the prism monitoring to "
@@ -201,7 +201,7 @@ def price_deck(path):
     rows = [("Assumption", "2027 budget", "Long term"),
             ("Gold (USD/oz)", "2,900", "2,450"), ("Silver (USD/oz)", "32.00", "27.50"),
             ("CAD per USD", "1.36", "1.33"), ("Diesel, Ontario sites (CAD/L)", "1.42", "1.38"),
-            ("Grid power, Kessock Lake (CAD/kWh)", "0.121", "0.116"), ("Sodium cyanide (CAD/t)", "4,180", "3,950"),
+            ("Grid power, Kelvanna Lake (CAD/kWh)", "0.121", "0.116"), ("Sodium cyanide (CAD/t)", "4,180", "3,950"),
             ("Ontario royalty and mining tax", "per statute", "per statute")]
     for i, r in enumerate(rows):
         L.append(("Helvetica-Bold" if i == 0 else "Helvetica", 9.5, list(r), [52, 300, 400], 15))

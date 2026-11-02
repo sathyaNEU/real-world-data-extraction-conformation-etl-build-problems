@@ -39,15 +39,15 @@ The landfill released 410 t of methane in 2026, between the 375 t and 450 t thre
 2. Methane captured in 2026: 3,166 t.
 3. Methane released in 2026: 410 t.
 4. Each engine's operating hours and starts by quarter:
-   - Q1: Engine 1 2,016 h and 16 starts; Engine 2 2,017 h and 16 starts
-   - Q2: Engine 1 2,040 h and 16 starts; Engine 2 2,073 h and 15 starts
+   - Q1: Engine 1 2,016 h and 17 starts; Engine 2 2,017 h and 16 starts
+   - Q2: Engine 1 2,040 h and 16 starts; Engine 2 2,073 h and 16 starts
    - Q3: Engine 1 2,120 h and 12 starts; Engine 2 2,082 h and 14 starts
-   - Q4: Engine 1 2,119 h and 16 starts; Engine 2 2,113 h and 16 starts
+   - Q4: Engine 1 2,119 h and 16 starts; Engine 2 2,112 h and 17 starts
 5. The flare's operating hours and methane destroyed in it by quarter:
-   - Q1: 1,988 h, 53 t
-   - Q2: 2,064 h, 55 t
-   - Q3: 1,701 h, 35 t
-   - Q4: 716 h, 24 t
+   - Q1: 1,994 h, 53 t
+   - Q2: 2,054 h, 55 t
+   - Q3: 1,765 h, 35 t
+   - Q4: 780 h, 24 t
 6. Each quarterly walkover's locations over 500 ppm and those still over at their first re-monitoring:
    - Q1: 7 locations, 2 still over
    - Q2: 8 locations, 4 still over

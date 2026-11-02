@@ -295,7 +295,39 @@ def main():
                                                           "scrub_producer_metadata.py"), d, "--floor", "2023-01-01",
                               "--ceiling", "2026-11-30"], capture_output=True, text=True).stdout
         check("H1 no writer signature or out-of-band stamp in %s" % os.path.basename(d), "clean" in out, out.strip()[-120:])
+    # H16: no extract carries a date after its own pull
+    lim_rep = [dt.datetime.strptime(x, "%d/%m/%Y").date() if "/" in x else dt.date.fromisoformat(x)
+               for x in lims["DATE_REPORTED"]]
+    disp_t = pd.to_datetime(disp["TIME_UTC"].str.replace("Z", ""))
+    bars_csv = A._csv(os.path.join(TDIR, pack.F_BARS))
+    check("H16 no extract runs past its pull: LIMS reported by 5 Nov, dispatch by the October night shift's last haul, "
+          "DCS by the end of October local, "
+          "refinery statements by 6 Nov, bars, mill and maintenance by 31 Oct",
+          max(lim_rep) <= P.LIMS_PULL and disp_t.max() < pd.Timestamp("2026-11-01 12:00")
+          and pd.to_datetime(dcs["TIME_UTC"]).max() <= pd.Timestamp("2026-11-01 04:00")
+          and max(ref["STATEMENT_DATE"]) <= pack.REFINERY_PULL.isoformat()
+          and max(bars_csv["POUR_DATE"]) <= "2026-10-31" and max(cmms["ACTUAL_FINISH"]) <= "2026-10-31 23:59",
+          (max(lim_rep), disp_t.max(), max(ref["STATEMENT_DATE"])))
+    settled_bars = set(ref["CLIENT_REF"])
+    q3 = bars_csv[bars_csv["POUR_DATE"] < "2026-10-01"]
+    check("ask fine gold: every bar poured before 1 October 2026 has settled on the statements",
+          all(("KL %d" % int(b.split("-")[1])) in settled_bars for b in q3["BAR_NO"]))
     import pypdf
+    for f in files:
+        if not f.endswith(".pdf"):
+            continue
+        rd = pypdf.PdfReader(os.path.join(TDIR, f), strict=True)
+        strict = re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in rd.pages))
+        lay = re.sub(r"\s+", " ", subprocess.run(["pdftotext", "-layout", os.path.join(TDIR, f), "-"],
+                                                 capture_output=True, text=True).stdout)
+        own = re.sub(r"\s+", " ", pdf_text(os.path.join(TDIR, f)))
+        first = own.split(" ")[:6]
+        check("H25 %s reads under pypdf strict and pdftotext" % f, len(strict) > 200 and len(lay) > 200
+              and " ".join(first[:4]) in strict and " ".join(first[:4]) in lay)
+    rep_lay = subprocess.run(["pdftotext", "-layout", os.path.join(TDIR, pack.F_RECON), "-"], capture_output=True,
+                             text=True).stdout
+    check("H13 the reconciliation table's last column survives the page edge (every F3 value is extracted)",
+          len(re.findall(r"\b\d\.\d\d\s*$", rep_lay, re.M)) >= 46)
     for f, key in ((pack.F_BASIS, "0.90 g/t or more"), (pack.F_RECON, "0.50 g/t cut-off")):
         strict = " ".join(pg.extract_text() for pg in pypdf.PdfReader(os.path.join(TDIR, f), strict=True).pages)
         lay = subprocess.run(["pdftotext", "-layout", os.path.join(TDIR, f), "-"], capture_output=True, text=True).stdout

@@ -2,6 +2,13 @@
  "R0": 130000,
  "budget_oz": 150000,
  "budget_oz_raw": 149863.3,
+ "constants": {
+  "budget_rounding_oz": 10000,
+  "new_ore_cut": 0.9,
+  "old_ore_cut": 0.5,
+  "opening_survey_year": 2022,
+  "ore_rounding_t": 100000
+ },
  "default_R1": 130000,
  "default_R1_raw": 130092.9,
  "f05_2dp": 1.02,

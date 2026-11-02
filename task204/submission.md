@@ -22,7 +22,7 @@ The Eastline group's 42 offences are one series because 18 westbound trains each
 3. Placed each platform offence on the train trips leaving its station within three minutes of occurred_from_local, from the gtfs/ feed with frequencies.txt expanded and calendar_dates.txt applied: 18 trips each carry two or three offences at different stations and join the Ridgeview, Ashford Road, Millbrook and Union Yards series into one group of 42.
 4. Kept Cobb Street apart: no trip carries one of its offences with another, and four of its offences fell within three minutes of an Eastline group offence at Union Yards.
 5. Took each group's ground from its offences' coordinates in patrol_districts_2026.geojson (OPS-41 section 4): four teams.
-6. 2025 comparison: put each 2025 RMS offence in its 2026 district by coordinates, read each transit officer station code as the station whose gate array carried that code on the day (fare_gate_daily_summary_2025.csv with carvale_transit_codes.xlsx), dropped reports referred to the Service that match an RMS file at the same station, and counted by Mountain-time date: 200 offences.
+6. 2025 comparison: put each 2025 RMS offence in its 2026 district by coordinates, read each transit officer station code as the station whose gate array carried that code on the day (fare_gate_daily_summary_2025.csv with carvale_transit_codes.xlsx), dropped reports referred to the Service that match an RMS file at the same station, and counted by Mountain-time date: 257 offences.
 7. Station figures: summed fare_gate_entries_hourly_2026.csv by gate array (codes were renumbered on 29 March) on Mountain-time dates, and counted every Eastline stop_times call with frequencies.txt trips expanded and calendar_dates.txt holiday services applied, in the twelve weeks.
 8. Recommendation: the four teams in block 1.
 
@@ -36,16 +36,16 @@ The Eastline group's 42 offences are one series because 18 westbound trains each
    - Cobb Street station group: district 8, 16 offences
    - District 6 street robbery group: district 6, 14 offences
 2. Robbery and theft from the person with a phone taken, 2026 patrol districts, same twelve weeks of 2025:
-   - District 1: 14 (10 Feb to 9 Mar 2025), 7 (10 Mar to 6 Apr 2025), 13 (7 Apr to 4 May 2025)
-   - District 2: 4 (10 Feb to 9 Mar 2025), 5 (10 Mar to 6 Apr 2025), 8 (7 Apr to 4 May 2025)
-   - District 3: 13 (10 Feb to 9 Mar 2025), 7 (10 Mar to 6 Apr 2025), 4 (7 Apr to 4 May 2025)
-   - District 4: 6 (10 Feb to 9 Mar 2025), 8 (10 Mar to 6 Apr 2025), 8 (7 Apr to 4 May 2025)
-   - District 5: 4 (10 Feb to 9 Mar 2025), 6 (10 Mar to 6 Apr 2025), 6 (7 Apr to 4 May 2025)
-   - District 6: 6 (10 Feb to 9 Mar 2025), 7 (10 Mar to 6 Apr 2025), 9 (7 Apr to 4 May 2025)
-   - District 7: 9 (10 Feb to 9 Mar 2025), 7 (10 Mar to 6 Apr 2025), 5 (7 Apr to 4 May 2025)
-   - District 8: 4 (10 Feb to 9 Mar 2025), 5 (10 Mar to 6 Apr 2025), 4 (7 Apr to 4 May 2025)
-   - District 9: 9 (10 Feb to 9 Mar 2025), 4 (10 Mar to 6 Apr 2025), 7 (7 Apr to 4 May 2025)
-   - District 10: 5 (10 Feb to 9 Mar 2025), 5 (10 Mar to 6 Apr 2025), 1 (7 Apr to 4 May 2025)
+   - District 1: 13 (10 Feb to 9 Mar 2025), 8 (10 Mar to 6 Apr 2025), 13 (7 Apr to 4 May 2025)
+   - District 2: 6 (10 Feb to 9 Mar 2025), 8 (10 Mar to 6 Apr 2025), 10 (7 Apr to 4 May 2025)
+   - District 3: 12 (10 Feb to 9 Mar 2025), 19 (10 Mar to 6 Apr 2025), 7 (7 Apr to 4 May 2025)
+   - District 4: 11 (10 Feb to 9 Mar 2025), 8 (10 Mar to 6 Apr 2025), 13 (7 Apr to 4 May 2025)
+   - District 5: 5 (10 Feb to 9 Mar 2025), 7 (10 Mar to 6 Apr 2025), 3 (7 Apr to 4 May 2025)
+   - District 6: 10 (10 Feb to 9 Mar 2025), 9 (10 Mar to 6 Apr 2025), 12 (7 Apr to 4 May 2025)
+   - District 7: 7 (10 Feb to 9 Mar 2025), 6 (10 Mar to 6 Apr 2025), 7 (7 Apr to 4 May 2025)
+   - District 8: 5 (10 Feb to 9 Mar 2025), 5 (10 Mar to 6 Apr 2025), 9 (7 Apr to 4 May 2025)
+   - District 9: 13 (10 Feb to 9 Mar 2025), 6 (10 Mar to 6 Apr 2025), 8 (7 Apr to 4 May 2025)
+   - District 10: 7 (10 Feb to 9 Mar 2025), 9 (10 Mar to 6 Apr 2025), 1 (7 Apr to 4 May 2025)
 3. Eastline stations, 9 February to 3 May 2026, fare-gate entries and scheduled Eastline train calls in both directions:
    - Westgate: 222,832 entries, 16,360 train calls
    - Centre Square: 709,302 entries, 16,360 train calls

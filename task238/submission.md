@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **Put Spryfield (102), Lower Sackville (107), Antigonish (203), Bridgewater (205) and Yarmouth (206) on Price Watch for the first quarter of 2027.**
-Their fourth-quarter price accuracy is 98.4%, 98.6%, 98.3%, 98.7% and 97.8% against the 99.0% line, and Cole Harbour (106) is the nearest store to stay off at 99.4%. Not the weekly random price audits, which check labels at random moments and put every store at 99.9% or more. Not the Thursday checks' share of labels still at the old price, which also puts Cole Harbour on.
+Their fourth-quarter price accuracy is 98.4%, 98.6%, 98.3%, 98.7% and 97.8% against the 99.0% line, and Cole Harbour (106) is the nearest store to stay off at 99.4%. Not the weekly random price audits, which check labels at random moments and put every store at 99.9% or more. Not the Thursday checks' share of labels still at the old price, which also puts Cole Harbour (106) on.
 
 ## 2. Critical Components
 
@@ -48,35 +48,35 @@ Their fourth-quarter price accuracy is 98.4%, 98.6%, 98.3%, 98.7% and 97.8% agai
    - 206 Yarmouth: Price Watch, 97.8%
    - 207 Amherst: stays off
 2. Dollars paid out under the Scanner Price Accuracy Code in Q4 2026, to the nearest dollar:
-   - 101 Quinpool Road: $8
-   - 102 Spryfield: $1,079
-   - 103 Clayton Park: $28
-   - 104 Bedford Place: $29
-   - 105 Dartmouth - Portland St: $32
-   - 106 Cole Harbour: $670
-   - 107 Lower Sackville: $1,270
-   - 201 Truro (Prince St): $4
-   - 202 New Glasgow: $192
-   - 203 Antigonish: $855
-   - 204 Kentville: $8
-   - 205 Bridgewater: $865
-   - 206 Yarmouth: $1,209
-   - 207 Amherst: $70
+   - 101 Quinpool Road: $14
+   - 102 Spryfield: $1,154
+   - 103 Clayton Park: $12
+   - 104 Bedford Place: $22
+   - 105 Dartmouth - Portland St: $23
+   - 106 Cole Harbour: $593
+   - 107 Lower Sackville: $1,063
+   - 201 Truro (Prince St): $5
+   - 202 New Glasgow: $221
+   - 203 Antigonish: $798
+   - 204 Kentville: $7
+   - 205 Bridgewater: $784
+   - 206 Yarmouth: $1,142
+   - 207 Amherst: $44
 3. Flyer weeks that started in the quarter: advertised UPCs that rang up at a price other than the flyer price, and dollars customers paid above the flyer price that week:
    - Week of 1 October 2026: 5 UPCs, $314
-   - Week of 8 October 2026: 8 UPCs, $1,523
-   - Week of 15 October 2026: 1 UPCs, $19
-   - Week of 22 October 2026: 3 UPCs, $163
+   - Week of 8 October 2026: 8 UPCs, $1,787
+   - Week of 15 October 2026: 1 UPC, $19
+   - Week of 22 October 2026: 3 UPCs, $153
    - Week of 29 October 2026: 6 UPCs, $99
-   - Week of 5 November 2026: 1 UPCs, $11
+   - Week of 5 November 2026: 1 UPC, $11
    - Week of 12 November 2026: 3 UPCs, $129
    - Week of 19 November 2026: 6 UPCs, $357
    - Week of 26 November 2026: 5 UPCs, $123
    - Week of 3 December 2026: 2 UPCs, $88
    - Week of 10 December 2026: 7 UPCs, $281
-   - Week of 17 December 2026: 11 UPCs, $332
-   - Week of 24 December 2026: 3 UPCs, $406
-   - Week of 31 December 2026: 2 UPCs, $123
+   - Week of 17 December 2026: 11 UPCs, $358
+   - Week of 24 December 2026: 10 UPCs, $535
+   - Week of 31 December 2026: 3 UPCs, $345
 
 ### price_accuracy_q4_2026.svg
 

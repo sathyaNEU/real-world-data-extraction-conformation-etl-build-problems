@@ -3,6 +3,7 @@ with every store's fourth-quarter price accuracy, the Scanner Code payouts, the 
 price_accuracy_q4_2026.svg (each store's accuracy against the Price Watch line), plus generator/figures.json."""
 import datetime as dt
 import json
+import math
 import os
 import re
 import zipfile
@@ -12,6 +13,7 @@ import analysis as A
 BOOK = "price_watch_2027q1.xlsx"
 CHART = "price_accuracy_q4_2026.svg"
 STAMP = (2027, 1, 15, 16, 20, 0)
+COUNT_WORD = {2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine"}
 NAMES = {101: "Quinpool Road", 102: "Spryfield", 103: "Clayton Park", 104: "Bedford Place",
          105: "Dartmouth - Portland St", 106: "Cole Harbour", 107: "Lower Sackville", 201: "Truro (Prince St)",
          202: "New Glasgow", 203: "Antigonish", 204: "Kentville", 205: "Bridgewater", 206: "Yarmouth",
@@ -46,6 +48,8 @@ def compute(target):
         "nearest_off_acc": acc[nearest],
         "audit_route": {str(s): half_up(R["r0_audit"][s], 1) for s in pk.stores},
         "audit_route_min": half_up(min(R["r0_audit"].values()), 1),
+        "audit_route_floor": math.floor(10 * min(R["r0_audit"].values()) + 1e-9) / 10.0,
+        "checkshare_route": [s for s in pk.stores if R["r1_checkshare"][s] < A.LINE],
         "pace": half_up(R["rate"], 1),
         "stray_share_pct": half_up(100 * R["baseline"], 2),
         "payouts": {str(s): half_up(pays.get(s, 0.0), 0) for s in pk.stores},
@@ -68,7 +72,7 @@ def write_book(path, F):
     ws = wb.active
     ws.title = "Price Watch Q1 2027"
     bold = Font(bold=True)
-    ws["A1"] = "Five stores go on Price Watch for Q1 2027"
+    ws["A1"] = "%s stores go on Price Watch for Q1 2027" % COUNT_WORD[F["n_watch"]]
     ws["A1"].font = Font(bold=True, size=13)
     ws["A2"] = "Price accuracy for Q4 2026 under PI-2 s.3.1; a store below 99.0% goes on Price Watch (s.4.1)."
     ws["A2"].font = Font(italic=True, size=9, color="555555")
@@ -113,7 +117,7 @@ def write_book(path, F):
         ws2.append([s, NAMES[s], F["payouts"][str(s)]])
         ws2.cell(row=ws2.max_row, column=3).number_format = "#,##0"
         tot += F["payouts_unrounded"][str(s)]
-    ws2.append(["", "All stores", half_up(tot, 0)])
+    ws2.append(["", "All stores (summed before rounding)", half_up(tot, 0)])
     ws2.cell(row=ws2.max_row, column=3).number_format = "#,##0"
     ws2.cell(row=ws2.max_row, column=2).font = bold
     ws2.column_dimensions["A"].width = 9
@@ -124,8 +128,8 @@ def write_book(path, F):
     ws3 = wb.create_sheet("Flyer prices")
     ws3["A1"] = "Advertised items that rang up off the flyer price, by flyer week"
     ws3["A1"].font = Font(bold=True, size=12)
-    ws3.append(["Register prices from the revised weekly price change release; a multi-buy is compared per unit; "
-                "an assorted line covers every variety."])
+    ws3.append(["Register prices from the revised weekly price change release, and from a price correction's "
+                "opening day on; a multi-buy is compared per unit; an assorted line covers every variety."])
     ws3.cell(row=2, column=1).font = Font(italic=True, size=9, color="555555")
     ws3.append([])
     ws3.append(["Flyer week starting", "Advertised UPCs off the flyer price", "Paid above the flyer price ($)"])
@@ -214,7 +218,8 @@ def write_chart(path, F):
     uniq = dict(zip(lab, h))
     ax.legend([uniq["Price Watch Q1 2027"], uniq["Stays off"]], ["Price Watch Q1 2027", "Stays off"],
               loc="lower right", fontsize=8.5, frameon=False)
-    fig.suptitle("Five stores fell below 99.0% price accuracy in Q4 2026", x=0.02, ha="left", fontsize=12,
+    fig.suptitle("%s stores fell below 99.0%% price accuracy in Q4 2026" % COUNT_WORD[F["n_watch"]], x=0.02,
+                 ha="left", fontsize=12,
                  fontweight="bold", color="#0b0b0b")
     fig.text(0.02, 0.915, "Saltmarsh Market, PI-2 s.3.1; changeover labels counted from each store's printed batch",
              fontsize=8.5, color="#52514e")

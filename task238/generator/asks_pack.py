@@ -96,7 +96,7 @@ def write(target, w, r):
     xlsx_props(wb, "Saltmarsh Market Customer Service", "Service desk adjustments Q4 2026")
     p = os.path.join(target, F["desk"])
     wb.save(p)
-    normalise_zip(p)
+    normalise_zip(p, P.file_stamp_utc("desk"))
     n["desk"] = sum(1 for row in desk if row[1].year == 2026 and row[1].month >= 10)
 
     # ---------------- flyer keying: the ad plan, the two price change releases, the flyer item weekly units -----
@@ -137,7 +137,7 @@ def write(target, w, r):
     xlsx_props(wb, "Saltmarsh Market Pricing", "Weekly price change releases Q4 2026")
     p = os.path.join(target, F["pricefile"])
     wb.save(p)
-    normalise_zip(p)
+    normalise_zip(p, P.file_stamp_utc("pricefile"))
     n["pricefile"] = sum(2 * 2 * len(c["items"]) for c in w.co)
 
     rows = []

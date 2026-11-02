@@ -23,6 +23,12 @@
    "role": "distractor",
    "source": "Ardnagree line operator, draft 2028 timetable, departures from Rathgarvan; synthetic, built for this task"
   },
+  "ardnagree_line_gate_asset_locations.csv": {
+   "date": "2027-12-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Ardnagree line operator, gate asset register, location history; synthetic, built for this task"
+  },
   "ardnagree_line_gate_entries_20180101_20271130.csv": {
    "date": "2027-12-06",
    "license": "synthetic, CC0",
@@ -98,17 +104,18 @@
  },
  "largest_file": {
   "name": "mobility_stays_2027w36_w47.csv",
-  "rows": 136688
+  "rows": 144892
  },
  "row_counts": {
   "ardnagree_line_draft_timetable_2028.csv": 92,
-  "ardnagree_line_gate_entries_20180101_20271130.csv": 28196,
+  "ardnagree_line_gate_asset_locations.csv": 8,
+  "ardnagree_line_gate_entries_20180101_20271130.csv": 30338,
   "ardnagree_line_station_register.csv": 8,
-  "cell_zone_lookup_v3.csv": 35,
+  "cell_zone_lookup_v3.csv": 42,
   "census2022_pow_rathgarvan_catchment.xlsx": 196,
   "kilcarrow_calendar_2018_2027.csv": 717,
-  "mobility_devices_2027w36_w47.csv": 1371,
-  "mobility_stays_2027w36_w47.csv": 136688
+  "mobility_devices_2027w36_w47.csv": 1345,
+  "mobility_stays_2027w36_w47.csv": 144892
  },
  "stated_inputs": [
   "1,400",

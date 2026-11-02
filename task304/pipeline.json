@@ -25,8 +25,8 @@
  },
  "judge": {
   "verdict": "NOT_DETERMINISTIC",
-  "disposition": "awaiting precision decision",
-  "report": "re-judge round 2 on 32a9da59: one fork, per-junction benefits at one decimal"
+  "disposition": "repaired, awaiting the final judge pass",
+  "report": "re-judge round 2 on 32a9da59: one fork, per-junction benefits at one decimal; repaired on 1c5b094a"
  },
  "returned": [
   {
@@ -50,11 +50,11 @@
   {
    "date": "2026-11-02",
    "portal": "re-judge round 2 on 32a9da59: main call and annex forced, G and H pass, F moderate to good, leak re-read clean; NOT_DETERMINISTIC on the per-junction benefits at one decimal across licensed fits",
-   "repair": "measured: no world construction holds all six at one decimal under every licensed fit (spans 0.10 Saxby, 0.06 Mill Lane at best); every fit agrees at the nearest half collision; awaiting the coordinator's decision on precision; pack unchanged",
+   "repair": "closed by construction, nothing filed: the split is the overdispersion estimators' sampling noise (spread 0.049 between units across 400 redraws of one network); the background collision draw on which the licensed fits agree (COUNT_DRAW 1199) and the six junctions' 2026 major traffic re-centred; fifteen fits print all six benefits at the golden's one decimal (nearest edge 0.013, Saxby Cross), asserted per fit (R3h); call, expected 2.7, one-decimal benefits, rungs and annex unchanged; target.zip 1c5b094a",
    "commit": ""
   }
  ],
- "resume": "coordinator decides the per-junction benefits' precision (nearest half collision holds under every fit); then rebuild, gates, final judge pass",
+ "resume": "final judge pass on 1c5b094a (main session)",
  "approved": null,
  "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-10-28 (architecture 2)",
@@ -134,16 +134,16 @@
  "as_of": "2026-12-04",
  "gates_final_cut": {
   "date": "2026-11-02",
-  "target_zip": "32a9da59",
-  "checks": "62 of 62",
+  "target_zip": "1c5b094a",
+  "checks": "69 of 69",
   "verify": "15 of 15",
   "rebuilds": "two byte-identical",
   "figures_check": "37 figures, 0 absent",
   "precut": "61 checks, 0 FAIL, 0 WARN",
-  "voice_check": "PASS",
-  "leak_py": "REVIEW, no LEAK",
-  "heart": "WARN",
-  "surface": "2 promoted on surface similarity, no hard tell",
-  "pair_ceiling": "44.3 (mirror leakage 33.3 per cent, generator/ceiling.py)"
+  "voice_check": "PASS (710 characters)",
+  "leak_py": "REVIEW, no LEAK (same lines as ruled)",
+  "heart": "WARN repeat.question_form against task484 v4 (ruled)",
+  "surface": "no hard tell; task271 and task231 promoted on surface similarity alone",
+  "pair_ceiling": 44.3
  }
 }

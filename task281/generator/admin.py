@@ -16,10 +16,11 @@ def fund_code(old_fac, when):
 
 
 def build(W, seed=P.SEED):
-    ra = random.Random(seed * 11 + 1)   # courses and reading lists
-    rc = random.Random(seed * 11 + 2)   # catalogue
-    ri = random.Random(seed * 11 + 3)   # invoices
-    rx = random.Random(seed * 11 + 4)   # rates
+    k = seed * 11 + 97 * P.ADMIN_SALT
+    ra = random.Random(k + 1)   # courses and reading lists
+    rc = random.Random(k + 2)   # catalogue
+    ri = random.Random(k + 3)   # invoices
+    rx = random.Random(k + 4)   # rates
     A = type("Admin", (), {})()
 
     # ---------------------------------------------------------------- courses
@@ -152,7 +153,7 @@ def build(W, seed=P.SEED):
         extra = [x for x in W.package_extra if x["package"] == pname]
         vendor = [p[1] for p in WD.PUBLISHERS if p[0] == pub][0]
         cur = [p[2] for p in WD.PUBLISHERS if p[0] == pub][0]
-        price_gbp = round(sum(ri.uniform(150, 290) for _ in titles) + 35.0 * len(extra), 2)
+        price_gbp = round(sum(ri.uniform(310, 520) for _ in titles) + 45.0 * len(extra), 2)
         inv_date = dt.date(2026, 1, ri.randint(5, 27))
         r = rate_of[(2026, 1)]
         amt = price_gbp if cur == "GBP" else round(price_gbp * (r["eur"] if cur == "EUR" else r["usd"]), 2)
@@ -218,7 +219,7 @@ def _item(ra, c, t, imp):
         title = t["next"]["title"]
         if ra.random() < 0.2:
             isbn = WD.isbn10_from13(isbn)
-    elif t["prev"] and ra.random() < 0.4:
+    elif t["prev"] and ra.random() < 0.6:
         isbn = t["prev"]["p_isbn"]
         ed = t["prev"]["edition"]
         title = t["prev"]["title"]

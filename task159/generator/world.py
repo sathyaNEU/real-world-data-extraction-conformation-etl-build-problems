@@ -1,4 +1,4 @@
-"""The clean truth of the Kessock Lake world: the Main Zone's block grades, the resource model's estimates, the
+"""The clean truth of the Kelvanna Lake world: the Main Zone's block grades, the resource model's estimates, the
 mining sequence, every blast hole and its assay, and the operating records the asks read. Nothing here is written
 to target/; pack.py renders it with the systems' own conventions."""
 import math

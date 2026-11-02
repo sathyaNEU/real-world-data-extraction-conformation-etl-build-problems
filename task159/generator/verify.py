@@ -44,7 +44,7 @@ def rows(b, name):
 
 def fit_similarity(b):
     """Least-squares similarity transform UTM -> mine grid from the control monuments (not the stated parameters)."""
-    txt = b["kessock_mine_grid_control.txt"].decode("utf-8")
+    txt = b["kelvanna_mine_grid_control.txt"].decode("utf-8")
     pts = [tuple(map(float, m.groups())) for m in
            re.finditer(r"KCM-\d+\s+([\d.]+)\s+([\d.]+)\s+[\d.]+\s+([\d.]+)\s+([\d.]+)", txt)]
     X = np.array([[p[2], p[3]] for p in pts])
@@ -84,7 +84,7 @@ def model(b):
 
 def plan(b):
     from openpyxl import load_workbook
-    wb = load_workbook(io.BytesIO(b["kessock_mine_plan_2027_v3.xlsx"]), read_only=True, data_only=True)
+    wb = load_workbook(io.BytesIO(b["kelvanna_mine_plan_2027_v3.xlsx"]), read_only=True, data_only=True)
     it = wb["Schedule"].iter_rows(values_only=True)
     hdr = next(it)
     ix = {h: n for n, h in enumerate(hdr)}
@@ -273,7 +273,7 @@ def main():
     ok("reconciliation (pypdf): the report is at the 0.50 g/t cut-off", "0.50 g/t cut-off" in rep)
     # the goldens agree with the write-up
     from openpyxl import load_workbook
-    gb = load_workbook(os.path.join(TASK, "golden", "kessock_2027_budget_gold.xlsx"), data_only=True)
+    gb = load_workbook(os.path.join(TASK, "golden", "kelvanna_2027_budget_gold.xlsx"), data_only=True)
     ws = gb["Budget gold"]
     ok("golden workbook: budget gold and ore match", ws["C5"].value == F["budget_oz"] and ws["B5"].value == F["ore_t_100k"],
        (ws["C5"].value, ws["B5"].value))

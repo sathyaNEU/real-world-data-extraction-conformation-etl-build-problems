@@ -137,6 +137,67 @@
     "deliverable set": "png+xlsx"
    },
    "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-15 with no portal result; one architecture per world, so the Hospital in the Home world is closed and the slot moves to another client domain"
+  },
+  {
+   "architecture": "v2 (re-root at the Batch 3 queue reset, drawn 2026-11-02)",
+   "drawn": "2026-11-02",
+   "domain": "energy-systems-utilities",
+   "subdomain": "load-forecasting",
+   "client_domain": "energy-systems-utilities",
+   "niche": "a Dutch city's district heating company deciding in which heating season its west network's pump station first runs short on a design day once a housing corporation's 1970s flats leave their block gas boilers for the heat network in six phases across 2027 and 2028, each block's design-day circulation flow its design heat load over the temperature drop that connections heated by the same kind of installation make on cold days",
+   "objective": "forecasting",
+   "shape": "06",
+   "decision_type": "date_or_period",
+   "question_form": "when",
+   "gap": [
+    "objective",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G1",
+    "G6"
+   ],
+   "gate_g": "forecasting",
+   "stump_strategy": "composition_mix",
+   "context_artifact": "capacity_report",
+   "role_family": "capacity_planner",
+   "forum": "executive_team",
+   "forcing_event": "season_or_peak",
+   "org_family": "utility_or_infrastructure",
+   "driver": "A newcomer's draw on a shared carrier is its load over the drop it makes in the carrier, and the drop belongs to the equipment behind it, which the units already on the carrier show only as two regimes in their own readings that no field labels; carrying the newcomers at the carrier's design drop, its measured average or the average of similar-looking units finds room that is not there.",
+   "driver_concrete": "Each converting block's design-day flow is its design heat load over 1.163 times the supply-return drop that the network's connections with original radiator systems make on days at or below 0 C (about 24 K, readable only as the high-return regime in the heat meters), not the network's 40 K design drop, its metered cold-day drop of 39.7 K or the pre-1985 buildings' 33 to 42 K, so OS West runs short in the 2028-29 season instead of never; a textbook 90/70 radiator drop of 20 K files 2027-28.",
+   "stump": "A competent planner converts each block's design heat load into flow at the network's 40 K design drop, its metered cold-day drop or the pre-1985 buildings' drop and files that OS West never runs short through 2028-29; the step that lands it there is carrying blocks that keep their original radiators at a drop those radiators cannot make, when the network's own radiator connections, recognisable only by their high returns, run at about 24 K on cold days and put the station short in 2028-29.",
+   "answer": "2028-29 heating season (phases 1 to 6 need about 200 m3/h of design-day flow against 168 available at OS West, short by about 30; 2027-28 holds at about 150)",
+   "deliverables": [
+    "os_west_debiet_2027-2029.xlsx"
+   ],
+   "spine": {
+    "file": "amr_warmtemeters_west_2025-10-01_2026-09-30.csv",
+    "rows": 42417,
+    "entity": "one heat meter's reading for one UTC day",
+    "grain": "meter x day",
+    "source": "synthetic"
+   },
+   "layer2_family": "estimation_fit",
+   "layer2_pattern": "own:design-day-flow-at-the-cold-day-drop-of-like-installations",
+   "differentiation": {
+    "task140": "task140 solves a compute pool's lowest-tier residual jointly with a dependent service whose load rises with that tier; task142 has no residual or dependency: each unmetered block's design-day flow is its load over the drop of its own installation, read from the metered connections whose cold-day returns show that installation, and the shared axes (objective gap, a unit swap, a capacity report) carry different mechanisms",
+    "task134": "task134 raises a held level's forward rate by the distance the untouched ground beside it shows; task142 has no held level or rate: it converts kilowatts to cubic metres an hour through a physical drop read from like installations on the same network",
+    "task133": "task133 lets each truck rise to the next binding limit in another dimension; task142 has no second limit: the one capacity is the station's flow, and the decisive estimate is the drop the unmetered blocks' radiators will make",
+    "task167": "task167 v2 matches a young grant book to the units whose first-year draws looked like its own and reads their schedule at later ages; task142's newcomers have no record at all: the blocks are unmetered, their installation is known from the works, and the parameter is a physical drop read from the metered connections whose cold-day returns form the high-return regime, with no age or schedule",
+    "task261": "task261 recomputes a subgroup difference's standard error over a design's replicates; task142 estimates no variance and compares no subgroups: it forecasts a station's design-day flow from a drop read off like installations",
+    "task149": "task149 v2 turns a census workplace tally into weekly trips at each workplace's own travel frequency read from a panel of workers' stays; task142 counts no trips and reads no panel: it converts unmetered blocks' kilowatts to cubic metres an hour through the drop of the metered connections that share their radiator installation"
+   },
+   "shell": {
+    "question form": "when",
+    "second-sentence opener": "build",
+    "rounding opener": "flows",
+    "deliverable set": "xlsx"
+   },
+   "fate": "spent at stage 4 (judge rounds 2 and 3: comparison group identifiable only by its outcome); re-rooted 2026-11-02"
   }
  ],
  "lineage_shells": [
@@ -145,8 +206,14 @@
    "second-sentence opener": "put",
    "rounding opener": "give",
    "deliverable set": "png+xlsx"
+  },
+  {
+   "question form": "when",
+   "second-sentence opener": "build",
+   "rounding opener": "flows",
+   "deliverable set": "xlsx"
   }
  ],
  "notes": "stump_strategy composition_mix: the network's cold-day drop is a mixture over installation regimes no field names, and the converting blocks all keep the high-return regime's installation; G1 marks the unit swap the decision turns on (the blocks are specified in kW and the station is limited in m3/h, the conversion running through the drop of the blocks' own installation), G6 the composition. Gate G forecasting: the station's available flow is filed; what decides is the forecast flow. People drawn with guard.py names --geo Netherlands --locale nl_NL --seed 142.",
- "registered": "2026-11-02T01:07:16Z"
+ "registered": ""
 }

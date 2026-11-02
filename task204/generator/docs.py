@@ -24,7 +24,7 @@ TITLE = ParagraphStyle("t", parent=SS["Normal"], fontName="Helvetica-Bold", font
 SMALL = ParagraphStyle("s", parent=SS["Normal"], fontName="Helvetica", fontSize=8, leading=10, textColor=colors.HexColor("#444444"))
 
 
-def _pdf(path, story, title, author, producer):
+def _pdf(path, story, title, author, producer, stamp):
     def meta(canvas, doc):
         canvas.setTitle(title)
         canvas.setAuthor(author)
@@ -36,6 +36,25 @@ def _pdf(path, story, title, author, producer):
     doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.8 * inch, rightMargin=0.8 * inch,
                             topMargin=0.75 * inch, bottomMargin=0.8 * inch, title=title, author=author)
     doc.build(story, onFirstPage=meta, onLaterPages=meta)
+    _scrub_pdf(path, stamp)
+
+
+def _scrub_pdf(path, stamp):
+    """Replace the writing library's comment lines and fixed dates in place, at equal byte length, so the xref
+    offsets stay valid: the document carries its own date and no library signature."""
+    import re
+    data = open(path, "rb").read()
+    n = len(data)
+    for pat in (rb"ReportLab Generated PDF document \(opensource\)", rb"ReportLab generated PDF document -- digest \(opensource\)"):
+        data = re.sub(pat, lambda m: b" " * len(m.group(0)), data)
+    fixed = b"D:20000101000000+00'00'"
+    new = ("D:%s-06'00'" % stamp).encode("ascii")
+    assert len(new) == len(fixed)
+    data = data.replace(fixed, new)
+    subj = b"/Subject (\\(unspecified\\))"
+    data = data.replace(subj, b"/Subject ()" + b" " * (len(subj) - len(b"/Subject ()")))
+    assert len(data) == n and b"ReportLab" not in data and b"unspecified" not in data
+    open(path, "wb").write(data)
 
 
 DIRECTIVE_TEXT = [
@@ -87,7 +106,7 @@ def directive_pdf(path):
     st.append(Spacer(1, 10))
     st.append(Paragraph("Version history: 1.0 (May 2022) first issue; 2.0 (March 2024) transit peace officer reports "
                         "brought into scope; 2.1 (September 2025) team stand-down rule added.", SMALL))
-    _pdf(path, st, "OPS-41 Series Crime Response", "Carvale Police Service", "Carvale Police Service")
+    _pdf(path, st, "OPS-41 Series Crime Response", "Carvale Police Service", "Carvale Police Service", "20250915101500")
 
 
 def station_reference_pdf(path):
@@ -109,7 +128,7 @@ def station_reference_pdf(path):
     st.append(t)
     st.append(Spacer(1, 10))
     st.append(Paragraph("Centre Square is served by both lines; occurrences there are recorded under one location text.", BODY))
-    _pdf(path, st, "CAU LRT station reference 2026", "Carvale Police Service Crime Analysis Unit", "Carvale Police Service")
+    _pdf(path, st, "CAU LRT station reference 2026", "Carvale Police Service Crime Analysis Unit", "Carvale Police Service", "20260406142000")
 
 
 def school_calendar_pdf(path):
@@ -126,7 +145,7 @@ def school_calendar_pdf(path):
     st.append(t)
     st.append(Spacer(1, 8))
     st.append(Paragraph("Instructional hours: elementary 8:40 to 15:20, junior high 8:30 to 15:10, high school 8:15 to 15:05.", BODY))
-    _pdf(path, st, "CPSD 2025-26 calendar", "Carvale Public School Division", "Carvale Public School Division")
+    _pdf(path, st, "CPSD 2025-26 calendar", "Carvale Public School Division", "Carvale Public School Division", "20250612093000")
 
 
 def planning_note_docx(path):

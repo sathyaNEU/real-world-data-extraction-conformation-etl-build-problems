@@ -15,7 +15,7 @@ import params as P
 import world as W
 
 UTC = ZoneInfo("UTC")
-FIXED_ZIP_TIME = (2027, 1, 12, 9, 30, 0)
+FIXED_ZIP_TIME = (1980, 1, 1, 0, 0, 0)        # what Excel writes on every member
 STORE = {s[0]: s for s in P.STORES}
 
 
@@ -27,7 +27,7 @@ def write_csv(path, header, rows):
             wr.writerow(r)
 
 
-def normalise_zip(path, when="2027-01-12T09:30:00Z"):
+def normalise_zip(path, when, created=None):
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
     fixed = []
@@ -36,8 +36,8 @@ def normalise_zip(path, when="2027-01-12T09:30:00Z"):
             data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>Microsoft Excel</Application>", data)
             data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>16.0300</AppVersion>", data)
         if name == "docProps/core.xml":
-            data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", rb"\g<1>" + when.encode() + rb"\g<2>",
-                          data)
+            data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)",
+                          rb"\g<1>" + (created or when).encode() + rb"\g<2>", data)
             data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
                           rb"\g<1>" + when.encode() + rb"\g<2>", data)
         fixed.append((name, data))
@@ -246,7 +246,7 @@ def build(target, w=None):
     xlsx_props(wb, "Saltmarsh Market Price Integrity", "Thursday changeover checks Q4 2026")
     p = os.path.join(target, F["checks"])
     wb.save(p)
-    normalise_zip(p)
+    normalise_zip(p, P.file_stamp_utc("checks"))
     n["checks"] = len(w.check_rows)
 
     # --- integrity team: the weekly random price audit (CSV export, local time) -----------------------------
@@ -297,7 +297,7 @@ def build(target, w=None):
     xlsx_props(wb, "Saltmarsh Market Store Operations", "Store directory January 2027")
     p = os.path.join(target, F["stores"])
     wb.save(p)
-    normalise_zip(p)
+    normalise_zip(p, P.file_stamp_utc("stores"), created="2025-03-04T14:12:00Z")
     n["stores"] = len(P.STORES)
 
     # --- the governing standard ------------------------------------------------------------------------
@@ -308,8 +308,7 @@ def build(target, w=None):
     import asks_pack
     n.update(asks_pack.write(target, w, r))
 
-    for fn in os.listdir(target):
-        p = os.path.join(target, fn)
-        ts = dt.datetime(*P.STAMP).timestamp()
-        os.utime(p, (ts, ts))
+    for key, fn in F.items():
+        ts = dt.datetime(*P.file_stamp(key)).timestamp()
+        os.utime(os.path.join(target, fn), (ts, ts))
     return w, n

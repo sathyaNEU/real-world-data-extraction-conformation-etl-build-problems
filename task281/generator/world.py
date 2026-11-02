@@ -349,6 +349,36 @@ def build(seed=P.SEED):
     for L in lic:
         t = tby[L.title]
         L.ordered_by = t["cross"] if (t["cross"] and ro.random() < 0.6) else t["school"]
+    # 40-loan licences that reached their fortieth loan before the record began, re-licensed by the platform then
+    rz = random.Random(seed * 7 + 8)
+    for t in titles:
+        old_lines = sorted([L for L in lic_by_title.get(t["id"], []) if L.model == "1U-M"
+                            and L.bought < dt.date(2024, 12, 1)], key=lambda L: L.bought)
+        if not old_lines or rz.random() >= 0.75:
+            continue
+        L = old_lines[0]
+        taken = set(x.bought for x in lic_by_title[t["id"]])
+        day = L.bought + dt.timedelta(days=rz.randint(220, 420))
+        day = min(day, dt.date(2025, 8, 24))
+        while day in taken:
+            day -= dt.timedelta(days=1)
+        created = dt.datetime(day.year, day.month, day.day, rz.randint(8, 20), rz.randint(0, 59), rz.randint(0, 59),
+                              tzinfo=UTC)
+        pr = random.Random("pre-%s" % L.lic_id)
+        R = Licence(lic_id="L%06d" % ((int(L.lic_id[1:]) * 7 + 131 * 97) % 999983), title=L.title, model="1U-M",
+                    copies=1, bought=to_uk(created).date(), po_line="", price_gbp=round(L.price_gbp * pr.uniform(1.0, 1.06), 2),
+                    currency=L.currency, renewal_of=L.lic_id, order_type="Renewal")
+        R.created_at = created
+        R.remaining = list(L.remaining0)
+        R.remaining0 = list(L.remaining0)
+        R.lapsed_at = [None]
+        R.ordered_by = L.ordered_by
+        L.lapsed_at = [created]
+        L.remaining = [0]
+        L.remaining0 = [0]
+        L.prelapsed = True
+        lic.append(R)
+        lic_by_title[t["id"]] = [x for x in lic_by_title[t["id"]] if x is not L] + [R]
 
     # ---------------------------------------------------------------- requests
     reqs = {t["id"]: [] for t in titles}
@@ -490,7 +520,7 @@ def retitle(W, rr):
                 return s
         return None
     for t in W.titles:
-        for key, p in (("prev", 0.5), ("next", 0.4)):
+        for key, p in (("prev", 0.8), ("next", 0.6)):
             e = t.get(key)
             if e is None:
                 continue

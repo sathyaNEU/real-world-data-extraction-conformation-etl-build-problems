@@ -208,9 +208,6 @@ def run(W, A, target, golden_dir=None):
            for m in ("km_fac", "km_pool", "km_title", "filled", "to_cancel")}
     check("R3d no survival estimate lands more than one faculty", max(fam.values()) <= 1, str(fam))
     # informative censoring, on the truth: impatient students cancel more the further back they stand
-    pos = {}
-    for t, hs in collections.Counter(h.title for h in W.holds).items():
-        pass
     byt = collections.defaultdict(list)
     for h in W.holds:
         byt[h.title].append(h)
@@ -263,13 +260,6 @@ def run(W, A, target, golden_dir=None):
     check("SF12 account-closure cancellations are cancellations (terms 2.3) and take the counterfactual",
           closed and all(r[4] == 0 for r in closed), "%d holds" % len(closed))
     lend = IO.pdf_text(os.path.join(target, F["lending"]))
-    noexp = 0
-    for r in canc:
-        evs_t = [x for x in evs[r[5]["title"]]]
-        cf = AN.counterfactual_offer(d, r[5])
-        if cf is not None and any(h["status"] == "Offer expired" and h["changed"] == cf and h["title"] == r[5]["title"]
-                                  for h in [r[5]]):
-            noexp += 1
     exp_instants = sum(1 for h in d.holds if h["status"] == "Offer expired")
     check("SF13 copies freed by lapsed offers enter the replay (terms 2.2 offers the copy to the next hold)",
           "an offer that is not taken up lapses and the copy is offered to the next hold" in " ".join(lend.split())
@@ -291,19 +281,19 @@ def run(W, A, target, golden_dir=None):
     m_hw = min(clr(g["hw"][f]) - abs(s["hw"][f] - g["hw"][f]) for f in AN.FAC_ORDER)
     check("EDGE2 every faculty's hold-weeks clear their 100 edge by more than the simple replay's drift", m_hw >= 2,
           "margin %.1f" % m_hw)
-    m_tot = clr(g["total_hw"]) - abs(s["total_hw"] - g["total_hw"])
-    check("EDGE3 total hold-weeks clear their 100 edge", m_tot >= 2, "margin %.1f" % m_tot)
     a = AN.ask_a(target)
-    check("EDGE4 every spend figure clears its £100 edge", min(clr(a[f]) for f in AN.FAC_ORDER) >= 3,
-          "min £%.1f" % min(clr(a[f]) for f in AN.FAC_ORDER))
-    check("EDGE5 total spend clears its £100 edge", clr(sum(a.values())) >= 3, "")
+    check("EDGE3 every spend figure clears its £10 edge by more than per-line rounding could move it",
+          min(clr(a[f], 10) for f in AN.FAC_ORDER) >= 1.0, "min £%.2f" % min(clr(a[f], 10) for f in AN.FAC_ORDER))
 
     # ---------------------------------------------------------------- the asks
     def misses(fn, var, gold, binf):
         v = fn(target, var)
         return sum(binf(v[f]) != binf(gold[f]) for f in AN.FAC_ORDER)
-    for var, k in (("no_chain", 5), ("title", 5), ("direct_isbn", 6), ("no_fx", 6), ("even_packages", 7)):
-        n = misses(AN.ask_a, var, a, b100)
+
+    def b10(x):
+        return int(math.floor(x / 10.0 + 0.5))
+    for var, k in (("no_chain", 6), ("title", 6), ("direct_isbn", 7), ("no_fx", 7), ("even_packages", 8)):
+        n = misses(AN.ask_a, var, a, b10)
         check("ASK-A %s misses at least %d faculties" % (var, k), n >= k, "%d of 8" % n)
     b = AN.ask_b(target)
     for var, k in (("no_chain", 7), ("title", 7), ("any_edition", 5), ("register_only", 6), ("direct_isbn", 8)):
@@ -316,20 +306,33 @@ def run(W, A, target, golden_dir=None):
     mism = sum(1 for l in W.loans if l.start < cut and (l.meter[0] if l.meter else None) != tr.get(l.loan_id))
     check("ASK-C the licence replay from the bundle makes every loan on the licence the platform made it on",
           mism == 0, "%d mismatches" % mism)
-    for var, k in (("no_status", 5), ("ignore_busy", 7), ("count_lapsed", 8), ("even", 7)):
+    for var, k in (("no_status", 7), ("ignore_busy", 8), ("absent_as_40", 6), ("even", 7)):
         n = misses(AN.ask_c, var, c, int)
         check("ASK-C %s misses at least %d faculties" % (var, k), n >= k, "%d of 8" % n)
-    ren = collections.Counter((L.title, L.bought) for L in W.licences if L.order_type == "Renewal")
-    orig = set((L.title, L.bought) for L in W.licences if L.order_type != "Renewal" and L.model == "1U-M")
-    check("ASK-C no title re-licensed twice on one day or on a purchase day",
-          not [k for k, v in ren.items() if v > 1] and not [k for k in ren if k in orig], "")
+    n = misses(AN.ask_c, "title_majority", c, int)
+    check("ASK-C a re-licence charged by its title's usual fund misses faculties", n >= 2, "%d of 8" % n)
+    lin = {}
+    AN.ask_c(target, lineage=lin)
+    truth_lin = {L.lic_id: L.renewal_of for L in W.licences if L.order_type == "Renewal"
+                 and L.bought <= dt.date(2026, 10, 30)}
+    bad = [k for k, v in truth_lin.items() if lin.get(k) != v]
+    check("ASK-C every re-licence is traced to the licence it replaced (reference order breaks same-day ties)",
+          not bad, "%d of %d wrong" % (len(bad), len(truth_lin)))
     truth_c = collections.Counter()
+    cut_l = dt.datetime(2026, 10, 31, tzinfo=dt.timezone.utc)
+    used_by = collections.Counter(l.meter[0] for l in W.loans if l.meter and l.start < cut_l)
     for L in W.licences:
         if L.model != "1U-M":
             continue
-        rem = L.remaining0[0]
-    check("ASK-C every 40-loan licence's faculty is its ordering school's", all(
-        hasattr(L, "ordered_by") for L in W.licences), "")
+        start = getattr(L, "created_at", None) or dt.datetime(L.bought.year, L.bought.month, L.bought.day, 9,
+                                                              tzinfo=dt.timezone.utc)
+        if getattr(L, "prelapsed", False) or start > cut_l:
+            continue
+        if L.lapsed_at[0] is not None and L.lapsed_at[0] <= cut_l:
+            continue
+        truth_c[W.school_new[L.ordered_by]] += L.remaining0[0] - used_by[L.lic_id]
+    check("ASK-C loans left equal the platform's own counters on the clean truth",
+          all(truth_c[f] == c[f] for f in AN.FAC_ORDER), str(dict(truth_c)))
     check("SEP1 no ask reads the holds export", "d.holds" not in src.split("def ask_a")[1], "")
     return ROWS
 

@@ -1,4 +1,4 @@
-"""Operating records of the Kessock Lake world: the laboratory stream, the mill, the gold room and refinery, the haul
+"""Operating records of the Kelvanna Lake world: the laboratory stream, the mill, the gold room and refinery, the haul
 fleet and its dispatch loads, the mill DCS and the maintenance system. Clean truth only; pack.py renders it."""
 import math
 import datetime as dt

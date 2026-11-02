@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 import params as P
 
 CHI = ZoneInfo(P.TZ)
+HOLIDAYS = (dt.date(2026, 5, 25), dt.date(2026, 7, 4), dt.date(2026, 9, 7))
 UTC = dt.timezone.utc
 
 
@@ -95,7 +96,7 @@ def simulate(seed=P.SEED):
     for d in days:
         sf = season_factor(d)
         wk = 1.45 if d.weekday() >= 5 else 0.85
-        hol = 1.5 if d in (dt.date(2026, 5, 25), dt.date(2026, 7, 4), dt.date(2026, 9, 7)) else 1.0
+        hol = 1.5 if d in HOLIDAYS else 1.0
         for m, tids in by_marina.items():
             open_winter = P.MARINAS[m][2]
             lev = P.MARINA_LEVEL[m]
@@ -269,12 +270,27 @@ def simulate(seed=P.SEED):
                                         "net_true": net, "h_true": h_true, "T_true": T})
                 no_order = seasonal and (when.date() >= dt.date(2026, 9, 15) or when.date() < dt.date(2026, 3, 1))
                 if when.hour == 6 and not pending and not no_order and when < local(dt.date(2026, 12, 29), 0):
-                    reorder_net = t.chart_gal(t.reorder_h)
-                    lag = 1 if when.weekday() < 4 else (7 - when.weekday())
-                    recent = [daily.get(when.date() - dt.timedelta(days=j), 0.0) for j in range(1, 8)]
-                    draw = (sum(recent) / 7.0) * (lag + 0.25)
-                    arrive_net = t.chart_gal(t.reorder_h - float(rng_t.uniform(1.5, 4.0)))
-                    if netc - draw < arrive_net:
+                    # the distributor delivers the next morning, every day of the week; the manager expects a
+                    # weekend day or a weekday to sell what the same kind of day averaged over the last fortnight,
+                    # a holiday half as much again, and orders on the morning that brings the truck closest to the
+                    # arrival level
+                    past = [when.date() - dt.timedelta(days=j) for j in range(1, 15)]
+                    kinds = {}
+                    for pd_ in past:
+                        kinds.setdefault(pd_.weekday() >= 5, []).append(daily.get(pd_, 0.0))
+                    wk1 = sum(daily.get(pd_, 0.0) for pd_ in past[:7])
+
+                    def expect(day):
+                        v = kinds.get(day.weekday() >= 5) or [wk1 / 7.0]
+                        return (sum(v) / len(v)) * (1.5 if day in HOLIDAYS else 1.0)
+
+                    def at_arrival(order_day, already):
+                        return netc - already - expect(order_day) - 0.25 * wk1 / 7.0, 1
+
+                    target = t.chart_gal(t.reorder_h - t.D * float(rng_t.uniform(0.026, 0.046)))
+                    e1, lag = at_arrival(when.date(), 0.0)
+                    e2, _ = at_arrival(when.date() + dt.timedelta(days=1), expect(when.date()))
+                    if e1 < target or (e2 < target and target - e2 > e1 - target):
                         dd = when.date() + dt.timedelta(days=lag)
                         heapq.heappush(q, (local(dd, float(rng_t.uniform(5.15, 6.10))), 0, "DS", None))
                         pending = True

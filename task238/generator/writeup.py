@@ -41,11 +41,14 @@ def main():
     L.append("## 1. Final Recommendation")
     L.append("")
     L.append("**Put %s on Price Watch for the first quarter of 2027.**" % names)
+    extra = [s for s in F["checkshare_route"] if s not in w]
+    assert extra and all(s in F["checkshare_route"] for s in w), "the check-share route must add stores to the set"
+    extra_names = " and ".join("%s (%d)" % (NAMES[s], s) for s in extra)
     L.append("Their fourth-quarter price accuracy is %s against the 99.0%% line, and %s (%d) is the nearest store "
              "to stay off at %s. Not the weekly random price audits, which check labels at random moments and put "
              "every store at %s or more. Not the Thursday checks' share of labels still at the old price, which "
-             "also puts %s on." % (accs, NAMES[near], near, pct(F["nearest_off_acc"]), pct(F["audit_route_min"]),
-                                  NAMES[near]))
+             "also puts %s on." % (accs, NAMES[near], near, pct(F["nearest_off_acc"]), pct(F["audit_route_floor"]),
+                                  extra_names))
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
@@ -103,13 +106,15 @@ def main():
              "flyer price, and dollars customers paid above the flyer price that week:")
     for d in sorted(F["flyer_count"]):
         dd = dt.date.fromisoformat(d)
-        L.append("   - Week of %d %s %d: %d UPCs, %s" % (dd.day, dd.strftime("%B"), dd.year, F["flyer_count"][d],
-                                                       dollars(F["flyer_over"][d])))
+        n_ = F["flyer_count"][d]
+        what = "none" if n_ == 0 else ("1 UPC" if n_ == 1 else "%d UPCs" % n_)
+        L.append("   - Week of %d %s %d: %s, %s" % (dd.day, dd.strftime("%B"), dd.year, what,
+                                                   dollars(F["flyer_over"][d])))
     L.append("")
     L.append("### price_accuracy_q4_2026.svg")
     L.append("")
-    L.append("1. Dot chart of every store's Q4 2026 price accuracy against the dashed 99.0% Price Watch line, the "
-             "five Price Watch stores in orange with their accuracy labelled, the others in blue.")
+    L.append("1. Dot chart of every store's Q4 2026 price accuracy against the dashed 99.0%% Price Watch line, the "
+             "%s Price Watch stores in orange with their accuracy labelled, the others in blue." % WORDS[F["n_watch"]])
     L.append("")
     open(os.path.join(TASK, "submission.md"), "w").write("\n".join(L))
 

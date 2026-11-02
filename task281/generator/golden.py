@@ -95,7 +95,6 @@ def write_xlsx(F, path):
     rt = r0 + len(F["rows"])
     ws.cell(row=rt, column=1, value="All faculties").font = Font(bold=True)
     ws.cell(row=rt, column=3, value=F["holds_total"]).number_format = "#,##0"
-    ws.cell(row=rt, column=4, value=F["hw_total100"]).number_format = "#,##0"
     ws.cell(row=rt, column=5, value=F["amount_total100"]).number_format = "#,##0"
     for j in range(1, 6):
         ws.cell(row=rt, column=j).border = Border(top=THIN)
@@ -139,12 +138,12 @@ def write_xlsx(F, path):
         ws.cell(row=4 + i, column=2, value=F["uncovered"][f])
 
     ws = wb.create_sheet("40-loan licences")
-    ws["A1"] = "40-loan licences in force at the end of 30 October 2026 with ten or fewer loans left, by fund"
+    ws["A1"] = "Loans left on 40-loan licences in force at the end of 30 October 2026, by the faculty charged"
     ws["A1"].font = Font(bold=True)
-    _head(ws, 3, ["Faculty", "Licences"], [30, 10])
+    _head(ws, 3, ["Faculty", "Loans left"], [30, 12])
     for i, f in enumerate(AN.FAC_ORDER):
         ws.cell(row=4 + i, column=1, value=FAC_NAME[f])
-        ws.cell(row=4 + i, column=2, value=F["metered"][f])
+        ws.cell(row=4 + i, column=2, value=F["metered"][f]).number_format = "#,##0"
 
     wb.properties.creator = "Collections and Content, Ardmuir University Library"
     wb.properties.lastModifiedBy = "Collections and Content, Ardmuir University Library"

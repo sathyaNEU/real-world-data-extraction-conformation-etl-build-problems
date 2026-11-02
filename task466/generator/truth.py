@@ -21,19 +21,19 @@ def flare_event_lines(lit, permissive):
             ev.append((int(m), "FLR", "FLARE START", "pilot proven, main burner lit"))
             since_start_permissive = False
             if pm:
-                ev.append((int(m), "FLR", "TEMP PERMISSIVE", "combustion temperature at setpoint"))
+                ev.append((int(m), "FLR", "TEMP PERMISSIVE", "TT-301 at or above 1400 F"))
                 since_start_permissive = True
         elif not l and prev_l:
             ev.append((int(m), "FLR", "FLARE STOP", "no gas demand"))
         elif l:
             if pm and not prev_p:
                 if not since_start_permissive:
-                    ev.append((int(m), "FLR", "TEMP PERMISSIVE", "combustion temperature at setpoint"))
+                    ev.append((int(m), "FLR", "TEMP PERMISSIVE", "TT-301 at or above 1400 F"))
                     since_start_permissive = True
                 else:
-                    ev.append((int(m), "FLR", "TEMP NORMAL", "combustion temperature at setpoint"))
+                    ev.append((int(m), "FLR", "TEMP NORMAL", "TT-301 at or above 1400 F"))
             elif not pm and prev_p:
-                ev.append((int(m), "FLR", "LOW TEMP", "combustion temperature below setpoint"))
+                ev.append((int(m), "FLR", "LOW TEMP", "TT-301 below 1400 F"))
         prev_l, prev_p = l, pm
     return ev
 
@@ -110,14 +110,16 @@ def nudge_flare_destroyed(p):
 
 
 def nudge_flare_hours(lit, permissive):
-    """Centre each quarter's flare operating hours by lengthening one warm-up after an ignition in that quarter."""
+    """Keep each quarter's flare operating hours at least 16 minutes inside its whole-hour bin by lengthening one
+    warm-up after an ignition in that quarter (the minutes left over the hour are drawn, never zero)."""
     log = []
+    r = W.rng(77)
     for q in range(4):
         a, b = R.quarter_minutes(2026, q)
-        h = permissive[a:b].sum() / 60.0
-        frac = h - np.floor(h)
-        n = int(round(frac * 60))
-        if n == 0 or abs(frac) < 0.05:
+        cur = int(permissive[a:b].sum()) % 60
+        tgt = int(r.choice(list(range(3, 15)) + list(range(46, 58))))
+        n = (cur - tgt) % 60
+        if n == 0:
             continue
         starts = np.flatnonzero(lit[a + 1:b] & ~lit[a:b - 1]) + a + 1
         for s in starts:

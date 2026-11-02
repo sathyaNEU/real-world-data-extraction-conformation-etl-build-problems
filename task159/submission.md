@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Budget 150,000 ounces of gold for the ore Kessock Lake mines in 2027 at the 0.90 g/t cut-off.** Grade control will keep about 2.8 Mt of ore from the 2027 schedule, because its block grades spread more widely than the resource model's and a 0.90 g/t cut on them keeps more gold than the model's own curve shows. Not the plan's 127,700 oz on the model's estimates, and not that figure times the reconciliation reports' 1.02, a factor measured on ore cut at 0.50 g/t.
+**Budget 150,000 ounces of gold for the ore Kelvanna Lake mines in 2027 at the 0.90 g/t cut-off.** Grade control will keep about 2.8 Mt of ore from the 2027 schedule, because its block grades spread more widely than the resource model's and a 0.90 g/t cut on them keeps more gold than the model's own curve shows. Not the plan's 127,700 oz on the model's estimates, and not that figure times the reconciliation reports' 1.02, a factor measured on ore cut at 0.50 g/t.
 
 ## 2. Critical Components
 
@@ -15,9 +15,9 @@
 
 ## 3. Step-by-Step Solution
 
-1. Moved every primary blast-hole assay in gc_assays_lims_export_20261105.csv from UTM to the mine grid with kessock_mine_grid_control.txt, read below-detection results at half the limit and over-range results from AU_GRAV_GPT, and averaged each block's holes per the budget basis memo: 21,616 blocks pair with kl_mz_resource_model_2026R.csv.
+1. Moved every primary blast-hole assay in gc_assays_lims_export_20261105.csv from UTM to the mine grid with kelvanna_mine_grid_control.txt, read below-detection results at half the limit and over-range results from AU_GRAV_GPT, and averaged each block's holes per the budget basis memo: 21,616 blocks pair with kl_mz_resource_model_2026R.csv.
 2. Re-cut the paired record at 0.90 g/t on both sides: grade control holds about 1.2 times the model's gold there, against 1.02 at the reconciliation reports' 0.50 g/t.
-3. Took each block on the Schedule sheet of kessock_mine_plan_2027_v3.xlsx through every grade-control-to-model ratio in the record and kept the gold where grade control reads 0.90 g/t or more: 2.8 Mt of ore and 150,000 oz, to the nearest 100,000 t and 10,000 oz.
+3. Took each block on the Schedule sheet of kelvanna_mine_plan_2027_v3.xlsx through every grade-control-to-model ratio in the record and kept the gold where grade control reads 0.90 g/t or more: 2.8 Mt of ore and 150,000 oz, to the nearest 100,000 t and 10,000 oz.
 4. Added each haul in dispatch_loads_to_lgsp_2023-2026.csv, its time moved from UTC to local, at the nominal payload of the truck that carried that number on the haul's date (haul_fleet_register_2026-10.xlsx, Fleet and Disposals sheets), counted a truck's second record from the same source within ten minutes once, and started from the 2022 year-end balance in stockpile_inventory_2022-12-31.csv.
 5. Rebuilt the ball mill's run state from both of its tags in dcs_event_export_grinding_2025-2026.csv (UTC to local) and counted every shutdown in cmms_work_orders_grinding_2025-2026.csv as down, including the shutdowns the historian did not store.
 6. Shared each lot's fine gold in refinery_outturn_statements_2025-2026.csv among the bars on its lines by their gross weights in goldroom_bar_register_2025-2026.csv (a bar melted as two lots takes both) and summed by pour date.
@@ -25,7 +25,7 @@
 
 ## 4. Deliverable Answers
 
-### kessock_2027_budget_gold.xlsx
+### kelvanna_2027_budget_gold.xlsx
 
 1. Gold in the ore mined in 2027: 150,000 oz.
 2. Ore behind it: 2,800,000 t.

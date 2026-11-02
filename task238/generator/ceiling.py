@@ -126,6 +126,25 @@ def main(target=None):
     print("Mirror leakage: %.1f per cent of ask weight" % (100 * ls))
     full = out["full includer"][3]
     print("full includer keeps %.1f%% of ask weight" % (100 * full))
+    # every ask stop the design note's ask sheet quotes, each a complete pipeline scored on the cut pack
+    for mode, what in (("union", "both payout logs added"), ("key_dedup", "every desk entry on a register-paid line "
+                       "dropped"), ("desk_only", "desk refunds only"), ("till_only", "register overrides only"),
+                       ("utc_date", "the override export's UTC date"), ("override_as_payout", "the override price "
+                       "read as the payout")):
+        p = payouts_variant(target, pk.by_name, mode)
+        miss = sum(1 for st in gold_pay if abs(round(p.get(st, 0.0)) - gold_pay[st]) > 0.5)
+        print("stop A  %-45s misses %2d of %d stores" % (what, miss, len(gold_pay)))
+    for what, kw in (("each flyer line's lead UPC only", {"lead_only": True}),
+                     ("varieties matched by the lead's keyed price", {"match": "price"}),
+                     ("the release price all week", {"corr": "none"}),
+                     ("the correction taken for the whole week", {"corr": "whole"}),
+                     ("the Monday preliminary release", {"release": "PRELIM"}),
+                     ("a multi-buy compared as its line price", {"qty_aware": False}),
+                     ("the two zones' units averaged", {"zone_units": False})):
+        c, o = A.ask_flyer(target, **kw)
+        mc = sum(1 for d in gold_cnt if c.get(d, 0) != gold_cnt[d])
+        mo = sum(1 for d in gold_over if abs(round(o.get(d, 0.0)) - gold_over[d]) > 0.5)
+        print("stop B  %-45s misses %2d counts, %2d dollar figures of %d weeks" % (what, mc, mo, len(gold_cnt)))
     h = hashlib.sha256()
     for name in sorted(os.listdir(target)):
         h.update(name.encode())

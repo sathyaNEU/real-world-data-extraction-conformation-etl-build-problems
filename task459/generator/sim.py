@@ -185,12 +185,13 @@ def simulate(wd):
         return out
 
     def enrolled_days(m):
-        s, e = m.enroll[0]
+        s = m.enroll[0][0]
+        e = m.enroll[-1][1]
         lo = max(0, W.doy(s)) if s > W.YEAR_START else 0
         hi = W.NDAYS - 1
         if e is not None and e < W.YEAR_END:
             hi = W.doy(e)
-        if m.dod is not None:
+        if m.dod is not None and m.dod <= W.YEAR_END:
             hi = min(hi, W.doy(m.dod))
         return lo, hi
 
@@ -353,10 +354,24 @@ def simulate(wd):
                 ag = byr[rc]["home"]
                 npi = ag[0].npi if rng_hv.random() < 0.7 else ag[1].npi
                 code = HOME_CODES[int(rng_hv.choice(3, p=[0.62, 0.23, 0.15]))]
-                units = int(rng_hv.choice([4, 6, 8, 10, 12, 16, 20, 24], p=[0.2, 0.18, 0.2, 0.12, 0.1, 0.1, 0.06, 0.04]))
-                start = "%02d:%02d" % (8 + int(rng_hv.integers(0, 4)), int(rng_hv.choice([0, 15, 30, 45])))
-                visits.append(Visit(m.mid, W.day(t), start, npi, code[0], units, rc))
                 if twice_daily:
+                    # a morning and a late-afternoon attendance, hours apart
+                    units = int(rng_hv.choice([4, 6, 8]))
+                    start = "%02d:%02d" % (7 + int(rng_hv.integers(0, 3)), int(rng_hv.choice([0, 15, 30, 45])))
+                    visits.append(Visit(m.mid, W.day(t), start, npi, code[0], units, rc))
                     start2 = "%02d:%02d" % (15 + int(rng_hv.integers(0, 3)), int(rng_hv.choice([0, 15, 30, 45])))
                     visits.append(Visit(m.mid, W.day(t), start2, npi, code[0], int(rng_hv.choice([4, 6, 8])), rc))
+                else:
+                    units = int(rng_hv.choice([4, 6, 8, 10, 12, 16, 20, 24], p=[0.2, 0.18, 0.2, 0.12, 0.1, 0.1, 0.06, 0.04]))
+                    start = "%02d:%02d" % (8 + int(rng_hv.integers(0, 4)), int(rng_hv.choice([0, 15, 30, 45])))
+                    visits.append(Visit(m.mid, W.day(t), start, npi, code[0], units, rc))
+    # Nothing is paid for a day the member was not enrolled (a member who left the plan for a month in 2025).
+    masks = {m.mid: W.enrolled_on_mask(m) for m in wd["members"] if len(m.enroll) > 1}
+    if masks:
+        def keep(e):
+            mk = masks.get(e.mid)
+            return mk is None or bool(mk[W.doy(e.date)])
+        svcs = [e for e in svcs if keep(e)]
+        fills = [e for e in fills if keep(e)]
+        visits = [e for e in visits if keep(e)]
     return svcs, fills, visits

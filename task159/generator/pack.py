@@ -1,4 +1,4 @@
-"""Renders the Kessock Lake world into target/: every file in the format, layout and conventions of the system that
+"""Renders the Kelvanna Lake world into target/: every file in the format, layout and conventions of the system that
 writes it. Returns the clean truth for checks.py."""
 import datetime as dt
 import math
@@ -18,10 +18,10 @@ from io_util import write_csv, save_xlsx, set_mtime
 F_LIMS = "gc_assays_lims_export_20261105.csv"
 F_MODEL = "kl_mz_resource_model_2026R.csv"
 F_DEPL = "survey_depletion_2023-01_2026-10.csv"
-F_PLAN = "kessock_mine_plan_2027_v3.xlsx"
+F_PLAN = "kelvanna_mine_plan_2027_v3.xlsx"
 F_BASIS = "budget_2027_basis_of_ore_and_gold.pdf"
 F_RECON = "monthly_reconciliation_jan2023_oct2026.pdf"
-F_GRID = "kessock_mine_grid_control.txt"
+F_GRID = "kelvanna_mine_grid_control.txt"
 F_MILL = "mill_daily_production_2023-2026.csv"
 F_BARS = "goldroom_bar_register_2025-2026.csv"
 F_REF = "refinery_outturn_statements_2025-2026.csv"
@@ -34,6 +34,7 @@ F_EXPL = "mz_exploration_assays_2019-2022.csv"
 F_GEOT = "pit_slope_review_phase5_2026.pdf"
 F_PRICE = "budget_2027_price_and_fx_deck.pdf"
 DISTRACTORS = [F_EXPL, F_GEOT, F_PRICE]
+REFINERY_PULL = dt.date(2026, 11, 6)
 
 
 def plan_scope(df):
@@ -128,10 +129,10 @@ def build(out):
                      b["rock"], "%.2f" % b["density"], "%.3f" % b["model"], npass, nsamp])
     write_csv(os.path.join(out, F_MODEL),
               ["IJK", "XC", "YC", "ZC", "DX", "DY", "DZ", "DOMAIN", "ROCK", "DENSITY", "AU_OK", "PASS", "NSAMP"], rows,
-              preamble=["# KESSOCK LAKE MINE  MAIN ZONE RESOURCE MODEL 2026R",
+              preamble=["# KELVANNA LAKE MINE  MAIN ZONE RESOURCE MODEL 2026R",
                         "# Estimate AU_OK: ordinary kriging, 1.5 m composites, top cut 25 g/t; parent blocks 10 x 10 x 5,"
                         " no sub-blocks",
-                        "# Coordinate system: KESSOCK MINE GRID",
+                        "# Coordinate system: KELVANNA MINE GRID",
                         "# Export: domain MZ only; 2026-03-18 B.Peck"], lineterminator="\n")
 
     # ---------------- survey depletion ----------------
@@ -246,7 +247,7 @@ def _write_plan(path, plan):
     ws.title = "Summary"
     months = ["Jan-27", "Feb-27", "Mar-27", "Apr-27", "May-27", "Jun-27", "Jul-27", "Aug-27", "Sep-27", "Oct-27",
               "Nov-27", "Dec-27"]
-    ws.append(["Kessock Lake Mine - 2027 mine plan v3 (resource model 2026R, ore at 0.90 g/t)"])
+    ws.append(["Kelvanna Lake Mine - 2027 mine plan v3 (resource model 2026R, ore at 0.90 g/t)"])
     ws.append(["Month", "Main Zone t", "Ore t", "Ore Au g/t", "Ore Au oz", "Low grade t (0.50-0.90)",
                "Mineralised waste t (0.30-0.50)", "Waste t (<0.30)"])
     for c in ws[2]:
@@ -320,6 +321,8 @@ def _write_goldroom(out, bars, ships, lots, pieces):
         L = lt.loc[int(pce["lot"])]
         b = bars.loc[int(pce["bar"])]
         st = L["settled"]
+        if st > REFINERY_PULL:
+            continue                       # not yet settled when the statements were pulled
         if st not in stmt_no:
             stmt_no[st] = None
         rows.append([st, lot_name[int(pce["lot"])], "KL %d" % b["seq"], L["received"].isoformat(), "%.3f" % L["gross_rec"],

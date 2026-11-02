@@ -15,7 +15,7 @@ The new draw moves the number to another client domain and world under the same 
   Rathgarvan opens in September 2028 on the Ardnagree commuter line; the Investment Committee picks its scope on 14
   December 2027 from the commuter boardings the station will carry on an average ordinary weekday in 2029 (full scheme
   at 1,400 or more). Fiction as-of date 2027-12-06.
-- **Call.** About 1,300 weekday commuter boardings (1,311.6), so the reduced scheme. Default about 2,400 (2,374.6), the
+- **Call.** About 1,300 weekday commuter boardings (1,296.6), so the reduced scheme. Default about 2,400 (2,374.6), the
   full scheme.
 - **Personas** from `guard.py names --geo Ireland --locale en_IE --seed 149`: Colum Curtis (author of the refresh),
   Deaglan Gilmore (author of the Lisnagry review), Eve Dunne (the panel provider's contact). Garrett Dulohery and Ciaran
@@ -49,13 +49,13 @@ The new draw moves the number to another client domain and world under the same 
 - **Reflex:** the field's own construction for a new station (journey-to-work flows times the mode share, each commuter
   a journey every weekday) sits at rung 0 and files 2,374.6 (about 2,400) and the full scheme.
 - **Back-test:** the Lisnagry review validates the reflex at the last new station on the line: the 2018 census-based
-  forecast of 1,140 against 1,076 ordinary-weekday entries in its first autumn and winter, 5.6 per cent low.
-- **Second use:** the panel and its cell lookup carry ask B (arrival times); the gate file and the register carry ask A
-  and the Lisnagry review's outturn; the calendar defines ordinary weekdays for every figure; the census is the refresh's
+  forecast of 1,140 against 1,078 ordinary-weekday entries in its first autumn and winter, 5.4 per cent low.
+- **Second use:** the panel and its cell lookup carry ask B (arrival times); the gate file, the station register and the
+  gate asset register carry ask A, and the gate file the Lisnagry review's outturn; the calendar defines ordinary weekdays for every figure; the census is the refresh's
   filed basis. Delete the decisive step and every file stays.
 - **Shock:** rosters and hybrid weeks are ordinary working patterns; no zone, device or station is an outlier, and the
   golden's zones are not an interval of any shipped statistic (the hospital and Carrigboy sit inside the zones' weekday
-  shares, 50.4 to 78.7 per cent).
+  shares, 47.4 to 85.9 per cent).
 - **Pins:** the refresh files the WHAT in the authority's own business-case form (population: the seven small areas'
   census commuters, final release, 2022 base; outcome: journeys to work begun at Rathgarvan; window: an average ordinary
   weekday in 2029; unit: boardings; comparison: each zone's station share and the 1,400 threshold); no filed sentence
@@ -71,14 +71,14 @@ The new draw moves the number to another client domain and world under the same 
 4. Compare with the threshold of 1,400: the full scheme.
 
 Ends on: about 2,400 weekday commuter boardings in 2029 (2,374.6) and the full scheme.
-Golden: about 1,300 weekday commuter boardings in 2029 (1,311.6) and the reduced scheme.
+Golden: about 1,300 weekday commuter boardings in 2029 (1,296.6) and the reduced scheme.
 
 ## Stump sentence
 
 A competent solver multiplies each zone's census commuters by the refresh's station share and counts every commuter as
 a boarding each weekday, filing about 2,400 (2,374.6) and the full scheme; the step that lands it there is reading a
-usual-workplace count as daily journeys, when the panel shows each zone's commuters going in on 50 to 79 per cent of
-ordinary weekdays (2.5 to 3.9 days a week), which puts Rathgarvan at about 1,300 (1,311.6) and the reduced scheme.
+usual-workplace count as daily journeys, when the panel shows each zone's commuters going in on 47 to 86 per cent of
+ordinary weekdays (2.4 to 4.3 days a week), which puts Rathgarvan at about 1,300 (1,296.6) and the reduced scheme.
 
 ## Three rules
 
@@ -93,7 +93,8 @@ ordinary weekdays (2.5 to 3.9 days a week), which puts Rathgarvan at about 1,300
   travels there; nothing in it would be read from a mobility panel of daily stays.
 - **Layer 1:** the panel's stays stamped in UTC while weekdays are Irish (the end of Irish Summer Time on 31 October falls
   inside the weeks: the operator's export); network cells overlapping census zones through an area-share lookup (radio
-  planning); device identifiers reissued on a SIM change (the operator's subscriber system); a provisional and a final
+  planning); device identifiers reissued on a SIM change (the operator's subscriber system); gate arrays moved between
+  stations after works and recorded under their asset numbers (the rail operator's asset register); a provisional and a final
   census release overlapping (the statistics office's two releases); the operator's gate entries in thousands in the 2020
   review against units in the export; the October bank holiday and the school mid-term inside the panel weeks (the
   calendar); home workers, no fixed place and outside-county rows inside the census table. None is placed to be caught;
@@ -108,10 +109,10 @@ ordinary weekdays (2.5 to 3.9 days a week), which puts Rathgarvan at about 1,300
   right; the default files the wrong answer on correct data by counting a person as a journey every weekday.
 - **Not rule application:** no filed sentence says how many journeys a commuter makes, so executing the refresh literally
   needs a journeys-per-commuter quantity that only an estimate from the panel supplies; the enumerated family spreads
-  1,312 to 2,375 (census daily 2,374.6, Lisnagry recovery factor 1,758.2, line recovery factor 1,610.1, pooled panel share
-  1,482.9, zone-by-zone panel shares 1,311.6) and the standing family (zone shares under every licensed reading of
-  workplace, commuting day, cell and denominator) spreads 1,311.6 to 1,314.1, one bin, ruled out loudly by the panel's own
-  stays (zone shares from 50.4 to 78.7 per cent, devices 37 to 186 per zone).
+  1,312 to 2,375 (census daily 2,374.6, Lisnagry recovery factor 1,775.9, line recovery factor 1,620.1, pooled panel share
+  1,474.6, zone-by-zone panel shares 1,296.6) and the standing family (zone shares under every licensed reading of
+  workplace, commuting day, cell and denominator) spreads 1,294.9 to 1,299.3, one bin, ruled out loudly by the panel's own
+  stays (zone shares from 47.4 to 85.9 per cent, devices 35 to 181 per zone).
 - **Analyst test:** a strong analyst who reads every file correctly multiplies each zone's census commuters by the
   station share, counts each commuter as a journey every weekday, sees the Lisnagry review confirm the construction and
   files about 2,400 (2,374.6) and the full scheme, against about 1,300 and the reduced scheme.
@@ -147,29 +148,30 @@ ordinary weekdays (2.5 to 3.9 days a week), which puts Rathgarvan at about 1,300
 | SF1 | commuting day | a workplace stay of four hours or more | 3.5 or 5 hours | none: every zone figure in one bin | same call, asserted in checks.py |
 | SF2 | usual workplace | the zone of most long stays, three or more | a strict majority, or five or more | none | same call, asserted |
 | SF3 | a cell shared by two zones | the zone with the larger area share | split by area share | none | same call, asserted |
-| SF4 | a zone's weekday share | commuting days over observed days | the mean of each device's share | none | same call, asserted |
+| SF4 | a zone's weekday share | commuting days over observed days | the mean of each device's share; each identifier over all 55 days | none: no served-zone commuter's identifier is reissued, so every estimator lands each zone in one bin | by construction; asserted per zone and per estimator |
 | SF5 | the day of a stay | Irish date | UTC date | none | same call, asserted |
-| SF6 | ordinary weekday | Monday to Friday in term, not a public holiday | every weekday | total 1,284.3, same bin | the refresh section 2; asserted |
+| SF6 | ordinary weekday | Monday to Friday in term, not a public holiday | every weekday | total 1,270.1, same bin | the refresh section 2; asserted |
 | SF7 | census basis | final release | provisional release | total in the same bin | the refresh section 2 (final release); asserted |
 | SF8 | the market | zones KW01 to KW11 | home workers, no fixed place, outside county added | would add journeys with no station share | the refresh section 2 and Table 2; asserted |
 | SF9 | a boarding | a journey to work begun at the station by a resident | return journeys or visitors | none in the graded figure | the refresh section 2; asserted |
 | SF10 | station share | applies to each zone's journeys to work | applies to commuters | same arithmetic once journeys are counted | Table 2's heading; asserted |
-| SF11 | a reissued identifier | each identifier over its own first to last day | every identifier over all 55 days | total 1,262.9, same bin | the panel notes (reissued identifiers are not linked); asserted |
+| SF11 | a reissued identifier | each identifier over its own first to last day | every identifier over all 55 days | total 1,290.0, same bin (reissues fall only outside the served zones) | the licence schedule (a replacement SIM gets a new hash); asserted |
 | SF12 | the base year | census commuters held at 2022 | grown by completions or jobs to 2029 | would move the total | the refresh section 2 (held at the 2022 base); asserted |
-| SF13 | ask A, a station | the station with the code it replaced (UHK with KUH, CBH with CBY) | the current code alone | no 2019 figure for two stations | the asking sentence; asserted |
-| SF14 | ask A, a station's entries | every location code carrying its register number | the register's codes alone | every station figure moves | the register's station_no and the codes G<no><gateline>; asserted |
-| SF15 | ask B, reaching the workplace | the start of the workplace stay, Irish time, 07:30 to 09:30 inclusive | the first stay away from home; UTC | figures move | the asking sentence; asserted |
-| SF16 | rounding | zones to the nearest 10 and the total to the nearest 100, from the same exact figures | the total as the sum of rounded zones | 1,320 against 1,300 | the prompt's rounding sentence; asserted |
+| SF13 | ask A, a station | the station with the code it replaced (UHK with KUH, CBH with CBY) | the current code alone | no 2019 figure for two stations | the asking sentence and the register's notes; asserted |
+| SF14 | ask A, a station's entries | every gate asset on the days the asset register places it at the station | one station per asset (current or first), or register codes only | every station figure moves | the gate asset register's dated rows; asserted |
+| SF15 | ask B, arrival | the day's first stay in any cell of the workplace zone, Irish time, on ordinary weekdays, from 07:30 up to and including 09:30 | the long workplace stay's start; UTC; an exclusive window | the first two move every figure; no stay starts on either boundary minute, so inclusive and exclusive agree | the asking sentence's own words; asserted |
+| SF16 | rounding | zones to the nearest 10 and the total to the nearest 100, from the same exact figures | the total as the sum of rounded zones | 1,300 either way | the prompt's rounding sentence; asserted |
+| SF17 | ask A, the line | the whole line's entries added together by day, 2027 average over 2019 average | the mean of the six station ratios (72) | 68 against 72 | the asking sentence ("the whole line's entries added together"); asserted |
 
 ## Ladder
 
 | Rung | Construction | Weekday boardings 2029 | Scope |
 |---|---|---|---|
 | 0 | census commuters x station share, one journey each weekday | 2,374.6 (about 2,400) | full |
-| 1 | rung 0 x Lisnagry's autumn 2027 entries over autumn 2019 (0.740) | 1,758.2 (about 1,800) | full |
-| 2 | rung 0 x the line's autumn 2027 entries over autumn 2019 (0.678) | 1,610.1 (about 1,600) | full |
-| 3 | rung 0 x one weekday share pooled over every panel commuter (62.4 per cent) | 1,482.9 (about 1,500) | full |
-| 4 | each zone's commuters x share x that zone's panel weekday share (the golden) | 1,311.6 (about 1,300) | reduced |
+| 1 | rung 0 x Lisnagry's autumn 2027 entries over autumn 2019 (0.748) | 1,775.9 (about 1,800) | full |
+| 2 | rung 0 x the line's autumn 2027 entries over autumn 2019 (0.682) | 1,620.1 (about 1,600) | full |
+| 3 | rung 0 x one weekday share pooled over every panel commuter (62.1 per cent) | 1,474.6 (about 1,500) | full |
+| 4 | each zone's commuters x share x that zone's panel weekday share (the golden) | 1,296.6 (about 1,300) | reduced |
 
 The field's method is rung 0; the decisive step is the precondition it assumes (one journey per commuter per weekday)
 failing differently zone by zone. Rungs 1 to 3 are the recoveries a careful analyst reaches for when the review or the
@@ -207,13 +209,13 @@ call on the clean truth: none.
 
 Executed word for word, the refresh asks for the journeys to work the catchment's census commuters begin at Rathgarvan on
 an average ordinary weekday; the census gives persons, so the literal reader needs journeys per commuter per ordinary
-weekday by zone, and the only shipped evidence of it is the panel's stays, which give 1,311.6 (about 1,300) and the
+weekday by zone, and the only shipped evidence of it is the panel's stays, which give 1,296.6 (about 1,300) and the
 reduced scheme. The default (a person counted as a journey every weekday) does not comply with "the journeys ... on an
 average ordinary weekday", because it substitutes the census's count of persons for the journeys they make.
 
 ## Oracles
 
-- The independent verifier (generator/verify.py, pandas and raw OOXML) recomputes the total (1,311.6), every zone, every
+- The independent verifier (generator/verify.py, pandas and raw OOXML) recomputes the total (1,296.6), every zone, every
   ask figure and reads the golden files back.
 - The Lisnagry review's outturn recomputes from the gate file (asserted).
 - The world's own working regimes (params.py) put each zone's true weekday share within the panel's estimate, by
@@ -221,57 +223,69 @@ average ordinary weekday", because it substitutes the census's count of persons 
 
 ## Ask sheet
 
-**Ask A, stations now on the Ardnagree line and the line as a whole (7 figures, whole per cents).** H18 home: a qualifier
-of the call (how far each station's autumn entries stand below 2019), used in the note's context paragraph. Primary
-device D7 keys: the export lists secondary gatelines under their own location codes (G0213 Ardnagree park-and-ride gate
-to May 2021, G0305 Central south concourse to August 2022, G0417 Docklands' temporary entrance in 2019 and 2020, G0711
-Carrigboy's second entrance from 2022, G0612 University Hospital's east entrance from 2024, G0909 Lisnagry's Mill Road
-entrance from 2026), none in the register, each carrying its station's register number; hazards: UHK to KUH and Carrigboy
-Halt to Carrigboy (the register, stated), ordinary weekdays from the calendar (2019's October mid-term and bank holiday).
-Path: gate file (3 columns), register (6), calendar (4). Stops: register codes only (ARD 94, LSG 59, KCN 90, KDK 87, KUH
-64, CBY 65, line 80), the current code alone (no 2019 figure for KUH and CBY), the golden (73, 74, 65, 56, 83, 79, 68).
-Pin test: the asking sentence pins the window, the day type and the predecessor; the device sits in which rows are the
-station's, a dimension the pins leave open.
+**Ask A, stations now on the line and the whole line (7 figures, whole per cents).** H18 home: a qualifier of the call
+(how far each station's autumn entries stand below 2019), used in the note's context paragraph. Primary device D7 keys,
+an as-of join: the gate file lists four gate arrays under their asset numbers (GL117, GL131, GL152, GL166), and the
+operator's gate asset register dates where each stood; every array was moved to another station after works
+(Ardnagree's park-and-ride gate to Carrigboy's second entrance, Central's south concourse to the Docklands footbridge,
+the Docklands' temporary entrance to University Hospital's east entrance, Central's Kent Row gate to Lisnagry's Mill Road
+entrance), so a lookup that keeps one station per asset misplaces one period at both stations. Hazards: UHK to KUH and
+Carrigboy Halt to Carrigboy (the register, stated), ordinary weekdays from the calendar (2019's October mid-term and bank
+holiday). Path: gate file (3 columns), asset register (5), station register (6), calendar (4). Stops: each asset at its
+current station (ARD 96, LSG 56, KCN 99, KDK 52, KUH 50, CBY 63), at its first station (87, 59, 74, 58, 64, 65), register
+codes only (96, 59, 99, 74, 64, 65), the mean of the station ratios for the line (72), the golden (74, 75, 66, 56, 83, 79;
+line 68). Pin test: the asking sentence pins the window, the day type, the predecessor and the line as entries added
+together; the device sits in which station an asset's entries belong to on the day, a dimension the pins leave to the
+asset register's dated rows.
 
 **Ask B, zones with a station share of 0.10 or more (6 figures, whole per cents).** H18 home: a component of the scope
-case (how many of each zone's journeys arrive in the morning peak), shown in the workbook. Primary device D8 clocks: UTC
-stamps against Irish time across the end of Irish Summer Time inside the weeks; second device D6: a late-shift or
-night-shift commuter's day often starts with a short morning stay away from home, so the day's first stay away from home
-is not the arrival at work (moves the city centre, the hospital and Carrigboy). Path: stays (4 columns), devices (4),
-lookup (4), calendar (4). Stops: UTC read as Irish time (66, 91, 56, 76, 39, 58), the day's first stay away from home (88,
-93, 95, 97, 53, 99), the golden (83, 93, 92, 97, 40, 99). Pin test: the asking sentence pins the window and "reached the
-workplace"; the devices sit in the clock and in which stay is the arrival.
+case (how many of each zone's journeys arrive in the morning peak), shown in the workbook. Primary device D6 grain: a
+journey arrives in the zone at its first stay there that day, and many journeys stop in the zone on the way in (a
+hospital car park, Carrigboy's security gate, a university car park, the Docklands hub, the city bus station, Lisnagry
+station), so the long workplace stay a solver already built for the commuting days starts later than the arrival;
+second device D8 clocks: UTC stamps against Irish time across the end of Irish Summer Time inside the weeks. Path: stays
+(4 columns), devices (4), lookup (4), calendar (4). Stops: the long workplace stay's start (85, 94, 92, 93, 60, 98), UTC
+read as Irish time (62, 72, 41, 67, 41, 44), the golden (84, 95, 78, 95, 47, 90). Pin test: the asking sentence pins
+ordinary weekdays, "arrived in the zone" and the window with both ends included; no stay starts on 07:30 or 09:30, so
+the window's ends cannot move a figure; the devices sit in which stay is the arrival and in the clock.
 
-Main population's zero-counts: every served zone has panel commuters (37 to 186 devices); every station has entries in
+Main population's zero-counts: every served zone has panel commuters (35 to 181 devices); every station has entries in
 both autumns. Referee: the full includer's row below reproduces every figure (checks.py).
 
 | Ask | Cracker's handling | Cracker |
 |---|---|---|
-| A | register codes, predecessors joined, ordinary weekdays: all seven figures off | miss |
-| B | time-zone database, first stay away from home: three of six figures off | miss |
-| full includer | G-codes by station number, workplace-stay arrival: all thirteen right (check row, not the cracker) | miss |
+| A | assets joined on their number keeping the current station; predecessors joined; ordinary weekdays: all six stations off, the line kept | miss |
+| B | time-zone database; the long workplace stay as the arrival: all six figures off | miss |
+| full includer | assets by their dated rows, first stay in the zone: all thirteen right (check row, not the cracker) | miss |
 
-Pair ceiling: 41.2 (cracker 57.7, mirror 24.7; the cracker keeps 3 of 13 ask criteria)
-Mirror leakage: 23.1 per cent of the ask weight
+Pair ceiling: 32.7 (cracker 49.2, mirror 16.2; the cracker keeps 1 of 13 ask criteria; keeping each asset's first
+station instead keeps the same 1)
+Mirror leakage: 7.7 per cent of the ask weight
 Measured by: generator/ceiling.py on the cut pack
 
 ## Build record
 
-- **Generator.** world.py (fixed seed 149; the panel, the census releases, the gate entries with their gateline
-  codes), pack.py (13 files: csv 7, xlsx 2, pdf 3, docx 1; the stays file 136,000-odd rows), analysis.py (every rung,
+- **Generator.** world.py (fixed seed 149; each device's days from its own streams for schedule, leave, errands and arrival
+  stays, so a zone's working pattern moves no other device; the census releases; the gate entries with the four gate
+  arrays), pack.py (14 files: csv 8, xlsx 2, pdf 3, docx 1; the stays file about 145,000 rows), analysis.py (every rung,
   the golden and the asks from target/ alone, with the licensed variants), golden.py (the workbook, the note and its
-  chart, figures.json), checks.py, verify.py, ceiling.py, writeup.py, build.py; tune.py is a tuning aid that never
-  ships and moves no figure by hand (it reports bin distances; the world's free parameters, departure offsets per zone,
-  the gate seed and two-decimal station shares, were set from it).
-- **Gates on the final cut.** checks.py 77 of 77; verify.py agrees on its own path (pandas and raw OOXML: total 1,311.6,
-  every zone, 6 arrival shares, 7 station ratios, golden files read back); two builds byte-identical over 20 files
-  (target.zip aa619280); figures_check.py 60 figures, 0 absent; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 (871 characters);
-  leak.py --asof 2027-12-06 REVIEW, no LEAK; guard.py heart WARN (no BLOCK); guard.py surface exit 0, personas Colum
-  Curtis, Deaglan Gilmore and Eve Dunne only, no hard tell (no shared name, file or seed table); ten pairs promoted
-  for the author's adjudicated read: task148 (the same urban forecasting pairing at the adjacent number; its driver is
-  queue reneging), six pairs at surface 0.10 (task134, task142, task167, task229, task261, task484, the top of this
-  build's own distribution), and task65, task67 and task482 (gap, pattern and decision family, differentiated on the
-  card: none converts a count of persons into journeys).
+  chart, figures.json), checks.py, verify.py, ceiling.py, writeup.py, build.py. tune.py, tune2.py and tune_b.py are
+  tuning aids that never ship and move no figure by hand: they report bin distances, and the world's free parameters
+  were set from them (leave rates by zone inside 6 to 12 per cent, the retail park's and the airport's rosters, the
+  Carrigboy shift start, how often a journey stops in the zone on the way in, the gate file's seed).
+- **Stage 4, round 1 (cut aa619280).** Leak reader clean (question 6 analytical). Judge NOT_DETERMINISTIC, SEND_BACK on
+  the asks only, the main call forced and reproduced (2,374.6 easy, 1,311.6 golden), Gate F good, G and H pass. Fixed in
+  one pass, by construction: (1) the six secondary location codes had no document behind them; they are now four gate
+  arrays in the operator's gate asset register with dated rows, so the mapping is a lookup across two files and the
+  device is the as-of join; (2) ask B's window and day set are pinned in the prompt's words (from 07:30 up to and
+  including 09:30, on ordinary weekdays, arrival in the zone) and no stay away from home starts on either boundary
+  minute, asserted; (3) every zone's boardings sits in one nearest-10 bin under every estimator (ratio of totals, mean
+  of device shares, all 55 days), asserted per zone and estimator: no served-zone commuter's identifier is reissued
+  inside the weeks, and the zones' leave rates were set inside a realistic band to clear the edges; (4) the line is
+  pinned as the whole line's entries added together. The re-cut moved the exact golden from 1,311.6 to 1,296.6; the call
+  (about 1,300, reduced scheme), the default (2,374.6) and the stump are unchanged.
+- **Gates on the final cut.** Listed in pipeline.json and the report: checks.py, verify.py, two byte-identical builds,
+  figures_check.py, precut.py, voice-check.py, leak.py --asof 2027-12-06, guard.py heart and surface.
 - **Guard WARNs answered.** overuse.org_family: a metropolitan transport authority is a government agency, the honest
   family. repeat.deliverables (docx and xlsx against task304): a workbook for the figures and a committee note are what
   the authority's rail planning team produces; the note carries the chart. repeat.question_form (how-many against
@@ -281,13 +295,11 @@ Measured by: generator/ceiling.py on the cut pack
   refresh carry stump-paragraph terms (census, journey, forecast) as the organisation's own vocabulary; neither names a
   trip rate, a weekly share or the panel's use. The census table, the employment outlook and the refresh name zones beside
   numbers without ranking them on the decision question. The panel's field notes were rewritten as Schedule 2 of the data
-  licence (service description, no column names, no clause numbers) after sweep 12 and the file-name sweep flagged a
-  describing document.
-- **Card shell.** `register` read the prompt still on disk at registration (architecture 1's), so the card's `shell`
-  was corrected to this prompt's (how-many | work | docx+xlsx) and architecture 1's shell (how-many | lindqvist |
-  pptx+xlsx) moved to `lineage_shells`; `guard.py validate` clean, `heart` WARN with no BLOCK.
+  licence (service description, no column names, no clause numbers).
+- **Card shell.** `register` read the prompt still on disk at registration (architecture 1's), so the card's `shell` was
+  corrected to this prompt's and architecture 1's moved to `lineage_shells`.
 - **PDF dates.** The documents' creation and modification dates are written at reportlab's own length, so every PDF's
-  cross-reference offsets stay valid (pypdf reads all three without a warning).
+  cross-reference offsets stay valid.
 
 ## Tried and rejected
 - The seed's mechanism (new hires not yet in the tenure window where harm surfaces): rejected at the draw, a hazard by
@@ -356,6 +368,16 @@ Measured by: generator/ceiling.py on the cut pack
   journeys per commuter, the decisive step itself; dropped.
 - 2026-11-02, ask devices tuned, never figures moved: departure offsets per zone and the gate file's seed chosen so
   every graded figure clears its bin edge under every licensed reading (tune.py; asserted in checks.py).
+
+- 2026-11-02, stage 4 round 1, ask A: secondary gatelines under codes G<station number><gateline> with no document
+  behind them; the judge read the mapping as a guess (Gates B and C). Replaced by the operator's gate asset register with
+  dated rows, the arrays moved between stations, so the device is the as-of join across two files.
+- 2026-11-02, stage 4 round 1, ask B: arrival at the workplace with the window's ends and the day set unfiled; 43 stays
+  began exactly at 09:30 and the share turned on inclusivity and on ordinary against all weekdays. Pinned in the prompt,
+  no stay begins on either boundary minute, and the arrival read as the first stay in the zone.
+- 2026-11-02, stage 4 round 1, zone boardings: reissued identifiers inside the served zones split the estimators (290
+  against 280 for the Docklands). Reissues now fall only outside the served zones and every estimator lands each zone in
+  one bin, asserted.
 
 ## Architecture 1 record
 

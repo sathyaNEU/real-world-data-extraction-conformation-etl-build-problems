@@ -1,4 +1,4 @@
-"""Fixed parameters of the Kessock Lake world (task159, architecture 2). Every random draw is seeded from here."""
+"""Fixed parameters of the Kelvanna Lake world (task159, architecture 2). Every random draw is seeded from here."""
 import datetime as dt
 
 SEED = 15902

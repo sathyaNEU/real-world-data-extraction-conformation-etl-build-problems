@@ -201,18 +201,22 @@ def build_panel(rng):
         dev.did = hashlib.sha1(("rmp114-%d" % i).encode()).hexdigest()[:16]
 
     for idx, dev in enumerate(devices):
+        # Each device's days come from its own streams (schedule, leave, errands), so a zone's working pattern can
+        # change without moving any other device in the panel.
+        srng = np.random.default_rng([P.SEED, 990, idx])
         arng = np.random.default_rng([P.SEED, 991, idx])
+        erng = np.random.default_rng([P.SEED, 993, idx])
         if dev.kind in ("worker", "outside"):
             if dev.kind == "outside":
-                dev.travel = 55 + int(rng.integers(0, 20))
+                dev.travel = 55 + int(srng.integers(0, 20))
                 dev.dest_travel = dev.travel
-            shifts = _schedule(rng, dev, sim_days) if dev.kind == "worker" else [
-                (d, 470 + 55 + rng.normal(0, 8), 470 + 55 + rng.uniform(480, 540), "day")
+            shifts = _schedule(srng, dev, sim_days) if dev.kind == "worker" else [
+                (d, 470 + 55 + srng.normal(0, 8), 470 + 55 + srng.uniform(480, 540), "day")
                 for d in sim_days if d.weekday() < 5]
             scheduled = set()
             for d, s, e, kind in shifts:
-                r, a = rng.random(), rng.uniform(485, 530)
-                ecell, edur = str(rng.choice(P.LOCAL_CELLS)), rng.uniform(24, 50)
+                r, a = erng.random(), erng.uniform(485, 530)
+                ecell, edur = str(erng.choice(P.LOCAL_CELLS)), erng.uniform(24, 50)
                 scheduled.add(d)
                 if _absent(arng, dev, d):
                     continue
@@ -226,17 +230,17 @@ def build_panel(rng):
                         a = (s - _t(d, 0)).total_seconds() / 60
                         b = (e - _t(d, 0)).total_seconds() / 60
                         busy.append((a - dev.travel - 10, b + dev.travel + 10))
-                dev.acts += _errands(rng, dev, d, busy, n_max=2 if d not in scheduled else 1)
+                dev.acts += _errands(erng, dev, d, busy, n_max=2 if d not in scheduled else 1)
         elif dev.kind == "nofixed":
             for d in sim_days:
-                if d.weekday() < 5 and rng.random() > 0.10:
-                    s = 470 + rng.normal(0, 12)
-                    dev.acts.append((str(rng.choice(dev.sites)), _t(d, s), _t(d, s + rng.uniform(380, 520)), "work"))
+                if d.weekday() < 5 and srng.random() > 0.10:
+                    s = 470 + srng.normal(0, 12)
+                    dev.acts.append((str(srng.choice(dev.sites)), _t(d, s), _t(d, s + srng.uniform(380, 520)), "work"))
             dev.travel = 30
         else:
             dev.travel = 10
             for d in sim_days:
-                dev.acts += _errands(rng, dev, d, [], n_max=2, long_ok=True)
+                dev.acts += _errands(erng, dev, d, [], n_max=2, long_ok=True)
         dev.acts.sort(key=lambda a: a[1])
         # remove overlaps (keep the earlier activity)
         clean, last_end = [], None
@@ -376,7 +380,7 @@ def gate_entries(rng):
                 f *= 0.93
             mu = base * dow * season * f
             val = int(max(0, round(rng.normal(mu, 0.028 * mu + 6))))
-            for parent, gid, a, b, lo, hi in P.GATELINES:
+            for parent, gid, a, b, lo, hi, _desc in P.GATELINES:
                 if code == parent and a <= d <= b:
                     tmp = int(round(val * float(rng.uniform(lo, hi))))
                     rows.append((d, gid, tmp))

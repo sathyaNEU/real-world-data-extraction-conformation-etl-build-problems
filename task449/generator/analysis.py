@@ -199,7 +199,7 @@ def S_at(tab, a):
 def weibull_table(durs, events):
     """Weibull fitted by maximum likelihood with right censoring, returned as a function on ages."""
     from scipy.optimize import minimize
-    d = np.asarray(durs, dtype=float)
+    d = np.maximum(np.asarray(durs, dtype=float), 0.5)
     e = np.asarray(events, dtype=float)
 
     def nll(th):
@@ -256,15 +256,24 @@ def es_durations(snap, ev, source="board", tgt=None):
     return out
 
 
-def survival_tables(durs, kind="km", pooled=False):
-    if pooled:
+def survival_tables(durs, kind="km", pooled=False, grouping="occ"):
+    fit = km_table if kind == "km" else weibull_table
+    if pooled or grouping == "pooled":
         allD = sum((v[0] for v in durs.values()), [])
         allE = sum((v[1] for v in durs.values()), [])
-        t = km_table(allD, allE) if kind == "km" else weibull_table(allD, allE)
+        t = fit(allD, allE)
         return defaultdict(lambda: t)
+    if grouping.startswith("parent"):
+        k = int(grouping[6:])           # NOC 2021 digits kept: 2 sub-major group, 3 minor group
+        groups = defaultdict(lambda: ([], []))
+        for occ, (dd, ee) in durs.items():
+            groups[occ[:k]][0].extend(dd)
+            groups[occ[:k]][1].extend(ee)
+        gt = {g: fit(dd, ee) for g, (dd, ee) in groups.items()}
+        return {occ: gt[occ[:k]] for occ in durs}
     out = {}
     for occ, (dd, ee) in durs.items():
-        out[occ] = km_table(dd, ee) if kind == "km" else weibull_table(dd, ee)
+        out[occ] = fit(dd, ee)
     return out
 
 
@@ -278,7 +287,7 @@ def next_events(ev):
     return by
 
 
-def posting_weight(row, d, evby, tabs, mode):
+def posting_weight(row, d, evby, tabs, mode, term_end="next", age_shift=0):
     if row.channel == "E" or mode in ("live", "raw"):
         return 1.0
     if mode == "eonly":
@@ -286,9 +295,9 @@ def posting_weight(row, d, evby, tabs, mode):
     e_last = row.term_last
     s = e_last - dt.timedelta(days=TERM - 1)       # the current term's first day
     e = e_last + dt.timedelta(days=1)             # the first day after the term
-    a = (d - row.posted).days
+    a = (d - row.posted).days + age_shift
     a_s = (s - row.posted).days
-    a_e = (e - row.posted).days
+    a_e = (e - row.posted).days - (1 if term_end == "last" else 0)
     evs = [(x, k) for x, k in evby.get(row.pid, []) if s <= x <= e]
     renewed = any(k == "RENEWED" for x, k in evs)
     removed_after = any(k == "REMOVED" and x > d for x, k in evs)
@@ -307,7 +316,8 @@ def posting_weight(row, d, evby, tabs, mode):
     raise AssertionError("posting %s live on %s has no outcome in its term" % (row.pid, d))
 
 
-def compute(tgt, mode="gold", surv="km", dur_source="board", cache=None):
+def compute(tgt, mode="gold", surv="km", dur_source="board", cache=None, term_end="next", age_shift=0,
+            grouping="occ", bench="sector"):
     c = cache if cache is not None else {}
     if "snap" not in c:
         c["snap"] = read_snapshots(tgt)
@@ -323,7 +333,7 @@ def compute(tgt, mode="gold", surv="km", dur_source="board", cache=None):
     if key not in c:
         c[key] = es_durations(snap, c["ev"], dur_source, tgt)
     durs = c[key]
-    tabs = survival_tables(durs, "km" if surv == "km" else "weibull", pooled=(mode == "pooled"))
+    tabs = survival_tables(durs, "km" if surv == "km" else "weibull", pooled=(mode == "pooled"), grouping=grouping)
     V = defaultdict(float)
     per_date = {}
     for d in REF_DATES:
@@ -331,14 +341,18 @@ def compute(tgt, mode="gold", surv="km", dur_source="board", cache=None):
         wsec = defaultdict(float)
         wocc = defaultdict(float)
         for row in live.itertuples(index=False):
-            w = posting_weight(row, d, evby, tabs, "gold" if mode == "pooled" else mode)
+            w = posting_weight(row, d, evby, tabs, "gold" if mode == "pooled" else mode, term_end, age_shift)
             sec = c["sector_of"][row.employer]
             wsec[sec] += w * row.positions
             wocc[(row.occ, sec)] += w * row.positions
         vd = defaultdict(float)
+        tot_w = sum(wsec.values())
+        tot_q = sum(qevs[(s_, d)] for s_ in set(k[0] for k in qevs))
         for (occ, sec), x in wocc.items():
             if mode == "raw":
                 vd[occ] += x
+            elif bench == "total":
+                vd[occ] += tot_q * x / tot_w
             elif wsec[sec] > 0:
                 vd[occ] += qevs[(sec, d)] * x / wsec[sec]
         per_date[d] = dict(vd)

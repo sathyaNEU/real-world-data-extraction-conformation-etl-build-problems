@@ -403,14 +403,13 @@ SPECS = {
 }
 
 # brand names: a place or nature word, then a word that says what the brand makes
-PREFIX = ["Harvest", "Northcove", "Ridgeway", "Maple Crest", "Bay Ridge", "Fundy", "Clearwater", "Old Mill",
-          "Brightfield", "Tidewell", "Sunnyhill", "Cobequid", "Lunenburg", "Atlantic", "Valley", "Highland",
-          "Kingsport", "Seaside", "Annapolis", "Minas", "Sable", "Acadia", "Shoreline", "Harbourside", "Pinecrest",
-          "Cedar Point", "Birchwood", "Stonebridge", "Meadowvale", "Willow Creek", "Silver Birch", "Bluenose",
-          "Greenfield", "Redcliff", "Saltwater", "Sandy Cove", "Wildrose", "Grand Pre", "Port Royal", "Riverbend",
-          "Brookside", "Oakhill", "Island Light", "Schooner", "Lighthouse", "Anchor", "Compass Rose", "Puffin",
-          "Heron", "Bayview", "Seabright", "Windsor", "Wolfville", "Chester", "Baddeck", "Margaree",
-          "Tatamagouche", "Parrsboro", "Granville", "Pictou", "Mahone Bay", "Cape North", "Glen Haven", "Hubbards"]
+PREFIX = ["Harvest", "Northcove", "Ridgeway", "Maple Crest", "Bay Ridge", "Fundy", "Brightfield", "Tidewell",
+          "Sunnyhill", "Cobequid", "Lunenburg", "Atlantic", "Valley", "Kingsport", "Seaside", "Annapolis", "Minas",
+          "Sable", "Acadia", "Shoreline", "Harbourside", "Pinecrest", "Birchwood", "Stonebridge", "Meadowvale",
+          "Silver Birch", "Bluenose", "Redcliff", "Saltwater", "Sandy Cove", "Wildrose", "Grand Pre", "Port Royal",
+          "Riverbend", "Oakhill", "Island Light", "Compass Rose", "Heron", "Bayview", "Seabright", "Wolfville",
+          "Chester", "Baddeck", "Margaree", "Parrsboro", "Pictou", "Mahone Bay", "Cape North", "Glen Haven",
+          "Hubbards"]
 SUFFIX = {
     "GROCERY": ["Pantry", "Kitchen", "Provisions", "Foods", "Table", "Harvest", "Select", "Naturals", "Gold"],
     "DAIRY": ["Dairy", "Creamery", "Farms", "Pastures", "Meadows"],
@@ -422,7 +421,7 @@ SUFFIX = {
     "BEVERAGES": ["Springs", "Beverages", "Orchards", "Soda Works", "Drinks"],
     "HOUSEHOLD": ["Home", "Essentials", "Clean", "Household", "Basics"],
     "HEALTH BEAUTY": ["Naturals", "Botanicals", "Care", "Labs", "Apothecary"],
-    "PET": ["Pet", "Pet Co.", "Pet Foods", "Pet Supply", "Animal Care"],
+    "PET": ["Pet", "Pet Foods", "Pet Supply", "Animal Care", "Pet Nutrition"],
     "BABY": ["Baby", "Baby Care", "Infant Care", "Nursery", "Kids"],
 }
 PRIVATE_LABEL = "Saltmarsh"
@@ -458,7 +457,8 @@ def brands_for(dept, rng, need, taken, taken_short):
         if room >= need:
             break
         name = names[j]
-        if name in taken or squeeze(name, 6) in taken_short:
+        words = name.split()
+        if name in taken or squeeze(name, 6) in taken_short or len(set(words)) < len(words):
             continue
         taken.add(name)
         taken_short.add(squeeze(name, 6))

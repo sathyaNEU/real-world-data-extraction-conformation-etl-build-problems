@@ -152,12 +152,12 @@ def write(W, A, target):
 
     # platform licence status report at 1 September 2025 (40-loan licences)
     rows = []
-    for L in sorted([L for L in W.licences if L.model == "1U-M" and L.bought <= P.RECORD_START.date()],
-                    key=lambda L: L.lic_id):
+    for L in sorted([L for L in W.licences if L.model == "1U-M" and L.bought <= P.RECORD_START.date()
+                     and not getattr(L, "prelapsed", False)], key=lambda L: L.lic_id):
         t = tby[L.title]
-        rows.append([L.lic_id, t["platform_id"], "1 user, 40 loans", L.remaining0[0], "2025-09-01"])
+        rows.append([L.lic_id, t["platform_id"], "1 user, 40 loans", "Active", L.remaining0[0], "2025-09-01"])
     IO.write_csv(os.path.join(target, FILES["status"]),
-                 ["licence_id", "title_id", "model", "loans_remaining", "as_at"], rows)
+                 ["licence_id", "title_id", "model", "status", "loans_remaining", "as_at"], rows)
 
     # reading list items
     period = {"A25": "2025-26 Semester 1", "S26": "2025-26 Semester 2", "A26": "2026-27 Semester 1"}

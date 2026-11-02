@@ -304,9 +304,9 @@ takes the line back to the shelf price leaves the rest of the Code remedy to the
 a second payout. The repair needs a judgment the battery does not make (which records are one event): a desk entry on
 a receipt line the register also paid is a duplicate only when it repeats that payout's amount. Hazards: the override
 export in UTC with 30 September evening payouts inside its window (D8; a UTC-date reading moves 6 stores), the payout
-as the original less the override price in cents (D3; the override price read as the payout moves 11), reason codes
+as the original less the override price in cents (D3; the override price read as the payout moves 10), reason codes
 (PM, MD, DM, MGR beside SC). Stops: adding both logs (misses 10 stores), dropping every desk entry that matches a register
-line (misses 10), desk only (10), register only (13). Realism: a supervisor's approval log and a two-stage remedy are
+line (misses 10), desk only (10), register only (14). Realism: a supervisor's approval log and a two-stage remedy are
 how service desks run the Code. Pin test: the asking sentence pins the basis (paid out under the Code), the window (in
 the quarter) and the unit (dollars); the device sits in which records are one payout, which no pin names.
 
@@ -317,19 +317,20 @@ weekly_price_change_releases_2026Q4.xlsx (9 columns, PRELIM and REVISED sheets),
 columns), flyer_item_daily_units_2026Q4.csv (5 columns). Primary devices: an assorted flyer line lists only its lead
 UPC, and its other varieties are found among the week's AD START items by the lead's abbreviated brand, product and size
 (D7/D6: the true key elsewhere; matching on the lead's keyed price, the natural shortcut, drops exactly the mis-keyed
-varieties: misses 9 weeks; the lead only misses 13); a mid-week correction fixes a register price from its own opening
+varieties: misses 10 weeks; the lead only misses 13); a mid-week correction fixes a register price from its own opening
 date, so the overcharge runs only to the day before (D2 dated: the release price all week misses 14 weeks' dollars,
 the correction taken for the whole week misses 14 weeks' counts and dollars). Hazards: the Monday preliminary against
-the Tuesday revision (13 weeks' counts, 14 weeks' dollars), a multi-buy compared per unit (3 counts, 10 dollar figures),
+the Tuesday revision (13 weeks' counts, 14 weeks' dollars), a multi-buy compared per unit (1 count, 10 dollar figures),
 each zone's own units (13 dollar figures). Realism: a promotions ad plan keys an assorted line to its lead item, and a pricing desk corrects a
 keying error mid-week with correction labels sent the night before. Pin test: the asking sentence pins the week (each
 flyer week that started in the quarter, its seven days), the set (advertised UPCs), the comparison (the flyer price)
 and the unit; the devices sit in which UPCs an assorted line covers and which days a register price was in force,
-which no pin names.
+which no pin names. Unit price: a multi-buy's unit price taken exactly or to the cent gives every week the same
+count and dollars (a three-for price is a whole number of dollars a unit; asserted askB.unit_price_to_the_cent_same_figures).
 
 Main population zero counts: no device row in the hourly report, the movement report, the printer fleet log, the checks
 or the audits (asserted: the main call reads no ask file, sep.main_call_reads_no_ask_file). Hazard table: UTC (ask A, 6
-stores), cents (ask A, 11), preliminary release (ask B, 13 weeks' counts, 14 weeks' dollars), multi-buy (ask B, 3 counts
+stores), cents (ask A, 10), preliminary release (ask B, 13 weeks' counts, 14 weeks' dollars), multi-buy (ask B, 1 count
 and 10 dollar figures), zone units (ask B, 13 dollar figures). Referee: none; every repair is forced by an internal inconsistency (a receipt line paid
 twice for the same amount; a variety in the week's AD START items sharing the lead's brand, product and size; a
 correction dated inside the week).
@@ -347,7 +348,7 @@ block was found that it would miss without a fork).
 
 Pair ceiling: 34.3 (cracker on the call 50.2, mirror off the call 18.4; 38 + 7 + 55)
 Mirror leakage: 11.9 per cent of ask weight (the mirror adds both payout logs, reads each flyer line's lead UPC, keeps the release price all week)
-Measured by: generator/ceiling.py on the cut pack (target/ of the final build, sha256 over its files 37e5f1af)
+Measured by: generator/ceiling.py on the cut pack (target/ of the final build, sha256 over its files 942540ae)
 
 ## Pre-ship check
 
@@ -427,6 +428,11 @@ reworded in docs.py to "sold"). Each REVIEW line, ruled:
   garbage bags in dark roast, hummus in 12 x 355 mL cans at 99 cents): a realism tell any reader quotes; each family is
   now dressed by catalogue.py on its own stream (a brand's product in one of its real sizes, that product's own
   varieties, a price from the product's level), and the master stream is untouched, so the call did not move.
+- 2026-11-02, three-for flyer prices at any whole-dollar total (3 for $10): one unit rings at a third of a cent, and
+  taking the unit price to the cent moved one week's dollars across a bin; a three-for price now carries a whole-dollar
+  unit and its keying errors move in steps of three cents.
+- 2026-11-02, service desk refunds placed by adding hours to the scan: a third landed overnight (00:15, 23:57) when no
+  desk is open; each desk entry now falls in desk hours, an overnight one the next morning.
 
 ## Architecture 1 record (re-rooted 2026-11-01 at the Batch 3 queue reset)
 

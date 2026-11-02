@@ -7,7 +7,7 @@
  "as_of": "2026-11-13",
  "question": "the gold an Ontario open-pit mine budgets for the ore it mines in 2027 under a higher ore cut-off, with the low-grade stockpile at four dates, the ball mill's running hours by quarter and the fine gold poured by quarter",
  "deliverables": [
-  "kessock_2027_budget_gold.xlsx",
+  "kelvanna_2027_budget_gold.xlsx",
   "lg_stockpile_2023-2026.svg"
  ],
  "distractor_files": [
@@ -47,14 +47,14 @@
   "gc_assays_lims_export_20261105.csv": 61077,
   "goldroom_bar_register_2025-2026.csv": 155,
   "haul_fleet_register_2026-10.xlsx": "",
-  "kessock_mine_grid_control.txt": "",
-  "kessock_mine_plan_2027_v3.xlsx": "",
+  "kelvanna_mine_grid_control.txt": "",
+  "kelvanna_mine_plan_2027_v3.xlsx": "",
   "kl_mz_resource_model_2026R.csv": 47587,
   "mill_daily_production_2023-2026.csv": 1400,
   "monthly_reconciliation_jan2023_oct2026.pdf": "",
   "mz_exploration_assays_2019-2022.csv": 14126,
   "pit_slope_review_phase5_2026.pdf": "",
-  "refinery_outturn_statements_2025-2026.csv": 266,
+  "refinery_outturn_statements_2025-2026.csv": 263,
   "stockpile_inventory_2022-12-31.csv": 3,
   "survey_depletion_2023-01_2026-10.csv": 21616
  },
@@ -72,5 +72,5 @@
    "date": "2026-11-13"
   }
  ],
- "notes": "Synthetic pack. Aubreth Gold Corporation, the Kessock Lake mine, its refinery counterparty and every person are invented; the northeastern Ontario setting, Canadian geodetic frames and the laboratory and refinery conventions are real."
+ "notes": "Synthetic pack. Aubreth Gold Corporation, the Kelvanna Lake mine, its refinery counterparty and every person are invented; the northeastern Ontario setting, Canadian geodetic frames and the laboratory and refinery conventions are real."
 }

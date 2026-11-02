@@ -55,6 +55,8 @@ def figures(t):
         family=dict(A=round(m["A"]), B05=round(m["B05"]), B10=round(m["B10"]), B20=round(m["B20"]), C=round(m["C"]),
                     D=round(m["D"])),
     )
+    F["constants"] = dict(new_ore_cut=P.NEW_ORE_CUT, old_ore_cut=P.OLD_ORE_CUT, budget_rounding_oz=10000,
+                          ore_rounding_t=100000, opening_survey_year=2022)
     labels = {"2023": "31 December 2023", "2024": "31 December 2024", "2025": "31 December 2025",
               "2026-10": "31 October 2026"}
     F["stock_rows"] = [(labels[k], rnd(v[0], 1000), rnd(v[1], 100)) for k, v in r["stockpile"].items()]
@@ -104,7 +106,7 @@ def metadata(target):
              "license": "CC BY 4.0 (constructed data)", "date": "2026-11-13"},
             {"files": "NAD83(CSRS) UTM zone 17N, CGVD2013 heights, troy ounce (31.1034768 g)",
              "origin": "public geodetic and measurement standards", "license": "public", "date": "2026-11-13"}],
-        "notes": "Synthetic pack. Aubreth Gold Corporation, the Kessock Lake mine, its refinery counterparty and "
+        "notes": "Synthetic pack. Aubreth Gold Corporation, the Kelvanna Lake mine, its refinery counterparty and "
                  "every person are invented; the northeastern Ontario setting, Canadian geodetic frames and the "
                  "laboratory and refinery conventions are real.",
     }

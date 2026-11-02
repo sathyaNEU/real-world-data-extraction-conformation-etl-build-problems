@@ -22,6 +22,7 @@ FILES = {
     "review": "lisnagry_opening_review_apr2020.pdf",
     "gates": "ardnagree_line_gate_entries_20180101_20271130.csv",
     "register": "ardnagree_line_station_register.csv",
+    "assets": "ardnagree_line_gate_asset_locations.csv",
     "calendar": "kilcarrow_calendar_2018_2027.csv",
     "panel_note": "kmta_vantra_licence_2027-114_schedule2.pdf",
     "housing": "rathgarvan_housing_pipeline_oct2027.xlsx",
@@ -52,6 +53,8 @@ def panel_rows(devices):
         for cell, s, e, _tag in stays:
             s = s.replace(second=0, microsecond=0)
             e = e.replace(second=0, microsecond=0)
+            if cell != dev.home and s.hour * 60 + s.minute in (450, 570):
+                s = s + dt.timedelta(minutes=1)
             if s.date() not in days or (e - s).total_seconds() < 20 * 60:
                 continue
             out.append((dev.did, cell, zstamp(to_utc(s)), zstamp(to_utc(e))))
@@ -86,6 +89,10 @@ def cell_rows():
                     rows.append((c, z, names[z], "%.2f" % sh))
             else:
                 rows.append((c, zone, names[zone], "1.00"))
+    for z, c in P.ARRIVE_CELLS.items():
+        if c not in seen:
+            seen.add(c)
+            rows.append((c, z, names[z], "1.00"))
     for c in P.OUTSIDE_CELLS:
         rows.append((c, "KX03", "Outside County Kilcarrow", "1.00"))
     rows.sort()
@@ -392,6 +399,10 @@ def build(target, seed=P.SEED):
                                     "CBY": "Replaces Carrigboy Halt (CBH)",
                                     "LSG": "New station"}.get(c, ""))
                                   for c, nm, o, cl, _b, _r, _o in P.STATIONS])
+    n["assets"] = IO.write_csv(os.path.join(target, FILES["assets"]),
+                               ["asset_id", "station_code", "location", "installed", "removed"],
+                               sorted((g, st, desc, a.isoformat(), "" if b >= dt.date(2027, 11, 30) else b.isoformat())
+                                      for st, g, a, b, _lo, _hi, desc in P.GATELINES))
     n["calendar"] = IO.write_csv(os.path.join(target, FILES["calendar"]), ["date", "weekday", "day_type", "name"],
                                  calendar_rows())
     write_panel_note(os.path.join(target, FILES["panel_note"]))

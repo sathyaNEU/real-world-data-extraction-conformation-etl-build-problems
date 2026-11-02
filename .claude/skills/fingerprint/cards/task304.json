@@ -48,7 +48,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "collision_records_2016_2025.csv",
-    "rows": 25836,
+    "rows": 26049,
     "entity": "one row is one police-reported injury collision",
     "grain": "collision",
     "source": "constructed (seeded generator)"
@@ -78,7 +78,7 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is each candidate's long-run count of events at its present exposure, when the candidates were listed because their recent counts were high: a listed unit's recent count carries the luck that listed it, so ranking on it favours the luckiest, and ranking on an exposure model fitted to comparable units ignores what each unit's own record shows; only each unit's own record weighed against the model by how far comparable units spread beyond chance estimates the long-run count the decision is scored on.",
-  "driver_concrete": "Each listed junction's expected injury collisions a year at its 2026 traffic come from a negative binomial performance function fitted to the county's 1,436 give-way and stop-controlled junctions (overdispersion 0.26), weighed against the junction's own 2021 to 2025 count by empirical Bayes; Saxby Cross's 22 collisions on a road predicted at 0.4 a year carry a weight of 0.66 on the prediction and fall to 0.8 prevented a year, Tollgate Crossroads's traffic predicts the most but its record runs below it, and Mill Lane Crossroads leads at 1.3.",
+  "driver_concrete": "Each listed junction's expected injury collisions a year at its 2026 traffic come from a negative binomial performance function fitted to the county's 1,436 give-way and stop-controlled junctions (overdispersion 0.27), weighed against the junction's own 2021 to 2025 count by empirical Bayes; Saxby Cross's 22 collisions on a road predicted at 0.4 a year carry a weight of 0.66 on the prediction and fall to 0.8 prevented a year, Tollgate Crossroads's traffic predicts the most but its record runs below it, and Mill Lane Crossroads leads at 1.3.",
   "stump": "A competent analyst takes each listed junction's 2021 to 2025 injury collisions as its expected annual count (the cluster-site practice) and files Saxby Cross at 2.1 injury collisions prevented a year; the step that lands it there is reading a recent count as the long-run count at junctions listed because their recent counts were high: Saxby Cross carries 3,700 vehicles a day and the county's performance function predicts 0.4 collisions a year there, while Mill Lane Crossroads keeps both its record and its traffic high, which only the record weighed against the function fitted to the county's 1,436 comparable junctions shows.",
   "mechanism_source": "design_note",
   "differentiation": {

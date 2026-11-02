@@ -229,7 +229,7 @@ def engine_stops(year, r, which):
     st = dt.datetime(day.year, day.month, day.day, 7, 0, tzinfo=C.TZ).astimezone(C.UTC)
     stops.append((st, int(r.uniform(2100, 2500)), "service"))
     # trips: jacket water temperature, misfire, gas quality
-    for _ in range(int(r.integers(14, 20))):
+    for _ in range(int(r.integers(11, 24))):
         st = jan1 + dt.timedelta(minutes=int(r.uniform(0, 365 * 1440 - 3000)))
         stops.append((st, int(r.uniform(18, 170)), "trip"))
     stops.sort()
@@ -247,14 +247,18 @@ def build_engines(times, capture, run_frac, outages):
 
     # plant outages stop both engines; the restart comes after the plant is back
     r = rng(30)
+    rt = rng(31)
     restart_delay = {}
     for k, o in enumerate(outages):
         a, b = minute_of(o["start"]), minute_of(o["end"])
         for e in (1, 2):
             d = int(r.uniform(6, 26)) if e == 1 else int(r.uniform(14, 48))
             restart_delay[(k, e)] = d
-            on[e][a:min(nmin, b + d)] = False
-            stop_list[e].append(dict(start=a, end=min(nmin, b + d), kind="plant", outage=k))
+            # a power failure stops everything at once; otherwise the engine runs on the header's residual pressure
+            # for up to two minutes before it trips on low gas pressure
+            lag = 0 if o["cause"] == "Utility power failure" else int(rt.integers(0, 3))
+            on[e][a + lag:min(nmin, b + d)] = False
+            stop_list[e].append(dict(start=a + lag, end=min(nmin, b + d), kind="plant", outage=k))
     for e in (1, 2):
         for y in YEARS:
             for st, mins, kind in engine_stops(y, rng(40 + 10 * e + y), e):

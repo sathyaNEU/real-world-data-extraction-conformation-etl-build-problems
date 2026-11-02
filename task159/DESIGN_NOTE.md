@@ -1,4 +1,336 @@
-# task159: the Vellmouth Transit Commission's spring 2027 platform conductor pick (architecture 1)
+# task159: Kelvanna Lake's 2027 budget gold at the raised ore cut-off (architecture 2)
+
+Private, never ships. Architecture 1 (the Vellmouth Transit Commission's spring 2027 platform conductor pick,
+urban-regional-science / forecasting, shipped 2026-10-17, no portal result) was re-rooted on 2026-11-01 at the Batch 3
+queue reset; its world is closed and its record is kept below under `## Architecture 1 record`. This architecture is
+a new world, dataset and prompt shell in a new client domain. Stump power is argued on paper; no solver, scored reader
+or probe ran.
+
+## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task159.json`, architecture v2, registered 2026-11-02T02:21:49Z,
+  re-checked on the registered card as the last act of the draw: WARN only (`repeat.question_form` how-much against
+  task281, answered below; `test.same_puzzle_older` against task488 differentiated: task488 links new items to an
+  established scale through standings computed from provisional levels; nothing here is linked to a scale).
+- **Pairing:** General Statistics & Data Science / regression-classification-model-diagnostics, which serves
+  Forecasting & Predictive Modeling. The deciding quantity is the calibration of a predictor where a decision threshold
+  is applied: the gold grade control will find above 0.90 g/t in blocks known only through a resource model's
+  estimates. Objective kept from the number's lane (Forecasting); the committed call is a figure for a window not yet
+  open (calendar 2027).
+- **World:** Aubreth Gold Corporation's Kessock Lake open pit and carbon-in-leach mill, northeastern Ontario (UTM 17N,
+  CAD); invented company, mine and people (`guard.py names --geo Canada --locale en_CA --seed 159`: Cindy Smith, Jeffrey
+  Russell, Charles Bailey, Emily Schmitt, Kerri Steele, Brent Peck, Heidi Nichols). No in-flight world is near it
+  (task186 airport screening, task271 lake stocking, task133 log trucks, task142 load forecasting, task304 road
+  junctions, task149 rail station, task138 QT study were read).
+- **Decision:** the 2027 budget gold (contained ounces in the ore mined), the figure the general manager takes to the
+  board on 8 December 2026, after the board raised the ore cut-off from 0.50 to 0.90 g/t.
+- **Shape:** `other`, single main figure with one component plus three ask trails. Criteria: the call (1), the ore
+  tonnes (1), the plan's model basis and the record's factors as components (2), the stockpile at four dates in tonnes
+  and gold (8), ball mill hours by quarter (7), fine gold poured by quarter (7), the chart's parts (3) and the files
+  (2): 31.
+- **Strategy:** `classification_error` (ore and waste are classified at the face on a measurement that spreads more
+  widely than the plan's estimate). Gap `objective` (the reports' factor is correct at 0.50 g/t and is not what the
+  decision is scored on), generators G14, G2, G3, Gate G `forecasting` (the correctly read past does not pin the
+  forward factor). `repeat.gate_g` against task149 answered: task149's forward quantity is trips per worker from a stay
+  panel; here it is the factor a selection threshold carries.
+- **Data-native sentence:** grade control selects ore at the face on blast-hole assays whose block grades vary more
+  than a kriged model's smoothed estimates although the model is right on average at every estimate, so this mine's
+  own reconciliation factor is a property of the cut-off it was measured at, and the four years of blast holes laid
+  into the model's blocks are the only record of how grade control spreads about the model.
+- **Abstraction sentence (written to test against every approved build):** "a selection made on a finer measurement
+  than the forecast's estimate keeps more above a raised threshold than the estimate's own distribution shows, so a
+  kept-to-estimated factor measured at the old threshold understates the new one." No approved build carries it:
+  task141 and task169 move units into a state the record already holds (no state changes here; the routes reading the
+  record's units in the forward state, the model-ore blocks' own grade-control grades, file the wrong 130,000);
+  task162 replays a cap; task135 and task143 understate a variance of a sum; task304 (in flight) shrinks selected sites
+  toward a model, the opposite correction (here the model is conditionally unbiased and the gain comes from the finer
+  selection).
+- **Candidates weighed (fates in `## Tried and rejected`):** twin-plant wrong-train slips under a single operator
+  (human-reliability-assessment), HRA response times pre-empted by an automatic trip, mixed-population wind extremes
+  (climate-weather-extremes), a noisy-model version of this world (regression to the mean at the raised cut-off), and
+  this smoothed-model version, chosen.
+- **Sources:** a constructed pack (seeded generator, `generator/build.py`, seed 15902); real conventions only:
+  NAD83(CSRS) UTM zone 17N with a rotated local mine grid, the troy ounce, fire-assay laboratory reporting in parts per
+  billion with gravimetric re-assay of over-range results, refinery melt lots and settlement statements, DCS historian
+  exports in UTC.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property is each scheduled block's expected grade-control gold above 0.90 g/t given its
+  model estimate, and the record's factor at 0.90 g/t; no file holds a grade-control grade per block, a factor at
+  0.90 g/t or any 2027 grade-control figure (asserted in `checks.py`, R1).
+- **Link:** blast holes are logged in UTM by the rigs' GNSS and the model lives in the rotated Kessock mine grid; the
+  pairing runs through the survey control's transformation and the bench, a link no key offers, and the comparison it
+  enables (grade control re-cut at the new cut-off against the model re-cut at it) is one the reconciliation's own
+  method never asks for.
+- **Reflex:** the field's method for converting a plan to a mined-ore forecast, the reconciliation factor (F1) from
+  the monthly reports applied to the plan's model ounces, sits at rung 1 and files 130,000; the model-diagnostic reflex
+  (check the model is right on average and keep the plan) sits at rung 1b and files 130,000.
+- **Back-test:** the textbook route validates: the reports' F1 at 0.50 g/t holds near 1.02 every year of the record and
+  predicts each year's grade-control ore gold from the model at 0.50 g/t within a few per cent; the regression of
+  grade control on the model is slope 1.008 (log slope 1.002), so the calibration check passes.
+- **Second use:** the blast-hole export is the grade-control record every reconciliation is built on; the model and
+  the plan are the planning record; the survey control is the site standard every survey file needs. Delete the
+  decisive step and the pack still carries each of them.
+- **Shock:** nothing moves in the record: the cut-off change is a filed board decision and the factor at 0.50 g/t is
+  steady; the gain at 0.90 g/t is a property of the record no statistic of any one file shows as an anomaly.
+- **Pins:** the WHAT is filed in the mine planning superintendent's budget basis memo (cut-off, ore selected block by
+  block on grade control, budget gold contained in calendar 2027 on grade-control grades and model tonnages, the
+  schedule's blocks ore and waste alike); no filed sentence names the threshold dependence, the re-cut or the
+  per-block reading.
+
+## Default path
+
+1. Read the budget basis memo: ore at 0.90 g/t on grade control, budget gold contained in calendar 2027.
+2. Sum the Schedule sheet of `kessock_mine_plan_2027_v3.xlsx` at AU_OK of 0.90 g/t or more: 2,719,560 t and
+   127,655 oz on the resource model (the plan's Summary sheet shows the same on its basis line).
+3. Open `monthly_reconciliation_jan2023_oct2026.pdf`, the record of how grade control and the mill compare with the
+   model, and take the January 2023 to October 2026 gold factor F1 of 1.02 (steady by year: 1.01, 1.01, 1.03, 1.02).
+4. Apply it to the plan's model gold, the field's method for a mined-ore forecast: 127,655 x 1.0191 = 130,093 oz.
+5. (Rung 1b, the model-diagnostic check) pair the blast holes with the model and confirm the model is right on average
+   (regression slope 1.008, ratio of means 1.004 over the blocks it calls ore), and keep the plan's 127,700.
+
+Ends on: 130,000 oz (130,093 unrounded; the plan's 127,655 and the calibration route's 128,119 print the same).
+Golden: 150,000 oz (149,863 unrounded under the per-block reading; ore 2.8 Mt).
+
+## Stump sentence
+
+A competent analyst applies the reconciliation reports' grade-control-to-model gold factor, 1.02, measured each month
+on ore cut at 0.50 g/t, to the 2027 plan's 127,655 model ounces at 0.90 g/t and files 130,000 oz; the step that lands
+there is treating the model's grade-tonnage curve as grade control's, when grade control's block grades spread more
+widely than the model's and a 0.90 g/t cut on them keeps more gold, which only the blast holes laid into the model's
+blocks and re-cut at 0.90 g/t on both sides show, putting the budget at 150,000 oz.
+
+## Three rules
+
+- **Task type:** regression-classification-model-diagnostics (General Statistics & Data Science), which serves
+  Forecasting & Predictive Modeling: judging a predictor's calibration where its use applies a threshold.
+- **Domain test:** the deciding quantity is the gold a selection on grade control keeps above 0.90 g/t in blocks known
+  only through the resource model's estimates; the field's estimator for carrying a plan to mined ore is the
+  observed-to-estimated ratio over the closed record (the mine's reconciliation factor, F1), and the field's
+  diagnostic of the estimate is whether it is right on average.
+- **Swap:** with another field's nouns ("a risk score" for "the block model", "claims paid" for "grade control"), the
+  task survives only if the threshold is applied to a finer measurement than the predictor, the outcome is seen only
+  for the units that measurement selected, and the record's factor was measured at another threshold; a plain
+  forecast of a total, or a stated score, reads differently.
+- **Layer 1:** blast-hole assays in parts per billion from the site laboratory against block grades in g/t (the
+  laboratory's LIMS); collars in UTM from the rigs' GNSS against a model in the rotated mine grid (survey control
+  sheet); the mid-2025 LIMS migration carrying legacy sample numbers, sample-type codes and date formats into one
+  export; below-detection results as text and over-range results re-assayed by gravimetric finish in their own column
+  (laboratory practice); field duplicates, certified reference materials and blanks in the sample stream (QA/QC
+  insertion); the mill's production day running 06:00 to 06:00 (mill reporting); monthly reconciliation tables inside
+  a PDF report; dispatch and DCS times in UTC against maintenance and production records in local time.
+- **Layer 2:** `estimation_fit`: the estimate must fit the data's structure (a smoothed predictor against a finer
+  selecting measurement); the methodological choice that flips the call is whether the record's factor is read at
+  the cut-off it was measured at or re-measured where the decision applies the threshold.
+- **Decisive step:** recognising that this record's grade-control-to-model gold factor depends on the cut-off because
+  grade control's block grades are more dispersed than the smoothed estimates, and re-reading the paired record at
+  0.90 g/t (as a re-cut ratio or block by block through the record's grade-control-to-model ratios).
+- **Not semantics:** every field read correctly (ppb converted, the grid transformed, the reports' 0.50 g/t line read,
+  the memo's ore definition read) still leaves the reports' factor, a correct measured property of the mine, applied
+  to the plan's ounces at 130,000; nothing in any file has to be reinterpreted to move it, the gain comes from a
+  recomputation the record supports and no column holds.
+- **Not rule application:** no filed rule or procedure performs the re-cut or the per-block reading; executing every
+  filed sentence leaves the analyst choosing how to carry model ounces to grade control. Enumerated family spread
+  (plan raw 127,655; reports' F1 130,093; reports' F3 130,209; calibration route 128,119; per-block over the plan's
+  ore blocks only 108,506; re-cut factor 152,883; binned conditional means 151,274 to 152,092; log-normal 149,875;
+  empirical ratios 149,863): 108,506 to 152,883, five printed cells. Standing family (the routes the memo and the data
+  leave defensible: the re-cut factor on all, the last 24 or the last 12 months of the record, the binned means at
+  three widths, the log-normal and the empirical ratios): 149,653 to 153,609, one printed cell (150,000). The
+  ruling-out is loud: the report's own heading says its factors are "for ore at the 0.50 g/t cut-off" and the memo
+  says ore is selected on grade control at 0.90 g/t.
+- **Analyst test:** a strong analyst who converts the assays from ppb, moves the collars onto the mine grid, drops the
+  laboratory's control samples, reads the budget basis correctly and applies the reconciliation reports' gold factor
+  (1.02, measured on ore cut at 0.50 g/t) to the plan's model ounces files 130,000 oz; one who first confirms the
+  model is right on average and keeps the plan files the same cell.
+- **Estimand:** filed in `budget_2027_basis_of_ore_and_gold.pdf`: "Budget gold is the gold contained in the ore mined
+  in calendar 2027, in troy ounces, on grade-control grades and the resource model's block tonnages"; ore is "a block
+  ... when its grade-control grade is 0.90 g/t or more", a block's grade-control grade "the average of the primary
+  blast-hole assays from the holes collared in it"; the volume is "every Main Zone block the plan mines in 2027, ore
+  and waste alike" (blocks not yet mined, known only through the model, are the population by construction).
+- **No decoy:** nothing is planted: the reconciliation report answers its own question correctly (monthly factors at
+  the operating cut-off), the plan reports its own basis, no memo, draft or stakeholder figure argues a budget number,
+  and no block of data is copied or altered.
+- **No certified replay:** the method is not recovered by reproducing certified figures; the reports' figures
+  reproduce under the default and the golden alike, and the golden is an estimate the paired record supports.
+- **Lesson:** a predictor that passes its calibration check can still misstate what a threshold applied to the
+  outcome's own finer measurement will keep, so a factor measured where the threshold sat does not travel to a new
+  threshold; no build on file teaches the selection-on-a-finer-measurement effect (support and information effect).
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the plan's model ounces at 0.90 g/t | the plan's Summary prints it | AU_OK column | yes | no | no | yes | no | readable |
+| R1 the reports' F1 at 0.50 g/t on the plan | the report prints 1.02 | no | yes (the field's method) | the report blesses it | no | yes | no | readable |
+| R1b the model checked right on average, plan kept | no | no | yes (calibration check) | the slope of 1.008 blesses it | no | no | no | readable |
+| R2 re-measure the record at 0.90 g/t, block by block or as a re-cut ratio (decisive) | no: the memo files the basis (grade control at 0.90 g/t), no sentence names a factor's dependence on the cut-off or the re-cut | no column holds a block's grade-control grade or a factor at 0.90 g/t | no: both reflexes file 130,000 | no: the reports and the calibration check both bless the reflex | no: the battery has no step that re-cuts a reconciliation | no: a recomputation over 21,616 paired blocks, not a reported figure | no: the blast-hole record ships for the reconciliation and grade control | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | budget gold | contained gold | recovered gold | another figure | memo: "the gold contained in the ore mined in calendar 2027" |
+| SF2 | 2027 | calendar 2027 | a fiscal year | another volume | memo "calendar 2027"; the Schedule runs Jan-27 to Dec-27 |
+| SF3 | ore | grade control at 0.90 g/t or more | the model at 0.90 g/t | 130,000 | memo: "A block is ore when its grade-control grade is 0.90 g/t or more" |
+| SF4 | a block's grade-control grade | mean of primary blast-hole assays | field duplicates averaged in | same call | memo excludes duplicates; asserted same call |
+| SF5 | below-detection results | half the limit | zero or the limit | same call | asserted same call |
+| SF6 | over-range results | the gravimetric column | capped at 10 g/t | same call | asserted same call |
+| SF7 | the budget's volume | every scheduled Main Zone block, ore and waste | the plan's ore blocks only | 110,000 | memo: "every Main Zone block the plan mines in 2027, ore and waste alike" |
+| SF8 | tonnes | the model's block tonnages | the plan's TONNES column | same call (identical) | asserted identical |
+| SF9 | the record's window | all four years | the last 24 or 12 months | same call | asserted same call |
+| SF10 | the estimator inside the family | empirical ratios per block | log-normal, binned means, the re-cut factor | same call | asserted same call (149,653 to 153,609) |
+| SF11 | ratio centring | centred so the model is right on average | uncentred | same call | asserted same call |
+| SF12 | rounding | nearest 10,000 oz, once | a different path | same call | the figure sits 4,863 oz inside its cell |
+| SF13 | ounce | troy ounce, 31.1034768 g | avoirdupois | another figure | prompt: "Gold is in troy ounces" |
+| SF14 | grid transformation | the control sheet's parameters | a fit to the monuments | same call | asserted (monuments reproduced to 2 mm) |
+| SF15 | the model's estimate | AU_OK | another estimate | same call | the export carries one estimate |
+| SF16 | ore tonnes | tonnes of grade-control ore | the plan's model ore, or the reports' tonnage factor on it | 2.7 or 2.4 Mt | prompt "ore tonnes behind it" with SF3 |
+
+## Ladder
+
+| Rung | Construction | Unrounded | Prints | Note |
+|---|---|---|---|---|
+| R0 | the plan's model ounces at 0.90 g/t | 127,655 | 130,000 | the planning basis |
+| R1 | R0 x the reports' F1 at 0.50 g/t (1.0191) | 130,093 | 130,000 | the default path; F3 (1.02) gives 130,209 |
+| R1b | the model checked right on average, R0 kept | 128,119 | 130,000 | the calibration route |
+| R1c | per-block reading over the plan's ore blocks only | 108,506 | 110,000 | half the step: grade control's ore gain from the schedule's waste left out |
+| R2 | the record re-cut at 0.90 g/t (factor 1.1976) on R0 | 152,883 | 150,000 | decisive step, ratio form |
+| G | each scheduled block through the record's ratios | 149,863 | 150,000 | golden; ore 2,778,429 t |
+
+Bin test in units of the 10,000 oz cell: (a) the decisive step's worth, golden less default, 19,770 oz = 1.98 cells;
+(b) the spread of the standing family, 149,653 to 153,609 = 0.40 cells; (c) the golden's sampling interval,
+bootstrap SD 168 oz, about 0.03 cells at 95 per cent. (a) exceeds (b) + (c) by four times. Tonnes: the standing
+family's ore tonnes run 2,778,429 to 2,817,999, inside the 2.75 to 2.85 Mt cell by 28,429 t at the nearest edge;
+the reports' tonnage factor on the plan gives 2,368,373 (2.4 Mt) and the plan's own ore 2,719,560 (2.7 Mt). The re-cut
+factor read off a single year spans 1.167 to 1.252 because each year's estimates sit differently about the cut-off;
+the per-block reading is year-proof (149,701 to 150,239 by year).
+
+## Closure table
+
+| # | Axis | Reading and move |
+|---|---|---|
+| 1 | Population | every scheduled Main Zone block, ore and waste (memo, SF7); the record is every mined block with holes, C1 |
+| 2 | Unit of account | the model block, the memo's selection unit (SF3, SF4) |
+| 3 | Attribution window | calendar 2027 by the Schedule's months (SF2) |
+| 4 | As-of dating | the record to 31 October 2026; the plan of 9 November 2026; nothing depends on a later state |
+| 5 | Version basis | model 2026R, plan v3, LIMS export of 5 November 2026: one version each shipped |
+| 6 | Denominator | none in the call; the factor's denominator is the model's gold at the same cut-off, C1 |
+| 7 | Weighting | tonnage-weighted throughout (block tonnages), C1 |
+| 8 | Window length | record window converges (SF9), C1 asserted |
+| 9 | Boundary inclusivity | 0.90 g/t or more (memo); no block sits on 0.900 in a way that moves a cell, asserted via the margin |
+| 10 | Rounding path | once, at the end, nearest 10,000 oz and 100,000 t (prompt) |
+| 11 | Tie-break | none arises |
+| 12 | Maturity and censoring | no censoring; every mined block is closed |
+| 13 | Order of operations | average holes, then cut (memo), C1 |
+| 14 | Row order | no step depends on file order, asserted by the verifier's independent path |
+| 15 | Duplicate resolution | field duplicates and laboratory controls excluded (memo, SF4) |
+| 16 | Identity normalisation | hole to block through the grid and the bench; the verifier fits the grid independently, C1 |
+| 17 | Netting against gross | not applicable to the call |
+| 18 | Dimensional units | ppb to g/t, troy ounces (SF13), C4 |
+| 19 | Code and status semantics | sample-type codes across the LIMS migration (BH and BLASTHOLE), C1 |
+| 20 | Integerisation | none |
+| 21 | Clause scope | the cut-off applies from 1 January 2027 to every scheduled block (memo) |
+| 22 | Forward window contents | the Schedule sheet is the shipped driver file for 2027 |
+
+## Literal reader
+
+Executed word for word: ore is a block whose grade-control grade (the average of its primary blast-hole assays) is
+0.90 g/t or more; budget gold is the gold contained in the ore mined in calendar 2027 on grade-control grades and the
+model's tonnages; the volume is the Schedule's blocks. No grade-control grade exists for a 2027 block, so the literal
+reader must estimate grade control's gold above 0.90 g/t from the only record relating grade control to the model,
+the paired blast holes; every estimator that does so lands 150,000. The reports' factor is, by the report's own line,
+measured "for ore at the 0.50 g/t cut-off", a basis the memo's 0.90 g/t definition does not name, so the default is
+an easier method on correct data inside the filed estimand, not another reading of it. The asks read literally too:
+"at the end of 2023 ... at 31 October 2026" and "each calendar quarter ... all in local time" fix the dates and clock,
+"the fine gold in the bars poured in each of those quarters" fixes the pour date and the fine (not gross) basis.
+
+## Oracles
+
+- The generator's clean truth (`world.py`, `world_ops.py`): the asks' goldens equal the hauls, recorded stops and lots
+  the world made (asserted in `checks.py`).
+- `generator/checks.py` (80 assertions: input gates, the three-rules block R1 to R3c, every SF row, mess neutrality,
+  margins, devices, separation, distractors, realism, H1, H25).
+- `generator/verify.py`, an independent path from `target.zip` (its own readers, a grid fitted to the monuments, the
+  log-normal per-block reading and the re-cut factor, pypdf for the documents).
+- `generator/ceiling.py`, the cracker and mirror sheets on the cut pack.
+
+## Ask sheet
+
+The asks are the board pack's trails beside the budget: what the stockpile the higher cut-off adds to already holds,
+how long the mill that will treat the ore actually ran, and the gold it actually poured. Each is computed from files
+the call never reads (asserted: the call is unchanged with every ask file deleted), on rows outside the call's
+population (zero dispatch, DCS, maintenance, gold room or refinery rows in the call).
+
+**Ask A, the low-grade stockpile** (8 figures: tonnes to the nearest 1,000 and gold to the nearest 100 oz at
+31 December 2023, 2024, 2025 and 31 October 2026). H18: an audit trail of the inventory the plan adds 0.50 to 0.90 g/t
+material to. Files: `dispatch_loads_to_lgsp_2023-2026.csv` (8 columns), `haul_fleet_register_2026-10.xlsx` (Fleet and
+Disposals), `stockpile_inventory_2022-12-31.csv`. Primary device (D7, key reissued): two truck numbers (T-04, T-09)
+were reissued in 2024 to CAT 785D trucks (136.1 t) after their CAT 777G units (90.7 t) were disposed; the Fleet sheet
+holds only the current units and the old ones sit on the Disposals sheet, so a payload joined on the number alone
+gives every 2023 and early-2024 haul by those numbers the larger payload; found only by a haul dated before its
+truck's in-service date. Hazards: the dispatch system's duplicate records (4.3 per cent of hauls logged twice, one to
+six minutes apart, a new load id, same truck and source; a truck's real cycle is 22 minutes or more) and UTC times at
+the year-end boundaries. Stops: golden 3,629,000 t and 45,500 oz at 2023 (and 5,417,000 / 68,200; 7,196,000 / 90,700;
+8,803,000 / 110,900); current-fleet payloads with duplicates removed 3,749,000 / 47,000 (the cracker); dated payloads
+with duplicates kept 3,690,000 / 46,300; both mishandled 3,816,000 / 47,900. Pin test: the asking sentence names the
+dates, the clock (local) and the measures; neither device's dimension (which truck a number meant on a date, which
+records are one haul) is named. Realism: dispatch systems log hauls in UTC and auto-assign a load while a truck's GNSS
+drops out; fleets reuse numbers.
+
+**Ask B, ball mill running hours** (7 figures, nearest hour, each calendar quarter January 2025 to September 2026,
+local time). H18: the capacity the budget ore meets. Files: `dcs_event_export_grinding_2025-2026.csv` (5 columns),
+`cmms_work_orders_grinding_2025-2026.csv` (8 columns). Primary device (D4, absence evidenced in another file): the
+historian's collector was down through one planned shutdown in every quarter (seven outages, each opening hours before
+the shutdown and closing hours after), so the DCS shows the mill running straight through; only the maintenance
+system's shutdown work orders show the stop. Second primary (D2, a label stored before a silent switch): the DCS
+migration ran through the May 2026 shutdown and the ball mill's run state continues under a new tag
+(GRD.BM01.RUN_STS) from the end of that outage. Hazards: UTC against local quarter boundaries; exact re-sends.
+Stops: golden 2,045 / 2,094 / 2,080 / 2,131 / 2,043 / 2,087 / 2,070; DCS only 21 to 58 hours higher every quarter (the
+cracker); the old tag only 15 and 41 hours higher in the last two quarters; a fixed UTC-5 clock 1 to 2 hours off.
+Pin test: the asking sentence names the quarter and the clock; it names neither the outages nor the tag. Realism:
+historians lose data through collector restarts, and IT patches them during shutdown windows; DCS upgrades rename
+tags.
+
+**Ask C, fine gold poured** (7 figures, nearest 100 oz, the bars poured in each quarter, local time). H18: the audit
+trail of the mill's gold production, the basis of every recovery the budget leans on. Files:
+`goldroom_bar_register_2025-2026.csv` (5 columns), `refinery_outturn_statements_2025-2026.csv` (9 columns). Primary
+device (D6, an event's quantity on every line it covers): the refinery melts a bar under 300 oz with its neighbour on
+the manifest and prints the lot's fine gold on each bar's line, while a bar over its 1,600 oz melt limit is cut into
+two lots, each line its own; a bar's fine gold is its share of its lots by gross weight. Summing the lines
+double-counts every combined lot (one at each month end); deduplicating by bar loses the second half of every cut bar.
+Hazards: bar numbers restart each year and the refinery's reference drops the year; statement dates are settlement
+dates. Stops: golden 24,600 / 26,300 / 29,600 / 28,900 / 30,300 / 27,900 / 29,400; lines summed 1,900 to 3,800 oz
+higher every quarter (the cracker); quartered by statement date 19,700 / 24,300 / 29,400 / 27,400 / 29,500 / 30,300 /
+29,200. Pin test: the sentence names the pour basis and fine gold; it names neither lot shape. Realism: refineries
+combine small bars and cut heavy ones to their melt size and report per melt lot.
+
+**Main population zero-counts:** the call reads the LIMS's primary blast-hole rows, the model and the plan; the asks'
+devices sit in the dispatch, fleet, DCS, maintenance, gold room and refinery files, none of which the call opens
+(asserted by deletion).
+
+| Hazard | Asks moved | Delta |
+|---|---|---|
+| UTC times | A (year ends), B (quarter ends) | under 1 cell in A; 1 to 2 hours in B |
+| exact re-sends | B | none once dropped |
+| duplicate hauls | A | 62,000 to 280,000 t and 800 to 3,500 oz |
+| settlement dates | C | up to 4,900 oz |
+
+Referee: none; every device is found by an internal inconsistency (a haul before its truck's service date; a week with
+no events from any tag while the work orders show a shutdown; a lot's fine gold larger than its bar's gross weight).
+
+| Ask figure | Golden | Mirror | Cracker | Cracker verdict |
+|---|---|---|---|---|
+| A stockpile tonnes, 4 dates | 3,629,000 to 8,803,000 | 3,690,000 to 9,083,000 | 3,749,000 to 8,987,000 | miss |
+| A stockpile gold, 4 dates | 45,500 to 110,900 | 46,300 to 114,400 | 47,000 to 113,200 | miss |
+| B ball mill hours, 7 quarters | 2,043 to 2,131 | 1 to 2 hours off each | 21 to 58 hours over each | miss |
+| C fine gold poured, 7 quarters | 24,600 to 30,300 | by statement date | 1,900 to 3,800 oz over each | miss |
+
+Mirror leakage: 0.0 per cent of the ask figures (the mirror's half-handled stops miss every figure).
+Pair ceiling: 28.5 (cracker 45.0 on the call with no ask figure, mirror 12.0 off the call).
+Measured by: generator/ceiling.py on target/ (every row of all 22 figures printed; rerun after every build).
+
+## Architecture 1 record
 
 Private, never ships. A new build (wave 5), numbered from seed FC30. The seed was read at its header and Situation only
 (`status.py task159`). Its world (a city transit agency posting weekday-morning platform conductors where crowding is
@@ -10,7 +342,7 @@ fare system counts entries per complex, and a platform's arrivals have to be bui
 pitfall is re-found from how a crowded platform actually fills: a six-car train that reaches the first interchange of a
 suburban branch already carrying the branch takes only part of the platform's crowd, and the rest wait for the next.
 
-## Draw
+### Draw (architecture 1)
 
 | Axis | Value |
 |---|---|
@@ -98,7 +430,7 @@ the Mondays and Fridays the count programme sampled.
 - `guide-to-prompt/references/examples.md` 1 (task133, the divisor no sentence names): the stump is a step a careful
   analyst takes by default, here carrying a counted crowd in proportion to the complex's entries.
 
-## Default path
+### Default path (architecture 1)
 
 Every figure below is built by `generator/calc.py` from the shipped pack and asserted in `generator/checks.py`.
 
@@ -117,7 +449,7 @@ Ends on: 35 shifts a week.
 
 Golden: 26 shifts a week.
 
-## Stump sentence
+### Stump sentence (architecture 1)
 
 A competent solver carries each watch-list platform's mid-week counted peak to each spring weekday in proportion to its
 complex's morning entries and files 35 shifts a week, posting Monday and Friday conductors on Sallow Park's Line 1 and
@@ -125,7 +457,7 @@ Line 4 southbound platforms and keeping Corran Junction's Line 5 westbound platf
 lands it there is treating a mid-week crowd behind full trains as proportional to arrivals, when on Mondays, Fridays and
 eight-car Line 5 trains every train takes everyone and the pick needs 26.
 
-## Three rules
+### Three rules (architecture 1)
 
 - **Task type:** `urban-regional-science` / `forecasting`, which serves Forecasting: the deciding object is each
   watch-list platform's forecast morning peak for each weekday of the spring 2027 pick, a window not begun at the as-of
@@ -181,7 +513,7 @@ eight-car Line 5 trains every train takes everyone and the pick needs 26.
   arrivals over each headway against the room each train still has, carry the backlog, and test the model on days when
   the trains have room; no build on file teaches platform loading behind full trains.
 
-## Readability screen
+### Readability screen (architecture 1)
 
 Six tests per rung (1 a filed sentence names it or sends the solver looking, 2 a column, key or marker makes it a
 predicate or a header join, 3 an opponent reflex, 4 a control or corpus scores it, 5 the hygiene battery finds it, 6 one
@@ -196,7 +528,7 @@ subtraction, ratio or half of a figure).
 | R2b a backlog model whose trains keep their mid-week room on every weekday (28) | no | no | a half-step | the hybrid-day counts at COR-5W show no backlog on the Monday and Friday | no | no | readable |
 | R3 (decisive) the backlog behind trains whose room is built from the branch's own riders on each weekday, run on the spring timetable (26) | no shipped sentence names a backlog, a train's room, riders left behind or how a crowd responds to fewer riders or longer trains | no column holds boardings, loads, room or riders left behind; the census counts flows, the sheets the people waiting | no: the reflexes scale the counts, use the observation, or take a headway's arrivals | the hybrid-day counts reject the carry at COR-5W on the autumn timetable; nothing scores a spring forecast, Sallow Park's Mondays or the eight-car Line 5 | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: a train-by-train run of every branch | silent |
 
-## Semantic fork table
+### Semantic fork table (architecture 1)
 
 Every term in the main ask and every convention the main computation needs; every id is asserted in
 `generator/checks.py`.
@@ -216,7 +548,7 @@ Every term in the main ask and every convention the main computation needs; ever
 | SF11 | the fare export's morning for the weekday index | 06:00 to 09:59 local | 07:00 to 09:59; 05:00 to 10:59 | same call, asserted | same call, asserted |
 | SF12 | weekdays in the index | the autumn pick's weekdays, federal holidays out | holidays kept | same call, asserted | same call, asserted |
 
-## Ladder
+### Ladder (architecture 1)
 
 Built figures from `generator/calc.py` on the shipped pack, every row asserted in `generator/checks.py` (LADDER, OOS,
 FAMILY). The graded quantity is a count of platform-weekdays; each rung names a different count.
@@ -270,7 +602,7 @@ weekday, and carry the result both to Sallow Park's uncounted Mondays and Friday
 land) about 0.06 to 0.08 with the correlation the audit allows. The seed was fixed by rule (the task number,
 then the as-of month and day: 1590111) before any data was generated and is never searched.
 
-## Closure table
+### Closure table (architecture 1)
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -297,7 +629,7 @@ then the as-of month and day: 1590111) before any data was generated and is neve
 | 21 | Clause scope | the standard applies from the autumn 2026 pick | filed (revision 4 in force from 8 September 2026) |
 | 22 | Forward window contents | the spring pick's timetable and consists | the SPR27 timetable and the spring service plan ship |
 
-## Literal reader
+### Literal reader (architecture 1)
 
 Executing the prompt and the standard word for word gives the count of watch-list platform-weekdays whose forecast
 morning peak (the highest quarter-hour mean of the people on the platform as trains arrive, quarter-hours starting 07:00
@@ -306,7 +638,7 @@ to 09:30 local) for an average weekday of the spring 2027 pick is more than 85 p
 literal estimand (carrying the mid-week counts by entries) files 35, and the fork table leaves no reading under which a
 rung is the golden.
 
-## Oracles
+### Oracles (architecture 1)
 
 - The hybrid-day counts (COR-5W, GAR-2, HES-3, FER-5W, ALB-6, QUA-6 on a Monday and a Friday): autumn observations on the
   autumn timetable; on the wrong path they confirm nothing (the carry misses COR-5W's by more than capacity), and they tie
@@ -317,7 +649,7 @@ rung is the golden.
   its own definition; it ranks nothing on the decision.
 - No control ties only under the golden.
 
-## Ask sheet
+### Ask sheet (architecture 1)
 
 **Main call's declared row population:** the station census, the platform counts, the fare export's `entries` column,
 the weekday timetables, the fleet register, the platform capacity register, the complex reference, the crowding
@@ -440,7 +772,7 @@ Mirror leakage: 8.3 per cent of ask weight (the chart's two parts).
 Pair ceiling: 29.3 (the cracker 46.8, the mirror 11.8; with the most obvious device cracked 29.3; both top responses on
 the call with no device cracked 46.8). Rerun from the generated rubric at stage 4.
 
-## Surface screen
+### Surface screen (architecture 1)
 
 `guard.py surface task159` promotes one pair, at the card level only: task147 against task159 (gap objective, pattern
 G8, Gate G `binding_constraint`, the same-driver signature), differentiated on the card at the draw: there a
@@ -452,7 +784,7 @@ task158 (forum and role family), raised after the draw by two re-roots' re-regis
 for the author. The persona sweep reads "Line Early" off the service plans' headway table, where the column heading
 "Early" follows the row heading "Line"; it is not a person.
 
-## Leak sweep
+### Leak sweep (architecture 1)
 
 `leak.py task159 --asof 2027-01-11` returns REVIEW (no LEAK); every line answered:
 - Sweep 3, the crowding standard names the watch-list platforms beside the call's vocabulary: the schedule is the
@@ -471,7 +803,7 @@ for the author. The persona sweep reads "Line Early" off the service plans' head
 - Sweep 10: no writer signature or out-of-band stamp; the fare export's Parquet footer carries Arrow's own writer
   string, as any export from that toolchain does.
 
-## Build record
+### Build record (architecture 1)
 
 Stage 3, 2026-10-17; rebuilt after the stage 4 round 1 findings and again at ship the same day. `build.py`: checks 129
 run, 0 failed (the
@@ -494,7 +826,7 @@ its own row from 1 September 2026, the rating unchanged). The seed was fixed by 
 (1590111) before any data was generated and never searched. The pack's files share the pull's modification time, the
 house convention (`dataset-generation` section 9).
 
-## Pre-ship check
+### Pre-ship check (architecture 1)
 
 - **Three rules, re-read against the built pack.** Domain: the deciding quantity is each watch-list platform's forecast
   peak quarter-hour accumulation by spring weekday, built the way transit capacity analysis builds platform loading
@@ -533,7 +865,7 @@ house convention (`dataset-generation` section 9).
   wrong-basis distractor. Delete every wrong number in the pack and the call still turns on reading the mid-week crowds
   as a backlog behind full trains.
 
-## Residual
+### Residual (architecture 1)
 
 - The capacity register repeats one basis text on most rows, as a register rated in one survey reads; kept.
 - Sallow Park's August 2026 re-measure kept its 2019 effective date when the re-judge read the pack; it now has its own
@@ -580,4 +912,42 @@ house convention (`dataset-generation` section 9).
   crosses the line at 120 a car.
 - The asks' fault minutes and holiday-timetable days left to the rubric (accepting 215 or 216, 27.9 or 31.8): rejected
   at round 1; the manual and the prompt now close both, with every other reading the reader raised.
-
+- 2026-11-01, Batch 3 queue reset: architecture 1 (the Vellmouth platform conductor pick) re-rooted whatever its
+  status; the transit world is closed, task133 had just shipped in urban-regional-science / forecasting, and the old
+  card's identity moved to the card's lineage with fate "re-rooted 2026-11-01 at the Batch 3 queue reset".
+- Architecture 2 draw, twin-plant wrong-train slips under one panel operator (human-reliability-assessment, a urea
+  complex's new central control room; the slip rate read in the hours one operator already ran both trains): rejected
+  at the abstraction test against task141 (a forward change puts every unit into a state some units already occupy, so
+  the rate those units show applies to all); the guard also blocked its gap and generator signatures.
+- Architecture 2 draw, the same world with slips per switch between trains: rejected; the exposure unit is a model
+  the data could not force without filing it (a Gate C fork or a filed HOW).
+- Architecture 2 draw, operator response times pre-empted by an automatic trip, read with the trips as censored:
+  rejected against task169 (a pre-empting route hides what the remaining route would have done).
+- Architecture 2 draw, the prevalence effect at an inspection station and alarm floods at a merged console: spent
+  (task175's screens retired the low-prevalence effect in this task type; task170's note found the console merger
+  replayable).
+- Architecture 2 draw, mixed-population wind extremes for a design gust (climate-weather-extremes): set aside; the
+  extreme-value fits spread across the bin and separating storm types is the wind engineer's textbook route.
+- Architecture 2 draw, this world with a noisy, conditionally biased model (regression to the mean at the raised
+  cut-off): set aside; regression to the mean under selection is task304 v5's driver in this batch. The smoothed,
+  conditionally unbiased model replaces it: the routes that read the model's own calibration (slope 1.008) or the
+  model-ore blocks' grade-control grades file the default's 130,000, so the step cannot be read as a shrinkage.
+- Architecture 2 build, the ore grade as the main call's component: dropped; the default's grade (the plan's 1.46 g/t
+  times the reports' grade factor 1.17) prints the golden's 1.7, so it graded nothing; the ore tonnes replace it.
+- Architecture 2 build, the plan's face position on bench 1185: 10,150 left the per-block ore tonnes 7,000 t from the
+  2.75 Mt line and 10,190 left the re-cut factor on the last twelve months 400 oz from the 155,000 line; 10,180 keeps
+  the whole standing family inside one cell for ounces (1,391 oz clearance at the tightest) and tonnes (28,429 t).
+- Architecture 2 build, the ratio route on a single year of the record: noted, not licensed; the factor re-cut on one
+  year spans 1.167 to 1.252 because each year's estimates sit differently about the cut-off (2024 alone files
+  159,799), while the per-block reading is year-proof (149,701 to 150,239).
+- Architecture 2 asks, a laboratory CRM performance trail (a legacy code re-pointed to a new certificate): dropped; the
+  CRM issue log is a helper document the careful solver reads, so the device was a work order.
+- Architecture 2 asks, refinery combined lots alone: strengthened with cut heavy bars; the battery's header-to-items
+  pairing lands combined lots on their own, and the two shapes need opposite repairs.
+- Architecture 2 asks, historian outages in four quarters: raised to one planned shutdown a quarter so every quarter
+  carries the device.
+- Architecture 2 build, maintenance isolation times equal to the DCS stop and start: rejected; two observers sharing
+  every bound is a causal impossibility, so the crew's isolation runs from 3 to 13 minutes after the stop to 4 to 16
+  minutes before the start.
+- Architecture 2 build, hauls generated on local wall time: rejected; spring-forward wall times that do not exist put
+  four real hauls within ten minutes of another in UTC, so hauls are generated on UTC.

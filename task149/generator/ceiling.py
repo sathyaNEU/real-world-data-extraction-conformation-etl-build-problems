@@ -6,12 +6,13 @@ handling that response applies, scored against the golden figures, and the pair 
 
 Rows. The cracker lands the call and runs the battery: the panel's UTC stamps to Irish time through the time-zone
 database (the clock change of 31 October handled), ordinary weekdays from the calendar file, each station joined
-to the code it replaced through the register, rows summed per station-day; it reads the gate file's stations off
-the register's station codes, so the unregistered gateline location codes (G0213, G0305, G0417, G0612, G0711,
-G0909) stay out of every station and of the line, and it times each journey to work by the first stay away from
-home that day. The mirror stops on the call's default rung and handles the asks the same way. The fixed-offset row
-is the cracker who converts every stamp at UTC+1 (a stress row); the full includer reads each G-code's station
-number against the register and times each journey by its workplace stay (the golden, a check row)."""
+to the code it replaced through the register, rows summed per station-day, and every gate asset joined to the
+asset register on its asset number, keeping each asset's current station (the habitual one-row lookup); it times
+each journey to work by the start of the long workplace stay it already built for the commuting days. The mirror
+stops on the call's default rung and handles the asks the same way. The first-station row keeps each asset's first
+station instead, and the fixed-offset row converts every stamp at UTC+1 (stress rows); the full includer places each
+asset by its dated rows and times each journey by its first stay of the day in the workplace zone (the golden, a
+check row)."""
 import json
 import os
 import sys
@@ -35,22 +36,25 @@ def main(target=TARGET):
     W = A.workers(D)
     if not F["station_ratio"] or not F["arrival_share"]:
         raise SystemExit("ceiling: no ask figure to score; refusing to print a ceiling")
-    reg = {k: v[0] for k, v in A.station_ratios(D, mode="register").items()}
+    last = {k: v[0] for k, v in A.station_ratios(D, mode="last").items()}
+    first_st = {k: v[0] for k, v in A.station_ratios(D, mode="first").items()}
     gold_a = {k: v[0] for k, v in A.station_ratios(D).items()}
-    first = A.arrivals(D, W, first=True)[0]
-    local = A.arrivals(D, W)[0]
+    long_arr = A.arrivals(D, W, mode="long")[0]
+    zone_arr = A.arrivals(D, W)[0]
     ist = A.arrivals(D, W, clock="ist")[0]
-    crack, n = score(reg, first, F)
-    fixed, _ = score(reg, ist, F)
-    full, _ = score(gold_a, local, F)
+    crack, n = score(last, long_arr, F)
+    first_row, _ = score(first_st, long_arr, F)
+    fixed, _ = score(last, ist, F)
+    full, _ = score(gold_a, zone_arr, F)
     lc = crack / n
     c = 38 + 7 + 55 * lc
     s = 5 + 7 + 55 * lc
-    print("cracker (lands the call; battery; register codes only; first stay away from home): keeps %d of %d ask "
-          "criteria, response %.1f" % (crack, n, c))
+    print("cracker (lands the call; battery; each asset at its current station; long workplace stay as arrival): keeps "
+          "%d of %d ask criteria, response %.1f" % (crack, n, c))
     print("mirror (default rung on the call, same ask handling): keeps %d of %d, response %.1f" % (crack, n, s))
+    print("first-station cracker (each asset at its first station, stress row): keeps %d of %d" % (first_row, n))
     print("fixed-offset cracker (every stamp at UTC+1, stress row): keeps %d of %d" % (fixed, n))
-    print("full includer (G-codes by station number, workplace-stay arrival, check row): keeps %d of %d" % (full, n))
+    print("full includer (assets by their dated rows, first stay in the zone, check row): keeps %d of %d" % (full, n))
     print("pair ceiling %.1f; mirror leakage %.1f per cent of the ask weight" % ((c + s) / 2, 100 * lc))
     return (c + s) / 2, 100 * lc, crack, n, full
 

@@ -128,10 +128,11 @@ def write_book(R, F, path):
         ws.column_dimensions[col].width = w
 
     ws2 = wb.create_sheet("Arrival 0730-0930")
-    ws2["A1"] = "Share of journeys to work reaching the workplace between 07:30 and 09:30 (Irish time), ordinary weekdays"
+    ws2["A1"] = ("Share of journeys to work on ordinary weekdays arriving in the workplace zone from 07:30 up to and "
+                 "including 09:30 (Irish time; arrival = the day's first stay in the zone)")
     ws2["A1"].font = Font(bold=True)
     for j, h in enumerate(["Zone code", "Workplace zone", "Station share", "Journeys to work in the panel",
-                           "Share 07:30-09:30 (%)"], 1):
+                           "Arrived 07:30 to 09:30 (%)"], 1):
         c = ws2.cell(row=3, column=j, value=h)
         c.font = bold
         c.fill = head
@@ -144,8 +145,9 @@ def write_book(R, F, path):
     ws2.column_dimensions["D"].width = 16
 
     ws3 = wb.create_sheet("Stations 2027 v 2019")
-    ws3["A1"] = ("Average ordinary-weekday gate entries, September to November, 2027 against 2019 (all gatelines of "
-                 "each station; University Hospital with UHK, Carrigboy with Carrigboy Halt)")
+    ws3["A1"] = ("Average ordinary-weekday gate entries, September to November, 2027 against 2019 (each station with "
+                 "the gate assets that stood at it on the day; University Hospital with UHK, Carrigboy with Carrigboy "
+                 "Halt; the line as all stations summed by day)")
     ws3["A1"].font = Font(bold=True)
     for j, h in enumerate(["Station", "2019 average", "2027 average", "2027 as share of 2019 (%)"], 1):
         c = ws3.cell(row=3, column=j, value=h)
@@ -203,8 +205,8 @@ def write_memo(R, F, path, png):
     doc.add_paragraph("")
     doc.add_paragraph("The existing stations show the same pattern: in autumn 2027 the line carried %d per cent of "
                       "its autumn 2019 ordinary-weekday entries, from %d per cent at Kilcarrow Docklands to %d per cent "
-                      "at University Hospital. Station figures count every gateline at each station, including the "
-                      "secondary entrances recorded under their own location codes."
+                      "at University Hospital. Station figures count each gate array at the station it stood at on the "
+                      "day, as the operator's asset register dates its moves."
                       % (F["station_ratio"]["LINE"], F["station_ratio"]["KDK"], F["station_ratio"]["KUH"]))
     doc.core_properties.author = "Rail Planning"
     doc.save(path)

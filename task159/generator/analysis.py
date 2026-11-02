@@ -25,7 +25,7 @@ def _csv(path, skip_hash=False):
 # ---------------------------------------------------------------------------------------------------------------
 
 def grid(target):
-    txt = open(os.path.join(target, "kessock_mine_grid_control.txt"), encoding="utf-8").read()
+    txt = open(os.path.join(target, "kelvanna_mine_grid_control.txt"), encoding="utf-8").read()
     e0 = float(re.search(r"E\(UTM\) = ([\d.]+)", txt).group(1))
     n0 = float(re.search(r"N\(UTM\) = ([\d.]+)", txt).group(1))
     a = float(re.search(r"a = ([\d.]+) degrees", txt).group(1))
@@ -89,7 +89,7 @@ def paired(target, **kw):
 
 
 def plan(target):
-    wb = load_workbook(os.path.join(target, "kessock_mine_plan_2027_v3.xlsx"), read_only=True, data_only=True)
+    wb = load_workbook(os.path.join(target, "kelvanna_mine_plan_2027_v3.xlsx"), read_only=True, data_only=True)
     ws = wb["Schedule"]
     rows = list(ws.iter_rows(values_only=True))
     df = pd.DataFrame(rows[1:], columns=rows[0])

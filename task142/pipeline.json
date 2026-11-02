@@ -1,34 +1,34 @@
 {
  "task": "task142",
- "status": "BUILD",
+ "status": "DRAWING",
  "domain": "energy-systems-utilities (load-forecasting)",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-11-02",
- "stump": "A competent planner converts each Weidehaven block's design heat load into design-day flow at the network's 40 K design drop, its metered cold-day drop (39.7 K) or the pre-1985 buildings' drop (32.7 to 41.6 K) and files that OS West never runs short through 2028-29; the step that lands it there is carrying blocks that keep their original radiators at a drop those radiators cannot make, when the network's own original-radiator connections, recognisable only as the regime whose cold-day returns sit at 63.7 to 66.3 C, run at about 24 K and put the station short in 2028-29 (about 200 m3/h against 168).",
- "architecture": 2,
+ "stump": "",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-02"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (8 lines, ruled in the design note's Leak review), 2026-11-02",
-  "reader": "round 1 clean on b35cf51b; documents changed since (CT-03 3.2, scope, rev2 header, hydraulic test section 5), re-read pending"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g against task301, answered in the Draw), 2026-11-02",
-  "nearest": "task273 v6 at 0.08",
-  "surface": "6 pairs promoted for the author's adjudication, differentiation lines on the card, 2026-11-02"
+  "heart": "",
+  "nearest": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (round 2 on 313a7c32: Gates C, E, B on the cohort)",
-  "disposition": "repaired at the WHAT level: CT-03 3.2 files the comparison by installation kind, the scope and rev2 file the blocks' original radiators sized for 90/70, the heat ask's population pinned; re-judge pending",
+  "verdict": "",
+  "disposition": "",
   "report": ""
  },
  "returned": [],
- "resume": "re-judge and leak reader on f6146df1 (main session), then ship",
+ "resume": "architecture 3 draw in progress (sociology-demography population projection: a primary school's pupils by 1 October count, entrants at the share children with and without an older sibling at the school have shown)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -46,21 +46,15 @@
   ],
   "judge": "DETERMINISTIC (re-judge after the FIX_NOW pass; every graded figure reproduced)"
  },
- "call": "2028-29 heating season (about 200 m3/h against 168 available, short by about 30; 2027-28 holds at about 150)",
+ "call": "",
  "asof": "2026-10-16",
- "gates_final_cut": {
-  "checks": "98 of 98",
-  "verify": "0 failed",
-  "byte_identical": "two builds, 17 files",
-  "figures_check": "59 of 59",
-  "precut": "61 checks, 0 FAIL, 0 WARN",
-  "voice_check": "PASS",
-  "leak_py": "REVIEW (7 lines ruled in the note)",
-  "heart": "WARN (repeat.gate_g vs task301)",
-  "surface": "6 pairs promoted for adjudication (task140, task134, task133, task149, task167, task261), each with a differentiation line on the card",
-  "target_zip": "f6146df1",
-  "zip_fresh": true,
-  "pair_ceiling": 28.5,
-  "mirror_leakage": 0.0
+ "gates_final_cut": {},
+ "architecture_2": {
+  "world": "Stadswarmte Lekstede's OS West design-day flow as Woonstichting Weidehaven's blocks connect (energy-systems-utilities load-forecasting)",
+  "fate": "spent at stage 4 (judge rounds 2 and 3: comparison group identifiable only by its outcome); re-rooted 2026-11-02",
+  "reports": [
+   "leak_check_report_arch2.md"
+  ],
+  "last_cut": "f6146df1"
  }
 }

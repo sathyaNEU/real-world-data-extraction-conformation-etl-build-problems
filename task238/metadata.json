@@ -111,8 +111,8 @@
   "rows": 55067
  },
  "row_counts": {
-  "clearance_markdown_labels_2026Q4.csv": 2699,
-  "customer_care_price_contacts_2026Q4.csv": 910,
+  "clearance_markdown_labels_2026Q4.csv": 2693,
+  "customer_care_price_contacts_2026Q4.csv": 887,
   "flyer_ad_plan_wk40-wk53_2026.csv": 618,
   "flyer_item_daily_units_2026Q4.csv": 25088,
   "label_printer_fleet_jobs_2026-10-01_2026-12-31.jsonl": 2148,
@@ -120,8 +120,8 @@
   "pos_price_overrides_2026Q4.csv": 2914,
   "price_audit_results_2026Q4.csv": 29120,
   "price_change_item_movement_2026Q4.csv": 55067,
-  "price_corrections_2026Q4.csv": 71,
-  "service_desk_adjustments_Q4_2026.xlsx": 2182,
+  "price_corrections_2026Q4.csv": 80,
+  "service_desk_adjustments_Q4_2026.xlsx": 2171,
   "store_directory_2027-01.xlsx": 14,
   "thursday_changeover_checks_Q4-2026.xlsx": 3920,
   "weekly_price_change_releases_2026Q4.xlsx": 16872

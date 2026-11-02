@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "four series teams: the Eastline group on patrol districts 4, 6, 7 and 9 (42 offences), the Hollin station group on district 5 (18), the Cobb Street station group on district 8 (16) and the district 6 street robbery group on district 6 (14)",
+  "answer_source": "task204/generator/figures.json (n_teams, teams), recomputed by generator/verify.py from target/",
   "gap": [
     "population",
     "time"
@@ -33,24 +33,25 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "With both occurrence logs deduplicated, every time put on one clock and the directive read correctly, the easy route links the spring phone snatches the way crime linkage does by default, by method, suspect description and straight-line distance and elapsed time between offences, which puts a separate group at each station the travelling crew uses and merges that crew with the local evening group at a station it never works, so it files the wrong number of series teams and the wrong districts for each.",
+  "analyst_test": "With both occurrence logs deduplicated, every time put on Mountain time and the directive read correctly, the easy route links the spring phone offences the way crime linkage does by default, on method, suspect description, 1 km and 28 days, which puts a separate group at each of the four Eastline stations the travelling group works and files seven series teams, the wrong count with the wrong grounds; the golden is four.",
   "domain_test": "The deciding quantity is the set of linked offence series behind the rise, which crime linkage analysis recovers from behavioural similarity and the distance and time between offences; here the distance that links a crew's offences is distance along the rail line in train time, read by placing each snatch on the trip leaving that station, and with another field's nouns there is no offender series, no modus operandi, no journey-to-crime path and no series team for the count to fund.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:offender-series-linked-along-the-line-by-the-train-trip-each-snatch-sits-on",
   "layer1": [
-    "two occurrence systems (the police records management system and the transit peace officers' occurrence log) holding overlapping reports of the same snatches under different identifiers, times and place names",
+    "two occurrence systems (the police records management system and the transit peace officers' occurrence log) holding overlapping reports of the same offences, some referred without the police file number",
     "the transit log stamped in UTC and the police system in Mountain local time across the 8 March 2026 daylight-saving change",
+    "fare-gate codes reissued on 29 March 2026 when Fairgrounds opened, the gate arrays keeping their ids and the code list current only",
     "a patrol district realignment on 1 January 2026, so 2025 occurrences carry the old district codes",
-    "a GTFS timetable feed with two service periods (the spring service change on 29 March 2026) and after-midnight trips written past 24:00:00",
-    "the directive and the district station list as PDF tables",
-    "station names spelled three ways (the police address block, the transit station code and the GTFS stop name)"
+    "a GTFS timetable feed with two service periods, holiday swaps in calendar_dates, frequency templates and trips written past 24:00:00",
+    "the directive and the station reference as PDF tables",
+    "station names spelled three ways (the police location text, the transit station code and the GTFS stop name)"
   ],
   "stakeholder_role": "the crime analysis unit supervisor, who prepares the series assessment the deputy chief signs into the summer deployment plan",
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "rms_occurrences_extract.csv",
-    "rows": 26000,
+    "file": "rms_occurrence_extract_20260511.csv",
+    "rows": 27127,
     "entity": "one police occurrence (any type) reported in the extract windows",
     "grain": "occurrence",
     "source": "synthetic"
@@ -70,12 +71,15 @@
       "Kristin Weber"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "series_assessment_2026.xlsx",
+    "summer_series_deployment_memo.docx"
+  ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The units that decide the count are groups behind the events, and one group travels along a fixed network on a published schedule, so its events sit at the network's own departure times in sequence along the route; linkage by straight-line distance and elapsed time splits that group into one local cluster at each place it strikes and merges it with a local group that shares its manner, and only placing each event on the scheduled trip leaving its place recovers one group across several areas and separates it from the local one.",
   "driver_concrete": "Each evening snatch at an Eastline station is placed on the train trip whose departure from that station matches the 911 call, and the snatches that fall on one trip's successive departures are one crew's run, so the travelling crew is a single offender group across four patrol districts while the evening snatches at the one station it never works are a separate local group, which no grouping by station, district, method or description reproduces.",
-  "stump": "A competent solver links the twelve weeks' phone snatches the way crime linkage does by default, by method, suspect description and straight-line distance and elapsed time, and files one series team per station cluster (the travelling crew split into four local groups in four districts, its evening snatches at Cobb Street merged with that station's local group), so the summer plan stands up the wrong number of teams with the wrong ground; the step that lands them there is measuring the distance between a crew's offences in straight-line kilometres and hours instead of along the line on the train trip each snatch sits on.",
+  "stump": "A competent solver links the twelve weeks' phone offences the way crime linkage does by default, on method, suspect description, straight-line distance and elapsed time, and files seven series teams, one at each of the four Eastline platforms the travelling group works plus Cobb Street, Hollin and a district 6 street group; the step that lands them there is measuring the separation between the travelling group's snatches in metres and days instead of along the line, on the westbound train trip each snatch sits on, which joins four stations into one group across four districts and leaves Cobb Street, struck within three minutes of Union Yards on four evenings, a separate group.",
   "lineage": [
     {
       "architecture": "v1",
@@ -134,11 +138,11 @@
   },
   "mechanism_source": "design_note",
   "notes": "gate_g read against the vocab: the decisive step is the choice of the proximity that links offences into series (distance and time along the rail line on the trip each snatch sits on, against straight-line distance and elapsed time), pinned by the data's own structure; stump_strategy grain_or_unit: the decided unit is the offender group's series, built by linking occurrence rows through a network bridge (the timetable), never a key column.",
-  "registered": "2026-11-02T02:25:25Z",
+  "registered": "2026-11-02T03:47:29Z",
   "shell": {
-    "question form": "what",
-    "second-sentence opener": "january's",
-    "rounding opener": "give",
-    "deliverable set": "csv+png+xlsx"
+    "question form": "how-many",
+    "second-sentence opener": "the",
+    "rounding opener": "every",
+    "deliverable set": "docx+xlsx"
   }
 }

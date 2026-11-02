@@ -1,13 +1,13 @@
 # leak check, task238
 
-**Verdict: REVIEW.** 15 files read, 38 golden figures and 11 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 39 golden figures and 11 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: checks, changeover, thursday, effect, printer, window, random, audits, labels, sentence, population, decisive, difference, completes, weekly, report, monitoring, moments, printed, online, telephone, checked, analyst, changed, comparison
+Stump terms swept: checks, changeover, thursday, effect, printer, window, random, audits, labels, sentence, population, decisive, difference, completes, weekly, report, monitoring, moments, printed, online, telephone, checked, analyst, carries, changed
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `PI-2_price_integrity_standard_rev3.pdf`: 4 of 25 stump-paragraph terms appear (thursday, effect, weekly, report); read whether the document names the move
+- **REVIEW** `PI-2_price_integrity_standard_rev3.pdf`: 5 of 25 stump-paragraph terms appear (thursday, effect, weekly, report, carries); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 4, INFO 1)
 - **REVIEW** `price_audit_results_2026Q4.csv`: names 8 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question

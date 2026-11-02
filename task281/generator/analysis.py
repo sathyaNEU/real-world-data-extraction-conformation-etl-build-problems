@@ -450,8 +450,8 @@ def ask_b(target, variant="golden"):
     return {f: out[f] for f in FAC_ORDER}
 
 
-def ask_c(target, variant="golden", trace=None):
-    """each faculty's 40-loan licences in force at the end of 30 October 2026 with ten or fewer loans left"""
+def ask_c(target, variant="golden", trace=None, measure="loans", lineage=None):
+    """the loans each faculty's 40-loan licences in force at the end of 30 October 2026 had left"""
     d = load_admin(target)
     cutoff = dt.datetime(2026, 10, 31, 0, 0, 0, tzinfo=UK).astimezone(UTC)
     rec_start = dt.date(2025, 9, 1)
@@ -459,14 +459,26 @@ def ask_c(target, variant="golden", trace=None):
     for r in d.reg:
         if r["model"] != "1 user, 40 loans":
             continue
-        left = d.status.get(r["lic"], 40) if r["date"] < rec_start else 40
+        pre = r["date"] < rec_start
+        left = d.status.get(r["lic"], 40) if pre else 40
         if variant == "no_status":
             left = 40
         c = dict(lic=r["lic"], date=r["date"], left=left, otype=r["otype"], lapsed=None, held=None, po=r["po"],
                  fac=d.fund_fac[r["fund"]] if r["fund"] else None)
-        if r["otype"] != "Renewal" or variant == "renewal_dates":
+        if r["otype"] != "Renewal" or pre or variant == "renewal_dates":
             c["held"] = dt.datetime(r["date"].year, r["date"].month, r["date"].day, tzinfo=UK).astimezone(UTC)
+        if pre and r["lic"] not in d.status and variant not in ("absent_as_40", "no_status", "cracker"):
+            # bought before the record and not in force on 1 September 2025: it had already lapsed
+            c["lapsed"] = c["held"]
+            c["left"] = 0
         lics[r["platform"]].append(c)
+    for plat, cps in lics.items():
+        # a re-licence raised before the record replaced the title's licence that was no longer in force
+        gone = [c for c in cps if c["otype"] != "Renewal" and c["lapsed"] is not None]
+        for c in cps:
+            if c["otype"] == "Renewal" and c["date"] < rec_start and gone:
+                c["fac"] = gone[0]["fac"]
+                c["src"] = gone[0]["lic"]
     inv_fund = {ln["po"]: ln["fund"] for ln in d.inv}
     loans_by_title = collections.defaultdict(list)
     for l in d.loans:
@@ -480,7 +492,24 @@ def ask_c(target, variant="golden", trace=None):
                 c["left"] -= n / max(1, len(live))
                 c["held"] = c["held"] or cutoff
             continue
+        pending = []
+
+        def settle(upto):
+            # re-licences raised as lapses fell due, in the order they fell: the title's re-licence dated that
+            # day with the lowest reference goes to the earliest lapse
+            pending.sort(key=lambda x: x[0])
+            while pending and pending[0][0] <= upto:
+                when, lc = pending.pop(0)
+                day = uk_date(when)
+                for r in sorted(cps, key=lambda x: x["po"]):
+                    if r["otype"] == "Renewal" and r["date"] == day and r.get("src") is None:
+                        r["src"] = lc["lic"]
+                        r["fac"] = lc["fac"]
+                        if variant != "renewal_dates":
+                            r["held"] = when
+                        break
         for l in sorted(loans_by_title.get(plat, []), key=lambda x: x["start"]):
+            settle(l["start"])
             free = [c for c in cps if c["held"] is not None and c["held"] <= l["start"] and c["lapsed"] is None
                     and c["left"] > 0 and (variant == "ignore_busy" or c.get("busy_until") is None
                                            or c["busy_until"] <= l["start"])]
@@ -495,29 +524,30 @@ def ask_c(target, variant="golden", trace=None):
             if c["left"] == 0:
                 c["lapsed"] = l["ended"] if l["ended"] else dt.datetime(2099, 1, 1, tzinfo=UTC)
                 if l["ended"]:
-                    # the re-licence Shelfmark raised when this licence lapsed: the title's re-licence dated that day
-                    day = uk_date(l["ended"])
-                    for r in cps:
-                        if r["otype"] == "Renewal" and r["date"] == day and r.get("src") is None:
-                            r["src"] = c["lic"]
-                            r["fac"] = c["fac"]
-                            if variant != "renewal_dates":
-                                r["held"] = c["lapsed"]
-                            break
-        if variant in ("title_majority", "invoice_majority"):
+                    pending.append((l["ended"], c))
+        settle(dt.datetime(2099, 1, 1, tzinfo=UTC))
+        if variant in ("title_majority", "invoice_majority", "absent_as_40", "cracker", "no_status"):
             own = collections.Counter(c["fac"] for c in cps if c["otype"] != "Renewal")
             top = own.most_common(1)[0][0]
             for c in cps:
-                if c["otype"] == "Renewal":
+                if c["otype"] == "Renewal" and (variant in ("title_majority", "invoice_majority", "cracker")
+                                                 or c["fac"] is None):
                     c["fac"] = top
-                    if variant == "invoice_majority" and c["po"] in inv_fund:
+                    if variant in ("invoice_majority", "cracker") and c["po"] in inv_fund:
                         c["fac"] = d.fund_fac[inv_fund[c["po"]]]
+    if lineage is not None:
+        for plat, cps in lics.items():
+            for c in cps:
+                if c["otype"] == "Renewal":
+                    lineage[c["lic"]] = c.get("src")
     out = collections.Counter()
     for plat, cps in lics.items():
         for c in cps:
             in_force = c["held"] is not None and c["held"] <= cutoff and (c["lapsed"] is None or c["lapsed"] > cutoff)
             if variant == "count_lapsed":
                 in_force = c["held"] is not None and c["held"] <= cutoff
-            if in_force and c["left"] <= 10:
+            if in_force and measure == "loans":
+                out[c["fac"]] += c["left"]
+            elif in_force and c["left"] <= 10:
                 out[c["fac"]] += 1
     return {f: out[f] for f in FAC_ORDER}

@@ -131,27 +131,49 @@ def main():
         eq("zone %s boardings" % z, int(round(b / 10.0)) * 10, F["zone_boardings"][z])
     eq("total boardings", int(round(tot / 100.0)) * 100, F["total_boardings"])
     eq("scope", "reduced scheme" if tot < thr else "full scheme", F["scope"])
-    # ask B: arrival at the workplace 07:30 to 09:30, local time, journeys to the usual zone on ordinary weekdays
+    # ask B: arrival in the workplace zone, from 07:30 up to and including 09:30 Irish time, on ordinary weekdays: the
+    # day's first stay in any cell of the commuter's usual zone, on each day the commuter has a long stay there
     lng2 = lng.merge(usual[["zone"]].rename(columns={"zone": "uz"}), left_on="hashed_imsi", right_index=True)
     lng2 = lng2[(lng2["zone"] == lng2["uz"]) & lng2["day"].isin(dayset)]
-    m = lng2["stay_start_utc"].dt.hour * 60 + lng2["stay_start_utc"].dt.minute
-    lng2["hit"] = (m >= 450) & (m <= 570)
+    allz = st[st["cell_id"] != st["home_cell"]].copy()
+    allz["day"] = allz["stay_start_utc"].dt.date
+    allz = allz.merge(usual[["zone"]].rename(columns={"zone": "uz"}), left_on="hashed_imsi", right_index=True)
+    allz = allz[allz["zone"] == allz["uz"]]
+    firsts = allz.groupby(["hashed_imsi", "day"])["stay_start_utc"].min().rename("arr").reset_index()
+    journeys = lng2.drop_duplicates(["hashed_imsi", "day"]).merge(firsts, on=["hashed_imsi", "day"])
+    m = journeys["arr"].dt.hour * 60 + journeys["arr"].dt.minute
+    journeys["hit"] = (m >= 450) & (m <= 570)
     for z in F["arrival_share"]:
-        sub = lng2[lng2["uz"] == z]
+        sub = journeys[journeys["uz"] == z]
         eq("arrival %s" % z, int(round(100 * sub["hit"].mean())), F["arrival_share"][z])
-    # ask A: gate entries by station number (register) and gateline codes G<no><gl>
+    # ask A: each location code placed at a station on the day: register codes (with the code each replaced) and gate
+    # assets by the asset register's dated rows; the line is every code summed by day
     gt = pd.read_csv(os.path.join(T, "ardnagree_line_gate_entries_20180101_20271130.csv"))
     reg = pd.read_csv(os.path.join(T, "ardnagree_line_station_register.csv"), dtype=str)
-    no = dict(zip(reg["station_code"], reg["station_no"]))
-    gt["no"] = [c[1:3] if (c.startswith("G") and len(c) == 5) else no.get(c) for c in gt["location_code"]]
+    ast = pd.read_csv(os.path.join(T, "ardnagree_line_gate_asset_locations.csv"), dtype=str).fillna("")
+    replaced = {}
+    for _, r in reg.iterrows():
+        m2 = re.search(r"(?:continues as|replaced by [A-Za-z ]+\() ?([A-Z]{3})", str(r["notes"]))
+        if m2:
+            replaced[r["station_code"]] = m2.group(1)
     gt["d"] = pd.to_datetime(gt["date"]).dt.date
-    gt = gt[[(d.weekday() < 5 and d not in off and 9 <= d.month <= 11) for d in gt["d"]]]
+    gt = gt[[(d.weekday() < 5 and d not in off and 9 <= d.month <= 11) for d in gt["d"]]].copy()
     gt["y"] = [d.year for d in gt["d"]]
-    daily = gt.groupby(["no", "y", "d"])["entries"].sum().reset_index()
-    stn = {"ARD": "02", "LSG": "09", "KCN": "03", "KDK": "04", "KUH": "06", "CBY": "07"}
-    for s, n in stn.items():
-        a = daily[(daily["no"] == n) & (daily["y"] == 2027)]["entries"].mean()
-        b = daily[(daily["no"] == n) & (daily["y"] == 2019)]["entries"].mean()
+
+    def place(code, d):
+        if code in set(reg["station_code"]):
+            return replaced.get(code, code)
+        for _, r in ast[ast["asset_id"] == code].iterrows():
+            a = pd.Timestamp(r["installed"]).date()
+            b = pd.Timestamp(r["removed"]).date() if r["removed"] else pd.Timestamp("2099-01-01").date()
+            if a <= d <= b:
+                return r["station_code"]
+        return None
+    gt["stn"] = [place(c, d) for c, d in zip(gt["location_code"], gt["d"])]
+    daily = gt.groupby(["stn", "y", "d"])["entries"].sum().reset_index()
+    for s in ["ARD", "LSG", "KCN", "KDK", "KUH", "CBY"]:
+        a = daily[(daily["stn"] == s) & (daily["y"] == 2027)]["entries"].mean()
+        b = daily[(daily["stn"] == s) & (daily["y"] == 2019)]["entries"].mean()
         eq("station %s" % s, int(round(100 * a / b)), F["station_ratio"][s])
     line = gt.groupby(["y", "d"])["entries"].sum().reset_index()
     eq("line", int(round(100 * line[line["y"] == 2027]["entries"].mean() / line[line["y"] == 2019]["entries"].mean())),

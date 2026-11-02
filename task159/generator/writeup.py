@@ -16,7 +16,7 @@ def emit(path, F):
     L.append("")
     L.append("## 1. Final Recommendation")
     L.append("")
-    L.append("**Budget %s ounces of gold for the ore Kessock Lake mines in 2027 at the 0.90 g/t cut-off.** Grade "
+    L.append("**Budget %s ounces of gold for the ore Kelvanna Lake mines in 2027 at the 0.90 g/t cut-off.** Grade "
              "control will keep about %.1f Mt of ore from the 2027 schedule, because its block grades spread more "
              "widely than the resource model's and a 0.90 g/t cut on them keeps more gold than the model's own curve "
              "shows. Not the plan's %s oz on the model's estimates, and not that figure times the reconciliation "
@@ -54,7 +54,7 @@ def emit(path, F):
     L.append("")
     L.append("## 4. Deliverable Answers")
     L.append("")
-    L.append("### kessock_2027_budget_gold.xlsx")
+    L.append("### kelvanna_2027_budget_gold.xlsx")
     L.append("")
     L.append("1. Gold in the ore mined in 2027: %s oz." % fmt(F["budget_oz"]))
     L.append("2. Ore behind it: %s t." % fmt(F["ore_t_100k"]))

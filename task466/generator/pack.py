@@ -132,8 +132,8 @@ def write_rule(target):
         ("1.3  Methane captured: the methane a landfill's gas system draws from the landfill in the reporting year, "
          "measured at its gas plant as the landfill gas flow at normal conditions (0 degrees C, 101.325 kPa) times its "
          "methane content. A normal cubic metre of methane weighs 0.7168 kg.", "", 9),
-        ("1.4  Collection efficiency: the fraction of the methane generated beneath a landfill's cap that its gas system "
-         "draws off while it runs continuously at its operating vacuum, as set in Schedule 2.", "", 9),
+        ("1.4  Collection efficiency: the fraction of the methane being generated beneath a landfill's cap that its gas "
+         "system draws off while it runs, as set in Schedule 2.", "", 9),
         ("1.5  Destruction device: an engine, boiler or flare that burns captured landfill gas. Methane destroyed: the "
          "methane routed to a destruction device times the device's destruction efficiency in Schedule 2.", "", 9),
         ("1.6  Methane released: the methane generated in the reporting year less the methane captured, of which the "

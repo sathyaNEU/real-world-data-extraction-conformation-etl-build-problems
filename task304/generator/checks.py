@@ -166,6 +166,20 @@ def main():
     bins_ok = all(len({r1(v[n]) for v in fam.values()}) == 1 for n in gold)
     check("R3e every member of the standing family prints every listed junction's benefit at the same one-decimal value",
           bins_ok, str({n: sorted({round(v[n], 3) for v in fam.values()}) for n in gold}))
+    # every licensed fit of the expected collisions (analysis.Pack.FAMILY), each listed junction's benefit asserted at
+    # its one-decimal value with its distance to the rounding edge
+    famx = pk.family()
+    edges = {lab: min(edge(d[n]["benefit"]) for n in d) for lab, d in famx.items()}
+    held = all(r1(d[n]["benefit"]) == r1(gold[n]) for d in famx.values() for n in gold)
+    check("R3h each of the %d licensed fits (junction-year or five-year totals, year terms or none, layouts pooled or "
+          "apart, overdispersion by likelihood or moments, a stop-control term, 2026 or window traffic) prints every listed "
+          "junction's benefit at the golden's one-decimal value, 0.010 or more from the rounding edge" % len(famx),
+          held and min(edges.values()) >= 0.010,
+          "; ".join("%s: min edge %.3f" % (lab, e) for lab, e in edges.items()))
+    for n in sorted(gold):
+        v = [d[n]["benefit"] for d in famx.values()]
+        check("R3h' %s: %.1f under every fit (%.3f to %.3f, nearest edge %.3f)" % (n, r1(gold[n]), min(v), max(v),
+              min(edge(x) for x in v)), all(r1(x) == r1(gold[n]) for x in v) and min(edge(x) for x in v) >= 0.010)
     m_tot = pk.spf(form="total")
     m_base = pk.spf()
     tot = {r["name"]: r["benefit"] for r in pk.junction_figures(m_tot).values()}

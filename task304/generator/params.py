@@ -23,6 +23,10 @@ CMF = {"X": 0.52, "T": 0.70, "ST": 0.70}
 SPF = {"T": (-9.30, 0.64, 0.31), "ST": (-9.30, 0.64, 0.31), "X": (-8.85, 0.64, 0.36),
        "MR": (-9.05, 0.62, 0.33), "RB": (-9.60, 0.66, 0.28), "SIG": (-8.70, 0.60, 0.30)}
 K_TRUE = 0.24                            # junction-to-junction spread beyond chance (gamma variance)
+# The background junctions' collision draw: the realisation of the record on which every licensed fit of the
+# expected collisions agrees at one decimal place (design note, Build record); the network and the 2026 data keep
+# their own streams.
+COUNT_DRAW = 1199
 YEAR_FACTOR = {2016: 1.07, 2017: 1.05, 2018: 1.03, 2019: 1.02, 2020: 0.80, 2021: 0.94,
                2022: 1.0, 2023: 1.0, 2024: 1.0, 2025: 1.0, 2026: 1.0}
 
@@ -32,12 +36,12 @@ N_LAYOUT = {"T": 960, "ST": 118, "X": 352, "MR": 61, "RB": 88, "SIG": 47}
 # The six junctions the 2026 screening lists (designed; their 2021 to 2025 counts are their own records).
 # name, district, layout, control, major road, minor road, major AADT 2026, minor AADT 2026, theta, counts 2021..2025
 CANDIDATES = [
-    ("Saxby Cross", "Kestermoor", "X", "GW", "B4419 Saxby Road", "Holt Lane", 3700, 1400, 2.55, [4, 4, 5, 5, 4]),
-    ("Tollgate Crossroads", "Brindham", "X", "STOP", "A6118 Brindham Road", "Tollgate Road", 19240, 4150, 0.62, [2, 3, 2, 2, 3]),
-    ("Mill Lane Crossroads", "Ardle Vale", "X", "GW", "A5207 Ardle Road", "B4421 Mill Lane", 15660, 3600, 1.27, [4, 4, 3, 4, 3]),
-    ("Church Street Junction", "Kestermoor", "X", "GW", "B4433 Kestermoor Road", "Church Street", 10770, 2280, 1.55, [3, 2, 3, 3, 3]),
-    ("Fen Lane Junction", "Brindham", "T", "GW", "A6118 Station Road", "Fen Lane", 13760, 3800, 1.90, [3, 3, 2, 3, 2]),
-    ("Coppice Way Junction", "Ardle Vale", "ST", "GW", "A5207 London Road", "Coppice Way", 28490, 3300, 1.10, [3, 2, 2, 3, 2]),
+    ("Saxby Cross", "Kestermoor", "X", "GW", "B4419 Saxby Road", "Holt Lane", 3320, 1400, 2.55, [4, 4, 5, 5, 4]),
+    ("Tollgate Crossroads", "Brindham", "X", "STOP", "A6118 Brindham Road", "Tollgate Road", 14620, 4150, 0.62, [2, 3, 2, 2, 3]),
+    ("Mill Lane Crossroads", "Ardle Vale", "X", "GW", "A5207 Ardle Road", "B4421 Mill Lane", 12630, 3600, 1.27, [4, 4, 3, 4, 3]),
+    ("Church Street Junction", "Kestermoor", "X", "GW", "B4433 Kestermoor Road", "Church Street", 9370, 2280, 1.55, [3, 2, 3, 3, 3]),
+    ("Fen Lane Junction", "Brindham", "T", "GW", "A6118 Station Road", "Fen Lane", 11340, 3800, 1.90, [3, 3, 2, 3, 2]),
+    ("Coppice Way Junction", "Ardle Vale", "ST", "GW", "A5207 London Road", "Coppice Way", 23410, 3300, 1.10, [3, 2, 2, 3, 2]),
 ]
 
 # Holt Lane (Saxby Cross's minor road) lost part of its through traffic to a 2024 traffic regulation order: minor-road

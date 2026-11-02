@@ -56,8 +56,8 @@ def main(target, golden_dir=None, meta_path=None):
     ok("R3a analyst test: the delivery check on the clean truth files CF-2 and GC-1, not the golden", sorted(r1_clean) == ["CF-2", "GC-1"], r1_clean)
     ok("R3a the monthly reconciliation passes every tank", res["R0_list"] == [], res["R0_list"])
     ok("R3b the decisive step alone (anchoring the intervals on the deliveries) files the golden", res["golden_list"] == GOLD, res["golden_list"])
-    ok("R3b the lower rung's single correction (intervals unanchored) leaves a wrong list", res["R2_list"] != GOLD and len(res["R2_list"]) == 10, res["R2_list"])
-    ok("R3b the mixed rung (delivery full range, unanchored halves) leaves a wrong list", res["R2p_list"] != GOLD and set(res["R2p_list"]) - set(GOLD) == {"DH-2", "EB-1"}, res["R2p_list"])
+    ok("R3b the lower rung's single correction (intervals unanchored) leaves a wrong list", res["R2_list"] != GOLD and "GC-1" not in res["R2_list"] and len(res["R2_list"]) == 9, res["R2_list"])
+    ok("R3b the mixed rung (delivery full range, unanchored halves) leaves a wrong list", res["R2p_list"] != GOLD and set(res["R2p_list"]) - set(GOLD) == {"EB-1"} and set(GOLD) <= set(res["R2p_list"]), res["R2p_list"])
     seqs = {}
     for r in csv.DictReader(open(os.path.join(target, "atg_inventory_2026.csv"), encoding="utf-8")):
         seqs.setdefault((r["console_sn"], r["tank"]), []).append(r["tc_gal_60f"])

@@ -369,7 +369,7 @@ def unit_price(qty, price):
 
 
 def ask_flyer(target, lead_only=False, release="REVISED", qty_aware=True, zone_units=True, corr="dated",
-              match="family"):
+              match="family", unit_cents=False):
     """ask B: for each flyer week, the advertised UPCs that rang up at a price other than the flyer price, and the
     dollars customers paid above the flyer price that week. corr: 'dated' (a correction fixes the register from its
     effective date), 'none' (the release price all week), 'whole' (the correction taken for the whole week).
@@ -439,6 +439,8 @@ def ask_flyer(target, lead_only=False, release="REVISED", qty_aware=True, zone_u
                     kq, kp = fx[-1][1], fx[-1][2]
                 ku = kp / kq if qty_aware else kp
                 au = p / q if qty_aware else p
+                if unit_cents:      # a multi-buy's unit price taken to the cent, as the register rings one unit
+                    ku, au = round(ku, 2), round(au, 2)
                 if abs(ku - au) > 0.004:
                     bad = True
                     if ku > au + 0.004:

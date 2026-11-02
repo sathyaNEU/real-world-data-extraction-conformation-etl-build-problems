@@ -49,8 +49,31 @@ def flare_states(p):
         b = int((o["end"] - W.T0).total_seconds() // 60)
         run[a:b] = False
     eng_cap = W.ENG_CAP * (p["eng_on_min"][1].astype(float) + p["eng_on_min"][2].astype(float))
-    need = run & (cap_rate - eng_cap > 1.0)
-    lit = need.copy()
+    excess = np.where(run, cap_rate - eng_cap, -1.0)
+    # burner management: light after three minutes of surplus above 2 kg/h, stop after ten minutes below 0.5 kg/h or
+    # at once when the plant stops; a stopped flare purges and waits at least eight minutes before it relights
+    lit = np.zeros(nmin, dtype=bool)
+    hi = (excess > 2.0).tolist()
+    lo = (excess < 0.5).tolist()
+    runl = run.tolist()
+    state, n_hi, n_lo, off_since = False, 0, 0, -10 ** 9
+    out = lit.tolist()
+    for m in range(nmin):
+        if not runl[m]:
+            if state:
+                off_since = m
+            state, n_hi, n_lo = False, 0, 0
+            out[m] = False
+            continue
+        n_hi = n_hi + 1 if hi[m] else 0
+        n_lo = n_lo + 1 if lo[m] else 0
+        if state:
+            if n_lo >= 10:
+                state, off_since = False, m
+        elif n_hi >= 3 and m - off_since >= 8:
+            state = True
+        out[m] = state
+    lit = np.array(out, dtype=bool)
     # warm-up and low-temperature episodes
     permissive = lit.copy()
     starts = np.flatnonzero(lit[1:] & ~lit[:-1]) + 1
@@ -60,7 +83,7 @@ def flare_states(p):
         warm = int(r.uniform(12, 25))
         permissive[s:s + warm] = False
     # low-flow sags: when the flare share is small, a few sags of 6 to 30 minutes
-    flare_rate = np.maximum(cap_rate - eng_cap, 0)
+    flare_rate = np.maximum(excess, 0)
     lowflow = lit & (flare_rate < 40)
     idx = np.flatnonzero(lowflow)
     if len(idx):
@@ -126,7 +149,8 @@ def engine_events(p):
                 o = outages[s["outage"]]
                 if o["cause"] == "Utility power failure":
                     # the controller loses power: nothing written at the stop; power-up when the supply returns
-                    up = int((o["end"] - W.T0).total_seconds() // 60) + int(r.uniform(1, 4))
+                    # the supply comes back a few minutes before the operator restarts the blowers
+                    up = int((o["end"] - W.T0).total_seconds() // 60) - int(r.uniform(2, 13))
                     ev.append((up, tag, "CONTROLLER POWER UP", "state: standstill"))
                 else:
                     ev.append((a, tag, "TRIP", "gas supply pressure low"))
@@ -278,9 +302,10 @@ def surface_walkovers(p):
         for rw in rewalk:
             if rw["idx"] == row["idx"]:
                 rw["ppm"] = v
-    # re-monitoring at the spot (handheld GPS, WGS84), under a running re-monitoring number: a first re-check four
-    # to nine days after the walkover, a second one for a location still over, and in two quarters a location that
-    # fails both and is cleared at a third visit; the year opens with the re-checks of the fourth 2025 walkover
+    # re-monitoring at the spot (handheld GPS, WGS84), under a running re-monitoring number: a first re-check three
+    # to nine days after the walkover (in two quarters one slipped to eleven to thirteen days), a second one for a
+    # location still over, and in two quarters a location that fails both and is cleared at a third visit; the year
+    # opens with the re-checks of the fourth 2025 walkover
     rmrows = []
     seq = [0]
 
@@ -293,6 +318,7 @@ def surface_walkovers(p):
                            (dt.datetime(2026, 1, 15, 9, 40, tzinfo=C.TZ), 1640.6, 2712.9, 120.0)):
         add(d, x, y, ppm, None, 0, 0)
     double_fail_q = (2, 4)
+    late_q = (1, 3)
     for wk in walks:
         q = wk["q"]
         last_day = dt.date(*wk["days"][-1])
@@ -300,16 +326,19 @@ def surface_walkovers(p):
         exc_sorted = sorted(wk["exc"])
         for n_i, idx in enumerate(exc_sorted):
             still = r.uniform() < 0.30
-            if q in double_fail_q and n_i == 0:
+            early = q in double_fail_q and n_i == 0      # repaired the next morning and re-checked within days
+            late = q in late_q and n_i == 1              # the re-check slipped past the plan's ten days
+            if early or late:
                 still = True
             pt = wk["pts"][idx]
             bx, by = pt["x"] + wk["offx"][idx], pt["y"] + wk["offy"][idx]
-            d1 = last_day + dt.timedelta(days=int(r.integers(4, 10)))
+            off1 = int(r.integers(3, 5)) if early else (int(r.integers(11, 14)) if late else int(r.integers(3, 10)))
+            d1 = last_day + dt.timedelta(days=off1)
             t1 = dt.datetime(d1.year, d1.month, d1.day, int(r.integers(8, 15)), int(r.integers(0, 60)), tzinfo=C.TZ)
             ppm1 = float(r.uniform(540, 1600)) if still else float(r.uniform(30, 380))
             rm.append(dict(t=t1, idx=idx, still=still, ppm=ppm1, x=bx + r.uniform(-6, 6), y=by + r.uniform(-6, 6), visit=1))
             if still:
-                d2 = d1 + dt.timedelta(days=int(r.integers(5, 10)))
+                d2 = d1 + dt.timedelta(days=int(r.integers(3, 6)) if early else int(r.integers(3, 8)))
                 t2 = dt.datetime(d2.year, d2.month, d2.day, int(r.integers(8, 15)), int(r.integers(0, 60)), tzinfo=C.TZ)
                 fail2 = q in double_fail_q and n_i == 0
                 ppm2 = float(r.uniform(520, 900)) if fail2 else float(r.uniform(25, 300))

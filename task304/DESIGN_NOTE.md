@@ -223,14 +223,14 @@ junctions shows.
 | Rung | Construction | Winner | Mill Lane | Tollgate | Church St | Saxby | Coppice Way | Fen Lane |
 |---|---|---|---|---|---|---|---|---|
 | R0 | five-year count as the expectation, prevented a year | Saxby Cross 2.1 | 1.73 | 1.15 | 1.34 | 2.11 | 0.72 | 0.78 |
-| R0' | the count carried to 2026 traffic | Saxby Cross 2.0 | 1.74 | 1.18 | 1.36 | 2.05 | 0.72 | 0.82 |
-| R1 | the performance function alone | Tollgate Crossroads 0.7 | 0.60 | 0.72 | 0.41 | 0.18 | 0.26 | 0.16 |
-| G | the record weighed against the function | Mill Lane Crossroads 1.3 | 1.31 | 1.02 | 0.91 | 0.81 | 0.50 | 0.42 |
+| R0' | the count carried to 2026 traffic | Saxby Cross 2.0 | 1.74 | 1.19 | 1.36 | 2.02 | 0.72 | 0.82 |
+| R1 | the performance function alone | Tollgate Crossroads 0.7 | 0.59 | 0.69 | 0.41 | 0.17 | 0.25 | 0.15 |
+| G | the record weighed against the function | Mill Lane Crossroads 1.3 | 1.31 | 1.02 | 0.92 | 0.80 | 0.50 | 0.41 |
 
-Margins: R0 1.22x (Saxby Cross over Mill Lane Crossroads), R0' 1.18x, R1 1.19x (Tollgate Crossroads over Mill Lane
-Crossroads), G 1.28x (Mill Lane Crossroads over Tollgate Crossroads); collisions per million entering vehicles also file
-Saxby Cross (3.86x). Position: Mill Lane Crossroads is second on R0 and on R1 and first only on G. The overdispersion is
-0.26 on 1,436 junctions over five years, so the weight on each listed junction's prediction runs from 0.35 (Tollgate
+Margins: R0 1.22x (Saxby Cross over Mill Lane Crossroads), R0' 1.16x, R1 1.16x (Tollgate Crossroads over Mill Lane
+Crossroads), G 1.29x (Mill Lane Crossroads over Tollgate Crossroads); collisions per million entering vehicles also file
+Saxby Cross (3.71x). Position: Mill Lane Crossroads is second on R0 and on R1 and first only on G. The overdispersion is
+0.27 on 1,436 junctions over five years, so the weight on each listed junction's prediction runs from 0.34 (Tollgate
 Crossroads, the highest prediction) to 0.66 (Saxby Cross, the lowest). On the clean truth (each junction's true long-run rate)
 the largest benefit is also at Mill Lane Crossroads (R3c'). The pricing sequence: (1) the residue the filed WHAT leaves
 is how to estimate an expectation, a method, not a knob; (2) the move is worth the whole call: Saxby Cross falls from
@@ -253,7 +253,7 @@ expectation; (8) the reflex sweep as code (checks.py R3a to R3c) lands every ref
 | 8 Window length | five years | filed (clause 3.3) |
 | 9 Boundary inclusivity | 12 or more in the screening | the note; SF1 |
 | 10 Rounding path | one decimal of the unrounded benefit | SF9, asserted |
-| 11 Tie-break | none needed | C1, 1.28x clear |
+| 11 Tie-break | none needed | C1, 1.29x clear |
 | 12 Maturity and censoring | the validated years are closed | C1 |
 | 13 Order of operations | counts, function, weighing, 2026 traffic, factor | C1, asserted invariant to the year level (SF6) |
 | 14 Row order | irrelevant | C1, sums |
@@ -345,13 +345,19 @@ Measured by: generator/ceiling.py (run on the cut pack: ask A 3 of 9 to the crac
 ## Build record
 
 - **Pack:** 12 files in four formats (7 csv, 2 xlsx, 2 pdf, 1 json); the bulk file is collision_records_2016_2025.csv at
-  25,836 collisions; distractors skid_resistance_survey_2025.csv and community_speedwatch_2026.csv, named in
+  26,049 collisions; distractors skid_resistance_survey_2025.csv and community_speedwatch_2026.csv, named in
   `metadata.json`. The fiction's as-of date is 4 December 2026.
-- **Measured on the cut pack:** the Ladder table above (golden Mill Lane Crossroads 1.31 prevented a year, expected 2.72
-  a year, against Tollgate Crossroads 1.02); overdispersion 0.260 on 1,436 junctions; the annex from target/ equals the
-  clean truth in all 21 cells (A0, A0'). Every member of the standing family prints every benefit at the same
-  one-decimal value (R3e); the nearest any member comes to a rounding edge is 0.025 (Fen Lane Junction, family 0.412
-  to 0.425; Tollgate Crossroads 1.006 to 1.024; Mill Lane Crossroads 1.277 to 1.309, its expectation 2.691 to 2.727).
+- **Measured on the cut pack:** the Ladder table above (golden Mill Lane Crossroads 1.31 prevented a year, expected 2.735
+  a year, against Tollgate Crossroads 1.02); overdispersion 0.273 on 1,436 junctions; the annex from target/ equals the
+  clean truth in all 21 cells (A0, A0'). Each of the fifteen licensed fits in `analysis.Pack.FAMILY` (junction-year or
+  five-year totals; year terms or none, the window's or 2025's year level; layouts pooled, crossroads apart from T and
+  staggered, or each layout alone; overdispersion by likelihood or moments; a stop-control term; totals on window or
+  2026 traffic; the expectation at 2026 or at window traffic) prints every listed junction's benefit at the golden's
+  one-decimal value, asserted per fit and per junction with its distance to the rounding edge (R3h, R3h'): Mill Lane
+  Crossroads 1.3 (1.271 to 1.316, nearest edge 0.021), Tollgate Crossroads 1.0 (0.978 to 1.023, 0.027), Church Street
+  Junction 0.9 (0.882 to 0.919, 0.031), Saxby Cross 0.8 (0.764 to 0.837, 0.013), Coppice Way Junction 0.5 (0.466 to
+  0.534, 0.016), Fen Lane Junction 0.4 (0.382 to 0.418, 0.032); Mill Lane Crossroads leads under every fit (1.27x or
+  more).
 - **Stage 4 repair (2026-11-02, on 1a624630):** the leak reader was clean (question 6 analytical); the judge reproduced
   every figure (overdispersion 0.260; the six benefits; A1 and A2 cell for cell) and returned NOT_DETERMINISTIC on
   Gates C and E with G and H passing: clause 3.3 only said how expectations are estimated, so the own count scaled to
@@ -361,8 +367,23 @@ Measured by: generator/ceiling.py (run on the cut pack: ask A 3 of 9 to the crac
   group or blend named); the register gives the county C-class and unclassified roads by their own entries and carries
   every section's start and end grid references, the A4600 handover at the Brindham East node's easting (SF17, SF18,
   L1, L2 asserted). The call and every graded figure are unchanged.
-- **Gates on the final cut (2026-11-02):** generator checks 62 of 62; verify 15 of 15 (its own NB2 fit by joint
-  quasi-Newton, overdispersion 0.260); two byte-identical builds, target.zip 32a9da59; figures_check 37 figures, 0
+- **Stage 4 re-judge round 2 (2026-11-02, on 32a9da59):** the judge passed the call and the annex and returned one
+  fork, the six benefits at one decimal across equally licensed fits (junction-year with and without year terms,
+  five-year totals, layouts split), spread by 0.1 to 0.2. No sentence was filed: the function's form, unit and weight
+  stay open. Measured: across 400 redraws of the background junctions' collision counts on the same network, the
+  five-year-total and junction-year overdispersion estimates differ by 0.001 on average with a spread of 0.049, so the
+  split was the estimators' sampling noise on 1,436 junctions, which a flat trend, shared layout slopes and a network
+  three times larger did not remove (Tried and rejected). Closed by construction: the background junctions' collision
+  draw is the one (`COUNT_DRAW`, chosen among the first 414 screened) on which the licensed fits agree, and the six
+  listed junctions' 2026 major-road traffic was re-centred so each junction's range across the fifteen fits sits inside
+  one one-decimal bin (Mill Lane 12,630, Tollgate 14,620, Church Street 9,370, Saxby 3,320, Coppice Way 23,410, Fen Lane
+  11,340 vehicles a day). Every one-decimal benefit, the call, the expected 2.7, the annex tables cell for cell, and the
+  own-count and model-alone rungs (Saxby Cross, Tollgate Crossroads) are unchanged. Outside the family: a function
+  fitted without the six listed junctions (selected on the very counts that listed them) lowers the overdispersion to
+  0.19 and every benefit by 0.08 to 0.15, Mill Lane still first; the call's expected collisions read 2.7 under fourteen
+  of the fifteen fits and 2.648 under five-year totals on 2026 traffic.
+- **Gates on the final cut (2026-11-02):** generator checks 69 of 69; verify 15 of 15 (its own NB2 fit by joint
+  quasi-Newton, overdispersion 0.273); two byte-identical builds, target.zip 1c5b094a; figures_check 37 figures, 0
   absent; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (710 characters); leak.py REVIEW, no LEAK (ruled below);
   guard heart WARN (repeat.question_form against task484 v4, a card registered after this one: the prompt opens on
   which and how many because the call is a pick sized by a count; nearest driver 0.07); guard surface: no hard tell (no
@@ -1256,6 +1277,7 @@ task122, task136 and task264 on corpus-top-percent surface similarity, and task1
   fitted overdispersion, which the fits estimate between 0.20 and 0.32 on one record, and a junction far from its
   prediction (Saxby Cross, 22 against 1.9) moves 0.016 per 0.01 of it. Tried by construction and not held: a flat 2021
   to 2025 trend, slopes shared by every layout, a network three times larger (4,456 junctions) and no tail redraw left
-  spans of 0.10 (Saxby Cross) and 0.06 (Mill Lane Crossroads). Every fit agrees at the nearest half collision a year
-  (nearest edge 0.027). Reported to the coordinator before any change to the prompt's precision; the pack is unchanged.
+  spans of 0.10 (Saxby Cross) and 0.06 (Mill Lane Crossroads): the split is the overdispersion estimators' sampling
+  noise (spread 0.049 between units across redraws of one network), so no generating parameter closes it; the closure
+  is the selected collision draw with re-centred traffic (Build record).
 

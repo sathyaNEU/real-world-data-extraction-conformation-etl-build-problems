@@ -18,7 +18,6 @@ import golden as GD  # noqa: E402
 import pack as M  # noqa: E402
 import params as P  # noqa: E402
 
-ZIPTIME = (2027, 1, 15, 16, 30, 0)
 SOURCES = {
     "standard": "Saltmarsh Market Store Operations, Price Integrity Standard PI-2 revision 3 (approved 18 September "
                 "2026); synthetic",
@@ -87,8 +86,9 @@ def one_build(base):
 
 def cut_zip(target, path):
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        key_of = {v: k for k, v in P.FILES.items()}
         for fn in sorted(os.listdir(target)):
-            zi = zipfile.ZipInfo(fn, date_time=ZIPTIME)
+            zi = zipfile.ZipInfo(fn, date_time=P.file_stamp(key_of[fn]))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(target, fn), "rb").read())

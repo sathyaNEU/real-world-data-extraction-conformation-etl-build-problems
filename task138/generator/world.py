@@ -68,9 +68,10 @@ def circ_h(h):
     return -P.PHYS["amp_h"] * np.cos(2 * np.pi * (h - P.PHYS["phase_h"]) / 24.0)
 
 
-def build(seed=P.SEED, phys=None, drug=None):
+def build(seed=P.SEED, phys=None, drug=None, streams=None, holter=True):
     phys = dict(P.PHYS, **(phys or {}))
     drug = dict(P.DRUG, **(drug or {}))
+    streams = dict(P.STREAMS, **(streams or {}))
     rng = np.random.default_rng(seed)
     W = {"subjects": [], "doses": [], "ecg": [], "pk": [], "amb": [], "holter": [], "recordings": [],
          "screening": [], "vitals": [], "safety_ecg": [], "phys": phys, "drug": drug}
@@ -137,6 +138,11 @@ def build(seed=P.SEED, phys=None, drug=None):
 
     # ------------------------------------------------------------ dosing and sampling per subject
     for s in W["subjects"]:
+        s["rng_c"] = np.random.default_rng([seed, 1, s["subject"]])
+        s["rng_h"] = np.random.default_rng([seed, 2, s["subject"]])
+        s["rng_l"] = np.random.default_rng([streams["late"], s["subject"]])
+    for s in W["subjects"]:
+        rng = s["rng_c"]
         day1 = s["day_m1"] + timedelta(days=1)
         stagger = 4 * (s["bed"] - 1)
         ndays = P.MAD_DAYS if s["design"] == "MAD" else 1
@@ -156,6 +162,8 @@ def build(seed=P.SEED, phys=None, drug=None):
 
     # PK samples (inpatient) and triplicate ECGs
     for s in W["subjects"]:
+        rng = s["rng_c"]
+        rng_late = s["rng_l"]
         days = [1] + ([P.MAD_DAYS] if s["design"] == "MAD" else [])
         for d in days:
             t0 = s["dose_times"][d - 1]
@@ -173,14 +181,14 @@ def build(seed=P.SEED, phys=None, drug=None):
                 c = conc(s, ts)
                 W["pk"].append(dict(subject=s["subject"], study=s["study"], day=d, nominal=0, time=ts, true=c,
                                     obs=c * float(np.exp(rng.normal(0, P.PK["assay_cv"])))))
-        # ambulatory late samples
+        # ambulatory late samples (own stream)
         last = s["dose_times"][-1]
         lates = P.AMB_TIMES_SAD if s["design"] == "SAD" else P.AMB_TIMES_MAD
         for nt in lates:
-            ts = add(last, nt * 60 + float(rng.integers(-55, 95)))
+            ts = add(last, nt * 60 + float(rng_late.integers(-55, 95)))
             c = conc(s, ts)
             W["amb"].append(dict(subject=s["subject"], volunteer=s["volunteer"], study=s["study"], nominal=nt,
-                                 time=ts, true=c, obs=c * float(np.exp(rng.normal(0, P.PK["assay_cv"])))))
+                                 time=ts, true=c, obs=c * float(np.exp(rng_late.normal(0, P.PK["assay_cv"])))))
         # ECG triplicates: Day -1 at the Day 1 clock times, Day 1, Day 10
         ecg_days = [(-1, s["dose_times"][0] - timedelta(days=1))] + [(1, s["dose_times"][0])]
         if s["design"] == "MAD":
@@ -215,7 +223,10 @@ def build(seed=P.SEED, phys=None, drug=None):
                                      conc=c, reps=reps))
 
     # ------------------------------------------------------------ Holter recordings
-    serials = sorted(rng.choice(np.arange(40100, 48900), size=60, replace=False).tolist())
+    if not holter:
+        return W
+    rng3 = np.random.default_rng([seed, 3])
+    serials = sorted(rng3.choice(np.arange(40100, 48900), size=60, replace=False).tolist())
     rec_no = [0]
 
     def rec_id():
@@ -231,24 +242,26 @@ def build(seed=P.SEED, phys=None, drug=None):
         day_m1 = subs[0]["day_m1"]
         day1 = (day_m1 + timedelta(days=1)).date().isoformat()
         day2 = (day_m1 + timedelta(days=2)).date().isoformat()
-        pool = list(rng.permutation(serials))
-        # exchange after the 12-hour extraction, bed by bed
-        x = loc(day1, 20, 52 if n > 8 else 40) + timedelta(seconds=int(rng.integers(0, 120)))
-        powers = loc(day1, 20, 31) + timedelta(seconds=int(rng.integers(0, 50)))
-        order = list(rng.permutation(n))
+        pool = list(rng3.permutation(serials))
+        rng_x = np.random.default_rng([streams["exchange"], int(key[0]), key[1]])
+        # exchange after the 12-hour extraction, bed by bed (own stream)
+        x = loc(day1, 20, 52 if n > 8 else 40) + timedelta(seconds=int(rng_x.integers(0, 120)))
+        powers = loc(day1, 20, 31) + timedelta(seconds=int(rng_x.integers(0, 50)))
+        order = list(rng_x.permutation(n))
         for i, s in enumerate(subs):
             hook = loc(day_m1.date().isoformat(), 7, 10) + timedelta(minutes=4 * (s["bed"] - 1),
-                                                                      seconds=int(rng.integers(0, 150)))
+                                                                      seconds=int(rng3.integers(0, 150)))
             s["rec1"] = dict(id=rec_id(), serial="RX-%d" % pool[2 * i], start=hook, stop=x)
             s["rec2"] = dict(id=None, serial="RX-%d" % pool[2 * i + 1],
-                             start=powers + timedelta(seconds=int(order[i] * 22 + rng.integers(0, 12))),
-                             attach=x + timedelta(seconds=int(rng.integers(62, 135))),
+                             start=powers + timedelta(seconds=int(order[i] * 22 + rng_x.integers(0, 12))),
+                             attach=x + timedelta(seconds=int(rng_x.integers(62, 135))),
                              stop=loc(day2, 9, 0) + timedelta(minutes=3 * (s["bed"] - 1),
-                                                              seconds=int(rng.integers(0, 100))))
-            x = x + timedelta(seconds=int(rng.integers(545, 640)))
+                                                              seconds=int(rng_x.integers(0, 100))))
+            x = x + timedelta(seconds=int(rng_x.integers(780, 960)))
         for s in sorted(subs, key=lambda q: q["rec2"]["start"]):
             s["rec2"]["id"] = rec_id()
         for s in subs:
+            rng = s["rng_h"]
             sleep_on = [loc((day_m1 + timedelta(days=k)).date().isoformat(), 23, 0)
                         + timedelta(minutes=float(rng.uniform(8, 42))) for k in range(2)]
             wake = [loc((day_m1 + timedelta(days=k + 1)).date().isoformat(), 6, 30)

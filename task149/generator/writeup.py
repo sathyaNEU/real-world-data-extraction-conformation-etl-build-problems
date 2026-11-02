@@ -12,7 +12,8 @@ ZN = {"KW01": "Kilcarrow city centre", "KW02": "Kilcarrow Docklands", "KW03": "U
       "KW07": "Ballymurragh retail park", "KW08": "Airport business park", "KW09": "Lisnagry and Ardnagree",
       "KW11": "Rest of County Kilcarrow"}
 SN = [("ARD", "Ardnagree"), ("LSG", "Lisnagry"), ("KCN", "Kilcarrow Central"), ("KDK", "Kilcarrow Docklands"),
-      ("KUH", "University Hospital (with UHK)"), ("CBY", "Carrigboy (with Carrigboy Halt)"), ("LINE", "Ardnagree line")]
+      ("KUH", "University Hospital (with UHK)"), ("CBY", "Carrigboy (with Carrigboy Halt)"),
+      ("LINE", "Ardnagree line, all stations' entries added together")]
 
 
 def fmt(n):
@@ -57,18 +58,20 @@ def main():
              + ".")
     L.append("5. Boardings per zone = census commuters x station share (refresh Table 2) x that share; summed, %s; "
              "against the threshold of %s, the reduced scheme." % ("%.1f" % F["total_boardings_exact"], fmt(F["threshold"])))
-    L.append("6. Arrival shares: each commuting day's workplace stay start in Irish time, 07:30 to 09:30 inclusive, "
-             "over the zone's commuting days.")
+    L.append("6. Arrival shares: on each commuting day, the first stay in any cell of the commuter's workplace zone "
+             "(car park, gate or hub stays included), Irish time, from 07:30 up to and including 09:30, over the zone's "
+             "commuting days on ordinary weekdays.")
     L.append("7. Station shares: ordinary-weekday entries, September to November, summed per station-day over the "
-             "station's codes (UHK with KUH, CBH with CBY) and every gateline code G<station number><gateline>; "
-             "2027 average over 2019 average.\n")
+             "station's codes (UHK with KUH, CBH with CBY) and each gate asset on the days the asset register places "
+             "it there; 2027 average over 2019 average; the line as every code summed by day.\n")
     L.append("## 4. Deliverable Answers\n")
     L.append("### rathgarvan_boardings_2029.xlsx\n")
     L.append("1. Weekday commuter boardings, 2029: %s (nearest 100)." % fmt(F["total_boardings"]))
     L.append("2. Boardings by workplace zone (nearest 10):")
     for k in sorted(F["zone_boardings"]):
         L.append("   - %s %s: %s" % (k, ZN[k], fmt(F["zone_boardings"][k])))
-    L.append("3. Share of journeys to work reaching the workplace between 07:30 and 09:30 (whole per cent):")
+    L.append("3. Share of journeys to work on ordinary weekdays arriving in the zone from 07:30 up to and including "
+             "09:30 (whole per cent):")
     for k in sorted(F["arrival_share"]):
         L.append("   - %s %s: %d per cent" % (k, ZN[k], F["arrival_share"][k]))
     L.append("4. Average ordinary-weekday entries, September to November 2027 as a share of the same months of 2019 "

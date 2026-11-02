@@ -6,29 +6,29 @@
  "stage": 3,
  "stage_name": "build",
  "updated": "2026-11-02",
- "stump": "A competent solver multiplies each zone's census commuters by the refresh's station share and counts every commuter as a boarding each weekday, filing about 2,400 (2,374.6) and the full scheme; the step that lands it there is reading a usual-workplace count as daily journeys, when the panel shows each zone's commuters going in on 50 to 79 per cent of ordinary weekdays, which puts Rathgarvan at about 1,300 (1,311.6) and the reduced scheme.",
+ "stump": "A competent solver multiplies each zone's census commuters by the refresh's station share and counts every commuter as a boarding each weekday, filing about 2,400 (2,374.6) and the full scheme; the step that lands it there is reading a usual-workplace count as daily journeys, when the panel shows each zone's commuters going in on 47 to 86 per cent of ordinary weekdays, which puts Rathgarvan at about 1,300 (1,296.6) and the reduced scheme.",
  "architecture": 2,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-02",
   "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-11-02, cut aa619280, --asof 2027-12-06); REVIEW lines read in the design note's Build record",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (cut 77ba30fa, --asof 2027-12-06); REVIEW lines read in the design note's Build record",
+  "reader": "round 1 on aa619280 clean (question 6 analytical); the prompt and the gate documents changed since"
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK (overuse.org_family, repeat.deliverables, repeat.question_form; answered in the Build record); card shell corrected to this prompt's",
+  "heart": "WARN, no BLOCK (overuse.org_family, repeat.deliverables, repeat.question_form; answered in the Build record)",
   "surface": "exit 0 on cut aa619280; personas Colum Curtis, Deaglan Gilmore, Eve Dunne; no hard tell; 10 pairs promoted for the author's adjudicated /clone-check (task148 adjacent urban x forecasting pairing; surface 0.10 top-of-distribution pairs task134, task142, task167, task229, task261, task484; card collisions task65, task67, task482, differentiated)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC (round 1, cut aa619280), SEND_BACK on the asks only; main call forced and reproduced, Gate F good, G and H pass",
+  "disposition": "fixed in one generator pass (gate asset register with dated rows; ask B pinned and boundary-free; zone cells robust per estimator; line pinned); re-judge pending on cut 77ba30fa",
+  "report": "relayed by the main session (stage 4 round 1)"
  },
  "returned": [],
- "resume": "Stage 3 complete on cut aa619280: the main session runs stage 4 (the isolated leak reader and the determinism judge) on this pack; fix any finding in the generator (task149/generator/build.py rebuilds everything) and re-run the free gates.",
+ "resume": "Stage 4 round 1 fixed on cut 77ba30fa (asks only; call, default and stump unchanged): the main session re-judges once and re-runs the leak reader (the prompt and the gate documents changed).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -51,12 +51,12 @@
   }
  ],
  "gates": {
-  "checks": "77 of 77",
-  "verify": "agrees on its own path (total 1,311.6, 10 zones, 6 arrival shares, 7 station ratios, golden read back)",
-  "rebuilds": "two byte-identical over 20 files; target.zip aa619280",
+  "checks": "83 of 83",
+  "verify": "agrees on its own path (total 1,296.6, 10 zones, 6 arrival shares, 7 station ratios, golden read back)",
+  "rebuilds": "two byte-identical over 21 files; target.zip 77ba30fa",
   "figures_check": "60 figures, 0 absent",
   "precut": "61 checks, 0 FAIL, 0 WARN",
-  "voice_check": "exit 0 (871 characters)",
-  "ceiling": "pair 41.2, mirror leakage 23.1 per cent (generator/ceiling.py)"
+  "voice_check": "PASS (924 characters)",
+  "ceiling": "pair 32.7, mirror leakage 7.7 per cent (generator/ceiling.py)"
  }
 }

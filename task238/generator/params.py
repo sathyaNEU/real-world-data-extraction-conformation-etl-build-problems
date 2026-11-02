@@ -8,7 +8,6 @@ Q_START = dt.date(2026, 10, 1)          # a Thursday
 Q_END = dt.date(2026, 12, 31)           # a Thursday
 ASOF = dt.date(2027, 1, 15)             # the review's date; every export pulled 2027-01-12
 PULL = dt.date(2027, 1, 12)
-STAMP = (2027, 1, 12, 9, 30, 0)         # mtime of every shipped file
 
 LINE = 99.0                             # PI-2 section 4.1: below 99.0 per cent goes on Price Watch
 BASE_ERR = 0.00012                       # stray-label share at any moment (missing, wrong item, torn)
@@ -73,3 +72,23 @@ FILES = {
     "markdowns": "clearance_markdown_labels_2026Q4.csv",
 }
 DISTRACTORS = ["contacts", "markdowns"]
+
+# each export's own pull time on 12 January 2027 (store local, AST); the standard keeps its approval date
+PULLED_AT = {"hourly": (7, 41), "movement": (7, 58), "printer": (8, 6), "overrides": (8, 13), "adsales": (8, 22),
+             "markdowns": (8, 31), "desk": (8, 47), "audits": (9, 4), "checks": (9, 12), "contacts": (9, 55),
+             "pricefile": (10, 18), "corrections": (10, 26), "adplan": (10, 37), "stores": (11, 3)}
+STANDARD_DATE = (2026, 9, 18, 10, 30, 0)
+
+
+def file_stamp(key):
+    """the local date-time a shipped file carries (its export, or the standard's approval)"""
+    if key == "standard":
+        return STANDARD_DATE
+    h, m = PULLED_AT[key]
+    return (PULL.year, PULL.month, PULL.day, h, m, 0)
+
+
+def file_stamp_utc(key):
+    """the same moment as an OOXML core-properties stamp (AST is UTC-4 in January)"""
+    t = dt.datetime(*file_stamp(key)) + dt.timedelta(hours=4)
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")

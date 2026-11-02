@@ -49,8 +49,8 @@ REGIMES = {
     "KW04": [("hybrid_c", 0.85), ("fixed5", 0.15)],
     "KW05": [("roster4on4off", 0.70), ("fixed5", 0.20), ("hybrid_a", 0.10)],
     "KW06": [("shift5of7", 0.50), ("fixed5", 0.40), ("roster4on4off", 0.10)],
-    "KW07": [("shift5of7", 0.50), ("fixed5", 0.50)],
-    "KW08": [("shift5of7", 0.60), ("fixed5", 0.40)],
+    "KW07": [("shift5of7", 0.80), ("fixed5", 0.20)],
+    "KW08": [("shift5of7", 0.30), ("fixed5", 0.70)],
     "KW09": [("fixed5", 0.80), ("hybrid_a", 0.20)],
     "KW10": [("fixed5", 0.90), ("parttime", 0.10)],
     "KW11": [("fixed5", 0.70), ("shift5of7", 0.30)],
@@ -72,14 +72,14 @@ STRADDLE = {"KH309": [("KW03", 0.58), ("KW04", 0.42)]}
 LOCAL_CELLS = ["RG01", "RG02", "RG04", "RG05", "RG06", "RG08", "RG09", "BM701"]
 OUTSIDE_CELLS = ["XO001", "XO002"]
 SAMPLE = 0.09  # panel devices per resident commuter, about
-DEP_SHIFT = {}  # minutes added to every shift of a destination's workers (set by tuning)
-GATE_SEED = 19
+DEP_SHIFT = {"KW05": 40}  # minutes added to every shift of a destination's workers (set by tuning)
+GATE_SEED = 45
 # Leave and sickness on scheduled days, by workplace zone (set by tuning, inside 6 to 12 per cent).
-ABSENCE = {}
+ABSENCE = {"KW01": 0.072, "KW03": 0.105, "KW04": 0.115, "KW05": 0.105, "KW08": 0.08}
 # Stays in the workplace zone on the way in (car parks, a security gate, a transport hub) and how often a journey makes one.
 ARRIVE_CELLS = {"KW01": "KC105", "KW02": "KD205", "KW03": "KH305", "KW04": "KU405", "KW05": "CB505", "KW06": "RC605",
                 "KW09": "LS905"}
-ARRIVE_P = {"KW01": 0.30, "KW02": 0.35, "KW03": 0.55, "KW04": 0.45, "KW05": 0.60, "KW06": 0.30, "KW09": 0.25}
+ARRIVE_P = {"KW01": 0.35, "KW02": 0.40, "KW03": 0.50, "KW04": 0.47, "KW05": 0.65, "KW06": 0.30, "KW09": 0.21}
 
 # Existing stations on the Ardnagree line and their 2019 base and 2027 standing (ordinary weekday entries).
 STATIONS = [
@@ -94,12 +94,19 @@ STATIONS = [
     ("CBY", "Carrigboy", dt.date(2021, 6, 14), None, 1450, 0.79, False),
 ]
 LISNAGRY_FORECAST = 1140
-# Secondary gatelines the export lists under their own location codes (not stations, so not in the register):
-# parent station, gateline id, first day, last day, share of the station's entries taken.
-GATELINES = [("KDK", "G0417", dt.date(2019, 6, 3), dt.date(2020, 2, 28), 0.33, 0.39),
-             ("ARD", "G0213", dt.date(2018, 1, 1), dt.date(2021, 5, 31), 0.19, 0.25),
-             ("KCN", "G0305", dt.date(2018, 1, 1), dt.date(2022, 8, 26), 0.25, 0.31),
-             ("CBY", "G0711", dt.date(2022, 5, 3), dt.date(2027, 11, 30), 0.15, 0.21),
-             ("KUH", "G0612", dt.date(2024, 9, 2), dt.date(2027, 11, 30), 0.20, 0.26),
-             ("LSG", "G0909", dt.date(2026, 3, 2), dt.date(2027, 11, 30), 0.18, 0.24)]
+# Gate arrays the export lists under their own asset numbers (not stations, so not in the register): asset, the
+# station it stood at, first day, last day, share of that station's entries it took, and the asset register's words.
+# Four arrays, each moved to another station after works, so an asset number belongs to a station by date.
+GATELINES = [("ARD", "GL117", dt.date(2018, 1, 1), dt.date(2021, 5, 31), 0.19, 0.25, "Park-and-ride gate"),
+             ("CBY", "GL117", dt.date(2022, 5, 3), dt.date(2027, 11, 30), 0.15, 0.21,
+              "Second entrance (array moved from Ardnagree)"),
+             ("KCN", "GL131", dt.date(2018, 1, 1), dt.date(2022, 8, 26), 0.25, 0.31, "South concourse"),
+             ("KDK", "GL131", dt.date(2024, 4, 15), dt.date(2027, 11, 30), 0.12, 0.18,
+              "Footbridge gate (array moved from Kilcarrow Central)"),
+             ("KDK", "GL152", dt.date(2019, 6, 3), dt.date(2020, 2, 28), 0.33, 0.39, "Temporary entrance, canopy works"),
+             ("KUH", "GL152", dt.date(2024, 9, 2), dt.date(2027, 11, 30), 0.20, 0.26,
+              "East entrance (array moved from Kilcarrow Docklands)"),
+             ("KCN", "GL166", dt.date(2018, 1, 1), dt.date(2020, 3, 27), 0.06, 0.10, "Kent Row gate"),
+             ("LSG", "GL166", dt.date(2026, 3, 2), dt.date(2027, 11, 30), 0.18, 0.24,
+              "Mill Road entrance (array moved from Kilcarrow Central)")]
 STATION_NO = {"ARD": "02", "KCN": "03", "KDK": "04", "UHK": "06", "KUH": "06", "CBH": "07", "CBY": "07", "LSG": "09"}

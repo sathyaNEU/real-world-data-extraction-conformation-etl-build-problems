@@ -257,37 +257,65 @@ def asks(target, fund_fac, school_fac):
     # C: replay the meter title by title
     status = {r["licence_id"]: int(r["loans_remaining"]) for r in rows(find(target, r"^shelfmark_licence_status.*\.csv$"))}
     end_oct30 = dt.datetime(2026, 10, 31, tzinfo=LON)
+    first = dt.date(2025, 9, 1)
     metered = collections.defaultdict(list)
     for r in lic:
-        if r["Licence model"] == "1 user, 40 loans":
-            od = as_d(r["Order date"])
-            metered[r["Platform title ID"]].append(dict(
-                id=r["Licence ID"], left=status.get(r["Licence ID"], 40) if od < dt.date(2025, 9, 1) else 40,
-                start=None if r["Order type"] == "Renewal" else dt.datetime(od.year, od.month, od.day, tzinfo=LON),
-                od=od, src=r["PO line"].split("-")[1] if r["Order type"] == "Renewal" else None,
-                fund=r["Fund code"], gone=None))
+        if r["Licence model"] != "1 user, 40 loans":
+            continue
+        od = as_d(r["Order date"])
+        x = dict(id=r["Licence ID"], od=od, ref=r["PO line"], renewal=r["Order type"] == "Renewal",
+                 fac=fund_fac.get(r["Fund code"]) if r["Fund code"] else None, out_until=None, gone=None,
+                 start=None, left=40)
+        if od < first:
+            x["start"] = dt.datetime(od.year, od.month, od.day, tzinfo=LON)
+            if x["id"] in status:
+                x["left"] = status[x["id"]]
+            else:
+                x["gone"], x["left"] = x["start"], 0          # not in force when the record began
+        elif not x["renewal"]:
+            x["start"] = dt.datetime(od.year, od.month, od.day, tzinfo=LON)
+        metered[r["Platform title ID"]].append(x)
+    for t, ls in metered.items():
+        lapsed_before = [x for x in ls if not x["renewal"] and x["gone"] is not None]
+        for x in ls:
+            if x["renewal"] and x["od"] < first and lapsed_before:
+                x["fac"] = lapsed_before[0]["fac"]
     loans = collections.defaultdict(list)
     for c in rows(find(target, r"^shelfmark_checkouts_.*\.csv$")):
-        s = ts(c["checked_out_at"])
-        if s < end_oct30:
-            loans[c["title_id"]].append((s, ts(c["ended_at"])))
+        s_ = ts(c["checked_out_at"])
+        if s_ < end_oct30:
+            loans[c["title_id"]].append((s_, ts(c["ended_at"])))
     held = collections.Counter()
+    far = dt.datetime(2100, 1, 1, tzinfo=Z)
     for t, ls in metered.items():
-        for s, e in sorted(loans.get(t, [])):
-            cand = [x for x in ls if x["start"] is not None and x["start"] <= s and x["gone"] is None and x["left"] > 0]
+        due = []
+
+        def raise_relicences(upto):
+            due.sort(key=lambda z: z[0])
+            while due and due[0][0] <= upto:
+                e0, x0 = due.pop(0)
+                day = e0.astimezone(LON).date()
+                nxt = sorted([y for y in ls if y["renewal"] and y["od"] == day and y["start"] is None],
+                             key=lambda y: y["ref"])
+                if nxt:
+                    nxt[0]["start"], nxt[0]["fac"] = e0, x0["fac"]
+        for s_, e in sorted(loans.get(t, [])):
+            raise_relicences(s_)
+            cand = [x for x in ls if x["start"] is not None and x["start"] <= s_ and x["gone"] is None
+                    and x["left"] > 0 and (x["out_until"] is None or x["out_until"] <= s_)]
             if not cand:
                 continue
             x = min(cand, key=lambda x: (x["start"], x["od"], x["id"]))
             x["left"] -= 1
+            x["out_until"] = e or far
             if x["left"] == 0:
-                x["gone"] = e or dt.datetime(2100, 1, 1, tzinfo=Z)
-                for y in ls:
-                    if y["src"] == x["id"] and y["start"] is None:
-                        y["start"] = x["gone"]
+                x["gone"] = e or far
+                if e is not None:
+                    due.append((e, x))
+        raise_relicences(far)
         for x in ls:
-            if x["start"] is not None and x["start"] <= end_oct30 and (x["gone"] is None or x["gone"] > end_oct30) \
-                    and x["left"] <= 10:
-                held[fund_fac[x["fund"]]] += 1
+            if x["start"] is not None and x["start"] <= end_oct30 and (x["gone"] is None or x["gone"] > end_oct30):
+                held[x["fac"]] += x["left"]
     return spend, unc, held
 
 

@@ -28,6 +28,7 @@ SOURCES = {
     "gates": ("Ardnagree line operator, daily gate entries by location code, 1 January 2018 to 30 November 2027",
               "evidence"),
     "register": ("Ardnagree line operator, station register", "evidence"),
+    "assets": ("Ardnagree line operator, gate asset register, location history", "evidence"),
     "calendar": ("KMTA, public holiday and school break calendar 2018 to 2027", "evidence"),
     "panel_note": ("Vantra Mobile Ireland and KMTA, data licence 2027-114, Schedule 2 service description", "evidence"),
     "housing": ("Kilcarrow City and County Council Planning Department, Rathgarvan residential pipeline, October 2027",

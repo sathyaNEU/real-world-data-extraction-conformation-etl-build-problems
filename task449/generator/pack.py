@@ -253,10 +253,15 @@ def write_cases(rows, tgt):
     from openpyxl.styles import Font
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
-    fy = {"FY 2025-26": (dt.date(2025, 4, 1), dt.date(2026, 3, 31)), "FY 2026-27": (dt.date(2026, 4, 1), dt.date(2027, 3, 31))}
+    fy = {"Carried into FY 2025-26": (dt.date(2020, 1, 1), dt.date(2025, 3, 31)),
+          "FY 2025-26": (dt.date(2025, 4, 1), dt.date(2026, 3, 31)),
+          "FY 2026-27": (dt.date(2026, 4, 1), dt.date(2027, 3, 31))}
     for sheet, (a, b) in fy.items():
         ws = wb.create_sheet(sheet)
-        ws.append(["Workshore Employer Services - vacancy cases opened %s" % sheet.replace("FY ", "in fiscal year ")])
+        if sheet.startswith("Carried"):
+            ws.append(["Workshore Employer Services - vacancy cases opened before 1 April 2025 and open on that day"])
+        else:
+            ws.append(["Workshore Employer Services - vacancy cases opened %s" % sheet.replace("FY ", "in fiscal year ")])
         ws["A1"].font = Font(bold=True)
         ws.append(["Run %s, case management system" % P.EXTRACT.strftime("%d %b %Y")])
         ws.append([])
@@ -276,7 +281,6 @@ def write_cases(rows, tgt):
         ws.column_dimensions["A"].width = 12
         ws.column_dimensions["B"].width = 12
         ws.column_dimensions["G"].width = 28
-    # cases opened before 1 April 2025 that were still open then go on the first sheet's foot as carried cases
     C.save_workbook(wb, os.path.join(tgt, "employer_services_vacancy_cases.xlsx"),
                     dt.datetime(2026, 11, 14, 8, 0), "Workshore Employer Services")
     return len(rows)

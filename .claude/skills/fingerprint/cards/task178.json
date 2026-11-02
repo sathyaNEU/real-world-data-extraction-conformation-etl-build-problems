@@ -1,106 +1,94 @@
 {
   "task": "task178",
-  "architecture": "v3",
-  "drawn": "2026-10-23",
-  "slot_note": "rebuild 2026-10-23 of a number reopened under the author's rule that no number stays retired; cell quantitative-finance / volatility-derivatives-pricing (Forecasting) allocated by the main session after the population-pharmacokinetics cell found nothing; world, decision, quantity and mechanism drawn fresh in the cell; architecture 1 (the trestle deck) and architecture 2 (the floodplain rating) spent at Gate F, the FC49 seed, conjoint and pharmacokinetics screens registered no card",
-  "domain": "quantitative-finance",
-  "subdomain": "volatility-derivatives-pricing",
-  "client_domain": "quantitative-finance",
-  "niche": "a domestic bank's FX options desk in a fictional Andean republic setting the volatility it prices its first one-year dollar options at for 2027, once the central bank ends the spot operations it ran against the market's largest hourly moves from 2024 to 2026, from the hourly record of those operations and of the dealers' customer flows that the central bank released with its float announcement",
+  "architecture": "v4",
+  "drawn": "2026-11-02",
+  "slot_note": "Batch 3 re-root of task178 (Forecasting) at stage 1: architecture 3 (quantitative-finance / volatility-derivatives-pricing) spent at Gate F and moved to lineage; architectures 1 and 2 spent at Gate F; the conjoint, pharmacokinetics, valve and reserving cells registered no card. World, decision, quantity and mechanism drawn fresh in human-factors-ergonomics / human-reliability-assessment.",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "human-reliability-assessment",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "an independent aircraft maintenance organisation fixing, before its 2027 C-check season for an airline customer opens, which of its planners' three check schedules it runs (the fourteen-day schedule it works today, or one of two ten-day schedules the airline's turn-time request needs, both with the same work and crews, one keeping today's phase-by-phase sequence and one sequencing the aircraft area by area) without the check-related defects per check breaking the contract's quality KPI, forecast from the hangar's own task card sessions and post-check defects on the airline's fleet over 2023 to 2026",
   "objective": "forecasting",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "rate_or_share",
-  "answer": "Price the 2027 one-year dollar options at 12 per cent. The closing rate's volatility over the 2024 to 2026 sessions without the Banco Central's spot operations is between 11 and 12 per cent.",
-  "answer_source": "task178/submission.md, 1. Final Recommendation (bold markers removed); figures in task178/generator/figures.json, written with golden/usd_options_vol_2027.xlsx and golden/free_float_vol_2027.png by generator/deliver.py from target/ and recomputed by generator/verify.py",
+  "shape": "13",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G5",
-    "G16",
+    "G2",
+    "G6",
     "G17"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "causal_design",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who takes the dealers' reports of record, drops the central bank's ANULADA deals and Financiera Tres Valles' July 2025 reports, joins the hours whose mark is missing and reads the pricing policy's closing-rate, 252-session and round-up conventions, then puts the bank's hourly trades back at the price impact read from the hour's move regressed on the market's net flow, prices at 8 per cent (7.4), or at 9 with customer flow alone (8.9), because the bank traded against each hour's own move; customer flow as the instrument puts the 2024 to 2026 volatility between 11 and 12 per cent and prices at 12.",
-  "domain_test": "The deciding quantity is the volatility of a freely floating exchange rate, estimated the way FX microstructure estimates the price effect of order flow (the rate's move per unit of customer order flow, the market's own depth) and turned into the realised volatility an options desk prices at; with another field's nouns there is no order flow, no dealer price impact and no central bank trading against the same hour's move, and the task stops reading the same.",
+  "analyst_test": "A strong analyst who keeps only the defects the joint investigation attributes to the check, maps the legacy and current card numbers and area codes, rebuilds each card's sessions on local time and carries the base's own 2023 to 2026 rate per 1,000 task card man-hours (or per man-hour by trade) to each schedule's planned man-hours forecasts about the same defects per check for all three schedules, inside the KPI, and bids the cheaper ten-day schedule (the phase sequence), because a rate per man-hour cannot see that each card's chance of escaping as a defect rises with the other cards worked in its area in the same shift.",
+  "domain_test": "The deciding quantity is the expected count of maintenance errors a check programme produces, quantified the way human reliability assessment quantifies it, a human error probability per task under its performance-shaping conditions estimated from the organisation's own error record, here the chance that a task card's work escapes as a post-check defect as a function of the other teams working the same area in the same shift; with another field's nouns (kilowatt-hours of load, invoices) there is no task worked by a team beside other teams and the interference that carries the call does not exist.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:price-impact-of-customer-flow-under-leaning-intervention",
+  "layer2_pattern": "own:defect-chance-per-card-read-on-area-shift-crowding",
   "layer1": [
-    "the central bank's dealing-system export with ANULADA rows for deals entered in error, each followed by the deal as dealt",
-    "dealer customer-flow reports refiled to correct them, every receipt kept with its receipt time, the last received of record",
-    "a merged dealer's legacy feed still filing its former customers for a month after the merger, already inside the absorbing dealer's reports",
-    "hour marks missing from the platform's hourly mid after price-feed failures",
-    "national and US holiday calendars closing the platform",
-    "platform trade confirmations stamped in UTC, one row per execution, with CANCELLED executions and their re-booked twins",
-    "a deal-system export with euro forwards, cancelled deals and the bank's own Treasury desks' deals beside client deals",
-    "window forwards kept at contract notional, their drawdowns booked as separate outrights at the window's rate"
+    "legacy and current maintenance information system exports with different card numbering and work-area codes, bridged by the migration crosswalk",
+    "card sessions stamped in UTC by the current system and in local time by the legacy terminals, across daylight-saving changes",
+    "cards worked over several shifts as several session rows, with sessions closed by the shift supervisor when the mechanic did not sign off",
+    "offline-sync duplicate session rows from the current system's tablets",
+    "not-applicable cards cancelled with zero hours",
+    "post-check defects raised by two reporters (the functional test log and the operator's technical log) and merged under one defect number",
+    "defects reclassified as not check-related by the joint investigation, kept in the register with their status",
+    "the hangar movement log with tows to the engine run pad and back during a check",
+    "attendance clockings with missing clock-outs closed at shift end and contractor badges re-keyed at the attendance system migration"
   ],
-  "stakeholder_role": "the head of FX options at a domestic bank, who sets the volatility the desk prices its first 2027 one-year dollar options at before the January launch",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "other",
+  "stakeholder_role": "the head of the heavy maintenance hangar at an independent aircraft maintenance organisation, who fixes the turn time and check schedule the hangar runs for an airline's 2027 C-checks under the contract's check-quality KPI",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per certified output",
   "spine": {
-    "file": "dealer_customer_flows_hourly_2024-2026.csv",
-    "rows": 67662,
-    "entity": "one report received from one reporting dealer of its customers' net dollar purchases in one trading hour",
-    "grain": "dealer x trading hour x report",
-    "source": "synthetic (constructed in the layout of a central bank's FX market statistics release)"
+    "file": "task_card_sessions_2023-2026.csv",
+    "rows": 0,
+    "entity": "one session of work on one task card in one shift of a C-check",
+    "grain": "check x task card x shift",
+    "source": "synthetic (constructed in the layout of a maintenance information system's task card sign-off export)"
   },
-  "forum": "operations_desk",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "financial_institution",
+  "forum": "line_manager_or_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "other",
   "world": {
-    "geography": "a fictional Andean republic (Tamarquia); its central bank, currency, dealers and every record are fictional",
-    "currency": "USD",
-    "org_type": "a domestic commercial bank's FX options desk",
-    "invented_names": [
-      "Republic of Tamarquia",
-      "Banco Central de Tamarquia",
-      "tamarquian peso",
-      "Banco Cordillera",
-      "Banco del Salitral",
-      "Financiera Tres Valles",
-      "Banco Hacendario del Valle",
-      "Banco Rural de Fomento",
-      "Corporación Financiera Los Molles",
-      "Banco Interoceánico",
-      "Banco del Quindal",
-      "Banco Alameda",
-      "Caja Previsora del Sur",
-      "Banco Valle Lindo",
-      "Cambios Costanera",
-      "Ilvara"
-    ],
+    "geography": "Portugal (a fictional independent aircraft maintenance organisation at a fictional northern regional airport and its fictional airline customer; every company, aircraft and record is fictional)",
+    "currency": "EUR",
+    "org_type": "independent aircraft maintenance organisation (heavy maintenance hangar)",
+    "invented_names": [],
     "people": [
-      "Yanet Cáceres",
-      "Miguel Rengifo",
-      "Inés Quiroz",
-      "Edison Hurtado",
-      "Luisa Molano",
-      "Gabriel Arias"
+      "Filipe Pacheco",
+      "Yara Faria",
+      "Dinis Melo",
+      "Eva Moura",
+      "Micael Freitas",
+      "Alícia Rodrigues"
     ]
   },
   "deliverables": [
-    "usd_options_vol_2027.xlsx",
-    "free_float_vol_2027.png"
+    "c_check_bid_review_2027.docx",
+    "c_check_bid_figures_2027.csv"
   ],
   "opening_move": "question-first",
   "question_form": "what",
-  "driver": "The decisive quantity is a forward dispersion with an absorbing agent removed: the agent traded against each interval's own shock and will stop, so the forward dispersion needs the outcome's response to the flow the agent absorbed, and because the agent's trades respond to the same interval's shock, the response read on the flow net of the agent is biased toward zero and the response read on the outside flow alone is net of the agent's offset; only the outside flow's response divided by the share of it the agent did not absorb (the outside flow as the instrument) puts the absorbed flow back at the market's own response.",
-  "driver_concrete": "From 2024 to 2026 the Banco Central de Tamarquia sold dollars in the hours the peso fell hardest and bought in the hours it rose hardest, in about a third of all trading hours, so the closing rate's recorded volatility is 6.9 per cent; its operations end with 2026. The hour's move regressed on the dealers' absorbed flow (customers less the bank) gives an impact of 0.07 per cent per 100 million dollars because the bank's trades answer the same hour's news, and on customer flow alone 0.27, the impact net of the bank's offset; customer flow as the instrument, the reduced form over one less the half of customer flow the bank absorbed, gives 0.55 and a 2024 to 2026 volatility without the bank between 11 and 12 per cent, priced at 12 against 8 or 9.",
-  "stump": "A competent solver who calibrates the market's price impact the textbook way, the hour's move regressed on the order flow the dealers absorbed (customers less the central bank), puts the bank's trades back at that impact and prices the 2027 options at 8 per cent (7.4), or at 9 on customer flow alone; the step that lands it there is the regression itself, because the bank traded against each hour's own move, so only customer flow read as the instrument gives the depth the float exposes, a volatility between 11 and 12 per cent and a price of 12.",
+  "driver": "The decisive quantity is a forward count of failures in work done by teams side by side, where each piece of work fails more often the more other teams work the same place in the same interval, so schedules that keep the work and the crews but arrange them differently change the count, which a rate per hour of work cannot carry; the count comes from each schedule's own crowding, read through the record's place-by-interval variation in crowding and failures.",
+  "driver_concrete": "Each task card's chance of escaping a C-check as a defect rises with the other cards worked in its area in the same shift, so the hangar's rate per 1,000 man-hours forecasts the same defects per check for the fourteen-day schedule and both ten-day schedules, while read on the area-shift crowding of the hangar's own 2023 to 2026 sessions the phase-sequenced ten-day schedule, which crowds every area together through open-up and close-up, breaks the KPI and the area-sequenced one, whose steady area teams crowd each area less than today's fourteen-day phase sequence, stays inside it.",
+  "stump": "A competent solver who carries the hangar's own rate per 1,000 task card man-hours, or per man-hour by trade, to each schedule's planned man-hours forecasts the same defects per check for every schedule, inside the KPI, and bids the cheaper ten-day schedule (the phase sequence), because a rate per man-hour cannot see that each card's chance of escaping as a defect rises with the other cards worked in its area in the same shift; read on that crowding the phase-sequenced ten-day schedule breaks the KPI and the bid is the area-sequenced ten-day schedule.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task173": "task173 v3 reads a unit's failures on the time since work was done on that unit, a hazard clock after an intervention; this build reads each work item's defect chance on how many other teams work its place in the same shift, a crowding relation between concurrent rows with no clock since any intervention, and the forecast turns on how each schedule arranges the same work across shifts.",
+    "task149": "task149 v1 (lineage) reads an injury hazard on each worker's own pace against the work's engineered content; this build holds pace and crews fixed (both ten-day schedules carry the same work and the same crews per shift) and turns on how many teams share a work area in the same shift, so no speed measure reaches the call."
+  },
   "lineage": [
     {
       "domain": "physical-environmental-sciences",
@@ -169,9 +157,62 @@
         "sauer_crossing_frequency_curve.svg"
       ],
       "fate": "spent 2026-10-23 at stage 4, Gate F (pack cc9cb2f1): the judge approved and both scored readers landed the call (Alternative D, 14,000 cfs); a rating segmented at the bankfull break is the field's standard practice and the 79 overbank gaugings show the break plainly"
+    },
+    {
+      "architecture": "architecture 3 (quantitative-finance / volatility-derivatives-pricing, the Banco Central de Tamarquia leaning spot operations ending)",
+      "drawn": "2026-10-23",
+      "domain": "quantitative-finance",
+      "subdomain": "volatility-derivatives-pricing",
+      "niche": "a domestic bank's FX options desk in a fictional Andean republic setting the volatility it prices its first one-year dollar options at for 2027, once the central bank ends the spot operations it ran against the market's largest hourly moves from 2024 to 2026, from the hourly record of those operations and of the dealers' customer flows that the central bank released with its float announcement",
+      "objective": "forecasting",
+      "shape": "04",
+      "decision_type": "dial_setting",
+      "answer_unit": "rate_or_share",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G5",
+        "G16",
+        "G17"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "none",
+      "stump_strategy": "causal_design",
+      "context_artifact": "published_series",
+      "role_family": "portfolio_manager",
+      "forum": "operations_desk",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "financial_institution",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:price-impact-of-customer-flow-under-leaning-intervention",
+      "driver": "The decisive quantity is a forward dispersion with an absorbing agent removed: the agent traded against each interval's own shock and will stop, so the forward dispersion needs the outcome's response to the flow the agent absorbed, and because the agent's trades respond to the same interval's shock, the response read on the flow net of the agent is biased toward zero and the response read on the outside flow alone is net of the agent's offset; only the outside flow's response divided by the share of it the agent did not absorb (the outside flow as the instrument) puts the absorbed flow back at the market's own response.",
+      "driver_concrete": "From 2024 to 2026 the Banco Central de Tamarquia sold dollars in the hours the peso fell hardest and bought in the hours it rose hardest, in about a third of all trading hours, so the closing rate's recorded volatility is 6.9 per cent; its operations end with 2026. The hour's move regressed on the dealers' absorbed flow (customers less the bank) gives an impact of 0.07 per cent per 100 million dollars because the bank's trades answer the same hour's news, and on customer flow alone 0.27, the impact net of the bank's offset; customer flow as the instrument, the reduced form over one less the half of customer flow the bank absorbed, gives 0.55 and a 2024 to 2026 volatility without the bank between 11 and 12 per cent, priced at 12 against 8 or 9.",
+      "stump": "A competent solver who calibrates the market's price impact the textbook way, the hour's move regressed on the order flow the dealers absorbed (customers less the central bank), puts the bank's trades back at that impact and prices the 2027 options at 8 per cent (7.4), or at 9 on customer flow alone; the step that lands it there is the regression itself, because the bank traded against each hour's own move, so only customer flow read as the instrument gives the depth the float exposes, a volatility between 11 and 12 per cent and a price of 12.",
+      "answer": "Price the 2027 one-year dollar options at 12 per cent. The closing rate's volatility over the 2024 to 2026 sessions without the Banco Central's spot operations is between 11 and 12 per cent.",
+      "spine": {
+        "file": "dealer_customer_flows_hourly_2024-2026.csv",
+        "rows": 67662,
+        "entity": "one report received from one reporting dealer of its customers' net dollar purchases in one trading hour",
+        "grain": "dealer x trading hour x report",
+        "source": "synthetic (constructed in the layout of a central bank's FX market statistics release)"
+      },
+      "deliverables": [
+        "usd_options_vol_2027.xlsx",
+        "free_float_vol_2027.png"
+      ],
+      "fate": "spent 2026-10-23 at stage 4, Gate F (zip 6a710f5b): blind reader B landed the call (7 of 7 call figures) by instrumenting the central bank's endogenous trades with customer flow; asks leaked 16 of 24; re-rooted 2026-11-01 at the Batch 3 queue reset. The two later cells searched for this number (a valve exercising programme's seizure clock, blocked by the guard window against task173 and task179; reserving development triangles, dead on lever and determinacy) registered no card."
     }
   ],
-  "notes": "Rebuild of task178, architecture 3 of the slot. stump_strategy causal_design: simultaneity, the agent's trades respond to the same hour's shock, so the comparison the design implies is the exogenous customer flow (not the net flow); not maturity_censoring, not composition_mix. Gate G method_or_model_selection: two defensible estimators of the market's price impact (the hour's move on the net or the customer flow, against the customer flow scaled by the share the bank left to the market, the customer flow as the instrument), the right one pinned by the data's structure, since the bank's trades grow with the same hour's move. Decisive generator G5 (provision elsewhere: the customers' dollar need was partly met by the central bank, so the record's prices never absorbed it), G16 (which estimator of the impact the data entitle), G17 (the margin of the instrument family against the pricing grid, asserted). task177's unregistered candidate G (dealer gamma damping) was the nearest screen and died on lever and family spread at plausible strength; here the absorbing agent's share is large and documented in its own log, and the family spread is measured at 2 to 4 per cent against a 30 per cent lever. Architecture 3 fate: spent 2026-10-23 at stage 4, Gate F (zip 6a710f5b): blind reader B landed the call, 7 of 7 call figures (priced at 12, settings 12 and 13 covering), by 2SLS of the hourly mid change on customer flow and the Bank's net sales with hinge terms of customer flow as instruments, having seen that the Bank trades when the hourly move exceeds about 5 pesos; counterfactual about 11.4 per cent. A central bank leaning against each hour's move is an endogeneity a medium reader spots and instruments by itself. Asks leaked 16 of 24 (66.7 per cent): ask A's sweep device fell to grouping fills by UTC time, trader and side; ask B held. Reader A and the judge were stopped.",
-  "registered": "2026-10-23T08:42:51Z",
-  "architecture_spent": true
+  "notes": "Architecture 4 of the slot (Batch 3 re-root). stump_strategy grain_or_unit: the defect risk lives in the area-shift's concurrent work (pairs of teams in one area in one shift), a unit built by grouping session rows that no key or column carries, not in the card or the man-hour; not composition_mix (no pooled rate over a shifted mix of a recorded class), not causal_design. Gate G forecasting. Gap time first (the record's work was arranged by today's phase sequence across shifts; the decision bets on schedules that arrange the same work differently), population second (the unit of risk is the area-shift's concurrent cards). G2 decisive (what is one unit of risk: the area-shift's concurrent cards), G6 (each schedule's crowding mix), G17 (the margin of every model form against the KPI, asserted). Axes redrawn at the draw (window task466, task185, task459): role compliance_or_audit to field_unit_lead (the hangar head fixes the schedule; quality's forecast informs it), artifact filed_standard to capacity_report (the planners' check schedules are the stakeholder's own file), forcing event purchase_order_or_contract to season_or_peak (the world moved from a tender to the 2027 season's schedule under the contract in force, forced by the season's first induction).",
+  "registered": "2026-11-02T03:46:56Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "png+xlsx"
+  }
 }

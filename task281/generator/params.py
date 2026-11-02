@@ -1,7 +1,8 @@
 """Fixed parameters of the Ardmuir University Library world (architecture 4)."""
 import datetime as dt
 
-SEED = 28115
+SEED = 28240
+ADMIN_SALT = 14     # the administrative records draw on their own streams, salted apart from the platform
 
 UTC = dt.timezone.utc
 # UK clock changes inside the record (UTC instants)

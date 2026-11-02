@@ -92,7 +92,7 @@ GROUPS = {
 # Background phone robberies and snatches per day by district (both windows; lone offenders mostly).
 BG_RATE = {"D1": 0.42, "D2": 0.20, "D3": 0.18, "D4": 0.20, "D5": 0.12, "D6": 0.22, "D7": 0.12,
            "D8": 0.13, "D9": 0.12, "D10": 0.09}
-ONTRAIN_RATE = 0.62      # on-train phone thefts per day across both lines (recorded by the transit officers)
+ONTRAIN_RATE = 1.45      # on-train phone thefts per day across both lines (recorded by the transit officers)
 
 # All-occurrence volume per day city-wide (other offence types fill the RMS extract).
 OTHER_RATE = 134.0
