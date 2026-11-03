@@ -193,5 +193,11 @@
    "deliverable set": "xlsx"
   }
  ],
- "registered": "2026-11-03T03:54:47Z"
+ "registered": "2026-11-03T03:54:47Z",
+ "shell": {
+  "question form": "other",
+  "second-sentence opener": "fill",
+  "rounding opener": "tons",
+  "deliverable set": "docx+xlsx"
+ }
 }

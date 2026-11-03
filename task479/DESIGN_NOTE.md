@@ -113,7 +113,7 @@ Link: the coincidence is read by sweeping all nine vents' steps on one clock, a 
 
 Reflex: the field's method for controlled emissions (vented VOC times one minus the tested destruction, the closed-vent system's capture taken as complete, minutes not in RUN uncontrolled) sits at R1 and files 1.9 tons, under the limit (the default path's Ends on).
 
-Back-test: the textbook route validates: the 2025 test confirms 99.4 per cent with the inlet loading the vent basis predicts for the steps in progress within 3 per cent (its runs at 3,342 to 3,371 scfm, under the fan), and the DAHS log shows RTO-1 in RUN at its operating temperature through the coincidences; none of them sees what the fan did not draw.
+Back-test: the textbook route validates: the 2025 test confirms 99.4 per cent, the plant's calculated loading from the vent basis for the steps in progress, which the report gives as process data, sits within 3 per cent of the measured inlet loading (its runs at 3,342 to 3,371 scfm, under the fan), and the DAHS log shows RTO-1 in RUN at its operating temperature through the coincidences; none of them sees what the fan did not draw.
 
 Second use: every file the step reads is read by the default path too: the batch exports (each step's minutes), the vent basis (each step's flow and VOC, the flow being the basis's own input), the register (which vents sit on CVS-1, RTO-1's rating, PSV-31) and the compliance log (the minutes not in RUN).
 
@@ -153,6 +153,7 @@ Each rung against the seven tests (1 filed sentence, 2 schema, 3 reflex, 4 contr
 | SF15 | the comparison | 2.5 tons in any calendar year | none | over | B.1 |
 | SF16 | delivered (the asks) | the supplier's delivery date on the invoice line | the warehouse posting date | asks only, every ask figure moves | the asking sentence's "delivered"; AP's Delivery Date column |
 | SF17 | each solvent (the asks) | the solvent delivered, named on its invoice line | SOL-07 read through the master's current description | asks only, n-heptane and isohexane move | the deliveries' own invoice lines name n-heptane before June 2026 |
+| SF18 | how much of the gas above the fan's draw leaves untreated | all of it: the header's mixed gas above 3,800 scfm leaves at PSV-31 | a part of it (the call needs 48 per cent or more of the proportional release; at 48 per cent the year is 2.5 tons) | over at the whole release, within only under 48 per cent | the register: RTO-1's maximum process flow and FN-1's rating are both 3,800 scfm, a hard cap on the draw, and in RUN PSV-31 at the inlet plenum is HDR-1's only outlet besides RTO-1 (XV-30 "Open whenever RTO-1 is not in RUN"); ruled at stage 4 |
 
 ## Ladder
 
@@ -229,12 +230,31 @@ Mirror leakage: 0.0 per cent of ask weight
 
 Measured by: generator/ceiling.py on the cut pack
 
+## Stage 4 rulings
+
+The leak reader (one isolated thread, `leak_check_report.md` ## Solver's-eye read) and the determinism judge
+(`determinism_check_report.md`, DETERMINISTIC, APPROVE, Gate G PASS, Gate H analytical) read target.zip 43c1d6c4;
+every finding was closed in one generator pass.
+
+- Judge finding 1, ruled: the over call needs 48 per cent or more of the proportional excess released at PSV-31 (the judge's thinnest point, non-blocking). RTO-1's 3,800 scfm (its maximum process flow and FN-1's rating, one figure) is a hard cap on what the oxidizer draws, and while RTO-1 is in RUN PSV-31 at the inlet plenum is HDR-1's only outlet besides RTO-1 (XV-30 opens only out of RUN), so all of the header's mixed gas above the draw leaves untreated; SF18 in the fork table, and checks.py SF18 asserts the register's outlets, the proportional release (2,704 lb, 3.196 tons, over) and the call holding at 48 per cent of it or more.
+- Judge finding 2, fixed in the generator: the planned outage's work order opened on 21 July while the DAHS shows RUN to 29 July; it now opens 20 minutes before the DAHS shows RTO-1 OFF and closes 75 minutes after RUN resumes (WO26101811, 2026-07-29 00:40 to 2026-07-31 09:35 local; the orders opened between 21 and 29 July renumber with it); checks.py S13.
+- Judge finding 3, fixed in the generator: the register's PSV-31 last-inspected date is 2026-05-21, the day of its annual inspection order WO26101668; checks.py S13.
+- Judge finding 4, process: the leak reader ran in the same stage; the rubric's 25 criteria are the shape's count in Draw.
+- Reader Q6 (what decides), ruled analytical: RTO-1's 3,800 scfm maximum and PSV-31 appear only as equipment-register ratings and no rule says what the excess does, so what decides the call is the minute-by-minute reconstruction of the vents' coincident flow; the judge's Gate H reads the same.
+- Reader realism note, the BST report's sentence setting the expected inlet loading against the measured: softened in the generator to process data (the plant's calculated loading for runs 1 to 3, the comparison left to the reader); the paragraph carries nothing the golden reads (the golden takes the 99.4 per cent from the summary).
+- Reader realism note, permit B.3's block-validity detail: harmless, kept; B.3 is the oxidizer's temperature condition with the averaging rules a permit's monitoring condition files, and it enters no figure (closure axis 21).
+- leak.py sweep 2, "generator" in the permit: harmless, EU-G1's own row (Emergency generator GEN-1).
+- leak.py sweep 3, golden figures in the pack: harmless, the permit's limit (2.5, B.1), EU-G1's 100-hour cap (C.3), the test's 99.4 per cent that both routes use, and a DAHS digit run (12:47,900.6).
+- leak.py sweep 3, the permit carrying the call's words: harmless, the governing document naming its own unit, limit and pollutant.
+- leak.py sweep 4, design-note terms in the permit (record, records, county, minute, method, oxidizer): harmless, the District's condition language; none names coincident flow, a capacity check or what PSV-31 releases.
+- leak.py sweep 12, column words in the permit (Closed, Description, Equipment, Permittee, Unit): harmless, the District's own record sharing the plant's naming.
+
 ## Pre-ship check
 
-- The 10/10 rules re-read against the built pack: the decisive step is analytical (checks.py R3a to R3f: no cheap route lands the call, the field's method 1.9 tons, the hourly check 2.1, the golden 3.2); the mess is Layer 1 only (R2a to R2d and SF7 to SF10, the call unchanged under every mishandling); no decoy (G7, the AQ-117 template ships blank, and no file states a 2026 EU-P1 figure).
-- Free gates on the final cut (target.zip sha256 43c1d6c4): checks.py 60 of 60; verify.py 28 of 28 from target/ alone; two builds byte-identical, the second in its own process under another hash seed; figures_check.py 54 of 54; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py PASS; leak.py REVIEW, every line ruled innocent (the permit's own limit, definitions and equipment words, the test's 99.4 per cent that both routes use, a DAHS digit run reading 12:47,900.6); guard.py heart WARN (repeat.gate_g, answered on the card) and surface exit 0, its four promoted pairs (task477, task478, task480, task310) answered by differentiation lines on the card; the container scrub clean on target/ and golden/.
-- The card is current: answer, stump, driver_concrete, deliverables, spine rows and layer1 match the measured build.
-- Open at the stage 4 hand-off: the leak reader's verdict and question 1, the determinism judge's verdict and Gate G line.
+- The 10/10 rules re-read against the built pack: the decisive step is analytical (checks.py R3a to R3f: no cheap route lands the call, the field's method 1.9 tons, the hourly check 2.1, the golden 3.2; SF18: the call holds at the proportional release and down to 48 per cent of it); the mess is Layer 1 only (R2a to R2d and SF7 to SF10, the call unchanged under every mishandling); no decoy (G7, the AQ-117 template ships blank, and no file states a 2026 EU-P1 figure).
+- Stage 4: the leak reader found no decisive-step sentence, no ranking file and no file that exists to help the analyst (question 6 ruled analytical); the judge returned DETERMINISTIC, APPROVE, Gate G PASS and Gate H analytical, so reader and judge agree on Gate H. Every finding was closed in one generator pass (## Stage 4 rulings). The pass moved three pack files and no value the call reads: the CMMS planned outage order and the register's PSV-31 date (data only) and the BST report's process sentence; verify.py still reads the fan's 3,800 scfm from the register and the 99.4 per cent from the test's summary. The reader was not re-run (no sentence moved beyond the BST wording) and the judge not re-judged (APPROVE, no FIX_NOW).
+- Free gates on the final cut (target.zip sha256 cbe457c6): checks.py 62 of 62 (SF18 and S13 added at stage 4); verify.py 28 of 28 from target/ alone; two builds byte-identical, the second in its own process under another hash seed; figures_check.py 54 of 54, figures.json, submission.md, metadata.json and golden/ byte-identical to the stage 3 cut; freeze.py check --mode determinism PASS against the snapshot taken before the first edit; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py PASS; leak.py REVIEW (as of 2027-01-29), every line ruled harmless in ## Stage 4 rulings; guard.py heart WARN (repeat.gate_g against task307 v2, answered on the card) and surface exit 0, its four promoted pairs (task477, task478, task480, task310) answered by differentiation lines on the card; the container sweep (leak.py 10) clean on target/.
+- The card is current: answer, stump, driver_concrete, deliverables, spine rows, layer1 and the prompt's shell (other, fill, docx+xlsx) match the measured build.
 
 ## Tried and rejected
 
@@ -329,3 +349,6 @@ Measured by: generator/ceiling.py on the cut pack
 - The PSV-31 release as an asked figure (2026-11-03, stage 2): naming the relief in the prompt announces the decisive step, so the release stays in the golden's memo and is graded only through the quarters and the total.
 - Test runs averaging 99.43 per cent (2026-11-03, stage 3): a reader taking the runs' unrounded mean filed 3.1 tons against the golden's 3.2, a fork on a number the report states; the runs were set to average exactly 99.40, and the lowest run (3.3 tons) is ruled out by B.4 and the report's summary (SF5).
 - The warehouse receipts with a received date beside the posting date (2026-11-03, stage 3): the field reads itself, so the delivery date moved to the supplier's invoice line, the receipts keeping the posting date their system writes.
+- The BST report's process paragraph setting the inlet loading the vent basis expects against the measured, "within 3 per cent" (2026-11-03, stage 4): the leak reader read the comparison as written for the analyst; the paragraph now gives the plant's calculated loading as the process data a test report carries.
+- The planned outage's work order opened on 21 July, eight days before the DAHS shows RTO-1 OFF (2026-11-03, stage 4): the judge read the two records as disagreeing; the order now opens and closes on the DAHS's outage.
+- PSV-31's last inspection on the register a day before its inspection order (2026-11-03, stage 4): one date in both, 21 May.

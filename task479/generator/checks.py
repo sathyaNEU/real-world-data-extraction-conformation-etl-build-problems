@@ -1,6 +1,6 @@
 """The generator's assertions, run on every build: the input gates, the three rules executed on the clean truth (R1 the
 field's raw material ships, R2 the Layer 1 mess cannot move the call, R3 the analyst test and its ladder), every
-semantic fork (SF1 to SF17), bin margins, the ask devices measured, the separation line and the realism sweep."""
+semantic fork (SF1 to SF18), bin margins, the ask devices measured, the separation line and the realism sweep."""
 import csv
 import datetime as dt
 import json
@@ -171,6 +171,19 @@ def run(target, gdir, w, meta_path, fig_path):
        round(sum(round(x, 1) for x in fig["raw"]["quarters_tons"]), 1) == round(G, 1) and
        all(round(sum(round(x, 1) for x in fig["raw"]["quarters_tons"][:k + 1]), 1) == round(yq[k], 1) for k in range(4)))
     ok("SF15 the comparison is the 2.5-ton calendar-year limit (B.1)", W.LIMIT_TONS == 2.5)
+    # ruled at stage 4 (the judge's thinnest point): the over call needs about half of the proportional excess
+    # released, and the register leaves the gas above the fan's draw no other way out while RTO-1 is in RUN
+    outlets = sorted(k for k, r in reg.items() if r[5] and r[5] != "CVS-1")
+    open_in_run = [k for k in outlets if k != "RTO-1" and "not in RUN" not in reg[k][4]]
+    xs = np.where((status == "RUN") & (flow > W.FAN_MAX), (flow - W.FAN_MAX) / np.maximum(flow, 1e-9), 0.0)
+    rel_lb = float((xs * voc).sum())
+    g_prop = t_s1 + W.DRE * rel_lb / 2000
+    f_star = (L - t_s1) / (g_prop - t_s1)
+    ok("SF18 the gas above the fan's draw leaves untreated whole: RTO-1's 3,800 scfm is a hard cap and in RUN PSV-31 "
+       "is HDR-1's only outlet besides RTO-1 (XV-30 opens only out of RUN); the proportional release, %.0f lb, files "
+       "%.3f t, over, and the call holds while %.0f per cent or more of it leaves" % (rel_lb, g_prop, 100 * f_star),
+       outlets == ["PSV-31", "RTO-1", "XV-30"] and open_in_run == ["PSV-31"] and abs(g_prop - G) < 1e-3 and
+       verdict(g_prop) == "over" and f_star < 0.5, "outlets %s" % ", ".join(outlets))
 
     # ------------------------------------------------------------------ the asks
     tgt = V.golden_figures(target)
@@ -247,6 +260,17 @@ def run(target, gdir, w, meta_path, fig_path):
         wo = list(csv.DictReader(fh))
     wo_t = {V.est_minute_from_local(r["Opened"], "%Y-%m-%d %H:%M") for r in wo}
     ok("S5 no work order opens on the minute of a trip", not (trips & wo_t))
+    po = [t for t in w.trips if w.down[0][0] <= t[0] < w.down[0][1]][0]
+    plan = [r for r in wo if r["Asset"] == "RTO-1" and r["Problem"].startswith("Planned outage")]
+    psv = [r for r in wo if r["Asset"] == "PSV-31"]
+    o_a, o_b = (V.est_minute_from_local(plan[0][k], "%Y-%m-%d %H:%M") for k in ("Opened", "Closed"))
+    ok("S13 the records agree: the planned outage order opens on the day the DAHS shows RTO-1 OFF, spans its OFF and "
+       "WARMUP minutes and closes on the day it is back in RUN; PSV-31's inspection order is on the register's date",
+       len(plan) == 1 and len(psv) == 1 and po[0] - 60 < o_a < po[0] and o_b > po[0] + po[1] + po[2] and
+       plan[0]["Opened"][:10] == P.est_dt(po[0]).strftime("%Y-%m-%d") and
+       plan[0]["Closed"][:10] == P.est_dt(po[0] + po[1] + po[2]).strftime("%Y-%m-%d") and
+       psv[0]["Opened"][:10] == psv[0]["Closed"][:10] == reg["PSV-31"][7],
+       "%s %s to %s; PSV-31 %s" % (plan[0]["WO No"], plan[0]["Opened"], plan[0]["Closed"], psv[0]["Opened"]))
     texts = [r["Problem"] for r in wo]
     top = max(texts.count(t) for t in set(texts))
     ok("S6 no free text recurs beyond a real rate", top <= 0.12 * len(texts) + 2, "most common %d of %d" % (top, len(texts)))

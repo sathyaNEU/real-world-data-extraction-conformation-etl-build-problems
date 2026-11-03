@@ -1,10 +1,10 @@
 {
  "task": "task479",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-03",
  "stump": "The default path applies RTO-1's tested 99.4 per cent destruction to every pound the batch records vent while the oxidizer was in RUN, counts its other minutes uncontrolled and files EU-P1 at 1.9 tons, under its 2.5-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 3,800 scfm, the excess lifts PSV-31 to atmosphere untreated, and EU-P1 emitted 3.2 tons.",
  "architecture": 7,
@@ -14,8 +14,8 @@
   "date": "2026-11-03"
  },
  "leak": {
-  "leak_py": "REVIEW, every line ruled innocent (sweeps 2, 3, 4, 12: the permit's own limit, definitions and equipment words, the test's 99.4 per cent, a DAHS digit run)",
-  "reader": ""
+  "leak_py": "REVIEW (as of 2027-01-29), every line ruled harmless (DESIGN_NOTE.md ## Stage 4 rulings)",
+  "reader": "no decisive-step sentence, no ranking or helping file, question 6 ruled analytical (target.zip 43c1d6c4); not re-run after the stage 4 pass, which moved no sentence beyond the BST process wording"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g against task307 v2, answered on the card)",
@@ -23,17 +23,17 @@
   "surface": "exit 0; promoted task477, task478, task480, task310, each answered by a differentiation line on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE, one pass (Gate G PASS, Gate H analytical); findings 2 and 3 fixed in the generator, finding 1 ruled (SF18)",
+  "report": "task479/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4: spawn together in the background the leak reader (general-purpose, model sonnet, effort medium, briefed with prompt.txt and the unzipped target.zip only, as /leak-check step 4 describes, no figures or keys) and the determinism-judge agent on task479, target.zip sha256 43c1d6c4 (python3 task479/generator/build.py rebuilds it byte for byte); fix every finding in the generator in one pass, rebuild, re-run the free gates, re-judge once on FIX_NOW; then stage 5: the pre-ship check's open line, ledger row SHIPPED, status SHIPPED, commit SHIPPED (task479) with git add -f task479/target.zip task479/golden/. This session had no agent-spawning tool, so it stopped at the hand-off.",
+ "resume": "Shipped 2026-11-03; awaiting the portal.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-03",
  "portal": null,
  "source_note": "seed ET36's slot; architecture 7 keeps nothing of the seed or of architectures 1 to 6: a fine-chemicals plant's process vent unit, its batch records, vent calculation basis, oxidizer log and register, invented",
- "shipped_architecture": {
+ "architecture_6_ship": {
   "architecture": 6,
   "delivered": "2026-10-21",
   "portal": "pending, left untouched",
@@ -62,15 +62,26 @@
   "record": "DESIGN_NOTE ## Tried and rejected, screens 1 to 16 and the two rejected prototypes"
  },
  "build": {
-  "target_zip_sha256": "43c1d6c475146c76042c17de76b24fd532623a170f3042494dafdfe7640e6b19",
+  "target_zip_sha256": "cbe457c660217da42494a76d5a3778ae112e89a4a3e23a9d80b15e749ea896fb",
   "rebuild": "python3 task479/generator/build.py (two byte-identical builds, the zip cut last)",
-  "checks": "60 of 60",
+  "checks": "62 of 62",
   "verify": "28 of 28",
   "figures_check": "54 of 54",
   "voice_check": "PASS",
   "pair_ceiling": 26.0,
   "mirror_leakage_pct": 0.0,
   "call": "over: 3.2 tons against 2.5, over by 0.7",
-  "default_path": "1.9 tons, under"
+  "default_path": "1.9 tons, under",
+  "freeze": "determinism PASS against the snapshot taken before the stage 4 edits"
+ },
+ "stage4_pass": {
+  "date": "2026-11-03",
+  "judged_zip_sha256": "43c1d6c475146c76042c17de76b24fd532623a170f3042494dafdfe7640e6b19",
+  "moved": [
+   "BST-25-0418_RTO-1_destruction_efficiency_report.pdf",
+   "cmms_work_orders_2026.csv",
+   "cvs1_closed_vent_system_register.xlsx"
+  ],
+  "graded_figures_moved": 0
  }
 }

@@ -334,12 +334,17 @@ WO_COLS = ["WO No", "Asset", "Opened", "Closed", "Type", "Problem", "Work Done"]
 def wo_rows(w):
     rng = np.random.default_rng([W.SEED, 405])
     f0, f1 = w.te_fail
+    # the planned outage's order opens 20 minutes before the DAHS shows RTO-1 OFF and closes 75 minutes after it is
+    # back in RUN, so the order and the one-minute log agree on the outage
+    po = [t for t in w.trips if w.down[0][0] <= t[0] < w.down[0][1]]
+    assert len(po) == 1, po
+    po_a, po_off, po_warm = po[0]
     fixed = [
         ("RTO-1", W.DOY[7] * 1440 + 9 * 1440 + 7 * 60 + 15, f1, "CM",
          "Chamber temp on DAHS reading low against TE-101B and against burner firing rate.",
          "Checked TE-101A loop, found thermocouple degraded. 08/11 DAHS chamber input moved to TE-101B pending part. "
          "08/26 replaced TE-101A, input restored to TE-101A, loop checked."),
-        ("RTO-1", w.down[0][0] - 6 * 1440 + 7 * 60 + 40, w.down[0][0] + 4 * 1440 + 515, "PM",
+        ("RTO-1", po_a - 20, po_a + po_off + po_warm + 75, "PM",
          "Planned outage, summer turnaround.", "Replaced burner management system and flame scanner; poppet valve seals "
          "renewed; media inspected."),
         ("RTO-1", 33 * 1440 + 11 * 60, 33 * 1440 + 15 * 60 + 20, "CM", "Flame failure trips, intermittent.",

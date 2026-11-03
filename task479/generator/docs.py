@@ -188,9 +188,9 @@ def _test_story():
         Paragraph("3. Process conditions during the runs", H2),
         Paragraph("The test was run with reactors R-101 (heat to reflux and reaction hold, PFC-2140), R-103 (extraction, "
                   "PFC-2315) and R-104 (vacuum distillation, PFC-3021) venting, dryer D-201 in its drying step and the "
-                  "still SR-301 on feed and reflux. Using the plant's vent calculation basis for the steps in progress, "
-                  "the inlet VOC loading expected for each run was 51.0, 51.6 and 51.3 lb/hr, within 3 per cent of the "
-                  "measured loading.", BODY),
+                  "still SR-301 on feed and reflux. Process data for each run were supplied by plant personnel; the "
+                  "plant's calculated VOC loading to RTO-1, from its vent calculation basis, was 51.0, 51.6 and 51.3 "
+                  "lb/hr for runs 1, 2 and 3.", BODY),
         Paragraph("4. Quality assurance", H2),
         Paragraph("Analyzer calibration error, drift and response checks met Method 25A criteria before and after each "
                   "run. Flow measurements met Method 2 cyclonic flow criteria at both locations.", BODY),
@@ -294,7 +294,7 @@ REGISTER = [
     ("XV-110", "Isolation damper, reactor bay manway exhaust", "MH-101 to MH-106", '10"', "Fail open", "", "P-201", "2026-03-11"),
     ("HDR-1", "CVS-1 header duct to RTO-1 inlet", "VL-101 to VL-301 to RTO-1", '18"', "", "", "P-230", "2026-03-14"),
     ("PSV-31", "Header pressure relief at RTO-1 inlet plenum", "HDR-1", '10" x 12"', "Set +6.0 in w.c.",
-     "Atmosphere, vent stack S-3", "P-230", "2026-05-20"),
+     "Atmosphere, vent stack S-3", "P-230", "2026-05-21"),
     ("XV-30", "RTO-1 emergency bypass damper", "HDR-1 to S-2", '18"', "Open whenever RTO-1 is not in RUN", "Stack S-2",
      "P-230", "2026-03-14"),
     ("FN-1", "RTO-1 induced-draft fan, VFD", "RTO-1", "40 hp", "3,800 scfm at 18 in w.c.", "", "P-231", "2026-03-14"),
