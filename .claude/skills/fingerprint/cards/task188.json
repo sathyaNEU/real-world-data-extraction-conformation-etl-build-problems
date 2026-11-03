@@ -6,13 +6,13 @@
   "domain": "banking-credit-financial-risk",
   "subdomain": "fraud-aml-detection",
   "client_domain": "banking-credit-financial-risk",
-  "niche": "a British Columbia credit union's financial intelligence unit choosing which cash-intensive business members it takes into enhanced investigation in the first quarter of 2027, each member's 2026 cash paid in judged against the cash its walk-in trade produces",
+  "niche": "a British Columbia credit union's Business Services team choosing which cash-intensive business members its January enhanced due diligence review refers to the financial intelligence unit for investigation in the first quarter of 2027, each member's 2026 cash paid in judged against the cash its walk-in trade produces",
   "objective": "anomaly-detection",
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Refer Seaview Specialty Foods (CAD 477,000 paid in, 125,000 produced, excess 350,000) and Pacifica Donair & Pizza (299,000, 75,000, 225,000); the largest excess not referred is Sunrise Fresh Market's",
+  "answer_source": "task188/generator/figures.json",
   "gap": [
     "objective",
     "population"
@@ -30,27 +30,27 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and the policy correctly scores each member's 2026 cash against its trade-and-size peers, against the expected activity it declared, or against its trade's cash share of everything else the account received, and refers honest members that grew or trade large, while the two fronts pass, because their laundered cash and their network's business receipts inflate exactly the measures those routes divide by.",
+  "analyst_test": "A strong analyst who reads every field and the programme correctly takes each member's produced cash as the expected activity it declared and refers Kingsway Pho House and Bright Spark Car Wash, honest members whose 2018 and 2019 declarations sit far below their 2026 cash, or as its business type and band peers or its type's cash share of turnover and refers nobody, while the two fronts pass because their laundered cash and their network's business payments inflate exactly the measures those routes divide by.",
   "domain_test": "The deciding quantity is a business member's cash beyond what its walk-in trade produces, the core quantity of cash-intensive business monitoring in anti-money-laundering work, estimated from the card acquirer settlements that measure the same counter trade independently of the cash; with hospitals or megawatt-hours in place of takeaways and salons there are no tills, card terminals or placement of criminal cash, so the task stops making sense.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:independent_trade_benchmark_for_cash",
   "layer1": [
-    "narrative-coded postings: card acquirer settlements, delivery platform payouts, cash channels and business receipts each in their processor's own wording",
-    "core banking timestamps in UTC against Pacific branch business days",
-    "members holding more than one account",
-    "KYC profiles of different review vintages, some years stale",
-    "acquirer monthly merchant statements in PDF carrying gross sales against the net daily settlements",
-    "a member register whose industry codes were set at onboarding",
-    "an LCTR filing log keyed by report number rather than posting"
+    "narrative-coded postings: two card acquirers' settlements in their own batch wording, delivery platform payouts, business EFTs, mobile cheque deposits, owner and loan transfers",
+    "counter deposits mixing cash and cheques with the cash in its own field",
+    "core banking timestamps in UTC against Pacific business dates; ATM deposits after 18:00 credited the next business date; night bags credited when counted",
+    "members holding more than one account, mapped through the register's accounts sheet",
+    "CDD profiles of different review vintages",
+    "a branch closed and another opened in June, an ATM moved under its own terminal number",
+    "an LCTR log mixing segment and other members' reports with Corrections, a re-sent Original and branch-keyed reports carrying the conductor's membership"
   ],
-  "stakeholder_role": "the credit union's financial intelligence unit lead, who takes the first-quarter 2027 investigation slate to the AML compliance committee",
-  "role_family": "compliance_or_audit",
+  "stakeholder_role": "the manager of Business Services, the first line that holds the cash-intensive business members' relationships, performs their January enhanced due diligence review and refers its slate to the financial intelligence unit and the AML compliance committee",
+  "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "business_account_postings_2026.csv",
-    "rows": 300000,
+    "file": "core_banking/hrcu_business_postings_2026.csv",
+    "rows": 321917,
     "entity": "one posting on a business member's account",
     "grain": "account x posting",
     "source": "synthetic"
@@ -72,14 +72,14 @@
   },
   "deliverables": [
     "fiu_referral_slate_2027q1.docx",
-    "member_cash_benchmark_2026.xlsx",
-    "referred_members_2026.png"
+    "member_cash_review_2026.xlsx",
+    "cash_review_2026.png"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "whether",
   "driver": "The decisive quantity is one kind of inflow beyond what a unit's own activity produces, and every benchmark built from the unit's peers, from what the unit declared or from the unit's other inflows moves with the anomaly, because the anomaly's owners set the declaration and supply the other inflows at will, so only the activity a third party records in a separate channel, carried through how that channel relates to the inflow across the whole population, separates the anomaly from size.",
   "driver_concrete": "Each business member's 2026 cash paid in is judged against the cash its walk-in trade produces, taken as its card acquirer settlements times its own trade's cash-to-card relation across the credit union's book, because the peer group, the member's declared expected activity and its other credits all move with the laundered cash: the fronts declared high expected activity at onboarding and receive their network's business-to-business payments.",
-  "stump": "The solver refers the members its peer scores, declared activity or turnover shares put on top, honest members that grew since onboarding or trade large, and clears the two fronts, because it judges each member's cash against measures their laundered cash and their network's business receipts inflate, when only the walk-in trade their card acquirers settle shows each paid in about four times the cash its counter trade produces.",
+  "stump": "The solver refers Kingsway Pho House and Bright Spark Car Wash, or nobody, because it judges each member's 2026 cash against the expected activity the member declared, its type-and-band peers or its type's cash share of turnover, and clears Seaview Specialty Foods and Pacifica Donair & Pizza, whose declarations were set high and whose network's business payments swell their turnover, when only the walk-in trade their card acquirers settle shows each paid in about four times the cash its counter trade produced.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -121,10 +121,10 @@
       "deliverable set": "pdf+png+xlsx"
     }
   ],
-  "notes": "Re-root 2026-11-03 (architecture 2). Strategy population_selection: the decisive choice is the exposure the cash is measured against (the walk-in trade a third party settles), not a peer group, a declaration or the account's own turnover. decomposition_attribution was the other honest label and is banned in the window (task173).",
+  "notes": "Re-root 2026-11-03 (architecture 2). Strategy population_selection: the decisive choice is the exposure the cash is measured against (the walk-in trade a third party settles), not a peer group, a declaration or the account's own turnover. decomposition_attribution was the other honest label and is banned in the window (task173). Stage 2 (2026-11-03): ban.role BLOCK against task479 v7 (registered nine minutes earlier in a parallel worktree) cleared by redrawing the review's owner: the January review moves to Business Services, the first line that holds the segment's relationships and performs its enhanced due diligence, with the FIU as the second line taking the referrals; role family portfolio_manager.",
   "registered": "2026-11-03T04:03:35Z",
   "shell": {
-    "question form": "how-much",
+    "question form": "whether",
     "second-sentence opener": "send",
     "rounding opener": "round",
     "deliverable set": "docx+png+xlsx"

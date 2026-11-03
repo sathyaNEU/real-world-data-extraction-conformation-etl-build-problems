@@ -1,7 +1,41 @@
 # task188 design note
 
 Architecture 2 (re-root 2026-11-03). Architecture 1, the West Nile virus spray zone, is spent and stays at the portal
-as shipped on 2026-10-13; its record is under `## Architecture 1 record` and every screen since is in
+as shipped on 2026-10-13; its record is under `## Leak sweep rulings
+
+`leak.py --asof 2027-01-15` on the final cut (zip 0fcfaed0), verdict REVIEW, no LEAK; sweeps 1, 2, 5, 7, 8 and 11 clean.
+- Sweep 3: the 55 hits on five-digit numbers are the branch transits (10342 to 11204), which every branch file carries as
+  its key; "7.3" is the programme's own section number; "1,000,000" in the CDD extract is a turnover band's edge, not
+  Uptown New Westminster's printed night cash; the programme shares the call's words because the call is its own
+  section 7.3 referral, and it names no member.
+- Sweep 4: the programme and the terms of reference share ordinary words with the stump paragraph (counter, turnover,
+  relation in "relationship", credit, section, activity, records); neither names card trade, a channel, a ratio or a
+  benchmark.
+- Sweep 6: the directory and the register name branches and members beside their own numbers (addresses, dates,
+  member numbers); neither ranks anything on the referral question.
+- Sweep 9: the CDD extract's `next_review_due` dates lie after the as-of date by their nature.
+- Sweep 12: the five words (channel, opened, closed, credit, Regional Cash Services) are the programme's own words
+  about its channels and its counting centre, not a gloss on any column.
+
+## Pre-ship check
+
+1. Domain: AML monitoring of cash-intensive businesses, each member's cash judged against the cash its counter trade
+   produced; with another field's nouns there is no till, card terminal, acquirer settlement or criminal cash to place.
+2. Real work, nothing planted: every Layer 1 item is what the credit union's systems write; each mishandled leaves the
+   call where it is (`checks.py` R2 rows), and the asks' devices sit only in ask files (A7).
+3. The step that flips the call is analytical: which record of the member's trade the laundered cash cannot move,
+   carried through each business type's relation; no clause names it (the programme files the test, not the estimate).
+4. Analyst test: the declared route, every rule applied, refers Kingsway Pho House and Bright Spark Car Wash on the clean
+   truth (R3a); the decisive step alone refers the golden (R3b); each lower correction stays wrong.
+5. The programme files the estimand (population, outcome, window on the business date, unit, comparison); the standing
+   family prints the same pair and figures in 12 of 12 (F1 to F4); every convention row is asserted (SF1 to SF20).
+6. No decoy, no withheld rule against a stated one, no certified replay.
+7. The lesson is on no other card: nearest driver 0.06 (task27, task66, task120 v3); `guard.py heart` WARN only, the two
+   WARNs answered in `## Draw`.
+8. Asks: 30 figures on files the call never reads for their devices; the cracker keeps 13 and the mirror 11 (pair
+   ceiling 50.5, `ceiling.py`).
+
+## Architecture 1 record` and every screen since is in
 `## Tried and rejected`.
 
 ## Draw
@@ -13,25 +47,36 @@ as shipped on 2026-10-13; its record is under `## Architecture 1 record` and eve
   card (task196, scam incidence by two capture channels). The draw moved here after three passes on 2026-11-01 and a
   fourth on 2026-11-03 screened every other Anomaly Detection cell dead (`## Tried and rejected`).
 - **Niche:** Harlow Reach Credit Union, a fictional credit union in the Lower Mainland of British Columbia. Its
-  Financial Intelligence Unit (the Unit) monitors the business members its AML/ATF compliance programme classes as
-  cash-intensive (full-service and limited-service restaurants, cafes, convenience and grocery retailers, bars, nail
-  and beauty salons, car washes, coin laundries, mobile food vendors). Each January the Unit selects the members it
-  takes into enhanced investigation for the quarter, under the programme's case acceptance test: the cash a member paid
-  into its accounts over the calendar year against the cash its trade with its customers produced.
+  Business Services team, the first line that holds the business members' relationships, performs the enhanced due
+  diligence the AML/ATF compliance programme requires on the members it classes as cash-intensive (full-service and
+  limited-service restaurants, cafes, convenience and grocery retailers, bars, nail and beauty salons, car washes, coin
+  laundries, mobile food vendors). Each January it reviews the segment on the year just closed and refers to the
+  Financial Intelligence Unit (the Unit), the second line, the members that meet the programme's case acceptance test:
+  the cash a member paid into its accounts over the calendar year against the cash its trade with its customers
+  produced.
 - **Forcing and forum:** the AML compliance committee's January meeting approves the quarter's investigations
-  (`vote_or_meeting`, `committee_or_panel`); a credit union (`financial_institution`); the requester is the Unit's lead
-  (`compliance_or_audit`).
-- **Call:** which cash-intensive business members the Unit opens enhanced investigations on in the first quarter of
-  2027, with each one's 2026 cash paid in, the cash its trade produced and the difference.
-- **Shape `other`:** a designation over the segment. Criteria arithmetic before the asks: the designated set (each
-  referred member, 2), each referred member's three figures (6), the largest non-qualifier and its three figures (4),
-  each referred member's unexplained cash by month (24), the chart with its parts (5), the files (3): 44.
+  (`vote_or_meeting`, `committee_or_panel`); a credit union (`financial_institution`); the requester is the manager of
+  Business Services (`portfolio_manager`, the holder of the segment's relationships). Redrawn at stage 2 from the Unit's
+  lead (`compliance_or_audit`): task479 v7, registered nine minutes before this card in a parallel worktree, holds that
+  family, so `ban.role` blocked. The first line is the honester owner and not merely the passing one: Canadian credit
+  unions run periodic enhanced due diligence on higher-risk business members in the business line and escalate to the
+  FIU, and the asks (branch after-hours cash, report timeliness on branch-keyed filings) are first-line measures.
+  `guard.py check` WARNs answered: `repeat.deliverables` (docx, png and xlsx are what a first-line review sends a
+  committee, a referral memo, a member workbook and one chart; task479's set is an emissions return) and
+  `repeat.question_form` (the call gates each member, refer or not, so the form is `whether`; `which` sits over its
+  corpus quota).
+- **Call:** which cash-intensive business members Business Services refers to the Unit for enhanced investigation in
+  the first quarter of 2027, with each one's 2026 cash paid in, the cash its trade produced and the difference.
+- **Shape `other`:** a designation over the segment. Criteria arithmetic: the designated set (each referred member, 2),
+  each referred member's three figures (6), the largest excess not referred (1), the workbook's every-member figures
+  (3), the chart with its parts (4), the files (3), each quarter's reports required, filed and late (12), each
+  branch's after-hours cash through its deposit ATMs and in its night depository (18): 49.
 - **Strategy and mechanism:** `population_selection` (the exposure the cash is measured against: the counter trade a
   third party settles, not a peer group, a declaration or the account's own turnover); gap objective then population
   (the declared activity, the peer means and the turnover shares are correct records and are not what the test is
   scored on); decisive generator G14 (the trade's cash-to-card relation carried onto each member's own card trade),
   G3 beside it (the record of cash against the trading operation behind it); Gate G `decomposition_attribution` (each
-  member's cash split into what its trade produced and the rest); calibration `none`; context `monitoring_export`.
+  member's cash split into what its trade produced and the rest); calibration `none`; context `operations_log`.
 - **Data-native sentence:** a member's cash comes only from its walk-in customers, whose other payments reach the
   account as its card acquirer's daily settlements under the acquirer's own narrative, while its declared expected
   activity, its peer band and its account's other credits are all things a front's owners set or supply, so the
@@ -66,83 +111,92 @@ as shipped on 2026-10-13; its record is under `## Architecture 1 record` and eve
 
 The pipeline a competent AML analyst builds from the question's words, the programme and the files' grain.
 
-1. Read the programme's case acceptance section: the test is on the cash a member paid in during 2026 against the cash
-   its trade with its customers produced, an excess of CAD 100,000 or more and at least twice the produced cash.
-2. Total each cash-intensive member's 2026 cash paid in from the postings: the cash portion of counter deposits, ATM
-   deposits and night deposits, on branch-local days, across every account the member holds.
+1. Read the programme's case acceptance section (7.3): the test is on the cash paid into the member's accounts in 2026,
+   on the business date of each credit, against the cash its trade with its customers produced, an excess of CAD
+   100,000 or more and at least twice the produced cash.
+2. Total each segment member's 2026 cash paid in from the postings: the cash portion of counter deposits, coin
+   deposits, ATM deposits and night deposits, across every account the register's accounts sheet maps to the member.
 3. Take the cash its trade produced as what the member told the credit union its trade would produce, its CDD
-   profile's expected monthly cash deposits times twelve: the field's standard measure of activity consistent with the
-   customer's profile.
-4. Cross-check against the peer route the monitoring scenarios use: the mean 2026 cash of the member's trade and
-   declared turnover band.
+   profile's anticipated monthly cash deposits times twelve: the field's standard measure of activity consistent with
+   the customer's profile.
+4. Cross-check against the peer route the monitoring scenarios use: the mean 2026 cash of the member's business type
+   and declared turnover band, and the business type's usual cash share of the account's turnover.
 5. Apply the test and file the members it refers.
 
-**Ends on:** refer Kingsway Pho House and Bright Spark Car Wash, two honest members whose 2026 cash is more than three
-times the expected activity they declared at onboarding in 2018 and 2019, and clear Pacifica Donair & Pizza and Lumen
-Nail Bar, whose declarations cover what they paid in (figures fixed by the generator at stage 3).
+**Ends on:** refer Kingsway Pho House and Bright Spark Car Wash, two honest members whose 2026 cash (CAD 237,252 and
+174,160) is 3.5 and 3.6 times the expected activity they declared at their 2018 and 2019 reviews, and clear Seaview
+Specialty Foods and Pacifica Donair & Pizza, whose cash sits at 0.93 of what they declared in 2025; the peer and
+turnover-share cross-checks refer nobody.
 
-**Golden:** refer Pacifica Donair & Pizza and Lumen Nail Bar, each of whom paid in more than three times the cash its
-counter trade produced, that trade read from its card acquirer's settlements through its own trade's cash-to-card
-relation across the credit union's book (figures fixed by the generator at stage 3).
+**Golden:** refer Seaview Specialty Foods (CAD 477,000 paid in, about 125,000 produced, excess 350,000) and Pacifica
+Donair & Pizza (299,000 paid in, about 75,000 produced, excess 225,000), each paying in about four times the cash its
+counter trade produced, that trade read from its card acquirer's settlements through its own business type's
+cash-to-card relation across the segment; the largest excess not referred is Sunrise Fresh Market's.
 
 ## Stump sentence
 
 The solver refers Kingsway Pho House and Bright Spark Car Wash because it judges each member's 2026 cash against the
-expected activity the member declared, or against its peers or the account's own turnover, and clears Pacifica Donair &
-Pizza and Lumen Nail Bar, whose declarations were set high at onboarding and whose network's business payments swell
-their turnover, when only the walk-in trade their card acquirers settle shows that each paid in more than three times
-the cash its counter trade produces.
+expected activity the member declared, or against its peers or the account's own turnover, and clears Seaview Specialty
+Foods and Pacifica Donair & Pizza, whose declarations were set high in 2025 and whose network's business payments swell
+their turnover, when only the walk-in trade their card acquirers settle shows that each paid in about four times the
+cash its counter trade produced.
 
 ## Three rules
 
 - **Task type:** banking-credit-financial-risk / fraud-aml-detection, which serves Anomaly Detection: separating
   laundered cash from the ordinary takings of a cash-intensive business is that task type's own work.
 - **Domain test:** the deciding quantity is each business member's cash paid in beyond the cash its trade with its
-  customers produced, the core quantity of cash-intensive business monitoring in anti-money-laundering work, estimated
-  the way the field estimates a customer's expected cash: from the business's own trade and what that kind of trade
-  pays in cash; with hospitals or megawatt-hours in place of takeaways and salons there are no tills, card terminals,
-  acquirer settlements or placement of criminal cash, so the task stops making sense.
+  customers produced, the core quantity of cash-intensive business monitoring in anti-money-laundering work; with
+  hospitals or megawatt-hours in place of takeaways and salons there are no tills, card terminals, acquirer
+  settlements or placement of criminal cash, so the task stops making sense.
 - **Swap:** "which hospitals should the inspectorate investigate for megawatt-hours beyond what their patient trade
   produces" has no tills, no card terminal settling the same counter's sales, no criminal cash to place and no
   declaration a front could inflate; the call does not survive the swap.
-- **Layer 1:** postings coded by the core banking system with each processor's own narrative (two card acquirers, two
-  delivery platforms, business payments, owner and loan transfers); counter deposits that mix cash and cheques, cash
-  portion in its own field; timestamps in UTC against Pacific branch days; members holding more than one account;
-  CDD profiles of different review vintages; an acquirer's monthly merchant statements in PDF carrying gross sales
-  against the net daily settlements; an LCTR filing log keyed by report number. Each comes from the system that makes
-  it; none is placed to be caught.
-- **Layer 2:** estimand_identification: the right counterfactual for a member's cash, the cash its own counter trade
+- **Layer 1:** the core banking system's postings with each processor's own narrative (two card acquirers with their
+  own batch wording and merchant number formats, two delivery platforms paying weekly net of commission, business EFTs,
+  mobile cheque deposits, owner and loan transfers); counter deposits that mix cash and cheques with the cash in its
+  own field; UTC timestamps against Pacific business dates, ATM deposits after 18:00 posting to the next business date
+  and night bags credited when counted, the next morning at three branches and later at Regional Cash Services; members
+  holding more than one account, mapped through the register's accounts sheet; CDD profiles of different review
+  vintages; a branch closed and another opened in June with an ATM moved under its own terminal number; an LCTR log
+  mixing segment and other members' reports, Corrections, a re-sent Original and branch-keyed reports carrying the
+  conductor's membership. Each comes from the system that makes it, none is placed to be caught, and every one
+  mishandled leaves the call where it is (`checks.py` R2 rows).
+- **Layer 2:** estimand_identification: the right counterfactual for a member's cash is the cash its own counter trade
   produces, measured through a channel the laundered money cannot reach, against the declared, peer and turnover
   benchmarks that all move with it.
-- **Decisive step:** judging each member's cash against the cash its counter trade produces, that trade taken from the
-  card acquirer settlements, the one record of the member's walk-in sales that a third party makes and that neither the
-  laundered cash nor the network's payments can inflate, carried through its own trade's cash-to-card relation across
-  the credit union's book.
+- **Decisive step:** judging each member's cash against the cash its walk-in counter trade produces, that trade taken
+  from the card acquirer settlements, the one record of the member's counter sales that a third party makes and that
+  neither the laundered cash nor the network's payments can inflate, carried through its own business type's relation
+  between cash and card across the segment.
 - **Not semantics:** every field, code, narrative and definition read correctly (the cash portions, the channels, the
   settlements, the payouts, the declarations) still leaves the declared-activity, peer and turnover routes on Kingsway
-  Pho House and Bright Spark Car Wash, because those routes are computed correctly on correctly read data; no field says
-  which benchmark the fronts' own money moves.
+  Pho House and Bright Spark Car Wash or on nobody, because those routes are computed correctly on correctly read
+  data; no field says which benchmark the fronts' own money moves.
 - **Not rule application:** no filed rule computes the cash a member's trade produced: the programme sets the test on
-  it (CAD 100,000 and twice the produced cash) and leaves the estimate to the Unit, so executing every filed rule with
-  the declared activity, the peer mean or the trade's cash share of turnover files the wrong set. Measured on the
-  prototype (`scratchpad proto4.py`, to be re-measured by `generator/checks.py` on the build): the enumerated family
-  (declared activity, peer mean, turnover share, non-cash credits, all settlements, counter card under six statistics)
-  names five different sets; the standing family (counter card under the median, ratio of totals, trimmed median,
-  through-origin and log-log fits) names one set in 17 of 20 worlds with the fronts' unexplained cash spread about 3
-  per cent; what rules the others out is the data itself (honest members' cash moves with their card trade and not
-  with business payments or platform payouts), not a sentence.
+  it and leaves the estimate to the review, so executing every filed rule with the declared activity, the peer mean or
+  the turnover share files the wrong set. The enumerated family (declared activity, peer mean, turnover share, non-cash
+  credits, every settlement with platform payouts in, a joint fit on card and platform, the counter card trade under
+  eight statistics and four groupings) names four different sets: the declared pair, nobody, Seaview alone and the
+  golden pair. The standing family (the counter card trade under the eight statistics and four groupings) names one set
+  in 12 of 12, its produced cash spreading CAD 117,929 to 132,736 for Seaview and 69,982 to 78,978 for Pacifica, every
+  member inside one printed bin (`checks.py` F1 to F4). What rules the rest out is quiet: no sentence; the domain fact
+  that a delivery order is paid in the app and a business customer pays by EFT or cheque, and the data's own record
+  that honest members' cash follows their card trade within each business type.
 - **Analyst test:** a strong analyst who reads every field and the programme correctly takes the produced cash as the
-  member's declared expected activity, or its trade-and-band peers, or its trade's cash share of everything else the
-  account received, and refers Kingsway Pho House and Bright Spark Car Wash while Pacifica Donair & Pizza and Lumen
-  Nail Bar pass, because their laundered cash and their network's business payments inflate exactly the measures those
-  routes divide by.
-- **Estimand:** filed in `hrcu_aml_atf_programme_2026.pdf` section 7.3 (case acceptance): population, the business
-  members in the cash-intensive segment at 31 December 2026; outcome, the cash paid into the member's accounts in 2026
-  beyond the cash its trade with its customers produced in 2026; window, calendar 2026 on branch-local days; unit, CAD
-  per member; comparison, the test's CAD 100,000 and twice the produced cash.
-- **No decoy:** nothing is planted to be caught: the declarations are the members' own onboarding statements, the
-  network payments are the fronts' ordinary layering, and no memo, draft, briefing or stakeholder figure argues for any
-  member.
+  member's declared expected activity and refers Kingsway Pho House and Bright Spark Car Wash on their 2026 cash of CAD
+  237,252 and 174,160, or as its type-and-band
+  peers or its type's cash share of turnover and refers nobody, while Seaview Specialty Foods and Pacifica Donair &
+  Pizza pass because their laundered cash and their network's business payments inflate exactly the measures those
+  routes divide by (`checks.py` R3a on the clean truth).
+- **Estimand:** filed in `compliance/hrcu_aml_atf_compliance_programme_v6-1.pdf` section 7.3 (case acceptance):
+  population, the members of the cash-intensive business segment (section 3, the register's segment at 31 December
+  2026); outcome, the cash paid into the member's accounts in the calendar year beyond the cash the member's trade with
+  its customers produced in that year; window, calendar 2026 on the credit union's business date of each credit; unit,
+  CAD per member; comparison, CAD 100,000 or more and at least twice the produced cash, presented in descending order
+  of the excess.
+- **No decoy:** nothing is planted to be caught: the declarations are the members' own review statements, the network
+  payments are the fronts' ordinary layering, and no memo, draft, briefing or stakeholder figure argues for any member.
 - **No certified replay:** no certified or published figure is reproduced to recover a method; the pack holds no
   control total of produced cash and no prior referral whose figures a method must match.
 - **Lesson:** an anomaly's benchmark must be one it cannot move: a front's declarations, peers and turnover all rise
@@ -154,24 +208,181 @@ the cash its counter trade produces.
 
 - **Actor:** the deciding property, how much cash a member's counter trade produces, has no column: the postings
   carry each credit's amount and narrative, the counter card trade is a sum of acquirer settlements recognised by their
-  narrative, and a trade's cash-to-card relation exists only across the population.
+  wording, and a business type's relation of cash to card exists only across the population.
 - **Link:** the step reads each member's cash through its card acquirer's settlements, a comparison across payment
   channels that monitoring of cash never asks for, and keyed by nothing: the settlements carry the acquirer's own
-  merchant number and wording, not the member's.
+  merchant number and wording, never a field saying card trade.
 - **Reflex:** the field's own routes, the CDD profile's expected activity and the monitoring scenarios' peer group, sit
-  at rungs 0 and 1 and refer Kingsway Pho House and Bright Spark Car Wash.
-- **Back-test:** the textbook route validates on the pack's own record: the members the declared-activity route refers
-  on 2026 it refers in each half-year, the peer route agrees on them, and the fronts sit inside their declarations in
-  every quarter, so a solver checking the route for stability finds it stable.
+  at rungs 0 and 1 and refer Kingsway Pho House and Bright Spark Car Wash, or nobody.
+- **Back-test:** the textbook route validates on the pack's own record: the members the declared-activity route
+  refers on the year it refers on each half-year (`checks.py` K4), and the fronts sit inside their declarations, so a
+  solver checking the route for stability finds it stable.
 - **Second use:** every file the decisive step reads has its own reason to be in the pack: the postings are the spine of
-  every figure and ask, the member register gives every route its trades and accounts, and nothing ships only for the
-  card benchmark.
-- **Shock:** the fronts are ordinary on every shipped statistic: mid-pack on cash paid in within their trades, inside
-  their declarations, under two standard deviations of their peer bands, and neither is the largest receiver of
-  business payments in its trade.
+  every figure and ask, the member register gives every route its business types and accounts, and nothing ships only
+  for the card benchmark.
+- **Shock:** the fronts are ordinary on every shipped statistic: Seaview twelfth of 48 grocers and Pacifica third of
+  56 quick-service restaurants on cash paid in, both at 0.93 of their declarations, neither first in its type on cash,
+  turnover, cash share, non-cash credits, card trade or deposit count, and the two never the segment's top two on any
+  (`checks.py` K5).
 - **Pins:** the WHAT is filed once, in the programme's case acceptance section in the credit union's own voice; no
   sentence names card trade, a channel, a ratio, a peer group or a declaration as the measure, so no filed sentence names
   what the stump rides on.
+
+## Readability screen
+
+Seven tests per rung: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene battery, 6 linear, 7 second use.
+The reflex row is enumerated from the field's own vocabulary for expected cash (customer profile, peer group,
+turnover share, cash intensity), not from the rungs beneath the decisive one.
+
+| Rung | 1 filed | 2 schema | 3 reflex | 4 bench | 5 hygiene | 6 linear | 7 second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 declared expected activity (Kingsway Pho House, Bright Spark Car Wash) | section 4 records the anticipated cash deposits | a CDD column, one join | yes, actual against expected | none | no | one product | the profiles serve no other step | readable |
+| 1 peer mean by business type and turnover band (nobody) | section 3 names the segment's types | two columns | yes, the scenario's peer group | none | no | a group mean | the register | readable |
+| 2 business type's cash share of turnover (nobody) | nothing | credits are one sum | yes, cash intensity | none | no | a share | the postings | readable |
+| 2b non-cash credits through the type's relation (nobody) | nothing | credits less cash | partly | none | no | one relation | the postings | readable |
+| 3 every settlement, platform payouts in (Seaview alone) | nothing | two narratives per member | partly, trade read as all sales | none | no | one relation | the postings | readable |
+| 4 (decisive) the counter card trade through the business type's cash-to-card relation | no clause names card trade, a channel, a ratio or a benchmark | no column marks a settlement as counter trade or holds the relation; two acquirers' wordings, net of their discount | no: the field's reflexes are rungs 0 and 1 | none shipped | the battery passes on every rung | no: a population relation estimated across the segment and carried to each member | the postings and register serve every route and every ask | silent |
+
+**Reflex sweep, measured on the cut pack.** Declared activity refers the declared pair; the peer mean, the turnover
+share and the non-cash relation refer nobody; every settlement with platform payouts in refers Seaview alone (Pacifica's
+excess 181,412 at 1.54 times its produced cash, short of the twice arm); a joint fit on card and platform payouts per
+business type refers Seaview alone. None prints the golden pair.
+
+## Semantic fork table
+
+| id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "cash paid in" | the cash portion of counter, coin, ATM and night deposits | the deposit's whole credit, cheques in | same call | C1 asserted (`checks.py` SF1): the mobile cheque channel carries the large business cheques, so the counter's mixed deposits move no member across the test |
+| SF2 | "in the calendar year" | the business date of each credit in 2026 | the UTC posting date | same call and figures | section 7.3, "counted on the credit union's business date of each credit"; C1 asserted |
+| SF3 | "the member's accounts" | every account the register maps to the member | the first account alone | a different quantity | section 7.3's plural and section 6.2's "any of its accounts"; asserted as computed |
+| SF4 | population | the register's segment at 31 December 2026, every member with a profile | members with a profile only; members active all year | same members | C1 asserted: every register member has a profile and is in the segment |
+| SF5 | "by at least twice the cash that trade produced" | the excess at least twice the produced cash | cash at least twice the produced cash | same call | C1 asserted: outside the two referred, no member's excess reaches even its produced cash (the largest 0.76 of it) |
+| SF6 | boundary inclusivity | "or more", "at least" | strict inequalities | same call | C1 asserted, nothing on either edge |
+| SF7 | rounding path | each figure rounded once at the end | the excess from the rounded cash and produced | same figures | asserted (`checks.py` SF7) |
+| SF8 | order of the slate | descending excess | descending relative excess | Pacifica first | section 7.3, "in descending order of the excess" |
+| SF9 | "the member with the largest excess that does not" | the CAD excess among members not meeting the test | the largest relative excess (Sunny Lotus Restaurant) | another member | the excess is the CAD difference section 7.3 tests |
+| SF10 | "produced in that year" | card settlements credited in 2026 | settlements on the sale date the batch narrative carries | same call and figures | C1 asserted (`checks.py` R2 and SF10) |
+| SF11 | a member with no card trade | none in the segment | n/a | same call | asserted: every member has card settlements |
+| SF12 | reports required | the section 6.2 window | one report per member and business date | other figures | section 6.2's window sentences |
+| SF13 | the window's members and clock | per member across accounts, quarter on Pacific time | per account; quarter on UTC | same figures | C1 asserted |
+| SF14 | "how many we filed for it" | reports on the segment's accounts | reports whose member field is a segment member | other figures | the report's account and amount are the segment account's cash for that business date; a branch-keyed report's member field holds the person who brought the cash, a membership not in the segment's register |
+| SF15 | "how many late" | submitted more than 15 calendar days after the day the first cash the report covers was received | after the log's transaction date | other figures | section 6.2, "after the day on which the first cash it reports was received"; the log's transaction date is the business date the cash was credited |
+| SF16 | a filed report's quarter | the quarter of its transaction date | the quarter it went in | other figures | section 6.2, "a report to the quarter of the transaction date it reports" |
+| SF17 | Corrections and re-sent Originals | one report per reference | every row | other figures on one cell | section 6.2, one report per window, and the reference each Correction carries |
+| SF18 | "its deposit ATMs" | the terminals the directory lists under the branch, at the site each stood at on the day of the deposit | one row per terminal | other figures on Langley City and Willowbrook | the directory lists a terminal once per installation with its dates |
+| SF19 | "in its night depository" | the depository the bag was dropped in: the counting branch, or the depository the armoured car collected it from that morning | the branch that issued the bag; the member's home branch | other figures on every branch | the asking sentence's own words; the bag register records issue, not deposit |
+| SF20 | "2026" for the branch cash | the business date | the day of deposit | other figures: the evening ATM deposits of 31 December credit on 4 January 2027 | section 5, "for monitoring and the January review, cash is counted on the credit union's business date of each credit" |
+
+## Ladder
+
+| Rung | Analysis | Referred | Seaview excess | Pacifica excess | Dies to |
+|---|---|---|---|---|---|
+| 0 | declared expected activity times twelve | Kingsway Pho House, Bright Spark Car Wash | under its declaration | under its declaration | the declarations are the members' own statements, a front's set to cover its money |
+| 1 | mean of the business type and declared turnover band | nobody | 14,896 | 20,019 | the band is the front's own declaration and the mean moves with large members |
+| 2 | the type's median cash share of the account's credits | nobody | 81,126 | 25,910 | the network's business payments swell the fronts' credits |
+| 2b | non-cash credits through the type's relation | nobody | not referred | not referred | the same payments are non-cash credits |
+| 3 | card settlements and platform payouts through the type's relation | Seaview Specialty Foods | 359,801 | 181,412 (1.54 times) | a delivery order is paid in the app and produces no cash |
+| golden | counter card trade through the type's cash-to-card relation | Seaview Specialty Foods, Pacifica Donair & Pizza | 355,022 (2.91 times) | 227,583 (3.17 times) | nothing |
+
+**Position and dominance.** The golden pair is named by no rung below it, and rung 3 names half of it, so no
+half-applied correction lands on it. Under the golden the referred sit at 2.91 and 3.17 times their produced cash and
+no other member above 0.9 (`checks.py` F5), so the relative arm separates by more than three to one; the absolute arm
+is passed at more than twice its CAD 100,000. Sunrise Fresh Market, the largest excess not referred (about CAD 475,000
+at 0.75 times), is the nearest member on the absolute arm and the farthest on the relative one.
+
+**Bins.** Every printed call figure sits inside one bin across the standing family: Seaview's produced cash 117,929
+to 132,736 (125,000) and excess 344,211 to 359,018 (350,000), Pacifica's produced 69,982 to 78,978 (75,000) and excess
+220,367 to 229,363 (225,000); cash paid in is a sum of shipped rows.
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | the register's segment at 31 December 2026 (section 3, 7.2); C1, every member with a profile (SF4) |
+| 2 | Unit of account | the member across its accounts (SF3), filed in section 7.3 |
+| 3 | Attribution window | calendar 2026 on the business date (sections 5 and 7.3); C1 against the UTC date (SF2) and the sale date (SF10); the branch cash filed (SF20) |
+| 4 | As-of dating | the register at 31 December 2026, the postings through the pull on 8 January 2027; no member joins or leaves in the year |
+| 5 | Version basis | the CDD extract is one vintage and no rung of the golden reads it; the LCTR log's Corrections amend their Original (SF17) |
+| 6 | Denominator | not a rate: the test compares two CAD amounts |
+| 7 | Weighting | the business type's relation is a median of members, C3: totals, means, trims, fits and groupings print the same figures (F1 to F4) |
+| 8 | Window length | one calendar year, filed |
+| 9 | Boundary inclusivity | C1, nothing on either edge (SF6) |
+| 10 | Rounding path | once at the end, filed in the asking sentence; C1 for the excess from rounded parts (SF7) |
+| 11 | Tie-break | none: two members, excesses 355,022 and 227,583 |
+| 12 | Maturity and censoring | the year is closed; settlements of the last days' card sales credited in 2027 move no figure (SF10) |
+| 13 | Order of operations | relation estimated per type, then carried to each member; C3 across the family |
+| 14 | Row order | C1: every computation is a sum or a median over rows |
+| 15 | Duplicate resolution | the postings carry unique ids; the LCTR log's re-sent Original is one report (SF17) |
+| 16 | Identity normalisation | accounts map to members through the register; the LCTR log's account, not its member field (SF14) |
+| 17 | Netting against gross | cash paid in is gross of withdrawals, filed ("paid into"); settlements are net of the discount, C1 grossed up (R2) |
+| 18 | Dimensional units | CAD throughout; no currency or scale shift |
+| 19 | Code and status semantics | cash codes and channels read from the postings; C1 on the cheque reading (SF1) |
+| 20 | Integerisation | figures rounded once; ATM cash in five-dollar multiples and night cash in whole dollars, so every branch sum is an exact integer and its rounding cannot drift (Seaview and Pacifica's cash sit 447 and 155 dollars from their edges) |
+| 21 | Clause scope | section 7.3 governs the call, section 6.2 the report counts; neither reaches the other |
+| 22 | Forward window contents | the call commits the first quarter's investigations from the closed year; nothing forecast |
+
+## Literal reader
+
+A reader executing section 7.3 word for word must estimate, for every member of the segment, the cash its trade with
+its customers produced in 2026, because no file states it; every term in the fork table returns the golden pair or is
+refused by a quoted sentence. The method is not filed and is forced by the record: a delivery order paid in the app and
+a business customer's EFT or cheque produce no cash, so the trade that produces cash is the walk-in counter trade, and
+the one record of that trade a third party makes is the acquirer's settlement; carried through each business type's
+relation, the standing family of statistics and groupings returns the same pair and the same printed figures (F1 to
+F4). The asks run on section 6.2 and the asking sentence: each of their conventions is filed or converges (SF12 to
+SF20).
+
+## Oracles
+
+- **The CDD profiles.** They confirm the default route rather than refuting it: the fronts sit inside their 2025
+  declarations and the two stale declarations sit far below their members' cash.
+- **The LCTR log.** It reports cash per account and business date for the asks; no golden figure of the call reads it,
+  and it holds no figure that equals any member's annual cash, produced cash or excess.
+- **`compliance/str_submissions_2025_2026.csv` and `compliance/fiu_case_register_2026.xlsx`** (declared distractors):
+  the Unit's own reports and cases, none on the fronts, the near miss or the stale-declaration members, so they point
+  at nothing.
+- **`payments/international_wires_2026.csv`** (declared distractor): honest grocers' and restaurants' supplier and
+  family wires; the fronts send none.
+- No corpus, no back-test of the golden, no prior referral, no worked example. Nothing in the pack states or implies
+  any produced cash figure.
+
+## Ask sheet
+
+The call's declared population is the segment's 2026 cash rows, card settlement rows and the register. Both asks read
+ask-only files for their devices (the LCTR log, the branch directory's ATM history, the armoured car's pickup
+manifests, the bag register), and no device row sits in the call's population: the postings are not altered for any
+ask (A7).
+
+- **Ask A, each 2026 quarter's large cash transaction reports the segment's cash required, filed and filed late (12
+  figures).** H18 home: the Committee's quarterly reporting item in its terms of reference. Required follows section
+  6.2's window, which the cracker executes. Filed carries a D7 device: a report keyed at a branch puts the conductor's
+  own membership in the member field, so the segment's reports are found by their account, not their member field.
+  Late carries a D8 device: section 6.2 runs the 15 days from the day the first cash was received, while the log's
+  transaction date is the business date an evening ATM deposit was credited.
+- **Ask B, each branch's 2026 segment cash through its deposit ATMs and in its night depository (18 figures).** H18
+  home: the after-hours cash the branch network services, a component of the segment's cash. ATMs carry a D7 device
+  (Langley City's lobby terminal reinstalled at Willowbrook Crossing under the same number, listed once per
+  installation). Night carries a D6 device: bags counted at Regional Cash Services post at its transit, and only the
+  armoured car's pickup manifest (bag and date) says which depository each came from; the bag register says where it
+  was issued.
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | executes section 6.2's window, counts each reference once, finds the segment's reports by the log's member field and runs the 15 days from the log's transaction date | misses |
+| B | places each ATM deposit at the terminal's site on the day and each cash-centre bag at the branch the bag register issued it from | misses |
+
+Measured by: `generator/ceiling.py` on the cut pack.
+
+| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive keeps | Cracker |
+|---|---|---|---|---|---|
+| A reports by quarter | 12 | 4 | 4 | 1 | misses |
+| B after-hours branch cash | 18 | 9 | 7 | 7 | misses |
+
+Over the 30 figures the cracker keeps 13 (43.3 per cent of ask weight), the mirror 11 (36.7 per cent), the naive
+handling 8; reading the conductor key alone keeps 17, the receipt day alone 14, the manifest alone 22, every device 30.
+
+Pair ceiling: 50.5.
+Mirror leakage: 36.7 per cent of ask weight.
 
 ## Architecture 1 record
 
@@ -261,3 +472,14 @@ re-screen is in the git history of this note at commit 0c21d67 and in the card's
   against its trade's relation and asserts the margin. In every prototype a cash-intensity ranking within the trade
   put the takeaway front first while the test computed on turnover shares referred nobody: the call is the test's
   designation, never a ranking, so that ranking is no route to it.
+- **(2026-11-03, stage 2 and 3) Ask and pack revisions before precut, each dead as first built:** an ask for each
+  referred member's cash by quarter was keyed to the call (a split of the committed figure for the members a response
+  refers, `supplemental-stumping` ban 4) and was cut; the branch counter channel was cut from the branch ask because the
+  posting's own transit places every counter deposit, so it carried no device; the old LCTR lateness ran from the log's
+  own transaction date, which the cracker executes, and now runs from the day the first cash was received (section 6.2);
+  the large business cheques deposited with counter cash let a reading of the deposit's whole credit as cash refer two
+  wholesale grocers (Westside Supermarket and Scarlet Farm Market), so members taking larger cheques scan them in the
+  banking app and the reading leaves the call (R2); ATM deposits at Willowbrook terminals before their installation were
+  impossible records, so terminals are chosen among those in service on the day, and Langley City's lobby terminal
+  now moves to Willowbrook Crossing under its own number; the case register's numbers ran without a gap and now skip
+  where a number was withdrawn; the LCTR log held exactly 1,000 rows and now holds 1,029.

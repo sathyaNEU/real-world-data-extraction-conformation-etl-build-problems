@@ -1,34 +1,35 @@
 {
  "task": "task188",
- "status": "DESIGN",
+ "status": "PAUSED",
  "seed": "analytical_tasks/02_anomaly_detection/AD11_routing-engagement-measured-page-removal.md",
- "domain": "banking-credit-financial-risk / fraud-aml-detection (a British Columbia credit union's financial intelligence unit: which cash-intensive business members it takes into enhanced investigation in the first quarter of 2027)",
+ "domain": "banking-credit-financial-risk / fraud-aml-detection (a British Columbia credit union's Business Services January review: which cash-intensive business members it refers to the financial intelligence unit for enhanced investigation in the first quarter of 2027)",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-03",
- "stump": "The solver refers Kingsway Pho House and Bright Spark Car Wash because it judges each member's 2026 cash against the expected activity the member declared, or against its peers or the account's own turnover, and clears Pacifica Donair & Pizza and Lumen Nail Bar, whose declarations were set high at onboarding and whose network's business payments swell their turnover, when only the walk-in trade their card acquirers settle shows that each paid in more than three times the cash its counter trade produces.",
+ "stump": "The solver refers Kingsway Pho House and Bright Spark Car Wash because it judges each member's 2026 cash against the expected activity the member declared, or against its peers or the account's own turnover, and clears Seaview Specialty Foods and Pacifica Donair & Pizza, whose declarations were set high in 2025 and whose network's business payments swell their turnover, when only the walk-in trade their card acquirers settle shows that each paid in about four times the cash its counter trade produced.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-03"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (zip 0fcfaed0, 2026-11-03); every REVIEW line ruled in the note's ## Leak sweep rulings",
+  "reader": "pending (stage 4)"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "guard.py check PASS 2026-11-03 on the registered card, no WARN, nearest drivers 0.06 (task27, task66, task120 v3)"
+  "heart": "WARN (repeat.deliverables, repeat.question_form, both answered in ## Draw), no BLOCK after the role redraw to portfolio_manager",
+  "surface": "clean, personas Kristine Kirby and Jeffrey Melendez only",
+  "nearest": "drivers 0.06 (task27, task66, task120 v3)"
  },
  "judge": {
   "verdict": "",
-  "disposition": "",
+  "disposition": "pending (stage 4)",
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 2 drawn and registered 2026-11-03 (card PASS). Next: stage 2 design (ladder, fork table, closure, asks, prompt) to precut.py exit 0, then the generator.",
+ "resume": "Stage 4: spawn together in the background the leak reader (general-purpose, sonnet, medium, fresh copies of prompt.txt and target/ only, the six /leak-check questions, no sweep figures or stump terms in the brief) and the determinism-judge agent on task188 (zip 0fcfaed0); fix every finding in the generator in one pass, re-judge once on FIX_NOW, re-run every free gate on the final cut, then ship (target.zip and golden/ with git add -f, ledger row, card current, SHIPPED commit). The building session had no agent-spawning tool, so stage 4 was left to the orchestrator.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -56,5 +57,14 @@
     "commit": ""
    }
   ]
+ },
+ "call": "Refer Seaview Specialty Foods (CAD 477,000 paid in, 125,000 produced, excess 350,000) then Pacifica Donair & Pizza (299,000, 75,000, 225,000) to the FIU for Q1 2027; largest excess not referred Sunrise Fresh Market",
+ "gates": {
+  "checks": "113 of 113",
+  "verify": "66 of 66",
+  "figures_check": "80 figures, 0 absent",
+  "rebuilds": "two consecutive builds byte-identical (target.zip 0fcfaed0)",
+  "voice_check": "PASS",
+  "ceiling": "cracker 13 of 30, mirror 11 of 30, pair ceiling 50.5"
  }
 }

@@ -1,254 +1,166 @@
 {
- "call": "Westbrook",
- "call_figure": 2.3,
- "call_figure_exact": 2.3275,
- "runner_up": "South Prairie",
- "runner_up_figure": 1.8,
- "runner_up_figure_exact": 1.8112,
- "flip_rate_per_1000": 18,
- "flip_rate_exact": 18.289,
- "call_rate_per_1000": 23.5,
- "call_build": {
-  "zone": "Westbrook",
-  "trap_nights": 30,
-  "tarsalis_per_tn": 95.2,
-  "pipiens_per_tn": 3.8,
-  "culex_per_tn": 99.0,
-  "tarsalis_pools": 70,
-  "tarsalis_positive": 42,
-  "pipiens_pools": 25,
-  "pipiens_positive": 2,
-  "tarsalis_mle_per_1000": 23.7,
-  "pipiens_mle_per_1000": 18.2,
-  "tarsalis_mir_per_1000": 14.7,
-  "index": 2.3,
-  "index_exact": 2.3275
- },
- "runner_up_build": {
-  "zone": "South Prairie",
-  "trap_nights": 24,
-  "tarsalis_per_tn": 134.9,
-  "pipiens_per_tn": 8.2,
-  "culex_per_tn": 143.0,
-  "tarsalis_pools": 334,
-  "tarsalis_positive": 41,
-  "pipiens_pools": 33,
-  "pipiens_positive": 0,
-  "tarsalis_mle_per_1000": 13.4,
-  "pipiens_mle_per_1000": 0.0,
-  "tarsalis_mir_per_1000": 12.7,
-  "index": 1.8,
-  "index_exact": 1.8112
- },
- "bias_corrected": {
-  "call": 2.3,
-  "runner_up": 1.8,
-  "flip": 18
- },
- "ladder": {
-  "default": {
-   "pick": "Riverside South",
-   "pick_figure": 2.28,
-   "second": "Old Town",
-   "second_figure": 1.79,
-   "margin": 1.271,
-   "westbrook_place": 4,
-   "westbrook_figure": 1.47
+ "branch_cash": {
+  "10342": {
+   "atm": 4503000,
+   "name": "Newton",
+   "night": 1494000
   },
-  "co2_mir": {
-   "pick": "South Prairie",
-   "pick_figure": 1.71,
-   "second": "Westbrook",
-   "second_figure": 1.47,
-   "margin": 1.165,
-   "westbrook_place": 2,
-   "westbrook_figure": 1.47
+  "10587": {
+   "atm": 4685000,
+   "name": "Guildford",
+   "night": 1832000
   },
-  "all_mle": {
-   "pick": "Old Town",
-   "pick_figure": 2.98,
-   "second": "Riverside South",
-   "second_figure": 2.48,
-   "margin": 1.204,
-   "westbrook_place": 3,
-   "westbrook_figure": 2.33
+  "10611": {
+   "atm": 5117000,
+   "name": "Richmond Centre",
+   "night": 1631000
   },
-  "co2_mle": {
-   "pick": "Westbrook",
-   "pick_figure": 2.33,
-   "second": "South Prairie",
-   "second_figure": 1.81,
-   "margin": 1.285,
-   "westbrook_place": 1,
-   "westbrook_figure": 2.33
+  "10729": {
+   "atm": 4386000,
+   "name": "Metrotown",
+   "night": 1208000
+  },
+  "10856": {
+   "atm": 4022000,
+   "name": "Coquitlam Centre",
+   "night": 1569000
+  },
+  "10903": {
+   "atm": 1487000,
+   "name": "Uptown New Westminster",
+   "night": 1000000
+  },
+  "11021": {
+   "atm": 1278000,
+   "name": "Langley City",
+   "night": 441000
+  },
+  "11168": {
+   "atm": 3527000,
+   "name": "Ladner Village",
+   "night": 1064000
+  },
+  "11204": {
+   "atm": 1505000,
+   "name": "Willowbrook",
+   "night": 488000
   }
  },
- "cases_by_zone": {
-  "North Bottoms": 3,
-  "Maple Ridge": 2,
-  "Westbrook": 2,
-  "Old Town": 2,
-  "Riverside South": 3,
-  "South Prairie": 4,
-  "Coulee Hills": 7,
-  "Airport East": 2
- },
- "cases_total": 25,
- "weeks": [
-  22,
-  23,
-  24,
-  25,
-  26,
-  27,
-  28,
-  29,
-  30,
-  31,
-  32
- ],
- "cases_by_week": {
-  "North Bottoms": [
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   1,
-   0,
-   1,
-   1,
-   0
-  ],
-  "Maple Ridge": [
-   0,
-   0,
-   0,
-   1,
-   0,
-   0,
-   1,
-   0,
-   0,
-   0,
-   0
-  ],
-  "Westbrook": [
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   2,
-   0
-  ],
-  "Old Town": [
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   1,
-   1,
-   0
-  ],
-  "Riverside South": [
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   2,
-   1,
-   0
-  ],
-  "South Prairie": [
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   2,
-   2,
-   0,
-   0
-  ],
-  "Coulee Hills": [
-   0,
-   0,
-   0,
-   0,
-   1,
-   2,
-   2,
-   2,
-   0,
-   0,
-   0
-  ],
-  "Airport East": [
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   1,
-   1,
-   0,
-   0
+ "call": {
+  "near_miss": {
+   "business_type": "Grocery / specialty food",
+   "cash_paid_in": 1103000,
+   "excess": 475000,
+   "member_number": 4726380,
+   "name": "Sunrise Fresh Market",
+   "produced": 625000,
+   "times_produced": 0.75
+  },
+  "referred": [
+   {
+    "business_type": "Grocery / specialty food",
+    "card_settlements_2026": 321675.93,
+    "card_settlements_2026_whole": 321676,
+    "cash_paid_in": 477000,
+    "cash_paid_in_exact": 476947.0,
+    "excess": 350000,
+    "member_number": 2795965,
+    "name": "Seaview Specialty Foods",
+    "produced": 125000,
+    "times_produced": 2.91,
+    "trade_cash_to_card": 0.379
+   },
+   {
+    "business_type": "Restaurant - quick service / takeout",
+    "card_settlements_2026": 183042.96,
+    "card_settlements_2026_whole": 183043,
+    "cash_paid_in": 299000,
+    "cash_paid_in_exact": 299345.0,
+    "excess": 225000,
+    "member_number": 4201921,
+    "name": "Pacifica Donair & Pizza",
+    "produced": 75000,
+    "times_produced": 3.17,
+    "trade_cash_to_card": 0.392
+   }
   ]
  },
- "co2_trap_nights_run": {
-  "North Bottoms": 256,
-  "Maple Ridge": 252,
-  "Westbrook": 319,
-  "Old Town": 215,
-  "Riverside South": 211,
-  "South Prairie": 251,
-  "Coulee Hills": 188,
-  "Airport East": 186
+ "deliverables": [
+  "fiu_referral_slate_2027q1.docx",
+  "member_cash_review_2026.xlsx",
+  "cash_review_2026.png"
+ ],
+ "lctr": {
+  "Q1 2026": {
+   "filed": 19,
+   "late": 2,
+   "required": 25
+  },
+  "Q2 2026": {
+   "filed": 44,
+   "late": 6,
+   "required": 40
+  },
+  "Q3 2026": {
+   "filed": 44,
+   "late": 11,
+   "required": 44
+  },
+  "Q4 2026": {
+   "filed": 37,
+   "late": 9,
+   "required": 38
+  }
  },
- "co2_trap_nights_lost": {
-  "North Bottoms": 6,
-  "Maple Ridge": 5,
-  "Westbrook": 9,
-  "Old Town": 3,
-  "Riverside South": 6,
-  "South Prairie": 11,
-  "Coulee Hills": 7,
-  "Airport East": 10
+ "programme_sections": [
+  "5",
+  "6.2",
+  "7.3"
+ ],
+ "rungs": {
+  "R0_declared": [
+   "Kingsway Pho House",
+   "Bright Spark Car Wash"
+  ],
+  "R1_peer_mean": [],
+  "R2_turnover_share": [],
+  "R2b_noncash": [],
+  "R3_all_settlements": [
+   "Seaview Specialty Foods"
+  ]
  },
- "reimport_copies": 206,
- "week": {
-  "mmwr": 32,
-  "from": "2026-08-09",
-  "to": "2026-08-15"
+ "segment": {
+  "members_assessed": 396,
+  "trade_cash_to_card": {
+   "BAR": 0.1893,
+   "CAF": 0.2711,
+   "CNV": 0.4409,
+   "CWS": 0.5805,
+   "GRO": 0.379,
+   "LDY": 0.9061,
+   "MFV": 0.4855,
+   "RFS": 0.1829,
+   "RQS": 0.392,
+   "SAL": 0.3516
+  }
  },
- "flight": "2026-08-20",
- "rate_basis": 1000,
- "pool_max": {
-  "district": 50,
-  "county": 10
+ "test": {
+  "lctr_cash_cad": 10000,
+  "report_due_days": 15,
+  "threshold_cad": 100000,
+  "times_produced": 2.0,
+  "window_hours": 24
  },
- "flight_text": "Thursday 20 August 2026",
- "protocol_clauses": {
-  "trap_night": "3.4",
-  "pooling": "4.1",
-  "retest": "4.3"
- }
+ "transits": [
+  "10342",
+  "10587",
+  "10611",
+  "10729",
+  "10856",
+  "10903",
+  "11021",
+  "11168",
+  "11204",
+  "19004"
+ ]
 }

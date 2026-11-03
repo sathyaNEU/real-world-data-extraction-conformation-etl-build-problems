@@ -1,193 +1,202 @@
-"""Independent verifier: reads only the shipped pack and the goldens, recomputes every graded figure by its own route
-(SQL over the field database, pypdf over the county report, the pooled likelihood maximised directly rather than
-solved from its score) and compares them with the goldens.
+#!/usr/bin/env python3
+"""Independent verifier for task188: reads only the shipped bundle (target/ and golden/) and recomputes every
+graded figure on its own code path, with a positive control on every format, then checks the golden
+deliverables and figures.json against it.
 
-    python3 task188/generator/verify.py [target] [golden]"""
+    python3 task188/generator/verify.py
+
+It imports nothing from the generator. Exit 1 on any mismatch.
+"""
 import datetime as dt
-import math
+import json
 import os
 import re
-import sqlite3
 import sys
+import zipfile
+from zoneinfo import ZoneInfo
 
-from scipy.optimize import minimize_scalar
+import docx
+import numpy as np
+import openpyxl
+import pandas as pd
+from pypdf import PdfReader
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-ZONES = ["North Bottoms", "Maple Ridge", "Westbrook", "Old Town", "Riverside South", "South Prairie", "Coulee Hills",
-         "Airport East"]
+T = os.path.join(TASK, "target")
+GOLD = os.path.join(TASK, "golden")
+PAC = ZoneInfo("America/Vancouver")
+OUT = []
 
 
-def loglik(p, pools):
-    s = 0.0
-    for m, pos in pools:
-        q = (1.0 - p) ** m
-        s += math.log(1.0 - q) if pos else math.log(q)
-    return s
+def ok(label, cond, detail=""):
+    OUT.append((label, bool(cond), detail))
 
 
-def mle(pools):
-    if not any(pos for m, pos in pools):
-        return 0.0
-    r = minimize_scalar(lambda p: -loglik(p, pools), bounds=(1e-8, 0.3), method="bounded",
-                        options={"xatol": 1e-13, "maxiter": 2000})
-    return r.x
+def r1k(x):
+    return int(round(x / 1000.0)) * 1000
 
 
-def county(path):
-    """pypdf gives the report's table one cell a line: walk the cells after each accession number."""
-    from pypdf import PdfReader
-    cells = [c.strip() for pg in PdfReader(path).pages for c in pg.extract_text().splitlines()]
-    rows, retest = {}, {}
-    table2 = False
-    i = 0
-    while i < len(cells):
-        c = cells[i]
-        if c.startswith("Table 2"):
-            table2 = True
-        if re.fullmatch(r"RCPHL-26-\d{4}", c):
-            if not table2:
-                site, coll, sp, nn, ct, res = cells[i + 1:i + 7]
-                mm, dd, yy = coll.split("/")
-                rows[c] = dict(site=site, collected="%s-%s-%s" % (yy, mm, dd),
-                               species={"Culex tarsalis": "CXTA", "Culex pipiens": "CXPI"}[sp], n=int(nn), result=res)
-                i += 7
-                continue
-            retest[c] = cells[i + 3]
-            i += 4
-            continue
-        i += 1
-    for k, r in rows.items():
-        r["positive"] = (retest[k] if r["result"] == "Inconclusive" else r["result"]) == "Positive"
-    return rows
+def r25k(x):
+    return int(round(x / 25000.0)) * 25000
 
 
-def main(target=None, golden=None):
-    target = target or os.path.join(TASK, "target")
-    golden = golden or os.path.join(TASK, "golden")
-    db = [f for f in os.listdir(target) if f.endswith(".sqlite")][0]
-    con = sqlite3.connect(os.path.join(target, db))
-    pdf = [f for f in os.listdir(target) if f.startswith("RCPHL") and f.endswith(".pdf")][0]
-    cty = county(os.path.join(target, pdf))
-    n = [0]
+def local(ts):
+    return ts.tz_localize("UTC").tz_convert(PAC)
 
-    def ok(c, what):
-        n[0] += 1
-        if not c:
-            raise AssertionError("verify: " + what)
 
-    # week 32: females per functioning CO2 trap-night, by zone and species
-    ab = {}
-    for z, sp, f, tn in con.execute("""
-            WITH t AS (SELECT n.tn_id, s.zone FROM trap_nights n JOIN sites s USING (site_id)
-                       WHERE n.set_date BETWEEN '2026-08-09' AND '2026-08-15' AND s.trap_type = 'CO2' AND n.status = 'OK')
-            SELECT t.zone, sp.code, COALESCE((SELECT SUM(c.count) FROM catches c JOIN t t2 USING (tn_id)
-                                              WHERE t2.zone = t.zone AND c.species = sp.code AND c.sex = 'F'), 0),
-                   COUNT(DISTINCT t.tn_id)
-            FROM t, species sp WHERE sp.code IN ('CXTA', 'CXPI') GROUP BY t.zone, sp.code"""):
-        ab[(z, sp)] = f / tn
-    # week-32 CO2 pools with their final results: district results in the database, county results in the report
-    final = {}
-    for pid, res in con.execute("""SELECT pool_id, result FROM pool_tests t WHERE test_no =
-                                   (SELECT MAX(test_no) FROM pool_tests u WHERE u.pool_id = t.pool_id)"""):
-        final[pid] = res == "POS"
-    pools = {}
-    for pid, z, sp, m, typ in con.execute("""
-            SELECT p.pool_id, s.zone, p.species, p.females, s.trap_type FROM pools p JOIN trap_nights n USING (tn_id)
-            JOIN sites s USING (site_id) WHERE n.set_date BETWEEN '2026-08-09' AND '2026-08-15'"""):
-        pos = final[pid] if pid in final else cty[pid]["positive"]
-        if pid in cty:
-            ok(cty[pid]["n"] == m and cty[pid]["species"] == sp, "county report and database agree on %s" % pid)
-        if typ == "CO2":
-            pools.setdefault((z, sp), []).append((m, pos))
-    ok(len([p for p in cty]) == con.execute("""SELECT COUNT(*) FROM pools p JOIN trap_nights n USING (tn_id)
-            WHERE p.lab = 'RCPHL' AND n.set_date BETWEEN '2026-08-09' AND '2026-08-15'""").fetchone()[0],
-       "the county report holds every week-32 county pool")
-    idx = {z: sum(ab[(z, sp)] * mle(pools.get((z, sp), [])) for sp in ("CXTA", "CXPI")) for z in ZONES}
-    order = sorted(ZONES, key=lambda z: -idx[z])
-    call, second = order[0], order[1]
-    flip = idx[second] / (ab[(call, "CXTA")] + ab[(call, "CXPI")]) * 1000.0
-    ok(idx[call] / idx[second] > 1.2, "the call leads by more than 1.2x")
+def main():
+    # ---- positive controls, one per format --------------------------------------------------------------
+    pdf = PdfReader(os.path.join(T, "compliance", "hrcu_aml_atf_compliance_programme_v6-1.pdf"))
+    text = " ".join(pg.extract_text() for pg in pdf.pages)
+    text = re.sub(r"\s+", " ", text)
+    ok("control pdf: the programme's case acceptance sentence reads", "by at least twice the cash that trade produced" in text)
+    ok("control pdf: the window convention reads", "received when its bag is opened and counted" in text)
+    tor = docx.Document(os.path.join(T, "compliance", "aml_compliance_committee_terms_of_reference.docx"))
+    ok("control docx: the terms of reference read", any("up to four new enhanced investigations" in p.text for p in tor.paragraphs))
+    reg = openpyxl.load_workbook(os.path.join(T, "membership", "member_register_2026-12-31.xlsx"), read_only=True)
+    ok("control xlsx: the register's two sheets", reg.sheetnames == ["Members", "Accounts"], reg.sheetnames)
+    post = pd.read_csv(os.path.join(T, "core_banking", "hrcu_business_postings_2026.csv"),
+                       dtype={"account_number": str, "transit": str, "terminal_id": str})
+    ok("control csv: postings read", len(post) > 300_000 and "cash_portion" in post.columns, len(post))
 
-    # ask A: locally acquired symptomatic cases by onset, 1 June to 15 August, one per state case ID, by 2026 zone
-    from openpyxl import load_workbook
-    reg = [f for f in os.listdir(target) if "register" in f][0]
-    zs = {r[0]: r[4] for r in load_workbook(os.path.join(target, reg), read_only=True)["Zone sections"].iter_rows(
-        min_row=2, values_only=True)}
-    log = [f for f in os.listdir(target) if "case_log" in f][0]
-    rows = list(load_workbook(os.path.join(target, log), read_only=True)["Cases"].iter_rows(values_only=True))
-    h = {k: i for i, k in enumerate(rows[0])}
-    cases, ids = {z: 0 for z in ZONES}, set()
-    weeks = {z: {} for z in ZONES}
-    for r in rows[1:]:
-        if r[h["Classification"]] not in ("Confirmed", "Probable") or r[h["Exposure"]] != "Rindal County":
-            continue
-        on = r[h["Onset date"]]
-        if on is None or not (dt.datetime(2026, 6, 1) <= on <= dt.datetime(2026, 8, 15)) or r[h["State case ID"]] in ids:
-            continue
-        ids.add(r[h["State case ID"]])
-        z = zs[r[h["Residence section"]]]
-        cases[z] += 1
-        jan4 = dt.datetime(2026, 1, 4)
-        wk = (on - jan4).days // 7 + 1
-        weeks[z][wk] = weeks[z].get(wk, 0) + 1
+    # ---- the call ------------------------------------------------------------------------------------------
+    members = pd.DataFrame(list(reg["Members"].iter_rows(min_row=2, values_only=True)),
+                           columns=[c.value for c in next(reg["Members"].iter_rows(max_row=1))])
+    accounts = pd.DataFrame(list(reg["Accounts"].iter_rows(min_row=2, values_only=True)),
+                            columns=[c.value for c in next(reg["Accounts"].iter_rows(max_row=1))])
+    owner = dict(zip(accounts.account_number.astype(str), accounts.member_number))
+    post["m"] = post.account_number.map(owner)
+    post["eff"] = pd.to_datetime(post.effective_date)
+    yr = post[post.eff.dt.year == 2026]
+    cashcodes = {"DEP", "ATMD", "NDEP", "COIN"}
+    cash = yr[yr.transaction_code.isin(cashcodes)].groupby("m").cash_portion.sum()
+    d = yr.description.fillna("")
+    card = yr[d.str.match(r"^(CASCADIA MERCH DEP|NORTHGATE PAY STLMT) ")].groupby("m").credit.sum()
+    seg = members.set_index("member_number")
+    tab = pd.DataFrame({"cash": cash, "card": card}).reindex(seg.index).fillna(0.0)
+    tab["type"] = seg.business_type_code
+    tab["name"] = seg.operating_name
+    ratio = (tab.cash / tab.card).groupby(tab.type).median()
+    tab["produced"] = tab.type.map(ratio) * tab.card
+    tab["excess"] = tab.cash - tab.produced
+    meets = tab[(tab.excess >= 100_000) & (tab.excess >= 2 * tab.produced)].sort_values("excess", ascending=False)
+    near = tab.drop(meets.index).excess.idxmax()
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    ref = figs["call"]["referred"]
+    ok("call: the same members in the same order", list(meets.name) == [r["name"] for r in ref], list(meets.name))
+    for r in ref:
+        i = r["member_number"]
+        ok("call: %s cash paid in" % r["name"], r1k(tab.cash[i]) == r["cash_paid_in"], (r1k(tab.cash[i]), r["cash_paid_in"]))
+        ok("call: %s produced cash" % r["name"], r25k(tab.produced[i]) == r["produced"])
+        ok("call: %s excess" % r["name"], r25k(tab.excess[i]) == r["excess"])
+    ok("call: the largest excess not meeting the test", tab.name[near] == figs["call"]["near_miss"]["name"])
 
-    # ask B: CO2 trap-nights run and lost, 1 June to 15 August, the re-imported second copies counted once
-    fp = {}
-    for t, cat in con.execute("""SELECT tn_id, GROUP_CONCAT(species || sex || count, ',') FROM
-                                 (SELECT * FROM catches ORDER BY tn_id, species, sex) GROUP BY tn_id"""):
-        fp[t] = cat
-    recs = list(con.execute("""SELECT n.tn_id, n.site_id, n.set_date, n.status, n.entered, s.zone, s.trap_type
-                               FROM trap_nights n JOIN sites s USING (site_id)"""))
-    key = {(r[1], r[2], r[3], fp.get(r[0], "")): r[0] for r in recs if not r[4].startswith("2026-06-22")}
-    copies = set()
-    for r in recs:
-        if r[4].startswith("2026-06-22"):
-            prev = (dt.date.fromisoformat(r[2]) - dt.timedelta(days=1)).isoformat()
-            if (r[1], prev, r[3], fp.get(r[0], "")) in key:
-                copies.add(r[0])
-    ok(len(copies) == sum(1 for r in recs if r[4].startswith("2026-06-22")), "every re-imported record has its "
-                                                                              "original a day earlier")
-    own = {(r[1], r[2]) for r in recs if r[0] not in copies}
-    for t, site, d, st, ent, z, typ in recs:
-        if t not in copies:
-            continue
-        wd = dt.date.fromisoformat(d).weekday()
-        enh = z == "Maple Ridge" and d in ("2026-06-17", "2026-06-18", "2026-06-24", "2026-06-25")
-        ok((site, d) not in own and wd not in (0, 1) and not enh, "copy %s on %s falls on a day no trap is scheduled "
-                                                                  "and on no night the site ran" % (site, d))
-    run, lost = {z: 0 for z in ZONES}, {z: 0 for z in ZONES}
-    for t, site, d, st, ent, z, typ in recs:
-        if t in copies or typ != "CO2" or not ("2026-06-01" <= d <= "2026-08-15"):
-            continue
-        if st == "OK":
-            run[z] += 1
-        elif st in ("FAN", "CO2", "BAT", "STOLEN"):
-            lost[z] += 1
+    # ---- reports required, filed and late ------------------------------------------------------------------
+    c = post[post.transaction_code.isin(cashcodes) & (post.cash_portion > 0) & post.m.notna()].copy()
+    c["t"] = pd.to_datetime(c.posted_at_utc.str.rstrip("Z"))
+    c = c.sort_values(["m", "t", "posting_id"])
+    req = {1: 0, 2: 0, 3: 0, 4: 0}
+    for m, sub in c.groupby("m"):
+        t0, tot = None, 0.0
+        opened = []
+        for t, v in zip(sub.t, sub.cash_portion):
+            if t0 is None or t >= t0 + pd.Timedelta(hours=24):
+                if t0 is not None and tot >= 10_000:
+                    opened.append(t0)
+                t0, tot = t, 0.0
+            tot += v
+        if t0 is not None and tot >= 10_000:
+            opened.append(t0)
+        for t in opened:
+            lt = local(t)
+            if lt.year == 2026:
+                req[(lt.month - 1) // 3 + 1] += 1
+    lg = pd.read_csv(os.path.join(T, "compliance", "lctr_submissions_2026.csv"), dtype={"account_number": str})
+    lg = lg[lg.account_number.isin(set(owner)) & (lg.report_version == "Original")].drop_duplicates("report_reference")
+    lg["td"] = pd.to_datetime(lg.transaction_date)
+    lg = lg[lg.td.dt.year == 2026]
+    first = c.groupby(["account_number", c.eff.dt.date]).t.min()
+    rec = [local(first[(a, x.date())]).date() for a, x in zip(lg.account_number, lg.td)]
+    lg["late"] = [(dt.date.fromisoformat(s) - r_).days > 15 for s, r_ in zip(lg.submitted_date, rec)]
+    q = lg.td.dt.quarter
+    for k in (1, 2, 3, 4):
+        f = figs["lctr"]["Q%d 2026" % k]
+        ok("lctr Q%d required" % k, req[k] == f["required"], (req[k], f["required"]))
+        ok("lctr Q%d filed" % k, int((q == k).sum()) == f["filed"], (int((q == k).sum()), f["filed"]))
+        ok("lctr Q%d late" % k, int(((q == k) & lg.late).sum()) == f["late"], (int(((q == k) & lg.late).sum()), f["late"]))
 
-    # the goldens
-    wb = load_workbook(os.path.join(golden, "zone_season_2026.xlsx"), read_only=True)
-    got = {r[0]: r[1:4] for r in wb["Zones"].iter_rows(min_row=2, values_only=True)}
-    for z in ZONES:
-        ok(tuple(got[z]) == (cases[z], run[z], lost[z]), "workbook row %s %s against %s" % (z, got[z], (cases[z], run[z],
-                                                                                                         lost[z])))
-    wk = {r[0]: r[1:] for r in wb["Cases by week"].iter_rows(min_row=2, values_only=True)}
-    for z in ZONES:
-        ok(list(wk[z][:-1]) == [weeks[z].get(w, 0) for w in range(22, 33)], "cases by week for %s" % z)
-    from pypdf import PdfReader
-    memo = re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in PdfReader(os.path.join(golden,
-                                                                                          "aerial_spray_recommendation.pdf")).pages))
-    ok("Fly %s." % call in memo, "the memo names %s" % call)
-    ok("an estimated %.1f" % idx[call] in memo, "the memo's figure %.1f" % idx[call])
-    ok("%s at %.1f" % (second, idx[second]) in memo, "the memo's runner-up %s %.1f" % (second, idx[second]))
-    ok("below %d per 1,000" % round(flip) in memo, "the memo's flip rate %d" % round(flip))
-    ok(os.path.getsize(os.path.join(golden, "human_cases_by_zone.png")) > 20000, "the chart is drawn")
-    con.close()
-    print("verify: %d checks passed from the pack alone (call %s %.3f, runner-up %s %.3f, flip %.2f per 1,000; cases "
-          "%d; trap-nights run %d, lost %d; %d re-imported copies)" % (
-              n[0], call, idx[call], second, idx[second], flip, sum(cases.values()), sum(run.values()),
-              sum(lost.values()), len(copies)))
+    # ---- branch cash through deposit ATMs and in night depositories -----------------------------------------
+    fac = openpyxl.load_workbook(os.path.join(T, "branch_network", "branch_atm_depository_directory.xlsx"), read_only=True)
+    atm_rows = list(fac["ATMs"].iter_rows(min_row=2, values_only=True))
+    dep_rows = list(fac["Night depositories"].iter_rows(min_row=2, values_only=True))
+    hist = {}
+    for tid, loc, tr, inst, rem, takes in atm_rows:
+        hist.setdefault(tid, []).append((inst.date() if hasattr(inst, "date") else inst, tr))
+    depot = {r[0]: r[1] for r in dep_rows}
+    cit = pd.read_csv(os.path.join(T, "cash_services", "cit_pickup_manifests_2026.csv"))
+    pick = {(b, dd): depot[x] for b, dd, x in zip(cit.bag_number, cit.pickup_date, cit.depository_id)}
+    atm = {}
+    night = {}
+    y2 = yr[yr.transaction_code.isin(cashcodes)]
+    for ch, tr, tid, desc, v, ts, e in zip(y2.channel, y2.transit, y2.terminal_id, y2.description, y2.cash_portion,
+                                           y2.posted_at_utc, y2.eff):
+        if ch == "ATM":
+            day = local(pd.Timestamp(ts.rstrip("Z"))).date()
+            site = [b for (i0, b) in sorted(hist[tid]) if i0 <= day][-1]
+            atm[site] = atm.get(site, 0.0) + v
+        elif ch == "NIGHT":
+            if tr != "19004":
+                night[tr] = night.get(tr, 0.0) + v
+            else:
+                bag = int(re.search(r"BAG (\d+)", desc).group(1))
+                b = pick[(bag, e.date().isoformat())]
+                night[b] = night.get(b, 0.0) + v
+    for b, f in figs["branch_cash"].items():
+        ok("branch %s ATMs" % b, r1k(atm.get(b, 0.0)) == f["atm"], (r1k(atm.get(b, 0.0)), f["atm"]))
+        ok("branch %s night depository" % b, r1k(night.get(b, 0.0)) == f["night"], (r1k(night.get(b, 0.0)), f["night"]))
+
+    # ---- the golden deliverables carry the same figures -------------------------------------------------------
+    memo = docx.Document(os.path.join(GOLD, "fiu_referral_slate_2027q1.docx"))
+    t0 = memo.tables[0]
+    rows = [[c_.text for c_ in r.cells] for r in t0.rows[1:]]
+    ok("memo: the slate names the referred in order", [r[1] for r in rows] == [r["name"] for r in ref])
+    for r, row in zip(ref, rows):
+        ok("memo: %s figures" % r["name"], row[3:] == ["CAD {:,}".format(r["cash_paid_in"]), "CAD {:,}".format(r["produced"]),
+                                                       "CAD {:,}".format(r["excess"])], row)
+    body = " ".join(p.text for p in memo.paragraphs)
+    ok("memo: names the largest excess not referred", figs["call"]["near_miss"]["name"] in body)
+    t1 = memo.tables[1]
+    for k, row in zip((1, 2, 3, 4), t1.rows[1:]):
+        f = figs["lctr"]["Q%d 2026" % k]
+        ok("memo: LCTR Q%d" % k, [c_.text for c_ in row.cells][1:] == [str(f["required"]), str(f["filed"]), str(f["late"])])
+    t2 = memo.tables[2]
+    for row in t2.rows[1:]:
+        cells = [c_.text for c_ in row.cells]
+        b = re.search(r"\((\d{5})\)", cells[0]).group(1)
+        f = figs["branch_cash"][b]
+        ok("memo: branch %s" % b, cells[1:] == ["{:,}".format(f["atm"]), "{:,}".format(f["night"])], cells)
+    wb = openpyxl.load_workbook(os.path.join(GOLD, "member_cash_review_2026.xlsx"), read_only=True)
+    ws = wb["Members 2026"]
+    vals = list(ws.iter_rows(min_row=5, values_only=True))
+    by = {v[0]: v for v in vals if v and isinstance(v[0], int)}
+    ok("workbook: every member listed once", len(by) == len(seg), len(by))
+    for r in ref:
+        v = by[r["member_number"]]
+        ok("workbook: %s" % r["name"], (v[3], v[5], v[6], v[8]) == (r["cash_paid_in"], r["produced"], r["excess"], "Yes"), v)
+    ok("workbook: only the referred meet the test", sorted(k for k, v in by.items() if v[8] == "Yes") ==
+       sorted(r["member_number"] for r in ref))
+    ok("workbook: every member's cash paid in", all(v[3] == r1k(tab.cash[k]) for k, v in by.items()))
+    png = open(os.path.join(GOLD, "cash_review_2026.png"), "rb").read()
+    ok("chart: a PNG with no software stamp", png[:8] == b"\x89PNG\r\n\x1a\n" and b"matplotlib" not in png.lower())
+
+    fails = [o for o in OUT if not o[1]]
+    for lab, good, detail in OUT:
+        if not good:
+            print("FAIL  %s  %s" % (lab, detail))
+    print("verify: %d checks, %d FAIL" % (len(OUT), len(fails)))
+    return 1 if fails else 0
 
 
 if __name__ == "__main__":
-    main(*(sys.argv[1:3]))
+    sys.exit(main())
