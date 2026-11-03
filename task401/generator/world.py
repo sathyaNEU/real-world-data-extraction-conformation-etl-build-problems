@@ -40,6 +40,13 @@ SVT_STEPS = [(D(2024, 4, 1), 1.071), (D(2024, 7, 1), 1.000), (D(2024, 10, 1), 1.
 FIX_LAUNCH = [D(2024, 5, 1), D(2024, 9, 2), D(2024, 12, 2), D(2025, 3, 3), D(2025, 6, 2), D(2025, 9, 1), D(2025, 12, 1)]
 PHASE1_START, PHASE1_END = D(2025, 9, 1), D(2025, 11, 2)
 PHASE2_ASOF = D(2026, 11, 1)
+# the extracts, each named for the span of the records it holds; the switching flows were pulled on 6 November 2026
+F_QUOTES = 'quote_log_2024-05_2025-12.csv'
+F_REGS = 'supply_registrations_2024-05_2025-12.csv'
+F_FLOWS = 'switching_flows_2026-05-01_2026-11-05.csv'
+FLOWS_LAST = D(2026, 11, 5)
+F_DD = 'direct_debit_changes_2024-07_2026-06.csv'
+DD_LAST = D(2026, 6, 30)
 
 
 def mpan_core(dno, rng):

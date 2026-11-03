@@ -145,7 +145,8 @@ def cutover_plan(out):
     d.add_heading('1. Scope', level=2)
     d.add_paragraph('Phase 2 moves every prepayment account on the legacy platform that we still supply on 1 November '
                     '2026, on at least one of its meter points, to the new platform. An account we no longer supply on '
-                    'any meter point on that date stays on the legacy platform until its final bill and closes there.')
+                    'any meter point on that date stays on the legacy platform until its final bill and closes there. '
+                    'A meter point we lose to another supplier is no longer ours from the effective date of the loss.')
     d.add_paragraph('Planning volumes use each meter point\'s industry annual quantity in force on 1 November 2026, '
                     'day and night together on a two-rate meter, electricity and gas reported separately, for the meter '
                     'points we still supply on that date.')
@@ -158,7 +159,8 @@ def cutover_plan(out):
     d.add_heading('3. Reporting conventions', level=2)
     d.add_paragraph('Weekly figures in this plan and in its reports run Monday to Sunday, UK time.')
     d.add_paragraph('Phase 1 is reported as the accounts it moved to the new platform in each week, each account counted '
-                    'once, in the week its last load completed, with the fuels that load carried.')
+                    'once, in the week its last load completed, with the fuels that load carried. An account counts as '
+                    'moved if the new platform was billing it at the end of 2 November 2025, when phase 1 closed.')
     d.add_heading('4. Dependencies', level=2)
     d.add_paragraph('Prepayment key and card top-up feeds from the payment network to be repointed at the new platform. '
                     'Smart prepayment meters to receive new tariff tables over the air in the load window. The vulnerable '
@@ -170,8 +172,9 @@ def cutover_plan(out):
     cp.revision = 7; cp.title = 'Phase 2 cutover plan'; cp.subject = ''; cp.keywords = ''; cp.comments = ''
     cp.category = ''
     path = os.path.join(out, 'phase2_cutover_plan_v1.3.docx')
+    words = sum(len(p.text.split()) for p in d.paragraphs)
     d.save(path)
-    scrub_docx(path, words=269, pages=1)
+    scrub_docx(path, words=words, pages=1)
 
 
 APP_XML = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/'
@@ -198,6 +201,11 @@ def scrub_docx(path, words, pages):
             data = re.sub(rb'<(Override|Relationship)[^>]*stylesWithEffects[^>]*/>', b'', data)
         if name == 'docProps/thumbnail.jpeg':
             continue
+        # the thumbnail goes with its package relationship and its content type, so every reader opens the package
+        if name == '_rels/.rels':
+            data = re.sub(rb'<Relationship[^>]*metadata/thumbnail[^>]*/>', b'', data)
+        if name == '[Content_Types].xml':
+            data = re.sub(rb'<Default Extension="jpeg"[^>]*/>', b'', data)
         out.append((name, data))
     with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
         for name, data in out:

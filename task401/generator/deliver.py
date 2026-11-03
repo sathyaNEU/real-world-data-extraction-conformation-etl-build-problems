@@ -114,7 +114,7 @@ def workbook():
         ws.append([r, F['ask_a']['counts'][r]])
     ws.append(['Total', sum(F['ask_a']['counts'].values())])
     ws.append([])
-    ws.append(['Annual quantity of the meter points phase 2 will move (in force on 1 November 2026)', 'GWh'])
+    ws.append(['Total annual quantity of all the meter points phase 2 will move (in force on 1 November 2026)', 'GWh'])
     ws.append(['Electricity', F['ask_a']['elec_gwh']]); ws.append(['Gas', F['ask_a']['gas_gwh']])
     for row in ws.iter_rows(min_row=4, max_row=4 + len(REGION_ORDER), min_col=2, max_col=2):
         for c in row:
@@ -165,13 +165,14 @@ def workbook():
     ws3.freeze_panes = 'B4'
     ws4 = wb.create_sheet('Notes')
     for line in ('Phase 2 scope per the phase 2 cutover plan v1.3: prepayment accounts on the legacy platform still supplied on '
-                 '1 November 2026 on at least one meter point; a meter point passes to the account that took it on last.',
+                 '1 November 2026 on at least one meter point; a meter point lost to another supplier is no longer ours from '
+                 'the effective date of the loss, and passes to the account that took it on last.',
                  'Annual quantities: each meter point\'s industry annual quantity in force on 1 November 2026, day and night '
-                 'together on a two-rate meter.',
+                 'together on a two-rate meter, totalled for phase 2 as a whole.',
                  'Phase 1 moves: each account counted once, in the week its last load completed, UK time, with the fuels that '
-                 'load carried; accounts returned to the legacy platform were not moved.',
+                 'load carried; an account counts as moved if the new platform was billing it at the end of 2 November 2025.',
                  'Switches: one per customer, in the month first supply started, credited to the sale the switch was '
-                 'registered on; switches withdrawn before supply began are left out.',
+                 'registered on; no withdrawn registration is counted.',
                  'Prepared by Customer Insight, 9 November 2026.'):
         ws4.append([line])
     ws4.column_dimensions['A'].width = 120

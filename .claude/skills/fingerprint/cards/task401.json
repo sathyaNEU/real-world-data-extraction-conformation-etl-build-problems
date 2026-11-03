@@ -44,7 +44,7 @@
     "tariffs by region with effective dates, variable rates stepping each quarter and fixed products holding their launch rates",
     "UTC in the platform's load log and the 2026 export against UK local dates in the legacy exports, across the clock changes"
   ],
-  "stakeholder_role": "the supplier's billing programme director, who needs to know whether any of the fall belongs to the platform before he asks the executive team to sign the phase 2 cutover off, with the phase 2 readiness tables (the prompt names no one)",
+  "stakeholder_role": "the supplier's billing programme director, who needs to know whether any of the fall belongs to the platform before they ask the executive team to sign the phase 2 cutover off, with the phase 2 readiness tables (the prompt names no one)",
   "role_family": "programme_officer",
   "scoring_unit": "index points",
   "spine": {

@@ -46,7 +46,7 @@ def main():
     ok('gate: three or more formats', len({f.rsplit('.', 1)[1] for f in files}) >= 3, str(sorted({f.rsplit('.', 1)[1] for f in files})))
     big = max(sum(1 for _ in open(os.path.join(T, f), 'rb')) for f in files if f.endswith(('.csv', '.jsonl')))
     ok('gate: a file of 25,000 rows or more', big >= 25000, '%d rows' % big)
-    dis = ['direct_debit_changes_2024-07_2026-06.csv', 'smart_meter_installs_2025.csv']
+    dis = [W.F_DD, 'smart_meter_installs_2025.csv']
     ok('gate: two distractors present', all(d in files for d in dis), ', '.join(dis))
     ok('no describing file', not any(k in f.lower() for f in files for k in ('readme', 'dictionary', 'notes', 'manifest', 'schema', 'codebook')))
     # ---- the golden from the bundle against the clean truth
@@ -132,7 +132,7 @@ def main():
     resp_acc = set(L['account'])
     chained = loads[loads['legacy_account_ref'].str.startswith('72')]
     ok('separation: no respondent in a reload chain or pilot row', not (set(chained['platform_account_no']) & resp_acc))
-    regs = pd.read_csv(os.path.join(T, 'supply_registrations_2024-07_2025-12.csv'), dtype=str)
+    regs = pd.read_csv(os.path.join(T, W.F_REGS), dtype=str)
     wd_q = set(regs.loc[regs['event'] == 'Withdrawal', 'quote_ref']); rq = set(L['quote_ref'])
     ok('separation: no respondent with a withdrawn registration', not (wd_q & rq), '%d' % len(wd_q & rq))
     per_q = regs[regs['event'] == 'Registration'].groupby('quote_ref')['registration_ref'].nunique()
@@ -144,6 +144,7 @@ def main():
     devices(F, Fs, L)
     literal_rows(L)
     literal_asks(F)
+    closures(F)
     fails = [r for r in RES if not r[1]]
     print('%d checks, %d failed' % (len(RES), len(fails)))
     return 1 if fails else 0
@@ -160,12 +161,14 @@ def literal_asks(F):
     # one of its meter points"; "An account we no longer supply on any meter point on that date stays on the legacy
     # platform until its final bill"; "each meter point's industry annual quantity in force on 1 November 2026, day and
     # night together on a two-rate meter, electricity and gas reported separately".
+    # Plan: "A meter point we lose to another supplier is no longer ours from the effective date of the loss." A transfer
+    # returned to us takes effect on its own effective date; a withdrawn loss never took effect.
     asof = D(2026, 11, 1)
-    supplied = {}                                       # the industry's switching record of who supplies a meter point
-    for f in sorted(rd('switching_flows_2026-05_2026-10.csv'), key=lambda f: (f['flow_date'], ['Loss notified', 'Loss withdrawn',
-                    'Loss completed', 'Erroneous transfer returned'].index(f['flow']))):
-        if D.fromisoformat(f['flow_date']) <= asof:
-            supplied[f['meter_point']] = f['flow'] != 'Loss completed'
+    took = {}                                           # the industry's switching record of who supplies a meter point
+    for f in rd(W.F_FLOWS):
+        if f['flow'] in ('Loss completed', 'Erroneous transfer returned') and D.fromisoformat(f['effective_date']) <= asof:
+            took.setdefault(f['meter_point'], []).append((f['effective_date'], f['flow']))
+    supplied = {m: max(v)[1] != 'Loss completed' for m, v in took.items()}
     leg = rd('legacy_accounts_extract_2026-10-31.csv')
     taken = {}                                          # a meter point is supplied to the account that took it on last
     for a in leg:
@@ -190,11 +193,13 @@ def literal_asks(F):
     okA = cnt == F['ask_a']['counts'] and round(kwh['E'] / 1e6, 1) == F['ask_a']['elec_gwh'] and round(kwh['G'] / 1e6, 1) == F['ask_a']['gas_gwh']
     # Ask B. Prompt: "the accounts phase 1 moved each week from 1 September to 2 November 2025, split into electricity-only
     # and dual fuel". Plan: "the accounts it moved to the new platform in each week, each account counted once, in the
-    # week its last load completed, with the fuels that load carried"; "Monday to Sunday, UK time". Close-out: "the
-    # platform issues a new account number on each load"; "Prepayment accounts remain on the legacy platform for phase 2".
+    # week its last load completed, with the fuels that load carried"; "An account counts as moved if the new platform
+    # was billing it at the end of 2 November 2025, when phase 1 closed"; "Monday to Sunday, UK time". Close-out: "the
+    # platform issues a new account number on each load". The legacy extract dates each account's current status: a
+    # loaded account live on the legacy platform from a day on or before 2 November 2025 was billed there at the close.
     loads = [json.loads(l) for l in open(os.path.join(T, 'phase1_migration_loads.jsonl'), encoding='utf-8')]
     earlier = {r['platform_account_no']: r['legacy_account_ref'] for r in loads}
-    still_legacy = {a['account_number'] for a in leg}
+    still_legacy = {a['account_number'] for a in leg if a['status_date'] <= '2025-11-02'}
     acct_last = {}
     for r in loads:
         k = r['legacy_account_ref']
@@ -211,9 +216,9 @@ def literal_asks(F):
             wk['%d|%s' % (w, fp)] = wk.get('%d|%s' % (w, fp), 0) + 1
     okB = wk == F['ask_b']
     # Ask C. Prompt: "the switches each sales channel brought in each month from July to December 2025, one per customer
-    # in the month their first supply started, credited to the sale it was registered on and none withdrawn before
-    # supply began".
-    rg = rd('supply_registrations_2024-07_2025-12.csv'); qs = rd('quote_log_2024-06_2025-12.csv')
+    # in the month their first supply started, credited to the sale it was registered on and no withdrawn registration
+    # counted".
+    rg = rd(W.F_REGS); qs = rd(W.F_QUOTES)
     wdn = {r['registration_ref'] for r in rg if r['event'] == 'Withdrawal'}
     cust = {}                                           # one customer: the accepted quote its registrations name
     for r in rg:
@@ -236,6 +241,157 @@ def literal_asks(F):
     ok('literal ask executor: Ask C from the asking sentence equals the golden (24 figures)', okC)
 
 
+def phase2_counts(B, lost):
+    """Ask A's account counts for a given set of lost meter points (the golden's holder and status rules)."""
+    leg = B['legacy']
+    holder = {}
+    for acct, mpan, mprn, st in zip(leg['account_number'], leg['mpan'], leg['mprn'], leg['supply_start_date']):
+        for m in (mpan, mprn):
+            if isinstance(m, str) and m and (m not in holder or st > holder[m][1]):
+                holder[m] = (acct, st)
+    cnt = {}
+    for _, a in leg[leg['account_status'] != 'Closed'].iterrows():
+        mps = [a['mpan']] + ([a['mprn']] if isinstance(a['mprn'], str) and a['mprn'] else [])
+        if [m for m in mps if m not in lost and holder[m][0] == a['account_number']]:
+            cnt[a['region']] = cnt.get(a['region'], 0) + 1
+    return cnt
+
+
+def closures(F):
+    """The ask conventions in the fork table (SF13 to SF22), the extracts' timeline and the realism the round-1 readers
+    raised, each asserted on target/."""
+    import datetime as dt
+    D = dt.date
+    B = G.load(T)
+    leg, fl, rg, q = B['legacy'], B['flows'].copy(), B['regs'], B['quotes']
+    # ---- SF15 (Gate A): no account's status is dated before its own supply start; a shared meter point's accounts never tie
+    early = leg[leg['status_date'] < leg['supply_start_date']]
+    ok('SF15 no legacy account closes or changes status before its own supply start', len(early) == 0, '%d accounts' % len(early))
+    sh = pd.concat([leg[['mpan', 'supply_start_date']].rename(columns={'mpan': 'm'}),
+                    leg.loc[leg['mprn'].notna(), ['mprn', 'supply_start_date']].rename(columns={'mprn': 'm'})])
+    sh = sh[sh['m'].duplicated(keep=False)]
+    ok('SF15 every shared meter point has one account that took it on last (no tie)', not sh.duplicated().any(), '%d shared rows' % len(sh))
+    # ---- SF13: a completed loss effective on 1 November leaves the meter point not ours that day (the plan's sentence)
+    fl['d'] = fl['flow_date']
+    rank = {'Loss notified': 0, 'Loss withdrawn': 1, 'Loss completed': 2, 'Erroneous transfer returned': 3}
+    f2 = fl[fl['d'] <= '2026-11-01'].assign(o=fl['flow'].map(rank)).sort_values(['meter_point', 'd', 'o'])
+    latest = f2.drop_duplicates('meter_point', keep='last')
+    lost = set(latest.loc[latest['flow'] == 'Loss completed', 'meter_point'])
+    on1 = set(fl.loc[(fl['flow'] == 'Loss completed') & (fl['effective_date'] == '2026-11-01'), 'meter_point'])
+    alt = phase2_counts(B, lost - on1)
+    ok('SF13 losses effective on 1 November: the plan\'s sentence is load-bearing (the other reading moves the counts)',
+       len(on1) > 0 and phase2_counts(B, lost) == F['ask_a']['counts'] and alt != F['ask_a']['counts'],
+       '%d meter points; other reading %+d accounts' % (len(on1), sum(alt.values()) - sum(F['ask_a']['counts'].values())))
+    pend = fl[(fl['flow'] == 'Loss notified') & (fl['effective_date'] <= '2026-11-01')]
+    done = fl[fl['flow'].isin(['Loss completed', 'Loss withdrawn'])].groupby('meter_point')['flow_date'].max()
+    ok('SF13 every loss due by 1 November was completed or withdrawn by its effective date (flow date and effective date agree)',
+       all(m in done.index and done[m] <= e for m, e in zip(pend['meter_point'], pend['effective_date'])), '%d losses' % len(pend))
+    # ---- SF14: the GWh totals are phase 2's whole, one figure a fuel
+    ok('SF14 the asking sentence grades one electricity and one gas total for phase 2 as a whole',
+       set(F['ask_a']) >= {'elec_gwh', 'gas_gwh'} and isinstance(F['ask_a']['elec_gwh'], float))
+    # ---- SF16: an account phase 1 moved (the plan: billed on the new platform at the end of 2 November 2025)
+    lo = B['loads'].copy()
+    lo['local'] = [x + pd.Timedelta(hours=G.uk_offset(x)) for x in pd.to_datetime(lo['completed_utc'].str.replace('Z', ''))]
+    src = dict(zip(lo['platform_account_no'], lo['legacy_account_ref']))
+    def root(k):
+        n = 0
+        while k in src and n < 20:
+            k = src[k]; n += 1
+        return k
+    lo['root'] = [root(k) for k in lo['legacy_account_ref']]
+    last = lo.sort_values('local').drop_duplicates('root', keep='last')
+    last = last[(last['local'] >= pd.Timestamp(2025, 9, 1)) & (last['local'] < pd.Timestamp(2025, 11, 3))]
+    last = last.assign(wk=[(t.date() - D(2025, 9, 1)).days // 7 + 1 for t in last['local']])
+    def tab(rows):
+        return {'%d|%s' % k: int(v) for k, v in rows.groupby(['wk', 'fuel_profile']).size().items()}
+    every = tab(last)
+    not_on = tab(last[~last['root'].isin(set(leg['account_number']))])
+    ok('SF16 an account phase 1 moved: every loaded account and every loaded account off the extract each file another table',
+       every != F['ask_b'] and not_on != F['ask_b'] and every != not_on,
+       'every load %+d, off the extract %+d accounts' % (sum(every.values()) - sum(F['ask_b'].values()), sum(not_on.values()) - sum(F['ask_b'].values())))
+    # ---- SF17: withdrawn registrations left out, whatever their date; every withdrawal precedes the start it requested
+    w = rg[rg['event'] == 'Withdrawal']; r = rg[rg['event'] == 'Registration']
+    st = r.set_index(['registration_ref', 'meter_point'])['supply_start_date']
+    wst = [st.get((a, m)) for a, m in zip(w['registration_ref'], w['meter_point'])]
+    ok('SF17 every withdrawal is dated before the supply start its registration requested', all(s is not None and d < s for d, s in zip(w['event_date'], wst)),
+       '%d withdrawals' % len(w))
+    wref = set(w['registration_ref'])
+    rmp = r[r['registration_ref'].isin(wref)].groupby('registration_ref')['meter_point'].apply(set)
+    wmp = w.groupby('registration_ref')['meter_point'].apply(set)
+    ok('SF17 a withdrawn registration is withdrawn on every meter point it registered (by reference or by row, the same rows)',
+       all(rmp[k] == wmp.get(k, set()) for k in rmp.index), '%d withdrawn registrations' % len(rmp))
+    # ---- SF18 to SF21: one customer, the month first supply started, the sale, the channel names
+    live = r[~r['registration_ref'].isin(wref)].copy()
+    qd, qc, qp = (dict(zip(q['quote_ref'], q[c])) for c in ('quote_date', 'channel', 'prospect_ref'))
+    live['prospect'] = live['quote_ref'].map(qp)
+    byp = {p: sorted(zip(g['quote_date'], g['quote_ref'], g['channel'])) for p, g in q.groupby('prospect_ref')}
+    def table_by(key):
+        g = live.groupby(key).agg(start=('supply_start_date', 'min'), reg=('event_date', 'min'), p=('prospect', 'first'))
+        g = g[(g['start'] >= '2025-07-01') & (g['start'] <= '2025-12-31')]
+        out = {}
+        for start, reg, p in zip(g['start'], g['reg'], g['p']):
+            k = '%s|%d' % ([x for x in byp[p] if x[0] <= reg][-1][2], int(start[5:7]))
+            out[k] = out.get(k, 0) + 1
+        return out
+    by_q, by_p, by_a = table_by('quote_ref'), table_by('prospect'), table_by('account_number')
+    ok('SF18 one customer: the accepted quote, the prospect and the account give the same switches in every cell',
+       by_q == F['ask_c'] and by_p == F['ask_c'] and by_a == F['ask_c'])
+    first = live.groupby('quote_ref')['supply_start_date'].min()
+    elec = live[live['fuel'] == 'Electricity'].groupby('quote_ref')['supply_start_date'].min()
+    ok('SF19 the month first supply started: the earliest live start is the electricity start for every customer',
+       (first.loc[elec.index] == elec).all() and set(first.index) == set(elec.index), '%d customers' % len(first))
+    named_ok = [x for x in live.groupby('quote_ref')['event_date'].min().items() if qd[x[0]] <= x[1]]
+    agree = all([c for c in byp[qp[k]] if c[0] <= reg][-1][1] == k for k, reg in named_ok)
+    ok('SF20 the sale it was registered on: wherever the named quote predates the registration it is the prospect\'s latest quote then',
+       agree, '%d registrations' % len(named_ok))
+    ok('SF21 the quote log carries exactly four sales channels', set(q['channel']) == {'Direct web', 'Comparison site', 'Phone', 'Broker'})
+    # ---- SF22: load stamps are UTC; the plan's weeks are UK time, and the UTC week moves cells
+    lo2 = last.assign(uwk=[(pd.Timestamp(x.replace('Z', '')).date() - D(2025, 9, 1)).days // 7 + 1 for x in last['completed_utc']])
+    ok('SF22 every load stamp is UTC (Z) and UTC weeks would file another table', lo['completed_utc'].str.endswith('Z').all()
+       and (lo2['uwk'] != lo2['wk']).sum() > 0, '%d accounts change week' % (lo2['uwk'] != lo2['wk']).sum())
+    # ---- the extracts' timeline: each file's records inside the span its name gives, nothing after its pull
+    sv = pd.read_csv(os.path.join(T, 'survey_export_6m_2026-01-01_2026-06-30.csv'), dtype=str)
+    s25 = pd.read_csv(os.path.join(T, 'six_month_survey_2025H1.csv'), dtype=str)
+    smi = pd.read_csv(os.path.join(T, 'smart_meter_installs_2025.csv'), dtype=str)
+    dd = pd.read_csv(os.path.join(T, W.F_DD), dtype=str)
+    rates = pd.read_excel(os.path.join(T, 'tariff_rates_2024-04_2026-06.xlsx'))
+    qty = B['qty']
+    s25d = pd.to_datetime(s25['RESP_DATE'], format='%d/%m/%Y')
+    spans = {W.F_QUOTES: (q['quote_date'], '2024-05-01', '2025-12-31'),
+             W.F_REGS: (rg['event_date'], '2024-05-01', '2025-12-31'),
+             W.F_FLOWS: (fl['flow_date'], '2026-05-01', W.FLOWS_LAST.isoformat()),
+             W.F_DD: (dd['change_date'], '2024-07-01', W.DD_LAST.isoformat()),
+             'smart_meter_installs_2025.csv': (smi['appointment_date'], '2025-01-01', '2025-12-31'),
+             'six_month_survey_2025H1.csv': (s25d.dt.strftime('%Y-%m-%d'), '2025-01-01', '2025-06-30'),
+             'survey_export_6m_2026-01-01_2026-06-30.csv': (sv['completed_at'].str[:10], '2026-01-01', '2026-06-30'),
+             'legacy_accounts_extract_2026-10-31.csv': (pd.concat([leg['status_date'], leg['supply_start_date']]), '2000-01-01', '2026-10-31'),
+             'meter_point_annual_quantities.parquet': (qty['effective_from'].astype(str), '2000-01-01', '2026-11-05'),
+             'tariff_rates_2024-04_2026-06.xlsx': (pd.concat([pd.to_datetime(rates['effective_from']), pd.to_datetime(rates['effective_to'])]).dt.strftime('%Y-%m-%d'),
+                                                   '2024-04-01', '2026-06-30')}
+    bad = ['%s %s..%s' % (n, v.min(), v.max()) for n, (v, a, b) in spans.items() if v.min() < a or v.max() > b]
+    ok('timeline: every extract\'s records sit inside the span its name or pull date gives', not bad, '; '.join(bad) or '%d files' % len(spans))
+    firsts = {W.F_QUOTES: q['quote_date'].min()[:7] == '2024-05', W.F_REGS: rg['event_date'].min()[:7] == '2024-05',
+              W.F_FLOWS: fl['flow_date'].min() == '2026-05-01' and fl['flow_date'].max() == W.FLOWS_LAST.isoformat()}
+    ok('timeline: a dated file name starts in the month of its first record', all(firsts.values()), str(firsts))
+    newest = max(fl['flow_date'].max(), str(qty['effective_from'].max()), leg['status_date'].max())
+    ok('timeline: the pack\'s export date (6 November 2026) follows every record; the plan (20 October 2026) predates the extracts',
+       newest < '2026-11-06' and '2026-10-20' < '2026-10-31', 'newest record %s' % newest)
+    # ---- realism the readers raised: the Direct Debit reasons differ; the parquet footer names a warehouse writer
+    vc = dd['reason'].value_counts()
+    ok('realism: Direct Debit new mandates and scheduled reviews differ, each near the joiners', vc['New mandate'] != vc['Scheduled review']
+       and abs(vc['New mandate'] - vc['Scheduled review']) > 100, '%d against %d' % (vc['New mandate'], vc['Scheduled review']))
+    import docx, zipfile
+    pl = ' '.join(p.text for p in docx.Document(os.path.join(T, 'phase2_cutover_plan_v1.3.docx')).paragraphs)
+    rels = zipfile.ZipFile(os.path.join(T, 'phase2_cutover_plan_v1.3.docx')).read('_rels/.rels')
+    ok('realism (H25): python-docx opens the plan and reads its filed sentences; no relationship points at a dropped part',
+       'An account counts as moved if the new platform was billing it at the end of 2 November 2025, when phase 1 closed.' in pl
+       and 'A meter point we lose to another supplier is no longer ours from the effective date of the loss.' in pl
+       and b'thumbnail' not in rels, '%d words' % len(pl.split()))
+    import pyarrow.parquet as pq
+    cb = pq.read_metadata(os.path.join(T, 'meter_point_annual_quantities.parquet')).created_by
+    ok('realism: the parquet writer is a release build, not a snapshot', 'SNAPSHOT' not in cb and cb.startswith('parquet-mr version'), cb)
+
+
 def fl_none(B, mps):
     """No switching flow touches these meter points."""
     return not (set(mps) & set(B['flows']['meter_point']))
@@ -255,26 +411,40 @@ def devices(F, Fs, L):
     ok('frozen main call: the quote carries more than half the fall', F['bridge']['quote'] > 0.5 * F['fall_points'],
        '%.1f of %.1f' % (F['bridge']['quote'], F['fall_points']))
     resp_acc, resp_q = set(L['account']), set(L['quote_ref'])
-    # ---- Ask B: reload chains on dual fuel accounts only (primary); accounts loaded and returned to legacy (second)
+    # ---- Ask B: reload chains on dual fuel accounts only (primary). Loaded accounts the legacy platform holds again come
+    # two ways: returned during phase 1 days after their load (a hazard the plan's moved sentence executes once noticed),
+    # and taken back months after the close on a change to prepayment (second, silent: the repair that leaves out every
+    # loaded account found on the legacy extract is right for the first and wrong for the second)
     lo = B['loads']; leg = B['legacy']
     src = dict(zip(lo['platform_account_no'], lo['legacy_account_ref']))
     reload = lo[lo['legacy_account_ref'].isin(set(lo['platform_account_no']))]
     ok('Ask B primary: every reload chain is a dual fuel account', (reload['fuel_profile'] == 'DUAL').all(), '%d reloads' % len(reload))
+    lo['local'] = [x + pd.Timedelta(hours=G.uk_offset(x)) for x in pd.to_datetime(lo['completed_utc'].str.replace('Z', ''))]
+    lo['wk'] = [(t.date() - D(2025, 9, 1)).days // 7 + 1 for t in lo['local']]
     back = lo[lo['legacy_account_ref'].isin(set(leg['account_number']))]
     bl = leg.set_index('account_number').loc[back['legacy_account_ref']]
-    ts = pd.to_datetime(back['completed_utc'].str.replace('Z', '')).dt.date.values
-    gap = [(D.fromisoformat(s) - t).days for s, t in zip(bl['status_date'], ts)]
+    gap = np.array([(D.fromisoformat(s) - t.date()).days for s, t in zip(bl['status_date'], back['local'])])
     fuel_ok = (back['fuel_profile'].values == bl['fuel'].map({'Electricity': 'ELEC', 'Dual fuel': 'DUAL'}).values).all()
-    ok('Ask B second: loaded accounts still on the legacy extract are live prepayment, loaded with their own fuels, set live 1 to 6 days after the load',
+    ok('Ask B: every loaded account on the legacy extract is live prepayment with its own fuels, live again after its load',
        len(back) > 0 and fuel_ok and (bl['payment_method'] == 'Prepayment').all() and (bl['account_status'] == 'Live').all()
-       and all(0 <= g <= 7 for g in gap), '%d accounts' % len(back))
-    lo['wk'] = [(t.date() - D(2025, 9, 1)).days // 7 + 1 for t in
-                [x + pd.Timedelta(hours=G.uk_offset(x)) for x in pd.to_datetime(lo['completed_utc'].str.replace('Z', ''))]]
-    per_wk = lo[lo['legacy_account_ref'].isin(set(back['legacy_account_ref']))].groupby(['wk', 'fuel_profile']).size()
-    cells = [per_wk.get((w, f), 0) for w in range(1, 10) for f in ('ELEC', 'DUAL')]
-    ok('Ask B second: moves every week of both splits by several', min(cells) >= 3, 'fewest %d, most %d' % (min(cells), max(cells)))
-    ok('separation: no respondent in a reload chain, a pilot row or a returned load',
-       not ({src.get(p) for p in resp_acc} & set(reload['legacy_account_ref'])) and not (set(back['legacy_account_ref']) & resp_acc)
+       and (gap >= 1).all() and back['legacy_account_ref'].is_unique, '%d accounts' % len(back))
+    sd = bl['status_date'].values
+    ret, hb = (gap <= 7), (sd >= '2026-01-01')
+    ok('Ask B: each is either returned within a week of its load or taken back during 2026, none on the day phase 1 closed',
+       (ret | hb).all() and not (ret & hb).any() and not (sd == '2025-11-02').any(),
+       'returned %d (%d after the close), taken back %d' % (ret.sum(), (ret & (sd > '2025-11-02')).sum(), hb.sum()))
+    def cells_of(rows):
+        g = rows.groupby(['wk', 'fuel_profile']).size()
+        return [int(g.get((w, f), 0)) for w in range(1, 10) for f in ('ELEC', 'DUAL')]
+    c_ret = cells_of(back[ret & (sd <= '2025-11-02')])
+    ok('Ask B hazard: accounts returned by the close move every week of both splits for a response that keeps every load',
+       min(c_ret) >= 3, 'fewest %d, most %d' % (min(c_ret), max(c_ret)))
+    c_hb = cells_of(back[sd > '2025-11-02'])
+    ok('Ask B second: accounts taken back after the close move every week of both splits for the drop-every-extract-account repair',
+       min(c_hb) >= 3, 'fewest %d, most %d' % (min(c_hb), max(c_hb)))
+    ok('separation: no respondent in a reload chain, a pilot row or on the legacy extract',
+       not ({src.get(p) for p in resp_acc} & set(reload['legacy_account_ref'])) and not (set(leg['account_number']) & resp_acc)
+       and not ({src.get(p) for p in resp_acc} & set(leg['account_number']))
        and not (set(lo.loc[lo['legacy_account_ref'].str.startswith('72'), 'platform_account_no']) & resp_acc))
     # ---- Ask C: split gas registration only after an address lookup (primary); broker sales re-pointed (second)
     rg, q = B['regs'], B['quotes'].copy()

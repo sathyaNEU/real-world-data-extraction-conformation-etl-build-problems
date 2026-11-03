@@ -207,17 +207,20 @@ def cut(out, seed=W.SEED):
                 if fuel == 'Gas' and not dual:
                     continue
                 rrows.append([ref, acct, mp, fuel, q, 'Registration', rdd.isoformat(), st.isoformat()])
-                rrows.append([ref, acct, mp, fuel, q, 'Withdrawal', (rdd + dt.timedelta(days=int(rng.integers(1, 14)))).isoformat(), ''])
+                # a registration can only be withdrawn before the supply it requested starts
+                wdd = min(rdd + dt.timedelta(days=int(rng.integers(1, 14))), st - dt.timedelta(days=1))
+                rrows.append([ref, acct, mp, fuel, q, 'Withdrawal', wdd.isoformat(), ''])
     qrows.sort(key=lambda r: (r[1], r[0])); rrows.sort(key=lambda r: (r[6], r[0], r[3], r[5]))
-    write_csv(os.path.join(out, 'quote_log_2024-06_2025-12.csv'),
+    write_csv(os.path.join(out, W.F_QUOTES),
               ['quote_ref', 'quote_date', 'channel', 'region', 'tariff_code', 'fuel', 'annual_kwh_electricity',
                'annual_kwh_gas', 'projected_annual_cost_gbp', 'prospect_ref'], qrows)
-    write_csv(os.path.join(out, 'supply_registrations_2024-07_2025-12.csv'),
+    write_csv(os.path.join(out, W.F_REGS),
               ['registration_ref', 'account_number', 'meter_point', 'fuel', 'quote_ref', 'event', 'event_date',
                'supply_start_date'], rrows)
     U['qrows'], U['rrows'] = qrows, rrows
     tracker(out, U, rng)
     quantities(out, U, rng, p1)
+    U['p1'] = p1
     tariffs(out, U)
     distractors(out, U, rng, p1)
     phase2(out, U, rng, ids)
@@ -332,6 +335,7 @@ def distractors(out, U, rng, p1):
     rows = []
     resp_ix = {i: k for k, i in enumerate(np.where(J['resp'])[0])}
     for i in range(len(J['t'])):
+        n0 = len(rows)
         s = J['start'][i]
         def acct(day):
             return J['platform'][i] if (not J['legacy'][i] or day >= W.PHASE1_START) else J['legacy'][i]
@@ -350,9 +354,10 @@ def distractors(out, U, rng, p1):
         if rng.random() < 0.025:
             cd = rv + dt.timedelta(days=int(rng.integers(5, 60)))
             new = round(cur * rng.uniform(0.85, 1.1)); rows.append([acct(cd), cd.isoformat(), '%.2f' % new, '%.2f' % cur, 'Customer request'])
+        for r in rows[n0:]:
+            r.append(i)                               # the joiner each row belongs to (never written)
     rows.sort(key=lambda r: (r[1], r[0], r[4]))
-    write_csv(os.path.join(out, 'direct_debit_changes_2024-07_2026-06.csv'),
-              ['account_number', 'change_date', 'new_amount_gbp', 'previous_amount_gbp', 'reason'], rows)
+    U['dd_rows'] = rows                               # written by devices.debits()
     inst = []
     pool = [(J['platform'][i] or J['legacy'][i], J['mpan'][i]) for i in rng.choice(len(J['t']), 5200, replace=False)]
     pool += [(a['legacy'], a['mpan']) for a in [p1[k] for k in rng.choice(len(p1), 3900, replace=False)] if 'mpan' in a]
@@ -366,6 +371,7 @@ def distractors(out, U, rng, p1):
     inst.sort(key=lambda r: (r[3], r[0]))
     write_csv(os.path.join(out, 'smart_meter_installs_2025.csv'),
               ['job_ref', 'account_number', 'mpan', 'appointment_date', 'meter_type', 'outcome'], inst)
+    U['smi_accts'] = {r[1] for r in inst}
 
 
 def phase2(out, U, rng, ids):
@@ -423,6 +429,8 @@ def phase2(out, U, rng, ids):
                 status, sdate = 'Final bill pending', nd
         elif u < 0.085:                               # closed on a change of occupier: a new account holds the supply
             status, sdate = 'Closed', D(2025, 6, 1) + dt.timedelta(days=int(rng.integers(0, 480)))
+            if start >= sdate:                        # the leaving occupier's account began before it closed
+                start = start - dt.timedelta(days=3 * 365)
             for mp in state:
                 state[mp] = 'other_account'
             acct2 = ids.legacy()
@@ -438,8 +446,10 @@ def phase2(out, U, rng, ids):
     write_csv(os.path.join(out, 'legacy_accounts_extract_2026-10-31.csv'),
               ['account_number', 'region', 'payment_method', 'fuel', 'account_status', 'status_date', 'mpan', 'mprn',
                'supply_start_date'], accts)
-    write_csv(os.path.join(out, 'switching_flows_2026-05_2026-10.csv'),
-              ['flow_ref', 'meter_point', 'fuel', 'flow', 'flow_date', 'effective_date'], flows)
+    # the flows extract was pulled on 6 November 2026: it holds every flow dated up to the day before
+    write_csv(os.path.join(out, W.F_FLOWS),
+              ['flow_ref', 'meter_point', 'fuel', 'flow', 'flow_date', 'effective_date'],
+              [f for f in flows if f[4] <= W.FLOWS_LAST.isoformat()])
     U['phase2_truth'], U['phase2_accts'], U['flows'] = truth, accts, flows
     qty.sort(key=lambda r: (r[0], r[3]))
     tbl = pa.table({'meter_point': [r[0] for r in qty], 'fuel': [r[1] for r in qty],

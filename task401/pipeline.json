@@ -21,47 +21,61 @@
   "precut": {
     "exit": 0,
     "date": "2026-11-03",
-    "note": "61 checks, 0 FAIL, 0 WARN on the final cut"
+    "note": "61 checks, 0 FAIL, 0 WARN on the final cut (target digest 1c1f695f)"
   },
-  "checks": "generator/checks.py 66 of 66 (frozen main call, device forcing and separation, literal-execution rows, literal ask executor 58 of 58); generator/verify.py 23 of 23 on its own code path",
+  "checks": "generator/checks.py 87 of 87 on the final cut (frozen main call; the ask forks SF13 to SF22; every account dated after its own start; the extracts inside their named spans; device forcing and separation; literal ask executor 58 of 58 under the new pins; tightest graded figure gas_gwh 0.0183 from its bin edge); generator/verify.py 25 of 25 on its own code path",
   "ceiling": {
     "measured_by": "generator/ceiling.py",
-    "target_digest": "1bbe6dc7ce43bcc20f3ba85f8b23ea95b7f44159a11a5adef7fc3695f9246256",
+    "target_digest": "1c1f695fd0020cf669eb249f761baefb03145ea48ad01f1c5393d510d57423d6",
     "cracker": "0 of 58",
     "mirror": "0 of 58",
     "full_includer": "0 of 58",
     "no_repair": "0 of 58",
     "pair_one_off": 28.5,
     "pair_full_and_cracker_on_call": 45.0,
-    "pair_two_full_includers": 45.0
+    "pair_two_full_includers": 45.0,
+    "stress_date_testing_includer": "0.310 of the ask weight (Ask B whole, A and C none); 37.0 with the mirror off, 53.5 with the cracker on the call",
+    "ask_b_remeasure": "moved sentence filed without the 2026 take-backs: the full includer keeps 16 of 18 Ask B figures (the returned block died to its WHAT); with them it keeps 0 of 18"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-11-03 (no LEAK: two golden-figure coincidences in the Direct Debit amounts, generic stump words in the three documents, regions beside numbers in three files, future loss effective dates in the switching flows)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-11-03 on target digest 1c1f695f (no LEAK; nine REVIEW lines ruled harmless in the note's ## Leak review: two date-and-amount digit runs in the Direct Debit history, generic stump words in the three documents, regions beside numbers in three files, planned effective dates of pending losses)",
+    "reader": "round 1 2026-11-03: nothing quoted for question 1, no ranking file, no answer-like figure, question 6 analytical; its realism tells and workbook readings fixed in the generator; round 2 brief written"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-11-03 after the merge of claude/jolly-hypatia-06c61h at bfe5590 (overuse.objective; repeat.gate_g against task400; repeat.deliverables pdf+xlsx against task399, answered on the card); two BLOCKs against task398 (ban.role research_desk, ban.strategy decomposition_attribution) cleared by redrawing the role to programme_officer and the strategy to composition_mix, both the honester labels (card strategy_note)",
-    "nearest": "driver 0.09 task121 v4",
-    "surface": "exit 0, two promoted pairs answered on the card: task399 (gap objective and decision type root_cause_named; the decision type stays, the prompt asks what pulled satisfaction down), task181 (G6 is the decisive generator; same-driver signature differentiated); task470 cleared by the rounding reword"
+    "heart": "WARN 2026-11-03 on the final cut (overuse.objective; repeat.gate_g against task400; repeat.deliverables pdf+xlsx against task399; answered on the card); no BLOCK",
+    "nearest": "driver 0.10 task121 v4",
+    "surface": "exit 0, the same two promoted pairs as round 1 (task399, task181), answered on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "round 1: NOT_DETERMINISTIC, SOLUTION_WRONG (the workbook asks and one extract anomaly; the main call reproduced and forced, Gate G analytical_non_defect, Gate H pass, Gate F likely stumps)",
+    "disposition": "round 1: SEND_BACK, light; ruled an ask-layer fix pass with one re-judge (no re-root): if round 2 is not DETERMINISTIC with APPROVE the architecture is spent",
+    "report": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge/judge_report.md",
+    "round_2": "brief written, not yet run"
   },
   "returned": [],
-  "resume": "stage 4, architecture 3. The pack, goldens and submission are built (python3 task401/generator/build.py, then deliver.py and writeup.py; target.zip sha256 8e51eb13). The parent runs the leak reader (reader_brief.md, sonnet, medium) and the determinism judge (judge_brief.md) together on their isolated copies. Resume with both reports: fix every finding in the generator in one pass, re-run checks.py, verify.py, ceiling.py, figures_check.py, precut, leak.py, guard.py surface and heart (after merging claude/jolly-hypatia-06c61h and copying sibling cards untracked), re-judge once on FIX_NOW, re-read only if a document or the prompt changed; then stage 5: pre-ship check in the design note, ledger row, card current, force-add target.zip and golden/, commit SHIPPED (task401).",
+  "resume": "stage 4 round 2 running: the parent runs the round-2 leak reader (reader_r2/reader_brief.md, sonnet, medium) and the round-2 determinism judge (judge_r2/judge_brief.md) together on their isolated copies of target.zip 492a3f71. On APPROVE with DETERMINISTIC and a clean read, go to stage 5: pre-ship check in the design note, every gate re-run on the final cut (precut, voice-check, leak.py --asof 2026-11-06, guard.py heart and surface after merging claude/jolly-hypatia-06c61h, figures_check), ledger row, card current, force-add target.zip and golden/, commit SHIPPED (task401). A round-2 verdict other than DETERMINISTIC with APPROVE spends architecture 3: re-root at stage 1 in another world.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "target_zip_sha256": "8e51eb1312696afbc224dd5432c66b71c2ceda9d82f86fa717028fd59f758dcf",
-  "rebuilds": "two consecutive builds byte-identical (digest 1bbe6dc7)",
+  "target_zip_sha256": "492a3f71b379cbd22778a048cc0441f64b70dba253a072c2388c1beba786b2fd",
+  "rebuilds": "two consecutive builds byte-identical (digest 1c1f695f)",
   "figures_check": "exit 0, 74 figures in blocks 1 to 4",
   "briefs": {
     "reader": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/reader/reader_brief.md",
-    "judge": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge/judge_brief.md"
-  }
+    "judge": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge/judge_brief.md",
+    "reader_r2": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/reader_r2/reader_brief.md",
+    "judge_r2": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge_r2/judge_brief.md"
+  },
+  "fix_pass_round_1": [
+    "Gate A: the leaving occupier's account now starts before its closure (asserted over every account); Eastern and London reproduce the round-1 literal 3,214 and 2,924 before the take-back rows are added",
+    "fork 1: the plan files that an account counts as moved if the new platform was billing it at the end of 2 November 2025; Ask B's second device re-sited onto 389 accounts the legacy platform took back during 2026 on a change to prepayment",
+    "fork 2: the plan files that a meter point we lose is no longer ours from the effective date of the loss",
+    "fork 3: the prompt counts no withdrawn registration; every withdrawal now precedes the start it requested",
+    "fork 5: the prompt asks for phase 2's total across all the meter points it will move",
+    "Table C readings asserted (SF17 to SF21): customer identity, first start, the sale, withdrawals, channel names",
+    "realism: quote log and registrations renamed to their first month, the flows named for their span and cut at the pull, the Direct Debit history cut at June 2026 with leavers and bank changes, a release parquet-mr writer, the plan readable by python-docx, the card's stakeholder role as they"
+  ]
 }
