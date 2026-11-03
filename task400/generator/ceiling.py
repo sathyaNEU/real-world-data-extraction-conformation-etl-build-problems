@@ -1,11 +1,13 @@
 """The pair ceiling on the cut pack. Shares no code with the generator: it reads target/ and figures.json only.
 
 The cracker lands the call (it reads each critical alert against the truck's speed and splits the alerts by the
-unit's firmware), runs the hygiene battery and executes every filed statement: it reads the register's VI-COL and
-VI-SPI entries by month in Western Australian time, counts IN reads at the pit gates with a vehicle read twice at one
-gate within 30 seconds under the same plate taken as one trip, keeps haul trucks' OVERSPEED windows on the two ramps,
-takes the limit in force on the day from the speed limit schedule, and counts each window the FMS logged as one time
-over the limit. The mirror stops on the North ramp junction (programme B) and handles the asks the same way.
+unit's firmware), runs the hygiene battery and executes every filed statement, the prompt's two counted units
+included: it reads the register's VI-COL and VI-SPI entries by month in Western Australian time; it counts one trip
+per vehicle entering a pit, taking a vehicle read twice at one gate within 30 seconds under the same plate as one
+entry; it keeps haul trucks' OVERSPEED windows on the two ramps, takes the limit in force on the day from the speed
+limit schedule, and takes windows that abut in time on one truck and ramp (the next opening on or before the
+moment the last one closed) as one continuous run. The mirror stops on the North ramp junction (programme B) and
+handles the asks the same way.
 """
 import hashlib
 import json
@@ -23,7 +25,7 @@ def cracker_asks(t):
     out = {}
     g = pd.read_csv(os.path.join(t, "pit_gate_reads_2026-07_2026-10.csv"), keep_default_na=False)
     g = g[g["direction"] == "IN"].copy()
-    g["t"] = pd.to_datetime(g["read_time"])
+    g["t"] = pd.to_datetime(g["read_time_awst"])
     g = g.sort_values("t")
     last, keep = {}, []
     for tt, rd, pl in zip(g["t"], g["reader"], g["plate_read"]):
@@ -37,8 +39,8 @@ def cracker_asks(t):
         out["trips_notag_%02d" % m] = int((x["cas_tag"] == "").sum())
     f = pd.read_parquet(os.path.join(t, "fms_event_windows_2025-2026.parquet"))
     f = f[(f["trigger"] == "OVERSPEED") & f["segment"].isin(["NRP", "SRP"]) & f["truck_no"].str.startswith("DT")]
-    ev = f.groupby(["event_ref", "segment", "trigger_time"])["speed_kmh"].max().reset_index()
-    ev["tt"] = pd.to_datetime(ev["trigger_time"])
+    ev = f.groupby(["event_ref", "truck_no", "segment", "trigger_time_awst"])["speed_kmh"].max().reset_index()
+    ev["tt"] = pd.to_datetime(ev["trigger_time_awst"])
     lim = pd.read_csv(os.path.join(t, "haul_road_speed_limits.csv"))
     lim["eff"] = pd.to_datetime(lim["effective_from"])
 
@@ -46,11 +48,16 @@ def cracker_asks(t):
         x = lim[(lim["segment"] == seg) & (lim["eff"] <= day)].sort_values("eff")
         return float(x["limit_kmh"].iloc[-1])
     ev["lim"] = [in_force(s, d.normalize()) for s, d in zip(ev["segment"], ev["tt"])]
+    ev = ev.sort_values(["truck_no", "segment", "tt"]).reset_index(drop=True)
+    gap = ev.groupby(["truck_no", "segment"])["tt"].diff().dt.total_seconds()
+    ev["run"] = (~(gap <= 10)).cumsum()
+    runs = ev.groupby("run").agg(segment=("segment", "first"), tt=("tt", "first"), peak=("speed_kmh", "max"),
+                                 lim=("lim", "first"))
     for seg in ("NRP", "SRP"):
         for m in (7, 8, 9, 10):
-            x = ev[(ev["segment"] == seg) & (ev["tt"].dt.year == 2026) & (ev["tt"].dt.month == m)]
+            x = runs[(runs["segment"] == seg) & (runs["tt"].dt.year == 2026) & (runs["tt"].dt.month == m)]
             out["os_%s_%02d" % (seg, m)] = int(len(x))
-            out["os5_%s_%02d" % (seg, m)] = int((x["speed_kmh"] > x["lim"] + 5).sum())
+            out["os5_%s_%02d" % (seg, m)] = int((x["peak"] > x["lim"] + 5).sum())
     return out
 
 

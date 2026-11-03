@@ -191,20 +191,25 @@ def fms_windows(S, crit):
         v0 = float(r.uniform(14, 48))
         trace = _response_trace(r, v0) if a["responded"] else _carry_on_trace(r, v0)
         events.append((local.replace(microsecond=0), s["truck"], "CAS_CRITICAL", "", "", trace))
-    # overspeed events: the FMS triggers at the segment's limit plus two for three seconds
+    # overspeed events: the FMS opens a window when a truck crosses the segment's limit plus two
     r2 = rng("overspeed")
     segs = {"SP-ORE": [("SRP", 0.045), ("SHR", 0.05), ("CRU", 0.02)], "NP-ORE": [("NRP", 0.05), ("NHR", 0.05), ("CRU", 0.02)],
             "SP-WST": [("SRP", 0.045), ("SHR", 0.05), ("SWD", 0.02)], "NP-WST": [("NRP", 0.06), ("NHR", 0.05), ("NWD", 0.02)]}
+
+    def excess_draw(base=None):
+        while True:
+            e = 2.0 + float(r2.exponential(3.4)) if base is None else max(2.4, base * float(r2.uniform(0.75, 1.15)))
+            if abs(e - 5.0) > 0.35:
+                return e
+            base = None
+
     for s in sh:
         for seg, lam in segs[s["circuit"]]:
             for _ in range(r2.poisson(lam)):
                 lim = limit_on(seg, s["day"])
-                while True:
-                    excess = 2.0 + float(r2.exponential(3.4))
-                    if abs(excess - 5.0) > 0.35:
-                        break
+                excess = excess_draw()
                 peak = lim + excess
-                when = s["start"] + dt.timedelta(seconds=float(r2.uniform(600, s["op_hours"] * 3600)))
+                when = (s["start"] + dt.timedelta(seconds=float(r2.uniform(600, s["op_hours"] * 3600)))).replace(microsecond=0)
                 long_run = r2.random() < 0.34
                 ipk = int(r2.integers(2, 5))
                 trace = []
@@ -216,22 +221,50 @@ def fms_windows(S, crit):
                     if long_run and t >= 6:
                         v = max(v, lim + 2.3 + float(r2.uniform(0, 1.2)))
                     trace.append(v)
-                events.append((when.replace(microsecond=0), s["truck"], "OVERSPEED", seg, current_limit(seg), trace))
+                # a run on a long descent: the operator brakes under the limit and the truck runs away again
+                rerun = (not long_run) and ipk <= 3 and r2.random() < (0.32 if seg in ("NRP", "SRP") else 0.08)
+                if rerun:
+                    trace[-1] = lim - float(r2.uniform(0.6, 2.6))
+                    trace[-2] = min(trace[-2], lim + float(r2.uniform(0.2, 1.6)))
+                events.append((when, s["truck"], "OVERSPEED", seg, current_limit(seg), trace))
                 if long_run and when >= FMS72:
-                    # from the 7.2 release a run still over the limit ten seconds on is logged again
-                    t2 = when + dt.timedelta(seconds=10)
-                    base = trace[-1]
-                    tr2 = [max(lim + 2.1, base - float(r2.uniform(0, 1.5)) + (0 if k < 3 else -k * float(r2.uniform(0.6, 1.8))))
-                           for k in range(len(OFFSETS))]
-                    tr2 = [min(v, peak - 0.6) for v in tr2]
-                    events.append((t2.replace(microsecond=0), s["truck"], "OVERSPEED", seg, current_limit(seg), tr2))
+                    # from the 7.2 release a run still over the limit when its window closes is logged again; the new
+                    # window opens on the sample that closed the last one
+                    tr2 = [trace[-1]] + [max(lim + 2.1, trace[-1] - float(r2.uniform(0, 1.5)) +
+                                             (0 if k < 3 else -k * float(r2.uniform(0.6, 1.8)))) for k in range(1, len(OFFSETS))]
+                    tr2 = [tr2[0]] + [min(v, peak - 0.6) for v in tr2[1:]]
+                    events.append((when + dt.timedelta(seconds=10), s["truck"], "OVERSPEED", seg, current_limit(seg), tr2))
+                if rerun:
+                    gap = int(r2.choice([10, 12, 14], p=[0.5, 0.3, 0.2]))
+                    ex2 = excess_draw(base=excess)
+                    ip2 = int(r2.integers(2, 4))
+                    tr3 = []
+                    for j, t in enumerate(OFFSETS):
+                        if j == 0:
+                            v = trace[-1] if gap == 10 else lim - float(r2.uniform(0.3, 2.2))
+                        elif j == 1:
+                            v = lim + 2.0 + float(r2.uniform(0.1, 0.6))
+                        elif j == ip2:
+                            v = lim + ex2
+                        else:
+                            v = lim + ex2 - abs(j - ip2) * float(r2.uniform(0.9, 2.0)) - float(r2.uniform(0.05, 0.4))
+                        tr3.append(v)
+                    tr3[1] = min(tr3[1], lim + ex2 - 0.2)
+                    events.append((when + dt.timedelta(seconds=gap), s["truck"], "OVERSPEED", seg, current_limit(seg), tr3))
     events.sort(key=lambda e: (e[0], e[1], e[2]))
+    r_os = rng("overspeed-gps")
     for when, truck, trig, seg, lim, trace in events:
-        ref += int(r.integers(1, 9))
-        for t, v in zip(OFFSETS, trace):
-            ok = r.random() > 0.016
+        if trig == "OVERSPEED":
+            ref += int(r_os.integers(1, 9))
+            # the window's edges and its highest sample always carry a fix (the trigger and the run's own record)
+            keep = {0, len(OFFSETS) - 1, int(np.argmax(trace))}
+            oks = [True if j in keep else r_os.random() > 0.016 for j in range(len(OFFSETS))]
+        else:
+            ref += int(r.integers(1, 9))
+            oks = [r.random() > 0.016 for _ in OFFSETS]
+        for t, v, ok in zip(OFFSETS, trace, oks):
             rows.append(dict(event_ref=ref, truck_no=truck, trigger=trig,
-                             trigger_time=when.strftime("%Y-%m-%d %H:%M:%S"), segment=seg,
+                             trigger_time_awst=when.strftime("%Y-%m-%d %H:%M:%S"), segment=seg,
                              limit_kmh=lim if lim != "" else None, t_offset_s=t,
                              speed_kmh=round(v, 1) if ok else None, gps_fix="3D" if ok else "NONE"))
     df = pd.DataFrame(rows)
@@ -323,25 +356,52 @@ def gate_reads(lvs, faults):
         if out_t <= dt.datetime(2026, 10, 31, 23, 59, 59) and out_t - t > dt.timedelta(minutes=3):
             rows.append((out_t.replace(microsecond=0), "SG-OUT" if gate == "S" else "NG-OUT", anpr(lv["rego"]), tag_seen(lv, out_t), "OUT"))
     rows.sort(key=lambda x: (x[0], x[1]))
-    df = pd.DataFrame(rows, columns=["read_time", "reader", "plate_read", "cas_tag", "direction"])
-    df["read_time"] = df["read_time"].dt.strftime("%Y-%m-%d %H:%M:%S")
+    df = pd.DataFrame(rows, columns=["read_time_awst", "reader", "plate_read", "cas_tag", "direction"])
+    df["read_time_awst"] = df["read_time_awst"].dt.strftime("%Y-%m-%d %H:%M:%S")
     return df, truth
 
 
 # ----------------------------------------------------------------------------------------------- incidents
-SPI_TEXT = [
-    "LV {p} entered the haul road in front of loaded {t}; truck stopped short, approx {d} m separation.",
-    "{t} and LV {p} closed to about {d} m at {l}; both stopped, no contact.",
-    "LV {p} parked inside {t} turning circle at {l}; operator stopped at roughly {d} m.",
-    "Near miss between {t} and {p} at {l}, est. {d} m. Radio call made after the event.",
-    "{t} reversing at {l} with {p} behind, approx {d} m when the truck stopped.",
-    "{p} passed {t} on the wrong side of the windrow at {l}, gap about {d} m.",
-]
-COL_TEXT = [
-    "{t} made contact with LV {p} at {l}; LV front quarter panel damaged, no injury.",
-    "Low speed contact, {t} and {p} at {l}. Mirror and bullbar damage, nil injuries.",
-    "{t} struck {p} at {l} while pulling away. LV towed to workshop, driver checked by paramedic, nil injury.",
-]
+SPI_LEAD = ["{P} entered the haul road in front of {ld}{t}", "{P} pulled out ahead of {ld}{t}",
+            "{t} and {P} closed head on", "{P} stopped in the blind spot of {t}", "{P} parked inside the turning circle of {t}",
+            "{t} reversing with {P} behind", "{P} passed {t} on the wrong side of the windrow",
+            "{P} came round the bend into the path of {ld}{t}", "{P} followed {t} too closely",
+            "{t} pulled away with {P} alongside", "{P} crossed in front of {ld}{t}", "{t} turned across the path of {P}"]
+SPI_GAP = ["approx {d} m", "about {d} m", "est. {d} m", "roughly {d} m", "{d} m apart", "under {d} m", "{d} to {d2} m"]
+SPI_END = ["both stopped", "truck stopped short", "operator braked hard", "{Q} pulled over", "no contact",
+           "operator stopped and called the {q}", "{Q} reversed clear", "both drivers stopped and called it in",
+           "truck held on the brakes until the {q} cleared"]
+ANC_KIND = {"WC": "water cart", "GR": "grader", "DZ": "dozer", "SV": "service truck"}
+VI_TAIL = ["", "", "", " Radio call made.", " Supervisor notified.", " Reported at end of shift.", " Both drivers spoken to.",
+           " LV driver stood down pending interview.", " Traffic controller attended.", " Area inspected, no defects.",
+           " Reported by the truck operator.", " Witness statement taken.", " Pre-start reminder issued to the crew."]
+COL_LEAD = ["{t} made contact with {P}", "{t} struck {P}", "{t} clipped {P}", "{P} rolled back into {t}",
+            "{t} reversed into {P}", "Low speed contact between {t} and {P}", "{P} ran into the side of {t}"]
+COL_DMG = ["front quarter panel", "bullbar", "mirror", "rear tray", "driver's door", "tail light", "bumper", "wheel arch"]
+COL_INJ = ["no injury", "nil injuries", "driver checked by ERT, no injury", "driver assessed at the medical centre, cleared",
+           "no injuries reported"]
+COL_TAIL = ["", "", " LV towed to workshop.", " Scene held for investigation.", " Both drivers tested for drug and alcohol, negative.",
+            " Area barricaded.", " Photos taken and investigation opened.", " Truck taken out of service for inspection."]
+
+
+def vi_text(r, collision, t, peer, is_lv, lname, lcode, when):
+    pick = lambda xs: xs[int(r.integers(0, len(xs)))]
+    P = ("LV " + peer) if is_lv else peer
+    d = int(r.integers(2, 9))
+    clock = (" at about %s" % when.strftime("%H:%M")) if r.random() < 0.22 else ""
+    if collision:
+        lead = pick(COL_LEAD).format(t=t, P=P)
+        return "%s at %s%s; %s damaged, %s.%s" % (lead, lname, clock, pick(COL_DMG), pick(COL_INJ), pick(COL_TAIL))
+    if r.random() < 0.12:
+        return pick(["SPI %s / %s at %s, ~%d m." % (t, peer, lcode, d), "Near miss %s and %s, %s." % (t, peer, lname),
+                     "SPI, %s and %s, %s%s, approx %d m." % (t, P, lname, clock, d)])
+    lead = pick(SPI_LEAD).format(t=t, P=P, ld=pick(["loaded ", "empty ", ""]))
+    gap = pick(SPI_GAP).format(d=d, d2=d + int(r.integers(1, 3)))
+    q = "LV" if is_lv else ANC_KIND.get(peer[:2], "vehicle")
+    end = pick(SPI_END).format(q=q, Q=q if q == "LV" else q[0].upper() + q[1:])
+    return "%s at %s%s, %s; %s.%s" % (lead, lname, clock, gap, end, pick(VI_TAIL))
+
+
 OTHER = [
     ("INJ-FAI", "First aid: {w} {cut} to {hand} while {task}, cleaned and dressed."),
     ("INJ-FAI", "First aid: dust in {eye} eye at {l}, eye wash station used{after}."),
@@ -360,6 +420,9 @@ OTHER = [
     ("NM", "Person walked into the exclusion zone of the {l} without contact, stopped by {stopper}."),
     ("NM", "{W} found an isolation lock missing on {plant} at {l} before work started."),
 ]
+OTHER_TAIL = ["", "", "", " Day shift.", " Night shift.", " Reported by the supervisor.", " Area inspected.",
+              " Toolbox talk at the next pre-start.", " Hazard report raised.", " Task risk assessment reviewed.",
+              " Supervisor notified.", " Reported next morning.", " Photos on file."]
 FILL = dict(
     cut=["cut", "small cut", "graze", "nick"], hand=["left hand", "right hand", "thumb", "index finger", "knuckle"],
     task=["changing a light tower filter", "opening a toolbox lid", "fitting a hose clamp", "cutting cable ties",
@@ -382,7 +445,7 @@ FILL = dict(
     litres=["5", "10", "15", "20", "30", "40"],
     dustfix=["water cart redirected", "watering increased", "road closed for an hour", "speed restriction applied"],
     when=["before leaving the area", "at the gate", "by the supervisor", "on the pre-start check"],
-    stopper=["spotter", "the operator", "a supervisor", "radio call"],
+    stopper=["the spotter", "the operator", "a supervisor", "a radio call", "the traffic controller"],
 )
 
 
@@ -394,15 +457,14 @@ def incidents(S, alerts_df, lvs, anc):
     recs = []
     for i in S["incidents"]:
         s = sh[i["sid"]]
-        peer = lv_rego[int(r.integers(0, len(lv_rego)))] if r.random() < 0.72 else anc_ids[int(r.integers(0, len(anc_ids)))]
+        is_lv = r.random() < 0.72
+        peer = lv_rego[int(r.integers(0, len(lv_rego)))] if is_lv else anc_ids[int(r.integers(0, len(anc_ids)))]
         lname = LOC_NAMES[i["loc"]][0]
-        d = int(r.integers(2, 9))
+        text = vi_text(r, i["collision"], s["truck"], peer, is_lv, lname, i["loc"], i["when_local"])
         if i["collision"]:
-            text = COL_TEXT[int(r.integers(0, len(COL_TEXT)))].format(t=s["truck"], p=peer, l=lname, d=d)
             cls = "VI-COL"
             pot = "High" if r.random() < 0.6 else "Medium"
         else:
-            text = SPI_TEXT[int(r.integers(0, len(SPI_TEXT)))].format(t=s["truck"], p=peer, l=lname, d=d)
             cls = "VI-SPI"
             pot = "High" if r.random() < 0.35 else "Medium"
         recs.append(dict(when=i["when_local"].replace(second=0, microsecond=0), loc=i["loc"], cls=cls, pot=pot,
@@ -416,7 +478,8 @@ def incidents(S, alerts_df, lvs, anc):
             when = dt.datetime.combine(day, dt.time(0)) + dt.timedelta(minutes=float(r.uniform(0, 1440)))
             wk = workers[int(r.integers(0, len(workers)))]
             fill = {k: v[int(r.integers(0, len(v)))] for k, v in FILL.items()}
-            txt = tmpl.format(w=wk, W=wk[0].upper() + wk[1:], l=LOC_NAMES[loc][0], **fill)
+            txt = tmpl.format(w=wk, W=wk[0].upper() + wk[1:], l=LOC_NAMES[loc][0], **fill) + \
+                OTHER_TAIL[int(r.integers(0, len(OTHER_TAIL)))]
             recs.append(dict(when=when.replace(second=0, microsecond=0), loc=loc, cls=cls,
                              pot=["Low", "Low", "Medium"][int(r.integers(0, 3))], vehicles="",
                              employer=emp, text=txt))
@@ -541,8 +604,10 @@ def cut(out, S=None):
     D.incident_register_xlsx(out, inc)
     dev, fw = device_register(S, lvs, anc)
     D.device_register_xlsx(out, dev, fw)
+    gates = {"NG": ("North pit access gate", "North pit"),
+             "SG": ("South pit access gate", "South pit")}
     write_csv(os.path.join(out, "site_location_codes.csv"), ["code", "location", "area"],
-              [[k, v[0], v[1]] for k, v in sorted(LOC_NAMES.items())])
+              [[k, v[0], v[1]] for k, v in sorted(list(LOC_NAMES.items()) + list(gates.items()))])
     write_csv(os.path.join(out, "light_vehicle_register.csv"), ["rego", "department", "employer", "vehicle"],
               [[lv["rego"], lv["dept"], lv["employer"], lv["type"]] for lv in sorted(lvs, key=lambda x: x["rego"])])
     write_csv(os.path.join(out, "haul_road_speed_limits.csv"), ["segment", "limit_kmh", "effective_from"],
@@ -552,7 +617,8 @@ def cut(out, S=None):
     write_csv(os.path.join(out, "road_maintenance_log_2026.csv"), ["date", "shift", "segment", "task", "plant", "hours"],
               road_maintenance(r))
     D.terms_docx(out)
-    D.notice_pdf(out)
+    nrj = [x for x in inc if x[2] == "NRJ" and x[4] == "VI-COL" and dt.datetime(2026, 7, 1) <= x[1] < dt.datetime(2026, 9, 1)]
+    D.notice_pdf(out, max(x[1] for x in nrj))
     monthly = vendor_monthly(alerts, disp)
     D.vendor_report_pdf(out, monthly, "All haul truck units are on the current release. Hardware replacements: %d haul "
                         "truck units over the period." % sum(1 for u in S["fleet"]["units"] if u[3] is not None))

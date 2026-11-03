@@ -10,12 +10,12 @@ cut, on the coordinator's review (`## Tried and rejected`, third line; `## Draw`
 
 Ternhallow Iron Ore runs the Mount Bracken open-pit iron ore mine in the Pilbara region of Western Australia. Its haul
 trucks carry collision avoidance units that warn the operator when a tagged vehicle comes close, first with a warning
-alert and then, closer in, a critical alert; light vehicles carry tags. Vehicle interaction incidents rose from 22 in
-July to October 2025 to 86 in July to October 2026, the rise starting in June 2026. Three things changed that month:
+alert and then, closer in, a critical alert; light vehicles carry tags. Vehicle interaction incidents rose from 24 in
+July to October 2025 to 89 in July to October 2026, the rise starting in June 2026. Three things changed that month:
 stage 3 of the north pit opened on 1 June and put more trucks on the North waste route through the North ramp
 junction, the North pit ramp's limit was cut on 9 June, and the vendor installed firmware 5.0.2 on every haul truck
 unit between 2 and 23 June. The update made the critical alert sound like the warning alert, which nothing in the pack
-says: operators still press acknowledge and no longer brake. After a collision at the North ramp junction on 28 July
+says: operators still press acknowledge and no longer brake. After a collision at the North ramp junction on 7 July
 the Mines Safety Inspectorate issued an improvement notice (2 September) requiring the cause and a control; the site
 safety steering committee funds one of five 2027 programmes on 19 November 2026 under terms HSE-TOR-026.
 
@@ -43,7 +43,7 @@ safety steering committee funds one of five 2027 programmes on 19 November 2026 
   rise assigned to the right driver). Gap objective then time; pattern none; generators G3 (an alert against what the
   operator did next), G12 (the acknowledgement press is logged, the absence of braking is logged nowhere), G6 (stage 3
   shifting the route mix toward the junction).
-- **Furniture:** forum `committee_or_panel`, forcing event `incident_or_complaint` (the 28 July collision and the
+- **Furniture:** forum `committee_or_panel`, forcing event `incident_or_complaint` (the 7 July collision and the
   improvement notice), org family `other` (a mining company), role `compliance_or_audit` (the health and safety
   superintendent), context artifact `monitoring_export` (the vendor's monthly fleet report), calibration none. None is
   held by the last three live cards (task277, task398, task399 architecture 4).
@@ -56,12 +56,17 @@ safety steering committee funds one of five 2027 programmes on 19 November 2026 
      100 operating hours run 37.4 to 42.0 in every month (no flood); critical alerts per load rise from 0.20 to 0.23
      with stage 3's longer cycles, which reads as B's traffic; acknowledgement runs 89.6 to 96.6 per cent and is 96.2
      against 96.4 per cent on the two firmwares; the critical alert fires at the same range (median 15.5 against 15.3
-     m); the incident split by firmware inside the rollout weeks is 11 against 7 on 564 and 568 truck shifts, too thin
-     to rank; and the June step in the monthly count is shared by three dated changes (stage 3's traffic, the ramp
-     limit, the firmware). The design dropped the earlier alarm flood (`## Tried and rejected`) because a flood is
+     m); the incident split by firmware inside the rollout weeks is 2 incidents on 543 truck shifts on 4.3 against 6 on
+     589 on 5.0.2 (2.4 and 7.8 expected from the world's own rates, R3d), too few to carry the call alone; and the June
+     step in the monthly count is shared by three dated changes (stage 3's traffic, the ramp limit, the firmware). The design dropped the earlier alarm flood (`## Tried and rejected`) because a flood is
      itself a route to C.
   2. *The endpoint.* The default path ends on B, the junction, never on C; A is the careful stop after B dies on rates
      (the pooled slowdown share falls from June, which reads as operators' attention). Both are measured in `## Ladder`.
+- **Round 1 at stage 4 (judge DETERMINISTIC, FIX_NOW; reader clean), answered in one generator pass:** the two counted
+  units are filed in the prompt as WHAT (`## Semantic fork table` SF7 and SF9); the incident draw is re-drawn to a
+  representative one and the write-up's attribution cut to what the records show (`## Tried and rejected`); the
+  reader's question 7 is closed row by row (SF16 to SF18, the gate codes added to the location list); the register's
+  free text is varied and asserted (no description more than three times).
   3. *No shared narrative with task399 v4.* No newcomer and no arrival: every operator is the mine's own and the crews
      do not change; nothing is dated March 2026; the change is a vendor's software update, not a process change.
 - **Data-native sentence:** the collision avoidance log records every alert and the operator's acknowledgement press in
@@ -94,9 +99,9 @@ safety steering committee funds one of five 2027 programmes on 19 November 2026 
 
 1. Read the terms (vi_review_terms_2026.docx) and the notice: name the driver that accounts for most of the rise
    (3.2) and fund the programme that answers it.
-2. Count the register's VI-COL and VI-SPI entries by month (2.1): 22 in July to October 2025, 86 in July to October
+2. Count the register's VI-COL and VI-SPI entries by month (2.1): 24 in July to October 2025, 89 in July to October
    2026, the monthly count stepping up in June 2026.
-3. Split by location: the North ramp junction goes from 4 to 19 and is 2026's top location; the notice's 28 July
+3. Split by location: the North ramp junction goes from 6 to 24 and is 2026's top location; the notice's 7 July
    collision was there.
 4. Read exposure from the dispatch summary: the North waste route, the one through the junction, goes from about 14 to
    about 35 per cent of truck shifts from June 2026, and critical alerts per 100 operating hours rise with it.
@@ -111,8 +116,8 @@ per cent of critical alerts from units still on 4.3 and about 30 per cent from u
 
 ## Stump sentence
 
-A competent solver counts the register's vehicle interaction incidents (22 to 86), finds them gathered at the North
-ramp junction, where the notice's 28 July collision happened and where stage 3 put more trucks from June, reads the
+A competent solver counts the register's vehicle interaction incidents (24 to 89), finds them gathered at the North
+ramp junction, where the notice's 7 July collision happened and where stage 3 put more trucks from June, reads the
 vendor's steady alert and acknowledgement rates as a working system, and funds B (Ends on: B); the step that lands it
 there is never reading each critical alert against the truck's speed by the unit's firmware, which shows that in the
 weeks 5.0.2 went on the same crews slowed for about 85 per cent of critical alerts on 4.3 units and about 30 per cent on
@@ -150,7 +155,7 @@ weeks 5.0.2 went on the same crews slowed for about 85 per cent of critical aler
   and 30 per cent to the nearest 5 under every slowdown rule (4 to 10 km/h at 4, 6 or 8 seconds) and every reading of
   the rollout weeks (spread zero at the graded precision); what rules the others out is quiet, a comparison no
   document invites and no sentence names.
-- **Analyst test:** a strong analyst who reads every field and rule correctly counts 22 to 86, finds the junction on
+- **Analyst test:** a strong analyst who reads every field and rule correctly counts 24 to 89, finds the junction on
   top with the North waste route's traffic up from June and the vendor's counts steady, and files B (Ends on: B); one
   who also rates by route sees B fail, reads braking month by month and files A; only the firmware split inside the
   rollout weeks separates the alerting from the operators.
@@ -203,13 +208,14 @@ Measured on the cut pack (`checks.py`, `ceiling.py`), July to October unless sta
 
 | Rung | Read | Figures | Dies to |
 |---|---|---|---|
-| 0, B | the hotspot and its traffic | junction 4 to 19, top in 2026; North waste route 13 to 15 per cent of truck shifts to May, 33 to 36 from June | per truck shift the South pit ore route rose 2.2 to 11.7 per 1,000, the North waste route 8.4 to 15.8 |
-| 1, E | the crusher pad | 9 to 13 | a rise of 1.4 times against the site's 3.9 |
-| 2, D | the night share | 9 of 22 to 43 of 86 | days rose 13 to 43; on 5.0.2 units braking is 32.1 per cent by day and 31.8 by night |
-| 3, A | braking share by month, pooled | 0.85 to 0.88 every month to May 2026, 0.53 in June, 0.30 to 0.33 July to October | inside the rollout weeks the same crews brake on 4.3 units |
-| 4, C (decisive) | braking share by firmware at onset, 2 to 23 June | 86.1 per cent of 633 alerts on 4.3 against 29.0 of 639 on 5.0.2; 129 operators drove both | none |
+| 0, B | the hotspot and its traffic | junction 6 to 24, top in 2026; North waste route 13 to 15 per cent of truck shifts to May, 33 to 36 from June | per 1,000 truck shifts every route rose: South pit ore 2.2 to 9.2, South waste 3.6 to 10.6, North ore 4.0 to 11.0, North waste 8.4 to 21.3 |
+| 1, E | the crusher pad | 7 to 15 | its share fell from 29 to 17 per cent while every location rose |
+| 2, D | the night share | 9 of 24 to 40 of 89 | days rose 15 to 49; on 5.0.2 units braking is 32.1 per cent by day and 31.8 by night |
+| 3, A | braking share by month, pooled | 0.86 to 0.88 every month to May 2026, 0.54 in June, 0.30 to 0.33 July to October | inside the rollout weeks the same crews brake on 4.3 units |
+| 4, C (decisive) | braking share by firmware at onset, 2 to 23 June | 85.9 per cent of 629 alerts on 4.3 against 29.4 of 640 on 5.0.2; 129 operators drove both | none |
 
-Margins: the decisive split is 2.97 times; every slowdown rule from 4 to 10 km/h read at 4, 6 or 8 seconds, and every
+Margins: the decisive split is 2.92 times; critical alerts nobody slowed for rose from about 880 to about 4,900 in
+July to October (more than fivefold under every slowdown rule), against incidents rising from 24 to 89; every slowdown rule from 4 to 10 km/h read at 4, 6 or 8 seconds, and every
 reading of the rollout weeks (local days, UTC days, first to last upgrade, all of June), gives 85 and 30 to the nearest
 5. Separation: the call reads the register, the alert log, the CAS_CRITICAL windows, the device register and the
 dispatch summary; the asks read the gate reads, the OVERSPEED windows and the speed limit schedule; no ask device sits
@@ -220,20 +226,23 @@ on a row the call reads.
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | vehicle interaction incident | VI-COL or VI-SPI entry | add NM near misses | same call | terms 2.1 |
-| SF2 | the month an incident falls in | Western Australian time | UTC | same call (22 and 86 either way) | terms 2.1 |
+| SF2 | the month an incident falls in | Western Australian time | UTC | same call (24 and 89 either way) | terms 2.1 |
 | SF3 | the comparison window | July to October 2026 against July to October 2025 | calendar years | same call | terms 3.1 |
 | SF4 | "accounts for most of that rise" | the driver behind most incidents | the largest single location | same call (C under every split the records allow) | terms 3.2, asserted |
 | SF5 | an alert acted on | the truck slowed by a clear margin within seconds | any rule from 4 to 10 km/h read at 4, 6 or 8 s | same call, 85 and 30 | C1, asserted |
 | SF6 | firmware family | 4.3.11 and 4.3.14 together against 5.0.2 | each 4.3 release apart | same call (both above 0.8) | C1, asserted |
-| SF7 | a light-vehicle trip into the pits | one entry, whichever readers recorded it | every IN read | ask figures move | the prompt's "trips", one vehicle per passage, asserted |
+| SF7 | a light-vehicle trip into the pits | one vehicle entering a pit, whichever readers recorded it | every IN read | ask figures move | the prompt's "a trip is one vehicle entering a pit"; the readers' timing separates entries, asserted |
 | SF8 | a trip by a vehicle whose tag the gate did not detect | empty cas_tag on the trip | either North reader empty | same figures (both readers agree) | C1, asserted |
-| SF9 | a time over the limit | one run over the limit, however many windows logged it | each FMS window | ask figures move | the prompt's "times", asserted |
+| SF9 | a time over the limit | one continuous run: a window joins the run before it only where it opens on that window's closing sample with the truck over the limit | each FMS window; windows within a gap | ask figures move | the prompt's "one continuous run above it"; the shared sample decides, the same for any line from the limit to the limit plus 2 (C1), asserted |
 | SF10 | peaked more than 5 km/h over | highest recorded speed above limit plus 5 | at the trigger sample | same figures (no peak within 0.3 km/h of the line) | C1, asserted |
 | SF11 | the limit in force | the schedule's limit on the window's day | the window's own limit column | ask figures move | the prompt's "in force", haul_road_speed_limits.csv |
 | SF12 | the month of a window | the window's trigger time, local | UTC | same figures | C1, asserted |
 | SF13 | each pit ramp | NRP and SRP | the haul roads too | ask figures move | site_location_codes.csv names the ramps |
 | SF14 | light vehicles at the gates | every vehicle the gates read (light vehicles only) | registered vehicles only | same figures | C1, asserted |
 | SF15 | the rollout weeks | 2 to 23 June 2026 | UTC days, first to last upgrade, all of June | same call, 85 and 30 | C1, asserted |
+| SF16 | the month of a gate read or an event window | Western Australian month | UTC month | ask figures move | the headers read_time_awst and trigger_time_awst, asserted |
+| SF17 | a tag the gate did not detect | a blank cas_tag | a tag missing from the device register | same figures (every read tag is registered and in service) | C1, asserted |
+| SF18 | samples with no GPS fix | dropped where missing; each window's first, last and highest samples are always present | windows with a missing sample dropped, or another offset for the braking read | same figures | C1, asserted |
 
 ## Closure table
 
@@ -253,7 +262,7 @@ on a row the call reads.
 | 12 Maturity and censoring | October 2026 complete in the export | export of 1 November 2026 |
 | 13 Order of operations | map unit to truck, then match the window | C1, asserted |
 | 14 Row order | none | counts and shares are order-free |
-| 15 Duplicate resolution | two North reads of one passage are one trip; a continuation window is one time over | SF7 and SF9, asserted |
+| 15 Duplicate resolution | two North reads of one entry are one trip; a window opening on its predecessor's closing sample above the limit continues that run | the prompt's two units (SF7, SF9), asserted |
 | 16 Identity normalisation | serial to truck by dated installs; plates as read | C1, asserted |
 | 17 Netting against gross | none | no offsets |
 | 18 Dimensional units | km/h throughout | C1 |
@@ -265,19 +274,24 @@ on a row the call reads.
 ## Literal reader
 
 Executed word for word: the prompt asks which programme to fund against the rise; terms 2.1 and 3.1 fix the
-incidents (22 and 86), 3.2 fixes the target (the driver of most of the rise) and section 4 maps drivers to programmes.
+incidents (24 and 89), 3.2 fixes the target (the driver of most of the rise) and section 4 maps drivers to programmes.
 The records do the rest: every reading of an acted-on alert and of the rollout weeks gives the same split (SF5, SF15),
 every location and route reading leaves the rise site-wide, and no literal reading of any filed sentence names
-another programme. The asks' literal readings (SF7 to SF14) each resolve to one figure set; the two that move figures
-(SF9 and SF11) are fixed by the prompt's own words, "times" and "in force".
+another programme. The asks' literal readings (SF7 to SF14, SF16 to SF18) each resolve to one figure set; the ones that move figures
+are fixed by the prompt's own words ("a trip is one vehicle entering a pit", "one continuous run above it", "in
+force") or by the export's own headers (the zone in read_time_awst and trigger_time_awst).
 
 ## Oracles
 
-- improvement_notice_IN-2026-0417.pdf: requires a cause and a control, names the 28 July collision; ranks no programme.
+- improvement_notice_IN-2026-0417.pdf: requires a cause and a control, names the 7 July collision; ranks no programme.
 - cas_monthly_report_2026-10.pdf: alert volumes and acknowledgement by month, correct for what it measures, and the
   firmware line; ranks no programme and says nothing about braking.
 - vi_review_terms_2026.docx: defines and lists; ranks no programme.
 - Gate G: no shipped artifact ranks the candidates on the decision question; no declared wrong-basis distractor.
+- leak.py's stump-vocabulary lines, ruled here (they never reach the reader): the vendor report's alert words are its
+  own subject and it names no driver; the notice's register, junction and operator words cite its own collision; the
+  terms' words are its definitions and its programme list. All harmless. Round 1's reader ruled the two call-word lines
+  harmless and answered question 1 with none.
 
 ## Ask sheet
 
@@ -291,14 +305,17 @@ chart's bars and labels (8). The files: 2. The asks: 24 figures. 34 criteria; we
   Primary (D1, one passage under two readers whose plates differ): from 14 July the North gate has two readers that
   read each vehicle seconds apart and each misreads plates on its own, so a vehicle read twice under the same plate
   collapses on any dedupe while a pair read under two plates survives one; only the readers' timing pairs them.
-  Hazard: the second reader's arrival mid-July.
+  Hazard: the second reader's arrival mid-July. The filed unit ("a trip is one vehicle entering a pit") names no
+  reader, so it leaves the pairing to the records.
 - **Ask B, haul truck times over the limit in force on each pit ramp and those peaking more than 5 km/h over, by month
   July to October 2026 (sixteen figures, whole counts).** H18 home: the ramp speed record the plan's controls are set
-  against. Path: the OVERSPEED windows, the speed limit schedule, the location codes. Primary (D2, a silent switch in
-  how one event is logged): from FMS 7.2 on 1 August a run still over the limit ten seconds on opens a second window,
-  so counting windows inflates August to October; only consecutive windows on one truck and ramp show it. Hazard (D2,
-  a label stored as of today): each window's limit column carries today's limit, wrong for the South ramp before 18
-  August.
+  against. Path: the OVERSPEED windows, the speed limit schedule, the location codes. Primary (which windows are one
+  run, read from the samples): on the long descents a truck braked under the limit and ran away again on the next
+  sample or two, so two windows open 10, 12 or 14 seconds apart are separate runs, while from FMS 7.2 on 1 August a run
+  still over the limit when its window closes is logged again in a window that opens on the closing sample; only that
+  shared instant's speed, over the limit or under it, tells a continuation from a new run, so counting windows
+  overcounts August to October and merging by gap undercounts every month. Hazard (D2, a label stored as of today):
+  each window's limit column carries today's limit, wrong for the South ramp before 18 August.
 - **Separation (asserted):** the asks read the gate reads, the OVERSPEED windows and the schedule; the call reads none
   of them. Delete every device and the call is as hard.
 - **Rounding edges:** every graded ask figure is a whole count; the braking shares are graded to the nearest 5 and the
@@ -307,15 +324,16 @@ chart's bars and labels (8). The files: 2. The asks: 24 figures. 34 criteria; we
 | Ask | Cracker (lands the call, runs the battery, executes every filed statement) | Verdict |
 |---|---|---|
 | A trips | one trip per plate per gate within 30 seconds: 1 of 8 (trips 7,629, 7,768, 7,708 and 7,846 off) | miss |
-| B ramp times | the schedule's limit, each FMS window one time over: 4 of 16 (August 64 and 39, September 66 and 53 off) | miss |
+| B ramp times | the schedule's limit, windows that abut in time taken as one run: 2 of 16 (North ramp 50, 64, 55 and 39 runs off) | miss |
 
-Measured by: generator/ceiling.py on the cut pack (target.zip 36837e7e; pandas only, no generator code): the cracker
-keeps 5 of the 24 ask figures; the mirror on B keeps the same 5 and 4 of 8 on the call side (the two counts and the
+Measured by: generator/ceiling.py on the cut pack (target.zip 954bd646; pandas only, no generator code): the cracker
+keeps 3 of the 24 ask figures; the mirror on B keeps the same 3 and 4 of 8 on the call side (the two counts and the
 chart).
-Pair ceiling: 47.0 (the cracker 38 + 7 + 11.5 = 56.5; the mirror 19.0 + 7 + 11.5 = 37.5).
-Mirror leakage: 20.8 per cent of ask weight.
-Stress row: the full includer (North reads paired by the readers' timing whatever the plates, consecutive windows on
-one truck and ramp merged) keeps 24 of 24, the residual risk recorded here.
+Pair ceiling: 42.4 (the cracker 38 + 7 + 6.9 = 51.9; the mirror 19.0 + 7 + 6.9 = 32.9).
+Mirror leakage: 12.5 per cent of ask weight.
+Stress rows: a response that counts every window keeps the four July ramp figures (no continuation windows before 1
+August); the full includer (North reads paired by the readers' timing whatever the plates, runs read from the shared
+sample) keeps 24 of 24, the residual risk recorded here.
 
 ## Tried and rejected
 
@@ -349,3 +367,18 @@ one truck and ramp merged) keeps 24 of 24, the residual risk recorded here.
   rounding edge (86.4 to 86.5 under rules read at 8 seconds) and the rollout share moved a point with how the weeks are
   bounded; the component now states the rollout weeks to the nearest 5, and the response traces were sharpened so every
   reasonable slowdown rule classifies the same alerts.
+- 2026-11-03, stage 4 round 1, the judge's FIX_NOW (two ask units unfiled): filed in the prompt as WHAT, "a trip is one
+  vehicle entering a pit, and a time over the limit is one continuous run above it". The judge's own wording ("however
+  many gate readers read it", "however many windows the system logged") was not taken: it names the readers and the
+  windows, the very dimensions the two devices live in.
+- 2026-11-03, stage 4 round 1, ask B's continuation device under the filed unit: windows that abut in time are merged by
+  anyone executing "one continuous run", so the continuation alone was a work order. Re-sited on this world's own
+  Layer 1: runs on the long descents that dip under the limit and run away again on the next sample sit 10 to 14
+  seconds apart like continuations, and only the shared sample's speed separates them.
+- 2026-11-03, stage 4 round 1, the incident draw (stream "incident"): the 4.3 units carried 7 incidents in the rollout
+  weeks against 2.4 expected from the world's own rates (about a 1-in-70 draw), so the register argued against the
+  driver the records measure, and checks.py had asserted the split "under 2 times" instead of asking whether the draw
+  was representative. Re-drawn on the incident stream only (incident-87: 2 against 2.4 and 6 against 7.8), with R3d
+  screening representativeness; the crusher pad's rung killer moved from its count to its share, because a fourfold
+  site-wide rise lifts every location's count; the write-up's attribution now claims only the braking split inside the
+  stagger and the unheeded critical alerts, not that the register alone proves the firmware carries the rise.

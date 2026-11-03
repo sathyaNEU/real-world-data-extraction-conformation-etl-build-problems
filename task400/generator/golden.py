@@ -83,7 +83,7 @@ def truck_of_unit(P):
     return d
 
 
-def crit_responses(P, slow=6.0, at=6):
+def crit_responses(P, slow=6.0, at=6, fallback=()):
     """Each critical alert on a haul truck unit, with the truck's speed change from the FMS window that opened on it
     and the unit's firmware at onset."""
     a = P["alerts"]
@@ -109,14 +109,19 @@ def crit_responses(P, slow=6.0, at=6):
     # FMS windows on critical alerts
     f = P["fms"]
     f = f[f["trigger"] == "CAS_CRITICAL"]
-    piv = f.pivot_table(index=["event_ref", "truck_no", "trigger_time"], columns="t_offset_s", values="speed_kmh",
+    piv = f.pivot_table(index=["event_ref", "truck_no", "trigger_time_awst"], columns="t_offset_s", values="speed_kmh",
                         aggfunc="first").reset_index()
-    piv["tt"] = pd.to_datetime(piv["trigger_time"], format="%Y-%m-%d %H:%M:%S")
+    piv["tt"] = pd.to_datetime(piv["trigger_time_awst"], format="%Y-%m-%d %H:%M:%S")
     piv = piv.sort_values("tt")
-    a = pd.merge_asof(a.sort_values("local"), piv.rename(columns={"truck_no": "truck"})[["truck", "tt", 0, at]],
+    cols = ["truck", "tt", 0, at] + [c for c in fallback if c not in (0, at)]
+    a = pd.merge_asof(a.sort_values("local"), piv.rename(columns={"truck_no": "truck"})[cols],
                       left_on="local", right_on="tt", by="truck", direction="forward", tolerance=pd.Timedelta(seconds=3))
-    a["has_window"] = a["tt"].notna() & a[0].notna() & a[at].notna()
-    a["slowed"] = (a[at] <= a[0] - slow)
+    v = a[at]
+    for c in fallback:
+        v = v.fillna(a[c])
+    a["v_at"] = v
+    a["has_window"] = a["tt"].notna() & a[0].notna() & a["v_at"].notna()
+    a["slowed"] = (a["v_at"] <= a[0] - slow)
     return a
 
 
@@ -138,7 +143,7 @@ def response_summary(a):
 # ----------------------------------------------------------------------------------------------- ask A: gate trips
 def gate_trips(P):
     g = P["gate"].copy()
-    g["t"] = pd.to_datetime(g["read_time"], format="%Y-%m-%d %H:%M:%S")
+    g["t"] = pd.to_datetime(g["read_time_awst"], format="%Y-%m-%d %H:%M:%S")
     g["gate"] = g["reader"].str[:2]
     g = g[g["direction"] == "IN"]
     trips = []
@@ -170,37 +175,62 @@ def gate_trips(P):
 
 
 # ----------------------------------------------------------------------------------------------- ask B: overspeed
-def overspeed(P):
-    f = P["fms"]
-    f = f[(f["trigger"] == "OVERSPEED") & f["segment"].isin(["NRP", "SRP"]) & f["truck_no"].str.startswith("DT")]
-    ev = f.groupby(["event_ref", "truck_no", "segment", "trigger_time"])["speed_kmh"].max().reset_index()
-    ev["tt"] = pd.to_datetime(ev["trigger_time"], format="%Y-%m-%d %H:%M:%S")
-    ev = ev.sort_values(["truck_no", "segment", "tt"]).reset_index(drop=True)
-    # a run still over the limit ten seconds on is the same time over the limit: one occasion, its highest speed
-    keep, peak = [], []
-    for i in range(len(ev)):
-        if keep and ev.at[i, "truck_no"] == ev.at[keep[-1], "truck_no"] and ev.at[i, "segment"] == ev.at[keep[-1], "segment"] \
-                and pd.Timedelta(seconds=8) <= ev.at[i, "tt"] - last_t <= pd.Timedelta(seconds=12):
-            peak[-1] = max(peak[-1], ev.at[i, "speed_kmh"])
-            last_t = ev.at[i, "tt"]
-            continue
-        keep.append(i)
-        peak.append(ev.at[i, "speed_kmh"])
-        last_t = ev.at[i, "tt"]
-    ev = ev.loc[keep].copy()
-    ev["speed_kmh"] = peak
-    ev["day"] = ev["tt"].dt.normalize()
+def limit_in_force(P):
     lim = P["limits"].copy()
     lim["eff"] = pd.to_datetime(lim["effective_from"])
 
     def in_force(seg, day):
         x = lim[(lim["segment"] == seg) & (lim["eff"] <= day)].sort_values("eff")
-        return int(x["limit_kmh"].iloc[-1])
-    ev["limit"] = [in_force(s, d) for s, d in zip(ev["segment"], ev["day"])]
-    ev["over5"] = ev["speed_kmh"] > ev["limit"] + 5
+        return float(x["limit_kmh"].iloc[-1])
+    return in_force
+
+
+def overspeed_windows(P):
+    """One row per OVERSPEED window on the two ramps for a haul truck: its first, last and highest recorded speeds."""
+    f = P["fms"]
+    f = f[(f["trigger"] == "OVERSPEED") & f["segment"].isin(["NRP", "SRP"]) & f["truck_no"].str.startswith("DT")]
+    g = f.groupby(["event_ref", "truck_no", "segment", "trigger_time_awst"])
+    ev = g["speed_kmh"].max().rename("peak").reset_index()
+    first = f[f["t_offset_s"] == f["t_offset_s"].min()].set_index("event_ref")["speed_kmh"]
+    last = f[f["t_offset_s"] == f["t_offset_s"].max()].set_index("event_ref")["speed_kmh"]
+    ev["first"] = ev["event_ref"].map(first)
+    ev["last"] = ev["event_ref"].map(last)
+    ev["tt"] = pd.to_datetime(ev["trigger_time_awst"], format="%Y-%m-%d %H:%M:%S")
+    in_force = limit_in_force(P)
+    ev["limit"] = [in_force(sg, t.normalize()) for sg, t in zip(ev["segment"], ev["tt"])]
+    return ev.sort_values(["truck_no", "segment", "tt"]).reset_index(drop=True)
+
+
+def overspeed_runs(ev, joins=None):
+    """Windows into runs. A window continues the run before it when it opens on the sample that closed that run's last
+    window (ten seconds after it, same truck and ramp) and the truck was still over the limit at that instant.
+    `joins` replaces the rule with a plain gap in seconds (the reflex merges measured in checks.py)."""
+    run_id, runs = [], -1
+    prev = None
+    for row in ev.itertuples():
+        cont = False
+        if prev is not None and row.truck_no == prev.truck_no and row.segment == prev.segment:
+            gap = (row.tt - prev.tt).total_seconds()
+            if joins is None:
+                cont = gap == 10 and row.first > row.limit
+            else:
+                cont = gap <= joins
+        if not cont:
+            runs += 1
+        run_id.append(runs)
+        prev = row
+    ev = ev.copy()
+    ev["run"] = run_id
+    return ev.groupby("run").agg(segment=("segment", "first"), tt=("tt", "first"), peak=("peak", "max"),
+                                 limit=("limit", "first")).reset_index(drop=True)
+
+
+def overspeed(P, joins=None):
+    r = overspeed_runs(overspeed_windows(P), joins)
+    r["over5"] = r["peak"] > r["limit"] + 5
     out = {}
     for seg in ("NRP", "SRP"):
         for m in (7, 8, 9, 10):
-            x = ev[(ev["segment"] == seg) & (ev["tt"].dt.year == 2026) & (ev["tt"].dt.month == m)]
-            out[(seg, m)] = (int(len(x)), int(x["over5"].sum()), [float(v - l) for v, l in zip(x["speed_kmh"], x["limit"])])
+            x = r[(r["segment"] == seg) & (r["tt"].dt.year == 2026) & (r["tt"].dt.month == m)]
+            out[(seg, m)] = (int(len(x)), int(x["over5"].sum()), [float(v - l) for v, l in zip(x["peak"], x["limit"])])
     return out

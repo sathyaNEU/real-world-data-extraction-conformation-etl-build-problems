@@ -25,13 +25,15 @@ def submission(F):
     L.append("## 1. Final Recommendation\n")
     L.append("**Mount Bracken should fund programme C, the collision avoidance alerting review on the haul truck units, "
              "for 2027.**\n")
-    L.append("Vehicle interaction incidents rose from %d in July to October 2025 to %d in July to October 2026 because haul "
-             "truck operators stopped slowing for critical alerts from units on firmware 5.0.2: while it went on, the same "
-             "crews slowed for about %d per cent of critical alerts from units still on 4.3 and about %d per cent from units "
-             "already on 5.0.2. Not B: the North ramp junction has the most incidents, but the South pit ore route, which does not use "
-             "the junction, rose more per truck shift. Not A: the same operators kept slowing on 4.3 units. Not D or E: the "
-             "fall in slowing came with the firmware on day shifts as on nights, and the crusher pad's incidents barely "
-             "moved.\n" % (F["vi_jul_oct_2025"], F["vi_jul_oct_2026"], F["resp_window_v43_pct"], F["resp_window_v5_pct"]))
+    L.append("Vehicle interaction incidents rose from %d in July to October 2025 to %d in July to October 2026, and the "
+             "one change in operator behaviour that the records show is in the response to critical alerts on units "
+             "running firmware 5.0.2: while it went on, the same crews slowed for about %d per cent of critical alerts from "
+             "units still on 4.3 and about %d per cent from units already on 5.0.2, and from July critical alerts nobody "
+             "slowed for ran at more than five times their 2025 level. Not B: the North ramp junction has the most "
+             "incidents, but incidents per truck shift rose about fourfold on the South pit ore route, which never passes "
+             "the junction. Not A: the same operators kept slowing on 4.3 units. Not D or E: the fall in slowing came with "
+             "the firmware on day shifts as on nights, and the crusher pad's share of incidents fell.\n"
+             % (F["vi_jul_oct_2025"], F["vi_jul_oct_2026"], F["resp_window_v43_pct"], F["resp_window_v5_pct"]))
     L.append("## 2. Critical Components\n")
     L.append("1. Vehicle interaction incidents, July to October 2025: **%d**" % F["vi_jul_oct_2025"])
     L.append("2. Vehicle interaction incidents, July to October 2026: **%d**" % F["vi_jul_oct_2026"])
@@ -56,14 +58,18 @@ def submission(F):
              "2026, with both firmwares running, %d per cent of critical alerts on 4.3 units against %d per cent on 5.0.2 "
              "units, to the nearest 5 per cent." % (F["resp_window_v43_pct"], F["resp_window_v5_pct"]))
     L.append("5. For the gate figures, read only IN reads in pit_gate_reads_2026-07_2026-10.csv and counted an NG-2 read "
-             "2 to 13 seconds after an NG-1 read as the same trip whatever plate each reader returned (the two North gate "
+             "2 to 13 seconds after an NG-1 read as the same entry whatever plate each reader returned (the two North gate "
              "readers read one vehicle seconds apart, and no two vehicles pass a gate within 16 seconds); a trip with an "
              "empty cas_tag is one with no tag detected.")
-    L.append("6. For the ramp figures, took each OVERSPEED window on NRP or SRP for a DT truck, merged a window that opens "
-             "8 to 12 seconds after the same truck's last one on the same ramp into that time over the limit, took its "
-             "highest speed, and compared it with the limit in force that day in haul_road_speed_limits.csv.")
-    L.append("7. The driver of the rise is the critical alerts on 5.0.2 units, which programme C answers "
-             "(vi_review_terms_2026.docx section 4): fund C.\n")
+    L.append("6. For the ramp figures, took each OVERSPEED window on NRP or SRP for a DT truck in "
+             "fms_event_windows_2025-2026.parquet, joined a window to the run before it only where it opens on the sample "
+             "that closed the same truck's last window on that ramp (ten seconds later) with the truck still over the limit "
+             "at that sample, took each run's highest speed, and compared it with the limit in force that day in "
+             "haul_road_speed_limits.csv.")
+    L.append("7. The response to critical alerts is the only measured change in operator behaviour, it follows the "
+             "firmware rather than the crews, and critical alerts nobody slowed for rose more than fivefold in July to "
+             "October against almost fourfold for the incidents; programme C answers the alerts (vi_review_terms_2026.docx "
+             "section 4): fund C.\n")
     L.append("## 4. Deliverable Answers\n")
     L.append("### vi_programme_paper_2027.docx\n")
     L.append("1. Call: fund programme C, the collision avoidance alerting review on the haul truck units, for 2027")

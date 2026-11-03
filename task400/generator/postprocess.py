@@ -347,6 +347,16 @@ def normalize_pdf(path, created, modified):
             tags[key] = b"/" + bytes(65 + x % 26 for x in h[:6]) + b"+" + m.group(2)
     for old, new in tags.items():
         b = re.sub(re.escape(old) + rb"(?![A-Za-z0-9-])", new, b)
+    # the library's default info entries (an empty subject, empty keywords, a trapping flag) are not written by the
+    # applications these documents name; each is blanked at equal length, so the dictionary and the offsets hold
+    import io
+    from pypdf import PdfReader
+    before = "\n".join(pg.extract_text() for pg in PdfReader(io.BytesIO(b)).pages)
+    for entry in (rb"/Subject \(\)", rb"/Keywords \(\)", rb"/Trapped /(?:False|True|Unknown)"):
+        b = re.sub(entry, lambda m: b" " * len(m.group(0)), b)
+    after = "\n".join(pg.extract_text() for pg in PdfReader(io.BytesIO(b)).pages)
+    assert before == after, "the metadata step changed the document's text"
+    assert b"/Trapped" not in b and b"/Subject ()" not in b and b"/Keywords ()" not in b
     assert len(b) == n and b"ReportLab" not in b and b"reportlab" not in b and b"AAAAAA+" not in b
     open(path, "wb").write(b)
 
