@@ -3,8 +3,8 @@
   "status": "PAUSED",
   "domain": "marketing-consumer-research/customer-satisfaction-driver-analysis",
   "objective": "root-cause",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-11-03",
   "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw, architecture 1 (a frailty virtual ward against care home closures, Epidemiology and Public Health) died at stage 2 on published admission rates, architecture 2 (a canola hybrid against July heat in late-seeded fields' flowering windows, Economics and Econometrics) died at stage 2 on its own ladder, and architecture 3 re-roots in a GB domestic energy supplier's six-month new-customer satisfaction tracker under the same objective and number",
   "stump": "A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy and bill clarity carry about two thirds of the 8.7-point fall, finds every H1 2026 respondent billed on the new platform, and books about 6 points to the billing platform, holding phase 2, because they never set the annual cost each customer was quoted at the switch against the cost of the annual quantity their meter point then showed, which puts most of the fall on the May 2025 quote journey's quotes and leaves the platform about a point at most.",
@@ -39,7 +39,8 @@
   },
   "leak": {
     "leak_py": "REVIEW 2026-11-03 on target digest 1c1f695f (no LEAK; nine REVIEW lines ruled harmless in the note's ## Leak review: two date-and-amount digit runs in the Direct Debit history, generic stump words in the three documents, regions beside numbers in three files, planned effective dates of pending losses)",
-    "reader": "round 1 2026-11-03: nothing quoted for question 1, no ranking file, no answer-like figure, question 6 analytical; its realism tells and workbook readings fixed in the generator; round 2 brief written"
+    "reader": "round 1 2026-11-03: nothing quoted for question 1, no ranking file, no answer-like figure, question 6 analytical; its realism tells and workbook readings fixed in the generator; round 2 brief written",
+    "reader_round_2": "clean on the main call (no decisive-step sentence, no ranking or helper file, nothing reads as the answer, analytical); mild realism notes (tariff xlsx package structure; extracts to 5 Nov after the plan and the legacy extract)"
   },
   "duplicate_check": {
     "heart": "WARN 2026-11-03 on the final cut (overuse.objective; repeat.gate_g against task400; repeat.deliverables pdf+xlsx against task399; answered on the card); no BLOCK",
@@ -50,10 +51,11 @@
     "verdict": "round 1: NOT_DETERMINISTIC, SOLUTION_WRONG (the workbook asks and one extract anomaly; the main call reproduced and forced, Gate G analytical_non_defect, Gate H pass, Gate F likely stumps)",
     "disposition": "round 1: SEND_BACK, light; ruled an ask-layer fix pass with one re-judge (no re-root): if round 2 is not DETERMINISTIC with APPROVE the architecture is spent",
     "report": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge/judge_report.md",
-    "round_2": "brief written, not yet run"
+    "round_2": "NOT_DETERMINISTIC, SEND_BACK (narrow) on target.zip 492a3f71: the switches table's credited sale is unfiled (596 Phone registrations name a quote dated 2 to 10 days after the registration; the golden re-attributes each to the prospect's latest quote on or before it, a rule no file states; latest against earliest moves about 20 cells for 94 prospects); every round-1 finding closed; main call forced and reproduced, Gate F good, Gate G decomposition_attribution analytical_non_defect, Gate H analytical; caveat: Critical Component 2's 'more than half' is specification-dependent (binary split 14 per cent, five bands 60, eight 85, kinked model 75)",
+    "report_round_2": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge_r2/judge_report.md"
   },
   "returned": [],
-  "resume": "stage 4 round 2 running: the parent runs the round-2 leak reader (reader_r2/reader_brief.md, sonnet, medium) and the round-2 determinism judge (judge_r2/judge_brief.md) together on their isolated copies of target.zip 492a3f71. On APPROVE with DETERMINISTIC and a clean read, go to stage 5: pre-ship check in the design note, every gate re-run on the final cut (precut, voice-check, leak.py --asof 2026-11-06, guard.py heart and surface after merging claude/jolly-hypatia-06c61h, figures_check), ledger row, card current, force-add target.zip and golden/, commit SHIPPED (task401). A round-2 verdict other than DETERMINISTIC with APPROVE spends architecture 3: re-root at stage 1 in another world.",
+  "resume": "stage 1, re-root (architecture 4): architecture 3 is spent at stage 4, round 2 (the judge's SEND_BACK on the switches table's credited-sale fork, after round 1's fix pass; DESIGN_NOTE Tried and rejected, last line). Re-root at stage 1 in another domain, world, dataset and shell: guard.py recent, coverage, mechanisms --objective root-cause, slots on mechanism and setting nouns; move architecture 3's identity into the card's lineage with its fate and its shell into lineage_shells, then write the new draw; the four go/no-go screens over 20 redraws before registering; the sibling-card protocol before check and register. The precut, checks, ceiling and gate records below are architecture 3's and are void for the next design.",
   "approved": null,
   "delivered": null,
   "portal": null,

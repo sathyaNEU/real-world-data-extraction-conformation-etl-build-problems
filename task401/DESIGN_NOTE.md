@@ -652,3 +652,16 @@ Measured by: generator/ceiling.py on the cut pack (target digest 1c1f695f), 2026
   precedes its closure, asserted over every account. Fork 3 was closed by "no withdrawn registration counted" rather than
   by dating the boundary in the asking sentence (shorter, and true whatever the date), with every withdrawal now dated
   before the start it requested, as switching allows.
+- 2026-11-03, stage 4 round 2, architecture 3 spent. The round-2 judge returned NOT_DETERMINISTIC, SEND_BACK (narrow), on
+  the switches table: "credited to the sale it was registered on", read word for word, takes each registration's
+  quote_ref, and 596 Phone registrations name a quote dated 2 to 10 days after the registration; the golden moves each to
+  the prospect's latest quote on or before it, a rule no file states, and for 94 of those prospects latest against
+  earliest moves about 20 cells. The literal ask executor in checks.py had carried the re-attribution as though it were
+  the field's own value, so it never saw the fork. Every round-1 finding closed, and the main call held in both rounds
+  (forced and reproduced; Gate F good; Gate G analytical_non_defect; Gate H analytical), but the judge noted that
+  Critical Component 2's "more than half" depends on the cut (a binary covered split puts 14 per cent of the fall on the
+  quote mix, five bands 60, eight bands 85, the kinked model 75). A second round without APPROVE spends the architecture
+  under the round-1 ruling; the slot re-roots at architecture 4 in another domain, world, dataset and shell. Lessons: a
+  literal executor takes every field at its face value, so a golden that overrides a field's own link (a reference, a
+  date, a status) carries a filed WHAT or the data are regenerated so the face value is the golden; and every quantity
+  the write-up states for the main call holds at every natural granularity of the comparison, or is stated so it does.
