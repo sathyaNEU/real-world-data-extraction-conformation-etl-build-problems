@@ -89,8 +89,8 @@ second duty lawyer on the region's custody-list roster, supported bail accommoda
    factors (charge seriousness, criminal history, bail history, on bail at arrest) as controls, the counsel-by-period
    interaction carrying the widening.
 4. Drill: courthouse, then list, then judicial officer. The widening sits in the Kestrel Bay custody list, under the
-   community magistrate who took it over in March 2026.
-5. Check the dated changes: EM bail assessments slowed from February 2026 (EM bail is sought at a later appearance,
+   community magistrate who took it over in December 2025.
+5. Check the dated changes: EM bail assessments slowed from November 2025 (EM bail is sought at a later appearance,
    never decided at the first); the duty lawyer roster is unchanged (one duty lawyer at every Kestrel Bay sitting,
    clients a sitting flat); reminders and accommodation show nothing at first appearance.
 6. Fund a District Court judge on the Kestrel Bay custody list.
@@ -104,7 +104,7 @@ custody courtroom when each matter was called (provisional).
 
 A competent solver measures the first-appearance custody-remand gap within court and judicial officer with the
 legally relevant factors as controls, finds the widening in the Kestrel Bay custody list under the community
-magistrate who took it over in March 2026, and funds a judge on the custody list (Ends on: a District Court judge on
+magistrate who took it over in December 2025, and funds a judge on the custody list (Ends on: a District Court judge on
 the Kestrel Bay custody list); the step that lands it there is reading a within-officer difference as the officer's,
 when the duty lawyer service's record and the sitting calendar show the single rostered duty lawyer was serving the
 new audio-visual remand list next door when most of the widening's matters were called, which puts the gap on the duty
@@ -232,6 +232,7 @@ lawyer roster.
 | SF14 | a night on approved leave (judge F3) | no night at the house | occupied, the bed held | same call; ask 2 only | clause 4 ("a night away on approved leave is not a night at the house"), asserted |
 | SF15 | an EM assessment the High Court ordered on a case transferred to it | outside the turnaround | averaged with the unit's other assessments | same call; ask 1 only | standard section 1 (the District Courts' orders) and bid section 5 ("the EM Bail Unit's assessments of the District Courts' orders"); which orders those are, the records fix (the extract's transfer before the order, no District Court order), asserted |
 | SF16 | a departure the incident log never closes, from the case app | an absence the app's record closes, the resident back | the resident leaving | same call; ask 2 only | clause 2 (a placement ends on the day the resident leaves it) and clause 4 (custody and hospital nights are not occupied, the bed held); the Away row with the same placement and first night settles each, asserted |
+| SF17 | a night a resident is absent without leave (the round-2 reader) | no night at the house | occupied: not among the absences clause 4 named | same call; ask 2 only (five months would move) | clause 4 ("a night away on approved leave or absent without leave is not a night at the house"), filed in the golden's direction with every figure unchanged, asserted |
 
 ## Ladder
 
@@ -362,10 +363,11 @@ pass (2026-11-03): with the judge's F1 to F3 filed as WHATs, the old devices bec
   arrival, departure and exit, but of the returns only the police bringing a resident back, an incident in its own
   right; a resident back from hospital or after a night out past curfew is the app's absence record closing (the Away
   sheet's "Away from" and "Away to (last night away)"). A state rebuilt from the log reads a departure it never sees
-  closed as the resident leaving, which is right in the spreadsheet months and wrong in every app month: 25 hospital
-  and curfew absences each end their stay early, while the resident was back within one to five nights. Clause 2 ends
-  a placement on the day the resident leaves it and clause 4 holds the bed through custody and hospital nights; the
-  Away row with the same placement and first night closes each departure.
+  closed as the resident leaving, which is right in the spreadsheet months and wrong in every app month: 17 hospital
+  absences (and 8 curfew absences, for a rebuild that does not read clause 4's absence without leave as nights away)
+  each end their stay early, while the resident was back within one to five nights. Clause 2 ends a placement on the
+  day the resident leaves it and clause 4 holds the bed through custody and hospital nights; the Away row with the same
+  placement and first night closes each departure.
 - **Forcing (asserted on the shipped rows):** from the app no hospital or curfew return is in the log and custody
   returns still are; every absence closed from the app has its Away row (173 of 173); in verify.py every departure is
   closed by a logged return or an Away row or is the placement's exit, and every Away row other than approved leave
@@ -378,12 +380,15 @@ pass (2026-11-03): with the judge's F1 to F3 filed as WHATs, the old devices bec
   bail_support_contract_schedule2.pdf (clauses 2 and 4), the bid instructions' section 5; four files, 17 columns.
 - **Stops (on the cut pack):** register nights as recorded (the mirror), 24 to 68 nights high; the round-1 judge's
   route (the first move-out or did-not-return, the register's custody exit, the log's closed pairs and approved
-  leave), 1 to 34 nights off; the log rebuilt with every sheet joined (the cracker), 29 to 102 nights low in every
-  month; each departure closed by the app's records (the full includer), every month; the golden 266 to 402.
+  leave), 1 to 34 nights off; the log rebuilt with every sheet joined and a departure never closed read as leaving, 29
+  to 102 nights low in every month; the same rebuild taking a curfew departure the Away sheet records as absence
+  without leave as nights away (the cracker, clause 4 executed), 12 to 80 nights low in eleven months, January 2026
+  kept (its only device departures are curfew absences); each departure closed by the app's records (the full
+  includer), every month; the golden 266 to 402.
 - **Pin test:** clauses 2 and 4 file the WHAT (a night dated by its evening and occupied at midnight; custody,
-  hospital and leave nights out; arrival to the night before departure; register entries outside those dates count
-  for nothing); the device sits in which departures the resident came back from, which no column flags and no
-  sentence states: a departure row reads the same either way.
+  hospital, approved leave and absence-without-leave nights out; arrival to the night before departure; register
+  entries outside those dates count for nothing); the device sits in which hospital departures the resident came back
+  from, which no column flags and no sentence states: a departure row reads the same either way.
 - **Realism:** a provider's case app keeps absences as records that staff open and close, and its incident module
   logs what staff report as incidents (police attendance, an ambulance, a curfew breach), not a resident walking back
   in.
@@ -402,30 +407,39 @@ byte-clean and arbitrates without carrying a level of its own.
 | Ask | Figures | Cracker kept | Mirror kept | Cracker |
 |---|---|---|---|---|
 | Ask 1, EM turnaround by month | 12 | 0 | 0 | miss |
-| Ask 2, bail house nights by month | 12 | 0 | 0 | miss |
+| Ask 2, bail house nights by month | 12 | 1 | 0 | miss |
 
 - **Mirror leakage:** 0.0 per cent of ask weight.
-- **Pair ceiling:** 31.6 (cracker 45.0 on the call with no ask cell; mirror 18.2, off the call, keeping the default
-  path's ten level-one figures of sixteen critical components and no ask cell).
+- **Pair ceiling:** 32.8 (cracker 47.3 on the call with one ask cell of 24, January 2026's nights; mirror 18.2, off
+  the call, keeping the default path's ten level-one figures of sixteen critical components and no ask cell).
 - **Stress rows:** the full includer keeps both asks whole (24 of 24: EM by dropping every order no District Court
   order stands behind, nights by closing each departure with the app's absence record), the residual risk recorded
-  here; the round-1 judge's nights route and the unit's own EM dates keep 0 of 12 each.
+  here; the round-1 judge's nights route, the rebuild that reads every unclosed departure as leaving and the unit's own
+  EM dates keep 0 of 12 each.
 - **Measured by:** generator/ceiling.py, run on the cut pack (target/ from build.py; stress rows by a scratch script on
   the same pack).
 
 ## Leak and duplicate review
 
-`leak.py --asof 2026-11-03` on the cut pack: REVIEW, no LEAK. Each REVIEW line, harmless:
+`leak.py --asof 2026-11-03` on the final cut: REVIEW, no LEAK. Each REVIEW line, harmless:
 - Sweep 3, the bid instructions carry the call's words: the shortlist names all five initiatives on the same
   footing with scope and cost, ranks none and states no figure for any of them.
-- Sweep 4, the bid instructions (sitting, appearance, region, Kestrel, calendar, returns), the EM standard (region,
-  calendar, records) and the contract schedule (Kestrel, calendar, defendant): the words are each document's own
-  genre (the measure's population, the cost bases' named records, calendar days and months); none names a call
-  time, another list's hours or the duty lawyer's whereabouts. Section 5's EM cost base now reads "the EM Bail Unit's
-  assessments of the District Courts' orders", the WHAT of ask 1's population; it names no court the unit's records
-  confuse and no record that tells the two courts apart.
+- Sweep 4, the bid instructions (appearance, sitting, Kestrel, region, section, calendar and three more), the EM
+  standard (region, section, records, calendar) and the contract schedule (Kestrel, calendar, defendant): the words
+  are each document's own genre (the measure's population, the cost bases' named records, its sections, calendar
+  days); none names a call time, another list's hours or the duty lawyer's whereabouts. Section 5's EM
+  cost base reads "the EM Bail Unit's assessments of the District Courts' orders", the WHAT of ask 1's population, and
+  clause 4 now names a night absent without leave beside approved leave, the WHAT of ask 2 in the golden's direction;
+  neither names a court the unit's records confuse or a record that closes an absence.
 - Sweep 9, 137 dates after 3 November 2026 in the appearance extract: the next dates of cases adjourned before the
   pull, which an extract pulled on 2 November 2026 carries.
+
+The leak reader, three rounds: round 1 on 5fa60b26 clean (question 1 none, question 6 an analytical choice; one
+realism note, the uniform no-lawyer share, closed by fix 7); round 2 on e206873b clean (no leak in the three changed
+documents; its question-8 residual on a night absent without leave closed in clause 4, SF17); round 3 on 35d217ce
+clean (questions 1 to 4 none, question 6 an analytical choice; the changed clause 4 clean and settling the night
+absent without leave; both sweep items harmless). The H1 fix after it touched only the PDFs' information
+dictionaries, so no further read is owed.
 
 `guard.py heart` (sibling draws merged, task400 on the tree): WARN on overuse.org_family (a Ministry of Justice region
 is the honest label) and repeat.question_form against task398 (the decision is a pick, which the guide maps to
@@ -437,16 +451,34 @@ pair, answered on the card. Personas in the cut pack: Freya Herd only.
 
 ## Pre-ship check
 
-Written at the stage-4 round-2 hand-off (2026-11-03), on target.zip e206873bef7ac576; the judge and the reader run round 2 on it.
-- **10/10, rule 1:** the deciding quantity is the bail disparity within court and presiding officer, net of the
-  legally relevant pre-decision factors, followed down the court's lists: the task type's own analysis.
+Written at the ship (2026-11-03), on target.zip a1b4b9a0, the final cut.
+- **10/10, rule 1, re-read against the built pack:** the deciding quantity is the bail disparity within court and
+  presiding officer, net of the legally relevant pre-decision factors, followed down the court's lists: the task
+  type's own analysis (the round-2 judge's Gate H, domain pass: the swap test breaks it).
 - **10/10, rule 2:** Layer 1 as listed in `## Three rules`, each produced by its system and neutral on the call
   (R2 asserted: the offset dropped moves no call, Courtroom 2 is KBY-2 on every AVL sitting, the claim form's
   column moves touch no figure); the EM records' courthouse codes and the bail-house app's absence records are
-  ledgered ask devices off the main population. Layer 2 is the comparison the within-officer estimate makes.
+  ledgered ask devices off the main population. Layer 2 is the comparison the within-officer estimate makes (the
+  judge's Gate H, layers pass).
 - **10/10, rule 3:** the decisive step is analytical (R3a, the easy route on the clean truth files a judge on the
   custody list; R3b, the AVL-time split alone moves it to the duty lawyer roster; R3c, no copied block, no
-  planted file). No decoy, no certified replay, no filed method.
+  planted file). The round-2 judge's own first drill filed a judge on the custody list (Gate F strong; Gate G
+  decomposition_attribution, analytical non-defect; Gate H decisive step analytical) and the reader's question 6 is
+  an analytical choice. No decoy, no certified replay, no filed method.
+- **Stage 4:** round 1 on 5fa60b26, the judge NOT_DETERMINISTIC on the asks only (FIX_NOW) and the reader clean with
+  one realism note; round 2 on e206873b, the judge DETERMINISTIC and APPROVE (every graded figure reproduced, all six
+  round-1 findings closed) and the reader clean (question 1 none, question 6 an analytical choice, no leak in the
+  three changed documents). The reader's question-8 residual (a night absent without leave is not among the absences
+  clause 4 named) is closed by a WHAT in the golden's direction in clause 4 (SF17), every figure unchanged; the
+  cracker that executes the sentence keeps January 2026's nights, pair 32.8. Round 3 on 35d217ce, the reader clean on
+  the changed schedule (questions 1 to 4 none, question 6 an analytical choice).
+- **House fix H1 (toolchain signatures):** every PDF, the three inputs and the golden briefing, carried the writing
+  library's default information entries (a Subject of "(unspecified)", an empty Keywords, a Trapped flag) and named
+  the organisation as Creator and Producer. The generator now writes each dictionary as a document saved from Word
+  writes it (Title, Author, "Microsoft® Word for Microsoft 365" as Creator and Producer, the two dates), asserted in
+  the realism sweep; each PDF's text is byte-identical before and after (pypdf lenient and strict, and pdftotext),
+  and every other member of the pack and the goldens, submission.md, metadata.json and figures.json are
+  byte-identical, so no read is owed.
 - **Round 1 closed:** F1 (section 2 of the standard files the first report as the turnaround's end, SF12), F2 (clause
   4 files the arrival to the night before departure and sets aside register entries outside them, SF13), F3 (clause
   4 files a night on approved leave as no night at the house, SF14), F4 (a call that fell on an AVL rising minute is
@@ -462,14 +494,18 @@ Written at the stage-4 round-2 hand-off (2026-11-03), on target.zip e206873bef7a
   and all twelve nights (the app's go-live moved to 1 October 2025, absences past curfew added). The call, the default
   path's answer (a judge on the custody list) and the stump do not move. freeze.py was not run: its snapshot stayed
   with the old worktree, and this pass moves graded main figures by design.
-- **Gates on the final cut:** checks.py 154 of 154 (the tightest graded figure the judges' gap outside AVL time, at 0.130 of a
-  bin; the realism sweep and the H1 metadata assertions among them), verify.py 40 of 40 with the three PDFs read
-  back, two builds byte-identical, figures_check 62 of 62, precut 61 of 61, voice-check PASS, leak.py REVIEW
-  (sweeps 3, 4 and 9 answered above), heart WARN, surface two pairs answered; ceiling.py keeps 0 of 24 for the
-  cracker and 0 of 24 for the mirror, pair 31.6.
-- **Stage 4 round 2:** the judge (verbatim system prompt, derivation before the graded blocks) and the leak reader
-  (the same eight questions; the bid instructions, the EM standard and the contract schedule changed since round 1)
-  on fresh isolated copies of the cut.
+- **Outside the pack, corrected to the data:** the stump sentence, default path steps 4 and 5, the card's stump,
+  analyst_test and driver_concrete, and pipeline.json's stump now say the community magistrate took the custody list
+  over in December 2025 (the world's 1 December 2025) and the EM slowdown came from November 2025; the call, the
+  ladder and the default path's answer are unchanged.
+- **Gates on the final cut:** checks.py 141 of 141 (the tightest graded figure the judges' gap outside AVL time, at
+  0.130 of a bin; the realism sweep, the H1 metadata assertions and fix 8 among them), verify.py 40 of 40 with the
+  three PDFs read back, two builds byte-identical, figures_check 62 of 62, precut 61 of 61, voice-check PASS,
+  leak.py REVIEW (sweeps 3, 4 and 9 answered above), heart WARN, surface two pairs answered; ceiling.py keeps 1 of
+  24 for the cracker (January 2026's nights) and 0 of 24 for the mirror, pair 32.8; target.zip sha256
+  a1b4b9a0ff3a40acf53a73bc1c25ac3d28125f92b8f212a1d34fbd4d4dae3488.
+- **Ship:** the ledger row (SHIPPED, delivered 11-03, pending review); committed SHIPPED with target.zip and golden/
+  force-added.
 
 ## Tried and rejected
 

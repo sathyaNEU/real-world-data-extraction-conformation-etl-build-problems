@@ -1,4 +1,4 @@
-"""The generator's assertions for task399: every semantic fork (SF1 to SF16), the ladder on the clean truth, the
+"""The generator's assertions for task399: every semantic fork (SF1 to SF17), the ladder on the clean truth, the
 three-rules block (the analyst test executed), every graded figure's bin edge, the separation of the ask devices
 from the main population, each ask device's forcing figure and mass, each extract's own date against its last record,
 the input gates and the realism screens. Exit 1 on any failure.
@@ -26,6 +26,7 @@ import figs as F    # noqa: E402
 import world as W   # noqa: E402
 
 RESULTS = []
+PDF_APPLICATION = "Microsoft® Word for Microsoft 365"     # what the organisations save their documents from
 
 
 def check(name, ok, detail=""):
@@ -213,6 +214,17 @@ def main():
     check("SF16 clause 4 counts a night away as no night at the house and clause 2 ends a placement on the day the "
           "resident leaves (read back by verify.py)", len(open(os.path.join(TARGET, "bail_support_contract_schedule2.pdf"),
                                                                 "rb").read()) > 0)
+    # SF17 (the round-2 reader): a night absent without leave is no night at the house; clause 4 names it beside
+    # approved leave, in the golden's direction, and counting it would move months
+    sched = " ".join(" ".join((pg.extract_text() or "").split()) for pg in
+                     _PR(os.path.join(TARGET, "bail_support_contract_schedule2.pdf")).pages)
+    g_ex = F.bh_month_nights(pl_w, ab_w)
+    g_in = F.bh_month_nights(pl_w, ab_w[ab_w.kind != "awol"])
+    moved = [ym for ym in F.MONTHS if g_ex[ym] != g_in[ym]]
+    check("SF17 clause 4 files a night absent without leave as no night at the house, and the golden excludes it",
+          "a night away on approved leave or absent without leave is not a night at the house" in sched
+          and all(int(figs["bh_%d_%02d" % ym]) == g_ex[ym] for ym in F.MONTHS) and len(moved) >= 1,
+          "%d months would move if those nights were counted" % len(moved))
 
     # ---------------------------------------------------------------- bins (edge distance, every graded figure)
     units = figs["_units"]
@@ -239,9 +251,19 @@ def main():
     cr = {}
     cr.update(C.em_cracker(TARGET))
     cr.update(C.bh_cracker(TARGET))
-    for k in [k for k in units if k.startswith(("em_", "bh_"))]:
-        dist = abs(cr[k] - float(figs[k])) / units[k]
-        check("device mass %s" % k, dist >= 3, "the careful route %.1f bins off" % dist)
+    # every EM month moves; the nights move in eleven months, January 2026 being the one month whose only device
+    # departures are curfew absences, which the cracker closes once clause 4 names absence without leave
+    for pre, need in (("em_", 12), ("bh_", 11)):
+        ks = [k for k in units if k.startswith(pre)]
+        far = []
+        for k in ks:
+            dist = abs(cr[k] - float(figs[k])) / units[k]
+            if dist >= 3:
+                far.append(k)
+            if os.environ.get("VERBOSE"):
+                print("INFO  device mass %s  the careful route %.1f bins off" % (k, dist))
+        check("device mass %s: the careful route 3 bins or more off in %d of %d months" % (pre[:-1], len(far), len(ks)),
+              len(far) >= need, "kept: " + (", ".join(sorted(set(ks) - set(far))) or "none"))
 
     # ---------------------------------------------------------------- fix 8: each extract's own date
     # a CSV is dated by its pull (metadata.json), a workbook by its saved stamp, a PDF by its own; each is on or after
@@ -413,6 +435,17 @@ def main():
             check("H25 %s reads the same strictly and leniently" % os.path.basename(x), lenient == strict and lenient)
             check("H1 %s carries no library banner" % os.path.basename(x),
                   b"ReportLab" not in open(pth, "rb").read() and b"matplotlib" not in open(pth, "rb").read())
+            info = dict(r.metadata)
+            raw = open(pth, "rb").read()
+            subj, keys = str(info.get("/Subject", "x")).strip("() "), str(info.get("/Keywords", "x")).strip()
+            check("H1 %s carries no writer default in its information dictionary" % os.path.basename(x),
+                  b"(unspecified)" not in raw and b"/Trapped" not in raw and "/Trapped" not in info
+                  and subj not in ("", "unspecified") and keys != "",
+                  ", ".join("%s %s" % kv for kv in sorted(info.items())))
+            check("H1 %s names the application it was saved from as creator and producer" % os.path.basename(x),
+                  info.get("/Producer") == info.get("/Creator") == PDF_APPLICATION
+                  and info.get("/Author") in ("Ministry of Justice", "Department of Corrections", "Freya Herd"),
+                  "%s / %s / %s" % (info.get("/Author"), info.get("/Creator"), info.get("/Producer")))
             stamps.append((os.path.basename(x), cr, mo))
     check("H13 every document's created stamp is its own", len({s[1] for s in stamps}) == len(stamps),
           ", ".join("%s %s" % (s[0], s[1]) for s in stamps if [t[1] for t in stamps].count(s[1]) > 1))

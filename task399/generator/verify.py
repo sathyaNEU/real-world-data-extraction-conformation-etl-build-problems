@@ -285,6 +285,7 @@ def documents(target):
                                             "an amended report is a later document"],
         "bail_support_contract_schedule2.pdf": ["Schedule 2", "at the house at midnight",
                                                 "police custody or in hospital", "approved leave",
+                                                "or absent without leave is not a night at the house",
                                                 "the night the resident arrives at the house",
                                                 "neither starts nor extends a placement",
                                                 "ends on the day the resident leaves it",

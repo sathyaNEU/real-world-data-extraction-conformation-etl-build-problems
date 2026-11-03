@@ -326,6 +326,29 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             z.writestr(zi, data)
 
 
+WORD_PDF = "Microsoft® Word for Microsoft 365"
+
+
+def word_pdf_info():
+    """Write each PDF's information dictionary as a document saved from Word writes it: title, author, the
+    application as creator and producer, the two dates; a subject or keywords only where the document has them. The
+    writing library's own defaults (an unspecified subject, empty keywords, a trapping flag) are never written. The
+    dictionary is written by the library itself, so its cross-reference table stays the library's own."""
+    from reportlab.pdfbase import pdfdoc
+
+    def info(self, document):
+        d = {"Title": pdfdoc.PDFString(self.title), "Author": pdfdoc.PDFString(self.author),
+             "Creator": pdfdoc.PDFString(self.creator), "Producer": pdfdoc.PDFString(self.producer)}
+        d["ModDate"] = d["CreationDate"] = pdfdoc.PDFDate(ts=document._timeStamp, dateFormatter=self._dateFormatter)
+        if self.subject and self.subject.strip("() ") not in ("", "unspecified"):
+            d["Subject"] = pdfdoc.PDFString(self.subject)
+        if self.keywords and str(self.keywords).strip():
+            d["Keywords"] = pdfdoc.PDFString(self.keywords)
+        return pdfdoc.PDFDictionary(d).format(document)
+
+    pdfdoc.PDFInfo.format = info
+
+
 def normalize_pdf(path, created, modified):
     """created, modified: the in-fiction stamps as PDF dates of the invariant date's length, D:YYYYMMDDHHMMSS+HH'MM'
     (the info dictionary carries the creation date before the modification date). The library's banners are blanked
