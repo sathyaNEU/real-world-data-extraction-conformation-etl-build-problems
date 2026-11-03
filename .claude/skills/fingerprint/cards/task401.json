@@ -1,89 +1,95 @@
 {
   "task": "task401",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-11-03",
-  "slot_note": "Numbered against seed RC07 (a supplier's January imbalance bill and plant trips). The seed's world could not carry an honest unbanned draw, architecture 1 (a frailty virtual ward against care home closures, Epidemiology and Public Health) died at stage 2 on published admission rates, and architecture 2 (a canola hybrid against July heat in late-seeded fields' flowering windows, Economics and Econometrics) died at stage 2 when the golden method's own variants straddled the bar and flexible controls on seeding dates landed the golden. Architecture 3 re-roots in Marketing and Consumer Research: a GB domestic energy supplier's six-month new-customer satisfaction tracker.",
-  "domain": "marketing-consumer-research",
-  "client_domain": "marketing-consumer-research",
-  "subdomain": "customer-satisfaction-driver-analysis",
-  "niche": "a GB domestic energy supplier's six-month new-customer satisfaction tracker, whose share of satisfied respondents fell between the first halves of 2025 and 2026 while every 2026 respondent was billed on a new billing platform, tariffs rose in October and the contact centre moved to an outsourcer, and whose cause the executive team needs named before the platform's second phase cuts over",
+  "slot_note": "Root-Cause Analysis slot re-rooted at architecture 4 after architecture 3 was spent at stage 4, round 2 (lineage). One architecture per world: the epidemiology, econometrics and marketing worlds are closed to this slot, and this draw moves to Physical and Environmental Sciences, a water and sewerage company's river catchment, a new dataset and a new shell.",
+  "domain": "physical-environmental-sciences",
+  "client_domain": "physical-environmental-sciences",
+  "subdomain": "pollution-source-attribution",
+  "niche": "a lowland river's winter ammonia exceedances below a sewage works, apportioned through the works' nitrification and its trade dischargers' telemetered discharges rather than by load",
   "objective": "root-cause",
-  "shape": "03",
+  "shape": "12",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "the quote journey relaunched in May 2025, whose quotes stopped pre-filling each meter point's industry annual quantity, not the billing platform: phase 2 can cut over",
-  "answer_source": "submission.md block 1; generator/figures.json call",
+  "answer": "",
+  "answer_source": "",
   "gap": [
+    "population",
     "objective"
   ],
   "pattern": [
-    "none"
+    "C"
   ],
   "generators": [
-    "G6",
-    "G14"
+    "G8",
+    "G3",
+    "G7"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every rating, quote and meter record correctly runs the field's key driver analysis on the tracker (overall satisfaction on the attribute ratings, Shapley shares), links the respondents to their accounts and payments, and books about 6 of the 8.7 points to the new billing platform, because billing accuracy and bill clarity fell furthest and every H1 2026 respondent is billed on it.",
-  "domain_test": "The deciding quantity is each driver's contribution to the fall in the share of satisfied new customers, estimated by a satisfaction driver model that carries each customer's disconfirmation (the cost of the use their meter recorded against the cost they were quoted at the switch), as the expectation-disconfirmation paradigm and the ACSI's expectations construct require; with hospital or school nouns there is no quote at a switch, no metered use to set against it and no six-month satisfaction tracker of switchers.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:expectation-disconfirmation-of-the-switch-quote-against-the-meter-point-annual-quantity",
+  "analyst_test": "A strong analyst who reads every file correctly apportions the downstream ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the new aeration control, finds the failures began the week the control went live and cluster in the coldest weeks with the works near its design load, and books the winter's exceedance days to the control and the works' nitrification capacity, backing the upgrade, while the dairy's charges, weekly composites and pH compliance all read normal.",
+  "domain_test": "The deciding quantity is the share of the downstream exceedance days that fall inside the days the works' nitrification needs to recover after a caustic excursion in one trade discharger's own fifteen-minute record, worked as river source apportionment through the works' process response rather than by each source's load; in another field's nouns dilution, nitrifier recovery and consented trade effluent strength have no counterpart and the task stops reading.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:the-share-of-river-exceedances-a-discharger's-pre-treatment-reaches-read-through-the-works'-nitrification-recovery",
   "layer1": [
-    "the tracker vendor's export changed in January 2026: coded columns and dd/mm/yyyy dates with numeric answers, then labels and UTC timestamps; partial responses and accounts answering twice in both",
-    "legacy eight-digit account numbers against the platform's ten-digit ones, the crosswalk held only in the phase 1 load log",
-    "registrations keyed by account and meter point, quotes by quote reference and prospect, the tracker by account",
-    "industry annual quantities as several dated rows per meter point and register, revised after reads",
-    "dual fuel as two registration rows, gas often starting days later; withdrawals in the cooling-off period and re-registrations",
-    "tariffs by region with effective dates, variable rates stepping each quarter and fixed products holding their launch rates",
-    "UTC in the platform's load log and the 2026 export against UK local dates in the legacy exports, across the clock changes"
+    "fifteen-minute discharger telemetry with logger gaps and the October clock change",
+    "weekly composite strength samples against daily meter volumes",
+    "provisional against ratified river monitor data with flagged sonde maintenance",
+    "trade effluent returns in cubic metres against a meter in litres",
+    "works SCADA tags renamed at the aeration control upgrade"
   ],
-  "stakeholder_role": "the supplier's billing programme director, who needs to know whether any of the fall belongs to the platform before they ask the executive team to sign the phase 2 cutover off, with the phase 2 readiness tables (the prompt names no one)",
+  "stakeholder_role": "the water company's environment programme manager, who must say whether the nitrification upgrade at the works goes into the company's environment programme submission to the Environment Agency (the prompt names no one)",
   "role_family": "programme_officer",
-  "scoring_unit": "index points",
+  "scoring_unit": "other",
   "spine": {
-    "file": "meter_point_annual_quantities.parquet",
-    "rows": 575821,
-    "entity": "one industry annual quantity revision on one meter point register",
-    "grain": "meter point x register x effective date",
+    "file": "river_monitor_downstream_15min_2024-10_2026-03.csv",
+    "rows": 52000,
+    "entity": "one fifteen-minute reading of the downstream river water quality monitor: ammonium, temperature, pH, flags",
+    "grain": "monitor x 15 minutes",
     "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "cutover_or_migration",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
   "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Great Britain (an invented domestic energy supplier)",
+    "geography": "England, the East Midlands (an invented water and sewerage company's catchment; invented river, works and dischargers)",
     "currency": "GBP",
-    "org_type": "domestic energy supplier",
+    "org_type": "water and sewerage company",
     "invented_names": [
-      "Ferncastle Energy Supply Ltd"
+      "Wendmoor Water",
+      "River Allery",
+      "Coldmere Water Recycling Centre",
+      "Thornlea Dairy"
     ],
     "people": [
-      "Rita Fisher",
-      "Joanne O'Brien",
-      "Elliot Davies"
+      "Gerard Norris",
+      "Katy Hughes",
+      "Sylvia Phillips"
     ]
   },
   "deliverables": [
-    "six_month_satisfaction_review.pdf",
-    "phase2_readiness.xlsx"
+    "coldmere_ammonia_briefing.pptx",
+    "coldmere_evidence.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "A fall in a share of satisfied members is booked to the service the members' own ratings blame, because those ratings fell furthest and every later member was served by that service, but what moved is the gap between the amount each member was told to expect when they joined and the amount their own later use then cost, which no column holds and only the joining record set against the member's own measured use reveals; members told accurately are as satisfied as before on the same service.",
-  "driver_concrete": "Six-month satisfaction among the supplier's new customers fell from about 76 to 67 per cent between H1 2025 and H1 2026, and key driver analysis books it to billing accuracy and so to the billing platform every H1 2026 respondent was billed on; but from May 2025 the quote journey stopped pre-filling each meter point's industry annual quantity (EAC, AQ), so customers were quoted on use they typed in or on Ofgem's medium typical values, and those whose meter point's quantity cost more than their quote carry most of the fall, while customers whose quote covered it were as satisfied on the new platform as H1 2025's were on the old.",
-  "stump": "A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy and bill clarity carry about two thirds of the 8.7-point fall, finds every H1 2026 respondent billed on the new platform, and books about 6 points to the billing platform, holding phase 2, because they never set the annual cost each customer was quoted at the switch against the cost of the annual quantity their meter point then showed, which puts most of the fall on the May 2025 quote journey's quotes and leaves the platform about a point at most.",
+  "question_form": "whether",
+  "driver": "A run of failures downstream of a shared processing unit is booked to that unit's own capacity and to a control change it made the same week, because the failures began then and cluster where its process is weakest, but nearly all of them fall inside the days the unit's process needs to recover after short excursions in one small contributor's discharge, which switch the process off for every contributor's load; by load the contributor barely registers and its daily strength and compliance read normal, so only its high-frequency record set against the unit's daily record shows the share of failures that acting on the contributor would reach, and read on excursion-free days the control change and the capacity cost almost nothing.",
+  "driver_concrete": "Below Coldmere Water Recycling Centre the River Allery's ammonia exceedance days of November 2025 to March 2026 are booked by mass balance to the works and, by the works' own process record, to its new ammonia-based aeration control (live 27 October 2025) and to nitrification capacity under housing growth and cold; most of them fall inside the two to four days the works needs to recover after caustic clean-in-place excursions in Thornlea Dairy's own fifteen-minute discharge monitor (its new line from 3 November 2025), whose ammonia load is a few per cent of the works' and whose weekly composites and pH consent compliance are normal; on excursion-free days the works meets its permit at equal temperature and load.",
+  "stump": "A competent analyst apportions the Allery's ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control, and books the winter's exceedance days to the new control and the works' nitrification capacity, backing the GBP 14 million upgrade, because they never set the dairy's fifteen-minute discharge record against the works' daily effluent record, which puts most of the exceedance days inside the works' recovery after the dairy's caustic excursions.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task121": "task121 v4 read a satisfaction fall on the operating conditions each journey ran under, because ratings of every candidate rise and fall with the respondent's overall verdict; here the operating record is the default's own rung (bills and Direct Debit reviews), and what decides is the expectation each customer was given at the switch, the quote's assumed use set against the use the meter then recorded, a sales record no conditions file carries.",
-    "task181": "task181 v6 traces each case through two time-ordered records to the shared upstream resource that handled it (a steriliser with a drying fault) and takes that resource's excess off the units it served; here no resource handled the customers differently and nothing is traced to one: the service the ratings blame billed every 2026 respondent alike, and the excess lies in what each customer was told to expect at the switch against what their own metered use then cost. G6 is this build's decisive generator (the 2026 pool shifted on each customer's quote-against-meter gap while satisfaction at a given gap held); G14 is secondary, so the generators stay as drawn.",
-    "task399": "task399 rebuilds day by day the stock of a capacity behind a self-service journey and reads its decision off that stock; here nothing is a stock or a capacity: the decision is which cause a satisfaction fall belongs to, and the decisive move standardises the 2026 pool to 2025's distribution of a property of each customer no column holds, the cost of their metered use against their quote. The shared labels (gap objective, root cause named) are each build's honest description; the decision type stays root_cause_named because the prompt's question is what pulled satisfaction down, and the platform clause asks whether any of the fall is the platform's, an attribution, not a hold decision."
+    "task202": "same cell, a lake's phosphorus reaching the layer the bloom draws on by matching the inflow's density to the lake's stratification; here no transport or layer decides anything: a contributor's short excursions switch off a treatment process, and the share each option reaches is read through that process's recovery",
+    "task398": "both read a component's effect through what it does to the whole, but there a filed rule set the whole's exposure from its own path; here a biological process fails for days after a discharge excursion, with no rule and no path",
+    "task468": "a water utility's trade waste charging basis converted between COD and TOC (ETL); here trade effluent is furniture for charges and the decisive move is a discharger's excursions against the works' recovery",
+    "task36": "there a decline lived in the joint distribution of two factors with flat marginals, read as a computed feasibility margin that a dated re-pairing moved; here a contributor's short excursions switch off a shared treatment process for days, read against the process's own recovery in two records",
+    "task83": "there a retrained selection model learned its own intervention's successes as low risk, enumerable only by re-scoring under the archived model; here no model is involved: a discharger's fifteen-minute excursions are set against a works' daily effluent record",
+    "task127": "there the recorded wait fused the step an intervention replaces with a concurrent one, rebuilt by joining operational logs; here no wait or fused step: the share of river exceedance days a discharger's pre-treatment reaches is read through the works' recovery after its excursions"
   },
   "lineage": [
     {
@@ -158,10 +164,65 @@
       },
       "driver": "A candidate change is blamed for a loss because its units lost more in the season it arrived, but the loss came from a short dated shock that harms a unit only inside a sensitive phase whose timing a clock sets from the unit's own start date at the pace of local conditions; the candidate's units started late for a one-off reason, so their sensitive phases met the shock, and read at equal timing the candidate costs nothing, while every season-wide, unit-level or linear start-date control leaves most of the loss on the candidate.",
       "fate": "spent 2026-11-03 at stage 2: the golden method's defensible variants straddle the bar, and flexible controls on a variable the default path already builds land the golden (flowering-window variants +2.1, -2.5, -12.0, +3.4, -8.2 and +4.9 per cent against a 5 per cent bar; seeding-week bins +3.6, a cubic +4.4 and same-day matching +9.3 on seeding dates the default's own rung 4 rebuilds, only a linear term still -10.1 or -8.3)"
+    },
+    {
+      "architecture": "v3 (Marketing and Consumer Research: an invented GB domestic energy supplier's six-month new-customer satisfaction fall booked to the new billing platform that the May 2025 quote journey's understated quotes caused)",
+      "drawn": "2026-11-03",
+      "domain": "marketing-consumer-research",
+      "subdomain": "customer-satisfaction-driver-analysis",
+      "objective": "root-cause",
+      "shape": "03",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G14"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "composition_mix",
+      "context_artifact": "close_out_summary",
+      "forum": "executive_team",
+      "forcing_event": "cutover_or_migration",
+      "org_family": "utility_or_infrastructure",
+      "role_family": "programme_officer",
+      "layer2_pattern": "own:expectation-disconfirmation-of-the-switch-quote-against-the-meter-point-annual-quantity",
+      "world": {
+        "geography": "Great Britain (an invented domestic energy supplier)",
+        "currency": "GBP",
+        "org_type": "domestic energy supplier",
+        "invented_names": [
+          "Ferncastle Energy Supply Ltd"
+        ],
+        "people": [
+          "Rita Fisher",
+          "Joanne O'Brien",
+          "Elliot Davies"
+        ]
+      },
+      "driver": "A fall in a share of satisfied members is booked to the service the members' own ratings blame, because those ratings fell furthest and every later member was served by that service, but what moved is the gap between the amount each member was told to expect when they joined and the amount their own later use then cost, which no column holds and only the joining record set against the member's own measured use reveals; members told accurately are as satisfied as before on the same service.",
+      "fate": "spent 2026-11-03 at stage 4, round 2: judge SEND_BACK on an ask's unfiled re-attribution (the golden overrode a registration's own quote reference), after a round-1 fix pass; the main call held both rounds"
     }
   ],
-  "notes": "Strategy decomposition_attribution (F8): the fall is a correctly reported movement booked by the ratings to the billing platform; the decisive move books it to the quote journey's typical-use default through each customer's disconfirmation. Layer 2 family field_method: the satisfaction driver model done right carries expectations.",
-  "registered": "2026-11-03T16:08:03Z",
-  "strategy_note": "Relabelled from decomposition_attribution to composition_mix at stage 3 (2026-11-03): F8's split is decided by overlap, a transfer or a shared driver, none of which decides this one; the decisive move standardises the 2026 pool to 2025's distribution of an unnamed property (F5's insight, with F5's generators G6 and G14, which the card carried from the draw). The stakeholder is the billing programme director (programme_officer), whose cutover question and readiness tables the prompt carries; the head of customer insight writes the review.",
-  "architecture_spent": true
+  "lineage_shells": [
+    {
+      "question form": "what",
+      "second-sentence opener": "write",
+      "rounding opener": "in",
+      "deliverable set": "pdf+xlsx"
+    }
+  ],
+  "notes": "Strategy population_selection, pattern C: the deciding quantity is the share of the exceedance days each option can reach (the dairy's pre-treatment against the works' upgrade), behind a join of the dairy's fifteen-minute record and the works' daily record, the shape strategies.md F7 records as approved on 25 and 28. G8 reachability versus magnitude: by load the dairy barely registers; by reach it carries most exceedance days. Role redrawn at registration from capacity_planner to programme_officer: task402's redraw took capacity_planner into the window; the environment programme manager owns the submission the upgrade goes into, so the replacement is the honest owner of the call, not merely the passing label.",
+  "registered": "2026-11-03T22:18:07Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "answer",
+    "rounding opener": "days",
+    "deliverable set": "pptx+xlsx"
+  }
 }

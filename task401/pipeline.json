@@ -1,83 +1,34 @@
 {
   "task": "task401",
-  "status": "PAUSED",
-  "domain": "marketing-consumer-research/customer-satisfaction-driver-analysis",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences/pollution-source-attribution",
   "objective": "root-cause",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-03",
-  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw, architecture 1 (a frailty virtual ward against care home closures, Epidemiology and Public Health) died at stage 2 on published admission rates, architecture 2 (a canola hybrid against July heat in late-seeded fields' flowering windows, Economics and Econometrics) died at stage 2 on its own ladder, and architecture 3 re-roots in a GB domestic energy supplier's six-month new-customer satisfaction tracker under the same objective and number",
-  "stump": "A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy and bill clarity carry about two thirds of the 8.7-point fall, finds every H1 2026 respondent billed on the new platform, and books about 6 points to the billing platform, holding phase 2, because they never set the annual cost each customer was quoted at the switch against the cost of the annual quantity their meter point then showed, which puts most of the fall on the May 2025 quote journey's quotes and leaves the platform about a point at most.",
-  "architecture": 3,
+  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw. Architecture 1 (Epidemiology and Public Health) and architecture 2 (Economics and Econometrics) died at stage 2; architecture 3 (Marketing and Consumer Research, a GB energy supplier's satisfaction fall) was spent at stage 4, round 2. Architecture 4 re-roots in Physical and Environmental Sciences: Wendmoor Water's Coldmere Water Recycling Centre and the River Allery.",
+  "stump": "A competent analyst apportions the Allery's ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control, and books the winter's exceedance days to the new control and the works' nitrification capacity, ending on the GBP 14.2 million upgrade, because they never set Thornlea Dairy's fifteen-minute discharge record against the works' daily effluent record, which puts most of the exceedance days inside the works' recovery after the dairy's caustic excursions.",
+  "architecture": 4,
   "loops": 0,
   "go_no_go": {
-    "screen1_lever_points": 1.25,
-    "screen1_note": "six-month new-customer tracker at published levels: quote default 2.31 (sd 0.23) of a 3.14-point fall (sd 0.62); default key driver analysis books 1.61 (sd 0.22) to the platform against its own 0.36; lever 1.00 to 1.47 across overrun effects 3.0 to 5.5; the base-wide tracker failed (0.54 against a spread of 0.66). Stage 2's redesign (typed use as well as typical values; first payment from the industry quantity) moved the fall to about 8.7 points with the quote's truth about 7.9",
-    "screen2_lowest_standing_variant": 1.71,
-    "screen2_note": "draw-time prototype: forms that keep the overrun's size 1.71 to 2.70 against a residual of at most 0.83. Final world (ladder.py, 20 seeds): every gap form names the quote 20 of 20, weakest the symmetric pounds form 4.97 against a platform residual of 3.21; on the shipped pack the symmetric forms give 4.91 and 4.73 against 2.64 and 2.82 (checks.py)",
-    "screen3_shapley_billing_share_pct": 62,
-    "screen3_note": "draw-time prototype 62 per cent; shipped pack 59.4 + 10.1 per cent on billing accuracy and clarity; after the link, use level, Direct Debit change and basis split each name the platform (ladder 20 of 20, 20 of 20, 19 of 20; shipped pack all three)"
+    "redraws": 20,
+    "screen1_margin_days": "min 13.4, median 20.5 (0.95 excursions a week); min 23.8, median 46.1 (2.1 a week); 20 of 20 over 10 days",
+    "screen2_forms": "every exposure form (windows 1-2, 1-3, 1-4, 1-5, 0-3 days; large and any excursion) names the dairy in 20 of 20 with margin over 10 days; window share spreads 0.50 to 1.00, so the reach is defined on the works' recovery episodes and graded at the shared precision",
+    "screen3_flexible_default": "61 to 93 per cent of the window's exceedance days booked to the aeration control by the cracker's flexible default; exposure binary once in hand",
+    "screen4_literal": "mass balance names the works; the process review on temperature, load and the dated control names the control; a dated before-and-after cannot part the control (27 Oct) from the dairy's line (3 Nov) and names the control",
+    "scripts": "scratchpad/t401/a4/proto3.py, proto3b.py"
   },
-  "precut": {
-    "exit": 0,
-    "date": "2026-11-03",
-    "note": "61 checks, 0 FAIL, 0 WARN on the final cut (target digest 1c1f695f)"
-  },
-  "checks": "generator/checks.py 87 of 87 on the final cut (frozen main call; the ask forks SF13 to SF22; every account dated after its own start; the extracts inside their named spans; device forcing and separation; literal ask executor 58 of 58 under the new pins; tightest graded figure gas_gwh 0.0183 from its bin edge); generator/verify.py 25 of 25 on its own code path",
-  "ceiling": {
-    "measured_by": "generator/ceiling.py",
-    "target_digest": "1c1f695fd0020cf669eb249f761baefb03145ea48ad01f1c5393d510d57423d6",
-    "cracker": "0 of 58",
-    "mirror": "0 of 58",
-    "full_includer": "0 of 58",
-    "no_repair": "0 of 58",
-    "pair_one_off": 28.5,
-    "pair_full_and_cracker_on_call": 45.0,
-    "pair_two_full_includers": 45.0,
-    "stress_date_testing_includer": "0.310 of the ask weight (Ask B whole, A and C none); 37.0 with the mirror off, 53.5 with the cracker on the call",
-    "ask_b_remeasure": "moved sentence filed without the 2026 take-backs: the full includer keeps 16 of 18 Ask B figures (the returned block died to its WHAT); with them it keeps 0 of 18"
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-11-03 on target digest 1c1f695f (no LEAK; nine REVIEW lines ruled harmless in the note's ## Leak review: two date-and-amount digit runs in the Direct Debit history, generic stump words in the three documents, regions beside numbers in three files, planned effective dates of pending losses)",
-    "reader": "round 1 2026-11-03: nothing quoted for question 1, no ranking file, no answer-like figure, question 6 analytical; its realism tells and workbook readings fixed in the generator; round 2 brief written",
-    "reader_round_2": "clean on the main call (no decisive-step sentence, no ranking or helper file, nothing reads as the answer, analytical); mild realism notes (tariff xlsx package structure; extracts to 5 Nov after the plan and the legacy extract)"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-11-03 on the final cut (overuse.objective; repeat.gate_g against task400; repeat.deliverables pdf+xlsx against task399; answered on the card); no BLOCK",
-    "nearest": "driver 0.10 task121 v4",
-    "surface": "exit 0, the same two promoted pairs as round 1 (task399, task181), answered on the card"
-  },
-  "judge": {
-    "verdict": "round 1: NOT_DETERMINISTIC, SOLUTION_WRONG (the workbook asks and one extract anomaly; the main call reproduced and forced, Gate G analytical_non_defect, Gate H pass, Gate F likely stumps)",
-    "disposition": "round 1: SEND_BACK, light; ruled an ask-layer fix pass with one re-judge (no re-root): if round 2 is not DETERMINISTIC with APPROVE the architecture is spent",
-    "report": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge/judge_report.md",
-    "round_2": "NOT_DETERMINISTIC, SEND_BACK (narrow) on target.zip 492a3f71: the switches table's credited sale is unfiled (596 Phone registrations name a quote dated 2 to 10 days after the registration; the golden re-attributes each to the prospect's latest quote on or before it, a rule no file states; latest against earliest moves about 20 cells for 94 prospects); every round-1 finding closed; main call forced and reproduced, Gate F good, Gate G decomposition_attribution analytical_non_defect, Gate H analytical; caveat: Critical Component 2's 'more than half' is specification-dependent (binary split 14 per cent, five bands 60, eight 85, kinked model 75)",
-    "report_round_2": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge_r2/judge_report.md"
-  },
+  "precut": {"exit": null, "date": ""},
+  "leak": {"leak_py": "", "reader": ""},
+  "duplicate_check": {"heart": "", "nearest": "", "surface": ""},
+  "judge": {"verdict": "", "disposition": "", "report": ""},
   "returned": [],
-  "resume": "stage 1, re-root (architecture 4): architecture 3 is spent at stage 4, round 2 (the judge's SEND_BACK on the switches table's credited-sale fork, after round 1's fix pass; DESIGN_NOTE Tried and rejected, last line). Re-root at stage 1 in another domain, world, dataset and shell: guard.py recent, coverage, mechanisms --objective root-cause, slots on mechanism and setting nouns; move architecture 3's identity into the card's lineage with its fate and its shell into lineage_shells, then write the new draw; the four go/no-go screens over 20 redraws before registering; the sibling-card protocol before check and register. The precut, checks, ceiling and gate records below are architecture 3's and are void for the next design.",
+  "resume": "stage 2 design: survivor anatomy, readability screen, fork table, ladder (stage-2 ladder.py on the clean truth, the reach defined on the works' recovery episodes), closure table, literal reader, oracles, the asks (supplemental-stumping) and prompt.txt against the golden; precut.py exit 0 before any data is cut.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "target_zip_sha256": "492a3f71b379cbd22778a048cc0441f64b70dba253a072c2388c1beba786b2fd",
-  "rebuilds": "two consecutive builds byte-identical (digest 1c1f695f)",
-  "figures_check": "exit 0, 74 figures in blocks 1 to 4",
-  "briefs": {
-    "reader": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/reader/reader_brief.md",
-    "judge": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge/judge_brief.md",
-    "reader_r2": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/reader_r2/reader_brief.md",
-    "judge_r2": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge_r2/judge_brief.md"
-  },
-  "fix_pass_round_1": [
-    "Gate A: the leaving occupier's account now starts before its closure (asserted over every account); Eastern and London reproduce the round-1 literal 3,214 and 2,924 before the take-back rows are added",
-    "fork 1: the plan files that an account counts as moved if the new platform was billing it at the end of 2 November 2025; Ask B's second device re-sited onto 389 accounts the legacy platform took back during 2026 on a change to prepayment",
-    "fork 2: the plan files that a meter point we lose is no longer ours from the effective date of the loss",
-    "fork 3: the prompt counts no withdrawn registration; every withdrawal now precedes the start it requested",
-    "fork 5: the prompt asks for phase 2's total across all the meter points it will move",
-    "Table C readings asserted (SF17 to SF21): customer identity, first start, the sale, withdrawals, channel names",
-    "realism: quote log and registrations renamed to their first month, the flows named for their span and cut at the pull, the Direct Debit history cut at June 2026 with leavers and bank changes, a release parquet-mr writer, the plan readable by python-docx, the card's stakeholder role as they"
-  ]
+  "previous_architectures": "v1 and v2 died at stage 2; v3 spent 2026-11-03 at stage 4, round 2 (judge SEND_BACK on an ask's unfiled re-attribution after a round-1 fix pass; the main call held both rounds). Their records are in the design note's Tried and rejected and the card's lineage."
 }
