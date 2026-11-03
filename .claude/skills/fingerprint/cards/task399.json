@@ -1,14 +1,14 @@
 {
   "task": "task399",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-11-03",
-  "slot_note": "new number in wave 7 (Root-Cause), numbered from seed RC05 (a regional electricity distributor choosing one reliability programme from five, the costliest cause leaving no record of its own). Architecture 1 (Quantitative Finance) was spent at the draw in task398's cell; architecture 2 (a bus operator's drivers' rest) was spent at the draw as a template of shipped task121 v6. Architecture 3 keeps the decision (one programme funded from a catalogue of five) and the seed's kernel (a cost that leaves no record of its own: a search that found no test slot leaves no trace of the shortage) in Product Analytics.",
-  "domain": "product-analytics",
-  "subdomain": "funnel-journey-analysis",
-  "client_domain": "product-analytics",
-  "niche": "a provincial licensing agency's online road-test booking service, whose new drivers licensed fell in the twelve months to 30 September 2026: where in the journey from permit to licence the fall came from, and which of five 2027 initiatives the agency funds (the portal's booking redesign, more examiner shifts, a hazard-perception practice module, a fee rebate, no-show reminders)",
+  "slot_note": "new number in wave 7 (Root-Cause), numbered from seed RC05 (a regional electricity distributor choosing one reliability programme from five, the costliest cause leaving no record of its own). Architecture 1 (Quantitative Finance) was spent at the draw in task398's cell, architecture 2 (a bus operator's drivers' rest) at the draw as a template of shipped task121 v6, architecture 3 (a road-test booking journey's slot stock) at stage 2 on the pricing harness. Architecture 4 keeps the decision (one initiative funded from a shortlist) and the kernel (a cost that leaves no record of its own: a defendant called while the duty lawyer is in the next courtroom leaves no record that nobody spoke for them) in Criminology & Justice.",
+  "domain": "criminology-justice",
+  "subdomain": "sentencing-bail-disparity-analysis",
+  "client_domain": "criminology-justice",
+  "niche": "a New Zealand District Court region's first appearances from police custody, where the gap in remands in custody between defendants without their own lawyer and defendants with one widened in the twelve months to 30 September 2026: where in the region's custody lists the widening sits and which initiative on the region's Budget 2027 shortlist removes it (electronically monitored bail assessment capacity, a judge on the custody list, the duty lawyer roster, supported bail accommodation, court-date text reminders)",
   "objective": "root-cause",
-  "shape": "09",
+  "shape": "12",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
   "answer": "",
@@ -20,7 +20,7 @@
     "none"
   ],
   "generators": [
-    "G3"
+    "G5"
   ],
   "gate_g": "binding_constraint",
   "calibration_form": "none",
@@ -30,37 +30,41 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds the permit-to-licence funnel stage by stage, compares each stage's rate year on year and segments it by the portal release, device and test centre funds the booking redesign, because the search-to-booking stage carries the largest fall and the fall lines up with the March 2026 release; the scheduling system's slot releases, bookings and cancellations show the searches failed because no slot was open within the six weeks the portal shows, and only the examiner shifts initiative removes that.",
-  "domain_test": "The deciding quantity is each funnel stage's loss of candidates against the prior year, read the way funnel and journey analysis reads it (stage volumes, conversion rates and time between steps), where the stage that shows the loss is not the stage that causes it because a capacity behind the portal empties; with a hospital's referral pathway in place of the booking journey the same capacity reading would hold, but with a reading score or a megawatt-hour there is no journey, no stage and no stock of slots to run out.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:a-funnel-stage-loss-read-against-the-capacity-stock-open-when-each-search-ran",
+  "analyst_test": "A strong analyst who measures the first-appearance custody-remand gap by counsel status within each court and judicial officer, with the legally relevant pre-decision factors (charge seriousness, criminal history, bail history, on bail at arrest) as controls, finds the widening in the Kestrel Bay custody list under the community magistrate who took it over in March 2026 and funds a judge on the custody list; read against the duty lawyer service's own record and the court's sitting calendar, most of those matters were called while the single rostered duty lawyer was serving the new audio-visual remand list in the next courtroom, the gap is the same under every judicial officer once those matters are set apart, and only the duty lawyer roster removes it.",
+  "domain_test": "The deciding quantity is the disparity in remands in custody between defendants with and without their own counsel at first appearance, estimated within court and judicial officer net of the legally relevant pre-decision factors the way bail disparity analysis estimates it, where the decisive judgment is what the within-officer comparison compares when one officer's sitting hours coincide with the duty lawyer's absence; with a hospital's or a lender's nouns there is no bail decision, no legally relevant factor set and no duty lawyer standing between a defendant and a remand, so the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a-within-officer-disparity-carried-by-the-advocate's-absence-at-the-call",
   "layer1": [
     "filled at stage 2 from the generator's mess list"
   ],
-  "stakeholder_role": "the licensing agency's product manager for the road-test booking service, who brings the 2027 initiative to the executive team",
-  "role_family": "product_manager",
+  "stakeholder_role": "the Ministry of Justice's regional manager for criminal court operations, who puts one initiative into the region's Budget 2027 bid",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "the booking portal's search log",
+    "file": "the District Court case management system's appearance extract",
     "rows": 0,
-    "entity": "one slot search run on the road-test booking portal",
-    "grain": "search",
+    "entity": "one appearance of one defendant's case before the court",
+    "grain": "appearance",
     "source": "synthetic"
   },
-  "forum": "executive_team",
+  "forum": "minister_or_cabinet",
   "forcing_event": "budget_or_appropriation",
   "org_family": "government_agency",
   "world": {
-    "geography": "Canada (a fictional province, its licensing agency and its test centres)",
-    "currency": "CAD",
-    "org_type": "a provincial driver licensing agency running road-test centres",
+    "geography": "New Zealand (a fictional District Court region; its courthouses, providers and people are fictional)",
+    "currency": "NZD",
+    "org_type": "the Ministry of Justice's regional criminal court operations and the region's duty lawyer service",
     "invented_names": [
-      "Norland Driver Services"
+      "Halsey Coast",
+      "Kestrel Bay",
+      "Dunmore",
+      "Ashgrove",
+      "Redcliff"
     ],
     "people": [
-      "Eric Davis",
-      "Brian Williams",
-      "Christopher Wolfe"
+      "Freya Herd",
+      "Casey Neal",
+      "Toby Conway"
     ]
   },
   "deliverables": [
@@ -68,14 +72,17 @@
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "The decisive quantity is the stock of a capacity that sits behind a self-service journey, rebuilt day by day from its own releases, bookings and returns: where the stock is empty the journey's searches fail without any record of the shortage, so a stage-by-stage reading puts the fall on the step where users gave up and on the release that changed that step, while read against the stock open at each search the step is sound and the candidate that adds capacity is the largest.",
-  "driver_concrete": "Norland's portal shows only slots within six weeks; from spring 2026 examiner shifts fell behind the permit holders reaching test eligibility, the slot stock at most centres sat empty for days at a time, and permit holders searched, found nothing and left; the portal logs the search and no booking, the scheduling system logs the slot releases, bookings and cancellations, and only the stock rebuilt from those shows that the search-to-booking fall is the examiners' and not the March 2026 booking redesign's.",
-  "stump": "A competent solver builds the permit-to-licence funnel, finds the search-to-booking stage carries the largest fall and that it lines up with the March 2026 booking redesign, and funds the redesign; the step that lands it there is reading the stage's loss as the portal's, when the scheduling system's releases, bookings and cancellations show no slot open within six weeks at the centre searched for most of the failed searches, which puts the fall on examiner capacity.",
+  "driver": "The decisive quantity is whether the advocate who stands between an unrepresented case and the decision was in the room when the case was called, read off the advocate's own service record against a second list the same advocate was rostered to serve next door: the advocate's daily presence and volume are flat, the decision-maker who took over the overlapping hours carries the whole widening on a within-decision-maker comparison, and only setting apart the cases called while the advocate was in the other room shows the gap is the same under every decision-maker and belongs to the roster.",
+  "driver_concrete": "From March 2026 Kestrel Bay District Court sat a new audio-visual remand list in courtroom 2 on mornings that overlap the custody list in courtroom 1, and the region's duty lawyer roster kept one duty lawyer there; custody-list defendants called while the duty lawyer was on the audio-visual list stood unassisted and were remanded in custody far more often, the community magistrate who took over the custody list that March presides over most of those hours, and only the duty lawyer service's time-stamped record, set against each matter's call time, shows the widening is the roster's and not the bench's or electronically monitored bail's.",
+  "stump": "A competent solver measures the first-appearance custody-remand gap within court and judicial officer with the legally relevant factors as controls, finds the widening in the Kestrel Bay custody list under the community magistrate who took it over in March 2026, and funds a judge on the custody list; the step that lands it there is reading a within-officer difference as the officer's, when the duty lawyer service's record and the sitting calendar show the single rostered duty lawyer was serving the new audio-visual remand list next door when most of the widening's matters were called, which puts the gap on the duty lawyer roster.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task121": "task121 v4 measures a satisfaction fall on the journey conditions (delays, crowding) each respondent travelled under, a driver analysis of ratings; task399 has no ratings and no ambient conditions: it rebuilds a stock (open road-test slots per centre and day) from the scheduling system's releases, bookings and cancellations and shows a funnel stage's loss happened where the stock was empty, so the stage that shows the loss is not its cause.",
-    "task307": "task307 sizes what added capacity saves across a network whose users re-choose their paths; task399 sizes nothing forward: it finds that a closed year's funnel loss sat behind an empty capacity stock that the funnel's own log cannot see.",
-    "task254": "task254 times units through a fixed sequence of stages; task399 reads no stage durations: the decisive record is a stock rebuilt from releases and bookings, set against each search's centre and window."
+    "task274": "task274 (a county's pre-plea diversion lottery read at a cut while most offered cases are still inside the programme) spends a deferred outcome and a cumulative incidence completed through a termination hazard; task399 has no lottery, no programme stage and no pending outcome: every first appearance is decided on the day, and the step is which matters were called while the duty lawyer was serving another list.",
+    "task121": "task121 v6 rebuilds the rest each worker actually had from the operator's own event record against the schedule; task399 reads no schedule against an actual: the sitting calendar is accurate, and the step is the overlap between one advocate's two lists, set against each matter's call time, behind a within-officer disparity.",
+    "task111": "task111 finds which cause still operates in the forward window when overflow work lands on the primary workforce late in the day; task399 sizes nothing forward and has no overflow: the decisive record is one advocate's presence at each matter's call across two simultaneous lists.",
+    "task399": "architecture 3 rebuilt a slot stock from releases, bookings and returns behind a booking journey and died on the throughput identity; architecture 4 rebuilds no stock and has no throughput: the advocate's output is flat by construction and the decisive relation is presence at the call.",
+    "task253": "task253 v2 values the loss of one of several parallel links sharing a congestible capacity by re-solving the self-consistent loading with the link removed; task399 loads nothing and solves no fixed point: the shared limit is one advocate rostered to two simultaneous lists, and the decisive record is whether the advocate was in the room at each matter's call.",
+    "task141": "task141 v1 prices a let-everyone-through rule from the outcome gradient across decision-makers who sit by rota and let through different shares; task399 prices no rule and reads no gradient across officers: the within-officer gap it finds is the advocate's absence at the call, and the gap is the same under every officer once those calls are set apart."
   },
   "lineage": [
     {
@@ -131,8 +138,35 @@
       "architecture": "v2 (Human Factors: a regional bus operator, drivers safety events against the terminus stands the schedule promised)",
       "drawn": "2026-11-03",
       "fate": "spent at the draw on 2026-11-03: same cell and same decisive insight as shipped task121 v6 (rest rebuilt from the operator records), a template the lexical guard misses (driver score 0.06); nine axes equal to task121 (domain, subdomain, objective, shape 18, gate_g, strategy, decision type, question form what, org family)"
+    },
+    {
+      "architecture": "v3 (Product Analytics: Norland Driver Services, a provincial licensing agency's road-test booking journey, which of five 2027 initiatives removes the fall in new drivers licensed)",
+      "drawn": "2026-11-03",
+      "domain": "product-analytics",
+      "subdomain": "funnel-journey-analysis",
+      "objective": "root-cause",
+      "shape": "09",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3"
+      ],
+      "gate_g": "binding_constraint",
+      "stump_strategy": "binding_constraint",
+      "context_artifact": "operations_log",
+      "forum": "executive_team",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "government_agency",
+      "driver": "The decisive quantity is the stock of a capacity that sits behind a self-service journey, rebuilt day by day from its own releases, bookings and returns: where the stock is empty the journey's searches fail without any record of the shortage, so a stage-by-stage reading puts the fall on the step where users gave up and on the release that changed that step, while read against the stock open at each search the step is sound and the candidate that adds capacity is the largest.",
+      "fate": "spent at stage 2 on 2026-11-03 before any data was cut: the pricing harness (scratch a3/harness.py, a daily road-test booking queue over two years) measured two one-group-by routes to the golden in all three hiding variants (the busy centres losing 14 per cent of slots; the province's releases held flat by rural top-ups; a quarter of slots released four days ahead): releases by centre fell about 8 per cent at the busy centres and bookings over releases by centre sat at the ceiling there, so the throughput identity (tests sat at a fully booked centre equal its releases) makes the capacity fall one subtraction (readability tests 3 and 6, Gate F's two cheap routes)"
     }
   ],
-  "notes": "Architecture 3 drawn 2026-11-03 after architectures 1 and 2 were spent at the draw (lineage). Personas from guard.py names --geo Canada --seed 399 (Eric Davis, Brian Williams, Christopher Wolfe); none of the earlier architectures' names is reused.",
-  "registered": "2026-11-03T08:37:35Z"
+  "notes": "Architecture 4 drawn 2026-11-03 after architectures 1 and 2 were spent at the draw and architecture 3 at stage 2 on the pricing harness (lineage). Personas from guard.py names --geo 'New Zealand' --seed 399 (Freya Herd, Casey Neal, Toby Conway; Anthony, Nathan, Gavin, Nicole, Jessica and Alexander were set aside on first-name warnings); the en_AU draw repeated architecture 3's names. gate_g and strategy binding_constraint: one rostered duty lawyer is the limit shared by two simultaneous lists, and that limit moves the naive pick off the bench. The one standing WARN is overuse.org_family (government_agency in 42 builds): a Ministry of Justice region is the honest label.",
+  "registered": "2026-11-03T09:26:51Z"
 }

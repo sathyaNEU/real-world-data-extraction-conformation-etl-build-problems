@@ -1,14 +1,14 @@
 {
  "task": "task399",
- "status": "PAUSED",
- "domain": "product-analytics/funnel-journey-analysis",
+ "status": "DESIGN",
+ "domain": "criminology-justice/sentencing-bail-disparity-analysis",
  "objective": "root-cause",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-11-03",
- "seed": "RC05 (a regional distributor's one reliability programme); the seed's world collided at the draw; architecture 1 (Quantitative Finance) spent at the draw in task398's cell; architecture 2 (bus drivers' rest) spent at the draw as a template of task121 v6; architecture 3 is a provincial licensing agency's road-test booking journey",
- "stump": "A competent solver builds the permit-to-licence funnel, finds the search-to-booking stage carries the largest fall and that it lines up with the March 2026 booking redesign, and funds the redesign; the step that lands it there is reading the stage's loss as the portal's, when the scheduling system's releases, bookings and cancellations show no slot open within six weeks at the centre searched for most of the failed searches, which puts the fall on examiner capacity.",
- "architecture": 3,
+ "seed": "RC05 (a regional distributor's one reliability programme); the seed's world collided at the draw; architecture 1 (Quantitative Finance) spent at the draw in task398's cell; architecture 2 (bus drivers' rest) spent at the draw as a template of task121 v6; architecture 3 (a road-test booking journey's slot stock) spent at stage 2 on the pricing harness; architecture 4 is a New Zealand District Court region's first appearances from custody",
+ "stump": "A competent solver measures the first-appearance custody-remand gap within court and judicial officer with the legally relevant factors as controls, finds the widening in the Kestrel Bay custody list under the community magistrate who took it over in March 2026, and funds a judge on the custody list; the step that lands it there is reading a within-officer difference as the officer's, when the duty lawyer service's record and the sitting calendar show the single rostered duty lawyer was serving the new audio-visual remand list next door when most of the widening's matters were called, which puts the gap on the duty lawyer roster.",
+ "architecture": 4,
  "loops": 0,
  "precut": {
   "exit": null,
@@ -20,7 +20,7 @@
  },
  "duplicate_check": {
   "heart": "",
-  "nearest": "guard.py check WARN on the registered card 2026-11-03 (first name Christopher in one older build; government_agency overused); test.same_puzzle_older against task121 v4 cleared by differentiation; semantic screen in ## Draw"
+  "nearest": "guard.py check WARN on the registered card 2026-11-03 (overuse.org_family only); test.same_driver_older against task253 v2 and driver.near against task141 v1 (0.14) cleared by differentiation; semantic screen and slots in ## Draw"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: write generator/world.py for the booking journey (permit holders reaching eligibility by month, examiner shift rosters releasing slots per centre and day, the portal's six-week search window, bookings, cancellations returned to the pool, tests sat and passed), size the stage losses so the search-to-booking fall is the largest on the default path and the slot stock empty for most failed searches; then the ladder and pricing sequence, the remaining note sections, the ask layer (asks off the main call's files) and prompt.txt; precut.py exit 0",
+ "resume": "stage 2: write generator/world.py for the region's custody lists (defendants and charges with the legally relevant factors, the Kestrel Bay custody list and the audio-visual remand list from March 2026, the single rostered duty lawyer's time-stamped services, the community magistrate from March 2026, EM bail assessments from February 2026), measure the default path and every rung in a harness on the clean truth, then the ladder, fork table, closure, the ask layer off the main call's files and prompt.txt until precut.py exits 0",
  "approved": null,
  "delivered": null,
  "portal": null,
