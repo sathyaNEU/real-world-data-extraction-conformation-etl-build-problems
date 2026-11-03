@@ -32,7 +32,7 @@ def load(T):
     loc = pd.to_datetime(wx.time_utc.str.replace("Z", ""), utc=True).dt.tz_convert(asks.TZ).dt.tz_localize(None)
     dm = wx.value.groupby((loc.dt.normalize() - D0).dt.days).mean()
     P["daymean"] = dm
-    P["frost"] = set(dm.index[dm.values <= -3.0])
+    P["daymin"] = wx.value.groupby((loc.dt.normalize() - D0).dt.days).min()
     dr = pd.read_excel(os.path.join(T, "daily_reliability_fy2021-fy2026.xlsx"), sheet_name=None)
     leg, oms = dr["Legacy OMS to Feb 2023"], dr["OMS daily"]
     a = pd.Series(leg["SAIDI Hrs"].values * 60.0, index=(pd.to_datetime(leg.Date, format="%m/%d/%Y") - D0).dt.days.values)
@@ -57,25 +57,76 @@ def load(T):
 
 
 def main_figures(P, **kw):
-    F, med, frost = P["F"], P["med"], P["frost"]
-    out = {"G": L.golden_switching(F, med, frost, **kw), "R": L.replay_heat_pumps(F, med, P["rebate_xf"]),
+    F, med = P["F"], P["med"]
+    out = {"G": L.golden_switching(F, med, **kw), "R": L.replay_heat_pumps(F, med, P["rebate_xf"]),
            "E": L.replay_guards(F, med, P["sites_2026"]), "D": L.replay_risers(F, med, P["risers_2025"]),
            "F": L.replay_supplier(F, med, P["unit_fit"])}
     return out
 
 
+FROSTS = [("none", None, None, None)] + [("day mean <= %d C on the %s day" % (t, on), "mean", t, on)
+                                         for t in (0, -2, -3, -5) for on in ("trip's", "outage's")] + \
+         [("day minimum <= 0 C on the %s day" % on, "min", 0, on) for on in ("trip's", "outage's")]
+PAIRINGS = ("the section's own devices, previous record", "every record of the section, previous record",
+            "the section's latest restoration before a trip at either level")
+NETTING = (("fiscal 2025 staged era", (L.Y1, L.G_DAY)), ("staged era from fiscal 2022", (L.day("2021-10-01"), L.G_DAY)),
+           ("not netted", None))
+
+
+def _tables(F):
+    sec = F[F.level == "section"]
+    S = sec.sort_values(["sec", "start"]).copy()
+    g = S.groupby("sec"); S["pend"] = g.end.shift(1); S["pstart"] = g.start.shift(1)
+    A = F.sort_values(["sec", "start"]).copy()
+    g = A.groupby("sec"); A["pend"] = g.end.shift(1); A["pstart"] = g.start.shift(1)
+    R = sec[["sec", "start", "end"]].rename(columns={"start": "pstart", "end": "pend"}).sort_values("pend")
+    B = pd.merge_asof(F.reset_index().sort_values("start"), R, left_on="start", right_on="pend", by="sec",
+                      direction="backward").set_index("index")
+    return {PAIRINGS[0]: (S, sec), PAIRINGS[1]: (A, F), PAIRINGS[2]: (B, sec)}
+
+
+def _cost(Tb, Q, med, W, dmin, fr, on, cause, staged):
+    gap, dur = Tb.start - Tb.pend, Tb.pend - Tb.pstart
+    pr = (gap >= 0) & (gap <= W) & (dur >= dmin) & ~(Tb.start // 1440).isin(med)
+    if cause:
+        pr &= Tb.cause == cause
+    if fr is not None:
+        pr &= ((Tb.pstart // 1440) if on == "outage's" else (Tb.start // 1440)).isin(fr)
+    val = float(Tb.ci[pr & (Tb.start >= L.G_DAY * 1440) & (Tb.start < L.YE * 1440)].sum())
+    if staged is None:
+        return val
+    q = ((Q.end - Q.start) >= dmin) & ~(Q.start // 1440).isin(med) & ~pr.reindex(Q.index, fill_value=False)
+    if fr is not None:
+        q &= ((Q.start // 1440) if on == "outage's" else (Q.end // 1440)).isin(fr)
+    sp = pr & (Tb.start >= staged[0] * 1440) & (Tb.end < staged[1] * 1440)
+    sq = q & (Q.start >= staged[0] * 1440) & (Q.end < staged[1] * 1440)
+    rate = Tb.ci[sp].sum() / max(Q.ci[sq].sum(), 1)
+    return val - rate * float(Q.ci[q & (Q.end >= L.G_DAY * 1440) & (Q.start < L.YE * 1440)].sum())
+
+
 def variants(P):
-    F, med, frost = P["F"], P["med"], P["frost"]
-    v = {}
-    for W in (5, 10, 20, 30):
-        for dmin in (0, 15, 30, 60):
-            v["W%d_D%d" % (W, dmin)] = L.golden_switching(F, med, frost, W, dmin)
-    v["no_frost"] = L.golden_switching(F, med, None)
-    v["staged_from_fy2022"] = L.golden_switching(F, med, frost, staged=(L.day("2021-10-01"), L.G_DAY))
-    v["staged_fy2025_only"] = L.golden_switching(F, med, frost, staged=(L.Y1, L.Y2))
-    v["all_levels"] = L.golden_switching(F, med, frost, levels=("section", "transformer"))
-    v["not_netted"] = L.golden_switching(F, med, frost, net=False)
-    return v
+    """The revision's cost under every operationalisation a solver who pairs might add: the pairing window (5 to 30
+    minutes), the qualifying outage (30 to 120 minutes), a frost filter (none; a day mean at or below 0, -2, -3 or -5 C or
+    a day minimum at or below 0 C, on the trip's day or the outage's start day, local dates), overload trips or every
+    trip, the pairing sequence, and the netting. Returns {(window, length, frost, cause, pairing, netting): cost}."""
+    F = P["F"][~P["F"].planned]
+    tabs = _tables(F)
+    sets = {}
+    for name, kind, t, on in FROSTS:
+        if kind is not None:
+            s = P["daymean"] if kind == "mean" else P["daymin"]
+            sets[name] = (set(s.index[s.values <= t]), on)
+        else:
+            sets[name] = (None, None)
+    out = {}
+    for pname, (Tb, Q) in tabs.items():
+        for nname, staged in NETTING:
+            for cause in ("OVLD", None):
+                for fname, (fr, on) in sets.items():
+                    for W in (5, 10, 15, 20, 30):
+                        for dmin in (30, 60, 90, 120):
+                            out[(W, dmin, fname, cause or "every cause", pname, nname)] = _cost(Tb, Q, P["med"], W, dmin, fr, on, cause, staged)
+    return out
 
 
 # ------------------------------------------------------------------ Ask A from the files
@@ -203,7 +254,7 @@ def callouts_files(P, route="golden"):
     return asks.callout_figures(R, route)
 
 
-QN = {1: "Q1 (Oct-Dec 2025)", 2: "Q2 (Jan-Mar 2026)", 3: "Q3 (Apr-Jun 2026)", 4: "Q4 (Jul-Sep 2026)"}
+QN = {1: "Fiscal Q1 (Oct-Dec 2025)", 2: "Fiscal Q2 (Jan-Mar 2026)", 3: "Fiscal Q3 (Apr-Jun 2026)", 4: "Fiscal Q4 (Jul-Sep 2026)"}
 MONTHS = ["Oct 2025", "Nov 2025", "Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026", "Jun 2026",
           "Jul 2026", "Aug 2026", "Sep 2026"]
 

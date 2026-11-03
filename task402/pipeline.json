@@ -13,21 +13,22 @@
   "precut": {
     "exit": 0,
     "date": "2026-11-03",
-    "detail": "61 checks, 0 FAIL, 0 WARN on the final cut (voice-check PASS, 793 characters)"
+    "detail": "61 checks, 0 FAIL, 0 WARN on the stage 4 fix pass cut (voice-check PASS, 815 characters)"
   },
   "leak": {
-    "leak_py": "REVIEW (0 LEAK; 410 renumbered to policy 407 after it matched a graded hours figure; REVIEW lines: generic column names device_id and device_type, a coincidental digit run in the step table, generic design-note words in the policy and review)",
-    "reader": "brief written, not yet run: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/brief_leak_reader.md"
+    "leak_py": "REVIEW with --asof 2026-11-03 (0 LEAK; REVIEW lines: generic stump-paragraph words in the policy and the review, generic device_id and device_type columns, each answered in the design note's Pre-ship check)",
+    "reader": "round 1: no decisive-step sentence, no ranking or helper file, deciding step analytical; realism tells and ask readings fixed in the generator this pass. Round 2 brief: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4_r2/reader/brief_leak_reader.md"
   },
   "duplicate_check": {
-    "heart": "WARN (after redrawing forum, role, artifact and strategy against task398 once task401 a3 left the window)",
-    "surface": "3 promoted pairs (task400, task129, task252) answered on the card's differentiation",
-    "nearest": "task129 and task400 by surface; task252 by structural driver"
+    "heart": "WARN (nearest driver 0.06, task129; repeat.decision and repeat.question_form answered in the Pre-ship check)",
+    "surface": "2 promoted pairs (task400, task252), answered on the card's differentiation",
+    "nearest": "task400 by surface; task252 by structural driver"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "brief written, not yet run: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/brief_determinism_judge.md"
+    "verdict": "round 1: DETERMINISTIC, SOLUTION_WRONG (minor: step 2's frost clause did not reproduce 8,700)",
+    "disposition": "round 1: FIX_NOW, fixed in one generator pass; round 2 pending (the one re-judge)",
+    "report": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/judge/judge_report.md",
+    "round2_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4_r2/judge/brief_determinism_judge.md"
   },
   "returned": [],
   "architectures": [
@@ -41,17 +42,17 @@
     },
     {
       "architecture": 3,
-      "fate": "drawn 2026-11-03: cold load pickup re-trips after the SO-7 switching template revision went to one-step re-energisation, at an electric membership cooperative; paused at stage 4 with the reader and judge briefs written"
+      "fate": "drawn 2026-11-03: cold load pickup re-trips after the SO-7 switching template revision went to one-step re-energisation, at an electric membership cooperative; stage 4 round 1 FIX_NOW fixed; round 2 running"
     }
   ],
-  "resume": "stage 4: run the leak reader (general-purpose, sonnet, medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/brief_leak_reader.md and the determinism judge (medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/brief_determinism_judge.md in the background together; each reads only its own copy under /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/reader/ and judge/ (byte-identical to target.zip f2a3c845...); the judge opens judge/graded_blocks.md only after writing judge/derivation.md. Rebuild first with python3 task402/generator/build.py (byte-identical) if target/ is absent. Fix every finding in the generator in one pass, re-run every free gate (checks.py, verify.py, two rebuilds, ceiling.py, figures_check.py, precut.py, voice-check.py, leak.py, guard.py heart and surface), write the ledger row, then ship.",
+  "resume": "stage 4 round 2 running: the parent runs the determinism judge (medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4_r2/judge/brief_determinism_judge.md and the leak reader (general-purpose, sonnet, medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4_r2/reader/brief_leak_reader.md together, each on its own copy under stage4_r2/judge/ and stage4_r2/reader/ (byte-identical to target.zip af10a74f...). Rebuild first with python3 task402/generator/build.py if target/ is absent (byte-identical). On APPROVE with a clean read: write the ledger row and ship (every gate re-run on the final cut). A round-2 verdict other than DETERMINISTIC with APPROVE spends architecture 3 (a FIX_NOW that failed its second pass): re-root at stage 1 in another world, dataset and shell.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "target_zip_sha256": "f2a3c84566acb8da93c39f85348d8665f739ff38e2dad65df2de9fe363a3a59e",
+  "target_zip_sha256": "af10a74f4175c99b80c6aaaa662c8aeb29555bec25bba9ae00da3fc11f8d1cf3",
   "go_no_go": {
     "redraws": 20,
     "screen1_lead": "every golden variant at least 1.5 times the best rival estimate in 20 of 20 redraws (worst 3.07); golden about 8,700 customer interruptions against rivals' 1,200 to 1,800; at the low edge of the unpublished re-trip lever (0.3) 17 of 20",
@@ -59,14 +60,15 @@
     "screen3_easy_completion": "heat pump policy on its own sections' overloads names it 19 of 20 (animal guards 1); on the overload category 20 of 20; on peak-hour overloads the call goes to animal guards 6, terminations 2, transformers 1, heat pumps 9, the rule 1 (residual only)",
     "screen4_literal": "every literal execution (scope across in-place date, cause category year on year, system residual) lands on the heat pump policy 19 or 20 of 20, animal guards otherwise, the rule 0 of 20",
     "scratch": "t402/a3/proto_clpu3.py, screen_central.txt, screen_low.txt",
-    "generator": "shipped draw (seed 434): SO-7 revision 8,700 with all 21 licensed variants identical; rivals as replays: heat pump policy 1,520, animal guards 702, risers 671, supplier 118; gap 7,180; every rival and the gap hold their bins under every estimator the filed text allows (SF13 and the lesson (ii) asserts)"
+    "generator": "shipped draw (seed 434, re-trip stream 2045): SO-7 revision 8,714 with all 3,960 pairing operationalisations identical (windows 5 to 30 min, qualifying outages 30 to 120 min, eleven frost filters on either day, overload or every trip, three pairings, three nettings); rivals as replays: heat pump policy 1,520, animal guards 702, risers 671, supplier 118; gap 7,194; joint re-trip fork booked to the policy 6,820 against 3,414, 17 of 20 redraws"
   },
   "call": "Fund the 2027 fix for the SO-7 restoration switching revision: about 8,700 sustained customer interruptions in fiscal 2026, 7,200 more than the heat pumps connected without a load study (about 1,500).",
   "gates": {
-    "checks_py": "0 failures, including 20 redraws (SF10: revision first booked 20 of 20; re-trip rate difference -1.9 points, sd 8.4)",
-    "verify_py": "48 graded figures recomputed independently, 0 mismatches",
-    "rebuilds": "two byte-identical builds",
-    "figures_check": "PASS, 70 figures, 0 absent",
-    "ceiling_py": "pair ceiling 31.2, mirror leakage 5.0 per cent; cracker A 2/16, B 0/24; full includer A 10/16, B 0/24"
+    "checks_py": "0 failures over 84 assertions, including 20 redraws (screen 1 20 of 20, worst 1.63; SF10 booked to the policy 17 of 20, floor 16); tightest graded figure May 2026 hours 727.65 (edge 15 per cent)",
+    "verify_py": "48 graded figures recomputed independently, 0 mismatches; T_MED 16.12",
+    "rebuilds": "two byte-identical builds (22 files)",
+    "figures_check": "PASS, 71 figures, 0 absent",
+    "ceiling_py": "pair ceiling 31.2, mirror leakage 5.0 per cent; cracker A 2/16, B 0/24; full includer A 10/16, B 0/24; no-repair 0/40",
+    "freeze_py": "rubric mode FAIL on the ladder section hash only (rungs re-measured: 10,924, 1,510, 1,068, 8,714); determinism mode also on the workbook answers; main side unchanged in both; outputs in the design note's Pre-ship check"
   }
 }

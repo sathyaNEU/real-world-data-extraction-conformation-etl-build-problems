@@ -66,5 +66,33 @@ def normalise(W, seed=4021):
     PL["site"] = -1; PL["riser"] = -1
     F["cmi"] = F.ci * (F.repair + (F.end - F.start - F.repair) / 2.0)
     PL["cmi"] = PL.ci * PL.repair
-    F = pd.concat([F, PL[F.columns]], ignore_index=True).sort_values("start").reset_index(drop=True)
+    F = pd.concat([F, PL[F.columns]], ignore_index=True)
+    F = space(F, W["dm"])
+    return F.sort_values("start").reset_index(drop=True)
+
+
+def space(F, dm, seed=4029, near=35.0, held=25.0):
+    """No independent fault starts in the half hour after a restoration on its section (the section's own device or one
+    of its transformers): only a re-trip does. A fault the draws put there starts later the same way (40 to 120 minutes
+    after), and a re-trip moves with the restoration it follows. Causes, durations and counts are kept."""
+    rng = np.random.default_rng(seed)
+    F = F.copy()
+    nd = len(dm)
+    for _ in range(50):
+        # every fault at either level, against the latest restoration on its section (either level) before it starts
+        last = F[["sec", "end", "start"]].assign(dur=F.end - F.start).sort_values("end")
+        cand = F[~F.planned & (F.kind != "retrip")].sort_values("start")
+        m = pd.merge_asof(cand[["start", "sec"]].reset_index(), last[["end", "sec", "dur"]].rename(columns={"end": "pend"}),
+                          left_on="start", right_on="pend", by="sec", direction="backward")
+        bad = m[(m.start - m.pend >= 0) & (m.start - m.pend <= near) & (m.dur >= held)]
+        if not len(bad):
+            break
+        for i, pe in zip(bad["index"].values, bad.pend.values):
+            if not (F.start[i] - pe <= near):
+                continue
+            dlt = pe + 40.0 + rng.uniform(0, 80) - F.start[i]
+            kids = F.index[(F.kind == "retrip") & (F.sec == F.sec[i]) & (F.start >= F.end[i]) & (F.start < F.end[i] + 5.0)]
+            for j in [i] + list(kids):
+                F.loc[j, "start"] += dlt; F.loc[j, "end"] += dlt
+                F.loc[j, "temp"] = dm[min(int(F.start[j] // 1440), nd - 1)]
     return F

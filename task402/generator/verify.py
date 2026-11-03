@@ -43,12 +43,6 @@ def main():
     mu = sum(hist) / len(hist); sd = math.sqrt(sum((x - mu) ** 2 for x in hist) / (len(hist) - 1))
     tmed = math.exp(mu + 2.5 * sd)
     med = {d for d, v in daily.items() if v > tmed}
-    # ---- frost days from the hourly temperatures on local dates
-    acc = {}
-    for r in rows("hq_substation_temperature_hourly.csv"):
-        d = local_from_utc(r["time_utc"]).date()
-        acc.setdefault(d, []).append(float(r["value"]))
-    frost = {d for d, v in acc.items() if sum(v) / len(v) <= -3.0}
     # ---- the outage records
     cw = {r["old_section_id"]: r["section_id"] for r in sheet("system_register_2026-09-30.xlsx", "gis_crosswalk")}
     ev = []
@@ -59,7 +53,8 @@ def main():
                        sect=r["device_type"] != "XFMR", feeder=r["feeder"], dev=r["device_id"], wo=r["work_order"]))
     un = [x for x in ev if not x["planned"]]
     inyr = lambda x, frm=FY0: frm <= x["s"] < FY1 and x["s"].date() not in med
-    # ---- the switching revision: pair each section record with the same section's previous restoration
+    # ---- the switching revision: each overload record of a section device against the end of the same section's
+    # previous record, where that record lasted an hour or more
     bysec = {}
     for x in un:
         if x["sect"]:
@@ -69,8 +64,8 @@ def main():
         L.sort(key=lambda x: x["s"])
         for a, b in zip(L, L[1:]):
             gap = (b["s"] - a["e"]).total_seconds() / 60
-            if 0 <= gap <= 10 and (a["e"] - a["s"]).total_seconds() >= 3600 and a["s"].date() in frost:
-                if REV <= b["s"] < FY1 and b["s"].date() not in med:
+            if 0 <= gap <= 10 and (a["e"] - a["s"]).total_seconds() >= 3600:
+                if REV <= b["s"] < FY1 and b["s"].date() not in med and b["cause"] == "OVLD":
                     G += b["ci"]
                 if datetime(2024, 10, 1) <= b["s"] < REV:
                     staged_pairs += 1

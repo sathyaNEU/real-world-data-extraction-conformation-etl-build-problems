@@ -33,6 +33,27 @@ def nudge(W, F, O, R, seed=4026):
         if not lone:
             break
         O = O[O.seq != lone[int(rng.integers(len(lone)))]]
+    # the feeder record's block (Prairie and River before July): a figure the year-end feeders leave in the same
+    # cent is moved with an ordinary lone sequence until the two readings print different figures, both mid-bin
+    for _ in range(60):
+        A, Af = asks.maifi(O, S, "golden"), asks.maifi(O, S, "full")
+        same = [(d, q) for d in (2, 3) for q in range(3) if abs(round(A[d, q], 2) - round(Af[d, q], 2)) < 0.0099]
+        if not same:
+            break
+        d, q = same[0]
+        tr = O[(O.kind == "R") & (~O.lockout) & (O.op == "TRIP")]
+        tr = tr[[S.district.values[int(i)] == d for i in tr.id.values]]
+        tr = tr[asks.quarter(asks.local_ts(tr.t.values)) == q + 1]
+        lone = [s for s in tr.seq.unique() if not ((O.kind == "B") & (abs(O.t - tr.t[tr.seq == s].min()) < 5)).any()]
+        moved = False
+        for s in rng.permutation(lone):
+            O2 = O[O.seq != s]
+            A2, Af2 = asks.maifi(O2, S, "golden"), asks.maifi(O2, S, "full")
+            if abs(round(A2[d, q], 2) - round(Af2[d, q], 2)) >= 0.0099 and edge(A2[d, q], 0.01) >= 0.0007 * 1.5:
+                O, moved = O2, True
+                break
+        if not moved:
+            break
     for _ in range(600):
         h, p = asks.callout_figures(R, "golden")
         bad = [m for m in range(12) if edge(h[m], 1) < 0.07 * 1.5 or edge(p[m], 1) < 0.07 * 1.5]

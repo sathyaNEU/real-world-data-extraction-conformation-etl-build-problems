@@ -165,7 +165,7 @@ def policy(out):
 
 
 def review(out, idx, members):
-    rows = [['Fiscal year', 'SAIFI', 'SAIDI (min)', 'CAIDI (min)', 'Major event days']] + idx
+    rows = [['Fiscal year', 'Members served (average)', 'SAIFI', 'SAIDI (min)', 'CAIDI (min)', 'Major event days']] + idx
     ch = [['Change', 'In place', 'Applies to', 'Recorded by'],
           ['Load study waived for heat pumps connected under the air-source heat pump rebate', '1 Nov 2025',
            'Services connected under the rebate from that date', 'Member Services'],
@@ -179,8 +179,9 @@ def review(out, idx, members):
     B = [('title', 'Reliability Review, Fiscal 2026'),
          ('sub', 'Reliability Engineering, for the Board of Trustees meeting of 27 October 2026. Prepared by Kayla Dean.'),
          ('h', '1. Indices'),
-         ('p', 'Indices are for unplanned sustained interruptions with major event days excluded (IEEE Std 1366), on %s '
-               'members.' % format(members, ',')),
+         ('p', 'Indices are for unplanned sustained interruptions with major event days excluded (IEEE Std 1366), per member '
+               'on the average number of members served in each fiscal year. The system register counted %s members at '
+               '30 September 2026.' % format(members, ',')),
          ('table', rows),
          ('p', 'District scorecards carry momentary interruption events per member (MAIFIe as IEEE Std 1366 defines it), '
                'all days included, alongside the sustained indices.'),
@@ -225,8 +226,9 @@ def agreement(out, classes, holidays):
                     'callout, travel between jobs included.', ST['p']),
           Paragraph('14.3 Callout hours worked on a holiday listed in Article 18 are paid at double time.', ST['p']),
           Paragraph('14.4 The crew foreman enters each crew member\'s callout time in the timekeeping system each Monday for '
-                    'the week before, against the work order of each job. A correction is entered as a new entry and the '
-                    'foreman approves it.', ST['p']),
+                    'the week before, against the work order of each job. A correction is entered as a new entry for the '
+                    'same job and, once the foreman approves it, replaces the earlier entry. Callout time is paid on the '
+                    'entries the foreman approves; an entry the foreman rejects is not paid.', ST['p']),
           Paragraph('Article 18. Holidays, fiscal 2026', ST['h']),
           _tbl([['Holiday', 'Date']] + [[n, d] for n, d in holidays], [95 * mm, 45 * mm]),
           Spacer(1, 6),
