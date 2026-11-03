@@ -324,6 +324,17 @@ def run(target, g=None):
        and {r["extraction_method"] for r in hist} == set(W.METHOD_ORDER))
     ok("ask released dates sit only on released rows",
        all((r["released_date"] != "") == (r["release_status"] == "RELEASED") for r in hist))
+    # "reviewed" reads one way: a record the duty bioinformatician reviewed carries a review outcome,
+    # and no other record does, before the amendments and after them
+    _rev_am = {(a["specimen_id"], a["field"]): a["value_after"] for a in amd_rows}
+    ok("ask a reviewed record is exactly one with a review outcome",
+       all((r["call_source"] == "REVIEWED") == (r["review_outcome"] != "") for r in hist)
+       and all((r["call_source"] == "REVIEWED")
+               == (_rev_am.get((r["specimen_id"], "review_outcome"), r["review_outcome"]) != "") for r in hist))
+    ok("ask an amendment to a call names the column that holds that record's call",
+       all((a["field"] == "review_outcome") == any(r["call_source"] == "REVIEWED" for r in hist
+                                                   if r["specimen_id"] == a["specimen_id"])
+           for a in amd_rows if a["field"] in ("review_outcome", "hetx_call")))
     # separation: no device or hazard row in the comparison's population, counted from the shipped rows
     ok("ask no history specimen is in the comparison",
        not ({r["specimen_id"] for r in hist} & comparison_ids))
@@ -630,8 +641,19 @@ def run(target, g=None):
             found = ISO.findall(open(path, encoding="utf-8").read())
             if found:
                 starts[f] = min(found)
-    ok("the protocol's issue says it pre-specifies the run it governs",
-       "pre-specified" in doc_text and "approved before a run opens" in doc_text)
+    ok("the protocol's issue that governs the run was approved before the run opened",
+       re.search(r"Issue 4, approved 2027-02-19", doc_text) is not None
+       and "2027-02-19" < W.RUN_FROM.isoformat()
+       and "pre-specified" not in doc_text)
+    ok("the partner's report notes the step in volume where the full typing order starts",
+       "types every cohort service receipt from 1 March" in re.sub(r"\s+", " ", doc_text)
+       and "Where a report is re-sent" not in doc_text)
+    ok("the model card's addendum leaves the cutoffs to KVAL-07 without saying so",
+       "KVAL-07's matter" not in re.sub(r"\s+", " ", doc_text))
+    _wbd = _x.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
+    ok("the sensitivity panel lists only the stock its replicates ran from",
+       {str(r[0]) for r in _wbd["Prepared levels"].iter_rows(min_row=2, values_only=True)} == {"NS-27-04"}
+       and {str(r[1]) for r in _wbd["Replicate results"].iter_rows(min_row=2, values_only=True)} == {"NS-27-04"})
     ok("the protocol is not a conspicuous extract",
        "not reproduced in this extract" not in doc_text
        and all(h in doc_text for h in ("Purpose and scope", "Responsibilities",
@@ -735,7 +757,7 @@ def run(target, g=None):
             blob += open(os.path.join(target, f), encoding="utf-8", errors="replace").read()
     ok("no author vocabulary in the data",
        not re.search(r"\b(rung|decoy|solver|rubric|golden|placeholder|claude)\b", blob, re.I))
-    ok("no em dash anywhere", "—" not in blob and "—" not in doc_text)
+    ok("no em dash anywhere", "\u2014" not in blob and "\u2014" not in doc_text)
     ok("identifiers are structured", re.match(r"NFG27-\d{6}$", rows[0]["specimen_id"]) is not None)
     # containers
     with zipfile.ZipFile(os.path.join(target, W.FILES["dilution"])) as z:

@@ -24,7 +24,7 @@ Not holding the change, which follows only if each screen's detection rate is ju
 3. Counted false calls on the 5,446 panel-clean specimens per 3.5: 91 for the screen in service against 61, 74, 80, 85 and 104, so 4.1(b) removes only the 0.010 cutoff.
 4. Took the 95 per cent interval on each increase from the specimens the two screens call differently, both calls coming from one specimen's own read sets: every paired estimator puts the 0.030 increase of 4.07 points clear of zero and leaves the 0.050 increase short of it.
 5. Read 4.1(a) at each cutoff and applied 4.1: the increase is not established at 0.050 and is established at 0.030, 0.020, 0.015 and 0.010, so the highest listed cutoff meeting both conditions is 0.030.
-6. Read each release record in qc_screen_history_2026-02-15_2027-02-28.csv on the LIMS method table in force when its DNA was extracted (the 2026 codes in extraction_platform_validation_2025.pdf for extractions before 2 November 2026, the first day a code outside that table was booked, and the table the extract names every code by from then), applied release_amendments_2027-04_2027-06.csv, took reviewed specimens by their review outcome and counted each specimen released from March 2026 to February 2027 once: magnetic bead 15,852 released and 13.0 flags per thousand, through salting out 3,989 and 11.3.
+6. Read each release record in qc_screen_history_2026-02-15_2027-02-28.csv on the LIMS method table in force when its DNA was extracted (the 2026 codes in extraction_platform_validation_2025.pdf for extractions before 2 November 2026, the first day a code outside that table was booked, and the table the extract names every code by from then), applied release_amendments_2027-04_2027-06.csv, took a reviewed specimen's flag from its review outcome and any other's from the screen in service's own call, and counted each specimen released from March 2026 to February 2027 once: magnetic bead 15,852 released and 13.0 flags per thousand, through salting out 3,989 and 11.3.
 7. Replace the screen in service at the 0.030 cutoff from 1 July 2027.
 
 ## 4. Deliverable Answers
@@ -38,7 +38,7 @@ Not holding the change, which follows only if each screen's detection rate is ju
    - 0.015: 319, 27, 6.87, 1.56, yes, yes
    - 0.010: 326, 34, 8.65, 1.91, yes, no
 2. The cutoff recommended: 0.030, replacing the screen in service from 1 July 2027.
-3. Per extraction method, the specimens released in the twelve months to February 2027, those the duty bioinformatician reviewed, those the screen in service flagged, reviewed ones by their review outcome, and its flags per thousand released, each specimen counted once:
+3. Per extraction method, the specimens released in the twelve months to February 2027, those the duty bioinformatician reviewed, the flagged ones and the flags per thousand released, each specimen counted once and a reviewed specimen's flag taken from its review outcome:
    - magnetic bead: 15,852, 475, 206, 13.0
    - magnetic bead, low input: 1,758, 63, 67, 38.1
    - silica column: 6,802, 208, 159, 23.4

@@ -353,8 +353,7 @@ def dilution(target):
     ws.append(["Stock", "Level", "Label", "Prepared level (fraction)", "Prepared", "Operator",
                "Replicates planned"])
     stock_of = {lv: "NS-27-04" for lv, _l, _f in W.DILUTION}
-    for stock, day, scale in (("NS-27-07", dt.date(2027, 3, 18), W.DILUTION_SECOND_PREP),
-                              ("NS-27-04", dt.date(2027, 3, 11), 1.0)):
+    for stock, day, scale in (("NS-27-04", dt.date(2027, 3, 11), 1.0),):
         for lv, label, frac in W.DILUTION:
             ws.append([stock, lv, label, round(frac * scale, 4), day,
                        W.PEOPLE["lead"].split()[1][:2].upper(), W.DILUTION_REPLICATES])
@@ -398,9 +397,8 @@ def dilution(target):
         ws2.append(r)
     ws3 = wb.create_sheet("Panel notes")
     for line in [["Analytical sensitivity panel, 2027Q1"],
-                 ["Prepared by the method group from two anonymised cell line DNAs. The series is made "
-                  "up from a stock each time a stock is drawn; the workbook keeps the series of every "
-                  "stock the group has made up."],
+                 ["Prepared by the method group from two anonymised cell line DNAs, stock NS-27-04 "
+                  "made up on 11 March 2027."],
                  ["Levels are labelled as the second contributor's share in per cent; the prepared "
                   "level column is the gravimetric fraction."],
                  ["Replicates were sequenced on GSQ-B and processed with GKJ-PIPE v3.4.1."],

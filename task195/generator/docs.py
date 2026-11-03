@@ -128,9 +128,11 @@ def protocol(target, shipped=False):
                      ["2", "2025-11-03", "Validation of a new assay restructured into sections 3 to 5",
                       W.PEOPLE["quality"]],
                      ["3", "2026-09-14", "Candidate cutoffs listed in Table 2", W.PEOPLE["quality"]],
-                     ["4", "2027-02-19", "Verification of a replacement screen on a parallel run "
-                      "added; the run's window, its data cut and the decision rule are pre-specified "
-                      "by this issue, which is approved before a run opens", W.PEOPLE["quality"]]]),
+                     ["4", "2027-02-19", ("Verification of a replacement screen on a parallel run "
+                                           "added; the run's window, its data cut and the decision rule are "
+                                           "pre-specified by this issue, which is approved before a run opens")
+                      if shipped else "Verification of a replacement screen on a parallel run added "
+                                      "(sections 3 and 4)", W.PEOPLE["quality"]]]),
                colWidths=[14 * mm, 20 * mm, 60 * mm, 22 * mm]),
          Spacer(1, 5 * mm),
          Paragraph("Annex A Validation request", H2),
@@ -191,9 +193,7 @@ def model_card(target, estimates, shipped=False):
                    ("Computed by the bioinformatics group on the accepted read sets of the March to May "
                     "2027 re-run that had completed by 16 June 2027; the batches of 17 June are not "
                     "included. The run's scope, reference build, marker panel and depth floor are in %s, "
-                    "filed with the re-run. The group reports this distribution as the estimator's "
-                    "behaviour on production material; where a share falls relative to any screening "
-                    "cutoff is KVAL-07's matter." % W.FILES["config"]), SMALL),
+                    "filed with the re-run." % W.FILES["config"]), SMALL),
          Paragraph("Known behaviour", H2),
          Paragraph("Specimens from the same donor sequenced twice return estimates within about 0.002 "
                    "of each other at low shares. A depth top-up library typed from the same extraction "
@@ -220,6 +220,9 @@ def weekly_reports(target, panel):
         counts[r[3]] = counts.get(r[3], 0) + 1
         dates[r[3]] = r[4]
     refs = sorted(counts)
+    # before March the panel typed the receipts the laboratory sent it in routine; from the run window
+    # it types every cohort service receipt, so the weekly volume steps up with the first such report
+    first_full = next(r for r in refs if counts[r] > 4 * counts[refs[0]])
     # a handful of results are returned to the partner for re-typing on receipt, so for those weeks
     # the partner's own total runs above what the laboratory loaded. The weeks the validation file
     # reports are not among them.
@@ -243,8 +246,9 @@ def weekly_reports(target, panel):
         if ref in returned:
             f.append(Paragraph("%d of these results were returned on receipt for re-typing and were "
                                "re-issued in a later week." % returned[ref], SMALL))
-    f.append(Paragraph("A result is issued for each aliquot typed. Where a report is re-sent, the "
-                       "week's count includes the results sent again.", SMALL))
+        if ref == first_full:
+            f.append(Paragraph("Includes the first results under the laboratory's order of 22 February "
+                               "2027, which types every cohort service receipt from 1 March.", SMALL))
     d.build(f)
 
 
