@@ -158,8 +158,8 @@ def main():
     x = G.vi_incidents(P)
     cru = {y: int(((x["when"].dt.year == y) & (x["when"].dt.month.between(7, 10)) & (x["Location code"] == "CRU")).sum())
            for y in (2025, 2026)}
-    check("E dies: the crusher pad's July to October incidents rose by less than 1.6 times", cru[2026] < 1.6 * cru[2025],
-          str(cru))
+    check("E dies: the crusher pad's share of the July to October incidents did not grow (%d of %d, then %d of %d)" %
+          (cru[2025], w[2025], cru[2026], w[2026]), cru[2026] / w[2026] <= cru[2025] / w[2025], str(cru))
     nrj = {y: int(((x["when"].dt.year == y) & (x["when"].dt.month.between(7, 10)) & (x["Location code"] == "NRJ")).sum())
            for y in (2025, 2026)}
     check("rung 0 on the pack: NRJ is 2026's top location", nrj[2026] == x[(x["when"].dt.year == 2026) &
@@ -173,12 +173,31 @@ def main():
           max(per) / min(per) < 1.2, "%.2f to %.2f" % (min(per), max(per)))
     check("no flood: the acknowledgement rate stays within two points", max(acks) - min(acks) < 2.0,
           "%.2f to %.2f" % (min(acks), max(acks)))
-    tsw = collections.Counter(s["firmware"][0] for s in sh if W.ROLLOUT_START <= s["day"] <= W.ROLLOUT_END)
+    # R3d: the incident draw is a representative realisation of the world's own rates, so the register does not argue
+    # against the driver the records measure
+    opf = {o["badge"]: o["factor"] for o in S["ops"]}
+    msh = collections.Counter((s_["day"].year, s_["day"].month) for s_ in sh)
+    exp_, tsw = collections.Counter(), collections.Counter()
+    for s_ in sh:
+        if W.ROLLOUT_START <= s_["day"] <= W.ROLLOUT_END:
+            tsw[s_["firmware"][0]] += 1
+            exp_[s_["firmware"][0]] += W.UNTAGGED_PER_MONTH / msh[(s_["day"].year, s_["day"].month)]
+    for a_ in al:
+        s_ = sh[a_["sid"]]
+        if a_["real"] and W.ROLLOUT_START <= s_["day"] <= W.ROLLOUT_END:
+            f_ = s_["firmware"][0]
+            if a_["level"] == "WARN":
+                exp_[f_] += W.P_INC["warn_only"]
+            else:
+                pr = min(1.0, W.P_RESP_CRIT["v5" if f_ == "5" else "v4"][0] * opf[s_["badge"]])
+                exp_[f_] += pr * W.P_INC["crit_resp"] + (1 - pr) * W.P_INC["crit_none"] - W.P_INC["warn_only"]
     tiw = collections.Counter(sh[i["sid"]]["firmware"][0] for i in inc if W.ROLLOUT_START <= sh[i["sid"]]["day"] <= W.ROLLOUT_END)
-    rate5 = tiw["5"] / tsw["5"]
-    rate4 = max(tiw["4"], 1) / tsw["4"]
-    check("the incident split by firmware in the rollout weeks is thin (fewer than 25 incidents) and under 2 times",
-          tiw["5"] + tiw["4"] < 25 and rate5 / rate4 < 2.0, "%s on %s" % (dict(tiw), dict(tsw)))
+    check("R3d the incident draw is representative: in the rollout weeks 4.3 units had %d incidents against %.1f expected "
+          "from the world's rates on %d truck shifts (within 1.6 times), 5.0.2 units %d against %.1f on %d, the 5.0.2 rate "
+          "above the 4.3 rate, and the weeks hold too few incidents to carry the call alone (under 25)" %
+          (tiw["4"], exp_["4"], tsw["4"], tiw["5"], exp_["5"], tsw["5"]),
+          exp_["4"] / 2.5 <= tiw["4"] <= 1.6 * exp_["4"] and exp_["5"] / 1.6 <= tiw["5"] <= 1.6 * exp_["5"] and
+          tiw["5"] / tsw["5"] > tiw["4"] / tsw["4"] and tiw["4"] + tiw["5"] < 25, "")
     # timing alone cannot separate B from C: stage 3's traffic and the rollout share the month
     nw = {}
     for s in sh:
@@ -215,22 +234,66 @@ def main():
           PK_TAG_CONSISTENT, "")
     os_ = G.overspeed(P)
     edges = [abs(e - 5.0) for v in os_.values() for e in v[2]]
-    check("SF9 'times over the limit': continuation windows merged; SF10 'peaked more than 5 over' has no peak within 0.3 "
-          "km/h of the line", min(edges) >= 0.3, "closest %.2f" % min(edges))
+    check("SF10 'peaked more than 5 km/h over' has no run peak within 0.3 km/h of the line (closest %.2f)" % min(edges),
+          min(edges) >= 0.3, "")
+    ow = G.overspeed_windows(P)
+    alt = {}
+    for thr in (0.0, 1.0, 2.0):
+        rid, k_, prev = [], -1, None
+        for row in ow.itertuples():
+            cont = prev is not None and row.truck_no == prev.truck_no and row.segment == prev.segment and \
+                (row.tt - prev.tt).total_seconds() == 10 and row.first > row.limit + thr
+            k_ += 0 if cont else 1
+            rid.append(k_)
+            prev = row
+        alt[thr] = len(set(rid))
+    shared = ow[["truck_no", "segment", "tt", "first", "last"]].copy()
+    nxt = shared.shift(-1)
+    pair = (nxt["truck_no"] == shared["truck_no"]) & (nxt["segment"] == shared["segment"]) & \
+        ((nxt["tt"] - shared["tt"]).dt.total_seconds() == 10)
+    check("SF9 'one continuous run': a window joins the run before it only where it opens on the sample that closed it "
+          "(both windows carry that instant, %d pairs, every one the same reading) with the truck over the limit there; "
+          "the run count is the same for any line from the limit to the limit plus 2 at that sample (C1: %s)" %
+          (int(pair.sum()), sorted(set(alt.values()))),
+          len(set(alt.values())) == 1 and (shared[pair]["last"].values == nxt[pair]["first"].values).all(), "")
     check("SF11 the limit in force: the schedule's dates, not the window's limit_kmh column (which carries today's limit)",
           (P["fms"][(P["fms"]["trigger"] == "OVERSPEED") & (P["fms"]["segment"] == "NRP")]["limit_kmh"].dropna() == 32).all(), "")
     check("SF12 calendar months by the window's trigger time (local); SF13 the ramps are NRP and SRP; SF14 light vehicles "
           "only at the gates", set(P["gate"]["plate_read"].str[0]) <= {"1"}, "")
+    check("SF16 the gate reads and the event windows carry their zone in the header (read_time_awst, trigger_time_awst), "
+          "so months are Western Australian months; read as UTC the ask figures would move, which the header rules out",
+          "read_time_awst" in P["gate"].columns and "trigger_time_awst" in P["fms"].columns, "")
+    lvt = P["dev"][P["dev"]["Device type"] == "LV tag T2"].copy()
+    lvt["inst"] = pd.to_datetime(lvt["Installed"])
+    lvt["rem"] = pd.to_datetime(lvt["Removed"]).fillna(pd.Timestamp("2100-01-01"))
+    gg = P["gate"][P["gate"]["cas_tag"] != ""].copy()
+    gg["t"] = pd.to_datetime(gg["read_time_awst"])
+    gg = gg.merge(lvt[["Serial", "inst", "rem"]], left_on="cas_tag", right_on="Serial", how="left")
+    unreg = int((gg["Serial"].isna() | (gg["t"] < gg["inst"]) | (gg["t"] >= gg["rem"])).sum())
+    check("SF17 'no tag detected' is a blank cas_tag; every tag the gates did read is a registered light vehicle tag in "
+          "service at the read time (%d not), so reading a tag missing from the register as undetected gives the same "
+          "figures" % unreg, unreg == 0, "")
+    fb = a[a[0].notna()].copy()
+    piv_ = P["fms"][P["fms"]["trigger"] == "CAS_CRITICAL"].pivot_table(index="event_ref", columns="t_offset_s",
+                                                                         values="speed_kmh", aggfunc="first")
+    os_full = P["fms"][P["fms"]["trigger"] == "OVERSPEED"]
+    ospk = os_full.groupby("event_ref")["speed_kmh"].max()
+    os_edges = os_full[os_full["t_offset_s"].isin([os_full["t_offset_s"].min(), os_full["t_offset_s"].max()])]
+    nofix = int(os_edges["speed_kmh"].isna().sum())
+    check("SF18 samples with no GPS fix: every OVERSPEED window keeps its first, last and highest sample (%d edge samples "
+          "missing), so the ask figures are the same whether fix-less samples are dropped or kept; the braking split reads "
+          "only alerts whose window has speeds at 0 and 6 s, and taking 8 or 4 s where 6 s is missing gives the same "
+          "rollout figures" % nofix, nofix == 0 and RS_FALLBACK == (85, 30), str(RS_FALLBACK))
 
     # ------------------------------------------------------------------ the asks: stops outside every bin
     g = P["gate"]
     ins = g[g["direction"] == "IN"].copy()
-    ins["m"] = ins["read_time"].str[5:7].astype(int)
+    ins["m"] = ins["read_time_awst"].str[5:7].astype(int)
     naive = ins.groupby("m").size().to_dict()
     check("ask A: counting every IN read misses every month", all(naive[m] != gt[m][0] for m in (7, 8, 9, 10)),
           str(naive))
     nn = g[(g["direction"] == "IN")].copy()
-    nn["t"] = pd.to_datetime(nn["read_time"])
+    nn["t"] = pd.to_datetime(nn["read_time_awst"])
     nn["m"] = nn["t"].dt.month
     nn = nn.sort_values("t")
     keep = []
@@ -244,17 +307,24 @@ def main():
     check("ask A: one trip per plate per gate within 30 seconds keeps the pairs whose plates the two readers returned "
           "differently and misses every month", all(by_plate[m] != gt[m][0] for m in (7, 8, 9, 10)), str(by_plate))
     raw = P["fms"][(P["fms"]["trigger"] == "OVERSPEED") & P["fms"]["segment"].isin(["NRP", "SRP"])]
-    evc = raw.groupby(["event_ref", "segment", "trigger_time", "limit_kmh"])["speed_kmh"].max().reset_index()
-    evc["q"] = evc["trigger_time"].str[5:7].astype(int)
-    evc = evc[evc["trigger_time"].str[:4] == "2026"]
+    evc = raw.groupby(["event_ref", "segment", "trigger_time_awst", "limit_kmh"])["speed_kmh"].max().reset_index()
+    evc["q"] = evc["trigger_time_awst"].str[5:7].astype(int)
+    evc = evc[evc["trigger_time_awst"].str[:4] == "2026"]
     MS = (7, 8, 9, 10)
     restated = {(s, q): int(((evc["segment"] == s) & (evc["q"] == q) & (evc["speed_kmh"] > evc["limit_kmh"] + 5)).sum())
                 for s in ("NRP", "SRP") for q in MS}
     check("ask B: the window's own limit column moves the South ramp's July over-5 figure",
           restated[("SRP", 7)] != os_[("SRP", 7)][1], "%s vs golden %s" % (restated, {k: v[1] for k, v in os_.items()}))
     unmerged = {(s, q): int(((evc["segment"] == s) & (evc["q"] == q)).sum()) for s in ("NRP", "SRP") for q in MS}
-    check("ask B: counting the FMS's windows rather than times over moves every August to October count",
+    check("ask B: counting the FMS's windows rather than runs moves every August to October count",
           all(unmerged[(s, q)] != os_[(s, q)][0] for s in ("NRP", "SRP") for q in (8, 9, 10)), str(unmerged))
+    ab10 = G.overspeed(P, joins=10)
+    ab30 = G.overspeed(P, joins=30)
+    m10 = sum(ab10[k][0] != os_[k][0] for k in os_)
+    m30 = sum(ab30[k][0] != os_[k][0] for k in os_)
+    check("ask B: taking windows that abut in time as one run (a gap of 10 s or less) misses %d of the 8 counts, and "
+          "within 30 s %d of 8 (the runs that dip under the limit and run away again at the next sample)" % (m10, m30),
+          m10 >= 6 and m30 == 8, "")
     check("separation: the call reads CAS_CRITICAL windows only, the ask OVERSPEED windows only",
           set(P["fms"]["trigger"]) == {"CAS_CRITICAL", "OVERSPEED"}, "")
 
@@ -284,6 +354,9 @@ def main():
     check("realism: incident numbers are not an arithmetic sequence", len(set(np.diff(incn))) > 1, "")
     check("realism: monthly gate trips are not identical", len({gt[m][0] for m in gt}) == 4, "")
     check("realism: monthly incident counts are not uniform", len({v for _, v in F["monthly"]}) > 6, "")
+    rep = P["reg"]["Description"].value_counts()
+    check("realism: no register description repeats more than three times (most: %d)" % int(rep.max()), rep.max() <= 3,
+          str(rep.head(3).to_dict()))
     check("realism: no round headline (the 2026 count is not a multiple of 10)", w[2026] % 10 != 0, str(w[2026]))
     # office properties (house fix H1)
     for fn in [f for f in files if f.endswith((".docx", ".xlsx"))] + ["../golden/vi_programme_paper_2027.docx",
@@ -302,6 +375,9 @@ def main():
     for fn in [f for f in files if f.endswith(".pdf")]:
         b = open(os.path.join(TARGET, fn), "rb").read()
         check("H1 PDF carries no writing-library banner: %s" % fn, b"ReportLab" not in b and b"reportlab" not in b, "")
+        check("H1 PDF carries no library default info entry (empty /Subject, empty /Keywords, /Trapped): %s" % fn,
+              b"/Trapped" not in b and not re.search(rb"/Subject\s*\(\s*\)", b) and not re.search(rb"/Keywords\s*\(\s*\)", b),
+              "")
     people = ["Shari Jefferson", "Ana Cuevas", "Nancy Franco"]
     check("personas are the drawn names", PK_TEXT.count("Shari Jefferson") + PK_TEXT.count("Ana Cuevas") +
           PK_TEXT.count("Nancy Franco") >= 2, str(people))
@@ -343,7 +419,7 @@ if __name__ == "__main__":
     PK_GATE_TRUTH = _R["gate_truth"]
     g_ = _R["gate"]
     ng = g_[g_["reader"].isin(["NG-1", "NG-2"]) & (g_["direction"] == "IN")].copy()
-    ng["t"] = pd.to_datetime(ng["read_time"])
+    ng["t"] = pd.to_datetime(ng["read_time_awst"])
     ng = ng.sort_values("t")
     prev = None
     bad = 0
@@ -352,6 +428,8 @@ if __name__ == "__main__":
             bad += (tag == "") != (prev[2] == "")
         prev = (t, rd, tag)
     PK_TAG_CONSISTENT = bad == 0
+    _rf = G.response_summary(G.crit_responses(G.load(TARGET), fallback=(8, 4)))["window"]
+    RS_FALLBACK = (int(5 * round(_rf["4.3"][0] * 20)), int(5 * round(_rf["5.0.2"][0] * 20)))
     import shutil
     shutil.rmtree(tmp)
     sys.exit(main())

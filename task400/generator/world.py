@@ -36,6 +36,7 @@ P_COLLISION = 0.16
 AVAILABILITY = 0.86
 ROLLOUT_START = dt.date(2026, 6, 2)
 ROLLOUT_END = dt.date(2026, 6, 23)
+INCIDENT_STREAM = "incident-87"   # the incident draw: a representative realisation of the rates above (checks.py R3d)
 
 
 def rng(name):
@@ -124,7 +125,7 @@ def simulate():
     fleet = build_fleet()
     ops = build_crews()
     by_crew = {c: [o for o in ops if o["crew"] == c] for c in "ABCD"}
-    r_ts, r_c, r_a, r_s, r_i = rng("truckshift"), rng("conflict"), rng("alarm"), rng("speed"), rng("incident")
+    r_ts, r_c, r_a, r_s, r_i = rng("truckshift"), rng("conflict"), rng("alarm"), rng("speed"), rng(INCIDENT_STREAM)
     shifts, alarms, incidents = [], [], []
     for day in DAYS:
         mix = MIX_AFTER if day >= STAGE3 else MIX_BEFORE

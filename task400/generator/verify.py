@@ -48,8 +48,8 @@ def main():
                        left_on="loc", right_on="fw_at", by="unit_serial")
     fm = pd.read_parquet(os.path.join(T, "fms_event_windows_2025-2026.parquet"))
     fm = fm[fm["trigger"] == "CAS_CRITICAL"]
-    w = fm.pivot_table(index=["event_ref", "truck_no", "trigger_time"], columns="t_offset_s", values="speed_kmh").reset_index()
-    w["tt"] = pd.to_datetime(w["trigger_time"])
+    w = fm.pivot_table(index=["event_ref", "truck_no", "trigger_time_awst"], columns="t_offset_s", values="speed_kmh").reset_index()
+    w["tt"] = pd.to_datetime(w["trigger_time_awst"])
     w["truck"] = w["truck_no"].str.replace("-", "", regex=False)
     al["truck"] = al["truck"].astype(object)
     w["truck"] = w["truck"].astype(object)
@@ -63,7 +63,7 @@ def main():
     # gate trips: the two North readers read one passage seconds apart
     g = pd.read_csv(os.path.join(T, "pit_gate_reads_2026-07_2026-10.csv"), keep_default_na=False)
     g = g[g["direction"] == "IN"].copy()
-    g["t"] = pd.to_datetime(g["read_time"])
+    g["t"] = pd.to_datetime(g["read_time_awst"])
     n = g[g["reader"].str.startswith("NG")].sort_values(["t", "reader"]).reset_index(drop=True)
     drop = set()
     for i in range(1, len(n)):
@@ -75,24 +75,36 @@ def main():
         x = trips[trips["t"].dt.month == mo]
         got["trips_%02d" % mo] = int(len(x))
         got["trips_notag_%02d" % mo] = int((x["cas_tag"] == "").sum())
-    # ramp times over the limit in force: a window opening 8 to 12 s after the same truck's last on that ramp continues it
+    # ramp times over the limit in force: a window that opens on the sample closing the same truck's previous window on
+    # that ramp, with the truck still over the limit there, continues that run
     f = pd.read_parquet(os.path.join(T, "fms_event_windows_2025-2026.parquet"))
     f = f[(f["trigger"] == "OVERSPEED") & f["segment"].isin(["NRP", "SRP"]) & f["truck_no"].str.startswith("DT")]
-    e = f.groupby(["event_ref", "truck_no", "segment", "trigger_time"])["speed_kmh"].max().reset_index()
-    e["tt"] = pd.to_datetime(e["trigger_time"])
-    e = e.sort_values(["truck_no", "segment", "tt"]).reset_index(drop=True)
-    gap = e.groupby(["truck_no", "segment"])["tt"].diff().dt.total_seconds()
-    e["run"] = (~gap.between(8, 12)).cumsum()
-    r = e.groupby("run").agg(seg=("segment", "first"), tt=("tt", "first"), peak=("speed_kmh", "max")).reset_index()
+    f = f.copy()
+    f["at"] = pd.to_datetime(f["trigger_time_awst"]) + pd.to_timedelta(f["t_offset_s"], unit="s")
     lim = pd.read_csv(os.path.join(T, "haul_road_speed_limits.csv"))
     lim["eff"] = pd.to_datetime(lim["effective_from"])
-    r["lim"] = [lim[(lim["segment"] == s) & (lim["eff"] <= t.normalize())].sort_values("eff")["limit_kmh"].iloc[-1]
-                for s, t in zip(r["seg"], r["tt"])]
-    for s in ("NRP", "SRP"):
+    w = f.groupby("event_ref").agg(truck=("truck_no", "first"), seg=("segment", "first"), t0=("trigger_time_awst", "first"),
+                                   start=("at", "min"), end=("at", "max"), peak=("speed_kmh", "max")).reset_index()
+    edge = f.set_index(["event_ref", "at"])["speed_kmh"]
+    w["t0"] = pd.to_datetime(w["t0"])
+    w["lim"] = [float(lim[(lim["segment"] == s_) & (lim["eff"] <= t.normalize())].sort_values("eff")["limit_kmh"].iloc[-1])
+                for s_, t in zip(w["seg"], w["t0"])]
+    w = w.sort_values(["truck", "seg", "t0"]).reset_index(drop=True)
+    run, k = [], 0
+    for i in range(len(w)):
+        if i and w.at[i, "truck"] == w.at[i - 1, "truck"] and w.at[i, "seg"] == w.at[i - 1, "seg"] and \
+                w.at[i, "start"] == w.at[i - 1, "end"] and edge[(w.at[i, "event_ref"], w.at[i, "start"])] > w.at[i, "lim"]:
+            pass
+        else:
+            k += 1
+        run.append(k)
+    w["run"] = run
+    rr = w.groupby("run").agg(seg=("seg", "first"), t0=("t0", "first"), peak=("peak", "max"), lim=("lim", "first"))
+    for s_ in ("NRP", "SRP"):
         for mo in (7, 8, 9, 10):
-            x = r[(r["seg"] == s) & (r["tt"].dt.year == 2026) & (r["tt"].dt.month == mo)]
-            got["os_%s_%02d" % (s, mo)] = int(len(x))
-            got["os5_%s_%02d" % (s, mo)] = int((x["peak"] > x["lim"] + 5).sum())
+            x = rr[(rr["seg"] == s_) & (rr["t0"].dt.year == 2026) & (rr["t0"].dt.month == mo)]
+            got["os_%s_%02d" % (s_, mo)] = int(len(x))
+            got["os5_%s_%02d" % (s_, mo)] = int((x["peak"] > x["lim"] + 5).sum())
     bad = [k for k in got if F.get(k) != got[k]]
     for k in sorted(got):
         if k != "monthly":

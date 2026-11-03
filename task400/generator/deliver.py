@@ -83,9 +83,10 @@ def paper_docx(path, F):
     p.runs[0].font.size = Pt(9)
     d.add_heading("Recommendation", level=2)
     d.add_paragraph("Fund programme C, the collision avoidance alerting review on the haul truck units. The rise in vehicle "
-                    "interaction incidents, from %d in July to October 2025 to %d in July to October 2026, followed the "
+                    "interaction incidents, from %d in July to October 2025 to %d in July to October 2026, came with the "
                     "5.0.2 firmware on the haul truck units: since it went on, operators slow for a critical alert about a "
-                    "third of the time, where on the earlier firmware they slowed for nearly nine in ten."
+                    "third of the time, where on the earlier firmware they slowed for nearly nine in ten, and the critical "
+                    "alerts nobody slows for now run at more than five times last year's level."
                     % (F["vi_jul_oct_2025"], F["vi_jul_oct_2026"]))
     d.add_heading("What drove the rise", level=2)
     for t in [
@@ -99,12 +100,12 @@ def paper_docx(path, F):
         "Alert volumes and acknowledgements did not move, which is why the vendor's report shows nothing: operators still "
         "press acknowledge, they no longer brake.",
         "Not B: the North ramp junction has the most incidents, and more trucks ran the North waste route from June, but "
-        "per truck shift the South pit ore route rose from %.1f to %.1f incidents per 1,000 shifts (July to October), more "
-        "than the North waste route through the junction (%.1f to %.1f)." % (F["rate_sore_2025"], F["rate_sore_2026"],
-                                                                            F["rate_nwst_2025"], F["rate_nwst_2026"]),
+        "per 1,000 truck shifts in July to October the South pit ore route, which never passes the junction, went from "
+        "%.1f to %.1f incidents, against %.1f to %.1f on the North waste route through it." % (
+            F["rate_sore_2025"], F["rate_sore_2026"], F["rate_nwst_2025"], F["rate_nwst_2026"]),
         "Not A: the operators' attention did not fall across the board; the same crews slowed on 4.3 units in June.",
-        "Not D or E: the fall in slowing came with the firmware on day shifts as on nights, and the crusher pad's count "
-        "barely moved.",
+        "Not D or E: the fall in slowing came with the firmware on day shifts as on nights, and the crusher pad's share "
+        "of incidents fell.",
     ]:
         d.add_paragraph(t, style="List Bullet")
     d.add_heading("Monthly incidents", level=2)
@@ -142,8 +143,8 @@ def workings_xlsx(path, F):
         for m, mn in ((7, "July 2026"), (8, "August 2026"), (9, "September 2026"), (10, "October 2026")):
             ws2.append([name, mn, F["os_%s_%02d" % (seg, m)], F["os5_%s_%02d" % (seg, m)]])
     ws2.append([])
-    ws2.append(["Limits as in force on the day (haul road speed limits). A run still over the limit ten seconds on is one "
-                "time over, at its highest recorded speed."])
+    ws2.append(["Limits as in force on the day (haul road speed limits). A window that opens on the sample closing the "
+                "truck's last window on that ramp, still over the limit, is the same run; each run at its highest speed."])
     for c, wd in zip("ABCD", (18, 10, 20, 28)):
         ws2.column_dimensions[c].width = wd
     wb.save(path)

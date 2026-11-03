@@ -109,7 +109,7 @@ def terms_docx(out):
     PP.scrub_docx(p, total_time=63, title="Vehicle interaction review 2026: terms of reference", company=COMPANY)
 
 
-def notice_pdf(out):
+def notice_pdf(out, col_when):
     blocks = [
         ("small", "Mines Safety Inspectorate  |  Improvement notice under the mine safety legislation  |  IN-2026-0417"),
         ("h1", "Improvement notice IN-2026-0417"),
@@ -123,8 +123,8 @@ def notice_pdf(out):
         ("p", "I believe that the operator is contravening, and is likely to continue to contravene, its duty to provide and "
               "maintain a working environment in which workers are not exposed to hazards, as regards interactions between "
               "mobile plant and light vehicles. The mine's register shows vehicle interaction incidents rising through July and "
-              "August 2026, including a collision on 28 July 2026 between a haul truck and a light vehicle at the North ramp "
-              "junction."),
+              "August 2026, including a collision on %s between a haul truck and another vehicle at the North ramp "
+              "junction." % ("%d %s %d" % (col_when.day, col_when.strftime("%B"), col_when.year))),
         ("h2", "Required"),
         ("p", "1. Identify the cause of the increase in vehicle interaction incidents at the mine."),
         ("p", "2. Implement a control that addresses that cause, and give the inspectorate the investigation and the control's "
