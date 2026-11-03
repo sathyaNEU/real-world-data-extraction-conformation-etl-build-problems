@@ -1,6 +1,6 @@
 {
   "task": "task402",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "epidemiology-public-health/health-equity-disparity-decomposition",
   "objective": "root-cause",
   "stage": 2,
@@ -11,8 +11,9 @@
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 1,
+    "date": "2026-11-03",
+    "detail": "61 checks, 3 FAIL, 1 WARN: no generator/ceiling.py, no cracker table, no prompt.txt; every design section and labelled line passes"
   },
   "leak": {
     "leak_py": "",
@@ -35,7 +36,7 @@
       "fate": "spent 2026-11-03 at stage 4: judge SEND_BACK, Gate H rule_application (the filed per-change cost, executed with any-contact exposure, lands A at 250), ask 4 conventions unfiled"
     }
   ],
-  "resume": "stage 2, design: write the generator (world, pack, golden, checks with the analyst test and every fork asserted, ceiling.py with the cracker, full includer, no-repair and mirror rows), the remaining note sections (Survivor anatomy, Readability screen, Semantic fork table, Ladder, Closure table, Literal reader, Oracles, Ask sheet), the fund's terms and prompt.txt; leave stage 2 only on precut.py exit 0.",
+  "resume": "stage 2, design, resume here (architecture 2, card registered and drawn at 2493835, merged at bfe5590). precut.py task402 exits 1 on three FAILs only: no generator/ceiling.py, no cracker table, no prompt.txt. Next, in order: (1) write task402/generator/ (world.py, pack.py, golden.py, checks.py, verify.py, ceiling.py, build.py) from the note's Draw, Default path, Ladder, Semantic fork table SF1-SF8, Closure table and Ask sheet; the prototype world is scratch t402/a2/proto4.py and proto5.py (about 480,000 people, deprivation fifths 27/22/19/17/15 per cent, within-region moves by tenure 3/6/20 per cent a year times two thirds, request-to-applied wait exponential with a six-month mean from 1 April 2024, a kit to the address left completes at 0.22 of normal, E -0.8 points from 6 October 2025, A -0.5 points in the most deprived localities from April 2025, B first invitations at 50-51 from 1 April 2025, C nil, a genuine mobility barrier of 2 points or less, returned-undelivered status on about one misaddressed kit in eight plus 0.2 per cent of all kits). (2) File the WHAT in equity_fund_terms_2026-27.docx (population, window, outcome, unit, comparison, decision rule; nothing on addresses or queues) and the pre-D fact in the shared service's transfer document (practice staff keyed an address change on the day received or the next working day). (3) Re-measure on the cut pack and assert in checks.py the coordinator's rows: D's cost under pre-D lags 0 to 3 days mid-bin at the nearest 100; the returned-kit route below E; C's golden with B's band removed; the movers-in-12-months literal row below E; D over A, B, C and E by 1.15 or more under every golden variant; the analyst test (E) on the clean truth. (4) Build the three asks with their second devices and score the cracker, full includer, no-repair and mirror rows in ceiling.py (pair ceiling at or under 60, built to 51; mirror under 50 per cent). (5) Write prompt.txt (a where-form question, the second sentence led by the paper's use, the rounding sentence led by its figures, equity_fund_paper_2026-27.docx and screens_lost_by_change_2025-26.csv) and pass voice-check. (6) precut exit 0, then message main with the coordinator's rows, the cracker table and the pair ceiling, then stage 3.",
   "approved": null,
   "delivered": null,
   "portal": null,

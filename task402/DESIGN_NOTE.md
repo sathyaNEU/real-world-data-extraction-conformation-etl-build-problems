@@ -65,8 +65,7 @@ rate in 2024-25 and 2025-26.
   nouns (bowel, screening, FIT, kit, hub, deprivation, fifth, completion) return no slot at three terms or more; the
   driver run returns only generic-word hits (task194, task135, task464, task474, task130, task170), none the insight.
   The architecture 1 words were run too and return this slot first.
-- Guard WARNs answered: `people.first` Ronald (task110, an older build; one persona, document metadata only);
-  `overuse.objective` and `overuse.gate_g` (the lane is Root-Cause and decomposition_attribution is the honest Gate G
+- Guard WARNs answered: `overuse.objective` and `overuse.gate_g` (the lane is Root-Cause and decomposition_attribution is the honest Gate G
   key for a fall assigned to a change; the strategy differs from all three window builds); `repeat.gate_g` against
   task400 and task401 (same answer). `test.same_puzzle_older` against task258 and `test.same_driver_older` against
   task303 are differentiated on the card.
@@ -74,8 +73,9 @@ rate in 2024-25 and 2025-26.
   either of the last two prompts), the second sentence opened by the deliverable's use rather than "Put", the rounding
   sentence opened by the figures it governs, deliverable set docx and csv (no build in the window; architecture 1's was
   pptx and xlsx). Architecture 1's shell (how-many, our, pptx+xlsx) is in `lineage_shells`.
-- People (`guard.py names --geo england --seed 402`, the four architecture 1 used skipped): Lesley Thompson, Ronald
-  Bailey.
+- People (`guard.py names --geo england`, seed 402 and then 4020; architecture 1's four skipped, and Lesley Thompson
+  and Ronald Bailey redrawn on the coordinator's read, `people.last` against task155 and `people.first` against
+  task110): Frances Greenwood, Terence Cooper, no people WARN on `check`.
 - The four go/no-go screens, run as a prototype on the clean truth before the card was registered (scratch proto4,
   eight draws, about 58,000 most-deprived-fifth kits a year):
   1. Realistic levels: completion within thirteen weeks about 55 per cent in the most deprived fifth to 74 in the
@@ -105,6 +105,39 @@ rate in 2024-25 and 2025-26.
      422 to 748 when the whole fall is put on the April changes, A 90 below to 410, E 17 below to 335 by its half-year
      difference, the joint model's year term 161 below to 408; never D. The golden needs a step the terms never ask
      for: setting each kit's despatch date against the shared service's open request for that person.
+- Coordinator's stage-2 rows (2026-11-03, after the merge at bfe5590), measured on the clean truth (scratch proto5,
+  five draws) or decided, each to be re-measured on the generator and asserted in `checks.py`:
+  1. What the pack holds before April 2024: no file reaches before D's start (the invitation extract and the queue
+     export begin 1 April 2024; the registration history carries pre-2024 addresses but no request dates), so there is
+     no before-and-after for D. The counterfactual "without D" comes from one filed fact in the shared service's own
+     transfer document, in its voice and naming no method: before 1 April 2024 practice staff keyed an address change
+     on the day it was received or the next working day. D's cost in the most deprived fifth under the defensible
+     pre-D lags: 387 (none), 382 (2 days), 371 (7 days), 356 (14 days); the filed fact admits 0 to 3 days, 368 to 399,
+     every draw mid-bin at the nearest 100 (at least 18 from the 350 edge). A 14-day lag would sit 6 from the edge, so
+     the filed fact's words carry the day.
+  2. Returned kits: a regional hub logs a kit returned undelivered when the envelope comes back; most misaddressed
+     kits never do. Decided: the invitation extract carries a "returned undelivered" kit status for about one
+     misaddressed kit in eight plus a baseline of about 0.2 per cent of all kits (deaths, demolished and invalid
+     addresses), the same in both years. Costing D from returned kits alone gives about 105 screens in the fifth, a
+     lower rung below E; the count does not move between the years, so the year-on-year route never reads it.
+     Readability row for the field: test 2 schema fires on a twelfth of D's kits only; the decisive rung stays silent.
+     To measure on the generator.
+  3. The domain test and swap lines now stand on the epidemiology (the deprivation gradient in moving house, the
+     programme's completion measure, the decomposition by fifth); the graded quantity is completed screens lost in the
+     most deprived fifth on the programme's measure.
+  4. The April 2025 coincidence: B's new age band (first invitations at 50 and 51) is visible in the extract, so the
+     golden prices B by its own kits (it adds about 1,670 screens in the fifth) and C on settled kits outside B's band
+     and A's localities across 1 April 2025, standardised for age. C's true effect is nil; the prototype's quick
+     estimate (371 to 628) left B's first invitations in the comparison and is void; C's golden is re-measured on the
+     generator with B's band removed, and D must lead A, B, C and E by 1.15 times or more under every golden variant.
+  5. The literal solver who will not accept zero for D and costs it from the pack's own mobility evidence without the
+     decisive join: completion of people whose address took effect in the 12 months before despatch against everyone
+     else, times those movers. It lands D at 36 (6 to 75), below E and A, because a pending person's move has not
+     taken effect on the register at despatch: the register's movers are exactly the people whose kits reached them.
+     With a genuine 8-point mobility barrier the same row reads 214 (185 to 235), level with E, so the generator holds
+     the barrier at 2 points or less and asserts this row below E. The join that does land D is a kit's despatch set
+     against a request received in another organisation's queue and not yet applied: that is the decisive step, not a
+     field read.
 - Sources: every input file is synthetic, generated by `generator/` (seed and licence in `metadata.json`); the
   deprivation lookup assigns invented small areas to national fifths in the published indices' format; the published
   rates above set the generator's levels and are cited, not shipped.
@@ -141,13 +174,15 @@ the person had left, about 400 screens a year in the most deprived fifth, so the
 
 - Task type: health-equity-disparity-decomposition (Epidemiology and Public Health), which serves Root-Cause in the
   taxonomy; the equity fund is decided on the most deprived fifth's shortfall split by cause.
-- Domain test: the deciding quantity is each change's cost in completed screens to the most deprived fifth, the
-  equity decomposition of that fifth's shortfall by cause on the screening pathway's own grain (an invitation, a posted
-  kit, a usable result inside thirteen weeks), age-standardised as the field compares a group's rates across years.
-- Swap: "which change cost the most deprived fifth the most completed screens" read as "which change cost the lowest
-  income fifth the most paid bills" keeps a mailing but loses the round structure, the thirteen-week completion clock,
-  previous participation and the deprivation fifth by registered address, so the cost no longer has a pathway to sit
-  on and the cohort no longer has a register to be pending in.
+- Domain test: the deciding quantity is each change's cost in completed screens to the most deprived fifth on the
+  programme's own completion measure, the equity decomposition of that fifth's shortfall by cause; it turns on the
+  deprivation gradient in residential mobility (the most deprived fifth moves house about twice as often as the
+  least, so more of its kits fall inside a pending window), read on the round structure and the thirteen-week
+  completion clock, the way the field decomposes a screening gap by fifth.
+- Swap: swapped to parcels ("which change cost the poorest fifth of customers the most delivered parcels") the
+  misdelivery survives, but the decision does not: the cost is graded on the programme's completion measure in the
+  most deprived fifth, its size is set by the deprivation gradient in moving house and by the round and the
+  thirteen-week clock, and the fund is an equity decomposition by fifth; none of those has a parcel analogue.
 - Layer 1: a registration history whose rows carry the date each address took effect, beside the shared service's work
   queue export (requests with received and completed dates, several request types); the programme's monthly uptake
   report on the address held at despatch; spoilt and technical-failure results re-tested under a new kit number; first
@@ -187,6 +222,158 @@ the person had left, about 400 screens a year in the most deprived fifth, so the
   force in both, and the cohort it hurts is found by setting each action's date against another organisation's open
   record. No build on file teaches it: the corpus's root-cause builds cost changes by their movement, timing or
   exposure, and none has a winner whose loss is constant through the compared periods.
+
+## Survivor anatomy
+
+- Actor: the deciding property, a kit posted while the person's address change sat open in the shared service's
+  queue, has no column in any file: it is the overlap of the invitation extract's despatch date with the queue
+  export's received and completed dates for an address-change request; the registration history stores only the date
+  each address took effect, and the uptake report only the address held at despatch.
+- Link: read through a comparison no key invites and no sentence asks for: each kit's despatch date against another
+  organisation's work queue for the same person. The queue export is the shared service's own turnaround record, the
+  review's evidence for D's line; nothing in the terms, the review or the files sets its dates against despatch.
+- Reflex: the field's method for the deciding quantity (completion standardised for age by deprivation fifth, each
+  change costed against the year before, the fifth's fall split by change) sits at rung 1 and files E.
+- Back-test: the textbook route validates: the monthly uptake report reconciles to the invitation extract month by
+  month on its own convention, and the year-on-year costing accounts for the fifth's fall with A, C and E and leaves
+  nothing for D, which never moves inside the files.
+- Second use: every file the decisive step reads has its own use: the invitation extract carries the whole pathway
+  and every rung; the registration history places each kit in a deprivation fifth; the queue export is the review's
+  turnaround evidence for D and the source of the fifth-by-registered-address convention's audit.
+- Shock: the loss reads as ordinary non-response in the fifth whose completion is always lowest; no shipped statistic
+  sorts the pending cohort to an extreme, and the kits went out and did not come back, as one in four never do.
+- Pins: the WHAT sits once in the equity fund's terms (population, window, outcome, unit, comparison, decision rule);
+  no filed sentence names addresses held, the queue, open requests, despatch against requests or the year-on-year
+  comparison. Deleting each filed sentence in turn (asserted in `checks.py`): no deletion moves the call toward D, and
+  deleting the comparison clause leaves "cost" undefined, so it stays.
+
+## Readability screen
+
+Rungs: R0 B by the crude completion rate; R1 E by the age-standardised year-on-year costing; R2 C by the April
+residual left after A and E; R3 (decisive) D by the pending cohort. Tests: 1 filed sentence, 2 schema, 3 reflex, 4
+control bench, 5 hygiene, 6 linear, 7 dedicated organ.
+
+| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 B, crude rate | no | yes (age column) | yes | no | no | yes | no | readable |
+| R1 E, year-on-year | no | yes (despatch date) | yes (the field's method) | no | no | yes | no | readable |
+| R2 C, April residual | no | no | yes | no | no | yes | no | readable |
+| R3 D, pending cohort (decisive) | no | no (three dates, two files, no column) | no (the field costs a change by its movement) | no (no control ties to it) | no (despatch inside a request's open interval is no consistency check) | no (a matched comparison inside the year) | no (the queue is the review's own evidence for D's line) | silent |
+
+## Semantic fork table
+
+Main-call terms and conventions. Each closure is a filed WHAT in the fund's terms or `same call`, asserted in
+`generator/checks.py` under these ids, with the cross product of SF2, SF4 and SF6 asserted together.
+
+| Id | Term or convention | Golden reading | Alternatives | Ruled out by |
+|---|---|---|---|---|
+| SF1 | completed screen | a usable result (normal or abnormal) within thirteen weeks of the kit's despatch | any kit returned; within six months; results dated in the year | the terms' outcome sentence; same call under each (asserted) |
+| SF2 | the most deprived fifth | the national fifth of the area holding the registered address on the despatch date | address at result; latest address; the address asked for | the terms' population sentence; same call under each (asserted) |
+| SF3 | 2025-26 | kits despatched 1 April 2025 to 31 March 2026, local date | invitation letter date; result date | the terms' window sentence; same call (asserted) |
+| SF4 | a change's cost | the screens those kits would have completed without the change, less those completed | the fall against 2024-25 | the terms' comparison sentence; the golden under either reading of the counterfactual's baseline is D (asserted) |
+| SF5 | B, the age extension | first invitations added screens, so B's cost is below zero | B's effect on the rate | the terms count screens; same call (asserted) |
+| SF6 | spoilt kits and re-tests | one person-round; a re-test's usable result completes the round | each kit counted | the terms' outcome sentence; same call (asserted) |
+| SF7 | people who died or left the region after despatch | in the population (the kit was posted) | removed | the terms' population sentence; same call (asserted) |
+| SF8 | D's in-place date | 1 April 2024, every request handled by the shared service from then | requests received before 1 April 2024 and completed after | the review's D line; same call (asserted) |
+
+## Ladder
+
+Positions and margins are re-measured on the cut pack by `checks.py` and written here from its output; the
+prototype (proto4, eight draws) gave the shape below.
+
+| Rung | Construction | Winner | Its figure | D's figure there | Dies to |
+|---|---|---|---|---|---|
+| R0 | crude completion rate in the fifth, 2025-26 against 2024-25 | B | the fall concentrated in first invitations | 0 | the terms count screens, and B's first invitations add them |
+| R1 | completion standardised for age, each change costed against 2024-25 by its natural exposure | E | about 250 | 0 | inside the year, kits whose address was settled show no change at October beyond E's own effect of about 230 |
+| R2 | the April residual after A's localities and E's half-years | C | 50 below to 450 by draw | 0 | kits whose address was settled show no change across April 2025 |
+| R3 | each kit's despatch date against the shared service's open requests; the pending kits against comparable settled kits | D | about 400 | about 400 | (the golden) |
+
+Pricing sequence (stumping Part 3), on the clean truth: residue the WHAT leaves, how a change in force through both
+years is costed; the ceiling, every pending kit's lost screen at about 0.4 of a screen each against about 1,000
+pending kits a year in the fifth; the one-group-by route, none (D never varies inside the files); the standard error
+of D's cost about 13 against a margin of about 150 over E; the lever and the ranked quantity are not one variance;
+the unit's own history is flat across both years by construction; the bound subset hands nothing over (no row is
+censored or capped); the reflex sweep as code, the pending cohort at AUC 0.5 to 0.6 on every visible attribute.
+Dominance asserted in `checks.py`: D's figure over every rival's widest estimate by 1.15 times or more, every rung's
+winner over its runner-up by the same floor.
+
+## Closure table
+
+| # | Axis | Reading here | Closure |
+|---|---|---|---|
+| 1 | Population | kits despatched in 2025-26 to people whose registered address on the despatch date is in the most deprived fifth | SF2, SF7 filed |
+| 2 | Unit of account | the person-round; a completed screen is one round | SF1, SF6 filed |
+| 3 | Attribution window | the despatch date | SF3 filed |
+| 4 | As-of dating | the extracts taken in July 2026, every kit despatched to 31 March 2026 with thirteen weeks run | filed in the terms |
+| 5 | Version basis | the extracts over the monthly uptake report | the report is a convention, not a rival; same call |
+| 6 | Denominator | none for the call (screens); rates only in R0 and R1 | SF4, SF5 |
+| 7 | Weighting | age standardisation to the 2024-25 kits' five-year bands, for the rungs only | same call under any standard |
+| 8 | Window length | one financial year | SF3 |
+| 9 | Boundary inclusivity | 1 April to 31 March inclusive, local dates | asserted inert |
+| 10 | Rounding path | whole screens, the call to the nearest 100, rounded once | in the prompt's rounding sentence |
+| 11 | Tie-break | not needed: D over every rival's widest estimate by the asserted floor | asserted |
+| 12 | Maturity and censoring | thirteen weeks run for every kit by the extract date | filed as-of |
+| 13 | Order of operations | place each kit in a fifth, then cost each change | same call in either order |
+| 14 | Row order | none | asserted over permutations |
+| 15 | Duplicate resolution | a re-test is the same round (SF6); re-sent despatch rows share a kit number | asserted |
+| 16 | Identity normalisation | NHS number across the invitation, registration and queue files | asserted single key |
+| 17 | Netting against gross | B's added screens net against nothing | SF5 |
+| 18 | Dimensional units | screens are counts | n/a |
+| 19 | Code and status semantics | result codes (normal, abnormal, spoilt, technical failure); request types and statuses | SF1, SF6, SF8 |
+| 20 | Integerisation | whole screens | rounding once |
+| 21 | Clause scope | the cost clause applies to every change alike | SF4 |
+| 22 | Forward window contents | none: the fund is decided on the closed year | n/a |
+
+## Literal reader
+
+A literal reader executes the fund's terms word for word: the population, window, outcome, unit and comparison are
+each filed once, and the comparison ("the screens those kits would have completed without the change") is executed
+for D, the one change that never varies inside the files, only within the year, through the kits D touched against
+comparable kits it did not; every other change's literal costing and the golden's agree within the bin, and D's
+literal cost is the golden once the kits it touched are identified (`determinism-check` §2).
+
+## Oracles
+
+- The programme's monthly uptake report: confirms the size of the fifth's fall on the wrong path and on the right one
+  alike (it states rates on the address held at despatch and ranks no change); ties under every basis.
+- The review's D line with the shared service's turnaround figure: confirms that requests take time on every path,
+  names no kit; ties under every basis.
+- No control ties only under the golden.
+
+## Ask sheet
+
+Design (to be cut and measured; the asks sit on the screening pathway's own records downstream of a completed screen
+and in the helpline's case log, files the main call never reads).
+
+- Ask 1, abnormal results seen within fourteen days, each month of 2025-26 (12 figures, whole people). H18 home: the
+  pathway's own timeliness measure every change's case carries. Use: the fund's paper reports the pathway behind the
+  screens. Files: specialist screening practitioner clinic bookings (ask-only), the laboratory results' abnormal rows
+  (read for dates only). Primary (D7, a reconstruction): appointments rebooked through the hospital switchboard carry
+  the hospital number only; the person is recovered through the booking they replaced. Second device (D3, disjoint
+  block): from the clinic's site merger on 3 November 2025 the second site's rows use its own status vocabulary.
+  Pin test: the sentence carries the clock (the result letter's date) and the counting unit (a person's first
+  attended appointment); both devices sit in which rows are the same person and which status is an attendance.
+- Ask 2, each endoscopist's adenoma detection rate on screening colonoscopies in 2025-26 (one figure per endoscopist,
+  per cent to one decimal). H18 home: the quality measure every colonoscopy the screens lead to carries. Files:
+  endoscopy procedure reports, pathology specimens, the endoscopist roster (all ask-only). Primary (D6, a
+  reconstruction): pathology is one row per specimen pot, linked to its procedure only through the accession prefix
+  of the specimen number; a procedure counts once. Second device (D7, disjoint block): trainee lists are recorded
+  under the supervising endoscopist's code with the trainee in the assisting field, and the sentence names the
+  endoscopist who performed it. Pin test: the sentence names the screening colonoscopy, the year by procedure date and
+  the performing endoscopist; the devices sit in which rows are one procedure and whose list it was.
+- Ask 3, web-form kit queries received and answered within two working days, each month from April 2025 to March 2026
+  (24 figures). H18 home: C's own measure. File: the web-form case log (ask-only) and the service calendar. Primary
+  (D1, a reconstruction): a person who writes again while a query is open is given a new case number; the queries are
+  one event by person and kit within the open interval, with no merge field. Second device (D8, disjoint block): the
+  case log stamps receipt in UTC and the service's working day is local, so receipts in the last hour before midnight
+  in British Summer Time fall on the next day. Pin test: the sentence carries the clock (working days in the service's
+  calendar) and the counting unit (a query, not a case).
+- Main population zero-counts: no device or hazard row in the invitation extract, registration history, queue export
+  or the lab's results for completion (asserted by count from the shipped rows).
+- Cracker sheet, full includer, no-repair profile and mirror: to be scored by `generator/ceiling.py` on the cut pack.
+- Pair ceiling: to be measured (target 51, bar 60).
+- Mirror leakage: to be measured (target under 40 per cent).
+- Measured by: generator/ceiling.py (to be written with the generator).
 
 ## Tried and rejected
 
