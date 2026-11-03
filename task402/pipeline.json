@@ -1,33 +1,33 @@
 {
   "task": "task402",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "energy-systems-utilities/grid-reliability-outage-analysis",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-03",
   "seed": "RC08 (which of five faults on an underperforming wind turbine gets the one spring crew visit, and the winter energy it cost); architecture 1 moved to an NHS Talking Therapies service and died at stage 4 (judge SEND_BACK); architecture 2 moved to a regional bowel screening programme's equity fund and died at stage 2 on honest levels; architecture 3 moves domain, world, dataset and shell to a cold-climate electric membership cooperative's 2027 reliability work plan, keeping the decision kind (one of five changes gets the single fix) and the quantity's kind (what that change cost over the review year, in its natural unit).",
-  "stump": "A solver who books fiscal 2026's sustained interruptions by cause files the heat pump connection policy, because overload trips rose most and on the sections where heat pumps were added, and costs the withdrawn restoration rule at nothing because it only shortens outages; the step that lands them there is never pairing each overload trip with the same section's restoration minutes earlier, which shows most of the winter's rise as cold-load re-trips after the rule went and puts the fix on the restoration rule.",
+  "stump": "A solver who books fiscal 2026's sustained interruptions by cause files the heat pump connection policy, at about 10,900 customer interruptions, because the overload category rose most once heat pumps were connected without a load study, and costs the switching revision at nothing because it only shortens restorations; the step that lands them there is never pairing each overload trip with the same section's restoration minutes earlier, which shows most of the winter's rise as cold-load re-trips after one-step re-energisation began and puts the fix on the switching revision.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": "",
-    "detail": "architecture 3 at stage 2; no precut run yet"
+    "exit": 0,
+    "date": "2026-11-03",
+    "detail": "61 checks, 0 FAIL, 0 WARN on the final cut (voice-check PASS, 793 characters)"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (0 LEAK; 410 renumbered to policy 407 after it matched a graded hours figure; REVIEW lines: generic column names device_id and device_type, a coincidental digit run in the step table, generic design-note words in the policy and review)",
+    "reader": "brief written, not yet run: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/brief_leak_reader.md"
   },
   "duplicate_check": {
-    "heart": "",
-    "surface": "",
-    "nearest": ""
+    "heart": "WARN (after redrawing forum, role, artifact and strategy against task398 once task401 a3 left the window)",
+    "surface": "3 promoted pairs (task400, task129, task252) answered on the card's differentiation",
+    "nearest": "task129 and task400 by surface; task252 by structural driver"
   },
   "judge": {
     "verdict": "",
     "disposition": "",
-    "report": ""
+    "report": "brief written, not yet run: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/brief_determinism_judge.md"
   },
   "returned": [],
   "architectures": [
@@ -41,23 +41,32 @@
     },
     {
       "architecture": 3,
-      "fate": "drawn 2026-11-03: cold load pickup re-trips after the staged cold-weather restoration rule was withdrawn, at an electric membership cooperative"
+      "fate": "drawn 2026-11-03: cold load pickup re-trips after the SO-7 switching template revision went to one-step re-energisation, at an electric membership cooperative; paused at stage 4 with the reader and judge briefs written"
     }
   ],
-  "resume": "stage 2, design: write Survivor anatomy, Readability screen, Semantic fork table, Ladder (pricing sequence, shape 01 sum), Closure table, Literal reader, Oracles, Ask sheet; prompt.txt (which, docx+png+xlsx); then the generator's checks.py and ceiling.py so precut.py can exit 0.",
+  "resume": "stage 4: run the leak reader (general-purpose, sonnet, medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/brief_leak_reader.md and the determinism judge (medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/brief_determinism_judge.md in the background together; each reads only its own copy under /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/reader/ and judge/ (byte-identical to target.zip f2a3c845...); the judge opens judge/graded_blocks.md only after writing judge/derivation.md. Rebuild first with python3 task402/generator/build.py (byte-identical) if target/ is absent. Fix every finding in the generator in one pass, re-run every free gate (checks.py, verify.py, two rebuilds, ceiling.py, figures_check.py, precut.py, voice-check.py, leak.py, guard.py heart and surface), write the ledger row, then ship.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "target_zip_sha256": "",
+  "target_zip_sha256": "f2a3c84566acb8da93c39f85348d8665f739ff38e2dad65df2de9fe363a3a59e",
   "go_no_go": {
     "redraws": 20,
     "screen1_lead": "every golden variant at least 1.5 times the best rival estimate in 20 of 20 redraws (worst 3.07); golden about 8,700 customer interruptions against rivals' 1,200 to 1,800; at the low edge of the unpublished re-trip lever (0.3) 17 of 20",
     "screen2_method": "18 golden variants (pairing window 5 to 30 min, qualifying outage any to 60 min, frost filter, staged-era netting) average 8,500 to 9,100 and each names the rule in every redraw",
     "screen3_easy_completion": "heat pump policy on its own sections' overloads names it 19 of 20 (animal guards 1); on the overload category 20 of 20; on peak-hour overloads the call goes to animal guards 6, terminations 2, transformers 1, heat pumps 9, the rule 1 (residual only)",
     "screen4_literal": "every literal execution (scope across in-place date, cause category year on year, system residual) lands on the heat pump policy 19 or 20 of 20, animal guards otherwise, the rule 0 of 20",
-    "scratch": "t402/a3/proto_clpu3.py, screen_central.txt, screen_low.txt"
+    "scratch": "t402/a3/proto_clpu3.py, screen_central.txt, screen_low.txt",
+    "generator": "shipped draw (seed 434): SO-7 revision 8,700 with all 21 licensed variants identical; rivals as replays: heat pump policy 1,520, animal guards 702, risers 671, supplier 118; gap 7,180; every rival and the gap hold their bins under every estimator the filed text allows (SF13 and the lesson (ii) asserts)"
+  },
+  "call": "Fund the 2027 fix for the SO-7 restoration switching revision: about 8,700 sustained customer interruptions in fiscal 2026, 7,200 more than the heat pumps connected without a load study (about 1,500).",
+  "gates": {
+    "checks_py": "0 failures, including 20 redraws (SF10: revision first booked 20 of 20; re-trip rate difference -1.9 points, sd 8.4)",
+    "verify_py": "48 graded figures recomputed independently, 0 mismatches",
+    "rebuilds": "two byte-identical builds",
+    "figures_check": "PASS, 70 figures, 0 absent",
+    "ceiling_py": "pair ceiling 31.2, mirror leakage 5.0 per cent; cracker A 2/16, B 0/24; full includer A 10/16, B 0/24"
   }
 }

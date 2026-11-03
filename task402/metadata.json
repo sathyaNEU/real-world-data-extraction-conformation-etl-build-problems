@@ -1,0 +1,134 @@
+{
+ "task": "task402",
+ "organisation": "Norvale Electric Cooperative (invented)",
+ "files": [
+  {
+   "file": "outage_events_fy2022-fy2026.csv",
+   "description": "Outage management system extract, fiscal 2022 to 2026",
+   "date": "2026-10-05",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "restoration_steps_fy2025-fy2026.csv",
+   "description": "Outage management system restoration step table",
+   "date": "2026-10-05",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "scada_reclosing_operations_fy2026.csv",
+   "description": "SCADA historian export, recloser and breaker operations",
+   "date": "2026-10-06",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "hq_substation_temperature_hourly.csv",
+   "description": "SCADA temperature point at the headquarters substation",
+   "date": "2026-10-06",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "daily_reliability_fy2021-fy2026.xlsx",
+   "description": "Daily reliability series, legacy and current outage systems",
+   "date": "2026-10-05",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "system_register_2026-09-30.xlsx",
+   "description": "GIS system register as at 30 September 2026",
+   "date": "2026-10-01",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "heat_pump_rebates_fy2024-fy2026.xlsx",
+   "description": "Member Services rebate register",
+   "date": "2026-10-02",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "asset_programme_lists_2022-2026.xlsx",
+   "description": "Operations programme lists",
+   "date": "2026-09-28",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "transformer_units.parquet",
+   "description": "Asset management transformer unit history",
+   "date": "2026-10-03",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "crew_time_overtime_fy2026.csv",
+   "description": "Timekeeping export, overtime and callout entries",
+   "date": "2026-10-07",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "labor_agreement_2024-2027_extract.pdf",
+   "description": "Labor agreement extract",
+   "date": "2025-10-06",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "board_policy_407_reliability_work_plan.docx",
+   "description": "Board policy",
+   "date": "2025-02-12",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "reliability_review_fy2026.docx",
+   "description": "Reliability review for the October 2026 meeting of the trustees",
+   "date": "2026-10-21",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "heat_pump_rebate_terms_2025-26.docx",
+   "description": "Member Services rebate terms",
+   "date": "2025-10-30",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "ivr_calls_fy2026.csv",
+   "description": "Call centre IVR log",
+   "date": "2026-10-08",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "wholesale_power_bills_fy2022-fy2026.xlsx",
+   "description": "Wholesale power bills by month",
+   "date": "2026-10-09",
+   "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  }
+ ],
+ "distractors": [
+  {
+   "file": "ivr_calls_fy2026.csv",
+   "why": "member calls follow interruptions and could be read as a measure of harm; the policy counts customer interruptions from the outage system"
+  },
+  {
+   "file": "wholesale_power_bills_fy2022-fy2026.xlsx",
+   "why": "winter peak demand reads as a load story for the heat pumps; no change is costed on it"
+  }
+ ],
+ "wrong_basis_distractors": [],
+ "deliverables": [
+  "reliability_fix_2027.docx",
+  "interruption_costing_fy2026.xlsx",
+  "fy2026_interruptions_by_change.png"
+ ]
+}
