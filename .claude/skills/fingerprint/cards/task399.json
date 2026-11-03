@@ -1,0 +1,110 @@
+{
+  "task": "task399",
+  "architecture": "v2",
+  "drawn": "2026-11-03",
+  "slot_note": "new number in wave 7 (Root-Cause), numbered from seed RC05 (a regional electricity distributor choosing one reliability programme from five, the costliest cause leaving no record of its own). Architecture 1 (Quantitative Finance, a pension plan's equity programme) was spent at the draw: it landed in the same cell as task398, whose draw was registered earlier but not yet visible to this guard. Architecture 2 moves to Human Factors: kept from the seed are the decision (one programme funded from a catalogue of five), the quantity in kind (the events each programme's cause accounted for over the last twelve months) and the kernel, a cost that leaves no record of its own (a rest the timetable shows and the bus drove through).",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "workload-fatigue-shift-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a state-owned regional bus operator whose drivers' safety events (collisions and the buses' recorded harsh-braking events) rose in the twelve months to 30 September 2026: what the 2027 safety budget funds from five initiatives (shorter duties, recovery time in the timetable so terminus breaks are kept, familiarisation on the new electric buses, mentoring for first-year drivers, in-cab fatigue cameras), judged on the safety events each initiative's cause accounted for",
+  "objective": "root-cause",
+  "shape": "18",
+  "decision_type": "root_cause_named",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins every safety event to the driver's duty, measures fatigue the field's way from the duty schedule (hours into the duty, time since the scheduled break, time of day) and takes each candidate's excess events with the other conditions held alike funds shorter duties, whose late-duty hours carry the largest excess, because the schedule gives every driver a terminus break of ten minutes or more; the vehicle location records show late-running trips turning straight round, and measured on the rest drivers actually got the late-duty excess is the recovery time initiative's.",
+  "domain_test": "The deciding quantity is each candidate cause's excess safety events per driving hour in a fatigue analysis of shift work, where risk rises with time on task since the last real rest and has to be separated from time on duty and time of day; with megawatt-hours or school places in place of driving hours there is no duty, no rest and no time on task for the events to depend on.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:rest-measured-on-the-operation-not-on-the-schedule",
+  "layer1": [
+    "filled at stage 2 from the generator's mess list"
+  ],
+  "stakeholder_role": "the operator's general manager of bus operations, who brings the 2027 safety budget to the executive team",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "the vehicle location system's trip records",
+    "rows": 0,
+    "entity": "one timetabled trip run by one bus on one duty",
+    "grain": "trip",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "Australia (a fictional regional city and its state-owned bus operator)",
+    "currency": "AUD",
+    "org_type": "a state-owned regional bus operator running three depots",
+    "invented_names": [
+      "Morrowbank",
+      "Morrowbank Regional Buses"
+    ],
+    "people": [
+      "Patrick Nichols",
+      "Amanda Sherman",
+      "Karen Sanchez"
+    ]
+  },
+  "deliverables": [
+    "filled at stage 2"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is the rest a worker actually got, rebuilt from the operation's own event record rather than from the schedule: running late, the operation works straight through the scheduled rests, so a schedule-based fatigue analysis puts the rising risk on long shifts and the candidate that would restore the rests looks worth nothing, while measured on the rest actually taken the long-shift effect vanishes and that candidate is the largest.",
+  "driver_concrete": "Morrowbank's duty schedule gives every driver a terminus break of ten minutes or more between trips, but a late-running trip arrives with the next departure already due and the driver turns straight round; rebuilt from the vehicle location records (each trip's actual arrival against the same duty's next actual departure), the drivers' real rests show the late-duty rise in safety events is the time driven since the last real rest, which makes timetable recovery time the largest initiative and shorter duties one of the smallest.",
+  "stump": "A competent solver joins each safety event to its duty, measures fatigue the field's way from the duty schedule (hours into the duty, time since the scheduled break) and funds shorter duties, whose late-duty hours carry the largest excess events; the step that lands it there is taking the scheduled terminus breaks as rest, when the vehicle location records show late-running trips turning straight round, and measured on the rest actually taken the excess belongs to the recovery time initiative.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task121": "task121 v6 builds each call-taker's rest before a shift from consecutive rostered shifts (quick returns in a new rotation) and separates it from a software change on the calendar; task399 takes the roster's rest as written and finds it was not taken: it rebuilds the rest inside each duty from the vehicle location records, where a late trip's actual arrival meets the same duty's next departure, so the rest the schedule promises and the rest the bus gave differ trip by trip."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (Quantitative Finance: a manufacturer's pension plan's global equity programme, which of five initiatives to fund against the shortfall to its policy benchmark)",
+      "drawn": "2026-11-03",
+      "domain": "quantitative-finance",
+      "subdomain": "factor-return-attribution",
+      "objective": "root-cause",
+      "shape": "18",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "context_artifact": "filed_standard",
+      "forum": "committee_or_panel",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "manufacturer",
+      "driver": "The decisive quantity is the money a parent raised for its own payments and left waiting in one unit's account, recorded there as the unit's holding: a unit-level attribution books its cost to the unit as a low market exposure and credits the candidate that would keep that money invested with almost nothing, while the money's own path puts it with the parent and makes that candidate the largest.",
+      "fate": "spent at the draw on 2026-11-03: it collided with task398's draw in the same cell (quantitative-finance / factor-return-attribution / root-cause), registered earlier but not visible to this guard; guard.py check with task398 visible returned BLOCK ban.pairing, ban.subdomain, ban.artifact (filed_standard) and ban.strategy (decomposition_attribution), and a reviewer would read the two as the same decision (an equity programme's shortfall against its benchmark and which of five changes removes most of it)"
+    }
+  ],
+  "notes": "Architecture 2 drawn 2026-11-03 after architecture 1 was spent at the draw (see lineage). Personas from guard.py names --geo Australia --seed 399 (Patrick Nichols, Amanda Sherman, Karen Sanchez); none of architecture 1's names is reused.",
+  "registered": "2026-11-03T08:28:18Z"
+}
