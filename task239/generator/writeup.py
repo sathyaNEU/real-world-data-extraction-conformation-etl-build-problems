@@ -7,12 +7,21 @@ import params as P
 
 KEEP_BAND = 0.80
 DROP_BAND = 0.25
-CHANNELS = [("personal", "personal link"), ("site", "site tablet"), ("paper", "paper form")]
 WORDING = {it[0]: it[1] for it in P.ITEMS}
+# the loadings are asked to one decimal place: every deterministic estimator of the between-team covariance gives the
+# kept items 0.9 there, and the withdrawn pair, with almost no team-level variance, is graded as any value under 0.25 in
+# size at one decimal, of either sign
+FIGURE_ROUTES = ["muml_paf", "muml_ml", "muml_pca", "unweighted"]
+WITHDRAWN_1DP = (-0.2, 0.2)
 
 
 def fmt(n):
     return "{:,}".format(int(n))
+
+
+def one_decimal(v):
+    r = round(float(v), 1)
+    return 0.0 if r == 0 else r
 
 
 def answers(X, FILES):
@@ -23,20 +32,25 @@ def answers(X, FILES):
     kept_min = min(min(v[E.ITEM_CODES.index(c)] for c in stay) for v in golden_spread.values())
     gone_max = max(max(v[E.ITEM_CODES.index(c)] for c in gone) for v in golden_spread.values())
     assert kept_min >= KEEP_BAND and gone_max < DROP_BAND, (kept_min, gone_max)
+    golden_1dp = {c: one_decimal(l) for c, l in zip(E.ITEM_CODES, X["golden"])}
+    for h in FIGURE_ROUTES:
+        for c, l in zip(E.ITEM_CODES, lam[h]):
+            if c in stay:
+                assert one_decimal(l) == golden_1dp[c] == 0.9, (h, c, l)
+            else:
+                assert WITHDRAWN_1DP[0] <= one_decimal(l) <= WITHDRAWN_1DP[1] and golden_1dp[c] == 0.0, (h, c, l)
     R = X["R"]
     used = R[R["used"]]
     A = dict(
         files=FILES,
         stay=stay, gone=gone,
         n_stay=len(stay),
-        loadings={c: round(float(l), 2) for c, l in zip(E.ITEM_CODES, X["golden"])},
+        loadings=golden_1dp,
         means={c: round(float(l), 2) for c, l in zip(E.ITEM_CODES, lam["means"])},
         disatt={c: round(float(l), 2) for c, l in zip(E.ITEM_CODES, lam["disatt"])},
         kept_min=round(float(kept_min), 2), gone_max=round(float(gone_max), 2),
         counted=int(len(R)), teams=len(X["reported"]), used=int(len(used)),
-        ledger=X["ledger"],
-        fav=X["fav"],
-        div=X["div"],
+        plans=X["plans"],
         switch=E.site_switch(X["D"])[0],
     )
     A["means_stay"] = E.verdict(lam["means"])
@@ -51,9 +65,8 @@ def figures(A):
          "steps": {"returns_that_count": A["counted"], "teams_reported": A["teams"], "returns_used": A["used"]},
          "deliverables": {
              "loadings": A["loadings"],
-             "ledger": A["ledger"],
-             "favourable": A["fav"],
-             "divisions": A["div"]},
+             "withdrawn_loading_one_decimal": {"low": WITHDRAWN_1DP[0], "high": WITHDRAWN_1DP[1]},
+             "plans": A["plans"]},
          "rungs": {"team_means": A["means"], "team_means_stay": len(A["means_stay"]),
                    "reliability_corrected": A["disatt"], "reliability_corrected_stay": len(A["disatt_stay"])}}
     return f
@@ -85,7 +98,6 @@ def submission(A):
     L.append("1. TC09 and TC10, the two team-practice items, load **%.2f or more** at team level, as TC01 to TC08 do." % KEEP_BAND)
     L.append("2. TC11 and TC12 load **under %.2f** at team level.\n" % DROP_BAND)
     L.append("## 3. Step-by-Step Solution\n")
-    sw = A["switch"]
     L.append("1. Built the returns that count under section 3 of %s: sessions submitted by the close in %s (a session a "
              "tablet re-sent with the same tablet_ref once), forms in %s scanned by 8 October with an answer, and each "
              "member once, at the return received last, the member found through the personal link's code, the code "
@@ -95,43 +107,37 @@ def submission(A):
              "started before the tablets' second team list load on 13 September (%s) and paper packs by their printed "
              "code read through %s, a split team's code reaching no single team." % (F["tablets"], F["reorg"]))
     L.append("3. Kept the %s teams with five or more returns that count (section 5.1) and their %s returns that answer "
-             "all twelve items on the scale, scored as section 2 and %s set out (TC04 and TC07 turned round)." % (fmt(A["teams"]), fmt(A["used"]), F["codebook"]))
+             "all twelve items on the scale, scored as section 2 sets out (TC04 and TC07 turned round)."
+             % (fmt(A["teams"]), fmt(A["used"])))
     L.append("4. Split the items' covariance into the pooled within-team covariance and the between-team covariance (the "
-             "scaled between-team matrix less the pooled within-team matrix) and fitted one factor to the between-team "
-             "correlations (section 4.2): TC01 to TC10 load %.2f or more, TC11 and TC12 under %.2f."
-             % (KEEP_BAND, DROP_BAND))
+             "scaled between-team matrix less the pooled within-team matrix) and fitted one common factor to the "
+             "between-team correlations by principal axis (section 4.2): TC01 to TC10 load %.2f or more, %.1f at one "
+             "decimal, and TC11 and TC12 under %.2f in size." % (KEEP_BAND, 0.9, DROP_BAND))
     L.append("5. Applied the %.2f line (section 4.3): ten items stay for 2028, TC11 and TC12 are withdrawn." % E.LINE)
-    L.append("6. Counted each channel's returns that count, those in no team the dashboard reports, those in a reported "
-             "team leaving an item without an answer on the scale, and those the check used.")
-    L.append("7. Counted each item's answers on the scale and its favourable answers over every return that counts, as %s "
-             "sets out." % F["note"])
-    L.append("8. Placed each reported team in the division it belonged to on 1 September 2027 (%s, the previous division "
-             "for a team that moved later) and counted the teams and the returns the check used.\n" % F["register"])
+    L.append("6. Took each team's development plan in %s at its latest version (an earlier version is replaced, as %s "
+             "sets out)." % (F["plans"], F["note"]))
+    L.append("7. Read each target saved up to 5 November, which the export holds as a number, as the item at that row of "
+             "the team's page (the team's items from its lowest percent favourable to its highest, over all the team's "
+             "returns that count, ties in Table 1 order); a target saved from 8 November carries its item code.")
+    L.append("8. Counted, for each item, the plans that target it and those whose status is Agreed (answer 2 for the "
+             "workbook).\n")
     L.append("## 4. Deliverable Answers\n")
     L.append("### lfp_tci_structure_check_2027.xlsx\n")
-    L.append("1. Each item's team-level loading and decision:")
+    L.append("1. Each item's team-level loading, to one decimal place, and decision:")
     for c in E.ITEM_CODES:
         if c in A["stay"]:
-            L.append("   - %s (%s): %.2f or more, stays" % (c, WORDING[c].rstrip("."), KEEP_BAND))
+            L.append("   - %s (%s): %.1f, stays" % (c, WORDING[c].rstrip("."), A["loadings"][c]))
         else:
-            L.append("   - %s (%s): under %.2f, withdrawn" % (c, WORDING[c].rstrip("."), DROP_BAND))
-    L.append("2. The 2027 returns by channel:")
-    for ch, nm in CHANNELS:
-        x = A["ledger"][ch]
-        L.append("   - %s: %s count, %s outside the teams the dashboard reports, %s more leave an item without an answer "
-                 "on the scale, %s used by the check" % (nm[0].upper() + nm[1:], fmt(x["count"]), fmt(x["outside"]),
-                                                         fmt(x["incomplete"]), fmt(x["used"])))
-    L.append("3. For each item, the company-wide answers on the scale the dashboard counts and how many of them are "
-             "favourable:")
+            L.append("   - %s (%s): %.1f, withdrawn (any value from %.1f to %.1f, of either sign)"
+                     % (c, WORDING[c].rstrip("."), A["loadings"][c], WITHDRAWN_1DP[0], WITHDRAWN_1DP[1]))
+    L.append("2. For each item, the team leaders' development plans that target it and how many of those plans their "
+             "manager has agreed:")
     for c in E.ITEM_CODES:
-        L.append("   - %s: %s answers, %s favourable" % (c, fmt(A["fav"][c]["base"]), fmt(A["fav"][c]["fav"])))
-    L.append("4. By division, the teams the dashboard reports and the returns the check used:")
-    for d in [x[1] for x in P.DIVISIONS]:
-        v = A["div"][d]
-        L.append("   - %s: %s teams, %s returns" % (d, fmt(v["teams"]), fmt(v["used"])))
+        v = A["plans"][c]
+        L.append("   - %s: %s plans, %s agreed" % (c, fmt(v["targets"]), fmt(v["agreed"])))
     L.append("")
     L.append("### lfp_tci_items_2028.pptx\n")
-    L.append("5. One slide for the executive team: the ten items that stay and TC11 and TC12 withdrawn, with each item's "
+    L.append("3. One slide for the executive team: the ten items that stay and TC11 and TC12 withdrawn, with each item's "
              "team-level loading charted against the %.2f line and TC11 and TC12 marked." % E.LINE)
     return "\n".join(L) + "\n"
 
