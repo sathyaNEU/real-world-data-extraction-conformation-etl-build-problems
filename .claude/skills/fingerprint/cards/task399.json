@@ -11,8 +11,8 @@
   "shape": "12",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Duty lawyer roster: a second rostered duty lawyer at Kestrel Bay District Court on every sitting day",
+  "answer_source": "submission.md block 1; generator/figures.json call",
   "gap": [
     "objective"
   ],
@@ -35,14 +35,21 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:a-within-officer-disparity-carried-by-the-advocate's-absence-at-the-call",
   "layer1": [
-    "filled at stage 2 from the generator's mess list"
+    "call timestamps with their New Zealand offset beside a local appearance date",
+    "courtroom as a code in the extract and a name in the sitting calendar",
+    "sitting times as local text",
+    "duty lawyer returns one workbook per financial year, column order changed with the 2025/26 claim form",
+    "EM bail records split across a legacy tracker and a case system either side of 2 February 2026 with carried-over rows",
+    "bail-house records split across a spreadsheet and a case app either side of 1 June 2026",
+    "incident and upload logs in UTC",
+    "dates as text in the spreadsheet rows and as dates in the app rows"
   ],
   "stakeholder_role": "the Ministry of Justice's regional manager for criminal court operations, who puts one initiative into the region's Budget 2027 bid",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "the District Court case management system's appearance extract",
-    "rows": 0,
+    "file": "cms_appearances_oct2024_sep2026.csv (the District Court case management system appearance extract)",
+    "rows": 77649,
     "entity": "one appearance of one defendant's case before the court",
     "grain": "appearance",
     "source": "synthetic"
@@ -63,12 +70,13 @@
     ],
     "people": [
       "Freya Herd",
-      "Casey Neal",
+      "Julie Smith",
       "Toby Conway"
     ]
   },
   "deliverables": [
-    "filled at stage 2"
+    "remand_gap_briefing.pdf",
+    "remand_gap_drill.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "where",
@@ -82,7 +90,9 @@
     "task111": "task111 finds which cause still operates in the forward window when overflow work lands on the primary workforce late in the day; task399 sizes nothing forward and has no overflow: the decisive record is one advocate's presence at each matter's call across two simultaneous lists.",
     "task399": "architecture 3 rebuilt a slot stock from releases, bookings and returns behind a booking journey and died on the throughput identity; architecture 4 rebuilds no stock and has no throughput: the advocate's output is flat by construction and the decisive relation is presence at the call.",
     "task253": "task253 v2 values the loss of one of several parallel links sharing a congestible capacity by re-solving the self-consistent loading with the link removed; task399 loads nothing and solves no fixed point: the shared limit is one advocate rostered to two simultaneous lists, and the decisive record is whether the advocate was in the room at each matter's call.",
-    "task141": "task141 v1 prices a let-everyone-through rule from the outcome gradient across decision-makers who sit by rota and let through different shares; task399 prices no rule and reads no gradient across officers: the within-officer gap it finds is the advocate's absence at the call, and the gap is the same under every officer once those calls are set apart."
+    "task141": "task141 v1 prices a let-everyone-through rule from the outcome gradient across decision-makers who sit by rota and let through different shares; task399 prices no rule and reads no gradient across officers: the within-officer gap it finds is the advocate's absence at the call, and the gap is the same under every officer once those calls are set apart.",
+    "task461": "surface pair (0.101, corpus top 1 per cent): task461 conforms a battery node spread series to a hub record for a cycling threshold (ETL); task399 shares only the pdf and xlsx deliverable pair, nothing of world, data or insight",
+    "task131": "surface pair (0.101, corpus top 1 per cent): task131 reads a randomised tariff trial for a default design (causal); task399 shares only the pdf and xlsx deliverable pair, nothing of world, data or insight"
   },
   "lineage": [
     {
@@ -167,6 +177,6 @@
       "fate": "spent at stage 2 on 2026-11-03 before any data was cut: the pricing harness (scratch a3/harness.py, a daily road-test booking queue over two years) measured two one-group-by routes to the golden in all three hiding variants (the busy centres losing 14 per cent of slots; the province's releases held flat by rural top-ups; a quarter of slots released four days ahead): releases by centre fell about 8 per cent at the busy centres and bookings over releases by centre sat at the ceiling there, so the throughput identity (tests sat at a fully booked centre equal its releases) makes the capacity fall one subtraction (readability tests 3 and 6, Gate F's two cheap routes)"
     }
   ],
-  "notes": "Architecture 4 drawn 2026-11-03 after architectures 1 and 2 were spent at the draw and architecture 3 at stage 2 on the pricing harness (lineage). Personas from guard.py names --geo 'New Zealand' --seed 399 (Freya Herd, Casey Neal, Toby Conway; Anthony, Nathan, Gavin, Nicole, Jessica and Alexander were set aside on first-name warnings); the en_AU draw repeated architecture 3's names. gate_g and strategy binding_constraint: one rostered duty lawyer is the limit shared by two simultaneous lists, and that limit moves the naive pick off the bench. The one standing WARN is overuse.org_family (government_agency in 42 builds): a Ministry of Justice region is the honest label.",
+  "notes": "Architecture 4 drawn 2026-11-03 after architectures 1 and 2 were spent at the draw and architecture 3 at stage 2 on the pricing harness (lineage). Personas from guard.py names --geo 'New Zealand' --seed 399 (Freya Herd, Julie Smith, Toby Conway; Anthony, Nathan, Gavin, Nicole, Jessica and Alexander were set aside on first-name warnings); the en_AU draw repeated architecture 3's names. gate_g and strategy binding_constraint: one rostered duty lawyer is the limit shared by two simultaneous lists, and that limit moves the naive pick off the bench. The one standing WARN is overuse.org_family (government_agency in 42 builds): a Ministry of Justice region is the honest label. Casey Neal redrawn to Julie Smith on the merged tree (people.last against task480).",
   "registered": "2026-11-03T09:26:51Z"
 }

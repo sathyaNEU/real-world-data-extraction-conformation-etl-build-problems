@@ -1,38 +1,41 @@
 {
  "task": "task399",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "criminology-justice/sentencing-bail-disparity-analysis",
  "objective": "root-cause",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-03",
  "seed": "RC05 (a regional distributor's one reliability programme); the seed's world collided at the draw; architecture 1 (Quantitative Finance) spent at the draw in task398's cell; architecture 2 (bus drivers' rest) spent at the draw as a template of task121 v6; architecture 3 (a road-test booking journey's slot stock) spent at stage 2 on the pricing harness; architecture 4 is a New Zealand District Court region's first appearances from custody",
  "stump": "A competent solver measures the first-appearance custody-remand gap within court and judicial officer with the legally relevant factors as controls, finds the widening in the Kestrel Bay custody list under the community magistrate who took it over in March 2026, and funds a judge on the custody list; the step that lands it there is reading a within-officer difference as the officer's, when the duty lawyer service's record and the sitting calendar show the single rostered duty lawyer was serving the new audio-visual remand list next door when most of the widening's matters were called, which puts the gap on the duty lawyer roster.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-03",
+  "checks": "61 checks, 0 FAIL, 0 WARN (re-run on the final cut)"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-03 (no LEAK; sweeps 3, 4 and 9 answered in ## Leak and duplicate review)",
+  "reader": "pending: brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t399/stage4/reader/reader_brief.md"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "guard.py check WARN on the registered card 2026-11-03 (overuse.org_family only); test.same_driver_older against task253 v2 and driver.near against task141 v1 (0.14) cleared by differentiation; semantic screen and slots in ## Draw"
+  "heart": "WARN 2026-11-03 (overuse.org_family only)",
+  "surface": "2 pairs promoted at 0.101 (task461, task131), answered on the card",
+  "nearest": "task141 v1 (0.14), task253 v2, both differentiated"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "pending: brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t399/stage4/judge/judge_brief.md (graded blocks in graded_blocks.md, opened only after derivation.md)"
  },
  "returned": [],
- "resume": "stage 2: write generator/world.py for the region's custody lists (defendants and charges with the legally relevant factors, the Kestrel Bay custody list and the audio-visual remand list from March 2026, the single rostered duty lawyer's time-stamped services, the community magistrate from March 2026, EM bail assessments from February 2026), measure the default path and every rung in a harness on the clean truth, then the ladder, fork table, closure, the ask layer off the main call's files and prompt.txt until precut.py exits 0",
+ "resume": "stage 4 hand-off: read the leak reader report (stage4/reader/reader_report.md) and the judge verdict (stage4/judge/verdict.md) from the scratch stage4 folder; fix every finding from both in the generator in one pass (build.py, then checks, verify, figures_check, ceiling, leak.py, precut); a FIX_NOW gets one re-judge; then the stage-5 pre-ship check in the design note, the golden-realism and reduce-house-fixes passes on the goldens and pack, every gate re-run on the final cut, the ledger row, and commit SHIPPED (task399) with target.zip and golden/ force-added",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "free_gates": "2026-11-03: checks.py 99 of 99, verify.py 41 of 41 graded figures, two builds byte-identical, figures_check 67 of 67, ceiling.py pair 31.3 (cracker 0 of 24 ask cells), precut 61 of 61, voice-check PASS, leak.py REVIEW, guard heart WARN, surface answered"
 }
