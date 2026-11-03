@@ -1,94 +1,155 @@
 {
   "task": "task276",
-  "architecture": "2",
+  "architecture": 3,
   "drawn": "2026-11-03",
-  "slot_note": "architecture 2 of the reopened slot, a re-root into urban-regional-science (network-analysis, descriptive) after architecture 1's twenty-two screens across nine task types, none registered; the DA26 developer-community world and the exposure-response draw stay dead",
-  "domain": "urban-regional-science",
-  "subdomain": "network-analysis",
-  "client_domain": "urban-regional-science",
-  "niche": "a sub-national transport body's level crossing replacement programme choosing the 2027 scheme by the road-user delay each shortlisted crossing's barrier closures cause on school-day mornings",
+  "slot_note": "architecture 3, a re-root into human-factors-ergonomics (anthropometric-design-fit, descriptive) after architecture 2 (urban-regional-science, network-analysis) died at stage 4; the Shires world, its queue survey and its closure replay stay dead",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "anthropometric-design-fit",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "an ambulance service formed from two predecessor services fixing the cab of its 2027 front-line ambulance order by how many of its rostered drivers each shortlisted converter-and-chassis cab would fail to fit, where one converter moves its cab bulkhead forward to lengthen the patient saloon",
   "objective": "descriptive-distribution",
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Replace Mill Lane in 2027: its closures cost 10,000 vehicle-hours on school-day mornings in 2025/26 against Station Road's 7,000, a gap of 3,000",
+  "answer": "",
   "answer_source": "task276/submission.md, Final Recommendation",
   "gap": [
-    "objective"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
     "G8",
-    "G7"
+    "G16"
   ],
   "gate_g": "binding_constraint",
-  "calibration_form": "physical_verification",
+  "calibration_form": "realised_outcome_roster",
   "stump_strategy": "binding_constraint",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "filed_model",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who pairs the barrier events, reads each closure's arrivals off the approach counts and releases every held queue at 1,800 vehicles an hour per lane once the barriers rise, the closure model the queue survey validates at every crossing, names Station Road (7,000 vehicle-hours against Mill Lane's 5,000), when at Mill Lane both directions' queues can only leave in the greens of the river bridge's shuttle signals 42 metres on and its closures cost 10,000.",
-  "domain_test": "The deciding quantity is the road-user delay each crossing's barrier closures cause, which transport network analysis estimates by deterministic queueing at the network's controls, the held queue released at the saturation flow and, where it reaches another control, at that control's capacity in its own green; swapped into another field there is no barrier log, no saturation flow, no shuttle green and no storage in metres between two stop lines, so the task stops reading the same.",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:downstream-control-gates-a-released-queue",
+  "analyst_test": "A strong analyst who places each rostered driver's predicted H-point inside the seat maker's fore-aft range as each converter mounts the seat and checks the predicted eye point against the chassis vision lines, the service's fit method executed on the stated ranges, files the Wrenfold cab on the FD35 chassis as failing the fewest drivers, when Wrenfold's forward bulkhead stops the reclined backrest of its tall drivers before the seat reaches their positions and the Pennick cab on the same chassis fails the fewest.",
+  "domain_test": "The deciding quantity is the number of drivers each cab fails to fit, which anthropometric design fit estimates by placing each person's predicted driving posture (hip point, back angle, eye point) in the cab's workspace; with patients and beds or pupils and desks in place of drivers and cabs there is no hip point, back angle, sightline or bulkhead to place, and the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:posture-cleared-against-the-structure-behind-an-adjustable-seat",
   "layer1": [
-    "barrier events from the rail infrastructure manager in UTC with sensor-bounce repeats",
-    "quarter-hour approach counts in UK local time across both clock changes, with dropouts outside the peak",
-    "the crossing register as a scanned PDF under the railway's references and OS grid references",
-    "the road network as links and nodes under the highway authority's node numbers",
-    "a signal timing register keyed by site and node",
-    "four county term calendars with different half terms",
-    "fault work orders under the maintainer's asset numbers and a signaller's occurrence book",
-    "two counter models writing the heavy-vehicle column differently"
+    "occupational health measurements from two predecessor services, one in feet and inches and stones and pounds",
+    "legacy staff numbers from the former southern service carried in the telematics until the driver cards were reissued",
+    "telematics card and ignition events in UTC against a shift rota in UK local time across both clock changes",
+    "converter drawings dimensioned from the seat reference point on one converter and from the accelerator heel point on the others",
+    "a seat maker's sheet in inches beside metric drawings",
+    "re-sent telematics batches after modem outages",
+    "absence episodes continued across month ends as separate records"
   ],
-  "stakeholder_role": "the transport body's network planning lead, preparing the panel's 2027 crossing choice",
-  "role_family": "capacity_planner",
+  "stakeholder_role": "the service's head of fleet, preparing the Fleet and Estates Committee's choice of cab for the 2027 ambulance order",
+  "role_family": "procurement_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "rail/barrier_events_2025_26.csv",
-    "rows": 227340,
-    "entity": "one barrier down or up event at one level crossing",
-    "grain": "event",
+    "file": "occupational_health/cab_fit_measurements.xlsx",
+    "rows": 3100,
+    "entity": "one occupational health body measurement of one member of staff",
+    "grain": "staff member x measurement",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "government_agency",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "England (fictional shire counties)",
+    "geography": "England (an invented ambulance service)",
     "currency": "GBP",
-    "org_type": "a sub-national transport body for four shire counties (the Shires Transport Board)",
+    "org_type": "a regional ambulance service formed in 2023 from two predecessor ambulance services",
     "invented_names": [
-      "Shires Transport Board",
-      "Northshire",
-      "Southshire",
-      "Eastshire",
-      "Westshire"
+      "Hallowfen Ambulance Service",
+      "Pennick Coachbuild",
+      "Wrenfold Bodies",
+      "Ostrel Vehicle Conversions",
+      "FD35",
+      "RD43"
     ],
     "people": [
-      "Andrew Stevens",
-      "Gareth Davis"
+      "Brenda Ward",
+      "Liam Jackson"
     ]
   },
   "deliverables": [
-    "crossing_delay_2025_26.xlsx",
-    "crossing_choice_2027.docx"
+    "cab_fit_2027.xlsx",
+    "cab_fit_2027.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "A queue held by a stoppage can only leave as fast as the next control downstream lets it through, so where that control sits close enough for the released queue to fill the space between them, each stoppage costs far more than a release at the road's own capacity implies, and the cost has to be built through the downstream control's recorded opening periods rather than from the stoppage and the arrivals alone.",
-  "driver_concrete": "Each crossing's closure delay is each counted vehicle's extra time to reach the far count site; at Mill Lane both directions' queues pass the single-track river bridge 42 metres beyond the crossing only in its fixed-time shuttle greens, with seven vehicles of storage between the two stop lines, which lifts Mill Lane's closure delay from 5,000 to 10,000 vehicle-hours and puts it ahead of Station Road's 7,000.",
-  "stump": "A competent solver releases each closure's queue at 1,800 vehicles an hour per lane once the barriers rise and names Station Road; the step that lands it there is releasing Mill Lane's queues at the road's own rate when the river bridge's shuttle signals 42 metres on pass each direction only in its own green.",
+  "question_form": "how-many",
+  "driver": "An adjustable part is judged against its own stated range, but where it is mounted a fixed structure behind it stops it short of that range at a point set by each user's own posture, so a count of the users it can serve has to place each user's whole posture against the surrounding structure, and the option with the longest stated range loses exactly the users who need its far end.",
+  "driver_concrete": "Each shortlisted ambulance cab's count of rostered drivers it fails to fit, where Wrenfold moves its bulkhead forward to lengthen the saloon, so the backrest set at each tall driver's predicted back angle meets the bulkhead before the seat reaches the driver's predicted hip point, which removes the advantage of its longer seat travel; not the drivers outside the seat maker's fore-aft range, nor that range with the vision zone.",
+  "stump": "A competent analyst places each rostered driver's predicted hip point in the seat maker's fore-aft range as each converter mounts it, checks the predicted eye point against the chassis vision lines and files the Wrenfold cab on the FD35 chassis as failing the fewest drivers; the step that lands it there is taking the seat's stated travel as usable when Wrenfold's forward bulkhead stops the backrest of its tall drivers short of their positions, so the Pennick cab on the FD35 chassis fails the fewest.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task147": "task147 loses a booking request when any unit of its run is full at the forecast date (a request taken whole or not at all); here nothing is lost or refused: every held vehicle crosses, and the decisive quantity is how long the queue a barrier closure releases takes to clear through a second control downstream whose recorded green periods and finite storage pace it.",
-    "task159": "task159 forecasts the riders a train cannot take because its room is set by the load it brings from its branch; here there is no service with room, only a continuous road queue released by a barrier and paced through a downstream signal with storage for a few vehicles, read retrospectively on the logged greens rather than forecast."
+    "task258": "task258 moves units across a threshold through a step each unit's served document must carry; here no intervention moves anything: each driver's predicted posture is placed against a fixed structure behind an adjustable seat, and the cab with the longest stated travel loses the drivers who need its far end",
+    "task303": "task303 credits an intervention with a shared upstream loss every unit logs; here the decisive relation is geometric, a reclined backrest meeting a bulkhead at a point each driver's own torso angle sets, with no shared record or upstream source",
+    "task256": "task256 carries a reference survey to a population known only by stature and weight to fill a box of ranges; here every driver is measured, every stated range is already met on paper, and the miss is the structure behind the seat stopping the backrest short of each tall driver's position"
   },
   "lineage": [
+    {
+      "domain": "urban-regional-science",
+      "subdomain": "network-analysis",
+      "client_domain": "urban-regional-science",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G8",
+        "G7"
+      ],
+      "gate_g": "binding_constraint",
+      "stump_strategy": "binding_constraint",
+      "calibration_form": "physical_verification",
+      "context_artifact": "monitoring_export",
+      "role_family": "capacity_planner",
+      "forum": "committee_or_panel",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "government_agency",
+      "layer2_family": "allocation_constraints",
+      "layer2_pattern": "own:downstream-control-gates-a-released-queue",
+      "deliverables": [
+        "crossing_delay_2025_26.xlsx",
+        "crossing_choice_2027.docx"
+      ],
+      "question_form": "what",
+      "driver": "A queue held by a stoppage can only leave as fast as the next control downstream lets it through, so where that control sits close enough for the released queue to fill the space between them, each stoppage costs far more than a release at the road's own capacity implies, and the cost has to be built through the downstream control's recorded opening periods rather than from the stoppage and the arrivals alone.",
+      "driver_concrete": "Each crossing's closure delay is each counted vehicle's extra time to reach the far count site; at Mill Lane both directions' queues pass the single-track river bridge 42 metres beyond the crossing only in its fixed-time shuttle greens, with seven vehicles of storage between the two stop lines, which lifts Mill Lane's closure delay from 5,000 to 10,000 vehicle-hours and puts it ahead of Station Road's 7,000.",
+      "stump": "A competent solver releases each closure's queue at 1,800 vehicles an hour per lane once the barriers rise and names Station Road; the step that lands it there is releasing Mill Lane's queues at the road's own rate when the river bridge's shuttle signals 42 metres on pass each direction only in its own green.",
+      "world": {
+        "geography": "England (fictional shire counties)",
+        "currency": "GBP",
+        "org_type": "a sub-national transport body for four shire counties (the Shires Transport Board)",
+        "invented_names": [
+          "Shires Transport Board",
+          "Northshire",
+          "Southshire",
+          "Eastshire",
+          "Westshire"
+        ],
+        "people": [
+          "Andrew Stevens",
+          "Gareth Davis"
+        ]
+      },
+      "architecture": "2",
+      "fate": "spent at stage 4 on 2026-11-03 after four determinism judge rounds: its queue survey, the default path's validation organ, agreed with the no-blocking replay and contradicted the world, an honest survey names Mill Lane at a glance, and the finite-storage rule the golden needs could only be filed by stating most of the decisive step",
+      "shell": {
+        "question form": "what",
+        "second-sentence opener": "build",
+        "rounding opener": "give",
+        "deliverable set": "docx+xlsx"
+      }
+    },
     {
       "architecture": "1",
       "fate": "spent at stage 1 on 2026-11-02, never registered: twenty-two screens across nine task types (A1.1 to A1.22 in the design note), none clearing guard.py check and the three rules together",
@@ -101,5 +162,11 @@
     }
   ],
   "notes": "",
-  "registered": "2026-11-03T15:16:43Z"
+  "registered": "2026-11-03T20:54:02Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "set",
+    "rounding opener": "keep",
+    "deliverable set": "pdf+xlsx"
+  }
 }
