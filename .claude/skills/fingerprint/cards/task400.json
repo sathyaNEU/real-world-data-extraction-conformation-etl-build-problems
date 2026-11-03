@@ -1,0 +1,91 @@
+{
+  "task": "task400",
+  "architecture": "v1",
+  "drawn": "2026-11-03",
+  "slot_note": "new number in wave 7 of the Root-Cause range, numbered from seed RC06 (an area control centre's summer of tripled en-route delay, Supply Chain & Logistics); the seed's world cannot carry an honest unbanned draw (its decisive step, a queue replay in which a short hour's backlog outlives it, is task398's path-dependent re-run counterfactual and task399's capacity stock in other nouns; its honest strategy, decomposition_attribution, and its forcing event, a statutory filing, are both held by task398 in the window; and Supply Chain's only Root-Cause task type, interpretability, was ruled a backdrop for an operations world at task129 v1), so the build moves to another client domain, world and dataset under the same objective and number (CLAUDE.md, a stuck build is unblocked)",
+  "domain": "human-factors-ergonomics",
+  "client_domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "niche": "a Pilbara iron ore mine's vehicle interaction incidents between haul trucks and light vehicles, tripled in 2026 after the collision avoidance system's warning zones were widened, the same spring a contractor fleet arrived and production rose; the mine's safety steering committee picks the one 2027 vehicle interaction programme",
+  "objective": "root-cause",
+  "shape": "18",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G12",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who aligns the collision avoidance log (UTC) with the dispatch telemetry and the incident register (Western Australian time), maps the system's tags to fleet numbers through the dated tag register, rates vehicle interaction incidents per million hours worked by employer, location and shift, and reads the vendor dashboard's interaction counts and acknowledgement rate correctly, files contractor operator retraining (the contractor's 2026 rate is about two and a half times the mine's), wrong because the operators of both employers stopped slowing after alarms once the warning zones were widened in March 2026 and the incidents rose behind those unheeded alarms.",
+  "domain_test": "The deciding quantity is the operators' behavioural response to collision warnings set against the share of warnings that were false, the human factors measure of alarm credibility (signal detection and the cry-wolf effect), read from what each operator did in the seconds after each warning; with a bank's or a retailer's nouns there is no warning, no operator response and no detection zone, and the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:warning-credibility-read-from-what-operators-did-after-each-warning",
+  "layer1": [
+    "collision avoidance alarms logged in UTC against dispatch telemetry and the incident register in Western Australian time",
+    "collision avoidance tags moved between vehicles after repairs, mapped to fleet numbers only through a dated tag register",
+    "contractor fleet numbers and badge numbers in the contractor's own formats",
+    "a mid-year firmware update that renamed the alarm level codes",
+    "telemetry snapshots with GPS dropouts in the pit",
+    "hours worked from two payroll systems, the contractor's on a different period basis"
+  ],
+  "stakeholder_role": "the mine's health and safety superintendent, who puts the vehicle interaction review to the site safety steering committee, which picks the one 2027 programme (the prompt names no one)",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "cas_alarm_events_2025-2026.csv",
+    "rows": 150000,
+    "entity": "one collision avoidance alarm raised on one haul truck: tag, level, onset time (UTC), the other vehicle's tag and the range at onset",
+    "grain": "alarm event",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "incident_or_complaint",
+  "org_family": "other",
+  "world": {
+    "geography": "Australia, the Pilbara region of Western Australia (a fictional iron ore mine, its owner and its contractor)",
+    "currency": "AUD",
+    "org_type": "an iron ore mining company operating one open-pit mine with a contractor haul fleet",
+    "invented_names": [
+      "Corella Iron Ore",
+      "Mount Bracken",
+      "Westray Haulage"
+    ],
+    "people": [
+      "Shari Jefferson",
+      "Kerri Smith",
+      "Ana Cuevas"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A warning device's trigger was widened so most of its activations became false, and the people it warns stopped acting on any activation, so incidents rose behind more warnings; counting activations reads the widening as more hazard detected and the incidents per hour put the rise on the newcomers who arrived the same spring, while reading what each person did in the seconds after each activation, the same people before and after the change, puts the rise on the warning's lost credibility.",
+  "driver_concrete": "Read each collision avoidance alarm against the truck's speed in the seconds after it: after the warning zone was widened in March 2026 the share of alarms followed by a slowdown fell from about three in four to about one in five, for the mine's own operators as much as for the contractor's, and most 2026 collisions and significant near misses followed an alarm nobody acted on, so the 2027 programme is the warning zone reconfiguration, not contractor retraining or separating light vehicles at the ramp junction.",
+  "stump": "A competent solver rates vehicle interaction incidents per million hours by employer, finds the contractor's operators (on site from April 2026) at about two and a half times the mine's, sees the incidents concentrate at the North pit ramp junction and the system's interactions up more than four times as production rose, and funds contractor operator retraining; the step that lands it there is reading the alarms as hazards detected, when the operators' speed after each alarm shows they stopped acting on them once the warning zone was widened in March, so the rise belongs to the warning zone configuration.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task107": "v2 scaled a lottery pilot by receipt through practitioners reassigned into the comparison arm (a contaminated arm reached by a timetable, directory and register join); here there is no arm and no assignment: a configuration change made most warnings false and every operator stopped acting on them, read from each truck's speed after each warning.",
+    "task121": "v4 read survey ratings against the conditions each passenger's journey ran under (a halo on ratings); here no rating or survey: the operators' own driving in the seconds after each collision warning, set against the share of warnings that were real, before and after the zones were widened.",
+    "task191": "v3 (never shipped) read each depot's failure-to-act rate on genuine warnings once fixed structures that inflated the raw counts were caught (planted structures, spent at stage 4); here nothing inflates a count to be caught: the widened zone is the cause itself, and the step is what operators did after warnings before and after it."
+  },
+  "lineage": [],
+  "notes": "org_family other: a mining company (no mining key in the vocabulary). Figures in the analyst test and stump are provisional until the stage 2 harness. Gate G decomposition_attribution answered in the design note: the rise is assigned to the right driver and the data give no other honest Gate G. Window read with the sibling build task399 architecture 4 card (batch4-task399, 11e8631) in place, which moved its decisive pattern from G3 to G5.",
+  "registered": "2026-11-03T10:09:48Z"
+}

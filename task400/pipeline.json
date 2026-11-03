@@ -1,0 +1,38 @@
+{
+  "task": "task400",
+  "status": "DESIGN",
+  "domain": "human-factors-ergonomics/safety-incident-error-analysis",
+  "objective": "root-cause",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-03",
+  "seed": "RC06 (an area control centre's summer of tripled en-route delay); the seed's world could not carry an honest unbanned draw (its queue replay is task398's re-run counterfactual and task399's stock in other nouns; decomposition_attribution and a statutory filing are held by task398 in the window), so the build moved to a Pilbara iron ore mine's collision avoidance warnings under the same objective and number",
+  "stump": "A competent solver rates vehicle interaction incidents per million hours by employer, finds Westray's operators (on site from April 2026) at about two and a half times the mine's, sees the incidents gather at the North ramp junction and the system's interactions up more than four times as production rose, and funds A, Westray operator retraining; the step that lands it there is reading the alarms as hazards detected and the acknowledgements as responses, when each truck's speed after each alarm shows that operators of both employers stopped slowing for alarms once the warning zone was widened in March, so the rise belongs to the zone setting and the programme is C.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "guard.py check WARN on the registered card 2026-11-03 (repeat.gate_g and repeat.question_form against task398); NOTE test.same_driver_older against task107 v2 and task121 v4, differentiated; nearest driver 0.09 task191 v3 (lineage, never shipped); window read with task399 architecture 4 (batch4-task399, 11e8631) in place"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: write the world model (generator/world.py) and the pricing harness on the clean truth: alarm onsets by zone and level per truck, operator response probability by alarm credibility over time (habituation over weeks after the 9 March 2026 widening), speed traces, incidents generated from unheeded critical alarms, Westray on the denser North waste circuit from April, production up from May; size the ladder (rung 0 Westray per million hours, rung 1 the junction, rung 2 interactions as exposure, rung 3 the response collapse), then the readability screen, fork table, closure table, asks and ceiling.py, prompt.txt; precut.py exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}
