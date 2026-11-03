@@ -1,224 +1,159 @@
 # task479 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 6, drawn 2026-10-21 after architectures 1
-to 5 were spent at stage 4; nothing of any earlier world or decisive step is kept (the ask devices that held in
-architectures 3 and 5 are re-skinned).
+Status lives in `pipeline.json`; this note holds the design. Architecture 7, drawn 2026-11-03 after architectures 1 to
+6 were spent (6 at the 11-01 re-check's stage 4, still at the portal pending). Nothing of any earlier world, dataset,
+decisive step or prompt shell is kept; the slot moves out of healthcare into Physical & Environmental Sciences.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task479.json` (architecture v6, lineage v1 to v5 spent), registered
-  2026-10-21 after a pull. Guard WARN only, answered here: `overuse.objective` (the lane), `people.first` (Michelle,
-  drawn by `guard.py names --geo us --seed 4796`). Redrawn at the draw: gap population with G17, then time with G13,
-  then population with G16 (same-puzzle blocks against task471, task178 and task480) to gap time with G16, Gate G
-  `signal_vs_noise_or_hold`, differentiation lines for task130, task148 and task241; shape 10 to 15 at stage 3 (ban.shape against task272, drawn meanwhile). People: Steven Coleman and
-  Michelle Patrick.
-- **Pairing:** Healthcare Delivery & Health Economics, task type `payment-claims-health-plan-analytics`, which serves
-  ETL: the administrator's claims lag reports in two layouts, the eligibility file and the carrier's specific
-  reimbursements conformed by member employer and plan year and restated as each employer's expected 2027 retained
-  claims.
-- **The decision and the quantity:** the trust's trustees surcharge the January 2027 contributions of the member
-  employers whose expected 2027 retained claims per member per month exceed the claims component of the 2027
-  contribution each employer elected. Forward facing: 2027 has not been incurred.
-- **Data-native sentence:** most member employers cover fewer than three hundred members, so one member's large claim
-  moves a year's experience by more than employers truly differ, and three years of a small employer's own record say
-  little about its expected claims.
-- **Strategy:** `uncertainty_hold`; Gate G `signal_vs_noise_or_hold`; gap `time`; generators G16, G17. Layer 2 family
-  `forecast_uncertainty`, pattern `own:each unit's expected level read as its own short noisy history weighted against
-  the pool by the share of its spread that is signal`.
+- **Card:** `.claude/skills/fingerprint/cards/task479.json` (architecture v7, lineage v1 to v6 spent), registered
+  2026-11-03 after a pull. Guard WARN only, answered in the card's notes: `repeat.gate_g` (binding_constraint repeats
+  task307 v2, a spent card in another domain, and the label is the honest one for a shared draw limit). Redrawn at the
+  draw: the context artifact from operations_log (ban.artifact against task157) to filed_standard; the forcing event
+  from statutory_or_regulatory_filing (ban against task173) to audit_or_inspection; the decisive pattern from C (spent
+  under gap objective and binding_constraint in ten builds) and from G7 (ban.pattern against task157) to none with G3
+  first; personas from Kenneth and Calvin (older builds) to Alyssa Alexander and Dylan Gonzalez, drawn with
+  `guard.py names --geo us --seed 4797`. Differentiation lines on the card for task106, task303, task482 v7, task87 and
+  task472.
+- **Pairing:** Physical & Environmental Sciences, task type `emissions-inventory`, which serves ETL: two batch-system
+  exports across the July 2026 cutover, a vent calculation basis kept in two unit systems, the oxidizer's one-minute
+  compliance log and the plant's equipment register conformed into the permit's monthly record for process vent unit
+  EU-P1, and the unit's 2026 total read against its limit.
+- **The decision and the quantity:** whether Pellston Fine Chemicals' process vent unit EU-P1 kept within its
+  calendar-year VOC limit of 3.2 tons in 2026, and by how much it went over if it did not. The Chalmont County Air Quality
+  District's inspector reviews the 2026 records at the February 2027 compliance evaluation, and the plant's 2027
+  production increase under the 2025 permit revision rests on the unit's compliance. Retrospective by nature, with its
+  reason: the permit's compliance year closed on 31 December 2026 and the determination is the record the evaluation
+  reads.
+- **Shape:** 15 (fields to one schema): the permit's monthly EU-P1 record, each month across its fields, with the
+  determination and its margin; the criteria sum is written at stage 2.
+- **Strategy:** `binding_constraint`; Gate G `binding_constraint`; gap `objective` (the controlled figure the field
+  computes is right for what reached the oxidizer and is not what the limit counts); generators G3 (record against
+  operation) and G7 (operating window). Layer 2 family `allocation_constraints` (capacity and queueing), pattern
+  `own:the capture of a closed-vent system read minute by minute as the control device's maximum draw over the
+  concurrent vent flow`.
+- **Data-native sentence:** nine vents share one header to an oxidizer whose fan was sized before the 2025 expansion
+  added the second fluid-bed dryer and the reactor bay's charging exhaust, and each vent's flow follows its own batch's
+  progress, so the header's total flow is set by coincidences between batches that no record stores.
+- **Abstraction sentence:** against task106, the nearest approved build in the shared-capacity family, the sentence a
+  reviewer would write for both ("a capacity several users draw on, counted in full for each") names the family and not
+  a driver: task106 sizes each supplier against a whole pool of spare legs that only one of them can use, a static
+  double-booking per corridor, while here nothing is allocated, every vent's gas is real and reaches the header, and
+  the step finds the minutes in which the vents' summed flow exceeded one fan's instantaneous maximum. Against task303,
+  the nearest approved build on the link (siblings' records in the same minute), co-timed tickets there are one
+  upstream event to subtract, while co-timed vents here are all genuine discharges and the step adds the share the
+  shared device could not draw. No driver-level sentence covers either pair.
+- **Prototype (the analyst test priced in code before the card):** a minute-level 2026 of six reactors, two fluid-bed
+  dryers and a still on one header (scratch `proto_x6.py`, four seeds): at a 3,800 scfm fan and 99.4 per cent tested
+  destruction the field's method with offline minutes files 2.1 to 2.4 tons, the fan's maximum checked on hourly mean
+  header flow 2.7, and the minute-by-minute capture 4.0; at 4,000 scfm the golden is 3.2 to 3.5 against 2.1 to 2.4. The
+  excess, about 1.8 tons, is under 1 per cent of the VOC the vents carry, spread over several hundred short
+  coincidences. Targets for the generator, not shipped figures.
+- **Sources:** every file is synthetic, written by `generator/`; the plant, district, vendors and people are invented;
+  no real dataset is used.
 
 ## Default path
 
 A strong analyst with every field read correctly:
 
-1. Reads the memo: an employer is surcharged when its expected 2027 retained claims PMPM exceed the claims component
-   of its elected 2027 contribution, the evidence the trust's 2023 to 2025 experience, each year's retained claims
-   trended at 7 per cent a year to 2027.
-2. Conforms the two lag reports (the May 2026 cells once), takes each year's claims paid through March of the next,
-   nets Westerby's reimbursements through the policy schedule, counts member months, and trends each employer's three
-   years to a member-month weighted 2027 PMPM.
-3. Compares each employer's trended experience with its claims component.
+1. Reads the permit: EU-P1 is the nine vents on closed-vent system CVS-1 routed to RTO-1; its VOC is limited to 3.2
+   tons per calendar year; the control efficiency is the one demonstrated in the most recent performance test (99.4 per
+   cent in May 2025); the month's EU-P1 VOC is calculated from the batch records and the vent calculation basis.
+2. Conforms the batch records: the legacy historian's export (January to June, local time) and the new MES export
+   (from July, UTC), the cutover week's steps once, the MES operation codes mapped to the basis's steps, and the
+   licensed product line's Nm3/h and kg/h rows converted at the stated reference conditions.
+3. For each executed step, VOC vented is the basis's rate for that product and step times the step's recorded minutes,
+   summed by month.
+4. Applies 99.4 per cent destruction to every pound vented while RTO-1 was on line in its one-minute log and counts the
+   pounds vented in its offline minutes as uncontrolled: the closed-vent system's capture taken as complete, which is
+   the field's method for controlled emissions from a closed-vent system with its downtime accounted for.
+5. Sums 2026 and compares the total with the 3.2-ton limit.
 
-**Ends on:** CR104, CR109, CR136, CR167 and CR176 surcharged
+**Ends on:** 2.2 tons, under the 3.2-ton limit
 
-On that path CR104, CR109 and CR136 stand at $578.2, $628.4 and $672.6 against claims components of $548.88, $583.93
-and $594.31, and CR113, CR118, CR131 and CR149 at $459.6, $445.6, $452.5 and $421.5 against $475.30, $467.01, $468.10
-and $445.54.
+**Golden:** 4.0 tons, over the 3.2-ton limit by 0.8 tons
 
-**Golden:** CR113, CR118, CR131, CR149, CR167 and CR176 surcharged; weighed by credibility (Buhlmann-Straub, k of
-7,285 member months, the trust's level $500.25), CR104, CR109 and CR136 fall to $511.2, $522.5 and $557.9 and CR113,
-CR118, CR131 and CR149 rise to $492.5, $488.5, $486.1 and $466.0.
+The figures are the prototype's targets and are replaced by the generator's measured ones at stage 3.
 
 ## Stump sentence
 
-The default path trends each employer's own 2023 to 2025 retained claims to 2027 and files CR104, CR109, CR136, CR167 and CR176 surcharged, because it never asks how much of a small employer's three years is chance: one member's large claim moves a forty-member employer's year by more than the employers truly differ, so the small employers with high experience are expected near the trust's level and under their claims components, and the small employers with low experience, whose claims components sit well under the trust's level, are expected over them.
+The default path applies RTO-1's tested 99.4 per cent destruction to every pound the batch records vent while the oxidizer was on line, counts its offline minutes uncontrolled and files EU-P1 at 2.2 tons, under its 3.2-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 3,800 scfm, the excess lifts PSV-31 to atmosphere untreated, and EU-P1 emitted 4.0 tons.
 
 ## Three rules
 
-Task type: payment-claims-health-plan-analytics (Healthcare Delivery & Health Economics): the administrator's claims lag reports in two layouts, the eligibility file and the carrier's specific reimbursements conformed by member employer and plan year into each employer's retained claims per member month, a conformation serving Data Extraction & Conformation (ETL).
+Task type: emissions-inventory (Physical & Environmental Sciences): the plant's two batch-system exports, its vent calculation basis in two unit systems, the oxidizer's one-minute compliance log and its equipment register conformed into the permit's monthly record for process vent unit EU-P1, a conformation serving Data Extraction & Conformation (ETL).
 
-Domain test: the deciding quantity is each member employer's expected 2027 retained claims per member per month, worked the way a health plan actuary experience-rates small groups: the group's own experience weighed against the pool's by its credibility, which the pool's own experience sets from how far each group's years spread around its own mean against how far the groups' means spread around the pool's (Buhlmann-Straub), the claims capped at the specific deductible.
+Domain test: the deciding quantity is EU-P1's 2026 VOC emitted to atmosphere, worked the way an air permit engineer works a batch-process vent inventory: each executed step's vented VOC from the vent calculation basis, times one minus capture times destruction, where a closed-vent system captures every pound only while its control device can take every vent at once and the destruction applies only to the gas the device receives.
 
-Swap: "which stores' expected 2027 shrinkage exceeds their budget, from three years of losses" keeps a short noisy history per unit and loses the step's ground: no member claim distribution capped by a specific deductible, no pool of groups underwriting each other, no experience rating whose credibility the pool's own claims set.
+Swap: "did the call centre's queue drop more calls in 2026 than its contract allows" keeps a capped server shared in time and loses the step's ground: no vent stream carrying solvent vapour at its own concentration, no destruction applied to the share the fan draws, no relief releasing the header's mixed gas, so the swapped task has no counterpart to the VOC that left untreated at each coincidence or to the tested efficiency the easy route applies to every pound.
 
-Layer 1: the claims lag report in two layouts across the May 2026 platform move (MM/YYYY dollars against YYYY-MM cents, May sent by both), Westerby's reimbursements keyed by policy numbers rewritten at the 2025 renewal, member ids reissued at the summer 2026 eligibility move; each is how the producing system writes, nothing is placed to be caught, and checks.py asserts the call holds under them (SF2, SF3, X1).
+Layer 1: the batch records in two layouts across the July 2026 cutover (local time against UTC, batches renumbered, the cutover week's steps in both exports), the vent calculation basis in two unit systems (scfm and lb/hr against Nm3/h and kg/h for the licensed product line), the oxidizer's log in local standard time all year and the register's merged headers and tag spellings; each is how the producing system writes, nothing is placed to be caught, and checks.py asserts the call holds under every reading of them.
 
-Layer 2: forecast_uncertainty, the evidence judged with its uncertainty: the choice that flips the call is reading each employer's expected claims as its experience weighed by the share of its spread that is signal, instead of the experience itself.
+Layer 2: allocation under real constraints (capacity and queueing): the choice that flips the call is reading the closed-vent system's capture minute by minute from the vents' coincident flow against RTO-1's maximum draw, instead of taking it as complete.
 
-Decisive step: estimating each employer's expected 2027 retained PMPM by credibility against the trust's level, which puts CR104, CR109 and CR136 (34 to 98 members, experience raised by a few large claims) under their claims components and CR113, CR118, CR131 and CR149 (48 to 155 members, low experience, claims components well under the trust's level) over theirs.
+Decisive step: rebuilding the header's total flow minute by minute from every vent's executed steps and the basis's flows, and charging as untreated the share of each minute's mixed gas above RTO-1's 3,800 scfm fan maximum, which lifts PSV-31 at the oxidizer inlet; the share is zero in most minutes and reaches a quarter of the gas in the minutes when both dryers dry while a reactor charges.
 
-Not semantics: every field, unit and definition read correctly (the two lag layouts, cents and dollars, the reimbursements and policy numbers, member months, retained claims before rebates) still leaves the easy route comparing each employer's own trended experience with its claims component, because no field says how much of an employer's experience is chance; the step is the inference that a small group's three years are mostly noise, which the spread of the employers' years shows and no sentence says.
+Not semantics: every field, unit and definition read correctly (the two layouts, UTC and local time, Nm3 and scf at their reference conditions, the step codes, the register's tags, the permit's standard conditions) still leaves the easy route treating every vented pound as reaching RTO-1, because no field records how much of each vent's gas the fan drew; the step is the inference that the header's summed flow exceeded the fan's maximum in thousands of minutes, which the coincidence of the steps shows and no column holds.
 
-Not rule application: the memo fixes the population, outcome, window, unit and comparison and names the evidence and the trend, and no rule says how an employer's expected claims are read from it; executing every filed rule on each employer's own experience files CR104, CR109, CR136, CR167 and CR176 surcharged.
+Not rule application: the permit files the population, outcome, window, unit and comparison, the records the month's VOC is calculated from and the tested efficiency, and no rule says how much of each vent the oxidizer received, so executing every filed rule files 2.2 tons; the enumerated family (destruction on every pound, offline minutes added, the fan's maximum checked on hourly, 15-minute, 5-minute and one-minute header flow, the excess charged to the last vent to open) spreads 1.7 to 4.0 tons, the standing family (the constructions that respect the fan's instantaneous maximum at the records' minute resolution with the relief at the oxidizer inlet) spreads under 0.05 tons, and the ruling-out is silent: no sentence names coincident flow, a capacity check or what PSV-31 releases.
 
-Analyst test: a strong analyst who conforms every file and reads every rule, taking each employer's own trended experience as its expected claims, files CR104, CR109, CR136, CR167 and CR176 surcharged (the default path's Ends on); one who takes 2025 alone files the same; one who takes the trust's level for every employer adds CR181; only weighing each employer's experience by its credibility files the golden six; checks.py runs them on the clean truth (R3a, R3b, R3c).
+Analyst test: a strong analyst who conforms every export and reads every condition, takes the basis's rate times each step's minutes, applies the tested 99.4 per cent to every pound vented while RTO-1 ran and counts its offline minutes uncontrolled files EU-P1 at 2.2 tons, under the 3.2-ton limit (the default path's Ends on); one who checks the fan's maximum against hourly mean header flow files about 2.7 tons, still under; only the minute-by-minute capture files 4.0 tons, over; checks.py runs each on the clean truth.
 
-Estimand: the renewal review memo (crbht_2027_renewal_review.pdf, sections 2 and 3): the population (each member employer's members in plan year 2027, the plan and employers unchanged), the outcome (retained claims, net of Westerby's specific reimbursements and before pharmacy rebates), the window (plan year 2027), the unit (per member per month) and the comparison (exceeding the claims component of the elected 2027 contribution), the evidence the trust's 2023 to 2025 experience for every employer, each year's retained claims trended at 7 per cent a year to 2027.
+Estimand: the permit (Chalmont County Air Quality District permit to operate, Revision 3, conditions on EU-P1): the population (the nine vents of EU-P1 on closed-vent system CVS-1), the outcome (VOC emitted to atmosphere from EU-P1 at every release point), the window (calendar 2026), the unit (tons of VOC) and the comparison (the 3.2-ton calendar-year limit), the month's VOC calculated from the batch records and the vent calculation basis, with the efficiency demonstrated in the most recent performance test.
 
-No decoy: nothing is planted: the lag reports, eligibility, reimbursements, high-cost report and elections are the producing systems' records, the memo states the basis without a method, and no projection, rating, earlier review or published figure ranks the employers on 2027.
+No decoy: nothing is planted: the batch exports, the vent basis, the compliance log, the register, the permit, the test report and the solvent balance are the producing systems' records; no memo, draft, earlier record, report or published figure states or ranks EU-P1's 2026 emissions.
 
-No certified replay: no certified or published credibility, manual rate or projection ships; the method is not recovered by reproducing any figure.
+No certified replay: no certified, filed or published 2026 EU-P1 figure ships, and the method is not recovered by reproducing any figure; the 2025 test confirms the efficiency, which both routes use.
 
-Lesson: an expected level read from a short record is the record weighed against the pool by how much of its spread is signal, and for a small health group three years of claims are mostly the luck of a few members; no build on file estimates each unit's level by shrinking its own noisy record toward the pool by a credibility the pool's own spread sets.
+Lesson: a closed-vent system captures every pound only while its control device can take every vent at once, so where intermittent batch vents share a fixed-draw oxidizer the capture is read from the vents' coincidences against the draw; no build on file reads a shared device's instantaneous limit against coincident loads rebuilt from batch records.
 
 ## Survivor anatomy
 
-Written at the 2026-11-01 re-check of the shipped build, each test run on the cut pack (scratch measurement, leave-one-year-out and every per-employer sort).
+Actor: the minutes in which the header carried more than RTO-1's fan could draw, and the gas above the draw, have no column in any file: they are a relation across every vent's executed steps (their coincidence on one clock) and the register's fan maximum, which nothing stores.
 
-Actor: the property that decides, how much of an employer's three years is chance, has no column in any file; it is a relation between each employer's own years and the spread of every employer's mean around the trust's level, which nothing stores.
-Link: the signal is read by comparing each employer's year-to-year spread with the spread across employers, a cross-unit comparison no key offers and no sentence invites; the memo names only each employer's own trended experience as the evidence.
-Reflex: the renewal underwriter's reflex, each group's own trended experience, sits at R2 and files CR104, CR109, CR136, CR167 and CR176 (Ends on); the trust's level for every employer (R0) adds CR181 to the golden.
-Back-test: fails here. A leave-one-year-out back-test on the pack refutes the easy route: own experience never beats the credibility estimate (weighted RMSE 115.9 against 109.9 holding out 2025, 86.8 against 72.4 holding out 2024, 60.2 against 60.0 holding out 2023), so a solver who validates is pointed toward the pool; recorded for the author, not repaired on a shipped build.
-Second use: every file the decisive step reads (the two lag reports, eligibility, the reimbursements, the policy schedule, the elections) is read by the default path too; the step reads no file of its own.
-Shock: fails here. The golden six are exactly the six lowest claims components in the elections workbook (positions 0 to 5 of 18 on that sort); they are no interval of member months, own experience, own experience less component or 2025 experience. Recorded for the author, not repaired on a shipped build.
-Pins: the memo files the population, outcome, window, unit, comparison, evidence and trend; no sentence names credibility, a pooling point, a manual rate or a full-credibility standard, and deleting any filed sentence leaves the credibility set unchanged (the fork table's convergences).
+Link: the coincidence is read by sweeping all nine vents' steps on one clock, a cross-unit comparison no key offers (the batch exports are keyed by unit and batch) and no sentence invites; the register carries RTO-1's maximum and PSV-31's discharge as equipment data among many.
+
+Reflex: the field's method for controlled emissions (vented VOC times one minus the tested destruction, the closed-vent system's capture taken as complete, offline minutes uncontrolled) sits at R1 and files 2.2 tons, under the limit (the default path's Ends on).
+
+Back-test: the textbook route validates: the plant's 2026 solvent balance (purchases less product, waste and recovery) reproduces the basis's vented VOC within about 2 per cent, the 2025 test confirms 99.4 per cent, and the compliance log shows the combustion temperature held; none of them sees what the fan did not draw.
+
+Second use: every file the step reads is read by the default path too: the batch exports (each step's minutes), the vent basis (each step's flow and VOC, the flow being the basis's own input to its VOC), the register (which vents sit on CVS-1, RTO-1's rating, PSV-31) and the compliance log (offline minutes).
+
+Shock: the excess is spread over several hundred short coincidences, and the months it lands in are not the months with the most vented VOC or the most batches; no shipped statistic shows it, and the golden's monthly figures are no interval of any shipped sort (asserted at stage 3).
+
+Pins: the permit files the population, outcome, window, unit and comparison and the efficiency's source; no sentence names coincident flow, the header's total, a capacity check or what PSV-31 releases.
 
 ## Readability screen
 
-Each rung, the sentence or file a reader would have to read to take it, and whether any shipped text hands it over.
-
-| Rung | What takes the reader there | Verdict |
-|---|---|---|
-| R0 the trust's level for every employer | the memo's "the trust's experience" | readable |
-| Layer 1: two layouts, reimbursements by policy, reissued ids | the files' own headers and the policy schedule | readable |
-| R1 2025 experience alone, trended | the lag report | readable |
-| R2 (default path) each employer's three years trended | the memo and the lag report | readable |
-| R3 (decisive) each employer's experience weighed by its credibility | nothing: no sentence names credibility, a manual rate, a pooling point or a full-credibility standard; the plan summary describes the design and the stop-loss only | silent |
+Written at stage 2.
 
 ## Semantic fork table
 
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | completeness of each plan year | claims paid through March of the next are complete | a lag allowance | same call | memo section 3; every cell within three months (SF1) |
-| SF2 | May 2026 in both lag reports | one cell | both | same call (May 2026 carries no 2023 to 2025 claims beyond March; identical cells, asserted) | the two reports' paid months (05/2026 and 2026-05 cells equal at 100 to 1); SF2 |
-| SF3 | member months | a member enrolled in the month | persons | same call (no reissued id before July 2026, asserted) | memo section 2; SF3 |
-| SF4 | pharmacy rebates | before rebates | net | not filed alternatives | memo section 2 |
-| SF5 | trend | each year's retained claims at 7 per cent a year | each claimant trended before the deductible | same call (asserted, L1b) | memo section 3 |
-| SF6 | the experience window | incurred 2023 to 2025, paid through March of the next | with 2026 to date | not filed alternatives | memo section 3, "2026 are not yet complete and are not part of the review" |
-| SF7 | the credibility form | Buhlmann-Straub with member-month weights, the trust's member-month level the complement | the employers' simple mean as complement; limited fluctuation at 1,000 to 3,000 lives; trend before the deductible | same call (asserted, L1b, C2) | checks.py L1b and C2 |
-| SF8 | the reimbursements | the claims over $150,000 in full | partial | same call (asserted) | SF8 |
+Written at stage 2.
 
 ## Ladder
 
-Built values from the cut pack (generator/checks.py L1 to L4, C2, C3), expected 2027 retained PMPM, dollars.
-
-| Rung | Route | Surcharged | CR104, CR109, CR136 / CR113, CR118, CR131, CR149 |
-|---|---|---|---|
-| R0 | the trust's level ($500.25) for every employer | the golden six and CR181 | 500.3 each |
-| R1 | 2025 experience alone | CR104, CR109, CR136, CR167, CR176 | 883.8, 634.8, 623.4 / 331.6, 365.2, 349.9, 396.9 |
-| R2 (default path) | each employer's three years | CR104, CR109, CR136, CR167, CR176 | 578.2, 628.4, 672.6 / 459.6, 445.6, 452.5, 421.5 |
-| Golden | credibility-weighted (Buhlmann-Straub) | CR113, CR118, CR131, CR149, CR167, CR176 | 511.2, 522.5, 557.9 / 492.5, 488.5, 486.1, 466.0 |
-
-- Dominance: every credibility form sits on one side of each employer's claims component, 2.4 per cent or more from it
-  (C2), and each employer the two sets differ on stands 2.4 per cent or more the other way on its own experience (C3).
-  CR181, the largest employer, is under on every form but over at the trust's level, so the call is not "the trust's
-  level for everyone".
-- The data separates the readings: the employers' years spread around their own means by an expected process variance
-  of 14.4 million per member month against a variance of the true levels of 1,973, so an employer needs 7,285 member
-  months for its experience to count for half.
+Written at stage 2.
 
 ## Closure table
 
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | each member employer's members in 2027 | filed (memo 2) |
-| 2 | Unit of account | per member per month | filed (memo 2) |
-| 3 | Attribution window | plan year 2027 | filed |
-| 4 | As-of dating | the extracts of 7 October 2026 | the files' own paid and coverage months, through September 2026 |
-| 5 | Version basis | one cell per employer, month, paid month and category | SF2 |
-| 6 | Denominator | member months | filed (SF3) |
-| 7 | Weighting | member months | SF7 (every form one call) |
-| 8 | Window length | plan years 2023 to 2025 | filed (SF6) |
-| 9 | Boundary inclusivity | exceed is strictly over | C2 (no employer within 2.4 per cent) |
-| 10 | Rounding path | unrounded against the claims component | prompt |
-| 11 | Tie-break | none | C2 |
-| 12 | Maturity and censoring | each year complete by March | SF1 |
-| 13 | Order of operations | conform, net, trend, weigh, compare | commutes (SF5) |
-| 14 | Row order | none | commutes |
-| 15 | Duplicate resolution | May 2026 once | SF2 |
-| 16 | Identity normalisation | employer ids across layouts | converge: the same CR codes in every file |
-| 17 | Netting against gross | net of reimbursements, before rebates | SF4, SF8 |
-| 18 | Dimensional units | cents against dollars | the header plan_paid_cents; the May 2026 cells both reports carry agree at 100 to 1 |
-| 19 | Code and status semantics | MED and RX | the codes as each system writes them (Medical and MED, Pharmacy and RX); never the stump |
-| 20 | Integerisation | none | commutes |
-| 21 | Clause scope | the test applies to every employer | filed |
-| 22 | Forward window contents | 2027 not yet incurred, plan and employers unchanged | filed (memo 2) |
+Written at stage 2.
 
 ## Literal reader
 
-The memo executed word for word asks for each employer's expected 2027 retained claims PMPM from the trust's 2023 to
-2025 experience trended to 2027; the literal question is what an employer's members are expected to cost, which for a
-small employer its own three years answer only in part, the trust's experience supplying the rest. A literal reader
-who takes an employer's own trended experience as its expectation has assumed its record carries no chance, which the
-spread of its years contradicts; every other reading converges or violates a quoted sentence (fork table). Re-run on
-the finished pack.
+Written at stage 2.
 
 ## Oracles
 
-- No shipped file carries an expected claims figure, a manual rate, a credibility or a ranking of the employers on 2027.
-- The rebate statement, the roster and the broker survey are distractors (metadata.json); none ranks the employers on
-  2027.
-- No control ties only under the golden on the asks.
+Written at stage 2.
 
 ## Ask sheet
 
-- **Ask A, each employer's July to September 2026 member months (eighteen figures, whole numbers).** H18 home: the
-  member months the third-quarter contributions are billed on, the base a surcharge is billed against (memo section
-  4). Path: the eligibility file. Primary device: D7, codes reissued: Hallam moved every employer to a new member-id
-  scheme in July or August 2026, reissuing each member from the move month, while about two fifths of the families
-  kept their old ids on the file for one or two more months; only birth date, sex and relationship within the
-  employer tie the two ids. Hazards: the subscriber id changes too.
-- **Ask B, each employer's members on the 2026 high-cost claimant report and their claims paid to date as last
-  reported (eighteen employers, two figures each, whole numbers and whole dollars).** H18 home: which employers carry
-  large claims into 2027 (memo section 4). Path: the high-cost report (report month, member id, employer, paid to
-  date), the eligibility file. Primary device: D1, the same records under two key schemes: the report carries each
-  member under the id the eligibility file carried that month, so a member reported before and after the move appears
-  as two members, each with claims to date. Hazards: the latest row, not the highest or the sum.
-- **The construction layer:** the call, the eighteen decisions and the chart; the cracker has them.
-- **Main population zero-counts (asserted):** the call reads 2023 to 2025 eligibility, the lag cells, the
-  reimbursements and the elections; every reissued id sits in July 2026 or later and the high-cost report is read by
-  ask B only (X1).
-- **Hazard table (asserted):** A1 to A3, B1, B2 in checks.py; none moves the call.
-- **Referee:** none.
-
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, July to September member months | a row per member id and month, no repeated key to resolve; keeps 0 of 18 | miss |
-| B, high-cost members and claims to date | the latest row per member id; keeps 2 of 36 | miss |
-
-- Mirror leakage: 3.7 per cent of ask weight on the cut pack (2 of 54).
-- Pair ceiling: 36.6 on the cut pack (weights 38 / 7 / 55: the cracker keeps the call and instructions, 47.0; the
-  mirror at the default path misses the set and keeps 11 of 18 decisions, 26.1). Re-measured by the stage 4 readers.
-- Measured by: generator/ceiling.py on the cut pack.
+Written at stage 2.
 
 ## Pre-ship check
 
-- Leak readers (Sonnet, medium, fresh unzips of target.zip, 2026-10-21): named no sentence carrying the decisive step and called the review lines harmless (the scored-read figures of that round are the retired practice and are not kept).
-
-- Judge (hand-built brief, Sonnet, medium): DETERMINISTIC, APPROVE; the set reproduces under Buhlmann-Straub, limited fluctuation at 1,000 and 3,000 lives and k from half to twice its estimate; Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no; Gate H domain pass, layers pass, decisive_step analytical. Report: determinism_check_report.md.
-- The 10/10 rules re-read against the built pack: the decisive step is credibility (analytical), the mess (two lag layouts, policy rewrites, reissued ids) is Layer 1 and moves no decision.
-
-- Re-check 2026-11-01 under the new gates, on the shipped cut (the rebuild reproduces target.zip at 8d3e2b83 byte for byte): leak.py LEAK on sweep 1 (crbht_data_dictionary.csv and crbht_extract_manifest_2026-10-07.csv describe the data; sweeps 12 and 13 clean); voice-check WARN on a count the data hold ("each of the eighteen employers") and the which-form quota; precut exit 0 with the survivor anatomy written (Back-test and Shock fail, measured); guard.py heart BLOCK ban.artifact against task474 (register, drawn 10-20, before this card), surface clean; figures_check 93 of 93. A repair was cut and gated (both files out, every reading converging on the files' headers, codes and paid months; the prompt saying "each member employer"; employer names off alphabetical id order and account managers drawn per row; freeze.py determinism PASS, leak.py REVIEW, precut, voice-check and figures_check green) and is not shipped: the stage 4 judge returned NOT_DETERMINISTIC, SEND_BACK (determinism_check_report_pass2.md) and the isolated leak reader read the memo the same way, so the shipped cut is restored and the architecture is spent. The re-root is the author's call.
-- The judge (pass 2) and the leak reader agree: the memo's section 3, read literally, takes each employer's own trended experience as its expected claims and files CR104, CR109, CR136, CR167 and CR176, the default path; the judge adds that nothing closes the broker survey as a complement. The sentence that would close the fork ("the expected cost given an employer's few members") names what the decisive step recognises, so the fork is the stump (build-pipeline, the fork-is-the-stump test) and no pin repairs it. The reader also named realism tells: employer names in alphabetical id order, account managers dealt round robin, ids in steps of four and five ascending with size.
+Written at stage 5.
 
 ## Tried and rejected
 
@@ -301,3 +236,10 @@ the finished pack.
 - Screen 10, seasonal adjustment, a seasonal break at a survey reference-period change (2026-11-01): the regARIMA rigor card is held by task146 and an estimated seasonal factor is a model of the measurement (task464 architecture 5, cell D).
 - Screen 11, emissions inventory, refrigerant service top-ups read as the year's leakage (2026-11-01): on a stable fleet the timing bias cancels, so the lever is near zero, and the activity-level input is on record (task470, task474, task480, task484; task464 architecture 5's six inputs).
 - Screen 12, emissions inventory, boilers sharing one gas meter allocated pro rata while they run in a lead and lag order (2026-11-01): task459's staging driver (a ratio that changes once a supplementary stage engages above a unit's base capability).
+- Architecture 7 draw resumed 2026-11-03 on the author's word to proceed (the 11-01 pause waited on the author's ruling, which `CLAUDE.md` no longer allows): five more candidates screened outside the twelve above and outside task464 architecture 5's cell map, each with a default path ending wrong, the swap test, the survivor anatomy and the bin test on paper; screens 13 to 16 die below, and the fifth (a closed-vent system whose oxidizer fan cannot draw every batch vent at once) was priced in code and carded as architecture 7.
+- Screen 13, official time-series production, a repeat-sales house price index whose sale pairs include homes renovated between sales, the permits linked to the parcels (2026-11-03): the field's own repeat-sales methodology excludes substantially remodelled homes where the data allow (a reflex), and excluding the pairs against adjusting them by permit value forks the index by more than the decisive step is worth.
+- Screen 14, census and register data quality, dual-system estimation with people moving between census day and the coverage survey (2026-11-03): the mover treatment is a filed procedure of the field's coverage methodology and the closed-population check is textbook, and dual-system estimation is cell C's card 1 family (task448, task249 architecture 3, task471).
+- Screen 15, emissions inventory, an equity-share consolidation in which two subsidiaries hold each other's shares, so the effective shares need the ownership matrix's inverse (2026-11-03): the swap test fails, because the effective equity share is a corporate-finance quantity that reads the same with profits in place of emissions, so the domain is a backdrop.
+- Screen 16, emissions inventory, a carbon adsorber's working capacity per regeneration cycle overrun by the heavy cycles (2026-11-03): the breakthrough curve (sharp against a mass-transfer zone) forks the passed share, and the vendor's working capacity is defined at a breakthrough level that leaves the excess open; carried in its flow-limited form, where the cap is a fan's hard maximum and the excess is mixed header gas.
+- Architecture 7's first prototype (proto_x2, reactor depressurisations at 2,700 scfm for about twelve minutes, 2026-11-03): rejected as physically unreal, because blowing a reactor down from two atmospheres releases about a thousandth of that volume; the high flows on a batch header are fluid-bed dryer purges and charging exhaust.
+- Architecture 7's second prototype (proto_x3 to proto_x5, dryer purges and charging exhaust at realistic flows, 98.6 per cent destruction, 2026-11-03): the golden ran only 1.03 to 1.27 times the field's method, under the 1.38 the rung and final margins need together, because a lower destruction raises the controlled base as fast as the excess; carried at the tested 99.4 per cent and a 3,800 scfm fan, where the golden runs 1.5 to 1.9 times the method.

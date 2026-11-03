@@ -1,87 +1,91 @@
 {
   "task": "task479",
-  "architecture": "v6",
-  "drawn": "2026-10-21",
-  "slot_note": "re-root of seed ET36 after architectures 1 to 5 were spent at stage 4; a small-employer health trust's 2027 renewal, where each member employer's expected 2027 retained claims are read from three years of experience whose noise, for the small employers, is larger than the differences between employers",
-  "domain": "healthcare-delivery-health-economics",
-  "client_domain": "healthcare-delivery-health-economics",
-  "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a chamber of commerce's small-employer health trust deciding at its November 2026 trustees' meeting which member employers' expected 2027 retained claims per member per month exceed the claims component of the 2027 contribution each employer elected, from the 2023 to 2025 plan years' experience, when most employers cover fewer than three hundred members",
+  "architecture": "v7",
+  "drawn": "2026-11-03",
+  "slot_note": "re-root of seed ET36 after architectures 1 to 6 were spent; a fine-chemicals plant's 2026 compliance determination for its process vent emission unit, where nine batch vents share one closed-vent header to a regenerative thermal oxidizer whose fan was sized before the plant's 2025 expansion",
+  "domain": "physical-environmental-sciences",
+  "client_domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a fine-chemicals plant's calendar 2026 VOC record for its permitted process vent unit, conformed from two batch-system exports across a mid-year cutover, a vent calculation basis kept in two unit systems and the oxidizer's one-minute compliance log, where six reactors, two fluid-bed dryers and a solvent still vent through one closed-vent header to a single regenerative thermal oxidizer",
   "objective": "etl",
   "shape": "15",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "CR113, CR118, CR131, CR149, CR167 and CR176 surcharged",
+  "decision_type": "structural_verdict",
+  "answer_unit": "named_option",
+  "answer": "",
   "answer_source": "generator/figures.json",
   "gap": [
-    "time"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
-    "G17"
+    "G3",
+    "G7"
   ],
-  "gate_g": "signal_vs_noise_or_hold",
-  "calibration_form": "existing_book_actuals",
-  "stump_strategy": "uncertainty_hold",
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, the easy route trends each employer's own 2023 to 2025 retained claims per member per month to 2027 and compares it with the employer's claims component; but a small employer's three years carry mostly the luck of a few members' claims, so its expected 2027 claims sit much nearer the trust's level than its own experience, and the easy route raises small employers that were unlucky and spares small employers that were lucky.",
-  "domain_test": "Experience rating with credibility, worked the way a health plan actuary rates a small group: the expected claims of a group are its own experience weighted by its credibility and the pool's experience for the rest, the credibility set by how much of the group's year-to-year spread is noise against how much the groups truly differ; with another field's nouns there is no member claim distribution capped by a specific deductible and no pool that underwrites the groups.",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:each unit's expected level read as its own short noisy history weighted against the pool by the share of its spread that is signal",
+  "analyst_test": "With every export conformed and every permit condition read, the easy route takes each batch step's vent VOC from the vent calculation basis, applies the oxidizer's tested destruction to every pound vented while it was on line and counts the offline minutes uncontrolled, and files the unit under its 2026 limit; but in the minutes when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than the oxidizer's fan can draw, the excess lifts the header relief to atmosphere untreated, and the unit went over.",
+  "domain_test": "A batch-process VOC inventory worked the way an air permit engineer works it, each step's vent emissions from the vent calculation basis times one minus capture times destruction, where a closed-vent system captures every pound only while its control device can draw every vent at once; with another field's nouns there is no vent stream carrying solvent vapour, no destruction applied to the share the fan draws and no relief releasing the header's mixed gas, so nothing would decide how much of each pound left untreated.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:the capture of a closed-vent system read minute by minute as the control device's maximum draw over the concurrent vent flow, the excess released as mixed header gas",
   "layer1": [
-    "the claims lag report in two layouts across the June 2026 platform move",
-    "the carrier's specific stop-loss reimbursements per contract year netted from plan-paid claims",
-    "member ids reissued at the July 2026 eligibility migration",
-    "policy numbers rewritten at the 2026 renewal"
+    "batch step records in two system layouts across the July 2026 cutover, local time against UTC, batches renumbered and the cutover week's steps in both",
+    "a vent calculation basis in two unit systems (scfm and lb/hr against Nm3/h and kg/h for the licensed product line)",
+    "the oxidizer's one-minute compliance log in local standard time all year",
+    "an equipment register with merged header rows and tag spellings that differ from the batch system's unit codes"
   ],
-  "stakeholder_role": "underwriting manager of a small-employer health trust",
-  "role_family": "finance_controller",
+  "stakeholder_role": "environmental compliance manager of a fine-chemicals plant",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "hallam_eligibility_member_months_2023-01_to_2026-09.csv",
-    "rows": 179535,
-    "entity": "one member's enrollment in one month",
-    "grain": "member x month",
+    "file": "batch_steps",
+    "rows": 0,
+    "entity": "one executed step of one batch on one vented unit",
+    "grain": "unit x batch x step",
     "source": "synthetic"
   },
-  "forum": "trustees_or_governors",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "cooperative_or_member_body",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "manufacturer",
   "world": {
-    "geography": "United States (a fictional county region)",
+    "geography": "United States (a fictional county)",
     "currency": "USD",
-    "org_type": "chamber of commerce small-employer health trust",
+    "org_type": "fine-chemicals manufacturer",
     "invented_names": [
-      "Corbel Ridge Business Health Trust",
-      "Hallam Benefit Administrators",
-      "Westerby Specialty Insurance Company"
+      "Pellston Fine Chemicals",
+      "Chalmont County Air Quality District",
+      "Thermavex Systems",
+      "Brightline Source Testing"
     ],
     "people": [
-      "Steven Coleman",
-      "Michelle Patrick"
+      "Alyssa Alexander",
+      "Dylan Gonzalez"
     ]
   },
   "deliverables": [
-    "crbht_2027_renewal_surcharges.xlsx"
+    "eu_p1_2026_monthly_record.xlsx",
+    "eu_p1_2026_determination.docx",
+    "eu_p1_2026_monthly_voc.png"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A unit's expected next-period level is read from a few periods of its own record, and for small units the record's spread is mostly chance, larger than the true differences between units; taking each unit's record at face value ranks the lucky small units low and the unlucky ones high, while the expected level weighs the unit's record against the pool by how much of its spread is signal.",
-  "driver_concrete": "A twelve-person shop whose 2024 included one member's $140,000 claim has a three-year average far over the trust's, but its expected 2027 claims are only a little over the trust's level; a sixty-member employer with three quiet years is expected to cost nearly the trust's level too; the easy route raises the first and spares the second.",
-  "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and files CR104, CR109, CR136, CR167 and CR176 surcharged, because it never asks how much of a small employer's three years is chance: one member's large claim moves a forty-member employer's year by more than the employers truly differ, so the small employers with high experience are expected near the trust's level and under their claims components, and the small employers with low experience, whose claims components sit well under the trust's level, are expected over them.",
+  "question_form": "whether",
+  "driver": "Several sources discharge through one shared device whose intake is capped, and their discharges coincide only in some intervals, so in those intervals the share above the cap passes untreated through a relief; applying the device's tested removal to everything the sources discharged while it ran misses that share, which only the sources' concurrent schedules set against the cap reveal.",
+  "driver_concrete": "RTO-1's fan draws at most 4,000 scfm, and through 2026 a fluid-bed dryer's drying cycle, the second dryer and a reactor's manway exhaust coincided often enough that the header carried more than the fan could draw for thousands of minutes; the excess lifted PSV-31 at the oxidizer inlet and left as untreated header gas, so the tested 98.6 per cent applies only to what the fan drew.",
+  "stump": "The default path applies RTO-1's tested destruction to every pound the batch records vent while the oxidizer was on line, counts its offline minutes uncontrolled and files EU-P1 under its 4.0-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 4,000 scfm, the excess lifts PSV-31 untreated, and EU-P1 went over.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task130": "task130's later architecture forecasts a group chosen for an extreme value in one period by carrying its value forward; here no group is chosen by its value and no period is extreme by selection: every employer's expected level is weighed against the pool by the signal share of its own three-year spread, which depends on its size.",
-    "task479v3": "architecture 3 trended a group's large claimants under a fixed specific deductible; here the deductible only caps the experience and the step is weighting each employer's experience by its credibility.",
-    "task148": "task148 models a queue drained by units that give up, the patience seen fully only for leavers; here nothing waits or leaves: each employer's expected claims are its noisy experience weighed against the pool's.",
-    "task241": "task241 reads a sensor's error against a reference displaced by movement of the medium; here no reference is displaced: the pool's own experience is the complement each small employer's chance-heavy record is weighed against."
+    "task106": "task106 sizes each supplier against a whole pool of spare return legs that only one supplier can use, a static double-booking per corridor; here nothing is allocated between the vents: every vent's gas is real and reaches the header, and the step finds the minutes in which the vents' summed flow exceeded the oxidizer fan's instantaneous maximum, a coincidence in time that no per-source record or allocation shows.",
+    "task303": "task303 subtracts the breaker tickets every feeder at a substation opened in the same minute as one upstream supply loss; here the co-timed records are all genuine discharges and the step adds the share of them the shared device could not draw, so co-timing changes how much passed untreated, not whose event it was.",
+    "task482": "task482 architecture 7 reads a removal device whose outlet holds near a floor concentration, so its removal share falls as its inlet grows dilute; here the device's destruction is constant at its tested value and what fails is capture: the gas above the fan's maximum never reaches the device at all.",
+    "task87": "task87 caps a delivered count because two owed items meeting in one time slot cannot both be taken by one unit; here no unit chooses between items and nothing is deferred: the excess gas leaves through the relief the moment the header exceeds the draw.",
+    "task472": "task472 credits shortened work only where it reaches an earlier release window fixed outside the job; here no window is fixed by any schedule: the binding minutes are set by the coincidence of nine vents' own batch progress against one draw."
   },
   "lineage": [
     {
@@ -176,9 +180,7 @@
       "niche": "a chamber of commerce's small-employer health trust deciding at its November 2026 trustees' meeting which member employers' expected 2027 retained claims per member per month exceed the claims component of the 2027 contribution each employer elected, from the 2023 to 2025 plan years' experience, when most employers cover fewer than three hundred members"
     }
   ],
-  "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
-  "registered": "2026-10-21T02:09:25Z",
-  "architecture_spent": true,
+  "notes": "architecture 7 re-root 2026-11-03 into physical-environmental-sciences (emissions-inventory) after architecture 6 was spent at the 11-01 re-check; WARN repeat.gate_g answered: binding_constraint repeats task307 v2, a spent card in another domain, and the label is the honest one for a shared draw limit that removes the natural figure. Screens 13 to 17 of the draw are in DESIGN_NOTE ## Tried and rejected.",
   "lineage_shells": [
     {
       "architecture": "v6",
@@ -186,5 +188,6 @@
       "second-sentence opener": "build",
       "deliverable set": "xlsx"
     }
-  ]
+  ],
+  "registered": "2026-11-03T03:54:47Z"
 }

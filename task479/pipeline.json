@@ -1,41 +1,44 @@
 {
  "task": "task479",
- "status": "PAUSED",
- "domain": "healthcare-delivery-health-economics",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-11-01",
- "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and raises the employers whose experience exceeds their claims component, because it never asks how much of a small employer's three years is chance.",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-03",
+ "stump": "The default path applies RTO-1's tested 99.4 per cent destruction to every pound the batch records vent while the oxidizer was on line, counts its offline minutes uncontrolled and files EU-P1 under its 3.2-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 3,800 scfm, the excess lifts PSV-31 untreated, and EU-P1 went over.",
  "architecture": 7,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-01"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "LEAK on the shipped cut (sweep 1: data dictionary and extract manifest; sweeps 12 and 13 clean), 2026-11-01",
-  "reader": "2026-11-01: no decisive-step sentence; question 5 and 6 read memo section 3 as filing each employer's own trended experience (a main-call fork)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "BLOCK ban.artifact against task474 (drawn 10-20, before this card; inherited, recorded for the author), 2026-11-01 after a pull",
-  "nearest": "task269 0.07",
-  "surface": "clean"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "report": "determinism_check_report_pass2.md",
-  "date": "2026-11-01",
-  "earlier": "DETERMINISTIC, APPROVE, determinism_check_report.md, 2026-10-21"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Architecture 7 draw for objective ETL, paused at stage 1 on the orchestrating session's stop rule (twelve candidates screened across five task types, none clears; no card registered for v7). Architecture 6 (the shipped health-trust build, judge SEND_BACK at the 11-01 re-check) stays at the portal pending; its identity and fate are already in the card's lineage and the card carries architecture_spent. Next: draw a fresh ETL mechanism outside the twelve screens and the drivers task464 architecture 5 maps (cells A to D measured mechanism-dead on 10-27; cell F holds task450, task482 v6 and task488), or take the author's call on the slot; then guard.py check and register, commit DRAWN, and continue from stage 2.",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-21",
+ "delivered": null,
  "portal": null,
- "source_note": "seed ET36 (NFIP loss ratios from public policy and claim records, written against earned, rows against insured units): the world, the decision and the quantity kept (NFIP claims experience per insured building, outreach for private-market flood products); the seed's mechanisms only as Layer 1; the pitfall re-found in the record's own mitigation history",
- "recheck": {
+ "source_note": "seed ET36's slot; architecture 7 keeps nothing of the seed or of architectures 1 to 6: a fine-chemicals plant's process vent unit, its batch records, vent calculation basis, oxidizer log and register, invented",
+ "shipped_architecture": {
+  "architecture": 6,
+  "delivered": "2026-10-21",
+  "portal": "pending, left untouched",
+  "target_zip_sha256": "8d3e2b831aec51fc0e5bea7035bc4cbdd7c13cd84ac49a0b7856892698557053"
+ },
+ "architecture_6_recheck": {
   "date": "2026-11-01",
   "rebuild_reproduces_shipped_zip": true,
   "voice_check": "WARN: a count the data hold (eighteen); which-form quota",
@@ -43,15 +46,9 @@
   "anatomy": "Back-test and Shock fail, measured (DESIGN_NOTE ## Survivor anatomy)",
   "repair": "cut and gated, not shipped; shipped cut restored"
  },
- "shipped_architecture": {
-  "architecture": 6,
-  "delivered": "2026-10-21",
-  "portal": "pending, left untouched",
-  "target_zip_sha256": "8d3e2b831aec51fc0e5bea7035bc4cbdd7c13cd84ac49a0b7856892698557053"
- },
  "draw_screen": {
-  "date": "2026-11-01",
-  "screened": 12,
+  "date": "2026-11-03",
+  "screened": 17,
   "task_types": [
    "item-response-theory-test-equating",
    "data-integration-record-linkage-entity-resolution",
@@ -59,7 +56,8 @@
    "seasonal-adjustment-official-time-series-production",
    "emissions-inventory"
   ],
-  "cleared": 0,
-  "record": "DESIGN_NOTE ## Tried and rejected, screens 1 to 12"
+  "cleared": 1,
+  "carded": "screen 17, emissions-inventory: a closed-vent system whose oxidizer fan cannot draw every batch vent at once",
+  "record": "DESIGN_NOTE ## Tried and rejected, screens 1 to 16 and the two rejected prototypes"
  }
 }
