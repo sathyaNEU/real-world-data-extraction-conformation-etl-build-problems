@@ -13,14 +13,14 @@
  "files": {
   "six_month_survey_2025H1.csv": "Previous survey vendor's six-month wave export, January to June 2025. Synthetic.",
   "survey_export_6m_2026-01-01_2026-06-30.csv": "Current survey vendor's six-month export, January to June 2026. Synthetic.",
-  "quote_log_2024-06_2025-12.csv": "Sales system quote log for the July to December switch cohorts of 2024 and 2025. Synthetic.",
-  "supply_registrations_2024-07_2025-12.csv": "Sales system supply registration events for the same cohorts. Synthetic.",
+  "quote_log_2024-05_2025-12.csv": "Sales system quote log for the July to December switch cohorts of 2024 and 2025, May 2024 to December 2025. Synthetic.",
+  "supply_registrations_2024-05_2025-12.csv": "Sales system supply registration events for the same cohorts, May 2024 to December 2025. Synthetic.",
   "meter_point_annual_quantities.parquet": "Industry annual quantity history held by the supplier, by meter point and register, exported 6 November 2026. Synthetic.",
   "tariff_rates_2024-04_2026-06.xlsx": "Pricing team's regional rates for the Standard Variable and fixed products. Synthetic.",
   "phase1_migration_loads.jsonl": "Billing platform load log for phase 1, September to November 2025. Synthetic.",
   "legacy_accounts_extract_2026-10-31.csv": "Legacy billing platform prepayment account extract, 31 October 2026. Synthetic.",
-  "switching_flows_2026-05_2026-10.csv": "Industry switching flows for the prepayment book's meter points, May to October 2026. Synthetic.",
-  "direct_debit_changes_2024-07_2026-06.csv": "Direct Debit amount change history for the two switch cohorts. Synthetic.",
+  "switching_flows_2026-05-01_2026-11-05.csv": "Industry switching flows for the prepayment book's meter points, 1 May to 5 November 2026, pulled 6 November 2026. Synthetic.",
+  "direct_debit_changes_2024-07_2026-06.csv": "Direct Debit amount change history for the two switch cohorts, July 2024 to June 2026. Synthetic.",
   "smart_meter_installs_2025.csv": "Smart meter installation appointments, 2025. Synthetic.",
   "six_month_survey_measurement_framework_v2.1.pdf": "Customer Insight's measurement framework for the six-month survey, version 2.1. Constructed.",
   "billing_platform_phase1_closeout_report.pdf": "Billing programme's phase 1 close-out report, issued 9 January 2026. Constructed.",
@@ -29,6 +29,7 @@
  "sources": "Levels set from public statistics: Ofgem typical domestic consumption values; DESNZ sub-national and NEED domestic consumption statistics; Ofgem Direct Debit guidance; Ofgem consumer perceptions research. No real supplier, vendor or comparison site is named.",
  "dates": {
   "pack_export": "2026-11-06",
-  "legacy_extract": "2026-10-31"
+  "legacy_extract": "2026-10-31",
+  "switching_flows_pull": "2026-11-06"
  }
 }

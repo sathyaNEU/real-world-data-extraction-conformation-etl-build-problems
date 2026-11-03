@@ -3,8 +3,10 @@
 Every draw here comes from its own generator, so the main stream that cut() consumes (and with it every row of
 the main call's population) is exactly what it was before this pass. Files touched here are rewritten whole.
   - phase 1 load log: validation failures fell on gas meter point data, so every reload chain is a dual fuel
-    account; a few hundred electricity-only smart prepayment accounts, carried as credit on the legacy platform,
-    were loaded in the nine batches and returned to the legacy platform days later (their legacy status was reset).
+    account; a few hundred smart prepayment accounts, carried as credit on the legacy platform, were loaded in the
+    nine batches and returned to the legacy platform days later (their legacy status was reset); and credit
+    accounts phase 1 moved that changed to prepayment during 2026 were taken back by the legacy platform, live
+    again on their old number from the day of the change.
   - registrations: a gas registration raised again under its own reference only happens where the meter point was
     looked up from the address (web and comparison-site sales); broker sales are confirmed on a call by the phone
     team, which re-quotes when the customer changes tariff, and the pending registration is re-pointed at the new
@@ -13,6 +15,8 @@ the main call's population) is exactly what it was before this pass. Files touch
     night register, and meters exchanged during 2026 for a single-rate smart meter carry a standard register from
     the exchange date while the old registers simply stop.
   - the 2026 survey export: version 4 response ids and completion times to the second.
+  - the Direct Debit history: cut at the end of June 2026; customers who left before their first scheduled review
+    have none, and a change of bank account sets up a new mandate.
 """
 import csv, datetime as dt, io, json, os, uuid
 import numpy as np
@@ -20,12 +24,14 @@ import pyarrow as pa, pyarrow.parquet as pq
 import world as W
 
 D = dt.date
-SEED_B, SEED_C, SEED_A, SEED_T, SEED_O = 4011, 4012, 4013, 4014, 4015
+SEED_B, SEED_C, SEED_A, SEED_T, SEED_O, SEED_H, SEED_D = 4011, 4012, 4013, 4014, 4015, 4016, 4017
 N_ROLLED = {'Electricity': 300, 'Dual fuel': 110}
 P_REPOINT = {3: 0.10, 0: 0.025, 1: 0.025}   # broker, direct web, comparison site
 N_COT = 420
 P_E7, P_EXCH = 0.22, 0.12
-CREATED_BY = b'parquet-cpp version 1.5.1-SNAPSHOT'
+P_HANDBACK, MIN_HANDBACK = 0.005, 6
+P_LEAVE, P_BANK = 0.03, 0.02
+CREATED_BY = b'parquet-mr version 1.12.3 (build f8dced182c4c1fbdec6ccb3185537b5a01e6ed6b)'
 
 
 def bst(d):
@@ -94,9 +100,12 @@ def loads(out, U):
         L.append(dict(load_id='', legacy=a[0], platform=ids.platform(), utc=utc, dual=a[3] == 'Dual fuel',
                       batch='P1-W%02d' % (w + 1)))
         back = local.date() + dt.timedelta(days=int(rng.integers(1, 7)))
+        if back == W.PHASE1_END:                         # the clean-up run did not sit on the day phase 1 closed
+            back += dt.timedelta(days=1)
         a[5] = back.isoformat()                          # the legacy record set live again on its return
         rolled.append(a[0])
     U['rolled_back'] = rolled
+    handbacks(U, L)
     # (3) the platform numbers its loads as they complete
     L.sort(key=lambda r: (r['utc'], r['legacy'], r['platform']))
     base_id = 208113
@@ -172,10 +181,10 @@ def sales(out, U):
         repointed.append((qref, q2))
     U['repointed'] = repointed
     qrows.sort(key=lambda r: (r[1], r[0])); rrows.sort(key=lambda r: (r[6], r[0], r[3], r[5]))
-    write_csv(os.path.join(out, 'quote_log_2024-06_2025-12.csv'),
+    write_csv(os.path.join(out, W.F_QUOTES),
               ['quote_ref', 'quote_date', 'channel', 'region', 'tariff_code', 'fuel', 'annual_kwh_electricity',
                'annual_kwh_gas', 'projected_annual_cost_gbp', 'prospect_ref'], qrows)
-    write_csv(os.path.join(out, 'supply_registrations_2024-07_2025-12.csv'),
+    write_csv(os.path.join(out, W.F_REGS),
               ['registration_ref', 'account_number', 'meter_point', 'fuel', 'quote_ref', 'event', 'event_date',
                'supply_start_date'], rrows)
 
@@ -296,5 +305,72 @@ def occupiers(U):
     U['cot_old'] = old
 
 
+def handbacks(U, L):
+    """Credit accounts phase 1 moved that changed to prepayment during 2026. Prepayment stays on the legacy platform
+    until phase 2, so the legacy platform takes each one back on its own legacy number, set live on the day of the
+    change. Drawn in every load week and both fuel splits; no file says which loaded accounts went back, or when."""
+    rng = np.random.default_rng(W.SEED + SEED_H)
+    reloaded = {r['root'] for r in L if 'root' in r}
+    first = {}
+    for r in L:
+        first.setdefault(r['legacy'], r)
+    cells = {}
+    for a in U['p1']:
+        lg = a['legacy']
+        if a['joiner'] is not None or lg.startswith('72') or lg in reloaded or 'mpan' not in a:
+            continue
+        u = first[lg]['utc']
+        w = ((u + dt.timedelta(hours=bst(u.date()))).date() - W.PHASE1_START).days // 7
+        if 0 <= w < 9:
+            cells.setdefault((w, bool(a['dual'])), []).append(a)
+    out = []
+    for key in sorted(cells):
+        pool = cells[key]
+        n = max(MIN_HANDBACK, int(rng.binomial(len(pool), P_HANDBACK)))
+        for j in sorted(rng.choice(len(pool), n, replace=False)):
+            a = pool[j]
+            change = D(2026, 1, 5) + dt.timedelta(days=int(rng.integers(0, 286)))
+            start = D(2011, 1, 3) + dt.timedelta(days=int(rng.integers(0, 4870)))
+            U['phase2_accts'].append([a['legacy'], W.REGIONS[a['region']][0], 'Prepayment',
+                                      'Dual fuel' if a['dual'] else 'Electricity', 'Live', change.isoformat(),
+                                      a['mpan'], a['mprn'], start.isoformat()])
+            out.append(a['legacy'])
+    U['handed_back'] = out
+
+
+def debits(out, U):
+    """The Direct Debit change history as the payments system exports it, to the end of June 2026: a customer who left
+    before the first scheduled review has none, and a change of bank account sets up a new mandate."""
+    rng = np.random.default_rng(W.SEED + SEED_D)
+    J = U['J']
+    last = W.DD_LAST.isoformat()
+    rows = [r for r in U['dd_rows'] if r[1] <= last]
+    by = {}
+    for r in rows:
+        by.setdefault(r[5], []).append(r)
+    surveyed = {r[1] for r in U['rows25']} | {r[1] for r in U['rows26']}
+    def acct(i, day):
+        return J['platform'][i] if (not J['legacy'][i] or day >= W.PHASE1_START) else J['legacy'][i]
+    drop, add = set(), []
+    for i in sorted(by):
+        mine = sorted(by[i], key=lambda r: r[1])
+        s = J['start'][i]
+        left = None
+        if not J['resp'][i] and not ({J['legacy'][i], J['platform'][i]} & surveyed) and \
+                J['legacy'][i] not in U['smi_accts'] and J['platform'][i] not in U['smi_accts'] and rng.random() < P_LEAVE:
+            left = s + dt.timedelta(days=int(rng.integers(45, 136)))
+            drop |= {id(r) for r in mine if r[1] >= left.isoformat()}
+        if rng.random() < P_BANK:
+            d = s + dt.timedelta(days=int(rng.integers(30, 331)))
+            if d <= W.DD_LAST and (left is None or d < left):
+                cur = [r for r in mine if r[1] <= d.isoformat()][-1][2]
+                add.append([acct(i, d), d.isoformat(), cur, '', 'New mandate', i])
+    rows = [r for r in rows if id(r) not in drop] + add
+    rows.sort(key=lambda r: (r[1], r[0], r[4]))
+    write_csv(os.path.join(out, W.F_DD), ['account_number', 'change_date', 'new_amount_gbp', 'previous_amount_gbp', 'reason'],
+              [r[:5] for r in rows])
+    U['dd_left'] = len({r[5] for r in U['dd_rows'] if id(r) in drop})
+
+
 def apply(out, U):
-    occupiers(U); loads(out, U); sales(out, U); quantities(out, U); survey_2026(out, U)
+    occupiers(U); loads(out, U); sales(out, U); quantities(out, U); survey_2026(out, U); debits(out, U)

@@ -269,6 +269,16 @@ movement): key driver analysis, relative importance, operational linkage of resp
 | SF10 | two-rate meters | none: every tariff in the pack is single-rate | n/a | asserted (no two-rate tariff code) |
 | SF11 | the cause's name | the quote journey's quotes from May 2025 | the typical values alone; the use customers typed alone: each names the quote journey | same call; the basis split alone does not name it (`## Ladder`, point 2) |
 | SF12 | the fall | percentage points between the two shares | relative change: same call | the framework's reporting sentence |
+| SF13 | Ask A: a loss effective on 1 November | the meter point is not ours that day | ours that day: 11 more accounts | the plan's "no longer ours from the effective date of the loss"; every loss due by then completed or withdrawn by its effective date (asserted) |
+| SF14 | Ask A: the GWh totals | one electricity and one gas total for phase 2 as a whole | per region | the asking sentence's "phase 2's total ... across all the meter points it will move" (asserted) |
+| SF15 | Ask A: a closure dated before its own start | none ships; one account took each shared meter point on last | the Closed predecessor holds the point: Eastern and London one fewer | asserted over every account (round 1 Gate A) |
+| SF16 | Ask B: an account phase 1 moved | billed on the new platform at the end of 2 November 2025 | every loaded account (+377); every loaded account off the legacy extract (-417) | the plan's "An account counts as moved if the new platform was billing it at the end of 2 November 2025, when phase 1 closed" (asserted) |
+| SF17 | Ask C: a withdrawn registration | not counted, whatever its date; every withdrawal precedes the start it requested | withdrawn before the start only | the asking sentence's "no withdrawn registration counted"; by reference and by row the same rows (asserted) |
+| SF18 | Ask C: one customer | the accepted quote's registrations | the prospect; the account: same counts | same call (asserted) |
+| SF19 | Ask C: the month first supply started | the earliest live supply start | the electricity start: same; the registration month | the asking sentence; same call for the electricity start (asserted) |
+| SF20 | Ask C: the sale it was registered on | the prospect's latest quote dated on or before the registration | the quote the registration names; the prospect's earliest quote | the asking sentence; wherever the named quote predates the registration it is that latest quote (asserted) |
+| SF21 | Ask C: the sales channels | the quote log's four channel values | none | asserted |
+| SF22 | Ask B: the week | Monday to Sunday, UK time, of the last load | the UTC week: 2,876 accounts change week | the plan's "Monday to Sunday, UK time" (asserted) |
 
 ## Ladder
 
@@ -399,16 +409,17 @@ payment linkage) on the same literal estimand, never from another reading.
 
 Measured on the cut pack by `generator/ceiling.py` (reads only `target/` and `figures.json`, shares no code with the
 generator). Each ask sits on rows the call never reads, asserted in `checks.py` by count from the shipped rows (no
-respondent in a reload chain, a pilot row or a returned load; no respondent quote split or re-pointed; every respondent
+respondent in a reload chain, a pilot row or on the legacy extract; no respondent quote split or re-pointed; every respondent
 meter point single-register). Each ask carries a primary and a silent second device from another family on a block the
 primary does not decide, and each second device is a reconstruction that can still go wrong once it is noticed. Every
 device draw comes from its own generator (`generator/devices.py`), so the main call's rows are byte for byte what they were
 (the frozen figures asserted). The contact centre ask planned at the draw was cut with its two call logs.
 
-- **Ask A, phase 2's scope** (16 figures: the accounts in each region; the total GWh of electricity and of gas of the meter
-  points it will move). Files: the legacy accounts extract, the switching flows, the meter point annual quantities, the
-  cutover plan (the WHAT: accounts still supplied on 1 November 2026 on at least one meter point; each meter point's
-  industry annual quantity in force that day, day and night together on a two-rate meter). Primary (D2, a state rebuilt
+- **Ask A, phase 2's scope** (16 figures: the accounts in each region; phase 2's total GWh of electricity and of gas across
+  all the meter points it will move). Files: the legacy accounts extract, the switching flows, the meter point annual
+  quantities, the cutover plan (the WHAT: accounts still supplied on 1 November 2026 on at least one meter point; a meter
+  point we lose is no longer ours from the loss's effective date; each meter point's industry annual quantity in force that
+  day, day and night together on a two-rate meter). Primary (D2, a state rebuilt
   from an event log; the counts and both totals): a completed loss later returned as an erroneous transfer, so the meter
   point is ours again on 1 November while the legacy status still reads final bill pending. Second (D6, a quantity held one
   grain below the meter point; the electricity total): the quantities are held per register, and 736 two-rate meters
@@ -423,20 +434,29 @@ device draw comes from its own generator (`generator/devices.py`), so the main c
   counts its meter points twice, 7 or more in every region. The plan's scope sentence settles it as filed (an account we no
   longer supply on any meter point stays on the legacy platform until its final bill): the meter point is supplied to the
   account that took it on last. Hazards: withdrawn losses whose legacy status was never reverted; losses effective after 1 November; a dual-fuel account
-  lost on one fuel; later quantity revisions dated 3 to 12 November.
+  lost on one fuel; later quantity revisions dated 2 to 5 November. The 389 accounts the legacy platform took back from
+  the new platform during 2026 (Ask B's second device) are live prepayment accounts here and count under every route.
 - **Ask B, phase 1's moves** (18 figures: nine UK weeks by electricity-only and dual fuel). Files: the load log, the legacy
   accounts extract, the close-out report, the cutover plan (the WHAT: the accounts phase 1 moved to the new platform, each
-  once in the week its last load completed, UK time, with the fuels that load carried; the close-out files that prepayment
+  once in the week its last load completed, UK time, with the fuels that load carried; an account counts as moved if the
+  new platform was billing it at the end of 2 November 2025, when phase 1 closed; the close-out files that prepayment
   accounts remain on the legacy platform). Primary (D7, the true key in a chain; the dual fuel block): a reload carries the
   failed load's platform number as its source reference, and validation failed on gas meter point data, so every one of
   the 2,947 chains is a dual fuel account; benign twin: pilot accounts whose source reference is a platform number with no
-  earlier load. Second (D5, out-of-scope rows known only by structure; both splits): 410 smart prepayment accounts (300
-  electricity-only, 110 dual fuel) carried as credit on the legacy platform were loaded in the batches and returned; they
-  stand in the log like any load (8 to 40 in every week and split), and only the legacy extract shows them, live
-  prepayment accounts whose status was set again one to six days after their load. Hazard: UTC stamps against UK weeks across 26 October.
+  earlier load. Hazard (D5, once the second device; the plan's moved sentence now executes it once noticed): 410 smart
+  prepayment accounts (300 electricity-only, 110 dual fuel) carried as credit on the legacy platform were loaded in the
+  batches and returned one to seven days later, live prepayment accounts on the legacy extract; 377 were back by the
+  close (6 to 40 in every week and split, so a response that keeps every load misses every cell) and 33 after it.
+  Second (D8, a dated system change against the date one filed WHAT pins; every week of both splits): 389 credit accounts
+  phase 1 moved changed to prepayment during 2026, and since prepayment stays on the legacy platform until phase 2 the
+  legacy platform took each back on its old number, live from the day of the change. On the extract they look exactly
+  like the returns, so the repair the moved sentence invites once the returns are noticed (leave out every loaded account
+  found live on the legacy extract) is right for a return dated by the close and wrong for one dated after it (6 to 45 in
+  every week and split); only dating each account's legacy status against the end of 2 November 2025 files the golden.
+  Hazard: UTC stamps against UK weeks across 26 October.
 - **Ask C, switches by channel** (24 figures: four channels by six months). Files: the registrations and the quote log. The
   asking sentence files one switch per customer in the month its first supply started, credited to the sale it was
-  registered on, none withdrawn before supply began. Primary (D1, one event in two records; the web and comparison-site
+  registered on, no withdrawn registration counted (every withdrawal precedes the start it requested). Primary (D1, one event in two records; the web and comparison-site
   block): a gas registration rejected for a meter point mismatch after an address lookup is raised again under its own
   reference, days after the electricity one. Second (D7, the true key elsewhere; every channel): a customer who rings the
   phone team to change tariff before the switch is re-quoted and the pending registration is re-pointed at the new quote
@@ -448,7 +468,8 @@ device draw comes from its own generator (`generator/devices.py`), so the main c
 Settled by (the filed sentence each device's handling executes; `checks.py`'s literal ask executor runs them word for
 word on `target/` and equals the golden on all 58 figures):
 - Ask A primary: the plan's scope sentence ("every prepayment account on the legacy platform that we still supply on 1
-  November 2026, on at least one of its meter points"), read against the switching flows, the industry's record of who
+  November 2026, on at least one of its meter points") and its last ("A meter point we lose to another supplier is no
+  longer ours from the effective date of the loss"), read against the switching flows, the industry's record of who
   supplies each meter point (a completed loss later returned leaves it ours).
 - Ask A second: "each meter point's industry annual quantity in force on 1 November 2026, day and night together on a
   two-rate meter": the meter point's latest revision on or before the day, all its registers; from an exchange the meter
@@ -458,32 +479,51 @@ word on `target/` and equals the golden on all 58 figures):
   the leaving account set to final bill pending on the day the new occupier's account starts on the same meter points.
 - Ask B primary: "each account counted once, in the week its last load completed" with the close-out's "the platform
   issues a new account number on each load": a load sourced from an earlier load's number is that account.
-- Ask B second: "the accounts it moved to the new platform" with the close-out's "Prepayment accounts remain on the legacy
-  platform for phase 2", read against the legacy extract (the account is live there, a prepayment account).
+- Ask B second and its hazard: the plan's "An account counts as moved if the new platform was billing it at the end of 2
+  November 2025, when phase 1 closed", read against the legacy extract's dating of each account's status: a loaded account
+  live on the legacy platform from a day on or before the close was billed there at the close (the returns); one live
+  there only from a later day was billed on the new platform at the close (the 2026 take-backs and the late returns).
 - Ask B fuels and clock: "with the fuels that load carried"; "Monday to Sunday, UK time".
 - Ask C primary: "one per customer in the month their first supply started": the two registrations name one accepted
-  quote and one account.
+  quote and one account; "no withdrawn registration counted" leaves out every withdrawn registration, whatever its date.
 - Ask C second: "credited to the sale it was registered on": a registration raised before the quote it now names was
   registered on the prospect's quote then live, the latest dated on or before the registration.
 
 Pin test: Ask A's pins carry the scope, the day and the register sum; the devices sit in which meter points are still
-ours (the flows), which account holds them (the move) and which registers the meter still has (the exchange). Ask B's pins carry the week, the clock, the last
-load and its fuels; the devices sit in which records are one account (the chain) and which loads moved nothing (the
-return). Ask C's pins carry the month, one per customer, the withdrawals and the sale; the devices sit in which records
-are one switch (the split) and which quote was the sale (the re-point).
+ours (the flows and the loss's effective date), which account holds them (the move) and which registers the meter still
+has (the exchange); the totals are phase 2's whole. Ask B's pins carry the week, the clock, the last load, its fuels and
+the day moved is judged on (the end of 2 November 2025); the devices sit in which records are one account (the chain) and
+which loaded accounts the legacy platform was billing on that day (the dated take-back). Ask C's pins carry the month, one
+per customer, the withdrawals and the sale; the devices sit in which records are one switch (the split) and which quote
+was the sale (the re-point).
 
 | Response (cracker sheet) | Ask A | Ask B | Ask C | Verdict |
 |---|---|---|---|---|
-| Cracker: lands the call, every filed convention, the hygiene battery | 0 of 16 | 0 of 18 | 0 of 24 | miss |
+| Cracker: lands the call, every filed convention, the hygiene battery (keeps every load, one per legacy reference) | 0 of 16 | 0 of 18 | 0 of 24 | miss |
 | Mirror: the most attractive wrong rung (live accounts and latest quantities, loads by UTC week, registration rows) | 0 of 16 | 0 of 18 | 0 of 24 | miss |
-| Full includer: every device it can find handled (each primary and every hazard), the silent ones left | 0 of 16 | 0 of 18 | 0 of 24 | miss |
+| Full includer: every device it can find handled (each primary, every hazard, every loaded account on the legacy extract left out), the silent ones left | 0 of 16 | 0 of 18 | 0 of 24 | miss |
 | No repair: every row taken as it stands | 0 of 16 | 0 of 18 | 0 of 24 | miss |
 
 Pair ceiling: 28.5 (the cracker or the full includer on the call at 45.0 with the mirror or the no-repair response off it at
 12.0, the worst of the four one-off pairings); the full includer and the cracker both on the call pair at 45.0, and two full
-includers on the call (the stress case) at 45.0, measured.
+includers on the call (the stress case) at 45.0, measured. Stress outside the four: a full includer that also dates every
+legacy return against the close keeps Ask B whole, 0.310 of the ask weight (under two fifths), pairing at 37.0 with the
+mirror off and 53.5 with the cracker on the call.
 Mirror leakage: 0.0 per cent.
-Measured by: generator/ceiling.py on the cut pack (target digest 1bbe6dc7), 2026-11-03.
+Measured by: generator/ceiling.py on the cut pack (target digest 1c1f695f), 2026-11-03.
+
+## Leak review
+
+`leak.py --asof 2026-11-06` on target digest 1c1f695f: REVIEW, no LEAK. Each line ruled harmless:
+- Direct Debit history, two golden figures: each is a change date's day running into the next field's amount
+  ("2025-12-10,341.00", "2024-07-11,155.00"); no amount in the file is a graded figure.
+- The close-out, the plan and the framework each carry four or five stump-paragraph words, all generic (direct, report,
+  contact, quantity, supplier); none names quotes against meter point quantities or an expectation.
+- The legacy extract, the quote log and the tariff table name every region beside numbers: an account's region, a quote's
+  region and a regional rate, none ranking a cause of the fall.
+- Switching flows, dates after the pull: the planned effective dates of losses notified by 5 November 2026; every flow is
+  dated on or before the pull (asserted).
+
 ## Tried and rejected
 
 - 2026-11-03, the seed's world (RC07, a supplier's January imbalance bill against plant trips and low wind), every
@@ -598,3 +638,17 @@ Measured by: generator/ceiling.py on the cut pack (target digest 1bbe6dc7), 2026
   per ask on its own block left a full includer and an on-call cracker pairing near 62. Widened: Ask A gained a change of
   occupier on the same meter points (the primary's own repair keeps the leaving account), Ask B's returned accounts take
   both fuels, Ask C's re-quotes reach every channel; the full includer keeps none of the 58.
+- 2026-11-03, stage 4 round 1 (judge NOT_DETERMINISTIC and SOLUTION_WRONG, SEND_BACK light on the workbook asks alone, main
+  call forced, Gates G and H passing; reader clean on the main call): Ask B's second device, the 410 accounts loaded and
+  returned to the legacy platform, died to its own WHAT. Filing what counts as moved (the new platform billing the account
+  at the end of 2 November 2025) closed the judge's fork 1 and made the returns a work order: with the sentence filed and
+  nothing else changed, the full includer keeps 16 of 18 Ask B figures (`scratchpad/t401/fix/remeasure_b.py`). The returns
+  stay as a hazard; the second device is re-sited onto 389 accounts the legacy platform took back during 2026 on a change
+  to prepayment, where the repair the sentence invites is right before the close and wrong after it (the full includer
+  keeps 0 of 18).
+- 2026-11-03, stage 4 round 1, the Gate A anomaly: the change-of-occupier branch drew the leaving account's supply start
+  without reference to its closure, so two Closed accounts began after they closed and took their meter points from the
+  live occupiers (Eastern and London one account short under the golden's own rule). The leaving account's start now
+  precedes its closure, asserted over every account. Fork 3 was closed by "no withdrawn registration counted" rather than
+  by dating the boundary in the asking sentence (shorter, and true whatever the date), with every withdrawal now dated
+  before the start it requested, as switching allows.

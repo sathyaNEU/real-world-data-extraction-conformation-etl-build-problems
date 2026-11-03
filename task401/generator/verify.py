@@ -105,7 +105,7 @@ def rate_on(rt, code, region, day):
 
 
 def live_registrations(T):
-    rg = table(T, 'supply_registrations_2024-07_2025-12.csv')
+    rg = table(T, 'supply_registrations_2024-05_2025-12.csv')
     gone = {r['registration_ref'] for r in rg if r['event'] == 'Withdrawal'}
     return [r for r in rg if r['event'] == 'Registration' and r['registration_ref'] not in gone]
 
@@ -139,7 +139,7 @@ def main_call(T):
     regs = defaultdict(list)
     for r in live_registrations(T):
         regs[r['account_number']].append(r)
-    quotes = {r['quote_ref']: r for r in table(T, 'quote_log_2024-06_2025-12.csv')}
+    quotes = {r['quote_ref']: r for r in table(T, 'quote_log_2024-05_2025-12.csv')}
     rt = rates_table(T); Q = quantities(T)
     rows = []
     for acct, v in R.items():
@@ -169,12 +169,15 @@ def main_call(T):
 
 
 def ask_a(T):
-    leg = table(T, 'legacy_accounts_extract_2026-10-31.csv'); fl = table(T, 'switching_flows_2026-05_2026-10.csv')
-    asof = date(2026, 11, 1); rank = {'Loss notified': 0, 'Loss withdrawn': 1, 'Loss completed': 2, 'Erroneous transfer returned': 3}
-    state = {}
-    for f in sorted(fl, key=lambda f: (f['meter_point'], f['flow_date'], rank[f['flow']])):
-        if date.fromisoformat(f['flow_date']) <= asof:
-            state[f['meter_point']] = f['flow']
+    leg = table(T, 'legacy_accounts_extract_2026-10-31.csv'); fl = table(T, 'switching_flows_2026-05-01_2026-11-05.csv')
+    asof = date(2026, 11, 1)
+    # the plan: a meter point we lose is no longer ours from the loss's effective date; a transfer returned to us takes
+    # effect on its own effective date; a withdrawn loss never took effect
+    took = defaultdict(list)
+    for f in fl:
+        if f['flow'] in ('Loss completed', 'Erroneous transfer returned') and date.fromisoformat(f['effective_date']) <= asof:
+            took[f['meter_point']].append((date.fromisoformat(f['effective_date']), f['flow']))
+    state = {m: max(v)[1] for m, v in took.items()}
     holder = {}
     for a in leg:
         for m in (a['mpan'], a['mprn']):
@@ -198,7 +201,11 @@ def ask_a(T):
 
 def ask_b(T):
     loads = [json.loads(l) for l in open(T + '/phase1_migration_loads.jsonl', encoding='utf-8')]
-    on_legacy = {a['account_number'] for a in table(T, 'legacy_accounts_extract_2026-10-31.csv')}
+    # the plan: moved means the new platform was billing the account at the end of 2 November 2025, so a loaded account
+    # whose legacy record was live again on or before that day was not moved
+    close = date(2025, 11, 2)
+    on_legacy = {a['account_number'] for a in table(T, 'legacy_accounts_extract_2026-10-31.csv')
+                 if date.fromisoformat(a['status_date']) <= close}
     src = {r['platform_account_no']: r['legacy_account_ref'] for r in loads}
     def first(k):
         for _ in range(50):
@@ -220,7 +227,7 @@ def ask_b(T):
 
 
 def ask_c(T):
-    quotes = table(T, 'quote_log_2024-06_2025-12.csv')
+    quotes = table(T, 'quote_log_2024-05_2025-12.csv')
     by_q = {q['quote_ref']: q for q in quotes}
     by_p = defaultdict(list)
     for q in quotes:
@@ -258,6 +265,10 @@ def documents(T):
           and 'in force on 1 November 2026, day and night together on a two-rate meter' in pl)
     check('DOCX plan files the phase 1 report', 'the accounts it moved to the new platform in each week, each account counted once, '
           'in the week its last load completed, with the fuels that load carried' in pl)
+    check('DOCX plan files what counts as moved, at the close of phase 1',
+          'An account counts as moved if the new platform was billing it at the end of 2 November 2025, when phase 1 closed.' in pl)
+    check('DOCX plan files when a lost meter point stops being ours',
+          'A meter point we lose to another supplier is no longer ours from the effective date of the loss.' in pl)
     import pyarrow.parquet as pq
     md = pq.read_metadata(T + '/meter_point_annual_quantities.parquet')
     check('parquet read back: columns and writer', md.schema.names == ['meter_point', 'fuel', 'register', 'annual_quantity_kwh', 'effective_from', 'source']

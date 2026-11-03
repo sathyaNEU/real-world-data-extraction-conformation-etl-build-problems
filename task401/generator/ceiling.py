@@ -10,9 +10,11 @@ Four responses, each scored on every ask figure (a hit is within half a unit of 
   full      the full includer, every device it can find handled: the switching flows replayed to 1 November (withdrawn
             losses, completed losses, erroneous transfers returned), each register's own quantity in force summed; the
             reload chain walked back to its first legacy reference, each account once in its last load's UK week with
-            that load's fuels; one switch per accepted quote, withdrawn registrations out, the quote's channel. The
-            silent second device on each ask is left: a meter whose registers changed at an exchange, an account loaded
-            and returned to the legacy platform, a registration re-pointed at a later quote.
+            that load's fuels, and (the plan files that a moved account is one the new platform was billing when phase 1
+            closed) every loaded account found live on the legacy prepayment extract left out as never moved; one switch
+            per accepted quote, withdrawn registrations out, the quote's channel. The silent second device on each ask
+            is left: a meter whose registers changed at an exchange, a loaded account the legacy platform took back
+            only after phase 1 closed, a registration re-pointed at a later quote.
   norepair  every row taken as it stands: every extract row an account, each meter point's last row, every load row
             in its UTC week, every registration row in its start month under the quote it names.
     python3 ceiling.py <target dir> <figures.json>
@@ -69,7 +71,7 @@ def last_row(q):
 
 
 def ask_a(T, mode):
-    acc = rows(T + '/legacy_accounts_extract_2026-10-31.csv'); fl = rows(T + '/switching_flows_2026-05_2026-10.csv')
+    acc = rows(T + '/legacy_accounts_extract_2026-10-31.csv'); fl = rows(T + '/switching_flows_2026-05-01_2026-11-05.csv')
     q = quantity_table(T)
     if mode in ('cracker', 'full'):
         qmap = per_register_in_force(q)
@@ -122,7 +124,7 @@ def ask_b(T, mode):
     src = {r['platform_account_no']: r['legacy_account_ref'] for r in recs}
     def root(k):
         n = 0
-        while mode == 'full' and k in src and n < 20:
+        while mode in ('full', 'dated') and k in src and n < 20:
             k = src[k]; n += 1
         return k
     last = {}
@@ -130,15 +132,20 @@ def ask_b(T, mode):
         t = uk(r['completed_utc']); k = root(r['legacy_account_ref'])
         if k not in last or t >= last[k][0]:
             last[k] = (t, r['fuel_profile'])
+    on_legacy = set()
+    if mode == 'full':
+        on_legacy = {a['account_number'] for a in rows(T + '/legacy_accounts_extract_2026-10-31.csv')}
+    elif mode == 'dated':      # stress: the full includer that also dates each legacy return against the close
+        on_legacy = {a['account_number'] for a in rows(T + '/legacy_accounts_extract_2026-10-31.csv') if a['status_date'] <= '2025-11-02'}
     for k, (t, fp) in last.items():
         w = week(t.date())
-        if 1 <= w <= 9:
+        if 1 <= w <= 9 and k not in on_legacy:
             out[(w, fp)] += 1
     return dict(out)
 
 
 def ask_c(T, mode):
-    rg = rows(T + '/supply_registrations_2024-07_2025-12.csv'); qt = {r['quote_ref']: r['channel'] for r in rows(T + '/quote_log_2024-06_2025-12.csv')}
+    rg = rows(T + '/supply_registrations_2024-05_2025-12.csv'); qt = {r['quote_ref']: r['channel'] for r in rows(T + '/quote_log_2024-05_2025-12.csv')}
     out = defaultdict(int)
     if mode in ('mirror', 'norepair'):
         for r in rg:
@@ -164,14 +171,15 @@ def ask_c(T, mode):
 
 def score(T, F, mode):
     per = {}
-    a_counts, a_e, a_g = ask_a(T, mode)
+    ma = 'full' if mode == 'dated' else mode       # the stress response is the full includer on Asks A and C
+    a_counts, a_e, a_g = ask_a(T, ma)
     g = F['ask_a']; h = sum(1 for r, v in g['counts'].items() if a_counts.get(r, -1) == v)
     he, hg = int(abs(a_e - g['elec_gwh']) < 0.05), int(abs(a_g - g['gas_gwh']) < 0.05)
     per['A'] = (h + he + hg, len(g['counts']) + 2, 'counts %d of %d, elec %s, gas %s' % (h, len(g['counts']), 'hit' if he else 'miss', 'hit' if hg else 'miss'))
     b = ask_b(T, mode); gb = F['ask_b']
     hb = {fp: sum(1 for k, v in gb.items() if k.endswith(fp) and b.get((int(k.split('|')[0]), fp), -1) == v) for fp in ('ELEC', 'DUAL')}
     per['B'] = (sum(hb.values()), len(gb), 'electricity-only %d of 9, dual fuel %d of 9' % (hb['ELEC'], hb['DUAL']))
-    c = ask_c(T, mode); gc = F['ask_c']
+    c = ask_c(T, ma); gc = F['ask_c']
     hc = defaultdict(int)
     for k, v in gc.items():
         ch, m = k.split('|')
@@ -199,3 +207,8 @@ if __name__ == '__main__':
     one_off = {k: v for k, v in pairs.items() if 'off' in k}
     print('pair ceiling %.1f (one response off the call, the worst of four); both on the call %.1f; mirror leakage %.1f per cent'
           % (max(one_off.values()), pairs['full includer and cracker, both on the call'], 100 * res['mirror'][0]))
+    # stress, outside the four: the full includer that also dates every legacy return against the close of phase 1
+    k, per = score(T, F, 'dated')
+    print('stress: date-testing includer keeps %.3f of ask weight (%s); with the mirror off %.1f, with the cracker on the call %.1f'
+          % (k, '; '.join('%s %d of %d' % (a, v[0], v[1]) for a, v in sorted(per.items())), (on(k) + off(res['mirror'][0])) / 2,
+             (on(k) + on(res['cracker'][0])) / 2))

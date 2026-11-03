@@ -23,13 +23,13 @@ def load(T):
     f = lambda n: os.path.join(T, n)
     s25 = pd.read_csv(f('six_month_survey_2025H1.csv'), dtype=str)
     s26 = pd.read_csv(f('survey_export_6m_2026-01-01_2026-06-30.csv'), dtype=str)
-    quotes = pd.read_csv(f('quote_log_2024-06_2025-12.csv'), dtype=str)
-    regs = pd.read_csv(f('supply_registrations_2024-07_2025-12.csv'), dtype=str)
+    quotes = pd.read_csv(f('quote_log_2024-05_2025-12.csv'), dtype=str)
+    regs = pd.read_csv(f('supply_registrations_2024-05_2025-12.csv'), dtype=str)
     qty = pd.read_parquet(f('meter_point_annual_quantities.parquet'))
     rates = pd.read_excel(f('tariff_rates_2024-04_2026-06.xlsx'), sheet_name='Rates')
     loads = pd.read_json(f('phase1_migration_loads.jsonl'), lines=True, dtype={'legacy_account_ref': str, 'platform_account_no': str})
     legacy = pd.read_csv(f('legacy_accounts_extract_2026-10-31.csv'), dtype=str)
-    flows = pd.read_csv(f('switching_flows_2026-05_2026-10.csv'), dtype=str)
+    flows = pd.read_csv(f('switching_flows_2026-05-01_2026-11-05.csv'), dtype=str)
     return dict(s25=s25, s26=s26, quotes=quotes, regs=regs, qty=qty, rates=rates, loads=loads, legacy=legacy, flows=flows)
 
 
@@ -195,8 +195,12 @@ def ask_b(B):
         return s
     lo['root'] = [root(s) for s in lo['legacy_account_ref']]
     last = lo.drop_duplicates('root', keep='last')
-    # an account loaded and returned to the legacy platform was not moved: it is still on the legacy extract
-    last = last[~last['root'].isin(set(B['legacy']['account_number']))]
+    # the plan: an account counts as moved if the new platform was billing it at the end of 2 November 2025. A loaded
+    # account live again on the legacy platform by then (its legacy status set on or before that day) was not moved;
+    # one the legacy platform took back later was.
+    leg = B['legacy']
+    back = set(leg.loc[leg['status_date'] <= '2025-11-02', 'account_number'])
+    last = last[~last['root'].isin(back)]
     last = last[(last['local'] >= pd.Timestamp(2025, 9, 1)) & (last['local'] < pd.Timestamp(2025, 11, 3))]
     last['week'] = [(t.date() - WEEK0).days // 7 + 1 for t in last['local']]
     return {(int(w), f): int(n) for (w, f), n in last.groupby(['week', 'fuel_profile']).size().items()}

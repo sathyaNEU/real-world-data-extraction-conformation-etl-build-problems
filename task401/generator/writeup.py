@@ -38,23 +38,24 @@ L += ['## 3. Step-by-Step Solution', '',
       '1. Read six_month_survey_2025H1.csv and survey_export_6m_2026-01-01_2026-06-30.csv per the measurement framework '
       '(labels by its scale table, 2026 times in UK time, the first answered response per account): %.1f and %.1f per cent '
       'satisfied, a fall of %.1f points.' % (s0, s1, fall),
-      '2. Linked each respondent to the accepted quote its registration names in supply_registrations_2024-07_2025-12.csv '
+      '2. Linked each respondent to the accepted quote its registration names in supply_registrations_2024-05_2025-12.csv '
       '(2026 platform numbers back to legacy numbers through phase1_migration_loads.jsonl) and costed, at that quote\'s '
       'rates in tariff_rates_2024-04_2026-06.xlsx, the annual quantities in force on the response date in '
       'meter_point_annual_quantities.parquet.',
       '3. Fitted satisfaction on the metered cost against the quote (kinked at zero) with the tariff rise, the contact '
       'centre and the 2026 term, and split the fall over the four causes in every order: the quote\'s part is more than '
       'half, and customers whose quote covered the cost held their level.',
-      '4. Phase 2 scope: replayed switching_flows_2026-05_2026-10.csv to 1 November 2026 (a meter point returned after an '
-      'erroneous transfer is ours), gave each meter point to the account in legacy_accounts_extract_2026-10-31.csv that '
-      'took it on last (a leaving occupier\'s account waiting for its final bill no longer counts), and summed each meter '
-      'point\'s registers on its latest revision on or before that day: the regional counts, %.1f GWh of electricity and '
-      '%.1f GWh of gas.' % (e, g),
+      '4. Phase 2 scope: replayed switching_flows_2026-05-01_2026-11-05.csv to 1 November 2026 per the cutover plan (a meter '
+      'point returned after an erroneous transfer is ours), gave each meter point to the account in '
+      'legacy_accounts_extract_2026-10-31.csv that took it on last (a leaving occupier\'s account waiting for its final '
+      'bill no longer counts), and summed each meter point\'s registers on its latest revision on or before that day: the '
+      'regional counts, and %.1f GWh of electricity and %.1f GWh of gas for phase 2 as a whole.' % (e, g),
       '5. Phase 1 moves: walked each load in phase1_migration_loads.jsonl back through the platform number it was sourced '
-      'from, took each account\'s last load in UK time with that load\'s fuels, and left out accounts still on the legacy '
-      'extract (loaded and returned, never moved): the weekly counts below.',
-      '6. Switches: one per accepted quote in the registrations with withdrawn registrations out, in the month its first '
-      'supply started, credited to the channel of the prospect\'s quote in quote_log_2024-06_2025-12.csv dated on or before '
+      'from, took each account\'s last load in UK time with that load\'s fuels, and per the cutover plan left out the '
+      'accounts legacy_accounts_extract_2026-10-31.csv shows live on the legacy platform again by the end of 2 November '
+      '2025 (an account it shows taken back on a later date was moved): the weekly counts below.',
+      '6. Switches: one per accepted quote in the registrations, no withdrawn registration counted, in the month its first '
+      'supply started, credited to the channel of the prospect\'s quote in quote_log_2024-05_2025-12.csv dated on or before '
       'the registration (a later phone re-quote does not move it): the monthly counts below.',
       '7. The platform is not the cause of the fall; phase 2 can cut over on 1 February 2027 and the fix is the quote '
       'journey.', '']
@@ -67,7 +68,7 @@ L += ['## 4. Deliverable Answers', '', '### six_month_satisfaction_review.pdf', 
       '### phase2_readiness.xlsx', '',
       '1. Accounts phase 2 will move, by region, whole numbers:']
 L += ['   - %s: %s' % (r, n(F['ask_a']['counts'][r])) for r in sorted(F['ask_a']['counts'])]
-L += ['2. Annual quantity of the meter points phase 2 will move, GWh to one decimal: electricity %.1f, gas %.1f.' % (e, g),
+L += ['2. Total annual quantity of all the meter points phase 2 will move, GWh to one decimal: electricity %.1f, gas %.1f.' % (e, g),
       '3. Accounts phase 1 moved each week, whole numbers:']
 L += ['   - Week commencing %s 2025: electricity-only %s, dual fuel %s' % (w, n(F['ask_b']['%d|ELEC' % k]), n(F['ask_b']['%d|DUAL' % k]))
       for k, w in enumerate(WEEKS, 1)]

@@ -1,25 +1,25 @@
 {
  "ask_a": {
   "counts": {
-   "East Midlands": 2520,
-   "Eastern": 3213,
-   "London": 2923,
-   "North East": 1560,
-   "North Scotland": 906,
-   "North Wales and Mersey": 1646,
-   "North West": 2881,
-   "South East": 2555,
-   "South Scotland": 2007,
-   "South Wales": 1200,
-   "South West": 2000,
-   "Southern": 3287,
-   "West Midlands": 2551,
-   "Yorkshire": 2931
+   "East Midlands": 2553,
+   "Eastern": 3253,
+   "London": 2952,
+   "North East": 1581,
+   "North Scotland": 920,
+   "North Wales and Mersey": 1672,
+   "North West": 2924,
+   "South East": 2580,
+   "South Scotland": 2029,
+   "South Wales": 1215,
+   "South West": 2019,
+   "Southern": 3326,
+   "West Midlands": 2582,
+   "Yorkshire": 2965
   },
-  "elec_gwh": 101.4,
-  "elec_gwh_raw": 101.399069,
-  "gas_gwh": 230.6,
-  "gas_gwh_raw": 230.591818
+  "elec_gwh": 102.6,
+  "elec_gwh_raw": 102.601916,
+  "gas_gwh": 233.8,
+  "gas_gwh_raw": 233.831657
  },
  "ask_b": {
   "1|DUAL": 4478,
@@ -38,8 +38,8 @@
   "7|ELEC": 3885,
   "8|DUAL": 10341,
   "8|ELEC": 3914,
-  "9|DUAL": 9665,
-  "9|ELEC": 3643
+  "9|DUAL": 9668,
+  "9|ELEC": 3668
  },
  "ask_c": {
   "Broker|10": 689,

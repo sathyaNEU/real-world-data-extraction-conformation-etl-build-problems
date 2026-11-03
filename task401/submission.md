@@ -18,11 +18,11 @@ More than half of the 9.1-point fall sits with customers whose meter points' ann
 ## 3. Step-by-Step Solution
 
 1. Read six_month_survey_2025H1.csv and survey_export_6m_2026-01-01_2026-06-30.csv per the measurement framework (labels by its scale table, 2026 times in UK time, the first answered response per account): 76.2 and 67.1 per cent satisfied, a fall of 9.1 points.
-2. Linked each respondent to the accepted quote its registration names in supply_registrations_2024-07_2025-12.csv (2026 platform numbers back to legacy numbers through phase1_migration_loads.jsonl) and costed, at that quote's rates in tariff_rates_2024-04_2026-06.xlsx, the annual quantities in force on the response date in meter_point_annual_quantities.parquet.
+2. Linked each respondent to the accepted quote its registration names in supply_registrations_2024-05_2025-12.csv (2026 platform numbers back to legacy numbers through phase1_migration_loads.jsonl) and costed, at that quote's rates in tariff_rates_2024-04_2026-06.xlsx, the annual quantities in force on the response date in meter_point_annual_quantities.parquet.
 3. Fitted satisfaction on the metered cost against the quote (kinked at zero) with the tariff rise, the contact centre and the 2026 term, and split the fall over the four causes in every order: the quote's part is more than half, and customers whose quote covered the cost held their level.
-4. Phase 2 scope: replayed switching_flows_2026-05_2026-10.csv to 1 November 2026 (a meter point returned after an erroneous transfer is ours), gave each meter point to the account in legacy_accounts_extract_2026-10-31.csv that took it on last (a leaving occupier's account waiting for its final bill no longer counts), and summed each meter point's registers on its latest revision on or before that day: the regional counts, 101.4 GWh of electricity and 230.6 GWh of gas.
-5. Phase 1 moves: walked each load in phase1_migration_loads.jsonl back through the platform number it was sourced from, took each account's last load in UK time with that load's fuels, and left out accounts still on the legacy extract (loaded and returned, never moved): the weekly counts below.
-6. Switches: one per accepted quote in the registrations with withdrawn registrations out, in the month its first supply started, credited to the channel of the prospect's quote in quote_log_2024-06_2025-12.csv dated on or before the registration (a later phone re-quote does not move it): the monthly counts below.
+4. Phase 2 scope: replayed switching_flows_2026-05-01_2026-11-05.csv to 1 November 2026 per the cutover plan (a meter point returned after an erroneous transfer is ours), gave each meter point to the account in legacy_accounts_extract_2026-10-31.csv that took it on last (a leaving occupier's account waiting for its final bill no longer counts), and summed each meter point's registers on its latest revision on or before that day: the regional counts, and 102.6 GWh of electricity and 233.8 GWh of gas for phase 2 as a whole.
+5. Phase 1 moves: walked each load in phase1_migration_loads.jsonl back through the platform number it was sourced from, took each account's last load in UK time with that load's fuels, and per the cutover plan left out the accounts legacy_accounts_extract_2026-10-31.csv shows live on the legacy platform again by the end of 2 November 2025 (an account it shows taken back on a later date was moved): the weekly counts below.
+6. Switches: one per accepted quote in the registrations, no withdrawn registration counted, in the month its first supply started, credited to the channel of the prospect's quote in quote_log_2024-05_2025-12.csv dated on or before the registration (a later phone re-quote does not move it): the monthly counts below.
 7. The platform is not the cause of the fall; phase 2 can cut over on 1 February 2027 and the fix is the quote journey.
 
 ## 4. Deliverable Answers
@@ -36,21 +36,21 @@ More than half of the 9.1-point fall sits with customers whose meter points' ann
 ### phase2_readiness.xlsx
 
 1. Accounts phase 2 will move, by region, whole numbers:
-   - East Midlands: 2,520
-   - Eastern: 3,213
-   - London: 2,923
-   - North East: 1,560
-   - North Scotland: 906
-   - North Wales and Mersey: 1,646
-   - North West: 2,881
-   - South East: 2,555
-   - South Scotland: 2,007
-   - South Wales: 1,200
-   - South West: 2,000
-   - Southern: 3,287
-   - West Midlands: 2,551
-   - Yorkshire: 2,931
-2. Annual quantity of the meter points phase 2 will move, GWh to one decimal: electricity 101.4, gas 230.6.
+   - East Midlands: 2,553
+   - Eastern: 3,253
+   - London: 2,952
+   - North East: 1,581
+   - North Scotland: 920
+   - North Wales and Mersey: 1,672
+   - North West: 2,924
+   - South East: 2,580
+   - South Scotland: 2,029
+   - South Wales: 1,215
+   - South West: 2,019
+   - Southern: 3,326
+   - West Midlands: 2,582
+   - Yorkshire: 2,965
+2. Total annual quantity of all the meter points phase 2 will move, GWh to one decimal: electricity 102.6, gas 233.8.
 3. Accounts phase 1 moved each week, whole numbers:
    - Week commencing 1 September 2025: electricity-only 1,757, dual fuel 4,478
    - Week commencing 8 September 2025: electricity-only 2,897, dual fuel 7,401
@@ -60,7 +60,7 @@ More than half of the 9.1-point fall sits with customers whose meter points' ann
    - Week commencing 6 October 2025: electricity-only 4,213, dual fuel 11,155
    - Week commencing 13 October 2025: electricity-only 3,885, dual fuel 10,412
    - Week commencing 20 October 2025: electricity-only 3,914, dual fuel 10,341
-   - Week commencing 27 October 2025: electricity-only 3,643, dual fuel 9,665
+   - Week commencing 27 October 2025: electricity-only 3,668, dual fuel 9,668
 4. Switches each sales channel brought in, by the month first supply started, whole numbers:
    - July 2025: Direct web 1,800, Comparison site 1,712, Phone 600, Broker 729
    - August 2025: Direct web 1,749, Comparison site 1,715, Phone 598, Broker 707
