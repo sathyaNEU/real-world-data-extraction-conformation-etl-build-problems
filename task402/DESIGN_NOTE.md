@@ -476,3 +476,18 @@ and in the helpline's case log, files the main call never reads).
 - Pending cohort at a four-month mean wait and 240,000 people (proto3): D 129 to 148 screens against E 145, screen 1
   failed. Region doubled (less noise, same ratios), mean wait six months, E at 0.8 and A at 0.5 points (the low end of
   their published ranges): D 370 to 395 against 230 (proto4).
+- Architecture 2 at honest levels (2026-11-03, stage 2, before any generator): the queue re-anchored to what the
+  published accounts of a shared primary care support service support (NAO HC 632, 17 May 2018, and PAC HC 698, 2018:
+  half a million patient registration letters in backlog and practitioners waiting months, with no wait distribution
+  published), a first-in-first-out backlog of address changes at a mean of 15 weeks with 15 per cent applied quickly,
+  85 per cent of within-region movers asking 0 to 8 weeks after moving, a kit to the address left completing at 0.30
+  of normal (about half of movers redirect mail and fewer on low incomes, Citizens Advice, Left behind), a 1.5-point
+  mobility barrier (no published barrier for colorectal screening): D costs the fifth 157 screens (sd 8, 20 redraws)
+  against E's true 145 at 0.5 points (1.08 times) and 116 at 0.4 (1.36); every rival is costed by a difference of
+  completion rates whose sampling sd is 120 to 280 screens (E within the year 120, E against 2024-25 169, A's
+  localities 148, C on settled kits 202, the April residual 280), as large as D's lead, so D's lowest golden variant
+  clears every rival estimator by 1.15 in 1 of 20 redraws, 3 of 20 with every lever at its honest edge (a 20-week mean
+  wait, 0.20, everyone asking, E and A at 0.3 points, D 279) and 4 of 20 at the old six-month exponential; the
+  shape-07 grid's fifteen rival cells carry the same noise, and the earlier screens had compared D with the rivals'
+  true costs, never with their estimators. The movers-in-12-months row (46, sd 18) and the returned-kit row (26) stayed
+  below E. Architecture 2 is spent before any data was cut (scratch t402/a2 proto6.py and p6_sd.py).
