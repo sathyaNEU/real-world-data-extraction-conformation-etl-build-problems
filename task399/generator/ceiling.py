@@ -127,14 +127,17 @@ def _months(pairs):
 def bh_cracker(t):
     """Clause 4 executed on a state rebuilt from the incident log in New Zealand time: a placement runs from its
     arrival to the night before the resident leaves; each departure (police custody, hospital, not back by curfew)
-    closed by its return is an absence, tested at midnight, and a departure never closed is the resident leaving;
-    every absence on the app's Away sheet is joined to the log's (a union, never a sum)."""
+    closed by its return is an absence, tested at midnight; a resident not back by curfew whom the Away sheet records
+    absent without leave from that night is away, not gone (the clause names those nights as nights away); any other
+    departure never closed is the resident leaving; every absence on the app's Away sheet is joined to the log's (a
+    union, never a sum)."""
     reg = rxlsx(os.path.join(t, "bail_house_register_2025-26.xlsx"), "Placements")
     away = rxlsx(os.path.join(t, "bail_house_register_2025-26.xlsx"), "Away")
     inc = rcsv(os.path.join(t, "bail_house_incidents.csv"))
     ev = defaultdict(list)
     for e in inc:
         ev[e["Placement"]].append((nz(e["ReportedAt"]), e["Type"]))
+    awol = {(a["Placement"], day(a["Away from"])) for a in away if a["Reason"] == "Absent without leave"}
     closes = {"Taken into police custody": "Returned from police custody", "Admitted to hospital": "Returned from hospital",
               "Resident did not return": "Resident returned"}
     gone, span = defaultdict(set), {}
@@ -147,6 +150,8 @@ def bh_cracker(t):
                 continue
             back = [x for x, kb in es[i + 1:] if kb == closes[k]]
             if not back:
+                if k == "Resident did not return" and (pid, o.date()) in awol:
+                    continue                           # absent without leave: nights away, the placement runs on
                 leave.append(o)                        # never back: the resident left
                 continue
             b = min(back)

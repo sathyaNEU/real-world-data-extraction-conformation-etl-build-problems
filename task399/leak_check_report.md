@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: appearance, extract, officer, sitting, audio-visual, magistrate, decisive, asserted, kestrel, region, window, section, records, calendar, comparison, counsel, disparity, returns, defendant, carries, golden, factors, courtroom, leaves, legally
+Stump terms swept: appearance, extract, officer, sitting, audio-visual, magistrate, decisive, asserted, kestrel, region, window, section, records, calendar, comparison, counsel, disparity, golden, returns, defendant, carries, factors, clause, courtroom, leaves
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `budget2027_bid_instructions_halsey_coast.pdf`: carries 12 of 12 distinctive words of the committed call: 'Put the duty lawyer roster forward: a second rostered duty lawyer at Kestrel Bay District Court on every sitting day.'

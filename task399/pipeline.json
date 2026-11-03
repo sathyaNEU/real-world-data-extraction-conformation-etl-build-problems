@@ -3,21 +3,21 @@
  "status": "PAUSED",
  "domain": "criminology-justice/sentencing-bail-disparity-analysis",
  "objective": "root-cause",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-03",
  "seed": "RC05 (a regional distributor's one reliability programme); the seed's world collided at the draw; architecture 1 (Quantitative Finance) spent at the draw in task398's cell; architecture 2 (bus drivers' rest) spent at the draw as a template of task121 v6; architecture 3 (a road-test booking journey's slot stock) spent at stage 2 on the pricing harness; architecture 4 is a New Zealand District Court region's first appearances from custody",
- "stump": "A competent solver measures the first-appearance custody-remand gap within court and judicial officer with the legally relevant factors as controls, finds the widening in the Kestrel Bay custody list under the community magistrate who took it over in March 2026, and funds a judge on the custody list; the step that lands it there is reading a within-officer difference as the officer's, when the duty lawyer service's record and the sitting calendar show the single rostered duty lawyer was serving the new audio-visual remand list next door when most of the widening's matters were called, which puts the gap on the duty lawyer roster.",
+ "stump": "A competent solver measures the first-appearance custody-remand gap within court and judicial officer with the legally relevant factors as controls, finds the widening in the Kestrel Bay custody list under the community magistrate who took it over in December 2025, and funds a judge on the custody list; the step that lands it there is reading a within-officer difference as the officer's, when the duty lawyer service's record and the sitting calendar show the single rostered duty lawyer was serving the new audio-visual remand list next door when most of the widening's matters were called, which puts the gap on the duty lawyer roster.",
  "architecture": 4,
  "loops": 0,
  "precut": {
   "exit": 0,
   "date": "2026-11-03",
-  "checks": "61 checks, 0 FAIL, 0 WARN (re-run on the final cut e206873b)"
+  "checks": "61 checks, 0 FAIL, 0 WARN (re-run on the final cut 35d217ce)"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-03 on e206873b (no LEAK; sweeps 3, 4 and 9 answered in ## Leak and duplicate review)",
-  "reader": "round 1 clean (question 1 none, question 6 an analytical choice; realism note on the uniform no-lawyer share, closed by fix 7); round 2 brief written, not yet run"
+  "leak_py": "REVIEW 2026-11-03 on 35d217ce (no LEAK; sweeps 3, 4 and 9 answered in ## Leak and duplicate review)",
+  "reader": "round 1 on 5fa60b26 clean (question 1 none, question 6 an analytical choice; realism note on the uniform no-lawyer share, closed by fix 7); round 2 on e206873b clean (question 1 none, question 6 an analytical choice, no leak in the three changed documents; question 8 residual on a night absent without leave, closed in clause 4 as SF17); round 3 on 35d217ce owed (only the contract schedule changed)"
  },
  "duplicate_check": {
   "heart": "WARN 2026-11-03 (overuse.org_family; repeat.question_form against task398, answered in the note)",
@@ -25,19 +25,19 @@
   "nearest": "task141 v1 (0.14), task253 v2, both differentiated"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC on the asks only (round 1)",
-  "disposition": "FIX_NOW (round 1, on 5fa60b26); round 2 not yet run, brief written for e206873b",
-  "report": "round 1 scratch t399/stage4/judge/verdict.md (main call forced, Gate F moderate to strong, Gate G decomposition_attribution analytical, Gate H pass); round 2 brief scratch t399/stage4/judge_r2/judge_brief.md"
+  "verdict": "DETERMINISTIC (round 2); round 1 NOT_DETERMINISTIC on the asks only",
+  "disposition": "APPROVE (round 2, on e206873b); round 1 FIX_NOW on 5fa60b26, repaired",
+  "report": "round 1 scratch t399/stage4/judge/verdict.md; round 2 scratch t399/stage4/judge_r2/verdict.md: every graded figure reproduced, all six round-1 findings closed, Gate F strong (its own officer drill filed a judge on the custody list), Gate G decomposition_attribution analytical non-defect, Gate H domain pass, layers pass, decisive step analytical"
  },
  "returned": [],
- "resume": "stage 4 round 2 running: the determinism judge (scratch t399/stage4/judge_r2/judge_brief.md, round-1 findings in round1_findings.md opened after derivation.md) and the leak reader (scratch t399/stage4/reader_r2/reader_brief.md), each on its own copy verified against target.zip e206873b; collect both reports, fix every finding in one generator pass (re-judge once on FIX_NOW, re-read only if a document or the prompt changes), re-run every free gate on the final cut, then ship: pre-ship check in DESIGN_NOTE.md, card current, ledger row SHIPPED, commit SHIPPED (task399) with target.zip and golden/ force-added",
+ "resume": "ship pending the third read: the leak reader's round 3 (scratch t399/stage4/reader_r3/reader_brief.md) on its own copy verified against target.zip 35d217ce, which changed only bail_support_contract_schedule2.pdf (clause 4 names a night absent without leave); if it is clean, commit SHIPPED (task399): the duty lawyer roster, a second rostered duty lawyer at Kestrel Bay District Court on every sitting day, with target.zip and golden/ force-added, status SHIPPED and delivered 2026-11-03 (the ledger row is already written); a finding is fixed in the generator, every free gate re-run, and read again",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "free_gates": "2026-11-03 on the final cut: checks.py 154 of 154 (tightest kb_other_judges_gap at 0.130 of a bin), verify.py 40 of 40, two builds byte-identical, figures_check 62 of 62, precut 61 of 61, voice-check PASS, leak.py REVIEW (sweeps 3, 4, 9 answered), heart WARN, surface 2 pairs answered; ceiling.py cracker 0 of 24, mirror 0 of 24, pair 31.6; target.zip sha256 e206873bef7ac57608297b870bb03eebcbc18686872ab30c15bc2a68b8c7b607",
+ "free_gates": "2026-11-03 on the final cut: checks.py 133 of 133 (tightest kb_other_judges_gap at 0.130 of a bin), verify.py 40 of 40, two builds byte-identical, figures_check 62 of 62, precut 61 of 61, voice-check PASS, leak.py REVIEW (sweeps 3, 4, 9 answered), heart WARN, surface 2 pairs answered; ceiling.py cracker 1 of 24 (January 2026's nights), mirror 0 of 24, pair 32.8; target.zip sha256 35d217ce89cecb4a9c8c4d340481267cda5d8416f0aeca54be28374753f9edcc",
  "fix_pass_done": [
   "F4: custody calls on an AVL finish minute re-timed one minute later (membership unchanged; SF11 asserted); held 1: AVL interior calls drawn on their own stream",
   "Gate E: the 1,995 count dropped from every graded block; drill ask 2 is the window split alone; briefing ask 2 described without officers",
@@ -50,6 +50,7 @@
   "ask 2 rebuilt: the provider's case app from 1 October 2025 closes hospital and curfew absences in its own records while the incident log keeps only the departure; curfew absences added",
   "ceiling.py cracker reads the court's order day from the extract, the first report, the carried rows' legacy order day, and rebuilds the bail-house state from the log with every sheet joined",
   "fix 8: checks.py asserts each extract's own saved or pulled date on or after its last record and before 3 November 2026",
-  "design note: fork rows SF11 to SF16, the ask sheet and cracker table, stress rows, leak review, pre-ship check with the moved figures, Tried and rejected lines; card spine.rows 77,743 and Layer 1"
+  "design note: fork rows SF11 to SF16, the ask sheet and cracker table, stress rows, leak review, pre-ship check with the moved figures, Tried and rejected lines; card spine.rows 77,743 and Layer 1",
+  "ship preparation: clause 4 names a night absent without leave (SF17, the golden's direction, every figure unchanged); the cracker executes it and keeps January 2026's nights; the stale March 2026 and February 2026 dates in the stump sentence, default path and card corrected to the data; ledger row written"
  ]
 }

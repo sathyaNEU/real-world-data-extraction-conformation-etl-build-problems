@@ -139,7 +139,8 @@ def contract_schedule(path):
          Paragraph("An occupied night is a night a resident spends at a bail house. A night is dated by the evening "
                    "it begins and is occupied when the resident is at the house at midnight. Nights a resident spends "
                    "in police custody or in hospital are not occupied nights, although the bed is held for the "
-                   "resident, and a night away on approved leave is not a night at the house. A placement's first "
+                   "resident, and a night away on approved leave or absent without leave is not a night at the "
+                   "house. A placement's first "
                    "night is the night the resident arrives at the house and its last is the night before the "
                    "resident leaves; a booking or register entry made before the resident arrives or after the "
                    "resident leaves neither starts nor extends a placement.", BODY),
