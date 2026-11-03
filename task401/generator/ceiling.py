@@ -1,14 +1,27 @@
 """task401 ask-layer ceiling, measured on the cut pack. Shares no code with the generator.
 
-The cracker lands the call, runs the hygiene battery and executes every filed convention (the cutover plan's scope,
-UK-time weeks, each account once in the week its last load completed; the asking sentences' one switch per customer
-in the month its first supply started, withdrawn switches out). The mirror stops at the most attractive wrong rung.
-Each ask figure is a hit when it is within half a unit of the stated rounding of the golden.
+Four responses, each scored on every ask figure (a hit is within half a unit of the stated rounding of the golden):
+  cracker   lands the call, runs the hygiene battery and executes every filed convention: the cutover plan's scope
+            (accounts not closed, meter points dropped on a completed loss), quantities in force on 1 November with day
+            and night together, UK-time weeks with each account once in the week its last load completed (one per
+            legacy reference), switches one per registration with withdrawn registrations out. Finds no device.
+  mirror    stops at the most attractive wrong rung: live accounts and each meter point's latest quantity, loads by
+            their UTC week, every registration row by its start month.
+  full      the full includer, every device it can find handled: the switching flows replayed to 1 November (withdrawn
+            losses, completed losses, erroneous transfers returned), each register's own quantity in force summed; the
+            reload chain walked back to its first legacy reference, each account once in its last load's UK week with
+            that load's fuels; one switch per accepted quote, withdrawn registrations out, the quote's channel. The
+            silent second device on each ask is left: a meter whose registers changed at an exchange, an account loaded
+            and returned to the legacy platform, a registration re-pointed at a later quote.
+  norepair  every row taken as it stands: every extract row an account, each meter point's last row, every load row
+            in its UTC week, every registration row in its start month under the quote it names.
     python3 ceiling.py <target dir> <figures.json>
 """
 import csv, json, sys
 from collections import defaultdict
 from datetime import date, datetime, timedelta
+
+ASOF = date(2026, 11, 1)
 
 
 def rows(path):
@@ -26,67 +39,99 @@ def uk(ts):
     return t + timedelta(hours=1 if on <= t < off else 0)
 
 
-def quantities(T):
+def week(d):
+    return (d - date(2025, 9, 1)).days // 7 + 1
+
+
+def quantity_table(T):
     import pyarrow.parquet as pq
     t = pq.read_table(T + '/meter_point_annual_quantities.parquet').to_pydict()
-    return list(zip(t['meter_point'], t['annual_quantity_kwh'], t['effective_from']))
+    return list(zip(t['meter_point'], t['register'], t['annual_quantity_kwh'], t['effective_from']))
+
+
+def per_register_in_force(q):
+    best = {}
+    for mp, reg, kwh, d in q:
+        if d <= ASOF and ((mp, reg) not in best or d >= best[(mp, reg)][1]):
+            best[(mp, reg)] = (kwh, d)
+    out = defaultdict(float)
+    for (mp, reg), (kwh, d) in best.items():
+        out[mp] += kwh
+    return out
+
+
+def last_row(q):
+    best = {}
+    for mp, reg, kwh, d in q:
+        if mp not in best or d >= best[mp][1]:
+            best[mp] = (kwh, d)
+    return {mp: v[0] for mp, v in best.items()}
 
 
 def ask_a(T, mode):
     acc = rows(T + '/legacy_accounts_extract_2026-10-31.csv'); fl = rows(T + '/switching_flows_2026-05_2026-10.csv')
-    asof = date(2026, 11, 1)
-    q = quantities(T); inforce, latest = {}, {}
-    for mp, kwh, d in q:
-        if d <= asof and (mp not in inforce or d >= inforce[mp][1]):
-            inforce[mp] = (kwh, d)
-        if mp not in latest or d >= latest[mp][1]:
-            latest[mp] = (kwh, d)
-    lost = {f['meter_point'] for f in fl if f['flow'] == 'Loss completed' and date.fromisoformat(f['effective_date']) <= asof}
+    q = quantity_table(T)
+    if mode in ('cracker', 'full'):
+        qmap = per_register_in_force(q)
+    else:
+        qmap = last_row(q)
+    if mode == 'cracker':
+        lost = {f['meter_point'] for f in fl if f['flow'] == 'Loss completed' and date.fromisoformat(f['effective_date']) <= ASOF}
+    elif mode == 'full':
+        rank = {'Loss notified': 0, 'Loss withdrawn': 1, 'Loss completed': 2, 'Erroneous transfer returned': 3}
+        ev = sorted((f['meter_point'], f['flow_date'], rank[f['flow']], f['flow']) for f in fl if date.fromisoformat(f['flow_date']) <= ASOF)
+        state = {}
+        for mp, d, r, flow in ev:
+            state[mp] = flow
+        lost = {mp for mp, s in state.items() if s == 'Loss completed'}
+    else:
+        lost = set()
     counts, e, g, seen = defaultdict(int), 0.0, 0.0, set()
     for a in acc:
-        if a['account_number'] in seen:
+        if mode != 'norepair':
+            if a['account_number'] in seen:
+                continue
+            seen.add(a['account_number'])
+        if mode in ('cracker', 'full') and a['account_status'] == 'Closed':
             continue
-        seen.add(a['account_number'])
-        if mode == 'cracker':
-            if a['account_status'] == 'Closed':
-                continue
-            mps = [('E', a['mpan'])] + ([('G', a['mprn'])] if a['mprn'] else [])
-            live = [(f, m) for f, m in mps if m not in lost]
-            src = inforce
-        else:
-            if a['account_status'] != 'Live':
-                continue
-            live = [('E', a['mpan'])] + ([('G', a['mprn'])] if a['mprn'] else [])
-            src = latest
+        if mode == 'mirror' and a['account_status'] != 'Live':
+            continue
+        mps = [('E', a['mpan'])] + ([('G', a['mprn'])] if a['mprn'] else [])
+        live = [(f, m) for f, m in mps if m not in lost]
         if not live:
             continue
         counts[a['region']] += 1
         for f, m in live:
             if f == 'E':
-                e += src[m][0]
+                e += qmap.get(m, 0)
             else:
-                g += src[m][0]
+                g += qmap.get(m, 0)
     return dict(counts), e / 1e6, g / 1e6
 
 
 def ask_b(T, mode):
-    out = defaultdict(int); last = {}
+    out = defaultdict(int)
     with open(T + '/phase1_migration_loads.jsonl', encoding='utf-8') as f:
         recs = [json.loads(l) for l in f]
-    if mode == 'mirror':
+    if mode in ('mirror', 'norepair'):
         for r in recs:
-            t = datetime.strptime(r['completed_utc'], '%Y-%m-%dT%H:%M:%SZ')
-            w = (t.date() - date(2025, 9, 1)).days // 7 + 1
+            w = week(datetime.strptime(r['completed_utc'], '%Y-%m-%dT%H:%M:%SZ').date())
             if 1 <= w <= 9:
                 out[(w, r['fuel_profile'])] += 1
         return dict(out)
+    src = {r['platform_account_no']: r['legacy_account_ref'] for r in recs}
+    def root(k):
+        n = 0
+        while mode == 'full' and k in src and n < 20:
+            k = src[k]; n += 1
+        return k
+    last = {}
     for r in recs:
-        t = uk(r['completed_utc'])
-        k = r['legacy_account_ref']
+        t = uk(r['completed_utc']); k = root(r['legacy_account_ref'])
         if k not in last or t >= last[k][0]:
             last[k] = (t, r['fuel_profile'])
     for k, (t, fp) in last.items():
-        w = (t.date() - date(2025, 9, 1)).days // 7 + 1
+        w = week(t.date())
         if 1 <= w <= 9:
             out[(w, fp)] += 1
     return dict(out)
@@ -95,7 +140,7 @@ def ask_b(T, mode):
 def ask_c(T, mode):
     rg = rows(T + '/supply_registrations_2024-07_2025-12.csv'); qt = {r['quote_ref']: r['channel'] for r in rows(T + '/quote_log_2024-06_2025-12.csv')}
     out = defaultdict(int)
-    if mode == 'mirror':
+    if mode in ('mirror', 'norepair'):
         for r in rg:
             if r['event'] == 'Registration':
                 d = date.fromisoformat(r['supply_start_date'])
@@ -107,7 +152,8 @@ def ask_c(T, mode):
     for r in rg:
         if r['event'] != 'Registration' or r['registration_ref'] in wd:
             continue
-        d = date.fromisoformat(r['supply_start_date']); k = r['registration_ref']
+        d = date.fromisoformat(r['supply_start_date'])
+        k = r['registration_ref'] if mode == 'cracker' else r['quote_ref']
         if k not in first or d < first[k][0]:
             first[k] = (d, r['quote_ref'])
     for k, (d, qref) in first.items():
@@ -117,24 +163,39 @@ def ask_c(T, mode):
 
 
 def score(T, F, mode):
-    hits, n, per = 0, 0, {}
+    per = {}
     a_counts, a_e, a_g = ask_a(T, mode)
     g = F['ask_a']; h = sum(1 for r, v in g['counts'].items() if a_counts.get(r, -1) == v)
-    h += int(abs(a_e - g['elec_gwh']) < 0.05) + int(abs(a_g - g['gas_gwh']) < 0.05)
-    per['A'] = (h, len(g['counts']) + 2); hits += h; n += len(g['counts']) + 2
+    he, hg = int(abs(a_e - g['elec_gwh']) < 0.05), int(abs(a_g - g['gas_gwh']) < 0.05)
+    per['A'] = (h + he + hg, len(g['counts']) + 2, 'counts %d of %d, elec %s, gas %s' % (h, len(g['counts']), 'hit' if he else 'miss', 'hit' if hg else 'miss'))
     b = ask_b(T, mode); gb = F['ask_b']
-    h = sum(1 for k, v in gb.items() if b.get((int(k.split('|')[0]), k.split('|')[1]), -1) == v)
-    per['B'] = (h, len(gb)); hits += h; n += len(gb)
+    hb = {fp: sum(1 for k, v in gb.items() if k.endswith(fp) and b.get((int(k.split('|')[0]), fp), -1) == v) for fp in ('ELEC', 'DUAL')}
+    per['B'] = (sum(hb.values()), len(gb), 'electricity-only %d of 9, dual fuel %d of 9' % (hb['ELEC'], hb['DUAL']))
     c = ask_c(T, mode); gc = F['ask_c']
-    h = sum(1 for k, v in gc.items() if c.get((k.split('|')[0], int(k.split('|')[1])), -1) == v)
-    per['C'] = (h, len(gc)); hits += h; n += len(gc)
+    hc = defaultdict(int)
+    for k, v in gc.items():
+        ch, m = k.split('|')
+        hc[ch] += int(c.get((ch, int(m)), -1) == v)
+    per['C'] = (sum(hc.values()), len(gc), ', '.join('%s %d of 6' % (ch, hc[ch]) for ch in sorted(hc)))
+    hits = sum(v[0] for v in per.values()); n = sum(v[1] for v in per.values())
     return hits / n, per
 
 
 if __name__ == '__main__':
     T, F = sys.argv[1], json.load(open(sys.argv[2]))
-    lc, pc = score(T, F, 'cracker'); lm, pm = score(T, F, 'mirror')
-    C = 38 + 7 + 55 * lc; S = 5 + 7 + 55 * lm
-    print('cracker (lands the call, every filed convention, the hygiene battery): ask weight kept %.3f %s' % (lc, pc))
-    print('mirror (stops at the most attractive wrong rung): ask weight kept %.3f %s' % (lm, pm))
-    print('pair ceiling %.1f (cracker %.1f, mirror %.1f); mirror leakage %.1f per cent' % ((C + S) / 2, C, S, 100 * lm))
+    res = {m: score(T, F, m) for m in ('cracker', 'mirror', 'full', 'norepair')}
+    for m, (k, per) in res.items():
+        print('%-9s keeps %.3f of ask weight: %s' % (m, k, '; '.join('%s %d of %d (%s)' % (a, v[0], v[1], v[2]) for a, v in sorted(per.items()))))
+    on = lambda k: 38 + 7 + 55 * k
+    off = lambda k: 5 + 7 + 55 * k
+    pairs = {'cracker on the call, mirror off': (on(res['cracker'][0]) + off(res['mirror'][0])) / 2,
+             'full includer on the call, mirror off': (on(res['full'][0]) + off(res['mirror'][0])) / 2,
+             'full includer on the call, no-repair off': (on(res['full'][0]) + off(res['norepair'][0])) / 2,
+             'cracker on the call, no-repair off': (on(res['cracker'][0]) + off(res['norepair'][0])) / 2,
+             'full includer and cracker, both on the call': (on(res['full'][0]) + on(res['cracker'][0])) / 2,
+             'two full includers on the call (stress)': on(res['full'][0])}
+    for k, v in pairs.items():
+        print('pair, %s: %.1f' % (k, v))
+    one_off = {k: v for k, v in pairs.items() if 'off' in k}
+    print('pair ceiling %.1f (one response off the call, the worst of four); both on the call %.1f; mirror leakage %.1f per cent'
+          % (max(one_off.values()), pairs['full includer and cracker, both on the call'], 100 * res['mirror'][0]))

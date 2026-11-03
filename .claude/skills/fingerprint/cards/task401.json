@@ -11,8 +11,8 @@
   "shape": "03",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "the quote journey relaunched in May 2025, whose quotes stopped pre-filling each meter point's industry annual quantity, not the billing platform: phase 2 can cut over",
+  "answer_source": "submission.md block 1; generator/figures.json call",
   "gap": [
     "objective"
   ],
@@ -25,7 +25,7 @@
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -36,20 +36,22 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:expectation-disconfirmation-of-the-switch-quote-against-the-meter-point-annual-quantity",
   "layer1": [
-    "the tracker vendor's export changed layout in January 2026 (renamed columns, the overall question moved, a 0 to 10 scale exported as text with its labels)",
-    "quotes keyed by quote reference and meter point numbers (MPAN, MPRN) while the tracker and billing key by account number, with accounts re-numbered on migration",
-    "meter reads flagged actual, customer or estimated, with register rollovers, meter exchanges and two-rate (Economy 7) registers",
-    "the legacy platform stamps reads and bills in UK local time and the new platform in UTC across the clock changes",
-    "bill and Direct Debit amounts in pence on the legacy export and pounds on the new, with accounts held on both platforms during the parallel run"
+    "the tracker vendor's export changed in January 2026: coded columns and dd/mm/yyyy dates with numeric answers, then labels and UTC timestamps; partial responses and accounts answering twice in both",
+    "legacy eight-digit account numbers against the platform's ten-digit ones, the crosswalk held only in the phase 1 load log",
+    "registrations keyed by account and meter point, quotes by quote reference and prospect, the tracker by account",
+    "industry annual quantities as several dated rows per meter point and register, revised after reads",
+    "dual fuel as two registration rows, gas often starting days later; withdrawals in the cooling-off period and re-registrations",
+    "tariffs by region with effective dates, variable rates stepping each quarter and fixed products holding their launch rates",
+    "UTC in the platform's load log and the 2026 export against UK local dates in the legacy exports, across the clock changes"
   ],
-  "stakeholder_role": "the supplier's head of customer insight",
-  "role_family": "research_desk",
+  "stakeholder_role": "the supplier's billing programme director, who needs to know whether any of the fall belongs to the platform before he asks the executive team to sign the phase 2 cutover off, with the phase 2 readiness tables (the prompt names no one)",
+  "role_family": "programme_officer",
   "scoring_unit": "index points",
   "spine": {
-    "file": "meter reads of the tracker's respondents, July 2024 to June 2026",
-    "rows": 0,
-    "entity": "one meter read on one register",
-    "grain": "register x read date",
+    "file": "meter_point_annual_quantities.parquet",
+    "rows": 575821,
+    "entity": "one industry annual quantity revision on one meter point register",
+    "grain": "meter point x register x effective date",
     "source": "synthetic"
   },
   "forum": "executive_team",
@@ -59,14 +61,19 @@
     "geography": "Great Britain (an invented domestic energy supplier)",
     "currency": "GBP",
     "org_type": "domestic energy supplier",
-    "invented_names": ["Ferncastle Energy Supply Ltd"],
+    "invented_names": [
+      "Ferncastle Energy Supply Ltd"
+    ],
     "people": [
       "Rita Fisher",
       "Joanne O'Brien",
       "Elliot Davies"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "six_month_satisfaction_review.pdf",
+    "phase2_readiness.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "A fall in a share of satisfied members is booked to the service the members' own ratings blame, because those ratings fell furthest and every later member was served by that service, but what moved is the gap between the amount each member was told to expect when they joined and the amount their own later use then cost, which no column holds and only the joining record set against the member's own measured use reveals; members told accurately are as satisfied as before on the same service.",
@@ -75,7 +82,8 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task121": "task121 v4 read a satisfaction fall on the operating conditions each journey ran under, because ratings of every candidate rise and fall with the respondent's overall verdict; here the operating record is the default's own rung (bills and Direct Debit reviews), and what decides is the expectation each customer was given at the switch, the quote's assumed use set against the use the meter then recorded, a sales record no conditions file carries.",
-    "task181": "task181 v6 traces each case through two time-ordered records to the shared upstream resource that handled it (a steriliser with a drying fault) and takes that resource's excess off the units it served; here no resource handled the customers differently and nothing is traced to one: the service the ratings blame billed every 2026 respondent alike, and the excess lies in what each customer was told to expect at the switch against what their own metered use then cost."
+    "task181": "task181 v6 traces each case through two time-ordered records to the shared upstream resource that handled it (a steriliser with a drying fault) and takes that resource's excess off the units it served; here no resource handled the customers differently and nothing is traced to one: the service the ratings blame billed every 2026 respondent alike, and the excess lies in what each customer was told to expect at the switch against what their own metered use then cost. G6 is this build's decisive generator (the 2026 pool shifted on each customer's quote-against-meter gap while satisfaction at a given gap held); G14 is secondary, so the generators stay as drawn.",
+    "task399": "task399 rebuilds day by day the stock of a capacity behind a self-service journey and reads its decision off that stock; here nothing is a stock or a capacity: the decision is which cause a satisfaction fall belongs to, and the decisive move standardises the 2026 pool to 2025's distribution of a property of each customer no column holds, the cost of their metered use against their quote. The shared labels (gap objective, root cause named) are each build's honest description; the decision type stays root_cause_named because the prompt's question is what pulled satisfaction down, and the platform clause asks whether any of the fall is the platform's, an attribution, not a hold decision."
   },
   "lineage": [
     {
@@ -153,5 +161,6 @@
     }
   ],
   "notes": "Strategy decomposition_attribution (F8): the fall is a correctly reported movement booked by the ratings to the billing platform; the decisive move books it to the quote journey's typical-use default through each customer's disconfirmation. Layer 2 family field_method: the satisfaction driver model done right carries expectations.",
-  "registered": "2026-11-03T16:08:03Z"
+  "registered": "2026-11-03T16:08:03Z",
+  "strategy_note": "Relabelled from decomposition_attribution to composition_mix at stage 3 (2026-11-03): F8's split is decided by overlap, a transfer or a shared driver, none of which decides this one; the decisive move standardises the 2026 pool to 2025's distribution of an unnamed property (F5's insight, with F5's generators G6 and G14, which the card carried from the draw). The stakeholder is the billing programme director (programme_officer), whose cutover question and readiness tables the prompt carries; the head of customer insight writes the review."
 }

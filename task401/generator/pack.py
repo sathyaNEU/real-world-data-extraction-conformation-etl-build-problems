@@ -221,6 +221,8 @@ def cut(out, seed=W.SEED):
     tariffs(out, U)
     distractors(out, U, rng, p1)
     phase2(out, U, rng, ids)
+    import devices
+    devices.apply(out, U)
     return U, facts
 
 
@@ -384,7 +386,7 @@ def phase2(out, U, rng, ids):
             qe = int(round(rng.lognormal(np.log(2500 if fuel == 'E' else 10200), .48)))
             qty.append((mp, fuel, qe, D(2026, 1, 1) + dt.timedelta(days=int(rng.integers(0, 280))), 'Revision'))
             if rng.random() < 0.15:
-                qty.append((mp, fuel, int(round(qe * rng.lognormal(0, .04))), D(2026, 11, 3) + dt.timedelta(days=int(rng.integers(0, 10))), 'Revision'))
+                qty.append((mp, fuel, int(round(qe * rng.lognormal(0, .04))), D(2026, 11, 2) + dt.timedelta(days=int(rng.integers(0, 10)) % 4), 'Revision'))
             state[mp] = 'supplied'
         lost_any = False
         u = rng.random()

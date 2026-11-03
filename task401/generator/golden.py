@@ -153,13 +153,21 @@ def ask_a(B):
     latest = f2.drop_duplicates('meter_point', keep='last')
     lost = set(latest.loc[latest['flow'] == 'Loss completed', 'meter_point'])
     qty = B['qty'].copy(); qty['effective_from'] = pd.to_datetime(qty['effective_from']).dt.date
-    qty = qty[qty['effective_from'] <= asof].sort_values(['meter_point', 'effective_from']).drop_duplicates('meter_point', keep='last')
-    qmap = dict(zip(qty['meter_point'], qty['annual_quantity_kwh']))
+    qty = qty[qty['effective_from'] <= asof]
+    # the meter's registers in force: every register on the meter point's latest date on or before 1 November
+    qty = qty[qty['effective_from'] == qty.groupby('meter_point')['effective_from'].transform('max')]
+    qmap = qty.groupby('meter_point')['annual_quantity_kwh'].sum().to_dict()
+    # a meter point is supplied to the account that took it on last: a new occupier's account holds it from the move
+    holder = {}
+    for acct, mpan, mprn, st in zip(leg['account_number'], leg['mpan'], leg['mprn'], leg['supply_start_date']):
+        for m in (mpan, mprn):
+            if isinstance(m, str) and m and (m not in holder or st > holder[m][1]):
+                holder[m] = (acct, st)
     acc = leg[leg['account_status'] != 'Closed'].drop_duplicates('account_number')
     counts, e_kwh, g_kwh = {}, 0.0, 0.0
     for _, a in acc.iterrows():
         mps = [('E', a['mpan'])] + ([('G', a['mprn'])] if isinstance(a['mprn'], str) and a['mprn'] else [])
-        live = [(f, m) for f, m in mps if m not in lost]
+        live = [(f, m) for f, m in mps if m not in lost and holder[m][0] == a['account_number']]
         if not live:
             continue
         counts[a['region']] = counts.get(a['region'], 0) + 1
@@ -187,19 +195,35 @@ def ask_b(B):
         return s
     lo['root'] = [root(s) for s in lo['legacy_account_ref']]
     last = lo.drop_duplicates('root', keep='last')
+    # an account loaded and returned to the legacy platform was not moved: it is still on the legacy extract
+    last = last[~last['root'].isin(set(B['legacy']['account_number']))]
     last = last[(last['local'] >= pd.Timestamp(2025, 9, 1)) & (last['local'] < pd.Timestamp(2025, 11, 3))]
     last['week'] = [(t.date() - WEEK0).days // 7 + 1 for t in last['local']]
     return {(int(w), f): int(n) for (w, f), n in last.groupby(['week', 'fuel_profile']).size().items()}
 
 
+def sale_channel(B, sw):
+    """The channel of the sale each switch was registered on: the latest quote of the named quote's prospect dated
+    on or before the switch's registration."""
+    q = B['quotes'].copy(); q['d'] = pd.to_datetime(q['quote_date']).dt.date
+    pros = dict(zip(q['quote_ref'], q['prospect_ref']))
+    byp = {p: list(zip(g['d'], g['quote_ref'], g['channel'])) for p, g in q.sort_values(['d', 'quote_ref']).groupby('prospect_ref')}
+    out = []
+    for qref, reg in zip(sw['quote_ref'], sw['reg']):
+        cands = [c for c in byp[pros[qref]] if c[0] <= reg]
+        out.append(cands[-1][2])
+    return out
+
+
 def ask_c(B):
-    rg = B['regs']; q = B['quotes'].set_index('quote_ref')
+    rg = B['regs']
     wd = set(rg.loc[rg['event'] == 'Withdrawal', 'registration_ref'])
     live = rg[(rg['event'] == 'Registration') & ~rg['registration_ref'].isin(wd)].copy()
     live['start'] = pd.to_datetime(live['supply_start_date']).dt.date
-    sw = live.groupby('quote_ref').agg(start=('start', 'min')).reset_index()
+    live['reg'] = pd.to_datetime(live['event_date']).dt.date
+    sw = live.groupby('quote_ref').agg(start=('start', 'min'), reg=('reg', 'min')).reset_index()
     sw = sw[(sw['start'] >= D(2025, 7, 1)) & (sw['start'] <= D(2025, 12, 31))]
-    sw['channel'] = q.loc[sw['quote_ref'], 'channel'].values
+    sw['channel'] = sale_channel(B, sw)
     sw['month'] = [d.month for d in sw['start']]
     return {(c, int(m)): int(n) for (c, m), n in sw.groupby(['channel', 'month']).size().items()}
 
