@@ -1,0 +1,38 @@
+{
+  "task": "task401",
+  "status": "DESIGN",
+  "domain": "epidemiology-public-health/health-equity-disparity-decomposition",
+  "objective": "root-cause",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-03",
+  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind, filed for the board's outage-cover decision); the seed's world could not carry an honest unbanned draw (its volume channel is settlement accounting, its price and desk-response channels are task398's re-run counterfactual in other nouns, gate closure is a market rule, and decomposition_attribution and the board are held by task398 in the window), so the build moved to an integrated care system's frailty virtual ward pilot in its Core20 neighbourhoods under the same objective and number",
+  "stump": "A competent solver takes the age-standardised difference in differences between Core20 and the rest of the system from the baseline year to the pilot year and files about 1,000 admissions prevented, clearing the bar of 750, so the trust bids for the extension; the step that lands it there is applying Core20's baseline-year rate, set while the eleven Wrenford homes were full, to a pilot-year pool with about 440 fewer care home residents, whose emergency admission rate is about five times the community's.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "guard.py check WARN on the draft 2026-11-03 (overuse.objective; repeat.gate_g against task400); NOTE test.same_puzzle_older and test.same_driver_older differentiated against task156 v2, task238, task303 v1; nearest driver 0.06"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: build the generator prototype at scale with the closures, the ward and the vaccination drive; measure the ladder (crude, age-standardised DiD, DiD with vaccination and season, community-only, the setting-standardised forms), fix the bar and the graded precision mid-bin; write the readability screen, fork table, closure table, literal reader, oracles, asks with devices and ceiling.py, prompt.txt; run precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}
