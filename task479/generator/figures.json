@@ -1,0 +1,209 @@
+{
+ "call": {
+  "verdict": "over",
+  "total_tons": "3.2",
+  "limit_tons": "2.5",
+  "margin_tons": "0.7",
+  "fan_scfm": "3,800",
+  "dre_pct": "99.4",
+  "std_temp_f": "68",
+  "lb_per_kg": "2.20462",
+  "year": "2026",
+  "rounding_lb": "100"
+ },
+ "quarters": {
+  "Q1": {
+   "tons": "1.4",
+   "ytd_tons": "1.4"
+  },
+  "Q2": {
+   "tons": "0.7",
+   "ytd_tons": "2.1"
+  },
+  "Q3": {
+   "tons": "0.5",
+   "ytd_tons": "2.6"
+  },
+  "Q4": {
+   "tons": "0.6",
+   "ytd_tons": "3.2"
+  }
+ },
+ "months_lb": {
+  "January": {
+   "vented": 37523,
+   "psv": 310,
+   "offline": 63,
+   "stack": 223,
+   "emitted": 596
+  },
+  "February": {
+   "vented": 31545,
+   "psv": 148,
+   "offline": 1312,
+   "stack": 181,
+   "emitted": 1640
+  },
+  "March": {
+   "vented": 35621,
+   "psv": 306,
+   "offline": 0,
+   "stack": 212,
+   "emitted": 517
+  },
+  "April": {
+   "vented": 34451,
+   "psv": 192,
+   "offline": 0,
+   "stack": 206,
+   "emitted": 397
+  },
+  "May": {
+   "vented": 35331,
+   "psv": 325,
+   "offline": 0,
+   "stack": 210,
+   "emitted": 535
+  },
+  "June": {
+   "vented": 33319,
+   "psv": 287,
+   "offline": 0,
+   "stack": 198,
+   "emitted": 485
+  },
+  "July": {
+   "vented": 24787,
+   "psv": 122,
+   "offline": 0,
+   "stack": 148,
+   "emitted": 270
+  },
+  "August": {
+   "vented": 25530,
+   "psv": 106,
+   "offline": 0,
+   "stack": 153,
+   "emitted": 258
+  },
+  "September": {
+   "vented": 36957,
+   "psv": 242,
+   "offline": 0,
+   "stack": 220,
+   "emitted": 463
+  },
+  "October": {
+   "vented": 26085,
+   "psv": 78,
+   "offline": 0,
+   "stack": 156,
+   "emitted": 234
+  },
+  "November": {
+   "vented": 38271,
+   "psv": 295,
+   "offline": 0,
+   "stack": 228,
+   "emitted": 523
+  },
+  "December": {
+   "vented": 30117,
+   "psv": 294,
+   "offline": 0,
+   "stack": 179,
+   "emitted": 473
+  }
+ },
+ "capture": {
+  "minutes_over_fan": 10061,
+  "psv31_lb": "2,700",
+  "vented_tons": "194.8",
+  "offline_lb": "1,375",
+  "stack_lb": "2,313"
+ },
+ "default_path": {
+  "tons": "1.9"
+ },
+ "hourly_check": {
+  "tons": "2.1"
+ },
+ "ask_a": {
+  "Q1": "659,500",
+  "Q2": "660,600",
+  "Q3": "775,200",
+  "Q4": "791,100"
+ },
+ "ask_b": {
+  "Methanol": "1,435,200",
+  "Toluene": "855,300",
+  "Isopropanol": "55,100",
+  "Ethyl acetate": "108,700",
+  "n-Heptane": "295,500",
+  "Isohexane": "47,900",
+  "Tetrahydrofuran": "88,700"
+ },
+ "raw": {
+  "total_tons": 3.1956,
+  "quarters_tons": [
+   1.3764,
+   0.7087,
+   0.4953,
+   0.6152
+  ],
+  "ytd_tons": [
+   1.3764,
+   2.0851,
+   2.5804,
+   3.1956
+  ],
+  "default_tons": 1.8518,
+  "hourly_tons": 2.1106,
+  "psv31_lb": 2703.77,
+  "ask_a_lb": [
+   659502.25,
+   660561.03,
+   775197.71,
+   791126.65
+  ],
+  "ask_b_lb": {
+   "Methanol": 1435217.98,
+   "Toluene": 855320.93,
+   "Isopropanol": 55136.29,
+   "Ethyl acetate": 108670.48,
+   "n-Heptane": 295471.98,
+   "Isohexane": 47867.65,
+   "Tetrahydrofuran": 88702.33
+  },
+  "qty": {
+   "Methanol": [
+    216473.3,
+    0
+   ],
+   "Toluene": [
+    117812.8,
+    0
+   ],
+   "Isopropanol": [
+    0,
+    25009.4
+   ],
+   "Ethyl acetate": [
+    0,
+    49292.1
+   ],
+   "n-Heptane": [
+    44033.2,
+    19977.3
+   ],
+   "Isohexane": [
+    0,
+    21712.4
+   ],
+   "Tetrahydrofuran": [
+    0,
+    40234.7
+   ]
+  }
+ }
+}

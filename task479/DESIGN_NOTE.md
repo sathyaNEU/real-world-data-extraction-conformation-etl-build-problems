@@ -17,16 +17,17 @@ decisive step or prompt shell is kept; the slot moves out of healthcare into Phy
   task472.
 - **Pairing:** Physical & Environmental Sciences, task type `emissions-inventory`, which serves ETL: two batch-system
   exports across the July 2026 cutover, a vent calculation basis kept in two unit systems, the oxidizer's one-minute
-  compliance log and the plant's equipment register conformed into the permit's monthly record for process vent unit
-  EU-P1, and the unit's 2026 total read against its limit.
+  log and the plant's equipment register conformed into the District's quarterly record for process vent unit EU-P1,
+  and the unit's 2026 total read against its limit.
 - **The decision and the quantity:** whether Pellston Fine Chemicals' process vent unit EU-P1 kept within its
-  calendar-year VOC limit of 3.2 tons in 2026, and by how much it went over if it did not. The Chalmont County Air Quality
-  District's inspector reviews the 2026 records at the February 2027 compliance evaluation, and the plant's 2027
-  production increase under the 2025 permit revision rests on the unit's compliance. Retrospective by nature, with its
-  reason: the permit's compliance year closed on 31 December 2026 and the determination is the record the evaluation
-  reads.
-- **Shape:** 15 (fields to one schema): the permit's monthly EU-P1 record, each month across its fields, with the
-  determination and its margin; the criteria sum is written at stage 2.
+  calendar-year VOC limit of 2.5 tons in 2026, and by how much it went over if it did not. The Chalmont County Air
+  Quality District reviews the 2026 records at its February 2027 compliance evaluation, and the plant's 2027 production
+  increase under the 2025 permit revision rests on the unit's compliance. Retrospective by nature, with its reason: the
+  permit's compliance year closed on 31 December 2026 and the determination and the fourth-quarter AQ-117 are the
+  record the evaluation reads.
+- **Shape:** 15 (fields to one schema): the AQ-117 form's fields for each quarter (emitted, year to date) with the
+  determination, the total and the margin, and the solvent deliveries sheet's fields: the call 3, the quarters 8, the
+  deliveries by solvent 7 and by quarter 4, the two files and the deliveries sheet 3, 25 criteria.
 - **Strategy:** `binding_constraint`; Gate G `binding_constraint`; gap `objective` (the controlled figure the field
   computes is right for what reached the oxidizer and is not what the limit counts); generators G3 (record against
   operation) and G7 (operating window). Layer 2 family `allocation_constraints` (capacity and queueing), pattern
@@ -43,12 +44,11 @@ decisive step or prompt shell is kept; the slot moves out of healthcare into Phy
   the nearest approved build on the link (siblings' records in the same minute), co-timed tickets there are one
   upstream event to subtract, while co-timed vents here are all genuine discharges and the step adds the share the
   shared device could not draw. No driver-level sentence covers either pair.
-- **Prototype (the analyst test priced in code before the card):** a minute-level 2026 of six reactors, two fluid-bed
-  dryers and a still on one header (scratch `proto_x6.py`, four seeds): at a 3,800 scfm fan and 99.4 per cent tested
-  destruction the field's method with offline minutes files 2.1 to 2.4 tons, the fan's maximum checked on hourly mean
-  header flow 2.7, and the minute-by-minute capture 4.0; at 4,000 scfm the golden is 3.2 to 3.5 against 2.1 to 2.4. The
-  excess, about 1.8 tons, is under 1 per cent of the VOC the vents carry, spread over several hundred short
-  coincidences. Targets for the generator, not shipped figures.
+- **Measured (the generator's clean truth, checks.py R3):** a minute-level 2026 of six reactors, two fluid-bed dryers
+  and a still on one header: the vents carried 194.8 tons of VOC; at RTO-1's 3,800 scfm and the tested 99.4 per cent
+  the field's method files 1.9 tons, the fan checked on hourly mean header flow 2.1 and the minute-by-minute capture
+  3.2 against the 2.5-ton limit. The header ran above the fan in about 10,000 minutes (peak 6,745 scfm) and about
+  2,700 lb, 0.7 per cent of what the vents carried, left untreated at PSV-31.
 - **Sources:** every file is synthetic, written by `generator/`; the plant, district, vendors and people are invented;
   no real dataset is used.
 
@@ -56,52 +56,50 @@ decisive step or prompt shell is kept; the slot moves out of healthcare into Phy
 
 A strong analyst with every field read correctly:
 
-1. Reads the permit: EU-P1 is the nine vents on closed-vent system CVS-1 routed to RTO-1; its VOC is limited to 3.2
-   tons per calendar year; the control efficiency is the one demonstrated in the most recent performance test (99.4 per
-   cent in May 2025); the month's EU-P1 VOC is calculated from the batch records and the vent calculation basis.
-2. Conforms the batch records: the legacy historian's export (January to June, local time) and the new MES export
-   (from July, UTC), the cutover week's steps once, the MES operation codes mapped to the basis's steps, and the
-   licensed product line's Nm3/h and kg/h rows converted at the stated reference conditions.
+1. Reads the permit: EU-P1 is the nine vents on closed-vent system CVS-1 routed to RTO-1; its VOC is limited to 2.5
+   tons per calendar year; the destruction efficiency is the one demonstrated in the most recent performance test (99.4
+   per cent in May 2025); the quarter's EU-P1 VOC is calculated from the batch records and the vent calculation basis.
+2. Conforms the batch records: the legacy system's export (January to the 1 July cutover, local time) and the new MES
+   export (from the cutover, UTC), the in-flight batches' steps once, the MES operation codes mapped to the basis's
+   steps, and the licensed product line's Nm3/h and kg/h rows converted at the permit's standard conditions.
 3. For each executed step, VOC vented is the basis's rate for that product and step times the step's recorded minutes,
-   summed by month.
-4. Applies 99.4 per cent destruction to every pound vented while RTO-1 was on line in its one-minute log and counts the
-   pounds vented in its offline minutes as uncontrolled: the closed-vent system's capture taken as complete, which is
+   summed by quarter.
+4. Applies 99.4 per cent destruction to every pound vented while RTO-1 was in RUN in its one-minute log and counts the
+   pounds vented in its other minutes as uncontrolled: the closed-vent system's capture taken as complete, which is
    the field's method for controlled emissions from a closed-vent system with its downtime accounted for.
-5. Sums 2026 and compares the total with the 3.2-ton limit.
+5. Sums 2026 and compares the total with the 2.5-ton limit.
 
-**Ends on:** 2.2 tons, under the 3.2-ton limit
+**Ends on:** 1.9 tons, under the 2.5-ton limit
 
-**Golden:** 4.0 tons, over the 3.2-ton limit by 0.8 tons
-
-The figures are the prototype's targets and are replaced by the generator's measured ones at stage 3.
+**Golden:** 3.2 tons, over the 2.5-ton limit by 0.7 tons
 
 ## Stump sentence
 
-The default path applies RTO-1's tested 99.4 per cent destruction to every pound the batch records vent while the oxidizer was on line, counts its offline minutes uncontrolled and files EU-P1 at 2.2 tons, under its 3.2-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 3,800 scfm, the excess lifts PSV-31 to atmosphere untreated, and EU-P1 emitted 4.0 tons.
+The default path applies RTO-1's tested 99.4 per cent destruction to every pound the batch records vent while the oxidizer was in RUN, counts its other minutes uncontrolled and files EU-P1 at 1.9 tons, under its 2.5-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 3,800 scfm, the excess lifts PSV-31 to atmosphere untreated, and EU-P1 emitted 3.2 tons.
 
 ## Three rules
 
-Task type: emissions-inventory (Physical & Environmental Sciences): the plant's two batch-system exports, its vent calculation basis in two unit systems, the oxidizer's one-minute compliance log and its equipment register conformed into the permit's monthly record for process vent unit EU-P1, a conformation serving Data Extraction & Conformation (ETL).
+Task type: emissions-inventory (Physical & Environmental Sciences): the plant's two batch-system exports, its vent calculation basis in two unit systems, the oxidizer's one-minute compliance log and its equipment register conformed into the District's quarterly record for process vent unit EU-P1, a conformation serving Data Extraction & Conformation (ETL).
 
 Domain test: the deciding quantity is EU-P1's 2026 VOC emitted to atmosphere, worked the way an air permit engineer works a batch-process vent inventory: each executed step's vented VOC from the vent calculation basis, times one minus capture times destruction, where a closed-vent system captures every pound only while its control device can take every vent at once and the destruction applies only to the gas the device receives.
 
 Swap: "did the call centre's queue drop more calls in 2026 than its contract allows" keeps a capped server shared in time and loses the step's ground: no vent stream carrying solvent vapour at its own concentration, no destruction applied to the share the fan draws, no relief releasing the header's mixed gas, so the swapped task has no counterpart to the VOC that left untreated at each coincidence or to the tested efficiency the easy route applies to every pound.
 
-Layer 1: the batch records in two layouts across the July 2026 cutover (local time against UTC, batches renumbered, the cutover week's steps in both exports), the vent calculation basis in two unit systems (scfm and lb/hr against Nm3/h and kg/h for the licensed product line), the oxidizer's log in local standard time all year and the register's merged headers and tag spellings; each is how the producing system writes, nothing is placed to be caught, and checks.py asserts the call holds under every reading of them.
+Layer 1: the batch records in two layouts across the July 2026 cutover (local time against UTC, batches renumbered, the in-flight batches' history migrated into the new system while the old one holds their steps to the cutover, the step in progress left open), the vent calculation basis in two unit systems (scfm and lb/hr against Nm3/h and kg/h for the licensed product line), the oxidizer's log in Eastern Standard Time all year with a degraded chamber thermocouple in August, and the register's merged headers and tag spellings; each is how the producing system writes, nothing is placed to be caught, and checks.py R2 and SF7 to SF10 assert the call holds under every mishandling of them.
 
 Layer 2: allocation under real constraints (capacity and queueing): the choice that flips the call is reading the closed-vent system's capture minute by minute from the vents' coincident flow against RTO-1's maximum draw, instead of taking it as complete.
 
-Decisive step: rebuilding the header's total flow minute by minute from every vent's executed steps and the basis's flows, and charging as untreated the share of each minute's mixed gas above RTO-1's 3,800 scfm fan maximum, which lifts PSV-31 at the oxidizer inlet; the share is zero in most minutes and reaches a quarter of the gas in the minutes when both dryers dry while a reactor charges.
+Decisive step: rebuilding the header's total flow minute by minute from every vent's executed steps and the basis's flows, and charging as untreated the share of each minute's mixed gas above RTO-1's 3,800 scfm maximum, which lifts PSV-31 at the oxidizer inlet; the share is zero in most minutes and reaches two fifths of the gas at the year's peak coincidence, when both dryers dry while two reactors charge.
 
-Not semantics: every field, unit and definition read correctly (the two layouts, UTC and local time, Nm3 and scf at their reference conditions, the step codes, the register's tags, the permit's standard conditions) still leaves the easy route treating every vented pound as reaching RTO-1, because no field records how much of each vent's gas the fan drew; the step is the inference that the header's summed flow exceeded the fan's maximum in thousands of minutes, which the coincidence of the steps shows and no column holds.
+Not semantics: every field, unit and definition read correctly (the two layouts, UTC and standard time, Nm3 and scf at their reference conditions, the step codes, the register's tags, the permit's definitions) still leaves the easy route treating every vented pound as reaching RTO-1, because no field records how much of each vent's gas the fan drew; the step is the inference that the header's summed flow exceeded the fan's maximum in about 10,000 minutes, which the coincidence of the steps shows and no column holds.
 
-Not rule application: the permit files the population, outcome, window, unit and comparison, the records the month's VOC is calculated from and the tested efficiency, and no rule says how much of each vent the oxidizer received, so executing every filed rule files 2.2 tons; the enumerated family (destruction on every pound, offline minutes added, the fan's maximum checked on hourly, 15-minute, 5-minute and one-minute header flow, the excess charged to the last vent to open) spreads 1.7 to 4.0 tons, the standing family (the constructions that respect the fan's instantaneous maximum at the records' minute resolution with the relief at the oxidizer inlet) spreads under 0.05 tons, and the ruling-out is silent: no sentence names coincident flow, a capacity check or what PSV-31 releases.
+Not rule application: the permit files the population, outcome, window, unit and comparison, the records the quarter's VOC is calculated from and the tested efficiency, and no rule says how much of each vent the oxidizer received, so executing every filed rule files 1.9 tons; the enumerated family (destruction on every pound 1.2, downtime uncontrolled 1.9, the fan checked on hourly 2.1, 15-minute 2.8, 5-minute 3.1 and one-minute 3.2 mean header flow) spreads 1.2 to 3.2 tons, the standing family (the constructions that respect the fan's instantaneous maximum at the records' minute resolution under every licensed convention of the fork table) spreads 3.18 to 3.20 tons, and the ruling-out is silent: no sentence names coincident flow, a capacity check or what PSV-31 releases.
 
-Analyst test: a strong analyst who conforms every export and reads every condition, takes the basis's rate times each step's minutes, applies the tested 99.4 per cent to every pound vented while RTO-1 ran and counts its offline minutes uncontrolled files EU-P1 at 2.2 tons, under the 3.2-ton limit (the default path's Ends on); one who checks the fan's maximum against hourly mean header flow files about 2.7 tons, still under; only the minute-by-minute capture files 4.0 tons, over; checks.py runs each on the clean truth.
+Analyst test: a strong analyst who conforms every export and reads every condition, takes the basis's rate times each step's minutes, applies the tested 99.4 per cent to every pound vented while RTO-1 was in RUN and counts its other minutes uncontrolled files EU-P1 at 1.9 tons, under the 2.5-ton limit (the default path's Ends on); one who checks the fan's maximum against hourly mean header flow files 2.1 tons, still under; only the minute-by-minute capture files 3.2 tons, over by 0.7; checks.py R3a to R3f run each on the clean truth.
 
-Estimand: the permit (Chalmont County Air Quality District permit to operate, Revision 3, conditions on EU-P1): the population (the nine vents of EU-P1 on closed-vent system CVS-1), the outcome (VOC emitted to atmosphere from EU-P1 at every release point), the window (calendar 2026), the unit (tons of VOC) and the comparison (the 3.2-ton calendar-year limit), the month's VOC calculated from the batch records and the vent calculation basis, with the efficiency demonstrated in the most recent performance test.
+Estimand: the permit (Chalmont County Air Quality District permit to operate PTO-2219-0447, Revision 3, conditions B.1, B.4, B.5 and D.1): the population (the nine vents of EU-P1 on closed-vent system CVS-1, Section A), the outcome (VOC emitted from EU-P1, emitted meaning released to the atmosphere), the window (calendar 2026 in local time, summed from its quarters), the unit (tons of 2,000 lb) and the comparison (the 2.5-ton calendar-year limit), the quarter's VOC calculated from the batch records and the vent calculation basis, with the efficiency demonstrated in the most recent performance test.
 
-No decoy: nothing is planted: the batch exports, the vent basis, the compliance log, the register, the permit, the test report and the solvent balance are the producing systems' records; no memo, draft, earlier record, report or published figure states or ranks EU-P1's 2026 emissions.
+No decoy: nothing is planted: the batch exports, the vent basis, the compliance log, the register, the permit, the test report and the purchasing records are the producing systems' records; no memo, draft, earlier record, report or published figure states or ranks EU-P1's 2026 emissions, and the District's AQ-117 template ships blank.
 
 No certified replay: no certified, filed or published 2026 EU-P1 figure ships, and the method is not recovered by reproducing any figure; the 2025 test confirms the efficiency, which both routes use.
 
@@ -111,49 +109,132 @@ Lesson: a closed-vent system captures every pound only while its control device 
 
 Actor: the minutes in which the header carried more than RTO-1's fan could draw, and the gas above the draw, have no column in any file: they are a relation across every vent's executed steps (their coincidence on one clock) and the register's fan maximum, which nothing stores.
 
-Link: the coincidence is read by sweeping all nine vents' steps on one clock, a cross-unit comparison no key offers (the batch exports are keyed by unit and batch) and no sentence invites; the register carries RTO-1's maximum and PSV-31's discharge as equipment data among many.
+Link: the coincidence is read by sweeping all nine vents' steps on one clock, a cross-unit comparison no key offers (the batch exports are keyed by unit and batch) and no sentence invites; the register carries RTO-1's maximum process flow and PSV-31's discharge as equipment data among eighteen rows.
 
-Reflex: the field's method for controlled emissions (vented VOC times one minus the tested destruction, the closed-vent system's capture taken as complete, offline minutes uncontrolled) sits at R1 and files 2.2 tons, under the limit (the default path's Ends on).
+Reflex: the field's method for controlled emissions (vented VOC times one minus the tested destruction, the closed-vent system's capture taken as complete, minutes not in RUN uncontrolled) sits at R1 and files 1.9 tons, under the limit (the default path's Ends on).
 
-Back-test: the textbook route validates: the plant's 2026 solvent balance (purchases less product, waste and recovery) reproduces the basis's vented VOC within about 2 per cent, the 2025 test confirms 99.4 per cent, and the compliance log shows the combustion temperature held; none of them sees what the fan did not draw.
+Back-test: the textbook route validates: the 2025 test confirms 99.4 per cent with the inlet loading the vent basis predicts for the steps in progress within 3 per cent (its runs at 3,342 to 3,371 scfm, under the fan), and the DAHS log shows RTO-1 in RUN at its operating temperature through the coincidences; none of them sees what the fan did not draw.
 
-Second use: every file the step reads is read by the default path too: the batch exports (each step's minutes), the vent basis (each step's flow and VOC, the flow being the basis's own input to its VOC), the register (which vents sit on CVS-1, RTO-1's rating, PSV-31) and the compliance log (offline minutes).
+Second use: every file the step reads is read by the default path too: the batch exports (each step's minutes), the vent basis (each step's flow and VOC, the flow being the basis's own input), the register (which vents sit on CVS-1, RTO-1's rating, PSV-31) and the compliance log (the minutes not in RUN).
 
-Shock: the excess is spread over several hundred short coincidences, and the months it lands in are not the months with the most vented VOC or the most batches; no shipped statistic shows it, and the golden's monthly figures are no interval of any shipped sort (asserted at stage 3).
+Shock: the release is spread over about 10,000 minutes in short coincidences, and the months it lands in are not the months with the most vented VOC (rank correlation 0.75, checks.py S1); no shipped statistic shows it, and the golden's quarters are no interval of any shipped sort.
 
 Pins: the permit files the population, outcome, window, unit and comparison and the efficiency's source; no sentence names coincident flow, the header's total, a capacity check or what PSV-31 releases.
 
 ## Readability screen
 
-Written at stage 2.
+Each rung against the seven tests (1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear, 7 second use); the reflex row comes from the field's vocabulary for controlled emissions (destruction efficiency, capture efficiency taken as 100 per cent for a closed-vent system, downtime uncontrolled).
+
+| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 tested destruction on every vented pound, downtime ignored (1.2 t) | B.4 names the efficiency | DAHS mode column | yes | test report | no | yes | no | readable |
+| R1 the field's method, minutes not in RUN uncontrolled (1.9 t) | B.2 and B.4 | DAHS mode column | yes | test report | no | yes | no | readable |
+| R2 the fan checked on hourly mean header flow (2.1 t) | no | no | no | no | no | no | no | silent |
+| R3 (decisive) the fan's maximum against each minute's summed vent flow, the excess untreated at PSV-31 (3.2 t) | no sentence names flow, capacity or the relief | no column holds a capture, a header flow or a release | the field's reflex is complete capture | no control scores it | no hygiene step finds it | a sweep over every vent's steps on one clock, not one subtraction | every file it reads is read by R1 | silent |
 
 ## Semantic fork table
 
-Written at stage 2.
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | VOC emitted | released to the atmosphere at S-1, S-2 or PSV-31 | the S-1 and S-2 stacks of Section A only | within, 1.9 t | permit D.1: "Emitted means released to the atmosphere"; B.1 limits VOC emitted from EU-P1 |
+| SF2 | calendar 2026 and its quarters | local time | EST or UTC boundaries | same call, same bins | D.1, and asserted: every quarter in the same bin |
+| SF3 | ton | 2,000 lb | metric tonne | over, 2.9 | D.1: "Ton means 2,000 pounds" |
+| SF4 | standard conditions for the PX line's Nm3 | 68 F and 29.92 inHg | 60 F (3.2) or Nm3 uncorrected (3.1) | over | D.1: "Standard conditions means 68 F and 29.92 inches of mercury" |
+| SF5 | destruction efficiency | 99.4 per cent, the test's mean | the lowest run, 99.36 (3.3) | over | B.4 and the report: "The VOC destruction efficiency demonstrated is 99.4 per cent, the mean of the three runs" |
+| SF6 | a step's duration | end less start | the end minute counted too (3.4) | over | B.7: the records show the start and end of each step; a step from 08:00 to 08:36 lasts 36 minutes |
+| SF7 | the cutover's in-flight steps | once | twice, Batchwise and Orbitas's migrated rows | same call, 3.2 | same call, asserted |
+| SF8 | the Batchwise step open at the cutover | completed from Orbitas's migrated row | ended at the cutover | same call, 3.2 | same call, asserted |
+| SF9 | the DAHS clock | Eastern Standard Time all year | prevailing local time | same call, 3.2 | the export's header line, and same call |
+| SF10 | the Orbitas clock | UTC | local time | same call, 3.2 | the columns start_utc and end_utc, and same call |
+| SF11 | the fan's maximum | 3,800 scfm | none: RTO-1's maximum process flow and FN-1's rating are one figure | same call | the register, both rows |
+| SF12 | what PSV-31 releases | the header's mixed gas, the VOC share equal to the flow share | the excess charged at one vent's concentration | over | the register: PSV-31 on HDR-1 at RTO-1's inlet plenum, downstream of every vent's line |
+| SF13 | minutes not in RUN | uncontrolled through the bypass | WARMUP as controlled (2.9) | over | the register: XV-30 "Open whenever RTO-1 is not in RUN" |
+| SF14 | rounding path | quarters unrounded, the year their sum (B.5), each rounded once | rounded quarters summed | same figures | asserted: both paths give 1.4, 2.1, 2.6, 3.2 and 0.7 |
+| SF15 | the comparison | 2.5 tons in any calendar year | none | over | B.1 |
+| SF16 | delivered (the asks) | the supplier's delivery date on the invoice line | the warehouse posting date | asks only, every ask figure moves | the asking sentence's "delivered"; AP's Delivery Date column |
+| SF17 | each solvent (the asks) | the solvent delivered, named on its invoice line | SOL-07 read through the master's current description | asks only, n-heptane and isohexane move | the deliveries' own invoice lines name n-heptane before June 2026 |
 
 ## Ladder
 
-Written at stage 2.
+| Rung | Construction | 2026 tons | Call | Margin |
+|---|---|---|---|---|
+| R0 | tested 99.4 per cent on every vented pound, RTO-1's downtime ignored | 1.2 | within | 2.14x under |
+| R1 | the field's method: 99.4 per cent on every pound vented in RUN, other minutes uncontrolled (the default path) | 1.9 | within | 1.35x under |
+| R2 | R1 with the fan checked on hourly mean header flow | 2.1 | within | 1.18x under |
+| R2b | the fan on 15-minute or 5-minute mean flow (not cheap: the capacity question already asked) | 2.8, 3.1 | over, wrong figure | |
+| R3 | the fan's maximum against each minute's summed flow, the excess untreated at PSV-31 (golden) | 3.2 | over by 0.7 | 1.28x over |
+
+Quarters (golden): 1.4, 0.7, 0.5, 0.6 tons; year to date 1.4, 2.1, 2.6, 3.2. Under R1: 1.0, 0.3, 0.3, 0.3. Bin edges: the total 0.046 t, the quarters 0.026 t or more, the year-to-date figures 0.030 t or more (checks.py M1).
 
 ## Closure table
 
-Written at stage 2.
+| Axis | Reading here | Move |
+|---|---|---|
+| 1 Population | the nine vents of EU-P1 on CVS-1 (Section A); the boiler, generator and LDAR files are other units | filed: Section A and B.1 |
+| 2 Unit of account | VOC in tons for the unit | filed: B.1, D.1 |
+| 3 Attribution window | a step's minutes fall in the local quarter they occur in | C1: EST and UTC boundaries give the same bins (SF2) |
+| 4 As-of dating | the 2026 record as exported in January 2027, every 2026 step closed | static, asserted |
+| 5 Version basis | vent basis Rev 7, the only revision shipped, covering every product and step run | C1 |
+| 6 Denominator | none, a total | not applicable |
+| 7 Weighting | none, a sum over minutes | not applicable |
+| 8 Window length | calendar 2026 | filed: B.1 |
+| 9 Boundary inclusivity | a step occupies its start minute to the minute before its end | SF6, B.7 |
+| 10 Rounding path | unrounded quarters, the year their sum, rounded once | SF14, asserted |
+| 11 Tie-break | none | not applicable |
+| 12 Maturity and censoring | no step open at the year end; the open cutover step closed in Orbitas | C1 (SF8) |
+| 13 Order of operations | capture before destruction: only the drawn share reaches RTO-1 | the design: PSV-31 upstream of RTO-1 on the register (SF12) |
+| 14 Row order | sums independent of order | C1 |
+| 15 Duplicate resolution | the in-flight batches' steps once | SF7, same call |
+| 16 Identity normalisation | R101, PFC-R-101 and R-101 are one unit; batch numbers differ across the systems, steps matched by unit and start | C1 on the systems' own unit codes |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | Nm3/h at 0 C to scfm at 68 F, kg/h to lb/hr; the asks' gallons at the master's density and kilograms at 2.20462 | SF4 (D.1), asserted |
+| 19 Code and status semantics | Orbitas op codes and operation numbers to the basis's steps; DAHS modes RUN, WARMUP, OFF | SF13 (XV-30 on the register) |
+| 20 Integerisation | none | not applicable |
+| 21 Clause scope | B.1 the unit's calendar-year total; B.3's temperature blocks are not part of the call | filed |
+| 22 Forward window contents | none: retrospective, the compliance year closed on 31 December 2026 | the reason in Draw |
 
 ## Literal reader
 
-Written at stage 2.
+Executed word for word, the prompt and the permit give VOC emitted from EU-P1 (released to the atmosphere, D.1) in calendar 2026 in local time, in tons of 2,000 lb, from the batch records and the vent basis (B.5) with the tested efficiency (B.4), against 2.5 tons (B.1): every reading in the fork table gives over and the golden's figures except those each ruled out by a quoted sentence (SF1, SF3 and SF4 by D.1, SF5 by B.4 and the report's summary, SF6 by B.7, SF13 by the register's XV-30), and the easy answer, 1.9 tons, comes from the easy method on the same literal estimand (every vented pound taken as reaching RTO-1), not from another reading.
 
 ## Oracles
 
-Written at stage 2.
+None ships: no file states or ranks EU-P1's 2026 emissions (the AQ-117 template is blank, checks.py G7), no capture, header flow or release figure exists in any file, the test report's runs are from 2025 at 3,342 to 3,371 scfm, under the fan, and the DAHS log carries RTO-1's temperatures and mode only. For the asks, the warehouse receipts and the invoice lines agree on every delivery's quantity (verify.py asserts it), and no file totals deliveries by solvent or by quarter.
 
 ## Ask sheet
 
-Written at stage 2.
+- **Ask A, all solvents delivered in each quarter of 2026** (four figures, nearest 100 lb). Primary D8, a recorded date for the event date: the warehouse receipts carry only the clerk's posting date, and postings stop for the half-year count (24 to 30 June) and the year-end count (17 December to the New Year), so the deliveries inside a count post in the next quarter or year; the supplier's delivery date is on the invoice line, joined by the delivery ticket. Hazards: units (gallons at the master's density, kilograms at 2.20462) and split tankers (one delivery on two tank receipts, each its own part, which a dedup on the bill of lading cuts in half).
+- **Ask B, each solvent delivered in 2026** (seven figures, nearest 100 lb). Primary D2, a label stored before a silent switch: material SOL-07 was n-heptane drums until 1 June 2026 and isohexane since, and the material master as of January 2027 names it isohexane, so the as-of join files January to May's n-heptane drums as isohexane; the invoice lines name what was delivered. Shared hazards: the year-end counts move every solvent (the 2025 restock posted in January 2026, the 2026 restock, ordered against the 2027 plan, posted in January 2027), and subsequent debits repeat their order's quantity on the invoice file.
+- **Use:** the plant's solvent deliveries are the cross-check the District's inspector runs against the vented VOC the basis gives, and the delivered pounds feed the annual emission statement's material usage.
+- **Separation:** the asks read only the purchasing files (receipts, invoice lines, material master), none of which the call reads (checks.py A6); delete every device and the call is unchanged.
+- **Literal pins:** "delivered" and "each solvent" are the asking sentence's WHAT (SF16, SF17); no filed sentence names a count freeze, a posting lag or the code's change.
+
+| Ask figure | Cracker (posting date, master names) | Golden | Cracker |
+|---|---|---|---|
+| Methanol | 1,438,300 | 1,435,200 | miss |
+| Toluene | 851,500 | 855,300 | miss |
+| Isopropanol | 54,100 | 55,100 | miss |
+| Ethyl acetate | 106,700 | 108,700 | miss |
+| n-Heptane | 221,100 | 295,500 | miss |
+| Isohexane | 92,100 | 47,900 | miss |
+| Tetrahydrofuran | 89,900 | 88,700 | miss |
+| Q1 all solvents | 763,600 | 659,500 | miss |
+| Q2 all solvents | 616,000 | 660,600 | miss |
+| Q3 all solvents | 772,600 | 775,200 | miss |
+| Q4 all solvents | 701,500 | 791,100 | miss |
+
+Pair ceiling: 26.0 (the cracker 45.0 on the call with no ask figure kept, the mirror 7.0 off it); the invoice-line route that counts the subsequent debits keeps 2 of the 7 solvent figures.
+
+Mirror leakage: 0.0 per cent of ask weight
+
+Measured by: generator/ceiling.py on the cut pack
 
 ## Pre-ship check
 
-Written at stage 5.
+- The 10/10 rules re-read against the built pack: the decisive step is analytical (checks.py R3a to R3f: no cheap route lands the call, the field's method 1.9 tons, the hourly check 2.1, the golden 3.2); the mess is Layer 1 only (R2a to R2d and SF7 to SF10, the call unchanged under every mishandling); no decoy (G7, the AQ-117 template ships blank, and no file states a 2026 EU-P1 figure).
+- Free gates on the final cut (target.zip sha256 43c1d6c4): checks.py 60 of 60; verify.py 28 of 28 from target/ alone; two builds byte-identical, the second in its own process under another hash seed; figures_check.py 54 of 54; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py PASS; leak.py REVIEW, every line ruled innocent (the permit's own limit, definitions and equipment words, the test's 99.4 per cent that both routes use, a DAHS digit run reading 12:47,900.6); guard.py heart WARN (repeat.gate_g, answered on the card) and surface exit 0, its four promoted pairs (task477, task478, task480, task310) answered by differentiation lines on the card; the container scrub clean on target/ and golden/.
+- The card is current: answer, stump, driver_concrete, deliverables, spine rows and layer1 match the measured build.
+- Open at the stage 4 hand-off: the leak reader's verdict and question 1, the determinism judge's verdict and Gate G line.
 
 ## Tried and rejected
 
@@ -243,3 +324,8 @@ Written at stage 5.
 - Screen 16, emissions inventory, a carbon adsorber's working capacity per regeneration cycle overrun by the heavy cycles (2026-11-03): the breakthrough curve (sharp against a mass-transfer zone) forks the passed share, and the vendor's working capacity is defined at a breakthrough level that leaves the excess open; carried in its flow-limited form, where the cap is a fan's hard maximum and the excess is mixed header gas.
 - Architecture 7's first prototype (proto_x2, reactor depressurisations at 2,700 scfm for about twelve minutes, 2026-11-03): rejected as physically unreal, because blowing a reactor down from two atmospheres releases about a thousandth of that volume; the high flows on a batch header are fluid-bed dryer purges and charging exhaust.
 - Architecture 7's second prototype (proto_x3 to proto_x5, dryer purges and charging exhaust at realistic flows, 98.6 per cent destruction, 2026-11-03): the golden ran only 1.03 to 1.27 times the field's method, under the 1.38 the rung and final margins need together, because a lower destruction raises the controlled base as fast as the excess; carried at the tested 99.4 per cent and a 3,800 scfm fan, where the golden runs 1.5 to 1.9 times the method.
+
+- RTO-1's 3-hour block temperature deviations as an ask (2026-11-03, stage 2): each device it could carry (the DAHS's standard-time clock against the permit's local blocks, the 135-minute validity rule, TE-101A's degraded readings against TE-101B) is found by the hygiene battery, read from a work order or executed from a filed rule, so the cracker keeps every figure; the chamber channel ships as Layer 1 and the asks moved to the purchasing records.
+- The PSV-31 release as an asked figure (2026-11-03, stage 2): naming the relief in the prompt announces the decisive step, so the release stays in the golden's memo and is graded only through the quarters and the total.
+- Test runs averaging 99.43 per cent (2026-11-03, stage 3): a reader taking the runs' unrounded mean filed 3.1 tons against the golden's 3.2, a fork on a number the report states; the runs were set to average exactly 99.40, and the lowest run (3.3 tons) is ruled out by B.4 and the report's summary (SF5).
+- The warehouse receipts with a received date beside the posting date (2026-11-03, stage 3): the field reads itself, so the delivery date moved to the supplier's invoice line, the receipts keeping the posting date their system writes.

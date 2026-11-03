@@ -1,0 +1,59 @@
+{
+ "task": "task479",
+ "domain": "Physical & Environmental Sciences (emissions inventory)",
+ "client_domain": "Physical & Environmental Sciences",
+ "task_type": "emissions-inventory",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "distractor_files": [
+  "eu_b1_boiler_gas_use_2026.csv",
+  "eu_g1_emergency_generator_log_2026.csv",
+  "ldar_method21_readings_2026.csv"
+ ],
+ "distractor_reasons": {
+  "eu_b1_boiler_gas_use_2026.csv": "boiler B-1 (EU-B1) burns natural gas through its own stack S-4; nothing it emits is an EU-P1 vent, and the permit limits EU-P1's VOC alone",
+  "eu_g1_emergency_generator_log_2026.csv": "the emergency generator EU-G1's run hours under permit condition C.3; it has no vent on CVS-1 and enters no EU-P1 figure",
+  "ldar_method21_readings_2026.csv": "Method 21 readings on equipment in VOC service (EU-F1, fugitive); leaks are a separate emission unit with its own condition, not EU-P1's process vents"
+ },
+ "deliverables": [
+  "eu_p1_2026_aq117.xlsx",
+  "eu_p1_2026_determination.docx"
+ ],
+ "as_of": "2027-01-29",
+ "files": [
+  "AQ-117_quarterly_emission_unit_report.xlsx",
+  "BST-25-0418_RTO-1_destruction_efficiency_report.pdf",
+  "PTO-2219-0447_R3_permit.pdf",
+  "ap_invoice_lines_2025-12-01_to_2027-01-29.xlsx",
+  "batchwise4_batch_steps_2026-01-01_to_2026-07-01.csv",
+  "cmms_work_orders_2026.csv",
+  "cvs1_closed_vent_system_register.xlsx",
+  "erp_material_master_2027-01-04.csv",
+  "eu_b1_boiler_gas_use_2026.csv",
+  "eu_g1_emergency_generator_log_2026.csv",
+  "ldar_method21_readings_2026.csv",
+  "orbitas_operation_codes.csv",
+  "orbitas_process_operations_2026H2.parquet",
+  "rto1_dahs_1min_2026.csv",
+  "vent_calculation_basis_rev7.xlsx",
+  "wms_receipts_2025-12-15_to_2027-01-08.csv"
+ ],
+ "rows": {
+  "ap_invoice_lines_2025-12-01_to_2027-01-29.xlsx": 220,
+  "eu_b1_boiler_gas_use_2026.csv": 12,
+  "batchwise4_batch_steps_2026-01-01_to_2026-07-01.csv": 17147,
+  "rto1_dahs_1min_2026.csv": 525600,
+  "eu_g1_emergency_generator_log_2026.csv": 13,
+  "ldar_method21_readings_2026.csv": 1344,
+  "erp_material_master_2027-01-04.csv": 10,
+  "orbitas_operation_codes.csv": 24,
+  "orbitas_process_operations_2026H2.parquet": 15038,
+  "wms_receipts_2025-12-15_to_2027-01-08.csv": 158,
+  "cmms_work_orders_2026.csv": 145
+ },
+ "sources": {
+  "constructed": "every file is constructed for this task by its generator (task479/generator) from a simulation of the plant's 2026 operations and purchasing; the plant, the district, the suppliers, the test contractor and the people are fictional",
+  "public_specifications": "the layouts follow common batch-system step exports, a thermal oxidizer DAHS one-minute export, warehouse goods-receipt and accounts-payable line extracts, an air permit to operate and an EPA Method 25A destruction efficiency test report",
+  "licence": "CC0 1.0 (constructed data)",
+  "date": "2027-01-29"
+ }
+}

@@ -1,193 +1,197 @@
 {
-  "task": "task479",
-  "architecture": "v7",
-  "drawn": "2026-11-03",
-  "slot_note": "re-root of seed ET36 after architectures 1 to 6 were spent; a fine-chemicals plant's 2026 compliance determination for its process vent emission unit, where nine batch vents share one closed-vent header to a regenerative thermal oxidizer whose fan was sized before the plant's 2025 expansion",
-  "domain": "physical-environmental-sciences",
-  "client_domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "niche": "a fine-chemicals plant's calendar 2026 VOC record for its permitted process vent unit, conformed from two batch-system exports across a mid-year cutover, a vent calculation basis kept in two unit systems and the oxidizer's one-minute compliance log, where six reactors, two fluid-bed dryers and a solvent still vent through one closed-vent header to a single regenerative thermal oxidizer",
-  "objective": "etl",
-  "shape": "15",
-  "decision_type": "structural_verdict",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "generator/figures.json",
-  "gap": [
-    "objective"
+ "task": "task479",
+ "architecture": "v7",
+ "drawn": "2026-11-03",
+ "slot_note": "re-root of seed ET36 after architectures 1 to 6 were spent; a fine-chemicals plant's 2026 compliance determination for its process vent emission unit, where nine batch vents share one closed-vent header to a regenerative thermal oxidizer whose fan was sized before the plant's 2025 expansion",
+ "domain": "physical-environmental-sciences",
+ "client_domain": "physical-environmental-sciences",
+ "subdomain": "emissions-inventory",
+ "niche": "a fine-chemicals plant's calendar 2026 VOC record for its permitted process vent unit, conformed from two batch-system exports across a mid-year cutover, a vent calculation basis kept in two unit systems and the oxidizer's one-minute compliance log, where six reactors, two fluid-bed dryers and a solvent still vent through one closed-vent header to a single regenerative thermal oxidizer",
+ "objective": "etl",
+ "shape": "15",
+ "decision_type": "structural_verdict",
+ "answer_unit": "named_option",
+ "answer": "EU-P1 over its 2026 VOC limit: 3.2 tons against 2.5, over by 0.7 tons",
+ "answer_source": "generator/figures.json",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G3",
+  "G7"
+ ],
+ "gate_g": "binding_constraint",
+ "calibration_form": "none",
+ "stump_strategy": "binding_constraint",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stump_class": "analytical",
+ "analyst_test": "With every export conformed and every permit condition read, the easy route takes each batch step's vent VOC from the vent calculation basis, applies the oxidizer's tested destruction to every pound vented while it was on line and counts the offline minutes uncontrolled, and files the unit under its 2026 limit; but in the minutes when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than the oxidizer's fan can draw, the excess lifts the header relief to atmosphere untreated, and the unit went over.",
+ "domain_test": "A batch-process VOC inventory worked the way an air permit engineer works it, each step's vent emissions from the vent calculation basis times one minus capture times destruction, where a closed-vent system captures every pound only while its control device can draw every vent at once; with another field's nouns there is no vent stream carrying solvent vapour, no destruction applied to the share the fan draws and no relief releasing the header's mixed gas, so nothing would decide how much of each pound left untreated.",
+ "layer2_family": "allocation_constraints",
+ "layer2_pattern": "own:the capture of a closed-vent system read minute by minute as the control device's maximum draw over the concurrent vent flow, the excess released as mixed header gas",
+ "layer1": [
+  "batch step records in two system layouts across the July 2026 cutover, local time against UTC, batches renumbered and the cutover week's steps in both",
+  "a vent calculation basis in two unit systems (scfm and lb/hr against Nm3/h and kg/h for the licensed product line)",
+  "the oxidizer's one-minute compliance log in local standard time all year",
+  "an equipment register with merged header rows and tag spellings that differ from the batch system's unit codes",
+  "warehouse receipts posted after the stock counts, the supplier's delivery date on the invoice line, and a material code re-pointed in the master (ask layer only)"
+ ],
+ "stakeholder_role": "environmental compliance manager of a fine-chemicals plant",
+ "role_family": "compliance_or_audit",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "batch_steps",
+  "rows": 32185,
+  "entity": "one executed step of one batch on one vented unit",
+  "grain": "unit x batch x step",
+  "source": "synthetic"
+ },
+ "forum": "regulator_or_inspector",
+ "forcing_event": "audit_or_inspection",
+ "org_family": "manufacturer",
+ "world": {
+  "geography": "United States (a fictional county)",
+  "currency": "USD",
+  "org_type": "fine-chemicals manufacturer",
+  "invented_names": [
+   "Pellston Fine Chemicals",
+   "Chalmont County Air Quality District",
+   "Thermavex Systems",
+   "Brightline Source Testing"
   ],
-  "pattern": [
+  "people": [
+   "Alyssa Alexander",
+   "Dylan Gonzalez"
+  ]
+ },
+ "deliverables": [
+  "eu_p1_2026_aq117.xlsx",
+  "eu_p1_2026_determination.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "Several sources discharge through one shared device whose intake is capped, and their discharges coincide only in some intervals, so in those intervals the share above the cap passes untreated through a relief; applying the device's tested removal to everything the sources discharged while it ran misses that share, which only the sources' concurrent schedules set against the cap reveal.",
+ "driver_concrete": "RTO-1's fan draws at most 3,800 scfm, and through 2026 the two fluid-bed dryers' drying cycles and a reactor's manway exhaust coincided often enough that the header carried more than the fan could draw in about 10,000 minutes; the excess lifted PSV-31 at the oxidizer inlet and left as untreated header gas, about 2,700 lb, so the tested 99.4 per cent applies only to what the fan drew.",
+ "stump": "The default path applies RTO-1's tested 99.4 per cent destruction to every pound the batch records vent while the oxidizer was in RUN, counts its other minutes uncontrolled and files EU-P1 at 1.9 tons, under its 2.5-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 3,800 scfm, the excess lifts PSV-31 to atmosphere untreated, and EU-P1 emitted 3.2 tons.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task106": "task106 sizes each supplier against a whole pool of spare return legs that only one supplier can use, a static double-booking per corridor; here nothing is allocated between the vents: every vent's gas is real and reaches the header, and the step finds the minutes in which the vents' summed flow exceeded the oxidizer fan's instantaneous maximum, a coincidence in time that no per-source record or allocation shows.",
+  "task303": "task303 subtracts the breaker tickets every feeder at a substation opened in the same minute as one upstream supply loss; here the co-timed records are all genuine discharges and the step adds the share of them the shared device could not draw, so co-timing changes how much passed untreated, not whose event it was.",
+  "task482": "task482 architecture 7 reads a removal device whose outlet holds near a floor concentration, so its removal share falls as its inlet grows dilute; here the device's destruction is constant at its tested value and what fails is capture: the gas above the fan's maximum never reaches the device at all.",
+  "task87": "task87 caps a delivered count because two owed items meeting in one time slot cannot both be taken by one unit; here no unit chooses between items and nothing is deferred: the excess gas leaves through the relief the moment the header exceeds the draw.",
+  "task472": "task472 credits shortened work only where it reaches an earlier release window fixed outside the job; here no window is fixed by any schedule: the binding minutes are set by the coincidence of nine vents' own batch progress against one draw.",
+  "task477": "task477 re-times covered wages recorded in the period each payment is made onto the period earned, a calendar conformation of a published series ranked across industries; here nothing is re-timed or ranked: one unit's total is rebuilt from the minutes in which concurrent vents exceeded a fan's draw, and the gap shared on the cards (objective) and the generator G3 name a family, not a driver.",
+  "task478": "task478, the same pairing, carries a source test's emission rate across a burner's fuel where the rate rises with a fuel property a supplier reports, a per-unit factor problem across sources; here no factor is wrong or carried: the tested efficiency is right for what reached the oxidizer and the step is the share of the vents' coincident flow the fan could not draw.",
+  "task480": "task480, the same pairing, reads each unit's future amount from one cumulative total observed once at a past date, an increment over time; here the record is complete minute by minute and the step is the instantaneous sum across concurrent vents against one device's capacity.",
+  "task310": "task310 simulates an added store against recorded output censored by a send-out limit, an opportunity sized under a cap on what was recorded; here nothing is censored or simulated forward: every vent's step and rate is recorded and the cap is the fan's draw on the summed flow, which decides what left untreated in a closed year."
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-20",
+   "fate": "spent 2026-10-21 at stage 4: a reader landed the call by reading guidelines 3.1's 'would bring ... as they stand' literally and replaying each claim's water on the present floor; judge FIX_NOW on ask B",
+   "driver": "A record of past events on units is carried to the units as they now stand, and some units were raised after their events, so a past event counts again on a raised unit only where the event's recorded level stood above the unit's new threshold; dropping a raised unit's earlier events, keeping them all, or giving it the later rate of units in its present class each misstates the expected rate.",
+   "stump": "The default path drops every claim a building filed before it was elevated and puts the two riverine counties elevated after 2016 in the pilot, because it never asks whether the 2016 water would still have reached the raised floors.",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G3",
-    "G7"
-  ],
-  "gate_g": "binding_constraint",
-  "calibration_form": "none",
-  "stump_strategy": "binding_constraint",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stump_class": "analytical",
-  "analyst_test": "With every export conformed and every permit condition read, the easy route takes each batch step's vent VOC from the vent calculation basis, applies the oxidizer's tested destruction to every pound vented while it was on line and counts the offline minutes uncontrolled, and files the unit under its 2026 limit; but in the minutes when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than the oxidizer's fan can draw, the excess lifts the header relief to atmosphere untreated, and the unit went over.",
-  "domain_test": "A batch-process VOC inventory worked the way an air permit engineer works it, each step's vent emissions from the vent calculation basis times one minus capture times destruction, where a closed-vent system captures every pound only while its control device can draw every vent at once; with another field's nouns there is no vent stream carrying solvent vapour, no destruction applied to the share the fan draws and no relief releasing the header's mixed gas, so nothing would decide how much of each pound left untreated.",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:the capture of a closed-vent system read minute by minute as the control device's maximum draw over the concurrent vent flow, the excess released as mixed header gas",
-  "layer1": [
-    "batch step records in two system layouts across the July 2026 cutover, local time against UTC, batches renumbered and the cutover week's steps in both",
-    "a vent calculation basis in two unit systems (scfm and lb/hr against Nm3/h and kg/h for the licensed product line)",
-    "the oxidizer's one-minute compliance log in local standard time all year",
-    "an equipment register with merged header rows and tag spellings that differ from the batch system's unit codes"
-  ],
-  "stakeholder_role": "environmental compliance manager of a fine-chemicals plant",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "batch_steps",
-    "rows": 0,
-    "entity": "one executed step of one batch on one vented unit",
-    "grain": "unit x batch x step",
-    "source": "synthetic"
+   ],
+   "gate_g": "etl_conformance",
+   "niche": "a regional flood authority's 2027 private flood placement pilot, set on each member county's expected paid building claims per 1,000 insured buildings for the buildings insured today as they now stand, built from the NFIP claims history, the policy terms and the authority's own elevation and acquisition projects, where the 2016 flood rose above the floors the post-flood elevations were built to"
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "audit_or_inspection",
-  "org_family": "manufacturer",
-  "world": {
-    "geography": "United States (a fictional county)",
-    "currency": "USD",
-    "org_type": "fine-chemicals manufacturer",
-    "invented_names": [
-      "Pellston Fine Chemicals",
-      "Chalmont County Air Quality District",
-      "Thermavex Systems",
-      "Brightline Source Testing"
-    ],
-    "people": [
-      "Alyssa Alexander",
-      "Dylan Gonzalez"
-    ]
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: both scored readers (target.zip 7d73c6a44d3464b7) landed the call (score_reader exit 1, 50 and 54 of 80 ask figures) by computing each county's Department-to-Monitor ratio for every published year and extrapolating its visible linear drift; both also found the register county and the crosswalk gaps",
+   "driver": "A total for a period not yet counted is carried from the last complete count by the movement of a fixed sample, and the sample covers a shrinking share of the whole because new members join only the whole, at a pace that differs by area and has held steady through every counted period; carrying the last count by the sample's movement, or scaling the sample by the last count's ratio to it, drops one more period of that drift, so the ratio must be carried forward on its own path.",
+   "stump": "The default path moves each county's 2024 Department receipts by its member panel's 2025 growth and qualifies Arvenne, Brisholt, Corrigan Bay and Delvane, because it never asks how the panel's growth has tracked the Department's in the years both are known.",
+   "gap": [
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "forecasting",
+   "niche": "a state lodging association's 2027 Rising Destinations co-op marketing match, a fixed fund split equally across the counties whose taxable lodging receipts grew at least six per cent from 2024 to 2025, where 2025 must be restated from the association's fixed monthly member panel onto the Department of Revenue's annual county basis two months before the Department publishes it"
   },
-  "deliverables": [
-    "eu_p1_2026_monthly_record.xlsx",
-    "eu_p1_2026_determination.docx",
-    "eu_p1_2026_monthly_voc.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "Several sources discharge through one shared device whose intake is capped, and their discharges coincide only in some intervals, so in those intervals the share above the cap passes untreated through a relief; applying the device's tested removal to everything the sources discharged while it ran misses that share, which only the sources' concurrent schedules set against the cap reveal.",
-  "driver_concrete": "RTO-1's fan draws at most 4,000 scfm, and through 2026 a fluid-bed dryer's drying cycle, the second dryer and a reactor's manway exhaust coincided often enough that the header carried more than the fan could draw for thousands of minutes; the excess lifted PSV-31 at the oxidizer inlet and left as untreated header gas, so the tested 98.6 per cent applies only to what the fan drew.",
-  "stump": "The default path applies RTO-1's tested destruction to every pound the batch records vent while the oxidizer was on line, counts its offline minutes uncontrolled and files EU-P1 under its 4.0-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 4,000 scfm, the excess lifts PSV-31 untreated, and EU-P1 went over.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task106": "task106 sizes each supplier against a whole pool of spare return legs that only one supplier can use, a static double-booking per corridor; here nothing is allocated between the vents: every vent's gas is real and reaches the header, and the step finds the minutes in which the vents' summed flow exceeded the oxidizer fan's instantaneous maximum, a coincidence in time that no per-source record or allocation shows.",
-    "task303": "task303 subtracts the breaker tickets every feeder at a substation opened in the same minute as one upstream supply loss; here the co-timed records are all genuine discharges and the step adds the share of them the shared device could not draw, so co-timing changes how much passed untreated, not whose event it was.",
-    "task482": "task482 architecture 7 reads a removal device whose outlet holds near a floor concentration, so its removal share falls as its inlet grows dilute; here the device's destruction is constant at its tested value and what fails is capture: the gas above the fan's maximum never reaches the device at all.",
-    "task87": "task87 caps a delivered count because two owed items meeting in one time slot cannot both be taken by one unit; here no unit chooses between items and nothing is deferred: the excess gas leaves through the relief the moment the header exceeds the draw.",
-    "task472": "task472 credits shortened work only where it reaches an earlier release window fixed outside the job; here no window is fixed by any schedule: the binding minutes are set by the coincidence of nine vents' own batch progress against one draw."
+  {
+   "architecture": "v3",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: reader 2 of 2 (target.zip d879fa0e89b65b9e) landed the call (score_reader exit 1, 22 of 80) by re-applying the fixed $250,000 deductible to each large claimant's trended claims; reader 1 missed on the default path (exit 0, 9 of 80); both missed both ask devices",
+   "driver": "A total kept below a fixed per-unit ceiling is carried to a later period on a growth rate that applies to the uncapped amounts, so each unit's amount grows first and is capped after: a unit already above the ceiling adds nothing to the kept total and a unit just below it adds only what it gains up to the ceiling, so growing the kept total by the rate overstates it most where units sit at or near the ceiling.",
+   "stump": "The default path trends each group's 2025 retained claims per member per month by the 2027 trend assumption and sends true-up notices to the groups it puts over their funding rates, because it never asks how much of the trend lands above the attachment for the members already at or near it.",
+   "gap": [
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "forecasting",
+   "niche": "a third-party administrator's 2027 funding true-up notices: which of its self-funded employer groups' expected 2027 retained medical claims per member per month, the claims the plan itself pays after specific stop-loss at the unchanged $250,000 attachment, exceed the 2027 funding rates the employers set in September"
   },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-20",
-      "fate": "spent 2026-10-21 at stage 4: a reader landed the call by reading guidelines 3.1's 'would bring ... as they stand' literally and replaying each claim's water on the present floor; judge FIX_NOW on ask B",
-      "driver": "A record of past events on units is carried to the units as they now stand, and some units were raised after their events, so a past event counts again on a raised unit only where the event's recorded level stood above the unit's new threshold; dropping a raised unit's earlier events, keeping them all, or giving it the later rate of units in its present class each misstates the expected rate.",
-      "stump": "The default path drops every claim a building filed before it was elevated and puts the two riverine counties elevated after 2016 in the pilot, because it never asks whether the 2016 water would still have reached the raised floors.",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "niche": "a regional flood authority's 2027 private flood placement pilot, set on each member county's expected paid building claims per 1,000 insured buildings for the buildings insured today as they now stand, built from the NFIP claims history, the policy terms and the authority's own elevation and acquisition projects, where the 2016 flood rose above the floors the post-flood elevations were built to"
-    },
-    {
-      "architecture": "v2",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: both scored readers (target.zip 7d73c6a44d3464b7) landed the call (score_reader exit 1, 50 and 54 of 80 ask figures) by computing each county's Department-to-Monitor ratio for every published year and extrapolating its visible linear drift; both also found the register county and the crosswalk gaps",
-      "driver": "A total for a period not yet counted is carried from the last complete count by the movement of a fixed sample, and the sample covers a shrinking share of the whole because new members join only the whole, at a pace that differs by area and has held steady through every counted period; carrying the last count by the sample's movement, or scaling the sample by the last count's ratio to it, drops one more period of that drift, so the ratio must be carried forward on its own path.",
-      "stump": "The default path moves each county's 2024 Department receipts by its member panel's 2025 growth and qualifies Arvenne, Brisholt, Corrigan Bay and Delvane, because it never asks how the panel's growth has tracked the Department's in the years both are known.",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "forecasting",
-      "niche": "a state lodging association's 2027 Rising Destinations co-op marketing match, a fixed fund split equally across the counties whose taxable lodging receipts grew at least six per cent from 2024 to 2025, where 2025 must be restated from the association's fixed monthly member panel onto the Department of Revenue's annual county basis two months before the Department publishes it"
-    },
-    {
-      "architecture": "v3",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: reader 2 of 2 (target.zip d879fa0e89b65b9e) landed the call (score_reader exit 1, 22 of 80) by re-applying the fixed $250,000 deductible to each large claimant's trended claims; reader 1 missed on the default path (exit 0, 9 of 80); both missed both ask devices",
-      "driver": "A total kept below a fixed per-unit ceiling is carried to a later period on a growth rate that applies to the uncapped amounts, so each unit's amount grows first and is capped after: a unit already above the ceiling adds nothing to the kept total and a unit just below it adds only what it gains up to the ceiling, so growing the kept total by the rate overstates it most where units sit at or near the ceiling.",
-      "stump": "The default path trends each group's 2025 retained claims per member per month by the 2027 trend assumption and sends true-up notices to the groups it puts over their funding rates, because it never asks how much of the trend lands above the attachment for the members already at or near it.",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "forecasting",
-      "niche": "a third-party administrator's 2027 funding true-up notices: which of its self-funded employer groups' expected 2027 retained medical claims per member per month, the claims the plan itself pays after specific stop-loss at the unchanged $250,000 attachment, exceed the 2027 funding rates the employers set in September"
-    },
-    {
-      "architecture": "v4",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: judge DETERMINISTIC but SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect: removing rapid-guessed responses is cleaning contaminated data, and the vendor's score report ranks the campuses wrongly); both scored readers missed the call on the vendor's scores (exit 1 on the asks at 85.7 per cent: the temporary id register and the rosters' names documented both devices)",
-      "driver": "Each unit's level is estimated from its answers to a set of items through a known response model, and in some sittings part of the answers were given too fast to have been read, at the chance rate, so they carry no information; estimating every unit from all its answers pulls the units of those sittings toward the floor, and only the answers given with effort, scored by the same model, recover each unit's level.",
-      "stump": "The default path takes the vendor's reported scale scores and designates the campuses with 35 per cent or more of students below Basic, because it never asks whether every response it scores was a real attempt.",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "niche": "a charter network's 2026-27 high-dosage math tutoring designation: the campuses where 35 per cent or more of the students tested on the spring 2026 benchmark score below Basic on the vendor's scale, from the item responses, the response times and the vendor's item bank, where some sessions were tested when students were not trying"
-    },
-    {
-      "architecture": "v5",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: both scored readers landed the call (exit 1, call hit, 32 of 64 figures each): each completed every district's first half by the 2025 plan-year factor of its 2026 plan, naming deductible leveraging unprompted; completing a part year by the destination design's seasonal pattern is textbook to a strong reader once the design history and per-district lag data sit side by side. Both asks held on ask B (latest per claimant number double counts); reader 7 resolved ask A's reissued ids by person attributes",
-      "driver": "A period's total is completed from its first months by the share those months carry, and the share is set by a design that resets each period and can change between periods: for units whose design changed, their own earlier period's share belongs to the old design, so the share has to come from units already on the new one.",
-      "stump": "The default path completes each district's January to June 2026 plan-paid claims by its own 2025 and files MV03, MV25 and MV36 raised, because it never asks whether a plan year's claims fall the same way under a different deductible: Brantmoor, Farrowdale and Northam Vale moved from the $500 plan to the $3,000 plan in 2026, whose first half carries less of the year, and they are short of their claims components.",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "forecasting",
-      "niche": "a school employees' health cooperative's October 2026 mid-year contribution review: which member districts' expected full 2026 plan-year plan-paid claims per member per month exceed the claims component of their 2026 contribution rate, from January to June 2026 claims, when members pay their deductibles first in the plan year and four districts moved to a $3,000 deductible on 1 January 2026"
-    },
-    {
-      "architecture": "v6",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-11-01 at the re-check's stage 4: judge pass 2 NOT_DETERMINISTIC, SEND_BACK, the renewal memo's literal reading filing each employer's own trended experience (the default path) and the broker survey left open as a complement; the isolated leak reader read the memo the same way; the sentence that would close the fork names the decisive step, so the fork is the stump",
-      "driver": "A unit's expected next-period level is read from a few periods of its own record, and for small units the record's spread is mostly chance, larger than the true differences between units; taking each unit's record at face value ranks the lucky small units low and the unlucky ones high, while the expected level weighs the unit's record against the pool by how much of its spread is signal.",
-      "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and files CR104, CR109, CR136, CR167 and CR176 surcharged, because it never asks how much of a small employer's three years is chance: one member's large claim moves a forty-member employer's year by more than the employers truly differ, so the small employers with high experience are expected near the trust's level and under their claims components, and the small employers with low experience, whose claims components sit well under the trust's level, are expected over them.",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "signal_vs_noise_or_hold",
-      "niche": "a chamber of commerce's small-employer health trust deciding at its November 2026 trustees' meeting which member employers' expected 2027 retained claims per member per month exceed the claims component of the 2027 contribution each employer elected, from the 2023 to 2025 plan years' experience, when most employers cover fewer than three hundred members"
-    }
-  ],
-  "notes": "architecture 7 re-root 2026-11-03 into physical-environmental-sciences (emissions-inventory) after architecture 6 was spent at the 11-01 re-check; WARN repeat.gate_g answered: binding_constraint repeats task307 v2, a spent card in another domain, and the label is the honest one for a shared draw limit that removes the natural figure. Screens 13 to 17 of the draw are in DESIGN_NOTE ## Tried and rejected.",
-  "lineage_shells": [
-    {
-      "architecture": "v6",
-      "question form": "which",
-      "second-sentence opener": "build",
-      "deliverable set": "xlsx"
-    }
-  ],
-  "registered": "2026-11-03T03:54:47Z"
+  {
+   "architecture": "v4",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: judge DETERMINISTIC but SEND_BACK on Gate G (planted_defect_flip, surface_read_rejection, sole_data_defect: removing rapid-guessed responses is cleaning contaminated data, and the vendor's score report ranks the campuses wrongly); both scored readers missed the call on the vendor's scores (exit 1 on the asks at 85.7 per cent: the temporary id register and the rosters' names documented both devices)",
+   "driver": "Each unit's level is estimated from its answers to a set of items through a known response model, and in some sittings part of the answers were given too fast to have been read, at the chance rate, so they carry no information; estimating every unit from all its answers pulls the units of those sittings toward the floor, and only the answers given with effort, scored by the same model, recover each unit's level.",
+   "stump": "The default path takes the vendor's reported scale scores and designates the campuses with 35 per cent or more of students below Basic, because it never asks whether every response it scores was a real attempt.",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "etl_conformance",
+   "niche": "a charter network's 2026-27 high-dosage math tutoring designation: the campuses where 35 per cent or more of the students tested on the spring 2026 benchmark score below Basic on the vendor's scale, from the item responses, the response times and the vendor's item bank, where some sessions were tested when students were not trying"
+  },
+  {
+   "architecture": "v5",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: both scored readers landed the call (exit 1, call hit, 32 of 64 figures each): each completed every district's first half by the 2025 plan-year factor of its 2026 plan, naming deductible leveraging unprompted; completing a part year by the destination design's seasonal pattern is textbook to a strong reader once the design history and per-district lag data sit side by side. Both asks held on ask B (latest per claimant number double counts); reader 7 resolved ask A's reissued ids by person attributes",
+   "driver": "A period's total is completed from its first months by the share those months carry, and the share is set by a design that resets each period and can change between periods: for units whose design changed, their own earlier period's share belongs to the old design, so the share has to come from units already on the new one.",
+   "stump": "The default path completes each district's January to June 2026 plan-paid claims by its own 2025 and files MV03, MV25 and MV36 raised, because it never asks whether a plan year's claims fall the same way under a different deductible: Brantmoor, Farrowdale and Northam Vale moved from the $500 plan to the $3,000 plan in 2026, whose first half carries less of the year, and they are short of their claims components.",
+   "gap": [
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "forecasting",
+   "niche": "a school employees' health cooperative's October 2026 mid-year contribution review: which member districts' expected full 2026 plan-year plan-paid claims per member per month exceed the claims component of their 2026 contribution rate, from January to June 2026 claims, when members pay their deductibles first in the plan year and four districts moved to a $3,000 deductible on 1 January 2026"
+  },
+  {
+   "architecture": "v6",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-11-01 at the re-check's stage 4: judge pass 2 NOT_DETERMINISTIC, SEND_BACK, the renewal memo's literal reading filing each employer's own trended experience (the default path) and the broker survey left open as a complement; the isolated leak reader read the memo the same way; the sentence that would close the fork names the decisive step, so the fork is the stump",
+   "driver": "A unit's expected next-period level is read from a few periods of its own record, and for small units the record's spread is mostly chance, larger than the true differences between units; taking each unit's record at face value ranks the lucky small units low and the unlucky ones high, while the expected level weighs the unit's record against the pool by how much of its spread is signal.",
+   "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and files CR104, CR109, CR136, CR167 and CR176 surcharged, because it never asks how much of a small employer's three years is chance: one member's large claim moves a forty-member employer's year by more than the employers truly differ, so the small employers with high experience are expected near the trust's level and under their claims components, and the small employers with low experience, whose claims components sit well under the trust's level, are expected over them.",
+   "gap": [
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "signal_vs_noise_or_hold",
+   "niche": "a chamber of commerce's small-employer health trust deciding at its November 2026 trustees' meeting which member employers' expected 2027 retained claims per member per month exceed the claims component of the 2027 contribution each employer elected, from the 2023 to 2025 plan years' experience, when most employers cover fewer than three hundred members"
+  }
+ ],
+ "notes": "architecture 7 re-root 2026-11-03 into physical-environmental-sciences (emissions-inventory) after architecture 6 was spent at the 11-01 re-check; WARN repeat.gate_g answered: binding_constraint repeats task307 v2, a spent card in another domain, and the label is the honest one for a shared draw limit that removes the natural figure. Screens 13 to 17 of the draw are in DESIGN_NOTE ## Tried and rejected.",
+ "lineage_shells": [
+  {
+   "architecture": "v6",
+   "question form": "which",
+   "second-sentence opener": "build",
+   "deliverable set": "xlsx"
+  }
+ ],
+ "registered": "2026-11-03T03:54:47Z"
 }

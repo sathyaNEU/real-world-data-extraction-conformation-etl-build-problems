@@ -1,25 +1,26 @@
 {
  "task": "task479",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-03",
- "stump": "The default path applies RTO-1's tested 99.4 per cent destruction to every pound the batch records vent while the oxidizer was on line, counts its offline minutes uncontrolled and files EU-P1 under its 3.2-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 3,800 scfm, the excess lifts PSV-31 untreated, and EU-P1 went over.",
+ "stump": "The default path applies RTO-1's tested 99.4 per cent destruction to every pound the batch records vent while the oxidizer was in RUN, counts its other minutes uncontrolled and files EU-P1 at 1.9 tons, under its 2.5-ton 2026 limit, because it never asks whether the oxidizer could draw every vent at once: when the dryers' drying cycles and a reactor's charging exhaust coincide the header carries more than RTO-1's 3,800 scfm, the excess lifts PSV-31 to atmosphere untreated, and EU-P1 emitted 3.2 tons.",
  "architecture": 7,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-03"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, every line ruled innocent (sweeps 2, 3, 4, 12: the permit's own limit, definitions and equipment words, the test's 99.4 per cent, a DAHS digit run)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (repeat.gate_g against task307 v2, answered on the card)",
+  "nearest": "task482 v7 lineage 0.10",
+  "surface": "exit 0; promoted task477, task478, task480, task310, each answered by a differentiation line on the card"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4: spawn together in the background the leak reader (general-purpose, model sonnet, effort medium, briefed with prompt.txt and the unzipped target.zip only, as /leak-check step 4 describes, no figures or keys) and the determinism-judge agent on task479, target.zip sha256 43c1d6c4 (python3 task479/generator/build.py rebuilds it byte for byte); fix every finding in the generator in one pass, rebuild, re-run the free gates, re-judge once on FIX_NOW; then stage 5: the pre-ship check's open line, ledger row SHIPPED, status SHIPPED, commit SHIPPED (task479) with git add -f task479/target.zip task479/golden/. This session had no agent-spawning tool, so it stopped at the hand-off.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -59,5 +60,17 @@
   "cleared": 1,
   "carded": "screen 17, emissions-inventory: a closed-vent system whose oxidizer fan cannot draw every batch vent at once",
   "record": "DESIGN_NOTE ## Tried and rejected, screens 1 to 16 and the two rejected prototypes"
+ },
+ "build": {
+  "target_zip_sha256": "43c1d6c475146c76042c17de76b24fd532623a170f3042494dafdfe7640e6b19",
+  "rebuild": "python3 task479/generator/build.py (two byte-identical builds, the zip cut last)",
+  "checks": "60 of 60",
+  "verify": "28 of 28",
+  "figures_check": "54 of 54",
+  "voice_check": "PASS",
+  "pair_ceiling": 26.0,
+  "mirror_leakage_pct": 0.0,
+  "call": "over: 3.2 tons against 2.5, over by 0.7",
+  "default_path": "1.9 tons, under"
  }
 }
