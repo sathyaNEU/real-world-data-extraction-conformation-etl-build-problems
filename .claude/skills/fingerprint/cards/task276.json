@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Replace Mill Lane in 2027: its closures cost 10,000 vehicle-hours on school-day mornings in 2025/26 against Station Road's 7,000, a gap of 3,000",
+  "answer_source": "task276/submission.md, Final Recommendation",
   "gap": [
     "objective"
   ],
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who pairs the barrier events, reads each closure's arrivals off the approach counts and releases every held queue at 1,800 vehicles an hour per lane once the barriers rise, the closure model the queue survey validates at every crossing, names Station Road, when at Mill Lane both directions' queues can only leave in the greens of the river bridge's shuttle signals 42 metres on and its closures cost the most road time.",
+  "analyst_test": "A strong analyst who pairs the barrier events, reads each closure's arrivals off the approach counts and releases every held queue at 1,800 vehicles an hour per lane once the barriers rise, the closure model the queue survey validates at every crossing, names Station Road (7,000 vehicle-hours against Mill Lane's 5,000), when at Mill Lane both directions' queues can only leave in the greens of the river bridge's shuttle signals 42 metres on and its closures cost 10,000.",
   "domain_test": "The deciding quantity is the road-user delay each crossing's barrier closures cause, which transport network analysis estimates by deterministic queueing at the network's controls, the held queue released at the saturation flow and, where it reaches another control, at that control's capacity in its own green; swapped into another field there is no barrier log, no saturation flow, no shuttle green and no storage in metres between two stop lines, so the task stops reading the same.",
   "layer2_family": "allocation_constraints",
   "layer2_pattern": "own:downstream-control-gates-a-released-queue",
@@ -50,7 +50,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "rail/barrier_events_2025_26.csv",
-    "rows": 200000,
+    "rows": 227340,
     "entity": "one barrier down or up event at one level crossing",
     "grain": "event",
     "source": "synthetic"
@@ -79,9 +79,9 @@
     "crossing_choice_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "what",
   "driver": "A queue held by a stoppage can only leave as fast as the next control downstream lets it through, so where that control sits close enough for the released queue to fill the space between them, each stoppage costs far more than a release at the road's own capacity implies, and the cost has to be built through the downstream control's recorded opening periods rather than from the stoppage and the arrivals alone.",
-  "driver_concrete": "Each crossing's closure delay is each counted vehicle's extra time to reach the far count site; at Mill Lane both directions' queues pass the single-track river bridge 42 metres beyond the crossing only in its fixed-time shuttle greens, with seven vehicles of storage between the two stop lines, which lifts Mill Lane's closure delay from about 5,000 to about 9,000 vehicle-hours and puts it ahead of Station Road's 7,000.",
+  "driver_concrete": "Each crossing's closure delay is each counted vehicle's extra time to reach the far count site; at Mill Lane both directions' queues pass the single-track river bridge 42 metres beyond the crossing only in its fixed-time shuttle greens, with seven vehicles of storage between the two stop lines, which lifts Mill Lane's closure delay from 5,000 to 10,000 vehicle-hours and puts it ahead of Station Road's 7,000.",
   "stump": "A competent solver releases each closure's queue at 1,800 vehicles an hour per lane once the barriers rise and names Station Road; the step that lands it there is releasing Mill Lane's queues at the road's own rate when the river bridge's shuttle signals 42 metres on pass each direction only in its own green.",
   "mechanism_source": "design_note",
   "differentiation": {

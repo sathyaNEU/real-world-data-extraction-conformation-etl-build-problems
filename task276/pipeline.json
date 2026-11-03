@@ -1,25 +1,40 @@
 {
  "task": "task276",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "urban-regional-science (network-analysis)",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-03",
  "stump": "A competent analyst replays every closure through the field's closure model, the held queue leaving at 1,800 vehicles an hour once the barriers rise, and names Station Road; the step that lands it there is releasing Mill Lane's queues at the road's own rate when the river bridge's shuttle signals 42 metres beyond the crossing pass each direction only in its own green.",
  "architecture": 2,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": null,
- "judge": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-03"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), every REVIEW line answered in DESIGN_NOTE.md ## Leak sweep answers",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.org_family, repeat.deliverables; no BLOCK)",
+  "nearest": "task472 v1 lineage 0.08",
+  "surface": "two pairs promoted on card structure (task159 0.025, task147 0.020), differentiated on the card, for the author"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "architecture 2 drawn 2026-11-03 (urban-regional-science, network-analysis; the level crossing replacement choice, Mill Lane against Station Road): stage 2 design, then the generator.",
+ "resume": "stage 4: spawn the leak reader (prompt.txt and a fresh unzip of target.zip only, sonnet at medium) and the determinism-judge together in the background; every stage 3 gate is green on target.zip sha256 9452f471eb2995bc755eb2bd9f321bdc382d7efb4237bb92343db4e618efc711 (generator checks 135, verify, two byte-identical builds, figures_check, precut, leak.py REVIEW, guard heart WARN, surface two card-structure pairs for the author's adjudication). The reader stays cold (no sweep line in its brief). Fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none (architecture 2 draws without a seed in a fresh world; DA26's world is not reused)"
+ "seed": "none (architecture 2 draws without a seed in a fresh world; DA26's world is not reused)",
+ "target_zip_sha256": "9452f471eb2995bc755eb2bd9f321bdc382d7efb4237bb92343db4e618efc711"
 }
