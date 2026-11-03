@@ -6,7 +6,7 @@
   "domain": "psychology-behavioral-science",
   "subdomain": "mediation-moderation-process-modeling",
   "client_domain": "psychology-behavioral-science",
-  "niche": "an NHS Talking Therapies service's 2025-26 fall in recoveries: which of five service changes gets the commissioner's one 2026-27 improvement, when the step 3 courses that agency high-intensity therapists' lapsing 12-week assignments broke off read as the waiting list's early leavers",
+  "niche": "an NHS Talking Therapies service's 2025-26 fall in recoveries: which of five service changes gets the commissioner's one 2026-27 improvement, when agency high-intensity cover bought to clear the step 3 backlog lapsed block by block and the courses it held were reallocated mid-course, so the loss reads as the waiting list's early leavers",
   "objective": "root-cause",
   "shape": "09",
   "decision_type": "pick_one_of_n",
@@ -33,8 +33,8 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and the national recovery definition correctly walks the year's fall down the referral-to-recovery funnel, finds it in step 3 courses that ended early, sees early endings climb with the wait while agency therapists' recovery rates match employed ones, and files C, the step 3 waiting list, as the cause that cost the most recoveries; the courses actually lost are the ones an agency therapist's lapsing assignment broke off, which no wait band or practitioner comparison isolates.",
-  "domain_test": "The deciding quantity is the recoveries each service change cost through the process by which a course of psychological therapy produces one (attending, finishing, crossing caseness on PHQ-9 and GAD-7), estimated as therapy outcome research models a service change through its mediators; with another field's nouns the call loses the continuity of a therapist's course and the session-by-session caseness measures it is decided on.",
+  "analyst_test": "A strong analyst who reads every field and the national recovery definition correctly walks the year's fall down the referral-to-recovery funnel, finds it in step 3 courses that ended early, sees early endings climb with the wait while agency therapists' recovery rates on the courses they discharged match employed ones, and files C, the step 3 waiting list, at about 310 recoveries; the loss runs through the courses an agency therapist's lapsing assignment broke off, and long waiters whose therapist stayed end early no more often than short waiters.",
+  "domain_test": "The deciding quantity is a mediation decomposition, the task type's own analysis: the wait's total association with early ending and lost recovery split into the path that runs through allocation to agency cover whose assignment lapsed mid-course (handover, then disengagement, the therapist-discontinuity dropout the psychotherapy literature reports) and the wait's direct path, which is about zero; a noun swap keeps the arithmetic of a split but loses the mediator, the continuity of one therapist across a course scored session by session against caseness, so the decomposition has no path to read.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:broken-course-attrition",
   "layer1": [
@@ -67,21 +67,22 @@
       "Wendy Gibson",
       "Jemma Fletcher",
       "Josh Parry",
-      "Lesley Thompson"
+      "Hollie Smith"
     ]
   },
   "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the good outcomes lost from cases broken off when the actor handling them leaves at the end of a fixed-term assignment, read only by setting each case's run of actors against the assignment register; because the arrangement was used to clear the longest-waiting cases the loss reads as early leaving among the longest waits, and the outcome rate counts only cases that reach a second treatment contact.",
-  "driver_concrete": "Each step 3 course's run of high-intensity therapists, rebuilt from the care contacts across the record migration, set against the temporary staffing register's assignment end dates: the courses an agency therapist's lapsing 12-week assignment broke off lose most of their patients after the handover, and because agency cover was bought to clear the longest waiters the loss reads as the waiting list's, while the recovery rate on finished courses never sees the patients who left before a second treatment appointment.",
-  "stump": "A solver who walks the fall down the referral-to-recovery funnel finds it in step 3 courses ending early, sees early endings rise with the wait while agency therapists' recovery rates match employed ones, and files C, the waiting list; the step that lands it there is never reading each course's run of therapists against the assignment register, which puts the loss on the courses an agency assignment broke off and the call on A.",
+  "driver": "The decisive quantity is the share of a long wait's apparent harm that runs through the actor the waiting cases were given to, whose fixed-term assignment lapsed mid-case so the case was handed on and abandoned, against the wait's direct path, read only by setting each case's run of actors against the assignment register; because the arrangement was used on the longest-waiting cases, the loss reads as the wait's.",
+  "driver_concrete": "Each step 3 course's run of high-intensity therapists, rebuilt from the care contacts across the record migration, set against the agency booking log's assignment ends: the courses an agency block's lapse broke off lose most of their patients after the reallocation, the wait's direct path is about zero among courses whose therapist stayed, and because agency cover took the backlog the loss reads as the waiting list's.",
+  "stump": "A solver who walks the fall down the referral-to-recovery funnel finds it in step 3 courses ending early, sees early endings rise with the wait while agency therapists' recovery rates match employed ones, and files C, the waiting list; the step that lands it there is never splitting the wait's effect by setting each course's run of therapists against the agency booking log, which puts the loss on the courses a lapsing agency block broke off and the call on A.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task245": "task245 rebuilds the periods a recorder missed because it fails under its heaviest load; here every appointment is recorded, and the loss is the courses an agency assignment's end broke off, found by setting each course's run of therapists against the staffing register's end dates.",
-    "task270": "task270 v6 places unscheduled advertising spots from a traffic system's past placements to read a schedule's reach; here the decisive relation is a therapy course's run of practitioners against assignment end dates, and the loss is the patients who leave after a handover, which the recovery rate on finished courses never counts."
+    "task270": "task270 v6 places unscheduled advertising spots from a traffic system's past placements to read a schedule's reach; here the decisive relation is a therapy course's run of practitioners against assignment end dates, and the loss is the patients who leave after a handover, which the recovery rate on finished courses never counts.",
+    "task399": "task399 reads an advocate's absence at the moment each case is decided, which confounds another decision-maker's measured disparity; here a therapist's departure breaks a course already under way, the patient is lost after the handover, and the loss is a mediated path of the wait counted over every course begun, not an absence at a decision."
   },
   "lineage": [],
-  "notes": "Strategy population_selection: the decisive move fixes which courses carry the cause (the courses an assignment end broke off, an exposure no column marks) and which cases the outcome is counted over (the recovery rate's finished courses drop the patients a broken course loses before a second treatment appointment). Gate G decomposition_attribution: the year's correctly counted fall assigned to the right change.",
+  "notes": "Strategy population_selection: the decisive move fixes which courses carry the change (the ones an agency block lapse broke off, an exposure no column marks), which is what splits the wait total effect into its mediated and direct paths. Gate G decomposition_attribution: a correctly counted fall assigned to the right change; the only honest Gate G key for a root-cause call, so the wave repeat WARN is answered by the strategies differing (composition_mix, causal_design, binding_constraint, population_selection). Decisive generator G9: the service measures each therapist recovery rate on the courses the therapist kept to discharge, and the courses an agency therapist lost when the block lapsed sit behind the care-contact to booking-log join. G4 and G6 were tried as the decisive generator at stage 2 and refused by the guard (test.same_driver against task232 v2, task121 v6, task129 v2, task243; test.same_puzzle_older against task144, task228, task265, task68), so they stay as frame. The recovery rate counting only finished courses carries about one broken course in eight (84 of 714 at seed 402) and is kept out of the driver.",
   "registered": "2026-11-03T14:20:49Z"
 }
