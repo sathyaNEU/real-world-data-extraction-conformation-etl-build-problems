@@ -29,6 +29,18 @@ def cut(out):
     return U
 
 
+def make_zip(target):
+    """target.zip: the pack's files at the archive root, sorted, stamped with the export date."""
+    import zipfile
+    path = os.path.join(TASK, 'target.zip')
+    with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
+        for fn in sorted(os.listdir(target)):
+            zi = zipfile.ZipInfo(fn, date_time=(2026, 11, 6, 9, 0, 0)); zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            z.writestr(zi, open(os.path.join(target, fn), 'rb').read())
+    return path
+
+
 def figures(target):
     F, L = golden.solve(target)
     r1 = lambda v: round(float(v), 1)
@@ -60,4 +72,6 @@ if __name__ == '__main__':
     cut(target)
     fig, F, L = figures(target)
     print('target digest', digest(target))
+    zp = make_zip(target)
+    print('target.zip sha256', hashlib.sha256(open(zp, 'rb').read()).hexdigest())
     print(json.dumps({k: v for k, v in fig.items() if not k.startswith('ask') and k != 'raw'}, default=float))

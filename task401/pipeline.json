@@ -3,8 +3,8 @@
   "status": "PAUSED",
   "domain": "marketing-consumer-research/customer-satisfaction-driver-analysis",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-03",
   "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw, architecture 1 (a frailty virtual ward against care home closures, Epidemiology and Public Health) died at stage 2 on published admission rates, architecture 2 (a canola hybrid against July heat in late-seeded fields' flowering windows, Economics and Econometrics) died at stage 2 on its own ladder, and architecture 3 re-roots in a GB domestic energy supplier's six-month new-customer satisfaction tracker under the same objective and number",
   "stump": "A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy and bill clarity carry about two thirds of the 8.7-point fall, finds every H1 2026 respondent billed on the new platform, and books about 6 points to the billing platform, holding phase 2, because they never set the annual cost each customer was quoted at the switch against the cost of the annual quantity their meter point then showed, which puts most of the fall on the May 2025 quote journey's quotes and leaves the platform about a point at most.",
@@ -19,27 +19,30 @@
     "screen3_note": "draw-time prototype 62 per cent; shipped pack 59.4 + 10.1 per cent on billing accuracy and clarity; after the link, use level, Direct Debit change and basis split each name the platform (ladder 20 of 20, 20 of 20, 19 of 20; shipped pack all three)"
   },
   "precut": {
-    "exit": 1,
+    "exit": 0,
     "date": "2026-11-03",
-    "note": "61 checks, 1 FAIL: the cracker table's full includer row keeps every ask (one primary device per ask)"
+    "note": "61 checks, 0 FAIL, 0 WARN on the final cut"
   },
-  "checks": "generator/checks.py on the cut pack, 37 of 37 (2026-11-03)",
+  "checks": "generator/checks.py 66 of 66 (frozen main call, device forcing and separation, literal-execution rows, literal ask executor 58 of 58); generator/verify.py 23 of 23 on its own code path",
   "ceiling": {
     "measured_by": "generator/ceiling.py",
-    "target_digest": "bade64f2be848495ae3b448aaf43e3f5ae8e9570793a79df659db6c24b3895c3",
-    "cracker": "0 of 58 ask figures",
+    "target_digest": "1bbe6dc7ce43bcc20f3ba85f8b23ea95b7f44159a11a5adef7fc3695f9246256",
+    "cracker": "0 of 58",
     "mirror": "0 of 58",
-    "pair": 28.5,
-    "full_includer": "58 of 58, pair 56.0"
+    "full_includer": "0 of 58",
+    "no_repair": "0 of 58",
+    "pair_one_off": 28.5,
+    "pair_full_and_cracker_on_call": 45.0,
+    "pair_two_full_includers": 45.0
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-11-03 (no LEAK: two golden-figure coincidences in the Direct Debit amounts, generic stump words in the three documents, regions beside numbers in three files, future loss effective dates in the switching flows)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN 2026-11-03 (overuse.objective, repeat.gate_g, overuse.gate_g; nearest 0.09 task121 v4)",
-    "nearest": "guard.py check WARN on the registered v3 card 2026-11-03 (overuse.objective, repeat.gate_g and overuse.gate_g against task400 and task402); NOTEs test.same_puzzle_older and test.same_driver_older differentiated against task121 v4 and v5 and task181 v6; nearest driver 0.10 (task121 v4); people redrawn to Rita Fisher, Joanne O'Brien, Elliot Davies (no people WARN)",
-    "surface": "exit 0 with three promoted pairs to answer before ship: task399 (same decisive gap objective and decision type root_cause_named, two apart), task470 (the prompt rounding construction \"are per cents to one\"), task181 (gap objective, pattern G6 and Gate G decomposition_attribution, the same-driver signature, differentiated on the card)"
+    "heart": "WARN 2026-11-03 after the merge of claude/jolly-hypatia-06c61h at bfe5590 (overuse.objective; repeat.gate_g against task400; repeat.deliverables pdf+xlsx against task399, answered on the card); two BLOCKs against task398 (ban.role research_desk, ban.strategy decomposition_attribution) cleared by redrawing the role to programme_officer and the strategy to composition_mix, both the honester labels (card strategy_note)",
+    "nearest": "driver 0.09 task121 v4",
+    "surface": "exit 0, two promoted pairs answered on the card: task399 (gap objective and decision type root_cause_named; the decision type stays, the prompt asks what pulled satisfaction down), task181 (G6 is the decisive generator; same-driver signature differentiated); task470 cleared by the rounding reword"
   },
   "judge": {
     "verdict": "",
@@ -47,11 +50,18 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2 to 3, architecture 3. The main call's design is complete and measured (DESIGN_NOTE ## Ladder carries the coordinator's five points with rows); the generator builds the pack end to end: `python3 task401/generator/build.py` cuts target/ (14 files, six formats, about 2 minutes) and writes generator/figures.json; `python3 task401/generator/checks.py` (about 3 minutes); `python3 task401/generator/ceiling.py task401/target task401/generator/figures.json`. Next, in order: (1) give each ask a second device from another family on a figure block disjoint from its primary's, whose handling can still go wrong after it is noticed, so the full includer misses a block (supplemental-stumping Part 1 rule 2), all kept off the respondents (assert in checks.py): candidates are, for Ask B's electricity-only block, an account whose gas supply was removed between its first load and its reload so its last load's fuel profile differs from its first; for Ask C, broker switches registered on the broker's lead reference, which reaches a quote only through the quote log's prospect reference; for Ask A's two GWh figures, a D2 or D3 device on the quantities (to design); add the full includer's handling to ceiling.py as its own scored row, re-measure, and bring the cracker table to every row `miss`, then precut exit 0 and message main with the coordinator's five rows and the pair ceiling; (2) verify.py reading only target/ on its own code path (every format read back, PDF and DOCX text through one extractor with positive controls); (3) the deliverables (golden/six_month_satisfaction_review.pdf with the bridge chart, golden/phase2_readiness.xlsx with the three tables) under submission-writeup and golden-realism, submission.md, figures_check.py; (4) metadata.json (decision, deliverables, the two distractors, provenance; no method vocabulary), two byte-identical builds and target.zip; (5) leak.py, guard.py surface and heart (put Ferncastle Energy Supply Ltd in the card's invented_names first), voice-check, reduce-house-fixes; (5b) answer guard.py surface's three promoted pairs: redraw the decision type to go_hold_or_stop (the prompt asks whether the fall gives any reason to hold phase 2), reword the prompt's rounding sentence away from \"are per cents to one\", and probe G14 as the decisive generator against task181 with guard.py check; (6) stage 4: write the leak reader and judge briefs per the parent's brief and hand back. Graded main-call set: the named cause, the two shares and the fall (mid-bin, tightest 0.0308), the quote's part as more than half; no per-cause point figure is graded.",
+  "resume": "stage 4, architecture 3. The pack, goldens and submission are built (python3 task401/generator/build.py, then deliver.py and writeup.py; target.zip sha256 8e51eb13). The parent runs the leak reader (reader_brief.md, sonnet, medium) and the determinism judge (judge_brief.md) together on their isolated copies. Resume with both reports: fix every finding in the generator in one pass, re-run checks.py, verify.py, ceiling.py, figures_check.py, precut, leak.py, guard.py surface and heart (after merging claude/jolly-hypatia-06c61h and copying sibling cards untracked), re-judge once on FIX_NOW, re-read only if a document or the prompt changed; then stage 5: pre-ship check in the design note, ledger row, card current, force-add target.zip and golden/, commit SHIPPED (task401).",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "target_zip_sha256": "8e51eb1312696afbc224dd5432c66b71c2ceda9d82f86fa717028fd59f758dcf",
+  "rebuilds": "two consecutive builds byte-identical (digest 1bbe6dc7)",
+  "figures_check": "exit 0, 74 figures in blocks 1 to 4",
+  "briefs": {
+    "reader": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/reader/reader_brief.md",
+    "judge": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/judge/judge_brief.md"
+  }
 }

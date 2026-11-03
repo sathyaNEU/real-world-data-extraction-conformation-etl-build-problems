@@ -44,21 +44,25 @@ an outsourcer in November 2025. Phase 2 of the billing platform (the remaining l
   items (the quote journey's typical-use default, the billing platform, the tariff rise, the contact centre, the rest),
   by fuel; the criteria arithmetic is written at stage 2 with the asks' repeated units. Architecture 2 also carried a
   bridge; the shell is redrawn (question form what, a new second-sentence opener and a new deliverable set at stage 2).
-- **Strategy and Gate G:** `decomposition_attribution` (F8: a correctly reported movement booked to the right driver),
-  Gate G `decomposition_attribution`. The fall is real and the ratings report it correctly; they book it to billing
-  accuracy and so to the platform, and the decisive move books it to the quote default through each customer's
-  disconfirmation. `repeat.gate_g` against task400 and task402 is answered: it is the honest label, and the decisive
-  families differ (task400 a staggered rollout's natural comparison, task402 courses broken off when an actor's block
-  lapses, here the expectation a sale set against the use the meter then recorded). `causal_design` and
-  `population_selection` are barred in the window, and neither is honest here: nothing in the platform's assignment
-  needs repairing (every 2026 respondent is on it) and no one is missing from the tracker.
+- **Strategy and Gate G:** `composition_mix` (F5: the pooled reading does not fit this pool, because the pool's mix on a
+  property no column names shifted), Gate G `decomposition_attribution`. The fall is real and the ratings report it
+  correctly; they book it to billing accuracy and so to the platform, and the decisive move standardises the 2026 pool to
+  2025's distribution of each customer's quote-against-meter gap, which no column holds, at which satisfaction held. The
+  draw filed the strategy as `decomposition_attribution` (F8); at stage 3 `guard.py heart` blocked it against task398
+  (registered earlier the same day), and F5 is the honester label in any case: F8's split is decided by overlap, a transfer
+  or a shared driver, none of which decides this one, while F5's insight and generators (G6, G14) are the card's own. The
+  Gate G mechanism stays decomposition_attribution (`repeat.gate_g` against task400, answered: task400 a staggered
+  rollout's natural comparison, here the expectation a sale set against the use the meter then recorded). `causal_design`
+  and `population_selection` are barred in the window, and neither is honest here.
 - **Gap, pattern, generators:** gap objective (the ratings and the driver analysis report the fall correctly and are
   not what the decision is scored on, the change that produced it); pattern none; generators G6 (composition shift: the
   2026 pool shifted on each customer's disconfirmation while the satisfaction curve held) and G14 (conditioned yield:
   the pooled driver weights do not apply to a pool conditioned on what each customer was quoted).
 - **Furniture** (read off `guard.py check` against the live window task399, task400, task402): forum `executive_team`
   (the executive signs the phase 2 cutover off), forcing event `cutover_or_migration` (phase 2 on 1 February 2027),
-  organisation `utility_or_infrastructure`, role `research_desk` (the head of customer insight owns the tracker),
+  organisation `utility_or_infrastructure`, role `programme_officer` (the billing programme director, whose cutover
+  question and readiness tables the prompt carries; the head of customer insight writes the review; `research_desk` was
+  redrawn at stage 3 when `heart` blocked it against task398),
   context artifact `close_out_summary` (the platform's phase 1 close-out report, which reports the programme's own
   defects and never ranks causes of the fall), calibration none. None is held by the window.
 - **People** (`guard.py names --geo uk --seed 401`): Rita Fisher (head of customer insight), Joanne O'Brien (chief
@@ -310,14 +314,33 @@ The coordinator's five points, each closed on these rows:
 5. **The filed estimand is WHAT only.** The framework files the population, the windows, the measure and the fall; it
    files no counterfactual and names no driver construction (`## Three rules`, Estimand).
 
-The graded set, at precisions every route that takes the step reproduces (asserted at the cut): the call (the May 2025
-quote journey's quotes, not the platform); the share satisfied in each half-year; the share satisfied among respondents
-whose quote covered the cost of their meter point's annual quantity, in each half-year (79.1 and 81.0 on the means
-above; a comparison with no fitted parameter, the zero line set by the quote itself); the share of respondents whose
-quote fell short, in each half-year; the quote's part of the fall stated as more than half (the weakest form gives 57
-per cent, the standing forms 82 per cent and up); the tariff rise and the contact centre each under half a point. The
-flip condition: the platform would carry the fall if respondents whose quote covered their cost had fallen as far as
-the rest. No per-cause point figure is graded.
+Literal-execution rows (the per-candidate attribution a rule-following solver runs once the records are linked, each
+candidate's in-place date filed: the close-out report dates the quote and switch journey relaunch (6 May 2025), new
+customers on the platform (1 September 2025), the Standard Variable rise (1 October 2025) and the contact centre move (10
+November 2025); the framework dates the survey vendor change (January 2026)). Shipped seed, points of the share satisfied,
+asserted in `checks.py`:
+
+| Candidate | Touched against not touched | Within the touched group | Names |
+|---|---|---|---|
+| Billing platform | -9.10 (every H1 2026 respondent, none of H1 2025) | -0.72, set up on it (Sep to Dec starters) against migrated onto it (Jul to Aug) | the platform or nothing; tied with two others |
+| Quote and switch journey | -9.10 (the same split: every 2026 respondent quoted after 6 May 2025) | -1.61, typical-value against typed quotes; each base 9.99 and 8.39 under 2025 | not the quote: the basis split clears it |
+| Survey vendor | -9.10 (the same split) | none (every 2026 response) | tie |
+| Tariff rise | -2.04, variable against fixed in 2026 | -1.56 difference in differences | a small part |
+| Contact centre | -1.53, contacted against not in 2026 | -1.10 difference in differences | a small part |
+
+Every touched-against-not row ties the platform, the quote journey and the vendor on the whole fall; no within-group row
+isolates a cause; the quote journey's own natural split (how each quote's use was set) clears it, both bases far under
+2025. A rule-following solver who runs these rows is left with the tie the key driver analysis then breaks toward the
+platform (R0). Only the gap names the quote's customers. The framework files nothing on how to cost or attribute a cause
+(population, half-years, measure and fall only).
+
+The graded set (frozen at stage 2): the named cause (the quote journey's quotes from May 2025, not the platform); the
+share satisfied in each half-year and the fall between them, each to one decimal (mid-bin, asserted at the cut); and the
+quote's part of the fall stated as more than half (the weakest form gives 57 per cent, the standing forms 82 per cent and
+up). No per-cause point figure is graded. The share satisfied among respondents whose quote covered the cost of their
+meter point's annual quantity (78.7 and 80.1 on the shipped seed, a comparison with no fitted parameter, the zero line set
+by the quote itself) is the evidence the write-up states, not a graded figure. The flip condition: the platform would carry
+the fall if respondents whose quote covered their cost had fallen as far as the rest.
 
 Pricing sequence, in the graded figure's units: (1) the residue the WHAT leaves is a method (which driver construction
 carries the expectation), not a knob; (2) the move needs about 7 points of a 9-point fall, and the affected population
@@ -357,7 +380,9 @@ the quote itself, so no subset hands over a rate; (8) the reflex sweep is the ta
 
 Executed word for word, the framework's measure gives 76.1 per cent satisfied in H1 2025 and 67.4 in H1 2026 (the shipped
 seed's values asserted at the cut); the question asks what pulled it down; the shipped documents name the year's
-changes (the quote and switch journey relaunch, the billing platform, the October tariff rise, the contact centre move);
+changes with their dates (the close-out report: the quote and switch journey relaunch on 6 May 2025, new customers on
+the platform from 1 September 2025, the Standard Variable rise on 1 October 2025, the contact centre move on 10 November
+2025; the framework: the survey vendor change in January 2026);
 every reading of SF1 to SF12 names the quote journey's quotes as the largest contributor (asserted as a product over the
 rows that touch the deciding quantity, SF6 x SF7 x SF9); the default comes from an easy method (key driver analysis, a
 payment linkage) on the same literal estimand, never from another reading.
@@ -366,46 +391,99 @@ payment linkage) on the same literal estimand, never from another reading.
 
 - The platform's phase 1 close-out report: estimated bills rose for six weeks after go-live (true, small); it confirms
   the wrong path and ties under every basis.
-- The tracker vendor's monthly summary table: ties to the respondents' records under every route; arbitrates nothing.
+- The tariff table: the October 2025 Standard Variable step ties under every route; arbitrates nothing.
 - The Direct Debit history (a declared distractor): reviews move little under every route.
 - Nothing ties only under the golden.
 
 ## Ask sheet
 
 Measured on the cut pack by `generator/ceiling.py` (reads only `target/` and `figures.json`, shares no code with the
-generator). Each ask sits on rows the call never reads, asserted in `checks.py` (no respondent in a reload chain or a
-pilot row, none with a withdrawn or split registration). The contact centre ask planned at the draw was cut with its
-two call logs: the contact rival is carried by the tracker's own contact question.
-- **Ask A, phase 2's scope** (16 figures: accounts by region, total GWh electricity and gas). Files: the legacy
-  accounts extract, the switching flows, the meter point quantities, the cutover plan (the WHAT: accounts still supplied
-  on 1 November 2026 on at least one meter point; quantities in force that day). Primary (D2, a state rebuilt from an
-  event log): a completed loss later returned as an erroneous transfer, so the meter point is ours again on 1 November
-  while the legacy status still reads final bill pending. Hazards: withdrawn losses whose legacy status was never
-  reverted; losses notified with an effective date after 1 November; a dual-fuel account lost on one fuel; later
-  quantity revisions dated 3 to 12 November.
-- **Ask B, phase 1's loads** (18 figures: nine UK weeks by electricity-only and dual fuel). File: the load log. The
-  cutover plan files each account once in the week its last load completed, UK time. Primary (D7, the true key in a
-  chain): a reload from the platform's exception queue carries the failed load's platform number as its source
-  reference, so the account is one only through the chain; benign twin: pilot accounts whose source reference is also
-  a platform number with no earlier load. Hazard: UTC stamps against UK weeks across 26 October.
-- **Ask C, switches by channel** (24 figures: four channels by six months). Files: the registrations and the quote
-  log. The asking sentence files one switch per customer in the month its first supply started, none withdrawn.
-  Primary (D1, one event in two records): a gas registration rejected for a meter point mismatch and raised again under
-  its own reference, days after the electricity one. Hazards: withdrawals in the cooling-off period, re-registrations
-  after a withdrawal, dual fuel as two rows.
+generator). Each ask sits on rows the call never reads, asserted in `checks.py` by count from the shipped rows (no
+respondent in a reload chain, a pilot row or a returned load; no respondent quote split or re-pointed; every respondent
+meter point single-register). Each ask carries a primary and a silent second device from another family on a block the
+primary does not decide, and each second device is a reconstruction that can still go wrong once it is noticed. Every
+device draw comes from its own generator (`generator/devices.py`), so the main call's rows are byte for byte what they were
+(the frozen figures asserted). The contact centre ask planned at the draw was cut with its two call logs.
+
+- **Ask A, phase 2's scope** (16 figures: the accounts in each region; the total GWh of electricity and of gas of the meter
+  points it will move). Files: the legacy accounts extract, the switching flows, the meter point annual quantities, the
+  cutover plan (the WHAT: accounts still supplied on 1 November 2026 on at least one meter point; each meter point's
+  industry annual quantity in force that day, day and night together on a two-rate meter). Primary (D2, a state rebuilt
+  from an event log; the counts and both totals): a completed loss later returned as an erroneous transfer, so the meter
+  point is ours again on 1 November while the legacy status still reads final bill pending. Second (D6, a quantity held one
+  grain below the meter point; the electricity total): the quantities are held per register, and 736 two-rate meters
+  exchanged during 2026 for a single-rate smart meter carry a standard register from the exchange date while their day and
+  night registers simply stop (day and night are otherwise always revised together, 7,454 revisions); summing each
+  register's own latest quantity keeps the stopped registers and over-states electricity by 3.28 GWh; the registers in
+  force are the ones on the meter point's latest date. Gas carries no register, so this block is electricity only. Third
+  (D7, records held by another holder after a transfer; the counts and both totals): 420 changes of occupier in September
+  and October 2026, where the leaving occupier's account waits for its final bill while the new occupier is set up on the
+  legacy platform (prepayment stays there until phase 2) on the same meter points, starting on the move date; no switching
+  flow touches them, so the primary's own repair (the legacy status lags, trust the flows) keeps the leaving account and
+  counts its meter points twice, 7 or more in every region. The plan's scope sentence settles it as filed (an account we no
+  longer supply on any meter point stays on the legacy platform until its final bill): the meter point is supplied to the
+  account that took it on last. Hazards: withdrawn losses whose legacy status was never reverted; losses effective after 1 November; a dual-fuel account
+  lost on one fuel; later quantity revisions dated 3 to 12 November.
+- **Ask B, phase 1's moves** (18 figures: nine UK weeks by electricity-only and dual fuel). Files: the load log, the legacy
+  accounts extract, the close-out report, the cutover plan (the WHAT: the accounts phase 1 moved to the new platform, each
+  once in the week its last load completed, UK time, with the fuels that load carried; the close-out files that prepayment
+  accounts remain on the legacy platform). Primary (D7, the true key in a chain; the dual fuel block): a reload carries the
+  failed load's platform number as its source reference, and validation failed on gas meter point data, so every one of
+  the 2,947 chains is a dual fuel account; benign twin: pilot accounts whose source reference is a platform number with no
+  earlier load. Second (D5, out-of-scope rows known only by structure; both splits): 410 smart prepayment accounts (300
+  electricity-only, 110 dual fuel) carried as credit on the legacy platform were loaded in the batches and returned; they
+  stand in the log like any load (8 to 40 in every week and split), and only the legacy extract shows them, live
+  prepayment accounts whose status was set again one to six days after their load. Hazard: UTC stamps against UK weeks across 26 October.
+- **Ask C, switches by channel** (24 figures: four channels by six months). Files: the registrations and the quote log. The
+  asking sentence files one switch per customer in the month its first supply started, credited to the sale it was
+  registered on, none withdrawn before supply began. Primary (D1, one event in two records; the web and comparison-site
+  block): a gas registration rejected for a meter point mismatch after an address lookup is raised again under its own
+  reference, days after the electricity one. Second (D7, the true key elsewhere; every channel): a customer who rings the
+  phone team to change tariff before the switch is re-quoted and the pending registration is re-pointed at the new quote
+  (broker sales are confirmed on such a call, so they meet it most); 596 registrations then name a phone quote dated after
+  them (17 to 123 in every channel and month), and the sale each was registered on is the prospect's latest quote on or
+  before the registration, not its earliest (94 of the prospects quoted through another channel first). Hazards: withdrawals in the cooling-off period, re-registrations after a
+  withdrawal, dual fuel as two rows.
+
+Settled by (the filed sentence each device's handling executes; `checks.py`'s literal ask executor runs them word for
+word on `target/` and equals the golden on all 58 figures):
+- Ask A primary: the plan's scope sentence ("every prepayment account on the legacy platform that we still supply on 1
+  November 2026, on at least one of its meter points"), read against the switching flows, the industry's record of who
+  supplies each meter point (a completed loss later returned leaves it ours).
+- Ask A second: "each meter point's industry annual quantity in force on 1 November 2026, day and night together on a
+  two-rate meter": the meter point's latest revision on or before the day, all its registers; from an exchange the meter
+  point's revisions carry a standard register only.
+- Ask A third: the same scope sentence with the plan's next one ("An account we no longer supply on any meter point on
+  that date stays on the legacy platform until its final bill and closes there"), read against the extract's own records:
+  the leaving account set to final bill pending on the day the new occupier's account starts on the same meter points.
+- Ask B primary: "each account counted once, in the week its last load completed" with the close-out's "the platform
+  issues a new account number on each load": a load sourced from an earlier load's number is that account.
+- Ask B second: "the accounts it moved to the new platform" with the close-out's "Prepayment accounts remain on the legacy
+  platform for phase 2", read against the legacy extract (the account is live there, a prepayment account).
+- Ask B fuels and clock: "with the fuels that load carried"; "Monday to Sunday, UK time".
+- Ask C primary: "one per customer in the month their first supply started": the two registrations name one accepted
+  quote and one account.
+- Ask C second: "credited to the sale it was registered on": a registration raised before the quote it now names was
+  registered on the prospect's quote then live, the latest dated on or before the registration.
+
+Pin test: Ask A's pins carry the scope, the day and the register sum; the devices sit in which meter points are still
+ours (the flows), which account holds them (the move) and which registers the meter still has (the exchange). Ask B's pins carry the week, the clock, the last
+load and its fuels; the devices sit in which records are one account (the chain) and which loads moved nothing (the
+return). Ask C's pins carry the month, one per customer, the withdrawals and the sale; the devices sit in which records
+are one switch (the split) and which quote was the sale (the re-point).
 
 | Response (cracker sheet) | Ask A | Ask B | Ask C | Verdict |
 |---|---|---|---|---|
 | Cracker: lands the call, every filed convention, the hygiene battery | 0 of 16 | 0 of 18 | 0 of 24 | miss |
-| Mirror: the most attractive wrong rung (Live status, rows by UTC week, registration rows) | 0 of 16 | 0 of 18 | 0 of 24 | miss |
-| Full includer: notices and resolves each ask's primary | 16 of 16 | 18 of 18 | 24 of 24 | keeps |
+| Mirror: the most attractive wrong rung (live accounts and latest quantities, loads by UTC week, registration rows) | 0 of 16 | 0 of 18 | 0 of 24 | miss |
+| Full includer: every device it can find handled (each primary and every hazard), the silent ones left | 0 of 16 | 0 of 18 | 0 of 24 | miss |
+| No repair: every row taken as it stands | 0 of 16 | 0 of 18 | 0 of 24 | miss |
 
-Pair ceiling: 28.5 (cracker 45.0 on the call, mirror 12.0 off it), measured; with a full includer on the call it is 56.0.
+Pair ceiling: 28.5 (the cracker or the full includer on the call at 45.0 with the mirror or the no-repair response off it at
+12.0, the worst of the four one-off pairings); the full includer and the cracker both on the call pair at 45.0, and two full
+includers on the call (the stress case) at 45.0, measured.
 Mirror leakage: 0.0 per cent.
-Measured by: generator/ceiling.py on the cut pack (target digest bade64f2), 2026-11-03.
-Owed before ship: a second device from another family on each ask with a figure block disjoint from the primary's, so
-the full includer misses a block (`supplemental-stumping` Part 1, rule 2).
-
+Measured by: generator/ceiling.py on the cut pack (target digest 1bbe6dc7), 2026-11-03.
 ## Tried and rejected
 
 - 2026-11-03, the seed's world (RC07, a supplier's January imbalance bill against plant trips and low wind), every
@@ -504,3 +582,19 @@ the full includer misses a block (`supplemental-stumping` Part 1, rule 2).
   withdrawals) were each executable from the cutover plan's and the asking sentences' own pins, so they were re-sited
   onto an erroneous-transfer return, a reload chain with a pilot twin, and a gas registration raised under its own
   reference.
+- 2026-11-03, stage 2 on architecture 3, the full includer (precut FAIL: one primary per ask). The coordinator's candidates
+  were screened against the full includer: (a) Ask B, an account whose gas was removed between its first load and its
+  reload: the full includer that walks the chain takes the last load's row, fuels with its week, and keeps the block, and
+  the sentence that closes the fork (the fuels that load carried) makes it a work order; (b) Ask C, broker switches
+  registered on the broker's lead reference: noticing the unmatched reference and joining on the prospect is one act, and
+  every quote under a broker's lead is a broker quote, so nothing goes wrong after the notice; re-sited onto a broker sale
+  re-quoted by the phone team after the registration; (c) Ask A, two-rate registers alone: a work order once the plan
+  files day and night together; the device is the register set changing at an exchange, and gas has no register. Also set
+  aside: split-fuel legacy accounts merged on load (one platform number on two rows, and the filed unit, the account the
+  platform holds, makes it a work order); a requested supply start on legacy sales (the industry registration date in the
+  quantities fixes it in one act); fuel add-ons across the migration renumbering (the solver who landed the call already
+  built the crosswalk).
+- 2026-11-03, stage 2, the full includer at 36 of 58 (62 per cent of the ask weight, 79.1 on the call): one second device
+  per ask on its own block left a full includer and an on-call cracker pairing near 62. Widened: Ask A gained a change of
+  occupier on the same meter points (the primary's own repair keeps the leaving account), Ask B's returned accounts take
+  both fuels, Ask C's re-quotes reach every channel; the full includer keeps none of the 58.

@@ -46,6 +46,7 @@ def _pdf(path, title, author, flow):
 
 
 ISSUED = {'six_month_survey_measurement_framework_v2.1.pdf': "20260114101500Z",
+          'six_month_satisfaction_review.pdf': "20261109163000Z",
           'billing_platform_phase1_closeout_report.pdf': "20260109142200Z"}
 
 
@@ -109,6 +110,9 @@ def closeout(out):
               'platform for phase 2.'),
             P('Loads ran overnight. An account that failed post-load validation was loaded again in a later run once its '
               'data was corrected; the platform issues a new account number on each load.'),
+            P('Other changes in the period, outside the programme: the quote and switch journey was relaunched on 6 May '
+              '2025; Standard Variable rates rose on 1 October 2025; and customer contact moved to our outsourced partner '
+              'on 10 November 2025, whose agents were trained on the new platform before the move.'),
             P('2. Defects and their status at close', 'h'),
             _table([['Ref', 'Defect', 'Raised', 'Status'],
                     ['BT-118', 'Bills issued on estimated reads where a customer read was received within two days of the bill run', '22 Sep 2025', 'Fixed 31 Oct 2025'],
@@ -143,7 +147,8 @@ def cutover_plan(out):
                     '2026, on at least one of its meter points, to the new platform. An account we no longer supply on '
                     'any meter point on that date stays on the legacy platform until its final bill and closes there.')
     d.add_paragraph('Planning volumes use each meter point\'s industry annual quantity in force on 1 November 2026, '
-                    'electricity and gas reported separately, for the meter points we still supply on that date.')
+                    'day and night together on a two-rate meter, electricity and gas reported separately, for the meter '
+                    'points we still supply on that date.')
     d.add_heading('2. Timetable', level=2)
     for line in ('Code freeze on the legacy prepayment module: 16 November 2026.',
                  'Dress rehearsal on a copy of the legacy database: 30 November to 6 December 2026.',
@@ -152,8 +157,8 @@ def cutover_plan(out):
         d.add_paragraph(line, style='List Bullet')
     d.add_heading('3. Reporting conventions', level=2)
     d.add_paragraph('Weekly figures in this plan and in its reports run Monday to Sunday, UK time.')
-    d.add_paragraph('Phase 1 is reported as the accounts loaded in each week, each account counted once, in the week its '
-                    'last load completed.')
+    d.add_paragraph('Phase 1 is reported as the accounts it moved to the new platform in each week, each account counted '
+                    'once, in the week its last load completed, with the fuels that load carried.')
     d.add_heading('4. Dependencies', level=2)
     d.add_paragraph('Prepayment key and card top-up feeds from the payment network to be repointed at the new platform. '
                     'Smart prepayment meters to receive new tariff tables over the air in the load window. The vulnerable '
@@ -166,7 +171,7 @@ def cutover_plan(out):
     cp.category = ''
     path = os.path.join(out, 'phase2_cutover_plan_v1.3.docx')
     d.save(path)
-    scrub_docx(path, words=410, pages=2)
+    scrub_docx(path, words=269, pages=1)
 
 
 APP_XML = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/'
@@ -201,21 +206,21 @@ def scrub_docx(path, words, pages):
             z.writestr(zi, data)
 
 
-def scrub_xlsx(path, author, created, modified):
+def scrub_xlsx(path, author, created, modified, stamp=(2026, 6, 24, 15, 12, 0)):
     src = zipfile.ZipFile(path)
     items = [(i.filename, src.read(i.filename)) for i in src.infolist()]
     src.close()
     with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
         for name, data in items:
             if name == 'docProps/core.xml':
-                data = re.sub(rb'<dc:creator>[^<]*</dc:creator>', ('<dc:creator>%s</dc:creator>' % author).encode(), data)
-                data = re.sub(rb'<cp:lastModifiedBy>[^<]*</cp:lastModifiedBy>', ('<cp:lastModifiedBy>%s</cp:lastModifiedBy>' % author).encode(), data)
+                data = re.sub(rb'(<dc:creator[^>]*>)[^<]*(</dc:creator>)', rb'\g<1>' + author.encode() + rb'\g<2>', data)
+                data = re.sub(rb'(<cp:lastModifiedBy[^>]*>)[^<]*(</cp:lastModifiedBy>)', rb'\g<1>' + author.encode() + rb'\g<2>', data)
                 data = re.sub(rb'(<dcterms:created[^>]*>)[^<]*', rb'\g<1>' + created.encode(), data)
                 data = re.sub(rb'(<dcterms:modified[^>]*>)[^<]*', rb'\g<1>' + modified.encode(), data)
             if name == 'docProps/app.xml':
                 data = re.sub(rb'<Application>[^<]*</Application>', b'<Application>Microsoft Excel</Application>', data)
                 data = re.sub(rb'<AppVersion>[^<]*</AppVersion>', b'<AppVersion>16.0300</AppVersion>', data)
-            zi = zipfile.ZipInfo(name, date_time=(2026, 10, 30, 11, 5, 0)); zi.compress_type = zipfile.ZIP_DEFLATED
+            zi = zipfile.ZipInfo(name, date_time=stamp); zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, data)
 
