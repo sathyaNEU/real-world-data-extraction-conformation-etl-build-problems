@@ -1,14 +1,14 @@
 {
   "task": "task401",
   "status": "DESIGN",
-  "domain": "epidemiology-public-health/health-equity-disparity-decomposition",
+  "domain": "economics-econometrics/panel-data-estimation",
   "objective": "root-cause",
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-11-03",
-  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind, filed for the board's outage-cover decision); the seed's world could not carry an honest unbanned draw (its volume channel is settlement accounting, its price and desk-response channels are task398's re-run counterfactual in other nouns, gate closure is a market rule, and decomposition_attribution and the board are held by task398 in the window), so the build moved to an integrated care system's frailty virtual ward pilot in its Core20 neighbourhoods under the same objective and number",
-  "stump": "A competent solver takes the age-standardised difference in differences between Core20 and the rest of the system from the baseline year to the pilot year and files about 1,000 admissions prevented, clearing the bar of 750, so the trust bids for the extension; the step that lands it there is applying Core20's baseline-year rate, set while the eleven Wrenford homes were full, to a pilot-year pool with about 440 fewer care home residents, whose emergency admission rate is about five times the community's.",
-  "architecture": 1,
+  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind, filed for the board's outage-cover decision); the seed's world could not carry an honest unbanned draw, architecture 1 (a frailty virtual ward's prevented admissions against care home closures, Epidemiology and Public Health) died at stage 2 on published admission rates, and architecture 2 re-roots in a Saskatchewan farmland operator's canola yield panel under the same objective and number",
+  "stump": "A competent solver fits the season-long degree-day yield panel with farm and year effects, files a hybrid penalty of about 9 per cent, past the 5 per cent bar, and drops the hybrid from the 2027 order, because it compares hybrid fields with incumbent fields that had flowered before the July heat, when the hybrid's fields, seeded about ten days later after their seed arrived late, flowered into it.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
     "exit": null,
@@ -20,7 +20,7 @@
   },
   "duplicate_check": {
     "heart": "",
-    "nearest": "guard.py check WARN on the draft 2026-11-03 (overuse.objective; repeat.gate_g against task400); NOTE test.same_puzzle_older and test.same_driver_older differentiated against task156 v2, task238, task303 v1; nearest driver 0.06"
+    "nearest": "guard.py check WARN on the registered v2 card 2026-11-03 (overuse.objective, repeat.gate_g and overuse.gate_g against task400 and task402); NOTE test.same_driver_older differentiated against task111 v1; nearest driver 0.05"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: build the generator prototype at scale with the closures, the ward and the vaccination drive; measure the ladder (crude, age-standardised DiD, DiD with vaccination and season, community-only, the setting-standardised forms), fix the bar and the graded precision mid-bin; write the readability screen, fork table, closure table, literal reader, oracles, asks with devices and ceiling.py, prompt.txt; run precut.py",
+  "resume": "stage 2: build the generator prototype at pack scale (stations' daily weather with the 10 to 18 July 2026 heat, field register across seasons, seeder pass logs, harvest loads and scale tickets, seed delivery register), measure the ladder (raw, season-long panel, farm-by-year, linear seeding date, the flowering-window exposure and its threshold, window and heat-unit variants, same-day matching) and the bridge pieces by soil zone with their family spread, fix the bar margins and graded precision mid-bin; write the readability screen, fork table, closure table, literal reader, oracles, asks with devices and ceiling.py, prompt.txt; run precut.py",
   "approved": null,
   "delivered": null,
   "portal": null,

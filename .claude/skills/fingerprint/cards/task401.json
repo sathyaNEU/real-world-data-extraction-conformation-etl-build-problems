@@ -1,91 +1,118 @@
 {
   "task": "task401",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-11-03",
-  "slot_note": "Numbered against seed RC07 (a supplier's January imbalance bill and plant trips). The seed's world could not carry an honest unbanned draw: its volume channel is settlement accounting, its price and desk-response channels are task398's re-run counterfactual in other nouns, gate closure is a market rule, and its honest strategy (decomposition_attribution) and forum (board) are held by task398. Moved under CLAUDE.md's stuck-build rule to another client domain, world and dataset under the same objective and number.",
-  "domain": "epidemiology-public-health",
-  "subdomain": "health-equity-disparity-decomposition",
-  "niche": "a community trust's frailty virtual ward for residents aged 80 and over in an integrated care system's Core20 neighbourhoods (the most deprived fifth of England's small areas), credited by the trust's own reading with cutting the deprived fifth's emergency admissions in its pilot year, when a care group's administration closed eleven of the Core20 care homes in the year between the baseline and the pilot and their residents left Core20",
+  "slot_note": "Numbered against seed RC07 (a supplier's January imbalance bill and plant trips). The seed's world could not carry an honest unbanned draw (settlement accounting, task398's re-run counterfactual, market rules), so architecture 1 moved to an integrated care system's frailty virtual ward; that draw died at stage 2 when the care home against community admission rates were set to published levels (the lever fell to about a quarter of the draw-to-draw spread). Architecture 2 re-roots in Economics and Econometrics: a Saskatchewan farmland operator's canola yield panel.",
+  "domain": "economics-econometrics",
+  "subdomain": "panel-data-estimation",
+  "niche": "a Saskatchewan farmland operator's first full season with a new canola hybrid, whose fields yielded about a tenth below the incumbent's in a summer with a July heat wave and a dry June, and whose place on the 2027 seed order turns on how much of the 2026 shortfall the hybrid itself caused",
   "objective": "root-cause",
-  "shape": "other",
+  "shape": "03",
   "decision_type": "go_hold_or_stop",
-  "answer_unit": "count",
+  "answer_unit": "rate_or_share",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
+    "objective",
     "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G6"
+    "G7",
+    "G13"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who collapses episodes into continuous spells, places every admission in its neighbourhood and reads the evaluation framework correctly takes the age-standardised difference in differences between Core20 and the rest of the system from the baseline year to the pilot year and files roughly three times the admissions the ward prevented, enough to clear the extension bar, when Core20's pilot-year residents held several hundred fewer care home residents, whose admission rate is about five times the community's, and the admissions those residents would have had without the ward fall far short of the bar.",
-  "domain_test": "The deciding quantity is an intervention's prevented admissions read as expected against observed admissions for the population actually at risk, the expectation standardised on the care setting that drives the rate (indirect standardisation on a stratum the age bands do not capture); with retail or school nouns there is no at-risk pool whose care setting carries a fivefold rate and moves with a care capacity record, so the task no longer reads the same.",
+  "analyst_test": "A strong analyst who calibrates the yield monitors to the elevator scale tickets, keys every field across seasons and links each field to its nearest weather station fits the field's standard yield-weather panel (season-long growing and extreme degree days, June rainfall, farm and year effects) and files a hybrid penalty of about nine per cent, past the five per cent bar for the 2027 order, because the season-long weather is the same for every field at a station while the July heat struck only the fields then in flower, and the hybrid's fields, seeded about ten days late after their seed arrived late, were the ones in flower; a linear seeding-date term still leaves about seven.",
+  "domain_test": "The deciding quantity is the hybrid's own effect on canola yield in a field-season panel once each field's weather enters in the crop's own sensitive window, placed by thermal time from that field's seeding date at its nearest station (the agricultural-economics yield-weather panel with a growth-stage exposure); with hospital or retail nouns there is no crop whose seeding date and local temperatures set when it is vulnerable to a dated heat wave, so the task no longer reads the same.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "epidemiology-public-health/health-equity-disparity-decomposition/1",
+  "layer2_pattern": "own:sensitive-phase-exposure-timed-by-each-unit's-own-thermal-clock",
   "layer1": [
-    "consultant episodes collapsed into continuous inpatient spells across two acute trusts, with transfers between them inside one spell",
-    "one acute trust's patient administration system migrated in April 2024, changing spell identifiers and admission method code formats",
-    "LSOA 2011 codes in the deprivation lookup against LSOA 2021 codes in the registration and admission extracts, with split and merged areas",
-    "quarterly registration snapshots against a December to March winter window",
-    "a care capacity tracker with weekly returns, missing weeks and homes re-registered under a new provider",
-    "admission source codes recorded inconsistently for care home residents between the two acute trusts"
+    "combine yield-monitor field totals that run above the elevator scale tickets, calibrated per farm and season to delivered tonnes net of dockage and moisture shrink",
+    "fields renamed, split and merged between seasons, keyed by legal land description in the field register and by operator-typed names in the seeder's as-applied logs",
+    "as-applied seeding logs stamped in UTC while the farm records use Saskatchewan's year-round Central Standard Time",
+    "daily climate records with missing days flagged and one station replaced by a new climate identifier partway through the record",
+    "yields in bushels per acre in the farm records and tonnes per hectare in the crop insurance production reports",
+    "crop insurance seeded-acreage reports whose acres differ from the GPS field areas"
   ],
-  "stakeholder_role": "the trust's head of business intelligence",
-  "role_family": "programme_officer",
+  "stakeholder_role": "the operator's agronomy director",
+  "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "emergency admission episodes of residents aged 80 and over at the system's three acute trusts, October 2021 to September 2026",
-    "rows": 300000,
-    "entity": "one consultant episode of an emergency admission",
-    "grain": "episode",
+    "file": "field-season crop and harvest records of the operator's farms, 2020 to 2026",
+    "rows": 8400,
+    "entity": "one field in one season",
+    "grain": "field-season",
     "source": "synthetic"
   },
   "forum": "executive_team",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "hospital_or_health_provider",
+  "org_family": "agriculture_or_food_producer",
   "world": {
-    "geography": "England, a northern integrated care system (invented): the city of Kirkhaven and four neighbouring boroughs",
-    "currency": "GBP",
-    "org_type": "community health NHS trust",
+    "geography": "Canada, west-central Saskatchewan (invented farms in the Dark Brown and Black soil zones)",
+    "currency": "CAD",
+    "org_type": "farmland operating company",
     "invented_names": [
-      "Kirkhaven",
-      "Kirkhaven Community Healthcare NHS Trust"
+      "Larkspur Hills Grain Ltd."
     ],
     "people": [
-      "Aimee Williams",
-      "Gerard Norris",
-      "Sylvia Phillips"
+      "Lacey Caldwell",
+      "Brandi Carlson",
+      "Elaine Gregory"
     ]
   },
   "deliverables": [
-    "core20_frailty_ward_pilot_year.xlsx",
-    "admissions_prevented_core20.png"
+    "canola_2026_shortfall.xlsx",
+    "canola_2026_shortfall_bridge.png"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "An intervention in one group is credited with a fall in that group's rate against the others', but between the baseline and evaluation periods the group's pool lost a block of its highest-rate members when the places that held them closed, so the baseline rate overstates what the smaller pool would have had; standardised to the evaluation period's mix on that property, which no column of the outcome or population files carries and a capacity record shows, the intervention's effect is a fraction of the difference in differences.",
-  "driver_concrete": "A care group's administration closed eleven Core20 care homes between October 2024 and September 2025, and their residents moved to homes outside Core20 or outside the system, so Core20's residents aged 80 and over in the pilot year held several hundred fewer care home residents, whose emergency admission rate is about five times the community's; the difference in differences against the baseline year credits the virtual ward with admissions the closed homes' residents no longer had in Core20, and the expected admissions standardised to the pilot year's mix of care home and community residents leave the ward about a third of that, below the bar for extending it.",
-  "stump": "A competent solver files the age-standardised difference in differences, about three times the ward's prevented admissions, and recommends extending the ward, because it applies Core20's baseline-year rate, set while the eleven closed homes were full, to a pilot-year pool without them.",
+  "question_form": "how-much",
+  "driver": "A candidate change is blamed for a loss because its units lost more in the season it arrived, but the loss came from a short dated shock that harms a unit only inside a sensitive phase whose timing a clock sets from the unit's own start date at the pace of local conditions; the candidate's units started late for a one-off reason, so their sensitive phases met the shock, and read at equal timing the candidate costs nothing, while every season-wide, unit-level or linear start-date control leaves most of the loss on the candidate.",
+  "driver_concrete": "The new canola hybrid's 2026 fields were seeded about ten days after the incumbent's because its seed reached most farms late, so each field's flowering window, set by thermal time from its seeding date at its nearest station, met the 10 to 18 July heat; the season-long degree-day panel with farm and year effects puts a yield penalty of about nine per cent on the hybrid, past the five per cent bar for the 2027 seed order, a linear seeding-date term still leaves about seven, and heat inside each field's own flowering window, or fields seeded on the same days on the same farm, takes it to about nil.",
+  "stump": "A competent solver fits the season-long degree-day yield panel with farm and year effects, files a hybrid penalty of about nine per cent, past the five per cent bar, and drops the hybrid from the 2027 order, because it compares hybrid fields with incumbent fields that flowered before the July heat, when the hybrid fields, seeded about ten days later after their seed arrived late, flowered into it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task156": "task156 v2 reads how often a fixed capacity is exceeded once a load is added, from a network share below a fluctuating level; here nothing is exceeded and no capacity binds: a pool lost its highest-rate members to closures between two periods, so a baseline rate stops fitting the evaluated pool.",
-    "task238": "task238 separates a channel effect from self-selection into the channel with a randomised nudge as an instrument; here nothing is chosen or randomised: the evaluated pool shrank on a setting a capacity register records, and the decisive move is standardising the expected admissions to that pool.",
-    "task303": "task303 removes a shared upstream loss that every sibling unit logs in the same minute; here no loss is shared or duplicated across units: one group lost a block of high-rate members to closures, and the difference in differences books their absence to the intervention."
+    "task111": "task111 v1 traces a failure back to work done in an earlier period under another system, joined through an identifier crosswalk and a mandatory minimum gap, so the cause is the previous period's overrun; here nothing carries over from an earlier period or system: one dated heat wave in the season itself harmed each field only while that field was in flower, and when each field flowered is set by thermal time from its own seeding date, so the hybrid's deficit is the timing its late seed forced, read at equal timing, never a chain of events traced back."
   },
-  "lineage": [],
-  "notes": "Strategy composition_mix: the decisive move is F5's own form, a stratum or pooled rate measured on one pool (winter 2023-24) applied to a pool whose mix on a property no column names (care home residence, read from a capacity register) has moved; it is not a split of one total between two movers.",
-  "registered": "2026-11-03T14:03:12Z"
+  "lineage": [
+    {
+      "architecture": "v1 (Epidemiology and Public Health: a community trust's frailty virtual ward in an integrated care system's Core20 neighbourhoods, its pilot-year prevented admissions against care home closures)",
+      "drawn": "2026-11-03",
+      "domain": "epidemiology-public-health",
+      "subdomain": "health-equity-disparity-decomposition",
+      "objective": "root-cause",
+      "shape": "other",
+      "decision_type": "go_hold_or_stop",
+      "answer_unit": "count",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G6"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "composition_mix",
+      "context_artifact": "capacity_report",
+      "forum": "executive_team",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "hospital_or_health_provider",
+      "driver": "An intervention in one group is credited with a fall in that group's rate against the others', but between the baseline and evaluation periods the group's pool lost a block of its highest-rate members when the places that held them closed, so the baseline rate overstates what the smaller pool would have had; standardised to the evaluation period's mix on that property, which no column of the outcome or population files carries and a capacity record shows, the intervention's effect is a fraction of the difference in differences.",
+      "fate": "spent at stage 2 on 2026-11-03 before any data was cut: with care home and community emergency admission rates set to published levels (about 0.70 against 0.24 to 0.58 a resident-year, a same-age ratio near two, not five), the composition lever fell to about 113 admissions for the 440 residents the closures moved, against a draw-to-draw spread of 157 to 215 in the default and the golden; a fixed bar between them separated them in 22 to 27 per cent of draws, and 72 per cent only at 1,400 residents moved, a failure no honest care group closure produces in one system's Core20 neighbourhoods."
+    }
+  ],
+  "notes": "Strategy decomposition_attribution (F8): the decisive move splits the hybrid fields' 2026 deficit between the hybrid and a shared external driver, the July heat, which struck each field only inside its own flowering window; the timing came from a one-off late seed delivery that the 2027 order does not repeat.",
+  "registered": "2026-11-03T15:02:46Z"
 }
