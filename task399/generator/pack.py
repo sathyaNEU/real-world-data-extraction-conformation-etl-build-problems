@@ -240,8 +240,9 @@ def _em_files(w, out, rng):
         if o.logged <= cutoff:
             done = o.filed <= cutoff
             for k, a in enumerate(names, start=1):
-                legacy.append(("EMB-%05d/%d" % (eref[o.order_id], k), o.surname, o.given, o.dob, o.crn if o.crn_on_tracker else "",
-                               COURT_LONG[o.court], o.logged, a, who, o.filed if done else None,
+                legacy.append(("EMB-%05d/%d" % (eref[o.order_id], k), o.surname, o.given, o.dob,
+                               o.crn if o.crn_on_tracker else "", W.COURT_NAME[o.court], o.logged, a, who,
+                               o.filed if done else None,
                                ("Suitable" if o.suitable else "Not suitable") if done else "",
                                "Completed" if done else "Migrated"))
             if done:
@@ -250,13 +251,16 @@ def _em_files(w, out, rng):
         else:
             order_date = o.order_date
         ref = "EMO-26-%05d" % cref[o.order_id]
+        filed = o.filed if o.filed <= W.EXTRACT else None          # a report not yet filed when the extract ran
         last = o.amended if (o.amended is not None and o.amended == o.amended) else None
-        rep = max(o.filed, last) if last else o.filed
+        last = last if (filed and last and last <= W.EXTRACT) else None
+        rep = max(filed, last) if last else filed
         for k, a in enumerate(names, start=1):
             case.append(("EMA-26-%05d-%d" % (cref[o.order_id], k), ref, o.crn, "%s, %s" % (o.surname, o.given),
-                         W.COURT_CODE[o.court], order_date.isoformat(), a, rep.isoformat(),
-                         "Suitable" if o.suitable else "Not suitable"))
-        uploads.append((ref, "EM address assessment report", utc_iso(o.filed, int(rng.integers(540, 990))), who))
+                         W.COURT_CODE[o.court], order_date.isoformat(), a, rep.isoformat() if rep else "",
+                         ("Suitable" if o.suitable else "Not suitable") if rep else ""))
+        if filed:
+            uploads.append((ref, "EM address assessment report", utc_iso(filed, int(rng.integers(540, 990))), who))
         if last and last > o.filed:
             uploads.append((ref, "EM address assessment report (amended)",
                             utc_iso(last, int(rng.integers(540, 990))), who))
@@ -264,7 +268,7 @@ def _em_files(w, out, rng):
                [("Tracker", ["Ref", "Surname", "First name", "DOB", "CRN", "Court", "Referral date", "Address",
                              "Assessor", "Report filed", "Outcome", "Status"], legacy)],
                "EM Bail Unit", "2025-08-01T20:05:00Z", "2026-02-01T22:48:00Z",
-               widths={"Address": 34, "Court": 28})
+               widths={"Address": 34, "Court": 16})
     case.sort(key=lambda x: x[0])
     write_csv(os.path.join(out, "em_case_system_assessments.csv"),
               ["AssessmentId", "OrderRef", "CRN", "Name", "Court", "OrderDate", "Address", "ReportFiledDate",
@@ -295,14 +299,23 @@ def _bail_house_files(w, out, rng):
         inc.append(("BH-%04d" % pref[p.placement], utc_iso(p.start, p.arrive_min), "Resident arrived"))
         if p.end <= W.EXTRACT:
             inc.append(("BH-%04d" % pref[p.placement], utc_iso(p.end, p.exit_min), p.exit_type))
+    events = {"custody": ("Taken into police custody", "Returned from police custody", "Police custody"),
+              "hospital": ("Admitted to hospital", "Returned from hospital", "Hospital"),
+              "awol": ("Resident did not return", "Resident returned", "Absent without leave"),
+              "leave": (None, None, "Approved leave")}
     for a in ab.itertuples(index=False):
-        if a.kind in ("custody", "hospital"):
-            kind_out, kind_back = (("Taken into police custody", "Returned from police custody") if a.kind == "custody"
-                                   else ("Admitted to hospital", "Returned from hospital"))
-            inc.append(("BH-%04d" % pref[a.placement], utc_iso(a.out_date, a.out_min), kind_out))
-            inc.append(("BH-%04d" % pref[a.placement], utc_iso(a.back_date, a.back_min), kind_back))
-        if a.out_date >= W.BH_SWITCH and (a.kind == "leave" or a.nights >= 2):
-            reason = {"custody": "Police custody", "hospital": "Hospital", "leave": "Approved leave"}[a.kind]
+        if a.out_date > W.EXTRACT:
+            continue
+        went, back, reason = events[a.kind]
+        if went:                                   # the log records every departure as it happens
+            inc.append(("BH-%04d" % pref[a.placement], utc_iso(a.out_date, a.out_min), went))
+        if a.back_date > W.EXTRACT:
+            continue                               # still away when the extract ran
+        if a.back_date < W.BH_SWITCH or a.kind == "custody":
+            # the standalone log recorded each return; from the app, the police bringing a resident back is still an
+            # incident
+            inc.append(("BH-%04d" % pref[a.placement], utc_iso(a.back_date, a.back_min), back))
+        if a.back_date >= W.BH_SWITCH:             # the app's absence record, closed on the return
             away_rows.append(("BH-%04d" % pref[a.placement], a.out_date, a.back_date - dt.timedelta(days=1), reason))
     noise = ["Curfew check, resident present", "Visitor incident", "Property damage reported", "Medication incident",
              "Complaint from neighbour", "Curfew check, resident present"]

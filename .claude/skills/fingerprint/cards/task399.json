@@ -40,7 +40,8 @@
     "sitting times as local text",
     "duty lawyer returns one workbook per financial year, column order changed with the 2025/26 claim form",
     "EM bail records split across a legacy tracker and a case system either side of 2 February 2026 with carried-over rows",
-    "bail-house records split across a spreadsheet and a case app either side of 1 June 2026",
+    "the EM unit's court columns naming the courthouse that the High Court sitting there shares",
+    "bail-house records split across a spreadsheet and standalone incident log and a case app either side of 1 October 2025, the app closing absences in its own records",
     "incident and upload logs in UTC",
     "dates as text in the spreadsheet rows and as dates in the app rows"
   ],
@@ -49,7 +50,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "cms_appearances_oct2024_sep2026.csv (the District Court case management system appearance extract)",
-    "rows": 77649,
+    "rows": 77743,
     "entity": "one appearance of one defendant's case before the court",
     "grain": "appearance",
     "source": "synthetic"

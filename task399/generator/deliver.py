@@ -94,10 +94,12 @@ def workbook(f, path):
         ["Gap: section 3 of the Budget 2027 bid instructions. Every first appearance from police custody at the four "
          "courts, once each on its New Zealand date; the share remanded in custody, no lawyer of record at that "
          "appearance minus a lawyer of record."],
-        ["EM turnaround: section 2 of the EM bail service standard. Calendar days from the court's order to the "
-         "assessment report's filing, one assessment per order, in the order's month."],
+        ["EM turnaround: sections 1 and 2 of the EM bail service standard. Calendar days from a District Court's "
+         "order to the first filing of the assessment report, one assessment per order, in the order's month. "
+         "Orders the High Court made on cases transferred to it are not in the standard's scope."],
         ["Occupied nights: clause 4 of the support contract's schedule 2. A night dated by its evening and counted "
-         "when the resident is at the house at midnight; custody and hospital nights excluded."],
+         "when the resident is at the house at midnight; nights in custody, in hospital, out past curfew and on "
+         "approved leave excluded."],
         ["Rounding: gaps to one decimal of a percentage point, days to one decimal, nights whole."],
     ]:
         nt.append(line)
@@ -263,14 +265,17 @@ def submission(f, path):
                                                       p1(f["kb_avl_mag_gap"]), p1(f["kb_avl_judges_gap"])),
         "5. No first appearance in the extract carries an EM bail assessment order; every order sits on a later "
         "appearance.",
-        "6. EM turnaround per section 2 of em_bail_service_standard_v4.pdf: each order's date from its \"Remanded in "
-        "custody, EM bail address assessment ordered\" appearance in the extract (by CRN, else surname, first name "
-        "and date of birth; orders carried into em_case_system_assessments.csv joined by their addresses), its "
-        "report from the first \"EM address assessment report\" in em_document_uploads.csv on its New Zealand date, "
-        "averaged by order month.",
+        "6. EM turnaround per sections 1 and 2 of em_bail_service_standard_v4.pdf: each order's date from its "
+        "\"Remanded in custody, EM bail address assessment ordered\" appearance in the extract (by CRN, else surname, "
+        "first name and date of birth; orders carried into em_case_system_assessments.csv joined by their addresses); "
+        "an order with no such appearance sits on a case the extract shows \"Transferred to the High Court\" before it, "
+        "is the High Court's and is left out; its report from the first \"EM address assessment report\" in "
+        "em_document_uploads.csv on its New Zealand date, averaged by order month.",
         "7. Occupied nights per clause 4 of bail_support_contract_schedule2.pdf: each placement from its \"Resident "
-        "arrived\" incident to its exit incident in bail_house_incidents.csv, less nights in custody or hospital "
-        "from the incidents and approved leave from the Away sheet of bail_house_register_2025-26.xlsx, by month.",
+        "arrived\" incident in bail_house_incidents.csv to the day the resident left (a move-out, or a departure that "
+        "neither a logged return nor an absence on the Away sheet of bail_house_register_2025-26.xlsx closes), less "
+        "the nights away: each departure to its logged return at midnight, and each absence on the Away sheet, "
+        "approved leave included, by month.",
         "8. The duty lawyer roster is the only shortlisted line that acts on a first appearance's representation, "
         "and the widening sits in calls made while the AVL list sat next door with one duty lawyer rostered that day: "
         "put it forward.", "",
