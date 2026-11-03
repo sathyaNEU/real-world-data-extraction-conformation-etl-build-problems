@@ -5,9 +5,10 @@ Account email: not yet recorded; until it is, the author names the handle at the
 - **Backlog: Batch 5 (the author's queue, 2026-10-31).** 36 tasks in six objectives, in five priority groups, from the
   author's `Batch_5_Claude_Code.csv`. It replaces every earlier wave in this file. The waves below are the batch's
   queue order cut into fours.
-- **Four at a time (the author, 2026-11-01).** Four tasks are in flight at once, one sibling session each, every one
-  running its build in its own main thread at max effort; the moment one finishes, the next task in queue order starts.
-  The sessions share the batch branch, pull it with `--rebase` before every guard check and every push, and register a
+- **Four at a time, one chat (the author, 2026-11-01 and 2026-11-03).** Four tasks are in flight at once; the moment one
+  finishes, the next task in queue order starts. The author works in a single chat: parallel builds run as background
+  agents or threads inside that one session, never as separate chat sessions (no `create_session`). Each build works in
+  its own git worktree, pulls the batch branch with `--rebase` before every guard check and every push, and registers a
   card the moment a draw is fixed, so concurrent draws guard each other.
 - **A shipped task here is not done.** Its note names the work it still owes: a rebuild from stage 2 after the portal
   landed its call, a determinism or prompt repair, a resume of a paused draw, or a re-check under the new gates
