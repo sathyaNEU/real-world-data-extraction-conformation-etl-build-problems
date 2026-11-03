@@ -21,12 +21,23 @@ def unit_year_stats(W):
     return gen, starts, run, rz
 
 
+def quick_restarts(W, u, i1=None):
+    """Starts inside one clock hour after a quick trip (the governor counts them, the hourly record cannot)."""
+    return sum(1 for e in W['trips'] if e['kind'] == 'quick' and e['unit'] == u and (i1 is None or e['h'] < i1))
+
+
+def trip_counts(W):
+    """Each unit's trips over the record: its own breaker's trips and every line trip that caught it generating."""
+    return {u: sum(1 for e in W['trips'] if (e['unit'] == u) or (e['kind'] == 'line' and u in e['units'])) for u in UNITS}
+
+
 def totals(W):
-    """Each unit's generation (MWh) and starts over the whole record, 2016-01-01 to 2026-12-31 local."""
+    """Each unit's generation (MWh), starts (every start from standstill, as the governor counts them) and trips over
+    the whole record, 2016-01-01 to 2026-12-31 local."""
     gen, starts = {}, {}
     for u in UNITS:
         o = W['out'][u]; on = o > 0
-        gen[u] = float(o.sum()); starts[u] = int((on[1:] & ~on[:-1]).sum())
+        gen[u] = float(o.sum()); starts[u] = int((on[1:] & ~on[:-1]).sum()) + quick_restarts(W, u)
     return gen, starts
 
 
@@ -44,7 +55,7 @@ def counter_readings(W):
             i0, i1 = L(*s), L(*e)
             for d, i, kind in ((s, i0, 'overhaul start'), (e, i1, 'return to service')):
                 rows.append({'date': dt.date(*d), 'unit': u, 'kind': kind, 'hours': h0 + int(on[:i].sum()),
-                             'starts': s0 + int(st[:i].sum()), 'i': i})
+                             'starts': s0 + int(st[:i].sum()) + quick_restarts(W, u, i), 'i': i})
     return rows
 
 

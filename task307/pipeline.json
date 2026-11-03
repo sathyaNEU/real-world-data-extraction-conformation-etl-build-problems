@@ -1,10 +1,10 @@
 {
  "task": "task307",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-03",
  "stump": "A competent analyst carries each runner's pitting from its last inspection at the fleet's pitting per running hour and refurbishes Nesvik G2, the only runner that rate takes past the limit before 2032; the step that lands it there is taking an hour run as an hour of wear, when the runners pit only in the restricted band and Nesvik G1 and Sørdal G1 have run there about one hour in nine since they took up frequency reserve in 2022, so Nesvik G1's runner passes the limit in 2027 and spares 4,650 MWh per NOK million against Sørdal G1's 3,820.",
  "architecture": 3,
@@ -15,23 +15,23 @@
   "result": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW (0 LEAK) on target.zip cea2a0eb2d4b, 2026-11-03: author-vocabulary hits are \"generator terminals\", answer-figure REVIEWs are runner serials and quote digits, the planning note shares the call's nouns; for the stage 4 reader",
-  "reader": ""
+  "leak_py": "REVIEW (0 LEAK) on target.zip 3bfbecc1fd06, 2026-11-03: author-vocabulary hits are \"generator terminals\", answer-figure REVIEWs are runner serials, quote digits and the 400 inside 18,400,000 and 2,400, the planning note shares the call's nouns; ruled harmless in the design note",
+  "reader": "r1 on cea2a0eb2d4b: no leak, every REVIEW harmless, docx default styles fixed; r2 on 3bfbecc1fd06 (after the asks rework): clean, no leak, every item harmless; both reads in leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.gate_g; NOTE same_puzzle_older vs task472 v2, differentiated), nearest 0.05",
+  "heart": "WARN on 2026-11-03 after the ask rework (overuse.gate_g; NOTE same_puzzle_older vs task472 v2, differentiated), nearest driver 0.09",
   "nearest": "task149 stump 0.05; drivers task230 v1 lineage 0.09",
-  "surface": "exit 0, personas none; promoted for the adjudicated read: task306 and task308 (adjacent energy-systems-utilities x OS builds, task306 the same subdomain, different driver), task305 (calibration form), task167 and task261 (corpus top 1 per cent), task472 (gap, pattern and decision family, differentiated on the card)"
+  "surface": "exit 0 on 3bfbecc1fd06, personas none; 5 pairs promoted for the adjudicated read as at stage 3 (task308 back to back and task306, adjacent energy x OS builds; calibration form; corpus top 1 per cent; gap, pattern and decision family vs task472, differentiated on the card)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (r1 on cea2a0eb2d4b; r2 on 3bfbecc1fd06)",
+  "disposition": "APPROVE both passes, Gate H decisive_step analytical; r1 minor (Nesvik G1 now 2,260 under the highest single pair rate) closed as SF16 before r2; r2 cosmetic note (planning note modified 9 Dec 2026 against a 31 December 2026 condition date) ruled harmless: a plan written before year end states year-end condition",
+  "report": "determinism_check_report.md (r1), determinism_check_report_pass2.md (r2)"
  },
  "returned": [],
- "resume": "Stage 4 hand-off: every free gate green on target.zip sha256 cea2a0eb2d4b (rebuild: python3 task307/generator/make.py, then python3 task307/generator/checks.py, verify.py and ceiling.py; byte-identical across two builds). Next: spawn the leak reader (/leak-check step 4, sonnet, medium) and the determinism-judge together in the background on the cut pack, fix every finding in the generator in one pass, re-run the stage 3 gates; then ship (target.zip and golden/ force-added in the SHIPPED commit, the ledger row written then). The two architecture 1 goldens (golden/mampo_*) are deleted in the working tree and leave git at that commit. Open for the author: the ask layer rests on one device family (the old historian's slot wiring), priced at 56.0 with one full includer and 83.5 with two; guard surface promotes the adjacent energy builds task306 and task308 for an adjudicated clone read.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-03",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -69,12 +69,16 @@
   "spent": "2026-11-02, stage 2, own prototype"
  },
  "gates": {
-  "checks_py": "72 checks, 0 failed",
-  "verify_py": "PASS, 67 graded figures recomputed from target/",
-  "byte_identical": "two rebuilds identical (target.zip, both goldens, figures.json, metadata.json)",
-  "figures_check": "PASS, 62 figures in blocks 1 to 4",
-  "voice_check": "PASS",
-  "ceiling_py": "battery cracker 0 of 14 asks (45.0), mirror on the default path 0 of 14 (12.0), pair 28.5; one full includer 56.0; both full includers 83.5"
+  "checks_py": "100 checks, 0 failed",
+  "verify_py": "PASS, 74 graded figures recomputed from target/",
+  "byte_identical": "two rebuilds identical (target.zip, goldens, figures.json, metadata.json, target/)",
+  "figures_check": "PASS, 63 figures in blocks 1 to 4",
+  "voice_check": "PASS (prompt 923 characters)",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "freeze_rubric": "PASS, the main call, the stump and every frozen figure unchanged; 23 ask figures moved",
+  "ceiling_py": "battery pair 28.5; largest single-device share 33.3 per cent; pair ceiling 56.0 (each on one finding 46.8, cracker on two and mirror on one 56.0, one full includer beside the battery mirror 56.0); both full includers 83.5",
+  "leak_py": "REVIEW (0 LEAK) on 3bfbecc1fd06, every line ruled harmless in the design note",
+  "guard": "surface exit 0 (personas none, 5 pairs promoted for the adjudicated read as at stage 3); heart WARN (overuse.gate_g; same_puzzle_older vs task472, differentiated); validate clean"
  },
- "target_zip_sha256": "cea2a0eb2d4b2def98f85095ad6d2867f79aa35aaf6a0baa0857fd65986bf7e5"
+ "target_zip_sha256": "3bfbecc1fd067bac813035cd4a23ad1fee3962d6e799274d7be038548bd7583d"
 }

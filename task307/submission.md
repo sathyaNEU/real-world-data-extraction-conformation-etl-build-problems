@@ -21,8 +21,9 @@ Its runner R-501 stands at 2,250 cm2 of pitting and passes the repair limit in 2
 3. Counted each unit's hours with output from 30 per cent of its rating up to 58 per cent (the restricted band in unit_register.xlsx) and found, across every pair of consecutive inspections of a runner in runner_inspections.xlsx, the same pitting per band hour, 0.24 cm2, the Sørdal G3 peaker's pairs included, where pitting per running hour differs tenfold between the peaker and the base-load runners.
 4. Carried each present runner from its last inspection to 31 December 2026 at that rate, then year by year at its 2026 band hours as outage_planning_note_2027.docx carries duty: Nesvik G1 in 2027, Sørdal G1 in 2029, Sørdal G3 in 2031 pass the repair limit in the window and no other runner does.
 5. Valued each passing runner's 14-week outage at the unit's mean generation over the 14 weeks from 1 December in the winters 2021/22 to 2025/26, as the planning note values an outage, and divided by the quotation excluding VAT in runner_refurbishment_quote_2027.pdf: Nesvik G1 4,650, Sørdal G1 3,820, Sørdal G3 990 MWh per NOK million.
-6. Ask: assigned each old historian slot tag, before its station's RTU replacement in maintenance_history.csv, to the unit whose logged overhauls and annual maintenance its zero hours match, rather than through historian_tag_map_2023.csv, which holds the wiring since; then summed each unit's hourly output and counted its starts from standstill per the definitions in production_report_2025.pdf.
-7. Refurbish Nesvik G1 in the 2027 summer window: it spares 67,000 MWh, 4,650 MWh per NOK million.
+6. Ask: assigned each old historian slot tag, before its station's RTU replacement in maintenance_history.csv, to the unit whose logged overhauls and annual maintenance its zero hours match, rather than through historian_tag_map_2023.csv, which holds the wiring since; then summed each unit's hourly output.
+7. Ask: counted starts as production_report_2025.pdf defines them, every run-up from standstill: the hourly record's changes from zero to generation, plus each generator breaker trip in protection_log_2016_2026.csv resynchronised with no standstill hour between (the governor start counters in unit_counter_readings.csv tie between every pair of readings only so); counted trips as each unit's own generator breaker trips plus each 132 kV line breaker trip at its station (unit_register.xlsx, Stasjoner: one line per station) in an hour the unit was generating.
+8. Refurbish Nesvik G1 in the 2027 summer window: it spares 67,000 MWh, 4,650 MWh per NOK million.
 
 ## 4. Deliverable Answers
 
@@ -37,14 +38,14 @@ Its runner R-501 stands at 2,250 cm2 of pitting and passes the repair limit in 2
    - NSV-G1: R-501, 1,050 cm2 (inspected 10 August 2021), 2,250 cm2 now, 2027, 67,000 MWh, 4,650 MWh per NOK million
    - NSV-G2: R-502, 1,350 cm2 (inspected 4 June 2019), 1,790 cm2 now, not before 2032, 0 MWh, 0 MWh per NOK million
 2. Unit chosen: NSV-G1 (Nesvik G1); runner-up: SDL-G1 (Sørdal G1); gap: 830 MWh per NOK million (4,650 against 3,820)
-3. Generation and starts each unit has had since the start of 2016, to 31 December 2026:
-   - OSD-G1: 4,542,600 MWh, 419 starts
-   - OSD-G2: 4,464,900 MWh, 417 starts
-   - SDL-G1: 2,427,400 MWh, 428 starts
-   - SDL-G2: 2,710,200 MWh, 492 starts
-   - SDL-G3: 558,000 MWh, 6,729 starts
-   - NSV-G1: 2,900,300 MWh, 375 starts
-   - NSV-G2: 3,370,400 MWh, 394 starts
+3. Generation, starts and trips each unit has had since the start of 2016, to 31 December 2026:
+   - OSD-G1: 4,542,200 MWh, 427 starts, 22 trips
+   - OSD-G2: 4,464,600 MWh, 423 starts, 16 trips
+   - SDL-G1: 2,427,200 MWh, 433 starts, 23 trips
+   - SDL-G2: 2,710,000 MWh, 501 starts, 20 trips
+   - SDL-G3: 557,900 MWh, 6,738 starts, 15 trips
+   - NSV-G1: 2,900,000 MWh, 383 starts, 26 trips
+   - NSV-G2: 3,370,200 MWh, 400 starts, 18 trips
 
 ### runner_2027.svg
 

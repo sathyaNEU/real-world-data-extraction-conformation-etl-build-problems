@@ -78,3 +78,39 @@ def pdf(path, title, author, date_pdf, story_fn, producer='Microsoft\u00ae Word 
     assert not re.search(rb"(?i)reportlab|anonymous", raw), 'library string left in ' + path
     with open(path, 'wb') as f:
         f.write(raw)
+
+
+KEEP_STYLES = ('Normal', 'DefaultParagraphFont', 'TableNormal', 'NoList', 'Heading1', 'Heading2', 'Heading1Char',
+               'Heading2Char')
+
+
+def lean_docx(raw):
+    """Cut a python-docx package down to what a short Word note carries: a styles part with the document defaults and
+    only the styles in use (and their linked character styles), no stylesWithEffects part. Theme, settings, fonts and
+    numbering stay."""
+    zin = zipfile.ZipFile(io.BytesIO(raw))
+    styles = zin.read('word/styles.xml').decode('utf-8')
+    head = styles[:styles.index('<w:docDefaults>')]
+    dd = styles[styles.index('<w:docDefaults>'):styles.index('</w:docDefaults>') + len('</w:docDefaults>')]
+    dd = dd.replace('w:val="en-US" w:eastAsia="en-US"', 'w:val="nb-NO" w:eastAsia="en-US"')
+    body = []
+    for sid in KEEP_STYLES:
+        m = re.search(r'<w:style [^>]*w:styleId="%s".*?</w:style>' % sid, styles, re.S)
+        body.append(m.group(0))
+    lean = head + dd + ''.join(body) + '</w:styles>'
+    out = io.BytesIO()
+    zout = zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED)
+    for zi in zin.infolist():
+        n = zi.filename
+        if n == 'word/stylesWithEffects.xml':
+            continue
+        data = zin.read(n)
+        if n == 'word/styles.xml':
+            data = lean.encode('utf-8')
+        elif n == 'word/_rels/document.xml.rels':
+            data = re.sub(rb'<Relationship [^>]*stylesWithEffects[^>]*/>', b'', data)
+        elif n == '[Content_Types].xml':
+            data = re.sub(rb'<Override PartName="/word/stylesWithEffects.xml"[^>]*/>', b'', data)
+        zout.writestr(zi, data)
+    zout.close()
+    return out.getvalue()

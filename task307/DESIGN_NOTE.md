@@ -16,7 +16,7 @@ portal, pending, untouched. This architecture moves to a third client domain, a 
 | Forward window | the 2027 summer outage window and outages beginning in 2027 to 2031; nothing in it has happened yet |
 | World | Sørdal Kraft, a fictional western Norwegian municipality's hydropower company running a cascade of three stations (Øvre Sørdal, Sørdal and Nesvik) with seven Francis units; the 2027 summer window has crane, crew and runner-shop capacity for one runner refurbishment |
 | People (not in the prompt) | Rita Haugen, head of production assets; Arild Sivertsen, maintenance planner (`guard.py names --geo norway --seed 307`) |
-| Shape | 01, a ranked list with one pick: per unit the runner, pitting at the last inspection, pitting now, the year it passes the limit, the generation at risk and that per million kroner (seven units, 42 cells), the pick, runner-up and gap (3), the chart's parts (3), and the asks' 14 unit figures: 62 graded figures |
+| Shape | 01, a ranked list with one pick: per unit the runner, pitting at the last inspection, pitting now, the year it passes the limit, the generation at risk and that per million kroner (seven units, 42 cells), the pick, runner-up and gap (3), the chart's parts (3), and the asks' 21 unit figures: 69 graded figures |
 | Deliverables | `runner_2027.xlsx` (the decision workbook) and `runner_2027.svg` (the bar chart of generation spared per million kroner, chosen unit marked) |
 | Card | `.claude/skills/fingerprint/cards/task307.json`, architecture v3, registered 2026-11-03; guard WARN `overuse.gate_g` and NOTE `test.same_puzzle_older` against task472 v2, differentiated on the card |
 | Strategy and family | `other` (wear accruing inside one band of a unit's output range that a new duty moved units into, read from each unit's own output record); Layer 2 family `estimand_identification`; generators G7 (operating window) then G13 (horizon mismatch) |
@@ -75,7 +75,7 @@ Domain test: the deciding quantity is the year each runner's cavitation pitting 
 
 Swap: "which ward should the hospital refit, sparing the most bed-days" keeps the sentence and loses the task: there is no band of an output range, no cavitation, no runner and no duty for a reserve contract to move a machine into.
 
-Layer 1: the 2023 historian migration (tag names, local time with its autumn hours to UTC, a three-day overlap), the old historian's slots wired by the old RTUs until each station's replacement, runner serials against units with two runner changes, decimal commas and Norwegian headers, cumulative governor counters read at overhauls, reserve contracts priced in EUR; each produced by the company's own systems, none placed to be caught.
+Layer 1: the 2023 historian migration (tag names, local time with its autumn hours to UTC, a three-day overlap), the old historian's slots wired by the old RTUs until each station's replacement, runner serials against units with two runner changes, decimal commas and Norwegian headers, cumulative governor counters read at overhauls, reserve contracts priced in EUR, the control centre's protection log in UTC to the second with one row per protection function that operated and pick-ups that operated nothing; each produced by the company's own systems, none placed to be caught.
 
 Layer 2: estimand identification in the wear model: pitting accrues per hour in the band, read across sibling runners against the peaker, and the reserve duty since 2022 moved two units into that band, so the wear per running hour the inspections validated under base-load duty no longer carries forward.
 
@@ -123,7 +123,9 @@ Each rung against the seven tests (1 filed sentence, 2 schema, 3 reflex, 4 contr
 | SF11 | the restricted band | 30 per cent of rating inclusive to 58 per cent exclusive, on hourly mean output | other band edges | same call (asserted at 25 to 60 and at both edges) | unit register, Driftsområder: "Fra og med" 30 %, Normal from 58 % |
 | SF12 | generation (ask) | gross at the generator terminals, MWh, each hour of the record once | the overlap hours twice | not the call (ask) | production report 2025, definitions |
 | SF13 | since the start of 2016 (ask) | 1 January 2016 00:00 to 31 December 2026 24:00, Norwegian time | UTC bounds | same figures (the record holds no hour outside, asserted) | production report 2025, definitions: years in Norwegian local time; planning note 1.2 |
-| SF14 | starts (ask) | changes from zero to non-zero hourly output between consecutive hours | the governors' start counter | not the call (ask) | production report 2025, definitions |
+| SF14 | starts (ask) | every run-up from standstill: the hourly record's changes from zero to generation, plus each generator breaker trip resynchronised with no standstill hour between | the hourly changes alone; the hourly changes plus every unit trip | not the call (ask) | production report 2025, definitions ("a run-up of a unit from standstill to generation; the governors count every start"); the governor start counters tie between every pair of readings only under the golden reading (25 of 25 intervals, asserted; the hourly changes alone tie 16 of 25) |
+| SF15 | trips (ask) | each unit's own generator breaker trips plus each 132 kV line breaker trip at its station in an hour the unit was generating | the unit's own breaker trips alone; line trips on every unit of the station; every protection-operated row | not the call (ask) | production report 2025, definitions ("an unplanned disconnection of a generating unit from the grid by protection"); unit register, Stasjoner: one 132 kV line per station; every line trip falls in an hour each unit of its station runs or stands throughout (asserted) |
+| SF16 | the rate per band hour carried to the cut | pooled over every pair, 0.240 cm2 | the mean or median of the pairs, any single pair, either band-edge convention | same figures (asserted: every graded pitting figure and crossing year rounds alike under every estimator and both conventions; Nesvik G1 now 2,249.7 to 2,250.9) | the inspection pairs agree within 0.2 per cent |
 
 ## Ladder
 
@@ -154,7 +156,7 @@ Each rung against the seven tests (1 filed sentence, 2 schema, 3 reflex, 4 contr
 | 12 Maturity and censoring | every 2026 hour recorded; inspections dated | C1 |
 | 13 Order of operations | carry pitting to the cut, then year by year at the 2026 duty | SF4, SF8 |
 | 14 Row order | sums independent of order | C1 |
-| 15 Duplicate resolution | the March 2023 overlap counted once (asks; the call is unmoved either way, asserted) | SF12 |
+| 15 Duplicate resolution | the March 2023 overlap counted once; a trip with two protection functions is one trip (asks; the call is unmoved either way, asserted) | SF12, SF15 |
 | 16 Identity normalisation | runner serials to units through the register; old historian slots to units through the logged outages before each RTU replacement (asks; the call reads no swapped hour, asserted) | SF9, asserted |
 | 17 Netting against gross | gross generation at the terminals | SF12 |
 | 18 Dimensional units | MW hourly means to MWh; EUR only in the reserve contracts | C1 |
@@ -176,29 +178,46 @@ Executed word for word, the prompt, TS-07 and the planning note give, for each u
 
 ## Ask sheet
 
-- **Ask A, each unit's generation since the start of 2016** (seven figures, MWh to the nearest 100). H18 home: the duty each candidate unit's runner has carried, the production record the investment plan sets beside the call. Path: historian_export_2016_2023.csv (Tidspunkt, seven slot tags), historian_export_2023_2026.csv (time_utc, seven unit tags), historian_tag_map_2023.csv (old_tag, new_tag), maintenance_history.csv (date, unit, event, detail), production_report_2025.pdf (definitions): five files, fourteen columns. Primary device: D2, a label stored before a silent switch. The old historian named its tags by the old RTUs' slots, and at each station the slots were not wired in unit order until the station's RTU was replaced (Øvre Sørdal 1 August 2016, Sørdal 12 June 2017, Nesvik 24 July 2017); the 2023 tag map pairs each old tag with its unit as wired since, and the three-day overlap with the new historian confirms it, so stacking the exports through the map puts every unit's early hours on a sibling's tag. Only the logged overhauls and annual maintenance show it (a unit's tag running while the unit stood for its overhaul), and each station's replacement date bounds it. Hazards: the overlap counted twice (moves every figure by 700 to 3,900 MWh), the autumn hours of the local-time export de-duplicated on their labels (moves every figure by 70 to 370 MWh), the year bounds in UTC (no hour falls outside, asserted).
-- **Ask B, each unit's starts since the start of 2016** (seven figures, whole numbers). H18 home: the start duty beside the running duty. Path: the same five files. Primary device: the same slot wiring, which moves the peaker's starts onto a base-load tag (by about 830) and every other unit's by 3 to 15. Hazard: the autumn labels de-duplicated (moves every figure by 2 to 7).
-- **Use:** the duty record is how the head of production assets reports what each runner has carried, beside the condition figures.
-- **Separation:** the call reads no hour the slot wiring touches (every inspection pair and projection window starts after the station's RTU replacement, asserted), and its graded figures are unchanged under the tag map as given, the overlap counted twice and the autumn labels de-duplicated (asserted in checks.py).
-- **Literal pins:** SF12, SF13 and SF14 fix the definitions on the production report's definitions page; no filed sentence names the slot wiring, the overlap or the autumn hours.
-- **Full includer:** a response that reads every old tag against the logged outages re-assigns the slots and keeps both asks; no second family sits on these figures, which the pair line below prices.
+Three blocks of seven unit figures, each block behind its own silent device, so no one finding keeps more than a third
+of the ask weight.
 
-| Ask figure group | Cracker (lands the call, stacks the exports on UTC with the overlap once and the autumn hours kept, maps the old tags through the 2023 tag map as given) | Golden | Cracker |
+- **Ask A, each unit's generation since the start of 2016** (seven figures, MWh to the nearest 100). H18 home: the duty each candidate unit's runner has carried, the production record the investment plan sets beside the call. Path: historian_export_2016_2023.csv (Tidspunkt, seven slot tags), historian_export_2023_2026.csv (time_utc, seven unit tags), historian_tag_map_2023.csv (old_tag, new_tag), maintenance_history.csv (date, unit, event, detail), production_report_2025.pdf (definitions): five files, fourteen columns. Primary device S: D2, a label stored before a silent switch. The old historian named its tags by the old RTUs' slots, and at each station the slots were not wired in unit order until the station's RTU was replaced (Øvre Sørdal 1 August 2016, Sørdal 12 June 2017, Nesvik 24 July 2017); the 2023 tag map pairs each old tag with its unit as wired since, and the three-day overlap with the new historian confirms it, so stacking the exports through the map puts every unit's early hours on a sibling's tag. Only the logged overhauls and annual maintenance show it (a unit's tag running while the unit stood for its overhaul), and each station's replacement date bounds it. Hazards: the overlap counted twice (700 to 3,900 MWh a figure), the autumn hours of the local-time export de-duplicated on their labels (70 to 370 MWh), the year bounds in UTC (no hour falls outside, asserted).
+- **Ask B, each unit's starts since the start of 2016** (seven figures, whole numbers). H18 home: the start duty beside the running duty. Path: Ask A's five files plus protection_log_2016_2026.csv (time_utc, object, event) and unit_counter_readings.csv (date, unit, starts_total): seven files. Primary device Q: D6, an event the hourly grain cannot show. A unit tripped by its own protection and restarted inside the same clock hour leaves an hourly mean that dips and stays a running hour, so the hourly record's changes from standstill miss the start the governors count; a long trip leaves standstill hours and is already a change from zero. The reconstruction is per trip: a generator breaker trip whose resynchronisation follows with no standstill hour between adds a start. The governor counters are the referee and hand over no level: read only at overhauls, they tie between every pair of readings only under the golden (25 of 25 against 16 of 25 for the hourly record), and every unit has such a restart before its first or after its last reading, so differencing the counters and bridging the ends with the hourly record still misses. Device S also moves every figure (3 to 833 starts, the peaker's onto a base-load tag). Mis-handlings: the hourly record alone (5 to 9 short a unit), every unit trip added (double-counts the long trips), line trips added (no stop). Hazard: the autumn labels de-duplicated (2 to 7).
+- **Ask C, each unit's trips since the start of 2016** (seven figures, whole numbers). H18 home: the forced-outage exposure beside the duty, reported with it. Path: protection_log_2016_2026.csv (time_utc, station, object, event), unit_register.xlsx (Stasjoner: one 132 kV line per station), the hourly record from Ask A, production_report_2025.pdf (definitions): five files, ten columns. Primary device L: D6 and D7, an event's quantity on every unit it covers, logged against another object. A 132 kV line breaker trip disconnects every unit generating at the station from the grid; the units, held at no load on their own breakers, leave no row, and the log carries the line only. The reconstruction joins each line trip at second grain to the hourly record to find which units were generating (2018 to 2021, after every RTU replacement, so no slot handling reaches it). Mis-handlings: the units' own breaker trips alone (2 to 6 short a unit), line trips on every unit of the station (stopped units counted), every protection-operated row counted (two functions on one trip, a hazard).
+- **Use:** the duty and trip record is how the head of production assets reports what each runner has carried, beside the condition figures.
+- **Separation:** the call reads no hour the slot wiring touches (every inspection pair and projection window starts after the station's RTU replacement, asserted) and no row of the protection log; the trip dips change no hour's band membership or running state and fall in no winter valuation window (every call figure identical with and without them, asserted); its graded figures are unchanged under the tag map as given, the overlap counted twice, the autumn labels de-duplicated and every starts and trips handling (asserted in checks.py).
+- **Literal pins:** SF12 to SF15 fix the definitions on the production report's definitions page and the register's one line per station; no filed sentence names the slot wiring, the restarts inside an hour, the line trips' effect on the units, the overlap or the autumn hours.
+- **Full includer:** a response that re-assigns the slots, adds the hidden restarts and spreads the line trips keeps all 21; any one finding keeps at most 7 of 21 (S keeps A, L keeps C, Q alone keeps nothing since B needs S too), any two at most 14.
+
+| Ask figure group | Cracker (lands the call; exports stacked on UTC, overlap once, autumn hours kept; old tags through the 2023 tag map as given; starts from the hourly record; trips as the units' own breaker trips) | Golden | Cracker |
 |---|---|---|---|
 | Øvre Sørdal G1 and G2 generation since 2016 | each carries the other's January to July 2016 | each unit's own | miss |
 | Sørdal G1, G2 and G3 generation since 2016 | each carries a sibling's 2016 to June 2017 | each unit's own | miss |
 | Nesvik G1 and G2 generation since 2016 | each carries the other's 2016 to July 2017 | each unit's own | miss |
-| Øvre Sørdal G1 and G2 starts since 2016 | swapped for January to July 2016 | each unit's own | miss |
-| Sørdal G1, G2 and G3 starts since 2016 | the peaker's starts on Sørdal G2 | each unit's own | miss |
-| Nesvik G1 and G2 starts since 2016 | swapped for 2016 to July 2017 | each unit's own | miss |
+| Starts since 2016, all seven units | slots as mapped and the restarts inside an hour missing | each unit's own | miss |
+| Trips since 2016, all seven units | the line trips that caught each unit generating missing (2 to 6 a unit) | own trips plus line trips while generating | miss |
+| Full includer on S alone: starts and trips | restarts and line trips missing | as above | miss |
+| Full includer on S and Q: trips | line trips missing | as above | miss |
 
-Measured on the cut pack (generator/ceiling.py): the cracker keeps 0 of 14 ask figures (45.0), the mirror on the default path keeps 0 of 14 (12.0), a pair of 28.5; with one of the two a full includer who re-assigns the slots, the pair is 56.0; with both full includers and one on the call it is 83.5, the case the ask layer does not hold.
+Measured on the cut pack (generator/ceiling.py): the cracker keeps 0 of 21 ask figures (45.0), the mirror on the default path keeps 0 of 21 (12.0), a pair of 28.5; the largest share one device keeps is 33.3 per cent; with each response on one finding the pair is 46.8; with the cracker on two findings and the mirror on one, or one full includer beside the battery mirror, it is 56.0; with both on the call each on one finding it is 63.3, and with both full includers and one on the call 83.5, the cases the ask layer does not hold.
 
 Pair ceiling: 56.0
 
 Mirror leakage: 0.0 per cent of ask weight
 
 Measured by: generator/ceiling.py on the cut pack
+
+## Leak read rulings
+
+- outage_planning_note_2027.docx, "generator terminals": harmless, the plant-engineering metering point.
+- production_report_2025.pdf, "gross energy at the generator terminals": harmless, the gross basis definition.
+- runner_refurbishment_quote_2027.pdf, numbers coinciding with golden figures: harmless, ordinary quote content (ex-VAT, VAT, total), inputs not answers.
+- outage_planning_note_2027.docx, words shared with the call: harmless, the note states conditions and rules, ranks nothing and names no choice.
+- production_report_2025.pdf and runner_standard_TS07_rev3.pdf, stump-vocabulary terms (output, nesvik, record): harmless, common words; neither ties pitting to an output band.
+- runner_refurbishment_quote_2027.pdf and runner_standard_TS07_rev3.pdf, "400" (now also Nesvik G2's starts): harmless, a digit run inside 18,400,000 and 2,400 cm2, not a stated count.
+- outage_planning_note_2027.docx (nesvik, inside, generator) and runner_standard_TS07_rev3.pdf (nesvik, register, record, standard), stump-vocabulary counts after the ask rework: harmless, plant nouns and the note's own scope sentences; neither ties pitting to a band of output.
+- Pack changes after the read (the protection log, the register's Stasjoner sheet, the production report's start and trip definitions, the prompt's trips ask): owed a second isolated read before ship.
+- Realism finding fixed: the planning note's python-docx default styles part replaced by a lean styles part holding only the styles in use, stylesWithEffects dropped, the theme part and fixed member dates kept (office.lean_docx, asserted in the realism sweep).
 
 ## Architecture records
 
@@ -311,3 +330,9 @@ Measured by: generator/ceiling.py on the cut pack
   rebalanced so Sørdal G1 leads both (asserted).
 - 2026-11-03, stage 3: a 450 cm2 per-blade repair rule in TS-07 contradicted the register's whole-runner repairs (no
   blade reaches 450); deleted.
+- 2026-11-03, stage 4: both asks on the one slot-wiring device (a finder kept the whole ask weight, a pair near 83.5 with
+  both on the call); Ask B given its own device (restarts inside an hour, shown by the protection log and tied to the
+  governor counters) and Ask C added on a third (line trips spread to the units generating), so one finding keeps a third.
+- 2026-11-03, stage 4: Nesvik G1's present pitting rounded to 2,260 under the single highest pair rate (judge r1, minor);
+  the inspection-pair noise cut from 0.4 to 0.05 per cent and R-501's 2016 pitting set 3 cm2 lower, so every estimator
+  and band-edge convention rounds every pitting figure alike (SF16); no call figure moved (freeze.py rubric PASS).

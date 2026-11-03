@@ -70,7 +70,7 @@ INSPECTIONS = [
 ]
 # runner pitting at 2016-01-01 (cm2), and which runner sits in which unit when
 PIT0 = {'R-301': 640.0, 'R-302': 1010.0, 'R-205': 380.0, 'R-206': 1260.0, 'R-410': 220.0, 'R-207': 1150.0,
-        'R-208': 0.0, 'R-501': 560.0, 'R-502': 1180.0}
+        'R-208': 0.0, 'R-501': 557.0, 'R-502': 1180.0}
 RUNNER_IN = {  # unit -> [(from local date, runner)]
     'OSD-G1': [((2016, 1, 1), 'R-301')], 'OSD-G2': [((2016, 1, 1), 'R-302')], 'SDL-G1': [((2016, 1, 1), 'R-205')],
     'SDL-G2': [((2016, 1, 1), 'R-206'), ((2019, 7, 22), 'R-410')], 'SDL-G3': [((2016, 1, 1), 'R-207'), ((2024, 6, 24), 'R-208')],
@@ -90,6 +90,103 @@ PRE_PERIOD_INSPECTIONS = [  # before the hourly record: runner, local date, unit
 ]
 
 
+TRIP_SEED = 3307
+RM_OFF = 8
+VALUE_WINTERS = [(y, 12, 1) for y in range(2021, 2026)]
+
+
+def trip_layer(out, forced):
+    """Protection trips, from their own generator so nothing above moves. Three kinds:
+    'long'  a unit trip that opened a forced outage (the unit stands for hours, the hourly record shows the stop);
+    'quick' a unit trip with the unit restarted and resynchronised inside the same clock hour (the hourly mean dips,
+            the hour stays a running hour; the governor counts the start);
+    'line'  the station's 132 kV line breaker tripped and reclosed inside the hour: every unit generating at the station
+            loses the grid for those minutes and is held at no load on its own breaker (no stop, no start).
+    Every dipped hour keeps the unit at 60 per cent of rating or more, so no hour enters or leaves the restricted band,
+    and no dip falls inside a winter valuation window. Returns the event list; `out` is dipped in place."""
+    r = np.random.default_rng(TRIP_SEED)
+    rm = np.random.default_rng(TRIP_SEED + RM_OFF)
+    blocked = np.zeros(NH, bool)
+    for (y, m, d) in VALUE_WINTERS:
+        s = L(y, m, d)
+        blocked[s:hidx(dt.datetime(y, m, d, tzinfo=OSLO) + dt.timedelta(weeks=14))] = True
+    blocked[:72] = True
+    blocked[-72:] = True
+    ev = []
+    on = {u: out[u] > 0 for u in UNITS}
+    for u in UNITS:
+        for f0 in sorted(forced.get(u, [])):
+            if 0 < f0 < NH and on[u][f0 - 1] and not on[u][f0]:
+                h1 = f0 + int(np.argmax(on[u][f0:])) if on[u][f0:].any() else None
+                if h1 is None or h1 == f0:
+                    continue
+                h0 = f0 - 1
+                v, rt = out[u][h0], RATED[u]
+                band = lambda x: RZ_LO * rt - 1e-9 <= x < RZ_HI * rt - 1e-9
+                last_min = h0 * 3600 + 3540 + int(r.integers(18, 58))
+                tries = [h0 * 3600 + int(rm.integers(6, 58)) * 60 + int(rm.integers(0, 60)) for _ in range(8)]
+                ok_t = [t for t in tries if not blocked[h0] and round(v * (t - h0 * 3600) / 3600.0, 2) > 0
+                        and band(round(v * (t - h0 * 3600) / 3600.0, 2)) == band(v)]
+                t0 = ok_t[0] if ok_t else last_min
+                nv = round(v * (t0 - h0 * 3600) / 3600.0, 2)
+                if ok_t:     # otherwise tripped in the hour's last minute, the mean left as recorded
+                    out[u][h0] = nv
+                t1 = h1 * 3600 + int(r.integers(70, 530))
+                ev.append({'kind': 'long', 'unit': u, 'station': u[:3], 'h': f0 - 1, 't0': t0, 't1': t1})
+    for u in UNITS:
+        o = out[u]
+        ok = (~blocked[1:-1]) & on[u][:-2] & on[u][1:-1] & on[u][2:] & (o[1:-1] >= 0.86 * RATED[u])
+        cand = np.nonzero(ok)[0] + 1
+        k = int(r.integers(5, 10))
+        chosen = []
+        for h in r.permutation(cand):
+            if all(abs(int(h) - c) > 24 * 45 for c in chosen):
+                chosen.append(int(h))
+            if len(chosen) == k:
+                break
+        for h in sorted(chosen):
+            d = int(r.integers(10, 19))
+            m0 = int(r.integers(3, 60 - d - 2))
+            o[h] = round(o[h] * (60 - d) / 60.0, 2)
+            ev.append({'kind': 'quick', 'unit': u, 'station': u[:3], 'h': h, 't0': h * 3600 + m0 * 60 + int(r.integers(0, 60)),
+                       't1': h * 3600 + (m0 + d) * 60 + int(r.integers(0, 60))})
+    lo, hi = L(2018, 1, 1), L(2022, 1, 1)
+    for st in ('OSD', 'SDL', 'NSV'):
+        us = [u for u in UNITS if u[:3] == st]
+        need_on = {u: 2 for u in us}
+        need_off = {u: 1 for u in us}
+        chosen = []
+        for h in r.permutation(np.arange(lo, hi)):
+            h = int(h)
+            if blocked[h] or any(abs(h - c) < 24 * 60 for c in chosen):
+                continue
+            steady = all(on[u][h - 1] == on[u][h] == on[u][h + 1] for u in us)
+            running = [u for u in us if on[u][h]]
+            if not steady or not running or any(out[u][h] < 0.86 * RATED[u] for u in running):
+                continue
+            gain = sum(need_on[u] > 0 for u in running) + sum(need_off[u] > 0 for u in us if u not in running)
+            if gain == 0 and len(chosen) >= 4:
+                continue
+            chosen.append(h)
+            for u in us:
+                if u in running:
+                    need_on[u] -= 1
+                else:
+                    need_off[u] -= 1
+            if len(chosen) >= 4 and all(v <= 0 for v in need_on.values()) and all(v <= 0 for v in need_off.values()):
+                break
+        for h in sorted(chosen):
+            d = int(r.integers(6, 15))
+            m0 = int(r.integers(4, 60 - d - 2))
+            running = [u for u in us if on[u][h]]
+            for u in running:
+                out[u][h] = round(out[u][h] * (60 - d) / 60.0, 2)
+            ev.append({'kind': 'line', 'unit': '', 'station': st, 'h': h, 'units': running,
+                       't0': h * 3600 + m0 * 60 + int(r.integers(0, 60)), 't1': h * 3600 + (m0 + d) * 60 + int(r.integers(0, 60))})
+    ev.sort(key=lambda e: (e['t0'], e['station'], e['unit']))
+    return ev
+
+
 def build():
     rng = np.random.default_rng(SEED)
     hours_local = [local(i) for i in range(NH)]
@@ -99,6 +196,7 @@ def build():
     fcr_i = hidx(FCR_FROM)
     out = {}
     avail = {}
+    forced = {}
     annual = {u: [] for u in UNITS}
     for u in UNITS:
         a = np.ones(NH, bool)
@@ -110,7 +208,9 @@ def build():
             annual[u].append(d0.date())
             for _ in range(int(rng.integers(0, 3))):   # forced outages
                 f0 = int(rng.integers(0, 8760 - 200)) + hidx(dt.datetime(y, 1, 1, tzinfo=OSLO))
-                a[f0:f0 + int(rng.integers(12, 120))] = False
+                n = int(rng.integers(12, 120))
+                a[f0:f0 + n] = False
+                forced.setdefault(u, []).append(f0)
         avail[u] = a
         rz, low, pon = DUTY[u]
         on = np.zeros(NH, bool)
@@ -153,6 +253,8 @@ def build():
         mw = np.where(on, np.round(frac * RATED[u], 2), 0.0)
         mw = np.where((mw > 0) & (mw < 0.01), 0.01, mw)
         out[u] = mw
+    out_plain = {u: out[u].copy() for u in UNITS}
+    trips = trip_layer(out, forced)
     # runner occupancy by hour
     occ = {}
     for u in UNITS:
@@ -174,7 +276,7 @@ def build():
         for i in np.nonzero(inz[u])[0]:
             runner_rz[occ[u][i]][i] = True
     for (i, rn, u, rep) in events:
-        f = rng.uniform(0.996, 1.004)
+        f = rng.uniform(0.9995, 1.0005)
         add = K_Z * runner_rz[rn][last_i[rn]:i].sum() * f
         pit[rn] += add
         found.append({'runner': rn, 'i': i, 'unit': u, 'found': round(pit[rn], 1), 'repaired_to': rep})
@@ -205,7 +307,7 @@ def build():
             pre_insp.append({'runner': rn, 'date': d, 'unit': u, 'found': f, 'repaired_to': start})
         else:
             pre_insp.append({'runner': rn, 'date': d, 'unit': u, 'found': start, 'repaired_to': None})
-    return {'out': out, 'avail': avail, 'occ': occ, 'inz': inz, 'found': found, 'runner_rz': runner_rz,
+    return {'out': out, 'out_plain': out_plain, 'trips': trips, 'avail': avail, 'occ': occ, 'inz': inz, 'found': found, 'runner_rz': runner_rz,
             'year': year, 'hours_local': hours_local, 'pre': pre, 'pre_insp': pre_insp, 'annual': annual}
 
 

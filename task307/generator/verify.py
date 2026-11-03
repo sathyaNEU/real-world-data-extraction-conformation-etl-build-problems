@@ -46,6 +46,7 @@ def load():
     rng = reg['Driftsområder']
     row = rng[rng['Område'] == 'Begrenset'].iloc[0]
     D['band'] = (num(str(row.iloc[1]).strip(' %')) / 100, num(str(row.iloc[2]).strip(' %')) / 100)
+    D['log'] = pd.read_csv(os.path.join(TGT, 'protection_log_2016_2026.csv'))
     D['insp'] = pd.read_excel(os.path.join(TGT, 'runner_inspections.xlsx'), dtype=str)
     import pdfplumber
     with pdfplumber.open(os.path.join(TGT, 'runner_refurbishment_quote_2027.pdf')) as pdf:
@@ -222,10 +223,51 @@ def call(D, S, mode='rz', peaker_out=True):
     return rows, order
 
 
-def asks(S):
+def log_events(D):
+    """Breaker operations from the protection log as (object, station, hour index, kind) with kind 'open' or 'close'."""
+    lg = D['log']
+    t = pd.to_datetime(lg['time_utc'], utc=True)
+    h = ((t - T0) / pd.Timedelta(hours=1)).astype(float).to_numpy()
+    out = []
+    for k, r in enumerate(lg.itertuples(index=False)):
+        if r.event in ('breaker open', 'breaker closed'):
+            out.append((r.object, r.station, int(np.floor(h[k])), 'open' if r.event == 'breaker open' else 'close'))
+    return out
+
+
+def asks(S, D=None, starts_mode='golden', trips_mode='golden'):
+    """starts_mode: 'golden' every start from standstill (the hourly record's starts plus the restarts after a trip
+    that the hourly record cannot see), 'hourly' the hourly record's alone, 'all' the hourly starts plus every unit trip;
+    trips_mode: 'golden' each unit's own breaker trips and every line trip that caught it generating, 'unit_rows' the
+    unit's own breaker trips alone, 'operated_rows' every protection-operated row on the unit, 'station_all' line trips
+    on every unit of the station."""
     gen = {u: float(v.sum()) for u, v in S.items()}
     starts = {u: int(((v[1:] > 0) & (v[:-1] == 0)).sum()) for u, v in S.items()}
-    return gen, starts
+    if D is None:
+        return gen, starts
+    ev = log_events(D)
+    station = {r['Aggregat']: r['Stasjon'] for _, r in D['units'].iterrows()}
+    units = list(S)
+    trips = {u: 0 for u in units}
+    for k, (obj, st, h, kind) in enumerate(ev):
+        if kind != 'open':
+            continue
+        if obj in S:
+            trips[obj] += 1
+            nxt = [e for e in ev[k + 1:] if e[0] == obj and e[3] == 'close'][0]
+            invisible = bool((S[obj][h:nxt[2] + 1] > 0).all())
+            if starts_mode == 'all' or (starts_mode == 'golden' and invisible):
+                starts[obj] += 1
+        else:
+            for u in units:
+                if station[u] == st and (trips_mode == 'station_all' or S[u][h] > 0):
+                    trips[u] += 1
+    if trips_mode == 'unit_rows':
+        trips = {u: sum(1 for (obj, st, h, kind) in ev if obj == u and kind == 'open') for u in units}
+    elif trips_mode == 'operated_rows':
+        lg = D['log']
+        trips = {u: int(((lg['object'] == u) & (lg['event'] == 'protection operated')).sum()) for u in units}
+    return gen, starts, trips
 
 
 def rnd(x, step):
@@ -236,7 +278,7 @@ def main():
     D = load()
     S, assign = series(D)
     rows, order = call(D, S)
-    gen, starts = asks(S)
+    gen, starts, trips = asks(S, D)
     F = json.load(open(os.path.join(HERE, 'figures.json'), encoding='utf-8'))
     bad = []
 
@@ -258,13 +300,14 @@ def main():
         chk(u + ' per_mnok', rnd(r['per_mnok'], 10), f['per_mnok'])
         chk(u + ' ask gen', rnd(gen[u], 100), F['asks']['generation_2016_2026_mwh'][u])
         chk(u + ' ask starts', starts[u], F['asks']['starts_2016_2026'][u])
+        chk(u + ' ask trips', trips[u], F['asks']['trips_2016_2026'][u])
     for st, (perm, end) in assign.items():
         print('slots before the %s RTU replacement:' % st, ', '.join('%s carried %s' % kv for kv in sorted(perm.items())))
     if bad:
         print('VERIFY FAIL')
         print('\n'.join(bad))
         sys.exit(1)
-    print('VERIFY PASS: call %s over %s, %d graded figures recomputed from target/' % (order[0], order[1], 4 + 9 * len(F['units'])))
+    print('VERIFY PASS: call %s over %s, %d graded figures recomputed from target/' % (order[0], order[1], 4 + 10 * len(F['units'])))
 
 
 if __name__ == '__main__':

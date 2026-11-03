@@ -99,6 +99,15 @@ def unit_register():
     ws2.column_dimensions['A'].width = 16
     ws2.column_dimensions['B'].width = 28
     ws2.column_dimensions['C'].width = 22
+    ws3 = wb.create_sheet('Stasjoner')
+    ws3.append(['Stasjon', 'Aggregater', 'Nettilknytning', 'Linjebryter'])
+    for st, grid in (('OSD', 'Storstølen'), ('SDL', 'Sørdalseid'), ('NSV', 'Fjordbotn')):
+        ws3.append([Wm.STATION[st], ', '.join(u for u in UNITS if u[:3] == st), '%d kV-linje til %s transformatorstasjon' % (LINE_KV, grid),
+                    'Ja, med gjeninnkobling'])
+    for c in ws3[1]:
+        c.font = Font(bold=True)
+    for col, w in zip('ABCD', (13, 26, 40, 22)):
+        ws3.column_dimensions[col].width = w
     xlsx_save(wb, os.path.join(TGT, 'unit_register.xlsx'), 'Arild Sivertsen', '2019-02-11T08:14:00Z', '2024-06-28T13:42:00Z')
 
 
@@ -175,6 +184,48 @@ def counters(W):
         rows.append([r['date'].isoformat(), r['unit'], wo, r['kind'], r['hours'], r['starts']])
     write_csv('unit_counter_readings.csv', ['date', 'unit', 'work_order', 'reading', 'running_hours_total', 'starts_total'],
               rows)
+
+
+LINE_KV = 132
+LINE = {st: '%d kV %s' % (LINE_KV, far) for st, far in (('OSD', 'Storstølen'), ('SDL', 'Sørdalseid'), ('NSV', 'Fjordbotn'))}
+UNIT_FN = ['stator earth fault 64S', 'loss of excitation 40', 'voltage restrained overcurrent 51V', 'generator differential 87G',
+           'reverse power 32', 'overspeed 12', 'guide bearing temperature 38', 'overvoltage 59']
+LINE_FN = ['distance protection zone 1', 'distance protection zone 2', 'directional earth fault 67N']
+
+
+def trip_log(W):
+    """The control centre's protection log: every protection operation, its breaker and the reclosure that followed,
+    plus pick-ups that started a protection function without operating it. UTC to the second."""
+    r = np.random.default_rng(5307)
+    rows = []
+
+    def ts(sec):
+        return (Wm.T0 + dt.timedelta(seconds=int(sec))).strftime('%Y-%m-%d %H:%M:%S')
+    for e in W['trips']:
+        st = Wm.STATION[e['station']]
+        if e['kind'] in ('long', 'quick'):
+            obj = e['unit']
+            fns = list(r.choice(UNIT_FN, size=1 + int(r.random() < 0.3), replace=False))
+            for k, fn in enumerate(fns):
+                rows.append([ts(e['t0'] + k), st, obj, 'protection operated', fn])
+            rows.append([ts(e['t0'] + len(fns) - 1), st, obj, 'breaker open', 'generator breaker, trip'])
+            rows.append([ts(e['t1']), st, obj, 'breaker closed', 'generator breaker, synchronised'])
+        else:
+            obj = LINE[e['station']]
+            fns = list(r.choice(LINE_FN, size=1 + int(r.random() < 0.4), replace=False))
+            for k, fn in enumerate(fns):
+                rows.append([ts(e['t0'] + k), st, obj, 'protection operated', fn])
+            rows.append([ts(e['t0'] + len(fns) - 1), st, obj, 'breaker open', 'line breaker, trip'])
+            rows.append([ts(e['t1']), st, obj, 'breaker closed', 'line breaker, synchrocheck reclose'])
+    # pick-ups without operation, on units and lines alike
+    for st in ('OSD', 'SDL', 'NSV'):
+        objs = [u for u in UNITS if u[:3] == st] + [LINE[st]]
+        for _ in range(int(r.integers(180, 260))):
+            o = objs[int(r.integers(0, len(objs)))]
+            fn = LINE_FN[int(r.integers(0, len(LINE_FN)))] if o.startswith('132') else UNIT_FN[int(r.integers(0, len(UNIT_FN)))]
+            rows.append([ts(int(r.integers(3 * 86400, NH * 3600 - 3 * 86400))), Wm.STATION[st], o, 'protection started', fn])
+    rows.sort(key=lambda x: x[0])
+    write_csv('protection_log_2016_2026.csv', ['time_utc', 'station', 'object', 'event', 'detail'], rows)
 
 
 def contracts():
@@ -267,8 +318,8 @@ def docs(gen_report):
                 P('Definitions', h),
                 P('Generation is gross energy at the generator terminals, taken from the station historian with each hour\'s mean '
                   'output in MW counted as that hour\'s MWh. Years and months are in Norwegian local time.'),
-                P('A start is a change from standstill (zero output) to generation between consecutive hours of the historian\'s '
-                  'record.'),
+                P('A start is a run-up of a unit from standstill to generation; the governors count every start.'),
+                P('A trip is an unplanned disconnection of a generating unit from the grid by protection.'),
                 P('Reserve income is reported in the financial statements and is not part of this report.')]
     office.pdf(os.path.join(TGT, 'production_report_2025.pdf'), 'Production report 2025', 'Rita Haugen', '20260219090500', report)
 
@@ -303,13 +354,13 @@ def docs(gen_report):
         words += len(t.split())
     b = io.BytesIO()
     d.save(b)
-    raw = office.resave(b.getvalue(), 'docx', 'Rita Haugen', '2026-11-20T08:02:00Z', '2026-12-09T15:37:00Z',
+    raw = office.resave(office.lean_docx(b.getvalue()), 'docx', 'Rita Haugen', '2026-11-20T08:02:00Z', '2026-12-09T15:37:00Z',
                         title='Outage planning note 2027', words=words, rev=7)
     with open(os.path.join(TGT, 'outage_planning_note_2027.docx'), 'wb') as f:
         f.write(raw)
 
 
-def golden(rows, order, tg, ts):
+def golden(rows, order, tg, ts, tt):
     import openpyxl
     from openpyxl.styles import Font, Alignment
     os.makedirs(GOLD, exist_ok=True)
@@ -321,7 +372,7 @@ def golden(rows, order, tg, ts):
     ws.append([])
     ws.append(['Unit', 'Runner', 'Last inspection', 'Pitting at last inspection (cm²)', 'Pitting at 31 Dec 2026 (cm²)',
                'Year pitting passes 2,400 cm²', 'Generation lost to the outage (MWh)', 'Quote excl. VAT (NOK m)',
-               'Generation spared per NOK m (MWh)', 'Generation 2016 to 2026 (MWh)', 'Starts 2016 to 2026'])
+               'Generation spared per NOK m (MWh)', 'Generation 2016 to 2026 (MWh)', 'Starts 2016 to 2026', 'Trips 2016 to 2026'])
     for c in ws[3]:
         c.font = Font(bold=True)
         c.alignment = Alignment(wrap_text=True, vertical='top')
@@ -329,7 +380,7 @@ def golden(rows, order, tg, ts):
         r = rows[u]
         ws.append([u, r['runner'], r['last_date'].strftime('%d.%m.%Y'), rnd(r['last_pitting'], 10), rnd(r['now'], 10),
                    r['cross'] if r['cross'] else 'not before 2032', rnd(r['gen_mwh'], 100), Wm.QUOTE_MNOK[u],
-                   rnd(r['per_mnok'], 10), rnd(tg[u], 100), ts[u]])
+                   rnd(r['per_mnok'], 10), rnd(tg[u], 100), ts[u], tt[u]])
     ws.append([])
     a, b = order[0], order[1]
     ws.append(['Refurbish in 2027', a, '', '', '', '', rnd(rows[a]['gen_mwh'], 100), '', rnd(rows[a]['per_mnok'], 10)])
@@ -340,7 +391,21 @@ def golden(rows, order, tg, ts):
     ws.append(['Pitting carried from each runner\'s last inspection at %.3f cm² per hour run between 30 and 58 per cent of '
                'rated output, the rate the inspection pairs 2016 to 2024 give; 2026 duty carried through 2031 (note 2.4).'
                % rows[a]['rate']])
-    for col, w in zip('ABCDEFGHIJK', (24, 9, 13, 14, 14, 13, 15, 11, 14, 15, 11)):
+    ws.append(['Starts count every run-up from standstill, the restarts after a trip inside the same hour included (protection '
+               'log, tied to the governor start counters at each overhaul); trips count each unit\'s own breaker trips and the '
+               '132 kV line trips that disconnected it while generating. Old historian tags before each RTU replacement '
+               're-assigned to the units their logged outages match.'])
+    for row in ws.iter_rows(min_row=4, max_row=ws.max_row):
+        for c in row:
+            if isinstance(c.value, (int, float)) and not isinstance(c.value, bool):
+                if c.column_letter == 'H':
+                    c.number_format = '0.0'
+                elif c.column_letter == 'F':
+                    c.number_format = '0'
+                else:
+                    c.number_format = '#,##0'
+    ws.freeze_panes = 'B4'
+    for col, w in zip('ABCDEFGHIJKL', (24, 9, 13, 14, 14, 13, 15, 11, 14, 15, 11, 10)):
         ws.column_dimensions[col].width = w
     ws.row_dimensions[3].height = 58
     xlsx_save(wb, os.path.join(GOLD, 'runner_2027.xlsx'), 'Rita Haugen', '2027-01-12T09:10:00Z', '2027-01-14T16:22:00Z',
@@ -378,6 +443,7 @@ SOURCES = {
     'maintenance_history.csv': 'maintenance system event history',
     'unit_counter_readings.csv': 'maintenance system counter readings at overhauls',
     'reserve_contracts_2022_2026.csv': 'frequency reserve contract register',
+    'protection_log_2016_2026.csv': 'control centre protection log',
     'runner_standard_TS07_rev3.pdf': 'technical standard TS-07 revision 3',
     'outage_planning_note_2027.docx': 'outage planning note 2027',
     'runner_refurbishment_quote_2027.pdf': 'runner shop quotation 2027-114',
@@ -427,6 +493,7 @@ def main():
     rows, order = Tm.call(W, 'rz')
     gen, starts, run, rz = Tm.unit_year_stats(W)
     tg, ts = Tm.totals(W)
+    tt = Tm.trip_counts(W)
     gen_report = {(st, y): sum(gen[(u, y)] for u in UNITS if u.startswith(st)) / 1000.0 for st in ('OSD', 'SDL', 'NSV')
                   for y in (2024, 2025)}
     historian(W)
@@ -434,10 +501,11 @@ def main():
     inspections(W)
     maintenance(W)
     counters(W)
+    trip_log(W)
     contracts()
     distractors()
     docs(gen_report)
-    golden(rows, order, tg, ts)
+    golden(rows, order, tg, ts, tt)
     a, b = order[0], order[1]
     figs = {'call': {'chosen': a, 'runner_up': b, 'chosen_gen_mwh': rnd(rows[a]['gen_mwh'], 100),
                      'chosen_per_mnok': rnd(rows[a]['per_mnok'], 10), 'runner_up_per_mnok': rnd(rows[b]['per_mnok'], 10),
@@ -447,9 +515,10 @@ def main():
                           'cross_year': rows[u]['cross'], 'gen_mwh': rnd(rows[u]['gen_mwh'], 100),
                           'quote_mnok': Wm.QUOTE_MNOK[u], 'per_mnok': rnd(rows[u]['per_mnok'], 10)} for u in UNITS},
             'asks': {'generation_2016_2026_mwh': {u: rnd(tg[u], 100) for u in UNITS},
-                     'starts_2016_2026': {u: ts[u] for u in UNITS}},
+                     'starts_2016_2026': {u: ts[u] for u in UNITS},
+                     'trips_2016_2026': {u: tt[u] for u in UNITS}},
             'rate_cm2_per_rough_zone_hour': round(rows[a]['rate'], 4), 'limit_cm2': 2400, 'outage_weeks': 14,
-            'band_per_cent_of_rating': [30, 58]}
+            'band_per_cent_of_rating': [30, 58], 'line_kv': LINE_KV}
     with open(os.path.join(HERE, 'figures.json'), 'w', encoding='utf-8') as f:
         json.dump(figs, f, indent=1, ensure_ascii=False)
         f.write('\n')

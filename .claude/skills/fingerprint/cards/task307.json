@@ -42,7 +42,8 @@
   "inspection rows by runner serial while the output record is by unit, with runner changes at Sørdal G2 in 2019 and Sørdal G3 in 2024",
   "governor counters read only at overhauls, as totals since commissioning",
   "reserve contracts priced per MW per hour in EUR",
-  "decimal commas and Norwegian headers in the inspection register and the old historian export"
+  "decimal commas and Norwegian headers in the inspection register and the old historian export",
+  "the control centre's protection log in UTC to the second: one row per protection function that operated, pick-ups that operated nothing, and line breaker trips logged against the line alone"
  ],
  "stakeholder_role": "the company's head of production assets, preparing the 2027 outage and investment plan",
  "role_family": "operations_director",
@@ -177,7 +178,7 @@
    "deliverable set": "docx+xlsx"
   }
  ],
- "notes": "Architecture 3, a re-root at the 11-03 orchestrator's call after architecture 2 died on its own prototype (11-02). Moved to a third client domain (energy-systems-utilities, asset-condition-maintenance), a new world (a Norwegian municipal hydropower company's 2027 runner refurbishment), a new dataset (hourly unit output, runner inspections, reserve contracts, the maintenance counters) and a new shell. stump_strategy other: wear accruing in an operating band a new duty moved units into, read from each unit's output record; binding_constraint, decomposition_attribution and population_selection stand in the ban window and none is the honest label. The screens of this draw are in DESIGN_NOTE.md Tried and rejected.",
+ "notes": "Architecture 3, a re-root at the 11-03 orchestrator's call after architecture 2 died on its own prototype (11-02). Moved to a third client domain (energy-systems-utilities, asset-condition-maintenance), a new world (a Norwegian municipal hydropower company's 2027 runner refurbishment), a new dataset (hourly unit output, runner inspections, reserve contracts, the maintenance counters) and a new shell. stump_strategy other: wear accruing in an operating band a new duty moved units into, read from each unit's output record; binding_constraint, decomposition_attribution and population_selection stand in the ban window and none is the honest label. The screens of this draw are in DESIGN_NOTE.md Tried and rejected. Shipped 2026-11-03 after stage 4 pass 2 (asks reworked onto three devices, judge r2 APPROVE).",
  "registered": "2026-11-03T09:30:53Z",
  "shell": {
   "question form": "how-much",

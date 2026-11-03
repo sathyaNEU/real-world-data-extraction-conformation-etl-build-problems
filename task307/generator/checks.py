@@ -66,6 +66,24 @@ def main():
     check('R1 each runner on its own pairs per running hour files NSV-G2', ladder['run_own'] == 'NSV-G2', ladder['run_own'])
     check('R1 per running hour with the peaker pooled files OSD-G1', ladder['run_pooled_all'] == 'OSD-G1', ladder['run_pooled_all'])
     check('R1 per start files SDL-G3', ladder['starts'] == 'SDL-G3', ladder['starts'])
+    cp = [p for p in Tm.counter_pairs(W) if p[0] != 'R-207']
+    rate_cs = sum(p[3] - p[2] for p in cp) / sum(p[5] for p in cp)
+    rows_cs = {}
+    for u in UNITS:
+        rn = Tm.current_runner(u)
+        f = Tm.last_inspection(W, rn)
+        p0 = f['found'] if f['repaired_to'] is None else f['repaired_to']
+        q = Tm.runner_counts(W, rn, f['i'], NH, 'starts') + sum(1 for e in W['trips'] if e['kind'] == 'quick' and e['unit'] == u and e['h'] >= f['i'])
+        q26 = Tm.runner_counts(W, rn, L(2026, 1, 1), NH, 'starts') + sum(1 for e in W['trips'] if e['kind'] == 'quick' and e['unit'] == u and e['h'] >= L(2026, 1, 1))
+        now, cross, p = p0 + rate_cs * q, None, p0 + rate_cs * q
+        for y in range(2027, 2032):
+            p += rate_cs * q26
+            if p >= LIMIT and cross is None:
+                cross = y
+        rows_cs[u] = (Tm.winter_generation(W, u) / Wm.QUOTE_MNOK[u]) if cross else 0.0
+    ladder['starts_counters'] = max(UNITS, key=lambda u: rows_cs[u])
+    check('R1 per start with the governors\' start counters files SDL-G3', ladder['starts_counters'] == 'SDL-G3',
+          ladder['starts_counters'])
     cheap = [m for m, p in ladder.items() if p == G]
     check('R1 cheap routes landing the call: none', not cheap, ','.join(cheap) or 'none')
     rows0, _ = Tm.call(W, 'run_pooled')
@@ -89,6 +107,29 @@ def main():
                                    rnd(rows[u]['per_mnok'], 10)) for u in UNITS))
         ref = ref or figs
         check('R3 standing family agrees: %s' % k, figs == ref, '%.5f' % rate)
+    # every reasonable rate estimator (pooled, mean or median of pairs, any single pair) and both band-edge conventions
+    # round every graded pitting figure and crossing year alike
+    est_all = dict(ests)
+    for k, (r_, a_, b_) in enumerate(inc):
+        est_all['pair %d %s' % (k, r_)] = a_ / b_
+    gfig = tuple((rnd(gold[u]['last_pitting'], 10), rnd(gold[u]['now'], 10), gold[u]['cross']) for u in UNITS)
+    spread_ok, worst = True, ''
+    for k, rate in est_all.items():
+        rows_k, _ = carry(W, rate, 'rz')
+        f_k = tuple((rnd(gold[u]['last_pitting'], 10), rnd(rows_k[u]['now'], 10), rows_k[u]['cross']) for u in UNITS)
+        if f_k != gfig:
+            spread_ok, worst = False, k
+        for lo_inc, hi_inc in ((False, False), (True, True)):
+            W3 = dict(W)
+            W3['inz'] = {u: ((W['out'][u] > Wm.RZ_LO * Wm.RATED[u] + 1e-9) if not lo_inc else (W['out'][u] >= Wm.RZ_LO * Wm.RATED[u] - 1e-9)) &
+                            ((W['out'][u] < Wm.RZ_HI * Wm.RATED[u] - 1e-9) if not hi_inc else (W['out'][u] <= Wm.RZ_HI * Wm.RATED[u] + 1e-9))
+                         for u in UNITS}
+            rows_e, _ = carry(W3, rate, 'rz')
+            if tuple((rnd(gold[u]['last_pitting'], 10), rnd(rows_e[u]['now'], 10), rows_e[u]['cross']) for u in UNITS) != gfig:
+                spread_ok, worst = False, k + ' band edges %s' % ((lo_inc, hi_inc),)
+    nsv = [carry(W, r_, 'rz')[0]['NSV-G1']['now'] for r_ in est_all.values()]
+    check('SF16 every rate estimator and band-edge convention rounds every pitting figure and crossing year alike',
+          spread_ok, worst or 'NSV-G1 now %.1f to %.1f' % (min(nsv), max(nsv)))
     picks = {Tm.call(W, m)[1][0] for m in ('run_pooled', 'run_own', 'counters', 'starts', 'run_pooled_all', 'rz')}
     check('R3 enumerated family spreads the pick over four units', len(picks) == 4, ','.join(sorted(picks)))
     ratios = [a / b for _, a, b in inc]
@@ -204,11 +245,70 @@ def main():
         check('SF11 the call holds with the band at %.4f to %.4f' % (lo, hi), p2 == G, p2)
     check('SF11 the operating range table files the band from 30 per cent to 58 per cent', D['band'] == (0.30, 0.58))
     # SF12 and SF14: the asks sum each hour once, gross at the terminals, and count starts on consecutive hours
-    g_pack, s_pack = V.asks(S)
+    g_pack, s_pack, t_pack = V.asks(S, D)
+    tt16 = Tm.trip_counts(W)
+    edge_g = {u: 50 - abs(g_pack[u] - rnd(g_pack[u], 100)) for u in UNITS}
+    check('every generation figure sits 15 MWh or more inside its 100 MWh bin', min(edge_g.values()) >= 15,
+          'tightest %s %.1f MWh from its edge' % (min(edge_g, key=edge_g.get), min(edge_g.values())))
     check('SF12 generation since 2016 sums each hour of the record once',
           all(rnd(g_pack[u], 100) == F['asks']['generation_2016_2026_mwh'][u] == rnd(gen16[u], 100) for u in UNITS))
-    check('SF14 starts count standstill to generation between consecutive hours',
+    check('SF14 starts are every start from standstill (the hourly record\'s plus the restarts inside one clock hour)',
           all(s_pack[u] == F['asks']['starts_2016_2026'][u] == st16[u] for u in UNITS))
+    check('SF15 trips are each unit\'s own breaker trips plus the line trips that caught it generating',
+          all(t_pack[u] == F['asks']['trips_2016_2026'][u] == tt16[u] for u in UNITS))
+    import pdfplumber as _pp
+    with _pp.open(os.path.join(TGT, 'production_report_2025.pdf')) as pdf:
+        rep = ' '.join(p.extract_text() for p in pdf.pages).replace('\n', ' ')
+    check('SF14 the production report files a start as a run-up from standstill, every start counted',
+          'from standstill to generation; the governors count every start' in rep)
+    check('SF15 the production report files a trip as an unplanned disconnection of a generating unit from the grid',
+          'unplanned disconnection of a generating unit from the grid by protection' in rep)
+    regx = V.pd.read_excel(os.path.join(TGT, 'unit_register.xlsx'), sheet_name='Stasjoner')
+    check('SF15 the register gives each station one grid connection, its 132 kV line', len(regx) == 3 and
+          all(str(x).startswith('132 kV-linje') for x in regx['Nettilknytning']))
+    # the forcing figures: the governors' counters tie between every pair of readings only under the golden starts
+    reads = sorted(Tm.counter_readings(W), key=lambda r: (r['unit'], r['i']))
+    ties_gold, ties_hourly, n_int = 0, 0, 0
+    for u in UNITS:
+        rr = [r for r in reads if r['unit'] == u]
+        on = W['out'][u] > 0
+        st = np.zeros(NH, bool); st[1:] = on[1:] & ~on[:-1]
+        for a, b in zip(rr, rr[1:]):
+            n_int += 1
+            hourly = int(st[a['i']:b['i']].sum())
+            quick = Tm.quick_restarts(W, u, b['i']) - Tm.quick_restarts(W, u, a['i'])
+            ties_gold += (b['starts'] - a['starts']) == hourly + quick
+            ties_hourly += (b['starts'] - a['starts']) == hourly
+    check('forcing: the start counters tie on every reading interval under the golden starts', ties_gold == n_int,
+          '%d of %d' % (ties_gold, n_int))
+    check('forcing: the hourly record alone fails the counters on some reading intervals', ties_hourly < n_int,
+          'hourly ties %d of %d' % (ties_hourly, n_int))
+    edge_ok = True
+    for u in UNITS:
+        ii = sorted(r['i'] for r in reads if r['unit'] == u)
+        q = [e['h'] for e in W['trips'] if e['kind'] == 'quick' and e['unit'] == u]
+        edge_ok &= sum(h < ii[0] for h in q) + sum(h >= ii[-1] for h in q) >= 1
+    check('the counters give no level: every unit has a restart inside an hour before its first or after its last reading',
+          edge_ok)
+    lg_t = V.pd.to_datetime(D['log']['time_utc'], utc=True)
+    check('SF13 every protection log row lies a day or more inside the record, so UTC and local year bounds agree',
+          lg_t.min() >= V.T0 + V.pd.Timedelta(hours=24) and lg_t.max() <= V.T1 - V.pd.Timedelta(hours=24),
+          '%s to %s' % (lg_t.min(), lg_t.max()))
+    quick_ev = [e for e in W['trips'] if e['kind'] == 'quick']
+    check('every quick trip and its resynchronisation fall in one clock hour, the hour a running hour',
+          all(e['t0'] // 3600 == e['t1'] // 3600 == e['h'] and W['out'][e['unit']][e['h']] > 0 for e in quick_ev))
+    long_ev = [e for e in W['trips'] if e['kind'] == 'long']
+    check('every long trip leaves a standstill hour in the hourly record before its resynchronisation',
+          all((W['out'][e['unit']][e['t0'] // 3600:e['t1'] // 3600 + 1] == 0).any() for e in long_ev))
+    line_ev = [e for e in W['trips'] if e['kind'] == 'line']
+    check('every line trip falls in an hour each unit of its station runs or stands throughout (h-1 to h+1)',
+          all(all((W['out'][u][e['h'] - 1] > 0) == (W['out'][u][e['h']] > 0) == (W['out'][u][e['h'] + 1] > 0)
+                  for u in UNITS if u[:3] == e['station']) for e in line_ev))
+    check('every line trip falls after each station\'s RTU replacement (no slot handling reaches the trips ask)',
+          all(e['h'] >= L(*Wm.RTU_NEW[e['station']]) for e in line_ev))
+    check('the line trips and quick restarts fall in no winter valuation window',
+          all(not any(L(y, 12, 1) <= e['h'] < Wm.hidx(dt.datetime(y, 12, 1, tzinfo=Wm.OSLO) + dt.timedelta(weeks=14))
+                      for y in range(2021, 2026)) for e in W['trips'] if e['kind'] != 'long'))
     # SF13: the record's bounds are the same in local time and UTC (no exported hour outside 2016 to 2026 local)
     new = D['new']
     last_new = V.pd.to_datetime(new['time_utc'].iloc[-1], utc=True).tz_convert('Europe/Oslo')
@@ -230,12 +330,43 @@ def main():
         inv = o2[:2] == porder[:2] and all((rnd(r2[u]['now'], 10), r2[u]['cross'], rnd(r2[u]['gen'], 100)) ==
                                            (rnd(rows[u]['now'], 10), rows[u]['cross'], rnd(rows[u]['gen'], 100)) for u in UNITS)
         check('separation: the call and its figures hold under %s' % kw, inv)
+    W0 = dict(W)
+    W0['out'] = W['out_plain']
+    W0['inz'] = {u: (W['out_plain'][u] >= Wm.RZ_LO * Wm.RATED[u] - 1e-9) & (W['out_plain'][u] < Wm.RZ_HI * Wm.RATED[u] - 1e-9)
+                 for u in UNITS}
+    g0, o0 = Tm.call(W0, 'rz')
+    check('separation: the trip dips change no hour\'s band membership or running state',
+          all(np.array_equal(W0['inz'][u], W['inz'][u]) and np.array_equal(W['out_plain'][u] > 0, W['out'][u] > 0) for u in UNITS))
+    check('separation: the call and every graded call figure are identical without the trip dips',
+          o0[:2] == order[:2] and all((rnd(g0[u]['now'], 10), g0[u]['cross'], rnd(g0[u]['gen_mwh'], 100), rnd(g0[u]['per_mnok'], 10))
+                                      == (rnd(gold[u]['now'], 10), gold[u]['cross'], rnd(gold[u]['gen_mwh'], 100),
+                                          rnd(gold[u]['per_mnok'], 10)) for u in UNITS))
+    for kw in (dict(starts_mode='hourly'), dict(starts_mode='all'), dict(trips_mode='unit_rows'), dict(trips_mode='station_all')):
+        r2, o2 = V.call(D, S)
+        check('separation: the call holds under the ask handling %s' % kw, o2[:2] == porder[:2])
     S_map, _ = V.series(D, swap='map')
     gm, sm = V.asks(S_map)
-    check('device D1 moves every generation figure by three bins or more', all(abs(gm[u] - base_g[u]) >= 300 for u in UNITS),
+    _, sq, _ = V.asks(S, D, starts_mode='hourly')
+    check('device Q moves every starts figure by three or more', all(s_pack[u] - sq[u] >= 3 for u in UNITS),
+          str({u: s_pack[u] - sq[u] for u in UNITS}))
+    _, sa, _ = V.asks(S, D, starts_mode='all')
+    check('device Q over-handled (every unit trip a start) misses every starts figure', all(sa[u] != s_pack[u] for u in UNITS))
+    _, _, tu = V.asks(S, D, trips_mode='unit_rows')
+    check('device L moves every trips figure by two or more', all(t_pack[u] - tu[u] >= 2 for u in UNITS),
+          str({u: t_pack[u] - tu[u] for u in UNITS}))
+    _, _, tsa = V.asks(S, D, trips_mode='station_all')
+    check('device L over-handled (line trips on every unit of the station) misses every trips figure',
+          all(tsa[u] != t_pack[u] for u in UNITS))
+    _, _, tro = V.asks(S, D, trips_mode='operated_rows')
+    check('hazard: counting protection-operated rows misses some trips figures', any(tro[u] != t_pack[u] for u in UNITS))
+    S_m = V.series(D, swap='map')[0]
+    _, smq, tm_ = V.asks(S_m, D)
+    check('device S leaves the trips ask alone and still moves the starts after Q is handled',
+          all(tm_[u] == t_pack[u] for u in UNITS) and all(smq[u] != s_pack[u] for u in UNITS))
+    check('device S moves every generation figure by three bins or more', all(abs(gm[u] - base_g[u]) >= 300 for u in UNITS),
           str({u: round(gm[u] - base_g[u]) for u in UNITS}))
-    check('device D1 moves every starts figure by three or more', all(abs(sm[u] - base_s[u]) >= 3 for u in UNITS),
-          str({u: sm[u] - base_s[u] for u in UNITS}))
+    check('device S moves every starts figure by three or more (hourly starts, slots as mapped against re-assigned)',
+          all(abs(sm[u] - sq[u]) >= 3 for u in UNITS), str({u: sm[u] - sq[u] for u in UNITS}))
     check('the slot re-assignment recovers the wiring the world used',
           all(assign[st][0] == {t: u for t, u in Wm.OLD_SLOT.items() if t[:3].replace('NES', 'NSV') == st} for st in assign))
     # the swaps sit outside every window the call reads: each pair starts, and each present runner's last inspection
@@ -277,6 +408,11 @@ def main():
                 tells.append(f + ' no Office app name')
             if len({zi.date_time for zi in z.infolist()}) != 1:
                 tells.append(f + ' member dates differ')
+            if f.endswith('.docx'):
+                if 'word/stylesWithEffects.xml' in names or z.getinfo('word/styles.xml').file_size > 20000:
+                    tells.append(f + ' default template styles')
+                if 'word/theme/theme1.xml' not in names:
+                    tells.append(f + ' no theme part')
         if f.endswith('.pdf'):
             b = open(p, 'rb').read()
             if b'ReportLab' in b or b'(anonymous)' in b or b'reportlab' in b:

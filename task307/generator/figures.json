@@ -81,29 +81,39 @@
  },
  "asks": {
   "generation_2016_2026_mwh": {
-   "OSD-G1": 4542600,
-   "OSD-G2": 4464900,
-   "SDL-G1": 2427400,
-   "SDL-G2": 2710200,
-   "SDL-G3": 558000,
-   "NSV-G1": 2900300,
-   "NSV-G2": 3370400
+   "OSD-G1": 4542200,
+   "OSD-G2": 4464600,
+   "SDL-G1": 2427200,
+   "SDL-G2": 2710000,
+   "SDL-G3": 557900,
+   "NSV-G1": 2900000,
+   "NSV-G2": 3370200
   },
   "starts_2016_2026": {
-   "OSD-G1": 419,
-   "OSD-G2": 417,
-   "SDL-G1": 428,
-   "SDL-G2": 492,
-   "SDL-G3": 6729,
-   "NSV-G1": 375,
-   "NSV-G2": 394
+   "OSD-G1": 427,
+   "OSD-G2": 423,
+   "SDL-G1": 433,
+   "SDL-G2": 501,
+   "SDL-G3": 6738,
+   "NSV-G1": 383,
+   "NSV-G2": 400
+  },
+  "trips_2016_2026": {
+   "OSD-G1": 22,
+   "OSD-G2": 16,
+   "SDL-G1": 23,
+   "SDL-G2": 20,
+   "SDL-G3": 15,
+   "NSV-G1": 26,
+   "NSV-G2": 18
   }
  },
- "rate_cm2_per_rough_zone_hour": 0.2397,
+ "rate_cm2_per_rough_zone_hour": 0.24,
  "limit_cm2": 2400,
  "outage_weeks": 14,
  "band_per_cent_of_rating": [
   30,
   58
- ]
+ ],
+ "line_kv": 132
 }
