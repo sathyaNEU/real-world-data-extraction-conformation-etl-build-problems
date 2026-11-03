@@ -18,7 +18,7 @@ on the same specimens.
 | Layer 2 | `field_method`, own pattern `own:paired-difference-against-marginal-intervals` |
 | World | Norway, Genomkjernen, the genomics core of Nordfjell forskningsinstitutt |
 | As-of date | 2027-06-21 (the validation extract); the quality review sits 2027-06-30 |
-| Spine | `qc_screen_history_2026-03_2027-02.csv`, one row per specimen's quality-control screen record |
+| Spine | `qc_screen_history_2026-02-15_2027-02-28.csv`, one row per release record of a specimen's quality-control screen |
 | People | Laila Johannessen (screening lead), Dag Rasmussen (quality manager), both from `guard.py names --geo Norway --seed 195` |
 
 **Data-native sentence.** Both screens were computed from the same archived read sets of the same specimens,
@@ -297,100 +297,136 @@ plate-clustered variants alike.
 
 | Control or published figure | What it confirms | On the wrong path |
 |---|---|---|
-| The partner laboratory's weekly report totals (PDF) | the results each report issued, the ask-1 control total | ties on the register's row count alone, so it arbitrates the results without ever stating a specimen count; says nothing about any detection count |
-| `release_volumes_monthly_2026-03_2027-02.csv` | the results booked as released at each month's close, which its own line states | counts results, so a correction released again and a depth top-up each count twice, and it ties to the extract before the release desk's amendments; it confirms no specimen count, names no correction, no flag, no verdict and no cutoff |
-| The model card's estimate distribution | the re-run's output distribution over the whole archive | reproduces identically on every route; carries no verdict, so it confirms nothing about detection |
-| Nothing else | no file states a detection count, an increase, an interval or a cutoff recommendation | no oracle ties only under the golden |
+| MG-2025-14, the 2025 extraction platform validation (PDF) | the 2026 method table's codes, and each method's median yield on the verification specimens | read beside the extract's names it contradicts them for every 2026 code, and the battery takes the name on the record; it states no figure the ask grades and arbitrates which method a code meant without handing over a count |
+| `release_volumes_monthly_2026-03_2027-02.csv` | the release rows booked at each month's close, before the release desk's amendments | invariant under the device: the re-coding moves no release between months, so every reading of the methods ties to it alike |
+| The model card's estimate distribution | the re-run's output distribution over the 2027 archive | reproduces identically on every route; carries no verdict, so it confirms nothing about detection |
+| Nothing else | no file states a detection count, an increase, an interval, a cutoff recommendation or a figure per method | no oracle ties only under the golden |
 
 ## Ask sheet
 
-Two asks, 30 graded figures, none keyed to the call or its construction and none on the comparison's
-rows. Every figure of the call is the one the judge approved, and so is every ask figure that stays: A1's
-eighteen and A2's twelve are the figures judge pass 2 recomputed, unchanged to the digit. The reship
-replaces both asks' devices, files the two facts pass 2 found unfiled in the producing files' own
-footers, and drops the dilution ask, whose six figures rested on a join the hygiene battery performs
-(`## Tried and rejected`).
+One ask, 16 graded figures, on the screen in service's twelve reporting months before the parallel run, the
+record KVAL-07 5.1 puts in the validation file; it is keyed to neither the call nor its construction, and none of
+its rows is a comparison specimen. Rebuilt at the reship of 11-03: the identity-merge layer (the weekly reports'
+specimens through the biobank's vial reference, the monthly baseline through the extraction id) went SEND_BACK at
+judge pass 3, and no identity reconstruction or counting convention is drafted again (`## Tried and rejected`).
+The per-cutoff table and the chart are the call's own construction and are scored with it.
 
 | Ask | Figures | H18 home | Use | Silent primary | Path (files, columns) | Stops and lazy delta | Realism |
 |---|---|---|---|---|---|---|---|
-| A1 the panel register against the partner laboratory's weekly reports | 9 reports x (distinct specimens the results came from, excess of results issued over them) = 18 | the audit trail of an input the call consumes, to another system's control total | KVAL-07 5.1 puts the identity panel's delivery record in the validation file | D7, the true key elsewhere, on task236's shape: the register keys every result to the laboratory accession, the specimen's key at face value, and the biobank's register, whose footer files `biobank_ref` as the biobank's own reference for the vial, holds 214 vials of April and May that sit under two accessions each, booked in again for a repeat panel. A vial holds one specimen, so two accessions on one vial are one specimen. No column, comment or code marks the second accession; its partner row shares the request, the project, the registration date and the reference, which is the inconsistency a grader confirms | `identity_panel_register_2027.csv` (specimen_id, aliquot_id, report_ref, report_date, result_seq), `specimen_request_crosswalk.tsv` (specimen_id, biobank_ref, request_id, project_code, registered_date, plate_barcode), `identity_panel_weekly_reports_2027.pdf` (the report's own total): 3 files, 12 columns | the row count per report (every excess 0); distinct accessions, the cracker's path (specimens 6 to 21 high in every report, 97 over the nine, the excess as many low); accession and aliquot (specimens 8 to 23 high in every report); the shipping plate's barcode (every report off); each specimen in its first report only, the over-cleaning half (8 of 9 reports low); the answer | a repeat off a vial already in the freezer is booked in as new work, because the accession is what the instrument queue consumes |
-| A2 the screen in service's twelve-month record | 12 months x flagged specimens per thousand specimens released, each specimen counted once = 12 | a measure the screen in service carries that the call does not turn on: KVAL-07 5.1's record over the twelve reporting months before the parallel run | the quality review reads the baseline before it reads the parallel run | D1, the same specimen under two keys: the LIMS of 2026 held one library per accession, so a depth top-up made from a specimen's extraction was booked as new work under an accession of its own. It keeps the specimen's receipt to the second, its project and its extraction, the screen ran again on the combined reads with the same call, and its result went out three to seventeen days after the first inside the same month: 338 top-ups, 318 of them in the twelve months, 18 to 36 a month, 1 to 7 of them flagged. An extraction is made from one specimen, so the two accessions are one specimen. No column marks a top-up: its plate, depth, heterozygosity, instrument and release date are its own | `qc_screen_history_2026-02-15_2027-02-28.csv` (32,985 rows; specimen_id, extraction_id, received_utc, project_code, call_source, hetx_call, review_outcome, release_status, released_date), `release_amendments_2027-04_2027-06.csv` (390 rows; its footer files that the amended record carries value_after), `release_volumes_monthly_2026-03_2027-02.csv` (the pack's results count): 3 files, 13 columns | the extract as it stands, on the accession (every month 2.7 to 7.2 high); amended and on the accession, the cracker's path (every month 0.3 to 2.5 high); amended, the automatic column alone (every month off); amended, the receipt month (every month off); on the extraction without the amendments (every month off); the answer | the warehouse load of the year before the read-set model kept one library per accession, and a top-up is ordered on a flag a bioinformatician wants confirmed or on a thin first library |
+| A, the screen in service by extraction method | 4 methods x (specimens released in the twelve months to February 2027, those the duty bioinformatician reviewed, the flagged ones, a reviewed specimen's flag taken from its review outcome and any other's from the screen in service's own call, flags per thousand released) = 16 | a measure the screen in service carries that the call does not turn on: KVAL-07 5.1's record of the screen in service over the twelve reporting months before the parallel run | the quality review reads where the screen in service's flags fall before the screen changes: a hand-held column and a low input carry a second contributor's DNA through more often | D2 with D7, a label at the wrong vintage on a code whose meaning changed. On 2 November 2026 the second extraction robot came into service with its low-input program, and the method group re-coded the LIMS method table so the codes follow the robots' program numbers: 1 the low-input program, 2 the standard magnetic bead, then the bench methods, 3 silica column and 4 salting out. An extraction keeps the code it was booked under, and the warehouse names every code by the table at the pull (the extract's footer: "Code descriptions are those of the LIMS reference tables at the pull"), so every extraction before the go-live carries a 2026 code (1 magnetic bead, 2 silica column, 3 salting out, as MG-2025-14 prints them) under the name of the method holding that code now. Nothing dates the re-coding; the first extraction booked under code 4 and every code's DNA concentration show it | `qc_screen_history_2026-02-15_2027-02-28.csv` (specimen_id, extracted_date, extraction_method_code, extraction_method, dna_ng_ul, call_source, hetx_call, review_outcome, release_status, released_date), `release_amendments_2027-04_2027-06.csv` (field, value_after), `extraction_platform_validation_2025.pdf` (the 2026 codes): 3 files, 13 columns | the names as the record gives them, amendments applied (the cracker): every figure off; the names without the amendments (the mirror): every figure off; the 2025 codes on every record: every figure off; the 2026 table on the 2026 records and the names on the 2027 ones: every figure off; the re-coding found but split on the receipt date: every released count off, 10 of 16 kept; the answer | a LIMS reference table re-coded in place when new equipment is set up, with a warehouse that joins old records to the table as it stands, is the commonest way a re-coded dimension mislabels history; low-input and hand-held extractions carrying more contamination through is what a genomics core sees |
 
-**The pin test, answered for each ask (`supplemental-stumping` Part 1 rule 1).** A1's sentence pins the
-report set (issued in April or May), the entity (specimens) and the excess's basis (the report's results);
-the crosswalk's footer pins what `biobank_ref` is and that `plate_barcode` is the shipping plate; the weekly
-reports' footer counts a result for each aliquot typed. The device sits in a dimension none of them names:
-which accessions are one specimen. A2's sentence pins the call of record (a reviewed specimen by its review
-outcome), the month (released in it), the unit (per thousand specimens released) and the grain (each
-specimen once); the amendment log's footer pins that the amended record carries value_after. The device
-sits in the same unnamed dimension in another system: which accessions are one specimen, where the link is
-the extraction rather than the vial.
+**Forcing, asserted on the shipped rows.** Read by the names, every 2026 code's median DNA concentration jumps at 2
+November 2026 (code 1 from 63.2 to 21.8 ng/ul, code 2 from 47.5 to 63.3, code 3 from 83.0 to 47.0, each 1.3 times
+or more); read on the table in force when the DNA was extracted, each method's concentration moves by 1.1 per
+cent or less across the go-live (the assertion's bar is 4). Before 2 November only codes 1 to 3 are booked, from it all four. Read the golden way,
+magnetic bead is the largest method all year (15,852 of the 28,401 specimens released); read by the names, the
+low-input program would hold 13,204 of them from March 2026, eight months before the robot that runs it arrived.
 
-**Main population zero counts (asserted, counted in one place).** Device and hazard rows inside the
-comparison's 5,839 specimens and the 5,978 read sets it reads: A1 0, A2 0. No re-accession pair, re-sent
-result or repeat aliquot touches a comparison specimen and every comparison specimen carries exactly one
-verdict row (asserted on the id sets); the twelve-month warehouse extract covers receipts to 28 February
-2027 and shares no specimen with the comparison, so no top-up and no amendment names one. The four files
-the call reads are byte-identical to the shipped pack by sha256 (`qc_screen_calls_gsqa`, `qc_screen_calls_gsqb`,
-`mixture_fraction_rerun_v34`, `identity_panel_register_2027`); KVAL-07 changes in 6.2 only, its call
-clauses 3.1 to 3.5 and 4.1 word for word as approved. Delete every device and the call is unchanged,
-asserted.
+**The pin test, answered.** The asking sentence pins the method, the window (released in the twelve months to
+February 2027), the count (each specimen once), which call counts as a flag (a reviewed specimen's flag from its
+review outcome, any other's from the screen in service's own call, pinned at judge pass 4) and the rate's unit
+(per thousand released); the extract's footer files what its description column is, and the
+amendment log's footer files that the amended value stands. The device sits in which method a code meant on the day
+the DNA was extracted, which no pin names and no filed sentence adjudicates; written fully defined (the method the
+extraction was booked under, on the table in force that day), the device still bites, because nothing says when the
+table changed or that it changed.
+
+**Main population zero counts, asserted and counted in one place.** The warehouse extract's receipts end 28 February
+2027, so it shares no specimen with the comparison; no amendment names a comparison specimen; the call reads none of
+the ask's three files and the ask reads none of the call's. `qc_screen_calls_gsqa`, `qc_screen_calls_gsqb` and
+`mixture_fraction_rerun_v34` are byte-identical to the 10-17 cut by sha256. Three files the call reads or cites
+changed for realism only, at the 11-01 reader's word, each on rows or sentences the call never executes: the
+register's request numbers on the 912 results for receipts before the run window (the biobank's counter skips),
+KVAL-07 6.2's sentence on an export manifest the pack no longer ships, and the model card's addendum sentence.
+`checks.py` regenerates each with the change undone and asserts the shipped bytes back exactly, and asserts the
+register's comparison rows byte-identical; KVAL-07 3.1 to 3.5 and 4.1 are word for word as approved. Delete the
+ask's files and the call is unchanged.
 
 | Hazard | Asks moved | Per-ask delta |
 |---|---|---|
-| 27 results re-sent under a second sequence number and 18 panels repeated on a second aliquot | A1 | the battery folds both, since each repeats an accession; counted as results, never as specimens |
-| the second accession's verdict differs from the first's | A1 | a verdict-level dedup splits the pairs further |
-| a report issued two working days late | A1 | none on the figures: the register's rows carry the report reference |
-| the release desk's 390 amendments, now filed in the log's footer | A2 | a work order: the extract as it stands runs 2.7 to 7.2 high in every month |
-| a correction released again under the same accession | A2 | a repeated key the battery folds |
-| withheld and superseded releases | A2 | the denominator moves by 4.6 per cent in every month |
-| the reviewer cleared or raised an automatic flag | A2 | the automatic column alone misses every month |
+| the release desk's 383 amendments, raised after the extract was pulled; the log's footer files that the amended record carries value_after | A | left out, the flagged counts and rates move in every method (the mirror's row) |
+| a correction released again under the same accession | A | each release row counted, every method's released count moves |
+| withheld and superseded release rows | A | kept, every method's released count moves |
+| the reviewer's outcome over the automatic call | A | the automatic call alone moves every method's flagged count |
 
-**Referee.** The partner laboratory's weekly report totals are the one byte-clean referee: they state the
-results each report issued and arbitrate A1's second column without stating a specimen count. The
-reporting pack counts results, so it ties to no specimen count on any path and confirms the extract before
-the amendments. There is no referee for the call, and no control ties only under the golden.
+**Referee.** MG-2025-14's own medians (yield 6.4, 4.9 and 8.1 ug for magnetic bead, silica column and salting out)
+order the 2026 codes' concentrations read on the 2026 table, and order nothing read by the names; the report states
+no count, rate or figure the ask grades. The reporting pack's monthly release counts tie under every reading.
 
-**The cracker sheet, measured.** `generator/cracker.py` runs the cracker's path on the cut pack and scores
-every figure against the golden within half a unit of the stated rounding. The cracker lands the call, runs
-the hygiene battery (key uniqueness, exact and near-exact duplicates, re-sent results, unmatched joins,
-fan-out, count ties against every control), executes every rule the pack files, including the two the
-files now state in their own footers, and reads every document. Its path is drawn from what that battery
-sees: on A1 every accession joins the biobank's register one to one, the register's only repeated keys are
-re-sends and second aliquots, and the reports' totals tie; on A2 the amendments are applied, the reviewed
-rule is executed, the repeated accession of a re-released correction is folded, and nothing repeats or
-near-duplicates once that is done.
-
-| Ask | The cracker's path on the cut pack | Figures | Kept within half a unit | Verdict |
+| Ask | Cracker (lands the call, runs the hygiene battery, executes every filed rule) | Figures | Kept | Verdict |
 |---|---|---|---|---|
-| A1 | counts the register's own accessions per report as the specimens, the report's rows as its results, the PDF total tying | 18 | 0 of 18: specimens 6 to 21 high in every report and the excess as many low | miss |
-| A2 | applies the release desk's amendments as the footer files them, takes a reviewed specimen's review outcome, folds the re-released correction and counts each accession released in the month once | 12 | 0 of 12: every month 0.3 to 2.5 per thousand high | miss |
+| A, by extraction method | applies the release desk's amendments as the log's footer files them, takes a reviewed specimen by its review outcome, counts each specimen once (the correction released again repeats its accession), keeps the releases dated March 2026 to February 2027 and reads each record's method from the record; where MG-2025-14's codes contradict the record's name, the battery re-derives from the finer key, the name: magnetic bead 10,546 released and 18.8 per thousand against 15,852 and 13.0, the low-input program 13,204 against 1,758, silica column 3,527 against 6,802, salting out 1,124 against 3,989 | 16 | 0 of 16 | miss |
+| A, the mirror (the best response off the call) | the same path without the amendments | 16 | 0 of 16 | miss |
 
-**The full includer, measured on the same pack.** The response that notices both devices and resolves
-them, accessions joined to their vial through the biobank's register and to their specimen through the
-extraction, keeps all 18 of A1 and all 12 of A2 (`cracker.full_includer`, asserted in `checks.py`). Neither
-ask carries a second device of another family with a disjoint figure block: every candidate drafted for one
-either forked the ask or rested on a battery item (`## Tried and rejected`). What the noticing response
-still has to do is real work that can be done wrong: on A1 count a specimen in every report its results
-came in, where counting it in its first report only misses 8 of 9 reports; on A2 link the top-up through its
-extraction and apply the amendments as well, where the extraction without the amendments misses every
-month.
+Stress rows, printed by `ceiling.py` and not the gate: the 2025 codes on every record keeps 0 of 16; the 2026 table
+on the 2026 records 0 of 16; the response that finds the re-coding but splits on the receipt date keeps 10 of 16
+and misses every released count, by the extractions of the last receipts before the go-live; the full includer,
+who reads each code on the table in force on the day its DNA was extracted, keeps 16 of 16, which with the call
+landed and a second includer off the call puts the pair at 83.5. The layer stands on one primary, the residual
+risk recorded here: the includer has to see that the extract names every code by today's table while the codes on
+its older records were booked under another, a judgment the battery does not make.
 
-**Measured by:** `generator/cracker.py`, run on the cut pack after every change; the figures below are its output and not an estimate.
+Measured by: generator/ceiling.py on the cut pack (target.zip 7ea6c4d9), standard library and pypdf only, no generator code.
 
-**Pair ceiling:** 28.5 measured, against a ceiling of 40. The cracker banks 38 + 7 + 55 x 0 = 45 and the
-best response off the call 5 + 7 + 55 x 0 = 12; the full includer on the call would bank 100, and beside a
-response off the call that the asks also stump the pair sits at 56.
-**Mirror leakage:** 0 per cent of ask weight measured, 0 of 30 figures.
+Pair ceiling: 36.8 measured, with the chart's four criteria counted inside the ask weight (the cracker 38 + 7 + 55 x 4/20 = 56.0; the mirror 5 + 7 + 55 x 2/20 = 17.5); 28.5 on the sixteen ask figures alone.
 
-Each primary is a key question no shipped sentence adjudicates (ban 1): the footers file what the vial
-reference and the amended value are, never that an accession can repeat a specimen. Neither carries a
-marker (ban 2: no flag, status, comment or column isolates a second accession or a top-up), neither has an
-oracle (ban 3: the only control that ties is the referee for results), and neither turns on anything the
-call turns on (ban 4: the call reads four files, the asks read five others, and the one shared file, the
-register, holds no device row among the comparison's).
+Mirror leakage: 10.0 per cent of ask weight (the mirror's chart keeps its increases and its zero line).
+
+Each primary is a key question no shipped sentence adjudicates (ban 1): the extract's footer files what the
+description column is and never that a code changed meaning. No marker isolates the device rows (ban 2: every
+record carries a code and a name, the instrument column's names are the benign twin under the same footer, and no
+flag, status or comment marks a pre-go-live extraction). No oracle ties only under the golden (ban 3: MG-2025-14
+states no graded figure; the reporting pack ties under every reading). The ask turns on nothing the call turns on
+(ban 4).
 
 ## Pre-ship check
+
+**Reship of 11-03, rubric scope, the call frozen: free gates, all green on the candidate cut
+(target.zip sha256 7ea6c4d97a5eb99a, after judge pass 4's FIX_NOW and the reader's realism fixes; the first
+cut was 18d896f6).** `generator/checks.py` 217 assertions, the separation line, the
+device's facts and forcing, every stop and hazard, and the undo proofs for the three call files that
+changed among them; `generator/verify.py` 70 independent checks from the bundle and `figures.json` alone,
+the per-method ask recomputed with its own parser and the 2026 codes read from the platform validation's
+own table; two rebuilds byte-identical (target, golden, `figures.json`, `metadata.json`) and the zip cut
+twice byte-identical by `generator/cut_zip.py`; input gates 17 files in 5 formats (csv, tsv, json, xlsx,
+pdf), the warehouse extract at 32,644 rows, 6 distractors declared and named in no file
+name; `figures_check.py` 107 figures, 0 absent; `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py`
+PASS at 878 characters; `leak.py --asof 2027-06-21` REVIEW on the same three lines as every earlier pass
+(KVAL-07 carries 8 of the call's 10 distinctive words because it is the protocol the call executes and
+names no cutoff, count or interval method; KVAL-07 and the model card share 9 and 5 of the stump
+paragraph's terms because they are the laboratory's own documents on this assay and neither names the
+paired reading), each ruled harmless; containers clean in `target/` and `golden/`; `freeze.py check
+--mode rubric` PASS with `--allow` for the nine `panel_weeks` week-ending keys (`## Tried and rejected`);
+`guard.py heart` WARN (repeat.gate_g against task233 v2, overuse.gate_g, repeat.deliverables against
+task263, test.same_driver_older a NOTE differentiated against task228 and task478 v7), no BLOCK;
+`guard.py surface` exit 0 with one promoted pair, task478 at 0.084 on the cards' gap, pattern and Gate G
+mechanism, the frozen main call's driver and not the ask, flagged to the author and not relabelled;
+`guard.py validate` 0 invalid.
+
+**The 10/10 rules re-read against the built pack.** The decisive step is untouched and still analytical:
+the call's three data files are byte-identical to the 10-17 cut and its clauses word for word, so the four
+rungs answer 0.050, the hold, 0.015 and 0.030 exactly as before. The ask's device is Layer 1 of the
+organisation's own making (a reference table re-coded in place, a warehouse naming old records by today's
+table); it is an ask device, which rule 3 does not bind, and nothing in it is planted: every code is the one
+in force on its extraction day and every name is the table's.
+
+**Stage 4.** This session has no agent-spawning tool, so the coordinating session runs the two isolated
+reads from the briefs this session writes. Judge pass 4 on 18d896f6 (`determinism_check_report_pass4.md`):
+NOT_DETERMINISTIC on ask 3's flagged cells only, FIX_NOW, the main call and every other figure forced, Gate G
+`statistical_rigor` / `analytical_non_defect`, Gate H domain pass, layers pass, decisive step analytical. The
+fork was which call counts as a flag; the prompt now pins it (a reviewed specimen's flag from its review
+outcome, any other's from the screen in service's own call) and no figure moved. The reader's pass 1 on the
+same cut: nothing quoted for question 1, no ranking or helping file, question 6 an analytical choice; its
+question 7 and 8 lines are ruled in `leak_check_report.md`, five realism tells fixed in the generator. The
+re-judge, the one a FIX_NOW gets, ran on 7ea6c4d9 (`determinism_check_report_pass5.md`): DETERMINISTIC,
+APPROVE, every golden figure reproduced, the four method rows exactly, Gate G `statistical_rigor` with
+`etl_conformance` on the asks / `analytical_non_defect`, no surface-read dependency, no sole data defect, Gate
+H domain pass, layers pass, decisive step analytical; its one optional pin is declined (`## Tried and
+rejected`). The reader's re-run on the same cut: question 1 none beyond the decision rule, question 6 an
+analytical choice, KVAL-07 not a leak, nothing addressed to a reader who recomputes; each line ruled in
+`leak_check_report.md`. The reader and the judge agree on Gate H, so there is no split to settle.
+
+**Earlier passes, kept as the record.**
 
 **Free gates, all green on the final rebuild.** `generator/checks.py` 279 assertions; `generator/verify.py`
 125 independent checks from the bundle and `figures.json` alone; two fresh rebuilds byte-identical to the
@@ -931,3 +967,69 @@ written to pass. Nine lines hold, three fail, and the client's own test is answe
   task236-shaped identity devices are dead in this world under this judge; no device drafted survives the
   filing (the lines above). Blocked: the ask layer needs devices that are not identity reconstructions, or the
   asks are cut back to what the records force and the pair is priced on the call alone.
+- Reship of 11-03, the identity layer replaced. A1 (each April and May weekly report's specimens counted
+  through the biobank's vial reference) and A2 (the twelve-month baseline counted once per extraction id)
+  are dropped: judge pass 3 held both merges unfiled, and with them filed the careful path keeps 36 of 36
+  (pair 83.5). No identity reconstruction or counting convention is drafted again. The ask moves onto the
+  screen in service's twelve reporting months by extraction method, on the LIMS method table's re-coding at
+  the second extraction robot's go-live on 2 November 2026 (`## Ask sheet`); ceiling.py on the cut pack:
+  the cracker and the mirror keep 0 of 16, pair 36.8 with the chart inside the ask weight.
+- Keeping the monthly per-thousand series beside the method ask: dropped. With the extraction-id device
+  gone every month is reachable by the battery (the amendments applied, the review outcome taken, the
+  correction released again folded on its accession), and twelve kept figures would put the pair at
+  52.1 on the ask figures alone, 54.3 with the chart.
+- A depth basis that changes at a pipeline version (depth over all reads before it, after duplicate
+  removal from it) under a below-the-estimator's-floor count: dropped. Unfiled, the earlier basis is a
+  fork; filed, the cracker converts; and either uniform reading keeps one side's months.
+- A control threshold re-validated mid-year under a count of the reviews that reversed the screen's own
+  call: dropped. The cracker re-derives the automatic call at the threshold the run log files, and the
+  recorded automatic calls show the earlier threshold the moment it checks its rule against them.
+- The review overwritten into hetx_call by an earlier LIMS: dropped. The battery's re-derivation of a call
+  its het excess contradicts recovers the screen's own call, so the flags reach the cracker.
+- Swapping what the two call columns hold on the earlier records: dropped. "Reviewed ones by their review
+  outcome" then reads literally to the cracker's answer, and a column swap is a planted defect.
+- A partial re-coding that left magnetic bead on code 1: dropped. The largest method's four figures would
+  have reached the cracker; the re-coding passes every 2026 code to another method.
+- Holding the receipt-date split outside the bin on every figure: not forced. It is the response that has
+  found the re-coding and splits on the wrong date, so it keeps 10 of 16 and misses every released count
+  by the extractions of the last receipts before the go-live; recorded as a stress row, not a stop.
+- A month-by-method grid, or the method figures by quarter: dropped. The quarter after the go-live is read
+  right on the names, so the grid hands the cracker its post-go-live cells; the twelve-month figures carry
+  the device in every cell.
+- Reverting the panel register, KVAL-07 and the model card to the 10-17 bytes: declined. The 11-01
+  reader's realism tells (request numbers stepping by one on the 912 earlier receipts, a protocol sentence
+  pointing at an export manifest the pack no longer ships, an addendum addressing a reader who recomputes)
+  were fixed there; each change touches no comparison row and no clause the call executes, and checks.py
+  regenerates each file with the change undone and asserts the shipped sha256 back (flagged to the author).
+- `freeze.py check task195 --mode rubric` without `--allow`: nine items, `panel_weeks.BA-2027-W13` to
+  `W21` `.week_ending`, A1's report dates, classified main-call because block 1 states 2027; they left with
+  A1. Named in `--allow`; with them the check passes, and the Final Recommendation and Critical Components
+  numbers, every main-call figure, the stump, the card's driver, the ladder, the default path and the
+  prompt's call sentence are unchanged.
+- Judge pass 4's FIX_NOW, ask 3's flagged cells: "those the screen in service flagged, reviewed ones by their
+  review outcome" did not attach the review outcome to the flag inside the comma list, so the screen's own
+  call on every record (219, 60, 160 and 48 flagged) stood beside the call of record (206, 67, 159 and 45).
+  Closed by a WHAT pin in the asking sentence, which call counts as a flag, and never by naming the method
+  table's re-coding; the golden keeps the call of record, so no figure moved. "Reviewed" was checked for the
+  same fork and converges: a record carries a review outcome exactly when call_source is REVIEWED, before and
+  after the amendments (asserted).
+- Switching the golden to the screen's own call on every record, the judge's other option: declined. It moves
+  all eight flagged and per-thousand cells off the rates the generator aims clear of a rounding edge (salting
+  out's 12.03 per thousand would sit 0.017 from one), and the record of the screen in service the quality review reads is the
+  call each specimen was released under.
+- Naming the interval's basis in the chart's asking clause ("from the specimens the two screens call
+  differently"), the judge's optional tightening: declined. It files the decisive step in the prompt; each
+  bar's verdict is the same under every paired estimator, and the chart's bounds were never graded to the
+  estimator.
+- The 11-03 reader's realism tells, fixed in one pass: the weekly reports' closing sentence for a reader who
+  recomputes (the dropped ask's filed fact) removed, and the step in weekly volume given the partner's own
+  note on the first report under the order to type every cohort service receipt from 1 March; the model
+  card's sentence on where a share falls relative to a cutoff removed; the dilution workbook's unused second
+  stock removed; KVAL-07 issue 4's "pre-specified by this issue" line rewritten in a quality system's voice.
+  KVAL-07 and the model card are files the call reads or cites, so checks.py regenerates both with every
+  change undone and asserts the 10-17 bytes back.
+- Judge pass 5's optional pin, filing in the prompt or in KVAL-07 that the increase is judged on the same
+  specimens: declined. It names the decisive step, since reading the increase on the specimens both screens
+  were read on is the paired analysis the call turns on; the thread itself rules the unpaired and
+  non-overlap readings analytical errors and finds every paired estimator at 0.030, so the pin would buy no
+  determinism and would hand over the stump. Declined at passes 3 and 4 in other words, for the same reason.

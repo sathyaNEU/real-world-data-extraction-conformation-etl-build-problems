@@ -1,4 +1,5 @@
 """The two things the screening lead puts in the validation file."""
+import datetime as dt
 import os
 
 import world as W
@@ -80,50 +81,47 @@ def workbook(path, g):
             value="Source: qc_screen_calls_gsqa and gsqb, mixture_fraction_rerun_v34, "
                   "identity_panel_register_2027.").font = Font(size=9, italic=True)
 
-    ws2 = wb.create_sheet("Panel deliveries")
-    ws2["A1"] = "Identity panel verdicts against the partner laboratory's weekly reports"
-    ws2["A1"].font = Font(bold=True, size=12)
-    ws2["A2"] = "April and May 2027 reports, register as extracted 21 June 2027."
-    ws2["A2"].font = Font(size=9, italic=True)
-    header(ws2, 4, ["Report", "Week ending", "Distinct specimens the results came from",
-                    "Excess of results issued over specimens"])
-    for i, w in enumerate(g["panel_weeks"]):
-        for j, v in enumerate([w["report_ref"], w["report_date"], w["specimens"], w["difference"]]):
-            c = ws2.cell(row=5 + i, column=1 + j, value=v)
-            c.border = box
-            c.alignment = Alignment(horizontal="left" if j < 2 else "right")
-    ws2.cell(row=6 + len(g["panel_weeks"]), column=1,
-             value="The report's own total counts results issued. A specimen is counted once on its "
-                   "vial's biobank reference in %s: a vial booked in again carries a second accession."
-                   % "specimen_request_crosswalk.tsv").font = Font(size=9)
-
-    ws3 = wb.create_sheet("Baseline, screen in service")
-    ws3["A1"] = "Screen in service: flagged specimens per thousand specimens released"
+    ws3 = wb.create_sheet("Screen in service by method")
+    ws3["A1"] = ("The screen in service flags the low-input program and the silica column most often, "
+                 "twelve months to February 2027")
     ws3["A1"].font = Font(bold=True, size=12)
-    ws3["A2"] = "The twelve reporting months to February 2027, from the quality-control warehouse extract."
+    ws3["A2"] = ("Releases 1 March 2026 to 28 February 2027, quality-control warehouse extract of "
+                 "9 April 2027 with the release desk's amendments.")
     ws3["A2"].font = Font(size=9, italic=True)
-    header(ws3, 4, ["Reporting month", "Specimens released, counted once each", "Flagged",
-                    "Per thousand specimens released"])
-    ws3.cell(row=6 + len(g["baseline"]), column=1,
-             value="Release desk amendments applied. A specimen counts once a month: a correction "
-                   "released again keeps its accession, and a depth top-up booked under its own "
-                   "accession shares the specimen's extraction.").font = Font(size=9)
-    for i, b in enumerate(g["baseline"]):
-        for j, v in enumerate([b["month"], b["released"], b["flagged"], round(b["per_thousand"], 1)]):
+    header(ws3, 4, ["Extraction method", "Specimens released", "Reviewed by the duty bioinformatician",
+                    "Flagged by the screen in service", "Flags per thousand released"])
+    for i, m in enumerate(g["methods"]):
+        vals = [m["method"], m["released"], m["reviewed"], m["flagged"], round(m["per_thousand"], 1)]
+        for j, v in enumerate(vals):
             c = ws3.cell(row=5 + i, column=1 + j, value=v)
             c.border = box
             c.alignment = Alignment(horizontal="left" if j == 0 else "right")
             if j == 1:
                 c.number_format = "#,##0"
-            if j == 3:
+            if j == 4:
                 c.number_format = "0.0"
-
-    ws3.cell(row=7 + len(g["baseline"]), column=1,
-             value="Source: qc_screen_history_2026-02-15_2027-02-28 and the reporting pack's "
-                   "release_volumes_monthly_2026-03_2027-02.").font = Font(size=9, italic=True)
-    ws2.cell(row=7 + len(g["panel_weeks"]), column=1,
-             value="Source: identity_panel_register_2027 against "
-                   "identity_panel_weekly_reports_2027.").font = Font(size=9, italic=True)
+    tot_rel = sum(m["released"] for m in g["methods"])
+    tot_flag = sum(m["flagged"] for m in g["methods"])
+    k = 5 + len(g["methods"])
+    for j, v in enumerate(["All methods", tot_rel, sum(m["reviewed"] for m in g["methods"]), tot_flag,
+                           round(1000.0 * tot_flag / tot_rel, 1)]):
+        c = ws3.cell(row=k, column=1 + j, value=v)
+        c.border = box
+        c.font = Font(bold=True)
+        c.alignment = Alignment(horizontal="left" if j == 0 else "right")
+        if j == 1:
+            c.number_format = "#,##0"
+        if j == 4:
+            c.number_format = "0.0"
+    ws3.cell(row=k + 2, column=1,
+             value="Each specimen counted once; a reviewed specimen counts by its review outcome. The "
+                   "method is the one the extraction was booked under: extractions before %s are read "
+                   "on the 2026 method table (MG-2025-14), as the warehouse names every code by the "
+                   "table at the pull." % dt.date.fromisoformat(g["method_switch"]).strftime("%-d %B %Y")
+             ).font = Font(size=9)
+    ws3.cell(row=k + 3, column=1,
+             value="Source: qc_screen_history_2026-02-15_2027-02-28, release_amendments_2027-04_2027-06, "
+                   "extraction_platform_validation_2025.").font = Font(size=9, italic=True)
     ws5 = wb.create_sheet("Notes")
     for line in [
             ["Validation file extract, KVAL-07 issue 4, section 5.1"],
@@ -139,12 +137,11 @@ def workbook(path, g):
              .format(t["n_clean"])],
             ["Verdicts reported after the extract date are carried into the next parallel run (5.2)."]]:
         ws5.append(line)
-    for sheet, widths in ((ws, [11, 15, 18, 20, 18, 22, 20]), (ws2, [16, 14, 22, 30]),
-                          (ws3, [18, 20, 12, 20]), (ws5, [104])):
+    for sheet, widths in ((ws, [11, 15, 18, 20, 18, 22, 20]), (ws3, [26, 18, 22, 20, 20]),
+                          (ws5, [104])):
         for i, wd in enumerate(widths, start=1):
             sheet.column_dimensions[get_column_letter(i)].width = wd
     ws.freeze_panes = "A10"
-    ws2.freeze_panes = "A5"
     ws3.freeze_panes = "A5"
     ws.print_area = "A1:G%d" % (r + 2)
     wb.save(path)

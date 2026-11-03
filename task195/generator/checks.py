@@ -23,6 +23,16 @@ Z = 1.959963985
 Z1 = 1.644853627
 ZB = 2.575829304          # a Bonferroni bar over the five listed cutoffs
 N = [0]
+# the files the call reads, as the 10-17 cut shipped them (sha256)
+SHIPPED = {
+    "qc_a": "9cb8419c79bf9e3a7c27b56b0bc542fbf5d8a3709a2a4c801ca46a857537c591",
+    "qc_b": "bf08148c2e81871ece2f3d70cc1be1a232a7ebba2d90bab20f62b2656ecb9f62",
+    "mf": "0257f1d3049fd4ea2a0fd808aa56bbeed1bd182a9b2802db68702bc3a4e289aa",
+    "panel": "69fca876c41c6f718cd72db87b9273b1bfca9a8a53169fdbfc7a2a3d41fe8a3d",
+    "protocol": "d952d532f58cb93859fe639f92b39024bff92fda76b745c606bc793b851f0e78",
+    "modelcard": "84d467958fabefd614f4e80714f7c62ccb9f209dc96a2314c27f998e84ee40d1",
+    "config": "03a299ae29850136e0964ea38a7f23b7df4929615c1d66840e711b8d7d2d6244",
+}
 
 
 def ok(label, cond, detail=""):
@@ -299,197 +309,210 @@ def run(target, g=None):
        len({r["specimen_id"] for r in panel_rows}) > len(rows))
 
     # ---------------------------------------------------------------- the ask layer
-    ok("ask 1 covers nine reports", len(g["panel_weeks"]) == 9)
-    ok("ask 1 every report carries a difference", all(w["difference"] >= 3 for w in g["panel_weeks"]))
-    ok("ask 1 the row count is the report's own total",
-       all(w["results_issued"] == w["specimens"] + w["difference"] for w in g["panel_weeks"]))
+    # The ask: per extraction method, the twelve reporting months to February 2027 of the screen in
+    # service, from the warehouse extract. Its primary: the LIMS method table was re-coded on the second
+    # robot's go-live, every extraction keeps the code it was booked under, and the warehouse names each
+    # code by the table at the pull.
     comparison_ids = {r["specimen_id"] for r in rows}
-    extra = [r for r in panel_rows if int(r["result_seq"]) > 1 or r["aliquot_id"] != "A1"]
-    flipped = 0
-    first = {}
-    for r in panel_rows:
-        if r["aliquot_id"] == "A1":
-            first[r["specimen_id"]] = r["verdict"]
-    for r in panel_rows:
-        if r["aliquot_id"] != "A1" and first.get(r["specimen_id"]) not in (None, r["verdict"]):
-            flipped += 1
-    ok("ask 1 some repeat panels carry the other verdict", flipped >= 3, str(flipped))
-    ok("ask 1 no device row sits in the comparison",
-       not any(r["specimen_id"] in comparison_ids for r in extra), str(len(extra)))
-    ok("ask 1 every comparison specimen has exactly one verdict row",
-       all(sum(1 for r in panel_rows if r["specimen_id"] == s) == 1 for s in list(comparison_ids)[:400]))
-    # A1's silent primary: a repeat panel typed under a second accession of the same specimen
-    cross_all = rows_of(os.path.join(target, W.FILES["crosswalk"]), "\t")
-    by_ref = {}
-    for r in cross_all:
-        by_ref.setdefault(r["biobank_ref"], []).append(r["specimen_id"])
-    reacc = {s for ids in by_ref.values() if len(ids) > 1 for s in ids}
-    ok("ask 1 the re-accessioned specimens exist", len(reacc) >= 2 * W.REACCESSIONED - 40, str(len(reacc)))
-    ok("ask 1 no re-accession sits in the comparison",
-       not (reacc & comparison_ids) or all(len(by_ref[r["biobank_ref"]]) == 1 for r in cross_all
-                                           if r["specimen_id"] in comparison_ids),
-       "comparison specimens sharing a biobank reference")
-    naive_week = {}
-    for r in panel_rows:
-        day = r["report_date"]
-        if day[:7] in ("2027-04", "2027-05"):
-            naive_week.setdefault(r["report_ref"], set()).add(r["specimen_id"])
-    for w in g["panel_weeks"]:
-        ok("ask 1 the accession count misses %s" % w["report_ref"],
-           len(naive_week[w["report_ref"]]) != w["specimens"],
-           "%d against %d" % (len(naive_week[w["report_ref"]]), w["specimens"]))
-    ok("ask 2 covers twelve months", len(g["baseline"]) == 12)
     hist = rows_of(os.path.join(target, W.FILES["history"]))
-    ok("ask 2 the history is 25,000 rows or more", len(hist) >= 25000, str(len(hist)))
-    ok("ask 2 no history specimen is in the comparison",
-       not ({r["specimen_id"] for r in hist} & comparison_ids))
-    ok("ask 2 released dates sit only on released rows",
+    hist_text = open(os.path.join(target, W.FILES["history"]), encoding="utf-8").read()
+    amd_rows = rows_of(os.path.join(target, W.FILES["amendments"]))
+    cross_all = rows_of(os.path.join(target, W.FILES["crosswalk"]), "\t")
+    ok("ask the history is 25,000 rows or more", len(hist) >= 25000, str(len(hist)))
+    ok("ask covers the four methods the records hold",
+       [m["method"] for m in g["methods"]] == W.METHOD_ORDER
+       and {r["extraction_method"] for r in hist} == set(W.METHOD_ORDER))
+    ok("ask released dates sit only on released rows",
        all((r["released_date"] != "") == (r["release_status"] == "RELEASED") for r in hist))
-    naive = {}
-    for r in hist:
-        if r["release_status"] != "RELEASED":
-            continue
-        month = r["received_date"][:7]
-        naive.setdefault(month, [0, 0])
-        naive[month][0] += 1
-        naive[month][1] += 1 if r["hetx_call"] == "FLAG" else 0
-    auto, ored = {}, {}
-    for r in hist:
-        if r["release_status"] != "RELEASED" or not r["released_date"]:
-            continue
-        month = r["released_date"][:7]
-        d = auto.setdefault(month, [0, 0])
-        d[0] += 1
-        d[1] += 1 if r["hetx_call"] == "FLAG" else 0
-        o = ored.setdefault(month, [0, 0])
-        o[0] += 1
-        o[1] += 1 if (r["hetx_call"] == "FLAG" or r["review_outcome"] == "FLAGGED") else 0
-    wide, autoer = 0, [0]
-    for b in g["baseline"]:
-        lazy = 1000.0 * naive[b["month"]][1] / naive[b["month"]][0]
-        ok("ask 2 the lazy read is outside the bin in %s" % b["month"],
-           round(lazy, 1) != round(b["per_thousand"], 1), "%.2f against %.2f" % (lazy, b["per_thousand"]))
-        wide += 1 if abs(lazy - b["per_thousand"]) > 0.6 else 0
-        only = 1000.0 * auto[b["month"]][1] / auto[b["month"]][0]
-        autoer[0] += 1 if round(only, 1) != round(b["per_thousand"], 1) else 0
-        both = 1000.0 * ored[b["month"]][1] / ored[b["month"]][0]
-        ok("ask 2 reading the two columns together misses %s" % b["month"],
-           round(both, 1) != round(b["per_thousand"], 1), "%.2f against %.2f" % (both, b["per_thousand"]))
-        ok("ask 2 %s sits mid-bin" % b["month"], _slack(b["per_thousand"], 1) > 0.02)
-    ok("ask 2 the lazy read misses widely in most months", wide >= 8, str(wide))
-    ok("ask 2 the automatic column alone misses most months", autoer[0] >= 9, str(autoer[0]))
-    # A2's silent primary: a correction released again inside the month, and a pack that counts releases
-    vol = {r["reporting_month"]: int(r["results_released"].replace(" ", ""))
-           for r in rows_of(os.path.join(target, W.FILES["volumes"]))}
-    rowcount = {}
-    for r in hist:
-        if r["release_status"] == "RELEASED" and r["released_date"]:
-            m = r["released_date"][:7]
-            d = rowcount.setdefault(m, [0, 0])
-            d[0] += 1
-            call = r["review_outcome"] if r["call_source"] == "REVIEWED" else r["hetx_call"]
-            d[1] += 1 if call in ("FLAG", "FLAGGED") else 0
-    ok("ask 2 the reporting pack counts releases, and ties with the row count",
-       all(vol[b["month"]] == rowcount[b["month"]][0] for b in g["baseline"]))
-    ok("ask 2 the pack is above the specimens released",
-       all(vol[b["month"]] > b["released"] for b in g["baseline"]))
-    for b in g["baseline"]:
-        naive_rate = 1000.0 * rowcount[b["month"]][1] / rowcount[b["month"]][0]
-        ok("ask 2 the release-row route misses %s" % b["month"],
-           round(naive_rate, 1) != round(b["per_thousand"], 1),
-           "%.2f against %.2f" % (naive_rate, b["per_thousand"]))
-    # A2's silent primary: a depth top-up booked under an accession of its own, made from the
-    # specimen's extraction, released again inside the month
-    by_ext = {}
-    for r in hist:
-        by_ext.setdefault(r["extraction_id"], []).append(r)
-    tops = {k: v for k, v in by_ext.items() if len({x["specimen_id"] for x in v}) > 1}
-    ok("ask 2 the depth top-ups exist", len(tops) >= 300, str(len(tops)))
-    ok("ask 2 an extraction is one specimen: one receipt, one project, one method",
-       all(len({(x["received_utc"], x["project_code"], x["extraction_method"]) for x in v}) == 1
-           for v in by_ext.values()))
-    ok("ask 2 a top-up is one more accession, never two",
-       all(len({x["specimen_id"] for x in v}) == 2 for v in tops.values()))
-    ok("ask 2 a top-up goes out in its specimen's month",
-       all(len({x["released_date"][:7] for x in v if x["released_date"]}) == 1 for v in tops.values()))
-    ok("ask 2 a top-up carries its specimen's call",
-       all(len({(x["call_source"], x["hetx_call"], x["review_outcome"]) for x in v}) == 1
-           for v in tops.values()))
-    top_ids = {x["specimen_id"] for v in tops.values() for x in v}
-    amd_ids = {a["specimen_id"] for a in rows_of(os.path.join(target, W.FILES["amendments"]))}
-    ok("ask 2 no amendment touches a top-up or its specimen", not (top_ids & amd_ids),
-       "%d shared" % len(top_ids & amd_ids))
-    per_month_tops = {}
-    for v in tops.values():
-        m = [x["released_date"][:7] for x in v if x["released_date"]][0]
-        per_month_tops[m] = per_month_tops.get(m, 0) + 1
-    ok("ask 2 every reporting month holds top-ups", all(per_month_tops.get(b["month"], 0) >= 15
-                                                       for b in g["baseline"]),
-       ", ".join("%s %d" % (b["month"], per_month_tops.get(b["month"], 0)) for b in g["baseline"]))
-    ok("ask 2 every top-up has a later accession than its specimen",
-       all(sorted(v, key=lambda x: x["released_date"])[0]["specimen_id"]
-           < sorted(v, key=lambda x: x["released_date"])[-1]["specimen_id"] for v in tops.values()))
-    # the golden counts the specimen the warehouse never keys: it equals the clean truth
+    # "reviewed" reads one way: a record the duty bioinformatician reviewed carries a review outcome,
+    # and no other record does, before the amendments and after them
+    _rev_am = {(a["specimen_id"], a["field"]): a["value_after"] for a in amd_rows}
+    ok("ask a reviewed record is exactly one with a review outcome",
+       all((r["call_source"] == "REVIEWED") == (r["review_outcome"] != "") for r in hist)
+       and all((r["call_source"] == "REVIEWED")
+               == (_rev_am.get((r["specimen_id"], "review_outcome"), r["review_outcome"]) != "") for r in hist))
+    ok("ask an amendment to a call names the column that holds that record's call",
+       all((a["field"] == "review_outcome") == any(r["call_source"] == "REVIEWED" for r in hist
+                                                   if r["specimen_id"] == a["specimen_id"])
+           for a in amd_rows if a["field"] in ("review_outcome", "hetx_call")))
+    # separation: no device or hazard row in the comparison's population, counted from the shipped rows
+    ok("ask no history specimen is in the comparison",
+       not ({r["specimen_id"] for r in hist} & comparison_ids))
+    ok("ask no history receipt falls in the parallel run's window",
+       max(r["received_date"] for r in hist) < W.RUN_FROM.isoformat())
+    ok("ask no amendment names a comparison specimen",
+       not ({a["specimen_id"] for a in amd_rows} & comparison_ids))
+    ok("ask the call reads no file the ask reads",
+       not ({W.FILES[k] for k in ("history", "amendments", "platform")}
+            & {W.FILES[k] for k in ("qc_a", "qc_b", "mf", "panel", "protocol")}))
+    # the golden is the clean truth
     import tempfile
     _tmp = tempfile.mkdtemp(prefix="t195_truth_")
-    _n, truth_rel, truth_flag, _ev, _am = AS.history(_tmp)
-    ok("ask 2 the golden is the clean truth, month by month",
-       all(b["released"] == truth_rel[b["month"]] and b["flagged"] == truth_flag[b["month"]]
-           for b in g["baseline"]))
-    import cracker as _CR
-    on_accession = _CR.ask2(target)
-    for b in g["baseline"]:
-        ok("ask 2 counting accessions misses %s" % b["month"],
-           abs(on_accession[b["month"]] - round(b["per_thousand"], 1)) >= 0.25,
-           "%.1f against %.1f" % (on_accession[b["month"]], b["per_thousand"]))
-    ok("ask 2 the extraction reproduces every month",
-       all(_CR.ask2(target, key=lambda r: r["extraction_id"])[b["month"]] == round(b["per_thousand"], 1)
-           for b in g["baseline"]))
-    _covered = {r["specimen_id"] for r in cross_all}
-    ok("ask 1 the biobank's register covers every accession the panel register holds",
-       not ({r["specimen_id"] for r in panel_rows} - _covered),
-       "%d uncovered" % len({r["specimen_id"] for r in panel_rows} - _covered))
-
-    # the ask layer's devices sit outside the call's row population, counted in one place
-    dev_a1 = sum(1 for r in panel_rows
-                 if r["specimen_id"] in comparison_ids
-                 and (int(r["result_seq"]) > 1 or r["aliquot_id"] != "A1"
-                      or r["specimen_id"] in reacc))
-    dev_a2 = len(amd_ids & comparison_ids)
-    dev_a2 = len(top_ids & comparison_ids) + dev_a2
-    ok("the ask devices hold no row of the comparison's population",
-       (dev_a1, dev_a2) == (0, 0), "A1 %d, A2 %d" % (dev_a1, dev_a2))
-    import openpyxl as _xl
-    _wb = _xl.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
-    dil_ids = {str(r[3]) for r in _wb["Replicate results"].iter_rows(min_row=2, values_only=True)}
-    read_sets = {r["read_set_id"] for r in mf_rows if r["specimen_id"] in comparison_ids}
-    ok("no file the asks read names a read set the comparison reads",
-       not (read_sets & dil_ids) and not (read_sets & amd_ids),
-       "%d comparison read sets" % len(read_sets))
-    # A1's footer and the weekly reports' footer: what the files say about themselves
-    cross_text = open(os.path.join(target, W.FILES["crosswalk"]), encoding="utf-8").read()
-    ok("ask 1 the biobank's register says what its reference is",
-       "the biobank's own reference for the vial" in cross_text)
-    ok("ask 1 the weekly reports count a result per aliquot, not per specimen",
-       "for each aliquot typed" in doc_text and "per specimen and aliquot" not in doc_text)
-    _vial = {r["specimen_id"]: r["biobank_ref"] for r in cross_all}
-    _first = {}
-    for r in sorted((x for x in panel_rows if x["report_date"][:7] in ("2027-04", "2027-05")),
-                    key=lambda x: x["report_date"]):
-        _first.setdefault(_vial[r["specimen_id"]], r["report_ref"])
-    _once = {}
-    for v, ref in _first.items():
-        _once[ref] = _once.get(ref, 0) + 1
-    ok("ask 1 counting each specimen only in its first report misses some report",
-       sum(1 for w in g["panel_weeks"] if _once.get(w["report_ref"], 0) != w["specimens"]) >= 3,
-       ", ".join("%s %d/%d" % (w["report_ref"], _once.get(w["report_ref"], 0), w["specimens"])
-                 for w in g["panel_weeks"]))
-    ok("ask 1 a re-accession is one biobank record booked twice",
-       all(len({(r["request_id"], r["project_code"], r["registered_date"]) for r in cross_all
-                if r["biobank_ref"] == ref}) == 1 for ref, ids in by_ref.items() if len(ids) > 1))
-    ok("ask 2 the release desk's log says the amended value stands",
+    _n, truth_m, _ev, _am = AS.history(_tmp)
+    ok("ask the golden is the clean truth, method by method",
+       all(truth_m[m["method"]] == {"released": m["released"], "reviewed": m["reviewed"],
+                                    "flagged": m["flagged"]} for m in g["methods"]),
+       str(truth_m))
+    for m in g["methods"]:
+        ok("ask %s's rate sits mid-bin" % m["method"], _slack(m["per_thousand"], 1) > 0.02,
+           "%.4f" % m["per_thousand"])
+    ok("ask the workbook's title is true: the low-input program and the silica column flag most often",
+       {m["method"] for m in sorted(g["methods"], key=lambda x: -x["per_thousand"])[:2]}
+       == {W.LOW_INPUT, "silica column"})
+    # the device's facts, from the shipped rows
+    switch = g["method_switch"]
+    ok("ask the table was re-coded on the second robot's go-live", switch == W.METHOD_SWITCH.isoformat(),
+       switch)
+    before = {r["extraction_method_code"] for r in hist if r["extracted_date"] < switch}
+    after = {r["extraction_method_code"] for r in hist if r["extracted_date"] >= switch}
+    ok("ask before the re-coding only the 2026 table's codes are booked", before == {"1", "2", "3"},
+       str(sorted(before)))
+    ok("ask from the re-coding all four codes are booked", after == {"1", "2", "3", "4"}, str(sorted(after)))
+    ok("ask the warehouse names every code by the table at the pull",
+       all(r["extraction_method"] == W.METHODS_NOW[int(r["extraction_method_code"])] for r in hist))
+    ok("ask no extraction follows its release",
+       all(r["extracted_date"] <= (r["released_date"] or "9999") and r["extracted_date"] >= r["received_date"]
+           for r in hist))
+    ok("ask the extract's own footer says whose table names the codes",
+       "Code descriptions are those of the LIMS reference tables at the pull" in hist_text)
+    ok("ask the 2025 platform validation prints the 2026 codes",
+       all(re.search(r"\b%d\s+%s\b" % (c, re.escape(n)), doc_text) for c, n in W.METHODS_2026.items()),
+       "codes not found in the report")
+    # the forcing, as numbers: read by the names, every code's DNA concentration jumps at the re-coding;
+    # read on the table in force, every method's concentration is level across it
+    def _med(xs):
+        return statistics.median(xs) if xs else float("nan")
+    jumps, level = [], []
+    for code in ("1", "2", "3"):
+        b = _med([float(r["dna_ng_ul"]) for r in hist if r["extraction_method_code"] == code
+                  and r["extracted_date"] < switch])
+        a = _med([float(r["dna_ng_ul"]) for r in hist if r["extraction_method_code"] == code
+                  and r["extracted_date"] >= switch])
+        jumps.append(max(a / b, b / a))
+    true_method = lambda r: (W.METHODS_2026[int(r["extraction_method_code"])]
+                             if r["extracted_date"] < switch else r["extraction_method"])
+    for name in ("magnetic bead", "silica column", "salting out"):
+        b = _med([float(r["dna_ng_ul"]) for r in hist if true_method(r) == name and r["extracted_date"] < switch])
+        a = _med([float(r["dna_ng_ul"]) for r in hist if true_method(r) == name and r["extracted_date"] >= switch])
+        level.append(max(a / b, b / a))
+    ok("ask read by the names, every code's concentration jumps at the re-coding", min(jumps) > 1.3,
+       ", ".join("%.2f" % x for x in jumps))
+    # the referee: MG-2025-14's yields order the 2026 methods as the table in force reads them, and the
+    # names read them otherwise
+    _report_order = ["salting out", "magnetic bead", "silica column"]          # 8.1, 6.4, 4.9 ug
+    _golden_order = sorted(_report_order, key=lambda n: -_med([float(r["dna_ng_ul"]) for r in hist
+                                                               if true_method(r) == n]))
+    _names_order = sorted(_report_order, key=lambda n: -_med([float(r["dna_ng_ul"]) for r in hist
+                                                              if r["extraction_method"] == n]))
+    ok("ask the platform validation's yields order the methods as the table in force reads them",
+       _golden_order == _report_order and _names_order != _report_order,
+       "%s / %s" % (_golden_order, _names_order))
+    ok("ask the platform validation states its yields", all(y in doc_text for y in ("6.4", "4.9", "8.1")))
+    ok("ask read on the table in force, every method's concentration is level", max(level) < 1.04,
+       ", ".join("%.3f" % x for x in level))
+    # the ask ladder, every stop measured by the ceiling script on the shipped rows
+    import ceiling as CE
+    _rd, _sw = CE.readings(target)
+    ok("ask the ceiling script reads the same switch from the pack", _sw == switch, _sw)
+    gold = {m["method"]: m for m in g["methods"]}
+    for name, rd in _rd.items():
+        if name == "full includer":
+            ok("ask the full includer reproduces every figure",
+               all(rd[m]["released"] == gold[m]["released"] and rd[m]["reviewed"] == gold[m]["reviewed"]
+                   and rd[m]["flagged"] == gold[m]["flagged"]
+                   and abs(rd[m]["per_thousand"] - round(gold[m]["per_thousand"], 1)) < 0.05 for m in gold))
+            continue
+        if name == "the switch on the receipt date":
+            # the response that has found the re-coding and splits on the receipt date: it misses every
+            # method's released count, by the extractions of the last receipts before the go-live
+            ok("ask the receipt-date split misses every released count",
+               all(rd[m]["released"] != gold[m]["released"] for m in gold),
+               ", ".join("%s %d/%d" % (m, rd[m]["released"], gold[m]["released"]) for m in gold))
+            continue
+        for m in gold:
+            got = rd.get(m)
+            ok("ask the %s stop misses %s" % (name, m),
+               got is None or (got["released"] != gold[m]["released"]
+                               and got["flagged"] != gold[m]["flagged"]
+                               and got["reviewed"] != gold[m]["reviewed"]
+                               and abs(got["per_thousand"] - gold[m]["per_thousand"]) >= 0.2),
+               "%s against %s" % (got, gold[m]))
+    # the hazards each move the ask on their own
+    def _per_method(skip_amend=False, every_row=False, auto_only=False, all_status=False):
+        amend = {} if skip_amend else {(a["specimen_id"], a["field"]): a["value_after"] for a in amd_rows}
+        out, seen = {}, set()
+        for r in hist:
+            if not all_status and (r["release_status"] != "RELEASED" or not r["released_date"]):
+                continue
+            sid = r["specimen_id"]
+            rel = amend.get((sid, "released_date"), r["released_date"]) or r["received_date"]
+            if rel[:7] not in set(AS._months()) or (sid in seen and not every_row):
+                continue
+            seen.add(sid)
+            field = "hetx_call" if auto_only or r["call_source"] != "REVIEWED" else "review_outcome"
+            call = amend.get((sid, field), r[field])
+            d = out.setdefault(true_method(r), [0, 0])
+            d[0] += 1
+            d[1] += 1 if call in ("FLAG", "FLAGGED") else 0
+        return out
+    for label, kw in (("the amendments left out", {"skip_amend": True}),
+                      ("each release row counted", {"every_row": True}),
+                      ("the automatic call alone", {"auto_only": True}),
+                      ("withheld and superseded rows kept", {"all_status": True})):
+        alt = _per_method(**kw)
+        moved = sum(1 for m in gold if (alt[m][0], alt[m][1]) != (gold[m]["released"], gold[m]["flagged"]))
+        ok("ask hazard: %s moves the ask" % label, moved >= 3, "%d of 4 methods" % moved)
+    # the re-coding is a business change in the laboratory's own records, not a defect: the codes the
+    # extractions were booked under are the ones in force on the day, and every row's name is the table's
+    ok("ask an extraction's code is the one in force on the day it was extracted",
+       all((int(r["extraction_method_code"]) in W.METHODS_2026) or r["extracted_date"] >= switch for r in hist))
+    # the call's files are the shipped ones, or the change is undone exactly (see below)
+    ok("ask the warehouse and its amendment log hold no read set the comparison reads",
+       not ({r["read_set_id"] for r in mf_rows if r["specimen_id"] in comparison_ids}
+            & ({r["specimen_id"] for r in hist} | {a["specimen_id"] for a in amd_rows})))
+    ok("ask the release desk's log says the amended value stands",
        "the amended record carries value_after in place of value_before"
        in open(os.path.join(target, W.FILES["amendments"]), encoding="utf-8").read())
+
+    # ---------------------------------------------------------------- the files the call reads
+    # qc_a, qc_b and the re-run file are byte-identical to the 10-17 cut. Three files the call reads or
+    # cites changed for realism only, each on rows or sentences the call never executes, and each change
+    # undone reproduces the shipped bytes exactly: the panel register's request numbers on the 912
+    # results for receipts before the run window (the biobank's counter skips), KVAL-07 6.2's sentence
+    # on an export manifest the pack no longer ships, and the model card's addendum sentence.
+    import hashlib
+    import build as BD
+    import docs as DC
+    import pack as PK
+
+    def _sha(path):
+        with open(path, "rb") as fh:
+            return hashlib.sha256(fh.read()).hexdigest()
+    for key in ("qc_a", "qc_b", "mf"):
+        ok("the call's %s is byte-identical to the shipped cut" % W.FILES[key],
+           _sha(os.path.join(target, W.FILES[key])) == SHIPPED[key], W.FILES[key])
+    _und = tempfile.mkdtemp(prefix="t195_shipped_")
+    _specimens = sim.build()
+    PK.write_panel(_und, _specimens, shipped=True)
+    DC.protocol(_und, shipped=True)
+    _done = {sid: day for sid, day in PK._mf_completions(_specimens)}
+    DC.model_card(_und, [rs["estimate"] for s in _specimens for rs in s["read_sets"]
+                         if rs["accepted"] and _done.get(s["specimen_id"], "9999") <= "2027-06-16"],
+                  shipped=True)
+    BD.stamp_pdf(_und, ("protocol", "modelcard"))
+    for key in ("panel", "protocol", "modelcard"):
+        ok("undoing the realism change to %s reproduces the shipped bytes" % W.FILES[key],
+           _sha(os.path.join(_und, W.FILES[key])) == SHIPPED[key], W.FILES[key])
+    now_panel = open(os.path.join(target, W.FILES["panel"]), encoding="utf-8").read().splitlines()
+    was_panel = open(os.path.join(_und, W.FILES["panel"]), encoding="utf-8").read().splitlines()
+    ok("the register's comparison rows are byte-identical to the shipped cut",
+       [l for l in now_panel if l.split(",")[0] in comparison_ids]
+       == [l for l in was_panel if l.split(",")[0] in comparison_ids])
+    ok("the register's rows differ only in the earlier receipts' request numbers",
+       len(now_panel) == len(was_panel)
+       and all(a == b or (a.split(",")[:2] == b.split(",")[:2] and a.split(",")[3:] == b.split(",")[3:]
+                          and a.split(",")[0] not in comparison_ids)
+               for a, b in zip(now_panel, was_panel)))
 
     # ---------------------------------------------------------------- the pack reads as the laboratory's
     accepted = {r["specimen_id"]: float(r["mixture_fraction"]) for r in mf_rows
@@ -618,8 +641,19 @@ def run(target, g=None):
             found = ISO.findall(open(path, encoding="utf-8").read())
             if found:
                 starts[f] = min(found)
-    ok("the protocol's issue says it pre-specifies the run it governs",
-       "pre-specified" in doc_text and "approved before a run opens" in doc_text)
+    ok("the protocol's issue that governs the run was approved before the run opened",
+       re.search(r"Issue 4, approved 2027-02-19", doc_text) is not None
+       and "2027-02-19" < W.RUN_FROM.isoformat()
+       and "pre-specified" not in doc_text)
+    ok("the partner's report notes the step in volume where the full typing order starts",
+       "types every cohort service receipt from 1 March" in re.sub(r"\s+", " ", doc_text)
+       and "Where a report is re-sent" not in doc_text)
+    ok("the model card's addendum leaves the cutoffs to KVAL-07 without saying so",
+       "KVAL-07's matter" not in re.sub(r"\s+", " ", doc_text))
+    _wbd = _x.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
+    ok("the sensitivity panel lists only the stock its replicates ran from",
+       {str(r[0]) for r in _wbd["Prepared levels"].iter_rows(min_row=2, values_only=True)} == {"NS-27-04"}
+       and {str(r[1]) for r in _wbd["Replicate results"].iter_rows(min_row=2, values_only=True)} == {"NS-27-04"})
     ok("the protocol is not a conspicuous extract",
        "not reproduced in this extract" not in doc_text
        and all(h in doc_text for h in ("Purpose and scope", "Responsibilities",
@@ -635,8 +669,9 @@ def run(target, g=None):
     reg_rows = {}
     for r in panel_rows:
         reg_rows[r["report_ref"]] = reg_rows.get(r["report_ref"], 0) + 1
-    ok("the weekly reports the validation file reports tie to the register exactly",
-       all(weekly_total[w["report_ref"]][1] == w["results_issued"] for w in g["panel_weeks"]),
+    april_may = sorted({r["report_ref"] for r in panel_rows if r["report_date"][:7] in ("2027-04", "2027-05")})
+    ok("the April and May weekly reports tie to the register exactly",
+       len(april_may) == 9 and all(weekly_total[k][1] == reg_rows[k] for k in april_may),
        "the nine April and May reports")
     off = [k for k, (d, n) in weekly_total.items() if n != reg_rows.get(k)]
     ok("some other weekly report does not tie, and the report says why",
@@ -662,17 +697,22 @@ def run(target, g=None):
            if a["field"] == "released_date"))
 
     # ---------------------------------------------------------------- the ask layer, measured
-    import cracker as CR
-    rows_c = CR.score(target, g)
-    total_f, kept_f, share, pair, mirror = CR.ceiling(rows_c)
-    for ask, n, hits in rows_c:
-        ok("the cracker's path misses at least half of %s" % ask, hits <= n // 2,
-           "keeps %d of %d" % (hits, n))
-    ok("the measured pair ceiling is at or under 40", pair <= 40.0, "%.1f" % pair)
-    ok("the measured mirror leakage is under 35 per cent", mirror < 35.0, "%.1f" % mirror)
-    full = CR.full_includer(target, g)
-    ok("the full includer keeps what the sheet says it keeps",
-       [(a, n, h) for a, n, h in full] == [("A1", 18, 18), ("A2", 12, 12)], str(full))
+    import ceiling as CEIL
+    _figs = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")
+    if os.path.exists(_figs) and "methods" in json.load(open(_figs, encoding="utf-8")):
+        meas = CEIL.measure(target, _figs)
+        ok("the cracker's path keeps no ask figure", meas["kept"]["cracker"] == 0,
+           "keeps %d of %d" % (meas["kept"]["cracker"], meas["figures"]))
+        ok("the mirror's path keeps no ask figure", meas["kept"]["mirror"] == 0,
+           "keeps %d of %d" % (meas["kept"]["mirror"], meas["figures"]))
+        for name in ("the 2025 codes on every record", "the 2026 table for 2026 records"):
+            ok("the stress row %s keeps no ask figure" % name, meas["kept"][name] == 0,
+               "keeps %d" % meas["kept"][name])
+        ok("the full includer keeps what the sheet says it keeps",
+           meas["kept"]["full includer"] == meas["figures"], str(meas["kept"]["full includer"]))
+        ok("the measured pair ceiling is at or under 40", meas["pair"] <= 40.0, "%.1f" % meas["pair"])
+        ok("the measured mirror leakage is under 35 per cent", meas["mirror_leakage_pct"] < 35.0,
+           "%.1f" % meas["mirror_leakage_pct"])
 
     # ---------------------------------------------------------------- gates, provenance, realism
     files = sorted(os.listdir(target))
@@ -687,9 +727,9 @@ def run(target, g=None):
     ok("no file name carries the word distractor", not any("distract" in f for f in files))
     ok("the distractors are shipped", all(os.path.exists(os.path.join(target, os.path.basename(d)))
                                           for d in meta["distractor_files"]))
-    read_by_solution = {W.FILES[k] for k in ("qc_a", "qc_b", "mf", "panel", "weekly", "history",
-                                             "volumes", "amendments", "protocol",
-                                             "crosswalk", "modelcard", "config")}
+    read_by_solution = {W.FILES[k] for k in ("qc_a", "qc_b", "mf", "panel", "history",
+                                             "amendments", "platform", "protocol",
+                                             "modelcard", "config")}
     ok("no distractor is on the solution's path",
        not (read_by_solution & {os.path.basename(d) for d in meta["distractor_files"]}))
     # dates
@@ -702,9 +742,13 @@ def run(target, g=None):
     # realism
     ok("no round headline total", all(x % 100 for x in (len(rows), t["n_mixed"], t["n_clean"],
                                                         t["inc_detected"], t["inc_false"])))
-    ok("monthly released counts differ", len({b["released"] for b in g["baseline"]}) == 12)
-    ok("monthly flagged counts vary", len({b["flagged"] for b in g["baseline"]}) >= 8)
-    ok("weekly report totals differ", len({w["results_issued"] for w in g["panel_weeks"]}) >= 8)
+    _per_month = {}
+    for r in hist:
+        if r["release_status"] == "RELEASED" and r["released_date"][:7] in set(AS._months()):
+            _per_month[r["released_date"][:7]] = _per_month.get(r["released_date"][:7], 0) + 1
+    ok("monthly release rows differ", len(set(_per_month.values())) == 12)
+    ok("no method's figures are round", all(m["released"] % 100 and m["flagged"] % 10 for m in g["methods"]))
+    ok("weekly report totals differ", len({reg_rows[k] for k in april_may}) >= 8)
     names = W.PEOPLE.values()
     ok("personas are the drawn ones", set(names) == {"Laila Johannessen", "Dag Rasmussen"})
     blob = ""
@@ -713,7 +757,7 @@ def run(target, g=None):
             blob += open(os.path.join(target, f), encoding="utf-8", errors="replace").read()
     ok("no author vocabulary in the data",
        not re.search(r"\b(rung|decoy|solver|rubric|golden|placeholder|claude)\b", blob, re.I))
-    ok("no em dash anywhere", "—" not in blob and "—" not in doc_text)
+    ok("no em dash anywhere", "\u2014" not in blob and "\u2014" not in doc_text)
     ok("identifiers are structured", re.match(r"NFG27-\d{6}$", rows[0]["specimen_id"]) is not None)
     # containers
     with zipfile.ZipFile(os.path.join(target, W.FILES["dilution"])) as z:

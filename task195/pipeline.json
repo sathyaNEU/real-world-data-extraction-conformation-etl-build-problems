@@ -2,22 +2,23 @@
  "approved": null,
  "architecture": 1,
  "ask_layer": {
-  "cracker": "honest careful path on target.zip 0925f9258f072b09: A1 0 of 18, A2 0 of 12; the full includer keeps 18 and 12",
-  "measured_before": "the same path on the shipped cut with the two facts filed kept 36 of 36, pair 83.5",
-  "mirror_leakage": 0.0,
-  "pair_ceiling": 28.5
+  "cracker": "ceiling.py on the shipped target.zip 7ea6c4d9: cracker 0 of 16, mirror 0 of 16; stress rows: the 2025 codes on every record 0, the 2026 table on 2026 records 0, the receipt-date split 10 (every released count missed), the full includer 16",
+  "device": "the screen in service's twelve reporting months by extraction method; the LIMS method table re-coded on 2 November 2026 at the second extraction robot's go-live, every extraction keeping its booked code and the warehouse naming every code by the table at the pull",
+  "measured_before": "the identity-merge layer: 36 of 36 with its facts filed, pair 83.5",
+  "mirror_leakage": 10.0,
+  "pair_asks_only": 28.5,
+  "pair_ceiling": 36.8
  },
  "delivered": "2026-10-17",
  "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
  "duplicate_check": {
-  "heart": "BLOCK 2026-10-21 on test.same_driver_older against task190 (6), no differentiation on the card; it was WARN nearest 0.08 at ship, and task190 architecture 6 was registered after. Nearest driver 0.07 task198 (v3), nearest stump 0.06 task260",
-  "nearest": "task190 (6) same gap, pattern and Gate G mechanism; task198 v3 driver 0.07; task260 stump 0.06",
-  "surface": "clean, exit 0, 2026-10-21, personas Dag Rasmussen only"
+  "heart": "WARN 2026-11-03 on the shipped cut (repeat.gate_g task233 v2, overuse.gate_g, repeat.deliverables task263, test.same_driver_older NOTE differentiated against task228 and task478 v7), no BLOCK",
+  "nearest": "task198 v3 driver 0.07",
+  "surface": "exit 0 2026-11-03 on the shipped cut, one promoted pair task478 (0.084) on the cards' gap, pattern and Gate G mechanism, the frozen main call's driver; flagged, not relabelled; personas Dag Rasmussen only"
  },
  "freeze": {
-  "ask_side": "both deliverables moved, 42 ask figures moved, 0 main-call figures moved",
-  "check": "two items moved, both ordered: Final Recommendation loses exactly 1.37 and 6.77, the paired Wald endpoints the judge ruled estimator-specific; Critical Components loses exactly 1, 2, 3, 4, the list markers freeze.py now strips and the pre-fix snapshot still holds. Measured against the snapshot: 0 main-call figures moved, stump, card driver, call sentence, ladder and default path byte-identical. --allow for panel_weeks.BA-2027-W13/W16/W18.difference, with the reason in the note",
-  "snapshot": "2026-10-17 before the second pass"
+  "check": "PASS --mode rubric with --allow panel_weeks.BA-2027-W13..W21.week_ending (A1's report dates, classified main-call because block 1 states 2027; gone with A1); 80 ask figures moved",
+  "snapshot": "2026-11-03 before the first edit of this reship"
  },
  "judge": {
   "disposition": "APPROVE",
@@ -27,14 +28,18 @@
    "report": "task195/determinism_check_report_pass3.md",
    "verdict": "NOT_DETERMINISTIC on asks 3 and 4, main call forced"
   },
+  "pass4_1103": "NOT_DETERMINISTIC on ask 3's flagged cells only, FIX_NOW; main call and every other figure forced; Gate G statistical_rigor / analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical; report task195/determinism_check_report_pass4.md",
+  "pass5_1103b": "DETERMINISTIC, APPROVE on the shipped cut 7ea6c4d9; every golden figure reproduced; Gate G statistical_rigor with etl_conformance on the asks / analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical; optional pin declined; report task195/determinism_check_report_pass5.md",
   "passes": "4; pass 4 scoped to the moved L1 median and the run-log threshold, both verified",
-  "report": "task195/determinism_check_report.md",
+  "report": "task195/determinism_check_report_pass5.md",
   "verdict": "DETERMINISTIC"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17 on the shipped pack, four lines, each answered in the design note's pre-ship check",
+  "leak_py": "REVIEW 2026-11-03 on the shipped cut 7ea6c4d9, the same three lines (KVAL-07's call words, KVAL-07 and the model card's stump terms), each ruled harmless",
   "reader": "pass 1 answers at <scratch>/t195/reader_answers_pass1.md; pass 2 answers at <scratch>/t195/reader (reader_answers.md). No further pass owed: the realism pass changed documents but the author's instruction records that a date correction cannot introduce a leak, and leak.py is green at REVIEW with every line answered",
-  "reader_1101": "no decisive-step sentence, no ranking or helper file; question 6 called it largely rule application plus the unfiled interval; three realism tells fixed in the generator"
+  "reader_1101": "no decisive-step sentence, no ranking or helper file; question 6 called it largely rule application plus the unfiled interval; three realism tells fixed in the generator",
+  "reader_1103": "pass 1 on 18d896f6: question 1 none, no ranking or helping file, question 6 analytical; question 7's flagged reading fixed by the prompt's pin, five realism tells fixed; ruled in leak_check_report.md",
+  "reader_1103b": "pass 2 on the shipped cut 7ea6c4d9: question 1 none beyond the decision rule, no ranking or helping file, question 6 an analytical choice, KVAL-07 not a leak, no realism tell of substance; ruled in leak_check_report.md"
  },
  "loops": 3,
  "objective": "anomaly-detection",
@@ -43,16 +48,25 @@
  "portal_status": "",
  "portal_status_date": "",
  "precut": {
-  "date": "2026-10-17",
-  "detail": "49 checks, 0 FAIL, 0 WARN; cracker re-measured on the shipped pack",
+  "date": "2026-11-03",
+  "detail": "61 checks, 0 FAIL, 0 WARN",
   "exit": 0
  },
- "resume": "PAUSED 2026-11-01. The shipped version stands in the portal (target.zip and golden/ on this branch are the shipped ones). Working tree carries a redesign: A1 counts specimens through the vial, A2 a depth top-up linked by extraction_id, the dilution ask dropped, the vial reference and the amended value filed in the producing files' footers; every graded figure unchanged; free gates green on cut 0925f9258f072b09 (cracker 0 of 30, pair 28.5). Judge pass 3 SEND_BACK on both asks: the identity merge is unfiled, and filing it makes both asks executable (honest ceiling 83.5). Next: an ask layer whose devices survive their WHAT being filed (not identity reconstructions), or the author's call on cutting the asks back; then regenerate, gates, judge, reader, RESHIPPED.",
- "returned": [],
- "stage": 4,
- "stage_name": "check",
- "status": "PAUSED",
+ "reshipped": "2026-11-03",
+ "resume": "",
+ "returned": [
+  {
+   "commit": "RESHIPPED (task195) on batch4-task195",
+   "date": "2026-11-03",
+   "detail": "the identity-merge asks replaced by the screen in service's twelve reporting months by extraction method, on the LIMS method table re-coded at the second extraction robot's go-live; target.zip 7ea6c4d9; pair ceiling 36.8 (28.5 on the ask figures alone)",
+   "portal": "none: a reship under the 10-30 gates, the 10-17 version pending review",
+   "repair": "rubric"
+  }
+ ],
+ "stage": 5,
+ "stage_name": "ship",
+ "status": "SHIPPED",
  "stump": "A competent solver computes each screen's detection rate on the parallel run with its own 95 per cent interval, finds every compliant cutoff's interval overlapping the screen in service's, reads the protocol's interval test as unmet and holds the change, where the same specimens establish the increase at the 0.030 cutoff with an interval clear of zero.",
  "task": "task195",
- "updated": "2026-11-01"
+ "updated": "2026-11-03"
 }

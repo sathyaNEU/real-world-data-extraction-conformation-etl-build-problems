@@ -29,14 +29,11 @@ def write(gendir, g):
             "ceiling_ok": "Yes" if r["ceiling_ok"] else "No",
             "interval_pp": [round(r["lo_paired"], 2), round(r["hi_paired"], 2)]}
             for r in t["cutoffs"]},
-        "panel_weeks": {w["report_ref"]: {"week_ending": w["report_date"],
-                                          "specimens": w["specimens"],
-                                          "difference": w["difference"],
-                                          "results_issued": w["results_issued"]}
-                        for w in g["panel_weeks"]},
-        "baseline": {b["month"]: {"released": b["released"], "flagged": b["flagged"],
-                                  "per_thousand": round(b["per_thousand"], 1)}
-                     for b in g["baseline"]},
+        "methods": {m["method"]: {"released": m["released"], "reviewed": m["reviewed"],
+                                  "flagged": m["flagged"],
+                                  "per_thousand": round(m["per_thousand"], 1)}
+                    for m in g["methods"]},
+        "method_table_recoded": g["method_switch"],
         "rungs": g["rungs"],
         "protocol_clauses": ["3.1", "3.2", "3.3", "3.4", "3.5", "4.1", "4.2", "5.1", "5.2"],
         "cutoff_values": ["%.3f" % c for c in W.CUTOFFS],

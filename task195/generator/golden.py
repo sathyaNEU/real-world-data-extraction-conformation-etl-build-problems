@@ -130,66 +130,52 @@ def rungs(tab):
     return out
 
 
-def ask_panel(target, panel_rows):
-    """Ask 1: the distinct specimens the results in each April and May weekly report came from, and
-    the excess of results issued over them. The register's identifier is the laboratory's accession;
-    a specimen is the material in one vial, the biobank's register gives each accession's vial, and a
-    vial booked in twice carries two accessions."""
-    biobank = {r["specimen_id"]: r["biobank_ref"]
-               for r in _rows(os.path.join(target, W.FILES["crosswalk"]), "\t")}
-    # the biobank's register covers every accession the panel register holds, so the vial a result
-    # came from is never guessed from the accession
-    missing = {r["specimen_id"] for r in panel_rows} - set(biobank)
-    assert not missing, "the crosswalk does not cover %d register accessions" % len(missing)
-    per = {}
-    for r in panel_rows:
-        day = dt.date.fromisoformat(r["report_date"])
-        if day.month in (4, 5) and day.year == 2027:
-            per.setdefault(r["report_ref"], {"rows": 0, "spec": set(), "date": r["report_date"]})
-            per[r["report_ref"]]["rows"] += 1
-            per[r["report_ref"]]["spec"].add(biobank[r["specimen_id"]])
-    out = []
-    for ref in sorted(per):
-        d = per[ref]
-        out.append({"report_ref": ref, "report_date": d["date"], "results_issued": d["rows"],
-                    "specimens": len(d["spec"]), "difference": d["rows"] - len(d["spec"])})
+def _months():
+    out, d = [], W.BASE_FROM
+    while d <= W.BASE_TO:
+        out.append("%04d-%02d" % (d.year, d.month))
+        d = (d.replace(day=28) + dt.timedelta(days=4)).replace(day=1)
     return out
 
 
-def ask_baseline(target):
-    """Ask 2: the screen in service's flagged specimens per thousand released, by release month.
+def ask_methods(target):
+    """The ask: per extraction method, the specimens released in the twelve reporting months to
+    February 2027, those the duty bioinformatician reviewed, those the screen in service flagged
+    (reviewed ones by their review outcome) and the flags per thousand released, each specimen once.
 
-    The release desk's amendments stand over the warehouse extract. A specimen is counted once in a
-    month however many of its results went out in it: a correction released again keeps the
-    accession, and a depth top-up from the specimen's extraction carries an accession of its own, so
-    the specimen is the extraction.
+    The release desk's amendments stand over the warehouse extract. Each record's method is the one
+    its code meant on the day the DNA was extracted: the warehouse names every code by the LIMS method
+    table at the pull, and the table was re-coded when a code the 2026 table does not hold was first
+    booked, so an extraction before that day is read on the 2026 table (MG-2025-14).
     """
     amend = {}
     for a in _rows(os.path.join(target, W.FILES["amendments"])):
         amend[(a["specimen_id"], a["field"])] = a["value_after"]
-    flagged, released = {}, {}
-    seen_rel, seen_flag = set(), set()
-    with open(os.path.join(target, W.FILES["history"]), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            if r["release_status"] != "RELEASED" or not r["released_date"]:
-                continue
-            released_date = amend.get((r["specimen_id"], "released_date"), r["released_date"])
-            r = dict(r,
-                     hetx_call=amend.get((r["specimen_id"], "hetx_call"), r["hetx_call"]),
-                     review_outcome=amend.get((r["specimen_id"], "review_outcome"),
-                                              r["review_outcome"]))
-            month = released_date[:7]
-            key = (month, r["extraction_id"])
-            if key not in seen_rel:
-                seen_rel.add(key)
-                released[month] = released.get(month, 0) + 1
-            flagged_call = (r["review_outcome"] if r["call_source"] == "REVIEWED" else r["hetx_call"])
-            if flagged_call in ("FLAG", "FLAGGED") and key not in seen_flag:
-                seen_flag.add(key)
-                flagged[month] = flagged.get(month, 0) + 1
-    months = [r["reporting_month"] for r in _rows(os.path.join(target, W.FILES["volumes"]))]
-    return [{"month": m, "released": released.get(m, 0), "flagged": flagged.get(m, 0),
-             "per_thousand": 1000.0 * flagged.get(m, 0) / released[m]} for m in months]
+    hist = _rows(os.path.join(target, W.FILES["history"]))
+    switch = min(r["extracted_date"] for r in hist
+                 if int(r["extraction_method_code"]) not in W.METHODS_2026)
+    window = set(_months())
+    out = {m: {"released": 0, "reviewed": 0, "flagged": 0} for m in W.METHOD_ORDER}
+    seen = set()
+    for r in hist:
+        if r["release_status"] != "RELEASED" or not r["released_date"]:
+            continue
+        sid = r["specimen_id"]
+        if amend.get((sid, "released_date"), r["released_date"])[:7] not in window or sid in seen:
+            continue
+        seen.add(sid)
+        code = int(r["extraction_method_code"])
+        method = W.METHODS_2026[code] if r["extracted_date"] < switch else r["extraction_method"]
+        field = "review_outcome" if r["call_source"] == "REVIEWED" else "hetx_call"
+        call = amend.get((sid, field), r[field])
+        d = out[method]
+        d["released"] += 1
+        d["reviewed"] += 1 if r["call_source"] == "REVIEWED" else 0
+        d["flagged"] += 1 if call in ("FLAG", "FLAGGED") else 0
+    return ([{"method": m, "released": out[m]["released"], "reviewed": out[m]["reviewed"],
+              "flagged": out[m]["flagged"],
+              "per_thousand": 1000.0 * out[m]["flagged"] / out[m]["released"]}
+             for m in W.METHOD_ORDER], switch)
 
 
 def compute(target):
@@ -197,9 +183,9 @@ def compute(target):
     rows = comparison(target)
     tab = table(rows)
     lad = rungs(tab)
+    methods, switch = ask_methods(target)
     g = {"comparison": len(rows), "table": tab, "rungs": lad,
-         "call": lad["rung3_paired"], "panel_weeks": ask_panel(target, panel_rows),
-         "baseline": ask_baseline(target), "rows": rows}
+         "call": lad["rung3_paired"], "methods": methods, "method_switch": switch, "rows": rows}
     chosen = next(r for r in tab["cutoffs"] if "%.3f" % r["cutoff"] == g["call"])
     g["chosen"] = chosen
     g["runner_up"] = next(r for r in tab["cutoffs"]

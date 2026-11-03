@@ -1,66 +1,4 @@
 {
- "baseline": {
-  "2026-03": {
-   "flagged": 35,
-   "per_thousand": 15.6,
-   "released": 2243
-  },
-  "2026-04": {
-   "flagged": 36,
-   "per_thousand": 15.3,
-   "released": 2353
-  },
-  "2026-05": {
-   "flagged": 32,
-   "per_thousand": 13.9,
-   "released": 2302
-  },
-  "2026-06": {
-   "flagged": 38,
-   "per_thousand": 14.9,
-   "released": 2549
-  },
-  "2026-07": {
-   "flagged": 35,
-   "per_thousand": 14.2,
-   "released": 2468
-  },
-  "2026-08": {
-   "flagged": 39,
-   "per_thousand": 15.1,
-   "released": 2582
-  },
-  "2026-09": {
-   "flagged": 42,
-   "per_thousand": 17.6,
-   "released": 2387
-  },
-  "2026-10": {
-   "flagged": 46,
-   "per_thousand": 19.6,
-   "released": 2348
-  },
-  "2026-11": {
-   "flagged": 48,
-   "per_thousand": 19.7,
-   "released": 2437
-  },
-  "2026-12": {
-   "flagged": 43,
-   "per_thousand": 18.8,
-   "released": 2288
-  },
-  "2027-01": {
-   "flagged": 47,
-   "per_thousand": 20.7,
-   "released": 2271
-  },
-  "2027-02": {
-   "flagged": 35,
-   "per_thousand": 16.1,
-   "released": 2173
-  }
- },
  "call": "0.030",
  "chosen_cutoff": "0.030",
  "chosen_detected": 308,
@@ -144,63 +82,34 @@
    ]
   }
  },
- "panel_clean": 5446,
- "panel_weeks": {
-  "BA-2027-W13": {
-   "difference": 14,
-   "results_issued": 589,
-   "specimens": 575,
-   "week_ending": "2027-04-02"
+ "method_table_recoded": "2026-11-02",
+ "methods": {
+  "magnetic bead": {
+   "flagged": 206,
+   "per_thousand": 13.0,
+   "released": 15852,
+   "reviewed": 475
   },
-  "BA-2027-W14": {
-   "difference": 12,
-   "results_issued": 608,
-   "specimens": 596,
-   "week_ending": "2027-04-09"
+  "magnetic bead, low input": {
+   "flagged": 67,
+   "per_thousand": 38.1,
+   "released": 1758,
+   "reviewed": 63
   },
-  "BA-2027-W15": {
-   "difference": 12,
-   "results_issued": 613,
-   "specimens": 601,
-   "week_ending": "2027-04-16"
+  "salting out": {
+   "flagged": 45,
+   "per_thousand": 11.3,
+   "released": 3989,
+   "reviewed": 123
   },
-  "BA-2027-W16": {
-   "difference": 13,
-   "results_issued": 641,
-   "specimens": 628,
-   "week_ending": "2027-04-23"
-  },
-  "BA-2027-W17": {
-   "difference": 14,
-   "results_issued": 577,
-   "specimens": 563,
-   "week_ending": "2027-04-30"
-  },
-  "BA-2027-W18": {
-   "difference": 13,
-   "results_issued": 554,
-   "specimens": 541,
-   "week_ending": "2027-05-07"
-  },
-  "BA-2027-W19": {
-   "difference": 15,
-   "results_issued": 570,
-   "specimens": 555,
-   "week_ending": "2027-05-14"
-  },
-  "BA-2027-W20": {
-   "difference": 23,
-   "results_issued": 542,
-   "specimens": 519,
-   "week_ending": "2027-05-21"
-  },
-  "BA-2027-W21": {
-   "difference": 26,
-   "results_issued": 564,
-   "specimens": 538,
-   "week_ending": "2027-05-28"
+  "silica column": {
+   "flagged": 159,
+   "per_thousand": 23.4,
+   "released": 6802,
+   "reviewed": 208
   }
  },
+ "panel_clean": 5446,
  "protocol_clauses": [
   "3.1",
   "3.2",

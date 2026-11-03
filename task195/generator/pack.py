@@ -93,17 +93,22 @@ def panel_share(base, z):
     return round(max(W.PANEL_LOD + 0.0008, (0.0075 + 0.95 * base) * math.exp(0.30 * z)), 4)
 
 
-def prior_register():
+def prior_register(shipped=False):
     """The receipts the register also holds from before the run window: the biobank request each was
     booked under, the accession the laboratory gave it and the day its result was issued. Shared by
-    the register and the biobank's request register so the two agree on every accession."""
+    the register and the biobank's request register so the two agree on every accession.
+
+    shipped=True reproduces the 10-17 cut, whose request numbers stepped by one; checks.py uses it to
+    prove that undoing the realism change gives the shipped register byte for byte."""
     rng = random.Random(W.SEED + 17)
     qrng = random.Random(W.SEED + 1717)      # the biobank's request counter, its own stream
     out, serial, request = [], 96000, 30500
     for k in range(912):
         serial += rng.choice([1, 1, 2, 2, 2, 3, 3, 4, 5, 7, 9, 13])
         # the biobank's request numbers are shared with its other customers, so they skip
-        request += 0 if k == 0 else qrng.choice([1, 2, 3])
+        if k:
+            step = qrng.choice([1, 2, 3])
+            request += 1 if shipped else step
         out.append({"sid": "NFG27-%06d" % serial,
                     "request": "REQ-2027-%05d" % request,
                     "project": W.PROJECTS[k % len(W.PROJECTS)][0],
@@ -112,7 +117,7 @@ def prior_register():
     return out
 
 
-def panel_rows(specimens):
+def panel_rows(specimens, shipped=False):
     """The partner laboratory's issued results, with the re-sends and repeat panels it issued."""
     rng = random.Random(W.SEED + 5)
     trng = random.Random(W.SEED + 23)        # the panel's typing record, off the turnaround stream
@@ -150,7 +155,7 @@ def panel_rows(specimens):
         rows.append(row(s["specimen_id"], "A1", s["request_id"], day, 1, s["verdict"], share,
                         trng.random()))
     # verdicts the register also holds for receipts before the run window
-    for pr in prior_register():
+    for pr in prior_register(shipped):
         verdict = "MIXED" if rng.random() < 0.064 else "CONCORDANT"
         share = (panel_share(math.exp(trng.gauss(math.log(0.028), 0.95)), rng.gauss(0.0, 1.0))
                  if verdict == "MIXED" else None)
@@ -218,8 +223,8 @@ def reaccessions(rows, specimens):
     return extra, pairs
 
 
-def write_panel(target, specimens):
-    rows = panel_rows(specimens)
+def write_panel(target, specimens, shipped=False):
+    rows = panel_rows(specimens, shipped)
     extra, pairs = reaccessions(rows, specimens)
     rows = rows + extra + devices(rows, specimens)
     rows.sort(key=lambda r: (r[4], r[0], r[1], r[5]))

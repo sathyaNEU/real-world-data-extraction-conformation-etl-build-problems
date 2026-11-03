@@ -1,4 +1,4 @@
-"""The files the supplemental asks run on, and the operating records that come with them."""
+"""The files the supplemental ask runs on, and the operating records that come with them."""
 import csv
 import datetime as dt
 import os
@@ -20,6 +20,47 @@ def _months():
     return out
 
 
+def _working_after(day, k):
+    """The k-th working day after a day (k = 0 is the day itself, or the next working day)."""
+    while day.weekday() > 4 or day in W.HOLIDAYS:
+        day += dt.timedelta(days=1)
+    for _ in range(k):
+        day += dt.timedelta(days=1)
+        while day.weekday() > 4 or day in W.HOLIDAYS:
+            day += dt.timedelta(days=1)
+    return day
+
+
+def _method(erng, project, extracted):
+    """The method the specimen's DNA was extracted with, and the code the LIMS booked it under."""
+    if extracted < W.METHOD_SWITCH:
+        names = ["magnetic bead", "silica column", "salting out"]
+        method = erng.choices(names, W.MIX_BEFORE[project])[0]
+        code = {v: k for k, v in W.METHODS_2026.items()}[method]
+    else:
+        names = ["magnetic bead", W.LOW_INPUT, "silica column", "salting out"]
+        method = erng.choices(names, W.MIX_AFTER[project])[0]
+        code = {v: k for k, v in W.METHODS_NOW.items()}[method]
+    return method, code
+
+
+def method_truth(rows):
+    """Per extraction method, over the twelve reporting months: the specimens released, those the duty
+    bioinformatician reviewed and those flagged, each specimen once, from the generator's own truth."""
+    months = set(_months())
+    out = {m: {"released": 0, "reviewed": 0, "flagged": 0} for m in W.METHOD_ORDER}
+    seen = set()
+    for r in rows:
+        if r["status"] != "RELEASED" or r["month"] not in months or r["sid"] in seen:
+            continue
+        seen.add(r["sid"])
+        d = out[r["method"]]
+        d["released"] += 1
+        d["reviewed"] += 1 if r["reviewed"] else 0
+        d["flagged"] += 1 if r["flag"] else 0
+    return out
+
+
 def history(target):
     """The quality-control warehouse extract: the twelve reporting months before the parallel run.
 
@@ -27,15 +68,22 @@ def history(target):
     outcome, where a specimen was reviewed, in review_outcome. The review stands: a reviewed specimen
     counts as the reviewer left it. The month a specimen belongs to in the laboratory's reporting pack
     is the month its result was released.
+
+    Each record carries the extraction it was made from: the day the DNA was extracted, the LIMS method
+    code the extraction was booked under, and that code's name. The code is the one in force when the
+    DNA was extracted; the name is the LIMS method table's at the pull, because the warehouse names
+    every code by the table as it stands. The table was re-coded on 2 November 2026 (world.py).
     """
     rng = random.Random(W.SEED + 21)
     trng = random.Random(W.SEED + 81)        # accessions, intake hours and heterozygosity texture
     mrng = random.Random(W.SEED + 919)       # the booking clock's minutes and seconds
-    xrng = random.Random(W.SEED + 1953)      # the extraction counter and the depth top-ups, its own stream
+    xrng = random.Random(W.SEED + 1953)      # the extraction counter, its own stream
+    erng = random.Random(W.SEED + 1987)      # the extraction day, method and DNA yield, its own stream
+    frng = random.Random(W.SEED + 2003)      # which of a month's specimens the screen flagged
     days = [(W.HIST_FROM + dt.timedelta(days=i)) for i in range((W.HIST_TO - W.HIST_FROM).days + 1)]
     days = [d for d in days if d.weekday() < 5]
     serial = [10007]
-    # the extraction counter is the extraction robot's, shared with the research group's work, and it
+    # the extraction counter is the extraction robots', shared with the research group's work, and it
     # starts again each January
     ext_serial = {2026: 3812, 2027: 211}
     rows = []
@@ -73,12 +121,21 @@ def history(target):
                 rec = near[k % len(near)] if near else rel - dt.timedelta(days=1)
             local = dt.datetime(rec.year, rec.month, rec.day, hour, minute, second)
             offset = 2 if dt.date(rec.year, 3, 29) <= rec < dt.date(rec.year, 10, 25) else 1
-            ext_serial[rec.year] += xrng.randint(1, 5)
+            project = rng.choice([p[0] for p in W.PROJECTS])
+            rng.choices(W.EXTRACTION, [0.6, 0.28, 0.12])      # the old method draw, kept in place
+            instrument = W.INSTRUMENTS[0] if rng.random() < 0.52 else W.INSTRUMENTS[1]
+            # the DNA is extracted on the day of receipt or within two working days, before release
+            extracted = _working_after(rec, erng.choices([0, 1, 2], [0.55, 0.35, 0.10])[0])
+            if extracted >= rel:
+                extracted = _working_after(rec, 0)
+            method, code = _method(erng, project, extracted)
+            med, spread = W.DNA_CONC[method]
+            conc = min(390.0, max(2.4, med * 2.718281828 ** erng.gauss(0.0, spread)))
+            ext_serial[extracted.year] += xrng.randint(1, 5)
             rows.append({"sid": "NFG%s-%06d" % (str(d.year)[2:], serial[0]),
-                         "ext": "EX%s-%06d" % (str(rec.year)[2:], ext_serial[rec.year]),
-                         "project": rng.choice([p[0] for p in W.PROJECTS]),
-                         "extraction": rng.choices(W.EXTRACTION, [0.6, 0.28, 0.12])[0],
-                         "instrument": W.INSTRUMENTS[0] if rng.random() < 0.52 else W.INSTRUMENTS[1],
+                         "ext": "EX%s-%06d" % (str(extracted.year)[2:], ext_serial[extracted.year]),
+                         "extracted": extracted, "method": method, "code": code, "conc": conc,
+                         "project": project, "instrument": instrument,
                          "plate": "GKP-%s%02d-%s%02d" % (str(d.year)[2:], d.month, "ABCD"[k % 4], (k % 23) + 1),
                          "received": rec, "utc": local - dt.timedelta(hours=offset),
                          "depth": _depth(rng.uniform(24.0, 73.0), mrng), "status": status,
@@ -86,8 +143,9 @@ def history(target):
                          "month": "%04d-%02d" % (rel.year, rel.month) if status == "RELEASED" else "",
                          "flag": False, "reviewed": False})
 
-    # the flagged specimens of each reporting month: the month's own rate, placed so the rate the
-    # reporting pack carries sits mid-bin at one decimal
+    # the flagged specimens of each reporting month: the month's own rate, and within it the methods
+    # the screen flags more often, a hand-held column and a low input carrying more of a second
+    # contributor's DNA through
     by_month = {}
     for r in rows:
         if r["status"] == "RELEASED":
@@ -101,13 +159,29 @@ def history(target):
             base = int(round(rate * den))
             num = min((n for n in range(max(0, base - 3), base + 4)),
                       key=lambda n: (-_slack(1000.0 * n / den), abs(n - base)))
-        picks = sorted(pool, key=lambda r: r["sid"])
-        rng.shuffle(picks)
-        for r in picks[:num]:
+        keyed = sorted(pool, key=lambda r: r["sid"])
+        # weighted draw without replacement: the largest u ** (1 / weight) are flagged
+        keyed = sorted(keyed, key=lambda r: -(frng.random() ** (1.0 / W.FLAG_WEIGHT[r["method"]])))
+        for r in keyed[:num]:
             r["flag"] = True
     for r in rows:
         if r["status"] != "RELEASED" and rng.random() < 0.0165:
             r["flag"] = True
+    # each method's twelve-month rate sits clear of a rounding edge at one decimal: where one does not,
+    # one more of that method's borderline specimens is flagged, taken in accession order so the build
+    # is fixed
+    window = set(_months())
+    for _attempt in range(60):
+        truth = method_truth(rows)
+        bad = [m for m in W.METHOD_ORDER
+               if _slack(1000.0 * truth[m]["flagged"] / truth[m]["released"]) < 0.022]
+        if not bad:
+            break
+        cands = sorted((r for r in rows if r["method"] == bad[0] and r["status"] == "RELEASED"
+                        and r["month"] in window and not r["flag"]), key=lambda r: r["sid"])
+        cands[(37 * _attempt + 11) % len(cands)]["flag"] = True
+    else:
+        raise AssertionError("a method's twelve-month rate would not clear its rounding edge")
     # borderline specimens are the ones the duty bioinformatician looks at
     for r in rows:
         r["reviewed"] = rng.random() < (0.183 if r["flag"] else 0.028)
@@ -122,7 +196,7 @@ def history(target):
                 r["auto"] = True       # the rule flagged it and the reviewer cleared it
 
     # a correction is released again inside the same reporting month, so the warehouse holds a second
-    # release row for the specimen, carrying the same call
+    # release row for the specimen, carrying the same call and the same extraction
     rerun = []
     for r in rows:
         if r["status"] != "RELEASED" or trng.random() >= 0.052:
@@ -183,54 +257,6 @@ def history(target):
             r["stale"] = True
     amend.sort(key=lambda x: (x[4], x[0]))
 
-    # a depth top-up: the LIMS of 2026 held one library per accession, so a second library made from a
-    # specimen's extraction was booked as new work under an accession of its own. It keeps the
-    # specimen's receipt, project and extraction; the screen ran again on the combined reads and the
-    # result went out again a few days after the first, inside the same reporting month. A flag the
-    # duty bioinformatician wanted confirmed, or a thin first library, is what asks for one.
-    touched = {a[0] for a in amend} | {c["sid"] for c in rerun}
-    in_use = {int(r["sid"].split("-")[1]) for r in rows}
-    by_day = {}
-    for r in rows:
-        by_day.setdefault(r["received"], []).append(int(r["sid"].split("-")[1]))
-    top = []
-    for r in sorted((x for x in rows if x["status"] == "RELEASED" and x["released"]
-                     and x["sid"] not in touched), key=lambda x: (x["released"], x["sid"])):
-        if xrng.random() >= (0.16 if r["flag"] else (0.05 if r["depth"] < 32.0 else 0.008)):
-            continue
-        book = r["released"] + dt.timedelta(days=xrng.randint(0, 2))
-        while book.weekday() > 4 or book in W.HOLIDAYS:
-            book += dt.timedelta(days=1)
-        again_on = book + dt.timedelta(days=xrng.randint(3, 10))
-        while again_on.weekday() > 4 or again_on in W.HOLIDAYS:
-            again_on += dt.timedelta(days=1)
-        if (again_on.year, again_on.month) != (r["released"].year, r["released"].month):
-            continue
-        # the accession is a free number of the day the top-up was booked in
-        day = book
-        while day not in by_day and day > W.HIST_FROM:
-            day -= dt.timedelta(days=1)
-        if day in by_day and book <= W.HIST_TO:
-            lo, hi = min(by_day[day]), max(by_day[day])
-            free = [x for x in range(lo + 1, hi) if x not in in_use]
-        else:
-            top_no = max(in_use)
-            free = [x for x in range(top_no + 3, top_no + 400) if x not in in_use]
-        if not free:
-            continue
-        num = free[xrng.randint(0, len(free) - 1)]
-        in_use.add(num)
-        other = W.INSTRUMENTS[1] if r["instrument"] == W.INSTRUMENTS[0] else W.INSTRUMENTS[0]
-        top.append({"sid": "NFG%s-%06d" % (str(book.year)[2:], num), "ext": r["ext"],
-                    "project": r["project"], "extraction": r["extraction"],
-                    "instrument": r["instrument"] if xrng.random() < 0.6 else other,
-                    "plate": "GKP-%s%02d-%s%02d" % (str(book.year)[2:], book.month,
-                                                    "ABCD"[xrng.randint(0, 3)], xrng.randint(1, 23)),
-                    "received": r["received"], "utc": r["utc"],
-                    "depth": r["depth"] * (1.55 + 0.4 * xrng.random()), "status": "RELEASED",
-                    "released": again_on, "month": r["month"], "flag": r["flag"],
-                    "reviewed": r["reviewed"], "auto": r["auto"], "of": r})
-
     out = []
     for r in rows:
         # heterozygosity carries a plate effect and a right tail, and the flagged specimens sit in it
@@ -246,39 +272,35 @@ def history(target):
             if trng.random() < 0.09:
                 het += abs(trng.gauss(0.0, 1.5))
             het = min(het, 36.44)
-        r["het_out"] = het
-        out.append([r["sid"], r["project"], r["extraction"], r["ext"], r["instrument"], r["plate"],
+        out.append([r["sid"], r["project"], r["ext"], r["extracted"].isoformat(), r["code"],
+                    W.METHODS_NOW[r["code"]], "%.1f" % r["conc"], r["instrument"], r["plate"],
                     r["received"].isoformat(), r["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "%.1f" % r["depth"], "%.2f" % het,
                     "REVIEWED" if r["reviewed"] else "AUTO",
                     "FLAG" if stored_auto else "CLEAR",
                     ("FLAGGED" if stored_flag else "CLEARED") if r["reviewed"] else "",
                     r["status"], stored_rel.isoformat() if stored_rel else ""])
-    for t in top:
-        # the combined reads give the same call; heterozygosity moves a little with the extra depth
-        het = t["of"]["het_out"] + xrng.gauss(0.0, 0.11)
-        het = max(het, 36.61) if t["auto"] else min(het, 36.44)
-        out.append([t["sid"], t["project"], t["extraction"], t["ext"], t["instrument"], t["plate"],
-                    t["received"].isoformat(), t["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"),
-                    "%.1f" % t["depth"], "%.2f" % het,
-                    "REVIEWED" if t["reviewed"] else "AUTO",
-                    "FLAG" if t["auto"] else "CLEAR",
-                    ("FLAGGED" if t["flag"] else "CLEARED") if t["reviewed"] else "",
-                    t["status"], t["released"].isoformat()])
-    out.sort(key=lambda r: (r[6], r[0]))
-    PK._write(os.path.join(target, W.FILES["history"]),
-              ["specimen_id", "project_code", "extraction_method", "extraction_id", "instrument",
-               "plate_id", "received_date", "received_utc", "mean_depth", "het_excess_pct",
-               "call_source", "hetx_call", "review_outcome", "release_status", "released_date"], out)
-    released = {m: len(p) for m, p in by_month.items()}
-    flagged = {m: sum(1 for r in p if r["flag"]) for m, p in by_month.items()}
+    out.sort(key=lambda r: (r[9], r[0]))
+    path = os.path.join(target, W.FILES["history"])
+    PK._write(path,
+              ["specimen_id", "project_code", "extraction_id", "extracted_date",
+               "extraction_method_code", "extraction_method", "dna_ng_ul", "instrument", "plate_id",
+               "received_date", "received_utc", "mean_depth", "het_excess_pct", "call_source",
+               "hetx_call", "review_outcome", "release_status", "released_date"], out)
+    with open(path, "a", encoding="utf-8") as fh:
+        fh.write("# Quality-control warehouse extract, pulled %s from the nightly load. Code "
+                 "descriptions are those of the LIMS reference tables at the pull.\n"
+                 % W.HIST_PULL.isoformat())
+        fh.write("# Maintained by the LIMS team. Owner: the laboratory manager.\n")
+    base = [r for r in rows if r not in rerun]
+    truth = method_truth(sorted(base, key=lambda r: r["sid"]))
     events = {}
-    for r in rows + top:
+    for r in rows:
         if r["status"] == "RELEASED" and r["released"]:
             stored = r.get("stale_released", r["released"])
             m = "%04d-%02d" % (stored.year, stored.month)
             events[m] = events.get(m, 0) + 1
-    return len(out), released, flagged, events, amend
+    return len(out), truth, events, amend
 
 
 def _depth(_old_draw, rng):
@@ -331,8 +353,7 @@ def dilution(target):
     ws.append(["Stock", "Level", "Label", "Prepared level (fraction)", "Prepared", "Operator",
                "Replicates planned"])
     stock_of = {lv: "NS-27-04" for lv, _l, _f in W.DILUTION}
-    for stock, day, scale in (("NS-27-07", dt.date(2027, 3, 18), W.DILUTION_SECOND_PREP),
-                              ("NS-27-04", dt.date(2027, 3, 11), 1.0)):
+    for stock, day, scale in (("NS-27-04", dt.date(2027, 3, 11), 1.0),):
         for lv, label, frac in W.DILUTION:
             ws.append([stock, lv, label, round(frac * scale, 4), day,
                        W.PEOPLE["lead"].split()[1][:2].upper(), W.DILUTION_REPLICATES])
@@ -376,9 +397,8 @@ def dilution(target):
         ws2.append(r)
     ws3 = wb.create_sheet("Panel notes")
     for line in [["Analytical sensitivity panel, 2027Q1"],
-                 ["Prepared by the method group from two anonymised cell line DNAs. The series is made "
-                  "up from a stock each time a stock is drawn; the workbook keeps the series of every "
-                  "stock the group has made up."],
+                 ["Prepared by the method group from two anonymised cell line DNAs, stock NS-27-04 "
+                  "made up on 11 March 2027."],
                  ["Levels are labelled as the second contributor's share in per cent; the prepared "
                   "level column is the gravimetric fraction."],
                  ["Replicates were sequenced on GSQ-B and processed with GKJ-PIPE v3.4.1."],
