@@ -1,15 +1,23 @@
 {
   "task": "task401",
-  "status": "PAUSED",
-  "domain": "economics-econometrics/panel-data-estimation",
+  "status": "DESIGN",
+  "domain": "marketing-consumer-research/customer-satisfaction-driver-analysis",
   "objective": "root-cause",
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-11-03",
-  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind, filed for the board's outage-cover decision); the seed's world could not carry an honest unbanned draw, architecture 1 (a frailty virtual ward's prevented admissions against care home closures, Epidemiology and Public Health) died at stage 2 on published admission rates, and architecture 2 re-roots in a Saskatchewan farmland operator's canola yield panel under the same objective and number",
-  "stump": "A competent solver fits the season-long degree-day yield panel with farm and year effects, files a hybrid penalty of about 9 per cent, past the 5 per cent bar, and drops the hybrid from the 2027 order, because it compares hybrid fields with incumbent fields that had flowered before the July heat, when the hybrid's fields, seeded about ten days later after their seed arrived late, flowered into it.",
-  "architecture": 2,
+  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw, architecture 1 (a frailty virtual ward against care home closures, Epidemiology and Public Health) died at stage 2 on published admission rates, architecture 2 (a canola hybrid against July heat in late-seeded fields' flowering windows, Economics and Econometrics) died at stage 2 on its own ladder, and architecture 3 re-roots in a GB domestic energy supplier's six-month new-customer satisfaction tracker under the same objective and number",
+  "stump": "A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy carry about three fifths of the fall, ties the H1 2026 respondents' large Direct Debit rises to the new platform every one of them was billed on, and books most of the 3.1-point fall (about 1.6 points by the driver analysis) to the billing platform, because they never set the use each customer was quoted on at the switch against the use their meter then recorded, which puts about 2.3 points on the quote journey's typical-use default and leaves the platform under half a point.",
+  "architecture": 3,
   "loops": 0,
+  "go_no_go": {
+    "screen1_lever_points": 1.25,
+    "screen1_note": "six-month new-customer tracker at published levels: quote default 2.31 (sd 0.23) of a 3.14-point fall (sd 0.62); default key driver analysis books 1.61 (sd 0.22) to the platform against its own 0.36; lever 1.00 to 1.47 across overrun effects 3.0 to 5.5; the base-wide tracker failed (0.54 against a spread of 0.66)",
+    "screen2_lowest_standing_variant": 1.71,
+    "screen2_note": "forms that keep the overrun's size land 1.71 to 2.70 on the quote default against an unexplained residual of at most 0.83; a 10 per cent flag (0.93) is rejected by the fit",
+    "screen3_shapley_billing_share_pct": 62,
+    "screen3_note": "the quoted use enters no default rung; Shapley key driver analysis puts 62 per cent of the fall on billing accuracy, first-review Direct Debit rises over a quarter went from 8.8 to 14.2 per cent of respondents all on the new platform, a use-by-period model books the fall to the October tariff rise"
+  },
   "precut": {
     "exit": null,
     "date": ""
@@ -20,7 +28,7 @@
   },
   "duplicate_check": {
     "heart": "",
-    "nearest": "guard.py check WARN on the registered v2 card 2026-11-03 (overuse.objective, repeat.gate_g and overuse.gate_g against task400 and task402); NOTE test.same_driver_older differentiated against task111 v1; nearest driver 0.05"
+    "nearest": "guard.py check WARN on the registered v3 card 2026-11-03 (overuse.objective, repeat.gate_g and overuse.gate_g against task400 and task402); NOTEs test.same_puzzle_older and test.same_driver_older differentiated against task121 v4 and v5 and task181 v6; nearest driver 0.10 (task121 v4)"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +36,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2, architecture 2 (canola hybrid against heat in each field's flowering window). Read the note's ## Ladder first (measured routes and the two findings). Next, in order: (1) world.py: set 2026's May to July monthly anomalies to normal apart from the heat wave so the incumbent and hybrid flowering clusters sit about 12 days apart, re-time the wave inside the hybrid's flowering (about 20 to 28 July at normals), rerun ladder.py over several seeds and record every route (linear, week bins, spline, same-day matching, window variants by base 0 or 5 C, heat units, length, threshold 28 to 32 C); (2) decide the graded set: the call with a band on the hybrid's own effect, bridge items only at a precision every defensible window reproduces or model-free figures; (3) write the readability screen table (assume heat blast is known), the SF fork table (the estimand's other conditions held as they were, the 2027 order's standing terms, yields calibrated to scale tickets), the 22-axis closure table, literal reader, oracles; (4) design three to five decoupled asks (seed cost per acre net of the hybrid's premium, seed delivered against sown by yard, production reconciliation to scale tickets, frost or harvest-weather counts on stations and months the call never reads) and write pack.py, docs and ceiling.py; measure the cracker and mirror on the cut pack; (5) prompt.txt through voice-check; precut.py exit 0; message main with the ladder and pair ceiling. Also: invented station names and climate identifiers (Mossbank is a real Saskatchewan town, rename Mossbank Creek), unbranded crop insurer series, check every invented name against real Saskatchewan places and companies, redraw the Caldwell persona (people.last against task189), and bring the card's driver_concrete and stump to the re-timed wave.",
+  "resume": "stage 2, architecture 3 (GB energy supplier's six-month new-customer tracker; the quote journey's typical-use default against the billing platform). Next, in order: (1) generator/world.py: the clean truth at the prototype's levels (scratchpad/t401/a3/proto_e4.py is the reference), joiners Jul-Dec 2024 and Jul-Dec 2025, every 2026 respondent on the new platform, quotes on own use or (from May 2025) Ofgem medium typical values, reads with flags and registers, bills, Direct Debit reviews, contacts, tariffs; tune the property-based estimate's error and the share without own use inside documented ranges so the 10 per cent flag clears the residual or is shown refuted by the fit; (2) ladder.py: every route (KDA linear and Shapley, DD and bill linkage, rival checks, use by period, every disconfirmation form) on the clean truth; decide the graded set (the named cause, model-free figures every defensible form reproduces, mid-bin); (3) readability screen, SF fork table, 22-axis closure table, literal reader, oracles; (4) three to five decoupled asks with devices on the migration's mess and ceiling.py sharing no code with the generator; (5) prompt.txt through voice-check (question form what, a fresh opener and deliverable set); precut.py exit 0. Invented names (supplier, platform vendor, outsourcer, comparison site) checked against real GB companies and places before any file is cut.",
   "approved": null,
   "delivered": null,
   "portal": null,
