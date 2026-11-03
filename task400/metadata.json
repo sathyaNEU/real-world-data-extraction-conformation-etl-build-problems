@@ -1,0 +1,32 @@
+{
+ "task": "task400",
+ "decision": "Which programme on the Mount Bracken site safety steering committee's list to fund for 2027 against the rise in vehicle interaction incidents, with the incident counts, a monthly chart, pit gate trips and ramp overspeed figures.",
+ "deliverables": [
+  "vi_programme_paper_2027.docx",
+  "vi_workings_2026.xlsx"
+ ],
+ "distractor_files": [
+  "haul_road_dust_pm10_2026.csv",
+  "road_maintenance_log_2026.csv"
+ ],
+ "licence": "CC BY 4.0 (synthetic records generated for this task; the mine, its owner, its contractors, the vendor, the inspectorate and every person are fictional)",
+ "files": {
+  "cas_alert_events_2025-01_2026-10.parquet": "Collision avoidance supplier portal alert export, January 2025 to October 2026. Synthetic.",
+  "fms_event_windows_2025-2026.parquet": "Fleet management system event window export, January 2025 to October 2026. Synthetic.",
+  "dispatch_shift_summary_2025-2026.csv": "Fleet management system shift summaries, January 2025 to October 2026. Synthetic.",
+  "pit_gate_reads_2026-07_2026-10.csv": "Pit access gate reader export (number plate and collision avoidance tag reads), July to October 2026. Synthetic.",
+  "incident_register_2025-01_2026-10.xlsx": "Site incident register export, January 2025 to October 2026. Synthetic.",
+  "cas_device_register_2026-10-31.xlsx": "Collision avoidance supplier portal asset export, 31 October 2026. Synthetic.",
+  "site_location_codes.csv": "Site location code list. Synthetic.",
+  "light_vehicle_register.csv": "Site light vehicle register. Synthetic.",
+  "haul_road_speed_limits.csv": "Haul road speed limit schedule with effective dates. Synthetic.",
+  "haul_road_dust_pm10_2026.csv": "Haul road dust monitor hourly PM10, 2026. Synthetic.",
+  "road_maintenance_log_2026.csv": "Haul road maintenance task log, 2026. Synthetic.",
+  "vi_review_terms_2026.docx": "Site document: vehicle interaction review terms of reference. Constructed.",
+  "improvement_notice_IN-2026-0417.pdf": "Inspectorate improvement notice. Constructed.",
+  "cas_monthly_report_2026-10.pdf": "Collision avoidance supplier's monthly fleet performance report, October 2026. Constructed."
+ },
+ "dates": {
+  "pack_export": "2026-11-02"
+ }
+}

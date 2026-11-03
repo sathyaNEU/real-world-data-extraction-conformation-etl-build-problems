@@ -6,7 +6,7 @@
   "domain": "human-factors-ergonomics",
   "client_domain": "human-factors-ergonomics",
   "subdomain": "safety-incident-error-analysis",
-  "niche": "a Pilbara iron ore mine's vehicle interaction incidents between haul trucks and light vehicles, tripled in 2026 after the collision avoidance system's warning zones were widened, the same spring a contractor fleet arrived and production rose; the mine's safety steering committee picks the one 2027 vehicle interaction programme",
+  "niche": "a Pilbara iron ore mine's vehicle interaction incidents between haul trucks and other vehicles, almost four times higher in July to October 2026 than a year earlier, after a month in which the north pit's stage 3 put more trucks through the North ramp junction, a ramp limit was cut and the collision avoidance vendor updated every haul truck unit's firmware over three weeks; the site safety steering committee funds one of five 2027 programmes under an inspectorate improvement notice",
   "objective": "root-cause",
   "shape": "18",
   "decision_type": "pick_one_of_n",
@@ -33,59 +33,64 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who aligns the collision avoidance log (UTC) with the dispatch telemetry and the incident register (Western Australian time), maps the system's tags to fleet numbers through the dated tag register, rates vehicle interaction incidents per million hours worked by employer, location and shift, and reads the vendor dashboard's interaction counts and acknowledgement rate correctly, files contractor operator retraining (the contractor's 2026 rate is about two and a half times the mine's), wrong because the operators of both employers stopped slowing after alarms once the warning zones were widened in March 2026 and the incidents rose behind those unheeded alarms.",
-  "domain_test": "The deciding quantity is the operators' behavioural response to collision warnings set against the share of warnings that were false, the human factors measure of alarm credibility (signal detection and the cry-wolf effect), read from what each operator did in the seconds after each warning; with a bank's or a retailer's nouns there is no warning, no operator response and no detection zone, and the task stops reading the same.",
+  "analyst_test": "A strong analyst who reads every field correctly (VI codes, UTC alerts against local dispatch and register times, unit serials mapped to fleet numbers through the dated installs) counts 22 to 86, finds the North ramp junction on top with the North waste route's traffic up from June and the vendor's alert and acknowledgement rates steady, and funds B; rating incidents per truck shift by route kills B and the pooled braking share by month then files A; only critical alerts compared by the unit's firmware inside the 2 to 23 June rollout (the same crews braking for about 85 per cent on 4.3 units and about 30 per cent on 5.0.2 units) files C.",
+  "domain_test": "The deciding quantity is the share of critical collision warnings operators acted on, the human factors measure of whether a warning still works as a warning, estimated alert by alert from the truck's speed after onset; swap in a retailer's nouns and the seconds-scale response read from vehicle telemetry against a warning's onset has nothing to run on. The field's reflex measures (incidents per exposure by location, route and shift, the hotspot, the vendor's alert and acknowledgement rates) sit at the bottom of the ladder.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:warning-credibility-read-from-what-operators-did-after-each-warning",
+  "layer2_pattern": "own:warning-response-split-by-device-version-inside-a-staggered-rollout",
   "layer1": [
-    "collision avoidance alarms logged in UTC against dispatch telemetry and the incident register in Western Australian time",
-    "collision avoidance tags moved between vehicles after repairs, mapped to fleet numbers only through a dated tag register",
-    "contractor fleet numbers and badge numbers in the contractor's own formats",
-    "a mid-year firmware update that renamed the alarm level codes",
-    "telemetry snapshots with GPS dropouts in the pit",
-    "hours worked from two payroll systems, the contractor's on a different period basis"
+    "collision avoidance alerts logged in UTC under unit serials against dispatch event windows and the incident register in Western Australian time under fleet numbers",
+    "collision avoidance units swapped between trucks, mapped to fleet numbers only through the device register's dated installs and removals",
+    "critical alerts with no dispatch event window and speed samples with no GPS fix",
+    "the dispatch export restating each overspeed window's limit to today's limit",
+    "a dispatch system release logging a run still over the limit as a second window from 1 August 2026",
+    "a second North gate reader from 14 July 2026, both readers misreading plates independently",
+    "an incident register mixing vehicle interaction codes with injury, damage and environment entries"
   ],
   "stakeholder_role": "the mine's health and safety superintendent, who puts the vehicle interaction review to the site safety steering committee, which picks the one 2027 programme (the prompt names no one)",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "cas_alarm_events_2025-2026.csv",
-    "rows": 150000,
-    "entity": "one collision avoidance alarm raised on one haul truck: tag, level, onset time (UTC), the other vehicle's tag and the range at onset",
-    "grain": "alarm event",
+    "file": "cas_alert_events_2025-01_2026-10.parquet",
+    "rows": 141693,
+    "entity": "one collision avoidance alert on one unit: unit serial, peer tag, level, onset and clear times (UTC), range at onset, acknowledgement time",
+    "grain": "alert event",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
   "forcing_event": "incident_or_complaint",
   "org_family": "other",
   "world": {
-    "geography": "Australia, the Pilbara region of Western Australia (a fictional iron ore mine, its owner and its contractor)",
+    "geography": "Australia, the Pilbara region of Western Australia (a fictional iron ore mine, its owner and its collision avoidance vendor)",
     "currency": "AUD",
-    "org_type": "an iron ore mining company operating one open-pit mine with a contractor haul fleet",
+    "org_type": "an iron ore mining company operating one open-pit mine",
     "invented_names": [
-      "Corella Iron Ore",
+      "Ternhallow Iron Ore",
       "Mount Bracken",
-      "Westray Haulage"
+      "Halcyon Proximity Systems"
     ],
     "people": [
       "Shari Jefferson",
       "Kerri Smith",
-      "Ana Cuevas"
+      "Ana Cuevas",
+      "Nancy Franco"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "vi_programme_paper_2027.docx",
+    "vi_workings_2026.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A warning device's trigger was widened so most of its activations became false, and the people it warns stopped acting on any activation, so incidents rose behind more warnings; counting activations reads the widening as more hazard detected and the incidents per hour put the rise on the newcomers who arrived the same spring, while reading what each person did in the seconds after each activation, the same people before and after the change, puts the rise on the warning's lost credibility.",
-  "driver_concrete": "Read each collision avoidance alarm against the truck's speed in the seconds after it: after the warning zone was widened in March 2026 the share of alarms followed by a slowdown fell from about three in four to about one in five, for the mine's own operators as much as for the contractor's, and most 2026 collisions and significant near misses followed an alarm nobody acted on, so the 2027 programme is the warning zone reconfiguration, not contractor retraining or separating light vehicles at the ramp junction.",
-  "stump": "A competent solver rates vehicle interaction incidents per million hours by employer, finds the contractor's operators (on site from April 2026) at about two and a half times the mine's, sees the incidents concentrate at the North pit ramp junction and the system's interactions up more than four times as production rose, and funds contractor operator retraining; the step that lands it there is reading the alarms as hazards detected, when the operators' speed after each alarm shows they stopped acting on them once the warning zone was widened in March, so the rise belongs to the warning zone configuration.",
+  "driver": "A software update changed how a warning sounds, and the people it warns kept acknowledging it but stopped acting on it, so incidents rose while every count of warnings and acknowledgements stayed steady; the hotspot and its new traffic carry the rise on the easy read, and only warnings from updated and not-yet-updated devices compared inside the staggered rollout separate the device from its users.",
+  "driver_concrete": "Read each critical collision avoidance alert against the truck's speed in the dispatch system's event window that opened on it, and split the alerts by the unit's firmware at onset: while 5.0.2 went on truck by truck between 2 and 23 June 2026 the same crews slowed for about 85 per cent of critical alerts from units still on 4.3 and about 30 per cent from units already on 5.0.2, so the rise belongs to the alerting (programme C), not to the North ramp junction's traffic (B) or the operators' attention (A).",
+  "stump": "A competent solver counts the register's vehicle interaction incidents (22 to 86), finds them gathered at the North ramp junction, where the notice's 28 July collision happened and where stage 3 put more trucks from June, reads the vendor's steady alert and acknowledgement rates as a working system, and funds B; the step that lands it there is never reading each critical alert against the truck's speed by the unit's firmware, which shows that in the weeks 5.0.2 went on the same crews slowed for about 85 per cent of critical alerts on 4.3 units and about 30 per cent on 5.0.2 units, so the programme is C.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task107": "v2 scaled a lottery pilot by receipt through practitioners reassigned into the comparison arm (a contaminated arm reached by a timetable, directory and register join); here there is no arm and no assignment: a configuration change made most warnings false and every operator stopped acting on them, read from each truck's speed after each warning.",
-    "task121": "v4 read survey ratings against the conditions each passenger's journey ran under (a halo on ratings); here no rating or survey: the operators' own driving in the seconds after each collision warning, set against the share of warnings that were real, before and after the zones were widened.",
-    "task191": "v3 (never shipped) read each depot's failure-to-act rate on genuine warnings once fixed structures that inflated the raw counts were caught (planted structures, spent at stage 4); here nothing inflates a count to be caught: the widened zone is the cause itself, and the step is what operators did after warnings before and after it."
+    "task107": "v2 scaled a lottery pilot by receipt through practitioners reassigned into the comparison arm (a contaminated arm reached by a timetable, directory and register join); here there is no arm and no assignment: a vendor's staggered firmware rollout is read as a comparison of warnings, and the step is what operators did in the seconds after each warning.",
+    "task121": "v4 read survey ratings against the conditions each passenger's journey ran under (a halo on ratings); here no rating or survey: the operators' own driving in the seconds after each collision warning, split by the warning unit's firmware inside the rollout weeks.",
+    "task191": "v3 (never shipped) read each depot's failure-to-act rate on genuine warnings once planted fixed structures inflating the raw counts were caught; here nothing inflates a count to be caught and no count moves: the warnings and acknowledgements stay steady, and the step is the braking that followed them, compared across the firmware rollout."
   },
   "lineage": [],
-  "notes": "org_family other: a mining company (no mining key in the vocabulary). Figures in the analyst test and stump are provisional until the stage 2 harness. Gate G decomposition_attribution answered in the design note: the rise is assigned to the right driver and the data give no other honest Gate G. Window read with the sibling build task399 architecture 4 card (batch4-task399, 11e8631) in place, which moved its decisive pattern from G3 to G5.",
+  "notes": "org_family other: a mining company (no mining key in the vocabulary). Mechanism redesigned at stage 2 before data was cut (the first design's widened zones, alarm flood and contractor newcomers dropped at the coordinator's review: a flood is a cheap route to C and a newcomer with a same-spring process change is task399 v4's narrative); figures are the cut pack's. Gate G decomposition_attribution: the rise is assigned to the right driver and the data give no other honest Gate G.",
   "registered": "2026-11-03T10:09:48Z"
 }
