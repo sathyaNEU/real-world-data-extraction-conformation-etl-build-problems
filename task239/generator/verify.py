@@ -10,8 +10,9 @@ import pandas as pd
 
 ITEMS = ["TC%02d" % k for k in range(1, 13)]
 NEG = {"TC04", "TC07"}
-ON = dict(zip(["Q3%s" % c for c in "abcdefghijkl"], ITEMS))
-PA = dict(zip(["Q3_%02d" % k for k in range(1, 13)], ITEMS))
+ON = dict(zip(["tc%02d" % k for k in range(1, 13)], ITEMS))
+PA = ON
+SCORE = {"Strongly disagree": 1, "Disagree": 2, "Neither agree nor disagree": 3, "Agree": 4, "Strongly agree": 5}
 
 
 def _f(target, pat):
@@ -36,12 +37,12 @@ def returns(target):
     on = pd.concat([on[on["chan"] != "site"], site])
     pk = K.set_index("form_serial")
     pa = Pp.copy()
-    pa = pa[pd.to_datetime(pa["scanned_at"]).dt.date <= pd.Timestamp("2027-10-08").date()]
-    qcols = [c for c in pa.columns if c.startswith("Q")]
-    pa = pa[(pa[qcols] != "9").any(axis=1)]
+    pa = pa[pd.to_datetime(pa["scanned_at_local"]).dt.date <= pd.Timestamp("2027-10-08").date()]
+    qcols = [c for c in pa.columns if c not in ("batch", "form_serial", "scanned_at_local")]
+    pa = pa[(pa[qcols] != "No mark").any(axis=1)]
     pa = pa.rename(columns=PA)
     pa["chan"] = "paper"
-    pa["t"] = pd.to_datetime(pa["scanned_at"]) - pd.Timedelta(hours=1)
+    pa["t"] = pd.to_datetime(pa["scanned_at_local"]) - pd.Timedelta(hours=1)
     pa["st"] = pd.NaT
     pa["team_code"] = pa["form_serial"].map(pk["team_code"])
     pa["member"] = pa["form_serial"].map(pk["inv_code"])
@@ -53,8 +54,7 @@ def returns(target):
     cols = ["rid", "chan", "t", "st", "team_code", "member"] + ITEMS
     R = pd.concat([on[cols], pa[cols]], ignore_index=True)
     for it in ITEMS:
-        v = pd.to_numeric(R[it], errors="coerce")
-        v = v.where((v >= 1) & (v <= 5))
+        v = R[it].map(SCORE).astype(float)
         R[it] = 6 - v if it in NEG else v
     R = R.sort_values(["t", "rid"])
     keyed = R[R["member"] != ""]
@@ -133,33 +133,57 @@ def main(target, golden, figures, submission):
     assert stay == F["call"]["stay"], (stay, F["call"]["stay"])
     assert all(lam[i] >= F["components"]["kept_band"] for i, it in enumerate(ITEMS) if it in stay)
     assert all(abs(lam[i]) < F["components"]["withdrawn_band"] for i, it in enumerate(ITEMS) if it not in stay)
+    band = F["deliverables"]["withdrawn_loading_one_decimal"]
     for i, it in enumerate(ITEMS):
-        assert abs(round(float(lam[i]), 2) - F["deliverables"]["loadings"][it]) < 0.006, it
+        one = round(float(lam[i]), 1) + 0.0
+        if it in stay:
+            assert one == F["deliverables"]["loadings"][it] == 0.9, (it, lam[i])
+        else:
+            assert F["deliverables"]["loadings"][it] == 0.0 and band["low"] <= one <= band["high"], (it, lam[i])
     assert len(R) == F["steps"]["returns_that_count"] and len(rep) == F["steps"]["teams_reported"]
     assert len(U) == F["steps"]["returns_used"]
-    for ch in ("personal", "site", "paper"):
-        x = R[R["chan"] == ch]
-        mine = dict(count=len(x), outside=int((~x["reported"]).sum()),
-                    incomplete=int((x["reported"] & ~x["complete"]).sum()), used=int(x["used"].sum()))
-        assert mine == F["deliverables"]["ledger"][ch], (ch, mine)
-    for it in ITEMS:
-        v = R[it].dropna()
-        assert dict(base=len(v), fav=int((v >= 4).sum())) == F["deliverables"]["favourable"][it], it
-    names = {"Hub Operations", "Linehaul and Fleet", "Customer Service", "Engineering", "Delivery Operations",
-             "Corporate Services"}
-    regi = reg.set_index("team_code")
-    div = {}
-    for t in rep:
-        r = regi.loc[t]
-        dname = r["previous_division"] if (r["division_since"] and r["division_since"] > "2027-09-01") else r["division"]
-        assert dname in names
-        div.setdefault(dname, [0, 0])[0] += 1
-    for t, k in U.groupby("team").size().items():
-        r = regi.loc[t]
-        dname = r["previous_division"] if (r["division_since"] and r["division_since"] > "2027-09-01") else r["division"]
-        div[dname][1] += int(k)
-    for dname, (tn, un) in div.items():
-        assert F["deliverables"]["divisions"][dname] == {"teams": tn, "used": un}, dname
+    # development plans: each plan's latest version; a number is a row of the team's page as the dashboard note lists it
+    from openpyxl import load_workbook as _lw
+    ws = _lw(_f(target, r"dashboard_plans"), data_only=True)["Plans"]
+    head = [c.value for c in ws[1]]
+    plans = [dict(zip(head, [c.value for c in row])) for row in ws.iter_rows(min_row=2)]
+    latest = {}
+    for p in plans:
+        if p["plan_ref"] not in latest or p["version"] > latest[p["plan_ref"]]["version"]:
+            latest[p["plan_ref"]] = p
+    inteam = R[R["team"].isin(rep)]
+    pages = {}
+    for t, grp in inteam.groupby("team"):
+        vals = []
+        for k, it in enumerate(ITEMS):
+            s = grp[it].dropna()
+            pct = int((s >= 4).sum()) * 1000 // len(s)          # tenths of a per cent, then half up on the next digit
+            rem = (int((s >= 4).sum()) * 10000 // len(s)) % 10
+            vals.append((pct + (1 if rem >= 5 else 0), k))
+        pages[t] = [ITEMS[k] for v, k in sorted(vals)]
+    got = {it: {"targets": 0, "agreed": 0} for it in ITEMS}
+    for p in latest.values():
+        for col in ("target_1", "target_2", "target_3"):
+            v = p[col]
+            if v is None:
+                continue
+            it = v if isinstance(v, str) else pages[p["team_code"]][int(v) - 1]
+            got[it]["targets"] += 1
+            got[it]["agreed"] += int(p["status"] == "Agreed")
+    assert got == F["deliverables"]["plans"], got
+    # the documents the call and the asks lean on, read back through this verifier's own extractors
+    import zipfile
+    from pypdf import PdfReader
+    note = " ".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>",
+                               zipfile.ZipFile(_f(target, r"dashboard_methodology")).read("word/document.xml").decode()))
+    assert "went live for team leaders on 1 November 2027" in note, "positive control: the note's own publication line"
+    assert "from the team's lowest figure to its highest" in note and "in the order of Table 1" in note
+    assert "the new version replaces the earlier one" in note and "every return that counts" in note
+    assert "holds a plan from the leader's first save" in note and "a draft until the leader sends it" in note
+    std = " ".join(" ".join(pg.extract_text().split()) for pg in PdfReader(_f(target, r"measurement_standard")).pages)
+    assert "WI-SV-03" in std, "positive control: the standard's own reference"
+    assert "0.75 or more stays in the index" in std and "five or more returns that count" in std
+    assert "the return received last counts" in std and "a member of the team is expected to give" in std
     # the goldens carry the same figures
     from openpyxl import load_workbook
     wb = load_workbook(os.path.join(golden, "lfp_tci_structure_check_2027.xlsx"), data_only=True)
@@ -167,34 +191,23 @@ def main(target, golden, figures, submission):
     rows = {ws.cell(row=r, column=1).value: (ws.cell(row=r, column=3).value, ws.cell(row=r, column=4).value)
             for r in range(5, 17)}
     for i, it in enumerate(ITEMS):
-        assert abs(rows[it][0] - round(float(lam[i]), 2)) < 1e-9 and rows[it][1] == ("Stays" if it in stay else "Withdrawn")
-    ws = wb["Returns by channel"]
-    for r, ch in zip(range(5, 8), ("personal", "site", "paper")):
-        got = [ws.cell(row=r, column=c).value for c in range(2, 6)]
-        x = F["deliverables"]["ledger"][ch]
-        assert got == [x["count"], x["outside"], x["incomplete"], x["used"]], ch
-    ws = wb["Favourable answers"]
+        assert rows[it][0] == F["deliverables"]["loadings"][it] and rows[it][1] == ("Stays" if it in stay else "Withdrawn")
+    ws = wb["Check"]
     for r in range(5, 17):
         it = ws.cell(row=r, column=1).value
-        assert [ws.cell(row=r, column=3).value, ws.cell(row=r, column=4).value] == [
-            F["deliverables"]["favourable"][it]["base"], F["deliverables"]["favourable"][it]["fav"]], it
-    ws = wb["Divisions"]
-    for r in range(5, 11):
-        dname = ws.cell(row=r, column=1).value
-        assert [ws.cell(row=r, column=2).value, ws.cell(row=r, column=3).value] == [
-            F["deliverables"]["divisions"][dname]["teams"], F["deliverables"]["divisions"][dname]["used"]], dname
+        assert [ws.cell(row=r, column=5).value, ws.cell(row=r, column=6).value] == [
+            F["deliverables"]["plans"][it]["targets"], F["deliverables"]["plans"][it]["agreed"]], it
     from pptx import Presentation
     prs = Presentation(os.path.join(golden, "lfp_tci_items_2028.pptx"))
     ch = [s for s in prs.slides[0].shapes if s.has_chart][0].chart
     vals = dict(zip(ch.plots[0].categories, ch.plots[0].series[0].values))
     for i, it in enumerate(ITEMS):
-        assert abs(vals[it] - round(float(lam[i]), 2)) < 1e-9, it
+        assert vals[it] == F["deliverables"]["loadings"][it], it
     # every number in the submission's answer blocks recomputes
-    for x in F["deliverables"]["ledger"].values():
-        for v in x.values():
-            assert "{:,}".format(v) in sub
-    for x in F["deliverables"]["favourable"].values():
-        assert "{:,}".format(x["base"]) in sub and "{:,}".format(x["fav"]) in sub
+    for it in stay:
+        assert "%s (" % it in sub and "): 0.9, stays" in sub, it
+    for it, x in F["deliverables"]["plans"].items():
+        assert "%s: %s plans, %s agreed" % (it, "{:,}".format(x["targets"]), "{:,}".format(x["agreed"])) in sub, it
     print("verify: every figure recomputes from the bundle (%d returns, %d teams, %d used; %s stay)"
           % (len(R), len(rep), len(U), len(stay)))
 

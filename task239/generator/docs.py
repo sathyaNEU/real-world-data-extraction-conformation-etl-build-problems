@@ -1,8 +1,5 @@
-"""task239 documents: the company's survey measurement standard (pdf), the dashboard methodology note and the fieldwork
-close-out (docx), the questionnaire codebook (xlsx), the data dictionary and the readme (md)."""
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
+"""task239 documents: the company's survey measurement standard (pdf), and the dashboard methodology note and the
+fieldwork close-out (docx)."""
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
@@ -16,9 +13,6 @@ BOARD = "Lowfirth Parcels"
 UNIT = "Workforce Insight"
 SURVEY = "Staff Voice survey"
 PEOPLE = {"head": "Carolyn Burrows", "methods": "George Haynes", "programme": "Laura Miles"}
-GROUP_CODES = ["%d %s" % (k + 1, g) for k, g in enumerate(P.STAFF_GROUPS)]
-YEAR_CODES = ["1 less than a year", "2 one to two years", "3 three to five years", "4 six to ten years",
-              "5 more than ten years"]
 
 
 def _styles():
@@ -167,8 +161,15 @@ def dashboard_note(path):
                                 "figure for the company as a whole uses every return that counts, including returns whose "
                                 "team is not reported and returns that leave some items unanswered."),
         ("Team pages.", "A team's page appears when the team is reported under section 5 of the standard. The page "
-                        "shows each item's percent favourable for the team and the team's index score, the mean of its "
-                        "twelve percentages."),
+                        "lists the twelve items with the team's percent favourable on each, from the team's lowest "
+                        "figure to its highest (items with the same figure in the order of Table 1 of the standard), "
+                        "and shows the team's index score, the mean of its twelve percentages. A team's figures use all "
+                        "of the team's returns that count."),
+        ("Development plans.", "From 1 November each team leader can choose up to three items on the team's page as "
+                               "the team's development targets for the year. The dashboard holds a plan from the "
+                               "leader's first save: it is a draft until the leader sends it to their manager, with the "
+                               "manager until the manager agrees it, and agreed once they have. A team has one plan: "
+                               "when the leader saves it again, the new version replaces the earlier one."),
         ("Divisions.", "Each team is shown under the division it belonged to on the census date, 1 September 2027. A "
                        "move between divisions after the census date shows from the next survey."),
         ("Rounding.", "Percentages are shown to one decimal place."),
@@ -205,128 +206,3 @@ def close_out(path, f):
            ("Subject", "Staff Voice 2027: fieldwork close-out")],
           paras, path, PEOPLE["programme"], "2027-10-11T15:40:00Z", "2027-10-12T08:55:00Z",
           "Staff Voice 2027 fieldwork close-out", sign=PEOPLE["programme"])
-
-
-# ------------------------------------------------------------------ the codebook (xlsx)
-def codebook(path):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Questions"
-    ws.append(["section", "online code", "paper column", "item", "wording", "worded"])
-    ws.append([1, "Q1", "Q1", "", "Which staff group do you belong to?", ""])
-    ws.append([1, "Q2", "Q2", "", "How long have you worked for the company?", ""])
-    for k, (code, wording, neg, *_) in enumerate(P.ITEMS):
-        ws.append([2 if k < 6 else 3, "Q3%s" % "abcdefghijkl"[k], "Q3_%02d" % (k + 1), code, wording,
-                   "negatively" if neg else "positively"])
-    for k, (code, wording) in enumerate(P.ENGAGE):
-        ws.append([4, "Q4%s" % "abcdef"[k], "Q4_%d" % (k + 1), code, wording, ""])
-    w2 = wb.create_sheet("Answer codes")
-    w2.append(["questions", "channel", "codes"])
-    w2.append(["Q3, Q4", "online (personal link and site tablet)",
-               "1 strongly disagree; 2 disagree; 3 neither agree nor disagree; 4 agree; 5 strongly agree; 6 don't know; "
-               "blank not answered"])
-    w2.append(["Q3, Q4", "paper form",
-               "1 strongly disagree; 2 disagree; 3 neither agree nor disagree; 4 agree; 5 strongly agree; 6 don't know; "
-               "8 more than one box marked; 9 no mark"])
-    w2.append(["Q1", "all", "; ".join(GROUP_CODES) + "; paper also 9 no mark"])
-    w2.append(["Q2", "all", "; ".join(YEAR_CODES) + "; paper also 9 no mark"])
-    w3 = wb.create_sheet("Pages")
-    for row in (["page", "online questions"], [1, "team; Q1, Q2"], [2, "Q3a to Q3f"], [3, "Q3g to Q3l"],
-                [4, "Q4a to Q4f"], [5, "submit"]):
-        w3.append(row)
-    for sh, widths in ((ws, [8, 12, 12, 8, 70, 11]), (w2, [10, 34, 90]), (w3, [8, 30])):
-        for c in sh[1]:
-            c.font = Font(bold=True)
-            c.fill = PatternFill("solid", fgColor="E3ECE8")
-        for i, w in enumerate(widths, 1):
-            sh.column_dimensions[get_column_letter(i)].width = w
-        for row in sh.iter_rows(min_row=2):
-            for c in row:
-                c.alignment = Alignment(wrap_text=True, vertical="top")
-        sh.freeze_panes = "A2"
-    wb.save(path)
-    postprocess.scrub(path, PEOPLE["methods"], "2027-07-14")
-    postprocess.finish_office(path, "2027-07-12T10:15:00Z", "2027-07-14T13:30:00Z", BOARD)
-
-
-# ------------------------------------------------------------------ the dictionary and the readme
-def dictionary(F):
-    return """# Data dictionary
-
-Staff Voice 2027 files held by {unit}, {board}. Times in columns ending `_utc` are UTC; other times are UK time.
-
-## {sessions}
-One row per session the survey platform opened, for personal links and site tablets alike.
-- `session_id`: the platform's number for the session, given as the session reached the platform.
-- `link_type`: `personal` (the member's own emailed link) or `site` (a site tablet).
-- `inv_code`: the invitation code of the personal link.
-- `tablet_ref`: the tablet's own reference for the session: the tablet and the tablet's running number.
-- `entered_code`: on a tablet, the invitation code the respondent typed if they chose to give it, kept as typed (the
-  platform keeps the respondent's own capitals and spacing).
-- `team_code`: for a personal link, the member's team code as it stood in HR's records when the links were issued on
-  6 September; for a tablet, the team chosen from the tablet's list.
-- `started_utc`, `submitted_utc`: when the session was started, and when the platform received the submission.
-- `status`: `submitted`; `abandoned` (no activity for seven days); `open at close` (still open at 23:59 on 4 October).
-- `last_page`: the last page reached; 5 is the end.
-
-## {answers}
-One row per question shown in a session, in the order shown: `session_id`, `question` (the online code in the
-codebook) and `response` (the online code, blank where the question was not answered).
-
-## {paper}
-One row per form scanned. `batch` (the scanning batch), `form_serial` (the serial in the form's barcode),
-`scanned_at` (when the form was scanned, on the day it arrived), then one column per question as the paper columns in
-the codebook, with the paper codes.
-
-## {packs}
-One row per paper pack posted. `form_serial`; `inv_code` (the member's invitation code, printed on the pack's cover
-letter); `team_code` (the team code printed on the form, from HR's team list on the day the packs were printed);
-`printed`; `posted`.
-
-## {register}
-HR's team register as it stood on 15 November 2027: one row per team of the structure in force from 1 September 2027.
-`team_code`, `team_name`, `division` (the team's division now), `previous_division` and `division_since` (where a team
-has moved between divisions, the division it left and the date it joined its division now), `site`.
-
-## {reorg}
-HR's reorganisation map for the change of 1 September 2027: one row for each link between a team code of the July
-structure and a team code of the September structure (`renamed`, `merged`, `split`), and one row for each team created
-on 1 September (`new team`, no July code). Codes that did not change are not listed.
-
-## {tablets}
-The site tablets' own log: `tablet`, `site`, `event` (`team list loaded` is the tablet taking HR's team list as it
-stood that day), `at_local`.
-
-## {staff}
-HR's staff in post on 1 September 2027 by team: `team_code`, `staff_in_post`, `invited` (staff in post less those on
-long-term leave on 20 August, when the contact list was taken).
-
-## {items26}
-The 2026 dashboard's company-wide results for the Team Climate Index items: `item`, `wording`,
-`percent_favourable_2026`, `answers_2026`.
-
-## {codebook}
-Questions, the online and paper codes, and the online pages.
-""".format(unit=UNIT, board=BOARD, **F)
-
-
-def readme(F):
-    return """# Staff Voice 2027: survey files
-
-{unit}'s files for the 2027 Staff Voice survey of {board}, gathered by {methods} (Survey Methods Analyst) on
-Friday 19 November 2027 for the Team Climate Index structure check.
-
-- `{standard}`: the survey's measurement standard, WI-SV-03, 2027 edition.
-- `{note}`: how the 2027 dashboard figures are made.
-- `{close}`: the fieldwork close-out.
-- `{codebook}`: the 2027 questionnaire codebook.
-- `{sessions}`, `{answers}`: the survey platform's session and response exports.
-- `{paper}`: the scanned paper forms.
-- `{packs}`: the paper packs posted.
-- `{register}`: HR's team register, 15 November 2027.
-- `{reorg}`: HR's reorganisation map, 1 September 2027.
-- `{tablets}`: the site tablets' log.
-- `{staff}`: HR's staff in post by team on 1 September 2027.
-- `{items26}`: the 2026 dashboard's item results.
-- `DATA_DICTIONARY.md`: the files and their fields.
-""".format(unit=UNIT, board=BOARD, methods=PEOPLE["methods"], **F)

@@ -30,115 +30,73 @@
     "withdrawn_band": 0.25
   },
   "deliverables": {
-    "divisions": {
-      "Corporate Services": {
-        "teams": 143,
-        "used": 1212
-      },
-      "Customer Service": {
-        "teams": 103,
-        "used": 781
-      },
-      "Delivery Operations": {
-        "teams": 245,
-        "used": 2060
-      },
-      "Engineering": {
-        "teams": 148,
-        "used": 1140
-      },
-      "Hub Operations": {
-        "teams": 228,
-        "used": 1821
-      },
-      "Linehaul and Fleet": {
-        "teams": 149,
-        "used": 1309
-      }
+    "loadings": {
+      "TC01": 0.9,
+      "TC02": 0.9,
+      "TC03": 0.9,
+      "TC04": 0.9,
+      "TC05": 0.9,
+      "TC06": 0.9,
+      "TC07": 0.9,
+      "TC08": 0.9,
+      "TC09": 0.9,
+      "TC10": 0.9,
+      "TC11": 0.0,
+      "TC12": 0.0
     },
-    "favourable": {
+    "plans": {
       "TC01": {
-        "base": 11329,
-        "fav": 6824
+        "agreed": 99,
+        "targets": 162
       },
       "TC02": {
-        "base": 11342,
-        "fav": 7442
+        "agreed": 69,
+        "targets": 126
       },
       "TC03": {
-        "base": 11387,
-        "fav": 8404
+        "agreed": 40,
+        "targets": 77
       },
       "TC04": {
-        "base": 11294,
-        "fav": 6262
+        "agreed": 96,
+        "targets": 163
       },
       "TC05": {
-        "base": 11419,
-        "fav": 8923
+        "agreed": 24,
+        "targets": 45
       },
       "TC06": {
-        "base": 11359,
-        "fav": 7254
+        "agreed": 51,
+        "targets": 103
       },
       "TC07": {
-        "base": 11273,
-        "fav": 6070
+        "agreed": 82,
+        "targets": 149
       },
       "TC08": {
-        "base": 11415,
-        "fav": 9020
+        "agreed": 20,
+        "targets": 28
       },
       "TC09": {
-        "base": 11162,
-        "fav": 6072
+        "agreed": 77,
+        "targets": 132
       },
       "TC10": {
-        "base": 11150,
-        "fav": 6613
+        "agreed": 78,
+        "targets": 143
       },
       "TC11": {
-        "base": 11374,
-        "fav": 7533
+        "agreed": 42,
+        "targets": 87
       },
       "TC12": {
-        "base": 11393,
-        "fav": 7817
+        "agreed": 39,
+        "targets": 81
       }
     },
-    "ledger": {
-      "paper": {
-        "count": 1714,
-        "incomplete": 255,
-        "outside": 290,
-        "used": 1169
-      },
-      "personal": {
-        "count": 7793,
-        "incomplete": 929,
-        "outside": 1156,
-        "used": 5708
-      },
-      "site": {
-        "count": 1975,
-        "incomplete": 215,
-        "outside": 314,
-        "used": 1446
-      }
-    },
-    "loadings": {
-      "TC01": 0.91,
-      "TC02": 0.92,
-      "TC03": 0.89,
-      "TC04": 0.9,
-      "TC05": 0.92,
-      "TC06": 0.9,
-      "TC07": 0.92,
-      "TC08": 0.9,
-      "TC09": 0.94,
-      "TC10": 0.91,
-      "TC11": -0.02,
-      "TC12": -0.02
+    "withdrawn_loading_one_decimal": {
+      "high": 0.2,
+      "low": -0.2
     }
   },
   "rungs": {

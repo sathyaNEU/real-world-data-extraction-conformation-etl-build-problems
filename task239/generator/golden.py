@@ -50,61 +50,37 @@ def workbook(path, A):
     ws = wb.active
     ws.title = "Check"
     _head(ws, "Team Climate Index structure check, 2027 survey",
-          "Ten items stay for 2028; TC11 and TC12 are withdrawn (team-level loading under 0.75). %s teams, %s returns."
+          "Ten items stay for 2028; TC11 and TC12 are withdrawn (team-level loading under 0.75). %s teams, %s returns. "
+          "Development plans as saved on the dashboard by 19 November."
           % (WU.fmt(A["teams"]), WU.fmt(A["used"])))
     rows = []
     for c in E.ITEM_CODES:
-        rows.append([c, WU.WORDING[c], A["loadings"][c], "Stays" if c in A["stay"] else "Withdrawn"])
-    _table(ws, 4, ["Item", "Wording", "Team-level loading", "2028"], rows, [8, 70, 12, 12], [None, None, "0.00", None])
+        rows.append([c, WU.WORDING[c], A["loadings"][c], "Stays" if c in A["stay"] else "Withdrawn",
+                     A["plans"][c]["targets"], A["plans"][c]["agreed"]])
+    _table(ws, 4, ["Item", "Wording", "Team-level loading", "2028", "Team plans targeting it", "Of which agreed"], rows,
+           [8, 64, 12, 11, 13, 11], [None, None, "0.0", None, "#,##0", "#,##0"])
     for i, c in enumerate(E.ITEM_CODES, 5):
         if c not in A["stay"]:
             for j in range(1, 5):
                 ws.cell(row=i, column=j).font = Font(bold=True, color=ORANGE)
-    w2 = wb.create_sheet("Returns by channel")
-    _head(w2, "2027 returns by channel", "Returns that count under WI-SV-03 section 3, down to the returns the check used.")
-    rows = []
-    tot = [0, 0, 0, 0]
-    for ch, nm in WU.CHANNELS:
-        x = A["ledger"][ch]
-        v = [x["count"], x["outside"], x["incomplete"], x["used"]]
-        tot = [a + b for a, b in zip(tot, v)]
-        rows.append([nm[0].upper() + nm[1:]] + v)
-    rows.append(["All channels"] + tot)
-    _table(w2, 4, ["Channel", "Returns that count", "Outside the teams the dashboard reports",
-                   "Leave an item without an answer on the scale", "Used by the check"], rows,
-           [16, 14, 20, 22, 14], [None, "#,##0", "#,##0", "#,##0", "#,##0"])
-    for j in range(1, 6):
-        w2.cell(row=8, column=j).font = Font(bold=True)
-    w3 = wb.create_sheet("Favourable answers")
-    _head(w3, "Team Climate Index items: 2027 favourable answers, company-wide",
-          "As the 2027 dashboard counts them: every return that counts; don't know and unanswered are not answers on "
-          "the scale.")
-    rows = [[c, WU.WORDING[c], A["fav"][c]["base"], A["fav"][c]["fav"], A["fav"][c]["fav"] / A["fav"][c]["base"]]
-            for c in E.ITEM_CODES]
-    _table(w3, 4, ["Item", "Wording", "Answers on the scale", "Favourable answers", "Percent favourable"], rows,
-           [8, 64, 13, 13, 12], [None, None, "#,##0", "#,##0", "0.0%"])
-    w4 = wb.create_sheet("Divisions")
-    _head(w4, "Teams reported and returns used, by division",
-          "Divisions as they stood on the census date, 1 September 2027.")
-    rows = [[d, A["div"][d]["teams"], A["div"][d]["used"]] for d in [x[1] for x in P.DIVISIONS]]
-    rows.append(["All divisions", sum(r[1] for r in rows), sum(r[2] for r in rows)])
-    _table(w4, 4, ["Division", "Teams the dashboard reports", "Returns used by the check"], rows, [32, 16, 16],
-           [None, "#,##0", "#,##0"])
-    for j in range(1, 4):
-        w4.cell(row=11, column=j).font = Font(bold=True)
     w5 = wb.create_sheet("Notes")
     notes = [
         "Standard: WI-SV-03, Staff Voice survey measurement standard, 2027 edition (sections 3 to 5).",
         "Team-level loading: one common factor fitted to the twelve items' between-team correlations; the between-team "
         "covariance is the scaled between-team matrix less the pooled within-team matrix, so the members' own covariance "
-        "across the items, which every team mean carries in part, is taken out.",
-        "Scores: 1 strongly disagree to 5 strongly agree; TC04 and TC07, worded negatively, scored the other way round. "
-        "Paper codes 8 (more than one box marked) and 9 (no mark), like don't know, are not answers on the scale.",
+        "across the items, which every team mean carries in part, is taken out. Shown to one decimal place: principal "
+        "axis, maximum likelihood and the matrix's first component all give TC01 to TC10 0.9; TC11 and TC12 have "
+        "almost no team-level variance, so their loadings sit near zero and their sign means nothing.",
+        "Scores: strongly disagree 1 to strongly agree 5; TC04 and TC07, worded negatively, scored the other way round. "
+        "Don't know, more than one box and no mark are not answers on the scale.",
         "A member who returned more than one form or session counts once, at the return received last; a tablet session "
         "the tablet sent twice counts once.",
         "Tablet returns started before the tablets' second team list load on 13 September and paper packs carry July "
         "team codes, read through HR's reorganisation map of 1 September 2027.",
-        "Percent favourable: as the 2027 dashboard methodology note sets out.",
+        "Development plans: each team's plan at its latest version, from the dashboard's plans export of 19 November. "
+        "A target saved up to 5 November is held in the export as a number, the item's row on the team's page (the "
+        "team's lowest percent favourable first, ties in Table 1 order), and is read against that team's page; a target "
+        "saved from 8 November carries its item code. Agreed: the plan's status is Agreed.",
         "Data as of 19 November 2027.",
     ]
     w5["A1"] = "Notes"
@@ -112,9 +88,8 @@ def workbook(path, A):
     for i, t in enumerate(notes, 3):
         w5.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
     w5.column_dimensions["A"].width = 110
-    for sh in (ws, w2, w3, w4):
-        sh.sheet_view.showGridLines = False
-        sh.print_title_rows = "4:4"
+    ws.sheet_view.showGridLines = False
+    ws.print_title_rows = "4:4"
     wb.save(path)
     postprocess.scrub(path, "Workforce Insight", "2027-11-19")
     postprocess.finish_office(path, "2027-11-19T09:40:00Z", "2027-11-19T15:25:00Z", "Lowfirth Parcels")
@@ -141,9 +116,8 @@ def slide(path, A):
     sub = s.shapes.add_textbox(Inches(0.6), Inches(1.0), Inches(12.1), Inches(0.7))
     sub.text_frame.word_wrap = True
     q = sub.text_frame.paragraphs[0]
-    q.text = ("At team level TC11 and TC12 load %.2f and %.2f, nowhere near the standard's %.2f line; the other ten "
-              "items, the two team-practice items included, all load well above it." % (A["loadings"]["TC11"],
-                                                                                       A["loadings"]["TC12"], E.LINE))
+    q.text = ("At team level TC11 and TC12 load about zero, nowhere near the standard's %.2f line; the other ten items, "
+              "the two team-practice items included, all load %.1f." % (E.LINE, A["loadings"]["TC01"]))
     q.runs[0].font.size = Pt(14)
     q.runs[0].font.color.rgb = RGBColor.from_string("44525C")
     cd = CategoryChartData()
@@ -167,7 +141,7 @@ def slide(path, A):
     plot.gap_width = 45
     plot.has_data_labels = True
     dl = plot.data_labels
-    dl.number_format, dl.number_format_is_linked = "0.00", False
+    dl.number_format, dl.number_format_is_linked = "0.0", False
     dl.position = XL_LABEL_POSITION.OUTSIDE_END
     dl.font.size = Pt(10)
     ser = plot.series[0]

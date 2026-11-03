@@ -1,34 +1,46 @@
 {
  "task": "task239",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "psychology-behavioral-science/psychometric-measurement-scale-validation",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-01",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-03",
  "stump": "A competent analyst fits one factor to the 2027 team means of the teams with five or more returns and withdraws four items for 2028 (TC09, TC10, TC11, TC12), keeping eight; the between-team covariance net of the pooled within-team covariance keeps both practice items and withdraws only TC11 and TC12, so ten items stay.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
-  "exit": 1,
-  "date": "2026-11-01",
-  "detail": "61 checks, 3 FAIL (pair ceiling 79.1, mirror leakage 84.1, the cracker keeps every ask row), 0 WARN; the seven survivor anatomy lines written and passing; the shipped 10-17 version passed on a paper cracker sheet"
+  "exit": 0,
+  "date": "2026-11-03",
+  "checks": 61,
+  "detail": "0 FAIL, 0 WARN on target.zip 96f49ade (pair ceiling 48.5, mirror leakage 19.6, every cracker row a miss, the prompt gate PASS)"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK)",
-  "reader": "three reads: question 1 none each time, question 6 analytical; realism fixes only"
+  "leak_py": "REVIEW, no LEAK (11-03 on target.zip 96f49ade; the README, the dictionary and the codebook gone; every line ruled in the design note's Leak check)",
+  "reader": "pass 4 on 37472ed9 and pass 5 on 96f49ade: question 1 none, question 6 an analytical choice, the standard's REVIEW line harmless; pass 4's ask readings closed (drafts filed in the note; reorganised teams by convergence), pass 5's ruled harmless, the target integers' reading the ask's device left unfiled by design"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form)",
-  "nearest": "task264 v2 driver 0.07; surface promotes task237 (same pairing, two apart)"
+  "heart": "BLOCK on test.same_puzzle and test.same_driver against task264 v1 (lineage, registered 07:58 on 10-17, before this card): flagged, not relabelled; WARN people.first (Laura), repeat.gate_g, overuse.gate_g, repeat.question_form",
+  "nearest": "task311 0.07; surface promotes task237 (same pairing), task270 and task48 (card-level signatures the card differentiates)",
+  "date": "2026-11-03"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task239/determinism_check_report.md"
+  "disposition": "APPROVE (pass 3, the re-judge on target.zip 96f49ade after pass 2's FIX_NOW on 37472ed9: the loadings asked to one decimal, drafts filed in the dashboard note; derivation written first; its optional ask-2 pin declined and the residual risk recorded in the ask sheet)",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task239/determinism_check_report_pass3.md"
  },
- "returned": [],
- "resume": "PAUSED 2026-11-01 at the ask design (/fix-rubric scope, the main call frozen). The shipped 10-17 version stands in the portal: target.zip, golden/, prompt.txt, submission.md and metadata.json on this branch are the shipped ones, and nothing was rebuilt. generator/ceiling.py measures the shipped ask layer at a pair of 79.1 (the cracker keeps 48 of 48 device figures, each device a filed rule or a battery item, with or without the describing files), and no in-scope ask layer survived on paper (ten candidates under Tried and rejected: every device in this world's records is adjudicated by 3.3, 3.4 or the dashboard note, is a battery repair, is unfiled, or needs the main files' team codes relabelled). Next: an ask layer on a quantity no filed rule governs, its device one filed WHAT forces while the battery's own repair gets it wrong (task463's shape), sited on an ask-only organ; or the author's call on the asks. Owed at the reship whatever the asks: the README, the dictionary and the codebook out of the pack, the facts the call needs in the producing files' own form (the index items' question codes and the answer codes on the platform's and the bureau's exports, which clock each stamp is on); metadata.json's subdomain and prompt_shape without 0.75; the prompt without the item count and with a question form under its quota; then freeze.py check --mode rubric (the call sentence moves with the count, recorded with --allow and its reason), every free gate on the final cut, the leak reader and the judge, RESHIPPED with the heart BLOCK against task264 v1 flagged.",
+ "returned": [
+  {
+   "date": "2026-11-03",
+   "by": "in-house (the 10-30 gates re-check; no portal return, the 10-17 version pending review)",
+   "finding": "ceiling.py measured the shipped ask layer at a pair of 79.1 (the cracker kept 48 of 48 device figures, each a filed rule or a battery item); leak.py LEAK on the README, the dictionary and the codebook (describing files) and metadata.json's 0.75; the prompt stated the item count",
+   "repair": "rubric (ask layer, the call frozen): the asks rebuilt on the dashboard's development plans export (each item's plans and agreed plans; a target saved up to 5 November held as its row on the team's page; cracker 0 of 24, pair 48.5); the describing files out, their facts in the exports' own tags, labels and clock-named columns, the call's files byte-identical to the 10-17 cut once read back (asserted); the loadings asked to one decimal and drafts filed in the note after judge pass 2's FIX_NOW; the prompt without the item count; freeze.py --mode rubric exit 1 on the call sentence only (recorded), every frozen figure unchanged",
+   "commit": "RESHIPPED (task239)"
+  }
+ ],
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
@@ -36,21 +48,37 @@
  "portal_status": "",
  "portal_status_date": "",
  "ask_layer": {
-  "measured": "2026-11-01, generator/ceiling.py on target.zip 8598f854 (the shipped cut)",
-  "cracker": "the careful route written from the files alone: 48 of 48 device figures kept, 63 of 63 ask criteria with the item lines and the slide",
-  "mirror": "53 of 63 (the five item lines its team-mean loadings place on the golden's side, every device figure)",
-  "pair_ceiling": 79.1,
-  "mirror_leakage": 84.1,
-  "why": "S1 is 3.3's member rule through the battery's cross-system code match, S7 the battery's re-sent batch, S2 3.4's map for every July-structure code (packs printed 21 July, the tablets' first list loaded 24 August), S3 the dashboard note's census date walked back through the register's change fields; removing the describing files moves none of those steps",
-  "measured_before": "the shipped paper sheet: Lc 0.24, pair 37.3, with no script behind it"
+  "measured": "2026-11-03, generator/ceiling.py on target.zip 96f49ade (the shipped cut)",
+  "ask": "each item's team leaders' development plans on the dashboard and the agreed ones (24 figures)",
+  "device": "a target saved up to 5 November is held as its row on the team's page (items lowest percent favourable first, ties in Table 1 order); from 8 November as the item code",
+  "cracker": "0 of 24 plan figures (each 9 to 64 off), 27 of 51 ask criteria with the item lines scored as each loading to one decimal and each verdict apart, and the slide",
+  "mirror": "10 of 51 (the ten verdicts its eight-item route gets right)",
+  "pair_ceiling": 48.5,
+  "mirror_leakage": 19.6,
+  "full_includer": "24 of 24 (pair 61.4 beside the mirror); one primary, the residual risk recorded",
+  "measured_before": "the 10-17 layer: cracker 48 of 48, pair 79.1"
  },
  "gates_1030": {
-  "leak_py": "LEAK 2026-11-01 on the shipped pack: README.md, DATA_DICTIONARY.md and lfp_staff_voice_2027_codebook.xlsx by name (sweep 1), the dictionary naming every register column (sweep 12), metadata.json's subdomain and prompt_shape carrying 0.75 (sweep 13)",
-  "voice_check": "PASS with the data-count WARN: the prompt states the item count (Which of the twelve, the twelve items)",
-  "heart": "BLOCK 2026-11-01 on test.same_puzzle and test.same_driver inside the batch against task264 v1 (lineage, registered 07:58 on 10-17, before this card at 16:36): flagged, not relabelled; task269 v3 and task270 v11 (registered after this build shipped) now differentiated on the card; WARN repeat.question_form (which, against task267), repeat.gate_g, overuse.gate_g, people.first (George)",
-  "anatomy": "written 2026-11-01, seven lines PASS; stump risk recorded (the textbook two-level fit is the golden)"
+  "leak_py": "REVIEW, no LEAK (README, dictionary and codebook out; metadata without 0.75)",
+  "voice_check": "PASS, no warning (no item count; question form under its quota)",
+  "heart": "BLOCK on test.same_puzzle and test.same_driver against task264 v1 (lineage, registered 07:58 on 10-17, before this card): flagged, not relabelled; WARN people.first (Laura), repeat.gate_g, overuse.gate_g, repeat.question_form",
+  "anatomy": "seven lines PASS (unchanged)"
  },
  "freeze": {
-  "snapshot": "2026-11-01, task239/.freeze.json, taken before any edit; nothing rebuilt since, so no check has been run"
- }
+  "snapshot": "2026-11-03, task239/.freeze.json, taken before the first edit on the shipped 10-17 tree",
+  "check": "--mode rubric exit 1 on the prompt's call sentence only (the item count dropped, owed by the 10-30 prompt gate; --allow reaches figures.json keys only; recorded in the design note for the author, the gate not edited); every frozen figure, the stump, the card's stump and driver, the ladder and the default path unchanged; 83 ask figures moved"
+ },
+ "zip_sha256": "96f49adec05980f32c6b48b86636febbe64a8a1b746b7c78455c83d6b8df4670",
+ "ceiling": {
+  "script": "generator/ceiling.py",
+  "pair": 48.5,
+  "cracker": 74.1,
+  "mirror": 22.8,
+  "mirror_leakage_pct": 19.6,
+  "cracker_kept": "0 of 24 plan figures; the item lines (each loading to one decimal and each verdict, 24) and the slide's 3 parts",
+  "full_includer_pair": 61.4
+ },
+ "reshipped": [
+  "2026-11-03"
+ ]
 }

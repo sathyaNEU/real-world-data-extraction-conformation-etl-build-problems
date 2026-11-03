@@ -6,7 +6,9 @@ import os
 import numpy as np
 import pandas as pd
 
+import exports as XP
 import params as P
+import plans as PL
 
 ITEM_CODES = [it[0] for it in P.ITEMS]
 NEG = {it[0] for it in P.ITEMS if it[2]}
@@ -109,7 +111,52 @@ def load(target, FILES):
         reorg=pd.read_csv(p("reorg"), dtype=str, keep_default_na=False),
         tablets=pd.read_csv(p("tablets"), dtype=str, keep_default_na=False),
     )
+    # the platform's and the bureau's exports carry question tags and answer labels; read back to their codes
+    D["answers"] = XP.platform_codes(D["answers"])
+    D["paper"] = XP.bureau_codes(D["paper"])
     return D
+
+
+def read_plans(path):
+    pl = pd.read_excel(path, sheet_name="Plans", dtype=object)
+    pl["saved_at_local"] = pd.to_datetime(pl["saved_at_local"])
+    return pl
+
+
+def plan_targets(D, R, reported, read="page", every=False):
+    """each item's development targets and the agreed ones, over each plan's latest version (every version when
+    every is set); read names how a target saved as a number is taken: the item at that row of the team's page
+    (the golden), the item of that number in Table 1, the item at that row of the company page, or dropped"""
+    pl = D["plans"]
+    latest = pl.sort_values(["plan_ref", "version"]).drop_duplicates("plan_ref", keep="last")
+    use = pl if every else latest
+    pages = PL.team_pages(R, reported)
+    company = None
+    if read == "company":
+        allv = R[ITEM_CODES]
+        comp = [(PL.shown((allv[c] >= 4).sum(), allv[c].notna().sum()), k) for k, c in enumerate(ITEM_CODES)]
+        company = [ITEM_CODES[k] for v, k in sorted(comp)]
+    out = {c: dict(targets=0, agreed=0) for c in ITEM_CODES}
+    for _, r in use.iterrows():
+        for col in ("target_1", "target_2", "target_3"):
+            v = r[col]
+            if v is None or (isinstance(v, float) and np.isnan(v)):
+                continue
+            if isinstance(v, str):
+                it = v
+            else:
+                n = int(v)
+                if read == "page":
+                    it = pages[r["team_code"]][n - 1]
+                elif read == "number":
+                    it = "TC%02d" % n
+                elif read == "company":
+                    it = company[n - 1]
+                else:
+                    continue
+            out[it]["targets"] += 1
+            out[it]["agreed"] += int(r["status"] == "Agreed")
+    return out
 
 
 def norm_code(x):
@@ -306,62 +353,22 @@ def verdict(lam):
 
 
 # ---------------------------------------------------------------------------------------------- the asks
-def ledger(R):
-    out = {}
-    for ch in ("personal", "site", "paper"):
-        x = R[R["channel"] == ch]
-        out[ch] = dict(count=int(len(x)), outside=int((~x["reported"]).sum()),
-                       incomplete=int((x["reported"] & ~x["complete"]).sum()), used=int(x["used"].sum()))
-    return out
-
-
-def favourable(R):
-    """company-wide, every return that counts: each item's answers on the scale and the favourable ones among them"""
-    out = {}
-    for it in ITEM_CODES:
-        v = R[it].dropna()
-        out[it] = dict(base=int(len(v)), fav=int((v >= 4).sum()))
-    return out
-
-
-def divisions(D, R, rule="census"):
-    reg = D["register"].set_index("team_code")
-    census = P.REORG.isoformat()
-
-    def div(code):
-        r = reg.loc[code]
-        if rule == "census":
-            if r["division_since"] and r["division_since"] > census:
-                return r["previous_division"]
-            return r["division"]
-        if rule == "current":
-            return r["division"]
-        if rule == "previous":
-            return r["previous_division"] or r["division"]
-        if rule == "prefix":
-            return {P.PREFIX[d[0]]: d[1] for d in P.DIVISIONS}[code.split("-")[0]]
-        raise ValueError(rule)
-
-    used = R[R["used"]]
-    rep = sorted(set(R.loc[R["reported"], "team"]))
-    out = {d[1]: dict(teams=0, used=0) for d in P.DIVISIONS}
-    for t in rep:
-        out[div(t)]["teams"] += 1
-    for t, k in used.groupby("team").size().items():
-        out[div(t)]["used"] += int(k)
-    return out
-
-
-def solve(target, FILES):
-    D = load(target, FILES)
+def call(target, FILES):
+    """the main call alone, from the files it reads (the plans export is not one of them)"""
+    D = load(target, {k: v for k, v in FILES.items() if k != "plans"})
+    D.pop("plans", None)
     R = resolve(D, counted(D))
     R, rep = population(R)
     Y, g = scores(R)
+    return D, R, rep, Y, g
+
+
+def solve(target, FILES):
+    D, R, rep, Y, g = call(target, FILES)
     X = dict(D=D, R=R, reported=rep, Y=Y, g=g, files=FILES)
     X["lam"] = {h: loadings(Y, g, h) for h in ROUTES}
     X["golden"] = X["lam"]["muml_paf"]
     X["stay"] = verdict(X["golden"])
-    X["ledger"] = ledger(R)
-    X["fav"] = favourable(R)
-    X["div"] = divisions(D, R)
+    D["plans"] = read_plans(os.path.join(target, FILES["plans"]))
+    X["plans"] = plan_targets(D, R, rep)
     return X
