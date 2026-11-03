@@ -1,10 +1,10 @@
 {
  "task": "task276",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "human-factors-ergonomics (anthropometric-design-fit)",
  "objective": "descriptive-distribution",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-03",
  "stump": "A competent analyst places every rostered driver with the service's posture model, checks the hip point against each cab's stated seat travel and the eye point against the vision standard, and specifies Wrenfold Bodies on the FD35 chassis; the step that lands it there is treating Wrenfold's stated travel as travel its drivers can use, when its forward bulkhead stops the backrest, set at each tall driver's predicted torso angle, before the seat reaches that driver's hip point, leaving Pennick Coachbuild on the FD35 chassis failing the fewest.",
  "call": "Specify Pennick Coachbuild on FD35: it fails 166 of the 2,658 rostered drivers, 153 fewer than the runner-up Ostrel Vehicle Conversions on FD35 at 319",
@@ -16,11 +16,11 @@
   "checks": "61 checks, 0 FAIL, 0 WARN on the final cut"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-11-03, --asof 2026-10-09, sweeps 2, 3, 4 and 12 REVIEW, every line answered in DESIGN_NOTE.md ## Leak sweep answers",
-  "reader": "no leak on the pack before the stage 4 fix (read under ## Solver's-eye read in leak_check_report.md; question 6 rule application ruled harmless, DESIGN_NOTE.md ## Stage 4 findings); the reporting standard's Miles run row was reworded since, so the reader re-reads it"
+  "leak_py": "REVIEW (no LEAK), 2026-11-03 on the final cut, --asof 2026-10-09, every REVIEW line answered in DESIGN_NOTE.md ## Leak sweep answers",
+  "reader": "no leak on two cold reads (the second after the reporting standard's Miles run clause); question 6 rule application ruled harmless both times, the Systems paragraph harmless (DESIGN_NOTE.md ## Stage 4 findings, leak_check_report.md)"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.deliverables pdf+xlsx, answered under Draw; NOTE test.same_puzzle_older, differentiated on the card); no BLOCK",
+  "heart": "WARN (repeat.deliverables pdf+xlsx, answered under Draw; people.first Christine and Linda; NOTE test.same_puzzle_older, differentiated on the card); no BLOCK",
   "nearest": "task230 v1 lineage 0.06 (driver); task305 v3 0.04 (text)",
   "surface": "two pairs promoted on card axes only (task303 0.032, task258 0.024), differentiated on the card, for the author's adjudicated read"
  },
@@ -30,9 +30,9 @@
   "report": "task276/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4: re-run the leak reader once (prompt.txt and a fresh unzip of target.zip only, medium effort, cold, no sweep line and no figure in its brief), because the stage 4 fix added one clause to policy/fleet_performance_reporting_standard_issue4.pdf's Miles run row (\"measured from the odometer reading entered when the unit was fitted\", closing SF18); every other file changed in metadata or layout only (three package PDFs' toolchains, the Wrenfold note on its table's page, the disposals, crosswalk and measurement workbooks' core properties). All free gates are green on target.zip sha256 cec6dc3ecd124b1f0f1fd6c049106a1c348cce03d7256eb56478bdbad59f9515 (generator checks 128, verify, two byte-identical builds, figures_check, precut, voice-check, leak.py REVIEW answered, guard heart WARN, surface, freeze determinism PASS). The judge's APPROVE stands (no figure moved; re-judge only if the reader finds a main-call fork). If the reader is clean, ship: re-run every gate on the final cut, ledger row, card current, status SHIPPED, commit SHIPPED (task276): Specify Pennick Coachbuild on FD35: it fails 166 of the 2,658 rostered drivers, 153 fewer than the runner-up Ostrel Vehicle Conversions on FD35 at 319.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-03",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -49,9 +49,11 @@
   "container": "scrub audit clean on target and golden; every PDF reads the same through pypdf lenient and strict and poppler (H25)",
   "realism": "sweep green in checks.py",
   "input_gates": "20 files, csv docx pdf xlsx, telematics_daily_odometer_2025_26.csv 58,851 rows, 2 distractors in metadata.json",
-  "guard": "heart WARN, surface two card-axis pairs for the author",
+  "guard": "validate clean, heart WARN no BLOCK, surface two card-axis pairs (task303, task258) for the author",
   "freeze": "freeze.py check --mode determinism PASS: main call, stump and every frozen figure unchanged",
-  "precut": "61 checks, 0 FAIL, 0 WARN"
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "leak_py": "REVIEW, no LEAK, --asof 2026-10-09",
+  "final_cut": "every gate re-run on the final cut 2026-11-03; target.zip byte-identical to the PAUSED commit 3bc85b26"
  },
  "zip": {
   "path": "task276/target.zip",

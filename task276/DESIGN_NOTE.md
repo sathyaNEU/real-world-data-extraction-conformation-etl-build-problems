@@ -379,6 +379,12 @@ baseline and days counted once 0.0 each alone, against a cap of 18.3), asserted.
 - Miles baseline (SF18): no shipped sentence fixed a unit's miles from the odometer entered at fitting rather than the
   first daily reading, which moves both converters' miles and rates; closed by one clause in the reporting standard's
   Miles run row, the only wording change in the pack. A reworded document, so the reader re-reads before ship.
+- Re-read after the Miles run clause: no leak, no ranking file, no answer figure; the clause reads as the organisation's
+  own reporting rule (`leak_check_report.md`, the re-read section).
+- Re-read, question 6 (rule application): harmless, as before. The judge's full derivation rules the whole-posture
+  check analytical, and a second cold reader taking the fit test for the sight-line angles alone, never reaching the
+  backrest-against-bulkhead check, is evidence that nothing announces it.
+- Re-read, the reporting standard's "Systems" paragraph: harmless, an organisational systems note that touches only the asks.
 
 ## House fixes
 

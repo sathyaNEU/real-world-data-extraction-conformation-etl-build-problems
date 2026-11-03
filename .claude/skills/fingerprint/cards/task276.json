@@ -11,7 +11,7 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
+  "answer": "Specify Pennick Coachbuild on FD35: it fails 166 of the 2,658 rostered drivers, 153 fewer than the runner-up Ostrel Vehicle Conversions on FD35 at 319",
   "answer_source": "task276/submission.md, Final Recommendation",
   "gap": [
     "population"
@@ -168,7 +168,7 @@
       "driver": "a member's acceptance rising with the number of seeded collaborators who invite, read at launch density (task175's driver in other nouns)"
     }
   ],
-  "notes": "",
+  "notes": "Architecture 3 shipped 2026-11-03: judge DETERMINISTIC, APPROVE (Gate H decisive_step analytical); leak.py REVIEW answered, two cold leak reads with no leak; guard heart WARN (deliverable set pdf+xlsx, first names Christine and Linda), no BLOCK; surface two card-axis pairs (task303, task258) differentiated above.",
   "registered": "2026-11-03T20:54:02Z",
   "shell": {
     "question form": "how-many",
