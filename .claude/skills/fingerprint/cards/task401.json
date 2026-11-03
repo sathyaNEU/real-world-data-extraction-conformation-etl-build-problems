@@ -31,10 +31,10 @@
   "validated_decoy": false,
   "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every rating, quote and meter record correctly runs the field's key driver analysis on the tracker (overall satisfaction on the attribute ratings, Shapley shares), links the respondents to their bills and Direct Debit reviews, and books most of the fall to the new billing platform, because billing accuracy fell furthest and the sharp Direct Debit rises all came on the platform every 2026 respondent was billed on.",
+  "analyst_test": "A strong analyst who reads every rating, quote and meter record correctly runs the field's key driver analysis on the tracker (overall satisfaction on the attribute ratings, Shapley shares), links the respondents to their accounts and payments, and books about 6 of the 8.7 points to the new billing platform, because billing accuracy and bill clarity fell furthest and every H1 2026 respondent is billed on it.",
   "domain_test": "The deciding quantity is each driver's contribution to the fall in the share of satisfied new customers, estimated by a satisfaction driver model that carries each customer's disconfirmation (the cost of the use their meter recorded against the cost they were quoted at the switch), as the expectation-disconfirmation paradigm and the ACSI's expectations construct require; with hospital or school nouns there is no quote at a switch, no metered use to set against it and no six-month satisfaction tracker of switchers.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:expectation-disconfirmation-of-the-switch-quote-against-metered-use",
+  "layer2_pattern": "own:expectation-disconfirmation-of-the-switch-quote-against-the-meter-point-annual-quantity",
   "layer1": [
     "the tracker vendor's export changed layout in January 2026 (renamed columns, the overall question moved, a 0 to 10 scale exported as text with its labels)",
     "quotes keyed by quote reference and meter point numbers (MPAN, MPRN) while the tracker and billing key by account number, with accounts re-numbered on migration",
@@ -59,10 +59,10 @@
     "geography": "Great Britain (an invented domestic energy supplier)",
     "currency": "GBP",
     "org_type": "domestic energy supplier",
-    "invented_names": [],
+    "invented_names": ["Ferncastle Energy Supply Ltd"],
     "people": [
-      "Gerard Norris",
-      "Sylvia Phillips",
+      "Rita Fisher",
+      "Joanne O'Brien",
       "Elliot Davies"
     ]
   },
@@ -70,8 +70,8 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "A fall in a share of satisfied members is booked to the service the members' own ratings blame, because those ratings fell furthest and every later member was served by that service, but what moved is the gap between the amount each member was told to expect when they joined and the amount their own later use then cost, which no column holds and only the joining record set against the member's own measured use reveals; members told accurately are as satisfied as before on the same service.",
-  "driver_concrete": "Six-month satisfaction among the supplier's new customers fell between H1 2025 and H1 2026, and key driver analysis books it to billing accuracy and so to the billing platform every H1 2026 respondent was billed on; but from May 2025 the quote journey priced customers who did not give their use at Ofgem's medium typical consumption, so those using more met first bills and Direct Debit reviews well above their quote, while customers quoted on their own use were as satisfied on the new platform as H1 2025's were on the old.",
-  "stump": "A competent solver runs key driver analysis on the tracker, sees billing accuracy fall furthest, ties the H1 2026 respondents' sharp Direct Debit rises to the new billing platform they were all on, and books most of the fall to the platform, because they never set the use each customer was quoted on at the switch against the use their meter then recorded, which puts most of the fall on the quote journey's typical-use default and leaves the platform under half a point.",
+  "driver_concrete": "Six-month satisfaction among the supplier's new customers fell from about 76 to 67 per cent between H1 2025 and H1 2026, and key driver analysis books it to billing accuracy and so to the billing platform every H1 2026 respondent was billed on; but from May 2025 the quote journey stopped pre-filling each meter point's industry annual quantity (EAC, AQ), so customers were quoted on use they typed in or on Ofgem's medium typical values, and those whose meter point's quantity cost more than their quote carry most of the fall, while customers whose quote covered it were as satisfied on the new platform as H1 2025's were on the old.",
+  "stump": "A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy and bill clarity carry about two thirds of the 8.7-point fall, finds every H1 2026 respondent billed on the new platform, and books about 6 points to the billing platform, holding phase 2, because they never set the annual cost each customer was quoted at the switch against the cost of the annual quantity their meter point then showed, which puts most of the fall on the May 2025 quote journey's quotes and leaves the platform about a point at most.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task121": "task121 v4 read a satisfaction fall on the operating conditions each journey ran under, because ratings of every candidate rise and fall with the respondent's overall verdict; here the operating record is the default's own rung (bills and Direct Debit reviews), and what decides is the expectation each customer was given at the switch, the quote's assumed use set against the use the meter then recorded, a sales record no conditions file carries.",

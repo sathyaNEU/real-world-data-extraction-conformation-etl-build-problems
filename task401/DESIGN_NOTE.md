@@ -61,8 +61,9 @@ an outsourcer in November 2025. Phase 2 of the billing platform (the remaining l
   organisation `utility_or_infrastructure`, role `research_desk` (the head of customer insight owns the tracker),
   context artifact `close_out_summary` (the platform's phase 1 close-out report, which reports the programme's own
   defects and never ranks causes of the fall), calibration none. None is held by the window.
-- **People** (`guard.py names --geo uk --seed 401`): Gerard Norris (head of customer insight), Sylvia Phillips (chief
-  customer officer), Elliot Davies (billing programme director). None appears in the prompt.
+- **People** (`guard.py names --geo uk --seed 401`): Rita Fisher (head of customer insight), Joanne O'Brien (chief
+  customer officer), Elliot Davies (billing programme director). The draw's first picks (Gerard Norris, Sylvia
+  Phillips) were architecture 1's personas, unshipped, and are set aside with Aimee Williams. None appears in the prompt.
 - **Data-native sentence:** a new customer's first bills and first Direct Debit review are set by what the meter records,
   while what the customer was told to expect was set at the switch from the use they gave or, from May 2025, from
   Ofgem's medium typical consumption when they gave none, so the six-month tracker measures the distance between the
@@ -132,28 +133,30 @@ an outsourcer in November 2025. Phase 2 of the billing platform (the remaining l
    the share satisfied the measurement framework files.
 2. Run the field's key driver analysis: overall satisfaction on the attribute ratings (billing accuracy, bill clarity,
    value for money, ease of contact, resolution, the app), Shapley shares; carry each attribute's change through its
-   share: billing accuracy carries about three fifths of the fall and value for money most of the rest.
-3. Link the respondents to their accounts, bills and Direct Debit reviews (account numbers re-mapped at migration):
-   every H1 2026 respondent was billed on the new platform, first-review Direct Debit rises over a quarter went from
-   about 9 to 14 per cent of respondents, and the respondents with large rises are the dissatisfied ones.
+   share: billing accuracy and bill clarity carry about two thirds of the 8.7-point fall, value for money a quarter.
+3. Link the respondents to their accounts and payments (account numbers re-mapped at migration): every H1 2026
+   respondent is billed on the new platform, the platform's close-out report shows estimated bills rising after
+   go-live, and the Direct Debit reviews moved little (the first payment is set from the meter point's industry
+   quantity), so nothing on the payment side competes with the platform.
 4. Check the other rivals: the October tariff rise (variable-tariff respondents), the contact centre transfer
-   (respondents who called), consumption bands: each moves a few tenths.
-5. Book most of the fall to the billing platform (its bills and its Direct Debit reviews) and hold phase 2 for
-   remediation.
+   (respondents who called), use bands: each moves a few tenths.
+5. Book the fall to the billing platform and hold phase 2 for remediation.
 
-Ends on: the billing platform carries most of the fall, about 1.6 of the 3.1 points by the driver analysis, with every
-large Direct Debit rise on it, so phase 2 is held.
-Golden: the quote journey's typical-use default (from May 2025) carries about 2.3 of the 3.1 points and the platform
-under half a point; customers quoted on their own use were as satisfied on the new platform as H1 2025's were on the
-old, so phase 2 can cut over and the fix is the quote.
+Ends on: the billing platform carries most of the fall, about 6 of the 8.7 points through the billing ratings, so
+phase 2 is held.
+Golden: from May 2025 the quote journey stopped pre-filling each meter point's industry annual quantity, so customers
+were quoted on use they typed in or on typical values; those whose meter point's annual quantity cost more than their
+quote carry most of the 8.7 points, while customers whose quote covered it were as satisfied in H1 2026 on the new
+platform (81.0 per cent) as in H1 2025 on the old (79.1); the platform is not what pulled satisfaction down, phase 2 can
+cut over, and the fix is the quote journey.
 
 ## Stump sentence
 
-A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy carry about three fifths of
-the fall, ties the H1 2026 respondents' large Direct Debit rises to the new platform every one of them was billed on,
-and books most of the 3.1-point fall (about 1.6 points by the driver analysis) to the billing platform, because they
-never set the use each customer was quoted on at the switch against the use their meter then recorded, which puts about
-2.3 points on the quote journey's typical-use default and leaves the platform under half a point.
+A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy and bill clarity carry about
+two thirds of the 8.7-point fall, finds every H1 2026 respondent billed on the new platform, and books about 6 points to
+the billing platform, holding phase 2, because they never set the annual cost each customer was quoted at the switch
+against the cost of the annual quantity their meter point then showed, which puts most of the fall on the May 2025
+quote journey's quotes and leaves the platform about a point at most.
 
 ## Three rules
 
@@ -167,35 +170,40 @@ Swap: "six-month satisfaction fell because customers' bills ran above the use th
 grid nouns ("attainment fell because pupils' bills ran above their quote") no longer parses; no school, ward or
 substation has a sale that set an expectation, a meter that later measured the thing quoted, and a tracker of how the
 customer felt about the difference.
-Layer 1: the tracker vendor's export changed layout in January 2026 (the survey vendor); quotes keyed by quote reference
-and meter point numbers while the tracker and billing key by account numbers re-numbered at migration (the sales
-system and the platform); reads flagged actual, customer or estimated, with register rollovers, meter exchanges and
-two-rate registers (the meters and the read agents); legacy timestamps in UK local time against the platform's UTC
-across the clock changes (the two platforms); pence on the legacy export against pounds on the platform's, with
-accounts on both during the parallel run (the migration). Each is produced by the system named; none is placed to be
-caught.
+Layer 1: the tracker vendor's export changed in January 2026 (coded columns and dd/mm/yyyy dates with numeric answers,
+then labels and UTC timestamps; partial responses and re-invited accounts answering twice in both) (the two survey
+vendors); legacy eight-digit account numbers against the platform's ten-digit ones, the crosswalk held only in the load
+log (the migration); registrations keyed by account and meter point, quotes by quote reference, the tracker by account
+(the sales system and the platforms); industry annual quantities as several dated rows per meter point, revised after
+reads (the industry data flows); dual fuel as two registration rows, gas often starting days later (the switching
+process); tariffs by region with effective dates, variable rates stepping each quarter and fixed products holding
+their launch rates (the pricing team); UTC in the platform's load log and the 2026 export against UK local dates in
+the legacy exports across the clock changes. Each is produced by the system named; none is placed to be caught.
 Layer 2: field method (the satisfaction driver model done right): the driver set must carry what each customer was led
 to expect, the disconfirmation that satisfaction is formed against, which no attribute rating measures.
-Decisive step: setting each respondent's quoted use against the annual use their meter then recorded (cost at their
-tariff), entering that disconfirmation in the driver model, and finding that it carries most of the fall while
-customers quoted on their own use hold their H1 2025 level on the new platform.
+Decisive step: setting the annual cost each respondent was quoted at the switch against the cost, at the same tariff, of
+the annual quantity their meter point showed six months on (negative disconfirmation, a quantity of each customer that
+no file holds), and finding that customers whose quote covered that cost held their H1 2025 level on the new platform
+while the fall sits with those it did not cover.
 Not semantics: every field, code, unit and date can be read correctly (the reads' flags, the registers, kWh, pence
 against pounds, UTC against local time, the re-mapped accounts) and the driver analysis still books the fall to the
 platform, because the error is in which driver the model carries, not in reading any column.
 Not rule application: no filed rule or procedure sets a quote against metered use or says satisfaction is formed
-against expectation; executing the measurement framework, the Direct Debit guidance and the tariff terms files the
-default. The enumerated family (key driver analysis linear and Shapley, the bill and Direct Debit linkage, the rival
-checks, a use-by-period model, the disconfirmation forms) spans the platform at about 1.0 to 1.8 points and the quote
-default at 0.9 to 2.7; the standing family once the data rule out the forms that drop the overrun's size spans 1.7 to
-2.7 on the quote default with the platform under a residual of at most 0.8; the ruling-out is the fit itself, quiet,
-in a file the question gives no reason to open (the quotes).
+against expectation; executing the measurement framework, the cutover plan and the tariff terms files the
+default. The enumerated family (key driver analysis linear and Shapley; the payment linkage; after the link, metered use
+level, the Direct Debit change and the quote-basis split; the gap in seven forms) spans the platform at 5.5 to 8.1
+points on every route that skips the gap and the quote at 5.0 to 9.0 on every gap form (`## Ladder`); the standing
+family once the fit rules out the symmetric forms (twice the log-likelihood gap 119 and 225) spans 7.1 to 9.0 on the
+quote with the platform's residual between -0.9 and 1.1; the ruling-out is the fit itself, quiet, on a construction
+across three files the question gives no reason to join (the quotes, the meter point quantities, the tariffs).
 Analyst test: a strong analyst who reads every rating, quote and meter record correctly runs key driver analysis with
-Shapley shares, links the respondents to their bills and Direct Debit reviews, and books most of the fall (about 1.6 of
-3.1 points) to the billing platform, holding phase 2 (the default path's `Ends on:`).
-Estimand: the supplier's satisfaction measurement framework (a governing document in its own genre) files the WHAT:
-the share of six-month respondents satisfied, the two half-year windows, and each change's part in the movement as the
-H1 2026 share against the share had that change not been made, the others as they were; it names no driver model, no
-quote, no consumption and no expectation.
+Shapley shares, links the respondents to their accounts and payments, and books about 6 of the 8.7 points to the
+billing platform, holding phase 2 (the default path's `Ends on:`).
+Estimand: the supplier's satisfaction measurement framework (a governing document in its own genre) files the WHAT
+only: the population (customers who answered the tracker's six-month survey), the two half-years (responses received 1
+January to 30 June 2025 and 2026), the measure (the share answering 4 or 5 to the overall question) and the fall between
+them as the movement a review explains; it files no counterfactual and names no driver model, quote, consumption or
+expectation.
 No decoy: nothing is planted to be caught; no memo, briefing, draft or stakeholder figure argues for the platform, the
 close-out report states the programme's own defects and no cause of the fall, and no file computes a driver's share.
 No certified replay: no certified or published figure is reproduced to recover a method; the tracker's published
@@ -210,49 +218,193 @@ expectation-disconfirmation from a sales record.
 
 ## Survivor anatomy
 
-Actor: the deciding property, how far each customer's metered use ran above the use their quote assumed, has no column
-in any file; the quote file holds the assumed use (the customer's own or a typical value), the reads file holds the
-meter's registers, and the bills hold amounts.
+Actor: the deciding property, how far the cost of each customer's metered annual quantity ran above the cost their quote
+projected, has no column in any file; the quote log holds the quoted use and cost (no field says where the use came
+from), the meter point file holds each MPAN's EAC and each MPRN's AQ with their effective dates, and the tariffs hold
+the rates.
 Link: the comparison of the quote's assumed use with metered annual use is a cross-file comparison the driver analysis
 never asks for, joined through quote references and meter point numbers to accounts re-numbered at migration.
 Reflex: the field's method, key driver analysis with Shapley shares, is rung 0 and books about three fifths of the fall
 to billing accuracy, so to the platform.
 Back-test: the driver analysis explains H1 2025's satisfaction well with stable weights, and the platform's close-out
 report shows estimated bills rising after go-live (true and small); the textbook route validates.
-Second use: the quotes carry an ask on acquisitions; the reads carry an ask on estimated bills across the migration; the
-Direct Debit history carries an ask on reviews; the tracker carries the measure itself.
+Second use: the quote log and the registrations carry an ask on switches by channel; the meter point quantities carry
+the phase 2 scope ask's annual quantities; the tracker carries the measure itself; the Direct Debit history is a declared
+distractor (the default reads it, the golden does not).
 Shock: the fall is modest, ordinary movement; the visible events of the year are the platform go-live, the October
 tariff rise and the contact centre transfer, and no shipped statistic sorts the quote default's customers to an end.
-Pins: the measurement framework files the measure, the windows and the WHAT of each change's part; no filed sentence
-names quotes, typical consumption, expectations, disconfirmation or a comparison group.
+Pins: the measurement framework files the population, the windows, the measure and the fall to be explained; the
+cutover plan files the asks' scope and weeks; no
+filed sentence names quotes, typical consumption, expectations, disconfirmation, a counterfactual or a comparison group.
 
 ## Readability screen
 
-(Stage 2.)
+The reflex row is enumerated from the field's vocabulary for the deciding quantity (a driver's part in a satisfaction
+movement): key driver analysis, relative importance, operational linkage of responses, segment drill-down.
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 key driver analysis, Shapley shares | the framework files the measure | ratings are columns | the field's method | none | n/a | n/a | n/a | readable |
+| R1 payment linkage: platform, estimated bills, Direct Debit reviews | the close-out report states the estimated-bill rise | platform by account, reviews by row | operational linkage | close-out ties | n/a | n/a | n/a | readable |
+| R2 after the link: use level, Direct Debit change, quote-basis split | none | each a column or one join | segment drill-down | none | n/a | one group-by | n/a | readable |
+| R3 (decisive) quoted annual cost against the cost of the meter point's annual quantity | silent: no sentence names quotes against quantities | silent: no column holds the gap and no field says where a quote's use came from | silent: the reflex is R0 | silent: nothing scores the quotes | silent: the battery never sets one system's quote against another's quantity | silent: a ratio of a quoted cost to a cost built from two other files at the quote's rates | silent: the quote log ships for the switches ask, the quantities for the phase 2 ask | silent |
 
 ## Semantic fork table
 
-(Stage 2.)
+| Id | Term or convention | Golden reading | Alternatives and the call under each | Ruled out by |
+|---|---|---|---|---|
+| SF1 | satisfied | 4 or 5 on the 1 to 5 overall question | top box only; mean score: quote leads under each | the framework's measure sentence; same call (asserted) |
+| SF2 | the half-years | responses received 1 January to 30 June | invitations sent in the window; joined July to December: same call | the framework's window sentence; same call |
+| SF3 | a response | an answered overall question | any started survey: same call | the framework's counting sentence |
+| SF4 | a respondent twice in a wave | the first answered response | both, the last: same call | the framework's one-per-account sentence; same call |
+| SF5 | the 2026 export's text labels | the vendor's label for each scale point | numeric order by file position: same call | the framework's scale table |
+| SF6 | the quote that set the expectation | the accepted quote the registration names | the customer's latest or first quote: same call | the registration's quote reference; same call (asserted) |
+| SF7 | the meter point's annual quantity | the EAC or AQ in force on the response date | at six months from supply start; the latest held: same call | same call (asserted over the three) |
+| SF8 | dual fuel | the whole projected annual cost against the whole cost | fuel by fuel: same call | same call (asserted) |
+| SF9 | the rates the gap is costed at | the quote's own rates | current rates (adds October's rise): same call | same call (asserted) |
+| SF10 | two-rate meters | none: every tariff in the pack is single-rate | n/a | asserted (no two-rate tariff code) |
+| SF11 | the cause's name | the quote journey's quotes from May 2025 | the typical values alone; the use customers typed alone: each names the quote journey | same call; the basis split alone does not name it (`## Ladder`, point 2) |
+| SF12 | the fall | percentage points between the two shares | relative change: same call | the framework's reporting sentence |
 
 ## Ladder
 
-(Stage 2.)
+Measured on the clean truth (`generator/world.py`, `generator/ladder.py`, 20 seeds, mean (sd); the shipped seed is
+asserted in `checks.py` at the cut). Six-month satisfaction 76.1 to 67.4 per cent, a fall of 8.72 (0.60). Truth: the
+quote journey's quotes 7.95 (0.18), the platform 0.37, the October tariff rise 0.31, the contact centre 0.32. Mean log
+gap 0.00 in H1 2025 and 0.055 in H1 2026; respondents more than a tenth over their quote 10.0 and 44.2 per cent.
+
+| Route | Quote | Platform (the 2026 term) | Tariff rise | Contact | Names |
+|---|---|---|---|---|---|
+| R0 key driver analysis, Shapley | 0 | billing accuracy 57.0 and clarity 11.0 per cent of the fall (about 6 points) | value 26.0 per cent | 1.8 per cent | platform |
+| R2a metered use level | 0.00 (use) | 8.14 (0.74) | 0.27 | 0.42 | platform 20 of 20 |
+| R2b Direct Debit change | 0.35 (the change) | 8.13 (0.75) | -0.07 | 0.42 | platform 20 of 20 |
+| R2c quote-basis split | 2.89 (basis, collinear with 2026) | 5.54 (0.86) | 0.28 | 0.42 | platform 19 of 20 |
+| R3 gap, kinked at zero (best fit) | 8.98 (0.38) | -0.92 | 0.25 | 0.38 | quote 20 of 20 |
+| R3 gap, linear in the log | 5.22 (0.28) | 2.93 | 0.24 | 0.39 | quote 20 of 20 |
+| R3 gap, pounds | 4.97 (0.29) | 3.21 | 0.24 | 0.38 | quote 20 of 20 |
+| R3 gap, quintile bands | 7.63 (0.61) | 0.15 | 0.24 | 0.39 | quote 20 of 20 |
+| R3 gap, over by 10, 20, 30 per cent | 7.91, 8.93, 7.12 | 0.27, -0.84, 1.09 | 0.26 | 0.40 | quote 20 of 20 each |
+| Fall split on the kinked route, Shapley against every order | 8.99 (8.93 to 9.05) | -0.88 (-0.92 to -0.83) | 0.24 | 0.37 | quote |
+
+The coordinator's five points, each closed on these rows:
+1. **After the link the estimators still split.** With every respondent's quote joined to their meter point's quantity,
+   metered use level names the platform 20 of 20, the Direct Debit change 20 of 20, the quote-basis split 19 of 20 (it is
+   collinear with the 2026 platform), and only the gap names the quote, in every form. The rung where the link alone
+   still leaves the platform is R2: a solver holding both files who builds a level, a payment change or a basis split
+   files the platform. The analytical choice that survives the link is the expectation construct: the cost each customer
+   was told against the cost their own quantity then carried.
+2. **A default quote is not what decides.** No field says where a quote's use came from, and recognising Ofgem's medium
+   values names only the typical-value half: in H1 2026 the typical-value respondents were 66.4 per cent satisfied and
+   the typed-use respondents 68.1, both far under H1 2025's 76.1, with 40.3 and 47.3 per cent of them more than a tenth
+   over their quote. The default-or-not split dilutes; the gap decides.
+3. **The Direct Debit chain is quiet.** The first payment is set from the meter point's industry annual quantity (the
+   supplier's practice under Ofgem's best-available-information rule; no file states it), so reviews move by the quantity's own
+   revision and October's rise: the change books 0.35 points. The review records carry the codes a GB supplier's billing
+   system writes (scheduled review, tariff change, customer request, payment failure, meter exchange); none says why use
+   differed from a quote, and no record carries the quote.
+4. **The call's rule and margin.** The named cause is the largest contributor to the fall. The quote leads every other
+   candidate in every gap form, 20 of 20; the weakest form (pounds, symmetric) books 4.97 against a platform residual
+   of 3.21; the 10 per cent flag books 7.91. The fit rejects the symmetric forms (twice the log-likelihood gap 119 for
+   the linear form and 225 for pounds against the kinked form), asserted in `checks.py`. Shapley against every sequential
+   order moves the quote's part by 0.12. Key driver analysis in both forms names the platform.
+5. **The filed estimand is WHAT only.** The framework files the population, the windows, the measure and the fall; it
+   files no counterfactual and names no driver construction (`## Three rules`, Estimand).
+
+The graded set, at precisions every route that takes the step reproduces (asserted at the cut): the call (the May 2025
+quote journey's quotes, not the platform); the share satisfied in each half-year; the share satisfied among respondents
+whose quote covered the cost of their meter point's annual quantity, in each half-year (79.1 and 81.0 on the means
+above; a comparison with no fitted parameter, the zero line set by the quote itself); the share of respondents whose
+quote fell short, in each half-year; the quote's part of the fall stated as more than half (the weakest form gives 57
+per cent, the standing forms 82 per cent and up); the tariff rise and the contact centre each under half a point. The
+flip condition: the platform would carry the fall if respondents whose quote covered their cost had fallen as far as
+the rest. No per-cause point figure is graded.
+
+Pricing sequence, in the graded figure's units: (1) the residue the WHAT leaves is a method (which driver construction
+carries the expectation), not a knob; (2) the move needs about 7 points of a 9-point fall, and the affected population
+could produce 9; (3) the one-group-by routes are R2a to R2c, each measured above; (4) the gap's standard error on the
+quote's part is about 0.3 to 0.4 points; (5) the call is a verdict on one named cause about 7 points from the
+platform's, more than nine of its own standard errors; (6) n/a (no variance correction); (7) the zero line comes from
+the quote itself, so no subset hands over a rate; (8) the reflex sweep is the table above, run as code.
 
 ## Closure table
 
-(Stage 2.)
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | respondents who answered the overall question in each half-year | filed in the framework; C1 |
+| 2 | Unit of account | the respondent (one account) | filed; SF4 one per account |
+| 3 | Attribution window | the response date | filed; C1, no response on a boundary day moves a share across a bin (asserted) |
+| 4 | As-of dating | the meter point quantity in force on the response date | C1 across three as-of rules (SF7, asserted) |
+| 5 | Version basis | the quote as accepted; the quantity as held | C1 (SF6, SF7) |
+| 6 | Denominator | answered overall questions | filed |
+| 7 | Weighting | unweighted shares | filed (the framework reports unweighted shares) |
+| 8 | Window length | half-years | filed |
+| 9 | Boundary inclusivity | 1 January to 30 June inclusive | filed; C1 |
+| 10 | Rounding path | shares to one decimal, once | filed in the prompt's rounding sentence |
+| 11 | Tie-break | none needed: the quote leads by about 7 points | C1 |
+| 12 | Maturity and censoring | none: every respondent has six months of supply | C1 |
+| 13 | Order of operations | cost the quoted and metered quantities at the same rates, then compare | C1 (SF9, asserted) |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | first answered response per account per wave | filed (SF4) |
+| 16 | Identity normalisation | quote reference to registration to account (legacy and platform numbers) | the systems' own keys and the migration crosswalk; C4 |
+| 17 | Netting against gross | customers under their quote are not netted against those over | the graded set reports both shares separately |
+| 18 | Dimensional units | kWh in the quote and the quantities; pounds a year in the quote | units in the data; C4 |
+| 19 | Code and status semantics | the vendor's scale labels; review reason codes | the framework's scale table; codes never decide |
+| 20 | Integerisation | none | C1 |
+| 21 | Clause scope | the framework's measure covers the six-month survey only | filed scope |
+| 22 | Forward window contents | the call names a cause; nothing is forecast | n/a |
 
 ## Literal reader
 
-(Stage 2.)
+Executed word for word, the framework's measure gives 76.1 per cent satisfied in H1 2025 and 67.4 in H1 2026 (the shipped
+seed's values asserted at the cut); the question asks what pulled it down; the shipped documents name the year's
+changes (the quote and switch journey relaunch, the billing platform, the October tariff rise, the contact centre move);
+every reading of SF1 to SF12 names the quote journey's quotes as the largest contributor (asserted as a product over the
+rows that touch the deciding quantity, SF6 x SF7 x SF9); the default comes from an easy method (key driver analysis, a
+payment linkage) on the same literal estimand, never from another reading.
 
 ## Oracles
 
-(Stage 2.)
+- The platform's phase 1 close-out report: estimated bills rose for six weeks after go-live (true, small); it confirms
+  the wrong path and ties under every basis.
+- The tracker vendor's monthly summary table: ties to the respondents' records under every route; arbitrates nothing.
+- The Direct Debit history (a declared distractor): reviews move little under every route.
+- Nothing ties only under the golden.
 
 ## Ask sheet
 
-(Stage 2.)
+Measured on the cut pack by `generator/ceiling.py` (reads only `target/` and `figures.json`, shares no code with the
+generator). Each ask sits on rows the call never reads, asserted in `checks.py` (no respondent in a reload chain or a
+pilot row, none with a withdrawn or split registration). The contact centre ask planned at the draw was cut with its
+two call logs: the contact rival is carried by the tracker's own contact question.
+- **Ask A, phase 2's scope** (16 figures: accounts by region, total GWh electricity and gas). Files: the legacy
+  accounts extract, the switching flows, the meter point quantities, the cutover plan (the WHAT: accounts still supplied
+  on 1 November 2026 on at least one meter point; quantities in force that day). Primary (D2, a state rebuilt from an
+  event log): a completed loss later returned as an erroneous transfer, so the meter point is ours again on 1 November
+  while the legacy status still reads final bill pending. Hazards: withdrawn losses whose legacy status was never
+  reverted; losses notified with an effective date after 1 November; a dual-fuel account lost on one fuel; later
+  quantity revisions dated 3 to 12 November.
+- **Ask B, phase 1's loads** (18 figures: nine UK weeks by electricity-only and dual fuel). File: the load log. The
+  cutover plan files each account once in the week its last load completed, UK time. Primary (D7, the true key in a
+  chain): a reload from the platform's exception queue carries the failed load's platform number as its source
+  reference, so the account is one only through the chain; benign twin: pilot accounts whose source reference is also
+  a platform number with no earlier load. Hazard: UTC stamps against UK weeks across 26 October.
+- **Ask C, switches by channel** (24 figures: four channels by six months). Files: the registrations and the quote
+  log. The asking sentence files one switch per customer in the month its first supply started, none withdrawn.
+  Primary (D1, one event in two records): a gas registration rejected for a meter point mismatch and raised again under
+  its own reference, days after the electricity one. Hazards: withdrawals in the cooling-off period, re-registrations
+  after a withdrawal, dual fuel as two rows.
+
+| Response (cracker sheet) | Ask A | Ask B | Ask C | Verdict |
+|---|---|---|---|---|
+| Cracker: lands the call, every filed convention, the hygiene battery | 0 of 16 | 0 of 18 | 0 of 24 | miss |
+| Mirror: the most attractive wrong rung (Live status, rows by UTC week, registration rows) | 0 of 16 | 0 of 18 | 0 of 24 | miss |
+| Full includer: notices and resolves each ask's primary | 16 of 16 | 18 of 18 | 24 of 24 | keeps |
+
+Pair ceiling: 28.5 (cracker 45.0 on the call, mirror 12.0 off it), measured; with a full includer on the call it is 56.0.
+Mirror leakage: 0.0 per cent.
+Measured by: generator/ceiling.py on the cut pack (target digest bade64f2), 2026-11-03.
+Owed before ship: a second device from another family on each ask with a figure block disjoint from the primary's, so
+the full includer misses a block (`supplemental-stumping` Part 1, rule 2).
 
 ## Tried and rejected
 
@@ -342,3 +494,13 @@ names quotes, typical consumption, expectations, disconfirmation or a comparison
   is task202's reach), water network reliability (the isolation extent per burst is one group-by; transients read
   through topology sit beside task303), the human factors cells (the pairing is barred against task400), and
   interpretability (ruled a backdrop at task129 v1).
+- 2026-11-03, stage 2 on architecture 3, three cuts. (a) The first world set the first Direct Debit from the quote, so
+  the review rise was a near-copy of the gap and a solver asking why payments rose walked to the quote; the payment is
+  now set from the meter point's industry quantity at registration, and the Direct Debit change books 0.35 points and
+  names the platform (`## Ladder`, R2b). (b) A Direct Debit policy document stating that rule was drafted and dropped:
+  its sentence on industry quantities would send a reader to set quotes against quantities, and the golden never needs
+  it. (c) The contact centre ask and its two call logs were cut for budget; the contact rival stays on the tracker's own
+  contact question. The asks' first devices as drafted (stale legacy status, re-runs keyed on the legacy reference,
+  withdrawals) were each executable from the cutover plan's and the asking sentences' own pins, so they were re-sited
+  onto an erroneous-transfer return, a reload chain with a pilot twin, and a gas registration raised under its own
+  reference.
