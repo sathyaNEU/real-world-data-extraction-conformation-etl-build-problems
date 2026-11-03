@@ -1,213 +1,42 @@
 # task307 design note
 
-Architecture 2, a re-root drawn on 2026-11-02 in the same objective (Opportunity Sizing & Decision Support) and the
-same number, at the orchestrating session's call. Architecture 1 (a metropolitan planning organisation's congestion
-slot, decided by re-assigning trips to user equilibrium on each build network) was found spent at the 11-01 re-check:
-its documentation 6.1 filed the HOW, so executing the scoring guidance gave the golden (rule application), and only
-Actor held on the survivor anatomy. Its shipped pack stays at the portal, pending, untouched. This architecture moves to
-another client domain, world, dataset and prompt shell, away from transport networks and trip assignment.
-
-**Status (2026-11-02): architecture 2 spent at stage 2, on its own prototype; the number is PAUSED.** The draw below
-cleared guard.py and the three rules on paper and was committed DRAWN, but the analyst test run as code on the
-prototype world (a year of the medical bed base simulated minute by minute: 14,200 admissions, 145 winter bay
-closures) refuted its golden. A side room freed early is refilled by the next patient who needs one, so the
-counterfactual is a queue whose outcome turns on unrecorded allocation rules: the FIFO replay files the palliative
-partnership at 858 bed-days and an infection-first replay at 1,029, both under the modular ward's 1,284, while
-only the naive per-closure check files it at 1,615; both replays also block 73 to 119 recorded room takes, closures
-the record never priced. The call flips with the allocation convention, and the sentence that would close it
-names how freed side rooms are given out, which is the decisive step. Architecture 1's files (generator, prompt,
-target.zip) are back in the folder unchanged: its pack stays at the portal, pending. The sections below are the
-architecture 2 draw as filed.
+Architecture 3, a re-root drawn on 2026-11-03 in the same objective (Opportunity Sizing & Decision Support) and the
+same number, at the orchestrating session's call. Architecture 1 (a planning organisation's congestion slot) was found
+spent at the 11-01 re-check because its guidance filed the HOW; architecture 2 (a hospital's side-room shadow price)
+died on its own prototype on 11-02 because the counterfactual of a freed side room turned on unrecorded allocation
+rules. Both are recorded in `## Architecture records` and in the card's lineage; architecture 1's pack stays at the
+portal, pending, untouched. This architecture moves to a third client domain, a new world, dataset and prompt shell.
 
 ## Draw
 
-- **Card.** `.claude/skills/fingerprint/cards/task307.json`, architecture v2, v1 moved into the lineage with its fate
-  and shell. `guard.py check` at WARN only: `repeat.deliverables` (a board paper and its appraisal workbook is the set
-  an NHS trust board takes, docx+xlsx, as task273 v5 did in another domain; answered here). The older same-puzzle and
-  same-driver signatures (gap objective, decisive generator G1, pick one; Gate G binding constraint) are differentiated
-  on the card against task118 v2 and v4, task184 v1, task198 v4, task472 v1 and task140, none of whose drivers is a
-  two-pool shortage.
-- **Pairing.** Healthcare Delivery & Health Economics (client domain) / `patient-flow-beds-workforce-optimization`
-  (serves Opportunity Sizing in the taxonomy) / Opportunity Sizing & Decision Support. The headline is a sized
-  opportunity, pool to realisable: the medical bed-days the 2025/26 winter lost to bay closures and to patients
-  waiting to leave, and the share of them each scheme releases; it drives the call.
-- **World.** Stourleigh Hospitals NHS Foundation Trust, an acute trust in the fictional county of Ellenmoor, England.
-  The medical bed base at Stourleigh General Hospital is a set of wards built of six-bed bays and single side rooms;
-  infection prevention and control (IPC) nurses infectious patients (norovirus and other diarrhoea and vomiting,
-  influenza, COVID-19, RSV) in side rooms, and side rooms also hold patients at the end of life and known carriers of
-  resistant organisms. Personas drawn with `guard.py names --geo UK --seed 307`: Hazel Doyle (head of patient flow and
-  capacity, the appraisal's author), Kayleigh Howe (director of finance, the envelope's holder).
-- **Decision and quantity.** One winter scheme for 2026/27 from the trust's candidate list: a modular ward of general
-  beds, a same-day emergency care (SDEC) extension into evenings and weekends, a seven-day discharge team for simple
-  discharges, and a palliative rapid-discharge partnership with the county hospice (hospice at home and fast-track
-  continuing healthcare brokered within 24 hours of the decision). The trust's winter capacity framework files the
-  WHAT: a scheme's benefit is the medical bed-days it would have released over the 2025/26 winter (1 December 2025 to
-  31 March 2026) against the bed base as it ran, the slot goes to the largest benefit, and every scheme is reported
-  with its benefit per £1,000 of winter cost. Forward facing: the scheme runs in the 2026/27 winter, appraised on the
-  last complete winter as the framework's standard winter.
-- **Shape.** 01, ranked list under the envelope: each scheme's released bed-days and bed-days per £1,000, the call,
-  the runner-up and the gap, the chart's named bars, and the asks (`## Ask sheet`).
-- **Strategy, Gate G, family.** `binding_constraint` (the side-room pool binds and removes the natural pick, as a
-  removal that re-places nobody), Gate G `binding_constraint`, decisive generator G1 (what the bed base is limited by)
-  then G7 (the moments the limit binds), Layer 2 family `allocation_constraints`, pattern
-  `own:side-room-shortage-closes-bays-so-freed-side-rooms-release-bays`.
-- **Default path (written first, short form).** The bed model counts each scheme's beds or the bed-days it removes from
-  the stays it touches, with the medical beds as one pool: the modular ward's twelve beds over its opening days, the
-  SDEC admissions it avoids, the weekend days simple discharges wait, the days fast-track patients wait for their
-  package. Ends on the modular ward. Golden: the palliative partnership, because the fast-track patients it moves hold
-  side rooms, and a bay with one infectious patient in it closes to admissions whenever every medical side room is
-  full.
-- **Data-native sentence.** The bed movements record which bed every patient held and the bed register which beds are
-  side rooms, the IPC closure log records each bay closure and how many patients were symptomatic when it closed, and
-  the palliative team's register records each fast-track decision; only together do they show that every closure with
-  one symptomatic patient began while every medical side room was occupied, and that fast-track patients past their
-  24 hours held some of those rooms at most such moments.
-- **Abstraction sentence (the one a reviewer would say of this build and its nearest approved one).** A unit of a
-  small specialised pool is worth a block of the large pool it keeps open while the small pool is full. Not writable
-  against any approved build: task106 shares a pool across candidates (double-booking), task303 removes a shared loss
-  logged per unit, task308 values a unit by the outages it shares, task120 nets storage out of production, task127
-  (same task type) splits one patient's concurrent waits; none values a scheme through a sub-pool whose shortage
-  closes blocks of the main pool.
-- **Candidates screened at this draw (each with its default path, swap test, anatomy and bin test; the dead ones are
-  also in `## Tried and rejected`).**
-  1. *Collections (banking, collections-recovery): keep or sell charged-off segments, in-house recovery read with sold
-     accounts censored.* Default: the life-table recovery curve with sales as censoring files keep-in-house for the
-     card segment; swap passes (debt sale is collections' own); anatomy: Actor and Link fail (the sale tranche is a
-     column); bin: the stratified life table is a grouping (stumping 1.1c). Dead: `ban.strategy` (population
-     selection is task273's) and the grouping dichotomy.
-  2. *Subscriptions (product analytics, churn-propensity-uplift): a payment-recovery upgrade credited with the voluntary
-     cancellations a failed-payment notice triggers.* Default: the cancellation reason codes size the save offer
-     first; swap passes; anatomy: Back-test fails (a pilot's retention ITT lands it); bin: without the pilot the
-     triggered share is a model with a free baseline window. Dead on Gate C.
-  3. *Anticoagulant switching (pharmacology, benefit-risk): the 2027 switch cohort sits in the early-bleeding months.*
-     Default: annual rates per patient-year file the oldest group; swap passes; anatomy: Reflex fails (one-year
-     cumulative incidence from past switchers lands the golden); bin passes. Dead on Gate F and on its honest label
-     (composition by time since initiation, banned in the window).
-  4. *Retention (product analytics or actuarial lapse): customers migrated at a system go-live only if active, so a
-     curve from origin ignores delayed entry.* Default: Kaplan-Meier from start date files the loyalty programme; swap
-     passes; anatomy holds on paper; bin passes (one estimator). Dead: honest label population selection (survivorship),
-     banned in the window.
-  5. *A clash cover (actuarial, reinsurance-capital): motor and home claims from one storm in two claims systems.*
-     Default: per-line models with an annual correlation file the per-line cover; anatomy: Pins fail (the treaty's
-     occurrence clause files the unit). Dead on the WHAT screen and on the dependence fork.
-  6. *A long-short sleeve (quantitative finance, portfolio-construction-risk): shorts the prime broker cannot locate.*
-     Default: the backtest's alpha files the small-cap sleeve; anatomy: Reflex and Second use fail (borrow cost is a
-     quant default; the locate file exists only for the step). Dead.
-  7. *A discharge lounge (healthcare, patient-flow): bed-hours released only count when an ED patient is waiting.*
-     Default: bed-hours released one for one; anatomy: Reflex fails (boarding by hour is one group-by). Dead, and close
-     to task127's world.
-  8. *A booking line (healthcare, workforce): redials inflate offered calls in an Erlang sizing.* Dead on Gate C (a
-     retrial queue carries a free persistence parameter).
-  9. *Blood pressure programmes (epidemiology, health-burden): regression dilution in the cohort's slope.* Dead: the
-     usual-BP relative risks of the literature land it, and the swap reads the same in any field with noisy exposures.
-  10. *A ticketing tier (marketing, conjoint and choice): sold-out options narrow the observed choice sets.* Dead: the
-      substitution is task302's, and the choice model's specification forks.
-  11. *Delinquency (banking, collections): month-end snapshots hide episodes that cure inside the month.* Dead: the
-      step is a grain reading.
-  12. *A schools vaccination programme (epidemiology, health-burden): household secondary cases.* Dead: honest label
-      causal design (spillover), task157's, banned in the window.
-  13. *A side-room pod among the candidates (this world).* The mechanism kept, the candidate dropped: a scheme that
-      adds side rooms names the step.
-  The strongest, this draw, was prototyped in code before carding: across four seeds the bed model files the modular
-  ward (12 beds over 107 opening days, 1,284 bed-days) with the palliative partnership last on its own waits (about
-  400 to 470), while crediting each scheme with the single-patient closures it would have kept open files the
-  partnership at about 1,550 to 2,140 (generator/checks.py carries the analyst test once the generator exists).
+| Item | Value |
+|---|---|
+| Pairing | `energy-systems-utilities` / `asset-condition-maintenance` (the task type serves Opportunity Sizing): the deciding quantity is the generation each unit would lose to an unplanned runner outage before 2032, set by the year its runner's cavitation pitting reaches the company's repair limit |
+| Objective | Opportunity Sizing & Decision Support: the pool is the generation the fleet's runners put at risk of an unplanned outage before 2032, the realisable part is what the one runner the 2027 summer window can take spares, and that sized figure per million kroner decides where the window goes |
+| Forward window | the 2027 summer outage window and the generation of 2027 to 2031; nothing in it has happened yet |
+| World | Sørdal Kraft, a fictional western Norwegian municipality's hydropower company running a cascade of three stations (Øvre Sørdal, Sørdal and Nesvik) with seven Francis units; the 2027 summer window has crane, crew and runner-shop capacity for one runner refurbishment |
+| People (not in the prompt) | Rita Haugen, head of production assets; Arild Sivertsen, maintenance planner (`guard.py names --geo norway --seed 307`) |
+| Shape | 01, a ranked list with one pick: per unit the runner, pitting at the last inspection, pitting now, the year it reaches the limit, the generation at risk and that per million kroner (seven units, 42 cells), the pick, runner-up and gap (3), the chart's parts (3), and the asks' unit-year cells |
+| Deliverables | `runner_2027.xlsx` (the decision workbook) and `runner_2027.svg` (the bar chart of generation spared per million kroner, chosen unit marked) |
+| Card | `.claude/skills/fingerprint/cards/task307.json`, architecture v3, registered 2026-11-03; guard WARN `overuse.gate_g` and NOTE `test.same_puzzle_older` against task472 v2, differentiated on the card |
+| Strategy and family | `other` (wear accruing inside one band of a unit's output range that a new duty moved units into, read from each unit's own output record); Layer 2 family `estimand_identification`; generators G7 (operating window) then G13 (horizon mismatch) |
 
-## Survivor anatomy
+**Data-native sentence.** Since 2022 Units 3 and 6 have held frequency containment reserve and run with headroom at
+part load, and a Francis runner erodes by cavitation in the part-load rough zone, so their pitting has run ahead of
+their running hours, while the maintenance system's hour counters and every inspection pair before 2022 were taken
+under base-load duty, when an hour run and an hour in the rough zone moved together.
 
-Written at the draw, measured again on the cut pack at stage 3.
-Actor: whether a bay closure began while every medical side room was occupied, and which of those rooms a scheme would
-have emptied by then, sits in no column of any file; it is a relation between the closure's start and the bed
-movements of every side room at that moment.
-Link: the IPC log names a closure by ward name and bay letter at a clock time, the bed movements carry bed codes, and
-the palliative register carries the hospital number with its own decision time; the comparison of a closure's start
-with side-room occupancy at that minute is one the bed model never asks for, and no key offers it.
-Reflex: the field's own sizing, the bed model with the medical beds as one pool (added beds times days, bed-days taken
-out of the stays a scheme touches), is rung 0 and files the modular ward.
-Back-test: the capacity team's bed model, run on beds as one pool, reproduces the 2025/26 winter's occupancy at the
-23:59 bed state, so the pack's own validation confirms the easy route (to be built and measured at stage 3).
-Second use: the bed movements are the spine (occupancy and every ask's base), the bed register is the bed base, the
-IPC log is the bed state's record of closed beds, and the palliative register is how the default path sizes the
-partnership's own waits; none sits in the pack for the decisive step alone.
-Shock: closures are ordinary winter events, about one every day and a half, spread across wards and months; the
-partnership ranks last or next to last on every statistic the pack ships.
-Pins: the framework files the WHAT (benefit, window, comparison, award rule, the per-£1,000 report); no filed sentence
-names side rooms, isolation, closures or the moments the side-room pool is full.
+**The WARN, answered.** `overuse.gate_g`: forecasting is the honest mechanism, since the call turns on the year each
+runner reaches its limit under the duty it now holds; the shell (where, set out, xlsx and svg) and the strategy
+(`other`) differ from every build in the window, and the nearest driver on file sits at 0.09.
 
-## Default path
+## Architecture records
 
-The route a capable analyst takes with every file read and every filed rule executed:
-
-1. Reads the winter capacity framework: a scheme's benefit is the medical bed-days it would have released over the
-   2025/26 winter against the bed base as it ran; the slot goes to the largest benefit; each scheme also with its
-   benefit per £1,000.
-2. Takes each scheme's specification from the scheme workbook and sizes it with the bed model, the medical beds as one
-   pool: the modular ward as twelve beds over its opening days (about 1,280 bed-days); the SDEC extension as the
-   bed-days of the short-stay ambulatory admissions it would have taken (about 700); the seven-day team as the days
-   simple discharges ready at a weekend waited for a weekday (about 1,000); the palliative partnership as the days
-   fast-track patients waited beyond 24 hours after the decision (about 420).
-3. Divides by each scheme's winter cost and awards the largest benefit.
-
-Ends on: the modular ward, about 1,280 bed-days.
-Golden: the palliative rapid-discharge partnership, about 1,800 bed-days (its own waits plus the closed beds of the
-bays that stay open because the rooms its patients held are free when every medical side room would otherwise be
-full); the modular ward next.
-
-## Stump sentence
-
-A competent analyst sizes each scheme with the bed model, the medical beds as one pool, and funds the modular ward at
-about 1,280 bed-days; the step that lands it there is counting a side room as a bed, when an infectious patient can be
-nursed only in a side room, a bay with one in it closes to admissions whenever every medical side room is full, and the
-palliative partnership empties side rooms held by fast-track patients, so it keeps those bays open and releases about
-1,800.
-
-## Three rules
-
-Task type: healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization (OS): one winter scheme for
-the medical bed base, sized by the bed-days it releases.
-Domain test: the deciding quantity is the medical bed-days a scheme releases over the winter, which bed planning
-estimates by replaying the winter's bed use with the scheme in place; infection control makes side rooms a separate
-pool that infectious patients alone may use and whose shortage closes a whole bay, so what a scheme releases turns on
-the side rooms it frees at the moments that pool binds.
-Swap: "fund the classroom scheme whose freed seminar rooms keep lecture halls open" keeps the sentence and loses
-isolation, bays, infection control and end-of-life care; no other field closes a block of its main resource because a
-small specialised pool is full.
-Layer 1: patient-administration bed movements by bed code with ward codes renamed part way through the year, the IPC
-closure log by ward name and bay letter, a 23:59 bed state that crosses the October and March clock changes,
-microbiology results keyed by NHS number against the hospital number, the palliative register's decision times
-entered after the fact, a scheme workbook in each sponsor's own units. Each is what a hospital's systems produce; none
-moves the call (asserted in checks.py as the R2 block).
-Layer 2: capacity under a binding sub-pool: a scheme's released bed-days are what the bed base gains with it in place,
-and the side-room pool's shortage closes bays, so a scheme that empties side rooms at the moments they are all full
-keeps bays open that the bed model never sees.
-Decisive step: crediting each scheme with the closed bay beds it would have kept open, by checking each closure that
-began with one symptomatic patient against side-room occupancy at that moment and the rooms the scheme would have
-emptied by then, instead of counting a side room as a bed.
-Not semantics: every room type, closure reason, symptomatic count and decision time can be read right and the bed model
-still counts the partnership's own waits only; no field, code or definition says a closure followed from a full
-side-room pool or that a scheme's patients held the rooms.
-Not rule application: the framework files the estimand and the award rule and no document says how a closure arises or
-how a scheme's benefit is built; executing every filed rule with the bed model files the modular ward. The enumerated
-family (the bed model, the bed model with the ward's own closures netted, the partnership's own waits at the
-brokerage's real start dates, crediting every closure in the IPC log to every scheme that frees a side room, the
-closure-by-closure check) spreads the partnership from about 420 to about 2,300 bed-days and the call across two
-schemes; the data's own absolute split (every single-patient closure began with every medical side room occupied,
-every closure that began with a room free had two or more symptomatic patients) leaves the closure-by-closure check
-standing, with a spread to be measured at stage 2 under the pool and timing conventions the fork table closes.
-Analyst test: a strong analyst who reads every record and the framework correctly sizes each scheme with the bed model
-and funds the modular ward at about 1,280 bed-days; the golden credits the bays each scheme keeps open and funds the
-palliative partnership at about 1,800 (generator/checks.py, R3a, once the generator exists).
-Estimand: the winter capacity framework (2026/27), section 3, files the population (the winter's medical bed base and
-its patients as they ran), the outcome (medical bed-days released), the window (1 December 2025 to 31 March 2026),
-the comparison (the bed base as it ran against the bed base with the scheme in place) and the unit (bed-days, and per
-£1,000 of the scheme's winter cost); section 4 files the award rule.
-No decoy: nothing is planted; the closures, rooms and decisions are the winter as the hospital ran it, and no memo,
-sponsor figure or draft ranks the schemes.
-No certified replay: no certified or published figure is reproduced to recover a hidden method; the framework states
-the estimand and the records carry the evidence.
-Lesson: a hospital's medical beds are not one pool when infectious patients may use only side rooms; a scheme is worth
-the bays it keeps open by freeing side rooms when they are all full, which no bed count shows. No build on file teaches
-a sub-pool shortage that closes blocks of the main pool.
+- Architecture 1 (drawn 2026-10-27, urban-regional-science optimisation, a planning organisation's congestion slot
+  scored by re-assigning trips on each build network): shipped; found spent at the 11-01 re-check because executing
+  the scoring guidance with its documentation 6.1 gave the golden. Pack at the portal, pending.
+- Architecture 2 (drawn 2026-11-02, healthcare patient flow, a hospital's side-room shadow price): spent at stage 2
+  on its own prototype (11-02), no pack cut; the line is in `## Tried and rejected`.
 
 ## Tried and rejected
 
@@ -262,3 +91,38 @@ a sub-pool shortage that closes blocks of the main pool.
   The call depends on unrecorded allocation rules, so closing the fork files the HOW (a withheld rule either way).
   With this the number has screened fourteen candidates across eleven task types at the 11-02 re-root and none
   clears; PAUSED on the orchestrating session's rule.
+- 2026-11-03, architecture 3 search, each dead at the draw: pooled testing with site-clustered positives (a replay
+  of the rack order lands it and the swap reads the same in quality control); competitive anti-selection on
+  comparison sites (task163's marginal entrant, and the window bans financial institutions); a streaming renewal
+  (task302's substitution); a wind farm aero upgrade net of wakes (task187's world and task303's named-caveat
+  screen); condition-based replacement under censoring (needs a decay model, Gate C); a tourist levy's base erosion
+  (identity reconciliation, an ETL step); a heat pump peak at the coldest hours (task309's mild-against-severe
+  abstraction); cyber misattestation (semantics, and a banned org family); a DGA reset (the resets family, task152 and
+  task229); discolouration from the utility's own valve operations (task303 again); maintenance-induced failures (a key
+  join plus a window fork).
+- 2026-11-03: a council's area-based insulation round sized by metered gas with comfort take-back settling at the new
+  fabric's level, prototyped to a clean ladder (scratchpad proto307/sim7.py, eight seeds) and dropped before
+  registration: the decisive step is task258's landed lineage driver (a part settling at a fixed level rather than
+  shrinking in proportion, which both top portal responses reached by back-testing), and the world is OS06's, task304's
+  seed.
+- 2026-11-03: indirect protection from a schools vaccination programme (task135 and task180 set it aside), N-1
+  redundancy behind an asset (dead on file, task198), a dairy calving shift (task162's list), and a 2027 grant's
+  fungibility kink against each recipient's own spending (task165's gain conditioned on prior coverage), all dead on
+  the slot notes before any harness.
+- 2026-11-03: a foundation's anchor grant sized net of crowd-out of each charity's other income, prototyped
+  (scratchpad proto307c/sim1.py, sim2.py): at charity revenue's realistic year-to-year noise one grant episode per
+  charity cannot identify its own crowd-out (estimates off by 0.2 to 0.4 at 3 per cent noise), and pooling by a
+  visible trait makes it the grouping dichotomy. Dropped.
+- 2026-11-03: VAT letters credited with their suppliers' extra declarations (the total equals the recipient's own
+  extra output VAT, so the step is reading output against net VAT, semantics); cash transfers credited with market
+  spillovers to non-recipients (task500 v2's spillover through a link); a small-cluster randomisation-inference hold on
+  a labour market pilot (the swap reads the same in any field, a backdrop domain); average against marginal price
+  response to a block tariff (average price is a common default, so two cheap routes land it); a water efficiency
+  programme valued at each day's marginal source (task460's margin read interval by interval); postal bowel-screening
+  kits losing haemoglobin in transit (task248's transit loss at a temperature-driven rate); a Real Living Wage uplift
+  costed with contractors' differential policies recovered from past upratings (a withheld rule recovered from settled
+  cases). All dead at the draw.
+- 2026-11-03: a district heating renewal sized by the buildings a leak cuts off at the nearest valve crews can close,
+  prototyped (scratchpad proto307c/dh1.py) and dropped at the guard check: it is task273's architecture 3 (spent on
+  paper 10-27, the area bounded by the nearest operable boundary devices, operability kept in a maintenance history),
+  which the lexical driver score missed at 0.07.

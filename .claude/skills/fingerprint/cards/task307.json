@@ -1,11 +1,12 @@
 {
   "task": "task307",
-  "architecture": "v2",
-  "drawn": "2026-11-02",
+  "architecture": "v3",
+  "drawn": "2026-11-03",
   "slot_note": "",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "patient-flow-beds-workforce-optimization",
-  "niche": "choosing the one winter scheme an acute trust funds for its medical bed base, sized by the bed-days each would have released over the last winter, when infectious patients can be nursed only in side rooms and a bay with one in it closes whenever every medical side room is full",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "choosing the one turbine runner a Norwegian municipal hydropower company refurbishes in its 2027 summer outage window, sized by the generation an unplanned runner outage would cost before 2032, when units moved onto part-load frequency reserve since 2022 spend their hours in the rough zone where cavitation erodes the runner",
   "objective": "opportunity-sizing-decision",
   "shape": "01",
   "decision_type": "pick_one_of_n",
@@ -14,77 +15,72 @@
   "answer_source": "",
   "gap": [
     "objective",
-    "population"
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G1",
-    "G7"
+    "G7",
+    "G13"
   ],
-  "gate_g": "binding_constraint",
-  "calibration_form": "none",
-  "stump_strategy": "binding_constraint",
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every record and the trust's winter capacity framework correctly sizes each scheme with the bed model, the medical beds as one pool (beds added times days, bed-days taken out of the stays a scheme touches), and funds the modular ward; only crediting each scheme with the bays that stay open because it frees a side room at the moments every medical side room is full funds the palliative rapid-discharge partnership.",
-  "domain_test": "Bed planning sizes a winter scheme by replaying the winter's bed use with the scheme in place, and infection control makes side rooms a separate pool that infectious patients alone can use and whose shortage closes a whole bay, so what a scheme releases turns on the side rooms it frees at the moments they bind; with classrooms or server racks for wards there are no bays, side rooms or isolation and the call no longer reads.",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:side-room-shortage-closes-bays-so-freed-side-rooms-release-bays",
+  "analyst_test": "A strong analyst who reads every register, inspection and output record correctly carries each runner's cavitation damage forward from its last inspection at the rate its operating hours have added damage across the fleet's inspections, the equivalent-hours reasoning the field's condition schemes use, and refurbishes Unit 1, the hardest-run unit; only carrying the damage at the rate per hour run inside the rough zone, counted from each unit's own output record since it took up frequency reserve, gives the unit whose runner reaches its repair limit first.",
+  "domain_test": "Hydropower asset management sizes a runner refurbishment by the unplanned outage it heads off, and a Francis runner's cavitation erosion accrues in the part-load rough zone, so the damage a unit adds depends on where in its output range its hours were spent; with megawatt-hours of a solar farm or a hospital's beds there is no rough zone and no erosion to accrue, and the call no longer reads.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:runner-damage-accrues-with-rough-zone-hours-not-operating-hours",
   "layer1": [
-    "patient-administration bed movements by bed code, with ward codes renamed part way through the year",
-    "the infection prevention team's closure log by ward name and bay letter, not bed code",
-    "a daily bed state at 23:59 local time across the October and March clock changes",
-    "microbiology results keyed by NHS number while the bed movements carry the hospital number",
-    "the palliative team's fast-track register with decision times entered after the fact"
+    "SCADA output exported as hourly means by unit, with the 2023 historian migration changing tag names and the clock from local time to UTC",
+    "inspection reports by the runner's serial number while the output record is by unit, with one runner swapped between two units in 2019",
+    "a maintenance system whose operating-hours counters were reset at overhauls and re-based at a 2021 system change",
+    "reserve contracts priced per MW per hour in EUR from the TSO's market while the company books in NOK",
+    "decimal commas and Norwegian month names in the inspection exports"
   ],
-  "stakeholder_role": "head of patient flow and capacity at an acute NHS foundation trust",
-  "role_family": "capacity_planner",
+  "stakeholder_role": "the company's head of production assets, preparing the 2027 outage and investment plan",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "bed_movements",
+    "file": "unit_output_hourly.csv",
     "rows": 0,
-    "entity": "one patient's stay in one bed",
-    "grain": "bed-stay segment",
+    "entity": "one generating unit's mean output in one hour",
+    "grain": "unit x hour",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
+  "forum": "executive_team",
   "forcing_event": "budget_or_appropriation",
-  "org_family": "hospital_or_health_provider",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "England (a fictional county, Ellenmoor)",
-    "currency": "GBP",
-    "org_type": "acute NHS foundation trust",
+    "geography": "Norway (a fictional western Norwegian municipality's hydropower company, Sørdal Kraft)",
+    "currency": "NOK",
+    "org_type": "a municipally owned hydropower company running a cascade of stations with Francis units",
     "invented_names": [
-      "Stourleigh Hospitals NHS Foundation Trust",
-      "Stourleigh General Hospital",
-      "Ellenmoor County Council"
+      "Sørdal Kraft",
+      "Sørdal"
     ],
     "people": [
-      "Hazel Doyle",
-      "Kayleigh Howe"
+      "Rita Haugen",
+      "Arild Sivertsen"
     ]
   },
   "deliverables": [
-    "winter_scheme_appraisal_2026-27.xlsx",
-    "winter_capacity_board_paper.docx"
+    "runner_2027.xlsx",
+    "runner_2027.svg"
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "The decisive quantity is what a scheme releases from a resource split into two pools, when the units that need the small pool can use nothing else and a full small pool takes a whole block of the large pool out of use, so valuing each scheme at the large-pool capacity it adds or frees misses the blocks it keeps open by emptying small-pool places at the moments the small pool is full.",
-  "driver_concrete": "A winter scheme is worth the medical bed-days it would have released over the 2025/26 winter; an infectious patient can be nursed only in a side room and a bay with one in it closes to admissions whenever every medical side room is full, so the palliative rapid-discharge partnership, whose fast-track patients hold side rooms while they wait for their package, keeps bays open and releases more than the modular ward, which the bed model funds.",
-  "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
+  "driver": "The decisive quantity is when a unit's wear crosses its repair limit, and the wear accrues only in the hours the unit runs inside one band of its range; a new duty since the last inspection moved some units into that band, so wear carried forward at the rate per hour run across the fleet's inspections ranks first the unit that runs longest, while the unit that crosses first shows only in its own output record read band by band since the duty began.",
+  "driver_concrete": "Sørdal's Francis runners erode by cavitation in the rough zone between about a third and three fifths of rated output; since 2022 two units hold frequency reserve and sit there for much of their running hours, so carrying each runner's pitting forward from its last inspection at the fleet's damage per operating hour files Unit 1, the base-load unit with the most hours, while the damage per rough-zone hour read off the inspections and counted from each unit's hourly output gives the reserve unit whose runner reaches the repair limit before the 2028 winter.",
+  "stump": "A competent analyst carries each runner's cavitation damage from its last inspection at the fleet's damage per operating hour and refurbishes Unit 1; the step that lands it there is taking an hour run as an hour of wear, when the runners erode only in the rough zone and the reserve units have run there for most of their hours since 2022, so a reserve unit's runner reaches its repair limit first.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task118": "task118 v2 prices the share of a display item's gain that is new to the system rather than taken from its neighbours, and v4 values a levy cut by the welfare wedge on the quantity reached in the year; task307 v2 has no substitution, price or elasticity: a scheme is worth the bays its freed side rooms keep open while the side-room pool is full.",
-    "task184": "task184 v1 reads a shared resource's effect against the site's own record rather than its filed plan; task307 v2 reads no plan: the decisive step is that a full side-room pool closes bays, so a scheme that empties side rooms releases bays.",
-    "task198": "task198 v4 recovers an entitlement hidden under a lesser-of record; task307 v2's records are what happened, and the step is the two-pool constraint behind the bay closures, not a censored value.",
-    "task472": "task472 v1 finishes a job when its slowest parallel stream does; task307 v2 has no parallel streams: a bay closes because a separate small pool is full, and freeing that pool reopens the bay.",
-    "task140": "task140 strikes a residual after higher reservations with a dependent load; task307 v2 has no reservations or residual: the step is the shortage of a sub-pool that infectious patients alone may use."
+    "task472": "task472 v2's window is a release schedule outside the job that a saving has to reach; here the window is a band of the unit's own output range in which wear accrues, and the decisive step is counting the hours a new duty put each unit inside it from its own output record"
   },
   "lineage": [
     {
@@ -122,6 +118,40 @@
       }
     },
     {
+      "architecture": "v2",
+      "drawn": "2026-11-02",
+      "domain": "healthcare-delivery-health-economics",
+      "subdomain": "patient-flow-beds-workforce-optimization",
+      "objective": "opportunity-sizing-decision",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G7"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "binding_constraint",
+      "layer2_pattern": "own:side-room-shortage-closes-bays-so-freed-side-rooms-release-bays",
+      "forum": "board_of_directors",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "hospital_or_health_provider",
+      "driver": "The decisive quantity is what a scheme releases from a resource split into two pools, when the units that need the small pool can use nothing else and a full small pool takes a whole block of the large pool out of use, so valuing each scheme at the large-pool capacity it adds or frees misses the blocks it keeps open by emptying small-pool places at the moments the small pool is full.",
+      "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
+      "fate": "spent at stage 2 on its own prototype (2026-11-02), no pack cut: a side room freed early is refilled by the next patient who needs one, so the honest replays (FIFO 858, infection-first 1,029 bed-days) file the modular ward (1,284) and only the naive per-closure check (1,615) files the partnership; the call turns on unrecorded allocation rules and closing it would file the HOW.",
+      "shell": {
+        "question form": "whether",
+        "second-sentence opener": "appraise",
+        "rounding opener": "released",
+        "deliverable set": "docx+xlsx"
+      }
+    },
+    {
       "architecture": "seed OS09",
       "fate": "dropped at the draw 2026-10-27: a mini-split rebate programme's net savings, its honest stump labels held by the guard window and its furniture barred",
       "driver": "not drawn"
@@ -138,15 +168,20 @@
       "second-sentence opener": "score",
       "rounding opener": "annual",
       "deliverable set": "pptx+xlsx"
+    },
+    {
+      "question form": "whether",
+      "second-sentence opener": "appraise",
+      "rounding opener": "released",
+      "deliverable set": "docx+xlsx"
     }
   ],
-  "notes": "Re-root of the number at the 11-02 orchestrator's call after architecture 1 was found spent (rule application through documentation 6.1). Moved off transport networks and trip assignment to another client domain, world, dataset and shell. Architecture 2 spent at stage 2 on its own prototype (11-02): a side room freed early is refilled by the next patient who needs one, so the honest replays (FIFO 858, infection-first 1,029 bed-days) file the modular ward (1,284) and only the naive per-closure check (1,615) files the partnership; the call turns on unrecorded allocation rules. No pack cut; the number PAUSED after fourteen candidates across eleven task types.",
-  "registered": "2026-11-02T01:11:13Z",
+  "notes": "Architecture 3, a re-root at the 11-03 orchestrator's call after architecture 2 died on its own prototype (11-02). Moved to a third client domain (energy-systems-utilities, asset-condition-maintenance), a new world (a Norwegian municipal hydropower company's 2027 runner refurbishment), a new dataset (hourly unit output, runner inspections, reserve contracts, the maintenance counters) and a new shell. stump_strategy other: wear accruing in an operating band a new duty moved units into, read from each unit's output record; binding_constraint, decomposition_attribution and population_selection stand in the ban window and none is the honest label. The screens of this draw are in DESIGN_NOTE.md Tried and rejected.",
+  "registered": "2026-11-03T09:30:53Z",
   "shell": {
-    "question form": "whether",
-    "second-sentence opener": "appraise",
-    "rounding opener": "released",
-    "deliverable set": "docx+xlsx"
-  },
-  "architecture_spent": true
+    "question form": "how-much",
+    "second-sentence opener": "set",
+    "rounding opener": "pitting",
+    "deliverable set": "svg+xlsx"
+  }
 }

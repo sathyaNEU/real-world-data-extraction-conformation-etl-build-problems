@@ -1,46 +1,69 @@
 {
- "task": "task307",
- "status": "PAUSED",
- "domain": "healthcare-delivery-health-economics",
- "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design (architecture 2 spent on its prototype)",
- "updated": "2026-11-02",
- "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": ""
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [],
- "resume": "PAUSED on the orchestrating session's rule: the architecture 2 re-root screened fourteen candidates across eleven task types on 11-02 and none clears (every line in DESIGN_NOTE.md's Tried and rejected). The carded draw (the side-room shadow price at Stourleigh General, DRAWN c0b4346) died on its prototype analyst test: freed side rooms are refilled by the next patient who needs one, so the honest replays file the modular ward (FIFO 858, infection-first 1,029 against 1,284) and only the naive per-closure check (1,615) files the partnership; the call turns on unrecorded allocation rules. Architecture 1's generator, prompt and target.zip are in the folder unchanged and its pack stays at the portal, pending. Next step is the orchestrator's or author's call: a third architecture in another world, or leave architecture 1 to the portal.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "architecture_1": {
-  "status": "SHIPPED, pending at the portal (delivered 2026-10-27, zip 549ae906954d0ec4)",
-  "spent": "2026-11-01 re-check: rule application through documentation 6.1 (generator/analyst_test.py in its tree, commit bd291a3)"
- },
- "architecture_2": {
-  "status": "spent at stage 2 on its prototype (no pack cut)",
-  "card": "registered 2026-11-02T01:11:13Z, architecture_spent",
-  "measured": "FIFO replay 858, infection-first replay 1,029, naive per-closure check 1,615 bed-days for the partnership against 1,284 for the modular ward; 73 to 119 blocked room takes"
- }
+  "task": "task307",
+  "status": "DESIGN",
+  "domain": "energy-systems-utilities",
+  "objective": "opportunity-sizing-decision",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-03",
+  "stump": "A competent analyst carries each runner's cavitation damage from its last inspection at the fleet's damage per operating hour and refurbishes Unit 1; the step that lands it there is taking an hour run as an hour of wear, when the runners erode only in the rough zone and the reserve units have run there for most of their hours since 2022, so a reserve unit's runner reaches its repair limit first.",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task230 v1 lineage 0.09 (guard check at registration, WARN overuse.gate_g)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "Architecture 3 drawn and registered 2026-11-03 (Sørdal Kraft runner refurbishment, energy-systems-utilities x OS). Next: stage 2 design note sections, fork table, closure, ask sheet and precut.py; then stage 3 generator.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "architecture_1": {
+    "status": "SHIPPED, pending at the portal (delivered 2026-10-27, zip 549ae906954d0ec4)",
+    "spent": "2026-11-01 re-check: rule application through documentation 6.1 (generator/analyst_test.py in its tree, commit bd291a3)"
+  },
+  "architecture_2": {
+    "status": "spent at stage 2 on its prototype (no pack cut)",
+    "card": "registered 2026-11-02T01:11:13Z, architecture_spent",
+    "measured": "FIFO replay 858, infection-first replay 1,029, naive per-closure check 1,615 bed-days for the partnership against 1,284 for the modular ward; 73 to 119 blocked room takes",
+    "final_state_before_reroot": {
+      "domain": "healthcare-delivery-health-economics",
+      "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
+      "precut": {
+        "exit": null,
+        "date": ""
+      },
+      "leak": {
+        "leak_py": "",
+        "reader": ""
+      },
+      "duplicate_check": {
+        "heart": "",
+        "nearest": ""
+      },
+      "judge": {
+        "verdict": "",
+        "disposition": "",
+        "report": ""
+      },
+      "resume": "PAUSED on the orchestrating session's rule: the architecture 2 re-root screened fourteen candidates across eleven task types on 11-02 and none clears (every line in DESIGN_NOTE.md's Tried and rejected). The carded draw (the side-room shadow price at Stourleigh General, DRAWN c0b4346) died on its prototype analyst test: freed side rooms are refilled by the next patient who needs one, so the honest replays file the modular ward (FIFO 858, infection-first 1,029 against 1,284) and only the naive per-closure check (1,615) files the partnership; the call turns on unrecorded allocation rules. Architecture 1's generator, prompt and target.zip are in the folder unchanged and its pack stays at the portal, pending. Next step is the orchestrator's or author's call: a third architecture in another world, or leave architecture 1 to the portal."
+    },
+    "spent": "2026-11-02, stage 2, own prototype"
+  }
 }
