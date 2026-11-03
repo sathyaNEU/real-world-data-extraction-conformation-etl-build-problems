@@ -1,0 +1,169 @@
+{
+ "task": "task399",
+ "domain": "Criminology & Justice",
+ "objective": "Root-Cause Analysis",
+ "decision": "which initiative on the region's Budget 2027 shortlist removes the change in the custody remand gap at first appearance between the two years to September",
+ "deliverables": [
+  "remand_gap_briefing.pdf",
+  "remand_gap_drill.xlsx"
+ ],
+ "distractor_files": [
+  "target/remand_centre_daily_muster.csv",
+  "target/court_reminder_service_log.csv"
+ ],
+ "files": [
+  {
+   "file": "bail_house_incidents.csv",
+   "path": "target/bail_house_incidents.csv",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "supported bail provider incident log",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Coastline Bail Support Trust (fictional)"
+  },
+  {
+   "file": "bail_house_register_2025-26.xlsx",
+   "path": "target/bail_house_register_2025-26.xlsx",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "supported bail houses placement register and away records",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Coastline Bail Support Trust (fictional)"
+  },
+  {
+   "file": "bail_support_contract_schedule2.pdf",
+   "path": "target/bail_support_contract_schedule2.pdf",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "supported bail accommodation agreement, schedule of service measures",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Coastline Bail Support Trust (fictional)"
+  },
+  {
+   "file": "budget2027_bid_instructions_halsey_coast.pdf",
+   "path": "target/budget2027_bid_instructions_halsey_coast.pdf",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "Ministry of Justice Budget 2027 regional bid instructions",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Ministry of Justice (fictional region)"
+  },
+  {
+   "file": "cms_appearances_oct2024_sep2026.csv",
+   "path": "target/cms_appearances_oct2024_sep2026.csv",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "District Court case management system appearance extract, every appearance October 2024 to September 2026 at the four Halsey Coast courts",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Ministry of Justice (fictional region)"
+  },
+  {
+   "file": "court_reminder_service_log.csv",
+   "path": "target/court_reminder_service_log.csv",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "court-date text reminder service send log",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Ministry of Justice (fictional region)"
+  },
+  {
+   "file": "court_sitting_calendar_2024-2026.xlsx",
+   "path": "target/court_sitting_calendar_2024-2026.xlsx",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "court scheduling export of sittings by courtroom and list",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Ministry of Justice (fictional region)"
+  },
+  {
+   "file": "duty_lawyer_returns_2024-25.xlsx",
+   "path": "target/duty_lawyer_returns_2024-25.xlsx",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "duty lawyer service daily returns, financial year 2024/25 (October 2024 on)",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Ministry of Justice (fictional region)"
+  },
+  {
+   "file": "duty_lawyer_returns_2025-26.xlsx",
+   "path": "target/duty_lawyer_returns_2025-26.xlsx",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "duty lawyer service daily returns, financial year 2025/26",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Ministry of Justice (fictional region)"
+  },
+  {
+   "file": "duty_lawyer_returns_2026-27.xlsx",
+   "path": "target/duty_lawyer_returns_2026-27.xlsx",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "duty lawyer service daily returns, financial year 2026/27 to September",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Ministry of Justice (fictional region)"
+  },
+  {
+   "file": "em_bail_service_standard_v4.pdf",
+   "path": "target/em_bail_service_standard_v4.pdf",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "Department of Corrections EM bail address assessment service standard",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Department of Corrections (fictional region)"
+  },
+  {
+   "file": "em_bail_tracker_2025-26.xlsx",
+   "path": "target/em_bail_tracker_2025-26.xlsx",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "EM Bail Unit tracker, assessments referred to 30 January 2026",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Department of Corrections (fictional region)"
+  },
+  {
+   "file": "em_case_system_assessments.csv",
+   "path": "target/em_case_system_assessments.csv",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "EM case system export of assessments from 2 February 2026",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Department of Corrections (fictional region)"
+  },
+  {
+   "file": "em_document_uploads.csv",
+   "path": "target/em_document_uploads.csv",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "EM case system document upload log",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Department of Corrections (fictional region)"
+  },
+  {
+   "file": "offence_seriousness_scale.csv",
+   "path": "target/offence_seriousness_scale.csv",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "offence seriousness scale, offence codes to bands",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Ministry of Justice (fictional region)"
+  },
+  {
+   "file": "police_bail_summaries_2024-2026.csv",
+   "path": "target/police_bail_summaries_2024-2026.csv",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "police prosecution bail summaries for first appearances from custody",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "New Zealand Police prosecutions (fictional region)"
+  },
+  {
+   "file": "remand_centre_daily_muster.csv",
+   "path": "target/remand_centre_daily_muster.csv",
+   "source": "synthetic, constructed for this task in the layout of the producing organisation's own export",
+   "covers": "remand centre daily muster by unit",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0",
+   "organisation": "Department of Corrections (fictional region)"
+  }
+ ]
+}
