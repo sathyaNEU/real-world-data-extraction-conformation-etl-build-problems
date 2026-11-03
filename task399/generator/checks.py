@@ -26,6 +26,7 @@ import figs as F    # noqa: E402
 import world as W   # noqa: E402
 
 RESULTS = []
+PDF_APPLICATION = "Microsoft® Word for Microsoft 365"     # what the organisations save their documents from
 
 
 def check(name, ok, detail=""):
@@ -434,6 +435,17 @@ def main():
             check("H25 %s reads the same strictly and leniently" % os.path.basename(x), lenient == strict and lenient)
             check("H1 %s carries no library banner" % os.path.basename(x),
                   b"ReportLab" not in open(pth, "rb").read() and b"matplotlib" not in open(pth, "rb").read())
+            info = dict(r.metadata)
+            raw = open(pth, "rb").read()
+            subj, keys = str(info.get("/Subject", "x")).strip("() "), str(info.get("/Keywords", "x")).strip()
+            check("H1 %s carries no writer default in its information dictionary" % os.path.basename(x),
+                  b"(unspecified)" not in raw and b"/Trapped" not in raw and "/Trapped" not in info
+                  and subj not in ("", "unspecified") and keys != "",
+                  ", ".join("%s %s" % kv for kv in sorted(info.items())))
+            check("H1 %s names the application it was saved from as creator and producer" % os.path.basename(x),
+                  info.get("/Producer") == info.get("/Creator") == PDF_APPLICATION
+                  and info.get("/Author") in ("Ministry of Justice", "Department of Corrections", "Freya Herd"),
+                  "%s / %s / %s" % (info.get("/Author"), info.get("/Creator"), info.get("/Producer")))
             stamps.append((os.path.basename(x), cr, mo))
     check("H13 every document's created stamp is its own", len({s[1] for s in stamps}) == len(stamps),
           ", ".join("%s %s" % (s[0], s[1]) for s in stamps if [t[1] for t in stamps].count(s[1]) > 1))

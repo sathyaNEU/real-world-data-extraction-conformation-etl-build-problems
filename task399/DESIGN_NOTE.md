@@ -424,15 +424,22 @@ byte-clean and arbitrates without carrying a level of its own.
 `leak.py --asof 2026-11-03` on the final cut: REVIEW, no LEAK. Each REVIEW line, harmless:
 - Sweep 3, the bid instructions carry the call's words: the shortlist names all five initiatives on the same
   footing with scope and cost, ranks none and states no figure for any of them.
-- Sweep 4, the bid instructions (appearance, sitting, Kestrel, region, section, calendar), the EM standard (region,
-  section, records, calendar) and the contract schedule (Kestrel, calendar, defendant, leaves): the words are each
-  document's own genre (the measure's population, the cost bases' named records, its sections, calendar days, a
-  resident who leaves); none names a call time, another list's hours or the duty lawyer's whereabouts. Section 5's EM
+- Sweep 4, the bid instructions (appearance, sitting, Kestrel, region, section, calendar and three more), the EM
+  standard (region, section, records, calendar) and the contract schedule (Kestrel, calendar, defendant): the words
+  are each document's own genre (the measure's population, the cost bases' named records, its sections, calendar
+  days); none names a call time, another list's hours or the duty lawyer's whereabouts. Section 5's EM
   cost base reads "the EM Bail Unit's assessments of the District Courts' orders", the WHAT of ask 1's population, and
   clause 4 now names a night absent without leave beside approved leave, the WHAT of ask 2 in the golden's direction;
   neither names a court the unit's records confuse or a record that closes an absence.
 - Sweep 9, 137 dates after 3 November 2026 in the appearance extract: the next dates of cases adjourned before the
   pull, which an extract pulled on 2 November 2026 carries.
+
+The leak reader, three rounds: round 1 on 5fa60b26 clean (question 1 none, question 6 an analytical choice; one
+realism note, the uniform no-lawyer share, closed by fix 7); round 2 on e206873b clean (no leak in the three changed
+documents; its question-8 residual on a night absent without leave closed in clause 4, SF17); round 3 on 35d217ce
+clean (questions 1 to 4 none, question 6 an analytical choice; the changed clause 4 clean and settling the night
+absent without leave; both sweep items harmless). The H1 fix after it touched only the PDFs' information
+dictionaries, so no further read is owed.
 
 `guard.py heart` (sibling draws merged, task400 on the tree): WARN on overuse.org_family (a Ministry of Justice region
 is the honest label) and repeat.question_form against task398 (the decision is a pick, which the guide maps to
@@ -444,8 +451,7 @@ pair, answered on the card. Personas in the cut pack: Freya Herd only.
 
 ## Pre-ship check
 
-Written at the ship preparation (2026-11-03), on target.zip 35d217ce; a third read is owed on the one document that
-changed since round 2.
+Written at the ship (2026-11-03), on target.zip a1b4b9a0, the final cut.
 - **10/10, rule 1, re-read against the built pack:** the deciding quantity is the bail disparity within court and
   presiding officer, net of the legally relevant pre-decision factors, followed down the court's lists: the task
   type's own analysis (the round-2 judge's Gate H, domain pass: the swap test breaks it).
@@ -464,8 +470,15 @@ changed since round 2.
   round-1 findings closed) and the reader clean (question 1 none, question 6 an analytical choice, no leak in the
   three changed documents). The reader's question-8 residual (a night absent without leave is not among the absences
   clause 4 named) is closed by a WHAT in the golden's direction in clause 4 (SF17), every figure unchanged; the
-  cracker that executes the sentence keeps January 2026's nights, pair 32.8. Only the contract schedule changed, so
-  the third read covers it.
+  cracker that executes the sentence keeps January 2026's nights, pair 32.8. Round 3 on 35d217ce, the reader clean on
+  the changed schedule (questions 1 to 4 none, question 6 an analytical choice).
+- **House fix H1 (toolchain signatures):** every PDF, the three inputs and the golden briefing, carried the writing
+  library's default information entries (a Subject of "(unspecified)", an empty Keywords, a Trapped flag) and named
+  the organisation as Creator and Producer. The generator now writes each dictionary as a document saved from Word
+  writes it (Title, Author, "Microsoft® Word for Microsoft 365" as Creator and Producer, the two dates), asserted in
+  the realism sweep; each PDF's text is byte-identical before and after (pypdf lenient and strict, and pdftotext),
+  and every other member of the pack and the goldens, submission.md, metadata.json and figures.json are
+  byte-identical, so no read is owed.
 - **Round 1 closed:** F1 (section 2 of the standard files the first report as the turnaround's end, SF12), F2 (clause
   4 files the arrival to the night before departure and sets aside register entries outside them, SF13), F3 (clause
   4 files a night on approved leave as no night at the house, SF14), F4 (a call that fell on an AVL rising minute is
@@ -485,14 +498,14 @@ changed since round 2.
   analyst_test and driver_concrete, and pipeline.json's stump now say the community magistrate took the custody list
   over in December 2025 (the world's 1 December 2025) and the EM slowdown came from November 2025; the call, the
   ladder and the default path's answer are unchanged.
-- **Gates on the final cut:** checks.py 133 of 133 (the tightest graded figure the judges' gap outside AVL time, at
+- **Gates on the final cut:** checks.py 141 of 141 (the tightest graded figure the judges' gap outside AVL time, at
   0.130 of a bin; the realism sweep, the H1 metadata assertions and fix 8 among them), verify.py 40 of 40 with the
   three PDFs read back, two builds byte-identical, figures_check 62 of 62, precut 61 of 61, voice-check PASS,
   leak.py REVIEW (sweeps 3, 4 and 9 answered above), heart WARN, surface two pairs answered; ceiling.py keeps 1 of
   24 for the cracker (January 2026's nights) and 0 of 24 for the mirror, pair 32.8; target.zip sha256
-  35d217ce89cecb4a9c8c4d340481267cda5d8416f0aeca54be28374753f9edcc.
-- **Ship:** the ledger row (SHIPPED, delivered 11-03, pending review) is written; the SHIPPED commit, with target.zip
-  and golden/ force-added, waits on a clean third read.
+  a1b4b9a0ff3a40acf53a73bc1c25ac3d28125f92b8f212a1d34fbd4d4dae3488.
+- **Ship:** the ledger row (SHIPPED, delivered 11-03, pending review); committed SHIPPED with target.zip and golden/
+  force-added.
 
 ## Tried and rejected
 

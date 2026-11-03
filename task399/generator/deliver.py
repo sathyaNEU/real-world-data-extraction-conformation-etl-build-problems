@@ -218,9 +218,10 @@ def briefing(f, path):
         canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "Page %d" % doc.page)
         canvas.restoreState()
 
+    PP.word_pdf_info()
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=15 * mm,
                             bottomMargin=17 * mm, title="Budget 2027 bid: custody remand gap", author="Freya Herd",
-                            creator="Freya Herd", producer="Ministry of Justice")
+                            creator=PP.WORD_PDF, producer=PP.WORD_PDF)
     doc.build(s, onFirstPage=footer, onLaterPages=footer)
     PP.normalize_pdf(path, b"D:20261103141000+13'00'", b"D:20261103160500+13'00'")
 

@@ -25,8 +25,10 @@ META = ParagraphStyle("meta", parent=BODY, fontSize=8.6, leading=11.5, textColor
 
 
 def _pdf(path, story, title, author, created, modified):
+    PP.word_pdf_info()
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                            bottomMargin=18 * mm, title=title, author=author, creator=author, producer=author)
+                            bottomMargin=18 * mm, title=title, author=author, creator=PP.WORD_PDF,
+                            producer=PP.WORD_PDF)
     doc.build(story)
     PP.normalize_pdf(path, created, modified)
 
