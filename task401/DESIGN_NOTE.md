@@ -1,199 +1,230 @@
 # task401 design note
 
-Architecture 2, drawn 2026-11-03. The number was handed out against seed RC07 (a supplier's January imbalance bill
-blamed on low wind by the desk and on plant trips by operations, the trips' cost filed as the reference for an
-outage-cover decision). The seed's world could not carry an honest unbanned draw, and architecture 1 (a frailty virtual
-ward's prevented admissions against care home closures, Epidemiology and Public Health) died at stage 2 when the
-admission rates were set to published levels (`## Tried and rejected`). Architecture 2 keeps the seed's decision shape (a
-loss with rival explanations, one figure filed as the reference for a buy-or-not decision) and re-roots in another
-client domain, world and dataset under the same objective and number (`CLAUDE.md`, a dead design is re-rooted at once).
+Architecture 3, drawn 2026-11-03. The number was handed out against seed RC07 (a supplier's January imbalance bill
+blamed on low wind by the desk and on plant trips by operations). The seed's world could not carry an honest unbanned
+draw; architecture 1 (a frailty virtual ward's prevented admissions against care home closures, Epidemiology and Public
+Health) died at stage 2 on published admission rates, and architecture 2 (a canola hybrid blamed for a shortfall that
+July heat in late-seeded fields' flowering windows caused, Economics and Econometrics) died at stage 2 when the golden's
+own window variants straddled the bar and flexible seeding-date controls landed the golden (`## Tried and rejected`,
+the card's `lineage`). Architecture 3 re-roots in another client domain, world, dataset and shell under the same
+objective and number (`CLAUDE.md`, a dead design is re-rooted at once; one architecture per world).
 
-The world: Larkspur Hills Grain Ltd. (invented), a farmland operating company farming about 150,000 acres of owned and
-leased land in west-central Saskatchewan from 31 farm yards in the Dark Brown and Black soil zones, canola on roughly
-two fifths of its acres each year. In 2026 it moved about two fifths of its canola acres from the incumbent hybrid to a
-new hybrid of the same maturity class. Its 2026 canola came in well below the 2020 to 2025 average, and the hybrid's
-fields came in about a tenth below the incumbent's. The summer had a dry June and a heat wave from 10 to 18 July. The
-executive team decides by the seed company's early-order deadline (15 December 2026) whether the hybrid stays on the
-2027 order; the operator's variety policy keeps a hybrid when it gives up no more than five per cent of the incumbent's
-yield on the operator's own fields.
+The world: an invented GB domestic energy supplier (about 640,000 accounts, electricity and gas, credit and Direct
+Debit customers, traditional and smart meters) that tracks every new customer's satisfaction six months after the
+switch. Six-month satisfaction fell between the first halves of 2025 and 2026. In the same year the supplier relaunched
+its quote and switch journey (May 2025), moved billing to a new platform (phase 1 live 1 September 2025: every customer
+who joined from July 2025 is billed on it), raised its variable tariffs in October 2025 and moved its contact centre to
+an outsourcer in November 2025. Phase 2 of the billing platform (the remaining legacy accounts) is due to cut over on
+1 February 2027; the executive team wants the cause of the fall named before it signs the cutover off.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task401.json`, architecture v2 (v1 in `lineage` with its fate), drawn and
-  registered 2026-11-03. `guard.py check` on the draft returned WARN: `overuse.objective` (root cause in 5 of the last
-  12; the number sits in the root-cause range), `repeat.gate_g` and `overuse.gate_g` against task400 and task402
-  (answered below). One older structural repeat is differentiated on the card (task111 v1). Nearest driver 0.05 (task118
-  v3, task130 v4, task254 v2, task301 v1, task31 lineage), each screened below. A first draft drew `ban.artifact`
-  (`register`, held by task402) and the context artifact was redrawn to `published_series`.
-- **Pairing:** Economics & Econometrics (client domain) / `panel-data-estimation` / Root-Cause Analysis. The task type
-  serves Experiment & Causal and Root-Cause; `economics-econometrics x root-cause` has never been built (`guard.py
-  coverage`, 2026-11-03), and no slot note mentions canola, flowering, degree days, seeding, hybrids or crop yields
-  (`guard.py slots`, mechanism and setting nouns run separately).
-- **Objective and call:** how much of the 2026 canola shortfall the new hybrid itself caused, and so whether it stays on
-  the 2027 seed order. The move to explain is the 2026 shortfall against the operator's 2020 to 2025 yields and the
-  hybrid's deficit against the incumbent inside it; the rivals are the hybrid, the July heat, the dry June, and how the
-  season's operations ran (seeding dates, which fields carried which hybrid). The call faces forward (the 2027 order);
-  the attribution is retrospective because 2026 is the only season the hybrid ran at scale. The tag stays Root-Cause
-  Analysis: the work is naming what produced the deficit, rivals ruled out on the record; nothing is forecast beyond
-  carrying the hybrid's own effect into a season with normal seed delivery.
-- **Shape:** `03`, bridge between two totals: the 2026 canola production against the 2020 to 2025 expectation, bridged
-  by reconciling items (heat in the flowering window, the dry June, the hybrid fields' timing, the hybrid's own effect,
-  the rest), by soil zone; written out in `## Ladder` at stage 2 with the asks' repeated units.
-- **Strategy and Gate G:** `decomposition_attribution` (F8, whose movement it is: a shared external driver decides the
-  split), Gate G `decomposition_attribution`. The decisive move splits the hybrid fields' deficit between the hybrid
-  and the July heat, which harmed a field only while that field was in flower; the hybrid's fields flowered into it
-  because their seed reached most farms late and they were seeded about ten days after the incumbent's. Gate G names the
-  mechanism carrying the stump, a correct deficit booked to the wrong cause. `repeat.gate_g` against task400 and task402
-  is answered: it is the honest label, and the decisive families differ (task400 a staggered rollout's natural
-  comparison of warning response, task402 attrition of broken-off therapy courses, here a crop's own phenological clock
-  against a dated shock).
-- **Why this label is the honester one, not the passing one:** `causal_design` BLOCKs on `ban.strategy` against task400, and seeding-date confounding reads naturally as a design problem, so the choice is argued on its merits: nothing in the hybrid's placement needs repairing (within a yard it went on fields at random); the late seeding is a pathway the hybrid's own seed delivery opened, and the shape 03 bridge splits the hybrid fields' deficit between that timing pathway (heat inside flowering windows it moved) and the variety's own effect, the split decided by how the heat met each field's flowering phase. A deficit booked to the right driver through a shared shock is F8's form.
-- **Gap, pattern, generators:** gap objective (the yield by hybrid is reported correctly and is not what the order is
-  scored on, the hybrid's own effect), then time (2026's seed arrived late; the 2027 order does not repeat it); pattern
-  none; generators G7 (operating window: the heat counts only inside each field's flowering window) and G13 (horizon
-  mismatch: the 2026 deficit carries a timing the 2027 season does not).
-- **Furniture:** forum `executive_team` (the operator's executive team signs the 2027 seed order), forcing event
-  `purchase_order_or_contract` (the seed company's early-order deadline, 15 December 2026), organisation
-  `agriculture_or_food_producer` (one build on file), role `research_desk` (the agronomy director, who owns the variety
-  policy's evaluation), context artifact `published_series` (the provincial crop insurer's published average canola
-  yields by risk zone and year, which answer what the region yielded), calibration none. None is held by the last three
-  live cards (task399, task400, task402).
-- **People** (`guard.py names --geo canada --seed 401`): Lacey Caldwell (agronomy director, owner of the variety
-  policy), Brandi Carlson (chief operating officer, signs the seed order), Elaine Gregory (seed and inputs buyer). None
-  appears in the prompt.
-- **Data-native sentence:** canola loses most of what heat costs it only while it is in flower, and when a field
-  flowers is set by the heat units it has gathered since its own seeding date at its own station, so in a season with a
-  nine-day July heat wave two fields of the same hybrid seeded ten days apart lose very different shares; the operator
-  keeps no seeding date on the field record, only the seeder's own timestamped passes.
-- **Abstraction sentence:** a candidate is blamed for a loss a dated shock caused, because a one-off delay started its
-  units' own clocks late enough that their sensitive phase sat on the shock, and every season-wide, unit-level or linear
-  start-date control leaves the loss on the candidate.
-- **Same-puzzle and library tests:** the stump sentence is not "use X on Y" with X a named correction. The field's named
-  method (the season-long degree-day panel of Schlenker and Roberts, with farm and year effects) is rung 1 and files the
-  wrong answer; the decisive step is the judgment that this season's heat struck through each field's own flowering
-  window, which the season-long exposure averages away.
+- **Card:** `.claude/skills/fingerprint/cards/task401.json`, architecture v3 (v1 and v2 in `lineage` with their
+  fates), registered 2026-11-03T16:08:03Z; `guard.py check` on the registered card returns WARN, exit 0, and `validate`
+  reads 312 cards with none invalid. Two BLOCKs on the draft were cleared before registration: `ban.pattern` (the first
+  decisive generator drafted, G9, repeats task402's) was redrawn to G6, which is the honest label (the per-customer
+  satisfaction curve does not move; the 2026 pool shifted on a state no column holds), and `test.same_driver_older`
+  against task181 v6 is answered on the card (task181 traces cases to a shared resource that handled them; nothing here
+  handled customers differently). The WARNs: `overuse.objective` (root cause in 5 of the last 12; the number sits in
+  the root-cause range); `repeat.gate_g` and `overuse.gate_g` against task400 and task402, answered under Strategy.
+  NOTEs: `test.same_puzzle_older` and `test.same_driver_older` differentiated on the card against task121 v4 and v5 and
+  task181 v6. Nearest driver 0.10 (task121 v4), under the 0.12 floor, screened below.
+- **Pairing:** Marketing and Consumer Research (client domain) / `customer-satisfaction-driver-analysis` / Root-Cause
+  Analysis. The task type serves Root-Cause Analysis only; `marketing-consumer-research x root-cause` has never been
+  built (`guard.py coverage`, 2026-11-03), and the probe card passed the task-type rule. The supplier is the setting;
+  the deciding quantity is the task type's own object, each driver's contribution to a fall in the share of satisfied
+  customers.
+- **Objective and call:** what pulled six-month satisfaction down between H1 2025 and H1 2026, and how much of the fall
+  it carries, so the executive team knows whether the billing platform is to blame before phase 2 cuts over. The
+  rivals on the record: the billing platform, the October tariff rise, the contact centre transfer and the quote
+  journey relaunch. The attribution is retrospective because H1 2026 is the closed window the tracker has measured; the
+  decision it feeds faces forward (the February 2027 cutover and what the 2027 quote journey does). It stays Root-Cause
+  Analysis: the work is naming what produced the fall with the rivals ruled out on the record; nothing is forecast.
+- **Shape:** `03`, a bridge between two totals: the H1 2025 share satisfied to the H1 2026 share, bridged by reconciling
+  items (the quote journey's typical-use default, the billing platform, the tariff rise, the contact centre, the rest),
+  by fuel; the criteria arithmetic is written at stage 2 with the asks' repeated units. Architecture 2 also carried a
+  bridge; the shell is redrawn (question form what, a new second-sentence opener and a new deliverable set at stage 2).
+- **Strategy and Gate G:** `decomposition_attribution` (F8: a correctly reported movement booked to the right driver),
+  Gate G `decomposition_attribution`. The fall is real and the ratings report it correctly; they book it to billing
+  accuracy and so to the platform, and the decisive move books it to the quote default through each customer's
+  disconfirmation. `repeat.gate_g` against task400 and task402 is answered: it is the honest label, and the decisive
+  families differ (task400 a staggered rollout's natural comparison, task402 courses broken off when an actor's block
+  lapses, here the expectation a sale set against the use the meter then recorded). `causal_design` and
+  `population_selection` are barred in the window, and neither is honest here: nothing in the platform's assignment
+  needs repairing (every 2026 respondent is on it) and no one is missing from the tracker.
+- **Gap, pattern, generators:** gap objective (the ratings and the driver analysis report the fall correctly and are
+  not what the decision is scored on, the change that produced it); pattern none; generators G6 (composition shift: the
+  2026 pool shifted on each customer's disconfirmation while the satisfaction curve held) and G14 (conditioned yield:
+  the pooled driver weights do not apply to a pool conditioned on what each customer was quoted).
+- **Furniture** (read off `guard.py check` against the live window task399, task400, task402): forum `executive_team`
+  (the executive signs the phase 2 cutover off), forcing event `cutover_or_migration` (phase 2 on 1 February 2027),
+  organisation `utility_or_infrastructure`, role `research_desk` (the head of customer insight owns the tracker),
+  context artifact `close_out_summary` (the platform's phase 1 close-out report, which reports the programme's own
+  defects and never ranks causes of the fall), calibration none. None is held by the window.
+- **People** (`guard.py names --geo uk --seed 401`): Gerard Norris (head of customer insight), Sylvia Phillips (chief
+  customer officer), Elliot Davies (billing programme director). None appears in the prompt.
+- **Data-native sentence:** a new customer's first bills and first Direct Debit review are set by what the meter records,
+  while what the customer was told to expect was set at the switch from the use they gave or, from May 2025, from
+  Ofgem's medium typical consumption when they gave none, so the six-month tracker measures the distance between the
+  two, and the supplier keeps the quote and the meter in different systems under different keys.
+- **Abstraction sentence:** a fall in a share of satisfied members is booked to the service the members' own ratings
+  blame, when it comes from the gap between what each member was told to expect at joining and what their own later use
+  then cost, visible only by setting the joining record against each member's measured use. It is not writable against
+  any approved build.
+- **Same-puzzle and library tests:** the stump sentence is not "use X on Y" with X a named correction. The field's
+  method (key driver analysis with Shapley shares, the client card's first pattern) is rung 0 and files the wrong
+  answer; the decisive step is the judgment that this fall was formed against an expectation the sale set, which the
+  driver analysis cannot see because no rating measures it. The guard's same-puzzle and same-driver NOTEs (task121 v5,
+  task181 v6) are differentiated on the card.
 - **Semantic screen, one line per nearest build on the insight it spends** (`guard.py mechanisms --objective
-  root-cause`, the brief's list, and the guard's nearest drivers):
-  - task121: rest rebuilt from duty records as each event's exposure to an unstated condition. Here the exposure is
-    weather every field at a station shares; what is rebuilt is when each field was vulnerable to it. Different insight.
-  - task129: a provider blamed for a rise that scales with each unit's surroundings. Here fields at one station share
-    their surroundings and still lose differently; the loss turns on each field's own timing against a dated shock, not
-    a static property. Different insight.
-  - task111 (now and v1): which cause operates in the forward window; failures traced back to an earlier period's work
-    through a crosswalk. Here nothing carries over from an earlier period or system; the forward step only carries the
-    hybrid's own effect into a season whose seed arrives on time. Differentiated on the card.
-  - task202: how much of each source's input reaches the layer a response draws on. No transport or receiving layer
-    here. task398: a path-dependent counterfactual re-running a rule on the changed path. No rule is re-run here.
-  - task399: an advocate's absence at each call, and a capacity stock rebuilt from its events. task400: a staggered
-    rollout separating a system change from its users. task402: outcomes lost from courses broken off when the actor
-    leaves. None is a growth-stage exposure.
-  - task13 (labels against physical evidence), task11 (a threshold rebate), task36 (a filed exclusion), task50 (exposure
-    inside a funded window), task72 (an owner by agreement across transfers), task84 (identical copies grouped on a
-    composite key), task500 (a matched-reference method; household spillover): none is a timing of vulnerability.
-  - Nearest drivers at 0.05: task118 v3 (a harm easing with time since exposure began, priced from the first record),
-    task130 v4 (a cover paying only for events reported inside its own window), task254 v2 (a cut of a time-to-event
-    distribution seen through events already observed), task301 v1 (a deposit falling off with distance from a source),
-    task31 (plan volume phased over a year). None places a unit's sensitive phase by its own start date against a shock.
-- **Sources:** Schlenker and Roberts (2009, PNAS) for the season-long degree-day yield panel the field reaches for first;
-  the Canola Council of Canada's crop development guidance on heat during flowering and growth stages by heat units;
-  Environment and Climate Change Canada's daily climate data (Open Government Licence, Canada) as the template for the
-  station files; Saskatchewan Crop Insurance's published yields by risk zone as the template for the context series.
-  Every row in the pack is constructed and declared synthetic in `metadata.json`.
+  root-cause`, the brief's list and the guard's nearest drivers):
+  - task121 v4 (a satisfaction fall read on the operating conditions each journey ran under, because ratings of every
+    candidate move with the overall verdict): here the operating record is the default's own rung (bills, Direct Debit
+    reviews); what decides is a sales record no conditions file carries. task121 (rest rebuilt from duty records): no
+    rest or duty here.
+  - task129 (exposure and surroundings under a reliability standard), task202 (a source's input reaching the layer a
+    response draws on), task398 (a path-dependent rule re-run), task399 (an advocate's absence at each call), task400 (a
+    staggered rollout's natural comparison), task402 (courses broken off when an actor's block lapses, the loss read as
+    the wait's), task187 (a shortfall against a reference curve at matched conditions): none sets an expectation given
+    at entry against the cost the member then met.
+  - task401 v1 (a composition shift by closures behind a credited effect): no pool lost or gained members here; each
+    respondent's own quote moved. task401 v2 (a dated shock meeting each unit's own sensitive phase): no shock, no phase.
+  - task181 v6 (cases traced through time-ordered records to a shared resource that handled them): nothing handled the
+    customers differently. task474 v7 (an instrument's change read through members who sat both): no instrument changed.
+  - task13, task11, task36, task50, task72, task84, task111, task500 (labels against evidence, a threshold rebate, a
+    filed exclusion, exposure inside a funded window, an owner across transfers, copies on a composite key, which cause
+    operates forward, a matched-reference method): none is an expectation set at a sale.
+- **The three go/no-go screens, measured on the clean truth before the card** (`scratchpad/t401/a3/proto_e2.py` to
+  `proto_e5.py`, 20 seeds unless stated; levels set first and cited under Sources):
+  1. **Realistic levels.** Ofgem's medium typical consumption (2,700 kWh electricity, 11,500 kWh gas) against household
+     use spread as the national consumption statistics show (lognormal, about 0.5 and 0.45 in logs), 45 per cent of
+     switchers giving no use, six-month satisfaction near 78 per cent, a 30 per cent overrun worth about 25 points. In
+     the base-wide relationship tracker the quote default carries only 0.54 points (1.35 if 2025's joiners used a fifth
+     more) against a fall whose draw-to-draw spread is 0.66 (`proto_e2.py`): it fails, so the build runs on the
+     six-month new-customer tracker, where every respondent was quoted at the switch. There the quote default carries
+     2.31 points (sd 0.23) of a 3.14-point fall (sd 0.62), the platform's own effect is 0.36, and the default's driver
+     analysis books 1.61 (sd 0.22) to the platform: **lever 1.25 points (sd 0.22), 1.00 to 1.47 across overrun effects
+     of 3.0 to 5.5 in the logit.**
+  2. **The golden's method holds the call.** Every form of the disconfirmation that keeps the overrun's size names the
+     quote default: kinked log cost ratio 2.59, pounds 2.41, kWh ratio 2.01, first-review Direct Debit rise 2.70,
+     flags at 20 and 30 per cent 1.71 and 2.18, kinked linear probability 2.53; **the lowest, 1.71, against an
+     unexplained residual (the fall less the quote default, the tariff rise and the contact centre) of at most 0.83.**
+     A symmetric linear term (1.52) still clears it; a 10 per cent flag (0.93) falls inside it and is rejected by the
+     data, since satisfaction keeps falling with the overrun's size inside the flagged group (stage 2 asserts the fit).
+  3. **No easy completion.** The use each customer was quoted on enters no default rung; once it is in hand the call
+     holds across the forms above; and the cracker's flexible rungs all land wrong: **Shapley key driver analysis puts
+     62 per cent (sd 5) of the fall on billing accuracy (the platform); first-review Direct Debit rises over a quarter
+     went from 8.8 to 14.2 per cent of respondents, every one on the new platform (the platform's reviews); a use-by-
+     period model books the fall to high-use 2026 respondents (the October tariff rise).**
+- **Sources:** Ofgem, typical domestic consumption values (medium 2,700 kWh electricity, 11,500 kWh gas, from April
+  2023) for the quote default; the Department for Energy Security and Net Zero's sub-national and NEED domestic
+  consumption statistics for the spread of household use; the CMA Energy Market Investigation final report (2016) on
+  how many customers do not know their annual use; Ofgem's Direct Debit guidance (2023) for how payments are set and
+  reviewed; Oliver (1980, Journal of Marketing Research) and Anderson and Sullivan (1993, Marketing Science) for
+  expectation-disconfirmation and its asymmetry; Fornell and colleagues (1996, Journal of Marketing) for the ACSI's
+  expectations construct; Ofgem's consumer perceptions research for the level of supplier satisfaction. Every row in
+  the pack is constructed and declared synthetic in `metadata.json`; no real supplier, vendor or comparison site is
+  named.
 
 ## Default path
 
-1. Read the field register and the harvest records for 2020 to 2026; calibrate each farm's combine yield-monitor totals
-   to its elevator scale tickets; key fields across seasons by legal land description; keep the canola field-seasons.
-2. Link each field to its nearest weather station and build the season's growing degree days and extreme degree days
-   above 29.5 C over May to August, and June rainfall, from the daily station records.
-3. Fit the field's standard yield-weather panel: log yield on the hybrid indicator, the season's degree days and extreme
-   degree days, June rainfall, farm effects and year effects (Schlenker and Roberts); check it on 2020 to 2025, where it
-   tracks each farm's yields.
-4. Read the hybrid's coefficient as what it costs: about nine per cent of yield in 2026. The within-farm comparison of
-   2026 hybrid and incumbent fields agrees (about nine), and a seeding-date term built from the seeder's logs, entered
-   linearly, still leaves about seven.
-5. Compare with the variety policy's five per cent and drop the hybrid from the 2027 order.
+1. Read the six-month tracker for H1 2025 and H1 2026 (the vendor's export changed layout in January 2026) and take
+   the share satisfied the measurement framework files.
+2. Run the field's key driver analysis: overall satisfaction on the attribute ratings (billing accuracy, bill clarity,
+   value for money, ease of contact, resolution, the app), Shapley shares; carry each attribute's change through its
+   share: billing accuracy carries about three fifths of the fall and value for money most of the rest.
+3. Link the respondents to their accounts, bills and Direct Debit reviews (account numbers re-mapped at migration):
+   every H1 2026 respondent was billed on the new platform, first-review Direct Debit rises over a quarter went from
+   about 9 to 14 per cent of respondents, and the respondents with large rises are the dissatisfied ones.
+4. Check the other rivals: the October tariff rise (variable-tariff respondents), the contact centre transfer
+   (respondents who called), consumption bands: each moves a few tenths.
+5. Book most of the fall to the billing platform (its bills and its Direct Debit reviews) and hold phase 2 for
+   remediation.
 
-Ends on: a hybrid penalty of about 9 per cent, past the 5 per cent bar, so the hybrid comes off the 2027 order.
-Golden: about 0 per cent once the heat enters inside each field's own flowering window (placed by heat units from its
-seeding date at its station), so the hybrid stays on the order; the deficit was the July heat meeting fields its late
-seed delivery had pushed about ten days later.
+Ends on: the billing platform carries most of the fall, about 1.6 of the 3.1 points by the driver analysis, with every
+large Direct Debit rise on it, so phase 2 is held.
+Golden: the quote journey's typical-use default (from May 2025) carries about 2.3 of the 3.1 points and the platform
+under half a point; customers quoted on their own use were as satisfied on the new platform as H1 2025's were on the
+old, so phase 2 can cut over and the fix is the quote.
 
 ## Stump sentence
 
-A competent solver fits the season-long degree-day yield panel with farm and year effects, files a hybrid penalty of
-about 9 per cent, past the 5 per cent bar, and drops the hybrid from the 2027 order, because it compares hybrid fields
-with incumbent fields that had flowered before the July heat, when the hybrid's fields, seeded about ten days later after
-their seed arrived late, flowered into it.
+A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy carry about three fifths of
+the fall, ties the H1 2026 respondents' large Direct Debit rises to the new platform every one of them was billed on,
+and books most of the 3.1-point fall (about 1.6 points by the driver analysis) to the billing platform, because they
+never set the use each customer was quoted on at the switch against the use their meter then recorded, which puts about
+2.3 points on the quote journey's typical-use default and leaves the platform under half a point.
 
 ## Three rules
 
-Task type: `panel-data-estimation` (Economics & Econometrics), which serves Root-Cause Analysis in the taxonomy; the
-field-by-season yield panel with weather exposure is its applied core in agricultural economics.
-Domain test: the deciding quantity is the hybrid's own yield effect in a field-season panel once weather enters as the
-crop meets it, inside each field's flowering window placed by thermal time from its seeding date; the field's estimator
-is the yield-weather panel with farm and year effects and a growth-stage exposure.
-Swap: "the new protocol's wards had more readmissions because the July heat struck each ward's patients only in their
-flowering window" no longer parses; no hospital, school or shop has a unit whose own planting date and local heat
-accumulation decide when a dated heat wave can harm it.
-Layer 1: yield monitors that read above the elevator scale tickets (combines), fields renamed, split and merged between
-seasons and typed by operators into the seeder (farm operations), seeder logs in UTC against the farm's year-round
-Central Standard Time (the seeder's controller), climate records with flagged missing days and a station that changed
-climate identifier (the weather service), bushels per acre against tonnes per hectare (the farm against the crop
-insurer), seeded acres that differ from GPS areas (the insurance reports); each is produced by the system named, and none
-is placed to be caught.
-Layer 2: estimand identification (the right counterfactual): the hybrid's effect is read against the incumbent at the
-same exposure to the season's shock, and the exposure that matters is the heat inside each field's own flowering
-window, which the season-long and farm-level forms average away.
-Decisive step: entering the July heat through each field's own flowering window, timed by heat units from that field's
-seeding date (read from the seeder's passes) at its nearest station, and reading the hybrid's coefficient at equal
-heat in flower; or, equivalently, comparing hybrid and incumbent fields seeded on the same days on the same farm.
-Not semantics: every field, code, unit and date can be read correctly (bushels against tonnes, UTC against CST, the
-calibrated yields, the station link) and the season-long panel still files about 9 per cent, because the error is in
-which weather the crop met, not in reading any column.
-Not rule application: no filed rule or procedure places a field's flowering window or says that heat counts only in
-flower; executing the variety policy, the crop insurer's definitions and the yield calibration files the default. The
-enumerated family (raw 2026 means, the season-long panel, farm-by-year effects, a linear seeding-date term, the
-flowering-window exposure at thresholds of 28 to 31 C and windows of 14 to 22 days, matching on seeding date within
-farm) spans about minus 12 to plus 1 per cent on the prototype; the standing family once the data rule out the
-season-long and linear forms (their residuals carry the timing) spans about minus 3.5 to plus 0.5, every member inside
-the bar; the ruling-out is the fit itself, quiet, in a file the question gives no reason to open (the seeder's logs).
-Analyst test: a strong analyst who calibrates the yields, keys every field and links every station fits the season-long
-degree-day panel with farm and year effects and files a hybrid penalty of about 9 per cent, past the 5 per cent bar, and
-drops the hybrid (the default path's `Ends on:`).
-Estimand: the variety policy (a governing document in the operator's own genre) files the WHAT: the share of yield the
-hybrid would give up against the incumbent on the operator's fields in the coming season, with its seed delivered under
-the order's standing terms; it names no method, no weather window and no seeding date.
-No decoy: nothing is planted to be caught; no memo, briefing, draft or stakeholder figure argues for dropping the
-hybrid, and no file computes the hybrid's yield penalty.
-No certified replay: no certified or published figure is reproduced to recover a method; the provincial yields by risk
-zone answer what the region yielded and agree with the operator's own records under every route.
-Domain close call: the domains README reads Economics as macro, labour, trade and fiscal reads, and a farm operator's seed order is none of those; it stays here because the deciding quantity is the econometrics literature's own estimate (the yield-weather panel with farm and year effects), the failure is an identification failure in a two-way fixed-effects panel (exposure timing confounded with treatment), and no client domain carries agronomy; the economics shows where it is honest, in the order's seed cost per acre net of the hybrid's premium (an ask), while the filed 5 per cent yield bar stays the rule.
-Lesson: weather harms a crop through its growth stage, so a variety compared across fields seeded on different dates
-must be read at equal exposure inside each field's own sensitive window; no build on file teaches a growth-stage
-exposure or a clock started by each unit's own date against a dated shock.
+Task type: `customer-satisfaction-driver-analysis` (Marketing and Consumer Research), which serves Root-Cause Analysis
+in the taxonomy; attributing a satisfaction movement to its drivers is the task type's core.
+Domain test: the deciding quantity is each driver's contribution to the fall in the share of satisfied new customers,
+estimated by a satisfaction driver model that carries each customer's disconfirmation (the cost of the use the meter
+recorded against the cost the customer was quoted at the switch), the expectation-disconfirmation paradigm and the
+ACSI's expectations construct.
+Swap: "six-month satisfaction fell because customers' bills ran above the use they were quoted on" read with school or
+grid nouns ("attainment fell because pupils' bills ran above their quote") no longer parses; no school, ward or
+substation has a sale that set an expectation, a meter that later measured the thing quoted, and a tracker of how the
+customer felt about the difference.
+Layer 1: the tracker vendor's export changed layout in January 2026 (the survey vendor); quotes keyed by quote reference
+and meter point numbers while the tracker and billing key by account numbers re-numbered at migration (the sales
+system and the platform); reads flagged actual, customer or estimated, with register rollovers, meter exchanges and
+two-rate registers (the meters and the read agents); legacy timestamps in UK local time against the platform's UTC
+across the clock changes (the two platforms); pence on the legacy export against pounds on the platform's, with
+accounts on both during the parallel run (the migration). Each is produced by the system named; none is placed to be
+caught.
+Layer 2: field method (the satisfaction driver model done right): the driver set must carry what each customer was led
+to expect, the disconfirmation that satisfaction is formed against, which no attribute rating measures.
+Decisive step: setting each respondent's quoted use against the annual use their meter then recorded (cost at their
+tariff), entering that disconfirmation in the driver model, and finding that it carries most of the fall while
+customers quoted on their own use hold their H1 2025 level on the new platform.
+Not semantics: every field, code, unit and date can be read correctly (the reads' flags, the registers, kWh, pence
+against pounds, UTC against local time, the re-mapped accounts) and the driver analysis still books the fall to the
+platform, because the error is in which driver the model carries, not in reading any column.
+Not rule application: no filed rule or procedure sets a quote against metered use or says satisfaction is formed
+against expectation; executing the measurement framework, the Direct Debit guidance and the tariff terms files the
+default. The enumerated family (key driver analysis linear and Shapley, the bill and Direct Debit linkage, the rival
+checks, a use-by-period model, the disconfirmation forms) spans the platform at about 1.0 to 1.8 points and the quote
+default at 0.9 to 2.7; the standing family once the data rule out the forms that drop the overrun's size spans 1.7 to
+2.7 on the quote default with the platform under a residual of at most 0.8; the ruling-out is the fit itself, quiet,
+in a file the question gives no reason to open (the quotes).
+Analyst test: a strong analyst who reads every rating, quote and meter record correctly runs key driver analysis with
+Shapley shares, links the respondents to their bills and Direct Debit reviews, and books most of the fall (about 1.6 of
+3.1 points) to the billing platform, holding phase 2 (the default path's `Ends on:`).
+Estimand: the supplier's satisfaction measurement framework (a governing document in its own genre) files the WHAT:
+the share of six-month respondents satisfied, the two half-year windows, and each change's part in the movement as the
+H1 2026 share against the share had that change not been made, the others as they were; it names no driver model, no
+quote, no consumption and no expectation.
+No decoy: nothing is planted to be caught; no memo, briefing, draft or stakeholder figure argues for the platform, the
+close-out report states the programme's own defects and no cause of the fall, and no file computes a driver's share.
+No certified replay: no certified or published figure is reproduced to recover a method; the tracker's published
+monthly shares agree with the respondents' records under every route.
+Domain close call: Energy Systems and Utilities carries load, capacity, reliability, tariffs, assets and savings, and
+none of its task types reads customer satisfaction; the deciding quantity here is a satisfaction driver attribution, so
+the build sits in Marketing and Consumer Research, with the supplier as the setting and the energy shown where it is
+honest (metered use, tariffs, Direct Debit reviews).
+Lesson: satisfaction is formed against expectation, so before a fall is booked to the service the ratings name, a
+driver analysis must carry what each customer was led to expect at the sale; no build on file teaches
+expectation-disconfirmation from a sales record.
 
 ## Survivor anatomy
 
-Actor: the deciding property, how much of the July heat fell inside each field's flowering window, has no column; no
-file stores a flowering date or a seeding date on the field (the seeder's logs hold timestamped passes with operator-typed
-field names, the stations hold daily temperatures).
-Link: each field's seeding date is rebuilt from the seeder's passes (a name that only partly matches the register,
-located by legal land description) and its flowering by heat units at the nearest station, a link no key offers and no
-sentence invites; the delivery register shows when each farm's seed arrived, never when it was due.
-Reflex: the field's named method, the season-long degree-day panel with farm and year effects (Schlenker and Roberts),
-is rung 1 and files about 9 per cent, past the bar.
-Back-test: the season-long panel tracks every farm's 2020 to 2025 canola yields, and the provincial yields by risk zone
-agree with the operator's own; the textbook route validates.
-Second use: the seeder's logs carry the seeding-rate and seed-use asks and reconcile seed delivered against seed sown;
-the station files feed the season-long panel the default already uses; the delivery register is the buyer's record of
-inputs received.
-Shock: the July heat wave is the season's ordinary explained weather, read by every route; nothing in the hybrid's
-fields is an outlier on any shipped statistic, and the hybrid's deficit is not the pack's largest movement (the dry
-June and the heat move every field).
-Pins: the variety policy files the WHAT (the share of the incumbent's yield the hybrid gives up on the operator's fields
-in a season under the order's standing delivery terms); no filed sentence names seeding dates, flowering, a weather
-window, a threshold or a comparison group.
+Actor: the deciding property, how far each customer's metered use ran above the use their quote assumed, has no column
+in any file; the quote file holds the assumed use (the customer's own or a typical value), the reads file holds the
+meter's registers, and the bills hold amounts.
+Link: the comparison of the quote's assumed use with metered annual use is a cross-file comparison the driver analysis
+never asks for, joined through quote references and meter point numbers to accounts re-numbered at migration.
+Reflex: the field's method, key driver analysis with Shapley shares, is rung 0 and books about three fifths of the fall
+to billing accuracy, so to the platform.
+Back-test: the driver analysis explains H1 2025's satisfaction well with stable weights, and the platform's close-out
+report shows estimated bills rising after go-live (true and small); the textbook route validates.
+Second use: the quotes carry an ask on acquisitions; the reads carry an ask on estimated bills across the migration; the
+Direct Debit history carries an ask on reviews; the tracker carries the measure itself.
+Shock: the fall is modest, ordinary movement; the visible events of the year are the platform go-live, the October
+tariff rise and the contact centre transfer, and no shipped statistic sorts the quote default's customers to an end.
+Pins: the measurement framework files the measure, the windows and the WHAT of each change's part; no filed sentence
+names quotes, typical consumption, expectations, disconfirmation or a comparison group.
 
 ## Readability screen
 
@@ -205,35 +236,7 @@ window, a threshold or a comparison group.
 
 ## Ladder
 
-Stage 2 in progress (`generator/world.py` clean truth, `generator/ladder.py` routes; the hybrid's own effect is nil by
-construction). Measured 2026-11-03 on seed 4012026 with the heat wave starting 20 July (the coordinator's 10 to 18 July
-was moved once the climatology was set to west-central Saskatchewan normals: with May to July at normal temperatures
-canola seeded in early May flowers about 1 July and the late-seeded hybrid about two weeks later, so a mid-July wave
-would strike both):
-
-| Route | Hybrid effect | Lands |
-|---|---|---|
-| Raw 2026 means | -24.6 | drop |
-| Season-long degree-day panel, farm and year effects (rung 1, the field's method) | -18.1 | drop |
-| Farm-by-year effects | -15.0 | drop |
-| Season panel plus a linear seeding-date term (dates rebuilt from the pass logs) | -10.1 | drop |
-| Farm-by-year plus a linear seeding-date term | -8.3 | drop |
-| Season panel plus seeding-week bins by season | +3.6 | keep |
-| Cubic in seeding day by season | +4.4 | keep |
-| Fields seeded within the same three days on the same farm (20 hybrid fields matched) | +9.3 | keep (noisy) |
-| Heat in each field's flowering window, 520 heat units base 5 C, 18 days, 29.5 C | +1.0 | keep |
-| Window variants: 28 C, 31 C, 14 days, 22 days, 490 and 550 units | +2.1, -2.5, -12.0, +3.4, -8.2, +4.9 | mixed |
-
-Findings to settle before precut. First, said plainly: once the seeding dates are rebuilt from the seeder's pass logs,
-every flexible seeding-date route lands about nil and keeps the hybrid; only a linear term still files a penalty past
-the bar. The stump therefore rests on whether the solver rebuilds seeding dates at all, and the Gate F argument is that
-no file states them, no ledger, memo or invoice dates the hybrid's seed arrival (the inputs ledger carries invoice dates
-from the early-order programme), and the field's method, run on every column the field register and harvest records
-carry, files about -15 to -18. Second, the window variants spread too widely to grade the hybrid's effect finer than the
-call: canola catches up when seeded late (a 17-day seeding gap became a 6-day flowering gap in a hot June), so the
-generator must set 2026's monthly anomalies (normal May to July apart from the wave) to hold the flowering clusters about
-12 days apart, and the graded figure becomes the call with a band; each bridge item is graded only at a precision every
-defensible window reproduces, or replaced by a model-free figure (seeding dates, yields by zone and hybrid).
+(Stage 2.)
 
 ## Closure table
 
@@ -312,3 +315,30 @@ defensible window reproduces, or replaced by a model-free figure (seeding dates,
   31 C, windows 14 and 22 days, 490 and 550 heat units to flower) minus 3.5 to plus 0.5, and fields seeded on the same
   days on the same farm minus 0.6 (the same insight by matching). The spread across draws is the weather's: the pack's
   July heat wave and seed delay are set by design, never picked from draws.
+- 2026-11-03, architecture 2 dies at stage 2 on its own ladder (`generator/ladder.py`, seed 4012026, measured at commit
+  7d3a3cd), before any data was cut. First, the golden's own method forks the main call: the flowering-window variants
+  land +2.1 (28 C), -2.5 (31 C), -12.0 (a 14-day window), +3.4 (a 22-day window), -8.2 (490 heat units to flower) and
+  +4.9 (550 units) against the 5 per cent bar, so two agronomically defensible variants drop the hybrid and four keep
+  it; filing the window or the heat metric would name the decisive step, and the generator cannot close the spread under
+  realistic catch-up (a 17-day seeding gap became a 6-day flowering gap). Second, the stump rests on a functional-form
+  choice: the default path's own rung 4 already rebuilds seeding dates from the seeder's logs, and every flexible form of
+  that variable then lands the golden (seeding-week bins +3.6, a cubic +4.4, same-day matching +9.3); only a linear term
+  stays wrong (-10.1 in the season panel, -8.3 with farm-by-year effects), so Gate F would rest on the solver choosing a
+  straight line. Spent; one architecture per world, so the crop and weather world is closed to this slot. Re-rooted at
+  architecture 3 in another client domain, world and dataset.
+- 2026-11-03, architecture 3's draw, candidates set aside before the card. In the never-built satisfaction cell, the
+  client card's moves (Shapley shares, a Net Promoter change's multinomial error, penalty against reward, loyalty read
+  on later behaviour) are reflexes, and reading a fall on the conditions each response was made under is task121 v4's.
+  A broadband provider's speed promise against delivered speed died on the regulator's own reflex (the share of plan
+  speed delivered is the standard metric). The energy quote mechanism in the supplier's base-wide relationship tracker
+  carried 0.54 points (1.35 with 2025's joiners using a fifth more) against a fall whose draw-to-draw spread is 0.66
+  (`scratchpad/t401/a3/proto_e2.py`), architecture 1's death in other nouns, so the build runs on the six-month
+  new-customer tracker. In the concentrated form a first harness with the platform's own effect at 1.3 points left the
+  golden's 10 and 20 per cent flags (0.98, 1.78) under the residual (`proto_e3.py`); at the platform's realistic small
+  effect the standing forms clear it (`proto_e4.py`). Other cells screened: education multilevel (the client's three
+  cards are reflexes; teacher reassignment and special-needs assessment waits fail screen 1 or repeat the actor family),
+  health equity (an inhaler switch run practice by practice is task400's staggered rollout; discharge after a missed
+  appointment repeats task402's broken-off cases), pollution source attribution (every wind, tide and capture-zone route
+  is task202's reach), water network reliability (the isolation extent per burst is one group-by; transients read
+  through topology sit beside task303), the human factors cells (the pairing is barred against task400), and
+  interpretability (ruled a backdrop at task129 v1).
