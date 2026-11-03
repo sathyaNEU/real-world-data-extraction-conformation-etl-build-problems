@@ -54,7 +54,7 @@ def make_pack():
     pack.lctr_log(TARGET, members, sim)
     pack.directory(TARGET, sim)
     pack.cit(TARGET, sim)
-    pack.bags(TARGET, sim)
+    pack.bags(TARGET, sim, members)
     pack.str_log(TARGET, members, by_role)
     pack.case_register(TARGET, members, by_role)
     pack.wires(TARGET, members)

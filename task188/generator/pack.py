@@ -290,14 +290,14 @@ def directory(target, sim):
 
 def cit(target, sim):
     """Regional Cash Services' pickup manifests: the bags the armoured car took from each depository it
-    serves, on the morning they were counted."""
+    serves, on the morning they were counted, each bag once (a bag holding two deposit slips is one bag)."""
     rng = np.random.default_rng(C.SEED + 19)
     by_stop = {}
     for (bag, member, depo, drop, count, cash, where, br) in sim.night_bags:
         if where != "cash_centre":
             continue
         key = (count.date(), depo)
-        by_stop.setdefault(key, []).append(bag)
+        by_stop.setdefault(key, set()).add(bag)
     rows = []
     used = set()
     for (day, depo) in sorted(by_stop):
@@ -316,12 +316,74 @@ def cit(target, sim):
     return len(rows)
 
 
-def bags(target, sim):
-    rows = []
-    for bag in sorted(sim.bag_issue):
-        member, transit, issued = sim.bag_issue[bag]
-        rows.append((bag, member, transit, issued.isoformat(), "Active"))
-    C.write_csv(os.path.join(target, P_BAGS), ["bag_number", "member_number", "issuing_transit", "issued_date", "status"], rows)
+def _home_on(member, day):
+    """The transit a member's bag is issued at on a day: Langley City's members are served from Willowbrook
+    once Langley City has closed."""
+    if member.home in (W.LANGLEY_OLD, W.LANGLEY_NEW):
+        return W.LANGLEY_OLD if day <= dt.date(2026, 6, 26) else W.LANGLEY_NEW
+    return member.home
+
+
+def _counter_day(d):
+    """A bag is issued, handed back or reported lost at a branch counter: the day itself, or the next weekday the
+    branches are open."""
+    while d.weekday() >= 5 or (d.month, d.day) in ((1, 1), (12, 25), (12, 26)) or d in C.HOLIDAYS:
+        d = d + dt.timedelta(days=1)
+    return d
+
+
+def bags(target, sim, members):
+    """Regional Cash Services' register of the night deposit bags issued to the segment's members, every bag
+    ever issued with its status at the extract and the day that status was set: a bag handed back, reported
+    lost or withdrawn worn out keeps its row, and a lost bag's replacement is issued the day the loss is
+    reported. Drawn from its own stream after the year is simulated, so no bag a 2026 deposit used carries a
+    status set before that deposit was counted."""
+    rng = np.random.default_rng(C.SEED + 37)
+    info = {m.number: m for m in members}
+    last_count = {}
+    for (bag, member, depo, drop, count, cash, where, br) in sim.night_bags:
+        last_count[bag] = max(last_count.get(bag, count.date()), count.date())
+    taken = set(sim.bag_issue)
+
+    def number(lo, hi):
+        while True:
+            v = int(rng.integers(lo, hi))
+            if v not in taken:
+                taken.add(v)
+                return v
+
+    held = {}
+    for bag, (member, transit, issued) in sim.bag_issue.items():
+        held.setdefault(member, []).append((_counter_day(issued), bag, transit))
+    rows = {}
+    for member in sorted(held):
+        mine = sorted(held[member])
+        for issued, bag, transit in mine:
+            status, sdate = "Active", issued
+            last = last_count.get(bag)
+            u = rng.random()
+            if last is None and u < 0.35:
+                # not dropped in 2026: handed back, or reported lost, before the year began
+                status = "Returned" if rng.random() < 0.65 else "Lost"
+                span = (dt.date(2025, 12, 19) - issued).days
+                sdate = issued + dt.timedelta(days=int(rng.integers(min(90, span), span + 1))) if span > 0 else issued
+                sdate = _counter_day(sdate)
+            elif last is not None and last <= dt.date(2026, 10, 30) and u < 0.05:
+                # reported lost after it last came back from the count; replaced the same day
+                status = "Lost"
+                sdate = _counter_day(last + dt.timedelta(days=int(rng.integers(2, 45))))
+                rows[number(30000, 89999)] = (member, _home_on(info[member], sdate), sdate, "Active", sdate)
+            rows[bag] = (member, transit, issued, status, sdate)
+        # a bag held before the first current one, withdrawn worn out (or lost) when that one was issued
+        first = mine[0][0]
+        room = (first - info[member].since).days
+        if room > 420 and rng.random() < 0.16:
+            iss = _counter_day(info[member].since + dt.timedelta(days=int(rng.integers(20, room - 365))))
+            rows[number(30000, 79999)] = (member, mine[0][2], iss, "Retired" if rng.random() < 0.7 else "Lost", first)
+    out = [(b, v[0], v[1], v[2].isoformat(), v[3], v[4].isoformat()) for b, v in sorted(rows.items())]
+    C.write_csv(os.path.join(target, P_BAGS), ["bag_number", "member_number", "issuing_transit", "issued_date", "status",
+                                              "status_date"], out)
+    return out
 
 
 def str_log(target, members, by_role):

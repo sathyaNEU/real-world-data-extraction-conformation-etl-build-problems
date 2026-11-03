@@ -1,41 +1,7 @@
 # task188 design note
 
 Architecture 2 (re-root 2026-11-03). Architecture 1, the West Nile virus spray zone, is spent and stays at the portal
-as shipped on 2026-10-13; its record is under `## Leak sweep rulings
-
-`leak.py --asof 2027-01-15` on the final cut (zip 0fcfaed0), verdict REVIEW, no LEAK; sweeps 1, 2, 5, 7, 8 and 11 clean.
-- Sweep 3: the 55 hits on five-digit numbers are the branch transits (10342 to 11204), which every branch file carries as
-  its key; "7.3" is the programme's own section number; "1,000,000" in the CDD extract is a turnover band's edge, not
-  Uptown New Westminster's printed night cash; the programme shares the call's words because the call is its own
-  section 7.3 referral, and it names no member.
-- Sweep 4: the programme and the terms of reference share ordinary words with the stump paragraph (counter, turnover,
-  relation in "relationship", credit, section, activity, records); neither names card trade, a channel, a ratio or a
-  benchmark.
-- Sweep 6: the directory and the register name branches and members beside their own numbers (addresses, dates,
-  member numbers); neither ranks anything on the referral question.
-- Sweep 9: the CDD extract's `next_review_due` dates lie after the as-of date by their nature.
-- Sweep 12: the five words (channel, opened, closed, credit, Regional Cash Services) are the programme's own words
-  about its channels and its counting centre, not a gloss on any column.
-
-## Pre-ship check
-
-1. Domain: AML monitoring of cash-intensive businesses, each member's cash judged against the cash its counter trade
-   produced; with another field's nouns there is no till, card terminal, acquirer settlement or criminal cash to place.
-2. Real work, nothing planted: every Layer 1 item is what the credit union's systems write; each mishandled leaves the
-   call where it is (`checks.py` R2 rows), and the asks' devices sit only in ask files (A7).
-3. The step that flips the call is analytical: which record of the member's trade the laundered cash cannot move,
-   carried through each business type's relation; no clause names it (the programme files the test, not the estimate).
-4. Analyst test: the declared route, every rule applied, refers Kingsway Pho House and Bright Spark Car Wash on the clean
-   truth (R3a); the decisive step alone refers the golden (R3b); each lower correction stays wrong.
-5. The programme files the estimand (population, outcome, window on the business date, unit, comparison); the standing
-   family prints the same pair and figures in 12 of 12 (F1 to F4); every convention row is asserted (SF1 to SF20).
-6. No decoy, no withheld rule against a stated one, no certified replay.
-7. The lesson is on no other card: nearest driver 0.06 (task27, task66, task120 v3); `guard.py heart` WARN only, the two
-   WARNs answered in `## Draw`.
-8. Asks: 30 figures on files the call never reads for their devices; the cracker keeps 13 and the mirror 11 (pair
-   ceiling 50.5, `ceiling.py`).
-
-## Architecture 1 record` and every screen since is in
+as shipped on 2026-10-13; its record is under `## Architecture 1 record` and every screen since is in
 `## Tried and rejected`.
 
 ## Draw
@@ -68,9 +34,10 @@ as shipped on 2026-10-13; its record is under `## Leak sweep rulings
 - **Call:** which cash-intensive business members Business Services refers to the Unit for enhanced investigation in
   the first quarter of 2027, with each one's 2026 cash paid in, the cash its trade produced and the difference.
 - **Shape `other`:** a designation over the segment. Criteria arithmetic: the designated set (each referred member, 2),
-  each referred member's three figures (6), the largest excess not referred (1), the workbook's every-member figures
-  (3), the chart with its parts (4), the files (3), each quarter's reports required, filed and late (12), each
-  branch's after-hours cash through its deposit ATMs and in its night depository (18): 49.
+  each referred member's three figures (6), the largest excess not referred (1), the workbook's cash paid in for every
+  member (1), the chart with its parts (4), the files (3), each quarter's reports required, filed and late (12), each
+  branch's after-hours cash through its deposit ATMs and in its night depository (18): 47. The workbook grades only
+  what every estimator of produced cash prints alike (`## Judge pass 5 rulings`).
 - **Strategy and mechanism:** `population_selection` (the exposure the cash is measured against: the counter trade a
   third party settles, not a peer group, a declaration or the account's own turnover); gap objective then population
   (the declared activity, the peer means and the turnover shares are correct records and are not what the test is
@@ -160,8 +127,11 @@ cash its counter trade produced.
   holding more than one account, mapped through the register's accounts sheet; CDD profiles of different review
   vintages; a branch closed and another opened in June with an ATM moved under its own terminal number; an LCTR log
   mixing segment and other members' reports, Corrections, a re-sent Original and branch-keyed reports carrying the
-  conductor's membership. Each comes from the system that makes it, none is placed to be caught, and every one
-  mishandled leaves the call where it is (`checks.py` R2 rows).
+  conductor's membership; a bag register (Regional Cash Services' item register) keeping the bags members withdrew
+  worn out or reported lost beside the active ones, each with the day its status was set, a lost bag's replacement
+  and the spares some members were issued; one bag carrying two accounts' deposit slips from one evening, listed once
+  on the carrier's manifest and posted twice. Each comes from the system that makes it, none is placed to be caught,
+  and every one mishandled leaves the call where it is (`checks.py` R2 rows).
 - **Layer 2:** estimand_identification: the right counterfactual for a member's cash is the cash its own counter trade
   produces, measured through a channel the laundered money cannot reach, against the declared, peer and turnover
   benchmarks that all move with it.
@@ -179,8 +149,10 @@ cash its counter trade produced.
   credits, every settlement with platform payouts in, a joint fit on card and platform, the counter card trade under
   eight statistics and four groupings) names four different sets: the declared pair, nobody, Seaview alone and the
   golden pair. The standing family (the counter card trade under the eight statistics and four groupings) names one set
-  in 12 of 12, its produced cash spreading CAD 117,929 to 132,736 for Seaview and 69,982 to 78,978 for Pacifica, every
-  member inside one printed bin (`checks.py` F1 to F4). What rules the rest out is quiet: no sentence; the domain fact
+  in 12 of 12; under the eight statistics the produced cash spreads CAD 117,929 to 132,736 for Seaview and 69,982 to
+  78,978 for Pacifica, every printed call figure inside one bin (`checks.py` F1 to F4, W1), and of the four groupings
+  only one relation across every business type, which the record rejects (type carries 78 per cent of the variance,
+  F7), moves a printed figure, Seaview's excess 51 dollars over its edge. What rules the rest out is quiet: no sentence; the domain fact
   that a delivery order is paid in the app and a business customer pays by EFT or cheque, and the data's own record
   that honest members' cash follows their card trade within each business type.
 - **Analyst test:** a strong analyst who reads every field and the programme correctly takes the produced cash as the
@@ -266,12 +238,17 @@ business type refers Seaview alone. None prints the golden pair.
 | SF12 | reports required | the section 6.2 window | one report per member and business date | other figures | section 6.2's window sentences |
 | SF13 | the window's members and clock | per member across accounts, quarter on Pacific time | per account; quarter on UTC | same figures | C1 asserted |
 | SF14 | "how many we filed for it" | reports on the segment's accounts | reports whose member field is a segment member | other figures | the report's account and amount are the segment account's cash for that business date; a branch-keyed report's member field holds the person who brought the cash, a membership not in the segment's register |
-| SF15 | "how many late" | submitted more than 15 calendar days after the day the first cash the report covers was received | after the log's transaction date | other figures | section 6.2, "after the day on which the first cash it reports was received"; the log's transaction date is the business date the cash was credited |
+| SF15 | "how many late" | submitted more than 15 calendar days after the day, on Pacific time, the first cash the report covers was received | after the log's transaction date; after the UTC day of the receipt | other figures under each | section 6.2, "after the day, on Pacific time, on which the first cash it reports was received"; the log's transaction date is the business date the cash was credited (`checks.py` SF15, both readings) |
 | SF16 | a filed report's quarter | the quarter of its transaction date | the quarter it went in | other figures | section 6.2, "a report to the quarter of the transaction date it reports" |
-| SF17 | Corrections and re-sent Originals | one report per reference | every row | other figures on one cell | section 6.2, one report per window, and the reference each Correction carries |
+| SF17 | Corrections and re-sent Originals | one report per reference, on its first submission | every row a report (filed 20, 47, 48, 39; late 3, 8, 13, 10); a reference on its last submission (late 2, 8, 12, 10) | other figures under each | section 6.2, "each report has its own reference. A correction carries the reference of the report it amends; it is not a further report, and the amended report keeps the submission date of the original" (`checks.py` SF17, all three readings) |
 | SF18 | "its deposit ATMs" | the terminals the directory lists under the branch, at the site each stood at on the day of the deposit | one row per terminal | other figures on Langley City and Willowbrook | the directory lists a terminal once per installation with its dates |
-| SF19 | "in its night depository" | the depository the bag was dropped in: the counting branch, or the depository the armoured car collected it from that morning | the branch that issued the bag; the member's home branch | other figures on every branch | the asking sentence's own words; the bag register records issue, not deposit |
-| SF20 | "2026" for the branch cash | the business date | the day of deposit | other figures: the evening ATM deposits of 31 December credit on 4 January 2027 | section 5, "for monitoring and the January review, cash is counted on the credit union's business date of each credit" |
+| SF19 | "in its night depository" | the depository the bag was dropped in: the counting branch, or the depository the armoured car collected it from that morning (the manifest's one listing of the bag on the pickup date equal to the posting's business date) | the branch that issued the bag; the member's home branch | other figures on every branch | the asking sentence's own words; the bag register records issue, not deposit |
+| SF20 | "2026" for the branch cash | the business date | the day of deposit | other figures: the evening ATM deposits of 31 December credit on 4 January 2027 | the asking sentence, "each branch's segment cash credited on 2026 business dates", and section 5, "for monitoring and the January review, cash is counted on the credit union's business date of each credit" |
+| SF21 | which listing places a cash-centre bag | the bag's one row on the manifest for that pickup date | the first or the last of two listings | same figures | C1 asserted (`checks.py` SF21): a bag is out from the evening it is dropped until it is counted, so the carrier lists it once on each pickup date (two deposits made one evening at one depository travel in one bag), every 2026 posting at transit 19004 joins exactly one listing, and the column equals the clean truth's depository to the dollar |
+| SF22 | "every member's cash paid in" in the workbook | the cash paid in column for every member; produced cash and excess graded for the referred members only | every member's produced cash and excess | not graded: the within-type mean and totals move 100 and 115 of the other members' produced cash a bin and Sunrise Fresh Market's excess spans 425,000 to 500,000 over the eight statistics | the asking sentence asks the workbook for every member's cash paid in, a sum of shipped rows; produced cash and excess are asked for the members that qualify (`checks.py` SF22, W1, W2) |
+| SF23 | the window for the first quarter of 2026, before version 6.1 took effect on 1 April | the section 6.2 window | the reporting module's one report per account and business date | another Q1 required count | section 1, "Section 6.2 restates, without change, the large cash transaction window and reporting rules in force since version 6.0 (April 2025)" (`checks.py` SF23) |
+| SF24 | the terminal's site for a deposit credited on a 2026 business date | the site on the day of the deposit | the site on the business date the deposit credits | same figures | C1 asserted (`checks.py` SF24): the moved terminal took its last Langley City deposits on 26 June, credited by 29 June, was taken out on 30 June and went back into service at Willowbrook Crossing on 6 July, so no deposit's two dates fall at two sites |
+| SF25 | where an installation ends: the 18 deposits (CAD 19,300) Langley City's lobby ATM took on the evening of 26 June, the branch's last day | inside the Langley City installation, whose removal the directory dates 30 June, the day the ATM and the night depository were taken out after their last deposits were credited on 29 June | the removal day not in force; the deposit's UTC day (27 June for all 18); the business date it credits (29 June for 15 of them) | same figures | C1 asserted (`checks.py` SF25, `verify.py`): the Pacific day, the UTC day and the business date, each with the removal day in force or not, place every 2026 ATM deposit in one installation and print Langley City's 1,278,000 and every other branch's figure; the same record dated on the branch's last day prints 1,257,000, 1,259,000, 1,263,000 or 1,278,000, and every manifest pickup from ND-9175 (the last on 29 June) falls before its removal |
 
 ## Ladder
 
@@ -300,19 +277,19 @@ to 132,736 (125,000) and excess 344,211 to 359,018 (350,000), Pacifica's produce
 |---|---|---|
 | 1 | Population | the register's segment at 31 December 2026 (section 3, 7.2); C1, every member with a profile (SF4) |
 | 2 | Unit of account | the member across its accounts (SF3), filed in section 7.3 |
-| 3 | Attribution window | calendar 2026 on the business date (sections 5 and 7.3); C1 against the UTC date (SF2) and the sale date (SF10); the branch cash filed (SF20) |
+| 3 | Attribution window | calendar 2026 on the business date (sections 5 and 7.3); C1 against the UTC date (SF2) and the sale date (SF10); the branch cash in the asking sentence's own words, "credited on 2026 business dates" (SF20), the terminal's site converging on either date (SF24) and on the UTC day (SF25) |
 | 4 | As-of dating | the register at 31 December 2026, the postings through the pull on 8 January 2027; no member joins or leaves in the year |
-| 5 | Version basis | the CDD extract is one vintage and no rung of the golden reads it; the LCTR log's Corrections amend their Original (SF17) |
+| 5 | Version basis | the CDD extract is one vintage and no rung of the golden reads it; the LCTR log's Corrections amend their Original and keep its submission date (section 6.2, SF17); programme v6.1 took effect on 1 April and section 1 files that section 6.2 restates the rules in force since version 6.0, so the window governs the whole year (SF23) |
 | 6 | Denominator | not a rate: the test compares two CAD amounts |
-| 7 | Weighting | the business type's relation is a median of members, C3: totals, means, trims, fits and groupings print the same figures (F1 to F4) |
+| 7 | Weighting | the business type's relation is a median of members, C3: totals, means, trims, fits and the within-type groupings print the same call figures (F1 to F4, W1); one relation across every type moves Seaview's excess 51 dollars over its edge and the record rejects it (F7); the other members' figures are not graded (SF22) |
 | 8 | Window length | one calendar year, filed |
-| 9 | Boundary inclusivity | C1, nothing on either edge (SF6) |
+| 9 | Boundary inclusivity | C1, nothing on either edge (SF6); an installation's end converges, the directory dating a fixture's removal on the day it was taken out, after its last credit (SF25) |
 | 10 | Rounding path | once at the end, filed in the asking sentence; C1 for the excess from rounded parts (SF7) |
 | 11 | Tie-break | none: two members, excesses 355,022 and 227,583 |
 | 12 | Maturity and censoring | the year is closed; settlements of the last days' card sales credited in 2027 move no figure (SF10) |
 | 13 | Order of operations | relation estimated per type, then carried to each member; C3 across the family |
 | 14 | Row order | C1: every computation is a sum or a median over rows |
-| 15 | Duplicate resolution | the postings carry unique ids; the LCTR log's re-sent Original is one report (SF17) |
+| 15 | Duplicate resolution | the postings carry unique ids; each report has its own reference, so the LCTR log's re-sent Original is one report and a Correction no further report (section 6.2, SF17); the pickup manifest lists each bag once per pickup date (SF21) |
 | 16 | Identity normalisation | accounts map to members through the register; the LCTR log's account, not its member field (SF14) |
 | 17 | Netting against gross | cash paid in is gross of withdrawals, filed ("paid into"); settlements are net of the discount, C1 grossed up (R2) |
 | 18 | Dimensional units | CAD throughout; no currency or scale shift |
@@ -330,7 +307,9 @@ a business customer's EFT or cheque produce no cash, so the trade that produces 
 the one record of that trade a third party makes is the acquirer's settlement; carried through each business type's
 relation, the standing family of statistics and groupings returns the same pair and the same printed figures (F1 to
 F4). The asks run on section 6.2 and the asking sentence: each of their conventions is filed or converges (SF12 to
-SF20).
+SF25). The workbook is asked for every member's cash paid in, a sum of shipped rows, and its produced cash and excess
+are graded only where the question asks for them, for the members that qualify, which every estimator the record
+licenses prints alike (SF22, W1).
 
 ## Oracles
 
@@ -359,12 +338,13 @@ ask (A7).
   own membership in the member field, so the segment's reports are found by their account, not their member field.
   Late carries a D8 device: section 6.2 runs the 15 days from the day the first cash was received, while the log's
   transaction date is the business date an evening ATM deposit was credited.
-- **Ask B, each branch's 2026 segment cash through its deposit ATMs and in its night depository (18 figures).** H18
+- **Ask B, each branch's segment cash credited on 2026 business dates through its deposit ATMs and in its night
+  depository (18 figures).** H18
   home: the after-hours cash the branch network services, a component of the segment's cash. ATMs carry a D7 device
   (Langley City's lobby terminal reinstalled at Willowbrook Crossing under the same number, listed once per
   installation). Night carries a D6 device: bags counted at Regional Cash Services post at its transit, and only the
-  armoured car's pickup manifest (bag and date) says which depository each came from; the bag register says where it
-  was issued.
+  armoured car's pickup manifest (bag and date, a bag listed once on each pickup date) says which depository each came
+  from; the bag register says where it was issued, and keeps the bags members withdrew or lost.
 
 | Ask | What the cracker does | Cracker |
 |---|---|---|
@@ -381,8 +361,148 @@ Measured by: `generator/ceiling.py` on the cut pack.
 Over the 30 figures the cracker keeps 13 (43.3 per cent of ask weight), the mirror 11 (36.7 per cent), the naive
 handling 8; reading the conductor key alone keeps 17, the receipt day alone 14, the manifest alone 22, every device 30.
 
+Re-run on the pass 5 and pass 6 cuts: every keep is unchanged (pass 6 moved two removal dates in the directory,
+which every handling reads alike, SF25). The three sentences pass 5 filed (a correction is no further report
+and keeps the original's submission date, section 6.2 governs the whole of 2026, the branch cash is credited on 2026
+business dates) are conventions both sheets already executed, so neither sheet moves. The workbook sits outside the 30
+ask figures: it is now asked for every member's cash paid in (one criterion, a sum of shipped rows), and its produced
+cash and excess are graded only for the referred pair, inside the call's criteria, so the rubric holds 47 criteria
+and the ask weight is unchanged.
+
 Pair ceiling: 50.5.
 Mirror leakage: 36.7 per cent of ask weight.
+
+## Leak sweep rulings
+
+`leak.py --asof 2027-01-15` on the final cut (target.zip sha256 0611e6b3, after the pass 6 repair), verdict REVIEW, no
+LEAK; sweeps 1, 2, 5, 7, 8 and 11 clean, and sweeps 3, 6, 9 and 12 the same lines as on eaf930e6. The pass 6 rulings
+joined the note paragraphs sweep 4 draws its terms from, so its 25 terms now take in settlements, benchmark,
+laundered, expected and report; no shipped document carries settlements, benchmark, laundered, expected, acquirer or
+card.
+- Sweep 3: the 53 hits on five-digit numbers are the branch transits (10342 to 11204), which every branch file carries
+  as its key; "7.3" is the programme's own section number, in its revision note and in the terms of reference; the
+  programme shares the call's words because the call is its own section 7.3 referral, and it names no member.
+- Sweep 4: the programme and the terms of reference share ordinary words with the stump paragraph (counter, turnover,
+  relation in "relationship", credit, section, activity, records, register in "member register", refers in "Business
+  Services refers", report in "large cash transaction report", carries in "a correction carries the reference");
+  neither names card trade, a channel, a ratio or a benchmark. The prompt's ask sentence carries "reports" (the large
+  cash transaction reports Ask A counts) and "credited" (the business-date basis Ask B files), the asks' own words,
+  and names nothing the call turns on.
+- Sweep 6: the directory and the register name branches and members beside their own numbers (addresses, dates,
+  member numbers); neither ranks anything on the referral question.
+- Sweep 9: the CDD extract's `next_review_due` dates lie after the as-of date by their nature.
+- Sweep 12: the five words (channel, opened, closed, credit, Regional Cash Services) are the programme's own words
+  about its channels and its counting centre, not a gloss on any column.
+
+## Leak reader rulings
+
+The stage 4 reader on zip 0fcfaed0 (its answers in `leak_check_report.md`, `## Solver's-eye read`), each ruled
+harmless in one line:
+- Question 1, none: the closest it named is section 7.3, which files the test and not the estimate.
+- Question 2, none: no file ranks or scores the members on the referral question.
+- Question 3, none: no file exists only to help the analyst.
+- Question 4, none: no figure or name reads as the answer.
+- Question 5: sections 7.3 and 5 fix the cash paid in by business date and section 6.2 governs the ask counts, which
+  executes to the golden's cash paid in; nothing files how produced cash is computed, the method open and forced by
+  the data, as designed.
+- Question 6: an analytical choice, produced cash estimated from the settlement streams that carry no cash, the step
+  `## Three rules` names, so rule 3 holds from outside.
+- The answer-figure sweep's lines: the transit codes, bag numbers and member numbers are identifiers every file keys
+  on, not answers.
+- The reader's two realism findings (the terms of reference on the writing library's stock template, every bag in
+  the register Active) were fixed in the generator, not ruled harmless.
+
+Re-read 3 on the pass 5 cut (target.zip sha256 eaf930e6; its answers in `leak_check_report.md`,
+`## Solver's-eye read (re-read 3, 2026-11-03)`), no leak, each ruled in one line:
+- Question 1: it quotes programme section 7.3, the filed case acceptance test, a WHAT (population, outcome, window,
+  unit, comparison) and not the decisive step, which no clause names.
+- Questions 2 to 4, none: no file ranks the members, none exists only to help the analyst, no figure or name reads as
+  the answer.
+- Question 6, analytical: the step `## Three rules` names, so rule 3 holds from outside on the final documents.
+- The terms of reference's modified date, 2026-11-23, falls before the January 2027 extracts and inside the setting's
+  timeline (a re-save of a document the committee approved in November 2025): harmless.
+
+## Judge pass 5 rulings
+
+The pass 5 FIX_NOW (`determinism_check_report_pass5.md`) closed in one generator pass, one line per ruling:
+- Workbook: closed on the grading side, no estimator filed. The prompt asks the workbook for every member's cash paid
+  in ("list in member_cash_review_2026.xlsx every member's cash paid in"); its graded cells are that column, the test
+  column and the referred pair's three figures, which hold under each of 12 within-type estimators (`checks.py` W1,
+  W2); the other members' produced cash and excess stay on the sheet as the review's working and are not asked or
+  graded (SF22); Sunrise Fresh Market is graded by name alone, because its excess prints 425,000, 475,000 or 500,000
+  across the eight statistics, so the bin the judge offered as stable is not.
+- Branch cash: the asking sentence carries the date basis as a WHAT, "each branch's segment cash credited on 2026
+  business dates" (SF20), and the terminal's site agrees on either date (SF24).
+- First quarter: section 1 says "Section 6.2 restates, without change, the large cash transaction window and reporting
+  rules in force since version 6.0 (April 2025)", the programme's own revision note, so the window governs all of 2026
+  with no method filed (SF23).
+- Corrections: no shipped sentence carried it and the figures do not hold either way (every row a report files 20,
+  47, 48 and 39 with 3, 8, 13 and 10 late; a reference on its last submission files 2, 8, 12 and 10 late), so section
+  6.2 files the WHAT: each report has its own reference, and a correction is no further report and keeps the
+  original's submission date (SF17).
+- Terms of reference: rebuilt with the Office theme part, the colour map in its settings, headings on the theme's
+  fonts, and every zip member dated 2026-11-23 18:41:00, the save its property part records, the pack's own convention
+  (each Office file's member times equal its core clock) (`checks.py` Z13, `verify.py`).
+- Measured, frozen and left for the re-judge: one relation across every business type moves Seaview's excess to
+  375,000 (362,551, 51 dollars over its edge), a grouping the record rejects (type carries 78 per cent of the variance
+  of log cash per card dollar outside the referred, F7); a business type by home branch split names Crystal Farm
+  Market as the largest excess not referred, while home branch carries 2.8 per cent of the within-type variance
+  against 1.8 by chance over its eight branches (F8). No frozen figure moved.
+- Scope: `freeze.py check task188 --mode determinism` passes against the snapshot taken before this pass (the call,
+  the stump, the ladder, the default path, the call sentence, every Deliverable Answers number and every existing
+  figures.json value unchanged; six workbook keys added); `--mode rubric` passes with no ask file moved.
+
+## Judge pass 6 rulings
+
+The re-judge on target.zip sha256 eaf930e6 (`determinism_check_report_pass6.md`): DETERMINISTIC, APPROVE; Gate H
+domain pass, layers pass, decisive step analytical; Gate G no mismatch; Gate F good. One line per finding:
+- Residual fork, Langley City's ATMs (1,278,000 with 26 June, the removal day, in force; 1,259,000 without it or on the
+  UTC day): the golden carries 1,278,000, each deposit at the installation standing on its Pacific day. Closed in the
+  organisation's own record and not in a sentence: the facilities directory dates the lobby ATM's removal on the day it
+  was taken out, 30 June, after its last deposits were credited on 29 June, so all six readings print 1,278,000
+  (SF25); on the old record they printed 1,257,000, 1,259,000, 1,263,000 and 1,278,000.
+- The night depository carried the same record (removed 26 June with three pickups on 29 June, Langley City's night
+  440,000 or 439,000 to a reader dropping them) and takes the same date, which the manifest's pickups now precede.
+- Scope: two cells of the directory moved; every other shipped byte, the three goldens, metadata.json and figures.json
+  are byte-identical to the approved cut; `freeze.py check task188 --mode determinism` passes against a snapshot of
+  that cut, figures_check finds all 80 figures, the ask ceiling is unchanged (cracker 13 and mirror 11 of 30, pair
+  ceiling 50.5); no method or sentence filed.
+- The APPROVE stands without a re-judge: the repair moves no graded figure and alters no clause a gate turned on (the
+  directory is an ask file the call never reads, and the closure is the one the judge asked for).
+- Stump power note (a cash-to-card benchmark is a recognised AML technique), weighed against the ladder: the field's
+  reflexes are the declared activity and the peer group (rungs 0 and 1), and a solver who builds expected cash from the
+  settlements most readily takes every settlement a third party records, rung 3, which clears Pacifica (1.54 times its
+  produced cash); only the counter trade names the pair. No change.
+- The terms of reference's creation date, 2025-10-02, six weeks before the committee approved it on 14 November 2025:
+  a draft precedes its approval; harmless.
+
+## Pre-ship check
+
+1. Domain: AML monitoring of cash-intensive businesses, each member's cash judged against the cash its counter trade
+   produced; with another field's nouns there is no till, card terminal, acquirer settlement or criminal cash to place.
+2. Real work, nothing planted: every Layer 1 item is what the credit union's systems write; each mishandled leaves the
+   call where it is (`checks.py` R2 rows), and the asks' devices sit only in ask files (A7).
+3. The step that flips the call is analytical: which record of the member's trade the laundered cash cannot move,
+   carried through each business type's relation; no clause names it (the programme files the test, not the estimate).
+4. Analyst test: the declared route, every rule applied, refers Kingsway Pho House and Bright Spark Car Wash on the clean
+   truth (R3a); the decisive step alone refers the golden (R3b); each lower correction stays wrong.
+5. The programme files the estimand (population, outcome, window on the business date, unit, comparison); the standing
+   family prints the same pair in 12 of 12 and the same call figures under the eight statistics and the three
+   within-type groupings (F1 to F4, W1; one relation across every type, which the record rejects, moves Seaview's
+   excess, F7); the workbook grades only those cells (SF22); every convention row is asserted (SF1 to SF25).
+6. No decoy, no withheld rule against a stated one, no certified replay.
+7. The lesson is on no other card: nearest driver 0.06 (task27, task66, task120 v3); `guard.py heart` WARN only
+   (repeat.question_form, answered in `## Draw`).
+8. Asks: 30 figures on files the call never reads for their devices; the cracker keeps 13 and the mirror 11 (pair
+   ceiling 50.5, `ceiling.py`), unchanged by the stage 4 repairs of passes 4, 5 and 6.
+9. The 10/10 rules re-read against the built pack (target.zip sha256 0611e6b3): the decisive step is still analytical
+   (R3a and R3b on the clean truth; the reader's question 6 and the judge's Gate H both analytical, no split); the mess
+   is still Layer 1 only (every R2 row leaves the call where it is, and pass 6 moved two facilities dates in an ask
+   file the call never reads).
+10. Every gate re-run on the final cut: checks.py 133 of 133, verify.py 80 of 80, two consecutive builds
+   byte-identical, figures_check 80 figures with 0 absent, `freeze.py` determinism PASS against the approved cut,
+   precut 61 checks with 0 FAIL and 0 WARN, voice-check PASS, leak.py REVIEW with no LEAK (ruled), `guard.py heart`
+   WARN with no BLOCK, `guard.py surface` exit 0 with 0 pairs promoted.
 
 ## Architecture 1 record
 
@@ -483,3 +603,32 @@ re-screen is in the git history of this note at commit 0c21d67 and in the card's
   impossible records, so terminals are chosen among those in service on the day, and Langley City's lobby terminal
   now moves to Willowbrook Crossing under its own number; the case register's numbers ran without a gap and now skip
   where a number was withdrawn; the LCTR log held exactly 1,000 rows and now holds 1,029.
+- **(2026-11-03, stage 4) The pickup manifest listed one bag twice on one pickup date, 79 bag-days in all, 16 of them
+  at two depositories (32 postings at transit 19004, all in 2026).** The ledger let a member reach for a bag that
+  was still out: two accounts' deposits made one evening at two depositories, or a Friday bag and a holiday Monday
+  bag both counted on the Tuesday. The judge found the night column reproduced only under keeping the last listing
+  in file order, with other tie-breaks moving six branches by up to about 8 thousand. Rejected: filing a tie-break
+  (a filed HOW) and adding a key to the posting (an easier device than the ask's). Fixed in the producing system's
+  own way: a bag is out from its drop until it is counted, two deposits made one evening at one depository travel in
+  one bag, a member whose every bag is out has a spare (12 issued), and the carrier lists each bag once per pickup;
+  the random draws are untouched, so only 65 night-bag narratives changed and the night column now equals the clean
+  truth to the dollar (`checks.py` SF21, Z15). Five night cells moved (Newton 1,494,000 to 1,493,000, Richmond Centre
+  1,631,000 to 1,636,000, Coquitlam Centre 1,569,000 to 1,566,000, Uptown New Westminster 1,000,000 to 1,001,000,
+  Willowbrook 488,000 to 487,000); nothing else in figures.json moved (5 of 103 keys). `freeze.py check task188 --mode
+  determinism --allow` with the five night keys leaves one finding, the Deliverable Answers block moving, which that
+  mode reports whenever any ask figure moves; `freeze.py check task188 --mode rubric` passes (the main call, the stump
+  and every frozen figure unchanged, 5 ask figures moved). The same pass filed the due day's clock in section 6.2
+  ("the day, on Pacific time, on which"): the UTC day of the same receipt filed 2, 3, 8 and 7 late against 2, 6, 11
+  and 9 (`checks.py` SF15), which closes a fork without naming a method; rebuilt the terms of reference as a plain
+  Word package; and gave the bag register its retired and lost bags, with status dates, on counter days.
+- **(2026-11-03, judge pass 5) Three closures refused before the repair:** filing the produced-cash estimator or its
+  comparison group (the median of cash per card dollar across same-type members) to close the workbook's fork files
+  the HOW and turns the decisive step into rule application, so the fork was closed on the grading side; grading
+  Sunrise Fresh Market's excess bin as a stable workbook cell fails on measurement (the eight statistics print it at
+  425,000, 475,000 and 500,000); an SF row showing the Corrections inert fails on measurement (every row a report and
+  a reference's last submission each move filed or late figures), so section 6.2 files the WHAT instead.
+- **(2026-11-03, judge pass 6) Two closures of Langley City's removal day refused before the repair:** the judge's
+  optional note row reading the removal day as in force, because the note is not shipped and the literal reader would
+  still hold four readings (1,257,000 to 1,278,000); and a filed sentence that a terminal is in force on its removal
+  day, which adds a counting convention for the reader to execute and leaves the UTC day and the business date open.
+  Closed instead in the directory's own record, the removal dated on the day the fixtures were taken out (SF25).

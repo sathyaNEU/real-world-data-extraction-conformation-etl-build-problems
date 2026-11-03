@@ -3,7 +3,7 @@
   "10342": {
    "atm": 4503000,
    "name": "Newton",
-   "night": 1494000
+   "night": 1493000
   },
   "10587": {
    "atm": 4685000,
@@ -13,7 +13,7 @@
   "10611": {
    "atm": 5117000,
    "name": "Richmond Centre",
-   "night": 1631000
+   "night": 1636000
   },
   "10729": {
    "atm": 4386000,
@@ -23,12 +23,12 @@
   "10856": {
    "atm": 4022000,
    "name": "Coquitlam Centre",
-   "night": 1569000
+   "night": 1566000
   },
   "10903": {
    "atm": 1487000,
    "name": "Uptown New Westminster",
-   "night": 1000000
+   "night": 1001000
   },
   "11021": {
    "atm": 1278000,
@@ -43,7 +43,7 @@
   "11204": {
    "atm": 1505000,
    "name": "Willowbrook",
-   "night": 488000
+   "night": 487000
   }
  },
  "call": {
@@ -162,5 +162,15 @@
   "11168",
   "11204",
   "19004"
- ]
+ ],
+ "workbook": {
+  "graded": [
+   "cash paid in, every member",
+   "meets the s.7.3 test, every member",
+   "produced cash and excess, the members referred"
+  ],
+  "members": 396,
+  "sheet": "Members 2026",
+  "working": "produced cash and excess of the members not referred"
+ }
 }

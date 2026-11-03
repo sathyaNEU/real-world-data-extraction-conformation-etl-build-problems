@@ -36,6 +36,17 @@ BR = {b[0]: b for b in BRANCHES}
 HOME_WEIGHTS = {"10342": 0.17, "10587": 0.13, "10611": 0.16, "10729": 0.14, "10856": 0.11,
                 "10903": 0.09, "11021": 0.11, "11168": 0.09}
 LANGLEY_OLD, LANGLEY_NEW = "11021", "11204"
+# Langley City traded its last day on Friday 26 June 2026. The deposits its lobby ATM took that evening after the
+# cutoff and the bags left in its night depository were cleared and credited on Monday 29 June, and both fixtures
+# were taken out on Tuesday 30 June; the ATM went back into service at Willowbrook Crossing on 6 July. Facilities
+# date a fixture's removal on the day it was taken out, so the directory's removal follows its last credit.
+FIXTURES_OUT = {LANGLEY_OLD: dt.date(2026, 6, 30)}
+
+
+def fixture_removed(branch):
+    """The day a branch's lobby ATMs and night depository were taken out, as the facilities directory dates it:
+    None while the branch is open."""
+    return FIXTURES_OUT.get(branch[0], branch[6])
 
 TRADES = [
     # code, register text, members, walk-in cash share, sd, platform share, sd, median annual sales,

@@ -52,8 +52,28 @@ def main():
     text = re.sub(r"\s+", " ", text)
     ok("control pdf: the programme's case acceptance sentence reads", "by at least twice the cash that trade produced" in text)
     ok("control pdf: the window convention reads", "received when its bag is opened and counted" in text)
-    tor = docx.Document(os.path.join(T, "compliance", "aml_compliance_committee_terms_of_reference.docx"))
+    ok("control pdf: the due day's clock reads", "after the day, on Pacific time, on which the first cash it reports was "
+       "received" in text)
+    ok("control pdf: a correction is not a further report and keeps the original's submission date",
+       "it is not a further report, and the amended report keeps the submission date of the original" in text)
+    ok("control pdf: section 6.2 restates the rules in force since version 6.0, so it governs the whole of 2026",
+       "restates, without change, the large cash transaction window and reporting rules in force since version 6.0 "
+       "(April 2025)" in text)
+    tor_path = os.path.join(T, "compliance", "aml_compliance_committee_terms_of_reference.docx")
+    tor = docx.Document(tor_path)
     ok("control docx: the terms of reference read", any("up to four new enhanced investigations" in p.text for p in tor.paragraphs))
+    with zipfile.ZipFile(tor_path) as z:
+        parts = z.namelist()
+        core = z.read("docProps/core.xml").decode()
+        stamps = {i.date_time for i in z.infolist()}
+        theme = z.read("word/theme/theme1.xml").decode() if "word/theme/theme1.xml" in parts else ""
+    modified = re.search(r"<dcterms:modified[^>]*>(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z<", core)
+    ok("docx: the Office theme part, and every member dated at the save the property part records",
+       'name="Office Theme"' in theme and modified is not None and
+       stamps == {tuple(int(x) for x in modified.groups())}, sorted(stamps))
+    ok("docx: a plain package with the credit union as author, no thumbnail or custom XML",
+       "<dc:creator>Harlow Reach Credit Union</dc:creator>" in core and
+       not any(n.startswith(("docProps/thumbnail", "customXml/")) or "stylesWithEffects" in n for n in parts), parts)
     reg = openpyxl.load_workbook(os.path.join(T, "membership", "member_register_2026-12-31.xlsx"), read_only=True)
     ok("control xlsx: the register's two sheets", reg.sheetnames == ["Members", "Accounts"], reg.sheetnames)
     post = pd.read_csv(os.path.join(T, "core_banking", "hrcu_business_postings_2026.csv"),
@@ -135,7 +155,14 @@ def main():
         hist.setdefault(tid, []).append((inst.date() if hasattr(inst, "date") else inst, tr))
     depot = {r[0]: r[1] for r in dep_rows}
     cit = pd.read_csv(os.path.join(T, "cash_services", "cit_pickup_manifests_2026.csv"))
-    pick = {(b, dd): depot[x] for b, dd, x in zip(cit.bag_number, cit.pickup_date, cit.depository_id)}
+    listings = cit.groupby(["bag_number", "pickup_date"]).depository_id.agg(list)
+    ok("manifest: each bag listed once on each pickup date", int(listings.map(len).max()) == 1,
+       int(listings.map(len).max()))
+    pick = {k: depot[v[0]] for k, v in listings.items()}
+    cc = yr[(yr.channel == "NIGHT") & (yr.transit == "19004")]
+    cc_bags = [int(re.search(r"BAG (\d+)", s).group(1)) for s in cc.description]
+    ok("manifest: every 2026 night posting at transit 19004 has its bag on the manifest for its business date",
+       all((b, e.date().isoformat()) in pick for b, e in zip(cc_bags, cc.eff)), len(cc))
     atm = {}
     night = {}
     y2 = yr[yr.transaction_code.isin(cashcodes)]
@@ -155,6 +182,34 @@ def main():
     for b, f in figs["branch_cash"].items():
         ok("branch %s ATMs" % b, r1k(atm.get(b, 0.0)) == f["atm"], (r1k(atm.get(b, 0.0)), f["atm"]))
         ok("branch %s night depository" % b, r1k(night.get(b, 0.0)) == f["night"], (r1k(night.get(b, 0.0)), f["night"]))
+    # where an installation ends cannot move a figure: the deposit's Pacific day, its UTC day or its business date,
+    # with the removal day in force or not, finds exactly one installation for every deposit
+    def day_of(v):
+        return v.date() if hasattr(v, "date") else v
+    ends = {}
+    for tid, loc, tr, inst, rem, takes in atm_rows:
+        ends.setdefault(tid, []).append((day_of(inst), day_of(rem) if rem else None, tr))
+    atm_y = y2[y2.channel == "ATM"]
+    utc = [pd.Timestamp(ts.rstrip("Z")) for ts in atm_y.posted_at_utc]
+    for basis, days in (("Pacific day", [local(t).date() for t in utc]), ("UTC day", [t.date() for t in utc]),
+                        ("business date", [e.date() for e in atm_y.eff])):
+        for incl in (True, False):
+            tot, lost = {}, 0.0
+            for tid, d_, v in zip(atm_y.terminal_id, days, atm_y.cash_portion):
+                s = [b for (i0, r0, b) in ends[tid] if i0 <= d_ and (r0 is None or (d_ <= r0 if incl else d_ < r0))]
+                if len(s) != 1:
+                    lost += v
+                    continue
+                tot[s[0]] = tot.get(s[0], 0.0) + v
+            ok("branch ATMs on the %s, removal day %s: one installation for every deposit, every figure as filed"
+               % (basis, "in force" if incl else "not"),
+               lost == 0 and all(r1k(tot.get(b, 0.0)) == f["atm"] for b, f in figs["branch_cash"].items()),
+               (round(lost), {b: r1k(tot.get(b, 0.0)) for b in figs["branch_cash"]}))
+    placed = {r[0]: (day_of(r[2]), day_of(r[3]) if r[3] else None) for r in dep_rows}
+    outside = sum(1 for d_, x in zip(cit.pickup_date, cit.depository_id)
+                  if not (placed[x][0] <= dt.date.fromisoformat(d_) and
+                          (placed[x][1] is None or dt.date.fromisoformat(d_) < placed[x][1])))
+    ok("manifest: every pickup from a depository in place on the pickup date", outside == 0, outside)
 
     # ---- the golden deliverables carry the same figures -------------------------------------------------------
     memo = docx.Document(os.path.join(GOLD, "fiu_referral_slate_2027q1.docx"))

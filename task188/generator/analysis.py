@@ -177,12 +177,15 @@ def lctr_required(p, mem, how="window", quarter_clock="pacific"):
     raise ValueError(how)
 
 
-def receipt_day(p):
+def receipt_day(p, utc=False):
     """(account, business date) -> the Pacific day the first cash credited to the account that business date was
     received: a deposit ATM's cash after 18:00 or on a non-business day posts to the next business date, and the
-    report the old module made carries that business date as its transaction date."""
+    report the old module made carries that business date as its transaction date. utc=True gives the UTC day of
+    the same receipt, a reading s.6.2 rules out ("the day, on Pacific time")."""
     rows = p[p.transaction_code.isin(CASH_CODES) & (p.cash_portion > 0)]
     first = rows.groupby([rows.account_number, rows.effective_date.dt.date]).posted_at_utc.min()
+    if utc:
+        return {k: v.to_pydatetime().date() for k, v in first.items()}
     return {k: C.utc_to_local(v.to_pydatetime()).date() for k, v in first.items()}
 
 
@@ -194,6 +197,7 @@ def lctr_filed(target, mem, acc=None, p=None, key="account", late_from="receipt"
     Original is the same report, a Correction amends it).
 
     The rival handlings: key=member (the member field), late_from=transaction (the log's transaction date),
+    late_from=receipt_utc (the UTC day of the receipt),
     by=submitted (the quarter it went in), dedupe=False (every Original row)."""
     lg = pd.read_csv(os.path.join(target, pack.P_LCTR), dtype={"report_reference": str, "account_number": str})
     if key == "account":
@@ -209,8 +213,8 @@ def lctr_filed(target, mem, acc=None, p=None, key="account", late_from="receipt"
     lg, col = lg[keep], col[keep]
     q = col.dt.quarter
     filed = lg.groupby(q).size().reindex([1, 2, 3, 4]).fillna(0).astype(int).to_dict()
-    if late_from == "receipt":
-        rd = receipt_day(p)
+    if late_from in ("receipt", "receipt_utc"):
+        rd = receipt_day(p, utc=late_from == "receipt_utc")
         start = pd.to_datetime(pd.Series([rd.get((a, d.date()), d.date()) for a, d in zip(lg.account_number, lg.transaction_date)],
                                          index=lg.index))
     else:
@@ -255,7 +259,11 @@ def branch_cash(target, p, night="manifest", atm="asof", counter="transit", mem=
                 best = tr
         return best
     cit = pd.read_csv(os.path.join(target, pack.P_CIT), dtype={"depository_id": str})
-    cit_map = {(int(b), d): depo[x] for b, d, x in zip(cit.bag_number, cit.pickup_date, cit.depository_id)}
+    cit_map = {}
+    for b, d, x in zip(cit.bag_number, cit.pickup_date, cit.depository_id):
+        if cit_map.get((int(b), d), depo[x]) != depo[x]:
+            raise ValueError("bag %d listed at two depositories on %s" % (int(b), d))
+        cit_map[(int(b), d)] = depo[x]
     bagreg = pd.read_csv(os.path.join(target, pack.P_BAGS), dtype={"issuing_transit": str})
     bag_tr = dict(zip(bagreg.bag_number, bagreg.issuing_transit))
     if mem is not None:

@@ -83,6 +83,13 @@ def figures_of(res):
     out["branch_cash"] = {b: {"name": names[b], "atm": r1000(v["atm"]), "night": r1000(v["night"])}
                           for b, v in res["branch"].items()}
     out["segment"] = {"members_assessed": int(len(df)), "trade_cash_to_card": {k: round(float(v), 4) for k, v in ratio.items()}}
+    # the workbook's graded cells are the ones every estimator of produced cash prints alike: every member's cash
+    # paid in (a sum of shipped rows), the test column and the referred members' three figures; the other members'
+    # produced cash and excess are the review's working, shown and not asked for
+    out["workbook"] = {"sheet": "Members 2026", "members": int(len(df)),
+                       "graded": ["cash paid in, every member", "meets the s.7.3 test, every member",
+                                  "produced cash and excess, the members referred"],
+                       "working": "produced cash and excess of the members not referred"}
     out["rungs"] = {k: [df.name[i] for i in v] for k, v in res["rungs"].items()}
     out["test"] = {"threshold_cad": A.THRESHOLD_CAD, "times_produced": A.TIMES_PRODUCED, "lctr_cash_cad": A.LCTR_CASH,
                    "report_due_days": 15, "window_hours": 24}

@@ -35,6 +35,9 @@ class Sim:
         self.depositories = {}
         self.bags = {}             # member number -> list of bag numbers
         self.bag_issue = {}        # bag -> (member, transit, issued date)
+        self.bag_out = {}          # bag -> (evening dropped, depository, business day counted)
+        self.spares = {}           # member number -> bags issued from the later stock when every bag it held was out
+        self.spare_rng = np.random.default_rng(self.seed + 41)
         self.loans = {}
         self._facilities()
 
@@ -52,7 +55,9 @@ class Sim:
                 tid = self._tid(r, used)
                 # the new Willowbrook lobby ATM was commissioned the week before the branch opened
                 inst = dt.date(2026, 6, 25) if transit == W.LANGLEY_NEW else b[5]
-                self.atm_rows.append((tid, "%s branch lobby %s" % (b[1], "AB"[k]), transit, inst, b[6], "Y"))
+                # a lobby ATM takes deposits until the branch's last day (its lobby closes with it); the directory
+                # dates its removal on the day it was taken out, after those deposits were credited
+                self.atm_rows.append((tid, "%s branch lobby %s" % (b[1], "AB"[k]), transit, inst, W.fixture_removed(b), "Y"))
                 self.terminals.setdefault(transit, []).append((tid, inst, b[6]))
             for place in offsite.get(transit, []):
                 if transit == W.LANGLEY_NEW:
@@ -67,7 +72,7 @@ class Sim:
                 self.terminals.setdefault(transit, []).append((tid, opened, None))
             # a cash-only ATM at the larger branches takes no deposits
             if transit in ("10342", "10729", "10856"):
-                self.atm_rows.append((self._tid(r, used), "%s drive-through" % b[1], transit, b[5], b[6], "N"))
+                self.atm_rows.append((self._tid(r, used), "%s drive-through" % b[1], transit, b[5], W.fixture_removed(b), "N"))
         self.depo_rows = []
         usedd = set()
         for b in W.BRANCHES:
@@ -77,7 +82,10 @@ class Sim:
                     usedd.add(did)
                     break
             self.depositories[b[0]] = did
-            self.depo_rows.append((did, b[0], b[5] if b[5].year >= 2009 else dt.date(2009, 1, 12), b[6]))
+            # a depository is emptied by the carrier on the business day after the branch's last evening and
+            # taken out with the lobby ATM
+            self.depo_rows.append((did, b[0], b[5] if b[5].year >= 2009 else dt.date(2009, 1, 12),
+                                   W.fixture_removed(b)))
 
     @staticmethod
     def _tid(r, used):
@@ -271,7 +279,8 @@ class Sim:
                     count_day = C.business_day_on_or_after(d)
                 own = W.BR[drop_branch][4]
                 count = _t(count_day, 9.2, 11.9, r) if own else _t(count_day, 10.4, 15.2, r)
-                bag = self.bags[m.number][int(r.integers(len(self.bags[m.number])))]
+                pick = self.bags[m.number][int(r.integers(len(self.bags[m.number])))]
+                bag = self._bag_for(m, pick, d, self.depositories[drop_branch], count_day)
                 cash = round(amt, 0)
                 if own:
                     self.post(r, m, acct, count, count_day, "NDEP", "NIGHT", "NIGHT DEP BAG %d BR" % bag,
@@ -283,6 +292,51 @@ class Sim:
                 self.night_bags.append((bag, m.number, self.depositories[drop_branch], drop, count, cash,
                                         "branch" if own else "cash_centre", drop_branch))
         return cheques_left
+
+    def _bag_for(self, m, pick, d, depo, count_day):
+        """The bag a night deposit goes in. A bag is out from the evening it is dropped until the business day
+        it is counted, so it cannot be dropped again before then; two deposits made the same evening at one
+        depository go in one bag. The member reaches for `pick` (its random draw, kept so no stream moves) and
+        takes its next free bag when that one is out; a member whose every bag is out is issued one from the
+        later stock. Uses no draw from the member's own stream."""
+        held = self.bags[m.number] + self.spares.get(m.number, [])
+
+        def out(b):
+            o = self.bag_out.get(b)
+            return o is not None and d < o[2]
+
+        def same_drop(b):
+            o = self.bag_out.get(b)
+            return o is not None and o[0] == d and o[1] == depo
+
+        if not out(pick) or same_drop(pick):
+            bag = pick
+        else:
+            shared = [b for b in held if same_drop(b)]
+            k = held.index(pick)
+            free = [b for b in held[k + 1:] + held[:k] if not out(b)]
+            bag = shared[0] if shared else (free[0] if free else self._issue_spare(m, d))
+        self.bag_out[bag] = (d, depo, count_day)
+        return bag
+
+    def _issue_spare(self, m, d):
+        """A further bag issued to the member at its home branch, on a day between its first bag and the evening
+        it was first needed, numbered from the later stock (80000 up), which no member's own draw reaches."""
+        while True:
+            bag = int(self.spare_rng.integers(80000, 89999))
+            if bag not in self.bag_issue:
+                break
+        first = min(self.bag_issue[b][2] for b in self.bags[m.number])
+        lo = first + dt.timedelta(days=45)
+        hi = d - dt.timedelta(days=9)
+        issued = lo + dt.timedelta(days=int(self.spare_rng.integers(0, (hi - lo).days + 1))) if hi > lo else hi
+        if m.home in (W.LANGLEY_OLD, W.LANGLEY_NEW):
+            transit = W.LANGLEY_OLD if issued <= dt.date(2026, 6, 26) else W.LANGLEY_NEW
+        else:
+            transit = m.home
+        self.bag_issue[bag] = (m.number, transit, issued)
+        self.spares.setdefault(m.number, []).append(bag)
+        return bag
 
     def _platforms(self, m, r, plat):
         if not m.platforms:

@@ -51,6 +51,8 @@ def main():
     res = G.compute(TARGET)
     p, mem, acc, df, g = res["p"], res["mem"], res["acc"], res["df"], res["golden"]
     figs = json.load(open(os.path.join(HERE, "figures.json")))
+    prompt_txt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
+    sub_txt = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
     gold_names = names(df, g["referred"])
     GOLD = ["Seaview Specialty Foods", "Pacifica Donair & Pizza"]
     DEFAULT = ["Kingsway Pho House", "Bright Spark Car Wash"]
@@ -219,6 +221,39 @@ def main():
             edges.append(abs((v % 25000) - 12500))
         edges.append(abs((df.cash[i] % 1000) - 500))
     check("F6 every graded figure of the call sits off its rounding edge under the golden", min(edges) > 120, round(min(edges)))
+    # F7: pooling every business type into one relation is the one grouping that moves a printed call figure, and
+    # the record rejects it: business type carries most of the variance of cash per card dollar
+    lr = np.log(df.cash / df.card).drop(g["referred"])
+    tt = df.trade[lr.index]
+
+    def eta2(v, by):
+        return 1 - sum(((x - x.mean()) ** 2).sum() for _, x in v.groupby(by)) / ((v - v.mean()) ** 2).sum()
+    med_t = np.exp(lr.groupby(tt).median())
+    share_t = eta2(lr, tt)
+    pooled = groupings["pooled across business types"]
+    moved = [(df.name[i], k) for i in g["referred"] for k, a_, b_ in (
+        ("produced", pooled[i], g["expected"][i]), ("excess", df.cash[i] - pooled[i], g["excess"][i])) if r25(a_) != r25(b_)]
+    sea = g["referred"][0]
+    over = (df.cash[sea] - pooled[sea]) - 362_500
+    check("F7 the record rejects one relation across business types: type carries %.0f per cent of the variance of log "
+          "cash per card dollar outside the referred, type medians %.2f to %.2f" % (100 * share_t, med_t.min(), med_t.max()),
+          share_t > 0.6 and med_t.max() / med_t.min() > 4, round(share_t, 3))
+    check("F7 under one relation across business types the only printed call figure that moves is Seaview Specialty "
+          "Foods' excess, %d dollars over the 362,500 edge (the note's pass 5 rulings)" % round(over),
+          moved == [("Seaview Specialty Foods", "excess")] and 0 < over < 100, (moved, round(over)))
+    # F8: a business type by home branch split carries no signal of its own, and it is the one grouping that names
+    # another largest excess not referred
+    resid = lr - lr.groupby(tt).transform("median")
+    homes_ = mem.set_index("member_number").loc[lr.index, "home_transit"].astype(str)
+    share_h = eta2(resid, homes_)
+    near_by = {lab: df.name[(df.cash - e).drop(A.designate(df, e)[0]).idxmax()] for lab, e in groupings.items()}
+    other_near = sorted({v for v in near_by.values() if v != "Sunrise Fresh Market"})
+    chance_h = (homes_.nunique() - 1) / (len(resid) - 1)
+    check("F8 home branch carries %.1f per cent of the within-type variance against the %.1f per cent chance gives "
+          "(%d branches over %d members), and only the type by home branch split names another largest excess not "
+          "referred (%s)" % (100 * share_h, 100 * chance_h, homes_.nunique(), len(resid), ", ".join(other_near)),
+          share_h < 2 * chance_h and
+          [k for k, v in near_by.items() if v != "Sunrise Fresh Market"] == ["business type by home branch"], near_by)
 
     # ---- K block: the ladder on the cut pack --------------------------------------------------------------------
     rg = res["rungs"]
@@ -339,16 +374,224 @@ def main():
     diff = [b for b in bc if G.r1000(br_[b]["night"]) != G.r1000(bc[b]["night"])]
     check("SF19 in its night depository: the depository the bag was collected from, not the bag's issuing branch "
           "(other figures on every branch)", len(diff) == len(bc), diff)
+    # SF21: the manifest lists a bag once on each pickup date, so the depository of every cash-centre bag is one row
+    cit_ = pd.read_csv(os.path.join(TARGET, pack.P_CIT), dtype={"depository_id": str})
+    per = cit_.groupby(["bag_number", "pickup_date"]).size()
+    nd = p[(p.channel == "NIGHT") & (p.transit == W.CASH_CENTRE[0])]
+    nd_bag = nd.description.str.extract(r"BAG (\d+)")[0].astype(int)
+    joins = collections.Counter(int(per.get((b, e.date().isoformat()), 0)) for b, e in zip(nd_bag, nd.effective_date))
+    check("SF21 the manifest lists each bag once per pickup date and every posting at transit 19004 joins exactly one "
+          "listing, so no tie-break between listings exists", int(per.max()) == 1 and set(joins) == {1},
+          (int(per.max()), dict(joins)))
+    truth_night = collections.Counter()
+    for (bag_, mn_, depo_, drop_, count_, cash_, where_, br_n) in sim.night_bags:
+        if count_.date().year == C.YEAR:
+            truth_night[br_n] += cash_
+    check("SF21 the night column read through the manifest is, to the dollar, the depository every bag was dropped in "
+          "on the clean truth", all(abs(bc[b]["night"] - truth_night.get(b, 0.0)) < 0.005 for b in bc),
+          {b: round(bc[b]["night"] - truth_night.get(b, 0.0)) for b in bc})
+    seen = collections.defaultdict(list)
+    for (bag_, mn_, depo_, drop_, count_, cash_, where_, br_n) in sim.night_bags:
+        seen[bag_].append((drop_.date(), depo_, count_.date()))
+    clash = 0
+    for ev in seen.values():
+        ev.sort()
+        for (d0, p0, c0), (d1, p1, c1) in zip(ev, ev[1:]):
+            if d1 < c0 and (d1, p1) != (d0, p0):
+                clash += 1
+    shared = int((nd.groupby([nd_bag.values, nd.effective_date]).size() > 1).sum())
+    check("Z15 no bag is dropped again before it has been counted; two deposits in one bag share an evening and a "
+          "depository (one bag, two slips)", clash == 0 and shared > 0, (clash, shared))
+    # R2: the bag register keeps the bags members no longer hold, and no graded figure reads a status
+    bagreg = pd.read_csv(os.path.join(TARGET, pack.P_BAGS))
+    nd_all = p[p.transaction_code == "NDEP"]
+    used_bag = nd_all.description.str.extract(r"BAG (\d+)")[0].astype(int)
+    last_eff = pd.Series(nd_all.effective_date.values, index=used_bag.values).groupby(level=0).max()
+    closed = bagreg[bagreg.status != "Active"].set_index("bag_number")
+    after = [int(b) for b in closed.index if b in last_eff.index and last_eff[b] >= pd.Timestamp(closed.status_date[b])]
+    st_counts = bagreg.status.value_counts().to_dict()
+    check("R2 the bag register keeps retired and lost bags beside the active ones; every bag a night posting names is "
+          "in it and none is used on or after the day its status was set",
+          {"Active", "Retired", "Lost"} <= set(st_counts) and set(used_bag) <= set(bagreg.bag_number) and not after
+          and bagreg.bag_number.is_unique, (st_counts, after))
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        for dp, dn, fn in os.walk(TARGET):
+            for f in fn:
+                rel = os.path.relpath(os.path.join(dp, f), TARGET)
+                os.makedirs(os.path.dirname(os.path.join(tmp, rel)), exist_ok=True)
+                if rel == pack.P_BAGS:
+                    bagreg[bagreg.status == "Active"].to_csv(os.path.join(tmp, rel), index=False)
+                else:
+                    os.symlink(os.path.join(dp, f), os.path.join(tmp, rel))
+        bc_active = A.branch_cash(tmp, p)
+    check("R2 the register's statuses mishandled (only Active bags kept) leave every branch cell where it is",
+          all(G.r1000(bc_active[b][k]) == G.r1000(bc[b][k]) for b in bc for k in ("atm", "night")))
     # the year for the branch ask: business date against the day of deposit
     yy = p[p.transaction_code.isin(A.CASH_CODES)]
     ld = pd.Series([C.utc_to_local(t.to_pydatetime()).date().year for t in yy.posted_at_utc], index=yy.index)
     shift = yy[yy.effective_date.dt.year != ld]
     from pypdf import PdfReader
     ptxt = re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in PdfReader(os.path.join(TARGET, pack.P_PROG)).pages))
-    check("SF20 the branch cash year is the business date, filed in section 5; the deposit day is another quantity "
-          "(deposits whose two dates fall in different years exist)",
+    check("SF20 the branch cash year is the business date, in the asking sentence ('credited on 2026 business dates') "
+          "and section 5; the deposit day is another quantity (deposits whose two dates fall in different years exist)",
+          "each branch's segment cash credited on 2026 business dates through its deposit ATMs" in prompt_txt and
           "For monitoring and the January review, cash is counted on the credit union's business date of each credit"
           in ptxt and len(shift) > 0, len(shift))
+    fu, lu = A.lctr_filed(TARGET, mem, acc, p, late_from="receipt_utc")
+    check("SF15 the due day is the day of receipt on Pacific time, filed in s.6.2; the UTC day of the same receipt "
+          "gives other late figures", "after the day, on Pacific time, on which the first cash it reports was received"
+          in ptxt and lu != llate and fu == lfiled, (llate, lu))
+    # SF17: one report per reference on its first submission, filed in s.6.2; the readings it rules out move figures
+    seg_lg = lg[lg.account_number.astype(str).isin(set(acc.account_number))].copy()
+    seg_lg["td"] = pd.to_datetime(seg_lg.transaction_date)
+    seg_lg["sd"] = pd.to_datetime(seg_lg.submitted_date)
+    seg_lg = seg_lg[seg_lg.td.dt.year == C.YEAR]
+    rd_ = A.receipt_day(p)
+
+    def counts_of(frame):
+        q_ = frame.td.dt.quarter
+        start = pd.to_datetime(pd.Series([rd_.get((a_, d_.date()), d_.date()) for a_, d_ in
+                                          zip(frame.account_number, frame.td)], index=frame.index))
+        late_ = (frame.sd - start).dt.days > 15
+        return ([int((q_ == k).sum()) for k in (1, 2, 3, 4)], [int(((q_ == k) & late_).sum()) for k in (1, 2, 3, 4)])
+    gold_c = ([lfiled[k] for k in (1, 2, 3, 4)], [llate[k] for k in (1, 2, 3, 4)])
+    by_sub = seg_lg.sort_values(["sd", "report_version"], kind="mergesort")
+    first_c = counts_of(by_sub.drop_duplicates("report_reference", keep="first"))
+    last_c = counts_of(by_sub.drop_duplicates("report_reference", keep="last"))
+    every_c = counts_of(seg_lg)
+    check("SF17 a correction is not a further report and keeps the original's submission date (s.6.2): one report per "
+          "reference on its first submission gives the golden, every row a report gives other filed and late figures, "
+          "a reference's last submission other late figures",
+          "each report has its own reference. A correction carries the reference of the report it amends; it is not a "
+          "further report, and the amended report keeps the submission date of the original" in ptxt and
+          first_c == gold_c and every_c[0] != gold_c[0] and every_c[1] != gold_c[1] and last_c[0] == gold_c[0] and
+          last_c[1] != gold_c[1], (gold_c, every_c, last_c))
+    # SF23: section 6.2 governs the whole of 2026, the first quarter before version 6.1 took effect included
+    acct_day, _ = A.lctr_required(p, mem, how="account_bizday")
+    check("SF23 section 1 files that section 6.2 restates without change the rules in force since version 6.0 (April "
+          "2025), so the first quarter counts the same windows; the reporting module's one report per account and "
+          "business date gives another Q1 figure",
+          "Section 6.2 restates, without change, the large cash transaction window and reporting rules in force since "
+          "version 6.0 (April 2025)" in ptxt and acct_day[1] != lreq[1], (lreq[1], acct_day[1]))
+    # SF24: the business date the asking sentence names fixes the year; the terminal's site on it or on the day of the
+    # deposit places every ATM deposit alike
+    hist_ = {}
+    for a_ in atms:
+        hist_.setdefault(str(a_[0]), []).append((A._day(a_[3]), str(a_[2]), A._day(a_[4]) if a_[4] else None))
+
+    def site_on(tid, day):
+        best = None
+        for inst, trn, _rem in sorted(hist_[str(tid)], key=lambda z: z[0]):
+            if inst <= day:
+                best = trn
+        return best
+    atm_y = y[(y.channel == "ATM") & y.member_number.notna()]
+    ld_y = [C.utc_to_local(t.to_pydatetime()).date() for t in atm_y.posted_at_utc]
+    split = sum(1 for tid, d_, e_ in zip(atm_y.terminal_id, ld_y, atm_y.effective_date)
+                if site_on(tid, d_) != site_on(tid, e_.date()))
+    gap = [(str(rm), str(nxt[0])) for v_ in hist_.values() if len(v_) > 1
+           for (i0, t0, rm), nxt in zip(sorted(v_, key=lambda z: z[0]), sorted(v_, key=lambda z: z[0])[1:])]
+    check("SF24 the terminal's site read on the business date or on the day of the deposit places every 2026 ATM "
+          "deposit alike (the moved terminal was taken out on %s and back in service on %s)" % (gap[0] if gap else ("", "")),
+          split == 0 and len(gap) == 1, split)
+    # SF25: where an installation ends. Facilities date a fixture's removal on the day it was taken out, after its last
+    # deposits were credited, so the end of an installation is inert: the deposit's Pacific day, its UTC day or the
+    # business date it credits, read with the removal day in force or not, places every 2026 ATM deposit inside one
+    # installation and prints each branch's golden figure, and every bag the carrier collected came from a depository
+    # in place on the pickup date. The same record with the removal dated on the branch's last day would split them.
+    atm25 = y[(y.channel == "ATM") & y.member_number.notna() & y.transaction_code.isin(A.CASH_CODES)]
+    utc25 = [t.to_pydatetime() for t in atm25.posted_at_utc]
+    bases25 = {"Pacific day": [C.utc_to_local(t).date() for t in utc25], "UTC day": [t.date() for t in utc25],
+               "business date": [e.date() for e in atm25.effective_date]}
+
+    def placements(ends):
+        out25 = {}
+        for bname, days in bases25.items():
+            for incl in (True, False):
+                tot, lost = collections.Counter(), 0.0
+                for tid, d_, v in zip(atm25.terminal_id, days, atm25.cash_portion):
+                    s_ = None
+                    for i0, r0, trn in ends[str(tid)]:
+                        if i0 <= d_ and (r0 is None or (d_ <= r0 if incl else d_ < r0)):
+                            s_ = trn
+                    if s_ is None:
+                        lost += v
+                    else:
+                        tot[s_] += v
+                out25["%s, removal day %s" % (bname, "in force" if incl else "not")] = (
+                    {b: G.r1000(tot.get(b, 0.0)) for b in bc}, round(lost))
+        return out25
+    ends25 = {}
+    for a_ in atms:
+        ends25.setdefault(str(a_[0]), []).append((A._day(a_[3]), A._day(a_[4]) if a_[4] else None, str(a_[2])))
+    gold_atm = {b: G.r1000(bc[b]["atm"]) for b in bc}
+    got25 = placements(ends25)
+    off25 = {k: (v[0][W.LANGLEY_OLD], v[1]) for k, v in got25.items() if v[0] != gold_atm or v[1]}
+    last_day = W.BR[W.LANGLEY_OLD][6]
+    removed25 = [A._day(a_[4]) for a_ in atms if str(a_[2]) == W.LANGLEY_OLD and a_[4]]
+    lang_tids = {t for t, v in ends25.items() if any(trn == W.LANGLEY_OLD for _i, _r, trn in v)}
+    last_credit = max(e.date() for tid, d_, e in zip(atm25.terminal_id, bases25["Pacific day"], atm25.effective_date)
+                      if str(tid) in lang_tids and d_ <= last_day)
+    check("SF25 an installation's end: facilities date a fixture's removal on the day it was taken out (Langley City's "
+          "lobby ATM on %s, after the branch's last day %s and its last deposits' credit on %s), so the deposit's Pacific "
+          "day, its UTC day or its business date, with the removal day in force or not, places every 2026 ATM deposit "
+          "inside one installation and prints each branch's golden figure (Langley City %s under all six)"
+          % (removed25[0], last_day, last_credit, "{:,}".format(gold_atm[W.LANGLEY_OLD])),
+          len(got25) == 6 and not off25 and len(removed25) == 1 and removed25[0] > last_credit, off25)
+    cf_ends = {t: [(i0, last_day if (trn == W.LANGLEY_OLD and r0) else r0, trn) for i0, r0, trn in v]
+               for t, v in ends25.items()}
+    cf25 = sorted({v[0][W.LANGLEY_OLD] for v in placements(cf_ends).values()})
+    check("SF25 the row is load-bearing: the same record with the removal dated on the branch's last day would print "
+          "Langley City's ATM figure at %s across those readings" % ", ".join("{:,}".format(x) for x in cf25),
+          len(cf25) > 1 and gold_atm[W.LANGLEY_OLD] in cf25, cf25)
+    dwb25 = openpyxl.load_workbook(os.path.join(TARGET, pack.P_DIR), read_only=True)
+    dep25 = {str(r_[0]): (A._day(r_[2]), A._day(r_[3]) if r_[3] else None, str(r_[1]))
+             for r_ in dwb25["Night depositories"].iter_rows(min_row=2, values_only=True)}
+    cit25 = pd.read_csv(os.path.join(TARGET, pack.P_CIT), dtype={"depository_id": str})
+    pick25 = [(x_, dt.date.fromisoformat(d_)) for d_, x_ in zip(cit25.pickup_date, cit25.depository_id)]
+    outside = sum(1 for x_, d_ in pick25 if not (dep25[x_][0] <= d_ and (dep25[x_][1] is None or d_ < dep25[x_][1])))
+    lang_dep = [k for k, v in dep25.items() if v[2] == W.LANGLEY_OLD]
+    cf_out = sum(1 for x_, d_ in pick25 if x_ in lang_dep and d_ > last_day)
+    check("SF25 every bag the carrier collected came from a depository in place on the pickup date under either end "
+          "convention (Langley City's taken out on %s, its last pickup on %s), so reading the depository's dates leaves "
+          "every night figure where the manifest puts it; dated on the branch's last day, %d pickups would fall after it"
+          % (dep25[lang_dep[0]][1], max(d_ for x_, d_ in pick25 if x_ in lang_dep), cf_out),
+          outside == 0 and cf_out > 0, (outside, cf_out))
+    # SF22 and the W rows: the workbook grades only what every estimator of produced cash prints alike
+    wbk = openpyxl.load_workbook(os.path.join(TASK, "golden", "member_cash_review_2026.xlsx"), read_only=True)
+    rows_w = {v[0]: v for v in wbk["Members 2026"].iter_rows(min_row=5, values_only=True) if v and isinstance(v[0], int)}
+    est = {how: A.produced(df, df.card, how) for how in A.FAMILY}
+    for lab, e in groupings.items():
+        if lab != "pooled across business types":
+            est["grouping " + lab] = e
+    est["20 per cent trimmed mean"] = r.groupby(df.trade).transform(
+        lambda v: v.sort_values().iloc[int(0.2 * len(v)):len(v) - int(0.2 * len(v))].mean()) * df.card
+    stable = []
+    for lab, e in est.items():
+        s_, x_ = A.designate(df, e)
+        stable.append(names(df, s_) == GOLD and all(r25(e[i]) == r25(g["expected"][i]) and r25(x_[i]) == r25(g["excess"][i])
+                                                     for i in g["referred"]))
+    check("W1 every graded workbook cell holds under each of %d within-type estimators: the test column names the "
+          "referred pair and their produced cash and excess print alike" % len(est), all(stable),
+          [k for k, ok_ in zip(est, stable) if not ok_])
+    check("W2 the workbook's cash paid in column is each member's sum of shipped rows at the nearest thousand, every "
+          "member once, and only the referred meet the test",
+          len(rows_w) == len(df) and all(rows_w[int(i)][3] == G.r1000(df.cash[i]) for i in df.index) and
+          sorted(k for k, v in rows_w.items() if v[8] == "Yes") == sorted(int(i) for i in g["referred"]))
+    moves = {lab: sum(r25(est[lab][i]) != r25(g["expected"][i]) for i in df.index if i not in g["referred"])
+             for lab in ("mean", "totals")}
+    sun = df.index[df.name == "Sunrise Fresh Market"][0]
+    sun_bins = sorted({r25(df.cash[sun] - est[lab][sun]) for lab in A.FAMILY})
+    wb_block = sub_txt.split("### member_cash_review_2026.xlsx", 1)[1].split("###", 1)[0]
+    wb_nums = re.findall(r"\d[\d,.]*\d|\d", re.sub(r"(?m)^\s*\d+\.\s", "", wb_block))
+    check("SF22 the other members' produced cash and excess are working, not asked: the within-type mean and totals "
+          "move %d and %d of them a bin and Sunrise Fresh Market's excess spans %s to %s over the eight statistics, so "
+          "the prompt asks the workbook for every member's cash paid in and the write-up grades none of their figures"
+          % (moves["mean"], moves["totals"], "{:,}".format(sun_bins[0]), "{:,}".format(sun_bins[-1])),
+          "list in member_cash_review_2026.xlsx every member's cash paid in" in prompt_txt and
+          "three figures" not in prompt_txt and wb_nums == ["2026", "2026"] and min(moves.values()) > 50 and
+          len(sun_bins) > 1, (moves, sun_bins, wb_nums))
 
     # ---- A rows: the ask layer --------------------------------------------------------------------------------
     gold_a, keeps = ceiling.measure(TARGET)
@@ -431,6 +674,24 @@ def main():
                   (core + app).lower())
     pdf = open(os.path.join(TARGET, pack.P_PROG), "rb").read()
     check("Z13 container scrubbed: the programme PDF names no library", b"ReportLab" not in pdf and b"reportlab" not in pdf)
+    tor = zipfile.ZipFile(os.path.join(TARGET, pack.P_TOR))
+    tor_names = tor.namelist()
+    tor_core = tor.read("docProps/core.xml").decode()
+    tor_app = tor.read("docProps/app.xml").decode()
+    check("Z13 the terms of reference is a plain Word package: no thumbnail, custom XML or second styles part, a small "
+          "styles part, the credit union as author and a word count that matches its text",
+          not any(n.startswith(("docProps/thumbnail", "customXml/")) or n.endswith("stylesWithEffects.xml") for n in tor_names)
+          and tor.getinfo("word/styles.xml").file_size < 20_000
+          and "<dc:creator>%s</dc:creator>" % C.ORG in tor_core and "<Company>%s</Company>" % C.ORG in tor_app
+          and "<Words>0</Words>" not in tor_app, tor_names)
+    tor_mod = re.search(r"<dcterms:modified[^>]*>([^<]+)<", tor_core).group(1)
+    saved_ = tuple(dt.datetime.strptime(tor_mod, "%Y-%m-%dT%H:%M:%SZ").timetuple()[:6])
+    tor_dates = {i.date_time for i in tor.infolist()}
+    check("Z13 the terms of reference carries the Office theme as a Word save does, and every part the save's time "
+          "its property part records (%s), none the zip epoch" % tor_mod,
+          "word/theme/theme1.xml" in tor_names and 'name="Office Theme"' in tor.read("word/theme/theme1.xml").decode()
+          and "theme/theme1.xml" in tor.read("word/_rels/document.xml.rels").decode()
+          and "clrSchemeMapping" in tor.read("word/settings.xml").decode() and tor_dates == {saved_}, sorted(tor_dates))
     people = set()
     for f in files:
         if f.endswith(".pdf"):

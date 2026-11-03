@@ -32,14 +32,14 @@
    "source": "Blueline Armoured Transport for Harlow Reach Credit Union Regional Cash Services, night deposit pickup manifests 2026 (fictional, synthetic records)",
    "date": "2027-01-05",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 6457
+   "rows": 6409
   },
   {
    "file": "cash_services/night_deposit_bag_register.csv",
    "source": "Harlow Reach Credit Union, Regional Cash Services, night deposit bag register (fictional, synthetic records)",
    "date": "2027-01-05",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 587
+   "rows": 625
   },
   {
    "file": "compliance/aml_compliance_committee_terms_of_reference.docx",

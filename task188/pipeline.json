@@ -1,11 +1,11 @@
 {
  "task": "task188",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "seed": "analytical_tasks/02_anomaly_detection/AD11_routing-engagement-measured-page-removal.md",
  "domain": "banking-credit-financial-risk / fraud-aml-detection (a British Columbia credit union's Business Services January review: which cash-intensive business members it refers to the financial intelligence unit for enhanced investigation in the first quarter of 2027)",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-03",
  "stump": "The solver refers Kingsway Pho House and Bright Spark Car Wash because it judges each member's 2026 cash against the expected activity the member declared, or against its peers or the account's own turnover, and clears Seaview Specialty Foods and Pacifica Donair & Pizza, whose declarations were set high in 2025 and whose network's business payments swell their turnover, when only the walk-in trade their card acquirers settle shows that each paid in about four times the cash its counter trade produced.",
  "architecture": 2,
@@ -15,23 +15,23 @@
   "date": "2026-11-03"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (zip 0fcfaed0, 2026-11-03); every REVIEW line ruled in the note's ## Leak sweep rulings",
-  "reader": "pending (stage 4)"
+  "leak_py": "REVIEW, no LEAK (target.zip sha256 0611e6b3, 2026-11-03): sweeps 3, 6, 9 and 12 line for line as on eaf930e6; sweep 4 draws its terms from the note's paragraphs, now including the pass 6 rulings, and adds the prompt's ask sentence (reports, credited); every REVIEW line ruled in the note's ## Leak sweep rulings",
+  "reader": "re-read 3 on the pass 5 cut (eaf930e6): no leak; question 1 quotes programme section 7.3, the filed test (a WHAT, not the decisive step); questions 2 to 4 none; question 6 analytical; the terms of reference's 2026-11-23 modified date harmless; pass 6 changed no document and not the prompt, so the read stands for the final cut; answers in leak_check_report.md (## Solver's-eye read (re-read 3, 2026-11-03)), rulings in the note's ## Leak reader rulings"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.deliverables, repeat.question_form, both answered in ## Draw), no BLOCK after the role redraw to portfolio_manager",
-  "surface": "clean, personas Kristine Kirby and Jeffrey Melendez only",
+  "heart": "WARN (repeat.question_form against task479 v7, answered in ## Draw), no BLOCK (2026-11-03, final cut)",
+  "surface": "clean (exit 0, 0 pairs promoted), personas Kristine Kirby and Jeffrey Melendez only",
   "nearest": "drivers 0.06 (task27, task66, task120 v3)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "pending (stage 4)",
-  "report": ""
+  "verdict": "DETERMINISTIC (pass 6, on zip sha256 eaf930e6); Gate H domain pass, layers pass, decisive step analytical; Gate G no mismatch; Gate F good",
+  "disposition": "APPROVE. Its one residual (Langley City's ATMs, 1,278,000 with the removal day 26 June in force against 1,259,000 without it or on the UTC day; the golden carries 1,278,000) closed in the facilities directory's own record: the lobby ATM and the night depository dated removed on 30 June, the day they were taken out, after their last deposits were credited on 29 June, so every reading prints 1,278,000 (SF25 in checks.py and verify.py); no method or sentence filed, no graded figure moved (freeze.py determinism PASS, figures_check 80 of 80), so the APPROVE stands without a re-judge",
+  "report": "determinism_check_report_pass6.md"
  },
  "returned": [],
- "resume": "Stage 4: spawn together in the background the leak reader (general-purpose, sonnet, medium, fresh copies of prompt.txt and target/ only, the six /leak-check questions, no sweep figures or stump terms in the brief) and the determinism-judge agent on task188 (zip 0fcfaed0); fix every finding in the generator in one pass, re-judge once on FIX_NOW, re-run every free gate on the final cut, then ship (target.zip and golden/ with git add -f, ledger row, card current, SHIPPED commit). The building session had no agent-spawning tool, so stage 4 was left to the orchestrator.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-03",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -60,11 +60,17 @@
  },
  "call": "Refer Seaview Specialty Foods (CAD 477,000 paid in, 125,000 produced, excess 350,000) then Pacifica Donair & Pizza (299,000, 75,000, 225,000) to the FIU for Q1 2027; largest excess not referred Sunrise Fresh Market",
  "gates": {
-  "checks": "113 of 113",
-  "verify": "66 of 66",
+  "checks": "133 of 133",
+  "verify": "80 of 80",
   "figures_check": "80 figures, 0 absent",
-  "rebuilds": "two consecutive builds byte-identical (target.zip 0fcfaed0)",
-  "voice_check": "PASS",
-  "ceiling": "cracker 13 of 30, mirror 11 of 30, pair ceiling 50.5"
+  "rebuilds": "two consecutive builds byte-identical (target.zip sha256 0611e6b3, md5 f6febf18)",
+  "voice_check": "PASS (973 characters)",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "ceiling": "cracker 13 of 30, mirror 11 of 30, pair ceiling 50.5, mirror leakage 36.7 per cent",
+  "freeze": "determinism mode PASS against a snapshot of the approved cut eaf930e6 (every Deliverable Answers number and figures.json value unchanged; two directory cells moved, every other shipped byte and the three goldens identical); rubric mode PASS, no ask file moved"
+ },
+ "target_zip": {
+  "sha256": "0611e6b3994b5ea3b1063f06fe66a875bad31090342bcf2fae7c43b1f402099c",
+  "md5": "f6febf188209f36fc852c4450b2e622e"
  }
 }
