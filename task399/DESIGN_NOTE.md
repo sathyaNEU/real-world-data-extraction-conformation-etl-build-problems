@@ -1,87 +1,113 @@
 # task399 design note
 
-Architecture 3, drawn 2026-11-03 (wave 7, Root-Cause lane, sathay3012), numbered from seed RC05 (a regional
+Architecture 4, drawn 2026-11-03 (wave 7, Root-Cause lane, sathay3012), numbered from seed RC05 (a regional
 electricity distributor choosing one reliability programme from five, where the costliest cause leaves no record of
-its own). The seed's world collided at the draw screen; architecture 1 (Quantitative Finance) was spent at the draw in
-task398's cell and architecture 2 (a bus operator's drivers' rest) at the draw as a template of shipped task121 v6
-(`## Tried and rejected`, the card's lineage). Kept from the seed: the decision (one programme funded from a catalogue
-of five), the quantity in kind (what each programme's cause cost over the last twelve months) and the kernel, a cost
-that leaves no record of its own: a search that found no road-test slot leaves no trace of the shortage.
+its own). The seed's world collided at the draw; architecture 1 (Quantitative Finance) was spent at the draw in
+task398's cell, architecture 2 (a bus operator's drivers' rest) at the draw as a template of shipped task121 v6, and
+architecture 3 (a licensing agency's road-test booking journey) at stage 2 on the pricing harness (`## Tried and
+rejected`, the card's lineage). Kept from the seed: the decision (one initiative funded from a shortlist), the
+quantity in kind (what each initiative's cause did to the year's outcome) and the kernel, a cost that leaves no record
+of its own: a defendant called while the duty lawyer is serving the list next door leaves no record that nobody spoke
+for them.
 
-Norland Driver Services, a fictional Canadian province's licensing agency, books road tests through a self-service
-portal that offers the slots open at each test centre within the next six weeks. New drivers licensed fell in the twelve
-months to 30 September 2026. The executive team funds one 2027 initiative from five: the portal's booking redesign
-(released March 2026), more examiner shifts, a hazard-perception practice module, a fee rebate, no-show reminders.
+The Halsey Coast region's District Courts hear defendants arrested and held in police custody at the next sitting's
+custody list. In the twelve months to 30 September 2026 the gap in remands in custody at first appearance between
+defendants without their own lawyer and defendants with one widened. The Ministry of Justice's regional manager for
+criminal court operations puts one initiative into the region's Budget 2027 bid, from a shortlist of five: more
+electronically monitored (EM) bail assessment capacity, a District Court judge on the Kestrel Bay custody list, a
+second duty lawyer on the region's custody-list roster, supported bail accommodation, and court-date text reminders.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task399.json`, architecture v3, registered 2026-11-03 with architectures
-  1 and 2 in its lineage. `guard.py check` on the draft: BLOCK test.same_puzzle_older against task121 v4 (gap,
-  pattern and decision type) and people.first Melissa; cleared by the differentiation line against task121 (and lines
-  against task307 and task254, the nearest drivers) and by drawing Christopher Wolfe instead. Re-checked on the
-  registered card as the last act of stage 1: WARN only (first name Christopher in one older build, government_agency
-  overused); the full names are new.
-- **Pairing:** Product Analytics (client domain) / `funnel-journey-analysis` / Root-Cause Analysis; the subdomain has
-  never been drawn.
-- **Objective and call:** where in the permit-to-licence journey the fall came from and which initiative removes it,
-  judged on the closed twelve months; the initiative runs in 2027, nothing is forecast.
-- **Shape:** 09, a funnel of stages for a fall: each stage's volume, rate and the candidates it lost against the prior
-  year, plus the call, the runner-up and the gap. Arithmetic in `## Ask sheet` at stage 2.
-- **Strategy and Gate G:** `binding_constraint` for both: the examiners' slot stock is the limit, and the limit itself
-  moves the naive pick off the booking redesign. Gap objective (the stage that shows the loss is not the stage that
-  causes it); generator G3 (the portal records a search with no booking; the scheduling system shows no slot was open).
-- **Furniture:** forum `executive_team`, forcing event `budget_or_appropriation`, org family `government_agency`, role
-  family `product_manager`, context artifact `operations_log` (the scheduling system's slot log), question form
-  `where`. None is held by task398, task277 or task274; shape 09 and `where` differ from task121's 18 and `what`.
-- **People** (`guard.py names --geo Canada --seed 399`): Eric Davis (product manager, road-test booking), Brian
-  Williams (director, testing operations), Christopher Wolfe (examiner workforce planning). None is in the prompt.
-- **Data-native sentence:** the portal offers only the slots open within six weeks at the centre searched and logs a
-  search that ends without a booking exactly as it logs one where the user simply left, while the scheduling system
-  logs every slot released from an examiner's shift, every booking and every cancellation returned to the pool, so the
-  shortage exists only as a stock rebuilt day by day from the scheduling system.
+- **Card:** `.claude/skills/fingerprint/cards/task399.json`, architecture v4, registered 2026-11-03 with architectures
+  1 to 3 in its lineage. `guard.py check` on the draft: BLOCK test.same_driver_older against task253 v2 (gap, G5 and
+  binding_constraint) and WARN driver.near against task141 v1 (0.14), both cleared by differentiation lines (task253 v2
+  re-solves a congestible network's loading; task141 v1 prices a release rule from the gradient across rota'd
+  decision-makers); first-name WARNs on Anthony, Nathan, Gavin, Nicole, Jessica and Alexander redrawn. Re-checked on
+  the registered card as the last act of stage 1: WARN overuse.org_family only (a Ministry of Justice region is the
+  honest label).
+- **Pairing:** Criminology & Justice (client domain) / `sentencing-bail-disparity-analysis` / Root-Cause Analysis; the
+  subdomain has never been drawn, lineage included.
+- **Objective and call:** where in the region's first appearances the widening sits and which shortlisted initiative
+  removes it. The call is retrospective on the closed twelve months, with its reason: a root cause is named for a year
+  already closed, the initiative is funded from July 2027, and nothing is forecast.
+- **Shape:** 12, a drill-down to one leaf (region, courthouse, list, judicial officer, and the leaf the drill lands
+  on), each branch's piece of the widening graded at each level. Arithmetic in `## Ask sheet` at stage 2.
+- **Strategy and Gate G:** `binding_constraint` for both. One rostered duty lawyer is the limit that two lists sitting
+  at the same time share, and that limit moves the naive pick off the bench. Gap objective (the duty lawyer's daily
+  presence and volume are correct and are not what decides); generator G5 (provision elsewhere: the provision was in
+  the next courtroom when the matter was called).
+- **Furniture:** forum `minister_or_cabinet` (the Budget 2027 bid goes to the Minister), forcing event
+  `budget_or_appropriation`, org family `government_agency`, role family `operations_director`, context artifact
+  `operations_log` (the duty lawyer service's own record), question form `where`. The ban window (task274, task277,
+  task398) holds none of them.
+- **Neighbour:** task274 (criminology, a US county's pre-plea diversion lottery on docket events) is three builds back.
+  The domain repeats; the subdomain, objective, geography, spine (an appearance extract, not docket events), decision
+  and mechanism do not (differentiation on the card).
+- **People** (`guard.py names --geo "New Zealand" --seed 399`): Freya Herd (regional manager, criminal court
+  operations), Casey Neal (manager of the region's duty lawyer service), Toby Conway (Corrections EM bail team
+  leader). None is in the prompt.
+- **Data-native sentence:** the court's appearance extract records a defendant's counsel of record (blank alike for a
+  defendant the duty lawyer helped and for one nobody helped) and the minute each matter was called, the duty lawyer
+  service records each defendant it assisted and when, and the sitting calendar records the audio-visual remand list
+  sitting in the next courtroom, so a custody-list matter called while the one rostered duty lawyer was on the
+  audio-visual list exists only as a time overlap across three records.
+- **Abstraction sentence:** one advocate rostered to two lists that sit at the same time leaves the cases called
+  while it serves the other list unassisted; its daily presence and output are flat, so the decision-maker who sits
+  the overlapping hours carries the gap on a within-decision-maker comparison. Not writable against an approved build:
+  task119 (a resource recorded full but held empty for planned work), task303 (a shared upstream loss every sibling
+  logs in the same minute), task124 (the kind a group was laid in, read off its surviving members) and task121 v6 (the
+  rest actually taken against the schedule) each spend another relation.
 - **Semantic screen** (`guard.py mechanisms --objective root-cause`, one line per build on the insight it spends):
-  task13 re-attributes outcomes from an exceptions-only log where absence means success; task11 a threshold rebate
-  that makes the shallowest discount pay, seen only on a rebuilt ledger; task36 a filed rule excluding the largest
-  candidate because an agreement already remedies it; task50 the share of each candidate's exposure inside a funded
-  window, projected by a filed issue order; task72 booking a movement to the owner whose agreement covered each piece;
-  task84 identical concurrently live units competing on a key nothing is keyed on; task111 which cause still operates
-  in the forward window (overflow work landing late in the day); task500 a matched-reference method pinned by two
-  certified statements; task129 a rise booked to a maintenance provider that scales with each unit's surroundings;
-  task121 the conditions each response or event was made under (v4 journey conditions, v6 the rest before a shift);
-  task202 the share of each input reaching the layer the response draws on; task398 an exposure rule driven by the
-  whole's own path. **Is the new decisive step any of them in other nouns?** No: it rebuilds a stock (open slots per
-  centre and day) from releases, bookings and cancellations and shows a funnel stage's loss sat where that stock was
-  empty; nothing on file reads a stage's loss against a capacity stock behind the journey. The nearest are task121 v4
-  (it conditions ratings on ambient journey conditions, no stock and no stage) and task111 (capacity overflow, but its
-  step is which cause survives into a forward window).
-- **Slots, run twice:** mechanism nouns (slot, capacity, inventory, booking): task179 (parole and jail bookings),
-  task147 (a hotel block's bookings replayed against a cap, a forecast's order of operations) and task456 (a converter's
-  VOC bypass), none this insight; setting nouns (driving test, examiner, learner, licence, portal): task130 (a licence
-  register) and task277 (a portal), neither this world.
-- **Library test:** the golden is not a named correction; the field's funnel reading (stage rates, release cohorts,
-  segment cuts) sits at rung 1 and files the booking redesign.
+  task13 re-attributes outcomes from an exceptions-only log; task11 a threshold rebate seen on a rebuilt ledger; task36
+  a filed rule excluding the largest candidate; task50 the share of exposure inside a funded window; task72 the owner
+  whose agreement covered each piece; task84 identical concurrent units competing on an unkeyed target; task111 the
+  cause still operating in the forward window; task500 a matched-reference method pinned by certified statements;
+  task129 a rise scaling with each unit's surroundings; task121 the conditions each event was made under (v6 the rest
+  before a shift); task202 the share of each input reaching the layer the response draws on; task398 an exposure rule
+  driven by the whole's own path; task399 v3 a capacity stock rebuilt from releases and bookings. **Is the new
+  decisive step any of them in other nouns?** No: it reads one advocate's presence at each case's call across two
+  simultaneous lists behind a within-decision-maker disparity; no build on file reads a disparity against the absence
+  of the person who speaks for the case.
+- **Slots, run twice before any harness:** setting nouns (bail, remand, duty counsel, duty lawyer, magistrate,
+  detention): task202 only, whose note set aside a binding hold read from the jail extract (the holds sit in a
+  column) and a charging-cell sentencing disparity (readable); neither is this insight. Mechanism nouns
+  (double-booked, simultaneous, overlap, same session, two places, adjourned): none.
+- **Library test:** the golden is not a named correction; the field's own method for the deciding quantity
+  (disparity within court and judicial officer, net of the legally relevant pre-decision factors, the rigor card's
+  pattern 4) sits at rung 1 and files a judge on the custody list.
 
 ## Default path
 
-1. Build the permit-to-licence funnel for each twelve months (permits reaching eligibility, portal searches, bookings,
-   tests sat, passes, licences issued), across the portal's search log and the testing records.
-2. Compare each stage's conversion year on year: the search-to-booking stage carries the largest fall.
-3. Segment that stage by release, device and centre: the fall starts with the March 2026 booking redesign and sits on
-   the redesigned flow.
-4. Fund the booking redesign's rework.
+1. Take every first appearance from police custody in the two twelve-month periods (October 2024 to September 2025,
+   October 2025 to September 2026) from the court's appearance extract, flag a remand in custody, and split by counsel
+   of record (own lawyer against none).
+2. The gap in the remand-in-custody share between defendants with no lawyer of record and defendants with one widens
+   between the periods.
+3. Estimate the disparity the field's way: within court and judicial officer, with the legally relevant pre-decision
+   factors (charge seriousness, criminal history, bail history, on bail at arrest) as controls, the counsel-by-period
+   interaction carrying the widening.
+4. Drill: courthouse, then list, then judicial officer. The widening sits in the Kestrel Bay custody list, under the
+   community magistrate who took it over in March 2026.
+5. Check the dated changes: EM bail assessments slowed from February 2026 (EM bail is sought at a later appearance,
+   never decided at the first); the duty lawyer roster is unchanged (one duty lawyer at every Kestrel Bay sitting,
+   clients a sitting flat); reminders and accommodation show nothing at first appearance.
+6. Fund a District Court judge on the Kestrel Bay custody list.
 
-Ends on: the booking redesign (provisional figures at stage 2).
+Ends on: a District Court judge on the Kestrel Bay custody list (provisional figures at stage 2).
 
-Golden: more examiner shifts, the search-to-booking loss read against the slot stock open when each search ran
-(provisional).
+Golden: a second duty lawyer on the custody-list roster, the widening read against whether the duty lawyer was in the
+custody courtroom when each matter was called (provisional).
 
 ## Stump sentence
 
-A competent solver builds the permit-to-licence funnel, finds the search-to-booking stage carries the largest fall and
-that it lines up with the March 2026 booking redesign, and funds the redesign (Ends on: the booking redesign); the step
-that lands it there is reading the stage's loss as the portal's, when the scheduling system's releases, bookings and
-cancellations show no slot open within six weeks at the centre searched for most of the failed searches, which puts the
-fall on examiner capacity.
+A competent solver measures the first-appearance custody-remand gap within court and judicial officer with the
+legally relevant factors as controls, finds the widening in the Kestrel Bay custody list under the community
+magistrate who took it over in March 2026, and funds a judge on the custody list (Ends on: a District Court judge on
+the Kestrel Bay custody list); the step that lands it there is reading a within-officer difference as the officer's,
+when the duty lawyer service's record and the sitting calendar show the single rostered duty lawyer was serving the
+new audio-visual remand list next door when most of the widening's matters were called, which puts the gap on the duty
+lawyer roster.
 
 ## Three rules
 
@@ -141,3 +167,38 @@ Drafted at the draw; completed and measured at stage 2.
   candidate is wrong), with nine axes equal to task121 (domain, subdomain, objective, shape 18, Gate G, strategy,
   decision type, question form what, org family); the lexical guard scored it 0.06 and passed it, a template only the
   semantic read catches. No rest, fatigue or time on task may decide this slot again.
+- Architecture 3 itself (Product Analytics, `funnel-journey-analysis`: Norland Driver Services' road-test booking
+  journey, the search-to-booking fall read against the slot stock rebuilt from releases, bookings and cancellations),
+  spent at stage 2 on 2026-11-03 before any data was cut. The pricing sequence's step 3 run as a daily queue harness
+  over two years (scratch `a3/harness.py`) under three variants built to hide the binding (the busy centres losing 14
+  per cent of slots; the province's releases held flat by rural top-ups; a quarter of slots released four days ahead):
+  in every variant two one-group-by routes name the golden at rung 1, releases by centre down about 8 per cent at the
+  busy centres and bookings over releases by centre at the ceiling there, while the decisive rebuild put 95 per cent
+  of failed searches on an empty stock. The throughput identity (tests sat at a fully booked centre equal its releases)
+  makes a binding capacity one subtraction (readability tests 3 and 6; Gate F's two cheap routes), so no honest booking
+  world hides it.
+- Duty counsel absent on some sitting days, read off the duty counsel log by day (Criminology, the same bail world as
+  architecture 4): the initiative "restore full duty counsel coverage" invites the count of sitting days with no
+  duty counsel entry, one group-by on the log, and the step is architecture 3's family (a resource's availability at
+  the event against its aggregate).
+- Video bail hearings recovered from the remand centre's court-escort movements: the initiative names the mode, so
+  the solver looks for it and the escort movement type is one join from the hearing; and the dated switch to video is
+  itself the before-and-after a solver runs first.
+- A legal aid contract concentrating bail work in fewer lawyers, read as their double-booking across courtrooms: the
+  per-lawyer caseload by year is one group-by and names the concentration.
+- The binding matter across a person's open cases (released on the new charge, held on an old one): task202's note
+  measured the holds as a column of every custody extract, and the rule that books a custody day to one matter would
+  have to be filed (rule application).
+- Failures to appear per scheduled appearance against the lead time each date was set at: a pooled rate over a mix
+  that shifted, `composition_mix`, banned in the window by task277, and lead time is one lag a solver enumerates.
+- Remand bed-days split into admissions and length of stay (exit-cohort stays shrink while stays lengthen):
+  `maturity_censoring`, banned in the window by task274, and Little's law makes the split one division.
+- Island ferry cancellations behind a visitor economy's turnover (Economics, panel data): the cancellations are the
+  pack's largest anomaly (Shock) and the relief-ferry initiative invites its own check.
+- An energy price shock absorbed by a panel's time effects, read through each town's energy-intensive employment
+  (Economics, panel data): exposure times the shock is the energy rebate's natural check, and the hedged-contract
+  second correction is a column one join away.
+- A scoring model's inputs as scored against as stored after a late feed was backfilled (General Statistics,
+  interpretability): the cause is a pipeline defect, so the step is Layer 1 carrying the call.
+- Vaccine hesitancy measured after the missed dose in a parents' survey (Psychology, mediation): temporal precedence of
+  the mediator is the rigor card's own pattern 3, a reflex.
