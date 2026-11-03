@@ -1,29 +1,28 @@
 {
   "task": "task402",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-11-03",
-  "slot_note": "Numbered from seed RC08 (a wind turbine's five faults and its one spring crew visit). The seed's world collides with shipped task187 (a wind farm's lost production read against the warranted curve) and its kernel, a unit's own healthy year as the reference curve, is task187's family; the seed's client domain (Supply Chain & Logistics) carries Root-Cause only through interpretability, ruled a backdrop for an operations world at task129 v1. Moved to another client domain, world and dataset under the same objective and number, keeping the decision kind (one of five causes gets the single fix) and the quantity's kind (what that cause cost over the period, in the period's natural unit).",
-  "domain": "psychology-behavioral-science",
-  "subdomain": "mediation-moderation-process-modeling",
-  "client_domain": "psychology-behavioral-science",
-  "niche": "an NHS Talking Therapies service's 2025-26 fall in recoveries: which of five service changes gets the commissioner's one 2026-27 improvement, when agency high-intensity cover bought to clear the step 3 backlog lapsed block by block and the courses it held were reallocated mid-course, so the loss reads as the waiting list's early leavers",
+  "slot_note": "Numbered from seed RC08 (a wind turbine's five faults and its one spring crew visit); the seed's world collides with shipped task187 and its client domain reaches Root-Cause only through interpretability, so architecture 1 moved to an NHS Talking Therapies service and died at stage 4 (lineage). Architecture 2 moves domain, world, dataset and shell: a regional bowel cancer screening programme's equity fund, keeping the decision kind (one of five changes gets the single fix) and the quantity's kind (what that change cost over the year, in the period's natural unit).",
+  "domain": "epidemiology-public-health",
+  "subdomain": "health-equity-disparity-decomposition",
+  "client_domain": "epidemiology-public-health",
+  "niche": "a regional bowel cancer screening programme's 2026-27 equity fund: which of five changes on its review costs the most deprived fifth the most completed screens in 2025-26, when the integrated care board's shared registration service, in force since April 2024, applied address changes months after they were asked for, so a kit despatched while a change was pending went to the address the person had left, a loss running at the same rate in both years that a comparison of 2025-26 against 2024-25 never sees",
   "objective": "root-cause",
-  "shape": "09",
+  "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "A: agency high-intensity therapists on 12-week assignments cost about 250 recoveries in 2025-26 (to the nearest 50); fund fixed-term high-intensity posts",
-  "answer_source": "submission.md block 1; generator/figures.json a_cost",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population",
-    "objective"
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G9",
-    "G4",
-    "G6"
+    "G8",
+    "G13"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
@@ -31,76 +30,131 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and the national recovery definition correctly walks the year's fall down the referral-to-recovery funnel, finds it in step 3 courses that ended early, sees early endings climb with the wait while agency therapists' recovery rates on the courses they discharged match employed ones, and files C, the step 3 waiting list, at about 310 recoveries; the loss runs through the courses an agency therapist's lapsing assignment broke off, and long waiters whose therapist stayed end early no more often than short waiters.",
-  "domain_test": "The deciding quantity is a mediation decomposition, the task type's own analysis: the wait's total association with early ending and lost recovery split into the path that runs through allocation to agency cover whose assignment lapsed mid-course (handover, then disengagement, the therapist-discontinuity dropout the psychotherapy literature reports) and the wait's direct path, which is about zero; a noun swap keeps the arithmetic of a split but loses the mediator, the continuity of one therapist across a course scored session by session against caseness, so the decomposition has no path to read.",
+  "analyst_test": "A strong analyst who reads every field and the fund's terms correctly age-standardises completion by deprivation fifth, costs each change on the review against 2024-25 (the localities for the outreach, the half-years for the reminder, the residual for the April changes) and files the reminder moved to eight weeks for the most deprived fifth's lost screens, setting the shared registration service aside because it ran through both years; its loss is a level, not a movement: kits despatched while the person's address change was still pending went to the address they had left, at the same rate in both years.",
+  "domain_test": "The deciding quantity is each change's cost in completed screens to the most deprived fifth, the equity decomposition of that fifth's shortfall by cause, worked on the screening pathway's own grain (an invitation, a posted kit, a usable result inside thirteen weeks) and standardised for age; a noun swap keeps a mailing but loses the deprivation fifth, the round structure and the completion clock that turn a kit's reach into the deprived fifth's lost screens.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:broken-course-attrition",
+  "layer2_pattern": "own:in-force-loss-against-a-year-on-year-comparison",
   "layer1": [
-    "an electronic record migration in October 2025 that re-keyed practitioner identifiers, joined back only through a directory whose names differ from the staffing system's",
-    "a temporary staffing register in which an assignment extended is a new row, not an end",
-    "outcome measures exported as item-level answers before the migration and totals after it",
-    "a monthly KPI report filed with preliminary figures that the refreshed extract revises",
-    "appointment times in local time against a staffing system stamped in UTC",
-    "fiscal year April to March against calendar-month extracts",
-    "agency timesheets recorded as weekly totals, a correction filed as a replacement timesheet on the agency portal and as an adjustment line on e-rostering from 1 August 2025",
-    "waiting list snapshots taken after the month end, a patient removed only when the first appointment is outcomed",
-    "a digital vendor's section-level event export in UTC across a content release"
+    "a registration history whose address rows carry the date a change took effect, beside the shared service's own work queue of requests with received and completed dates",
+    "the programme's monthly uptake report computed on the address held at despatch, against the fund's terms reading the same address",
+    "kit results returned from the laboratory with spoilt and technical-failure rows that are re-tested under a new kit",
+    "an age extension adding first-time invitees mid-round",
+    "despatch dates in local time against laboratory receipt stamps in UTC",
+    "the review's localities defined on practice lists, against residence for deprivation"
   ],
-  "stakeholder_role": "head of psychological therapies for the service",
-  "role_family": "field_unit_lead",
-  "scoring_unit": "per episode",
+  "stakeholder_role": "programme manager for the regional bowel screening hub",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "care_contacts_2023-10-02_to_2025-10-12.csv",
-    "rows": 184455,
-    "entity": "one appointment booked within one referral's course of therapy",
-    "grain": "referral x appointment",
+    "file": "kit_invitations_2024-04_to_2026-03.parquet",
+    "rows": 380000,
+    "entity": "one screening invitation with its posted kit",
+    "grain": "person x screening round",
     "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "period_close",
-  "org_family": "nonprofit_or_charity",
+  "forum": "board_of_directors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "England, a fictional county integrated care board area",
+    "geography": "England, an invented region",
     "currency": "GBP",
-    "org_type": "a mental health charity delivering the county's NHS Talking Therapies service under contract to the integrated care board (stepped care, steps 2 and 3)",
-    "invented_names": [
-      "Fenwold",
-      "Fenwold Talking Therapies",
-      "Fenwold Wellbeing Partnership",
-      "NHS Fenwold Integrated Care Board",
-      "Halberd Clinical Staffing",
-      "Tarnside Health Recruitment",
-      "Steadyway",
-      "Quillfern",
-      "Marshby",
-      "Hollingby",
-      "Ashwold Road Health Centre"
-    ],
+    "org_type": "an NHS foundation trust hosting the region's bowel cancer screening hub",
+    "invented_names": [],
     "people": [
-      "Wendy Gibson",
-      "Jemma Fletcher",
-      "Josh Parry",
-      "Hollie Smith"
+      "Lesley Thompson",
+      "Ronald Bailey"
     ]
   },
   "deliverables": [
-    "improvement_case_2026-27.pptx",
-    "review_evidence_2025-26.xlsx"
+    "equity_fund_paper_2026-27.docx",
+    "screens_lost_by_change_2025-26.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is the share of a long wait's apparent harm that runs through the actor the waiting cases were given to, whose fixed-term assignment lapsed mid-case so the case was handed on and abandoned, against the wait's direct path, read only by setting each case's run of actors against the assignment register; because the arrangement was used on the longest-waiting cases, the loss reads as the wait's.",
-  "driver_concrete": "Each step 3 course's run of high-intensity therapists, rebuilt from the care contacts across the record migration, set against the agency booking log's assignment ends: the courses an agency block's lapse broke off lose most of their patients after the reallocation, the wait's direct path is about zero among courses whose therapist stayed, and because agency cover took the backlog the loss reads as the waiting list's.",
-  "stump": "A solver who walks the fall down the referral-to-recovery funnel finds it in step 3 courses ending early, sees early endings rise with the wait while agency therapists' recovery rates match employed ones, and files C, the waiting list; the step that lands it there is never splitting the wait's effect by setting each course's run of therapists against the agency booking log, which puts the loss on the courses a lapsing agency block broke off and the call on A.",
+  "question_form": "where",
+  "driver": "The decisive quantity is what a change in force through both compared years costs every year through a cohort no column marks, members whose change of record was still pending when their summons was sent and who were summoned at a place they had left; a comparison of the year against the last gives it nothing, because its loss is a level and not a movement, while the changes dated between the years take the year-on-year fall.",
+  "driver_concrete": "Each 2025-26 kit set against the shared registration service's own work queue: where an address change had been asked for before the kit was despatched and was applied after it, the kit went to the address the person had left and almost never came back completed; that loss runs at the same rate in 2024-25 and 2025-26, so costing each change against 2024-25 gives the shared service nothing while the reminder change takes the fall.",
+  "stump": "A solver who age-standardises completion by deprivation fifth and costs each change against 2024-25 files the reminder moved to eight weeks for the most deprived fifth's lost screens and sets the shared registration service aside as in force through both years; the step that lands them there is never setting each kit's despatch date against the person's pending address change, which shows the most deprived fifth losing more screens to kits sent to the address the person had left than to any change on the review, so the fund goes to the shared registration service.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task245": "task245 rebuilds the periods a recorder missed because it fails under its heaviest load; here every appointment is recorded, and the loss is the courses an agency assignment's end broke off, found by setting each course's run of therapists against the staffing register's end dates.",
-    "task270": "task270 v6 places unscheduled advertising spots from a traffic system's past placements to read a schedule's reach; here the decisive relation is a therapy course's run of practitioners against assignment end dates, and the loss is the patients who leave after a handover, which the recovery rate on finished courses never counts.",
-    "task399": "task399 reads an advocate's absence at the moment each case is decided, which confounds another decision-maker's measured disparity; here a therapist's departure breaks a course already under way, the patient is lost after the handover, and the loss is a mediated path of the wait counted over every course begun, not an absence at a decision."
+    "task303": "task303 sizes what an intervention on one unit removes from its recorded losses when part of that record is a shared loss every unit fed from one source carries; here the decisive relation is whether each posted kit reached the person, read by setting its despatch date against the shared service's pending address change, and the call names the change whose loss is a level that a year-on-year comparison cannot see.",
+    "task258": "task258 counts how many units an intervention moves across a threshold when its effect works through a reference each unit's own document must carry, and the back-test passes by construction; here nothing crosses a threshold: each kit's reach is read from its despatch date against a pending change in another service's queue, and the decisive point is that the loss runs at one rate through both compared years."
   },
-  "lineage": [],
-  "notes": "Strategy population_selection: the decisive move fixes which courses carry the change (the ones an agency block lapse broke off, an exposure no column marks), which is what splits the wait total effect into its mediated and direct paths. Gate G decomposition_attribution: a correctly counted fall assigned to the right change; the only honest Gate G key for a root-cause call, so the wave repeat WARN is answered by the strategies differing (composition_mix, causal_design, binding_constraint, population_selection). Decisive generator G9: the service measures each therapist recovery rate on the courses the therapist kept to discharge, and the courses an agency therapist lost when the block lapsed sit behind the care-contact to booking-log join. G4 and G6 were tried as the decisive generator at stage 2 and refused by the guard (test.same_driver against task232 v2, task121 v6, task129 v2, task243; test.same_puzzle_older against task144, task228, task265, task68), so they stay as frame. The recovery rate counting only finished courses carries about one broken course in eight (84 of 714 at seed 402) and is kept out of the driver.",
-  "registered": "2026-11-03T14:20:49Z"
+  "lineage": [
+    {
+      "architecture": "v1 (Psychology and Behavioural Science: a charity-run NHS Talking Therapies service's 2025-26 fall in recoveries, agency high-intensity cover on 12-week blocks breaking step 3 courses, read as the waiting list's)",
+      "drawn": "2026-11-03",
+      "domain": "psychology-behavioral-science",
+      "subdomain": "mediation-moderation-process-modeling",
+      "objective": "root-cause",
+      "shape": "09",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G4",
+        "G6"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "population_selection",
+      "context_artifact": "register",
+      "forum": "customer_or_counterparty",
+      "forcing_event": "period_close",
+      "org_family": "nonprofit_or_charity",
+      "role_family": "field_unit_lead",
+      "layer2_pattern": "own:broken-course-attrition",
+      "world": {
+        "geography": "England, a fictional county integrated care board area",
+        "currency": "GBP",
+        "org_type": "a mental health charity delivering the county's NHS Talking Therapies service under contract to the integrated care board (stepped care, steps 2 and 3)",
+        "invented_names": [
+          "Fenwold",
+          "Fenwold Talking Therapies",
+          "Fenwold Wellbeing Partnership",
+          "NHS Fenwold Integrated Care Board",
+          "Halberd Clinical Staffing",
+          "Tarnside Health Recruitment",
+          "Steadyway",
+          "Quillfern",
+          "Marshby",
+          "Hollingby",
+          "Ashwold Road Health Centre"
+        ],
+        "people": [
+          "Wendy Gibson",
+          "Jemma Fletcher",
+          "Josh Parry",
+          "Hollie Smith"
+        ]
+      },
+      "driver": "The decisive quantity is the share of a long wait's apparent harm that runs through the actor the waiting cases were given to, whose fixed-term assignment lapsed mid-case so the case was handed on and abandoned, against the wait's direct path, read only by setting each case's run of actors against the assignment register; because the arrangement was used on the longest-waiting cases, the loss reads as the wait's.",
+      "driver_concrete": "Each step 3 course's run of high-intensity therapists, rebuilt from the care contacts across the record migration, set against the agency booking log's assignment ends: the courses an agency block's lapse broke off lose most of their patients after the reallocation, the wait's direct path is about zero among courses whose therapist stayed, and because agency cover took the backlog the loss reads as the waiting list's.",
+      "stump": "A solver who walks the fall down the referral-to-recovery funnel finds it in step 3 courses ending early, sees early endings rise with the wait while agency therapists' recovery rates match employed ones, and files C, the waiting list; the step that lands it there is never splitting the wait's effect by setting each course's run of therapists against the agency booking log, which puts the loss on the courses a lapsing agency block broke off and the call on A.",
+      "shell": {
+        "question form": "how-many",
+        "second-sentence opener": "our",
+        "rounding opener": "for",
+        "deliverable set": "pptx+xlsx"
+      },
+      "fate": "spent 2026-11-03 at stage 4: judge SEND_BACK, Gate H rule_application (the filed per-change cost, executed with any-contact exposure, lands A at 250), ask 4 conventions unfiled. Measured: the plan filed each change's cost as expected minus actual recoveries read from the year's other referrals at the same step, largest wins; any-contact exposure gives A 249, the naive comparator 267, the golden 257 (all 250 to the nearest 50), last-clinician exposure 222; change C had no filed in-place date or wait threshold and tied A at 248 to 257 on the same patients; ask 4's monthly agency hours needed unfiled conventions (a dropped old booking, the later of two portal timesheets before 1 August and summing after, catch-up lumps spread over unclaimed weeks, working-day allocation, week-commencing moving June by about 1,200 hours); Gate F low to moderate."
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "our",
+      "rounding opener": "for",
+      "deliverable set": "pptx+xlsx"
+    }
+  ],
+  "notes": "Strategy population_selection: the deprived fifth's shortfall sits on a cohort built from two histories (the invitation's despatch date and the shared service's request and completion dates), never a status word or column. Gate G decomposition_attribution: a correctly counted shortfall assigned to the right change; the repeat WARN is answered by the strategy differing from the window's (binding_constraint, causal_design, decomposition_attribution). Decisive generator G8 (reachability against magnitude): every rival is costed on the size of its change between the years, the decisive step on whether each kit reached the person. G13 (horizon mismatch) carries the year-on-year comparison against a change in force since April 2024.",
+  "registered": "2026-11-03T18:12:57Z"
 }

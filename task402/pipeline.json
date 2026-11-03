@@ -1,28 +1,27 @@
 {
   "task": "task402",
-  "status": "PAUSED",
-  "domain": "psychology-behavioral-science/mediation-moderation-process-modeling",
+  "status": "DESIGN",
+  "domain": "epidemiology-public-health/health-equity-disparity-decomposition",
   "objective": "root-cause",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-03",
-  "seed": "RC08 (which of five faults on an underperforming wind turbine gets the one spring crew visit, and the winter energy it cost); the seed's world collides with shipped task187 (a wind farm's lost production read against the warranted power curve) and its kernel, the turbine's own healthy year as the reference curve, is task187's family; its client domain (Supply Chain & Logistics) carries Root-Cause only through interpretability, a backdrop for an operations world (task129 v1). Moved to an NHS Talking Therapies service's 2025-26 fall in recoveries under the same objective and number, keeping the decision kind (one of five causes gets the single fix) and the quantity's kind (what that cause cost over the period, in recoveries).",
-  "stump": "A competent solver walks the year's fall in recoveries down the referral-to-recovery funnel, finds it in step 3 courses that end early, reads those early endings as the waiting list's because they climb with the wait, finds agency therapists' recovery rates on the courses they discharged level with employed therapists', and files C, the step 3 waiting list; the step that lands it there is never splitting the wait's effect by setting each step 3 course's run of therapists, rebuilt across the record migration, against the agency booking log's assignment ends, which shows the loss runs through the courses a lapsing agency block broke off while the wait's direct path is about nil, so the change is A.",
-  "architecture": 1,
+  "seed": "RC08 (which of five faults on an underperforming wind turbine gets the one spring crew visit, and the winter energy it cost); architecture 1 moved to an NHS Talking Therapies service and died at stage 4 (judge SEND_BACK); architecture 2 moves domain, world, dataset and shell to a regional bowel cancer screening programme's equity fund, keeping the decision kind (one of five changes gets the single fix) and the quantity's kind (what that change cost over the year, in its natural unit).",
+  "stump": "A solver who standardises completion for age and costs each change on the review against 2024-25 files E, the reminder moved to eight weeks, at about 250 of the most deprived fifth's screens, setting D aside because it ran through both years; the step that lands them there is never setting each kit's despatch date against the shared registration service's open address requests, which shows kits posted while a change was pending going to the address the person had left, about 400 screens a year in the most deprived fifth, so the fund goes to D.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-11-03",
-    "detail": "61 checks, 0 FAIL, 0 WARN on the final cut; voice-check PASS (909 characters)"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (2026-11-03, --asof 2026-05-11): three lines ruled harmless in DESIGN_NOTE ## Draw (the plan lists every change alike; ordinary service vocabulary)",
+    "leak_py": "",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN, exit 0 (shell how-many | our | pptx+xlsx, redrawn away from task399 and task400 at stage 3; overuse.objective; repeat.gate_g and repeat.decision against task400; repeat.deliverables against task398)",
-    "surface": "one pair promoted for adjudication: task245 at surface 0.077 (40th percentile), on the card's structural triple (gap, pattern, Gate G), differentiated on the card at the draw; no shared names or files",
-    "nearest": "task245 (structural), task268 surface 0.100"
+    "heart": "",
+    "surface": "",
+    "nearest": ""
   },
   "judge": {
     "verdict": "",
@@ -30,26 +29,18 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 4, resume here. The two briefs are written under the session scratchpad t402/reader and t402/judge (each with its own copy of prompt.txt and target/ verified against target.zip sha256 c9874081...). (1) When the reader's and the judge's outputs come back, fix every finding in the generator in one pass (task402/generator/build.py rebuilds everything; checks.py, verify.py, ceiling.py, figures_check, precut, leak.py --asof 2026-05-11, guard.py heart and surface after the sibling-card merge), re-judge once on FIX_NOW with round1_findings.md beside graded_blocks.md, re-read only if a document or the prompt changed. (2) Where the reader and the judge split on Gate H, recompute the easy routes on the clean truth (generator/harness.py at seed 402) before anything ships. (3) Ship: pre-ship check in the design note, every gate re-run on the final cut, ledger row, card answer current, commit SHIPPED (task402): A, the agency cover, about 250 recoveries, with git add -f task402/target.zip task402/golden/.",
+  "architectures": [
+    {
+      "architecture": 1,
+      "fate": "spent 2026-11-03 at stage 4: judge SEND_BACK, Gate H rule_application (the filed per-change cost, executed with any-contact exposure, lands A at 250), ask 4 conventions unfiled"
+    }
+  ],
+  "resume": "stage 2, design: write the generator (world, pack, golden, checks with the analyst test and every fork asserted, ceiling.py with the cracker, full includer, no-repair and mirror rows), the remaining note sections (Survivor anatomy, Readability screen, Semantic fork table, Ladder, Closure table, Literal reader, Oracles, Ask sheet), the fund's terms and prompt.txt; leave stage 2 only on precut.py exit 0.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "target_zip_sha256": "c9874081eabec719a0b48873362682e90a151af9ec45c058c74c3df82f5291fb",
-  "gates": {
-    "checks": "68 of 68",
-    "verify": "PASS",
-    "byte_identical_cuts": true,
-    "figures_check": "41 of 41",
-    "pair_ceiling": 28.5,
-    "mirror_leakage": 0.0,
-    "full_includer_keep": 0.0
-  },
-  "briefs": {
-    "leak_reader": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/reader/reader_brief.md",
-    "judge": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/judge/judge_brief.md",
-    "judge_graded_blocks": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/judge/graded_blocks.md"
-  }
+  "target_zip_sha256": ""
 }
