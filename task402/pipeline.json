@@ -3,25 +3,26 @@
   "status": "PAUSED",
   "domain": "psychology-behavioral-science/mediation-moderation-process-modeling",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-03",
   "seed": "RC08 (which of five faults on an underperforming wind turbine gets the one spring crew visit, and the winter energy it cost); the seed's world collides with shipped task187 (a wind farm's lost production read against the warranted power curve) and its kernel, the turbine's own healthy year as the reference curve, is task187's family; its client domain (Supply Chain & Logistics) carries Root-Cause only through interpretability, a backdrop for an operations world (task129 v1). Moved to an NHS Talking Therapies service's 2025-26 fall in recoveries under the same objective and number, keeping the decision kind (one of five causes gets the single fix) and the quantity's kind (what that cause cost over the period, in recoveries).",
   "stump": "A competent solver walks the year's fall in recoveries down the referral-to-recovery funnel, finds it in step 3 courses that end early, reads those early endings as the waiting list's because they climb with the wait, finds agency therapists' recovery rates on the courses they discharged level with employed therapists', and files C, the step 3 waiting list; the step that lands it there is never splitting the wait's effect by setting each step 3 course's run of therapists, rebuilt across the record migration, against the agency booking log's assignment ends, which shows the loss runs through the courses a lapsing agency block broke off while the wait's direct path is about nil, so the change is A.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": 1,
+    "exit": 0,
     "date": "2026-11-03",
-    "detail": "61 checks, 3 FAIL (cracker sheet, ceiling script, mirror leakage), 1 WARN (checks.py not written); every design-note section passes"
+    "detail": "61 checks, 0 FAIL, 0 WARN on the final cut; voice-check PASS (909 characters)"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (2026-11-03, --asof 2026-05-11): three lines ruled harmless in DESIGN_NOTE ## Draw (the plan lists every change alike; ordinary service vocabulary)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "guard.py check WARN on the registered card after the stage-2 edits 2026-11-03 (overuse.objective; repeat.gate_g and overuse.gate_g against task400 and task401; repeat.question_form against task400); NOTE test.same_puzzle_older against task270 v6 (lineage) and test.same_driver_older against task245, differentiated; task399 differentiated on the insight at the coordinator's request; G4 and G6 as decisive refused by check and kept as frame; nearest driver 0.08 task130 v2 loop 1 (lineage)"
+    "heart": "WARN, exit 0 (shell how-many | our | pptx+xlsx, redrawn away from task399 and task400 at stage 3; overuse.objective; repeat.gate_g and repeat.decision against task400; repeat.deliverables against task398)",
+    "surface": "one pair promoted for adjudication: task245 at surface 0.077 (40th percentile), on the card's structural triple (gap, pattern, Gate G), differentiated on the card at the draw; no shared names or files",
+    "nearest": "task245 (structural), task268 surface 0.100"
   },
   "judge": {
     "verdict": "",
@@ -29,11 +30,21 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2, resume here, in order. (1) Apply the coordinator's four stage-2 risks in generator/world.py and measure each with generator/harness.py and generator/seeds.py (seeds 402 and 1 to 5), recording every number in DESIGN_NOTE ## Ladder: raise WAIT_HAZARD from 0.0030 to about 0.0060 and print both C variants (wait-band shortfall alone, and with the extra list leavers) against coarse A (first practitioner); cap the backlog's waits at 33 weeks (longest-first clearance) and print the four cross-tab cells (n, early-ending rate, recovery rate) by wait band and first practitioner kind, keeping long-wait employed under about 15 courses; taper the cover (no new cover starts after August, no block renewed to end after mid-November) so the 19 December lapse breaks under about 60 courses, and add a holiday disengagement in the last fortnight of December and the first of January in both years, then run the readability screen on the monthly chart (step 3 starts, early endings and active practitioners by kind, by month, both years); settle SF4, A's comparison, by measuring the three options in ## Ladder risk 4 at the shipped seed and record the choice in ## Semantic fork table, never filing a clause that names a handover, reallocation, booking log or departure. (2) Write generator/pack.py (shipped files with the Layer 1 forms in ## Three rules: record migration on 13 October 2025 re-keying practitioner identifiers with a directory map, item-level scores before it and totals after, booking extensions as new lines under the original reference with a header line filing SF5, local appointment times against a UTC booking log, the preliminary monthly KPI report as PDF), the board's improvement plan document filing SF1 to SF3 and SF5 to SF8 in its own voice, generator/checks.py asserting SF1 to SF8, every broken course discharged by an employed therapist, every broken course's counterfactual end inside 2025-26 and zero device rows among step 3 referrals ending in 2025-26, and generator/ceiling.py sharing no code with the generator; engineer the three asks' devices from ## Ask sheet (ask 1 the two vendors' usage exports, ask 2 the agency timesheets with extension-line rates, ask 3 the waiting list snapshots), measure the cracker and mirror rows on the cut pack, and write the cracker sheet table, Mirror leakage and Pair ceiling. (3) Run precut.py to exit 0, message main at precut, then stage 3 (goldens, submission.md, verify, two byte-identical builds, figures_check, leak.py, guard.py surface and heart reading the shell lines) and the stage-4 briefs per the coordinator's brief. Invented names (Fenwold and the rest) are checked against real places and companies before the pack is cut.",
+  "resume": "stage 4, resume here. The two briefs are written under the session scratchpad t402/reader and t402/judge (each with its own copy of prompt.txt and target/ verified against target.zip sha256 3d00ce51...). (1) When the reader's and the judge's outputs come back, fix every finding in the generator in one pass (task402/generator/build.py rebuilds everything; checks.py, verify.py, ceiling.py, figures_check, precut, leak.py --asof 2026-05-11, guard.py heart and surface after the sibling-card merge), re-judge once on FIX_NOW with round1_findings.md beside graded_blocks.md, re-read only if a document or the prompt changed. (2) Where the reader and the judge split on Gate H, recompute the easy routes on the clean truth (generator/harness.py at seed 402) before anything ships. (3) Ship: pre-ship check in the design note, every gate re-run on the final cut, ledger row, card answer current, commit SHIPPED (task402): A, the agency cover, about 250 recoveries, with git add -f task402/target.zip task402/golden/.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "target_zip_sha256": "3d00ce51861b202bcacb6f07cd72e35c47969a7dbb72faf0d8b88210a09183c8",
+  "gates": {
+    "checks": "68 of 68",
+    "verify": "PASS",
+    "byte_identical_cuts": true,
+    "figures_check": "41 of 41",
+    "pair_ceiling": 28.5,
+    "mirror_leakage": 0.0,
+    "full_includer_keep": 0.0
+  }
 }

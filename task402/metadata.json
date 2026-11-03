@@ -1,0 +1,33 @@
+{
+ "task": "task402",
+ "decision": "Which change on an NHS Talking Therapies service's 2025-26 improvement list gets the commissioner's 2026-27 improvement fund, with the recoveries it cost, a monthly chart of recoveries, and evidence tables for the list's other lines.",
+ "deliverables": [
+  "improvement_case_2026-27.pptx",
+  "review_evidence_2025-26.xlsx"
+ ],
+ "distractor_files": [
+  "target/quillfern_module_completions_2025-04_to_2025-06.csv",
+  "target/stress_management_groups_schedule_2024-04_to_2025-08.csv"
+ ],
+ "licence": "CC BY 4.0 (synthetic records generated for this task; the service, the provider, the integrated care board, the agencies, the digital vendors and every person are fictional)",
+ "files": {
+  "referrals_received_2023-10_to_2026-03.csv": "Clinical system referral extract, refreshed 6 May 2026. Synthetic.",
+  "care_contacts_2023-10-02_to_2025-10-12.csv": "Previous clinical system appointment export to its close on 12 October 2025. Synthetic.",
+  "outcome_measures_items_2023-10-02_to_2025-10-12.csv": "Previous clinical system questionnaire item export. Synthetic.",
+  "appointments_2025-10-13_to_2026-05-06.parquet": "Clinical system appointment export from 13 October 2025. Synthetic.",
+  "clinical_system_users_2026-05-06.xlsx": "Clinical system user list, 6 May 2026. Synthetic.",
+  "agency_bookings_psychological_therapies_2025-26.xlsx": "People team agency booking register export, 5 May 2026. Synthetic.",
+  "agency_timesheets_2025-04_to_2026-03.csv": "Agency timesheet portal export, 2025-26. Synthetic.",
+  "step3_waiting_list_month_end_2025-04_to_2025-09.csv": "Waiting list module month-end snapshots, previous system. Synthetic.",
+  "step3_waiting_list_month_end_2025-10_to_2026-03.csv": "Waiting list module month-end snapshots, current system. Synthetic.",
+  "steadyway_activity_export_2025-07_to_2026-05.json": "Digital CBT vendor activity export, 6 May 2026. Synthetic.",
+  "quillfern_module_completions_2025-04_to_2025-06.csv": "Previous digital CBT vendor's final completions export. Synthetic.",
+  "stress_management_groups_schedule_2024-04_to_2025-08.csv": "Group programme schedule. Synthetic.",
+  "improvement_plan_2026-27.docx": "Integrated care board improvement plan for the contract, version 2.0. Constructed.",
+  "monthly_performance_report_2026-03_provisional.pdf": "Provider's provisional monthly performance report, March 2026. Constructed."
+ },
+ "dates": {
+  "pack_export": "2026-05-11",
+  "refreshed_extract": "2026-05-06"
+ }
+}
