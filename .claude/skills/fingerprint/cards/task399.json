@@ -1,0 +1,84 @@
+{
+  "task": "task399",
+  "architecture": "v1",
+  "drawn": "2026-11-03",
+  "slot_note": "new number in wave 7 (Root-Cause), numbered from seed RC05 (a regional electricity distributor's outage causes and one reliability programme). The seed's world was screened first against task129 (grid-reliability outage root cause, vegetation programme) and task303 (customer-minutes, storm hardening): it collides on world (same subdomain, customer-minutes by cause, vegetation and storm candidates; heart WARN 0.14 against task303's stump), so the build moved to another client domain, world and dataset under the same objective and number. Kept from the seed: the decision (one programme funded from a catalogue of five) and the quantity in kind (the dollars of a shortfall each programme's cause accounted for over the last twelve months, in millions to one decimal) and the seed's own kernel, that the costliest cause leaves no record of its own.",
+  "domain": "quantitative-finance",
+  "subdomain": "factor-return-attribution",
+  "client_domain": "quantitative-finance",
+  "niche": "a manufacturer's closed defined-benefit pension plan whose global equity programme, run by five external managers, fell short of its half-hedged policy benchmark in the twelve months to 30 September 2026: which of five initiatives the pension investment committee funds for 2027 (replacing the core manager, a currency hedge to the benchmark's basis, a cash overlay on the benefit payments' cash, monthly rebalancing to policy weights, replacing the emerging markets manager), judged on the dollars of the shortfall each initiative's cause accounted for",
+  "objective": "root-cause",
+  "shape": "18",
+  "decision_type": "root_cause_named",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reconciles every account to the custodian, runs the plan-level attribution and the returns-based factor attribution the field uses on each manager, and reads every field correctly funds the replacement of the core manager, whose shortfall against its benchmark is the largest line and reads as a low market exposure, because the attribution books to the manager everything its account held, the plan's waiting benefit cash included, and credits the cash overlay only with the plan's own cash account.",
+  "domain_test": "The deciding quantity is the dollars of the programme's shortfall against its policy benchmark each source accounted for, which plan-level performance attribution settles by separating the sponsor's decisions (allocation, currency basis, the plan's own cash) from each manager's (selection and factor exposure on the money it manages); with a hospital's departments in place of managers there is no benchmark return for idle money to miss, no time-weighted return to carry it and no market exposure for it to dilute.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:the-sponsor's-cash-left-in-a-manager's-account-separated-from-the-manager's-market-exposure",
+  "layer1": [
+    "filled at stage 2 from the generator's mess list"
+  ],
+  "stakeholder_role": "the plan's chief investment officer, who brings the initiative to the pension investment committee",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "custody positions, daily, by account",
+    "rows": 0,
+    "entity": "one holding in one manager account at one day's close",
+    "grain": "account x security x day",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "United States",
+    "currency": "USD",
+    "org_type": "a manufacturer's closed defined-benefit pension plan, net benefit outflows paid monthly",
+    "invented_names": [
+      "Thornell Industries"
+    ],
+    "people": [
+      "James Torres",
+      "Jacqueline Keller",
+      "Kelsey Smith"
+    ]
+  },
+  "deliverables": [
+    "filled at stage 2"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the money a parent raised for its own payments and left waiting in one unit's account, recorded there as the unit's holding: a unit-level attribution books its cost to the unit as a low market exposure and credits the candidate that would keep that money invested with almost nothing, while the money's own path (a pro-rata sale of every holding on each quarter's first day, then transfers out on the payment dates) puts it with the parent and makes that candidate the largest.",
+  "driver_concrete": "The core global equity account's cash is mostly the plan's benefit-payment money: on each quarter's first business day the core manager sold every holding pro rata at the close for the next quarter's payments and the proceeds waited in its account until each monthly payment date, so the plan-level and factor attribution book a low market exposure in a rising market to the core manager, and the cash overlay, credited only with the plan's own cash account, looks worth almost nothing until the waiting benefit cash is moved to the plan.",
+  "stump": "A competent solver attributes the programme's shortfall against its policy benchmark by manager, factor, currency and cash, finds the core manager's shortfall the largest line and funds its replacement; the step that lands it there is booking the cash in the core account to the core manager, when it is the plan's benefit-payment money, raised by pro-rata sales on each quarter's first business day and waiting there for the monthly payment dates, which makes the cash overlay the largest initiative and the core manager's own shortfall one of the smallest.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task101": "task101 finds an organisation's own top-ups sitting in the baseline a per-head figure is read against; task399 finds a sponsor's benefit cash sitting in one manager's account, identified by the account's pro-rata quarter sales and its transfers on the payment dates, and moves its cost from the manager's market exposure to the plan's own cash.",
+    "task121": "task121 v2 recovers a loss carried by units filed as newcomers that belong to established accounts through a reference in a second party's report; task399 resolves no identity: it separates one account's money by its path through the quarter, the sale on the quarter's first day and the transfers on the payment dates, and prices the waiting days against the policy benchmark.",
+    "task464": "task464's tenth architecture prices an energy efficiency programme's savings; task399 attributes an equity programme's shortfall between a sponsor's cash and its managers' decisions, with no savings, measurement and verification or baseline model.",
+    "task303": "task303 removes from a feeder's breaker tickets the substation supply losses every sibling feeder opened in the same minute; task399 has no simultaneity across siblings and no upstream event: one account's own cash balance is followed from the quarter's pro-rata sale to the monthly payment transfers, and the attribution moves its cost from the manager's market exposure to the overlay that would have kept it invested."
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-11-03 at stage 1. The seed RC05 world (a regional distributor's five reliability programmes) was screened with guard.py check, heart and slots against task129 and task303 and moved: same subdomain and objective as task129 and the same customer-minutes and storm-hardening candidates as task303. Personas from guard.py names --geo 'United States' --seed 399.",
+  "registered": "2026-11-03T07:35:43Z"
+}
