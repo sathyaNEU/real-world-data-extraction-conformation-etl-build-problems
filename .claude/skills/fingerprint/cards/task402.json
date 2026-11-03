@@ -11,8 +11,8 @@
   "shape": "09",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "A: agency high-intensity therapists on 12-week assignments cost about 250 recoveries in 2025-26 (to the nearest 50); fund fixed-term high-intensity posts",
+  "answer_source": "submission.md block 1; generator/figures.json a_cost",
   "gap": [
     "population",
     "objective"
@@ -43,14 +43,17 @@
     "outcome measures exported as item-level answers before the migration and totals after it",
     "a monthly KPI report filed with preliminary figures that the refreshed extract revises",
     "appointment times in local time against a staffing system stamped in UTC",
-    "fiscal year April to March against calendar-month extracts"
+    "fiscal year April to March against calendar-month extracts",
+    "agency timesheets recorded as weekly totals, a correction filed as a replacement timesheet on the agency portal and as an adjustment line on e-rostering from 1 August 2025",
+    "waiting list snapshots taken after the month end, a patient removed only when the first appointment is outcomed",
+    "a digital vendor's section-level event export in UTC across a content release"
   ],
   "stakeholder_role": "head of psychological therapies for the service",
   "role_family": "field_unit_lead",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "care_contacts_2024-26.csv",
-    "rows": 0,
+    "file": "care_contacts_2023-10-02_to_2025-10-12.csv",
+    "rows": 184455,
     "entity": "one appointment booked within one referral's course of therapy",
     "grain": "referral x appointment",
     "source": "synthetic"
@@ -62,7 +65,19 @@
     "geography": "England, a fictional county integrated care board area",
     "currency": "GBP",
     "org_type": "a mental health charity delivering the county's NHS Talking Therapies service under contract to the integrated care board (stepped care, steps 2 and 3)",
-    "invented_names": [],
+    "invented_names": [
+      "Fenwold",
+      "Fenwold Talking Therapies",
+      "Fenwold Wellbeing Partnership",
+      "NHS Fenwold Integrated Care Board",
+      "Halberd Clinical Staffing",
+      "Tarnside Health Recruitment",
+      "Steadyway",
+      "Quillfern",
+      "Marshby",
+      "Hollingby",
+      "Ashwold Road Health Centre"
+    ],
     "people": [
       "Wendy Gibson",
       "Jemma Fletcher",
@@ -70,9 +85,12 @@
       "Hollie Smith"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "improvement_case_2026-27.pptx",
+    "review_evidence_2025-26.xlsx"
+  ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "what",
   "driver": "The decisive quantity is the share of a long wait's apparent harm that runs through the actor the waiting cases were given to, whose fixed-term assignment lapsed mid-case so the case was handed on and abandoned, against the wait's direct path, read only by setting each case's run of actors against the assignment register; because the arrangement was used on the longest-waiting cases, the loss reads as the wait's.",
   "driver_concrete": "Each step 3 course's run of high-intensity therapists, rebuilt from the care contacts across the record migration, set against the agency booking log's assignment ends: the courses an agency block's lapse broke off lose most of their patients after the reallocation, the wait's direct path is about zero among courses whose therapist stayed, and because agency cover took the backlog the loss reads as the waiting list's.",
   "stump": "A solver who walks the fall down the referral-to-recovery funnel finds it in step 3 courses ending early, sees early endings rise with the wait while agency therapists' recovery rates match employed ones, and files C, the waiting list; the step that lands it there is never splitting the wait's effect by setting each course's run of therapists against the agency booking log, which puts the loss on the courses a lapsing agency block broke off and the call on A.",

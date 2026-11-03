@@ -10,7 +10,7 @@ in the period's natural unit). The kernel is new.
 A mental health charity delivers the county's NHS Talking Therapies service under contract to the integrated care
 board: step 2 (psychological wellbeing practitioners: guided self-help, digital therapy, groups) and step 3
 (high-intensity therapists: cognitive behavioural therapy and counselling for depression). Recoveries, counted on the
-national measure, fell between 2024-25 and 2025-26. Five things changed in 2025-26 and the board's improvement review
+national measure, fell between 2024-25 and 2025-26 as a winter rise in referrals formed a step 3 backlog. Five things changed in 2025-26 and the board's improvement review
 lists them, each with the fix it would buy: A, agency high-intensity cover brought in from May 2025 on 12-week
 assignments renewed quarter by quarter to clear the step 3 waiting list (fix: fixed-term posts); B, telephone-first
 step 2 from April 2025 (fix: video and face-to-face as standard); C, the step 3 waiting list itself (fix: an extra
@@ -18,7 +18,7 @@ block of step 3 sessions); D, the digital therapy platform changed in July 2025 
 the stress management groups withdrawn from September 2025 (fix: reinstate them). The board's 2026-27 improvement fund
 is committed at the year-end contract review to the one change that cost the service the most recoveries in 2025-26.
 
-What nothing in the pack says: an agency therapist whose assignment lapses at a quarter's end leaves mid-course, the
+What nothing in the pack says: an agency therapist whose assignment lapses at the end of a 12-week block leaves mid-course, the
 patients are reallocated without a joint session, and many stop attending; agency cover was given the longest waiters,
 so the early endings it causes read as the waiting list's.
 
@@ -103,6 +103,20 @@ so the early endings it causes read as the waiting list's.
   the measure definitions, the monthly KPI report (preliminary), the waiting list snapshots, the digital platform's
   usage report, the group programme schedule, and two distractors named in `metadata.json`.
 
+- **Stage 3 record (2026-11-03).** Shell redrawn after `heart`'s shell lines matched task400's role sequence (a "which"
+  question, a docx paper carrying the call and a monthly chart, an xlsx of workings): question form now "what" (heart reads
+  how-many), second-sentence opener "Our commissioner", the case a contract-review deck (pptx) setting this year's
+  recoveries against last year's; heart exit 0, WARN only (overuse.objective; repeat.gate_g and repeat.decision against
+  task400, answered at the draw; repeat.deliverables pptx+xlsx against task398, four builds back). `guard.py surface`
+  promotes one pair for adjudication, task245 at surface 0.077 (40th percentile), on the card's structural triple, the
+  same-driver signature differentiated on the card at the draw; no shared names, files or surface tells.
+- **leak.py REVIEW rulings.** The plan carries the call's words because it lists all five changes alike (no ranking):
+  harmless. The plan and the provisional report carry 7 and 6 of the stump paragraph's terms (course, recovery,
+  assignment, therapist, clinician, monthly, report), the service's ordinary vocabulary; neither names a handover, a
+  lapse or a course's run of therapists: harmless. The vendor export's "generated_utc" key read as a generator's word:
+  renamed "exported_utc". House fix H16 at the last pass: the vendor export held 133 events after its own run
+  (programmes begun in March running on to June); cut at the export stamp, no graded figure moved.
+
 ## Default path
 
 1. Read the board's improvement plan: the fund goes to the change that cost the service the most recoveries in
@@ -111,20 +125,19 @@ so the early endings it causes read as the waiting list's.
 2. Walk the referral-to-recovery funnel by step and year: recoveries fell by a few hundred; step 2's recovery rate is
    a little lower; step 3 lost the most, because more step 3 courses ended early.
 3. Price each change with the field's measures: B from step 2 recovery by modality (telephone against video and
-   face-to-face) times the courses on the telephone (about 4 at seed 402); D from digital courses against 2024-25's
-   (about 32); E from the group places withdrawn (about nil); A from recovery by practitioner, attributed as the
-   national data attributes a course, to the practitioner who discharged it (agency 44.4 against employed 48.0 per
+   face-to-face) times the courses on the telephone (-17.6 at seed 402); D from digital courses against 2024-25's
+   (58.8); E from the group places withdrawn (4.9); A from recovery by practitioner, attributed as the
+   national data attributes a course, to the practitioner who discharged it (agency 48.6 against employed 46.5 per
    cent, so A costs nothing); C from step 3 courses by wait band, the long waiters' recovery shortfall against the
-   short waiters' (about 269) plus the waiting list's extra leavers against 2024-25 (about 43).
+   short waiters' (263.8) plus the waiting list's extra leavers against 2024-25 (56.1).
 4. C prices highest: fund the extra block of step 3 sessions.
 
-Ends on: C, the step 3 waiting list (about 312 recoveries on the default path's pricing at seed 402).
+Ends on: C, the step 3 waiting list (about 320 recoveries on the default path's pricing at seed 402).
 
-Golden: A, the agency cover's lapsing assignments (about 250 recoveries at seed 402): the wait's total association
-with lost recovery splits into the path through the step 3 courses an agency block's lapse broke off (about 700
-courses, most of whose patients stop attending after the reallocation) and the wait's direct path, about nil, since
-long waiters whose therapist stayed recover like short waiters; C's own cost is the waiting list's extra leavers plus
-that direct path, about 70.
+Golden: A, the agency cover's lapsing assignments (257.3 recoveries at seed 402, graded 250 to the nearest 50): the
+wait's total association with lost recovery splits into the path through the 733 step 3 courses an agency block's
+lapse broke off (114 recovered against 371.3 expected, most of the patients stopping after the reallocation) and the
+wait's direct path, small; C's own cost is the waiting list's extra leavers plus that direct path, 70.9.
 
 ## Stump sentence
 
@@ -154,8 +167,10 @@ the wait's direct path is about nil, so the change that cost the most recoveries
 - **Layer 1:** an electronic record migration in October 2025 re-keyed practitioner identifiers, joined back only
   through a directory whose names differ from the booking log's; the booking log writes an extended assignment as a new
   row, not an end; outcome measures are item-level before the migration and totals after it; the monthly KPI report
-  carries preliminary figures the refreshed extract revises; appointments run on local time and the booking log on
-  UTC; the fiscal year runs April to March against calendar-month extracts. Nothing is placed to be caught.
+  carries provisional figures the refreshed extract revises; appointments run on local time and the booking log on
+  UTC; the agency portal records weekly totals; the waiting list module snapshots after the month end; the digital
+  vendor exports section events in UTC; the fiscal year runs April to March against calendar-month extracts.
+  Nothing is placed to be caught.
 - **Layer 2:** estimand and identification: a mediation decomposition whose mediator has no column (the courses an
   agency block's lapse broke off, not the courses an agency therapist discharged), against a wait gradient that the
   allocation of agency cover to the backlog produces.
@@ -171,8 +186,10 @@ the wait's direct path is about nil, so the change that cost the most recoveries
   count from the handover; the plan files only the measure, the year and "the change that cost the most recoveries".
   The enumerated family files C (early endings by wait), B (recovery by modality), A at zero (recovery by clinician),
   A diluted or C (completion by allocated practitioner, the cover and the wait moving together), and A (the broken
-  courses); the standing family once the records are read is the broken-course reading, whose spread is measured at
-  stage 2; what rules the others out is quiet, a relation no document invites.
+  courses); the standing family once the records and the plan's comparison clause are read is the broken-course
+  reading, eight constructions spreading 246.0 to 262.6 (all 250 at the graded nearest 50); the enumerated family
+  spreads 0 (A by the discharging clinician) to 320.0 (C by wait band with leavers); what rules the others out is
+  quiet, a relation no document invites.
 - **Analyst test:** a strong analyst who reads every field and rule correctly walks the funnel, finds step 3's early
   endings climbing with the wait and agency therapists' recovery rates level with employed ones, and files C (Ends on:
   C); one who also prices completion by the allocated practitioner finds the cover and the wait moving together and
@@ -224,6 +241,7 @@ organ); a rung any test fires on is readable.
 | B, D, E by modality and year (rung 0) | no | modality column | yes | no | no | yes | no | readable |
 | A by the first practitioner (rung 2) | no | first contact's practitioner, directory | partly | no | no | yes | no | readable |
 | cross-tab wait band by first kind (rung 2) | no | two columns | yes, stratification | no | no | yes | no | readable |
+| monthly chart: starts, early endings, practitioners in post by kind (rung 2) | no | dates and staff group | yes, the run chart | no | no | yes | no | readable |
 | the broken courses, priced from the reallocation (decisive) | no | no column marks a course broken; practitioner identifiers re-keyed at the migration, booking log on other identifiers and UTC | no, the field prices the wait and the clinician, never a course's run of therapists against assignment ends | no control isolates it | no, the battery chains extensions and maps identifiers but does not split a wait effect by its mediator | no, a landmark comparison per course | no, the booking log is the people team's own record and carries ask 2's rates | silent |
 
 ## Semantic fork table
@@ -236,7 +254,7 @@ and asserted in `generator/checks.py` under these ids.
 | SF1 | recovery | the national measure: course ended in the year, two or more attended treatment appointments, at caseness at the first, below on PHQ-9 and GAD-7 at the last | scores at assessment as the first; any two contacts | to file: the plan's measure annex in the national wording |
 | SF2 | the year | referrals whose course ended 1 April 2025 to 31 March 2026, local dates | received in the year; calendar 2025 | to file: the plan's period clause |
 | SF3 | a change's cost | the recoveries the year's referrals would have had without that change, less those they had | the fall from 2024-25; the KPI shortfall | to file: the plan's cost clause |
-| SF4 | the comparison for a referral a change reached | open design tension (`## Ladder`, risk 4) | landmark by count and wait band; pooled; agency-only; banded | to settle at stage 3 by measurement, then file or grade on a band |
+| SF4 | the comparison for a referral a change reached | the year's other referrals at the same step; inside it landmark, banded, pooled, employed-only and coarse members all 250 | a subgroup pool (unbroken agency, unbroken long waiters); 2024-25's courses | filed: plan 3.3 "read from the year's other referrals at the same step"; graded to the nearest 50, every member mid-bin, asserted |
 | SF5 | an agency assignment | a booking and its extensions, first start to last end | each booking line's end as an end | to file: the booking log's own header line |
 | SF6 | a practitioner across the migration | one person under an old and a new identifier, joined through the directory | each identifier a different practitioner | the directory's own mapping columns; asserted that every course spanning 13 October 2025 keeps its therapist under the map |
 | SF7 | the step of a referral | step 3 when any treatment appointment is with a high-intensity therapist | step at assessment | to file: the plan's step clause; asserted inert for the call |
@@ -248,15 +266,15 @@ and asserted in `generator/checks.py` under these ids.
 |---|---|---|---|
 | 1 | Population | referrals whose course ended in 2025-26, every one that began (not only finished courses) | SF2, SF3 filed |
 | 2 | Unit of account | the referral; a recovery is one referral | SF1 filed |
-| 3 | Attribution window | the course's end date | SF2; C1 checked: no broken course's counterfactual end leaves the year (to assert) |
+| 3 | Attribution window | the course's end date | SF2; C1: every broken course's counterfactual end is inside 2025-26 (latest 24 December 2025), asserted |
 | 4 | As-of dating | the refreshed extract of 6 May 2026 | filed as-of; the preliminary report is a different release |
 | 5 | Version basis | refreshed extract over the preliminary monthly report | the plan names the refreshed extract |
 | 6 | Denominator | the recovery measure's finished courses at caseness for rates; costs are counts | SF1, SF3 |
 | 7 | Weighting | none; counts | n/a |
 | 8 | Window length | one fiscal year | SF2 |
-| 9 | Boundary inclusivity | 1 April to 31 March inclusive, local dates | C1: assert no course ends within a day of either boundary under UTC against local |
+| 9 | Boundary inclusivity | 1 April to 31 March inclusive, local dates | C1: no broken course ends within a day of either boundary, asserted |
 | 10 | Rounding path | whole recoveries, rounded once at the end | to file in the prompt's rounding sentence |
-| 11 | Tie-break | not needed: A clears every rival by 2.7 times or more | asserted margin |
+| 11 | Tie-break | not needed: A clears every rival's widest read by 2.87 times under every estimator | asserted margin |
 | 12 | Maturity and censoring | courses open at 31 March are outside the year; broken courses' counterfactuals end inside it | C1 by construction, asserted |
 | 13 | Order of operations | identify broken courses, then price from the reallocation | one order |
 | 14 | Row order | none | C1 over permutations, asserted |
@@ -271,113 +289,169 @@ and asserted in `generator/checks.py` under these ids.
 
 ## Literal reader
 
-On paper at stage 2: executing the prompt and the plan's clauses word for word (SF1 to SF3, SF5 to SF8) gives one
-reading of every term except the comparison for a reached referral (SF4), which stays open until stage 3 settles it
-by measurement; the call (A) is the same under every member of the standing family, the figure is not yet.
+Executing the prompt and the plan's clauses word for word (SF1 to SF4, SF7, SF8, the register's SF5 header) gives one
+reading of every term; the comparison is filed (SF4) and the method inside it stays open, every member grading to 250;
+the call (A) is the same under every member of the enumerated family once the broken courses are read.
 
 ## Oracles
 
-None that rank the candidates. The monthly KPI report (preliminary) reports the recovery rate, waits and the
-clinician rates correctly for what it measures and agrees with the wrong path on every figure it prints; the vendor's
-usage reports and the timesheets feed the asks only. To check at stage 3 that no shipped figure ties only under the
-golden.
+None that rank the candidates. The provisional KPI report prints the recovery rate by month and by the staff group of
+the discharging clinician (step 3 substantive against agency) and agrees with the wrong path on every figure it prints;
+the timesheets, the snapshots and the vendor export feed the asks only. No shipped figure ties only under the golden.
 
 ## Ask sheet
 
-The asks sit on quantities the call never computes, each from an ask-only file, each a component of the review's
-case for another change on the list (H18), with the call's population carrying no device (zero device rows among
-step 3 referrals ending in 2025-26, asserted by count). Devices are engineered and measured at stage 3; nothing
-below is measured yet.
+The asks sit on quantities the call never computes, each a component of the review's case for another line on the list
+(H18), each from ask-only files, each figure moved by a device for the careful solver. Blocks no device reaches were cut at
+stage 2 (the digital beginners, the over-18-week counts, the agency cover's November and December). The main call's files
+(referrals, both appointment exports, the item scores, the user list, the booking register's lines) carry no device row:
+the ask builders write only the timesheets, the snapshots and the vendor export, and the bundle's main-call figures equal
+the clean truth (asserted).
 
-- **Ask 1, the digital programme's engagement funnel (evidence on D)** from the two vendors' usage exports (the old
-  platform to June 2025, the new from July): for each month of 2025-26, the patients who began a programme and how
-  many of them completed four of its modules within eight weeks (24 figures, whole numbers). Primary device to
-  engineer (D7, a reconstruction across two systems): patients carried across in July sit in both exports in their
-  first weeks under different keys; hazard D8 (UTC events against local months).
-- **Ask 2, the agency cover's hours and cost by month (context for A's fix)** from the agency timesheets: for each
-  month from May to December 2025, hours worked and their cost at the booking line's charge rate (16 figures). Primary
-  device to engineer (D2, a rate stored on an extension line): extensions booked from 1 October carry the new
-  framework rate; hazard D6 (weekly timesheets split across month ends by their daily columns).
-- **Ask 3, the step 3 waiting list at each month end (evidence on C)** from the list's monthly snapshots: the number
-  waiting and the number waiting over 18 weeks from referral (24 figures). Primary device to engineer (D5, the
-  snapshot's clock runs from assessment for patients re-added after a pause); hazard shared with ask 1 (D8).
-- **Main population zero-counts:** to assert. **Hazard table:** to write with per-ask deltas.
-- **Cracker sheet** (the cracker lands the call, runs the hygiene battery, executes every filed rule): to measure on
-  the cut pack; every row must read `miss`.
-- Mirror leakage: pending, under 50 per cent required.
-- Pair ceiling: pending, 60 or under required.
-- Measured by: generator/ceiling.py (to write at stage 3; shares no code with the generator).
+- **Ask 1, the step 3 waiting list at each month end of 2025-26 (evidence on C)**, 12 figures, whole patients, from
+  `step3_waiting_list_month_end_2025-04_to_2025-09.csv` and `..._2025-10_to_2026-03.csv` (6 columns each) read against the
+  appointment files. Primary (D4, absence evidenced in a file no habitual join reaches): each snapshot is taken at 06:00 on
+  the first working day after the month end, and a patient leaves the list only when the first treatment appointment is
+  outcomed, up to four working days later, so every snapshot still lists patients first seen in the month's last days;
+  only the appointment files show they had started. Moves every month by 11 to 59 patients. Hazards: the snapshots change
+  layout at the record migration (D2); the weeks-on-list column runs from the date added. **Not two-sided, and why:** the
+  WHAT is fixed for the whole year (waiting until the first attended treatment appointment), so dropping a listed patient
+  already seen by the month end is never wrong on either side of the migration; a two-sided version would need a changed
+  definition of waiting, which the cracker would read and execute. The rows as they stand miss every month, so the full
+  includer keeps none of it; a response that cross-checks the appointments keeps all of it.
+- **Ask 2, the new digital platform's four-module finishers by month began, September 2025 to February 2026 (evidence on
+  D)**, 6 figures, whole patients, from `steadyway_activity_export_2025-07_to_2026-05.json` (users and section events,
+  UTC). Primary (D2, a label stored before a silent switch): the vendor's content release for patients beginning from 5
+  January 2026 replaced the last section of module 3 with two new ones and added a section to module 5, under new content
+  IDs, while earlier patients kept the old structure. A module is finished when all of its sections are completed.
+  Inferring each module's sections from the whole export over-counts both structures, and reading rows as they stand (a
+  module finished when every section the patient opened is completed) over-counts both sides too. Found only by an internal
+  inconsistency: few patients ever finish modules 3 and 5. Moves every month by 3 to 11 patients. Hazard: UTC timestamps
+  against local months (D8). Pin test: the sentence carries the population (patients who began on the new platform), the
+  window (eight weeks from beginning) and the count (four modules); the device sits in which records are one module.
+- **Ask 3, the waiting list initiative's agency hours and cost by month, May to October 2025 (context for A's fix)**, 12
+  figures, hours to the nearest hour and cost to the nearest 100 pounds, from `agency_timesheets_2025-04_to_2026-03.csv`
+  (10 columns) with the booking register and the appointment files.
+  - **Two-sided primary (D1 and D2, a system change whose date one filed WHAT pins):** the register files that timesheets
+    went through the agency portal until 31 July 2025 and through e-rostering from 1 August 2025. A corrected claim is a
+    second timesheet for the same week. On the portal it replaces the first; on e-rostering it is an adjustment line for
+    the difference. So the battery's latest-version rule is right before 1 August and wrong after, and summing every row
+    is right after and wrong before. Corrections run at about one week in seven, so every month moves.
+  - **Second primary (D6, an allocation whose weight is recorded):** the portal records a week's total. A week that crosses
+    a month end belongs to the months of the days worked, and a 30-hour booking works four days whose weekdays only the
+    therapist's appointments show.
+  - **Third primary (151's family, a catch-up half settled in a later line):** about half the initiative's therapists filed
+    their first two or three weeks late as one timesheet in a later week. That is an impossible weekly total, and it
+    belongs to the weeks it covers.
+  - **Hazards:** the long-standing locum's timesheets in the same export (scope), extension lines at the 2025 framework rate
+    from 1 October (D2), UTC register stamps (D8).
+  - **Pin test:** the sentence carries the population (the agency therapists brought in for the waiting list), the measure
+    (hours worked and their cost) and the months. The devices sit in which rows are one week's claim and which days carry
+    the hours.
+
+**Hazard table.**
+- **UTC stamps:** asks 2 and 3, under one bin each when mishandled.
+- **Migration layout:** ask 1, no figure moved when read.
+- **The locum's timesheets:** ask 3, about 160 hours and 9,000 pounds a month when kept.
+- **Framework rates:** ask 3, cost only, October.
+
+**Referee.** None arbitrates: the appointment files are the second source for asks 1 and 3 and agree with the golden on
+every day they cover.
+
+| Block | Cracker keeps | Mirror keeps | Cracker |
+|---|---|---|---|
+| Ask 1, step 3 patients waiting at each month end (12) | 0 of 12 | 0 of 12 | miss |
+| Ask 2, digital four-module finishers by month began, September to February (6) | 0 of 6 | 0 of 6 | miss |
+| Ask 3, agency hours, May to October (6) | 0 of 6 | 0 of 6 | miss |
+| Ask 3, agency cost, May to October (6) | 0 of 6 | 0 of 6 | miss |
+
+The three profiles, each scored on the cut pack:
+- **The cracker** lands the call, converts UTC, removes exact duplicates and closed referrals, applies the latest-version
+  rule to timesheets, joins booking lines as of the day, keeps only the initiative's bookings, spreads each week over Monday
+  to Friday and infers module structure from the whole export. It keeps nothing.
+- **The mirror** (off the call) reads the snapshots as they stand, counts a module as finished when any section is, and
+  books each week to the month it starts in with the locum included. It keeps nothing.
+- **The full includer** (off the call: every row as it stands, no exclusion, no dedupe) keeps none of the 30 figures.
+
+A response that reads the snapshots against the appointments, splits module structure at the January release, applies
+each timesheet route's own correction rule and spreads weeks and late claims over the therapists' own days reproduces the
+asks. That is the fair handling every device has.
+
+Mirror leakage: 0.0 per cent of ask weight.
+Pair ceiling: 28.5 (landed call 45.0 with no ask figure kept, missed call 12.0; the same with the full includer as the miss).
+Measured by: generator/ceiling.py on the cut pack.
 
 ## Ladder
 
-Measured on the clean truth by `generator/harness.py` (never shipped) at seed 402 and swept over seeds 1 to 5
-(`generator/seeds.py`). Recoveries on the national measure, courses ending 1 April 2025 to 31 March 2026, step 3
-started courses unless stated. Each rung names its candidate and the one fact that kills it.
+Measured on the clean truth by `generator/harness.py` (never shipped) at the shipped seed 402 and swept over seeds 1 to 15
+(`generator/seeds.py` and the stage-2 sweep), on the world as built: a winter rise in referrals (October 2024 to March
+2025) forms a step 3 backlog, the waiting list initiative clears it longest waiter first between 12 May and 22 August
+2025 (no wait past 33 weeks), 32 agency therapists at a time from 5 May, first starts spread over ten weeks, a first block
+renewed with p 0.4 and later blocks with p 0.45 while the renewed block ends by 14 November, no new cover after 22
+August, and the list's leaving hazard 0.3 per cent a week to 18 weeks and 2 per cent after. Recoveries on the national
+measure, courses ending 1 April 2025 to 31 March 2026, step 3 courses that attended a treatment appointment unless
+stated. Each rung names its candidate and the one fact that kills it.
 
-| Rung | Construction | Files | Seed 402 | Seeds 1-5 | Dies to |
+| Rung | Construction | Files | Seed 402 | Seeds 1-15 | Dies to |
 |---|---|---|---|---|---|
-| 0 | funnel plus the clinician KPI: A by the discharging practitioner (agency 44.4, employed 48.0 per cent) | contacts, scores | A 0.3 | 0 to 9 | every broken course is discharged by an employed therapist |
-| 0 | B by modality; D against 2024-25 digital; E groups withdrawn | contacts, scores | B 4, D 32, E -3 | B -86 to 59, D -7 to 32, E -10 to 9 | small at every seed; below A's floor |
-| 1 (Ends on) | C by wait band: long waiters' shortfall (269) plus extra leavers (43) | contacts, referrals | C 312 | 229 to 277 | long waiters whose therapist stayed recover like short waiters |
-| 2 | A by the first practitioner's kind (agency-first shortfall) | contacts, directory | A 270 | 197 to 257 | it sits beside C's 312 on the same courses: the cover and the wait are one block |
-| 2 | cross-tab wait band by first kind | contacts | long-employed 59 courses; short-agency 44.4 against short-employed 48.0 | 36 to 62 courses | no cell separates the wait from the cover |
-| 3 (decisive) | the broken courses: each course's therapists against the booking log, priced from the reallocation against courses that had come as far | contacts, directory, booking log | A 251 (714 courses) | 194 to 237 | (golden) |
+| 0 | the clinician KPI: A by the discharging practitioner (agency 48.6, employed 46.5 per cent) | contacts, scores, directory | A 0 | 0 at every seed | every broken course is discharged by an employed therapist |
+| 0 | B by modality (and against 2024-25 telephone); D against 2024-25 digital; E groups withdrawn | contacts, scores | B -17.6 (-32.5), D 58.8, E 4.9 | largest rival read 93 (B, seed 12) | each is a small or noisy read below A's floor |
+| 1 (Ends on) | C by wait band: long waiters' shortfall 263.8 plus extra list leavers 56.1 | contacts, referrals | C 320.0 | 1.21 to 1.41 times coarse A | long waiters' poorer outcomes sit on the same courses the cover held |
+| 2 | A by the first practitioner's kind (agency-first shortfall) | contacts, directory | A 262.5 | 0.96 to 1.04 of C without leavers | it is C's wait-band shortfall counted on the same courses: the cover and the wait are one block |
+| 2 | cross-tab wait band by first kind | contacts | 4 cells below | long-wait employed 2 to 12 courses | the only short-wait agency courses are the long-standing locum's; long-wait employed is 6 courses |
+| 3 (decisive) | the broken courses: each course's therapists against the booking register's assignment ends, priced from the lapse against the year's other step 3 referrals that had attended as many treatment appointments | contacts, directory, booking register | A 257.3 (733 courses, 114 recovered, 371.3 expected) | 198.9 to 260.6 | (golden) |
 
-The standing estimators of A's counterfactual at seed 402: landmark at the exact count of attended treatment
-appointments 250.9, landmark in bands 247.6, pooled over all unbroken courses 234.3, unbroken agency courses only
-192.2, every reallocation including the one employed leaver's planned handovers 247.5. C's golden is 71.7 (extra
-leavers 43.2 plus the direct path among courses whose therapist stayed, 28.5). Under every estimator A exceeds the
-largest rival (C 71.7) by 2.7 times or more at seed 402 and by 2.9 times or more at the lowest seed; B's widest read
-(99 at seed 5, telephone against 2024-25 telephone) stays under A's floor at every seed. The default path's C (312)
-beats the default reads of A (0.3), B (4), D (32) and E (-3) at seed 402, and the coarse first-practitioner read of A
-(270) stays below it, so a solver who prices the cover the coarse way still files C. Broken before a second treatment
-appointment: 84 of 714 (12 per cent), so the recovery rate's finished-course rule carries little and is out of the
-driver. The comparison the counterfactual is read from is part of the estimand and is filed (`## Semantic fork
-table`); the bin for A's graded figure is set at stage 3 from the standing family's spread on the shipped seed.
+**Risk 1, C against coarse A.** The default path's C with its list leavers (320.0) beats the coarse first-practitioner
+read of A (262.5) by 1.22 times at seed 402 and 1.21 to 1.41 times over seeds 1 to 15. Without the leavers C's wait-band
+shortfall (263.8) and coarse A (262.5) are one quantity read twice (1.00 at seed 402, 0.96 to 1.04 over the sweep): the
+backlog cohort is the cover's caseload, so no honest lever separates them; a direct effect of the wait adds to both and
+the off-diagonal cells are a few courses each. So the solver who prices C without its leavers and A by the first
+practitioner reaches a tie on the same courses at rung 2 and has to split the block; the cross-tab and the clinician KPI
+both lean to C there, and the split is the decisive step. This is the crack Gate F will look at: a solver who gives the
+whole block to the cover lands A at about 260 without the decisive step. The leaving hazard heavier after 18 weeks is
+the honest lever that widens the with-leavers margin (C's leavers 56.1, from 12 under a flat hazard).
 
-**The coordinator's four stage-2 risks, each a generator change to make and measure before `precut.py`** (written
-2026-11-03 when the session paused; nothing below is measured yet unless it says so):
+**Risk 2, the cross-tab.** Started step 3 courses ending in 2025-26 (n, early-ending rate, recovery rate): short-wait
+employed 3,843, 4.6, 49.5 per cent; short-wait agency (the long-standing locum alone) 109, 1.8, 49.5; long-wait employed 6,
+16.7, 33.3; long-wait agency 967, 50.6, 22.3. A careful solver concludes that agency therapists do as well as employed ones
+at short waits and that long waits do badly whoever holds them, with six long-wait employed courses too few to say
+otherwise (their 95 per cent interval covers both the long-wait agency and the short-wait rate, asserted); that reads as
+C, and the short-wait agency cell is one long-standing locum, not the initiative's cover, so it cannot separate the cover
+from the wait either. Within the long waits there is no gradient: 18 to 21 weeks 49.1 per cent ending early (recovery
+25.2), 22 to 25 weeks 53.2 (20.8), 26 to 29 weeks 52.8 (21.0), 30 to 33 weeks 45.7 (23.0). The timing route without the
+register (agency-first courses by start month against the blocks' ends) shows nothing either: 47.5, 49.6 and 50.1 per cent
+ending early for June, July and August starters, because each therapist's block ends on their own date.
 
-1. *Coarse A against wait-band C are one set of courses counted twice.* Measured at seed 402: coarse A (first
-   practitioner) 270, C's wait-band shortfall alone 269, C with the extra list leavers 312. They are structurally
-   equal (both read the broken courses' loss), so the only separators are the list leavers and any direct wait path.
-   Change: raise the list-leaving hazard from 0.30 to about 0.60 per cent a week so the leavers carry about 85 (C's
-   golden stays near 100, under half of A), and measure both C variants against coarse A over seeds 1 to 5. The
-   ladder then says plainly which rung each solver reaches: the default (A by the discharging practitioner, C with
-   its leavers) files C; a solver who prices A by the first practitioner and C without leavers reaches a tie on the
-   same courses and must split them, and the split is the decisive step.
-2. *The stratified cross-tab* (early ending and recovery by wait band and first practitioner kind) is the cracker's
-   natural move. Measured at seed 402: long-wait employed 59 courses, short-wait agency 44.4 against short-wait
-   employed 48.0 per cent recovery per started course; the long-wait cells' rates are still to print. Change: the
-   initiative clears the backlog longest-first, so cap the backlog's waits at 33 weeks; long-wait employed then falls
-   under about 15 courses at every seed, and the long-standing locum's ordinary short-wait courses keep short-wait
-   agency at the short-wait rate. The cracker then reads "agency cover is sound at short waits and long waits do
-   badly", which is C. Print the four cells (n, early-ending rate, recovery rate) at seed 402 and over the sweep, and
-   assert in `checks.py` that the long-wait employed cell's 95 per cent interval covers both the long-wait agency rate
-   and the short-wait rate, so it cannot separate the cover from the wait.
-3. *The funding end.* With staggered 12-week blocks, lapses fall through July to November at each therapist's own
-   block end (no quarter-end waves, which would announce the renewal cycle); the 19 December end is the one
-   synchronised date. Change: taper the programme (no new cover starts after August, no block renewed to end after
-   mid-November) so the final lapse breaks under about 60 courses, and give both years a holiday disengagement in the
-   last fortnight of December and the first of January, so what remains of the December rise reads as the season
-   that 2024-25 also shows. Run the readability screen on the monthly chart a careful solver draws (step 3 starts,
-   early endings and active practitioners by kind, by month, both years) and record it.
-4. *A's graded cost* spread 192 to 251 across estimators, about 27 per cent, which no mid-bin grade survives. The
-   comparison is part of the WHAT and must be filed so the literal execution is one number, and this is the open
-   design tension the next session settles first, measured, before any pack is cut:
-   - filing the comparison as referrals "whose course ran to its own end" (or any wording that excludes the broken
-     courses) makes the solver ask which courses were cut short, which is readability test 1 on the decisive step,
-     so it fails the fork-is-the-stump test;
-   - filing it as all of the year's step 3 referrals in the same wait band that had attended as many treatment
-     appointments keeps the decisive step silent and executes to one number, but the broken courses sit inside their
-     own comparison group and drag the expectation down, most in the long-wait band where they are the majority; A's
-     figure under that clause must be measured against C before it is adopted;
-   - the third option is to grade A's cost on a band (nearest 50, or a range) shown mid-bin for every standing
-     estimator, keeping the comparison open where the design forces it (the landmark is the counterfactual the WHAT's
-     "would have had" implies) and asserting the call under every member.
-   Settle by measurement at the shipped seed, record the choice in `## Semantic fork table`, and never file a clause
-   that names a handover, a reallocation, the booking log or a therapist's departure. No ask grades C's direct
-   path.
+**Risk 3, the funding end and the monthly chart.** No new cover after 22 August and no block renewed to end after 14
+November: breaks by lapse month July 55, August 277, September 340, November 61; the last lapse (13 November) breaks 7
+courses and the largest single date 70; 19 December is never reached. The chart a careful solver draws (step 3 starts,
+early endings and practitioners in post by kind, by month, both years): starts 887 in July and 697 in August as the
+backlog cohort begins treatment; early endings 179 in September, 225 in October, 71 in November, then 59 and 62 over the
+new year (the holiday rise that 2024-25 also shows, 55 in January 2025); agency therapists in post 33, 35, 24, 7 from
+July to October. The early endings follow the cohort's starts by the length of a course, which is the wait story, and
+the cover's run-down moves with them because the cover held the cohort: the chart shows the confound, not a separation.
+Readability row added below; verdict readable, as a rung below the decisive one.
+
+**Risk 4, A's graded cost (SF4 settled).** The comparison is part of the WHAT and is filed in the plan's own voice: what a
+referral would have had "is read from the year's other referrals at the same step" (3.3). It names no handover,
+reallocation, register, continuity or departure. Inside it the method stays open and every member grades to 250 at the
+nearest 50: landmark at the exact count 256.7 (257.3 with the 24 employed-leaver handovers in the pool, the bundle's
+literal reading and the golden), landmark in bands 254.0, pooled 246.0, every handover 254.8, employed-only pool 258.0
+(pooled 248.3), the cover's own courses coarse 262.6 (landmark 261.9); tightest edge 12.4, a quarter of the bin. The
+generator closes the spread (ordinary dropout 0.3 per cent a session, no wait-dependent drift in the scores). Outside the
+filed comparison the subgroup pools spread wider (unbroken agency 220.5 and 239.5, unbroken long waiters 203.6 and 227.8,
+2024-25's courses 260.0) and are ruled out by "the year's other referrals at the same step"; A still exceeds every
+rival's widest read by 2.87 times under them. C's golden is 70.9 (extra leavers 56.1 plus 14.8 on the pooled long-wait
+comparison, whose unbroken long waiters are the courses that ended before their cover lapsed). Over seeds 1 to 15 A's
+smallest estimator is at least 1.96 times the largest rival read (seed 3) and at least 2.14 at every other seed.
+
+**Pricing sequence.** 1 residue: which courses carry the change, then a comparison the plan files. 2 ceiling: the
+affected population (967 long-wait agency courses) could lose about 480 recoveries; A needs 257. 3 one-group-by routes:
+by discharging practitioner (0), by first practitioner (262.5, the block), by wait band (263.8, the block). 4 standard
+error of A in its own units: about 6 recoveries on the landmark pool. 7 the subset recovered exactly is the broken
+courses themselves, read from the register's ends. 8 the reflex sweep is the rung table above. Broken before a second
+treatment appointment: 31 of 733, so the recovery rate's finished-course rule carries little and stays out of the
+driver.
 
 ## Tried and rejected
 
@@ -426,3 +500,28 @@ table`); the bin for A's graded figure is set at stage 3 from the standing famil
 - G4 and then G6 as the decisive generator (2026-11-03, stage 2): refused by `check` (test.same_driver against task232
   v2, whose interviewer change between waves identifies a roster effect, task121 v6, task129 v2 and task243;
   test.same_puzzle_older against task144, task228, task265 and task68). G9 stays decisive.
+- A flat list-leaving hazard of 0.6 per cent a week (2026-11-03, stage 2, risk 1): the backlog's leavers split across
+  2024-25 and 2025-26, so C's extra leavers fell to 12 and C with leavers came within 1.07 times of coarse A. Replaced by
+  0.3 per cent a week to 18 weeks and 2 per cent after (C's leavers 56.1).
+- Monday-start agency bookings (2026-11-03, stage 2): lapses bunched on single Sundays (130 to 215 broken courses a date)
+  and the long-wait employed cell rose to 21. Starts drawn over working days.
+- A first wave started over six weeks with a first renewal of 0.2 (2026-11-03, stage 2, risk 3): 524 of 762 breaks fell in
+  August and early endings jumped to 313 in September as agency therapists in post fell from 38 to 16, the readability
+  screen firing on the monthly chart. Spread over ten weeks with a first renewal of 0.4.
+- No referral surge (2026-11-03, stage 2): step 3 starts fell to 0.4 of normal from December 2024 to April 2025 while 40
+  employed therapists stayed in post, an idle-staff tell. A winter rise in referrals forms the backlog instead.
+- Loose clearance without longest-first order (2026-11-03, stage 2): broken courses halved, A fell to 110 to 160 and rivals
+  came within 1.2 times at some seeds. Longest-first kept.
+- The long-standing locum taking 5 per cent of ordinary step 3 patients: about 40 sessions a week. Cut to 2.5 per cent.
+- Seeds 7 and 14 (2026-11-03, stage 2): seed 14's longest waiters recovered best inside the backlog cohort (30 to 33 weeks
+  38.6 per cent against 20.7 at 18 to 21 weeks), a dose-response a careful solver would read against the wait; seed 7 sat
+  on an earlier world. Seed 402 shipped: no gradient inside the cohort, every filed-comparison estimator mid-bin.
+- Ask devices dropped at stage 2: carried-across digital patients (discovery and remedy one act); the digital beginners,
+  the over-18-week counts and the agency cover's November and December (no device reaches them); three agency therapists
+  booked after the backlog cleared, with no patients (an idle booking reads as generated), left out of the pack.
+- Ask devices one-sided against the full includer (2026-11-03, stage 2, the coordinator's precut read): an off-call
+  response that handles every device banks the ask weight. The timesheet corrections were made two-sided at the route
+  change of 1 August 2025 (filed in the register), and the digital ask was moved to span the January 2026 content release.
+  Its first form, which only added sections, let the cracker's whole-export inference keep January and February (2 of 6),
+  so the release also retires a section of module 3, and both structures now count against any single inference. The
+  waiting list ask stays one-sided (its WHAT cannot change mid-year without a filed rule the cracker would execute).
