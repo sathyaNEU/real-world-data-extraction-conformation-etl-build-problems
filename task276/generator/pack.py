@@ -38,6 +38,14 @@ FILES = {
 DISTRACTORS = ["prices", "reference"]
 
 
+# the people who keep each department's workbooks (guard.py names --geo england --seed 276)
+FLEET_EDITOR = "Liam Jackson"          # fleet systems: the register and the code map
+DISPOSALS_EDITOR = "Gareth Davis"      # fleet administration: the year's disposals return
+HR_EDITOR = "Christine Rees"           # HR: the staff number crosswalk
+OH_EDITOR = "Linda Cooper"             # Occupational Health: the measurement programme
+PERSONAS = {"Brenda Ward", FLEET_EDITOR, DISPOSALS_EDITOR, HR_EDITOR, OH_EDITOR}
+
+
 def _p(root, key):
     path = os.path.join(root, FILES[key])
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -92,7 +100,7 @@ def write_people(root, W):
                       [(a, b, _dt(P.HR_MIGRATION)) for a, b in extra],
                       columns=["Former Vennerley staff number", "Service staff number", "Effective from"])
     df = df.sort_values("Former Vennerley staff number").reset_index(drop=True)
-    O.xlsx(_p(root, "crosswalk"), [("Crosswalk", df)], author="Liam Jackson", created="2025-08-28T10:14:00Z",
+    O.xlsx(_p(root, "crosswalk"), [("Crosswalk", df)], author=HR_EDITOR, created="2025-08-28T10:14:00Z",
            modified="2025-08-29T15:02:00Z", widths={"Crosswalk": [30, 24, 16]}, title="Vennerley staff numbers")
     # measurements
     initials = {"Strakemoor": ["JKe", "RMo", "TSa", "ABi", "HCo"], "Vennerley": ["PWh", "LHa", "DNo", "SGr"]}
@@ -119,44 +127,76 @@ def write_people(root, W):
             k += 1
     df = pd.DataFrame(out).sort_values(["Date measured", "Ref"]).reset_index(drop=True)
     O.xlsx(_p(root, "measure"), [("Measurements", df)], author="Occupational Health", created="2025-03-03T08:40:00Z",
-           modified="2026-10-02T09:26:00Z", last="Liam Jackson",
+           modified="2026-10-02T09:26:00Z", last=OH_EDITOR,
            widths={"Measurements": [11, 15, 14, 18, 20, 12, 11, 11, 14, 14, 11, 10, 10, 11]},
            number_formats={"Measurements": {"Weight (kg)": "0.0", "Stature (in)": "0.00", "Sitting eye height (in)": "0.00"}},
            title="Cab fit measurement programme")
 
 
 # ----------------------------------------------------------------------------------------------- documents
-def _styles():
+WORD_LOOK = {"face": "Calibri", "size": 10.5, "head": "#1F3864", "grid": "#8C8C8C", "fill": "#D9E1F2", "rule": 0.4}
+# each converter issues its package data from its own office: Pennick from a workbook saved as PDF, Wrenfold from its
+# drawing office's Word template through Acrobat, Ostrel from a document printed to Distiller
+TOOLCHAIN = {
+    "pkg_pennick": {"look": {"face": "Calibri", "size": 10.5, "head": "#000000", "grid": "#BFBFBF", "fill": "#E7E6E6",
+                             "rule": 0.5},
+                    "creator": "Microsoft® Excel® for Microsoft 365", "producer": "Microsoft® Excel® for Microsoft 365",
+                    "version": "1.7", "tags": ("BCDEEE", "BCDFEE"), "xmp": True, "lag": 0},
+    "pkg_wrenfold": {"look": {"face": "Arial", "size": 9.5, "head": "#3A3A3A", "grid": "#595959", "fill": "#F2F2F2",
+                              "rule": 0.6, "files": (("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+                                                      "ArialMT"),
+                                                     ("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+                                                      "Arial-BoldMT"))},
+                     "creator": "Acrobat PDFMaker 23 for Word", "producer": "Adobe PDF Library 23.8.53",
+                     "version": "1.6", "tags": ("QKXVRM", "TNHBWA"), "xmp": True, "lag": 4},
+    "pkg_ostrel": {"look": {"face": "Cambria", "size": 10.5, "head": "#2E5E3F", "grid": "#7F7F7F", "fill": "#E2EFD9",
+                            "rule": 0.4, "files": (("/usr/share/fonts/truetype/crosextra/Caladea-Regular.ttf", "Cambria"),
+                                                   ("/usr/share/fonts/truetype/crosextra/Caladea-Bold.ttf",
+                                                    "Cambria-Bold"))},
+                   "creator": "PScript5.dll Version 5.2.2", "producer": "Acrobat Distiller 23.0 (Windows)",
+                   "version": "1.5", "tags": ("GJPLDE", "MWRCFO"), "xmp": True, "lag": 0},
+}
+
+
+def _styles(look=None):
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib import colors
-    O.word_fonts()
-    base = ParagraphStyle("b", fontName="Calibri", fontSize=10.5, leading=13.4, spaceAfter=6)
+    look = look or WORD_LOOK
+    if "files" in look:
+        O.register_face(look["face"], *look["files"])
+    else:
+        O.word_fonts()
+    face, sz = look["face"], look["size"]
+    lead = round(sz * 1.276, 1)
+    base = ParagraphStyle("b", fontName=face, fontSize=sz, leading=lead, spaceAfter=6)
     return {"body": base,
-            "h1": ParagraphStyle("h1", parent=base, fontName="Calibri-Bold", fontSize=15, leading=19, spaceAfter=10,
-                                 textColor=colors.HexColor("#1F3864")),
-            "h2": ParagraphStyle("h2", parent=base, fontName="Calibri-Bold", fontSize=11.5, leading=15, spaceBefore=8,
-                                 spaceAfter=4, textColor=colors.HexColor("#1F3864")),
-            "small": ParagraphStyle("s", parent=base, fontSize=8.5, leading=10.5, textColor=colors.HexColor("#444444")),
-            "cell": ParagraphStyle("c", parent=base, fontSize=9, leading=11, spaceAfter=0)}
+            "h1": ParagraphStyle("h1", parent=base, fontName=face + "-Bold", fontSize=sz + 4.5, leading=sz + 8.5,
+                                 spaceAfter=10, textColor=colors.HexColor(look["head"])),
+            "h2": ParagraphStyle("h2", parent=base, fontName=face + "-Bold", fontSize=sz + 1, leading=sz + 4.5,
+                                 spaceBefore=8, spaceAfter=4, textColor=colors.HexColor(look["head"])),
+            "small": ParagraphStyle("s", parent=base, fontSize=sz - 2, leading=sz, textColor=colors.HexColor("#444444")),
+            "cell": ParagraphStyle("c", parent=base, fontSize=sz - 1.5, leading=sz + 0.5, spaceAfter=0),
+            "look": look}
 
 
 def _table(rows, widths, st, head=True):
     from reportlab.platypus import Paragraph, Table, TableStyle
     from reportlab.lib import colors
+    look = st.get("look", WORD_LOOK)
     data = [[Paragraph(str(c), st["cell"]) for c in r] for r in rows]
     t = Table(data, colWidths=widths, repeatRows=1 if head else 0)
-    style = [("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#8C8C8C")), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+    style = [("GRID", (0, 0), (-1, -1), look["rule"], colors.HexColor(look["grid"])), ("VALIGN", (0, 0), (-1, -1), "TOP"),
              ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4)]
     if head:
-        style.append(("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#D9E1F2")))
+        style.append(("BACKGROUND", (0, 0), (-1, 0), colors.HexColor(look["fill"])))
     t.setStyle(TableStyle(style))
     return t
 
 
 def _pdf(root, key, title, author, created, story, producer="Microsoft® Word for Microsoft 365", footer=None,
-         modified=None):
+         modified=None, creator=None, footer_font="Calibri", **kw):
     O.pdf(_p(root, key), story, title=title, author=author, created_pdf=created, modified_pdf=modified, producer=producer,
-          creator=producer, footer=footer, footer_font="Calibri")
+          creator=creator or producer, footer=footer, footer_font=footer_font, **kw)
 
 
 def posture_report(root):
@@ -291,12 +331,13 @@ def _pkg_rows(cab, sgrp=None):
 
 
 def package(root, key, converter, cabs, sgrp, created, issue):
-    from reportlab.platypus import Paragraph, Spacer, PageBreak
+    from reportlab.platypus import Paragraph, Spacer, KeepTogether
     from reportlab.lib.units import mm
     short = converter.split()[0]
+    tc = TOOLCHAIN[key]
 
     def story():
-        st = _styles()
+        st = _styles(tc["look"])
         s = [Paragraph("%s: cab package data for Hallowfen Ambulance Service tender HAS-F-2026-04" % converter, st["h1"]),
              Paragraph("Driver's side package, issue %s. Dimensions in millimetres. Seat: Brevin AS-7 with the %s slide." %
                        (issue, cabs[0]["slide"]), st["small"]), Spacer(1, 4 * mm)]
@@ -307,19 +348,25 @@ def package(root, key, converter, cabs, sgrp, created, issue):
         else:
             s.append(Paragraph("x is measured rearward and z upward from the accelerator heel point, the heel of the "
                                "driver's right shoe on the depressed floor covering at the accelerator.", st["body"]))
+        note = Paragraph("Windscreen and bonnet points are taken from the chassis maker's body builder data for the "
+                         "%s. Saloon dimensions are for the stretcher-side wall." % " and ".join(sorted({c["chassis"] for c in cabs})),
+                         st["small"])
         for i, cab in enumerate(cabs):
-            s.append(Paragraph("%s conversion on the %s chassis-cab" % (short, cab["chassis"]), st["h2"]))
+            block = [Paragraph("%s conversion on the %s chassis-cab" % (short, cab["chassis"]), st["h2"])]
             sg = sgrp[cab["chassis"]] if sgrp else None
             if sg:
-                s.append(Paragraph("SgRP located %d mm aft of and %d mm above the accelerator heel point." % sg, st["body"]))
-            s.append(_table([["Dimension", "Value"]] + _pkg_rows(cab, sg), [118 * mm, 48 * mm], st))
-            s.append(Spacer(1, 3 * mm))
-        s.append(Paragraph("Windscreen and bonnet points are taken from the chassis maker's body builder data for the "
-                           "%s. Saloon dimensions are for the stretcher-side wall." % " and ".join(sorted({c["chassis"] for c in cabs})),
-                           st["small"]))
+                block.append(Paragraph("SgRP located %d mm aft of and %d mm above the accelerator heel point." % sg, st["body"]))
+            block.append(_table([["Dimension", "Value"]] + _pkg_rows(cab, sg), [118 * mm, 48 * mm], st))
+            block.append(Spacer(1, 3 * mm))
+            if i == len(cabs) - 1:
+                block.append(note)      # the source note stays on the page of the table it qualifies
+            s.append(KeepTogether(block))
         return s
+    mod = created[:12] + "%02d" % (int(created[12:14]) + tc["lag"])
     _pdf(root, key, "%s cab package data, tender HAS-F-2026-04" % converter, converter, created, story,
-         producer="Microsoft® Excel® for Microsoft 365", footer="%s  tender HAS-F-2026-04  package issue %s" % (short, issue))
+         producer=tc["producer"], creator=tc["creator"], modified=mod, footer_font=tc["look"]["face"],
+         footer="%s  tender HAS-F-2026-04  package issue %s" % (short, issue), version=tc["version"], tags=tc["tags"],
+         xmp=tc["xmp"])
 
 
 def kpi_doc(root):
@@ -342,7 +389,8 @@ def kpi_doc(root):
                         ["Vehicle-year", "365 days in the front-line fleet."],
                         ["Converter and chassis", "The converter that built the vehicle's conversion and the chassis-cab it is "
                                                   "built on."],
-                        ["Miles run", "The distance a vehicle's telematics unit recorded while fitted to the vehicle. A "
+                        ["Miles run", "The distance a vehicle's telematics unit recorded while fitted to the vehicle, "
+                                      "measured from the odometer reading entered when the unit was fitted. A "
                                       "unit is fitted from the date it was fitted up to the date it was removed, that "
                                       "date not counted."],
                         ["Off the road", "A vehicle is off the road from the date it is declared off the road up to the date "
@@ -469,7 +517,7 @@ def write_fleet(root, W):
                     "Status": rnd.choice(status_pick)})
     df = pd.DataFrame(reg).sort_values("Fleet number").reset_index(drop=True)
     O.xlsx(_p(root, "register"), [("Register", df)], author="Fleet Services", created="2026-10-01T06:00:00Z",
-           modified="2026-10-01T06:00:00Z", last="Liam Jackson", widths={"Register": [13, 17, 12, 28, 15, 12, 15, 11]},
+           modified="2026-10-01T06:00:00Z", last=FLEET_EDITOR, widths={"Register": [13, 17, 12, 28, 15, 12, 15, 11]},
            title="Front-line fleet register")
     # disposals in the year
     dis = []
@@ -483,8 +531,8 @@ def write_fleet(root, W):
                     "Converter": v["converter"], "In service": _dt(held), "Disposed": _dt(v["disposed"]),
                     "Reason": rnd.choice(["End of life", "End of life", "End of life", "Accident damage"])})
     df = pd.DataFrame(dis).sort_values("Disposed").reset_index(drop=True)
-    O.xlsx(_p(root, "disposals"), [("Disposals", df)], author="Fleet Services", created="2025-05-02T11:31:00Z",
-           modified="2026-04-08T10:47:00Z", last="Brenda Ward", widths={"Disposals": [13, 17, 12, 28, 12, 12, 16]},
+    O.xlsx(_p(root, "disposals"), [("Disposals", df)], author=DISPOSALS_EDITOR, created="2026-04-02T09:18:00Z",
+           modified="2026-04-08T10:47:00Z", last=DISPOSALS_EDITOR, widths={"Disposals": [13, 17, 12, 28, 12, 12, 16]},
            title="Vehicle disposals 2025-26")
     # Vennerley asset list at 27 June 2025
     snap = dt.date(2025, 6, 27)
@@ -605,7 +653,7 @@ def jobs(root, W):
                                  "TYRE": "Tyres", "SERV": "Service", "TEST": "Annual test", "EQPT": "Equipment mounts",
                                  "LIFT": "Tail lift/ramp"}[Wd.LEGACY_CODE[c]], c, Wd.CODES[c]) for c in Wd.CODES]
     df = pd.DataFrame(rows, columns=["Vennerley defect code", "Vennerley description", "Fleet job code", "Fleet job description"])
-    O.xlsx(_p(root, "codemap"), [("Code map", df)], author="Liam Jackson", created="2025-06-19T09:44:00Z",
+    O.xlsx(_p(root, "codemap"), [("Code map", df)], author=FLEET_EDITOR, created="2025-06-19T09:44:00Z",
            modified="2025-06-23T16:10:00Z", widths={"Code map": [20, 24, 15, 30]}, title="Vennerley codes to fleet job codes")
     return merged, legacy
 

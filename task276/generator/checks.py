@@ -243,6 +243,14 @@ def run(T, Gd, W, S, A, fig, info):
     kpi = texts[PK.FILES["kpi"]]
     ok("financial quarter" in kpi and "1 April to 31 March" in kpi, "SF16.financial_quarters", "the definitions file the year")
     ok("365 days in the front-line fleet" in kpi, "SF20.vehicle_year", "a vehicle-year is 365 days")
+    kflat = " ".join(kpi.split())
+    ok("measured from the odometer reading entered when the unit was fitted" in kflat and
+       "from the date it was fitted up to the date it was removed" in kflat, "SF18.miles_from_the_entered_odometer",
+       "the definitions fix a unit's miles from the odometer entered at fitting, the fitting date counted")
+    first = SV.fleet_figures(T, miles_how="window_first")
+    ok(all(round(first["converters"][c]["miles"], -2) != round(F["converters"][c]["miles"], -2) for c in G.CONVERTERS),
+       "SF18.first_reading_baseline_moves_the_miles", "%s" % [round(first["converters"][c]["miles"] - F["converters"][c]["miles"])
+                                                             for c in G.CONVERTERS])
     reg_x = pd.read_excel(os.path.join(T, PK.FILES["register"]), dtype={"Former fleet number": str})
     renum = reg_x[reg_x["Former fleet number"].notna()]
     legacy_rows = list(csv.DictReader(open(os.path.join(T, PK.FILES["legacy_jobs"]), encoding="utf-8")))
@@ -312,8 +320,41 @@ def run(T, Gd, W, S, A, fig, info):
     per_hub = pd.Series([r["Hub code"] for r in roster_rows]).value_counts()
     ok(per_hub.nunique() == len(per_hub), "realism.no_identical_counts", "drivers per hub all differ")
     ok(not re.search(r"(?i)john doe|acme|company a\b|lorem", " ".join(texts.values())), "realism.no_placeholders", "none")
-    people = set(re.findall(r"Brenda Ward|Liam Jackson", " ".join(texts.values())))
-    ok(people <= {"Brenda Ward", "Liam Jackson"}, "realism.personas", ", ".join(sorted(people)) or "none named in text")
+    people = set(re.findall("|".join(sorted(PK.PERSONAS)), " ".join(texts.values())))
+    ok(people <= PK.PERSONAS, "realism.personas", ", ".join(sorted(people)) or "none named in text")
+
+    def core(key):
+        x = zipfile.ZipFile(os.path.join(T, PK.FILES[key])).read("docProps/core.xml").decode("utf-8")
+        g = lambda tag: (re.search(r"<%s[^>]*>([^<]*)</%s>" % (tag, tag), x) or [None, None])[1]
+        return g("dc:creator"), g("cp:lastModifiedBy"), g("dcterms:created"), g("dcterms:modified")
+    eds = {k: core(k)[1] for k in ("register", "codemap", "disposals", "crosswalk", "measure")}
+    ok(eds["crosswalk"] == PK.HR_EDITOR and eds["measure"] == PK.OH_EDITOR and
+       eds["register"] in (PK.FLEET_EDITOR, PK.DISPOSALS_EDITOR) and eds["codemap"] in (PK.FLEET_EDITOR, PK.DISPOSALS_EDITOR) and
+       len({eds["crosswalk"], eds["measure"], eds["register"]}) == 3, "realism.department_editors",
+       ", ".join("%s %s" % kv for kv in sorted(eds.items())))
+    dcr, dlast, dc0, dc1 = core("disposals")
+    dlast_row = pd.read_excel(os.path.join(T, PK.FILES["disposals"]))["Disposed"].max().date().isoformat()
+    ok(dc0[:10] > dlast_row and dc1 >= dc0 and dc1[:10] <= P.PACK_DATE.isoformat() and dcr and dlast and
+       "Fleet Services" != dcr and dcr in PK.PERSONAS, "realism.disposals_dated_after_its_rows",
+       "last disposal %s, created %s, modified %s, by %s / %s" % (dlast_row, dc0, dc1, dcr, dlast))
+    from pypdf import PdfReader as _R
+    tool = {}
+    for key in ("pkg_pennick", "pkg_wrenfold", "pkg_ostrel"):
+        rd = _R(os.path.join(T, PK.FILES[key]))
+        fonts = {str(f.get_object()["/BaseFont"]).split("+")[-1] for pg in rd.pages
+                 for f in pg["/Resources"]["/Font"].values()} - {"Helvetica"}
+        tool[key] = (rd.metadata.get("/Creator"), rd.metadata.get("/Producer"), frozenset(fonts), rd.pdf_header)
+        made = rd.metadata.get("/CreationDate")[2:10]
+        ok("20260401" <= made <= "20260602", "realism.package_dated_before_evaluation.%s" % key, made)
+    ok(len({t[0] for t in tool.values()}) == 3 and len({t[1] for t in tool.values()}) == 3 and
+       len({t[2] for t in tool.values()}) == 3, "realism.package_toolchains_differ",
+       "; ".join("%s: %s / %s / %s" % (k, t[0], t[1], ",".join(sorted(t[2]))) for k, t in sorted(tool.items())))
+    for key in ("pkg_pennick", "pkg_wrenfold", "pkg_ostrel"):
+        pages = [pg.extract_text() or "" for pg in _R(os.path.join(T, PK.FILES[key])).pages]
+        note_page = [i for i, t in enumerate(pages) if "stretcher-side wall" in t]
+        last_table = [i for i, t in enumerate(pages) if "Bulkhead walk-through door width" in t]
+        ok(note_page and note_page[0] == last_table[-1] and all(len(t.split()) > 40 for t in pages),
+           "realism.no_orphaned_note.%s" % key, "%d pages, note on page %d" % (len(pages), note_page[0] + 1 if note_page else 0))
     # document dates against their content
     jl = list(csv.DictReader(open(os.path.join(T, PK.FILES["legacy_jobs"]), encoding="utf-8")))
     last_legacy = max(dt.datetime.strptime(r["Date in"], "%d/%m/%y").date() for r in jl)

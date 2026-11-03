@@ -17,7 +17,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), 2026-11-03, --asof 2026-10-09, sweeps 2, 3, 4 and 12 REVIEW, every line answered in DESIGN_NOTE.md ## Leak sweep answers",
-  "reader": ""
+  "reader": "no leak on the pack before the stage 4 fix (read under ## Solver's-eye read in leak_check_report.md; question 6 rule application ruled harmless, DESIGN_NOTE.md ## Stage 4 findings); the reporting standard's Miles run row was reworded since, so the reader re-reads it"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.deliverables pdf+xlsx, answered under Draw; NOTE test.same_puzzle_older, differentiated on the card); no BLOCK",
@@ -25,12 +25,12 @@
   "surface": "two pairs promoted on card axes only (task303 0.032, task258 0.024), differentiated on the card, for the author's adjudicated read"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE, Gate H decisive_step analytical",
+  "report": "task276/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4: spawn the leak reader (prompt.txt and a fresh unzip of target.zip only, at medium effort, cold: no sweep line and no figure in its brief) and the determinism-judge (medium) together in the background; every stage 3 gate is green on target.zip sha256 8c6fd92e6c10507fb3d9be86065d12f79a2fa1581e27fcc19cc8385439afef48 (generator checks 117, verify, two byte-identical builds, figures_check, precut, voice-check, leak.py REVIEW with every line answered, guard heart WARN, surface two card-axis pairs for the author). Fix every finding from both in the generator in one pass, re-judge once on FIX_NOW, re-read only if a document or the prompt changed, then ship (stage 5: every gate re-run on the final cut, target.zip from the final rebuild, ledger row, card current, commit SHIPPED (task276): <the call>).",
+ "resume": "stage 4: re-run the leak reader once (prompt.txt and a fresh unzip of target.zip only, medium effort, cold, no sweep line and no figure in its brief), because the stage 4 fix added one clause to policy/fleet_performance_reporting_standard_issue4.pdf's Miles run row (\"measured from the odometer reading entered when the unit was fitted\", closing SF18); every other file changed in metadata or layout only (three package PDFs' toolchains, the Wrenfold note on its table's page, the disposals, crosswalk and measurement workbooks' core properties). All free gates are green on target.zip sha256 cec6dc3ecd124b1f0f1fd6c049106a1c348cce03d7256eb56478bdbad59f9515 (generator checks 128, verify, two byte-identical builds, figures_check, precut, voice-check, leak.py REVIEW answered, guard heart WARN, surface, freeze determinism PASS). The judge's APPROVE stands (no figure moved; re-judge only if the reader finds a main-call fork). If the reader is clean, ship: re-run every gate on the final cut, ledger row, card current, status SHIPPED, commit SHIPPED (task276): Specify Pennick Coachbuild on FD35: it fails 166 of the 2,658 rostered drivers, 153 fewer than the runner-up Ostrel Vehicle Conversions on FD35 at 319.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -38,22 +38,24 @@
  "portal_status": "",
  "portal_status_date": "",
  "seed": "none (architecture 3 draws without a seed in a fresh world)",
- "target_zip_sha256": "8c6fd92e6c10507fb3d9be86065d12f79a2fa1581e27fcc19cc8385439afef48",
+ "target_zip_sha256": "cec6dc3ecd124b1f0f1fd6c049106a1c348cce03d7256eb56478bdbad59f9515",
  "gates": {
-  "generator_checks": "117 passed (make.py, final cut)",
+  "generator_checks": "128 passed (make.py, final cut)",
   "verify": "green, independent path over the shipped bundle (docx and PDFs parsed, every figure recomputed)",
   "byte_identical": "two builds byte-identical, target and golden",
   "figures_check": "50 figures in blocks 1 to 4, 0 absent",
-  "voice_check": "PASS, 978 characters",
+  "voice_check": "PASS",
   "ceiling": "pair 32.4 (cracker 45.0, mirror 19.8), mirror leakage 0.0, cracker misses all 6 ask rows, largest single-device lift 9.2 against a cap of 18.3",
   "container": "scrub audit clean on target and golden; every PDF reads the same through pypdf lenient and strict and poppler (H25)",
   "realism": "sweep green in checks.py",
   "input_gates": "20 files, csv docx pdf xlsx, telematics_daily_odometer_2025_26.csv 58,851 rows, 2 distractors in metadata.json",
-  "guard": "heart WARN, surface two card-axis pairs for the author"
+  "guard": "heart WARN, surface two card-axis pairs for the author",
+  "freeze": "freeze.py check --mode determinism PASS: main call, stump and every frozen figure unchanged",
+  "precut": "61 checks, 0 FAIL, 0 WARN"
  },
  "zip": {
   "path": "task276/target.zip",
-  "sha256": "8c6fd92e6c10507fb3d9be86065d12f79a2fa1581e27fcc19cc8385439afef48",
+  "sha256": "cec6dc3ecd124b1f0f1fd6c049106a1c348cce03d7256eb56478bdbad59f9515",
   "members": 28,
   "layout": "files under target/"
  }

@@ -49,7 +49,7 @@
     {
       "path": "target/fleet/package_drawing_data_ostrel.pdf",
       "format": "pdf",
-      "bytes": 38386,
+      "bytes": 37461,
       "rows": null,
       "covers": "one converter's tender dimension data for the cab it offered",
       "source": "Constructed (seeded generator, task276/generator/make.py)",
@@ -59,7 +59,7 @@
     {
       "path": "target/fleet/package_drawing_data_pennick.pdf",
       "format": "pdf",
-      "bytes": 38490,
+      "bytes": 38466,
       "rows": null,
       "covers": "one converter's tender dimension data for the cabs it offered",
       "source": "Constructed (seeded generator, task276/generator/make.py)",
@@ -69,7 +69,7 @@
     {
       "path": "target/fleet/package_drawing_data_wrenfold.pdf",
       "format": "pdf",
-      "bytes": 39162,
+      "bytes": 45041,
       "rows": null,
       "covers": "one converter's tender dimension data for the cabs it offered",
       "source": "Constructed (seeded generator, task276/generator/make.py)",
@@ -109,7 +109,7 @@
     {
       "path": "target/fleet/vehicle_disposals_2025_26.xlsx",
       "format": "xlsx",
-      "bytes": 6232,
+      "bytes": 6223,
       "rows": 15,
       "covers": "front-line vehicles disposed of in 2025-26",
       "source": "Constructed (seeded generator, task276/generator/make.py)",
@@ -199,7 +199,7 @@
     {
       "path": "target/policy/fleet_performance_reporting_standard_issue4.pdf",
       "format": "pdf",
-      "bytes": 38264,
+      "bytes": 38308,
       "rows": null,
       "covers": "Fleet Services' performance reporting standard, issue 4",
       "source": "Constructed (seeded generator, task276/generator/make.py)",

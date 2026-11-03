@@ -371,12 +371,27 @@ def word_fonts():
     addMapping("Calibri", 1, 0, "Calibri-Bold")
 
 
+def register_face(name, regular, bold):
+    """a converter's own body face, registered under the name its toolchain embeds (metric-compatible files)"""
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.lib.fonts import addMapping
+    if name in pdfmetrics.getRegisteredFontNames():
+        return
+    for nm, fn, face in ((name, regular[0], regular[1]), (name + "-Bold", bold[0], bold[1])):
+        f = TTFont(nm, fn)
+        f.face.name = face.encode()
+        pdfmetrics.registerFont(f)
+    addMapping(name, 0, 0, name)
+    addMapping(name, 1, 0, name + "-Bold")
+
+
 def _pdf_date(stamp):
     month = int(stamp[4:6])
     return "D:%s%s" % (stamp, "+01'00'" if 4 <= month <= 10 else "+00'00'")
 
 
-def _xmp(title, author, producer, created, modified):
+def _xmp(title, author, producer, created, modified, creator=None):
     iso = lambda st: "%s-%s-%sT%s:%s:%s%s" % (st[0:4], st[4:6], st[6:8], st[8:10], st[10:12], st[12:14],
                                             "+01:00" if 4 <= int(st[4:6]) <= 10 else "Z")
     return ("<?xpacket begin=\"\ufeff\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"
@@ -388,13 +403,13 @@ def _xmp(title, author, producer, created, modified):
             "</dc:title><dc:creator><rdf:Seq><rdf:li>%s</rdf:li></rdf:Seq></dc:creator><xmp:CreatorTool>%s"
             "</xmp:CreatorTool><xmp:CreateDate>%s</xmp:CreateDate><xmp:ModifyDate>%s</xmp:ModifyDate>"
             "</rdf:Description></rdf:RDF></x:xmpmeta>%s<?xpacket end=\"w\"?>") % (
-        producer.replace("\u00ae", "&#174;"), title, author, producer.replace("\u00ae", "&#174;"), iso(created),
+        producer.replace("\u00ae", "&#174;"), title, author, (creator or producer).replace("\u00ae", "&#174;"), iso(created),
         iso(modified), " " * 2000)
 
 
 def pdf(path, story_fn, title, author, created_pdf, modified_pdf=None,
         producer="Microsoft\u00ae Word for Microsoft 365", creator="Microsoft\u00ae Word for Microsoft 365", footer=None,
-        footer_font="Helvetica"):
+        footer_font="Helvetica", version="1.7", tags=("BCDEEE", "BCDFEE", "BCDGEE", "BCDHEE"), xmp=True):
     """A PDF as Word for Microsoft 365 exports one: PDF 1.7, the body font embedded as a subset, the document
     language and marked-content flag in the catalogue, an XMP packet beside the Info dictionary, and the creation
     (created_pdf, like 20260930141200) and last-save (modified_pdf) stamps with the UK offset of their dates. The
@@ -430,7 +445,7 @@ def pdf(path, story_fn, title, author, created_pdf, modified_pdf=None,
         rl_config.canvas_basefontname = base0
     w = PdfWriter(clone_from=PdfReader(io.BytesIO(buf.getvalue())))
     # each embedded subset under its own six-letter tag, as Word writes them
-    tags = {}
+    seen = {}
     for page in w.pages:
         for _k, ref in page["/Resources"]["/Font"].items():
             f = ref.get_object()
@@ -438,13 +453,13 @@ def pdf(path, story_fn, title, author, created_pdf, modified_pdf=None,
             if "+" not in bf:
                 continue
             face = bf.split("+", 1)[1]
-            tag = tags.setdefault(face, ["BCDEEE", "BCDFEE", "BCDGEE", "BCDHEE"][len(tags)])
+            tag = seen.setdefault(face, tags[len(seen)])
             f[NameObject("/BaseFont")] = NameObject("/%s+%s" % (tag, face))
             for d in (f.get("/FontDescriptor"),) + tuple(x.get_object().get("/FontDescriptor") for x in
                                                          f.get("/DescendantFonts", [])):
                 if d is not None:
                     d.get_object()[NameObject("/FontName")] = NameObject("/%s+%s" % (tag, face))
-    w.pdf_header = b"%PDF-1.7"
+    w.pdf_header = ("%%PDF-%s" % version).encode()
     w._info.get_object().clear() if hasattr(w._info, "get_object") else None
     info = DictionaryObject({NameObject("/Title"): TextStringObject(title),
                              NameObject("/Author"): TextStringObject(author),
@@ -459,10 +474,11 @@ def pdf(path, story_fn, title, author, created_pdf, modified_pdf=None,
             del root[k]
     root[NameObject("/Lang")] = TextStringObject("en-GB")
     root[NameObject("/MarkInfo")] = DictionaryObject({NameObject("/Marked"): BooleanObject(True)})
-    xs = DecodedStreamObject()
-    xs.set_data(_xmp(title, author, producer, created_pdf, modified_pdf).encode("utf-8"))
-    xs.update({NameObject("/Type"): NameObject("/Metadata"), NameObject("/Subtype"): NameObject("/XML")})
-    root[NameObject("/Metadata")] = w._add_object(xs)
+    if xmp:
+        xs = DecodedStreamObject()
+        xs.set_data(_xmp(title, author, producer, created_pdf, modified_pdf, creator).encode("utf-8"))
+        xs.update({NameObject("/Type"): NameObject("/Metadata"), NameObject("/Subtype"): NameObject("/XML")})
+        root[NameObject("/Metadata")] = w._add_object(xs)
     fid = hashlib.md5((title + created_pdf).encode()).digest()
     w._ID = ArrayObject([ByteStringObject(fid), ByteStringObject(hashlib.md5((title + modified_pdf).encode()).digest())])
     out = io.BytesIO()

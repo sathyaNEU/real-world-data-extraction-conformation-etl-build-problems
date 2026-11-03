@@ -215,7 +215,7 @@ check, seat-track accommodation, the vision check), not from the rungs below.
 | SF15 | body mass index | latest weight over latest stature squared | a recorded index | none recorded | the model report's definition |
 | SF16 | quarters | financial quarters from 1 April | calendar quarters | asks only | the reporting definitions |
 | SF17 | a job carried across the workshop cutover | once, in the quarter first raised | twice, or at the fleet system's date | asks only | the definitions, "first raised" |
-| SF18 | a unit's miles | from the odometer entered at fitting to its last reading before removal | readings after removal kept | asks only | the definitions' fitted window |
+| SF18 | a unit's miles | from the odometer entered at fitting to its last reading before removal | readings after removal kept, or the first daily reading as the baseline (moves both converters' miles and rates) | asks only | the reporting standard's Miles run row, "measured from the odometer reading entered when the unit was fitted" and "from the date it was fitted up to the date it was removed, that date not counted" (`SF18.miles_from_the_entered_odometer`, `SF18.first_reading_baseline_moves_the_miles`) |
 | SF19 | days off the road | the days a vehicle was off the road, once each | each job's spell added | asks only | the definitions' state of a vehicle |
 | SF20 | vehicle-year | 365 days in the fleet | 365.25 or the year's days | asks only | the definitions |
 | SF21 | in service, renumbered vehicles | from the Vennerley asset list's date | from the register's 1 July 2025 | asks only | the definitions' "entered front-line service" and the vehicles' Vennerley jobs before July |
@@ -356,6 +356,29 @@ baseline and days counted once 0.0 each alone, against a cap of 18.3), asserted.
   call), so no file ranks the cabs on drivers fitted (Gate G, asserted).
 - Sweep 12, the standard names six column values of the data files (Converter, Chassis, FD35, RD43 and two
   converters' names): the organisation's own record of its shortlist; it defines no column and states no join.
+
+## Stage 4 findings
+
+- Judge: DETERMINISTIC, APPROVE, Gate H decisive_step analytical (`determinism_check_report.md`).
+- Reader, question 6 (rule application): harmless. The reader never reached the backrest-against-bulkhead check and
+  read the filed posture model as the decisive step; the judge's full derivation rules the whole-posture check
+  analytical, and the judge recomputed where the reader did not.
+- Reader, question 5 gap (travel limits and recline not named in section 3): harmless, the intended stump; "seated
+  in the driving posture" and the Wrenfold geometry stay as filed, since naming the travel or the bulkhead files the method.
+- Reader REVIEW, the posture model's author-like vocabulary: harmless as the reader ruled, a consultant's model report.
+- Reader REVIEW, `package_drawing_data_pennick.pdf`: harmless as the reader ruled, geometry only, recommends nothing.
+- Reader REVIEW, the standard's decision vocabulary: harmless as the reader ruled, the decision rule names no winner.
+- Reader REVIEW, the posture model's decision vocabulary: harmless as the reader ruled, it recommends no cab.
+- Reader REVIEW, the standard naming data columns: harmless as the reader ruled, the organisation's governing record.
+- Reader realism, fixed in the generator: the disposals return now dated after its last row (created 2 April 2026)
+  and kept by Gareth Davis; HR's crosswalk by Christine Rees and Occupational Health's measurements by Linda Cooper,
+  Liam Jackson left on the fleet register and code map (`realism.department_editors`,
+  `realism.disposals_dated_after_its_rows`); each converter's package from its own toolchain (Pennick from Excel,
+  Wrenfold through Acrobat PDFMaker in Arial, Ostrel printed to Distiller in Cambria, `realism.package_toolchains_differ`);
+  the Wrenfold source note kept on its table's page (`realism.no_orphaned_note.*`). No package wording changed.
+- Miles baseline (SF18): no shipped sentence fixed a unit's miles from the odometer entered at fitting rather than the
+  first daily reading, which moves both converters' miles and rates; closed by one clause in the reporting standard's
+  Miles run row, the only wording change in the pack. A reworded document, so the reader re-reads before ship.
 
 ## House fixes
 
