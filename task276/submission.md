@@ -1,47 +1,47 @@
-# task276 submission
-
 ## Tags
 
-**Domain:** Urban & Regional Science (network analysis: the road-user delay each shortlisted level crossing's barrier closures impose on the roads through it).
-**Analytical objective:** Descriptive & Distribution Analysis (how school-day morning closure delay is distributed across the programme's shortlisted crossings, choosing the 2027 replacement, with each crossing's closure frequency, fault-held closure hours and heavy goods vehicle share).
+**Domain:** Human Factors & Ergonomics (anthropometric design fit).
+**Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Replace Mill Lane in 2027.**
-
-Its closures cost road users **10,000 vehicle-hours** on school-day mornings 07:00 to 10:00 in 2025/26, against Station Road's **7,000**, a gap of **3,000**. Not Station Road, which leads only when every held queue leaves at the road's own saturation flow once the barriers rise (7,000 against Mill Lane's 5,000); Mill Lane's queues can only leave in the greens of the river bridge's shuttle signals 42 metres beyond the crossing.
+**We should specify Pennick Coachbuild on FD35 for the 2027 front-line ambulance order.**
+It fails 166 of our rostered drivers, 153 fewer than the runner-up, Ostrel Vehicle Conversions on FD35, at 319. Not Wrenfold Bodies on FD35, whose longer stated seat travel fits more drivers on paper but whose forward bulkhead stops the backrest of its tall drivers short of their posture, so it fails 450. Not the two RD43 cabs, which fail 399 and 435.
 
 ## 2. Critical Components
 
-1. Mill Lane's section between its count sites holds the shuttle-signalled single-track bridge: a **100**-second cycle, **32** seconds of westbound and **48** of eastbound green, **7** vehicles of storage between the bridge stop line and the barriers.
-2. Delay by crossing: Mill Lane **10,000**; Station Road **7,000**; Moor Road **4,000**; Long Drove **4,000**; Church Lane **2,000**; Common Road **2,000**.
-3. No other shortlisted crossing has a control between its count sites.
+1. Pennick Coachbuild on FD35 fails **166** rostered drivers.
+2. Ostrel Vehicle Conversions on FD35 fails **319**.
+3. Wrenfold Bodies on FD35 fails **450** once each driver's backrest is placed against its bulkhead, against **109** on its stated travel and vision alone.
 
 ## 3. Step-by-Step Solution
 
-1. Paired each LOWERED event in barrier_events_2025_26.csv with the next RAISED event per crossing, dropping repeats of the same event within three seconds, and converted UTC to UK local time.
-2. Took each crossing's school days from term_dates_2025_26.xlsx for its county in crossing_register_2025.pdf, weekdays in term outside half terms and bank holidays (crossing_programme_2027.docx 3.3).
-3. Spread each quarter hour's vehicles in approach_counts_2025_26.csv evenly across it at the count sites network_register_2026.xlsx gives each crossing (road_delay_appraisal_conventions.pdf 3).
-4. Matched each crossing to its node in network_nodes.csv by grid reference and walked network_links.csv between its two count sites: only Mill Lane's section holds a signal site, SS 2207, whose single-track link is the bridge, 42 metres from the crossing.
-5. Replayed every school morning from 06:00, each vehicle passing the barriers when raised at 1,800 vehicles an hour per lane and, at Mill Lane, the bridge stop line only in its direction's green at the register's 1,800, with 7 vehicles of storage between the two stop lines; delay is each vehicle's exit time against the same morning with no closures (crossing_programme_2027.docx 3.2), summed over vehicles counted 07:00 to 10:00.
-6. Fault-held hours: the barrier closures during which a BFR, ODF or PWR fault in lx_work_orders_2025_26.csv was reported (the renewed Long Drove machine, LXB/5203, matched by the closure held down at that minute) or which ended at a signaller's reset in signaller_occurrences_2025_26.xlsx, summed over the year.
-7. Heavy goods share: the veh_hgv column over veh_total for the quarter hours between 07:00 and 10:00 on school days, both approaches; at the QT-40 sites, and at an RX-5 site's rows before its counter's install date, the column is a whole-number percentage of the interval's vehicles, converted at veh_hgv times veh_total over 100.
-8. Mill Lane leads at 10,000 vehicle-hours against Station Road's 7,000: replace Mill Lane in 2027.
+1. Took every staff number on front_line_driving_roster_2026-10-01.csv (the cab fit standard's section 2), joined each to its latest measurement in cab_fit_measurements_2025_26.xlsx through vennerley_staff_number_crosswalk.xlsx for former Vennerley numbers, the Vennerley paper forms converted from inches, stones and pounds: 2,658 drivers.
+2. Placed each driver in each shortlisted cab with the hip point, torso angle and eye point equations in driver_posture_model_ellisand_2025.pdf, taking H30, the H-point travel, the bulkhead trim face and the chassis sight points from the package data, package_drawing_data_wrenfold.pdf's dimensions moved from each cab's stated SgRP to the heel point.
+3. Set the seat to that posture: the hip point inside the cab's H-point travel, and the backrest at the predicted torso angle with its top rear corner (30.31 in along and 3.74 in behind the torso line, seat_dimension_sheet_brevin_as7.pdf) not behind the bulkhead trim face line at the corner's height.
+4. Checked the eye point against the 11 degree upward and 5 degree downward sight lines to the chassis points (section 4) and counted the drivers each cab fails: the figures in block 4.
+5. Rebuilt each 2025-26 front-line vehicle from front_line_fleet_register_2026-10-01.xlsx, vehicle_disposals_2025_26.xlsx and vennerley_asset_list_2025-06-27.xlsx (renumbered Vennerley vehicles from their original in-service dates), and gave each job, telematics unit and off-road spell to the vehicle holding its fleet number on its date, reused numbers resolved through the disposals.
+6. Counted seat and cab-structure jobs (B12, B30 and their Vennerley codes in workshop_code_map.xlsx) by the quarter first raised, a Vennerley job carried into workshop_jobs_2025_26.csv on 1 July 2025 counted once at its Vennerley date; took miles as each unit's distance while fitted per telematics_unit_changes.xlsx; and days off the road as the calendar days in the union of each vehicle's spells: the converter and chassis figures in block 4.
+7. Specified the cab the fewest drivers fail (section 7): Pennick Coachbuild on FD35.
 
 ## 4. Deliverable Answers
 
-### crossing_delay_2025_26.xlsx
+### cab_fit_2027.xlsx
 
-1. Each shortlisted crossing, ranked by delay: delay to the nearest thousand vehicle-hours, closures begun between 07:00 and 10:00 per school morning, hours barriers were down 1 September 2025 to 31 August 2026 in closures a fault held down, heavy goods vehicles as a share of vehicles counted on school-day mornings:
-   - Mill Lane: 10,000 vehicle-hours, 11.8 closures per school morning, 4.0 fault-held hours, 7.2% heavy goods vehicles
-   - Station Road: 7,000 vehicle-hours, 11.8 closures per school morning, 3.3 fault-held hours, 5.6% heavy goods vehicles
-   - Moor Road: 4,000 vehicle-hours, 11.8 closures per school morning, 1.8 fault-held hours, 6.7% heavy goods vehicles
-   - Long Drove: 4,000 vehicle-hours, 8.9 closures per school morning, 2.4 fault-held hours, 8.2% heavy goods vehicles
-   - Church Lane: 2,000 vehicle-hours, 14.8 closures per school morning, 3.6 fault-held hours, 4.8% heavy goods vehicles
-   - Common Road: 2,000 vehicle-hours, 17.7 closures per school morning, 3.7 fault-held hours, 6.1% heavy goods vehicles
+1. Rostered drivers each shortlisted cab fails to fit, whole drivers:
+   - Pennick Coachbuild on FD35: 166, of whom 160 women
+   - Ostrel Vehicle Conversions on FD35: 319, of whom 305 women
+   - Pennick Coachbuild on RD43: 399, of whom 359 women
+   - Wrenfold Bodies on RD43: 435, of whom 121 women
+   - Wrenfold Bodies on FD35: 450, of whom 109 women
+2. Recommended: Pennick Coachbuild on FD35; runner-up Ostrel Vehicle Conversions on FD35, which fails 153 more drivers.
+3. Seat and cab-structure defect jobs raised in 2025-26 by quarter, miles run that year to the nearest hundred and jobs per 100,000 miles to two decimals:
+   - Pennick Coachbuild: Q1 76, Q2 74, Q3 85, Q4 81; 2,231,700 miles; 14.16 jobs per 100,000 miles
+   - Ostrel Vehicle Conversions: Q1 40, Q2 38, Q3 30, Q4 50; 1,280,400 miles; 12.34 jobs per 100,000 miles
+4. Days off the road in 2025-26 by quarter, vehicle-years in service and days off the road per vehicle-year, to one decimal:
+   - FD35: Q1 901, Q2 875, Q3 933, Q4 906; 109.9 vehicle-years; 32.9 days per vehicle-year
+   - RD43: Q1 422, Q2 457, Q3 524, Q4 523; 52.6 vehicle-years; 36.6 days per vehicle-year
 
-### crossing_choice_2027.docx
+### cab_fit_2027.pdf
 
-1. Recommendation: replace Mill Lane in 2027.
-2. Runner-up: Station Road.
-3. Gap between them: 3,000 vehicle-hours.
+5. One bar per shortlisted cab giving the drivers it fails to fit, each bar labelled with its count, the Pennick FD35 bar in blue and marked Recommended.

@@ -1,34 +1,39 @@
 # leak check, task276
 
-**Verdict: REVIEW.** 14 files read, 21 golden figures and 9 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 20 files read, 19 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: analytics, register, closure, bridge, product, network, control, station, second, survey, reflex, storage, signal, sentence, saturation, counts, released, queues, method, minutes, section, default, driver, sign-ups, metric-definition
+Stump terms swept: driver, bulkhead, posture, wrenfold, travel, stated, backrest, standard, population, measured, package, committee, pennick, forward, fewest, vision, predicted, cannot, specifies, coachbuild, failing, factors, descriptive, distribution, vennerley
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `programme/crossing_programme_2027.docx`: golden figure 3.3 appears: ...urs, with the Board's appraisal conventions. 3.3 School days are the weekdays inside the published...
-- **REVIEW** `programme/crossing_programme_2027.docx`: candidate 'Church Lane' sits beside decision vocabulary: ...rthshire Station Road NSB 12m 47ch Northshire Church Lane SCL 18m 23ch Southshire 3. Basis of selection 3.1 The...
+## 2 author vocabulary (REVIEW 1)
+- **REVIEW** `policy/driver_posture_model_ellisand_2025.pdf`: \bthe model\b x6: ...vice's own drivers rather than against published percentile manikins. The model was fitted to the seat trial run in May and June 2025 in the service'...
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `programme/crossing_programme_2027.docx`: 4 of 25 stump-paragraph terms appear (closure, bridge, network, station); read whether the document names the move
-- **REVIEW** `programme/road_delay_appraisal_conventions.pdf`: 6 of 25 stump-paragraph terms appear (register, control, survey, signal, saturation, counts); read whether the document names the move
-- **REVIEW** `rail/crossing_register_2025.pdf`: 3 of 25 stump-paragraph terms appear (register, control, station); read whether the document names the move
+## 3 answer figures in the pack (REVIEW 3)
+- **REVIEW** `fleet/package_drawing_data_pennick.pdf`: carries 4 of 7 distinctive words of the committed call: 'We should specify Pennick Coachbuild on FD35 for the 2027 front-line ambulance order.'
+- **REVIEW** `policy/cab_fit_standard_issue2.docx`: carries 7 of 7 distinctive words of the committed call: 'We should specify Pennick Coachbuild on FD35 for the 2027 front-line ambulance order.'
+- **REVIEW** `policy/driver_posture_model_ellisand_2025.pdf`: carries 5 of 7 distinctive words of the committed call: 'We should specify Pennick Coachbuild on FD35 for the 2027 front-line ambulance order.'
 
-## 6 ranking artifacts (REVIEW 4, INFO 2)
-- **REVIEW** `highways/network_register_2026.xlsx`: names 6 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `programme/queue_survey_march_2026.xlsx`: names 6 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `rail/crossing_register_2025.pdf`: names 6 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `rail/signaller_occurrences_2025_26.xlsx`: names 6 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `highways/network_links.csv`: names 6 of 9 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `programme/crossing_programme_2027.docx`: names 6 of 9 answer-set candidates; confirm it does not rank them on the decision question
+## 4 design-note vocabulary (REVIEW 7)
+- **REVIEW** `fleet/package_drawing_data_ostrel.pdf`: 6 of 25 stump-paragraph terms appear (driver, bulkhead, travel, standard, measured, package); read whether the document names the move
+- **REVIEW** `fleet/package_drawing_data_pennick.pdf`: 7 of 25 stump-paragraph terms appear (driver, bulkhead, travel, measured, package, pennick); read whether the document names the move
+- **REVIEW** `fleet/package_drawing_data_wrenfold.pdf`: 6 of 25 stump-paragraph terms appear (driver, bulkhead, wrenfold, travel, stated, package); read whether the document names the move
+- **REVIEW** `fleet/seat_dimension_sheet_brevin_as7.pdf`: 4 of 25 stump-paragraph terms appear (driver, stated, backrest, standard); read whether the document names the move
+- **REVIEW** `policy/cab_fit_standard_issue2.docx`: 13 of 25 stump-paragraph terms appear (driver, posture, wrenfold, standard, measured, package); read whether the document names the move
+- **REVIEW** `policy/driver_posture_model_ellisand_2025.pdf`: 6 of 25 stump-paragraph terms appear (driver, posture, measured, pennick, forward, factors); read whether the document names the move
+- **REVIEW** `policy/fleet_performance_reporting_standard_issue4.pdf`: 5 of 25 stump-paragraph terms appear (driver, bulkhead, standard, committee, vennerley); read whether the document names the move
+
+## 6 ranking artifacts (INFO 2)
+- **INFO** `policy/cab_fit_standard_issue2.docx`: names 3 of 3 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `procurement/tender_prices_2027_shortlist.xlsx`: names 3 of 3 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 12 describing content (REVIEW 1)
+- **REVIEW** `policy/cab_fit_standard_issue2.docx`: names 7 column(s) of the data files verbatim (Chassis, Converter, FD35, Ostrel Vehicle Conversions, Pennick Coachbuild, RD43): confirm it is the organisation's own record and not a note written for the analyst
 
-## 2 author vocabulary (clean)
+## 1 file names (clean)
 
 ## 5 announcements (clean)
 

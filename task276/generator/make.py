@@ -1,8 +1,9 @@
-"""Build the pack, solve it, write the goldens, figures.json, submission.md and metadata.json, run the checks and the
-independent verifier, rebuild into a scratch folder and require byte-identical output, then cut target.zip.
+"""Build the pack from the world, solve it, write the goldens, figures.json, submission.md and metadata.json, run the
+checks and the independent verifier, rebuild into a scratch folder and require byte-identical output, then cut
+target.zip with every file under target/.
 
-    python3 task276/generator/make.py            (full: two builds, the zip)
-    python3 task276/generator/make.py --once     (one build, no zip)
+    python3 task276/generator/make.py            (full: checks, verifier, second build, the zip)
+    python3 task276/generator/make.py --once     (one build, checks and verifier, no zip)
 """
 import hashlib
 import json
@@ -15,31 +16,39 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import build as B
-import deliver as DL
+import golden as G
+import pack as PK
 import params as P
 import solve as SV
+import world as Wd
+import writeup as WU
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
-STAMP = (2026, 9, 14, 8, 30, 0)          # the morning the pack was put together for the programme
-AS_OF = "2026-09-14"
+STAMP = (2026, 10, 9, 16, 42, 0)
+AS_OF = "2026-10-09"
 ABOUT = {
-    "barrier": "barrier lowering and raising events at the six shortlisted crossings, 05:00 to 21:00 daily",
-    "orders": "the maintainer's work orders on level crossing equipment on the four lines",
-    "occ": "the signal boxes' occurrence book entries for the six crossings",
-    "register": "the rail infrastructure manager's level crossing register extract, May 2025",
-    "plan": "the 2026 train service plan by line, day and hour",
-    "counts": "quarter-hour approach counts at the twelve crossing count sites, 06:00 to 11:00 daily",
-    "links": "the highway network's links for the four counties' A, B and C roads",
-    "nodes": "the highway network's nodes with grid coordinates",
-    "netreg": "the highway authority's count site and signal site registers",
-    "collisions": "recorded road injury collisions, 2021 to 2025",
-    "brief": "the programme board paper setting the basis of the 2027 selection",
-    "method": "the Board's road user delay appraisal conventions",
-    "survey": "the March 2026 queue survey at the six crossings",
-    "terms": "the four county councils' school term dates for 2025/26",
+    "roster": "the front-line driving roster published on 1 October 2026: staff number, hub, role, contract, sex, rota line",
+    "crosswalk": "former Vennerley staff numbers and the service staff numbers that replaced them on 1 September 2025",
+    "measure": "the cab fit measurement programme's records, March 2025 to September 2026: stature, sitting eye height, weight",
+    "standard": "the service's cab fit standard, issue 2, with the 2027 shortlist and the Committee's decision rule",
+    "posture": "the driver posture model fitted to the 2025 seat trial, with its validation",
+    "seat": "the seat maker's dimension sheet for the driver seat every shortlisted converter fits",
+    "pkg_pennick": "one converter's tender dimension data for the cabs it offered",
+    "pkg_wrenfold": "one converter's tender dimension data for the cabs it offered",
+    "pkg_ostrel": "one converter's tender dimension data for the cab it offered",
+    "kpi": "Fleet Services' performance reporting standard, issue 4",
+    "register": "the front-line fleet register at 1 October 2026",
+    "disposals": "front-line vehicles disposed of in 2025-26",
+    "assets": "the former Vennerley workshop system's asset list exported on 27 June 2025",
+    "units": "telematics units fitted to and removed from front-line vehicles",
+    "odometer": "daily telematics odometer readings by unit, 31 March 2025 to 31 March 2026",
+    "jobs": "workshop jobs raised in the fleet management system in 2025-26",
+    "legacy_jobs": "workshop jobs in the former Vennerley workshop system, April to June 2025",
+    "codemap": "the Vennerley defect codes and the fleet job codes they correspond to",
+    "prices": "tendered prices, lead times and warranties for the shortlisted cabs",
+    "reference": "national reference tables of working-age adult body dimensions",
 }
 
 
@@ -53,37 +62,40 @@ def walk(folder):
 
 def metadata(target):
     files = []
-    key_of = {v: k for k, v in B.FILES.items()}
+    key_of = {v: k for k, v in PK.FILES.items()}
     for rel in walk(target):
         p = os.path.join(target, rel)
-        rows = sum(1 for _ in open(p, encoding="utf-8")) - 1 if rel.endswith(".csv") else None
-        files.append({"path": rel, "format": rel.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
+        rows = sum(1 for _ in open(p, encoding="utf-8-sig")) - 1 if rel.endswith(".csv") else None
+        if rel.endswith(".xlsx"):
+            import pandas as pd
+            rows = int(sum(len(pd.read_excel(p, sheet_name=s)) for s in pd.ExcelFile(p).sheet_names))
+        files.append({"path": "target/" + rel, "format": rel.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
                       "covers": ABOUT[key_of[rel]], "source": "Constructed (seeded generator, task276/generator/make.py)",
                       "date": AS_OF, "license": "CC0-1.0 (original work)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task276",
-        "title": "Which crossing on a transport body's level crossing replacement shortlist the 2027 scheme replaces, by "
-                 "the road-user delay its barriers caused on school-day mornings in the 2025/26 school year",
-        "domain": "Urban & Regional Science",
-        "subdomain": "network-analysis (road-user delay at level crossings on a sub-national transport body's roads)",
+        "title": "Which cab a regional ambulance service specifies for its 2027 front-line ambulance order, by the "
+                 "rostered drivers each shortlisted cab fails to fit, with the shortlisted converters' and chassis' "
+                 "record on the current fleet",
+        "domain": "Human Factors & Ergonomics",
+        "subdomain": "anthropometric-design-fit",
         "objective": "Descriptive & Distribution Analysis",
-        "prompt_shape": "01: ranked list, each shortlisted crossing with its school-morning delay and the figures the "
-                        "programme panel asks for beside it, and a short panel paper",
+        "prompt_shape": "01: each shortlisted cab with the drivers it fails and the women among them, the recommendation "
+                        "and runner-up, and the fleet record per shortlisted converter and chassis by quarter",
         "as_of": AS_OF,
-        "deliverables": [DL.XLSX, DL.DOCX],
-        "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
+        "deliverables": [G.XLSX, G.PDF],
+        "distractor_files": ["target/" + PK.FILES[k] for k in PK.DISTRACTORS],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
-                     "origin": "generated by task276/generator/make.py (seeded, deterministic) around a sub-national "
-                               "transport body for four shire counties in England: a rail infrastructure manager's "
-                               "barrier event log, crossing register, equipment work orders and signallers' occurrence "
-                               "book; the highway authorities' approach counts, network links and nodes, count and signal "
-                               "site registers and collision records; the counties' school term dates; and the body's "
-                               "own programme paper, appraisal conventions and queue survey. The body, the counties, the "
-                               "roads, the crossings and the people are invented, and every record is simulated, not "
-                               "taken from any real dataset.",
+                     "origin": "generated by task276/generator/make.py (seeded, deterministic) around an invented regional "
+                               "ambulance service formed from two predecessor services: its HR roster and staff number "
+                               "crosswalk, its occupational health measurement programme, its fleet register, disposals, "
+                               "telematics and workshop records, its predecessor's asset list and workshop records, its "
+                               "standards and definitions, its posture model report, and the converters' and the seat "
+                               "maker's tender documents. The service, its hubs, the converters, the seat maker, the "
+                               "consultancy, the survey and the people are invented, and every record is simulated.",
                      "date": AS_OF, "license": "CC0-1.0 (original work)"}],
         "created": "2026-11-03",
         "generator": "task276/generator/make.py",
@@ -128,20 +140,27 @@ def fresh(folder):
     os.makedirs(folder, exist_ok=True)
 
 
+def build_once(target, golden_dir):
+    W = Wd.build()
+    fresh(target)
+    info = PK.run(target, W)
+    stamp(target)
+    S = SV.solve(target, variants=True)
+    A = G.answers(S)
+    fresh(golden_dir)
+    G.write_goldens(golden_dir, A)
+    stamp(golden_dir)
+    return W, info, S, A
+
+
 def main(second=True, checks=True):
-    fresh(TARGET)
-    W = B.run(TARGET)
-    stamp(TARGET)
-    S = SV.solve(TARGET, variants=checks)
-    A = DL.answers(S)
-    fresh(GOLDEN)
-    DL.write_goldens(GOLDEN, A)
-    stamp(GOLDEN)
-    fig = DL.write(TASK, HERE, A)
+    W, info, S, A = build_once(TARGET, GOLDEN)
+    fig = G.figures(HERE, A, S)
+    WU.write(TASK, fig, A)
     metadata(TARGET)
     if checks:
         import checks as C
-        n = C.run(TARGET, GOLDEN, W, S, A)
+        n = C.run(TARGET, GOLDEN, W, S, A, fig, info)
         for line in C.LOG:
             print("  " + line)
         print("checks: %d passed" % n)
@@ -150,10 +169,7 @@ def main(second=True, checks=True):
     if second:
         tmp = tempfile.mkdtemp(dir=os.environ.get("TMPBUILD"))
         t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
-        B.run(t2)
-        stamp(t2)
-        DL.write_goldens(g2, DL.answers(SV.solve(t2)))
-        stamp(g2)
+        build_once(t2, g2)
         d1, d2 = digest(TARGET), digest(t2)
         assert d1 == d2, [f for f in d1 if d1[f] != d2.get(f)]
         g1, g2d = digest(GOLDEN), digest(g2)

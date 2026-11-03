@@ -1,86 +1,78 @@
-"""World constants for task276: the Shires Transport Board's 2027 level crossing replacement choice."""
+"""World parameters for Hallowfen Ambulance Service's 2027 cab specification. Every figure the pack, the goldens and
+the write-up state is computed from these by the generator; nothing graded is typed anywhere else."""
 import datetime as dt
 
-SEED = "task276-architecture-2"
-D0, D1 = dt.date(2025, 9, 1), dt.date(2026, 8, 31)
-EXPORT = dt.date(2026, 9, 14)
-BOARD = "Shires Transport Board"
-RAIL = "Route Asset Management, Shires route"
-HIGHWAYS = "Shires Highways Partnership"
-LEAD, PM = "Andrew Stevens", "Gareth Davis"
+SEED = 276
+YEAR_STREAM = 156                # the fleet year's random stream
+ROSTER_DATE = dt.date(2026, 10, 1)            # the front-line driving roster the order is bought for
+PACK_DATE = dt.date(2026, 10, 9)              # the day the committee pack was assembled
+FY = (dt.date(2025, 4, 1), dt.date(2026, 3, 31))
+QUARTERS = [("Q1", dt.date(2025, 4, 1), dt.date(2025, 6, 30)), ("Q2", dt.date(2025, 7, 1), dt.date(2025, 9, 30)),
+            ("Q3", dt.date(2025, 10, 1), dt.date(2025, 12, 31)), ("Q4", dt.date(2026, 1, 1), dt.date(2026, 3, 31))]
+HR_MIGRATION = dt.date(2025, 9, 1)            # Vennerley staff numbers replaced by service numbers
+IMPERIAL_FORMS_UNTIL = dt.date(2025, 8, 1)    # Vennerley OH paper forms (feet, inches, stones, pounds)
+WORKSHOP_CUTOVER = dt.date(2025, 7, 1)        # Vennerley workshop system closed, vehicles renumbered
+PROGRAMME = (dt.date(2025, 3, 3), dt.date(2026, 9, 25))   # the cab fit measurement programme
 
-# BST on these dates' 05:00 to 21:00 local window (both clock changes fall on Sundays before 05:00)
-BST_ENDS, BST_STARTS = dt.date(2025, 10, 26), dt.date(2026, 3, 29)
-
-BANK_HOLIDAYS = [dt.date(2025, 12, 25), dt.date(2025, 12, 26), dt.date(2026, 1, 1), dt.date(2026, 4, 3),
-                 dt.date(2026, 4, 6), dt.date(2026, 5, 4), dt.date(2026, 5, 25), dt.date(2026, 8, 31)]
-
-# (term, start, half term first day, half term last day, end)
-TERMS = {
-    "Northshire": [("Autumn 2025", "2025-09-03", "2025-10-27", "2025-10-31", "2025-12-19"),
-                   ("Spring 2026", "2026-01-05", "2026-02-16", "2026-02-20", "2026-03-27"),
-                   ("Summer 2026", "2026-04-13", "2026-05-25", "2026-05-29", "2026-07-22")],
-    "Southshire": [("Autumn 2025", "2025-09-04", "2025-10-27", "2025-10-31", "2025-12-19"),
-                   ("Spring 2026", "2026-01-05", "2026-02-16", "2026-02-20", "2026-03-27"),
-                   ("Summer 2026", "2026-04-14", "2026-05-25", "2026-05-29", "2026-07-21")],
-    "Eastshire": [("Autumn 2025", "2025-09-03", "2025-10-20", "2025-10-24", "2025-12-19"),
-                  ("Spring 2026", "2026-01-05", "2026-02-09", "2026-02-13", "2026-03-27"),
-                  ("Summer 2026", "2026-04-13", "2026-05-25", "2026-05-29", "2026-07-22")],
-    "Westshire": [("Autumn 2025", "2025-09-02", "2025-10-27", "2025-10-31", "2025-12-18"),
-                  ("Spring 2026", "2026-01-06", "2026-02-16", "2026-02-20", "2026-04-02"),
-                  ("Summer 2026", "2026-04-20", "2026-05-25", "2026-05-29", "2026-07-21")],
-}
-
-# the shortlist; q = peak-hour flow per direction (dir 0, dir 1), closures per hour by band, closure length (mean, sd)
-CROSSINGS = {
-    "A": dict(name="Station Road", elr="NSB", miles=12, chains=47, county="Northshire", type="MCB",
-              grid=(438214, 361902), axis="NS", dirs=("northbound", "southbound"), lanes=1, q=(440, 400),
-              rate={"early": 2, "peak": 4, "day": 3, "pm": 4, "late": 2.5}, dm=294, ds=55, hgv=(0.054, 0.058),
-              asset="LXB/2271", speed=30),
-    "B": dict(name="Mill Lane", elr="WVL", miles=31, chains=8, county="Westshire", type="MCB-CCTV",
-              grid=(401876, 352130), axis="EW", dirs=("westbound", "eastbound"), lanes=1, q=(434, 394),
-              rate={"early": 2, "peak": 4, "day": 3, "pm": 4, "late": 2}, dm=250, ds=50, hgv=(0.071, 0.074),
-              asset="LXB/2285", speed=30),
-    "C": dict(name="Common Road", elr="WVL", miles=26, chains=55, county="Westshire", type="AHB",
-              grid=(406522, 349870), axis="EW", dirs=("westbound", "eastbound"), lanes=2, q=(700, 650),
-              rate={"early": 4, "peak": 6, "day": 5, "pm": 6, "late": 4}, dm=98, ds=15, hgv=(0.061, 0.060),
-              asset="LXB/2264", speed=40),
-    "D": dict(name="Long Drove", elr="EFL", miles=7, chains=71, county="Eastshire", type="MCB-CCTV",
-              grid=(471340, 339212), axis="NS", dirs=("northbound", "southbound"), lanes=1, q=(500, 430),
-              rate={"early": 2, "peak": 3, "day": 2, "pm": 3, "late": 2}, dm=240, ds=55, hgv=(0.083, 0.081),
-              asset="LXB/2290", speed=40, renewed=("2026-02-10", "LXB/5203")),
-    "E": dict(name="Church Lane", elr="SCL", miles=18, chains=23, county="Southshire", type="AHB",
-              grid=(452107, 301884), axis="EW", dirs=("westbound", "eastbound"), lanes=1, q=(520, 560),
-              rate={"early": 3, "peak": 5, "day": 4, "pm": 5, "late": 3}, dm=115, ds=20, hgv=(0.047, 0.049),
-              asset="LXB/2302", speed=30),
-    "F": dict(name="Moor Road", elr="NSB", miles=16, chains=2, county="Northshire", type="MCB-CCTV",
-              grid=(434980, 366415), axis="NS", dirs=("northbound", "southbound"), lanes=1, q=(520, 470),
-              rate={"early": 2, "peak": 4, "day": 3, "pm": 4, "late": 2}, dm=205, ds=45, hgv=(0.066, 0.068),
-              asset="LXB/2278", speed=40),
-}
-ORDER = ["A", "B", "C", "D", "E", "F"]
-
-# crossings on the same lines that are not shortlisted (register rows only)
-OTHER_CROSSINGS = [
-    ("NSB", 9, 66, "Hall Farm", "UWC-T", "Northshire", (440630, 357118), "LXB/2269", 50, 18, 34, "C8"),
-    ("WVL", 28, 40, "Kiln Lane", "AHB", "Westshire", (404910, 350688), "LXB/2266", 60, 46, 1630, "D5"),
-    ("EFL", 11, 12, "Fen Bank", "AOCL+B", "Eastshire", (474018, 343377), "LXB/2294", 45, 22, 410, "C6"),
-    ("SCL", 21, 48, "Sandpit Lane", "MCB", "Southshire", (455240, 303016), "LXB/2305", 60, 61, 2240, "D3"),
+# hubs: code, name, area, drivers on the October 2026 roster (drawn around these)
+HUBS = [
+    ("BQY", "Strakemoor Quay", "Strakemoor", 318), ("BMG", "Tollmarsh", "Strakemoor", 276), ("BFL", "Hallowfen MRC", "Strakemoor", 341),
+    ("BLA", "Hallowfen Moor", "Strakemoor", 247), ("BBX", "Beacon Cross", "Strakemoor", 296), ("VWB", "Weir Bank", "Vennerley", 304),
+    ("VCF", "Vennerley Central", "Vennerley", 262), ("VSC", "Vennerley Bridge", "Vennerley", 329), ("VOM", "Old Mill Yard", "Vennerley", 271),
 ]
+WOMEN_SHARE = 0.47
+ROLES = [("Paramedic", 0.44), ("Emergency Medical Technician", 0.31), ("Ambulance Support Worker", 0.25)]
 
-# Mill Lane's westbound side: the single-track river bridge and its shuttle signals
-BRIDGE = dict(stop_gap_m=42.0, span_m=28.0, site="SS 2207", cycle=100, wb_green=32, ig1=10, eb_green=48, ig2=10,
-              sat=1800, plan_start="06:00:00", plan="06:00-11:00")
-SAT = 1800
-VEH_LEN = 5.75
-COUNT_SITE_M = 300
+# bodies: stature mean and sd by sex, body mass index (lognormal), sitting eye height as a share of stature
+STATURE = {"F": (1631.0, 63.0), "M": (1760.0, 69.0)}
+BMI = {"F": 27.4, "M": 28.1}
+BMI_SPREAD = 0.16
+SEH_RATIO = {"F": 0.468, "M": 0.462}
+SEH_SPREAD = 0.011
 
-# heavy-vehicle column: the older counter writes a whole-number share of the interval's vehicles
-QT40_ALL_YEAR = {"C": 1, "D": 0, "F": 0}            # crossing: approach index with the older counter all year
-QT40_SWITCHED = {"C": 0, "E": 1}                    # changed to the newer counter on SWITCH_DATE
-SWITCH_DATE = "2026-04-08"
+# the service's driver posture model (Ellisand Human Factors, July 2025); x is aft of the accelerator heel point,
+# z above it, millimetres; the torso angle is from vertical, degrees
+POSTURE = {"hx0": 792.0, "hx_s": 0.61, "hx_b": 2.6, "hx_h": -0.95, "s0": 1700.0, "b0": 27.0, "h0": 400.0,
+           "t0": 19.0, "t_s": 0.011, "t_b": 0.09, "ex": -18.0, "ez": 0.955}
 
-# stream salts per crossing (closures, faults, heavy-vehicle draws), chosen so that every graded figure sits clear of
-# its rounding edge
-SALTS = {"A": dict(cl=2, flt=4, hgv=0), "B": dict(cl=2, flt=4, hgv=3), "C": dict(cl=1, flt=2, hgv=4),
-         "D": dict(cl=1, flt=2, hgv=1), "E": dict(cl=1, flt=5, hgv=1), "F": dict(cl=1, flt=0, hgv=4)}
+# the seat every converter fits (Brevin AS-7), as its maker's sheet states it in inches
+SEAT_IN = {"backrest_along": 30.31, "backrest_behind": 3.74, "recline_min": 8.0, "recline_max": 34.0,
+           "slide_standard": 9.45, "slide_long": 9.84, "slide_extended": 10.55}
+
+# the standard's vision zone, the same for every cab
+VISION = {"up_deg": 11.0, "down_deg": 5.0}
+
+# chassis vision points (x, z from the heel point): windscreen header, lowest visible road edge over the bonnet
+CHASSIS = {"FD35": {"header": (110, 1440), "bonnet": (-310, 960)},
+           "RD43": {"header": (95, 1418), "bonnet": (-290, 980)}}
+
+# the five shortlisted cabs: converter, chassis, seat height, slide, hip-point travel, bulkhead trim face line
+CABS = [
+    {"id": "PEN-FD35", "converter": "Pennick Coachbuild", "chassis": "FD35", "h30": 408, "slide": "long",
+     "travel": (700, 950), "bulkhead": (1445, 1392)},
+    {"id": "PEN-RD43", "converter": "Pennick Coachbuild", "chassis": "RD43", "h30": 421, "slide": "long",
+     "travel": (712, 962), "bulkhead": (1460, 1405)},
+    {"id": "WRE-FD35", "converter": "Wrenfold Bodies", "chassis": "FD35", "h30": 405, "slide": "extended",
+     "travel": (690, 958), "bulkhead": (1300, 1160)},
+    {"id": "WRE-RD43", "converter": "Wrenfold Bodies", "chassis": "RD43", "h30": 406, "slide": "extended",
+     "travel": (694, 962), "bulkhead": (1305, 1168)},
+    {"id": "OST-FD35", "converter": "Ostrel Vehicle Conversions", "chassis": "FD35", "h30": 414, "slide": "standard",
+     "travel": (712, 952), "bulkhead": (1415, 1330)},
+]
+BULKHEAD_TOP_Z = 1700            # the drawings give the trim face at the floor and 1,700 mm above it
+WRENFOLD_SGRP = {"FD35": (845, 405), "RD43": (851, 406)}   # Wrenfold dimensions from each cab's SgRP
+DEAD_ZONE_MM = 1.5               # no driver's hip point or backrest corner within this of a limit
+DEAD_ZONE_DEG = 0.05             # no driver's sight line within this of the vision angle
+
+# the current front-line fleet in 2025-26: converter, chassis, vehicles in service at 1 April 2025
+FLEET = [("Pennick Coachbuild", "FD35", 44), ("Pennick Coachbuild", "RD43", 27), ("Ostrel Vehicle Conversions", "FD35", 36),
+         ("Corvane Coachworks", "FD35", 29), ("Corvane Coachworks", "RD43", 25)]
+NEW_IN_FY = [("Ostrel Vehicle Conversions", "FD35", 9), ("Pennick Coachbuild", "RD43", 6)]
+DISPOSALS_IN_FY = 15
+REISSUED_NUMBERS = 6              # disposed vehicles' fleet numbers given to new vehicles
+UNIT_SWAPS = 21                   # telematics units replaced during the year
+DAILY_MILES = (95.0, 0.32)        # lognormal median and spread of a front-line vehicle's day
+# seat and cab-structure jobs per vehicle-year, and all other jobs per vehicle-year, by converter
+SEAT_CAB_RATE = {"Pennick Coachbuild": 3.9, "Ostrel Vehicle Conversions": 3.4, "Corvane Coachworks": 5.8}
+OTHER_JOB_RATE = 30.0
+VOR_SHARE = 0.22                  # share of jobs that take the vehicle off the road

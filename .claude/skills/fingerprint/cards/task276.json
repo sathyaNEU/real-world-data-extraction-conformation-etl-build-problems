@@ -36,20 +36,24 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:posture-cleared-against-the-structure-behind-an-adjustable-seat",
   "layer1": [
-    "occupational health measurements from two predecessor services, one in feet and inches and stones and pounds",
-    "legacy staff numbers from the former southern service carried in the telematics until the driver cards were reissued",
-    "telematics card and ignition events in UTC against a shift rota in UK local time across both clock changes",
-    "converter drawings dimensioned from the seat reference point on one converter and from the accelerator heel point on the others",
-    "a seat maker's sheet in inches beside metric drawings",
-    "re-sent telematics batches after modem outages",
-    "absence episodes continued across month ends as separate records"
+    "occupational health forms from the former Vennerley service in feet and inches and stones and pounds beside metric e-forms (the merged OH system keeps both column sets)",
+    "former Vennerley staff numbers on measurements taken before the September 2025 HR migration (HR's crosswalk)",
+    "drivers re-measured on query, the latest measurement standing under the standard",
+    "Wrenfold's package data dimensioned from each cab's seating reference point while Pennick and Ostrel use the accelerator heel point",
+    "the seat maker's dimension sheet in inches beside metric package data",
+    "the former Vennerley workshop system's jobs to 30 June 2025 under legacy codes and fleet numbers, with jobs open at its closure carried into the fleet system on 1 July",
+    "Vennerley vehicles renumbered at the workshop cutover, the fleet system's in-service date for them being the date their records were created",
+    "fleet numbers of disposed vehicles reused for new vehicles",
+    "telematics units swapped during the year, the old unit reporting until collected and the new unit's odometer entered at fitting",
+    "overlapping off-road spells where several jobs held one vehicle off the road",
+    "a current fleet register beside a separate disposals list"
   ],
   "stakeholder_role": "the service's head of fleet, preparing the Fleet and Estates Committee's choice of cab for the 2027 ambulance order",
   "role_family": "procurement_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "occupational_health/cab_fit_measurements.xlsx",
-    "rows": 3100,
+    "file": "occupational_health/cab_fit_measurements_2025_26.xlsx",
+    "rows": 3387,
     "entity": "one occupational health body measurement of one member of staff",
     "grain": "staff member x measurement",
     "source": "synthetic"

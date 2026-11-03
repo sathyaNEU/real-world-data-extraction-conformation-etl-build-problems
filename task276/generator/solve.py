@@ -1,526 +1,315 @@
-"""Every figure from the shipped bundle alone: the golden, each rung of the ladder, each ask's routes.
-
-solve(target) reads only files under target/ and returns S."""
-import bisect
-import collections
+"""Solve the shipped pack: the drivers each shortlisted cab fails (the golden and every rung below it) and the fleet
+figures the asks grade. Reads only files under target/, plus the document constants the generator wrote into them
+(verify.py reads those constants back out of the documents on its own path)."""
 import csv
 import datetime as dt
+import math
 import os
-import re
 
-import docx
-import pdfplumber
-from openpyxl import load_workbook
+import pandas as pd
 
-F = {
-    "barrier": "rail/barrier_events_2025_26.csv", "orders": "rail/lx_work_orders_2025_26.csv",
-    "occ": "rail/signaller_occurrences_2025_26.xlsx", "register": "rail/crossing_register_2025.pdf",
-    "counts": "highways/approach_counts_2025_26.csv", "links": "highways/network_links.csv",
-    "nodes": "highways/network_nodes.csv", "netreg": "highways/network_register_2026.xlsx",
-    "brief": "programme/crossing_programme_2027.docx", "method": "programme/road_delay_appraisal_conventions.pdf",
-    "survey": "programme/queue_survey_march_2026.xlsx", "terms": "schools/term_dates_2025_26.xlsx",
-}
-CLOSING = {"BFR", "ODF", "PWR"}
-T7, T10 = 7 * 3600, 10 * 3600
+import pack as PK
+import params as P
+import world as Wd
+
+D = dt.timedelta
+KG_PER_LB = 0.45359237
 
 
-def pdf_text(path):
-    with pdfplumber.open(path) as pdf:
-        return "\n".join(p.extract_text() or "" for p in pdf.pages)
+def _read_csv(root, key):
+    with open(os.path.join(root, PK.FILES[key]), encoding="utf-8-sig", newline="") as fh:
+        return list(csv.DictReader(fh))
 
 
-# ---------------------------------------------------------------- documents
-def register(target):
-    out = {}
-    pat = re.compile(r"^([A-Z]{3}) (\d+)m (\d+)ch (.+?) (MCB-CCTV|MCB|AHB|AOCL\+B|UWC-T) (\w+shire) (\d{6}) (\d{6}) "
-                     r"(LXB/\d+) (\d+) mph (\d+) ([\d,]+) ([A-Z]\d)$")
-    for line in pdf_text(os.path.join(target, F["register"])).splitlines():
-        m = pat.match(line.strip())
-        if m:
-            elr, mi, ch, name, typ, county, e, n, asset, spd, tr, veh, risk = m.groups()
-            out[name] = dict(elr=elr, miles=int(mi), chains=int(ch), type=typ, county=county, grid=(int(e), int(n)),
-                             asset=asset, trains=int(tr), vehicles=int(veh.replace(",", "")), risk=risk)
-    return out
+def _xlsx(root, key):
+    return pd.read_excel(os.path.join(root, PK.FILES[key]))
 
 
-def shortlist(target):
-    d = docx.Document(os.path.join(target, F["brief"]))
-    names = [r.cells[0].text.strip() for r in d.tables[0].rows[1:]]
-    text = "\n".join(p.text for p in d.paragraphs)
-    return names, text
+def _d(x):
+    if x is None or (not isinstance(x, str) and pd.isna(x)):
+        return None
+    if isinstance(x, (dt.datetime, pd.Timestamp)):
+        return x.date() if hasattr(x, "date") else x
+    if x is None or (isinstance(x, float) and math.isnan(x)) or x == "":
+        return None
+    s = str(x)
+    if "/" in s:
+        p = s.split("/")
+        y = int(p[2]) + (2000 if len(p[2]) == 2 else 0)
+        return dt.date(y, int(p[1]), int(p[0]))
+    return dt.date.fromisoformat(s[:10])
 
 
-def method(target):
-    text = pdf_text(os.path.join(target, F["method"]))
-    flat = re.sub(r"\s+", " ", text)
-    sat = int(re.search(r"discharges a standing queue at ([\d,]+) vehicles an hour", flat).group(1).replace(",", ""))
-    vlen = float(re.search(r"A queued vehicle occupies ([\d.]+) metres", flat).group(1))
-    return dict(sat=sat, vlen=vlen, text=flat)
-
-
-def school_days(target):
-    wb = load_workbook(os.path.join(target, F["terms"]), read_only=True)
-    bh = set()
-    for r in wb["Bank holidays"].iter_rows(min_row=2, values_only=True):
-        if r and r[0]:
-            bh.add(r[0].date() if hasattr(r[0], "date") else r[0])
-    out = {}
-    for county in ["Northshire", "Southshire", "Eastshire", "Westshire"]:
-        days = set()
-        for r in wb[county].iter_rows(min_row=4, values_only=True):
-            if not r or not isinstance(r[1], dt.datetime):
-                continue
-            s, hs, he, e = (x.date() for x in r[1:5])
-            d = s
-            while d <= e:
-                if d.weekday() < 5 and not (hs <= d <= he) and d not in bh:
-                    days.add(d)
-                d += dt.timedelta(days=1)
-        out[county] = days
-    return out, bh
-
-
-# ---------------------------------------------------------------- the barrier log
-def london_offset(u):
-    """UK clock rule: summer time from 01:00 UTC on the last Sunday of March to 01:00 UTC on the last Sunday of October"""
-    def last_sunday(y, m):
-        d = dt.date(y, m, 31)
-        return d - dt.timedelta(days=(d.weekday() + 1) % 7)
-    y = u.year
-    start = dt.datetime.combine(last_sunday(y, 3), dt.time(1))
-    end = dt.datetime.combine(last_sunday(y, 10), dt.time(1))
-    return 3600 if start <= u < end else 0
-
-
-def closures(target, dedupe=True, convert=True):
-    """crossing code -> date -> sorted [(down, up)] in local seconds; bounce repeats (the same event again within a few
-    seconds) dropped"""
-    ev = collections.defaultdict(list)
-    with open(os.path.join(target, F["barrier"]), newline="") as fh:
-        for r in csv.DictReader(fh):
-            u = dt.datetime.strptime(r["event_time_utc"], "%Y-%m-%dT%H:%M:%SZ")
-            ev[r["lx_ref"]].append((u, r["event_type"]))
-    out = {}
-    for code, rows in ev.items():
-        rows.sort()
-        kept, last = [], None
-        for u, e in rows:
-            if dedupe and last is not None and e == last[1] and (u - last[0]).total_seconds() <= 3:
-                continue
-            kept.append((u, e))
-            last = (u, e)
-        by = collections.defaultdict(list)
-        down = None
-        for u, e in kept:
-            loc = u + dt.timedelta(seconds=london_offset(u) if convert else 0)
-            if e == "LOWERED" and down is None:
-                down = loc
-            elif e == "RAISED" and down is not None:
-                d = down.date()
-                base = dt.datetime.combine(d, dt.time(0))
-                by[d].append(((down - base).total_seconds(), (loc - base).total_seconds()))
-                down = None
-        out[code] = dict(by)
-    return out
-
-
-def code_of(reg):
-    return "%s %03d.%02d" % (reg["elr"], reg["miles"], reg["chains"])
-
-
-# ---------------------------------------------------------------- counts and the network
-def counts(target):
-    out = collections.defaultdict(dict)
-    with open(os.path.join(target, F["counts"]), newline="") as fh:
-        for r in csv.DictReader(fh):
-            d = dt.date.fromisoformat(r["count_date"])
-            hh, mm = r["interval_start"].split(":")
-            q = (int(hh) - 6) * 4 + int(mm) // 15
-            out[(r["site_ref"], d)][q] = (int(r["veh_total"]), int(r["veh_hgv"]))
-    return out
-
-
-def netreg(target):
-    wb = load_workbook(os.path.join(target, F["netreg"]), read_only=True)
-    sites = []
-    for r in wb["Count sites"].iter_rows(min_row=2, values_only=True):
-        if r and r[0]:
-            inst = r[6].date() if hasattr(r[6], "date") else r[6]
-            sites.append(dict(site=r[0], node=int(r[1]), road=r[2], location=r[3], direction=r[4], counter=r[5],
-                              installed=inst))
-    sig = []
-    for r in wb["Signal sites"].iter_rows(min_row=2, values_only=True):
-        if r and r[0]:
-            sig.append(dict(site=r[0], node=int(r[1]), road=r[2], desc=r[3], control=r[4], cycle=r[5], s1=r[6],
-                            g1=r[7], i1=r[8], s2=r[9], g2=r[10], i2=r[11], sat=str(r[12])))
-    return sites, sig
-
-
-def network(target):
-    nodes = {}
-    with open(os.path.join(target, F["nodes"]), newline="") as fh:
-        for r in csv.DictReader(fh):
-            nodes[int(r["node_ref"])] = (int(r["easting"]), int(r["northing"]))
-    adj = collections.defaultdict(list)
-    links = []
-    with open(os.path.join(target, F["links"]), newline="") as fh:
-        for r in csv.DictReader(fh):
-            L = dict(a=int(r["from_node"]), b=int(r["to_node"]), road=r["road_name"], length=float(r["length_m"]),
-                     carriage=r["carriageway"], lanes=int(r["lanes_each_direction"]))
-            links.append(L)
-            adj[L["a"]].append((L["b"], L))
-            adj[L["b"]].append((L["a"], L))
-    return nodes, adj, links
-
-
-def path(adj, a, b):
-    prev, q, seen = {a: None}, collections.deque([a]), {a}
-    while q:
-        x = q.popleft()
-        if x == b:
-            break
-        for y, L in adj[x]:
-            if y not in seen:
-                seen.add(y)
-                prev[y] = (x, L)
-                q.append(y)
-    out, x = [], b
-    while prev[x] is not None:
-        p, L = prev[x]
-        out.append((p, x, L))
-        x = p
-    return out[::-1]
-
-
-def layout(target, reg, names):
-    """each shortlisted crossing's node, approach sites, lanes and the controls between its two count sites"""
-    nodes, adj, links = network(target)
-    sites, sig = netreg(target)
-    sig_by_node = {s["node"]: s for s in sig}
-    out = {}
-    for name in names:
-        g = reg[name]["grid"]
-        node = min(nodes, key=lambda n: (nodes[n][0] - g[0]) ** 2 + (nodes[n][1] - g[1]) ** 2)
-        mine = [s for s in sites if s["location"].split(",")[0].strip() == name]
-        lanes = max(L["lanes"] for _, L in adj[node])
-        p = path(adj, mine[0]["node"], mine[1]["node"])
-        on = [x for _, x, _ in p[:-1]]
-        ctrl = [sig_by_node[n] for n in on if n in sig_by_node]
-        gate = None
-        for s in ctrl:
-            if s["desc"].startswith("Shuttle"):
-                # the shuttle's own stop line is the site's node; the single-track link beyond it is the bridge
-                near = [(x, L) for x, L in adj[s["node"]] if L["carriage"] != "single track"]
-                far = [(x, L) for x, L in adj[s["node"]] if L["carriage"] == "single track"]
-                storage_link = [L for x, L in near if x == node or L["a"] == node or L["b"] == node]
-                gate = dict(site=s, storage_m=storage_link[0]["length"], bridge_m=far[0][1]["length"])
-        out[name] = dict(node=node, sites=mine, lanes=lanes, controls=ctrl, gate=gate, path=p)
-    return out
-
-
-# ---------------------------------------------------------------- the replay
-def arrivals(cnt, mode="even"):
-    """count rows -> arrival seconds; vehicles in a quarter hour arrive evenly through it"""
-    out, tag = [], []
-    for q in range(16):                         # 06:00 to 10:00; later vehicles cannot delay earlier ones
-        n = cnt[q][0]
-        t0 = 6 * 3600 + 900 * q
-        for j in range(n):
-            out.append(t0 + (j + 0.5) * 900.0 / n if mode == "even" else t0 + j * 900.0 / n)
-            tag.append(q >= 4)
-    return out, tag
-
-
-def pass_free(arr, cl, h):
-    downs = [x[0] for x in cl]
-    ups = [x[1] for x in cl]
-    n, j, last, out = len(cl), 0, -1e18, []
-    for a in arr:
-        t = a if a > last + h else last + h
-        while j < n and ups[j] <= t:
-            j += 1
-        if j < n and downs[j] <= t:
-            t = ups[j]
-        out.append(t)
-        last = t
-    return out
-
-
-def green(s, off, cyc, g0, g1):
-    ph = (s - off) % cyc
-    return s if g0 <= ph < g1 else s + (g0 - ph) % cyc
-
-
-def pass_down_gate(arr, cl, h, N, gp, hb, tau=0.0):
-    """barrier first, then a fixed-time stop line N vehicles of storage downstream: exit times past the stop line"""
-    downs = [x[0] for x in cl]
-    ups = [x[1] for x in cl]
-    n, j, lb, lc, b, c = len(cl), 0, -1e18, -1e18, [], []
-    off, cyc, g0, g1 = gp
-    for i, a in enumerate(arr):
-        t = a if a > lb + h else lb + h
-        while True:
-            t0 = t
-            if i >= N and c[i - N] > t:
-                t = c[i - N]
-            while j < n and ups[j] <= t:
-                j += 1
-            if j < n and downs[j] <= t:
-                t = ups[j]
-            if t == t0:
-                break
-        b.append(t)
-        lb = t
-        s = t + tau if t + tau > lc + hb else lc + hb
-        s = green(s, off, cyc, g0, g1)
-        c.append(s)
-        lc = s
-    return c
-
-
-def pass_up_gate(arr, cl, h, N, gp, hb, tau=0.0):
-    """a fixed-time stop line first, N vehicles of storage, then the barrier: exit times past the barrier"""
-    downs = [x[0] for x in cl]
-    ups = [x[1] for x in cl]
-    n, j, lb, lc, b, c = len(cl), 0, -1e18, -1e18, [], []
-    off, cyc, g0, g1 = gp
-    for i, a in enumerate(arr):
-        s = a if a > lc + hb else lc + hb
-        while True:
-            s0 = s
-            if i >= N and b[i - N] > s:
-                s = b[i - N]
-            s = green(s, off, cyc, g0, g1)
-            if s == s0:
-                break
-        c.append(s)
-        lc = s
-        t = s + tau if s + tau > lb + h else lb + h
-        while j < n and ups[j] <= t:
-            j += 1
-        if j < n and downs[j] <= t:
-            t = ups[j]
-        b.append(t)
-        lb = t
-    return b
-
-
-def gate_plans(gate):
-    s = gate["site"]
-    m = re.search(r"cycle zero (\d\d):(\d\d):(\d\d)", s["control"])
-    off = int(m.group(1)) * 3600 + int(m.group(2)) * 60 + int(m.group(3))
-    cyc = float(s["cycle"])
-    plans = {}
-    start = 0.0
-    for stage, g, ig in ((s["s1"], s["g1"], s["i1"]), (s["s2"], s["g2"], s["i2"])):
-        plans[stage] = (off, cyc, start, start + float(g))
-        start += float(g) + float(ig)
-    sat = [int(x) for x in re.findall(r"\d+", s["sat"])]
-    return plans, sat
-
-
-def crossing_delay(name, L, reg, cl_by_day, cnt, sdays, M, variant=None):
-    """vehicle-hours over the school days; variant: None (golden replay through the section's controls), 'free' (the
-    closure model, barrier only), 'wb_only' (the shuttle for the queue it meets downstream only), or a dict of
-    convention changes"""
-    v = variant if isinstance(variant, dict) else {}
-    mode = v.get("mode", "even")
-    h = 3600.0 / (M["sat"] * L["lanes"])
-    total = 0.0
-    code = code_of(reg[name])
-    gate = L["gate"] if variant not in ("free",) else None
-    if gate:
-        plans, sat = gate_plans(gate)
-        N = v.get("N", int(gate["storage_m"] // M["vlen"]))
-        tau = v.get("tau", 0.0)
-    for d in sdays:
-        cl = cl_by_day[code].get(d, [])
-        if v.get("start7"):
-            cl = [x for x in cl if x[1] > T7]
-        for s in L["sites"]:
-            arr, tag = arrivals(cnt[(s["site"], d)], mode)
-            if v.get("start7"):
-                keep = [i for i, a in enumerate(arr) if a >= T7]
-                arr, tag = [arr[i] for i in keep], [tag[i] for i in keep]
-            if gate and s["direction"] in plans:
-                own = plans[s["direction"]]
-                hb = 3600.0 / sat[0]
-                downstream = gate_is_downstream(L, s, gate)
-                if variant == "wb_only" and not downstream:
-                    w, w0 = pass_free(arr, cl, h), pass_free(arr, [], h)
-                elif downstream:
-                    w, w0 = pass_down_gate(arr, cl, h, N, own, hb, tau), pass_down_gate(arr, [], h, N, own, hb, tau)
-                else:
-                    w, w0 = pass_up_gate(arr, cl, h, N, own, hb, tau), pass_up_gate(arr, [], h, N, own, hb, tau)
-            else:
-                w, w0 = pass_free(arr, cl, h), pass_free(arr, [], h)
-            total += sum(x - y for x, y, k in zip(w, w0, tag) if k)
-    return total / 3600.0
-
-
-def gate_is_downstream(L, s, gate):
-    """the shuttle lies between the crossing and the far count site when the approach site is on the other side"""
-    p = L["path"]
-    seq = [p[0][0]] + [x for _, x, _ in p]
-    i_site, i_x, i_g = seq.index(s["node"]), seq.index(L["node"]), seq.index(gate["site"]["node"])
-    return (i_site < i_x < i_g) or (i_site > i_x > i_g)
-
-
-# ---------------------------------------------------------------- the asks
-def orders(target):
+# ----------------------------------------------------------------------------------------------- drivers
+def drivers(root, which="latest", population="roster", crosswalk=True, lb=KG_PER_LB):
+    roster = _read_csv(root, "roster")
+    cw = _xlsx(root, "crosswalk")
+    to_new = dict(zip(cw["Former Vennerley staff number"].astype(str), cw["Service staff number"].astype(str)))
+    m = _xlsx(root, "measure")
+    recs = {}
+    for r in m.itertuples(index=False):
+        key = str(r[1])
+        if crosswalk and key in to_new:
+            key = to_new[key]
+        if r.Form == "Vennerley paper form":
+            stature = (12 * r[6] + r[7]) * 25.4
+            seh = r[9] * 25.4
+            weight = (14 * r[11] + r[12]) * lb
+        else:
+            stature, seh, weight = float(r[5]), float(r[8]), float(r[10])
+        recs.setdefault(key, []).append((_d(r[2]), r[0], stature, weight, seh))
     out = []
-    with open(os.path.join(target, F["orders"]), newline="") as fh:
-        for r in csv.DictReader(fh):
-            p = lambda s: dt.datetime.strptime(s, "%d/%m/%Y %H:%M")
-            out.append(dict(wo=r["work_order"], asset=r["asset_no"], code=r["fault_code"], rep=p(r["reported_at"]),
-                            att=p(r["attended_at"]), clr=p(r["cleared_at"])))
+    pool = [(row["Staff number"], row["Sex"]) for row in roster]
+    if population == "measured":
+        sexes = {row["Staff number"]: row["Sex"] for row in roster}
+        pool = [(k, sexes.get(k, "?")) for k in recs]
+    for staff, sex in pool:
+        rs = sorted(recs.get(staff, []))
+        if not rs:
+            continue
+        r = rs[-1] if which == "latest" else (rs[0] if which == "first" else None)
+        if which == "mean":
+            r = (None, None, sum(x[2] for x in rs) / len(rs), sum(x[3] for x in rs) / len(rs), sum(x[4] for x in rs) / len(rs))
+        out.append({"staff": staff, "sex": sex, "stature": r[2], "weight": r[3], "seh": r[4], "n": len(rs)})
     return out
 
 
-def occurrences(target):
-    wb = load_workbook(os.path.join(target, F["occ"]), read_only=True)
+def rung(cab, a, name):
+    if name == "R1":
+        return a["in_travel"]
+    if name == "R2":
+        return a["in_travel"] and a["vision"]
+    if name == "R2r":
+        return a["in_travel"] and a["vision"] and a["recline_ok"]
+    if name == "G":
+        return Wd.fits(a)
+    if name == "R1c":
+        return a["in_travel"] and a["clear"]
+    raise ValueError(name)
+
+
+def fit_table(dr, name="G"):
+    out = {}
+    for cab in P.CABS:
+        fails = [d for d in dr if not rung(cab, Wd.assess(cab, d["stature"], d["weight"], d["seh"]), name)]
+        out[cab["id"]] = {"fail": len(fails), "women": sum(1 for d in fails if d["sex"] == "F")}
+    return out
+
+
+def r0(dr):
+    """the percentile check: the 5th to 95th percentile hip point against each cab's stated travel (shortfall, mm)"""
+    out = {}
+    for cab in P.CABS:
+        xs = sorted(Wd.assess(cab, d["stature"], d["weight"], d["seh"])["xh"] for d in dr)
+        p5, p95 = xs[int(0.05 * (len(xs) - 1))], xs[int(0.95 * (len(xs) - 1))]
+        t0, t1 = cab["travel"]
+        out[cab["id"]] = max(0.0, t0 - p5) + max(0.0, p95 - t1)
+    return out
+
+
+def call(table):
+    order = sorted(table, key=lambda k: table[k]["fail"])
+    return order[0], order[1], table[order[1]]["fail"] - table[order[0]]["fail"]
+
+
+# ----------------------------------------------------------------------------------------------- fleet
+def vehicles(root, in_service="true"):
+    reg = _xlsx(root, "register")
+    dis = _xlsx(root, "disposals")
+    al = _xlsx(root, "assets")
+    true_legacy = {str(r.Vehicle): _d(r[3]) for r in al.itertuples(index=False)}
     out = []
-    for r in wb["Occurrences"].iter_rows(min_row=2, values_only=True):
-        if r and r[0]:
-            d = r[0].date() if hasattr(r[0], "date") else r[0]
-            out.append(dict(date=d, time=r[1], box=r[2], text=r[3]))
+    for r in reg.itertuples(index=False):
+        former = "" if (isinstance(r[1], float) and math.isnan(r[1])) else str(r[1])
+        held = _d(r[5])
+        start = true_legacy.get(former, held) if (former and in_service == "true") else held
+        out.append({"key": "R:" + str(r[0]), "fleet": str(r[0]), "former": former, "chassis": r[2], "converter": r[3],
+                    "start": start, "end": None})
+    for r in dis.itertuples(index=False):
+        former = "" if (isinstance(r[1], float) and math.isnan(r[1])) else str(r[1])
+        held = _d(r[4])
+        start = true_legacy.get(former, held) if (former and in_service == "true") else held
+        out.append({"key": "D:%s:%s" % (r[0], _d(r[5])), "fleet": str(r[0]), "former": former, "chassis": r[2],
+                    "converter": r[3], "start": start, "end": _d(r[5])})
     return out
 
 
-def closure_at(cl_day, t):
-    for x in cl_day:
-        if x[0] <= t <= x[1]:
-            return x
+def _owner(vs, label, day, how="asof"):
+    """the vehicle a record on this fleet number (or former number) on this date belongs to"""
+    c = [v for v in vs if v["fleet"] == label or v["former"] == label]
+    if not c:
+        return None
+    if how == "register":
+        reg = [v for v in c if v["end"] is None]
+        return (reg or c)[0]
+    live = [v for v in c if v["end"] is None or day < v["end"]]
+    if len(live) > 1:
+        live = [v for v in live if v["end"] is not None] or live
+    return live[0] if live else c[0]
+
+
+def job_records(root, vs, join="asof", transferred="first", legacy_map=True):
+    merged = _read_csv(root, "jobs")
+    legacy = _read_csv(root, "legacy_jobs")
+    cmap = _xlsx(root, "codemap")
+    to_code = dict(zip(cmap["Vennerley defect code"], cmap["Fleet job code"]))
+    recs = []
+    open_legacy = []
+    for r in legacy:
+        day = _d(r["Date in"])
+        v = _owner(vs, r["Vehicle"], day, join) if legacy_map else None
+        code = to_code.get(r["Defect code"], r["Defect code"])
+        rec = {"veh": v, "raised": day, "code": code, "off": r["Off road"] == "Y", "from": day,
+               "to": _d(r["Date out"]), "src": "legacy", "status": r["Status"], "label": r["Vehicle"]}
+        if r["Status"] == "TRANSFERRED":
+            open_legacy.append(rec)
+        recs.append(rec)
+    for r in merged:
+        day = _d(r["raised"])
+        v = _owner(vs, r["fleet_no"], day, join)
+        recs.append({"veh": v, "raised": day, "code": r["job_code"], "off": r["off_road"] == "Y",
+                     "from": _d(r["off_road_from"]), "to": _d(r["back_on_road"]), "src": "merged", "status": "",
+                     "label": r["fleet_no"]})
+    # a job open in the Vennerley system at its closure continues as the job raised for it on 1 July 2025
+    for lg in open_legacy:
+        twin = [m for m in recs if m["src"] == "merged" and m["raised"] == P.WORKSHOP_CUTOVER and m["veh"] is lg["veh"]
+                and m["code"] == lg["code"] and not m.get("twin")]
+        if twin and lg["veh"] is not None:
+            m = twin[0]
+            m["twin"] = lg
+            lg["twin"] = m
+            if lg["off"]:
+                lg["to"] = P.WORKSHOP_CUTOVER
+            if transferred == "first":
+                m["count"] = False
+            elif transferred == "merged":
+                lg["count"] = False
+    for r in recs:
+        r.setdefault("count", True)
+        if r["src"] == "legacy" and r["status"] == "TRANSFERRED" and r["off"] and r["to"] is None:
+            r["to"] = P.FY[1] + D(days=1)
+    return recs
+
+
+def _q(day):
+    for i, (_, a, b) in enumerate(P.QUARTERS):
+        if a <= day <= b:
+            return i
     return None
 
 
-def fault_hours(target, reg, names, cl_by_day, route="golden"):
-    """hours of barrier closure, 1 September 2025 to 31 August 2026, in closures a fault held down"""
-    by_asset = {reg[n]["asset"]: n for n in reg}
-    held = {n: set() for n in names}
-    spans = {n: 0.0 for n in names}
-    for o in orders(target):
-        if o["code"] not in CLOSING:
+def miles(root, vs, how="window", join="asof"):
+    units = _xlsx(root, "units")
+    by_unit = {}
+    with open(os.path.join(root, PK.FILES["odometer"]), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            by_unit.setdefault(r["unit_id"], []).append((dt.date.fromisoformat(r["reading_date"]), float(r["odometer_miles"])))
+    fy0, fy1 = P.FY
+    tot = {}
+    for u in units.itertuples(index=False):
+        uid, label, fitted, removed, entered = str(u[0]), str(u[1]), _d(u[2]), _d(u[3]), u[4]
+        v = _owner(vs, label, fitted if fitted >= fy0 else fy0, join)
+        if v is None:
             continue
-        name = by_asset.get(o["asset"])
-        d = o["rep"].date()
-        t = (o["rep"] - dt.datetime.combine(d, dt.time(0))).total_seconds()
-        if route == "lazy":
-            if name in held:
-                spans[name] += (o["clr"] - o["rep"]).total_seconds() / 3600.0
+        rd = sorted(by_unit.get(uid, []))
+        if not rd:
             continue
-        if name is None and route == "golden":
-            # a machine the register does not list: the crossing whose barriers were held down at that minute
-            hits = [n for n in names if (x := closure_at(cl_by_day[code_of(reg[n])].get(d, []), t + 30)) and x[1] - x[0] > 600]
-            name = hits[0] if len(hits) == 1 else None
-        if name not in held:
+        if how == "unit_span":
+            inside = [x for x in rd if fy0 - D(days=1) <= x[0] <= fy1]
+            if len(inside) >= 2:
+                tot[v["key"]] = tot.get(v["key"], 0.0) + inside[-1][1] - inside[0][1]
             continue
-        x = closure_at(cl_by_day[code_of(reg[name])].get(d, []), t + 30)
-        if x:
-            held[name].add((d, x))
-    if route in ("full_short_f3", "golden"):
-        pat = re.compile(r"^(.+?) LC: barriers failed to rise after \w+ passed at (\d\d):(\d\d)\. Crossing reset from "
-                         r"panel (\d\d):(\d\d)")
-        for e in occurrences(target):
-            m = pat.match(e["text"])
-            if not m or m.group(1) not in held:
-                continue
-            name = m.group(1)
-            reset = int(m.group(4)) * 3600 + int(m.group(5)) * 60
-            cands = [x for x in cl_by_day[code_of(reg[name])].get(e["date"], []) if reset <= x[1] < reset + 60]
-            if len(cands) == 1:
-                held[name].add((e["date"], cands[0]))
-    if route == "lazy":
-        return spans
-    return {n: sum(x[1] - x[0] for _, x in held[n]) / 3600.0 for n in names}
-
-
-def long_closure_hours(reg, names, cl_by_day, minutes=10):
-    return {n: sum(x[1] - x[0] for d, cl in cl_by_day[code_of(reg[n])].items() for x in cl if x[1] - x[0] > minutes * 60)
-            / 3600.0 for n in names}
-
-
-def share_rows(cnt, site, before):
-    """does a site's heavy column rise with its flow?  a share of the interval's vehicles does not"""
-    lo, hi = [], []
-    for (s, d), rows in cnt.items():
-        if s != site or (before is not None and not (d < before)) or (before is None and False):
+        start = max(fitted, fy0)
+        stop = min(removed, fy1 + D(days=1)) if removed else fy1 + D(days=1)
+        inside = [x for x in rd if start <= x[0] < stop]
+        if not inside:
             continue
-        for q, (v, h) in rows.items():
-            if v < 45:
-                lo.append(h / max(v, 1))
-            elif v > 95:
-                hi.append(h / v)
-    if not lo or not hi:
-        return False
-    return (sum(lo) / len(lo)) > 2.0 * (sum(hi) / len(hi))
+        if fitted >= fy0 and how == "window_first":
+            base = inside[0][1]
+        elif fitted >= fy0:
+            base = float(entered)
+        else:
+            prior = [x for x in rd if x[0] < start]
+            base = prior[-1][1]
+        tot[v["key"]] = tot.get(v["key"], 0.0) + inside[-1][1] - base
+    return tot
 
 
-def hgv_share(L, names, cnt, sdays_by_name, route="golden"):
-    out = {}
-    for n in names:
-        hv = tv = 0.0
-        for s in L[n]["sites"]:
-            older_all = s["counter"] == "QT-40"
-            inst = s["installed"]
-            switched = (not older_all) and share_rows(cnt, s["site"], inst)
-            for d in sdays_by_name[n]:
-                rows = cnt[(s["site"], d)]
-                share = (route in ("f4", "golden") and older_all) or (route == "golden" and switched and d < inst)
-                for q in range(4, 16):
-                    v, h = rows[q]
-                    hv += h * v / 100.0 if share else h
-                    tv += v
-        out[n] = 100.0 * hv / tv
+def fleet_figures(root, join="asof", transferred="first", legacy_map=True, miles_how="window", in_service="true",
+                  vor="union"):
+    vs = vehicles(root, in_service)
+    recs = job_records(root, vs, join, transferred, legacy_map)
+    fy0, fy1 = P.FY
+    conv = {}
+    for r in recs:
+        if not r["count"] or r["veh"] is None or r["code"] not in ("B12", "B30"):
+            continue
+        q = _q(r["raised"])
+        if q is None:
+            continue
+        conv.setdefault(r["veh"]["converter"], [0, 0, 0, 0])[q] += 1
+    mi = miles(root, vs, miles_how, join)
+    conv_miles = {}
+    for v in vs:
+        conv_miles[v["converter"]] = conv_miles.get(v["converter"], 0.0) + mi.get(v["key"], 0.0)
+    # days off the road
+    days = {}
+    spells = {}
+    for r in recs:
+        if not r["off"] or r["veh"] is None or r["from"] is None:
+            continue
+        a, b = r["from"], r["to"] or (fy1 + D(days=1))
+        spells.setdefault(r["veh"]["key"], []).append((a, b))
+    for v in vs:
+        ch = days.setdefault(v["chassis"], [0, 0, 0, 0])
+        if vor == "union":
+            seen = set()
+            for a, b in spells.get(v["key"], []):
+                d = a
+                while d < b:
+                    seen.add(d)
+                    d += D(days=1)
+            for d in seen:
+                q = _q(d)
+                if q is not None:
+                    ch[q] += 1
+        else:
+            for a, b in spells.get(v["key"], []):
+                d = a
+                while d < b:
+                    q = _q(d)
+                    if q is not None:
+                        ch[q] += 1
+                    d += D(days=1)
+    vy = {}
+    for v in vs:
+        a = max(v["start"], fy0)
+        b = min(v["end"] or fy1 + D(days=1), fy1 + D(days=1))
+        vy[v["chassis"]] = vy.get(v["chassis"], 0) + max(0, (b - a).days)
+    out = {"converters": {}, "chassis": {}}
+    for c in ("Pennick Coachbuild", "Ostrel Vehicle Conversions"):
+        jobs = conv.get(c, [0, 0, 0, 0])
+        out["converters"][c] = {"jobs": jobs, "miles": conv_miles.get(c, 0.0),
+                                "rate": sum(jobs) / conv_miles[c] * 100000.0 if conv_miles.get(c) else None}
+    for c in ("FD35", "RD43"):
+        out["chassis"][c] = {"days": days.get(c, [0, 0, 0, 0]), "vehicle_years": vy.get(c, 0) / 365.0,
+                             "rate": sum(days.get(c, [0, 0, 0, 0])) / (vy[c] / 365.0)}
+    out["_vehicles"] = vs
     return out
 
 
-# ---------------------------------------------------------------- everything
-def solve(target, variants=False):
-    reg = register(target)
-    names, brief = shortlist(target)
-    M = method(target)
-    sd, bh = school_days(target)
-    cl = closures(target)
-    cnt = counts(target)
-    L = layout(target, reg, names)
-    sdays = {n: sorted(sd[reg[n]["county"]]) for n in names}
-    S = dict(names=names, reg=reg, M=M, layout=L, sdays=sdays)
-    S["delay"] = {n: crossing_delay(n, L[n], reg, cl, cnt, sdays[n], M) for n in names}
-    S["free"] = {n: (S["delay"][n] if L[n]["gate"] is None else crossing_delay(n, L[n], reg, cl, cnt, sdays[n], M, "free"))
-                 for n in names}
-    S["wb_only"] = {n: (S["delay"][n] if L[n]["gate"] is None else crossing_delay(n, L[n], reg, cl, cnt, sdays[n], M,
-                                                                                    "wb_only")) for n in names}
-    per = {}
-    for n in names:
-        code = code_of(reg[n])
-        k = mins = held_veh = 0.0
-        for d in sdays[n]:
-            day = cl[code].get(d, [])
-            k += sum(1 for x in day if T7 <= x[0] < T10)
-            mins += sum(max(0.0, min(x[1], T10) - max(x[0], T7)) for x in day) / 60.0
-            for s in L[n]["sites"]:
-                arr, tag = arrivals(cnt[(s["site"], d)])
-                held_veh += sum(1 for a, t in zip(arr, tag) if t and closure_at(day, a))
-        per[n] = dict(closures=k / len(sdays[n]), minutes=mins / len(sdays[n]), held=held_veh / len(sdays[n]))
-    S["per"] = per
-    S["fault"] = {r: fault_hours(target, reg, names, cl, r) for r in ("lazy", "careful", "full_short_f3", "golden")}
-    S["fault"]["long10"] = long_closure_hours(reg, names, cl)
-    S["hgv"] = {r: hgv_share(L, names, cnt, sdays, r) for r in ("lazy", "f4", "golden")}
-    rank = sorted(names, key=lambda n: -S["delay"][n])
-    S["call"], S["runner"] = rank[0], rank[1]
-    S["gap"] = S["delay"][rank[0]] - S["delay"][rank[1]]
+def solve(root, variants=False):
+    dr = drivers(root)
+    S = {"drivers": len(dr), "fit": fit_table(dr, "G"), "rungs": {n: fit_table(dr, n) for n in ("R1", "R2", "R2r", "R1c")},
+         "r0": r0(dr)}
+    S["call"] = call(S["fit"])
+    S["default_call"] = call(S["rungs"]["R2"])
+    S["fleet"] = fleet_figures(root)
     if variants:
-        S["variants"] = {}
-        gated = [n for n in names if L[n]["gate"]]
-        for key, v in (("start_mode", {"mode": "start"}), ("N6", {"N": 6}), ("N8", {"N": 8}), ("tau2", {"tau": 2.0}),
-                       ("tau5", {"tau": 5.0}), ("start7", {"start7": True})):
-            S["variants"][key] = {n: (crossing_delay(n, L[n], reg, cl, cnt, sdays[n], M, v) if (n in gated or key in
-                                      ("start_mode", "start7")) else S["delay"][n]) for n in names}
-        cl_raw = closures(target, dedupe=False)
-        S["variants"]["no_dedupe"] = {n: crossing_delay(n, L[n], reg, cl_raw, cnt, sdays[n], M) for n in names}
-        cl_utc = closures(target, convert=False)
-        S["variants"]["utc_unconverted_free"] = {n: crossing_delay(n, L[n], reg, cl_utc, cnt, sdays[n], M, "free")
-                                                 for n in names}
-        S["fault"]["unconverted"] = fault_hours(target, reg, names, cl_utc, "golden")
+        S["variants"] = {
+            "first": fit_table(drivers(root, which="first")), "mean": fit_table(drivers(root, which="mean")),
+            "measured": fit_table(drivers(root, population="measured")),
+            "no_crosswalk": fit_table(drivers(root, crosswalk=False)),
+            "lb_rounded": fit_table(drivers(root, lb=0.4536)),
+        }
     return S
