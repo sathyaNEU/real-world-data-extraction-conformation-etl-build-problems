@@ -1,187 +1,188 @@
 {
-  "task": "task307",
-  "architecture": "v3",
-  "drawn": "2026-11-03",
-  "slot_note": "",
-  "domain": "energy-systems-utilities",
-  "subdomain": "asset-condition-maintenance",
-  "client_domain": "energy-systems-utilities",
-  "niche": "choosing the one turbine runner a Norwegian municipal hydropower company refurbishes in its 2027 summer outage window, sized by the generation an unplanned runner outage would cost before 2032, when units moved onto part-load frequency reserve since 2022 spend their hours in the rough zone where cavitation erodes the runner",
-  "objective": "opportunity-sizing-decision",
-  "shape": "01",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "objective",
-    "time"
+ "task": "task307",
+ "architecture": "v3",
+ "drawn": "2026-11-03",
+ "slot_note": "",
+ "domain": "energy-systems-utilities",
+ "subdomain": "asset-condition-maintenance",
+ "client_domain": "energy-systems-utilities",
+ "niche": "choosing the one turbine runner a Norwegian municipal hydropower company refurbishes in its 2027 summer outage window, sized by the generation an unplanned runner outage would cost before 2032, when units moved onto part-load frequency reserve since 2022 spend their hours in the rough zone where cavitation erodes the runner",
+ "objective": "opportunity-sizing-decision",
+ "shape": "01",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "Refurbish Nesvik G1 (runner R-501) in the 2027 summer window: it passes the repair limit in 2027 and the refurbishment spares 67,000 MWh in the 2027 to 2031 planning window, 4,650 MWh per NOK million against Sørdal G1's 3,820, a lead of 830.",
+ "answer_source": "submission.md block 1; generator/figures.json",
+ "gap": [
+  "objective",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G7",
+  "G13"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "existing_book_actuals",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "monitoring_export",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every register, inspection and output record correctly carries each runner's pitting forward from its last inspection at the pitting per running hour the base-load inspection pairs give (the peaker set aside as a peaker), the equivalent-hours reasoning the field's condition schemes use, and refurbishes Nesvik G2, the only runner that rate takes past the limit before 2032; only carrying pitting at the rate per hour run in the restricted band, counted from each unit's own hourly output, gives Nesvik G1.",
+ "domain_test": "Hydropower asset management sizes a runner refurbishment by the unplanned outage it heads off, and a Francis runner's cavitation erosion accrues in the part-load rough zone, so the damage a unit adds depends on where in its output range its hours were spent; with megawatt-hours of a solar farm or a hospital's beds there is no rough zone and no erosion to accrue, and the call no longer reads.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:runner-damage-accrues-with-rough-zone-hours-not-operating-hours",
+ "layer1": [
+  "the 2023 historian migration: tag names change and the clock moves from Norwegian local time to UTC, with a three-day overlap",
+  "the old historian's tags named by RTU slot, wired out of unit order at each station until its RTU replacement in 2016 and 2017",
+  "inspection rows by runner serial while the output record is by unit, with runner changes at Sørdal G2 in 2019 and Sørdal G3 in 2024",
+  "governor counters read only at overhauls, as totals since commissioning",
+  "reserve contracts priced per MW per hour in EUR",
+  "decimal commas and Norwegian headers in the inspection register and the old historian export"
+ ],
+ "stakeholder_role": "the company's head of production assets, preparing the 2027 outage and investment plan",
+ "role_family": "operations_director",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "historian_export_2016_2023.csv",
+  "rows": 63264,
+  "entity": "the old station historian's mean output on seven slot tags in one hour",
+  "grain": "hour x slot tag",
+  "source": "synthetic"
+ },
+ "forum": "executive_team",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "utility_or_infrastructure",
+ "world": {
+  "geography": "Norway (a fictional western Norwegian municipality's hydropower company, Sørdal Kraft)",
+  "currency": "NOK",
+  "org_type": "a municipally owned hydropower company running a cascade of stations with Francis units",
+  "invented_names": [
+   "Sørdal Kraft",
+   "Sørdal"
   ],
-  "pattern": [
+  "people": [
+   "Rita Haugen",
+   "Arild Sivertsen"
+  ]
+ },
+ "deliverables": [
+  "runner_2027.xlsx",
+  "runner_2027.svg"
+ ],
+ "opening_move": "question-first",
+ "question_form": "where",
+ "driver": "The decisive quantity is when a unit's wear crosses its repair limit, and the wear accrues only in the hours the unit runs inside one band of its range; a new duty since the last inspection moved some units into that band, so wear carried forward at the rate per hour run across the fleet's inspections ranks first the unit that runs longest, while the unit that crosses first shows only in its own output record read band by band since the duty began.",
+ "driver_concrete": "Sørdal Kraft's Francis runners pit by cavitation only in the hours a unit runs between 30 and 58 per cent of its rating; since 2022 Nesvik G1 and Sørdal G1 hold frequency reserve and run there about one hour in nine, so carrying each runner's pitting forward from its last inspection at the fleet's pitting per running hour files Nesvik G2, the unit with the oldest inspection and the most hours, while the pitting per band hour every inspection pair shares, the Sørdal G3 peaker's included, counted from each unit's hourly output, takes Nesvik G1's runner past the repair limit in 2027.",
+ "stump": "A competent analyst carries each runner's pitting from its last inspection at the fleet's pitting per running hour and refurbishes Nesvik G2, the only runner that rate takes past the limit before 2032; the step that lands it there is taking an hour run as an hour of wear, when the runners pit only in the restricted band and Nesvik G1 and Sørdal G1 have run there about one hour in nine since they took up frequency reserve in 2022, so Nesvik G1's runner passes the limit in 2027 and spares 4,650 MWh per NOK million against Sørdal G1's 3,820.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task472": "task472 v2's window is a release schedule outside the job that a saving has to reach; here the window is a band of the unit's own output range in which wear accrues, and the decisive step is counting the hours a new duty put each unit inside it from its own output record"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-27",
+   "domain": "urban-regional-science",
+   "subdomain": "optimization",
+   "objective": "opportunity-sizing-decision",
+   "gap": [
+    "population",
+    "objective"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G7",
-    "G13"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "existing_book_actuals",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every register, inspection and output record correctly carries each runner's cavitation damage forward from its last inspection at the rate its operating hours have added damage across the fleet's inspections, the equivalent-hours reasoning the field's condition schemes use, and refurbishes Unit 1, the hardest-run unit; only carrying the damage at the rate per hour run inside the rough zone, counted from each unit's own output record since it took up frequency reserve, gives the unit whose runner reaches its repair limit first.",
-  "domain_test": "Hydropower asset management sizes a runner refurbishment by the unplanned outage it heads off, and a Francis runner's cavitation erosion accrues in the part-load rough zone, so the damage a unit adds depends on where in its output range its hours were spent; with megawatt-hours of a solar farm or a hospital's beds there is no rough zone and no erosion to accrue, and the call no longer reads.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:runner-damage-accrues-with-rough-zone-hours-not-operating-hours",
-  "layer1": [
-    "SCADA output exported as hourly means by unit, with the 2023 historian migration changing tag names and the clock from local time to UTC",
-    "inspection reports by the runner's serial number while the output record is by unit, with one runner swapped between two units in 2019",
-    "a maintenance system whose operating-hours counters were reset at overhauls and re-based at a 2021 system change",
-    "reserve contracts priced per MW per hour in EUR from the TSO's market while the company books in NOK",
-    "decimal commas and Norwegian month names in the inspection exports"
-  ],
-  "stakeholder_role": "the company's head of production assets, preparing the 2027 outage and investment plan",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "unit_output_hourly.csv",
-    "rows": 0,
-    "entity": "one generating unit's mean output in one hour",
-    "grain": "unit x hour",
-    "source": "synthetic"
+   ],
+   "generators": [
+    "G1",
+    "G8"
+   ],
+   "gate_g": "binding_constraint",
+   "decision_type": "pick_one_of_n",
+   "stump_strategy": "binding_constraint",
+   "layer2_pattern": "own:project-benefit-from-the-re-equilibrated-network-not-the-improved-links",
+   "forum": "executive_team",
+   "forcing_event": "budget_or_appropriation",
+   "org_family": "government_agency",
+   "driver": "The decisive quantity is what an added capacity saves across a whole system whose users each choose their path given everyone else's, so pricing the time saved on the improved element at today's loads credits it with users who would arrive from parallel paths into a downstream element that binds, and ranks first the element that saves least once the system re-settles.",
+   "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
+   "fate": "spent at the 11-01 re-check: guidance 2.1 with documentation 6.1 (user equilibrium on the coded network) executed word for word is the golden, so the decisive step is rule application (R3a fails, generator/analyst_test.py; the fixed-volume route reaches Route 9 only by breaking 6.1's gap); the survivor anatomy holds only Actor. The shipped pack stays at the portal, pending.",
+   "shell": {
+    "question form": "which",
+    "second-sentence opener": "score",
+    "rounding opener": "annual",
+    "deliverable set": "pptx+xlsx"
+   }
   },
-  "forum": "executive_team",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "utility_or_infrastructure",
-  "world": {
-    "geography": "Norway (a fictional western Norwegian municipality's hydropower company, Sørdal Kraft)",
-    "currency": "NOK",
-    "org_type": "a municipally owned hydropower company running a cascade of stations with Francis units",
-    "invented_names": [
-      "Sørdal Kraft",
-      "Sørdal"
-    ],
-    "people": [
-      "Rita Haugen",
-      "Arild Sivertsen"
-    ]
+  {
+   "architecture": "v2",
+   "drawn": "2026-11-02",
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "patient-flow-beds-workforce-optimization",
+   "objective": "opportunity-sizing-decision",
+   "gap": [
+    "objective",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G1",
+    "G7"
+   ],
+   "gate_g": "binding_constraint",
+   "decision_type": "pick_one_of_n",
+   "stump_strategy": "binding_constraint",
+   "layer2_pattern": "own:side-room-shortage-closes-bays-so-freed-side-rooms-release-bays",
+   "forum": "board_of_directors",
+   "forcing_event": "budget_or_appropriation",
+   "org_family": "hospital_or_health_provider",
+   "driver": "The decisive quantity is what a scheme releases from a resource split into two pools, when the units that need the small pool can use nothing else and a full small pool takes a whole block of the large pool out of use, so valuing each scheme at the large-pool capacity it adds or frees misses the blocks it keeps open by emptying small-pool places at the moments the small pool is full.",
+   "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
+   "fate": "spent at stage 2 on its own prototype (2026-11-02), no pack cut: a side room freed early is refilled by the next patient who needs one, so the honest replays (FIFO 858, infection-first 1,029 bed-days) file the modular ward (1,284) and only the naive per-closure check (1,615) files the partnership; the call turns on unrecorded allocation rules and closing it would file the HOW.",
+   "shell": {
+    "question form": "whether",
+    "second-sentence opener": "appraise",
+    "rounding opener": "released",
+    "deliverable set": "docx+xlsx"
+   }
   },
-  "deliverables": [
-    "runner_2027.xlsx",
-    "runner_2027.svg"
-  ],
-  "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "The decisive quantity is when a unit's wear crosses its repair limit, and the wear accrues only in the hours the unit runs inside one band of its range; a new duty since the last inspection moved some units into that band, so wear carried forward at the rate per hour run across the fleet's inspections ranks first the unit that runs longest, while the unit that crosses first shows only in its own output record read band by band since the duty began.",
-  "driver_concrete": "Sørdal's Francis runners erode by cavitation in the rough zone between about a third and three fifths of rated output; since 2022 two units hold frequency reserve and sit there for much of their running hours, so carrying each runner's pitting forward from its last inspection at the fleet's damage per operating hour files Unit 1, the base-load unit with the most hours, while the damage per rough-zone hour read off the inspections and counted from each unit's hourly output gives the reserve unit whose runner reaches the repair limit before the 2028 winter.",
-  "stump": "A competent analyst carries each runner's cavitation damage from its last inspection at the fleet's damage per operating hour and refurbishes Unit 1; the step that lands it there is taking an hour run as an hour of wear, when the runners erode only in the rough zone and the reserve units have run there for most of their hours since 2022, so a reserve unit's runner reaches its repair limit first.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task472": "task472 v2's window is a release schedule outside the job that a saving has to reach; here the window is a band of the unit's own output range in which wear accrues, and the decisive step is counting the hours a new duty put each unit inside it from its own output record"
+  {
+   "architecture": "seed OS09",
+   "fate": "dropped at the draw 2026-10-27: a mini-split rebate programme's net savings, its honest stump labels held by the guard window and its furniture barred",
+   "driver": "not drawn"
   },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-27",
-      "domain": "urban-regional-science",
-      "subdomain": "optimization",
-      "objective": "opportunity-sizing-decision",
-      "gap": [
-        "population",
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G1",
-        "G8"
-      ],
-      "gate_g": "binding_constraint",
-      "decision_type": "pick_one_of_n",
-      "stump_strategy": "binding_constraint",
-      "layer2_pattern": "own:project-benefit-from-the-re-equilibrated-network-not-the-improved-links",
-      "forum": "executive_team",
-      "forcing_event": "budget_or_appropriation",
-      "org_family": "government_agency",
-      "driver": "The decisive quantity is what an added capacity saves across a whole system whose users each choose their path given everyone else's, so pricing the time saved on the improved element at today's loads credits it with users who would arrive from parallel paths into a downstream element that binds, and ranks first the element that saves least once the system re-settles.",
-      "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
-      "fate": "spent at the 11-01 re-check: guidance 2.1 with documentation 6.1 (user equilibrium on the coded network) executed word for word is the golden, so the decisive step is rule application (R3a fails, generator/analyst_test.py; the fixed-volume route reaches Route 9 only by breaking 6.1's gap); the survivor anatomy holds only Actor. The shipped pack stays at the portal, pending.",
-      "shell": {
-        "question form": "which",
-        "second-sentence opener": "score",
-        "rounding opener": "annual",
-        "deliverable set": "pptx+xlsx"
-      }
-    },
-    {
-      "architecture": "v2",
-      "drawn": "2026-11-02",
-      "domain": "healthcare-delivery-health-economics",
-      "subdomain": "patient-flow-beds-workforce-optimization",
-      "objective": "opportunity-sizing-decision",
-      "gap": [
-        "objective",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G1",
-        "G7"
-      ],
-      "gate_g": "binding_constraint",
-      "decision_type": "pick_one_of_n",
-      "stump_strategy": "binding_constraint",
-      "layer2_pattern": "own:side-room-shortage-closes-bays-so-freed-side-rooms-release-bays",
-      "forum": "board_of_directors",
-      "forcing_event": "budget_or_appropriation",
-      "org_family": "hospital_or_health_provider",
-      "driver": "The decisive quantity is what a scheme releases from a resource split into two pools, when the units that need the small pool can use nothing else and a full small pool takes a whole block of the large pool out of use, so valuing each scheme at the large-pool capacity it adds or frees misses the blocks it keeps open by emptying small-pool places at the moments the small pool is full.",
-      "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
-      "fate": "spent at stage 2 on its own prototype (2026-11-02), no pack cut: a side room freed early is refilled by the next patient who needs one, so the honest replays (FIFO 858, infection-first 1,029 bed-days) file the modular ward (1,284) and only the naive per-closure check (1,615) files the partnership; the call turns on unrecorded allocation rules and closing it would file the HOW.",
-      "shell": {
-        "question form": "whether",
-        "second-sentence opener": "appraise",
-        "rounding opener": "released",
-        "deliverable set": "docx+xlsx"
-      }
-    },
-    {
-      "architecture": "seed OS09",
-      "fate": "dropped at the draw 2026-10-27: a mini-split rebate programme's net savings, its honest stump labels held by the guard window and its furniture barred",
-      "driver": "not drawn"
-    },
-    {
-      "architecture": "resource adequacy draft",
-      "fate": "dropped at the draw 2026-10-27 before registration: task308's architecture 3 registered the same world and driver first (a generation cooperative's capacity offers with outages that bunch in the cold)",
-      "driver": "not drawn"
-    }
-  ],
-  "lineage_shells": [
-    {
-      "question form": "which",
-      "second-sentence opener": "score",
-      "rounding opener": "annual",
-      "deliverable set": "pptx+xlsx"
-    },
-    {
-      "question form": "whether",
-      "second-sentence opener": "appraise",
-      "rounding opener": "released",
-      "deliverable set": "docx+xlsx"
-    }
-  ],
-  "notes": "Architecture 3, a re-root at the 11-03 orchestrator's call after architecture 2 died on its own prototype (11-02). Moved to a third client domain (energy-systems-utilities, asset-condition-maintenance), a new world (a Norwegian municipal hydropower company's 2027 runner refurbishment), a new dataset (hourly unit output, runner inspections, reserve contracts, the maintenance counters) and a new shell. stump_strategy other: wear accruing in an operating band a new duty moved units into, read from each unit's output record; binding_constraint, decomposition_attribution and population_selection stand in the ban window and none is the honest label. The screens of this draw are in DESIGN_NOTE.md Tried and rejected.",
-  "registered": "2026-11-03T09:30:53Z",
-  "shell": {
-    "question form": "how-much",
-    "second-sentence opener": "set",
-    "rounding opener": "pitting",
-    "deliverable set": "svg+xlsx"
+  {
+   "architecture": "resource adequacy draft",
+   "fate": "dropped at the draw 2026-10-27 before registration: task308's architecture 3 registered the same world and driver first (a generation cooperative's capacity offers with outages that bunch in the cold)",
+   "driver": "not drawn"
   }
+ ],
+ "lineage_shells": [
+  {
+   "question form": "which",
+   "second-sentence opener": "score",
+   "rounding opener": "annual",
+   "deliverable set": "pptx+xlsx"
+  },
+  {
+   "question form": "whether",
+   "second-sentence opener": "appraise",
+   "rounding opener": "released",
+   "deliverable set": "docx+xlsx"
+  }
+ ],
+ "notes": "Architecture 3, a re-root at the 11-03 orchestrator's call after architecture 2 died on its own prototype (11-02). Moved to a third client domain (energy-systems-utilities, asset-condition-maintenance), a new world (a Norwegian municipal hydropower company's 2027 runner refurbishment), a new dataset (hourly unit output, runner inspections, reserve contracts, the maintenance counters) and a new shell. stump_strategy other: wear accruing in an operating band a new duty moved units into, read from each unit's output record; binding_constraint, decomposition_attribution and population_selection stand in the ban window and none is the honest label. The screens of this draw are in DESIGN_NOTE.md Tried and rejected.",
+ "registered": "2026-11-03T09:30:53Z",
+ "shell": {
+  "question form": "how-much",
+  "second-sentence opener": "set",
+  "rounding opener": "pitting",
+  "deliverable set": "svg+xlsx"
+ }
 }

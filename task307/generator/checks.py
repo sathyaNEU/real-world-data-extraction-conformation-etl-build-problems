@@ -1,291 +1,300 @@
-"""The generator's assertions on the cut pack and the clean truth: the pack replays the truth, the call and its
-margins, the ladder (every cheap route's pick), every semantic fork row (SF1 to SF15), the ask devices and their
-interiors, the three-rules analyst test, the figure edges and the input gates.
+"""task307 generator checks: the three rules on the clean truth, every semantic fork, the ladder, separation, the input
+gates and the realism sweep. Run after make.py:
 
-    python3 task307/generator/checks.py <target dir>
+    python3 task307/generator/checks.py          exit 1 on any failed assertion
 """
 import datetime as dt
 import json
-import math
 import os
+import re
 import sys
-
+import zipfile
 import numpy as np
-import pandas as pd
+import world as Wm
+import truth as Tm
+import verify as V
+from world import UNITS, L, NH, LIMIT, local
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import asks as A  # noqa: E402
-import build  # noqa: E402
-import net  # noqa: E402
-import pack  # noqa: E402
-import params as P  # noqa: E402
-import records as R  # noqa: E402
-import rungs  # noqa: E402
-import solve  # noqa: E402
-import world  # noqa: E402
-
-N = {"pass": 0}
-CODE = {p["tip_id"]: p["code"] for p in P.PROJECTS}
+TASK = os.path.dirname(HERE)
+TGT = os.path.join(TASK, 'target')
+RESULTS = []
 
 
-def ok(cond, msg):
-    if not cond:
-        raise AssertionError(msg)
-    N["pass"] += 1
+def check(tag, ok, detail=''):
+    RESULTS.append((tag, bool(ok), detail))
 
 
-def edge(v, u):
-    """distance from v to the nearest edge of its printed cell, as a share of the unit"""
-    return (u / 2 - abs(v - math.floor(v / u + 0.5) * u)) / u
+def rnd(x, step):
+    return int(np.floor(x / step + 0.5) * step)
 
 
-def rnd(v, u):
-    return math.floor(v / u + 0.5) * u
+def carry(W, rate, what, mode_cross=True):
+    """Carry every present runner from its last inspection at `rate` per counted hour; returns rows like Tm.call."""
+    rows = {}
+    for u in UNITS:
+        rn = Tm.current_runner(u)
+        f = Tm.last_inspection(W, rn)
+        p0 = f['found'] if f['repaired_to'] is None else f['repaired_to']
+        now = p0 + rate * Tm.runner_counts(W, rn, f['i'], NH, what)
+        q26 = Tm.runner_counts(W, rn, L(2026, 1, 1), NH, what)
+        cross, p = None, now
+        for y in range(2027, 2032):
+            p += rate * q26
+            if p >= LIMIT and cross is None:
+                cross = y
+        if now >= LIMIT:
+            cross = 2027
+        gen = Tm.winter_generation(W, u) if cross else 0.0
+        rows[u] = {'now': now, 'cross': cross, 'gen': gen, 'per_mnok': gen / Wm.QUOTE_MNOK[u]}
+    return rows, sorted(UNITS, key=lambda u: -rows[u]['per_mnok'])
 
 
-def main(target):
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    o = solve.run()
-    n = pack.Net(target)
-    c = n.call()
+def main():
+    W = Wm.build()
+    F = json.load(open(os.path.join(HERE, 'figures.json'), encoding='utf-8'))
+    gold, order = Tm.call(W, 'rz')
+    G = order[0]
+    check('golden pick', G == F['call']['chosen'] == 'NSV-G1', G)
 
-    # ---------------------------------------------------------------- the pack replays the truth
-    ok(len(n.arcs) == len(o["links"]), "every directed link of the extract is in the pack")
-    ok(n.zones == {int(z) for z in world.zones()}, "every zone is a centroid in the node table")
-    for tip, r in c["proj"].items():
-        ok(abs(r["annual"] - o["proj"][CODE[tip]]["annual"]) < 0.01, "pack replay of %s's annual benefit" % tip)
-    for per in ("AM", "PM"):
-        ok(abs(c["nobuild"][per] - o["nobuild"][per]["vht"]) < 1e-6, "pack replay of the %s no-build VHT" % per)
-        ok(sum(n.od[per].values()) == sum(o["tabs"][per].values()), "trip table total %s" % per)
-    ok(pack.WEEKDAYS * pack.EXPANSION == P.ANNUAL_FACTOR, "the guidance's annual factor")
-    ok(n.cost == {p["tip_id"]: p["cost_m"] for p in P.PROJECTS}, "candidate costs")
+    # ---- The three rules, executed on the clean truth (dataset-generation 7.1) ----
+    ladder = {m: Tm.call(W, m)[1][0] for m in ('run_pooled', 'counters', 'run_own', 'run_pooled_all', 'starts')}
+    check('R1 analyst test: the default path (fleet pitting per running hour, peaker set aside) files NSV-G2',
+          ladder['run_pooled'] == 'NSV-G2', ladder['run_pooled'])
+    check('R1 analyst test: the counter route with every pre-period pair files NSV-G2', ladder['counters'] == 'NSV-G2',
+          ladder['counters'])
+    check('R1 each runner on its own pairs per running hour files NSV-G2', ladder['run_own'] == 'NSV-G2', ladder['run_own'])
+    check('R1 per running hour with the peaker pooled files OSD-G1', ladder['run_pooled_all'] == 'OSD-G1', ladder['run_pooled_all'])
+    check('R1 per start files SDL-G3', ladder['starts'] == 'SDL-G3', ladder['starts'])
+    cheap = [m for m, p in ladder.items() if p == G]
+    check('R1 cheap routes landing the call: none', not cheap, ','.join(cheap) or 'none')
+    rows0, _ = Tm.call(W, 'run_pooled')
+    check('R1 the default path takes no runner but NSV-G2 past the limit before 2032',
+          [u for u in UNITS if rows0[u]['cross']] == ['NSV-G2'], str([u for u in UNITS if rows0[u]['cross']]))
+    # Rule 2: every Layer 1 handling leaves the call and its graded figures unchanged (on the cut pack, below).
+    # Rule 3: the standing family (rates per restricted-band hour under every estimator) agrees on every graded figure;
+    # the enumerated family spreads the pick.
+    P = Tm.pairs(W)
+    inc = [(p[0], p[4] - p[2], Tm.runner_counts(W, p[0], p[1], p[3], 'rz')) for p in P]
+    ests = {'pooled': sum(a for _, a, b in inc) / sum(b for _, a, b in inc),
+            'mean of ratios': float(np.mean([a / b for _, a, b in inc])),
+            'median': float(np.median([a / b for _, a, b in inc])),
+            'base-load pairs only': sum(a for r, a, b in inc if r != 'R-207') / sum(b for r, a, b in inc if r != 'R-207'),
+            'peaker pairs only': sum(a for r, a, b in inc if r == 'R-207') / sum(b for r, a, b in inc if r == 'R-207'),
+            'least squares through zero': sum(a * b for _, a, b in inc) / sum(b * b for _, a, b in inc)}
+    ref = None
+    for k, rate in ests.items():
+        rows, o = carry(W, rate, 'rz')
+        figs = (o[0], o[1], tuple((rnd(rows[u]['now'], 10), rows[u]['cross'], rnd(rows[u]['gen'], 100),
+                                   rnd(rows[u]['per_mnok'], 10)) for u in UNITS))
+        ref = ref or figs
+        check('R3 standing family agrees: %s' % k, figs == ref, '%.5f' % rate)
+    picks = {Tm.call(W, m)[1][0] for m in ('run_pooled', 'run_own', 'counters', 'starts', 'run_pooled_all', 'rz')}
+    check('R3 enumerated family spreads the pick over four units', len(picks) == 4, ','.join(sorted(picks)))
+    ratios = [a / b for _, a, b in inc]
+    check('band rate fits every pair, the peaker included, within 1 per cent', max(ratios) / min(ratios) - 1 < 0.01,
+          '%.4f to %.4f' % (min(ratios), max(ratios)))
+    runr = [(p[0], (p[4] - p[2]) / Tm.runner_counts(W, p[0], p[1], p[3], 'run')) for p in P if p[0] != 'R-207']
+    spread = max(r for _, r in runr) / min(r for _, r in runr) - 1
+    check('back-test: pitting per running hour across the base-load pairs within 15 per cent', spread < 0.15,
+          'spread %.1f per cent' % (100 * spread))
+    peak = [(p[4] - p[2]) / Tm.runner_counts(W, p[0], p[1], p[3], 'run') for p in P if p[0] == 'R-207']
+    check('the peaker wears about ten times as fast per running hour', min(peak) / max(r for _, r in runr) > 5,
+          '%.4f against %.4f' % (min(peak), max(r for _, r in runr)))
+    check('no inspection pair of a reserve unit spans its reserve duty',
+          all(not (p[0] in ('R-205', 'R-501') and p[3] > L(2022, 1, 1)) for p in P))
+    # margins
+    a, b = order[0], order[1]
+    check('lead over the runner-up at least 1.1 times per NOK million', gold[a]['per_mnok'] / gold[b]['per_mnok'] >= 1.1,
+          '%.2f' % (gold[a]['per_mnok'] / gold[b]['per_mnok']))
+    check('NSV-G1 passes the limit in 2027 and SDL-G1 in 2029', gold['NSV-G1']['cross'] == 2027 and gold['SDL-G1']['cross'] == 2029)
+    # the one-dimensional statistic law: the pick is never first on a statistic the pack carries or a reader sorts on
+    gen16, st16 = Tm.totals(W)
+    last = {u: Tm.last_inspection(W, Tm.current_runner(u)) for u in UNITS}
+    stats = {
+        'pitting at last inspection': {u: gold[u]['last_pitting'] for u in UNITS},
+        'age of last inspection': {u: -last[u]['i'] for u in UNITS},
+        'running hours since last inspection': {u: Tm.runner_counts(W, Tm.current_runner(u), last[u]['i'], NH, 'run') for u in UNITS},
+        'starts since 2016': st16, 'generation since 2016': gen16,
+        'rating': Wm.RATED, 'lowest quote': {u: -Wm.QUOTE_MNOK[u] for u in UNITS},
+        'winter generation per NOK million': {u: Tm.winter_generation(W, u) / Wm.QUOTE_MNOK[u] for u in UNITS},
+        'reserve capacity': {u: {'SDL-G1': 10.0, 'NSV-G1': 9.0}.get(u, 0.0) for u in UNITS},
+        'own pair pitting per running hour': {u: max([r for rn, r in runr if rn == Tm.current_runner(u)] or [0]) for u in UNITS},
+    }
+    for k, v in stats.items():
+        top = max(v, key=lambda u: v[u])
+        check('shock: the pick is not first on %s' % k, top != G, top)
 
-    # ---------------------------------------------------------------- the call
-    ann = {k: v["annual"] for k, v in c["proj"].items()}
-    ok(c["best"] == "TIP-28-009" == F["award"], "golden award: the Center Street Bridge widening")
-    srt = sorted(ann.values(), reverse=True)
-    ok(srt[0] / srt[1] > 1.5, "the award leads the runner-up by more than half")
-    ok(max(c["proj"], key=lambda k: c["proj"][k]["per_m"]) == "TIP-28-009", "the award also leads per million dollars")
-    ok(F["runner_up"] == "TIP-28-014", "runner-up: the Route 9 auxiliary lane")
+    # ---- Semantic forks (every SF row of the design note's fork table) ----
+    D = V.load()
+    raw = D['insp']
+    blade_cols = [c for c in raw.columns if c.startswith('Skovl') or c == 'Bånd']
+    ok = all(abs(sum(V.num(r[c]) for c in blade_cols) - V.num(r['Funn totalt (cm²)'])) < 0.05 for _, r in raw.iterrows())
+    check('SF1 pitting is the total over blades and band: every register row sums to its total', ok)
+    import pdfplumber
+    with pdfplumber.open(os.path.join(TGT, 'runner_standard_TS07_rev3.pdf')) as pdf:
+        stdtext = ' '.join(p.extract_text() for p in pdf.pages)
+    check('SF1 TS-07 4.2 files pitting as the total pitted area of blades and band', 'total pitted area of the runner' in stdtext)
+    check('SF2 the repair limit is 2,400 cm2 of total pitting and no per-blade limit is filed',
+          '2,400 cm2' in stdtext and 'blade with' not in stdtext)
+    S, assign = V.series(D)
+    check('SF3 the record and the projection end at 31 December 2026 24:00 local',
+          local(NH - 1).strftime('%Y-%m-%d %H') == '2026-12-31 23' and len(S['NSV-G1']) == NH)
+    # SF4: the year read at year ends equals the year read hour by hour with 2026 repeated
+    for u in ('NSV-G1', 'SDL-G1', 'SDL-G3'):
+        rn = Tm.current_runner(u)
+        rate = gold[u]['rate']
+        hrs = W['inz'][u][L(2026, 1, 1):NH] & (W['occ'][u][L(2026, 1, 1):NH] == rn)
+        cum = gold[u]['now'] + rate * np.cumsum(np.tile(hrs, 5))
+        k = int(np.argmax(cum >= LIMIT)) if (cum >= LIMIT).any() else None
+        year = 2027 + k // len(hrs) if k is not None else None
+        check('SF4 %s passes the limit in the same year read hour by hour' % u, year == gold[u]['cross'], str(year))
+    # SF5: the outage valued as 14 weeks of the unit's mean generation over the whole of 2021 to 2025, not its winter weeks
+    check('SF5 the outage counted from 1 December (TS-07 6.1, note 3.1)', '1 December of the year' in stdtext)
+    flat = {}
+    for u in UNITS:
+        o = W['out'][u][L(2021, 1, 1):L(2026, 1, 1)]
+        flat[u] = (o.sum() / 5 * 14 * 7 / 365.25 / Wm.QUOTE_MNOK[u]) if gold[u]['cross'] else 0.0
+    check('SF5 the call holds when the 14 weeks are valued at the year-round mean', max(UNITS, key=lambda u: flat[u]) == G)
+    # SF6: all winters since 2016/17 instead of the last five
+    w_all = {}
+    for u in UNITS:
+        o = W['out'][u]
+        tot = [o[L(y, 12, 1):Wm.hidx(dt.datetime(y, 12, 1, tzinfo=Wm.OSLO) + dt.timedelta(weeks=14))].sum() for y in range(2016, 2026)]
+        w_all[u] = np.mean(tot) if gold[u]['cross'] else 0.0
+    check('SF6 the call holds on every winter since 2016/17',
+          max(UNITS, key=lambda u: w_all[u] / Wm.QUOTE_MNOK[u]) == G)
+    # SF7: outages ending before 2032 drop the 2031 outage; the call holds
+    end32 = {u: (gold[u]['per_mnok'] if gold[u]['cross'] and gold[u]['cross'] < 2031 else 0.0) for u in UNITS}
+    check('SF7 the call holds when the window counts only outages ending before 2032', max(UNITS, key=lambda u: end32[u]) == G)
+    # SF8: duty carried at the 2022 to 2026 mean instead of 2026
+    rows8 = {}
+    for u in UNITS:
+        rn = Tm.current_runner(u)
+        q = np.mean([Tm.runner_counts(W, rn, L(y, 1, 1), L(y + 1, 1, 1), 'rz') for y in range(2022, 2027)])
+        p, cross = gold[u]['now'], None
+        for y in range(2027, 2032):
+            p += gold[u]['rate'] * q
+            if p >= LIMIT and cross is None:
+                cross = y
+        rows8[u] = (Tm.winter_generation(W, u) / Wm.QUOTE_MNOK[u]) if cross else 0.0
+    check('SF8 the call holds with duty carried at the 2022 to 2026 mean', max(UNITS, key=lambda u: rows8[u]) == G)
+    # SF9: reading each unit's latest register row instead of its present runner's latest row gives the same start
+    regrows = V.inspections(D)
+    same9 = True
+    for u in UNITS:
+        by_unit = [r for r in regrows if r['unit'] == u][-1]
+        by_runner = [r for r in regrows if r['runner'] == Tm.current_runner(u)][-1]
+        same9 &= by_unit == by_runner
+    check('SF9 each unit\'s latest register row is its present runner\'s latest row (same call)', same9)
+    with pdfplumber.open(os.path.join(TGT, 'runner_standard_TS07_rev3.pdf')) as pdf:
+        pass
+    check('SF9 TS-07 2.1 ties condition limits to the runner across moves', 'whichever unit it is installed in' in stdtext)
+    reg = D['units']
+    check('SF9 the register names each unit\'s present runner',
+          all(reg[reg['Aggregat'] == u]['Løpehjul'].iloc[0] == Tm.current_runner(u) for u in UNITS))
+    # SF10: VAT included scales every quote alike
+    check('SF10 the call holds with VAT included', max(UNITS, key=lambda u: gold[u]['gen_mwh'] / (1.25 * Wm.QUOTE_MNOK[u])) == G)
+    # SF11: other band edges
+    for lo, hi in ((0.25, 0.60), (0.30, 0.5801), (0.2999, 0.58)):
+        rz = {u: (W['out'][u] >= lo * Wm.RATED[u] - 1e-9) & (W['out'][u] < hi * Wm.RATED[u] - 1e-9) for u in UNITS}
+        W2 = dict(W)
+        W2['inz'] = rz
+        p2 = Tm.call(W2, 'rz')[1][0]
+        check('SF11 the call holds with the band at %.4f to %.4f' % (lo, hi), p2 == G, p2)
+    check('SF11 the operating range table files the band from 30 per cent to 58 per cent', D['band'] == (0.30, 0.58))
+    # SF12 and SF14: the asks sum each hour once, gross at the terminals, and count starts on consecutive hours
+    g_pack, s_pack = V.asks(S)
+    check('SF12 generation since 2016 sums each hour of the record once',
+          all(rnd(g_pack[u], 100) == F['asks']['generation_2016_2026_mwh'][u] == rnd(gen16[u], 100) for u in UNITS))
+    check('SF14 starts count standstill to generation between consecutive hours',
+          all(s_pack[u] == F['asks']['starts_2016_2026'][u] == st16[u] for u in UNITS))
+    # SF13: the record's bounds are the same in local time and UTC (no exported hour outside 2016 to 2026 local)
+    new = D['new']
+    last_new = V.pd.to_datetime(new['time_utc'].iloc[-1], utc=True).tz_convert('Europe/Oslo')
+    first_old = D['old']['Tidspunkt'].iloc[0]
+    check('SF13 the record runs from 01.01.2016 00:00 to 31.12.2026 23:00 local',
+          first_old == '01.01.2016 00:00' and last_new.strftime('%Y-%m-%d %H:%M') == '2026-12-31 23:00')
 
-    # ---------------------------------------------------------------- the ladder: every cheap route's pick
-    rt = rungs.routes(o)
-    pick = {k: max(v, key=v.get) for k, v in rt.items()}
-    ok(pick["fixed no-build volumes"] == "A", "default path: fixed no-build volumes fund the Route 9 widening")
-    ok(pick["fixed volumes, per million dollars"] == "A", "fixed volumes per million dollars also fund Route 9")
-    ok(pick["equilibrium, AM peak only"] == "C", "AM peak alone: same call")
-    ok(pick["one all-or-nothing re-route"] == "A", "one all-or-nothing re-route lands on Route 9")
-    for k in ("Frank-Wolfe, 3 iterations", "Frank-Wolfe, 10 iterations", "Frank-Wolfe, 50 iterations",
-              "MSA, 10 iterations", "MSA, 50 iterations"):
-        ok(pick[k] == "C", "%s: same call" % k)
-    fx = n.fixed()
-    ok(fx["best"] == "TIP-28-014", "the pack's fixed-volume route (loaded file) funds Route 9")
-    ok(fx["TIP-28-014"]["annual"] / fx["TIP-28-009"]["annual"] > 1.5, "the fixed-volume route's margin for Route 9")
-    ok(F["fixed_route"]["award"] == "TIP-28-014", "figures carry the easy route")
+    # ---- The cut pack ----
+    rows, porder = V.call(D, S)
+    same = all((rnd(rows[u]['now'], 10), rows[u]['cross'], rnd(rows[u]['gen'], 100), rnd(rows[u]['per_mnok'], 10)) ==
+               (F['units'][u]['now_cm2'], F['units'][u]['cross_year'], F['units'][u]['gen_mwh'], F['units'][u]['per_mnok'])
+               for u in UNITS)
+    check('the pack recomputes every call figure', same and porder[:2] == [G, order[1]])
+    base_g, base_s = g_pack, s_pack
+    for kw in (dict(swap='map'), dict(swap='map', overlap='twice'), dict(swap='map', dst='label'), dict(overlap='twice'),
+               dict(dst='label')):
+        S2, _ = V.series(D, **kw)
+        r2, o2 = V.call(D, S2)
+        inv = o2[:2] == porder[:2] and all((rnd(r2[u]['now'], 10), r2[u]['cross'], rnd(r2[u]['gen'], 100)) ==
+                                           (rnd(rows[u]['now'], 10), rows[u]['cross'], rnd(rows[u]['gen'], 100)) for u in UNITS)
+        check('separation: the call and its figures hold under %s' % kw, inv)
+    S_map, _ = V.series(D, swap='map')
+    gm, sm = V.asks(S_map)
+    check('device D1 moves every generation figure by three bins or more', all(abs(gm[u] - base_g[u]) >= 300 for u in UNITS),
+          str({u: round(gm[u] - base_g[u]) for u in UNITS}))
+    check('device D1 moves every starts figure by three or more', all(abs(sm[u] - base_s[u]) >= 3 for u in UNITS),
+          str({u: sm[u] - base_s[u] for u in UNITS}))
+    check('the slot re-assignment recovers the wiring the world used',
+          all(assign[st][0] == {t: u for t, u in Wm.OLD_SLOT.items() if t[:3].replace('NES', 'NSV') == st} for st in assign))
+    # the swaps sit outside every window the call reads: each pair starts, and each present runner's last inspection
+    # falls, on or after its station's RTU replacement
+    station = {u: u[:3] for u in UNITS}
+    unit_of = {f['runner']: f['unit'] for f in W['found']}
+    ok_pairs = all(L(*Wm.RTU_NEW[station[unit_of[p[0]]]]) <= p[1] for p in P)
+    ok_proj = all(L(*Wm.RTU_NEW[station[u]]) <= last[u]['i'] for u in UNITS)
+    check('the slot swaps end before every inspection pair and projection window', ok_pairs and ok_proj)
+    # ---- Input gates ----
+    files = sorted(os.listdir(TGT))
+    exts = {os.path.splitext(f)[1] for f in files}
+    check('input gate: ten or more files', len(files) >= 10, str(len(files)))
+    check('input gate: three or more formats', len(exts) >= 3, ','.join(sorted(exts)))
+    big = max(sum(1 for _ in open(os.path.join(TGT, f), encoding='utf-8')) for f in files if f.endswith('.csv'))
+    check('input gate: a file of 25,000 rows or more', big >= 25000, str(big))
+    meta = json.load(open(os.path.join(TASK, 'metadata.json'), encoding='utf-8'))
+    dis = meta.get('distractors', [])
+    check('input gate: two or more distractors named in metadata.json and shipped',
+          len(dis) >= 2 and all(d['file'] in files for d in dis))
+    check('input gate: every file has source, date and license in metadata.json',
+          {f['file'] for f in meta['files']} == set(files) and all(f.get('license') and f.get('source') and f.get('date')
+                                                                for f in meta['files']))
+    check('no data dictionary, readme, manifest, codebook or notes file shipped',
+          not [f for f in files if re.search(r'readme|dictionary|manifest|codebook|notes|field_guide', f, re.I)])
+    # ---- Realism sweep ----
+    tells = []
+    for f in files:
+        p = os.path.join(TGT, f)
+        if f.endswith(('.xlsx', '.docx')):
+            z = zipfile.ZipFile(p)
+            names = z.namelist()
+            blob = b''.join(z.read(n) for n in names if n.startswith('docProps/'))
+            if any(n.startswith('customXml/') or 'thumbnail' in n for n in names):
+                tells.append(f + ' thumbnail or customXml')
+            if re.search(rb'openpyxl|python-docx|Macintosh|Compatible', blob, re.I):
+                tells.append(f + ' library app name')
+            if not re.search(rb'Microsoft (Excel|Office Word)', blob):
+                tells.append(f + ' no Office app name')
+            if len({zi.date_time for zi in z.infolist()}) != 1:
+                tells.append(f + ' member dates differ')
+        if f.endswith('.pdf'):
+            b = open(p, 'rb').read()
+            if b'ReportLab' in b or b'(anonymous)' in b or b'reportlab' in b:
+                tells.append(f + ' ReportLab stamp')
+        if f.endswith('.csv'):
+            t = open(p, encoding='utf-8').read(200000)
+            if '—' in t or '–' in t:
+                tells.append(f + ' dash')
+    check('realism sweep: no library stamps, thumbnails or dashes', not tells, '; '.join(tells))
+    note = open(os.path.join(TASK, 'DESIGN_NOTE.md'), encoding='utf-8').read()
+    check('no em dash in the design note or prompt', '—' not in note and '—' not in open(os.path.join(TASK, 'prompt.txt')).read())
 
-    # ---------------------------------------------------------------- semantic fork rows
-    links, cap, t0, al, be, tabs = o["links"], o["cap"], o["t0"], o["al"], o["be"], o["tabs"]
-
-    def call_with(scale=1.0, caps=None, period=("AM", "PM"), proj_caps=None, tol=1e-12):
-        cp = cap if caps is None else caps
-        res = {}
-        for pr in P.PROJECTS:
-            c2 = (proj_caps or solve.project_caps)(links, cp, pr)
-            s = 0.0
-            for per in period:
-                od = {k: q * scale for k, q in tabs[per].items()}
-                v0, tt0, _, _ = net.ue_paths(links, solve.aggregate(od), cp, t0, al, be, tol=tol)
-                v1, tt1, _, _ = net.ue_paths(links, solve.aggregate(od), c2, t0, al, be, tol=tol)
-                s += (v0 @ tt0 - v1 @ tt1) / 60.0
-            res[pr["code"]] = s * P.ANNUAL_FACTOR
-        return res
-    # SF1 the trip tables in passenger-car equivalents rather than vehicles (heavy vehicles at 2.0)
-    r = call_with(scale=1.08)
-    ok(max(r, key=r.get) == "C", "SF1 trips scaled to PCE: same call")
-    # SF2 both peak hours (filed, guidance 2.1 and 2.2); the AM alone names the same project
-    ok(pick["equilibrium, AM peak only"] == "C", "SF2 AM alone: same call")
-    # SF3 connector time in the vehicle-hours or not: the savings are identical
-    for tip in c["proj"]:
-        s_conn = c["proj"][tip]["saved"]["AM"]
-        ok(abs(s_conn - o["proj"][CODE[tip]]["AM"]["saved"]) < 1e-6, "SF3 connector time cancels for %s" % tip)
-    # SF4 converged to the documentation's relative gap of 0.000001 rather than exactly: every figure the same, and
-    # a run stopped ten times looser still names the same project
-    r6 = call_with(tol=1e-6)
-    r5 = call_with(tol=1e-5)
-    for code, tip in ((p["code"], p["tip_id"]) for p in P.PROJECTS):
-        ok(rnd(r6[code], 1000) == F["annual_vh"][tip], "SF4 gap 1e-6: %s annual unchanged" % tip)
-        ok(rnd(r6[code] / n.cost[tip], 100) == F["per_musd_vh"][tip], "SF4 gap 1e-6: %s per million unchanged" % tip)
-        ok(abs(r6[code] - ann[tip]) < 120, "SF4 gap 1e-6: %s within 120 vehicle-hours" % tip)
-    ok(max(r5, key=r5.get) == "C", "SF4 gap 1e-5: same call")
-    # SF5 the no-build vehicle-hours read from the loaded network file rather than re-run: every figure the same
-    L = n.loaded
-    for per in ("AM", "PM"):
-        vf = float(((L["AB_VOL_" + per] * L["AB_TIME_" + per] + L["BA_VOL_" + per] * L["BA_TIME_" + per]).sum()) / 60)
-        ok(abs(vf - c["nobuild"][per]) < 0.1, "SF5 loaded file's %s VHT within 0.1 of the re-run" % per)
-    # SF6 the Ferry Street project's on-ramp lane left out (exit direction only): same call
-    def caps_b_exit(lk, cp, pr):
-        c2 = solve.project_caps(lk, cp, pr)
-        if pr["code"] == "B":
-            for j, l in enumerate(lk):
-                if l["name"] == "Ferry Street exit" and l["a"] == "DT1":
-                    c2[j] = cp[j]
-        return c2
-    r = call_with(proj_caps=caps_b_exit)
-    ok(max(r, key=r.get) == "C", "SF6 Ferry Street exit direction only: same call")
-    # SF7 the Route 9 widening read as the whole Lakeview Road to Quarry Lane stretch (links 1 to 3): same call
-    def caps_a_long(lk, cp, pr):
-        c2 = solve.project_caps(lk, cp, pr)
-        if pr["code"] == "A":
-            for j, l in enumerate(lk):
-                if l["name"] == "Route 9" and l["a"] in ("F1", "F2", "F3") and l["b"] in ("F1", "F2", "F3", "F4"):
-                    c2[j] = max(c2[j], 3 * net.LANE_CAP["freeway"])
-        return c2
-    r = call_with(proj_caps=caps_a_long)
-    ok(max(r, key=r.get) == "C", "SF7 Route 9 widening read long: same call")
-    # SF8 the Southport package's per-lane capacity read as one direction only: same call
-    def caps_d_one(lk, cp, pr):
-        c2 = solve.project_caps(lk, cp, pr)
-        if pr["code"] == "D":
-            for j, l in enumerate(lk):
-                if l["name"] in pr["streets"] and l["a"] in ("C1", "C2", "DT2"):
-                    c2[j] = cp[j]
-        return c2
-    r = call_with(proj_caps=caps_d_one)
-    ok(max(r, key=r.get) == "C", "SF8 Southport package one direction: same call")
-    # SF9 a different annual factor (260 weekdays, or the peak hour alone): proportional, same call
-    ok(max(ann, key=ann.get) == "TIP-28-009", "SF9 any common annual factor: same call")
-    # SF10 the lane-drop section (FTYPE 12) at the bridge capacity per lane rather than the freeway's: same call
-    cap_b = cap.copy()
-    for j, l in enumerate(links):
-        if l["bottleneck"]:
-            cap_b[j] = l["lanes"] * net.LANE_CAP["bridge"]
-    r = call_with(caps=cap_b)
-    ok(max(r, key=r.get) == "C", "SF10 lane-drop at bridge capacity: same call")
-    # SF11 per million dollars as the award rule rather than the largest benefit: same call
-    ok(max(c["proj"], key=lambda k: c["proj"][k]["per_m"]) == "TIP-28-009", "SF11 per million: same call")
-    # SF12 a zone used as a way through: no zone has two connectors, so no path can
-    conn = pd.Series([l["a"] for l in links if l["ftype"] == "connector" and l["a"] in world.zones() or
-                      (l["ftype"] == "connector" and l["a"].isdigit())])
-    ok(conn.value_counts().max() == 1, "SF12 one connector per zone")
-    # SF13 trip tables at subzone level against the macro zones: subzones share their zone's connector node
-    ok(len({world.ATTACH[m] for m in world.zones().values()}) == 10, "SF13 ten attachment nodes")
-    # SF14 elastic demand or induced trips: filed out (guidance 2.1); the tables are the only demand
-    ok(True, "SF14 fixed demand, filed (guidance 2.1)")
-    # SF16 the Route 9 section's facility type after widening: the coding sheet changes lanes only and the weaving
-    # remains (FTYPE 12); recoded as plain freeway it names the same project
-    def caps_a_ftype(lk, cp, pr):
-        return solve.project_caps(lk, cp, pr)
-    al_f = al.copy()
-    be_f = be.copy()
-    for j, l in enumerate(links):
-        if l["bottleneck"]:
-            al_f[j], be_f[j] = net.VDF["freeway"]
-    res = {}
-    for pr in P.PROJECTS:
-        c2 = solve.project_caps(links, cap, pr)
-        s_ = 0.0
-        for per in ("AM", "PM"):
-            agg = solve.aggregate(tabs[per])
-            v0, t0_, _, _ = net.ue_paths(links, agg, cap, t0, al, be)
-            alx, bex = (al_f, be_f) if pr["code"] == "A" else (al, be)
-            v1, t1_, _, _ = net.ue_paths(links, agg, c2, t0, alx, bex)
-            s_ += (v0 @ t0_ - v1 @ t1_) / 60.0
-        res[pr["code"]] = s_
-    ok(max(res, key=res.get) == "C", "SF16 Route 9 recoded as plain freeway: same call")
-    tipwb = __import__("openpyxl").load_workbook(os.path.join(target, P.FILES["tip"]), read_only=True)
-    ok(all("FTYPE" not in str(r[4]) for r in list(tipwb["Model coding"].iter_rows(values_only=True))[1:]),
-       "SF16 the coding sheet changes no facility type")
-    # SF15 the opening year: the 2028 tables are the only opening-year tables in the pack
-    ok(set(pd.read_csv(os.path.join(target, P.FILES["trips"])).PERIOD) == {"AM", "PM"}, "SF15 one year of tables")
-
-    # ---------------------------------------------------------------- three rules: the analyst test on the clean truth
-    ok(pick["fixed no-build volumes"] == "A" and max(ann, key=ann.get) == "TIP-28-009",
-       "analyst test: the easy route (no re-assignment) files Route 9, the equilibrium files Center Street")
-    ok(o["proj"]["A"]["annual_fixed"] > 1.2 * o["proj"]["A"]["annual"], "the widening loses a share of its link saving")
-    # the binding constraint: under re-assignment the widened lane-drop feeds the Route 9 bridge
-    nb_v = o["nobuild"]["AM"]["v"]
-    bridge = [j for j, l in enumerate(links) if l["name"] == "Route 9 Ashkettle Bridge" and l["a"] == "F4"][0]
-    va = o["proj"]["A"]["AM"]["v"]
-    ok(va[bridge] > nb_v[bridge] and va[bridge] / cap[bridge] > 1.0, "the Route 9 bridge binds once A opens")
-
-    # ---------------------------------------------------------------- ask devices
-    cnt = A.Counts(target)
-    win = cnt.fault_windows()
-    for st, (d, f0, f1, fac, lane, kind) in R.FAULTS.items():
-        ok(win[(st, d)] == (f0.date(), f1.date()), "fault window of %s %s recovered from the pack" % (st, d))
-    for st, (d, f0, f1, fac, lane, kind) in R.FAULTS.items():
-        near = [h for h in R.HOLIDAYS_2025 + [R.DST_ON, R.DST_OFF] if abs((h - f0.date()).days) <= 1]
-        ok(not near, "fault start of %s clear of holidays and clock changes" % st)
-    df_truth, info = R.atr_records(*R.base_assignment())
-    atr = cnt.df
-    ok(len(atr) == len(df_truth), "ATR rows")
-    # carried polls: the hour after each missed poll holds the missed hours' vehicles, status OK, no flag
-    carried = 0
-    for st, runs in info["missed"].items():
-        w = cnt.wide(st)
-        for (day, h), L_ in runs:
-            row = w[(w.D == day) & (w.HR_END == h) & (w.OCC == 0)].index[0]
-            ok((w.loc[row:row + L_ - 1, "s1"] == "NR").all(), "missed poll at %s %s %s" % (st, day, h))
-            ok(w.loc[row + L_, "s1"] == "OK", "the next poll answered")
-            carried += 1
-    ok(carried >= 60, "carried polls across the stations (%d)" % carried)
-    ok(set(atr.STATUS) == {"OK", "NR", "EST"}, "three statuses, no flag for a carried hour")
-    # interior: after a whole-day outage the counters restart, and the first hour back is its own count
-    spells = sum(1 for s in info["outages"].values() for x in s if x[2] == "NR")
-    ok(spells >= 8, "whole-day outages")
-    # every month has every weekday among its valid days, on the golden and on every ladder path
-    for st in cnt.stations:
-        for kw in ({}, dict(faults=False, carry=False), dict(carry=False), dict(faults=False), dict(carry_after_spell=True)):
-            vd = cnt.valid_days(st, **kw)
-            cells = {(d.month, d.weekday()) for d in vd}
-            ok(len(cells) == 84, "every month-weekday cell has a valid day (%s, %s)" % (st, kw))
-    # the probe vendor stamps interval ends: the year's first stamp is 00:15 local, its last 24:00
-    pr = pd.read_parquet(os.path.join(target, P.FILES["probe"]))
-    ok(pr.measurement_tstamp.min() == "2025-01-01T06:15:00Z", "first stamp ends the first interval")
-    ok(pr.measurement_tstamp.max() == "2026-01-01T06:00:00Z", "last stamp ends the year's last interval")
-    ok(len(pr) >= 25000, "probe rows")
-    # validation: the model's vehicles are whole vehicles
-    val = pd.read_csv(os.path.join(target, P.FILES["valid"]))
-    vv = val.VOL_PCE / (1 + val.HV_PCT / 100)
-    ok(np.allclose(vv, vv.round(), atol=0.01), "model vehicles within 0.01 of whole")
-    ok(set(val.STATION) == {"S-0101", "S-0102", "S-0103", "S-0104", "S-0105"}, "validation stations")
-
-    # the filed-rules path (the cracker) misses every ask figure; the mirror is the same on the asks
-    g = A.golden(target)
-    cr1 = cnt.ask1(faults=False)
-    for s in cnt.stations:
-        ok(rnd(cr1[s]["aadt"], 1) != F["aadt"][s], "cracker misses %s AADT" % s)
-        ok("%.3f" % rnd(cr1[s]["k"], 0.001) != F["k_factor"][s], "cracker misses %s K" % s)
-    cr2 = cnt.ask2(target, faults=False)
-    for k in cr2:
-        ok("%.1f" % rnd(cr2[k]["pct"], 0.1) != F["validation_pct"]["%s %s %s" % k], "cracker misses %s validation" % (k,))
-
-    # ---------------------------------------------------------------- figures: edges and agreement
-    for tip in ann:
-        ok(edge(ann[tip], 1000) >= 0.25, "annual edge %s" % tip)
-        ok(edge(c["proj"][tip]["per_m"], 100) >= 0.25, "per-million edge %s" % tip)
-        ok(F["annual_vh"][tip] == rnd(ann[tip], 1000), "figures annual %s" % tip)
-    for s, v in g["ask1"].items():
-        ok(edge(v["aadt"], 1) >= 0.15, "AADT edge %s (%.3f)" % (s, v["aadt"]))
-        ok(edge(v["k"], 0.001) >= 0.15, "K edge %s (%.5f)" % (s, v["k"]))
-        ok(abs(v["k"] - v["k_raw"]) < 1e-5 and "%.3f" % rnd(v["k_raw"], 0.001) == F["k_factor"][s],
-           "K the same on the rounded or the exact AADT %s" % s)
-    for k, v in g["ask2"].items():
-        ok(edge(v["pct"], 0.1) >= 0.25, "validation edge %s (%.4f)" % (k, v["pct"]))
-
-    # ---------------------------------------------------------------- input gates
-    files = sorted(os.listdir(target))
-    ok(len(files) >= 10, "ten or more files (%d)" % len(files))
-    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three or more formats")
-    ok(len(atr) >= 25000, "a file of 25,000 or more rows")
-    ok(len(build.DISTRACTORS) >= 2 and all(P.FILES[k] in files for k in build.DISTRACTORS), "two or more distractors")
-    meta = json.load(open(os.path.join(build.TASK, "metadata.json")))
-    ok(sorted(meta["distractors"]) == sorted(P.FILES[k] for k in build.DISTRACTORS), "distractors named in metadata.json")
-    ok(set(files) == set(P.FILES.values()), "pack holds exactly the filed files")
-    print("checks: %d passed" % N["pass"])
-    return 0
+    bad = [r for r in RESULTS if not r[1]]
+    for tag, ok, detail in RESULTS:
+        print('%s  %s%s' % ('PASS' if ok else 'FAIL', tag, ('  [' + detail + ']') if detail else ''))
+    print('%d checks, %d failed' % (len(RESULTS), len(bad)))
+    sys.exit(1 if bad else 0)
 
 
-if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
+if __name__ == '__main__':
+    main()

@@ -1,339 +1,271 @@
-"""Independent verifier: recomputes every graded figure from the cut pack alone with its own code (its own path
-equilibration written apart from pack.py, its own day and hour rules for the counts, its own clock for the
-probe file) and compares with figures.json at the stated rounding.
+"""Independent recomputation of task307's golden from the shipped files in target/ only (no generator imports).
 
-    python3 task307/generator/verify.py <target dir>
+    python3 task307/generator/verify.py          exit 0 when every graded figure matches figures.json
+
+The functions are shared with ceiling.py, which runs the cracker's and the mirror's handlings on the same pack.
 """
-import csv
 import datetime as dt
+import itertools
 import json
-import math
 import os
+import re
 import sys
-from collections import defaultdict
-
+from zoneinfo import ZoneInfo
 import numpy as np
 import pandas as pd
-from openpyxl import load_workbook
-from scipy.sparse import csr_matrix
-from scipy.sparse.csgraph import dijkstra
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FILES = {
-    "links": "MAMPO_v42_subarea_links_2028NB.csv", "nodes": "MAMPO_v42_subarea_nodes.csv",
-    "trips": "MAMPO_v42_subarea_trips_2028.csv", "tip": "FY2028_TIP_congestion_relief_candidates.xlsx",
-    "atr": "ATR_hourly_volumes_2025.csv", "stations": "ATR_station_inventory_2025.xlsx",
-    "valid": "MAMPO_v42_base2025_station_volumes.csv", "probe": "probe_segment_travel_times_2025.parquet",
-    "segs": "CMP_probe_segment_reference.csv"}
-PERLANE = {1: 1900, 12: 1900, 2: 1800, 3: 1700, 4: 850, 5: 650}
-ALPHA = {1: 0.15, 12: 0.80, 2: 0.80, 3: 0.80, 4: 0.60, 5: 0.75, 9: 0.0}
-BETA = {1: 6, 12: 6, 2: 6, 3: 6, 4: 4, 5: 4, 9: 1}
-FED_HOLIDAYS = ["2025-01-01", "2025-01-20", "2025-02-17", "2025-05-26", "2025-06-19", "2025-07-04", "2025-09-01",
-                "2025-10-13", "2025-11-11", "2025-11-27", "2025-12-25"]
+TGT = os.path.join(os.path.dirname(HERE), 'target')
+OSLO = ZoneInfo('Europe/Oslo')
+T0 = pd.Timestamp(dt.datetime(2016, 1, 1, tzinfo=OSLO)).tz_convert('UTC')
+T1 = pd.Timestamp(dt.datetime(2027, 1, 1, tzinfo=OSLO)).tz_convert('UTC')
+NH = int((T1 - T0) / pd.Timedelta(hours=1))
+STATION_OF = {'Øvre Sørdal': 'OSD', 'Sørdal': 'SDL', 'Nesvik': 'NSV'}
 
 
-def r(v, u):
-    return math.floor(v / u + 0.5) * u
+def hidx(d, h=0):
+    """Hour index of local midnight (or hour h) of a date."""
+    return int((pd.Timestamp(dt.datetime(d.year, d.month, d.day, h, tzinfo=OSLO)).tz_convert('UTC') - T0) / pd.Timedelta(hours=1))
 
 
-# ---------------------------------------------------------------- the call
-class Assignment:
-    def __init__(self, target):
-        L = pd.read_csv(os.path.join(target, FILES["links"]))
-        self.zones = set(pd.read_csv(os.path.join(target, FILES["nodes"])).query("CENTROID == 1").N)
-        A, B, T0, CAP, FT, LID = [], [], [], [], [], []
-        for x in L.itertuples():
-            for a, b, n in ((x.A_NODE, x.B_NODE, x.AB_LANES), (x.B_NODE, x.A_NODE, x.BA_LANES)):
-                A.append(a); B.append(b); FT.append(x.FTYPE); LID.append(x.LINK_ID)
-                T0.append(60 * x.LENGTH_MI / x.FF_SPD_MPH)
-                CAP.append(n * PERLANE.get(x.FTYPE, 1))
-        self.lid = np.array(LID); self.ft = np.array(FT)
-        self.t0 = np.array(T0); self.cap0 = np.array(CAP, float)
-        self.al = np.array([ALPHA[f] for f in FT]); self.be = np.array([BETA[f] for f in FT], float)
-        nodes = sorted(set(A) | set(B))
-        self.ix = {v: i for i, v in enumerate(nodes)}
-        self.a = np.array([self.ix[v] for v in A]); self.b = np.array([self.ix[v] for v in B])
-        self.arc = {(i, j): k for k, (i, j) in enumerate(zip(self.a, self.b))}
-        self.nn = len(nodes)
-        tr = pd.read_csv(os.path.join(target, FILES["trips"]))
-        self.od = {p: g for p, g in tr.groupby("PERIOD")}
-        wb = load_workbook(os.path.join(target, FILES["tip"]), read_only=True)
-        self.cost = {row[0]: float(row[3]) for row in list(wb["Candidates"].iter_rows(values_only=True))[1:]}
-        self.code = defaultdict(list)
-        for row in list(wb["Model coding"].iter_rows(values_only=True))[1:]:
-            self.code[row[0]].append(row)
-
-    def caps(self, tip):
-        c = self.cap0.copy()
-        for _, link, a, b, change, fr, to in self.code.get(tip, []):
-            m = self.lid == link
-            if "LANES" in change:
-                c[m] = to * np.array([PERLANE[f] for f in self.ft[m]])
-            else:
-                c[m] = c[m] / fr * to
-        return c
-
-    def tt(self, v, c):
-        return self.t0 * (1 + self.al * np.where(self.al > 0, v / c, 0) ** self.be)
-
-    def aon(self, t, od):
-        # a zone is never a way through: arcs leaving a zone carry only that zone's own trips
-        w = t.copy()
-        G = csr_matrix((w + 1e-12, (self.a, self.b)), shape=(self.nn, self.nn))
-        y = np.zeros(len(t))
-        origins = sorted(set(od.I))
-        dist, pred = dijkstra(G, indices=[self.ix[o] for o in origins], return_predecessors=True)
-        row = {o: i for i, o in enumerate(origins)}
-        for o, d, q in zip(od.I, od.J, od.TRIPS):
-            i = row[o]; cur = self.ix[d]; s = self.ix[o]
-            while cur != s:
-                p = pred[i, cur]
-                y[self.arc[(p, cur)]] += q
-                cur = p
-        return y, sum(q * dist[row[o], self.ix[d]] for o, d, q in zip(od.I, od.J, od.TRIPS))
-
-    def sp(self, t, origins):
-        G = csr_matrix((t + 1e-12, (self.a, self.b)), shape=(self.nn, self.nn))
-        return dijkstra(G, indices=[self.ix[o] for o in origins], return_predecessors=True)
-
-    def walk(self, pred, row, o, d):
-        cur, s, arcs = self.ix[d], self.ix[o], []
-        while cur != s:
-            p = pred[row, cur]
-            arcs.append(self.arc[(p, cur)])
-            cur = p
-        return frozenset(arcs)
-
-    def ue(self, od, c, tol=1e-9, iters=400):
-        """path-based equilibration: every OD pair's flow spread over its used paths and moved, a projected Newton
-        step at a time, from each costlier path onto the cheapest, until the relative gap is below tol"""
-        ods = list(zip(od.I, od.J, od.TRIPS))
-        origins = sorted(set(od.I))
-        row = {o: i for i, o in enumerate(origins)}
-        v = np.zeros(len(self.t0))
-        _, pred = self.sp(self.tt(v, c), origins)
-        P = {}
-        for o, d, q in ods:
-            p = self.walk(pred, row[o], o, d)
-            P[(o, d)] = {p: float(q)}
-            v[list(p)] += q
-        gap = 1.0
-        for it in range(iters):
-            t = self.tt(v, c)
-            dist, pred = self.sp(t, origins)
-            low = sum(q * dist[row[o], self.ix[d]] for o, d, q in ods)
-            gap = (v @ t - low) / (v @ t)
-            if gap < tol:
-                break
-            for o, d, q in ods:
-                paths = P[(o, d)]
-                best = self.walk(pred, row[o], o, d)
-                paths.setdefault(best, 0.0)
-                for p in list(paths):
-                    if p == best or paths[p] <= 0:
-                        continue
-                    t = self.tt(v, c)
-                    gp = t[list(p)].sum() - t[list(best)].sum()
-                    if gp <= 0:
-                        continue
-                    r = np.where(self.al > 0, v / c, 0)
-                    h = np.where(self.al > 0, self.t0 * self.al * self.be * r ** (self.be - 1) / c, 0)
-                    den = h[list(p ^ best)].sum()
-                    x = min(paths[p], gp / den) if den > 0 else paths[p]
-                    paths[p] -= x
-                    paths[best] += x
-                    v[list(p)] -= x
-                    v[list(best)] += x
-                for p in [p for p, f in paths.items() if f <= 1e-12 and p != best]:
-                    del paths[p]
-        return v, self.tt(v, c), gap
-
-    def vht(self, od, c):
-        v, t, gap = self.ue(od, c)
-        assert gap < 1e-6, gap          # the documentation's relative gap
-        return v @ t / 60.0, gap
+def num(x):
+    if isinstance(x, (int, float)):
+        return float(x)
+    return float(str(x).replace(',', '.'))
 
 
-def verify_call(target, F):
-    asg = Assignment(target)
-    nb = {p: asg.vht(asg.od[p], asg.caps(None)) for p in ("AM", "PM")}
+def load():
+    D = {}
+    old = pd.read_csv(os.path.join(TGT, 'historian_export_2016_2023.csv'), sep=';', decimal=',')
+    D['old'] = old
+    D['new'] = pd.read_csv(os.path.join(TGT, 'historian_export_2023_2026.csv'))
+    D['map'] = pd.read_csv(os.path.join(TGT, 'historian_tag_map_2023.csv'))
+    D['mh'] = pd.read_csv(os.path.join(TGT, 'maintenance_history.csv'), dtype=str).fillna('')
+    reg = pd.read_excel(os.path.join(TGT, 'unit_register.xlsx'), sheet_name=None)
+    D['units'] = reg['Aggregater']
+    rng = reg['Driftsområder']
+    row = rng[rng['Område'] == 'Begrenset'].iloc[0]
+    D['band'] = (num(str(row.iloc[1]).strip(' %')) / 100, num(str(row.iloc[2]).strip(' %')) / 100)
+    D['insp'] = pd.read_excel(os.path.join(TGT, 'runner_inspections.xlsx'), dtype=str)
+    import pdfplumber
+    with pdfplumber.open(os.path.join(TGT, 'runner_refurbishment_quote_2027.pdf')) as pdf:
+        text = '\n'.join(p.extract_text() for p in pdf.pages)
+    D['quote'] = {m.group(1): float(m.group(2).replace(',', '')) / 1e6
+                  for m in re.finditer(r'^(\w{3}-G\d) R-\d+ shop refurbishment ([\d,]+) ', text, re.M)}
+    return D
+
+
+def old_hour_index(D, dst='infer'):
+    """UTC hour index of each old-historian row (local wall-clock labels)."""
+    ts = pd.to_datetime(D['old']['Tidspunkt'], format='%d.%m.%Y %H:%M')
+    if dst == 'infer':
+        loc = ts.dt.tz_localize(OSLO, ambiguous='infer')
+        return ((loc.dt.tz_convert('UTC') - T0) / pd.Timedelta(hours=1)).astype(int).to_numpy(), np.ones(len(ts), bool)
+    # dedupe on the local label first, as a stacked export with the overlap removed by timestamp would
+    keep = ~ts.duplicated(keep='first').to_numpy()
+    loc = ts[keep].dt.tz_localize(OSLO, ambiguous=True)
+    idx = np.full(len(ts), -1)
+    idx[keep] = ((loc.dt.tz_convert('UTC') - T0) / pd.Timedelta(hours=1)).astype(int).to_numpy()
+    return idx, keep
+
+
+def outages(D):
+    """Logged out-of-service spans per unit: (start hour, end hour)."""
+    mh = D['mh']
+    spans = {}
+    for kind in ('overhaul', 'annual maintenance'):
+        s = mh[mh['event'] == kind + ' start']
+        e = mh[mh['event'] == kind + ' end']
+        for u in s['unit'].unique():
+            a = sorted(s[s['unit'] == u]['date'])
+            b = sorted(e[e['unit'] == u]['date'])
+            for x, y in zip(a, b):
+                spans.setdefault(u, []).append((hidx(dt.date.fromisoformat(x)), hidx(dt.date.fromisoformat(y))))
+    return spans
+
+
+def rtu_dates(D):
+    mh = D['mh']
     out = {}
-    for tip in asg.cost:
-        s = sum(nb[p][0] - asg.vht(asg.od[p], asg.caps(tip))[0] for p in ("AM", "PM"))
-        out[tip] = s * 247 * 2.9
-    bad = []
-    best = max(out, key=out.get)
-    if best != F["award"]:
-        bad.append("award %s" % best)
-    for tip, a in out.items():
-        if r(a, 1000) != F["annual_vh"][tip]:
-            bad.append("annual %s %.1f" % (tip, a))
-        if r(a / asg.cost[tip], 100) != F["per_musd_vh"][tip]:
-            bad.append("per million %s %.1f" % (tip, a / asg.cost[tip]))
-    print("call: %s, annual %s" % (best, {k: round(v) for k, v in out.items()}))
-    return bad
+    for _, r in mh[mh['event'] == 'control system'].iterrows():
+        for name in ('Øvre Sørdal', 'Nesvik', 'Sørdal'):
+            if r['detail'].startswith(name + ' station'):
+                out[STATION_OF[name]] = hidx(dt.date.fromisoformat(r['date']))
+                break
+    return out
 
 
-# ---------------------------------------------------------------- the count stations
-def verify_counts(target, F):
-    rows = list(csv.DictReader(open(os.path.join(target, FILES["atr"]))))
-    wb = load_workbook(os.path.join(target, FILES["stations"]), read_only=True)
-    maint = list(wb["Maintenance 2025"].iter_rows(values_only=True))[1:]
-    series = lambda s: s[:-1] if s.endswith("R") else s
-    # hours in file order per station and direction
-    H = defaultdict(list)
-    for x in rows:
-        H[(series(x["STATION"]), x["DIR"])].append((dt.datetime.strptime(x["DATE"], "%m/%d/%Y").date(),
-                                                     int(x["HR_END"]), int(x["VOLUME"]), x["STATUS"]))
-    stations = sorted({k[0] for k in H})
-    dirs = {s: sorted(d for (ss, d) in H if ss == s) for s in stations}
-    # the work orders that replaced a failed loop or detector card
-    repairs = {}
-    for st, day, wo, txt in maint:
-        t = str(txt)
-        if "open circuit" in t or "crosstalk" in t:
-            d = t.split()[2] if t.startswith("Loop") else t.split()[0]
-            repairs[(series(st), d)] = dt.date.fromisoformat(str(day)[:10])
-    bad = []
-    bad_days = defaultdict(set)
-    bad_hours = defaultdict(set)
-    for s in stations:
-        d1, d2 = dirs[s]
-        A1, A2 = H[(s, d1)], H[(s, d2)]
-        assert len(A1) == len(A2)
-        n = len(A1)
-        nr = [A1[i][3] == "NR" or A2[i][3] == "NR" for i in range(n)]
-        for i in range(n):
-            ok = A1[i][3] == "OK" and A2[i][3] == "OK"
-            # a poll after a missed poll inside a running day carries the missed hours
-            if i and nr[i - 1]:
-                k = i - 1
-                while k >= 0 and nr[k]:
-                    k -= 1
-                if i - 1 - k < 20:
-                    ok = False
-            if not ok:
-                bad_hours[s].add(i)
-                bad_days[s].add(A1[i][0])
-        # faults: the faulted direction's daily share against its share on the same weekday elsewhere in the year
-        for (ss, d), rep in repairs.items():
-            if ss != s:
+def series(D, swap='golden', overlap='once', dst='infer'):
+    """Hourly MW per unit over the record. swap: 'golden' re-assigns the old slots before each RTU replacement from the
+    logged outages, 'map' takes the 2023 tag map as given; overlap: 'once' or 'twice'; dst: 'infer' or 'label'."""
+    tagmap = {r['old_tag']: r['new_tag'].replace('.P', '') for _, r in D['map'].iterrows()}
+    units = list(D['units']['Aggregat'])
+    idx, keep = old_hour_index(D, dst)
+    old = {t: np.zeros(NH) for t in tagmap}
+    for t in tagmap:
+        v = D['old'][t].to_numpy(dtype=float)
+        ok = keep & (idx >= 0) & (idx < NH)
+        old[t][idx[ok]] = v[ok]
+    new_t = pd.to_datetime(D['new']['time_utc'], utc=True)
+    nidx = ((new_t - T0) / pd.Timedelta(hours=1)).astype(int).to_numpy()
+    new_start = nidx.min()
+    old_last = idx[keep].max()
+    S = {u: np.zeros(NH) for u in units}
+    assign = {}
+    if swap == 'golden':
+        spans = outages(D)
+        rtu = rtu_dates(D)
+        for st in ('OSD', 'SDL', 'NSV'):
+            tags = [t for t in tagmap if tagmap[t].startswith(st)]
+            us = [tagmap[t] for t in tags]
+            end = rtu[st]
+            best = None
+            for perm in itertools.permutations(us):
+                score = 0
+                for t, u in zip(tags, perm):
+                    for (a, b) in spans.get(u, []):
+                        a, b = max(a, 0), min(b, end)
+                        if a < b:
+                            score += int((old[t][a:b] == 0).sum()) - int((old[t][a:b] > 0).sum())
+                key = (score, tuple(perm) == tuple(us))
+                if best is None or key > best[0]:
+                    best = (key, perm)
+            assign[st] = (dict(zip(tags, best[1])), end)
+    for t, u in tagmap.items():
+        S[u][:min(old_last + 1, NH)] += 0.0
+    for t in tagmap:
+        src = old[t]
+        st = tagmap[t][:3]
+        if swap == 'golden':
+            perm, end = assign[st]
+            S[perm[t]][:end] += src[:end]
+            S[tagmap[t]][end:new_start] += src[end:new_start]
+        else:
+            S[tagmap[t]][:new_start] += src[:new_start]
+        if overlap == 'twice':
+            S[tagmap[t]][new_start:old_last + 1] += src[new_start:old_last + 1]
+    for u in units:
+        v = D['new'][u + '.P'].to_numpy(dtype=float)
+        S[u][nidx] += v
+    return S, assign
+
+
+def ratings(D):
+    return {r['Aggregat']: float(r['Ytelse (MW)']) for _, r in D['units'].iterrows()}
+
+
+def in_band(S, D):
+    lo, hi = D['band']
+    R = ratings(D)
+    out = {}
+    for u, v in S.items():
+        c = np.round(v * 100).astype(np.int64)
+        out[u] = (c >= int(round(lo * R[u] * 100))) & (c < int(round(hi * R[u] * 100)))
+    return out
+
+
+def inspections(D):
+    rows = []
+    for _, r in D['insp'].iterrows():
+        d = dt.datetime.strptime(r['Dato'], '%d.%m.%Y').date()
+        rep = num(r['Etter reparasjon (cm²)']) if r['Reparert'] == 'Ja' else None
+        rows.append({'runner': r['Løpehjul'], 'date': d, 'unit': r['Aggregat'], 'found': num(r['Funn totalt (cm²)']),
+                     'rep': rep})
+    rows.sort(key=lambda r: (r['date'], r['runner']))
+    return rows
+
+
+def call(D, S, mode='rz', peaker_out=True):
+    """mode 'rz': pitting per hour in the restricted band (golden); 'run': per running hour, the peaker set aside."""
+    R = ratings(D)
+    band = in_band(S, D)
+    count = {u: (band[u] if mode == 'rz' else S[u] > 0) for u in S}
+    ins = [r for r in inspections(D) if r['date'] >= dt.date(2016, 1, 1)]
+    num_, den = 0.0, 0
+    for rn in sorted({r['runner'] for r in ins}):
+        mine = [r for r in ins if r['runner'] == rn]
+        for a, b in zip(mine, mine[1:]):
+            if a['unit'] != b['unit']:
                 continue
-            j = 0 if d == d1 else 1
-            share = defaultdict(list)
-            hourly = []
-            for i in range(n):
-                tot = A1[i][2] + A2[i][2]
-                if i in bad_hours[s] or tot <= 300:
-                    continue
-                sh = (A1[i][2], A2[i][2])[j] / tot
-                hourly.append((A1[i][0], A1[i][1], sh))
-            ref = defaultdict(list)
-            for day, h, sh in hourly:
-                if not (rep - dt.timedelta(days=35) <= day <= rep):
-                    ref[(day.weekday(), h)].append(sh)
-            med = {k: float(np.median(v)) for k, v in ref.items()}
-            x = [(day, abs(math.log(sh / med[(day.weekday(), h)]))) for day, h, sh in hourly
-                 if rep - dt.timedelta(days=35) <= day < rep and (day.weekday(), h) in med]
-            days = sorted({day for day, _ in x})
-            dev = {day: [e for dd, e in x if dd == day] for day in days}
-            faulted = [day for day in days if np.median(dev[day]) > 0.1 or np.mean(np.array(dev[day][-6:]) > 0.1) > 0.8]
-            # back from the work order over the days that have usable hours (an outage day has none and neither
-            # starts nor ends a fault)
-            start = rep
-            for day in sorted(days, reverse=True):
-                if day not in faulted:
-                    break
-                start = day
-            for k in range((rep - start).days + 1):
-                bad_days[s].add(start + dt.timedelta(days=k))
-            for i in range(n):
-                if start <= A1[i][0] <= rep:
-                    bad_hours[s].add(i)
-            if F["fault_windows"]["%s %s" % (s, d)] != [str(start), str(rep)]:
-                bad.append("fault window %s %s %s" % (s, d, start))
-        # AADT, AASHTO method
-        daily = defaultdict(int)
-        for i in range(n):
-            daily[A1[i][0]] += A1[i][2] + A2[i][2]
-        cell = defaultdict(list)
-        for day, v in daily.items():
-            if day not in bad_days[s]:
-                cell[(day.month, day.weekday())].append(v)
-        months = [np.mean([np.mean(cell[(m, w)]) for w in range(7)]) for m in range(1, 13)]
-        aadt = float(np.mean(months))
-        if r(aadt, 1) != F["aadt"][s]:
-            bad.append("AADT %s %.3f" % (s, aadt))
-        two = sorted((A1[i][2] + A2[i][2] for i in range(n) if i not in bad_hours[s]), reverse=True)
-        k = two[29] / r(aadt, 1)
-        if "%.3f" % r(k, 0.001) != F["k_factor"][s]:
-            bad.append("K %s %.5f" % (s, k))
-        # validation at the river bridges
-        if s in ("S-0101", "S-0102", "S-0103"):
-            val = pd.read_csv(os.path.join(target, FILES["valid"]))
-            for j, d in enumerate((d1, d2)):
-                for per, he in (("AM", 8), ("PM", 18)):
-                    vals = [(A1[i], A2[i])[j][2] for i in range(n)
-                            if A1[i][1] == he and A1[i][0] not in bad_days[s] and A1[i][0].weekday() in (1, 2, 3)
-                            and A1[i][0].month in (3, 4, 5, 9, 10) and str(A1[i][0]) not in FED_HOLIDAYS]
-                    cntv = float(np.mean(vals))
-                    q = val[(val.STATION == s) & (val.DIR == d) & (val.PERIOD == per)].iloc[0]
-                    model = q.VOL_PCE / (1 + q.HV_PCT / 100)
-                    pct = 100 * (model - cntv) / cntv
-                    if "%.1f" % r(pct, 0.1) != F["validation_pct"]["%s %s %s" % (s, d, per)]:
-                        bad.append("validation %s %s %s %.4f" % (s, d, per, pct))
-    print("counts: %d stations" % len(stations))
-    return bad
+            if mode == 'run' and peaker_out and a['unit'] == 'SDL-G3':
+                continue
+            start = a['rep'] if a['rep'] is not None else a['found']
+            num_ += b['found'] - start
+            den += int(count[a['unit']][hidx(a['date']):hidx(b['date'])].sum())
+    rate = num_ / den
+    cur = {r['Aggregat']: r['Løpehjul'] for _, r in D['units'].iterrows()}
+    rows = {}
+    for u in S:
+        rn = cur[u]
+        last = [r for r in ins if r['runner'] == rn][-1]
+        p0 = last['rep'] if last['rep'] is not None else last['found']
+        now = p0 + rate * int(count[u][hidx(last['date']):NH].sum())
+        q26 = int(count[u][hidx(dt.date(2026, 1, 1)):NH].sum())
+        cross, p = None, now
+        for y in range(2027, 2032):
+            p += rate * q26
+            if p >= 2400 and cross is None:
+                cross = y
+        if now >= 2400:
+            cross = 2027
+        gen = 0.0
+        if cross is not None:
+            tot = 0.0
+            for y in range(2021, 2026):
+                a = hidx(dt.date(y, 12, 1))
+                b = hidx(dt.date(y, 12, 1) + dt.timedelta(weeks=14))
+                tot += S[u][a:b].sum()
+            gen = tot / 5
+        rows[u] = {'runner': rn, 'last_date': last['date'], 'last_pitting': p0, 'now': now, 'cross': cross, 'gen': gen,
+                   'per_mnok': gen / D['quote'][u], 'rate': rate}
+    order = sorted(rows, key=lambda u: -rows[u]['per_mnok'])
+    return rows, order
 
 
-# ---------------------------------------------------------------- the CMP corridors
-def central_offset(day):
-    """hours behind UTC in US Central time: daylight time from the second Sunday of March to the first Sunday of
-    November"""
-    mar = dt.date(day.year, 3, 8) + dt.timedelta(days=(6 - dt.date(day.year, 3, 8).weekday()) % 7)
-    nov = dt.date(day.year, 11, 1) + dt.timedelta(days=(6 - dt.date(day.year, 11, 1).weekday()) % 7)
-    return 5 if mar <= day < nov else 6
+def asks(S):
+    gen = {u: float(v.sum()) for u, v in S.items()}
+    starts = {u: int(((v[1:] > 0) & (v[:-1] == 0)).sum()) for u, v in S.items()}
+    return gen, starts
 
 
-def verify_probe(target, F):
-    seg = pd.read_csv(os.path.join(target, FILES["segs"]), dtype={"SEGMENT": str})
-    pr = pd.read_parquet(os.path.join(target, FILES["probe"]))
-    utc = pd.to_datetime(pr.measurement_tstamp.str.slice(0, 19))
-    # local end of each interval: try the daylight offset, keep it if the local date agrees with the rule
-    loc5 = utc - pd.Timedelta(hours=5)
-    off = np.array([central_offset(d) for d in loc5.dt.date.unique()])
-    offmap = dict(zip(loc5.dt.date.unique(), off))
-    loc = utc - pd.to_timedelta(loc5.dt.date.map(offmap), unit="h")
-    start = loc - pd.Timedelta(minutes=15)
-    x = pd.DataFrame({"seg": pr.segment_id.values, "start": start.values, "tt": pr.travel_time_seconds.values})
-    x = x[(x.start.dt.weekday < 5) & (~x.start.dt.strftime("%Y-%m-%d").isin(FED_HOLIDAYS))]
+def rnd(x, step):
+    return int(np.floor(x / step + 0.5) * step)
+
+
+def main():
+    D = load()
+    S, assign = series(D)
+    rows, order = call(D, S)
+    gen, starts = asks(S)
+    F = json.load(open(os.path.join(HERE, 'figures.json'), encoding='utf-8'))
     bad = []
-    for cor in sorted(seg.CORRIDOR.unique()):
-        for per, hr, dirs in (("AM", 7, ("NB", "EB")), ("PM", 17, ("SB", "WB"))):
-            sg = seg[(seg.CORRIDOR == cor) & seg.DIR.isin(dirs)]
-            ff = sum(3600 * l / s for l, s in zip(sg.LENGTH_MI, sg.REF_SPEED_MPH))
-            y = x[x.seg.isin(sg.SEGMENT) & (x.start.dt.hour == hr)]
-            g = y.groupby("start").agg(n=("tt", "size"), tot=("tt", "sum"))
-            tt = sorted(g.tot[g.n == len(sg)])
-            p95 = tt[int(math.ceil(0.95 * len(tt))) - 1]
-            pti = p95 / ff
-            if "%.2f" % r(pti, 0.01) != F["pti"]["%s %s" % (cor, per)]:
-                bad.append("PTI %s %s %.5f" % (cor, per, pti))
-    print("probe: %d rows" % len(pr))
-    return bad
 
-
-def main(target):
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    bad = verify_counts(target, F) + verify_call(target, F)
+    def chk(name, got, want):
+        if got != want:
+            bad.append('%s: got %r, figures.json %r' % (name, got, want))
+    chk('chosen', order[0], F['call']['chosen'])
+    chk('runner_up', order[1], F['call']['runner_up'])
+    chk('chosen_gen', rnd(rows[order[0]]['gen'], 100), F['call']['chosen_gen_mwh'])
+    chk('gap', rnd(rows[order[0]]['per_mnok'], 10) - rnd(rows[order[1]]['per_mnok'], 10), F['call']['gap_per_mnok'])
+    for u, f in F['units'].items():
+        r = rows[u]
+        chk(u + ' runner', r['runner'], f['runner'])
+        chk(u + ' last', rnd(r['last_pitting'], 10), f['last_pitting_cm2'])
+        chk(u + ' now', rnd(r['now'], 10), f['now_cm2'])
+        chk(u + ' cross', r['cross'], f['cross_year'])
+        chk(u + ' gen', rnd(r['gen'], 100), f['gen_mwh'])
+        chk(u + ' quote', D['quote'][u], f['quote_mnok'])
+        chk(u + ' per_mnok', rnd(r['per_mnok'], 10), f['per_mnok'])
+        chk(u + ' ask gen', rnd(gen[u], 100), F['asks']['generation_2016_2026_mwh'][u])
+        chk(u + ' ask starts', starts[u], F['asks']['starts_2016_2026'][u])
+    for st, (perm, end) in assign.items():
+        print('slots before the %s RTU replacement:' % st, ', '.join('%s carried %s' % kv for kv in sorted(perm.items())))
     if bad:
-        print("verify: MISMATCH")
-        for b in bad:
-            print("  ", b)
-        return 1
-    print("verify: every graded figure reproduced")
-    return 0
+        print('VERIFY FAIL')
+        print('\n'.join(bad))
+        sys.exit(1)
+    print('VERIFY PASS: call %s over %s, %d graded figures recomputed from target/' % (order[0], order[1], 4 + 9 * len(F['units'])))
 
 
-if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
+if __name__ == '__main__':
+    main()
