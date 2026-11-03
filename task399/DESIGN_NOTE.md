@@ -1,77 +1,87 @@
 # task399 design note
 
-Architecture 2, drawn 2026-11-03 (wave 7, Root-Cause lane, sathay3012), numbered from seed RC05 (a regional
+Architecture 3, drawn 2026-11-03 (wave 7, Root-Cause lane, sathay3012), numbered from seed RC05 (a regional
 electricity distributor choosing one reliability programme from five, where the costliest cause leaves no record of
-its own). The seed's world collided at the draw screen; architecture 1 (Quantitative Finance) was spent at the draw
-when it landed in task398's cell (`## Tried and rejected`, the card's lineage). Kept from the seed: the decision (one
-programme funded from a catalogue of five), the quantity in kind (the events each programme's cause accounted for over
-the last twelve months) and the kernel, a cost that leaves no record of its own.
+its own). The seed's world collided at the draw screen; architecture 1 (Quantitative Finance) was spent at the draw in
+task398's cell and architecture 2 (a bus operator's drivers' rest) at the draw as a template of shipped task121 v6
+(`## Tried and rejected`, the card's lineage). Kept from the seed: the decision (one programme funded from a catalogue
+of five), the quantity in kind (what each programme's cause cost over the last twelve months) and the kernel, a cost
+that leaves no record of its own: a search that found no road-test slot leaves no trace of the shortage.
 
-Morrowbank Regional Buses, the state-owned operator in a fictional Australian regional city, runs its routes from one
-depot with drivers on duties of eight to ten hours, each duty a chain of timetabled trips on one bus with a scheduled
-stand at the terminus between trips. Its buses record harsh-braking events and its drivers report collisions, and the
-safety events per driving hour rose in the twelve months to 30 September 2026. The executive team funds one safety
-initiative from five in the 2027 budget.
+Norland Driver Services, a fictional Canadian province's licensing agency, books road tests through a self-service
+portal that offers the slots open at each test centre within the next six weeks. New drivers licensed fell in the twelve
+months to 30 September 2026. The executive team funds one 2027 initiative from five: the portal's booking redesign
+(released March 2026), more examiner shifts, a hazard-perception practice module, a fee rebate, no-show reminders.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task399.json`, architecture v2, registered 2026-11-03 with architecture 1
-  in its lineage. `guard.py check` on the registered card (task398 visible): WARN only (first names Patrick, Amanda and
-  Karen each in one older build; government_agency overused; Gate G decomposition_attribution repeats task398). The
-  first names are answered here: every full name is new. Nearest driver task121 v6 (0.06), differentiated on the card.
-- **Pairing:** Human Factors and Ergonomics (client domain) / `workload-fatigue-shift-analysis` / Root-Cause Analysis.
-- **Objective and call:** what the 2027 safety budget funds, decided by the safety events each initiative's cause
-  accounted for over the closed twelve months; the initiative runs in 2027, nothing is forecast.
-- **Shape:** 18, hypotheses against evidence: five initiatives, each credited with its cause's excess events, plus the
-  call, the runner-up and the gap; the patronage ask adds a figure per route. Arithmetic in `## Ask sheet`.
-- **Strategy and Gate G:** `causal_design` (two exposures move together on the calendar of a duty, time on duty and
-  time driven since the last real rest, and only the rest the bus actually gave separates them), Gate G
-  `decomposition_attribution` (each initiative credited with its cause's excess events). Gap time (the rest the
-  schedule promises against the rest taken); generator G3 (record against operation).
+- **Card:** `.claude/skills/fingerprint/cards/task399.json`, architecture v3, registered 2026-11-03 with architectures
+  1 and 2 in its lineage. `guard.py check` on the draft: BLOCK test.same_puzzle_older against task121 v4 (gap,
+  pattern and decision type) and people.first Melissa; cleared by the differentiation line against task121 (and lines
+  against task307 and task254, the nearest drivers) and by drawing Christopher Wolfe instead. Re-checked on the
+  registered card as the last act of stage 1: WARN only (first name Christopher in one older build, government_agency
+  overused); the full names are new.
+- **Pairing:** Product Analytics (client domain) / `funnel-journey-analysis` / Root-Cause Analysis; the subdomain has
+  never been drawn.
+- **Objective and call:** where in the permit-to-licence journey the fall came from and which initiative removes it,
+  judged on the closed twelve months; the initiative runs in 2027, nothing is forecast.
+- **Shape:** 09, a funnel of stages for a fall: each stage's volume, rate and the candidates it lost against the prior
+  year, plus the call, the runner-up and the gap. Arithmetic in `## Ask sheet` at stage 2.
+- **Strategy and Gate G:** `binding_constraint` for both: the examiners' slot stock is the limit, and the limit itself
+  moves the naive pick off the booking redesign. Gap objective (the stage that shows the loss is not the stage that
+  causes it); generator G3 (the portal records a search with no booking; the scheduling system shows no slot was open).
 - **Furniture:** forum `executive_team`, forcing event `budget_or_appropriation`, org family `government_agency`, role
-  family `operations_director` (the general manager, bus operations), context artifact `register` (the 2027 safety
-  initiative register), calibration none. None is held by task398, task277 or task274.
-- **People** (`guard.py names --geo Australia --seed 399`): Patrick Nichols (general manager, bus operations), Amanda
-  Sherman (safety and fatigue manager), Karen Sanchez (network planning manager). None appears in the prompt.
-- **Data-native sentence:** Morrowbank's duties are built so every driver stands ten minutes or more at the terminus
-  between trips, but a trip that arrives late leaves on time, so in the afternoon peak the stand is driven through and
-  the rest exists only in the duty schedule; the vehicle location system records each trip's actual arrival and the
-  next trip's actual departure, and nothing else does.
-- **The abstraction sentence:** "the rest a worker actually got is rebuilt from the operation's own event record, trip
-  by trip, because the schedule records rests the operation worked through; measured on it, a rise the schedule puts
-  on long shifts belongs to the lost rests". task121 v6 builds rest before a shift from consecutive rostered shifts and
-  never doubts the roster; task303 strips upstream events by simultaneity; task202 places a load by density; none
-  rebuilds a scheduled rest from the operation's arrivals and departures, so the sentence fits none of them.
-- **Library test:** the golden is not a named correction. The field's analysis (fatigue risk from duty hours, time
-  since the last break and time of day, the schedule-based fatigue index) sits at rung 1 and files shorter duties; the
-  step is doubting that the scheduled stand was a rest, which no field marks.
-- **Sources** (synthetic, generated by `generator/` from seed 399, invented city, operator and people, CC BY 4.0,
-  recorded in `metadata.json`): written at stage 3.
+  family `product_manager`, context artifact `operations_log` (the scheduling system's slot log), question form
+  `where`. None is held by task398, task277 or task274; shape 09 and `where` differ from task121's 18 and `what`.
+- **People** (`guard.py names --geo Canada --seed 399`): Eric Davis (product manager, road-test booking), Brian
+  Williams (director, testing operations), Christopher Wolfe (examiner workforce planning). None is in the prompt.
+- **Data-native sentence:** the portal offers only the slots open within six weeks at the centre searched and logs a
+  search that ends without a booking exactly as it logs one where the user simply left, while the scheduling system
+  logs every slot released from an examiner's shift, every booking and every cancellation returned to the pool, so the
+  shortage exists only as a stock rebuilt day by day from the scheduling system.
+- **Semantic screen** (`guard.py mechanisms --objective root-cause`, one line per build on the insight it spends):
+  task13 re-attributes outcomes from an exceptions-only log where absence means success; task11 a threshold rebate
+  that makes the shallowest discount pay, seen only on a rebuilt ledger; task36 a filed rule excluding the largest
+  candidate because an agreement already remedies it; task50 the share of each candidate's exposure inside a funded
+  window, projected by a filed issue order; task72 booking a movement to the owner whose agreement covered each piece;
+  task84 identical concurrently live units competing on a key nothing is keyed on; task111 which cause still operates
+  in the forward window (overflow work landing late in the day); task500 a matched-reference method pinned by two
+  certified statements; task129 a rise booked to a maintenance provider that scales with each unit's surroundings;
+  task121 the conditions each response or event was made under (v4 journey conditions, v6 the rest before a shift);
+  task202 the share of each input reaching the layer the response draws on; task398 an exposure rule driven by the
+  whole's own path. **Is the new decisive step any of them in other nouns?** No: it rebuilds a stock (open slots per
+  centre and day) from releases, bookings and cancellations and shows a funnel stage's loss sat where that stock was
+  empty; nothing on file reads a stage's loss against a capacity stock behind the journey. The nearest are task121 v4
+  (it conditions ratings on ambient journey conditions, no stock and no stage) and task111 (capacity overflow, but its
+  step is which cause survives into a forward window).
+- **Slots, run twice:** mechanism nouns (slot, capacity, inventory, booking): task179 (parole and jail bookings),
+  task147 (a hotel block's bookings replayed against a cap, a forecast's order of operations) and task456 (a converter's
+  VOC bypass), none this insight; setting nouns (driving test, examiner, learner, licence, portal): task130 (a licence
+  register) and task277 (a portal), neither this world.
+- **Library test:** the golden is not a named correction; the field's funnel reading (stage rates, release cohorts,
+  segment cuts) sits at rung 1 and files the booking redesign.
 
 ## Default path
 
-1. Convert the telematics events (UTC) to local time across the October and April clock changes, join each harsh
-   braking event and collision to the bus's trip and duty in the vehicle location records, and the duty to its driver.
-2. Measure each event's exposure the field's way from the duty schedule: hours into the duty, time since the last
-   scheduled stand of ten minutes or more, night hours, the driver's first year, the driver's first weeks on the
-   electric buses.
-3. Rate events per driving hour under each initiative's condition against the hours without it, the other conditions
-   held alike, and credit each initiative with its excess events.
-4. Fund the largest: the late-duty hours carry the largest excess, and the stand condition carries none, because the
-   schedule never runs past two and a half hours without a stand.
+1. Build the permit-to-licence funnel for each twelve months (permits reaching eligibility, portal searches, bookings,
+   tests sat, passes, licences issued), across the portal's search log and the testing records.
+2. Compare each stage's conversion year on year: the search-to-booking stage carries the largest fall.
+3. Segment that stage by release, device and centre: the fall starts with the March 2026 booking redesign and sits on
+   the redesigned flow.
+4. Fund the booking redesign's rework.
 
-Ends on: shorter duties, credited with about 230 excess safety events (provisional until the stage 2 harness).
+Ends on: the booking redesign (provisional figures at stage 2).
 
-Golden: timetable recovery time, about 400 excess safety events, against new-driver mentoring as the runner-up; shorter
-duties near zero (provisional).
+Golden: more examiner shifts, the search-to-booking loss read against the slot stock open when each search ran
+(provisional).
 
 ## Stump sentence
 
-A competent solver joins each safety event to its duty, measures fatigue the field's way from the duty schedule (hours
-into the duty, time since the scheduled stand) and funds shorter duties, credited with about 230 excess safety events
-(Ends on: shorter duties); the step that lands it there is taking the scheduled terminus stands as rest, when the
-vehicle location records show late-running trips turning straight round, and measured on the rest drivers actually got
-the excess belongs to timetable recovery time.
+A competent solver builds the permit-to-licence funnel, finds the search-to-booking stage carries the largest fall and
+that it lines up with the March 2026 booking redesign, and funds the redesign (Ends on: the booking redesign); the step
+that lands it there is reading the stage's loss as the portal's, when the scheduling system's releases, bookings and
+cancellations show no slot open within six weeks at the centre searched for most of the failed searches, which puts the
+fall on examiner capacity.
 
 ## Three rules
 
@@ -124,3 +134,10 @@ Drafted at the draw; completed and measured at stage 2.
   twice; moved to bus duties, where the rest is a terminus stand and the operation's own record is the trip log.
 - A parcel sortation hub with the same missed-break mechanism: org family logistics_or_3pl is held by task277 (BLOCK
   ban.org_family), and pick and sort accuracy is task277's own quantity.
+- Architecture 2 itself (Human Factors, `workload-fatigue-shift-analysis`: Morrowbank Regional Buses, whose drivers'
+  terminus stands the duty schedule promised were driven through by late trips, rebuilt from the vehicle location
+  records), spent at the draw on 2026-11-03 before any data was cut: the same cell and the same decisive insight as
+  shipped task121 v6 (the rest each worker really had, rebuilt from the operator's own records, while the obvious
+  candidate is wrong), with nine axes equal to task121 (domain, subdomain, objective, shape 18, Gate G, strategy,
+  decision type, question form what, org family); the lexical guard scored it 0.06 and passed it, a template only the
+  semantic read catches. No rest, fatigue or time on task may decide this slot again.

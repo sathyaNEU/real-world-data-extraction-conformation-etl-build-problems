@@ -1,21 +1,34 @@
 {
  "task": "task399",
  "status": "DESIGN",
- "domain": "human-factors-ergonomics/workload-fatigue-shift-analysis",
+ "domain": "product-analytics/funnel-journey-analysis",
  "objective": "root-cause",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-11-03",
- "seed": "RC05 (a regional distributor's one reliability programme); the seed's world collided with task129 and task303 at the draw screen; architecture 1 (Quantitative Finance) was spent at the draw in task398's cell; architecture 2 is a regional bus operator's drivers' safety events",
- "stump": "A competent solver joins each safety event to its duty, measures fatigue the field's way from the duty schedule (hours into the duty, time since the scheduled stand) and funds shorter duties; the step that lands it there is taking the scheduled terminus stands as rest, when the vehicle location records show late-running trips turning straight round, and measured on the rest drivers actually got the excess belongs to timetable recovery time.",
- "architecture": 2,
+ "seed": "RC05 (a regional distributor's one reliability programme); the seed's world collided at the draw; architecture 1 (Quantitative Finance) spent at the draw in task398's cell; architecture 2 (bus drivers' rest) spent at the draw as a template of task121 v6; architecture 3 is a provincial licensing agency's road-test booking journey",
+ "stump": "A competent solver builds the permit-to-licence funnel, finds the search-to-booking stage carries the largest fall and that it lines up with the March 2026 booking redesign, and funds the redesign; the step that lands it there is reading the stage's loss as the portal's, when the scheduling system's releases, bookings and cancellations show no slot open within six weeks at the centre searched for most of the failed searches, which puts the fall on examiner capacity.",
+ "architecture": 3,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "guard.py check WARN on the registered card 2026-11-03 (first names in older builds; nearest driver task121 v6 at 0.06, differentiated)"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "guard.py check WARN on the registered card 2026-11-03 (first name Christopher in one older build; government_agency overused); test.same_puzzle_older against task121 v4 cleared by differentiation; semantic screen in ## Draw"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: the clean-truth generator for the bus world (duties, trips, events), the ladder and the pricing sequence, then the design note's remaining sections, prompt.txt and precut.py",
+ "resume": "stage 2: write generator/world.py for the booking journey (permit holders reaching eligibility by month, examiner shift rosters releasing slots per centre and day, the portal's six-week search window, bookings, cancellations returned to the pool, tests sat and passed), size the stage losses so the search-to-booking fall is the largest on the default path and the slot stock empty for most failed searches; then the ladder and pricing sequence, the remaining note sections, the ask layer (asks off the main call's files) and prompt.txt; precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
