@@ -1,20 +1,20 @@
 {
   "task": "task188",
-  "architecture": "v1",
-  "drawn": "2026-10-13",
-  "slot_note": "Lane AD, wave 2, seed AD11. The seed's world (route-origin paging at a cloud platform) has no client task type serving Anomaly Detection, so under the 10/10 domain rule the draw keeps the seed's decision shape (one scarce engagement for one of eight candidates this week) and moves to epidemiology's surveillance task type.",
-  "domain": "epidemiology-public-health",
-  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
-  "client_domain": "epidemiology-public-health",
-  "niche": "a county vector control district choosing the week's one aerial adulticide zone from CO2 and gravid trap collections and pooled RT-PCR results for West Nile virus",
+  "architecture": "v2",
+  "drawn": "2026-11-03",
+  "slot_note": "Lane AD, re-root of the AD11 slot after architecture 1 (disease surveillance, pooled-test infection rates) was spent on measurement; three 11-01 passes screened 37 Anomaly Detection candidates dead and the 11-03 pass moved the slot to banking's fraud and AML detection task type, a cell holding one live card (task196, scam incidence by capture-recapture).",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a British Columbia credit union's financial intelligence unit choosing which cash-intensive business members it takes into enhanced investigation in the first quarter of 2027, each member's 2026 cash paid in judged against the cash its walk-in trade produces",
   "objective": "anomaly-detection",
-  "shape": "01",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Westbrook, 2.3 estimated West Nile virus-infected Culex females per CO2 trap-night in week 32 (runner-up South Prairie 1.8; flip below 18 per 1,000)",
-  "answer_source": "task188/submission.md block 1; generator/figures.json call, call_figure, runner_up, runner_up_figure, flip_rate_per_1000",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "rule",
+    "objective",
     "population"
   ],
   "pattern": [
@@ -22,81 +22,111 @@
   ],
   "generators": [
     "G14",
-    "G16"
+    "G3"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
-  "stakeholder_role": "the district's operations manager, who books the week's one aerial adulticide application with the contract applicator",
-  "role_family": "field_unit_lead",
-  "scoring_unit": "index points",
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and the policy correctly scores each member's 2026 cash against its trade-and-size peers, against the expected activity it declared, or against its trade's cash share of everything else the account received, and refers honest members that grew or trade large, while the two fronts pass, because their laundered cash and their network's business receipts inflate exactly the measures those routes divide by.",
+  "domain_test": "The deciding quantity is a business member's cash beyond what its walk-in trade produces, the core quantity of cash-intensive business monitoring in anti-money-laundering work, estimated from the card acquirer settlements that measure the same counter trade independently of the cash; with hospitals or megawatt-hours in place of takeaways and salons there are no tills, card terminals or placement of criminal cash, so the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:independent_trade_benchmark_for_cash",
+  "layer1": [
+    "narrative-coded postings: card acquirer settlements, delivery platform payouts, cash channels and business receipts each in their processor's own wording",
+    "core banking timestamps in UTC against Pacific branch business days",
+    "members holding more than one account",
+    "KYC profiles of different review vintages, some years stale",
+    "acquirer monthly merchant statements in PDF carrying gross sales against the net daily settlements",
+    "a member register whose industry codes were set at onboarding",
+    "an LCTR filing log keyed by report number rather than posting"
+  ],
+  "stakeholder_role": "the credit union's financial intelligence unit lead, who takes the first-quarter 2027 investigation slate to the AML compliance committee",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
   "spine": {
-    "file": "rcvcd_surveillance_2024_2026.sqlite (tables trap_nights, catches, pools, pool_tests)",
-    "rows": 57074,
-    "entity": "one species and sex count from one trap-night at one trap site (catches)",
-    "grain": "trap site x trap-night x species x sex",
+    "file": "business_account_postings_2026.csv",
+    "rows": 300000,
+    "entity": "one posting on a business member's account",
+    "grain": "account x posting",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "shift_or_daily_cycle",
-  "org_family": "local_government",
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "United States (North Dakota, Red River Valley: a fictional county vector control district)",
-    "currency": "USD",
-    "org_type": "county vector control district",
+    "geography": "Canada (British Columbia, Lower Mainland)",
+    "currency": "CAD",
+    "org_type": "credit union",
     "invented_names": [
-      "Rindal County",
-      "Rindal County Vector Control District",
-      "Fjelstad",
-      "Ostby Aviation",
-      "Westbrook",
-      "South Prairie",
-      "Old Town",
-      "Riverside South",
-      "North Bottoms",
-      "Maple Ridge",
-      "Coulee Hills",
-      "Airport East"
+      "Harlow Reach Credit Union"
     ],
     "people": [
       "Kristine Kirby",
-      "Philip Orr",
-      "Paige Watkins",
-      "Ethan Ramirez",
-      "Kyle Blair"
+      "Jeffrey Melendez"
     ]
   },
   "deliverables": [
-    "aerial_spray_recommendation.pdf",
-    "zone_season_2026.xlsx",
-    "human_cases_by_zone.png"
+    "fiu_referral_slate_2027q1.docx",
+    "member_cash_benchmark_2026.xlsx",
+    "referred_members_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is a density of affected individuals estimated from grouped tests, where reading each positive group as a single affected individual understates the rate exactly where groups are large and the rate is high, and where the rate measured on individuals sampled by one collection method is carried onto the individuals another method collects, whose members have had more exposure; only the likelihood estimate from the groups drawn from the same collection as the counts ranks the units correctly.",
-  "driver_concrete": "Each zone's infected Culex females per CO2 trap-night is its CO2 catch per trap-night times the infection among the females those CO2 traps caught, estimated by maximum likelihood from pools of up to fifty, not by counting each positive pool as one infected mosquito and not by folding in the gravid-trap pools, which hold only females that have already taken a blood meal.",
-  "stump": "The natural index, each zone's Culex females per CO2 trap-night times the minimum infection rate of all its Culex pools, names Riverside South for the aerial application, because counting one infected mosquito in every positive pool understates the infection in Westbrook's pools of fifty, where more than half are positive, and because the gravid-trap pools of the two town zones carry the infection of females that have already fed into an index of the females the CO2 traps catch.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst reads every field and the protocol correctly and takes the infection rate as the field states it, positive pools over mosquitoes tested, on the CO2-trap pools the question's wording points at: that files South Prairie (1.71 against Westbrook's 1.47). Taken across every pool the zone sent it files Riverside South (2.28), and the likelihood estimate across every pool files Old Town (2.98). Only the likelihood estimate on the CO2-trap pools files Westbrook.",
-  "domain_test": "The deciding quantity is the vector index estimated the way arbovirus surveillance estimates it, the infection of host-seeking Culex females by maximum likelihood from pools of varying size times their CO2-trap abundance, separated from gravid-trap females by their feeding history; with schools or megawatt-hours in place of mosquitoes there are no pools, trap-nights or blood meals, so the task stops making sense.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:pooled_test_likelihood_on_the_sampled_population",
-  "layer1": [
-    "native formats: the county laboratory's pool results as tables in a PDF report",
-    "several sources: district laboratory, county laboratory, field database, site register",
-    "imperfect keys: site codes migrated in June 2026, species codes differing between field sheet and laboratory",
-    "units and time: trap set date against collection date",
-    "genuine overlap: inconclusive pools retested with the final result in a later row",
-    "coverage: trap-nights lost to fan, CO2 and battery failures",
-    "documentation: surveillance protocol and data dictionary"
-  ],
+  "driver": "The decisive quantity is one kind of inflow beyond what a unit's own activity produces, and every benchmark built from the unit's peers, from what the unit declared or from the unit's other inflows moves with the anomaly, because the anomaly's owners set the declaration and supply the other inflows at will, so only the activity a third party records in a separate channel, carried through how that channel relates to the inflow across the whole population, separates the anomaly from size.",
+  "driver_concrete": "Each business member's 2026 cash paid in is judged against the cash its walk-in trade produces, taken as its card acquirer settlements times its own trade's cash-to-card relation across the credit union's book, because the peer group, the member's declared expected activity and its other credits all move with the laundered cash: the fronts declared high expected activity at onboarding and receive their network's business-to-business payments.",
+  "stump": "The solver refers the members its peer scores, declared activity or turnover shares put on top, honest members that grew since onboarding or trade large, and clears the two fronts, because it judges each member's cash against measures their laundered cash and their network's business receipts inflate, when only the walk-in trade their card acquirers settle shows each paid in about four times the cash its counter trade produces.",
   "mechanism_source": "design_note",
   "differentiation": {},
-  "lineage": [],
-  "notes": "2026-11-01: architecture 1 spent (its note's Gate F re-screen of 10-21: the decisive estimator family names one zone of 12 licensed constructions; precut.py exit 1 on the readable decisive rung); the slot re-roots to architecture 2.",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-21 on measurement and confirmed 2026-11-01: the decisive estimator family (pooled-test infection rates by maximum likelihood against the minimum infection rate) names one zone of 12 licensed constructions, so the step is a reflex; shipped 2026-10-13 and left at the portal, pending",
+      "domain": "epidemiology-public-health",
+      "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+      "niche": "a county vector control district choosing the week's one aerial adulticide zone from CO2 and gravid trap collections and pooled RT-PCR results for West Nile virus",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "composition_mix",
+      "decision_type": "pick_one_of_n",
+      "shape": "01",
+      "driver": "The decisive quantity is a density of affected individuals estimated from grouped tests, where reading each positive group as a single affected individual understates the rate exactly where groups are large and the rate is high, and where the rate measured on individuals sampled by one collection method is carried onto the individuals another method collects, whose members have had more exposure.",
+      "shell": {
+        "question form": "which",
+        "second-sentence opener": "in",
+        "rounding opener": "give",
+        "deliverable set": "pdf+png+xlsx"
+      }
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "in",
+      "rounding opener": "give",
+      "deliverable set": "pdf+png+xlsx"
+    }
+  ],
+  "notes": "Re-root 2026-11-03 (architecture 2). Strategy population_selection: the decisive choice is the exposure the cash is measured against (the walk-in trade a third party settles), not a peer group, a declaration or the account's own turnover. decomposition_attribution was the other honest label and is banned in the window (task173).",
+  "registered": "2026-11-03T04:03:35Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "send",
+    "rounding opener": "round",
+    "deliverable set": "docx+png+xlsx"
+  }
 }
