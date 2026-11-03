@@ -153,6 +153,11 @@ def main():
     rr = G.route_rates(P)
     ratio = {k: (rr[(k, 2026)][0] / rr[(k, 2026)][1]) / (rr[(k, 2025)][0] / rr[(k, 2025)][1])
              for k in ("S-ORE>ROM", "N-WST>NWD", "S-WST>SWD", "N-ORE>ROM")}
+    rates = {"%s %d" % (k_[0], k_[1]): 1000.0 * v_[0] / v_[1] for k_, v_ in rr.items() if k_[0] in ("S-ORE>ROM", "N-WST>NWD")}
+    rmarg = {k_: 0.05 - abs(v_ - round(v_, 1)) for k_, v_ in rates.items()}
+    rt_ = min(rmarg, key=rmarg.get)
+    check("bins: the four step-2 rates per 1,000 truck shifts sit at least 7 per cent of a 0.1 bin from an edge (tightest "
+          "%s at %.3f)" % (rt_, rates[rt_]), min(rmarg.values()) >= 0.007, str({k_: round(v_, 3) for k_, v_ in rates.items()}))
     check("B dies: the South pit ore route's rate per truck shift rose at least as much as the North waste route's",
           ratio["S-ORE>ROM"] >= ratio["N-WST>NWD"], str({k: round(v, 2) for k, v in ratio.items()}))
     x = G.vi_incidents(P)
@@ -232,6 +237,10 @@ def main():
           str(gt))
     check("SF8 a trip's tag status is the same on both North gate reads (no trip read once with and once without a tag)",
           PK_TAG_CONSISTENT, "")
+    tv = sorted(PK_GATE_TRUTH, key=lambda x: (x[1], x[0]))
+    close = sum(1 for a_, b_ in zip(tv, tv[1:]) if a_[1] == b_[1] and (b_[0] - a_[0]).total_seconds() < 1200)
+    check("SF7 one vehicle's entries are at least 20 minutes apart (%d closer), so every trip is an entry with its own "
+          "exit between, whatever window a solver uses to collapse a vehicle's repeated reads" % close, close == 0, "")
     os_ = G.overspeed(P)
     edges = [abs(e - 5.0) for v in os_.values() for e in v[2]]
     check("SF10 'peaked more than 5 km/h over' has no run peak within 0.3 km/h of the line (closest %.2f)" % min(edges),
@@ -256,6 +265,13 @@ def main():
           "the run count is the same for any line from the limit to the limit plus 2 at that sample (C1: %s)" %
           (int(pair.sum()), sorted(set(alt.values()))),
           len(set(alt.values())) == 1 and (shared[pair]["last"].values == nxt[pair]["first"].values).all(), "")
+    chg = {}
+    for sg_, grp in P["limits"].groupby("segment"):
+        e_ = sorted(pd.to_datetime(grp["effective_from"]))
+        chg[sg_] = set(d_.normalize() for d_ in e_[1:])
+    on_change = int(sum(1 for sg_, t_ in zip(ow["segment"], ow["tt"]) if t_.normalize() in chg.get(sg_, ())))
+    check("SF11 no ramp window falls on the day its limit changed (%d do), so no run sits between the old and the new "
+          "limit on a change day" % on_change, on_change == 0, "")
     check("SF11 the limit in force: the schedule's dates, not the window's limit_kmh column (which carries today's limit)",
           (P["fms"][(P["fms"]["trigger"] == "OVERSPEED") & (P["fms"]["segment"] == "NRP")]["limit_kmh"].dropna() == 32).all(), "")
     check("SF12 calendar months by the window's trigger time (local); SF13 the ramps are NRP and SRP; SF14 light vehicles "

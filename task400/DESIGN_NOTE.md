@@ -323,14 +323,14 @@ chart's bars and labels (8). The files: 2. The asks: 24 figures. 34 criteria; we
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed statement) | Verdict |
 |---|---|---|
-| A trips | one trip per plate per gate within 30 seconds: 1 of 8 (trips 7,629, 7,768, 7,708 and 7,846 off) | miss |
+| A trips | one trip per plate per gate within 30 seconds: 0 of 8 (trips 7,647, 7,828, 7,683 and 7,876 off) | miss |
 | B ramp times | the schedule's limit, windows that abut in time taken as one run: 2 of 16 (North ramp 50, 64, 55 and 39 runs off) | miss |
 
-Measured by: generator/ceiling.py on the cut pack (target.zip 954bd646; pandas only, no generator code): the cracker
-keeps 3 of the 24 ask figures; the mirror on B keeps the same 3 and 4 of 8 on the call side (the two counts and the
+Measured by: generator/ceiling.py on the cut pack (target.zip 63cfa0bc; pandas only, no generator code): the cracker
+keeps 2 of the 24 ask figures; the mirror on B keeps the same 2 and 4 of 8 on the call side (the two counts and the
 chart).
-Pair ceiling: 42.4 (the cracker 38 + 7 + 6.9 = 51.9; the mirror 19.0 + 7 + 6.9 = 32.9).
-Mirror leakage: 12.5 per cent of ask weight.
+Pair ceiling: 40.1 (the cracker 38 + 7 + 4.6 = 49.6; the mirror 19.0 + 7 + 4.6 = 30.6).
+Mirror leakage: 8.3 per cent of ask weight.
 Stress rows: a response that counts every window keeps the four July ramp figures (no continuation windows before 1
 August); the full includer (North reads paired by the readers' timing whatever the plates, runs read from the shared
 sample) keeps 24 of 24, the residual risk recorded here.
@@ -382,3 +382,35 @@ sample) keeps 24 of 24, the residual risk recorded here.
   screening representativeness; the crusher pad's rung killer moved from its count to its share, because a fourfold
   site-wide rise lifts every location's count; the write-up's attribution now claims only the braking split inside the
   stagger and the unheeded critical alerts, not that the register alone proves the firmware carries the rise.
+- 2026-11-03, stage 4 round 2 (judge DETERMINISTIC, FIX_NOW on the solution side; reader clean; every round-1 finding
+  closed): the chart line in the write-up graded a bar chart with labelled bars where the prompt asks only for a chart
+  of the monthly count, so it now grades that chart with each month's count readable (the golden chart is unchanged).
+  Two residual forks were closed in the generator with no figure moving: 33 same-vehicle north-gate entries 16 to 27
+  seconds apart (a vehicle's next entry is now at least 20 minutes after its last, moved later in the same month, or
+  earlier at a month's end), and a South ramp run on 18 August peaking between the new and the old limit (no ramp
+  window now falls on its limit-change day; such runs moved to the next day of the same month). Only the gate reads
+  and the event windows changed; every document, the prompt and all 38 figures in figures.json are byte-identical or
+  equal to the round-2 pack's.
+
+## Pre-ship check
+
+- **The 10/10 rules, re-read against the built pack (target.zip 63cfa0bc).** Rule 1: the deciding quantity is the share
+  of critical collision warnings operators acted on, estimated alert by alert from the trucks' speed windows; swap in
+  another field's nouns and nothing is left to estimate it from. Rule 2: Layer 1 is the systems' own mess (UTC alerts
+  against local windows, serials against fleet numbers through dated installs, a second gate reader with independent
+  misreads, an FMS release logging continuations, fix-less samples, a restated limit column), none of which decides the
+  call; Layer 2 is the within-stagger comparison. Rule 3: no plant (the notice, the vendor report and the terms are each
+  correct for what they say and rank nothing), no semantics (every field read right still files B, then A), no rule
+  application (no filed sentence names the speed reading, the firmware split or the rollout weeks). Analyst test: the
+  easy route ends on B (the junction, its stage 3 traffic, the notice's 7 July collision). The judge's Gate H: domain
+  pass, layers pass, decisive step analytical (rounds 1 and 2); the reader's question 6: an analytical choice (both
+  rounds).
+- **Gates on the final cut:** checks.py 75 assertions, 0 FAIL (tightest edges: the rollout-week shares 1.29 points of 5
+  under every rule and 0.39 under every reading of the weeks; the step-2 rates named in their own assertion);
+  verify.py 30 figures, 0 mismatch; two byte-identical builds; figures_check 0 absent; precut 0 FAIL, 0 WARN,
+  voice-check exit 0; leak.py REVIEW, no LEAK; guard heart WARN (nearest task191 v3, 0.11, lineage), surface exit 0.
+- **Deliverables:** vi_programme_paper_2027.docx (the call, the two counts, the chart) and vi_workings_2026.xlsx (the
+  two ask tables); office properties scrubbed (H1), pack PDFs carry no library default entries.
+- **Flag carried to the author:** surface promotes task398 against task400 (two apart; decisive gap and decision type
+  collide, pattern differs), for the adjudicated /clone-check if wanted.
+

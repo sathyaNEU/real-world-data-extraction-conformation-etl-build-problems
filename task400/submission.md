@@ -34,7 +34,7 @@ Vehicle interaction incidents rose from 24 in July to October 2025 to 89 in July
 
 1. Call: fund programme C, the collision avoidance alerting review on the haul truck units, for 2027
 2. Vehicle interaction incidents: 89 in July to October 2026, 24 in July to October 2025
-3. Bar chart of vehicle interaction incidents by month from January 2025 to October 2026, each bar labelled with its count
+3. Chart of the monthly count of vehicle interaction incidents from January 2025 to October 2026, each month's count readable
 
 ### vi_workings_2026.xlsx
 
