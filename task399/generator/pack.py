@@ -100,7 +100,7 @@ def addresses(rng, n):
     from faker import Faker
     fk = Faker("en_NZ")
     fk.seed_instance(SEED_PACK + 1)
-    towns = ["Kestrel Bay", "Dunmore", "Ashgrove", "Redcliff", "Port Halsey", "Tarrin", "Ellsmere"]
+    towns = ["Kestrel Bay", "Dunmore", "Ashgrove", "Thornmere", "Port Halsey", "Tarrin", "Ellsmere"]
     return ["%d %s, %s" % (int(rng.integers(1, 240)), fk.street_name(), towns[int(rng.integers(0, len(towns)))])
             for _ in range(n)]
 
@@ -194,8 +194,11 @@ def build_pack(w, out):
         else:
             hdr = ["Court", "Sitting date", "Duty lawyer", "Hours claimed", "Session claimed"]
             body = [(W.COURT_NAME[c], d, l, h, se) for d, c, l, se, h in rr]
+        stamp = {"2024-25": ("2025-07-08T22:10:00Z", "2025-07-09T02:35:00Z"),
+                 "2025-26": ("2026-07-07T21:55:00Z", "2026-07-08T03:20:00Z"),
+                 "2026-27": ("2026-10-30T21:40:00Z", "2026-10-30T23:05:00Z")}[fy]
         write_xlsx(os.path.join(out, "duty_lawyer_returns_%s.xlsx" % fy), [("Returns", hdr, body)],
-                   "Legal Aid Services", "2026-10-30T21:40:00Z", "2026-10-30T21:40:00Z", widths={"Court": 28})
+                   "Legal Aid Services", stamp[0], stamp[1], widths={"Court": 28})
 
     # ---------------------------------------------------------------- police bail summaries and the offence scale
     bs = []
@@ -253,10 +256,10 @@ def _em_files(w, out, rng):
             case.append(("EMA-26-%05d-%d" % (cref[o.order_id], k), ref, o.crn, "%s, %s" % (o.surname, o.given),
                          W.COURT_CODE[o.court], order_date.isoformat(), a, rep.isoformat(),
                          "Suitable" if o.suitable else "Not suitable"))
-        uploads.append((ref, "EM address assessment report", utc_iso(o.filed, 540 + (o.order_id * 37) % 450), who))
+        uploads.append((ref, "EM address assessment report", utc_iso(o.filed, int(rng.integers(540, 990))), who))
         if last and last > o.filed:
             uploads.append((ref, "EM address assessment report (amended)",
-                            utc_iso(last, 540 + (o.order_id * 53) % 450), who))
+                            utc_iso(last, int(rng.integers(540, 990))), who))
     write_xlsx(os.path.join(out, "em_bail_tracker_2025-26.xlsx"),
                [("Tracker", ["Ref", "Surname", "First name", "DOB", "CRN", "Court", "Referral date", "Address",
                              "Assessor", "Report filed", "Outcome", "Status"], legacy)],

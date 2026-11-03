@@ -67,8 +67,13 @@ def em_cracker(t):
         if r["Status"] == "Migrated":
             continue                                   # carried into the case system: keep the case system's copy
         orders.setdefault(r["Ref"].split("/")[0], (day(r["Referral date"]), day(r["Report filed"])))
+    first = {}
+    for u in rcsv(os.path.join(t, "em_document_uploads.csv")):
+        if u["DocumentType"] == "EM address assessment report":     # section 2: the first report filed
+            dd = nz(u["UploadedAt"]).date()
+            first[u["OrderRef"]] = min(dd, first.get(u["OrderRef"], dd))
     for r in case:
-        orders.setdefault(r["OrderRef"], (day(r["OrderDate"]), day(r["ReportFiledDate"])))
+        orders.setdefault(r["OrderRef"], (day(r["OrderDate"]), first.get(r["OrderRef"], day(r["ReportFiledDate"]))))
     return _months(orders.values())
 
 
@@ -119,7 +124,24 @@ def bh_cracker(t):
         while d <= last:
             gone[a["Placement"]].add(d)
             d += dt.timedelta(days=1)
-    return _nights(reg, gone)
+    # clause 4: a placement runs from the night the resident arrives to the night before the resident leaves
+    span = {}
+    for pid, es in ev.items():
+        arr = [x for x, k in es if k == "Resident arrived"]
+        ex = [x for x, k in es if k in ("Resident moved out", "Resident did not return")]
+        outs = [x for x, k in es if k == "Taken into police custody"]
+        backs = [x for x, k in es if k == "Returned from police custody"]
+        ex += [o for o in outs if not [b for b in backs if b > o]]
+        span[pid] = (min(arr).date() if arr else None, min(ex).date() if ex else None)
+    reg2 = []
+    for p in reg:
+        a0, e0 = span.get(p["Placement"], (None, None))
+        q = dict(p)
+        if a0:
+            q["First night"] = a0
+        q["Left"] = e0 if e0 else None
+        reg2.append(q)
+    return _nights(reg2, gone)
 
 
 def bh_mirror(t):

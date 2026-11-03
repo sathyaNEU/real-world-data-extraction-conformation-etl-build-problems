@@ -11,7 +11,7 @@ TASK = os.path.dirname(HERE)
 CALL = "Duty lawyer roster: a second rostered duty lawyer at Kestrel Bay District Court on every sitting day"
 LEVEL1 = ["region_gap_2025", "region_gap_2026"] + ["gap_%s_%s" % (c, y) for c in W.COURTS for y in ("2025", "2026")]
 LEVEL2 = ["kb_avl_gap", "kb_other_gap", "kb_avl_mag_gap", "kb_avl_judges_gap", "kb_other_mag_gap",
-          "kb_other_judges_gap", "kb_avl_unrepresented"]
+          "kb_other_judges_gap"]
 
 
 def figures(w):
@@ -24,7 +24,6 @@ def figures(w):
     for (y, m), v in bh.items():
         out["bh_%d_%02d" % (y, m)] = int(v)
     units = {k: 0.1 for k in F.GRADED_MAIN}
-    units["kb_avl_unrepresented"] = 1
     units.update({k: 0.1 for k in out if k.startswith("em_")})
     units.update({k: 1 for k in out if k.startswith("bh_")})
     out["_units"] = units

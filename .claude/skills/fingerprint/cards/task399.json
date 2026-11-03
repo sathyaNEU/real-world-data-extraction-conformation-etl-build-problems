@@ -66,7 +66,7 @@
       "Kestrel Bay",
       "Dunmore",
       "Ashgrove",
-      "Redcliff"
+      "Thornmere"
     ],
     "people": [
       "Freya Herd",
@@ -79,7 +79,7 @@
     "remand_gap_drill.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
+  "question_form": "which",
   "driver": "The decisive quantity is whether the advocate who stands between an unrepresented case and the decision was in the room when the case was called, read off the advocate's own service record against a second list the same advocate was rostered to serve next door: the advocate's daily presence and volume are flat, the decision-maker who took over the overlapping hours carries the whole widening on a within-decision-maker comparison, and only setting apart the cases called while the advocate was in the other room shows the gap is the same under every decision-maker and belongs to the roster.",
   "driver_concrete": "From March 2026 Kestrel Bay District Court sat a new audio-visual remand list in courtroom 2 on mornings that overlap the custody list in courtroom 1, and the region's duty lawyer roster kept one duty lawyer there; custody-list defendants called while the duty lawyer was on the audio-visual list stood unassisted and were remanded in custody far more often, the community magistrate who took over the custody list that March presides over most of those hours, and only the duty lawyer service's time-stamped record, set against each matter's call time, shows the widening is the roster's and not the bench's or electronically monitored bail's.",
   "stump": "A competent solver measures the first-appearance custody-remand gap within court and judicial officer with the legally relevant factors as controls, finds the widening in the Kestrel Bay custody list under the community magistrate who took it over in March 2026, and funds a judge on the custody list; the step that lands it there is reading a within-officer difference as the officer's, when the duty lawyer service's record and the sitting calendar show the single rostered duty lawyer was serving the new audio-visual remand list next door when most of the widening's matters were called, which puts the gap on the duty lawyer roster.",
@@ -177,6 +177,12 @@
       "fate": "spent at stage 2 on 2026-11-03 before any data was cut: the pricing harness (scratch a3/harness.py, a daily road-test booking queue over two years) measured two one-group-by routes to the golden in all three hiding variants (the busy centres losing 14 per cent of slots; the province's releases held flat by rural top-ups; a quarter of slots released four days ahead): releases by centre fell about 8 per cent at the busy centres and bookings over releases by centre sat at the ceiling there, so the throughput identity (tests sat at a fully booked centre equal its releases) makes the capacity fall one subtraction (readability tests 3 and 6, Gate F's two cheap routes)"
     }
   ],
-  "notes": "Architecture 4 drawn 2026-11-03 after architectures 1 and 2 were spent at the draw and architecture 3 at stage 2 on the pricing harness (lineage). Personas from guard.py names --geo 'New Zealand' --seed 399 (Freya Herd, Julie Smith, Toby Conway; Anthony, Nathan, Gavin, Nicole, Jessica and Alexander were set aside on first-name warnings); the en_AU draw repeated architecture 3's names. gate_g and strategy binding_constraint: one rostered duty lawyer is the limit shared by two simultaneous lists, and that limit moves the naive pick off the bench. The one standing WARN is overuse.org_family (government_agency in 42 builds): a Ministry of Justice region is the honest label. Casey Neal redrawn to Julie Smith on the merged tree (people.last against task480).",
-  "registered": "2026-11-03T09:26:51Z"
+  "notes": "Architecture 4 drawn 2026-11-03 after architectures 1 and 2 were spent at the draw and architecture 3 at stage 2 on the pricing harness (lineage). Personas from guard.py names --geo 'New Zealand' --seed 399 (Freya Herd, Julie Smith, Toby Conway; Anthony, Nathan, Gavin, Nicole, Jessica and Alexander were set aside on first-name warnings); the en_AU draw repeated architecture 3's names. gate_g and strategy binding_constraint: one rostered duty lawyer is the limit shared by two simultaneous lists, and that limit moves the naive pick off the bench. The one standing WARN is overuse.org_family (government_agency in 42 builds): a Ministry of Justice region is the honest label. Casey Neal redrawn to Julie Smith on the merged tree (people.last against task480). question_form aligned to the shell guard.py reads off prompt.txt (the decision clause 'which initiative').",
+  "registered": "2026-11-03T09:26:51Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "remand",
+    "rounding opener": "gaps",
+    "deliverable set": "pdf+xlsx"
+  }
 }

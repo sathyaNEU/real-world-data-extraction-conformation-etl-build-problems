@@ -106,7 +106,7 @@ def main_figures(target):
     for lab, (lo, hi) in (("2025", P1), ("2026", P2)):
         yr = [r for r in first if lo <= r["date"] <= hi]
         f["region_gap_" + lab] = gap(yr)
-        for code, c in (("KBY", "KB"), ("DUN", "DN"), ("ASH", "AG"), ("RED", "RC")):
+        for code, c in (("KBY", "KB"), ("DUN", "DN"), ("ASH", "AG"), ("THM", "RC")):
             f["gap_%s_%s" % (c, lab)] = gap([r for r in yr if r["court"] == code])
     kb = [r for r in first if r["court"] == "KBY" and P2[0] <= r["date"] <= P2[1]]
     f["kb_avl_gap"] = gap([r for r in kb if r["avl"]])
@@ -242,9 +242,12 @@ def documents(target):
         "budget2027_bid_instructions_halsey_coast.pdf": ["Budget 2027", "every first appearance from police custody",
                                                          "no lawyer of record", "percentage points"],
         "em_bail_service_standard_v4.pdf": ["Electronically monitored bail", "the day the court orders the assessment",
-                                            "filed with the court"],
+                                            "filed with the court", "the first assessment report is filed",
+                                            "an amended report is a later document"],
         "bail_support_contract_schedule2.pdf": ["Schedule 2", "at the house at midnight",
-                                                "police custody or in hospital"],
+                                                "police custody or in hospital", "approved leave",
+                                                "the night the resident arrives at the house",
+                                                "neither starts nor extends a placement"],
     }
     for f, phrases in want.items():
         t = pdf_text(os.path.join(target, f))

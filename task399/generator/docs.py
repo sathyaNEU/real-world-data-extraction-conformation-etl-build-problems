@@ -58,7 +58,7 @@ def bid_instructions(path):
          Paragraph("3. The measure", H2),
          Paragraph("Each bid is assessed on one measure: the gap in custody remands at first appearance. For each "
                    "year to 30 September, take every first appearance from police custody heard at the region's four "
-                   "District Courts (Kestrel Bay, Dunmore, Ashgrove and Redcliff), each counted once, on its New "
+                   "District Courts (Kestrel Bay, Dunmore, Ashgrove and Thornmere), each counted once, on its New "
                    "Zealand date. All of them are decided on the day they are heard. The share remanded in custody "
                    "is the share of those first appearances that end with the defendant remanded in custody, "
                    "whatever else the court ordered; a first appearance that ends in a sentence or any other outcome "
@@ -105,9 +105,10 @@ def em_standard(path):
                    "order before deciding an application for electronically monitored bail.", BODY),
          Paragraph("2. Turnaround", H2),
          Paragraph("An assessment's turnaround runs from the day the court orders the assessment to the day the "
-                   "assessment report is filed with the court, counted in calendar days. A court order is one "
-                   "assessment, whatever the number of addresses it names. Assessments are reported in the month in "
-                   "which the court ordered them.", BODY),
+                   "assessment report is filed with the court, counted in calendar days. The turnaround runs to the day the first "
+                   "assessment report is filed; an amended report is a later document and does not move that day. A "
+                   "court order is one assessment, whatever the number of addresses it names. Assessments are reported "
+                   "in the month in which the court ordered them.", BODY),
          Paragraph("3. Target", H2),
          Paragraph("The unit files nine in ten assessment reports within ten calendar days of the court's order.",
                    BODY),
@@ -137,7 +138,10 @@ def contract_schedule(path):
          Paragraph("An occupied night is a night a resident spends at a bail house. A night is dated by the evening "
                    "it begins and is occupied when the resident is at the house at midnight. Nights a resident spends "
                    "in police custody or in hospital are not occupied nights, although the bed is held for the "
-                   "resident.", BODY),
+                   "resident, and a night away on approved leave is not a night at the house. A placement's first "
+                   "night is the night the resident arrives at the house and its last is the night before the "
+                   "resident leaves; a booking or register entry made before the resident arrives or after the "
+                   "resident leaves neither starts nor extends a placement.", BODY),
          Paragraph("5. Reporting", H2),
          Paragraph("The provider reports occupied nights for each house by calendar month.", BODY)]
     _pdf(path, s, "Supported bail accommodation, Schedule 2", "Ministry of Justice",

@@ -143,6 +143,24 @@ def main():
           "duty lawyer roster %.0f remands, a judge on the list %.0f" % (avoided_dl, avoided_judge))
     # SF10: one row per case at first appearance
     check("SF10 one first appearance per case", fa_p.CRN.is_unique, "%d first appearances" % len(fa_p))
+    # SF11 (F4): no custody-list call shares a minute with an AVL list's start or finish that day at Kestrel Bay
+    on_edge = 0
+    for a in w["avl"].itertuples(index=False):
+        calls = set(fa[(fa.court == "KB") & (fa.date == a.date)].call_min)
+        on_edge += int(a.start in calls) + int(a.end in calls)
+    check("SF11 no custody call on an AVL list's start or finish minute", on_edge == 0, "%d on an edge" % on_edge)
+    # SF12 (F1): the EM turnaround ends at the first report; the case system's date column carries the latest
+    up = pd.read_csv(os.path.join(TARGET, "em_document_uploads.csv"), dtype=str)
+    check("SF12 an amended report is its own document in the upload log",
+          set(up.DocumentType) == {"EM address assessment report", "EM address assessment report (amended)"})
+    em_doc = open(os.path.join(TARGET, "em_bail_service_standard_v4.pdf"), "rb").read()
+    check("SF12 the standard files the first report as the turnaround's end (read back by verify.py)", len(em_doc) > 0)
+    # SF13 (F2): a placement runs arrival to departure; SF14 (F3): approved leave is a night away
+    inc0 = list(csv.DictReader(open(os.path.join(TARGET, "bail_house_incidents.csv"), encoding="utf-8")))
+    check("SF13 every placement has its arrival in the incident log",
+          set(e["Placement"] for e in inc0 if e["Type"] == "Resident arrived") >= {e["Placement"] for e in inc0})
+    check("SF14 approved leave sits only on the Away sheet",
+          not any("leave" in e["Type"].lower() for e in inc0))
 
     # ---------------------------------------------------------------- bins (edge distance, every graded figure)
     units = figs["_units"]
@@ -242,6 +260,40 @@ def main():
           abs(b / a - 1) <= 0.10, "%.2f a claimed hour before, %.2f from December 2025" % (a, b))
     check("R3c no copied block: no two Kestrel Bay sitting days share a call sequence",
           fa[fa.court == "KB"].groupby("date").call_min.apply(tuple).duplicated().sum() == 0)
+
+    # H1 and H13: each workbook and PDF carries its own saved stamp, created no later than modified
+    import re as _re
+    import zipfile as _zf
+    stamps = []
+    for x in files + ["../golden/" + g for g in sorted(os.listdir(os.path.join(TASK, "golden")))]:
+        pth = os.path.normpath(os.path.join(TARGET, x))
+        if x.endswith(".xlsx"):
+            core = _zf.ZipFile(pth).read("docProps/core.xml").decode()
+            app_xml = _zf.ZipFile(pth).read("docProps/app.xml").decode()
+            cr = _re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1)
+            mo = _re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+            check("H1 %s names its owner, not the writing library" % os.path.basename(x),
+                  "openpyxl" not in core + app_xml and "<Application>Microsoft Excel</Application>" in app_xml)
+            nsheets = len(_zf.ZipFile(pth).read("xl/workbook.xml").decode().split("<sheet ")) - 1
+            check("H1 %s app.xml lists its %d sheets" % (os.path.basename(x), nsheets),
+                  app_xml.count("<vt:lpstr>") >= nsheets)
+            stamps.append((os.path.basename(x), cr, mo))
+        elif x.endswith(".pdf"):
+            from pypdf import PdfReader
+            r = PdfReader(pth)
+            cr, mo = str(r.metadata.get("/CreationDate")), str(r.metadata.get("/ModDate"))
+            lenient = " ".join((p.extract_text() or "") for p in r.pages)
+            strict = " ".join((p.extract_text() or "") for p in PdfReader(pth, strict=True).pages)
+            check("H25 %s reads the same strictly and leniently" % os.path.basename(x), lenient == strict and lenient)
+            check("H1 %s carries no library banner" % os.path.basename(x),
+                  b"ReportLab" not in open(pth, "rb").read() and b"matplotlib" not in open(pth, "rb").read())
+            stamps.append((os.path.basename(x), cr, mo))
+    check("H13 every document's created stamp is its own", len({s[1] for s in stamps}) == len(stamps),
+          ", ".join("%s %s" % (s[0], s[1]) for s in stamps if [t[1] for t in stamps].count(s[1]) > 1))
+    check("H13 no document modified before it was created",
+          all(s[1].replace("D:", "")[:14] <= s[2].replace("D:", "")[:14] for s in stamps if s[1] and s[2]))
+    check("H9 no file under target/ describes the pack",
+          not any(_re.search(r"readme|dictionar|manifest|field.?notes|codebook|schema", x, _re.I) for x in files))
 
     bad = [r for r in RESULTS if not r[1]]
     for name, ok, detail in RESULTS:

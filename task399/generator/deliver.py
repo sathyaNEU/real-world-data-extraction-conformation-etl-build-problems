@@ -21,7 +21,7 @@ import world as W  # noqa: E402
 MONTH = {10: "Oct", 11: "Nov", 12: "Dec", 1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul",
          8: "Aug", 9: "Sep"}
 MONTHS = [(2025, m) for m in (10, 11, 12)] + [(2026, m) for m in range(1, 10)]
-COURTS = [("Kestrel Bay", "KB"), ("Dunmore", "DN"), ("Ashgrove", "AG"), ("Redcliff", "RC")]
+COURTS = [("Kestrel Bay", "KB"), ("Dunmore", "DN"), ("Ashgrove", "AG"), ("Thornmere", "RC")]
 
 
 def p1(v):
@@ -60,11 +60,13 @@ def workbook(f, path):
     ws.append(["Called at other times", round(f["kb_other_gap"], 1), round(f["kb_other_mag_gap"], 1),
                round(f["kb_other_judges_gap"], 1)])
     ws.append([])
-    ws.append(["Defendants with no lawyer of record called while the AVL list sat", f["kb_avl_unrepresented"]])
-    ws.append([])
     ws.append(["Source: CMS appearance extract and court sitting calendar, pulled 2 November 2026."])
+    ws.cell(row=ws.max_row, column=1).font = Font(italic=True, size=9)
     for col, wdt in (("A", 58), ("B", 18), ("C", 22), ("D", 12)):
         ws.column_dimensions[col].width = wdt
+    ws.freeze_panes = "B4"
+    ws.page_setup.orientation = "landscape"
+    ws.print_title_rows = "3:3"
     em = wb.create_sheet("EM turnaround")
     em.append(["Month ordered", "Average days, order to filed report"])
     for c in "AB":
@@ -74,6 +76,7 @@ def workbook(f, path):
         em.append(["%s %d" % (MONTH[m], y), round(f["em_%d_%02d" % (y, m)], 1)])
     em.column_dimensions["A"].width = 16
     em.column_dimensions["B"].width = 34
+    em.freeze_panes = "A2"
     bh = wb.create_sheet("Bail house nights")
     bh.append(["Month", "Occupied nights, both houses"])
     for c in "AB":
@@ -83,11 +86,33 @@ def workbook(f, path):
         bh.append(["%s %d" % (MONTH[m], y), int(f["bh_%d_%02d" % (y, m)])])
     bh.column_dimensions["A"].width = 16
     bh.column_dimensions["B"].width = 30
+    bh.freeze_panes = "A2"
+    nt = wb.create_sheet("Notes")
+    for line in [
+        ["Notes"],
+        ["As of: every extract pulled 2 November 2026; years run 1 October to 30 September."],
+        ["Gap: section 3 of the Budget 2027 bid instructions. Every first appearance from police custody at the four "
+         "courts, once each on its New Zealand date; the share remanded in custody, no lawyer of record at that "
+         "appearance minus a lawyer of record."],
+        ["EM turnaround: section 2 of the EM bail service standard. Calendar days from the court's order to the "
+         "assessment report's filing, one assessment per order, in the order's month."],
+        ["Occupied nights: clause 4 of the support contract's schedule 2. A night dated by its evening and counted "
+         "when the resident is at the house at midnight; custody and hospital nights excluded."],
+        ["Rounding: gaps to one decimal of a percentage point, days to one decimal, nights whole."],
+    ]:
+        nt.append(line)
+    nt["A1"].font = bold
+    nt.column_dimensions["A"].width = 118
+    for row in nt.iter_rows(min_row=2):
+        for cell in row:
+            cell.alignment = Alignment(wrap_text=True, vertical="top")
     for s in (ws, em, bh):
         for row in s.iter_rows():
             for cell in row:
                 if isinstance(cell.value, float):
                     cell.number_format = "0.0"
+                elif isinstance(cell.value, int):
+                    cell.number_format = "#,##0"
     wb.save(path)
     PP.normalize_ooxml(path, "Freya Herd", "Freya Herd", "2026-11-03T01:40:00Z", "2026-11-03T03:05:00Z",
                        excel=True, company="Ministry of Justice")
@@ -140,41 +165,61 @@ def chart(f):
 
 
 def briefing(f, path):
-    body = ParagraphStyle("b", fontName="Helvetica", fontSize=9.8, leading=13.4, spaceAfter=6)
-    h1 = ParagraphStyle("h1", parent=body, fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=2)
-    h2 = ParagraphStyle("h2", parent=body, fontName="Helvetica-Bold", fontSize=10.6, spaceBefore=6, spaceAfter=3)
-    meta = ParagraphStyle("m", parent=body, fontSize=8.6, textColor=colors.HexColor("#444444"))
-    s = [Paragraph("Budget 2027 bid: custody remand gap at first appearance", h1),
-         Paragraph("Halsey Coast region, criminal court operations. Prepared for the Deputy Secretary's review of "
-                   "regional bids, 2 December 2026.", meta), Spacer(1, 5),
+    body = ParagraphStyle("b", fontName="Helvetica", fontSize=9.6, leading=13.0, spaceAfter=6)
+    h1 = ParagraphStyle("h1", parent=body, fontName="Helvetica-Bold", fontSize=13, leading=16.5, spaceAfter=4)
+    h2 = ParagraphStyle("h2", parent=body, fontName="Helvetica-Bold", fontSize=10.4, spaceBefore=5, spaceAfter=3)
+    meta = ParagraphStyle("m", parent=body, fontSize=8.8, leading=11.6, spaceAfter=1)
+    small = ParagraphStyle("s", parent=body, fontSize=7.8, leading=10, textColor=colors.HexColor("#444444"))
+    s = [Paragraph("To: Deputy Secretary, Regional Operations", meta),
+         Paragraph("From: Freya Herd, Regional Manager, Criminal Court Operations, Halsey Coast", meta),
+         Paragraph("Date: 3 November 2026", meta),
+         Paragraph("Subject: Budget 2027 bid, custody remand gap at first appearance", meta), Spacer(1, 6),
+         Paragraph("The remand gap widened in the Kestrel Bay calls heard while the duty lawyer was on the AVL list",
+                   h1),
          Paragraph("Recommendation", h2),
          Paragraph("Put the duty lawyer roster forward: a second rostered duty lawyer at Kestrel Bay District Court on "
                    "every sitting day.", body),
+         Image(chart(f), width=170 * mm, height=72 * mm),
+         Paragraph("Source: CMS appearance extract and court sitting calendar, pulled 2 November 2026; duty lawyer "
+                   "returns, 2024/25 to 2026/27.", small),
          Paragraph("What moved", h2),
          Paragraph("The gap between defendants with no lawyer of record and defendants with one widened from %s "
-                   "points in the year to September 2025 to %s points in the year to September 2026. The whole of "
-                   "the widening is at Kestrel Bay (%s to %s points); the other three courts moved within a few "
-                   "points either way." % (p1(f["region_gap_2025"]), p1(f["region_gap_2026"]),
-                                           p1(f["gap_KB_2025"]), p1(f["gap_KB_2026"])), body),
+                   "points in the year to September 2025 to %s points in the year to September 2026.<super>1</super> "
+                   "The widening is at Kestrel Bay (%s to %s points); the other three courts moved far less." % (
+                       p1(f["region_gap_2025"]), p1(f["region_gap_2026"]), p1(f["gap_KB_2025"]),
+                       p1(f["gap_KB_2026"])), body),
          Paragraph("Since December 2025 the AVL remand list from the remand centre has sat in courtroom 2 on most "
-                   "Monday to Thursday sittings, while the custody list runs in courtroom 1, and the roster keeps "
-                   "one duty lawyer at Kestrel Bay. Custody-list defendants called while the AVL list was sitting "
-                   "show a gap of %s points; those called at other times show %s points, the same as before the "
-                   "change. The community magistrate who took the custody list in December presides over most of "
-                   "the AVL hours, which is why the gap reads as his at first sight, but his gap at other times is "
-                   "%s points against the judges' %s." % (p1(f["kb_avl_gap"]), p1(f["kb_other_gap"]),
-                                                          p1(f["kb_other_mag_gap"]), p1(f["kb_other_judges_gap"])),
-                   body),
-         Image(chart(f), width=172 * mm, height=73 * mm),
+                   "Monday to Thursday sittings while the custody list runs in courtroom 1, and the roster keeps one "
+                   "duty lawyer at Kestrel Bay. Custody-list defendants called while the AVL list was sitting show a "
+                   "gap of %s points; those called at other times show %s points, against %s for Kestrel Bay's whole "
+                   "custody list in the year before. The community magistrate who took the custody list in December "
+                   "presides over most of the AVL hours, which is why the gap reads as his at first sight, but his gap "
+                   "at other times is %s points against the judges' %s." % (
+                       p1(f["kb_avl_gap"]), p1(f["kb_other_gap"]), p1(f["gap_KB_2025"]), p1(f["kb_other_mag_gap"]),
+                       p1(f["kb_other_judges_gap"])), body),
          Paragraph("Why not the other lines", h2),
          Paragraph("A judge on the custody list would not change the calls made while the duty lawyer is in the "
                    "other courtroom. EM bail capacity matters for how long defendants wait once remanded, but EM "
                    "bail is sought at a later appearance, never at the first. The EM, bail house and reminder lines "
-                   "are costed in the workbook (remand_gap_drill.xlsx).", body)]
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
-                            bottomMargin=16 * mm, title="Budget 2027 bid: custody remand gap", author="Freya Herd",
+                   "are costed in remand_gap_drill.xlsx.", body),
+         Spacer(1, 4),
+         Paragraph("<super>1</super> The gap as section 3 of the bid instructions defines it: every first appearance "
+                   "from police custody at the four courts, once each on its New Zealand date, remanded in custody "
+                   "whatever else the court ordered; no lawyer of record at that appearance minus a lawyer of "
+                   "record, in percentage points.", small)]
+
+    def footer(canvas, doc):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(18 * mm, 10 * mm, "Halsey Coast region, criminal court operations. Budget 2027 bid.")
+        canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "Page %d" % doc.page)
+        canvas.restoreState()
+
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=15 * mm,
+                            bottomMargin=17 * mm, title="Budget 2027 bid: custody remand gap", author="Freya Herd",
                             creator="Freya Herd", producer="Ministry of Justice")
-    doc.build(s)
+    doc.build(s, onFirstPage=footer, onLaterPages=footer)
     PP.normalize_pdf(path, b"D:20261103141000+13'00'", b"D:20261103160500+13'00'")
 
 
@@ -226,14 +271,15 @@ def submission(f, path):
         "7. Occupied nights per clause 4 of bail_support_contract_schedule2.pdf: each placement from its \"Resident "
         "arrived\" incident to its exit incident in bail_house_incidents.csv, less nights in custody or hospital "
         "from the incidents and approved leave from the Away sheet of bail_house_register_2025-26.xlsx, by month.",
-        "8. Put the duty lawyer roster forward.", "",
+        "8. The duty lawyer roster is the only shortlisted line that acts on a first appearance's representation, "
+        "and the widening sits in calls made while the AVL list sat next door with one duty lawyer rostered that day: "
+        "put it forward.", "",
         "## 4. Deliverable Answers", "",
         "### remand_gap_briefing.pdf", "",
         "1. The call: the duty lawyer roster, a second rostered duty lawyer at Kestrel Bay District Court on every "
         "sitting day.",
         "2. Chart on page 1: the gap for the region and each courthouse in both years, then Kestrel Bay's year to "
-        "September 2026 split into calls made while the AVL remand list sat and other calls, each by presiding "
-        "officer.", "",
+        "September 2026 split into calls made while the AVL remand list sat and other calls.", "",
         "### remand_gap_drill.xlsx", "",
         "1. Gap by courthouse, year to September 2025 then 2026, percentage points:",
     ]
@@ -241,12 +287,8 @@ def submission(f, path):
         lines.append("   - %s: %s, %s" % (name, p1(a), p1(b)))
     lines += [
         "2. Kestrel Bay custody list, year to September 2026, percentage points:",
-        "   - Called while the AVL remand list sat: %s (community magistrate %s, judges %s)" % (
-            p1(f["kb_avl_gap"]), p1(f["kb_avl_mag_gap"]), p1(f["kb_avl_judges_gap"])),
-        "   - Called at other times: %s (community magistrate %s, judges %s)" % (
-            p1(f["kb_other_gap"]), p1(f["kb_other_mag_gap"]), p1(f["kb_other_judges_gap"])),
-        "   - Defendants with no lawyer of record called while the AVL list sat: %s" % (
-            "{:,}".format(int(f["kb_avl_unrepresented"]))),
+        "   - Called while the AVL remand list sat: %s" % p1(f["kb_avl_gap"]),
+        "   - Called at other times: %s" % p1(f["kb_other_gap"]),
         "3. EM bail assessment turnaround, average days by order month: %s." % em,
         "4. Occupied nights at the supported bail houses by month: %s." % bh,
     ]

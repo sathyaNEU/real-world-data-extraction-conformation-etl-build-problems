@@ -50,9 +50,11 @@ def zip_target():
     z = os.path.join(TASK, "target.zip")
     with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
         for f in sorted(os.listdir(TARGET)):
-            zi = zipfile.ZipInfo("target/" + f, date_time=(2026, 11, 2, 9, 0, 0))
+            zi = zipfile.ZipInfo(f, date_time=(2026, 11, 2, 9, 0, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zf.writestr(zi, open(os.path.join(TARGET, f), "rb").read())
+    names = zipfile.ZipFile(z).namelist()
+    assert names == sorted(os.listdir(TARGET)) and not any("/" in n for n in names), "H4 archive members"
     return hashlib.sha256(open(z, "rb").read()).hexdigest()
 
 

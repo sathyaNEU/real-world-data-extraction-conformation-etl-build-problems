@@ -38,8 +38,8 @@ BH_SWITCH = dt.date(2026, 6, 1)       # the bail houses' provider moves to its c
 EXTRACT = dt.date(2026, 11, 2)        # the date every extract was pulled
 
 COURTS = ["KB", "DN", "AG", "RC"]
-COURT_NAME = {"KB": "Kestrel Bay", "DN": "Dunmore", "AG": "Ashgrove", "RC": "Redcliff"}
-COURT_CODE = {"KB": "KBY", "DN": "DUN", "AG": "ASH", "RC": "RED"}
+COURT_NAME = {"KB": "Kestrel Bay", "DN": "Dunmore", "AG": "Ashgrove", "RC": "Thornmere"}
+COURT_CODE = {"KB": "KBY", "DN": "DUN", "AG": "ASH", "RC": "THM"}
 COURT_NUM = {"KB": "041", "DN": "043", "AG": "044", "RC": "047"}
 LAMBDA = {"KB": 34.0, "DN": 11.0, "AG": 9.0, "RC": 6.0}          # first appearances from custody per sitting day
 DOW_MULT = [1.45, 0.95, 0.9, 0.9, 1.0]                          # Monday carries the weekend's arrests
@@ -202,6 +202,15 @@ def first_appearances(seed=SEED):
                 t += m["dur"]
             if c == "KB" and sess is not None:
                 sess = _settle_window(sess, {m["call"] for m in order}, d)
+                taken = {m["call"] for m in order}
+                for m in order:
+                    if m["call"] == sess[1]:
+                        nxt = m["call"] + 1
+                        while nxt in taken:
+                            nxt += 1
+                        taken.discard(m["call"])
+                        m["call"] = nxt
+                        taken.add(nxt)
                 avl.append(dict(date=d, court="KB", courtroom="2", start=sess[0], end=sess[1]))
             for m in order:
                 officer = am_officer if m["session"] == "am" else pm_officer
@@ -301,8 +310,12 @@ def later_appearances(fa, avl, seed):
         span = a.end - m2 - (a.start + m1)
         officer = AVL_OFFICERS[int(rng.integers(0, len(AVL_OFFICERS)))]
         avl_officer[a.date] = officer
+        jit = np.random.default_rng([seed, a.date.toordinal()])
+        inner = sorted(int(x) for x in jit.choice(np.arange(1, max(span, 2)), size=max(n - 2, 0),
+                                                  replace=max(n - 2, 0) > max(span - 1, 1))) if n > 2 else []
+        times = ([a.start + m1] + [a.start + m1 + x for x in inner] + [a.end - m2]) if n > 1 else [a.start + m1]
         for k, r in enumerate(due):
-            call = a.start + m1 + (int(round(k * span / (n - 1))) if n > 1 else 0)
+            call = times[k]
             rows.extend(_remand_chain(rng, r, a.date, judges, em_orders, avl_call=call, avl_officer=officer,
                                       last=(k == n - 1)))
     avl = avl.copy()

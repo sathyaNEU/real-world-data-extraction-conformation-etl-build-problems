@@ -385,6 +385,33 @@ byte-clean and arbitrates without carrying a level of its own.
 for a cycling threshold) and task131 (a randomised tariff trial); both share only the pdf and xlsx deliverable
 pair, answered on the card. Personas in the cut pack: Freya Herd only.
 
+## Pre-ship check
+
+Written at the stage-4 hand-off (2026-11-03), with the reader and the judge running on target.zip 5fa60b26; the
+house-fix pass since moved only the three duty lawyer workbooks' saved stamps (docProps/core.xml, content
+unchanged), the archive's member paths (no enclosing folder) and the goldens' presentation.
+- **10/10, rule 1:** the deciding quantity is the bail disparity within court and presiding officer, net of the
+  legally relevant pre-decision factors, followed down the court's lists: the task type's own analysis.
+- **10/10, rule 2:** Layer 1 as listed in `## Three rules`, each produced by its system and neutral on the call
+  (R2 asserted: the offset dropped moves no call, Courtroom 2 is KBY-2 on every AVL sitting, the claim form's
+  column moves touch no figure); the EM and bail-house system changes are ledgered ask devices off the main
+  population. Layer 2 is the comparison the within-officer estimate makes.
+- **10/10, rule 3:** the decisive step is analytical (R3a, the easy route on the clean truth files a judge on the
+  custody list; R3b, the AVL-time split alone moves it to the duty lawyer roster; R3c, no copied block, no
+  planted file). No decoy, no certified replay, no filed method.
+- **Gates on the final cut:** checks.py 124 of 124, verify.py 41 of 41 with the PDFs read back strictly and
+  leniently, two builds byte-identical, figures_check 67 of 67, precut 61 of 61, voice-check PASS, freeze
+  (determinism mode) PASS with figures.json, submission.md and prompt.txt byte-identical; leak.py, heart and
+  surface re-run below on the rebuilt pack.
+- **Held for the stage-4 fix pass** (each a content change, none moving a graded figure, each to be asserted):
+  1. H13: the AVL remand list's calls are evenly spaced inside each sitting in cms_appearances (a fixed
+     increment); draw the interior calls, keep the first and last on the window's margins (SF8).
+  2. H13: EM upload minutes step by 37 per order (a modular pattern); draw them inside the working day.
+  3. H21: "Redcliff" sits one letter from Christchurch's Redcliffs; rename the courthouse (data and the bid
+     instructions' text, so a second reader pass is owed).
+- **Stage 4:** the leak reader's and the judge's reports pending; every finding fixed in one generator pass with
+  the held three, then every gate re-run on the final cut before the ship.
+
 ## Tried and rejected
 
 - Seed RC05's own world (a regional distributor's five reliability programmes: animal guarding, recloser firmware,
