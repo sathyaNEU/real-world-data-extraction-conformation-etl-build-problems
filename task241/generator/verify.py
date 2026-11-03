@@ -15,10 +15,7 @@ from openpyxl import load_workbook
 
 CODES = dict(C="COMPLETE", P="PARTIAL", R="REFUSAL", B="CALLBACK", I="INELIGIBLE", L="LANGUAGE", H="HANGUP", D="DNC",
              A="AMD_MACHINE", X="ABANDONED", AA="AGENT_MACHINE")
-DST_ON, DST_OFF = dt.datetime(2026, 3, 8, 2, 0), dt.datetime(2026, 11, 1, 2, 0)   # US clock changes, local time
-STD = {"Eastern": -5, "Central": -6, "Mountain": -7, "Mountain (Arizona)": -7, "Pacific": -8}
-AREA = {"218": "MN", "320": "MN", "507": "MN", "612": "MN", "651": "MN", "763": "MN", "952": "MN", "608": "WI",
-        "715": "WI", "515": "IA", "712": "IA", "701": "ND", "605": "SD"}
+ZT = {}       # the shipped time zone table: zone, standard offset, daylight offset, 2026 clock changes (local time)
 
 
 def ten(s):
@@ -38,11 +35,13 @@ def read_calls(target):
             if "CallID" in r:
                 x = dict(id=r["CallID"], job=r["JobNo"], phone=ten(r["Phone"]), case=r["CaseID"],
                          placed=dt.datetime.strptime(r["CallStart"], "%m/%d/%Y %H:%M:%S"), agent=r["AgentID"],
+                         answered=dt.datetime.strptime(r["AnswerTime"], "%m/%d/%Y %H:%M:%S"),
                          outcome=CODES[r["Disp"]], sec=int(r["TalkSec"]) + int(r["WrapSec"]), talk=int(r["TalkSec"]),
                          ended=dt.datetime.strptime(r["CallEnd"], "%m/%d/%Y %H:%M:%S"))
             else:
                 x = dict(id=r["call_id"], job=r["job"], phone=ten(r["dialed_number"]), case=r["case_number"],
                          placed=dt.datetime.fromisoformat(r["placed_at"]), agent=r["agent"], outcome=r["outcome"],
+                         answered=dt.datetime.fromisoformat(r["answered_at"]),
                          sec=int(r["talk_seconds"]) + int(r["wrap_seconds"]), talk=int(r["talk_seconds"]),
                          ended=dt.datetime.fromisoformat(r["ended_at"]))
             if x["id"] not in seen:
@@ -51,19 +50,31 @@ def read_calls(target):
     return out
 
 
-def central_offset(t):
-    return -5 if DST_ON <= t < DST_OFF else -6
+def load_zones(target):
+    for r in rows(os.path.join(target, "state_time_zones.csv")):
+        on = dt.datetime.fromisoformat(r["daylight_time_begins_2026"]) if r["daylight_time_begins_2026"] else None
+        off = dt.datetime.fromisoformat(r["daylight_time_ends_2026"]) if r["daylight_time_ends_2026"] else None
+        ZT[r["state"]] = (r["time_zone"], int(r["utc_offset_standard"]), int(r["utc_offset_daylight"]), on, off,
+                          r["other_zone_areas"])
 
 
-def local(t, zone):
-    utc = t - dt.timedelta(hours=central_offset(t))
-    off = STD[zone]
-    if zone != "Mountain (Arizona)":
-        # the clock change happens at 2 am local in every zone; no call sits near one
-        loc_std = utc + dt.timedelta(hours=off)
-        if DST_ON <= loc_std < DST_OFF:
-            off += 1
-    return utc + dt.timedelta(hours=off)
+def offset(state, loc_std):
+    zone, std, dst, on, off, _ = ZT[state]
+    return dst if on and on <= loc_std < off else std
+
+
+def local(t, state):
+    """a Central clock reading taken to the household state's own clock, by the table's offsets and dates"""
+    utc = t - dt.timedelta(hours=offset("MN", t - dt.timedelta(hours=0)))
+    std = ZT[state][1]
+    return utc + dt.timedelta(hours=offset(state, utc + dt.timedelta(hours=std)))
+
+
+def docx_text(path):
+    import zipfile
+    with zipfile.ZipFile(path) as z:
+        x = z.read("word/document.xml").decode("utf-8")
+    return " ".join("".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", p)) for p in re.findall(r"<w:p[ >].*?</w:p>", x, re.S))
 
 
 def main(target, golden, figures, submission):
@@ -98,9 +109,32 @@ def main(target, golden, figures, submission):
                 r_am[job] += 1
             elif outcome == "ABANDONED":
                 r_ab[job] += 1
+    # the same tie at every window from 2 to 150 minutes, from the call's end and from its start
+    by_start = {}
+    for c in calls:
+        by_start.setdefault(c["phone"], []).append((c["placed"], c["job"], c["outcome"]))
+    for v_ in by_start.values():
+        v_.sort()
+    spread = set()
+    for anchor in (by_phone, by_start):
+        for w in (2, 3, 5, 10, 20, 40, 60, 90, 120, 150):
+            ca, cb = {j: 0 for j in jobs}, {j: 0 for j in jobs}
+            for r in first:
+                lst = anchor.get(ten(r["caller"]))
+                st = dt.datetime.fromisoformat(r["started"])
+                if not lst:
+                    continue
+                k = bisect.bisect_right(lst, (st, "~", "~")) - 1
+                if k >= 0 and lst[k][1] in ca and (st - lst[k][0]).total_seconds() <= 60 * w:
+                    if lst[k][2] == "AMD_MACHINE":
+                        ca[lst[k][1]] += 1
+                    elif lst[k][2] == "ABANDONED":
+                        cb[lst[k][1]] += 1
+            spread.add(tuple(ca[j] for j in jobs) + tuple(cb[j] for j in jobs))
     n_am = {j: sum(1 for c in calls if c["job"] == j and c["outcome"] == "AMD_MACHINE") for j in jobs}
     n_ab = {j: sum(1 for c in calls if c["job"] == j and c["outcome"] == "ABANDONED") for j in jobs}
     share = {j: (r_am[j] / n_am[j]) / (r_ab[j] / n_ab[j]) for j in jobs}
+    assert spread == {tuple(r_am[j] for j in jobs) + tuple(r_ab[j] for j in jobs)}, "verify: the window moves a count"
     off = sorted(j for j in jobs if share[j] >= 0.10)
     assert off == sorted(fig["call"]["detection_off"]), ("verify: the call", off)
     for j in jobs:
@@ -124,14 +158,18 @@ def main(target, golden, figures, submission):
             return st_case[c["case"]], c["case"]
         return old_state[(c["job"], c["case"])], old_id[(c["job"], c["case"])]
 
-    zones = {r["state"]: r["time_zone"] for r in rows(os.path.join(target, "state_time_zones.csv"))}
-    outside = {j: 0 for j in jobs}
+    load_zones(target)
+    outside, outside_ans = {j: 0 for j in jobs}, {j: 0 for j in jobs}
     for c in calls:
         if c["job"] in outside:
-            t = local(c["placed"], zones[household(c)[0]])
-            h = t.hour + t.minute / 60 + t.second / 3600
-            outside[c["job"]] += int(h < 8 or h >= 21)
+            st = household(c)[0]
+            assert ZT[st][5] == "", ("verify: a household in a state split between zones", st)
+            for key, tally in (("placed", outside), ("answered", outside_ans)):
+                t = local(c[key], st)
+                h = t.hour + t.minute / 60 + t.second / 3600
+                tally[c["job"]] += int(h < 8 or h >= 21)
     assert outside == fig["deliverables"]["outside_hours"], ("verify: ask A", outside)
+    assert outside_ans == outside, ("verify: ask A moves when the ring is read at the answer", outside_ans)
     # completed interviews
     done = set()
     phone_id = dict(id_phone)
@@ -148,6 +186,24 @@ def main(target, golden, figures, submission):
             if l1["dialed_line"] in line:
                 done.add((line[l1["dialed_line"]], phone_id[ten(l1["caller"])]))
     comp = {j: sum(1 for (jj, _) in done if jj == j) for j in jobs}
+    late = set()
+    for sid, lg in legs.items():
+        l1 = [x for x in lg if x["leg"] == "1"][0]
+        if l1["caller"].startswith("+1") and l1["started"] >= "2027-01-01" and any(x["wrap_code"] == "COMPLETE" for x in lg):
+            late.add(sid)
+    assert late, "verify: the switch log's January 2027 interviews"
+    # the golden's 2026 window is the only difference from counting every COMPLETE in the log: each 2027 interview adds
+    # exactly one case to its own project and nothing else moves
+    with_late = set(done)
+    late_by_job = {j: 0 for j in jobs}
+    for sid in late:
+        l1 = [x for x in legs[sid] if x["leg"] == "1"][0]
+        j = line.get(l1["dialed_line"])
+        if j:
+            with_late.add((j, phone_id[ten(l1["caller"])]))
+            late_by_job[j] += 1
+    comp_late = {j: sum(1 for (jj, _) in with_late if jj == j) for j in jobs}
+    assert all(comp_late[j] - comp[j] == late_by_job[j] for j in jobs), ("verify: the 2027 interviews", comp_late)
     assert {j: f"{v:,}" for j, v in comp.items()} == fig["deliverables"]["completed_interviews"], ("verify: ask B", comp)
     # interviewer hours
     shifts = []
@@ -189,6 +245,22 @@ def main(target, golden, figures, submission):
         assert f"{j}: {outside[j]}\n" in sub and f"{j}: {comp[j]:,}\n" in sub and f"{j}: {got[j]}\n" in sub, j
         assert re.search(r"%s [^\n]*: %d%%, detection %s" % (j, fig["components"]["share_per_cent"][j],
                                                             "off" if j in off else "on"), sub), j
+    # the documents the call and the asks lean on, read back from the pack
+    pol = docx_text(os.path.join(target, "dialer_policy_2027.docx"))
+    assert "fewer than one in ten of the calls the dialer classed as answering machines on that project in 2026" in pol
+    assert "Calls ring only between 8 am and 9 pm in the called household's own local time" in pol
+    assert "stamp every call in the centre's own local time (Central time, with daylight saving time)" in pol
+    assert "An interview counts once, when it is completed." in pol
+    assert "in proportion to each project's talk and wrap time" in pol
+    assert ZT["MN"][3] == dt.datetime(2026, 3, 8, 2, 0) and ZT["AZ"][3] is None, "verify: the table's clock changes"
+    wb = load_workbook(os.path.join(target, "project_register_2027.xlsx"), data_only=True)
+    closed = [r for r in wb["Closed 2026 jobs"].iter_rows(min_row=2, values_only=True) if r[0]]
+    assert closed and all(r[0] not in jobs and "not recurring" in r[3] for r in closed), "verify: the closed jobs"
+    seen_jobs = {c["job"] for c in calls}
+    assert seen_jobs == set(jobs) | {r[0] for r in closed}, ("verify: a dialer job on neither sheet", seen_jobs)
+    from pypdf import PdfReader
+    spec = " ".join(p.extract_text() for p in PdfReader(os.path.join(target, "larkspur_amd_release6.pdf"), strict=True).pages)
+    assert "Balanced (default) 2.1%" in spec.replace("\n", " ") and "collected in 2023" in spec, "verify: the maker's sheet"
     pdf = open(os.path.join(golden, "amd_review_2027.pdf"), "rb").read()
     assert pdf.startswith(b"%PDF") and pdf.count(b"/Type /Page\n") + pdf.count(b"/Type /Page ") + pdf.count(b"/Type /Page/") >= 1
     print("verify: the call (%d off), %d shares, the three asks, the workbook and the write-up agree" % (len(off), len(jobs)))

@@ -9,13 +9,14 @@ import pandas as pd
 LETTERS = dict(C="COMPLETE", P="PARTIAL", R="REFUSAL", B="CALLBACK", I="INELIGIBLE", L="LANGUAGE", H="HANGUP",
                D="DNC", A="AMD_MACHINE", X="ABANDONED", AA="AGENT_MACHINE")
 ZONES = {"Eastern": "America/New_York", "Central": "America/Chicago", "Mountain": "America/Denver",
-         "Mountain (Arizona)": "America/Phoenix", "Pacific": "America/Los_Angeles"}
+         "Mountain (Arizona)": "America/Phoenix", "Pacific": "America/Los_Angeles", "Alaska": "America/Anchorage",
+         "Hawaii-Aleutian": "Pacific/Honolulu"}
 # the North American numbering plan's own assignment of the area codes the pack's numbers carry (public knowledge)
 AREA_STATE = {"218": "MN", "320": "MN", "507": "MN", "612": "MN", "651": "MN", "763": "MN", "952": "MN",
-              "608": "WI", "715": "WI", "515": "IA", "712": "IA", "701": "ND", "605": "SD",
-              "480": "AZ", "602": "AZ", "520": "AZ", "239": "FL", "941": "FL", "727": "FL", "561": "FL",
+              "608": "WI", "715": "WI", "920": "WI", "515": "IA", "712": "IA", "563": "IA",
+              "480": "AZ", "602": "AZ", "520": "AZ", "843": "SC", "864": "SC", "803": "SC", "854": "SC",
               "619": "CA", "760": "CA", "949": "CA", "303": "CO", "719": "CO", "212": "NY", "718": "NY", "914": "NY",
-              "214": "TX", "512": "TX", "312": "IL", "847": "IL"}
+              "314": "MO", "816": "MO", "312": "IL", "847": "IL"}
 NEW_CASE = r"^\d{4}-\d{6}$"
 
 
@@ -30,13 +31,15 @@ def load_calls(target):
         if "CallID" in d.columns:
             d = pd.DataFrame({"call_id": d["CallID"], "job": d["JobNo"], "phone": digits(d["Phone"]), "case": d["CaseID"],
                               "placed": pd.to_datetime(d["CallStart"], format="%m/%d/%Y %H:%M:%S"),
+                              "answered": pd.to_datetime(d["AnswerTime"], format="%m/%d/%Y %H:%M:%S"),
                               "amd": d["AMD"].map({"M": "MACHINE", "H": "LIVE"}), "agent": d["AgentID"],
                               "outcome": d["Disp"].map(LETTERS), "talk": d["TalkSec"].astype(int),
                               "wrap": d["WrapSec"].astype(int),
                               "ended": pd.to_datetime(d["CallEnd"], format="%m/%d/%Y %H:%M:%S")})
         else:
             d = pd.DataFrame({"call_id": d["call_id"], "job": d["job"], "phone": digits(d["dialed_number"]),
-                              "case": d["case_number"], "placed": pd.to_datetime(d["placed_at"]), "amd": d["amd_result"],
+                              "case": d["case_number"], "placed": pd.to_datetime(d["placed_at"]),
+                              "answered": pd.to_datetime(d["answered_at"]), "amd": d["amd_result"],
                               "agent": d["agent"], "outcome": d["outcome"], "talk": d["talk_seconds"].astype(int),
                               "wrap": d["wrap_seconds"].astype(int), "ended": pd.to_datetime(d["ended_at"])})
         parts.append(d)
@@ -89,14 +92,14 @@ def load_hours(target, hhmm=True):
 
 # ---- the main call -------------------------------------------------------------------------------------------------
 
-def returns(calls, inbound):
+def returns(calls, inbound, anchor="ended"):
     """each inbound call from a dialed number (its legs collapsed to the first), tied to the latest outbound call to
-    that number"""
+    that number; the delay measured from the outbound call's end, or from its start"""
     first = inbound[(inbound["leg"] == "1") & inbound["phone"].ne("")].sort_values("started")
-    out = calls[["call_id", "job", "phone", "ended", "outcome"]].sort_values("ended")
-    m = pd.merge_asof(first, out, left_on="started", right_on="ended", by="phone", direction="backward")
+    out = calls[["call_id", "job", "phone", "placed", "ended", "outcome"]].sort_values(anchor)
+    m = pd.merge_asof(first, out, left_on="started", right_on=anchor, by="phone", direction="backward")
     m = m[m["call_id"].notna()].copy()
-    m["delay_min"] = (m["started"] - m["ended"]).dt.total_seconds() / 60.0
+    m["delay_min"] = (m["started"] - m[anchor]).dt.total_seconds() / 60.0
     return m
 
 
@@ -147,8 +150,9 @@ def household_state(calls, cases, route="golden"):
     return st
 
 
-def calling_hours(calls, cases, zones, jobs, route="golden", arizona_dst=False, return_rows=False):
+def calling_hours(calls, cases, zones, jobs, route="golden", arizona_dst=False, return_rows=False, anchor="placed"):
     g = calls[calls["job"].isin(jobs)].copy()
+    g["placed"] = g[anchor]
     g["state"] = household_state(g, cases, route).values
     zmap = dict(zip(zones["state"], zones["time_zone"].map(ZONES)))
     if arizona_dst:
@@ -196,9 +200,9 @@ def completes(calls, inbound, reg, cases, jobs, route="golden"):
     lj = line_jobs(reg)
     if route == "invoiced":                       # every completed row the dialer wrote
         return comp.groupby("job").size().reindex(jobs).fillna(0).astype(int)
-    if route == "cracker":                        # one per case number, plus the line's completes on its first leg
+    if route in ("cracker", "cracker_any_leg"):   # one per case number, plus the line's completes on its first leg
         a = comp.drop_duplicates(["job", "case"]).groupby("job").size().reindex(jobs).fillna(0)
-        ib = inbound_calls(inbound, first_leg_only=True)
+        ib = inbound_calls(inbound, first_leg_only=route == "cracker")
         ib = ib[ib["complete"]].assign(job=lambda d: d["dialed_line"].map(lj))
         return (a + ib.groupby("job").size().reindex(jobs).fillna(0)).astype(int)
     case = case_of(calls, cases)
@@ -207,7 +211,7 @@ def completes(calls, inbound, reg, cases, jobs, route="golden"):
     phone_case = phone_case[~phone_case.index.duplicated()]
     pc = dict(zip(cases["phone"], cases["case_number"]))
     pc.update({k: v for k, v in phone_case.items() if k not in pc and pd.notna(v)})
-    ib = inbound_calls(inbound)
+    ib = inbound_calls(inbound, first_leg_only=route == "record_first_leg")
     ib = ib[ib["complete"]]
     b = pd.DataFrame({"job": ib["dialed_line"].map(lj), "case": ib["phone"].map(pc)})
     u = pd.concat([a, b]).dropna().drop_duplicates()

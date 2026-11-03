@@ -72,8 +72,8 @@ def workbook(path, A):
     notes = [
         "Share answered by a person: the machine-classed calls rung back from the dialed number within 20 minutes, as a "
         "share of the project's machine-classed calls, divided by the same share for its abandoned live answers, which "
-        "hear the same recorded message. Each project on its own calls; the share is the same for any window from 5 "
-        "to 40 minutes.",
+        "hear the same recorded message. Each project on its own calls; the counts are the same for any window from 2 "
+        "to 120 minutes, from the call's start or its end.",
         "Detection off where the share is one in ten or more (2027 dialer policy, section 3).",
         "Outside hours: answered calls that rang before 8 am or after 9 pm in the household's own local time, the "
         "household's state from its case record (calls to another of the household's numbers through the same case).",
@@ -81,7 +81,7 @@ def workbook(path, A):
         "line; a supervisor's verification call does not add an interview.",
         "Interviewer hours: payroll hours (July to December written as hours.minutes) shared in each shift by each "
         "project's talk and wrap time; training shifts with no calls are not charged (policy, section 5).",
-        "KR-2624 Library Users Study, a one-off 2026 study, is not on the 2027 register and is not shown.",
+        P.ONE_OFF[0] + " " + P.ONE_OFF[1] + ", a one-off 2026 study (the register's closed jobs sheet), is not shown.",
     ]
     for k, s in enumerate(notes):
         c = ws.cell(row=t + 2 + k, column=1, value=s)

@@ -10,10 +10,10 @@ import params as P
 
 CENTRAL = "America/Chicago"
 MONTH_PROFILES = {
-    "KR-2614": [0.02, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.12, 0.20, 0.24, 0.10, 0.04],
-    "KR-2615": [0.11, 0.12, 0.12, 0.11, 0.08, 0.02, 0.01, 0.06, 0.11, 0.11, 0.09, 0.06],
-    "KR-2616": [0.16, 0.16, 0.13, 0.07, 0.03, 0.03, 0.03, 0.03, 0.05, 0.07, 0.11, 0.13],
-    "KR-2624": [0.10, 0.14, 0.16, 0.16, 0.16, 0.14, 0.10, 0.04, 0, 0, 0, 0],
+    "KR-2615": [0.02, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.12, 0.20, 0.24, 0.10, 0.04],
+    "KR-2618": [0.11, 0.12, 0.12, 0.11, 0.08, 0.02, 0.01, 0.06, 0.11, 0.11, 0.09, 0.06],
+    "KR-2622": [0.16, 0.16, 0.13, 0.07, 0.03, 0.03, 0.03, 0.03, 0.05, 0.07, 0.11, 0.13],
+    "KR-2656": [0.10, 0.14, 0.16, 0.16, 0.16, 0.14, 0.10, 0.04, 0, 0, 0, 0],
 }
 
 
@@ -208,6 +208,32 @@ def on_the_hour(placed, states):
     return out
 
 
+def no_straddle(placed, answered, states):
+    """the dialer's pacing never starts a ring in the last seconds before 8:00 or 21:00 in the household's clock and
+    has it answered after: such a ring is answered before the hour turns"""
+    placed = pd.Series(pd.to_datetime(placed)).reset_index(drop=True)
+    answered = pd.Series(pd.to_datetime(answered)).reset_index(drop=True)
+    st = pd.Series(states).map(P.STATE_TZ).values
+    lp = pd.Series(np.zeros(len(placed)))
+    shift_p = np.zeros(len(placed))
+    new_ring = (answered - placed).dt.total_seconds().values.copy()
+    for zone in pd.unique(st):
+        ix = np.flatnonzero(st == zone)
+        a = placed.iloc[ix].dt.tz_localize(CENTRAL).dt.tz_convert(zone)
+        b = answered.iloc[ix].dt.tz_localize(CENTRAL).dt.tz_convert(zone)
+        for h in (8, 21):
+            edge = a.dt.normalize() + pd.Timedelta(hours=h)
+            hit = ((a < edge) & (b >= edge)).values
+            gap = (edge - a).dt.total_seconds().values
+            j = ix[hit]
+            g = gap[hit]
+            shift_p[j] = np.where(g < 2, 2, 0)
+            new_ring[j] = g + shift_p[j] - 1
+    p2 = placed - pd.to_timedelta(shift_p, unit="s")
+    a2 = p2 + pd.to_timedelta(new_ring, unit="s")
+    return p2.values, a2.values, (a2 - answered).dt.total_seconds().values
+
+
 def timings(rng, df):
     n = len(df)
     ring = rng.integers(4, 26, n)
@@ -326,6 +352,10 @@ def make():
     sharp = on_the_hour(c["placed"].values, c["state"].values)    # the dialer's pacing never lands on the second
     for col in ("placed", "answered", "connected", "ended"):
         c.loc[sharp, col] = c.loc[sharp, col] + pd.Timedelta(seconds=7)
+    pl, an, moved = no_straddle(c["placed"].values, c["answered"].values, c["state"].values)
+    c["placed"], c["answered"] = pl, an
+    for col in ("connected", "ended"):
+        c[col] = c[col] + pd.to_timedelta(moved, unit="s")
     ids = np.arange(5_400_000, 5_400_000 + len(c)) + rng.integers(0, 3, len(c)).cumsum()
     order = np.argsort(c["placed"].values, kind="stable")
     c["call_id"] = 0
@@ -341,25 +371,50 @@ def make():
     c, shifts, training = staff(np.random.default_rng(P.SEED + 3), c)
     truth_ret = inbound_returns(np.random.default_rng(P.SEED + 5), full)
     truth_ret = truth_ret[truth_ret["src_call"].isin(set(c["call_id"]))]
-    inbound = pd.concat([truth_ret, other], ignore_index=True)
+    inbound = clear_of_redials(pd.concat([truth_ret, other], ignore_index=True), c)
     inbound = inbound[inbound["started"] < pd.Timestamp(P.INBOUND_END)]
     inbound = inbound.sort_values(["started", "caller"]).reset_index(drop=True)
     reopen = reopens(np.random.default_rng(P.SEED + 9), c)
+    frame, c, inbound, truth_ret, reopen = (relabel(x) for x in (frame, c, inbound, truth_ret, reopen))
     return dict(frame=frame, calls=c, shifts=shifts, training=training, inbound=inbound, returns=truth_ret,
                 reopen=reopen, rng=rng)
 
 
-LINES = {s[0]: f"+16515550{100 + i:03d}"[:12] for i, s in enumerate(P.PROJECTS + [P.ONE_OFF])}
+# each project's caller-ID line, taken from the centre's block of direct lines as the project was set up
+LINE_SUFFIX = ["0117", "0163", "0128", "0181", "0142", "0109", "0195", "0136", "0172", "0154", "0189", "0121", "0148",
+               "0166"]
+def _code(s):
+    s = pd.Series(s, dtype=object)
+    ok = s.str.len().eq(10)
+    head = s.str[:3].map(P.RELABEL_CODE)
+    return s.where(~(ok & head.notna()), head + s.str[3:]).values
+
+
+def relabel(df):
+    """the world's draw labels onto the states and area codes the frame really reaches (params.RELABEL_STATE)"""
+    df = df.copy()
+    for col in ("state", "home_state"):
+        if col in df.columns:
+            df[col] = df[col].replace(P.RELABEL_STATE)
+    for col in ("phone", "caller"):
+        if col in df.columns:
+            df[col] = _code(df[col].astype(str).values)
+    return df
+
+
+LINES = {s[0]: "+1651555" + x for s, x in zip(P.PROJECTS + [P.ONE_OFF], LINE_SUFFIX)}
 LINE_NAMES = {s[0]: "KRR " + s[1].split(" (")[0].replace(" Survey", "").replace(" Poll", " Poll").replace(" Study", "")
               for s in P.PROJECTS + [P.ONE_OFF]}
 
 
 def _delay_prompt(rng, k):
-    return np.minimum(15 + np.exp(np.log(70) + 0.55 * rng.standard_normal(k)), 268)
+    """a person who hears the recorded message presses redial: seconds after the line closes"""
+    return 8 + np.exp(np.log(14) + 0.4 * np.clip(rng.standard_normal(k), -3, 3))
 
 
 def _delay_late(rng, k):
-    return 2700 + np.exp(np.log(4 * 3600) + 0.9 * rng.standard_normal(k))
+    """a voicemail returned, or a person ringing back later in the day: hours after the call"""
+    return 9000 + np.exp(np.log(2.5 * 3600) + 0.8 * rng.standard_normal(k))
 
 
 def inbound_returns(rng, c):
@@ -384,13 +439,40 @@ def inbound_returns(rng, c):
     screen = am & ~person & (u < 0.0003)
     vm = am & ~person & (~screen) & (u2 < p_vm)
     for mask, kind, delay in [(prompt, "prompt", _delay_prompt), (late_person, "late", _delay_late),
-                              (screen, "screen", lambda r, k: 60 + 180 * r.random(k)), (vm, "voicemail", _delay_late)]:
+                              (screen, "screen", lambda r, k: 10 + 40 * r.random(k)), (vm, "voicemail", _delay_late)]:
         idx = np.flatnonzero(mask)
         d = delay(rng, len(idx))
         rows.append(pd.DataFrame(dict(src_call=c["call_id"].values[idx], kind=kind, job=c["job"].values[idx],
                                       caller=c["phone"].values[idx],
                                       started=c["ended"].values[idx] + pd.to_timedelta(np.floor(d), unit="s"))))
-    return pd.concat(rows, ignore_index=True)
+    out = pd.concat(rows, ignore_index=True)
+    # nobody returns a call in the night: a return that would land after 22:00 or before 08:00 comes the next morning
+    night = (out["started"].dt.hour >= 22) | (out["started"].dt.hour < 8)
+    morning = out["started"].dt.normalize() + pd.to_timedelta(np.where(out["started"].dt.hour >= 22, 1, 0), unit="D")
+    r2 = np.random.default_rng(P.SEED + 6)
+    later = pd.to_timedelta(8 * 3600 + np.floor(r2.exponential(80 * 60, len(out))), unit="s")
+    out.loc[night, "started"] = (morning + later)[night]
+    return out
+
+
+def clear_of_redials(inbound, c):
+    """a household that rings the line for any reason but the recorded message it just heard does so more than two and
+    a half hours after the dialer last rang it (its later calls come after an evening's or a morning's other business)"""
+    inbound = inbound.copy()
+    keep = inbound["kind"].isin(["prompt", "screen"]) | inbound["kind"].eq("test")
+    out = c[["phone", "ended"]].dropna().sort_values("ended")
+    for _ in range(5):
+        x = inbound[~keep].reset_index().sort_values("started")
+        m = pd.merge_asof(x, out.rename(columns={"phone": "caller"}), left_on="started", right_on="ended",
+                          by="caller", direction="backward")
+        near = m["ended"].notna() & ((m["started"] - m["ended"]) < pd.Timedelta(minutes=150))
+        if not near.any():
+            break
+        idx = m.loc[near, "index"].values
+        inbound.loc[idx, "started"] = (m.loc[near, "ended"] + pd.Timedelta(minutes=150)
+                                       + pd.to_timedelta((m.loc[near, "started"] - m.loc[near, "ended"]).dt.total_seconds()
+                                                         .values, unit="s")).values
+    return inbound
 
 
 def inbound_other(rng, c):

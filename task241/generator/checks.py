@@ -76,6 +76,7 @@ def run(target, golden_dir, W, S, A):
     lines = S_.line_jobs(reg)
     ok(len(set(lines)) == len(jobs) == len(set(lines.values())), "SF2: the register's lines are not one to one")
     r20 = ret[(ret["delay_min"] <= 20) & ret["job"].isin(jobs)]
+    lines_list = list(lines)
     ok((r20["dialed_line"].map(lines) == r20["job"]).all(), "SF5: a return landed on another project's line")
     # SF3: the repeated day is an exact copy, and the year window is the same in UTC
     dup = raw[raw.duplicated("call_id", keep=False)]
@@ -106,12 +107,23 @@ def run(target, golden_dir, W, S, A):
     ok(sorted(m6.index[m6["off"]]) == gold, "SF6: the day's first call moves the call")
     ok(((m6["share"] * 100).apply(lambda x: int(np.floor(x + 0.5))) == (share * 100).apply(lambda x: int(np.floor(x + 0.5)))).all(),
        "SF6: the day's first call moves a share")
-    # SF7: the corridor, 5 to 40 minutes
+    # SF7: the corridor, every window from 2 to 150 minutes, measured from the call's end or from its start, gives the
+    # same four counts per project (so the same shares, unrounded, and the same call)
     base = (share * 100).apply(lambda x: int(np.floor(x + 0.5)))
-    for w in (5, 10, 15, 20, 30, 40):
-        mw = S_.main_call(calls, inbound, jobs, window_min=w, ret=ret).set_index("job")
-        ok(((mw["share"] * 100).apply(lambda x: int(np.floor(x + 0.5))) == base).all(), "SF7: window %d moves a share" % w)
-        ok(sorted(mw.index[mw["off"]]) == gold, "SF7: window %d moves the call" % w)
+    cols = ["n_am", "r_am", "n_ab", "r_ab"]
+    ret_start = S_.returns(calls, inbound, anchor="placed")
+    for anchor, rr_ in (("end", ret), ("start", ret_start)):
+        for w in (2, 2.5, 3, 4, 5, 6, 10, 15, 20, 30, 40, 60, 90, 120, 150):
+            mw = S_.main_call(calls, inbound, jobs, window_min=w, ret=rr_).set_index("job")
+            ok((mw[cols] == m[cols]).all().all(), "SF7: a window of %s minutes from the call's %s moves a count" % (w, anchor))
+            ok(((mw["share"] * 100).apply(lambda x: int(np.floor(x + 0.5))) == base).all() and
+               sorted(mw.index[mw["off"]]) == gold, "SF7: window %s from the %s moves a share or the call" % (w, anchor))
+    gap = ret[(ret["delay_min"] > 1.0) & (ret["delay_min"] < 150)]
+    ok(len(gap) == 0, "SF7: %d returns between one and 150 minutes after a call" % len(gap))
+    ok(ret.loc[ret["delay_min"] <= 1.0, "delay_min"].max() < 1.0 and
+       ret_start.loc[ret_start["delay_min"] < 150, "delay_min"].max() < 2.0, "SF7: a prompt return outside the minute")
+    note("SF7 corridor: identical counts for windows of 2 to 150 minutes from the call's end and from its start; "
+         "latest prompt return %.2f minutes after the call's start" % ret_start.loc[ret_start["delay_min"] < 5, "delay_min"].max())
     # SF8: one return per leg
     legs = inbound[inbound["phone"].ne("")].sort_values("started")
     ml = pd.merge_asof(legs, calls[["call_id", "job", "phone", "ended", "outcome"]].sort_values("ended"),
@@ -125,9 +137,13 @@ def run(target, golden_dir, W, S, A):
     # SF9: the test calls never match a dialed number
     tests = inbound[inbound["wrap_code"].eq("TEST")]
     ok(len(tests) > 0 and (tests["phone"] == "").all(), "SF9: a test call carries a dialed number")
-    # SF11: the one-off study is in the exports, not on the register
+    # SF11: the one-off study is in the exports, not on the register's 2027 sheet, and on its closed jobs sheet
     ok(P.ONE_OFF[0] in set(calls["job"]) and P.ONE_OFF[0] not in jobs and len(jobs) == len(P.PROJECTS),
        "SF11: the register's projects")
+    closed = pd.read_excel(os.path.join(target, "project_register_2027.xlsx"), sheet_name="Closed 2026 jobs", dtype=str)
+    ok(list(closed["Job"]) == [P.ONE_OFF[0]] and closed["Type"].str.contains("not recurring").all(),
+       "SF11: the closed jobs sheet")
+    ok(set(calls["job"]) == set(jobs) | set(closed["Job"]), "SF11: a dialer job on neither sheet of the register")
     # SF12: returns landing in January 2027 are counted, and dropping them does not move the call
     jan = ret[(ret["started"] >= pd.Timestamp("2027-01-01")) & (ret["delay_min"] <= 20)]
     ok(len(jan) == 0, "SF12: a return inside the window crosses the year edge")
@@ -155,10 +171,10 @@ def run(target, golden_dir, W, S, A):
     ok(9 / 400 < P.LIMIT, "rung 1: the listening audit")
     order = list(msh.sort_values(ascending=False).index)
     top4 = sorted(order[:4])
-    ok(top4 == sorted(["KR-2613", "KR-2612", "KR-2620", "KR-2622"]), "rung 2: the top four by machine share are %s" % top4)
+    ok(top4 == sorted(["KR-2609", "KR-2607", "KR-2638", "KR-2647"]), "rung 2: the top four by machine share are %s" % top4)
     ok(100 * (msh[order[3]] - msh[order[4]]) >= 1.0, "rung 2: the fourth and fifth machine shares within a point")
     ok(len(set(top4) & set(gold)) == 2, "rung 2: two right")
-    for j in ("KR-2613", "KR-2622"):          # the note: higher machine-classed shares than most of the six
+    for j in ("KR-2609", "KR-2647"):          # the note: higher machine-classed shares than most of the six
         ok(int((msh[j] > msh[gold]).sum()) >= 4, "note: %s is not above most of the six on machine share" % j)
     any_d = S_.main_call(calls, inbound, jobs, any_delay=True, ret=ret)
     ok(any_d["off"].all(), "rung 3: returns at any delay do not flag every project")
@@ -220,6 +236,17 @@ def run(target, golden_dir, W, S, A):
     lh = local_hours(rows["placed"].values, rows["state"].values, zones)
     tA = pd.Series((lh < 8) | (lh >= 21), index=rows.index).groupby(rows["job"]).sum().reindex(jobs).astype(int)
     ok((tA.values == S["askA"].values).all(), "ask A: the golden differs from the truth")
+    # SF14: "rang" read at the call's start or at its answer gives the same count on every project
+    ans = S_.calling_hours(calls, cases, zones, jobs, anchor="answered")
+    ok((ans.values == S["askA"].values).all(), "SF14: reading the ring at the answer moves ask A: %s" % ans.tolist())
+    # SF15: every household the frame reaches is in a state on one zone, and the table carries the 2026 clock changes
+    hh = set(S_.household_state(calls, cases).dropna())
+    ok(hh <= set(zones["state"]) and zones.set_index("state").loc[sorted(hh), "other_zone_areas"].isna().all(),
+       "SF15: a household in a state split between zones")
+    ok(len(zones) == 51 and zones["other_zone_areas"].notna().sum() >= 10, "SF15: the zone table is not the full list")
+    dst = zones[zones["observes_daylight_time"].eq("yes")]
+    ok((dst["daylight_time_begins_2026"] == "2026-03-08 02:00").all() and
+       (dst["daylight_time_ends_2026"] == "2026-11-01 02:00").all(), "SF15: the 2026 clock changes")
     on_edge = ((np.abs(lh - 8) < 1e-9) | (np.abs(lh - 21) < 1e-9)).sum()
     ok(on_edge == 0, "ask A: %d calls ring exactly on 8:00 or 21:00" % on_edge)
     routes = {"cracker": S_.calling_hours(calls, cases, zones, jobs, route="cracker"),
@@ -240,6 +267,17 @@ def run(target, golden_dir, W, S, A):
     done |= set(zip(ti["job"], ti["case_new"]))
     tB = pd.Series([j for j, _ in done]).value_counts().reindex(jobs).fillna(0).astype(int)
     ok((tB.values == S["askB"].values).all(), "ask B: the golden differs from the truth")
+    # SF17: "completed in 2026" (ask B) is the completion's own date; the switch log runs into January 2027 and its
+    # January interviews are 2027's, which the truth leaves out
+    ib_all = inbound[inbound["phone"].ne("")]
+    sw = ib_all.groupby("switch_call_id").agg(st=("started", "min"), comp=("wrap_code", lambda w_: (w_ == "COMPLETE").any()))
+    n_jan = int((sw["comp"] & (sw["st"] >= pd.Timestamp("2027-01-01"))).sum())
+    ok(n_jan > 0, "SF17: the switch log holds no January 2027 interview")
+    ok(int(S["askB"].sum()) == sum(1 for j_, _ in done if j_ in jobs), "SF17: ask B is not the truth's 2026 count")
+    ok(int(S_.completes(calls, inbound.assign(started=inbound["started"].where(inbound["started"] < pd.Timestamp(
+        "2027-01-01"), pd.Timestamp("2026-12-31 12:00"))), reg, cases, jobs).sum()) > int(S["askB"].sum()),
+       "SF17: counting the January 2027 interviews does not move ask B")
+    note("SF17 interviews completed on the line in January 2027, left out: %d" % n_jan)
     inv = invoices(target)
     rB = {"cracker": S_.completes(calls, inbound, reg, cases, jobs, route="cracker"),
           "invoiced": S_.completes(calls, inbound, reg, cases, jobs, route="invoiced")}
@@ -291,7 +329,32 @@ def run(target, golden_dir, W, S, A):
         ok(os.path.exists(os.path.join(target, f)), "input gate: distractor missing " + f)
     for p in files:
         if p.endswith((".csv",)):
-            ok("—" not in open(p, encoding="utf-8").read(), "an em dash in " + p)
+            ok("\u2014" not in open(p, encoding="utf-8").read(), "an em dash in " + p)
+    # ---- realism: allocations and containers ---------------------------------------------------------------------
+    for name, seq in (("job numbers", sorted(int(j[3:]) for j in jobs + [P.ONE_OFF[0]])),
+                      ("caller-ID lines", sorted(int(x[-4:]) for x in lines))):
+        ok(len(set(np.diff(seq))) > 3, "realism: the %s run in one step" % name)
+    import zipfile
+    with zipfile.ZipFile(os.path.join(target, "dialer_policy_2027.docx")) as z:
+        parts = z.namelist()
+        infos = z.infolist()
+        sty = z.read("word/styles.xml").decode()
+    ok(not any(x in n for n in parts for x in ("stylesWithEffects", "webSettings", "numbering", "customXml")),
+       "realism: the policy carries the library's default parts")
+    ok("word/theme/theme1.xml" in parts and len(sty) < 4000 and sty.count("<w:style ") == 3,
+       "realism: the policy's styles part is not lean")
+    ok(all(i.date_time[:3] == (2026, 11, 20) for i in infos), "realism: the policy's member dates")
+    # SF16: the clock the exports and the switch are stamped in is filed once, in the policy's section 6
+    with zipfile.ZipFile(os.path.join(target, "dialer_policy_2027.docx")) as z:
+        doc = z.read("word/document.xml").decode()
+    ok("Calls ring only between 8 am and 9 pm" in doc, "SF16: the policy reads back (control)")
+    ok(doc.count("Central time, with daylight saving time") == 1, "SF16: the export clock is not filed once")
+    from pypdf import PdfReader
+    rd = PdfReader(os.path.join(target, "larkspur_amd_release6.pdf"), strict=True)
+    meta = rd.metadata
+    ok(len(rd.pages) == 2 and os.path.getsize(os.path.join(target, "larkspur_amd_release6.pdf")) > 20000 and
+       meta["/CreationDate"] != meta["/ModDate"] and "Word" in meta["/Producer"], "realism: the maker's sheet")
+    ok("Balanced (default)" in rd.pages[0].extract_text(), "realism: the maker's sheet reads back (control)")
     return N[0]
 
 

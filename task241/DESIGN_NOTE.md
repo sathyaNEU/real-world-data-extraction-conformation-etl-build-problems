@@ -78,8 +78,8 @@ calls it classed as answering machines on that project in 2026 had in fact been 
     (Hailey Mullins, director of telephone operations; Vincent Armstrong, quality assurance lead; Brian Maynard,
     dialer administrator). The prompt shell is drawn new against architecture 1's (which, put, png+xlsx): the
     second sentence leads with the deliverable's use, and the deliverable set is a workbook and a pdf note.
-    `voice-check.py` WARNs that the question form "which" stands at 38 per cent of the corpus: the call is a
-    designation set, which the question form follows, and the shell's other classes are new for the slot.
+    The question asks what each recurring project's detection is set to at the 2027 setup (form "what"); `voice-check.py`
+    passes the shell quota, and `guard.py heart` passes it against the last prompts.
 
 ## Default path
 
@@ -153,7 +153,8 @@ the listening test's rate, the machine-classed share against the firm's norm, th
 the prompt return-call ratio over a pooled abandoned rate, the prompt ratio over each project's own abandoned rate)
 spreads the flagged set from 0 to 13 projects; the standing family once the data are read (the prompt ratio, with
 each project's own abandoned callers' rate because those rates run from 9.6 to 48.7 per cent) spreads 0 projects
-on the call and 0 points on every graded share across prompt windows of 5 to 40 minutes; what rules the others out sits
+on the call and leaves every count behind every graded share unchanged across return windows of 2 to 150 minutes,
+counted from the call's start or from its end (asserted); what rules the others out sits
 only in the inbound log and the calls' timing, which no document points to.
 
 Analyst test: with every field and rule read correctly, the easy route carries the detector's certified 2.1 per cent
@@ -228,13 +229,17 @@ hand-checked sample, the confusion matrix carried across, the class share agains
 | SF4 | "a person had answered" | the outcome the estimate is of | (no reading: no field holds it) | not applicable | the stump; no reading, an estimate (the decisive step), recorded here so the judge sees it is not a field |
 | SF5 | return call | an inbound call to any company line from the dialed number after the outbound call ended | only to the project's own line | same call | every return in the log lands on the calling project's line; asserted |
 | SF6 | which outbound call a return belongs to | the latest outbound call to that number before the return | the first of the day | same call | the dialer's four-hour redial floor leaves one outbound call per number inside any return window; asserted |
-| SF7 | how soon a return counts | inside the gap of the two-cluster delay (people within minutes, voicemail returns after the next half hour) | any window from 5 to 40 minutes | same call, same printed shares | C3 corridor: every project's whole-per-cent share identical across 5, 10, 15, 20, 30 and 40 minutes; asserted |
+| SF7 | how soon a return counts, and from when | inside the gap of the two-cluster delay (people within a minute of the message, every other call from a dialed number two and a half hours or more after the dialer's call) | any window from 2 to 150 minutes, counted from the call's start or from its end | same call, same counts, same shares | C3 corridor in the data: the four counts per project identical at 2, 2.5, 3, 4, 5, 6, 10, 15, 20, 30, 40, 60, 90, 120 and 150 minutes from either anchor, no return between one and 150 minutes after a call; asserted in `checks.py` and `verify.py` |
 | SF8 | transferred return calls | one return per inbound call, the switch's call id collapsing its legs | one per leg | same call | legs fall alike on returns after machine-classed and after abandoned calls, so the ratio and the call do not move; asserted |
 | SF9 | quality-assurance test calls | not returns (they come from the firm's own extensions, never dialed) | kept | same call | no test call matches a dialed number; asserted |
 | SF10 | "fewer than one in ten" | strictly under 10 per cent on the unrounded share | at or under; on the rounded share | same call | the nearest project sits more than three points from the limit; asserted |
-| SF11 | which projects are in the decision | the recurring projects on the 2027 setup register | every 2026 job, including the one-off study that ended in August | same call (the one-off is not on the register and is outside the call) | the register lists the 2027 projects; asserted |
+| SF11 | which projects are in the decision | the recurring projects on the 2027 setup register | every 2026 job, including the one-off study that ended in August | same call (the one-off is not on the register and is outside the call) | the register's 2027 sheet lists the recurring projects and its closed jobs sheet the one-off, marked not recurring; every dialer job is on one sheet or the other; asserted |
 | SF12 | December calls whose returns fall in January 2027 | counted (the inbound log runs to 14 January 2027) | dropped | same call | the last calls of the year ring on 30 December, so no return inside the window crosses the year; asserted |
 | SF13 | rounding | the share computed from counts, rounded once to a whole per cent | each rate rounded to a whole per cent before the division | same call | every golden share at least 0.05 points from a rounding edge, and the early-rounded rates give the same set; asserted |
+| SF14 | when a call "rang" (ask A) | the call's start (CallStart, placed_at) | the answer time (AnswerTime, answered_at) | same counts | the dialer never starts a ring in the seconds before 8:00 or 21:00 household time and has it answered after the hour; ask A identical under both anchors; asserted |
+| SF15 | the household's own local time (ask A) | the state's zone from state_time_zones.csv with its 2026 daylight time dates | a split state's other zone; daylight time dates from memory | same counts | every household the frame reaches is in a state on one zone, the table carries the 2026 clock changes and the offsets; asserted |
+| SF17 | "completed in 2026" (ask B) | interviews whose completion is dated in 2026; the switch log's interviews of 1 to 6 January 2027 are 2027's | every COMPLETE in the switch log (it runs to 14 January 2027) | ask B moves by 0 to 4 per project, the call does not | the prompt's own year and policy section 5 ("counts once, when it is completed") fix it; the step names the January interviews as 2027's; asserted in `checks.py`, the verifier recounts from target/ alone |
+| SF16 | the clock the exports are stamped in | Central time with daylight saving time | UTC; the household's clock | same call | policy section 6 files it; asserted by the verifier's read-back |
 
 ## Ladder
 
@@ -268,7 +273,7 @@ large employers and drops none) each file a wrong set.
 | 5 Version basis | the post-upgrade export layout and its pre-upgrade twin read as one year | C1 (the detector result column means the same in both) |
 | 6 Denominator | the project's machine-classed calls | filed in the policy's sentence; C1 |
 | 7 Weighting | none (counts within a project) | C1 |
-| 8 Window length | the return window for a prompt return | C3 corridor, 5 to 40 minutes, asserted |
+| 8 Window length | the return window for a prompt return | C3 corridor in the data, 2 to 150 minutes from the call's start or end, identical counts, asserted |
 | 9 Boundary inclusivity | strictly fewer than one in ten | filed; C1 (no project within three points) |
 | 10 Rounding path | shares computed from counts, rounded once | filed in the prompt's rounding; asserted mid-bin |
 | 11 Tie-break | none needed (no two projects tie at the limit) | C1 |
@@ -376,7 +381,7 @@ Measured by: `generator/ceiling.py` on the cut pack (stage 3), and every route's
 
 On the cut pack the cracker keeps none of the 39 ask figures and the mirror none. The gaps `checks.py` asserts and
 prints: ask A's careful route misses every project, and so do the area-code route, the route that drops the calls it
-cannot place and the golden route with Arizona on daylight time; ask B's careful route misses by 55 to 126
+cannot place and the golden route with Arizona on daylight time; ask B's careful route misses by 53 to 128
 interviews and the invoiced count by 30 to 82; ask C's careful route misses by 50.0 to 138.7 hours, the hours by code
 read right by 9.5 to 206.4 and the allocation with the training shifts charged by 32.5 to 80.0. The full includer
 who reconstructs every device lands the asks; the sheet prices the careful route short of the reconstructions, as
@@ -473,4 +478,20 @@ Mirror leakage: 0.0 per cent of ask weight.
 - A3.25 Ask B's invoiced count against the golden: the verification calls' extra completed rows and the inbound completes the dialer never sees offset, the invoices tying to the golden on one project to the interview (no subset of mishandlings may compose back); the inbound completes were thinned and handed to a second leg four times in five.
 - A3.26 The golden six an interval of interviewer hours, answered calls and line volume (the six call populations that answer with long greetings also had the fewer live calls): the projects' sizes and two populations' voicemail return rates redrawn so every shipped per-project statistic interleaves the two groups.
 - A3.27 Shares within 0.02 points of a whole-per-cent rounding edge on most seeds: the seed is drawn by a search over the main call's own criteria (the six, rung 4 dropping one, rung 2's four, the pilot inside the 2025 audit's interval, no interval of any per-project statistic, the 5 to 40 minute corridor, the nearest share over three points from the limit) for the widest rounding margin; the random streams of staffing, returns, verification calls and late appointments were split so the ask devices never move the main call.
+- Stage 4 judge r1 (FIX_NOW, SOLUTION_WRONG on Critical Component 3): the claim that every window from 5 to 40 minutes gives the same shares failed at 5 minutes from the call's start (one share at 29.51) and at 3 or 4 minutes (three more moved), because the prompt returns ran to about five minutes after the call. Closed in the data, not by filing the window: prompt returns now come within a minute of the message (redial), every other call from a dialed number two and a half hours or more after the dialer's call (a later call is pushed past that floor, a night return to the next morning), so every count is identical from 2 to 150 minutes from either anchor; the counts and every graded figure are the ones the judge reproduced.
+- Judge r1 residual forks, closed in the same pass: the answer-time reading of "rang" moved three calling-hours cells by one (closed in the data, SF14); the 2026 daylight time dates were in no file (now in state_time_zones.csv, SF15); the export clock was only implied (policy section 6, SF16); the one-off job had no shipped reason to be outside "every project" (the register's closed jobs sheet and the invoices' row, SF11).
+- Leak read realism, fixed: the policy docx shipped python-docx's default part set (now a lean Word package: document, styles with the three styles used, settings, font table, theme, member dates of its save); the maker's sheet was a 2.4 KB one-pager with identical midnight stamps (now a two-page Word export, 36 KB, embedded fonts, distinct creation and modification stamps); caller-ID lines and job numbers ran in one step (now allocated out of order); the time zone table held 12 states (now all 50 and DC with the split-zone areas named, and the frame relabelled off the four split states it touched, ND, SD, FL and TX, onto single-zone states in the same zones so no household's clock moved).
+- Job numbers renumbered with the realism fix (same order, so every random stream and figure holds): KR-2611 to KR-2623 are now KR-2604, KR-2607, KR-2609, KR-2615, KR-2618, KR-2622, KR-2626, KR-2631, KR-2633, KR-2638, KR-2644, KR-2647, KR-2651, and the one-off KR-2624 is KR-2656; the call is KR-2607, KR-2622, KR-2631, KR-2638, KR-2644 and KR-2651 (the same six projects).
+- leak.py sweep 11, question form "which" at 38 per cent against the 30 per cent cap: reworded at the role level to the setting the director enters per project at setup (what detection is set to on each recurring project, kept on or switched off), the same asks, units and rounding; a "whether" draft was dropped because guard.py heart warned it repeated task188's form.
 
+- Judge r2 ask B finding (key lower by 0 to 4 on 12 projects, 26 in all): the 26 are interviews completed on the line from 1 to 6 January 2027, which the switch log carries to 14 January and which the prompt's "completed in 2026" leaves out; the golden rule is real and already derivable from the log's own dates, so the key stands, the step now says the January interviews belong to 2027 (a WHAT), SF17 asserts it and the verifier recounts it from target/ alone. The appointment-number link is stated as scoped to the job (the pre-July case numbers restart in every job).
+- Second leak read realism, fixed: the policy's app.xml word and character counts now come from its own paragraphs; the client invoices workbook is created in January 2026 as the year's running ledger and modified in January 2027.
+## Stage 4 rulings
+
+- larkspur_amd_release6.pdf, the settings table's 2.1 per cent coinciding with a golden figure: harmless, the vendor's reference-set rate, nothing about this centre or 2026.
+- project_register_2027.xlsx naming every project beside numbers: harmless, a setup register with no counts, shares or ranks, its Detection 2027 column blank.
+- dialer_policy_2027.docx: harmless, rules and the threshold only, no figure, ranking or method for the share.
+- Stump-vocabulary lines (the policy: inbound, counts, abandoned, its own title word policy and the January of its project setup; the maker's sheet: return, default, returns): harmless, ordinary contact-centre words; neither document ties return calls to the share.
+- Judge r2 note on KR-2631 (a pooled abandoned callers' rate as the reference drops it to 5.8 per cent): ruled, not closed. The pooled reference is rung 4 of the ladder, the stump's own analytical choice; the prompt's "its 2026 share" makes the per-project reference the literal reading, and filing it in the prompt would hand the decisive step over.
+- "Answered calls" in the calling-hours ask: ruled to mean every call the dialer connected (a person or a machine answered), the literal reading the golden takes; the person-only reading is not the prompt's word.
+- The disposition-code mapping (the pre-upgrade letters against the post-upgrade words): fixed by the 30 June day both export layouts hold, ruled sufficient; no legend ships.

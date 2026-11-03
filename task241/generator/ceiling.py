@@ -54,6 +54,22 @@ def main(target):
         kc += hc
         km += hm
         print("%-4s %5d/%d %5d/%d" % (k, hc, len(jobs), hm, len(jobs)))
+    assert total > 0, "ceiling: no ask figure to score"
+    # each single finding added to the cracker, and the ask figures it alone wins back (a third of the weight is 13)
+    single = {"A: the case behind a pre-July appointment number": S_.calling_hours(c, cases, zones, jobs),
+              "B: completes on any leg, cases once by case number": S_.completes(c, inb, reg, cases, jobs,
+                                                                                 route="cracker_any_leg"),
+              "B: cases once through the record, first legs only": S_.completes(c, inb, reg, cases, jobs,
+                                                                                route="record_first_leg"),
+              "C: July to December read as hours.minutes": S["askC"].map(lambda x: int(10 * x + 0.5) / 10)}
+    worst = 0
+    for name, v in single.items():
+        k = name[0]
+        won = int(((v - gold[k]).abs() < tol[k]).sum()) - int(((crack[k] - gold[k]).abs() < tol[k]).sum())
+        worst = max(worst, won)
+        print("single finding %-52s wins %2d of %d ask figures" % (name, won, total))
+    assert worst <= total / 3, "ceiling: one finding keeps over a third of the ask weight"
+    print("largest single-finding lift %d of %d (%.1f per cent of ask weight)" % (worst, total, 100 * worst / total))
     lc, lm = kc / total, km / total
     pair = (CALL + IF + ASKS * lc + MISS + IF + ASKS * lm) / 2
     print("cracker keeps %.1f per cent of ask weight, mirror %.1f per cent" % (100 * lc, 100 * lm))

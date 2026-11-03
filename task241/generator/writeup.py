@@ -4,6 +4,7 @@ import math
 import os
 
 import golden as GD
+import params as P
 
 
 def pct(x):
@@ -35,7 +36,7 @@ def answers(S):
     on = [r for r in rows if not r["off"]]
     near_on = max(on, key=lambda r: r["share"])
     low_off = min(off, key=lambda r: r["share"])
-    pilot = next(r for r in rows if r["job"] == "KR-2611")
+    pilot = next(r for r in rows if r["job"] == P.PILOT_JOB)
     A = dict(rows=rows, off=[r["job"] for r in off], on=[r["job"] for r in on], near_on=near_on, low_off=low_off,
              pilot=pilot, answered=int(len(S["calls"][S["calls"]["job"].isin(jobs)])),
              off_lo=min(r["pct"] for r in off), off_hi=max(r["pct"] for r in off),
@@ -51,12 +52,12 @@ def answers(S):
         f"shares ran from {A['on_lo']} to {A['on_hi']} per cent.",
         "The call detail records only what the detector decided, so the share has to be measured. A person the "
         "detector hangs up on hears the project's recorded message, and many ring the project's line straight back, "
-        "nearly all within five minutes; answering machine owners ring back from their messages three quarters of an "
-        "hour or more later. "
+        "within a minute of the message; answering machine owners ring back from their messages, and anyone else "
+        "the dialer rang calls the line, two and a half hours or more later. "
         "Abandoned live answers hear the same message and ring back at the same speed, which gives each project's own "
         "rate of calling back. Each project's share is its machine-classed calls rung back within 20 minutes, as a "
-        "rate, divided by its abandoned answers' rate of ringing back within 20 minutes. Any window from 5 to 40 "
-        "minutes gives the same shares.",
+        "rate, divided by its abandoned answers' rate of ringing back within 20 minutes. Any window from 2 to 120 "
+        "minutes, counted from the start of the call or from its end, gives the same counts.",
         "The maker's 2.1 per cent and our 2025 listening audit (9 people in 400 machine-classed calls) were measured "
         f"on short greetings on household landlines, and the pilot still reads {pilot['pct']} per cent in 2026. "
         "Detection mistakes people who answer with a long greeting, and the six projects call older households, farms "
@@ -81,7 +82,7 @@ def figures(A):
             "off_range": [A["off_lo"], A["off_hi"]], "on_range": [A["on_lo"], A["on_hi"]],
             "nearest_on": {A["near_on"]["job"]: A["near_on"]["pct"]},
             "lowest_off": {A["low_off"]["job"]: A["low_off"]["pct"]},
-            "pilot_per_cent": A["pilot"]["pct"], "window_minutes": [5, 20, 40],
+            "pilot_per_cent": A["pilot"]["pct"], "window_minutes": [2, 20, 120],
             "certified_per_cent": 2.1, "listening_audit": [9, 400],
             "answered_calls": A["answered"],
             "counts": {r["job"]: [r["n_am"], r["r_am"], r["n_ab"], r["r_ab"]] for r in rows},
@@ -120,9 +121,10 @@ def submission(A):
              "; ".join(f"{r['job']} **{r['pct']}%**" for r in rows) + ".")
     L.append(f"2. Nearest the limit: {A['near_on']['job']} at **{A['near_on']['pct']}%** stays on; "
              f"{A['low_off']['job']} at **{A['low_off']['pct']}%** is the lowest switched off.")
-    L.append(f"3. The pilot, KR-2611, reads **{A['pilot']['pct']}%**, in line with the 2025 listening audit; people "
-             "who ring back mostly do so within five minutes and machine owners three quarters of an hour or more "
-             "later, so every window from 5 to 40 minutes gives the same shares.\n")
+    L.append(f"3. The pilot, {A['pilot']['job']}, reads **{A['pilot']['pct']}%**, in line with the 2025 listening "
+             "audit; people the message reached ring back within a minute of it and no other call from a dialed number "
+             "reaches the line in the two and a half hours after the dialer's call, so every window from 2 to 120 minutes, counted from the call's start or "
+             "from its end, gives the same counts and the same shares.\n")
     L.append("## 3. Step-by-Step Solution\n")
     L.append("1. Read the twelve exports in dialer_exports (letter codes and US dates to June, words and ISO dates from "
              "July) and dropped the day each export repeats from the month before by call id.")
@@ -135,10 +137,12 @@ def submission(A):
              "projects; on for the other seven.")
     L.append("5. Calling hours: each answered call's household state from case_records_2026.csv, by the number dialed, "
              "else by the case number the dialer wrote from July, else (an appointment number the record lacks, before "
-             "July) through the same case's calls to its recorded number; Central time converted with "
+             "July) through the calls of the same job under the same case number to its recorded number, the pre-July "
+             "case numbers restarting in every job; Central time converted with "
              "state_time_zones.csv, Arizona on standard time all year; counted calls before 8:00 or from 21:00 local.")
-    L.append("6. Completed interviews: the dialer's COMPLETE rows and the inbound calls with COMPLETE on any leg, each "
-             "case counted once across the July case-number change (matched to its case record), a supervisor's "
+    L.append("6. Completed interviews: the dialer's COMPLETE rows and the inbound calls with COMPLETE on any leg "
+             "completed in 2026 (an interview counts in 2026 when it was completed in 2026, so the switch log's completes dated "
+             "2027 fall outside), each case counted once across the July case-number change (matched to its case record), a supervisor's "
              "verification call adding none (policy section 5).")
     L.append("7. Interviewer hours: interviewer_hours_2026_h1.csv (decimal hours) and interviewer_hours_2026_h2.csv "
              "(hours.minutes, 4.30 being four and a half hours), each shift's hours shared by each project's talk and "

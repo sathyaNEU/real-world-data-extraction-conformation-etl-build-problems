@@ -68,7 +68,7 @@
     {
       "path": "client_invoices_2026.xlsx",
       "format": "xlsx",
-      "bytes": 6224,
+      "bytes": 6263,
       "rows": null,
       "source": "Constructed (seeded generator, task241/generator/make.py)",
       "date": "2027-01-15",
@@ -185,7 +185,7 @@
     {
       "path": "dialer_policy_2027.docx",
       "format": "docx",
-      "bytes": 35899,
+      "bytes": 7387,
       "rows": null,
       "source": "Constructed (seeded generator, task241/generator/make.py)",
       "date": "2027-01-15",
@@ -194,8 +194,8 @@
     {
       "path": "inbound_switch_2026.csv",
       "format": "csv",
-      "bytes": 1986154,
-      "rows": 19371,
+      "bytes": 1987229,
+      "rows": 19379,
       "source": "Constructed (seeded generator, task241/generator/make.py)",
       "date": "2027-01-15",
       "license": "CC0-1.0 (original work)"
@@ -221,7 +221,7 @@
     {
       "path": "larkspur_amd_release6.pdf",
       "format": "pdf",
-      "bytes": 2387,
+      "bytes": 36024,
       "rows": null,
       "source": "Constructed (seeded generator, task241/generator/make.py)",
       "date": "2027-01-15",
@@ -239,7 +239,7 @@
     {
       "path": "project_register_2027.xlsx",
       "format": "xlsx",
-      "bytes": 6917,
+      "bytes": 7646,
       "rows": null,
       "source": "Constructed (seeded generator, task241/generator/make.py)",
       "date": "2027-01-15",
@@ -257,8 +257,8 @@
     {
       "path": "state_time_zones.csv",
       "format": "csv",
-      "bytes": 286,
-      "rows": 12,
+      "bytes": 4062,
+      "rows": 51,
       "source": "Constructed (seeded generator, task241/generator/make.py)",
       "date": "2027-01-15",
       "license": "CC0-1.0 (original work)"
