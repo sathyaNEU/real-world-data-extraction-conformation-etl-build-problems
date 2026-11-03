@@ -1,12 +1,12 @@
 {
   "task": "task399",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-11-03",
-  "slot_note": "new number in wave 7 (Root-Cause), numbered from seed RC05 (a regional electricity distributor's outage causes and one reliability programme). The seed's world was screened first against task129 (grid-reliability outage root cause, vegetation programme) and task303 (customer-minutes, storm hardening): it collides on world (same subdomain, customer-minutes by cause, vegetation and storm candidates; heart WARN 0.14 against task303's stump), so the build moved to another client domain, world and dataset under the same objective and number. Kept from the seed: the decision (one programme funded from a catalogue of five) and the quantity in kind (the dollars of a shortfall each programme's cause accounted for over the last twelve months, in millions to one decimal) and the seed's own kernel, that the costliest cause leaves no record of its own.",
-  "domain": "quantitative-finance",
-  "subdomain": "factor-return-attribution",
-  "client_domain": "quantitative-finance",
-  "niche": "a manufacturer's closed defined-benefit pension plan whose global equity programme, run by five external managers, fell short of its half-hedged policy benchmark in the twelve months to 30 September 2026: which of five initiatives the pension investment committee funds for 2027 (replacing the core manager, a currency hedge to the benchmark's basis, a cash overlay on the benefit payments' cash, monthly rebalancing to policy weights, replacing the emerging markets manager), judged on the dollars of the shortfall each initiative's cause accounted for",
+  "slot_note": "new number in wave 7 (Root-Cause), numbered from seed RC05 (a regional electricity distributor choosing one reliability programme from five, the costliest cause leaving no record of its own). Architecture 1 (Quantitative Finance, a pension plan's equity programme) was spent at the draw: it landed in the same cell as task398, whose draw was registered earlier but not yet visible to this guard. Architecture 2 moves to Human Factors: kept from the seed are the decision (one programme funded from a catalogue of five), the quantity in kind (the events each programme's cause accounted for over the last twelve months) and the kernel, a cost that leaves no record of its own (a rest the timetable shows and the bus drove through).",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "workload-fatigue-shift-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a state-owned regional bus operator whose drivers' safety events (collisions and the buses' recorded harsh-braking events) rose in the twelve months to 30 September 2026: what the 2027 safety budget funds from five initiatives (shorter duties, recovery time in the timetable so terminus breaks are kept, familiarisation on the new electric buses, mentoring for first-year drivers, in-cab fatigue cameras), judged on the safety events each initiative's cause accounted for",
   "objective": "root-cause",
   "shape": "18",
   "decision_type": "root_cause_named",
@@ -14,7 +14,7 @@
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population"
+    "time"
   ],
   "pattern": [
     "none"
@@ -24,61 +24,87 @@
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reconciles every account to the custodian, runs the plan-level attribution and the returns-based factor attribution the field uses on each manager, and reads every field correctly funds the replacement of the core manager, whose shortfall against its benchmark is the largest line and reads as a low market exposure, because the attribution books to the manager everything its account held, the plan's waiting benefit cash included, and credits the cash overlay only with the plan's own cash account.",
-  "domain_test": "The deciding quantity is the dollars of the programme's shortfall against its policy benchmark each source accounted for, which plan-level performance attribution settles by separating the sponsor's decisions (allocation, currency basis, the plan's own cash) from each manager's (selection and factor exposure on the money it manages); with a hospital's departments in place of managers there is no benchmark return for idle money to miss, no time-weighted return to carry it and no market exposure for it to dilute.",
+  "analyst_test": "A strong analyst who joins every safety event to the driver's duty, measures fatigue the field's way from the duty schedule (hours into the duty, time since the scheduled break, time of day) and takes each candidate's excess events with the other conditions held alike funds shorter duties, whose late-duty hours carry the largest excess, because the schedule gives every driver a terminus break of ten minutes or more; the vehicle location records show late-running trips turning straight round, and measured on the rest drivers actually got the late-duty excess is the recovery time initiative's.",
+  "domain_test": "The deciding quantity is each candidate cause's excess safety events per driving hour in a fatigue analysis of shift work, where risk rises with time on task since the last real rest and has to be separated from time on duty and time of day; with megawatt-hours or school places in place of driving hours there is no duty, no rest and no time on task for the events to depend on.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:the-sponsor's-cash-left-in-a-manager's-account-separated-from-the-manager's-market-exposure",
+  "layer2_pattern": "own:rest-measured-on-the-operation-not-on-the-schedule",
   "layer1": [
     "filled at stage 2 from the generator's mess list"
   ],
-  "stakeholder_role": "the plan's chief investment officer, who brings the initiative to the pension investment committee",
-  "role_family": "portfolio_manager",
+  "stakeholder_role": "the operator's general manager of bus operations, who brings the 2027 safety budget to the executive team",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "custody positions, daily, by account",
+    "file": "the vehicle location system's trip records",
     "rows": 0,
-    "entity": "one holding in one manager account at one day's close",
-    "grain": "account x security x day",
+    "entity": "one timetabled trip run by one bus on one duty",
+    "grain": "trip",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
+  "forum": "executive_team",
   "forcing_event": "budget_or_appropriation",
-  "org_family": "manufacturer",
+  "org_family": "government_agency",
   "world": {
-    "geography": "United States",
-    "currency": "USD",
-    "org_type": "a manufacturer's closed defined-benefit pension plan, net benefit outflows paid monthly",
+    "geography": "Australia (a fictional regional city and its state-owned bus operator)",
+    "currency": "AUD",
+    "org_type": "a state-owned regional bus operator running three depots",
     "invented_names": [
-      "Thornell Industries"
+      "Morrowbank",
+      "Morrowbank Regional Buses"
     ],
     "people": [
-      "James Torres",
-      "Jacqueline Keller",
-      "Kelsey Smith"
+      "Patrick Nichols",
+      "Amanda Sherman",
+      "Karen Sanchez"
     ]
   },
   "deliverables": [
     "filled at stage 2"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is the money a parent raised for its own payments and left waiting in one unit's account, recorded there as the unit's holding: a unit-level attribution books its cost to the unit as a low market exposure and credits the candidate that would keep that money invested with almost nothing, while the money's own path (a pro-rata sale of every holding on each quarter's first day, then transfers out on the payment dates) puts it with the parent and makes that candidate the largest.",
-  "driver_concrete": "The core global equity account's cash is mostly the plan's benefit-payment money: on each quarter's first business day the core manager sold every holding pro rata at the close for the next quarter's payments and the proceeds waited in its account until each monthly payment date, so the plan-level and factor attribution book a low market exposure in a rising market to the core manager, and the cash overlay, credited only with the plan's own cash account, looks worth almost nothing until the waiting benefit cash is moved to the plan.",
-  "stump": "A competent solver attributes the programme's shortfall against its policy benchmark by manager, factor, currency and cash, finds the core manager's shortfall the largest line and funds its replacement; the step that lands it there is booking the cash in the core account to the core manager, when it is the plan's benefit-payment money, raised by pro-rata sales on each quarter's first business day and waiting there for the monthly payment dates, which makes the cash overlay the largest initiative and the core manager's own shortfall one of the smallest.",
+  "question_form": "what",
+  "driver": "The decisive quantity is the rest a worker actually got, rebuilt from the operation's own event record rather than from the schedule: running late, the operation works straight through the scheduled rests, so a schedule-based fatigue analysis puts the rising risk on long shifts and the candidate that would restore the rests looks worth nothing, while measured on the rest actually taken the long-shift effect vanishes and that candidate is the largest.",
+  "driver_concrete": "Morrowbank's duty schedule gives every driver a terminus break of ten minutes or more between trips, but a late-running trip arrives with the next departure already due and the driver turns straight round; rebuilt from the vehicle location records (each trip's actual arrival against the same duty's next actual departure), the drivers' real rests show the late-duty rise in safety events is the time driven since the last real rest, which makes timetable recovery time the largest initiative and shorter duties one of the smallest.",
+  "stump": "A competent solver joins each safety event to its duty, measures fatigue the field's way from the duty schedule (hours into the duty, time since the scheduled break) and funds shorter duties, whose late-duty hours carry the largest excess events; the step that lands it there is taking the scheduled terminus breaks as rest, when the vehicle location records show late-running trips turning straight round, and measured on the rest actually taken the excess belongs to the recovery time initiative.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task101": "task101 finds an organisation's own top-ups sitting in the baseline a per-head figure is read against; task399 finds a sponsor's benefit cash sitting in one manager's account, identified by the account's pro-rata quarter sales and its transfers on the payment dates, and moves its cost from the manager's market exposure to the plan's own cash.",
-    "task121": "task121 v2 recovers a loss carried by units filed as newcomers that belong to established accounts through a reference in a second party's report; task399 resolves no identity: it separates one account's money by its path through the quarter, the sale on the quarter's first day and the transfers on the payment dates, and prices the waiting days against the policy benchmark.",
-    "task464": "task464's tenth architecture prices an energy efficiency programme's savings; task399 attributes an equity programme's shortfall between a sponsor's cash and its managers' decisions, with no savings, measurement and verification or baseline model.",
-    "task303": "task303 removes from a feeder's breaker tickets the substation supply losses every sibling feeder opened in the same minute; task399 has no simultaneity across siblings and no upstream event: one account's own cash balance is followed from the quarter's pro-rata sale to the monthly payment transfers, and the attribution moves its cost from the manager's market exposure to the overlay that would have kept it invested."
+    "task121": "task121 v6 builds each call-taker's rest before a shift from consecutive rostered shifts (quick returns in a new rotation) and separates it from a software change on the calendar; task399 takes the roster's rest as written and finds it was not taken: it rebuilds the rest inside each duty from the vehicle location records, where a late trip's actual arrival meets the same duty's next departure, so the rest the schedule promises and the rest the bus gave differ trip by trip."
   },
-  "lineage": [],
-  "notes": "Drawn 2026-11-03 at stage 1. The seed RC05 world (a regional distributor's five reliability programmes) was screened with guard.py check, heart and slots against task129 and task303 and moved: same subdomain and objective as task129 and the same customer-minutes and storm-hardening candidates as task303. Personas from guard.py names --geo 'United States' --seed 399.",
-  "registered": "2026-11-03T07:35:43Z"
+  "lineage": [
+    {
+      "architecture": "v1 (Quantitative Finance: a manufacturer's pension plan's global equity programme, which of five initiatives to fund against the shortfall to its policy benchmark)",
+      "drawn": "2026-11-03",
+      "domain": "quantitative-finance",
+      "subdomain": "factor-return-attribution",
+      "objective": "root-cause",
+      "shape": "18",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "context_artifact": "filed_standard",
+      "forum": "committee_or_panel",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "manufacturer",
+      "driver": "The decisive quantity is the money a parent raised for its own payments and left waiting in one unit's account, recorded there as the unit's holding: a unit-level attribution books its cost to the unit as a low market exposure and credits the candidate that would keep that money invested with almost nothing, while the money's own path puts it with the parent and makes that candidate the largest.",
+      "fate": "spent at the draw on 2026-11-03: it collided with task398's draw in the same cell (quantitative-finance / factor-return-attribution / root-cause), registered earlier but not visible to this guard; guard.py check with task398 visible returned BLOCK ban.pairing, ban.subdomain, ban.artifact (filed_standard) and ban.strategy (decomposition_attribution), and a reviewer would read the two as the same decision (an equity programme's shortfall against its benchmark and which of five changes removes most of it)"
+    }
+  ],
+  "notes": "Architecture 2 drawn 2026-11-03 after architecture 1 was spent at the draw (see lineage). Personas from guard.py names --geo Australia --seed 399 (Patrick Nichols, Amanda Sherman, Karen Sanchez); none of architecture 1's names is reused.",
+  "registered": "2026-11-03T08:28:18Z"
 }
