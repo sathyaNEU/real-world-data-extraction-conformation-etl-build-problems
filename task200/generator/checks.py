@@ -1,5 +1,6 @@
 """The generator's assertions: the three rules on the clean truth, every rung, every fork row, every ask against
 the truth, the mess one item at a time, the realism sweep and the input gates. LOG carries each check's line."""
+import datetime as dt
 import os
 import re
 import shutil
@@ -212,8 +213,25 @@ def run(target, golden, W, S, A):
     hrs = hrs / 3600.0
     ok("askA.truth", (hrs - S["A"]["golden"]).abs().max() < 1e-6, "screen time equals the sessions as worked and "
        "logged on, to the second")
-    ea = min(edge(v, 0.1) for v in S["A"]["golden"].values)
-    ok("askA.edge", ea >= 0.004, "nearest hours figure to a rounding edge: %.4f h" % ea)
+    HV = SV.hours_variants(target, S["roster"])
+    worst = min(((edge(v, 0.1), k, t) for k, X in HV.items() for t, v in X.items()))
+    ok("askA.edge", worst[0] >= 0.02, "nearest screen-time figure to a tenth-of-an-hour edge under every merge and "
+       "clipping variant (%s): %.4f h (%s, %s)" % (", ".join(HV), worst[0], worst[2], worst[1]))
+    ok("askA.variants_converge", all((X - S["A"]["golden"]).abs().max() < 1e-9 for X in HV.values()),
+       "every merge and clipping variant files the golden screen time to the second")
+    span_pb = (pbl.off - pbl.on).dt.total_seconds().max()
+    span_ct = (c26.end - c26.start).dt.total_seconds().max()
+    ok("SF13.cap20_inert", span_pb <= 20 * 60 and span_ct <= 20 * 60 and
+       (HV["cap20"] - S["A"]["golden"]).abs().max() < 1e-9,
+       "SPS-04 5.1 read as a 20-minute cap on a logged-on span moves no team's screen time: longest Pier B log-on %.0f s, "
+       "longest Central session %.0f s" % (span_pb, span_ct))
+    tot = float(S["A"]["golden"].sum())
+    ok("askA.total_edge", edge(tot, 0.1) >= 0.02, "the airport total %.4f h, %.4f h from its edge" % (tot, edge(tot, 0.1)))
+    moved = W.get("hours_moved", {})
+    ok("askA.moves_small", all(len(v) <= 3 and sum(s for _i, s in v) <= 360 for v in moved.values()) and
+       all(20 * 60 >= (W["sessions"].loc[W["sessions"].sid == i].pipe(lambda d: (d.end - d.start).dt.total_seconds()
+                                                                             .iloc[0])) for v in moved.values()
+           for i, _s in v), "screen-time moves: %s" % moved)
     rj = W["rejects"]
     clear = rj[(rj.outcome == "CLEAR") & rj.pid.isin(cur.index)]
     tb = clear.pid.map(team_of).value_counts().reindex(TEAMS, fill_value=0)
@@ -271,6 +289,16 @@ def run(target, golden, W, S, A):
         txt = " ".join(p.text for p in d.paragraphs) + " " + " ".join(
             c.text for tb in d.tables for row in tb.rows for c in row.cells)
         assert must in txt and "**" not in txt, path
+    sd = _docx.Document(os.path.join(target, PK.F["sps"]))
+    revrows = [[c.text for c in row.cells] for row in sd.tables[-1].rows][1:]
+    pdate = lambda x: pd.Timestamp(dt.datetime.strptime(x, "%d %B %Y"))
+    cp = sd.core_properties
+    ok("doc.sps_issue_dates", len(revrows) == 3 and all(pdate(r[1]) < pdate(r[2]) for r in revrows)
+       and revrows[-1][2] in sps.split("Owner")[0] and "Issue %s, effective %s" % (revrows[-1][0], revrows[-1][2]) in sps
+       and "%s." % revrows[-1][1] in sps.split("Owner")[1][:200]
+       and pdate(revrows[-1][1]).date() == cp.modified.date() and pdate(revrows[0][1]).date() == cp.created.date(),
+       "SPS-04 revision history: each issue issued before it took effect, Issue 3 issued on its approval day and the "
+       "file's last save, Issue 1 on the file's creation: %s" % revrows)
     ok("doc.docx_two_readers", True, "python-docx reads SPS-04 and the golden note with their key sentences, no "
        "stray markup")
     eml = open(os.path.join(target, PK.F["eml"]), encoding="utf-8").read()
@@ -285,6 +313,17 @@ def run(target, golden, W, S, A):
        _C(rev.split()) == _C(rev2.split()), "pypdf and pdfplumber read the same words")
     ok("doc.review_control", "Fourteen test articles detected" in rev and not banned.search(rev),
        "the compliance review read back from its streams")
+    from pypdf import PdfReader as _PR
+    rp = os.path.join(target, PK.F["review"])
+    rr = _PR(rp, strict=True)
+    md = rr.metadata
+    faces = {str(v.get_object()["/BaseFont"]) for pg in rr.pages for _k, v in pg["/Resources"]["/Font"].items()}
+    ok("doc.review_word_export", rr.pdf_header == "%PDF-1.7" and os.path.getsize(rp) > 20000
+       and md["/Producer"] == md["/Creator"] == "Microsoft\u00ae Word for Microsoft 365"
+       and md["/CreationDate"][2:16] < md["/ModDate"][2:16] < "20261214000000"
+       and all("+" in f for f in faces) and "/Metadata" in rr.trailer["/Root"],
+       "the compliance review reads as a Word export: PDF 1.7, %d bytes, created %s, saved %s before the 14 December "
+       "meeting, fonts %s" % (os.path.getsize(rp), md["/CreationDate"], md["/ModDate"], sorted(faces)))
 
     # ----------------------------------------------------------------- the write-up's own figures and prose claims
     import writeup as WU
@@ -293,6 +332,16 @@ def run(target, golden, W, S, A):
                                                     100 * A["met_rate"][a0]])
     ep = min(edge(v, 1.0) for v in stated)
     ok("figures.pct_edges", ep >= 0.05, "nearest stated percentage to a whole-per-cent edge: %.3f points" % ep)
+    # every graded figure against its printed unit, in one place: the hours to a tenth of an hour (0.02 h floor, the
+    # figure the write-up prints is the rounding of the exact value), the percentages to a whole per cent, and the
+    # counts exact integers that no rounding touches
+    he = {k: edge(A["hours_exact"][k], 0.1) for k in TEAMS}
+    graded_ok = (all(v >= 0.02 for v in he.values())
+                 and all(abs(A["hours"][k] - round(A["hours_exact"][k] + 1e-9, 1)) < 1e-9 for k in TEAMS)
+                 and ep >= 0.05
+                 and all(float(S[x]["golden"][k]).is_integer() for x in ("B", "C") for k in TEAMS))
+    ok("figures.graded_edges", graded_ok, "every graded figure off its edge: hours %s; percentages >= %.3f points; "
+       "clear searches and certificates whole counts" % ({k: round(v, 4) for k, v in he.items()}, ep))
     lift = {k: al[k]["rate"] - f[k]["rate"] for k in TEAMS}
     ok("prose.flatters", all(v > 0 for v in lift.values()) and
        lift[a0] > 3 * max(v for k, v in lift.items() if k != a0),

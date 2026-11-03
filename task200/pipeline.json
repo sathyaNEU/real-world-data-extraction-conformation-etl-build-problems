@@ -1,33 +1,57 @@
 {
   "task": "task200",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "human-factors-ergonomics/safety-incident-error-analysis",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-03",
   "stump": "A competent solver orders the 2027 remedial image interpretation course by each team's 2026 threat image projection detection rate (Brook first at 71 per cent, Fell fourth at 80) or by d-prime against the clear searches (Esk first); the step that lands it there is treating every projection as a fresh test, when 4,104 of Fell's 5,229 projections in 2026 were Pier B library images its operators had met before, and on the images each operator met for the first time Fell finds 63 per cent against 69 for Brook, the lowest at the airport.",
   "call": "Fell first, then Brook, Dene, Esk, Arden and Cleve, one team a course month from February 2027",
   "architecture": 6,
   "loops": 0,
-  "precut": {"exit": 0, "date": "2026-11-03", "checks": "61 checks, 0 FAIL, 0 WARN on the final cut"},
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-03",
+    "checks": "61 checks, 0 FAIL, 0 WARN on the final cut"
+  },
   "gates": {
-    "generator_checks": "65 passed (make.py, final cut)",
-    "verify": "green, independent stdlib and openpyxl path over the shipped bundle",
+    "generator_checks": "72 passed (make.py, final cut)",
+    "verify": "green, independent path over the shipped bundle",
     "byte_identical": "two builds byte-identical, target and golden",
     "figures_check": "40 figures in blocks 1 to 4, 0 absent",
     "voice_check": "PASS, 614 characters",
-    "ceiling": "cracker 0 of 18 ask figures, mirror 0 of 18, pair ceiling 28.5; single findings 27.8, 27.8, 22.2, 0.0 and 5.6 per cent of ask weight",
-    "container": "scrub audit clean on target and golden"
+    "ceiling": "cracker 0 of 18, mirror 0 of 18, pair ceiling 28.5; single findings 27.8, 27.8, 22.2, 0.0 and 5.6 per cent of ask weight",
+    "freeze": "rubric mode PASS (main call, stump and every frozen figure unchanged); the authorised ask moves, accepted by the main thread: hours.Dene 4593.7 to 4593.8 (off its rounding edge) and hours.Fell 4603.7 to 4484.2 (SPS-04 5.1 read as a cap made inert in the data, SF13); determinism mode fails on those figures and the Deliverable Answers line by construction",
+    "container": "scrub audit clean on target and golden",
+    "leak_py": "REVIEW (no LEAK), --asof 2027-01-15, the same three lines, ruled harmless under the design note's Leak sweep",
+    "guard": "surface exit 0, 0 of 302 pairs promoted; heart WARN (answered under Draw)",
+    "realism": "sweep green in checks.py; container scrub clean on target and golden; compliance review re-cut as a Word export (doc.review_word_export)"
   },
-  "leak": {"leak_py": "REVIEW (no LEAK), 2026-11-03, --asof 2027-01-15, three lines (sweep 4 on SPS-04 and the compliance review, sweep 12 on SPS-04) each ruled harmless under the design note's Leak sweep", "reader": ""},
-  "duplicate_check": {"heart": "WARN (driver.near 0.12 vs task190 architecture 3 lineage, repeat.gate_g vs task241 v2; both answered in the design note's Draw)", "surface": "exit 0, 0 of 302 pairs promoted, nearest task174 at 0.040; persona NOTE 'Vincent Security' is the email signature, not a person", "nearest": "task190 (3, lineage) 0.12"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
-  "zip": {"path": "task200/target.zip", "sha256": "349d6d43a9125b977def5f95180c804fd70fb6ae84c1a731b487d9c1f1f2aa63", "members": 17},
+  "leak": {
+    "leak_py": "REVIEW (no LEAK), 2026-11-03, --asof 2027-01-15, three lines ruled harmless",
+    "reader": "two isolated reads, both no leak: round 1 at stage 4 and round 2 after the stage 4 repairs, both under Solver's-eye read in leak_check_report.md; rulings in the design note's Stage 4 rulings"
+  },
+  "duplicate_check": {
+    "heart": "WARN (driver.near 0.12 vs task190 architecture 3 lineage, repeat.gate_g vs task241 v2; both answered in the design note's Draw)",
+    "surface": "exit 0, 0 of 302 pairs promoted",
+    "nearest": "task190 (3, lineage) 0.12"
+  },
+  "judge": {
+    "verdict": "r1 DETERMINISTIC, APPROVE (Gate H analytical); r2 DETERMINISTIC, APPROVE (derived before reading the blocks); r3 DETERMINISTIC, APPROVE (every critical component and all 24 ask cells reproduced)",
+    "disposition": "APPROVE",
+    "report": "task200/determinism_check_report.md, task200/determinism_check_report_pass2.md, task200/determinism_check_report_pass3.md"
+  },
+  "zip": {
+    "path": "task200/target.zip",
+    "sha256": "fe054c67f337e617c3c150f227ebd51969e33f922711c5511e8091fe3ca0dfe1",
+    "members": 25,
+    "layout": "files under target/"
+  },
   "returned": [],
-  "resume": "stage 4: the main thread spawns the isolated leak reader (/leak-check task200, reader half only, prompt.txt and a fresh copy of target/ only) and the determinism judge together at medium; fix every finding in the generator in one pass, rebuild with python3 task200/generator/make.py, re-run every free gate on the final cut (precut.py, voice-check.py, leak.py --asof 2027-01-15, figures_check.py, guard.py heart and surface, ceiling.py), then stage 5 ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-03",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

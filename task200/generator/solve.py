@@ -201,13 +201,15 @@ def pb_events(target):
     return e
 
 
-def union_seconds(df, key):
+def union_seconds(df, key, touch=False):
+    """seconds covered by each key's intervals, overlapping rows merged (touch: rows that only meet merged as well,
+    which gives the same total)"""
     tot = {}
     for who, g in df.sort_values([key, "on", "off"]).groupby(key, sort=True):
         s = 0.0
         cur0 = cur1 = None
         for a, b in zip(g.on, g.off):
-            if cur1 is None or a > cur1:
+            if cur1 is None or (a > cur1 if not touch else a >= cur1 + pd.Timedelta(seconds=1)):
                 if cur1 is not None:
                     s += (cur1 - cur0).total_seconds()
                 cur0, cur1 = a, b
@@ -262,16 +264,42 @@ def pb_logged(e, route="golden"):
     return d
 
 
-def ask_hours(target, ros, ct_route="union", pb_route="golden", register=True):
+def _in_year(d, year_by):
+    """the 2026 rows: by the local date of the log-on (golden), by its UTC date, or every row overlapping the local
+    year with its time clipped to the year"""
+    if year_by == "utc":
+        return d[d.on.dt.year == 2026].copy()
+    if year_by == "clip":
+        y0 = pd.Timestamp("2026-01-01", tz=LONDON).tz_convert("UTC")
+        y1 = pd.Timestamp("2027-01-01", tz=LONDON).tz_convert("UTC")
+        d = d[(d.off > y0) & (d.on < y1)].copy()
+        d["on"] = d.on.clip(lower=y0)
+        d["off"] = d.off.clip(upper=y1)
+        return d
+    return d[d.on.dt.tz_convert(LONDON).dt.year == 2026].copy()
+
+
+def _cap(d, cap_min):
+    """each logged-on span read as at most cap_min minutes (SPS-04 5.1's 20 minutes at a stretch taken as a cap)"""
+    if cap_min is None:
+        return d
+    d = d.copy()
+    lim = d.on + pd.Timedelta(minutes=cap_min)
+    d["off"] = d.off.where(d.off <= lim, lim)
+    return d
+
+
+def ask_hours(target, ros, ct_route="union", pb_route="golden", register=True, year_by="local", touch=False,
+              cap_min=None):
     c = ct_sessions(target)
-    c = c[c.on.dt.tz_convert(LONDON).dt.year == 2026]
+    c = _cap(_in_year(c, year_by), cap_min)
     if ct_route == "union":
-        cs = union_seconds(c, "login")
+        cs = union_seconds(c, "login", touch)
     else:
         cs = ((c.off - c.on).dt.total_seconds()).groupby(c.login).sum()
     e = pb_events(target)
     b = pb_logged(e, pb_route)
-    b = b[b.on.dt.tz_convert(LONDON).dt.year == 2026].reset_index(drop=True)
+    b = _cap(_in_year(b, year_by), cap_min).reset_index(drop=True)
     staff = badge_staff(target, b.rename(columns={"badge": "Badge"}).assign(t=b.on), ros, register)
     staff_team = dict(zip(ros["Staff no"], ros["Team"]))
     bt = staff.map(lambda v: staff_team.get(int(v)) if pd.notna(v) else None)
@@ -285,6 +313,14 @@ def ask_hours(target, ros, ct_route="union", pb_route="golden", register=True):
         if k in hrs.index:
             hrs[k] += v
     return hrs / 3600.0
+
+
+def hours_variants(target, ros):
+    """the golden screen time under every merge and clipping variant of its own route: rows that only meet merged,
+    the year taken by UTC date, rows clipped to the year, and every logged-on span capped at SPS-04 5.1's 20 minutes"""
+    return {"golden": ask_hours(target, ros), "touch": ask_hours(target, ros, touch=True),
+            "utc_year": ask_hours(target, ros, year_by="utc"), "clip_year": ask_hours(target, ros, year_by="clip"),
+            "cap20": ask_hours(target, ros, cap_min=20)}
 
 
 # ----------------------------------------------------------------------------------------------- ask B: clear searches

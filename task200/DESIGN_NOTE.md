@@ -157,6 +157,7 @@ half-handled form of the decisive step and files Brook first.
 | SF10 | screening supervisors | X-ray operators on the team (SPS-04 section 2) | left out | same call | SPS-04 section 2; asserted (SF10) |
 | SF11 | 2026 starters | on the team (SPS-04 section 3) | left out | same call | asserted (SF11) |
 | SF12 | the images added to the Pier B library in April 2026 | projections like any other | left out | same call | asserted (SF12) |
+| SF13 | screen time against SPS-04 5.1 (ask A) | logged-on time (section 3): a Pier B log-on runs to the operator's own log-off, the next log-on at that screen or the shutdown | 5.1's 20 minutes at a stretch read as a cap on each logged-on span | same call, same figures (no golden span is longer than 20 minutes, Pier B log-ons included) | C1 converge; asserted (SF13.cap20_inert, askA.variants_converge) |
 
 ## Ladder
 
@@ -329,6 +330,67 @@ for each team (18); the note with the order and its reason (1 to 2); the files (
 - `guard.py surface task200`: 0 of 302 pairs promoted (nearest task174 at 0.040); its persona NOTE "Vincent Security"
   is the planning email's signature, Bernard Vincent's name line run into his job title, not a person. `guard.py heart
   task200`: WARN only, the two lines answered under `## Draw`.
+
+## Stage 4 rulings
+
+Determinism judge r1: DETERMINISTIC, APPROVE, Gate H decisive_step analytical; the leak reader found no leak.
+- Screen time off its rounding edges (the judge's one finding): Dene's 2026 screen time sat 0.011 h from the .75 edge
+  and Arden's 0.014 h (the judge listed Brook at 0.029, Cleve and Esk at 0.04). `pack.clear_hours` now runs after the
+  positions, searches and badge register are written: where a team's total, or the airport's, sits within 0.03 h of
+  a tenth-of-an-hour edge, its latest sessions that end a screen's day (nothing after them at that screen that day,
+  the operator's next session at least 25 minutes off, still no longer than 20 minutes and inside the area's hours)
+  run a few whole seconds longer (Arden 184 s over two sessions, Brook 83 s over two, Dene 167 s in one). Every
+  projection, reject and search was drawn before, inside the sessions as they were, so none moves. On the cut pack:
+  Arden 5,168.81 (still 5,168.8), Brook 4,750.90 (still 4,750.9), Dene 4,593.79 (4,593.7 to 4,593.8, the one graded
+  figure that moved), Cleve, Esk and Fell untouched; the nearest figure is 0.035 h from its edge, and every merge and
+  clipping variant (rows that only meet merged, the year by UTC date, rows clipped to the year) files the same hours
+  to the second. Asserted in `checks.py` (`askA.edge` at 0.02 h under every variant, `askA.variants_converge`,
+  `askA.total_edge`, `askA.moves_small`, and `figures.graded_edges` over every graded figure: hours, the stated
+  percentages and the whole counts). An authorised ask move: `freeze.py check --mode rubric` PASS (the main call, the
+  stump and every frozen figure unchanged, one ask figure moved); `--mode determinism` fails on that figure by
+  construction.
+- The exposure window (judge's open point, no change): a memory window of 18 months or less puts Brook first, and it
+  is outside the reasonable set. No shipped file grounds a memory window (SPS-04, the email and the exports name no
+  period after which an image counts as new again), so any window is a parameter the solver invents; "never shown
+  before in the exports" is the one parameter-free definition of a first meeting, and every window of 730 days or more
+  agrees with it on the whole order. The prompt is unchanged.
+- SPS-04 revision history: the reader's note dated Issue 3 at 31 December 2026; the shipped text read 1 December
+  2026 in both the header and the table, so the claim did not reproduce. The table now carries an Issued column beside
+  Effective, each issue issued before it took effect, Issue 3 issued 24 November 2026 (its approval date and the
+  file's last save) and Issue 1 on the file's creation date, asserted in `doc.sps_issue_dates`.
+- SPS-04 5.1 against ask A (pass 2's one live alternative, Fell only): read as a cap on a logged-on span, the 20
+  minutes at a stretch put Fell at 4,522.7 against the golden 4,603.7, because a Pier B log-on left open could run past
+  20 minutes to the next log-on or the shutdown. Closed in the data, not the text: the Pier B screens now prompt an
+  operator still logged on 20 minutes after logging on, who logs off, so no log-on stays open past 20 minutes and the
+  cap moves nothing (C1, `SF13.cap20_inert`; SPS-04 unchanged, no sentence names the device). Fell's screen time moves
+  to 4,484.2 (an ask figure), Brook takes 15 more seconds to keep the airport total off its edge (4,750.9 unchanged),
+  every other figure, the call and the main-call figures unchanged, the nearest figure still 0.035 h from its edge.
+  Explicit log-offs only (2,476.2 on pass 2) remains the mirror's route, which section 3's logged-on time rules out
+  for a log-on the next log-on closes.
+- Judges r2 and r3: DETERMINISTIC, APPROVE (r2 derived before reading the blocks; r3 reproduced every critical
+  component and all 24 ask cells). r3's residual, no change: the overall TIP rate is the surface read SPS-04 4.2's
+  "a prohibited article in a passenger's cabin bag" does not license, and a first-meeting history cut to 2025 or later
+  (Brook first) discards shipped export years that nothing in the pack retires, so it is not a licensed reading.
+- r3's optional sentence (that the articles in passengers' bags are ones the operator has not been shown before)
+  declined: it names the thing the decisive step recognises, which is filing the stump (the fork-is-the-stump test),
+  and the call is forced without it.
+- Write-up step 5 now says that no Pier B log-on runs past the 20 minutes at a stretch of SPS-04 section 5, the WHAT
+  behind Fell's 4,484.2 (no new method).
+- The compliance review (a distractor, nothing graded reads it) re-cut as a Word for Microsoft 365 export: PDF 1.7,
+  the body font embedded as subsets, the document language and an XMP packet, created 4 December and last saved 10
+  December 2026, before the 14 December meeting it was prepared for; its opening line now reads "For the security
+  management meeting of 14 December 2026" so no stamp precedes what the file states. Asserted in
+  `doc.review_word_export`; every graded figure unchanged.
+- Second leak read (after the stage 4 repairs): clean. Rulings, harmless, one line each: SPS-04 with its Issued column
+  is the organisation's own standard, issued before effective in every row and matching the file's metadata, its 5.1
+  rule matching the data; the Pier B log is an authentic export, the 20-minute ceiling reading as the screen's
+  prompted log-off under a stated rule; the documents and the email rank no team and suggest no measure.
+- `target.zip` now holds the files under `target/` (25 members: the folder, its six subfolders and 17 files).
+- Leak reader rulings, harmless, one line each: SPS-04 naming column words is the organisation's own standard with
+  purpose, scope, revision history, owner and approver; the compliance review ranks nothing and puts image
+  interpretation outside its scope; the planning email sets the schedule and the three fields and ranks no team; the
+  stump-vocabulary lines (SPS-04, the compliance review) name no familiarity, repeat image or first meeting, the
+  review's "meetings" being team briefings.
 
 ## Tried and rejected
 

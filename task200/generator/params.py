@@ -37,6 +37,7 @@ TEAM_OFFSET = {"Arden": 0, "Brook": 2, "Cleve": 4, "Dene": 6, "Esk": 1, "Fell": 
 LEAVE_DAYS = 26                      # annual leave and absence days a year, drawn per person
 SESSIONS_PER_SHIFT = (5, 8)          # screen sessions a shift, inclusive
 SESSION_MIN = (17.0, 2.1)            # minutes at a screen, mean and sd, truncated to 9 to 20 (SPS-04 5.1)
+HOURS_EDGE_TARGET = 0.03          # every team's 2026 screen time at least this far (hours) from a tenth-of-an-hour edge
 GAP_MIN = (38.0, 9.0)                # minutes off the screen between sessions
 TIP_PER_HOUR = 1.22                  # projections a screen-hour
 REJECT_PER_HOUR = {"Arden": 1.55, "Brook": 1.10, "Cleve": 1.45, "Dene": 1.70, "Esk": 2.75, "Fell": 1.60}
@@ -45,6 +46,7 @@ ESK_PIERB_PER_DAY = (0, 0)           # no other team covers Pier B: the pier is 
 MULTIPLEX_P = 0.31                   # share of Central sessions on a two-lane queue (one row per lane)
 
 # Pier B legacy screen event behaviour
+PB_PROMPT_MIN = 20                   # minutes after a Pier B log-on at which the screen prompts the operator to log off
 PB_LOGOFF_P = 0.56                   # sessions ended by the operator's own log-off
 PB_SHUTDOWN_P = 0.08                 # sessions ended by the screen's end-of-day shutdown (the rest end at the next log-on)
 

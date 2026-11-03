@@ -163,7 +163,11 @@ def positions(target, W):
                 u = r.random()
                 implicit_ok = nxt is not None and (own_next is None or nxt <= own_next) and \
                     (nxt - row.end) <= pd.Timedelta(minutes=12)
-                if u < P.PB_LOGOFF_P or (not implicit_ok and nxt is not None):
+                # the screen's 20-minute warning: an operator still logged on 20 minutes after logging on is prompted
+                # and logs off, so no log-on stays open past 20 minutes, whether the next log-on or the shutdown
+                # would have closed it
+                stays = (nxt if nxt is not None else close_t) - row.start <= pd.Timedelta(minutes=P.PB_PROMPT_MIN)
+                if u < P.PB_LOGOFF_P or (not implicit_ok and nxt is not None) or not stays:
                     ev.append((row.end, scr, "LOGOFF", str(Wm.badge_at(pp, row.pid, row.start)), ""))
                     truth.append((row.pid, scr, row.start, row.end, "LOGOFF"))
                 elif nxt is None:
@@ -185,6 +189,80 @@ def positions(target, W):
     _write_csv(target, "pbev", out)
     W["pb_logged"] = pd.DataFrame(truth, columns=["pid", "screen", "on", "off", "end_by"])
     W["ct_rows"] = pos
+
+
+def clear_hours(target, W, floor=P.HOURS_EDGE_TARGET, rounds=4):
+    """keep every team's 2026 screen time clear of a tenth-of-an-hour edge. Where a team's total sits within `floor`
+    hours of one, its latest short sessions that end a screen's day (nothing after them at that screen that day, the
+    operator's next session at least 25 minutes off, the session still no longer than 20 minutes and inside the
+    area's hours) run a little longer, by whole seconds, until it clears. Every projection, reject and search was
+    drawn before, inside the sessions as they were, so none of them moves; the positions are written again."""
+    import solve as SV
+    pp, ss = W["people"], W["sessions"]
+    cur = pp[pp.left.isna()]
+    team_of = dict(zip(cur.index, cur.team_end))
+    ros = SV.roster(target)
+    edge = lambda v: 0.05 - abs(v - round(v, 1))
+    for _ in range(rounds):
+        h = SV.ask_hours(target, ros)
+        need = {}
+        for t, v in h.items():
+            if edge(v) < floor:
+                step = 1
+                while edge(v + step / 3600.0) < floor + 0.005:
+                    step += 1
+                need[t] = step
+        tot = float(h.sum()) + sum(need.values()) / 3600.0
+        if edge(tot) < floor:
+            step = 1
+            while edge(tot + step / 3600.0) < floor + 0.005:
+                step += 1
+            # the airport's total prints too: teams with room inside their own tenth carry the rest between them
+            for t in sorted(h.index):
+                v = float(h[t]) + need.get(t, 0) / 3600.0
+                room = 0
+                while room < step and edge(v + (room + 1) / 3600.0) >= floor + 0.005 and \
+                        round(v + (room + 1) / 3600.0, 1) == round(v, 1):
+                    room += 1
+                if room:
+                    need[t] = need.get(t, 0) + room
+                    step -= room
+                if step <= 0:
+                    break
+            else:
+                raise AssertionError("no team can carry the airport total off its edge")
+        if not need:
+            W["hours_moved"] = W.get("hours_moved", {})
+            return
+        y26 = pd.to_datetime(ss.day).dt.year == 2026
+        loc_end = ss.end.dt.tz_convert(LONDON)
+        mins = (loc_end - loc_end.dt.normalize()).dt.total_seconds() / 60.0
+        for t, sec in sorted(need.items()):
+            m = ss[y26 & ss.pid.map(team_of).eq(t)].sort_values(["end", "sid"], ascending=False)
+            left = sec
+            for i in m.index:
+                if left <= 0:
+                    break
+                row = ss.loc[i]
+                dur = (row.end - row.start).total_seconds()
+                room = 20 * 60 - dur
+                close = (15 * 60 + 30 if row.area == "B" else 22 * 60) - mins[i]
+                room = int(min(room, close * 60.0, 180))
+                if room < 1:
+                    continue
+                later = ss[(ss.screen == row.screen) & (ss.day == row.day) & (ss.start > row.start)]
+                if len(later):
+                    continue
+                own = ss[(ss.pid == row.pid) & (ss.start > row.start)]
+                if len(own) and (own.start.min() - row.end).total_seconds() < 25 * 60 + room:
+                    continue
+                add = min(room, left)
+                ss.loc[i, "end"] = row.end + pd.Timedelta(seconds=add)
+                W.setdefault("hours_moved", {}).setdefault(t, []).append((int(row.sid), int(add)))
+                left -= add
+            assert left <= 0, ("no session to carry the screen-time move", t, left)
+        positions(target, W)
+    raise AssertionError("screen time still on a rounding edge after %d rounds" % rounds)
 
 
 # ----------------------------------------------------------------------------------------------- rejects and searches
@@ -314,6 +392,7 @@ def run(target):
     positions(target, W)
     searches(target, W)
     badge_register(target, W)
+    clear_hours(target, W)
     lms, certs = training_frames(W)
     O.xlsx(os.path.join(target, F["lms"]), [("Assessments", lms)], author="LMS Reporting",
            created="2027-01-11T07:30:00Z", modified="2027-01-11T07:30:00Z", widths={"Assessments": [10, 11, 52, 12, 8, 14]})

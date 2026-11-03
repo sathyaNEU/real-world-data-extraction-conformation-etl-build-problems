@@ -46,7 +46,7 @@
     {
       "path": "docs/SPS-04_screener_performance_standard_issue3.docx",
       "format": "docx",
-      "bytes": 8708,
+      "bytes": 8749,
       "rows": null,
       "source": "Constructed (seeded generator, task200/generator/make.py)",
       "date": "2027-01-15",
@@ -64,7 +64,7 @@
     {
       "path": "docs/security_compliance_review_2026.pdf",
       "format": "pdf",
-      "bytes": 3328,
+      "bytes": 38275,
       "rows": null,
       "source": "Constructed (seeded generator, task200/generator/make.py)",
       "date": "2027-01-15",
@@ -100,8 +100,8 @@
     {
       "path": "positions/pierb_screen_events_2026.csv",
       "format": "csv",
-      "bytes": 1315700,
-      "rows": 34372,
+      "bytes": 1372510,
+      "rows": 35867,
       "source": "Constructed (seeded generator, task200/generator/make.py)",
       "date": "2027-01-15",
       "license": "CC0-1.0 (original work)"

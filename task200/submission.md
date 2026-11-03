@@ -20,7 +20,7 @@ On the threat images its operators met for the first time in 2026 Fell found 63 
 2. Put each screener's projections in time order from the start of each export and marked one a first meeting where that screener had not been shown that image before.
 3. On 2026 projections each team's share found on first meetings is Fell 63%, Brook 69%, Dene 74%, Esk 77%, Arden 81%, Cleve 85%.
 4. On all 2026 projections Brook finds 71% and Fell 80%, the gap being Fell's 4,104 projections of images already met, found 84% of the time.
-5. Screen time: merged each CT login's overlapping rows in ct_workstation_sessions_2026.csv into one span, and ended each Pier B log-on in pierb_screen_events_2026.csv at the operator's own log-off, the next log-on at that screen or the screen's shutdown, whichever came first, each badge read to its holder on the day through id_centre_badge_register.csv.
+5. Screen time: merged each CT login's overlapping rows in ct_workstation_sessions_2026.csv into one span, and ended each Pier B log-on in pierb_screen_events_2026.csv at the operator's own log-off, the next log-on at that screen or the screen's shutdown, whichever came first, so that none runs past the 20 minutes at a stretch SPS-04 section 5 allows, each badge read to its holder on the day through id_centre_badge_register.csv.
 6. Clear searches: split search_log_2026.csv records that carry two trays, matched each tray to its latest reject before the search was taken (ct_tray_rejects_2026.csv, or the Pier B REJECT events) and charged it to the screener logged on at that screen then.
 7. Certificates: took each rostered screener's latest certification, from the passed IIC rows in the LMS export and from every certificate in assessment_centre_certificates.csv by candidate staff number on its assessment date (an EXT-IIC row in the LMS carries the date it was keyed, and the centre's list also holds certificates not yet keyed), and counted three-year expiries before 1 July 2027.
 8. Ordered the teams from least to most likely to find a prohibited article (SPS-04 4.2): Fell, Brook, Dene, Esk, Arden, Cleve.
@@ -40,9 +40,9 @@ On the threat images its operators met for the first time in 2026 Fell found 63 
    - Arden: 5,168.8
    - Brook: 4,750.9
    - Cleve: 5,545.6
-   - Dene: 4,593.7
+   - Dene: 4,593.8
    - Esk: 5,297.1
-   - Fell: 4,603.7
+   - Fell: 4,484.2
 3. Clear searches in 2026:
    - Arden: 6,608
    - Brook: 4,399

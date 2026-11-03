@@ -47,11 +47,12 @@ SPS_BLOCKS = [
     (None, "The screening systems' projection, session and reject records, the search team's search log and the training "
            "register are kept for five years from the end of the year they cover."),
     ("Heading2", "Revision history"),
-    ("TABLE", ([["Issue", "Effective", "Change"],
-                ["1", "4 March 2024", "First issue, with the Central Search CT lanes and screening room"],
-                ["2", "1 September 2025", "Search definitions aligned with the search team's tablet log"],
-                ["3", "1 December 2026", "Section 4 added: the order of the remedial image interpretation course"]],
-               [1100, 2000, 6300])),
+    ("TABLE", ([["Issue", "Issued", "Effective", "Change"],
+                ["1", "19 February 2024", "4 March 2024", "First issue, with the Central Search CT lanes and screening room"],
+                ["2", "14 August 2025", "1 September 2025", "Search definitions aligned with the search team's tablet log"],
+                ["3", "24 November 2026", "1 December 2026",
+                 "Section 4 added: the order of the remedial image interpretation course"]],
+               [800, 1800, 1800, 5000])),
 ]
 
 EML = """Return-Path: <bernard.vincent@brackenfordairport.co.uk>
@@ -106,15 +107,16 @@ def compliance_review(path):
     from reportlab.lib.units import mm
     from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
     from reportlab.lib import colors
+    O.word_fonts()
     ss = getSampleStyleSheet()
-    body = ParagraphStyle("b", parent=ss["BodyText"], fontName="Helvetica", fontSize=9.2, leading=12.6, spaceAfter=5)
-    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=14, spaceAfter=6)
-    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.5, spaceBefore=8, spaceAfter=3)
-    cell = ParagraphStyle("c", fontName="Helvetica", fontSize=8.4, leading=10.4)
+    body = ParagraphStyle("b", parent=ss["BodyText"], fontName="Calibri", fontSize=10, leading=13, spaceAfter=5)
+    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Calibri-Bold", fontSize=15, spaceAfter=6)
+    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Calibri-Bold", fontSize=11, spaceBefore=8, spaceAfter=3)
+    cell = ParagraphStyle("c", fontName="Calibri", fontSize=9, leading=11)
 
     def story():
         s = [Paragraph("Security compliance review 2026", h1),
-             Paragraph("Compliance and Quality, Security Screening. Reviewed at the security management meeting of "
+             Paragraph("Compliance and Quality, Security Screening. For the security management meeting of "
                        "14 December 2026.", body),
              Paragraph("1 Scope", h2),
              Paragraph("This review covers the airport's own quality control activity in 2026: the staff and vehicle "
@@ -134,7 +136,8 @@ def compliance_review(path):
                 ["Covert testing", "16 tests", "Fourteen test articles detected; the two not detected were at the "
                  "divest and archway stage, not at an X-ray screen", "Individual coaching; closed"]]
         t = Table([[Paragraph(c, cell) for c in r] for r in rows], colWidths=[34 * mm, 22 * mm, 66 * mm, 44 * mm])
-        t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.3, colors.Color(0.55, 0.55, 0.55)),
+        t.setStyle(TableStyle([("FONTNAME", (0, 0), (-1, -1), "Calibri"),
+                               ("GRID", (0, 0), (-1, -1), 0.3, colors.Color(0.55, 0.55, 0.55)),
                                ("BACKGROUND", (0, 0), (-1, 0), colors.Color(0.86, 0.89, 0.94)),
                                ("VALIGN", (0, 0), (-1, -1), "TOP")]))
         s += [t, Spacer(1, 6),
@@ -144,7 +147,8 @@ def compliance_review(path):
                         "most of the pier's passengers are screened.", body)]
         return s
     O.pdf(path, story, title="Security compliance review 2026", author="Compliance and Quality",
-          created_pdf="20261216104500", footer="Brackenford Airport Ltd  |  Security compliance review 2026  |  Internal")
+          created_pdf="20261204091800", modified_pdf="20261210162700", footer_font="Calibri",
+          footer="Brackenford Airport Ltd  |  Security compliance review 2026  |  Internal")
 
 
 def write_all(target, F):

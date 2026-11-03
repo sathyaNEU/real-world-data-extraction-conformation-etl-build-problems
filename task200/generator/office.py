@@ -356,37 +356,118 @@ def docx(path, blocks, author, created, modified, revision, total_time, company=
 
 
 # ----------------------------------------------------------------------------------------------- PDF
-def pdf(path, story_fn, title, author, created_pdf, producer="Microsoft\u00ae Word for Microsoft 365",
-        creator="Microsoft\u00ae Word for Microsoft 365", footer=None):
-    """created_pdf like 20260930141200: written into CreationDate and ModDate with the UK offset of that date."""
+def word_fonts():
+    """the body font a Word export embeds (a metric-compatible face, embedded as a subset under the face's Word name)"""
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.lib.fonts import addMapping
+    if "Calibri" in pdfmetrics.getRegisteredFontNames():
+        return
+    for name, fn in (("Calibri", "Carlito-Regular.ttf"), ("Calibri-Bold", "Carlito-Bold.ttf")):
+        f = TTFont(name, "/usr/share/fonts/truetype/crosextra/" + fn)
+        f.face.name = name.encode()
+        pdfmetrics.registerFont(f)
+    addMapping("Calibri", 0, 0, "Calibri")
+    addMapping("Calibri", 1, 0, "Calibri-Bold")
+
+
+def _pdf_date(stamp):
+    month = int(stamp[4:6])
+    return "D:%s%s" % (stamp, "+01'00'" if 4 <= month <= 10 else "+00'00'")
+
+
+def _xmp(title, author, producer, created, modified):
+    iso = lambda st: "%s-%s-%sT%s:%s:%s%s" % (st[0:4], st[4:6], st[6:8], st[8:10], st[10:12], st[12:14],
+                                            "+01:00" if 4 <= int(st[4:6]) <= 10 else "Z")
+    return ("<?xpacket begin=\"\ufeff\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"
+            "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\"><rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">"
+            "<rdf:Description rdf:about=\"\" xmlns:pdf=\"http://ns.adobe.com/pdf/1.3/\" "
+            "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\" "
+            "xmlns:xmpMM=\"http://ns.adobe.com/xap/1.0/mm/\">"
+            "<pdf:Producer>%s</pdf:Producer><dc:title><rdf:Alt><rdf:li xml:lang=\"x-default\">%s</rdf:li></rdf:Alt>"
+            "</dc:title><dc:creator><rdf:Seq><rdf:li>%s</rdf:li></rdf:Seq></dc:creator><xmp:CreatorTool>%s"
+            "</xmp:CreatorTool><xmp:CreateDate>%s</xmp:CreateDate><xmp:ModifyDate>%s</xmp:ModifyDate>"
+            "</rdf:Description></rdf:RDF></x:xmpmeta>%s<?xpacket end=\"w\"?>") % (
+        producer.replace("\u00ae", "&#174;"), title, author, producer.replace("\u00ae", "&#174;"), iso(created),
+        iso(modified), " " * 2000)
+
+
+def pdf(path, story_fn, title, author, created_pdf, modified_pdf=None,
+        producer="Microsoft\u00ae Word for Microsoft 365", creator="Microsoft\u00ae Word for Microsoft 365", footer=None,
+        footer_font="Helvetica"):
+    """A PDF as Word for Microsoft 365 exports one: PDF 1.7, the body font embedded as a subset, the document
+    language and marked-content flag in the catalogue, an XMP packet beside the Info dictionary, and the creation
+    (created_pdf, like 20260930141200) and last-save (modified_pdf) stamps with the UK offset of their dates. The
+    library's output is re-serialised through pypdf rather than patched in place."""
     import os
     from reportlab import rl_config
     rl_config.invariant = 1
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.units import mm
     from reportlab.platypus import SimpleDocTemplate
+    from pypdf import PdfReader, PdfWriter
+    from pypdf.generic import (BooleanObject, DecodedStreamObject, DictionaryObject, NameObject, TextStringObject,
+                               ArrayObject, ByteStringObject)
+    import hashlib
     os.makedirs(os.path.dirname(path), exist_ok=True)
+    modified_pdf = modified_pdf or created_pdf
     buf = io.BytesIO()
 
     def _foot(canv, doc):
         if footer:
             canv.saveState()
-            canv.setFont("Helvetica", 7)
+            canv.setFont(footer_font, 7)
             canv.drawString(18 * mm, 10 * mm, footer)
             canv.drawRightString(192 * mm, 10 * mm, "Page %d" % doc.page)
             canv.restoreState()
     doc = SimpleDocTemplate(buf, pagesize=A4, title=title, author=author, creator=creator, producer=producer,
                             leftMargin=52, rightMargin=52, topMargin=56, bottomMargin=56)
-    doc.build(story_fn(), onFirstPage=_foot, onLaterPages=_foot)
-    raw = buf.getvalue()
-    month = int(created_pdf[4:6])
-    off = "+01'00'" if 4 <= month <= 10 else "+00'00'"
-    raw = re.sub(rb"D:\d{14}[+-]\d\d'\d\d'", lambda m: ("D:%s%s" % (created_pdf, off)).encode(), raw)
-    raw = re.sub(rb"D:\d{14}Z00'00'", lambda m: ("D:%s%s" % (created_pdf, off)).encode()[:len(m.group(0))].ljust(
-        len(m.group(0)), b" "), raw)
-    raw = re.sub(rb"(?i)reportlab generated pdf document[^\r\n]*", lambda m: b" " * len(m.group(0)), raw)
-    raw = re.sub(rb"(?i)reportlab[^\r\n)]*", lambda m: b" " * len(m.group(0)), raw)
-    raw = re.sub(rb"\(anonymous\)", b"(         )", raw)
-    assert not re.search(rb"(?i)reportlab", raw), "library string left in " + path
+    base0 = rl_config.canvas_basefontname
+    rl_config.canvas_basefontname = footer_font
+    try:
+        doc.build(story_fn(), onFirstPage=_foot, onLaterPages=_foot)
+    finally:
+        rl_config.canvas_basefontname = base0
+    w = PdfWriter(clone_from=PdfReader(io.BytesIO(buf.getvalue())))
+    # each embedded subset under its own six-letter tag, as Word writes them
+    tags = {}
+    for page in w.pages:
+        for _k, ref in page["/Resources"]["/Font"].items():
+            f = ref.get_object()
+            bf = str(f["/BaseFont"])
+            if "+" not in bf:
+                continue
+            face = bf.split("+", 1)[1]
+            tag = tags.setdefault(face, ["BCDEEE", "BCDFEE", "BCDGEE", "BCDHEE"][len(tags)])
+            f[NameObject("/BaseFont")] = NameObject("/%s+%s" % (tag, face))
+            for d in (f.get("/FontDescriptor"),) + tuple(x.get_object().get("/FontDescriptor") for x in
+                                                         f.get("/DescendantFonts", [])):
+                if d is not None:
+                    d.get_object()[NameObject("/FontName")] = NameObject("/%s+%s" % (tag, face))
+    w.pdf_header = b"%PDF-1.7"
+    w._info.get_object().clear() if hasattr(w._info, "get_object") else None
+    info = DictionaryObject({NameObject("/Title"): TextStringObject(title),
+                             NameObject("/Author"): TextStringObject(author),
+                             NameObject("/Creator"): TextStringObject(creator),
+                             NameObject("/CreationDate"): TextStringObject(_pdf_date(created_pdf)),
+                             NameObject("/ModDate"): TextStringObject(_pdf_date(modified_pdf)),
+                             NameObject("/Producer"): TextStringObject(producer)})
+    w._info = w._add_object(info)
+    root = w._root_object
+    for k in ("/PageMode", "/OpenAction", "/Outlines", "/PageLabels"):
+        if k in root:
+            del root[k]
+    root[NameObject("/Lang")] = TextStringObject("en-GB")
+    root[NameObject("/MarkInfo")] = DictionaryObject({NameObject("/Marked"): BooleanObject(True)})
+    xs = DecodedStreamObject()
+    xs.set_data(_xmp(title, author, producer, created_pdf, modified_pdf).encode("utf-8"))
+    xs.update({NameObject("/Type"): NameObject("/Metadata"), NameObject("/Subtype"): NameObject("/XML")})
+    root[NameObject("/Metadata")] = w._add_object(xs)
+    fid = hashlib.md5((title + created_pdf).encode()).digest()
+    w._ID = ArrayObject([ByteStringObject(fid), ByteStringObject(hashlib.md5((title + modified_pdf).encode()).digest())])
+    out = io.BytesIO()
+    w.write(out)
+    raw = out.getvalue()
+    assert not re.search(rb"(?i)reportlab|pypdf|unspecified", raw), "library string left in " + path
     with open(path, "wb") as fh:
         fh.write(raw)

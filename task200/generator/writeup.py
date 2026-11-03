@@ -104,7 +104,8 @@ def write(task_dir, gen_dir, A):
                                                     _fmt_i(A["met_n"][a]), pct(A["met_rate"][a])),
           "5. Screen time: merged each CT login's overlapping rows in ct_workstation_sessions_2026.csv into one span, "
           "and ended each Pier B log-on in pierb_screen_events_2026.csv at the operator's own log-off, the next log-on "
-          "at that screen or the screen's shutdown, whichever came first, each badge read to its holder on the day "
+          "at that screen or the screen's shutdown, whichever came first, so that none runs past the 20 minutes at a "
+          "stretch SPS-04 section 5 allows, each badge read to its holder on the day "
           "through id_centre_badge_register.csv.",
           "6. Clear searches: split search_log_2026.csv records that carry two trays, matched each tray to its latest "
           "reject before the search was taken (ct_tray_rejects_2026.csv, or the Pier B REJECT events) and charged it "

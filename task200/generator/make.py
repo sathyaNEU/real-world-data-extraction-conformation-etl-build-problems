@@ -91,13 +91,13 @@ def digest(folder):
 def cut_zip():
     zp = os.path.join(TASK, "target.zip")
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
-        dirs = sorted({os.path.dirname(r) for r in walk(TARGET) if os.path.dirname(r)})
+        dirs = ["target"] + sorted({"target/" + os.path.dirname(r) for r in walk(TARGET) if os.path.dirname(r)})
         for d in dirs:
             zi = zipfile.ZipInfo(d + "/", date_time=P.EXPORT_STAMP)
             zi.external_attr = (0o40755 << 16) | 0x10
             z.writestr(zi, b"")
         for rel in walk(TARGET):
-            zi = zipfile.ZipInfo(rel, date_time=P.EXPORT_STAMP)
+            zi = zipfile.ZipInfo("target/" + rel, date_time=P.EXPORT_STAMP)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(TARGET, rel), "rb").read())
