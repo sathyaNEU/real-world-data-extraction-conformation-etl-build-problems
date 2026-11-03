@@ -11,8 +11,8 @@
   "shape": "06",
   "decision_type": "schedule_or_sequence",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Fell first, then Brook, Dene, Esk, Arden and Cleve, one team a course month from February 2027",
+  "answer_source": "submission.md block 1 and golden/remedial_course_2027.xlsx (Course order), from the 2026 hit rate on each screener's first meeting with a threat image: Fell 63 per cent (707 of 1,125), Brook 69, Dene 74, Esk 77, Arden 81, Cleve 85",
   "gap": [
     "objective",
     "population"
@@ -39,20 +39,21 @@
   "layer1": [
     "two projection systems with different layouts, clocks (UTC against UK local) and result codes",
     "operator identifiers that differ between systems, crosswalked through the roster",
-    "month-boundary repeat rows in the screening system exports",
+    "annual CT exports stitched from monthly pulls, the first hours of each month's first day repeated",
     "cancelled projections",
-    "team moves during 2026, the team read off the 31 December roster",
-    "legacy screen events with sign-ons that are never signed off",
-    "a January export holding the last days of December",
-    "reusable tray barcodes",
-    "externally assessed certificates keyed in weeks after the assessment"
+    "team moves during 2026, the team read off the 31 December roster, leavers absent",
+    "a remote screening log writing one row per lane a workstation's queue served",
+    "legacy screen events with log-ons that are never logged off, and ID badges replaced during the year",
+    "reusable tray barcodes and two trays on one search record",
+    "the search tablet's outcome codes changed in its July update",
+    "externally assessed certificates keyed in weeks after the assessment, the December 2026 ones not yet in the January LMS export"
   ],
   "stakeholder_role": "the airport's Head of Security Screening, setting the 2027 order of the remedial image interpretation course",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "screening_tip/ct_tip_export_2026.csv",
-    "rows": 34000,
+    "file": "screening_tip/ct_tip_events_2026.csv",
+    "rows": 31957,
     "entity": "one threat image projection on a Central Search CT screen",
     "grain": "projection",
     "source": "synthetic"
@@ -86,7 +87,7 @@
   "question_form": "who",
   "driver": "A unit's success rate is measured on test items drawn again and again from a small fixed pool, and a member succeeds more often on an item met before, so units whose members keep meeting the same few items look able while units drawing from a large pool look weak; only each member's first meeting with an item measures the ability the decision needs.",
   "driver_concrete": "Each team's chance of spotting a threat article it has never seen is read from its operators' threat image projections on images they met for the first time, because the Pier B screens draw their projections from a small legacy library that Fell's operators have met several times each, which lifts Fell's overall projection score to the middle of the table while its first-meeting detection is the lowest at the airport.",
-  "stump": "A competent solver orders the 2027 remedial course by each team's 2026 threat image projection detection rate (Brook first at about 72 per cent, Fell fourth at about 78) or by d-prime against the false searches (Esk first); the step that lands it there is treating every projection as a fresh test, when most of Fell's projections were images its operators had met before, and on the images each operator met for the first time Fell finds about 63 per cent against 70 to 80 for the other teams.",
+  "stump": "A competent solver orders the 2027 remedial course by each team's 2026 threat image projection detection rate (Brook first at 71 per cent, Fell fourth at 80) or by d-prime against the clear searches (Esk first); the step that lands it there is treating every projection as a fresh test, when 4,104 of Fell's 5,229 projections in 2026 were images its operators had met before, and on the images each operator met for the first time Fell finds 63 per cent against 69 to 85 for the other teams.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [

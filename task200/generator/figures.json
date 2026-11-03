@@ -1,0 +1,92 @@
+{
+ "all_n": {
+  "Arden": 6051,
+  "Brook": 5738,
+  "Cleve": 6650,
+  "Dene": 5520,
+  "Esk": 6329,
+  "Fell": 5229
+ },
+ "all_rate_pct": {
+  "Arden": 82,
+  "Brook": 71,
+  "Cleve": 86,
+  "Dene": 75,
+  "Esk": 79,
+  "Fell": 80
+ },
+ "certs": {
+  "Arden": 4,
+  "Brook": 2,
+  "Cleve": 3,
+  "Dene": 2,
+  "Esk": 5,
+  "Fell": 3
+ },
+ "clear": {
+  "Arden": 6608,
+  "Brook": 4399,
+  "Cleve": 6737,
+  "Dene": 6429,
+  "Esk": 11915,
+  "Fell": 5683
+ },
+ "cutoff": "1 July 2027",
+ "first_hits": {
+  "Arden": 4341,
+  "Brook": 3480,
+  "Cleve": 4961,
+  "Dene": 3570,
+  "Esk": 4324,
+  "Fell": 707
+ },
+ "first_n": {
+  "Arden": 5369,
+  "Brook": 5026,
+  "Cleve": 5841,
+  "Dene": 4842,
+  "Esk": 5605,
+  "Fell": 1125
+ },
+ "first_rate_pct": {
+  "Arden": 81,
+  "Brook": 69,
+  "Cleve": 85,
+  "Dene": 74,
+  "Esk": 77,
+  "Fell": 63
+ },
+ "hours": {
+  "Arden": 5168.8,
+  "Brook": 4750.9,
+  "Cleve": 5545.6,
+  "Dene": 4593.7,
+  "Esk": 5297.1,
+  "Fell": 4603.7
+ },
+ "met_n": {
+  "Arden": 682,
+  "Brook": 712,
+  "Cleve": 809,
+  "Dene": 678,
+  "Esk": 724,
+  "Fell": 4104
+ },
+ "met_rate_pct": {
+  "Arden": 90,
+  "Brook": 86,
+  "Cleve": 91,
+  "Dene": 87,
+  "Esk": 90,
+  "Fell": 84
+ },
+ "order": [
+  "Fell",
+  "Brook",
+  "Dene",
+  "Esk",
+  "Arden",
+  "Cleve"
+ ],
+ "sps_clause": "4.2"
+}

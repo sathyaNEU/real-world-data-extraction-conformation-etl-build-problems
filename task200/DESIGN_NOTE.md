@@ -11,20 +11,20 @@ domain the number had never used, with a new world, a new dataset and a new gene
 | Card | `.claude/skills/fingerprint/cards/task200.json`, architecture 6, registered 2026-11-03T12:41:43Z; `guard.py check` on the registered card: WARN only (below) |
 | Pairing | Human Factors & Ergonomics (client domain), task type `safety-incident-error-analysis`, which serves Root-Cause Analysis and Anomaly Detection & Diagnostics; objective Anomaly Detection & Diagnostics |
 | Niche | an airport security department ordering its X-ray screening teams through the 2027 remedial image interpretation course from the threat image projection (TIP) records of two generations of screening machine |
-| Call | the 2027 order of the remedial course, one team a month from January, the team whose X-ray operators are least likely to find a prohibited article in a passenger's cabin bag first (the screening standard SPS-04 files the WHAT) |
+| Call | the 2027 order of the remedial course, one team a month from February, the team whose X-ray operators are least likely to find a prohibited article in a passenger's cabin bag first (the screening standard SPS-04 files the WHAT) |
 | Shape | 06, a sequence under capacity: one team per course month, six positions graded, beside a per-team grid of three asks |
 | Strategy, gap, pattern | `composition_mix`; gap objective first (the projection detection rate is a correct number and is not what the order is scored on), population second; pattern none, generators G6 (composition shift: each team's mix of first and repeated meetings with an image) then G14 (the detection rate conditioned on a first meeting) |
 | Gate G | `method_or_model_selection`: the pooled projection rate against the rate on first meetings, the data's own hit-by-meeting gradient choosing between them |
 | Layer 2 | `estimation_fit`, `own:practice-inflated-proficiency-measure` |
-| World | Brackenford Airport, a fictional regional airport in England owned by two councils, running its own security screening: Central Search (eight CT lanes since March 2024, each projecting from the CT system's own library of about 6,000 threat images) and Pier B Search (three dual-view X-ray lanes kept until a later replacement, projecting from the legacy library loaded in May 2024, 420 images with 40 more in April 2026). Six screening teams on a rotating roster: Arden, Brook, Cleve, Dene, Esk, Fell. Fell is Pier B's team; Esk covers part of Pier B's early shifts; the other four work Central only. GBP |
+| World | Brackenford Airport, a fictional regional airport in England owned by two councils, running its own security screening: Central Search (eight CT lanes since March 2024, each projecting from the CT system's own library of about 6,000 threat images) and Pier B Search (three legacy X-ray screens, PB1 to PB3, kept until a later replacement, projecting from the legacy library loaded on 11 September 2023, 420 images with 60 more added on 20 April 2026 in the same code range). Six screening teams on a rotating roster: Arden, Brook, Cleve, Dene, Esk, Fell. Fell is Pier B's team and works nowhere else; the other five work Central only. GBP |
 | People | Marian Taylor, Head of Security Screening (the decision); Bernard Vincent, Security Training Manager (the course plan), drawn with `guard.py names --geo "United Kingdom" --seed 200`; no people warning on the card |
-| Forum, forcing event, organisation | `other` (the Head of Security Screening sets the order herself, no formal forum), `season_or_peak` (the course runs January to June ahead of the summer schedule), `other` (a council-owned airport company) |
+| Forum, forcing event, organisation | `other` (the Head of Security Screening sets the order herself, no formal forum), `season_or_peak` (the course runs in six monthly blocks, February to July, and the order is due by 22 January), `other` (a council-owned airport company) |
 | Deliverables | `remedial_course_2027.xlsx` (the order and the per-team grid) and `remedial_course_2027_note.docx` (one page) |
 
 **Data-native sentence.** Each screen projects its fictional threats from the library loaded on that machine,
 so an operator meets the same threat images again and again, and a hit on an image already met measures memory
 of that image rather than the skill of spotting a threat in a passenger's bag; the Pier B library is small and
-Fell screens on it all day, while the Central library is large enough that most of its projections are first
+Fell screens on it every shift, while the Central library is large enough that most of its projections are first
 meetings.
 
 **Abstraction sentence (Part 6).** "A unit's success rate on a test whose items recur is lifted by memory of the
@@ -59,15 +59,276 @@ honester gap here (the projection rate is right as a number and wrong as the ord
 people are invented):
 - the Central Search CT system's TIP exports for 2024, 2025 and 2026 (UTC, operator login, image identifier, threat
   category, result), the 2026 export the volume spine;
-- the Pier B legacy X-ray TIP log since the May 2024 library load (UK local time, badge number, image code);
-- the screening roster at 31 December 2026 with each screener's badge, CT login, team and start date, and the 2026
-  team moves;
-- the Central CT position log for 2026 and its January 2027 export (sessions in UTC) and the Pier B screen event log
-  (sign-ons, sign-offs and tray rejects in local time);
+- the Pier B legacy X-ray TIP log since the September 2023 library load (UK local time, TIP operator number, image
+  code, a three-line preamble);
+- the screening roster at 31 December 2026 with each screener's staff number, team, role, CT login, Pier B TIP operator
+  number, badge and start date, and the 2026 team moves; the ID Centre badge register;
+- the Central CT workstation sessions for 2026 (UTC, one row per lane a queue served) and the Pier B screen event log
+  (log-ons, log-offs, shutdowns and tray rejects in local time, by badge);
 - the CT tray reject log for 2026 and the search team's 2026 search log;
-- the training register (assessment sittings) and the external certificates sheet;
+- the LMS assessment export of 11 January 2027 and the assessment centre's certificate list;
 - the screener performance standard SPS-04, the course planning email, the lane throughput, the queue time samples
-  and the regulator's 2026 inspection letter.
+  and the compliance team's 2026 review.
+
+## Default path
+
+The pipeline a competent analyst builds from the prompt's words and the files' grain, with the field's own measure
+of screener detection in it (the threat image projection detection rate, the regulator's and the airport's routine
+performance figure, then signal detection theory's d-prime as the human-factors reflex):
+
+1. Read the three Central CT TIP exports and the Pier B TIP log, drop the repeated first-of-month rows the CT exports
+   carry, convert the Pier B local times, and drop cancelled projections (SPS-04 section 3).
+2. Map each CT login and Pier B TIP operator number to a staff number and team through the 31 December roster
+   (SPS-04's team definition), leaving out leavers.
+3. For each team, take its 2026 projections and compute the share it hit: Brook 71 per cent, Dene 75, Esk 79, Fell 80,
+   Arden 82, Cleve 86.
+4. Check the figure the field's way: d-prime against each team's clear searches per screen-hour puts Esk lowest
+   (2.96 against 3.04 to 3.47), and a logistic model with threat class and practice to date leaves Brook lowest;
+   the score is stable for the Central teams year on year (Brook lowest in 2024, 2025 and 2026).
+5. Order the teams from least to most likely to find an article (SPS-04 4.2).
+
+**Ends on:** Brook first, the order Brook, Dene, Esk, Fell, Arden, Cleve (Fell fourth).
+**Golden:** Fell first, the order Fell, Brook, Dene, Esk, Arden, Cleve.
+
+## Stump sentence
+
+A competent analyst orders the 2027 remedial course by each team's 2026 threat image projection detection rate and
+starts with Brook (71 per cent, Fell fourth at 80), or by d-prime and starts with Esk; the step that lands it there
+is treating every projection as a fresh test, when 4,104 of Fell's 5,229 projections in 2026 showed a Pier B library
+image its operators had already met, and on the images each operator met for the first time Fell finds 63 per cent
+against 69 for Brook, the lowest at the airport.
+
+## Three rules
+
+Task type: Human Factors & Ergonomics, `safety-incident-error-analysis` (serves anomaly-detection and root-cause): the anomaly is the screening team whose detection of threat articles is weakest, diagnosed through the airport's own threat image projection records, which is the domain's performance-monitoring analysis of a human error (a missed threat).
+Domain test: the deciding quantity is each team's chance of detecting a threat article it has never seen, which aviation security monitors through threat image projection: fictional threat images superimposed on live bags from a fixed library loaded on each machine, scored per operator login as hits and misses and read beside the false searches on live bags; swap in another field's nouns and the projection mechanics, the per-machine library and the bag searches have nothing to stand for.
+Swap: "the team whose X-ray operators are least likely to find a prohibited article in a passenger's bag, read from the threat images projected at their screens" becomes "the ward whose nurses are least likely to spot a deteriorating patient, read from the simulated alerts injected into their monitors": the simulated alerts would need a fixed library per monitor that some wards meet all day and others never repeat, which no hospital system has, so the sentence stops making sense.
+Layer 1: two TIP systems written by different vendors (the CT system's annual exports in UTC with operator logins and HIT, MISS and CANCELLED; the Pier B legacy log in UK local time with a three-line preamble, TIP operator numbers and H, M and X codes); the CT exports' rows from the first hours of each month's first day repeated because each annual file is stitched from monthly pulls, each run at 06:00 UTC on the first and taking everything since the last pull began; cancelled projections; team moves in April and June 2026 and leavers absent from the roster; the CT workstation log writing one row per lane a queue served; the Pier B screens' access log writing a log-on but often no log-off, and ID badges replaced in 2026; reusable tray barcodes and two trays on one search record; the search tablet's codes changed in its July update; externally assessed certificates keyed into the LMS weeks after the assessment, so the centre's December 2026 certificates are not in the January LMS export yet. Each is the system's own behaviour, documented by the file's own header, codes or the register beside it, and none is placed to be caught.
+Layer 2: estimation_fit: the projection score is a correct number measured on a test whose items recur, and the analysis that decides is reading the team's ability only on each member's first meeting with an image, because on an image already met the hit says more about remembering that image than about spotting a threat.
+Decisive step: score each team on the threat images its operators met for the first time, counting every earlier projection of the same image to the same screener back to the load of each machine's library, because the Pier B library is small and Fell meets it all day while the Central library is large enough that most of its projections are first meetings.
+Not semantics: every field, code, unit and definition read correctly (the result codes, the clocks, the operator mapping, the team rule, the cancelled projections) still gives the projection score Brook 71, Dene 75, Esk 79, Fell 80, Arden 82, Cleve 86 and an order that starts with Brook; no field says which projections were first meetings, the property is a relation between rows of one screener's history.
+Not rule application: SPS-04 files what the order ranks (how likely the team's operators are to find a prohibited article in a passenger's bag) and no rule or procedure says how that chance is estimated from TIP records; the enumerated family a competent analyst reaches for (the projection rate, d-prime at five tray rates, logistic models with threat class, screening area and practice to date, Central-only rates, first meetings counted inside 2026) spreads from Brook first to Esk first and never puts Fell above third, the standing family the data leave defensible once each projection's earlier meetings are counted (pooled first meetings, the member mean, a logistic with earlier-meeting terms read at none) agrees on the whole order with a spread of 2.5 points on Fell's figure against a smallest gap of 3.4 points, and what rules the rest out is loud only once looked for: inside Fell the hit rate climbs from 63 per cent on a first meeting to 84 per cent on an image met before.
+Analyst test: a strong analyst who cleans both TIP systems, maps every operator to the 31 December roster and reads SPS-04 ranks the teams on their 2026 projection score and starts the course with Brook (71 per cent, the default path's `Ends on:` Brook first), or on d-prime and starts with Esk, when Fell, whose operators had already met most of the Pier B library, finds 63 per cent of the images it meets for the first time.
+Estimand: SPS-04 section 4.2 in `docs/SPS-04_screener_performance_standard_issue3.docx`: the course starts with the team whose X-ray operators are least likely to find a prohibited article in a passenger's cabin bag and runs to the team most likely to find one; population, the screeners on each team's 31 December 2026 roster (section 3, every X-ray operator on it, starters and supervisors included); outcome, finding a threat article in a bag; window, how the teams screened in 2026 (section 4.3); unit, the team; comparison, the teams against each other.
+No decoy: nothing is planted to be caught: no copied block, no withheld rule, no memo, draft or briefing, no stakeholder figure written to carry the wrong answer; no shipped artifact ranks the teams on any measure, and the standard defines no metric.
+No certified replay: the method is not hidden and recovered by reproducing certified or published figures; the pack carries no published TIP score, no certified rate and no prior order to reproduce.
+Lesson: a performance test whose items recur measures memory of the items as well as the skill, so the units that meet a small item pool most often look most able; the ability is read on each member's first meeting with an item, from the member's own history. No build on file carries a practice or familiarity effect on recurring test items (every card's driver, stump and lineage searched).
+
+## Survivor anatomy
+
+Actor: the deciding property (whether the screener had met this image before) has no column in any file: it is a relation between rows of one screener's projection history across three CT exports or the Pier B log, two to three years deep, and no column holds a count, a flag or a date of first presentation.
+Link: the signal is read through a comparison the field's method never asks for, each projection against the same screener's earlier projections of the same image; the keys exist (operator and image) but no sentence, header or document invites the comparison, and the TIP score as the airport and regulator use it pools every projection.
+Reflex: the field's named measure for the deciding quantity is rung 0 (the TIP detection rate, Brook first) and signal detection theory's d-prime is rung 1 (Esk first); both file a wrong answer here, and the default path carries both.
+Back-test: the textbook route validates: the projection score is stable for the Central teams across 2024, 2025 and 2026 (Brook lowest each year, the Central order unchanged), and Fell's rise from 75 to 80 per cent over the same years reads as a team improving.
+Second use: every file the decisive step reads ships for its own reason: the 2024 and 2025 TIP exports are the system's own year files and carry the year-on-year check the textbook route validates on, the Pier B log is the pier's whole TIP record since its library was loaded, and the roster maps operators for every rung and every ask; delete the decisive step and the pack still carries all of them.
+Shock: the movement the step recovers reads as ordinary: on every shipped per-team statistic Fell sits inside the range (fourth on the projection score, fourth on d-prime, second lowest on screen time behind Dene and on clear searches behind Brook, level with Cleve and Dene on certificates), and its upward trend reads as improvement rather than as the pack's largest anomaly.
+Pins: SPS-04 files the WHAT (who is counted, what the order ranks, the year it is read on) in the organisation's own standard, and no filed sentence names a first meeting, a repeated image, the library, the history or any test; deleting 4.2 unforces the call, and it names only the outcome.
+
+## Readability screen
+
+The reflex row is enumerated from the field's vocabulary for screener detection (the TIP detection rate, a per-threat-class rate, d-prime or A-prime against false alarms, a learning curve in experience, machine-type adjustment, covert test results), never from the rungs.
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Readable |
+|---|---|---|---|---|---|---|---|---|
+| 0 the 2026 projection detection rate | no | yes (result column, one group-by) | yes | no | yes | yes | no | readable |
+| 1 d-prime against clear searches | no | yes (the search log's outcome) | yes (the human-factors method) | no | no | yes | no | readable |
+| 2 logistic with threat class | no | yes (threat class column) | yes | no | no | no | no | readable |
+| 3 logistic with practice to date | no | no | yes (experience as a covariate) | no | no | no | no | readable |
+| 4 Central projections only | no | yes (the system the file comes from) | yes (like-for-like machines) | no | no | yes | no | readable |
+| 5 first meetings counted inside 2026 | no | no | no | no | no | no | no | readable |
+| decisive: first meetings over each screener's whole history | no (no sentence names an earlier meeting, an image or a library) | no (no column marks a first presentation; the image codes of the 2026 additions are drawn from the same number range as the 2023 load) | no (the reflexes are rungs 0 to 3) | no (no control or corpus scores the teams) | no (the battery dedupes, converts clocks and maps codes, and stops) | no (a running count per screener and image across three years of two systems, then a filter) | no (the TIP exports are the system's own year files, used by every rung) | silent |
+
+Rung 5 is marked readable because once the idea of a first meeting is held, the history is one file away; it is the
+half-handled form of the decisive step and files Brook first.
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternatives | Call under each | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the CT exports' repeated first-of-month rows | dropped as exact copies | kept | same call | exact copies; asserted in `checks.py` (SF1) |
+| SF2 | cancelled projections | not shown, so neither a projection nor a meeting (SPS-04 section 3) | read as shown misses | same call | SPS-04 section 3; asserted (SF2) |
+| SF3 | a team's screeners | the 31 December 2026 roster (SPS-04 section 3) | the team each screener was in on the day of each projection | same call | SPS-04 section 3; asserted (SF3) |
+| SF4 | 2026 | UK local dates | UTC dates | same call | no projection near midnight moves a team; asserted (SF4) |
+| SF5 | an earlier meeting | any earlier projection of the same image to the same screener since the library's load, which is where each export begins | (the estimate, not a reading: no field holds it) | not applicable | recorded so the judge sees it is the decisive step, not a term; asserted as the golden's construction (SF5) |
+| SF6 | screeners who left during 2026 | not on the roster, so outside every team | kept under their last team | same call | SPS-04 section 3; asserted (SF6) |
+| SF7 | the Pier B clock | UK local time, as the log's own date and time columns are | UTC | same call | asserted (SF7) |
+| SF8 | a team's figure | pooled over its screeners' first meetings | the mean of each member's own rate | same call | asserted (SF8) |
+| SF9 | rounding | each team's rate computed from counts and printed to a whole per cent | rounded before ordering | same call | every first-meeting rate at least 0.23 points from a whole-per-cent edge; asserted (SF9) |
+| SF10 | screening supervisors | X-ray operators on the team (SPS-04 section 2) | left out | same call | SPS-04 section 2; asserted (SF10) |
+| SF11 | 2026 starters | on the team (SPS-04 section 3) | left out | same call | asserted (SF11) |
+| SF12 | the images added to the Pier B library in April 2026 | projections like any other | left out | same call | asserted (SF12) |
+
+## Ladder
+
+Measured on the built pack (six teams, 35,517 shown projections in 2026, the history back to September 2023 at Pier B
+and March 2024 at Central), every rung's first team and order asserted in `generator/checks.py`.
+
+| Rung | Construction | First team | Fell's place | Killed by |
+|---|---|---|---|---|
+| 0 | every 2026 projection's hit rate (the field's measure) | Brook (71.3 per cent) | 4th (79.7) | Fell's hits on images met before |
+| 1 | d-prime against clear searches per screen-hour, at 80 to 300 trays a screen-hour | Esk (2.96) | 4th | measures separation, not how often a team finds an article; and still pools repeats |
+| 2 | logistic with threat class, read at the airport's mix | Brook (71.3) | 4th | threat class is not what differs |
+| 3 | logistic with threat class and log practice to date | Brook (71.5) | 4th (79.2) | practice to date is similar across teams; memory is per image |
+| 4 | Central projections only, like-for-like machines | Brook | absent | leaves the Pier B team out of the comparison |
+| 5 | first meetings counted inside 2026 only | Brook (70.8) | 3rd (77.2) | most of Fell's earlier meetings fell in 2024 and 2025 |
+| golden | first meetings over each screener's whole history | Fell (62.8 per cent, 707 of 1,125) | 1st | |
+
+Order under the golden: Fell 62.8, Brook 69.2, Dene 73.7, Esk 77.1, Arden 80.9, Cleve 84.9 per cent; adjacent gaps
+6.4, 4.5, 3.4, 3.7 and 4.1 points. Golden family: the member mean (Fell 64.1, Brook 68.7) and a logistic with
+earlier-meeting terms read at none (Fell 61.6, Brook 69.6) give the same order, largest spread 2.5 points against
+the smallest gap of 3.4. Position: Fell is fourth on rung 0, never first on an intermediate rung, second on none
+(third on rung 5). Dominance: Fell's first-meeting deficit to Brook (6.4 points) against the advantage memory buys it
+on every projection (Fell above Brook by 8.4 points on rung 0) is the reversal the step makes; inside Fell the hit
+rate is 63 per cent on a first meeting and 84 per cent on an image met before (4,104 of its 5,229 shown projections).
+
+**The pricing sequence.** (1) Residue the filed WHAT leaves: the estimator of each team's chance on a never-seen
+article; a method, not a knob. (2) The move against the ceiling: Fell must move 8.4 points from rung 0 to fall
+below Brook, and memory carries 4,104 of its 5,229 projections at 84 against 63 per cent, worth 16.9 points on its
+overall score (no Central team gains more than 2.1). (3) The one-group-by route: no shipped column groups first meetings, and the running count is
+not affine in any shipped column (the closest, practice to date, is rung 3 and files Brook). (4) The standard error
+of what the step estimates: Fell's first-meeting rate rests on 1,125 projections (about 1.4 points), Brook's on 5,026
+(0.7), against a 6.4-point gap. (5) Lever and noise are not the same variance: the step moves a level (which
+projections count), not a variance. (6) Not a variance correction. (7) The subset the step reads (first meetings) does
+not publish the answer in any other column. (8) The reflex sweep, run as code in `checks.py`: the projection rate, d-prime
+at five tray rates, three logistic forms, Central only and first meetings inside 2026 all file Brook or Esk first.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | each team's screeners on the 31 December 2026 roster, starters and supervisors included (members not yet observed: none) | filed in SPS-04 section 3; C1 (SF3, SF10, SF11) |
+| 2 Unit of account | the team | filed in 4.2; C1 |
+| 3 Attribution window | how the teams screened in 2026, UK local dates | filed in 4.3; C1 (SF4, SF7) |
+| 4 As-of dating | the exports of January 2027 | C1 (no 2026 projection arrives later) |
+| 5 Version basis | the CT annual exports and the Pier B log read as one history per screener | C1 (the image codes of the two systems never overlap) |
+| 6 Denominator | each team's shown projections on first meetings | the estimate; its alternatives are rungs, not readings |
+| 7 Weighting | pooled over screeners | C1 with the member mean (SF8) |
+| 8 Window length | the history back to each library's load | the estimate (SF5); the exports begin at the loads |
+| 9 Boundary inclusivity | not applicable (an order, no threshold) | C1 |
+| 10 Rounding path | rates from counts, printed to whole per cent, ordered on the unrounded rate | asserted mid-bin (SF9) |
+| 11 Tie-break | none needed (smallest gap 3.4 points) | C1 |
+| 12 Maturity and censoring | none (2026 is closed; no projection is pending) | C1 |
+| 13 Order of operations | dedupe, drop cancelled, map operators, count earlier meetings, filter to 2026, group | C1 (SF1, SF2) |
+| 14 Row order | time order; same-second ties by file order | C1 (no same-second repeat of one image to one screener) |
+| 15 Duplicate resolution | the repeated first-of-month rows dropped as exact copies | C1 (SF1) |
+| 16 Identity normalisation | CT logins and Pier B TIP operator numbers mapped through the roster; Pier B badges read through the ID Centre register for the asks | C4 (an unmapped login or operator number is a leaver, outside every team; SF6) |
+| 17 Netting against gross | not applicable | C1 |
+| 18 Dimensional units | shares of projections; hours for the asks | C1 |
+| 19 Code and status semantics | HIT, MISS, CANCELLED and H, M, X, crosswalked by the Pier B log's own preamble | C1 |
+| 20 Integerisation | not applicable | C1 |
+| 21 Clause scope | 4.2 orders all the teams; 4.1 one team a course month | filed |
+| 22 Forward window contents | the 2027 course, February to July, one team a month (the planning email) | filed in 4.1 and the email |
+
+## Literal reader
+
+Executed on paper word for word: SPS-04 4.2 fixes the outcome (how likely the team's X-ray operators are to find a
+prohibited article in a passenger's cabin bag), section 3 the population (the 31 December roster) and the meaning of a
+hit, a miss and a cancelled projection, 4.3 the year; no shipped field states any team's chance of finding a real
+article, so every literal reading needs an estimate from the projection records, and the easy answers (Brook on the
+projection rate, Esk on d-prime) are easy methods on the same literal estimand, not other readings. Every convention
+the estimate needs is closed in the fork table; the method is left open and forced by the data: inside every team the
+hit rate on an image met before is far above the rate on a first meeting (63 against 84 per cent at Fell, 69 against 86
+at Brook), so a hit on an image met before is not a hit on an unseen article, and a real article in a bag is always
+unseen. Pass.
+
+## Oracles
+
+- The clean truth in the generator: each team's true chance on a first meeting orders the teams Fell, Brook, Dene,
+  Esk, Arden, Cleve (63.7 to 84.4 per cent) and the mean member skill gives the same order; asserted.
+- No control, published figure, reconciliation column or corpus in the pack scores the teams on detection, and the
+  compliance review's covert tests are reported for the airport as a whole (and were missed at the divest and archway
+  stage, not at a screen); nothing ties only under the golden.
+
+## Ask sheet
+
+Three asks, each per team (every team in every ask), each a reconstruction across two systems or grains no sentence
+states, sited on files the main call never reads (the session logs, the screen events, the reject and search logs,
+the badge register, the LMS and the centre's certificates), none touching the projection records.
+
+**Ask A, screen time.** Each team's 2026 hours at an X-ray screen, to one decimal (6 figures). Use: Bernard Vincent's
+cover plan for the course month. Primary device D6 (one event's quantity on every line it covers): the Central
+remote-screening log writes one row per lane a workstation's queue served, and a two-lane queue picks its second lane
+up part way through a session, so the second row lies inside the first; summed as exported the Central teams' hours
+run about a fifth high (19.9 to 20.6 per cent). Second device, another family (a state rebuilt from an event log, D4): the Pier B screens
+write a log-on but often no log-off, the next operator's log-on or the screen's shutdown ending a session; and the
+Pier B badges are read through the ID Centre register, because badges replaced in 2026 are not on the roster.
+Filed: SPS-04 section 3 (screen time is logged-on time), naming neither device. Stops: the rows summed with Pier B
+closed at the next log-on through the roster's badges (the cracker); the rows summed with only paired Pier B log-ons
+(the mirror); the rows merged with roster badges (Fell missed); golden.
+
+**Ask B, clear searches.** Each team's 2026 clear searches (6 figures). Use: the trainers size each block's clutter
+and false-alarm session on the team's clear searches (the planning email).
+Primary device D6 (one record covering several events): at the busiest times an officer clears two trays of one
+passenger on one search record, the tray tags joined by a semicolon, and the two trays were often rejected at
+different screens by different screeners. Second: tray barcodes are reused all day, so each tray is read to its latest
+reject before the search was taken, through the CT reject log (UTC) or the Pier B screen's REJECT event (local time,
+by badge through the register). Hazard: the tablet's codes changed in July (NF to CLEAR). Filed: SPS-04 section 3 (a
+search is charged to the screener whose decision sent the tray; a clear search finds nothing at all). Stops: each
+record once against its first tray with roster badges (the cracker); each record once with the register (the
+mirror); records split with roster badges (Fell missed, its replaced badges' rejects unread);
+golden.
+
+**Ask C, certificates.** Each team's screeners whose image interpretation certificate runs out before 1 July 2027 (6
+figures). Use: recertifying them on the course. Primary device D8 (a recorded date for the event date): an
+assessment sat at the external centre reaches the LMS as an EXT-IIC row dated when HR keyed it, weeks after the
+assessment; the centre's certificate list carries the assessment date, joined by the certificate reference, and in
+every team one or two long-serving screeners were assessed there in late spring 2024 and keyed after June. Second
+device, another family (D4, absence in the habitual source evidenced in a file the habitual join does not reach): two
+screeners in different teams (Arden and Dene on this cut) whose certificates run out in spring 2027 booked their
+renewal at the centre early and sat it in early December 2026; the centre's list holds those certificates under the
+candidate's staff number, and the LMS export of 11 January does not yet, so a solver who dates the LMS's EXT-IIC rows
+through their references still counts both as running out. Filed: SPS-04 section 3 (a certificate runs three years
+from the assessment that awarded it, a screener holds one at a time and a later pass replaces it), naming neither
+device. Hazards: failed IIC sittings and the annual refresher, which SPS-04 says renew nothing. Stops: the LMS dates
+(the cracker and the mirror); the centre's dates through the LMS references (Arden and Dene missed); the LMS dates
+with the centre's unkeyed certificates added (every team missed); golden.
+
+Main population zero-counts (asserted in `checks.py`): the call reads only the TIP exports and the roster, so no ask
+device sits in its rows; deleting every ask file leaves the order and every first-meeting figure identical; the
+distractors (throughput, queue samples, the compliance review) deleted move nothing.
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | CT rows summed as exported; Pier B log-ons closed at the log-off, the next log-on or the shutdown, badges through the roster | misses |
+| B | each clear record once, against its first tray's latest reject, badges through the roster | misses |
+| C | each screener's latest passed certification on its LMS date | misses |
+
+Measured by: `generator/ceiling.py` on the cut pack (stage 3), every route's figures asserted off the golden in
+`generator/checks.py`.
+
+| Ask | Graded figures | Cracker keeps | Mirror keeps | Cracker |
+|---|---|---|---|---|
+| A screen time | 6 | 0 | 0 | misses |
+| B clear searches | 6 | 0 | 0 | misses |
+| C certificates | 6 | 0 | 0 | misses |
+
+On the cut pack the cracker keeps none of the 18 ask figures and the mirror none. Each device fixed alone buys under
+a third of the ask weight: the CT rows merged 5 of 18 (27.8 per cent), the two-tray records split 5 of 18 (27.8), the
+centre's dates through the LMS references 4 of 18 (22.2), the centre's unkeyed certificates 0 of 18, the badge
+register 1 of 18 (5.6). With the call landed at 38 plus 7 and the
+best miss at 5 plus 7, the pair is (45 + 55 x 0.000 + 12 + 55 x 0.000) / 2.
+
+Pair ceiling: 28.5.
+Mirror leakage: 0.0 per cent of ask weight.
+
+**Shape arithmetic (the 25 criteria).** The order, six positions (6); screen time, clear searches and certificates
+for each team (18); the note with the order and its reason (1 to 2); the files (2): 27 to 28.
+
+## Leak sweep
+
+`leak.py task200 --asof 2027-01-15` at stage 3: REVIEW on three lines, no LEAK, each ruled harmless.
+- Sweep 4 on SPS-04 (11 of 25 stump-paragraph terms): the standard defines a threat image projection, a screener, a
+  team, screen time, a search and a certificate, which is what a screener performance standard is for, and names no
+  earlier meeting, repeated image, library or history of a screener (`doc.sps_silent` in `checks.py`); its one
+  "history" is the revision history heading and its "standard" its own title.
+- Sweep 4 on the compliance review (4 terms): its "meeting" is the security management meeting of 14 December 2026,
+  its "articles" the covert test articles, and it puts screener image interpretation outside its own scope.
+- Sweep 12 on SPS-04 (4 column names: Screen, Team, cancelled, workstation): ordinary words of the standard's own
+  definitions (an X-ray screen, a team, a cancelled projection, a remote screening workstation), not a note on any
+  file's columns; the standard names no file, column or code.
+- `guard.py surface task200`: 0 of 302 pairs promoted (nearest task174 at 0.040); its persona NOTE "Vincent Security"
+  is the planning email's signature, Bernard Vincent's name line run into his job title, not a person. `guard.py heart
+  task200`: WARN only, the two lines answered under `## Draw`.
 
 ## Tried and rejected
 
