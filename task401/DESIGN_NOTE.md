@@ -47,6 +47,7 @@ yield on the operator's own fields.
   is answered: it is the honest label, and the decisive families differ (task400 a staggered rollout's natural
   comparison of warning response, task402 attrition of broken-off therapy courses, here a crop's own phenological clock
   against a dated shock).
+- **Why this label is the honester one, not the passing one:** `causal_design` BLOCKs on `ban.strategy` against task400, and seeding-date confounding reads naturally as a design problem, so the choice is argued on its merits: nothing in the hybrid's placement needs repairing (within a yard it went on fields at random); the late seeding is a pathway the hybrid's own seed delivery opened, and the shape 03 bridge splits the hybrid fields' deficit between that timing pathway (heat inside flowering windows it moved) and the variety's own effect, the split decided by how the heat met each field's flowering phase. A deficit booked to the right driver through a shared shock is F8's form.
 - **Gap, pattern, generators:** gap objective (the yield by hybrid is reported correctly and is not what the order is
   scored on, the hybrid's own effect), then time (2026's seed arrived late; the 2027 order does not repeat it); pattern
   none; generators G7 (operating window: the heat counts only inside each field's flowering window) and G13 (horizon
@@ -167,6 +168,7 @@ No decoy: nothing is planted to be caught; no memo, briefing, draft or stakehold
 hybrid, and no file computes the hybrid's yield penalty.
 No certified replay: no certified or published figure is reproduced to recover a method; the provincial yields by risk
 zone answer what the region yielded and agree with the operator's own records under every route.
+Domain close call: the domains README reads Economics as macro, labour, trade and fiscal reads, and a farm operator's seed order is none of those; it stays here because the deciding quantity is the econometrics literature's own estimate (the yield-weather panel with farm and year effects), the failure is an identification failure in a two-way fixed-effects panel (exposure timing confounded with treatment), and no client domain carries agronomy; the economics shows where it is honest, in the order's seed cost per acre net of the hybrid's premium (an ask), while the filed 5 per cent yield bar stays the rule.
 Lesson: weather harms a crop through its growth stage, so a variety compared across fields seeded on different dates
 must be read at equal exposure inside each field's own sensitive window; no build on file teaches a growth-stage
 exposure or a clock started by each unit's own date against a dated shock.
@@ -203,7 +205,35 @@ window, a threshold or a comparison group.
 
 ## Ladder
 
-(Stage 2.)
+Stage 2 in progress (`generator/world.py` clean truth, `generator/ladder.py` routes; the hybrid's own effect is nil by
+construction). Measured 2026-11-03 on seed 4012026 with the heat wave starting 20 July (the coordinator's 10 to 18 July
+was moved once the climatology was set to west-central Saskatchewan normals: with May to July at normal temperatures
+canola seeded in early May flowers about 1 July and the late-seeded hybrid about two weeks later, so a mid-July wave
+would strike both):
+
+| Route | Hybrid effect | Lands |
+|---|---|---|
+| Raw 2026 means | -24.6 | drop |
+| Season-long degree-day panel, farm and year effects (rung 1, the field's method) | -18.1 | drop |
+| Farm-by-year effects | -15.0 | drop |
+| Season panel plus a linear seeding-date term (dates rebuilt from the pass logs) | -10.1 | drop |
+| Farm-by-year plus a linear seeding-date term | -8.3 | drop |
+| Season panel plus seeding-week bins by season | +3.6 | keep |
+| Cubic in seeding day by season | +4.4 | keep |
+| Fields seeded within the same three days on the same farm (20 hybrid fields matched) | +9.3 | keep (noisy) |
+| Heat in each field's flowering window, 520 heat units base 5 C, 18 days, 29.5 C | +1.0 | keep |
+| Window variants: 28 C, 31 C, 14 days, 22 days, 490 and 550 units | +2.1, -2.5, -12.0, +3.4, -8.2, +4.9 | mixed |
+
+Findings to settle before precut. First, said plainly: once the seeding dates are rebuilt from the seeder's pass logs,
+every flexible seeding-date route lands about nil and keeps the hybrid; only a linear term still files a penalty past
+the bar. The stump therefore rests on whether the solver rebuilds seeding dates at all, and the Gate F argument is that
+no file states them, no ledger, memo or invoice dates the hybrid's seed arrival (the inputs ledger carries invoice dates
+from the early-order programme), and the field's method, run on every column the field register and harvest records
+carry, files about -15 to -18. Second, the window variants spread too widely to grade the hybrid's effect finer than the
+call: canola catches up when seeded late (a 17-day seeding gap became a 6-day flowering gap in a hot June), so the
+generator must set 2026's monthly anomalies (normal May to July apart from the wave) to hold the flowering clusters about
+12 days apart, and the graded figure becomes the call with a band; each bridge item is graded only at a precision every
+defensible window reproduces, or replaced by a model-free figure (seeding dates, yields by zone and hybrid).
 
 ## Closure table
 
