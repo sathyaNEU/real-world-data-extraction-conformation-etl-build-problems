@@ -2,11 +2,292 @@
 
 ## Draw
 
-Not drawn. Seed DA26, kept as world, decision and quantity: a code-hosting platform's developer-relations team can staff one community's launch of pair-review sessions, and the slot goes to the community whose launch reaches the most developers. Pairing: `product-analytics` / `feature-adoption-diffusion-modeling` (DD).
+Architecture 2 of the reopened slot, re-rooted at the draw on 2026-11-03 into a fresh world and domain (the DA26
+developer-community world, the exposure-response draw and architecture 1's twenty-two screens stay dead, `## Tried and
+rejected`). Pairing: `urban-regional-science` / `network-analysis` (Descriptive & Distribution Analysis), shape 01
+(ranked list, each shortlisted crossing a row). Niche: the Shires Transport Board, a sub-national transport body for
+four shire counties (Northshire, Southshire, Eastshire, Westshire), chooses which crossing on its level crossing
+replacement shortlist the 2027 scheme replaces; the programme brief files the choice as the crossing whose barrier
+closures cost road users the most delay on school-day mornings, 07:00 to 10:00, over the 2025/26 school year.
 
-The exposure-response architecture prototyped on 2026-10-23 (acceptance rising with the number of seeded collaborators who invite, carried from low-density pilots to a launch dense enough to invite most of a mid-sized hub several times) cleared `ban.strategy` on the 2026-10-24 window and a re-searched world met every ladder separation rule (pilot yield names Embedded at 2.26 times the next with Infrastructure fourth, acceptance per invitation names Data and ML at 1.52 times, tie-type, per-hub-curve and mean-plug-in rivals all off Infrastructure, the exposure-response route names Infrastructure at 1.46 times). It was refused at the abstraction test before registration: stripped of nouns its driver is task175's (shipped), below.
+Abstraction: a stoppage holds a queue, and the cost of the stoppage is the time the queue takes to drain; the field's
+model drains it at the road's own capacity, and the step is seeing that at one site the drain runs through a second
+control whose open periods and short storage set the pace, so the cost has to be rebuilt through that control's timed
+greens. Nearest drivers on file (guard.py check): task472 v1 lineage at 0.08 (a job finished only when its slowest
+parallel stream finishes), task109 v1 lineage at 0.06, task173 v4 at 0.05; none is a queue paced by a downstream
+control. `slots` on the mechanism words (spillback, blocking back, storage, shuttle signals, downstream signal,
+saturation flow) and on the setting words (level crossing, barrier, closure delay, school run) returned no screen.
 
-Architecture 1 of the reopened slot, re-rooted at the draw on 2026-11-02 in a fresh world (the DA26 world is not reused): 22 candidates screened across nine task types (Product Analytics' three Descriptive task types, General Statistics' missing data, Sociology's life tables, Healthcare's provider quality, Political Science's small-area opinion, Marketing's segmentation and Survey Research's sample design), A1.1 to A1.22 in Tried and rejected, the four strongest written in full there and the strongest prototyped in code on an honest replay of its world. None clears `guard.py check` and the three rules together, so nothing is carded or registered and the slot stops at stage 1 on the orchestrating session's rule (twelve screened across three task types). The ban window read at the draw (last three live cards task157, task166, task173) bars `causal_design`, `composition_mix` and `decomposition_attribution`; the structural window (last twelve, lineage included) bars every honest signature the strongest candidate has.
+The committed quantity is retrospective on purpose: the programme's appraisal reads the last full school year's
+record to choose the next year's scheme (the timetable and the road network are unchanged into 2027, the brief
+says so), so the call faces forward and the measured year is closed.
+
+Guard answers: WARN overuse.org_family (government_agency in 40 builds) is the honest label, a public transport
+body; WARN repeat.deliverables (docx and xlsx against task200) is answered at the role level, a crossing workbook and
+a panel paper, with the shell drawn as a "which" question with a "Build" opener. Personas from
+`guard.py names --geo uk --seed 276`: Andrew Stevens (network planning lead), Gareth Davis (programme manager); neither
+appears in the prompt.
+
+Data-native sentence: Mill Lane's crossing sits 42 metres from the stop line of a single-track river bridge worked by
+fixed-time shuttle signals, so every queue a closure builds there can only leave in the bridge's greens for its own
+direction, and that fact lives only in the network links, the node coordinates and the highway authority's signal
+timing register, none of which the closure model reads.
+
+## Default path
+
+1. Read `rail/barrier_events_2025_26.csv` (UTC), drop the sensor-bounce repeats, pair each lowering with the next
+   raising and convert to UK local time.
+2. Take school days from `schools/term_dates_2025_26.xlsx` for each crossing's county (the county from
+   `rail/crossing_register_2025.pdf`), bank holidays out, as the programme brief files.
+3. Map the approach count sites to crossings through `highways/network_register_2026.xlsx` and spread each
+   quarter-hour's count in `highways/approach_counts_2025_26.csv` evenly across its quarter hour (the appraisal
+   method's convention).
+4. The field's closure model: each vehicle reaching the barriers while they are down waits for the raising, and
+   the held queue discharges at the saturation flow, 1,800 vehicles an hour per lane (lanes from
+   `highways/network_links.csv`), from the moment the barriers rise; delay is each vehicle's extra time against the
+   same morning with no closures.
+5. Sum over vehicles counted 07:00 to 10:00 on school days, by crossing, in vehicle-hours; validate the arrivals
+   against the 2026 queue survey's queues at barrier rise, which agree at every crossing; rank.
+
+Ends on: Station Road, about 7,000 vehicle-hours against Mill Lane's 5,000 in second place.
+
+Golden: Mill Lane, about 9,000 vehicle-hours against Station Road's 7,000, a gap of 2,000.
+
+## Stump sentence
+
+A competent analyst replays every closure through the field's closure model, the held queue leaving at 1,800 vehicles
+an hour once the barriers rise, and names Station Road (about 7,000 vehicle-hours against Mill Lane's 5,000); the step
+that lands it there is releasing Mill Lane's queues at the road's own rate, when the river bridge's shuttle signals 42
+metres beyond the crossing pass each direction only in its own green and hold seven vehicles of storage between them,
+so Mill Lane's closures cost about 9,000 vehicle-hours and lead.
+
+## Three rules
+
+Task type: network-analysis in urban-regional-science, the delay a network element imposes on the flows through it,
+which serves Descriptive & Distribution Analysis in the taxonomy (how the road-user delay of the programme's
+crossings is distributed across them).
+Domain test: the deciding quantity is the road-user delay each crossing's closures cause, which transport network
+analysis estimates with deterministic queueing at the network's controls (the closure model at the saturation flow,
+and at any control the released queue reaches, that control's capacity in its own green).
+Swap: with "hospital" for "crossing" and "patients" for "vehicles" the sentence loses its meaning: there is no barrier
+log, no saturation flow, no shuttle green and no storage in metres between two stop lines to pace a released queue.
+Layer 1: the rail infrastructure manager's barrier log in UTC with sensor-bounce repeats; the highway authority's
+quarter-hour counts in UK local time across both clock changes, with dropouts outside the peak; the crossing register
+as a scanned PDF under the railway's references; the network under the highway authority's node numbers; four county
+term calendars with different half terms; a fault work-order export and a signaller's occurrence book, each in its own
+keys; two counter models that write the heavy-vehicle column differently.
+Layer 2: allocation_constraints, a queue's discharge bounded by the tightest capacity downstream within the queue's
+reach, here a fixed-time shuttle signal with seven vehicles of storage between it and the barrier.
+Decisive step: recognising that Mill Lane's released queues, westbound and eastbound, are paced by the river bridge's
+signals 42 metres away and rebuilding the closures' delay through the bridge's timed greens and the storage between
+the two stop lines, rather than through the barrier alone.
+Not semantics: every field, code, unit and clock read correctly still leaves the closure model naming Station Road,
+because no field says that a control sits within the queue's reach; the bridge is a node 42 metres along a link, and a
+site in a timing register keyed by node number.
+Not rule application: no filed rule or procedure says where a released queue goes; the brief files the outcome (extra
+time to reach the far count site against the same morning without closures), the population, the window and the unit,
+and the method files only network constants; the enumerated family (closure count, closure minutes, vehicles held,
+the closure model at 1,800, the closure model with the bridge for one direction, the replay through every control in
+the section) spreads Mill Lane from about 5,000 to 9,000 vehicle-hours and the call between Common Road, Station Road
+and Mill Lane; the standing family (the closure model at 1,800 and the replay through the section's controls, both
+literal readings of "extra time to reach the far count site" to a reader who has not looked at the section) spreads
+Mill Lane from about 5,000 to 9,000 and the call from Station Road to Mill Lane; nothing loud rules either out, since no
+sentence, column or flag names the bridge's effect.
+Analyst test: a strong analyst who pairs the barrier events, reads each closure's arrivals off the approach counts and
+releases every held queue at 1,800 vehicles an hour per lane once the barriers rise, the closure model the queue survey
+validates at every crossing, names Station Road, when at Mill Lane both directions' queues can only leave in the
+bridge's greens and its closures cost the most road time.
+Estimand: the programme brief (`programme/crossing_programme_2027.docx`, section 3) files the delay a crossing causes
+as the extra time vehicles counted on its approaches between 07:00 and 10:00 on school days take to reach the count
+site on the far side of the crossing because the barriers were lowered, against the same morning with the barriers
+left raised, summed in vehicle-hours over the 2025/26 school year; the appraisal method files the network constants.
+No decoy: nothing is planted: no copied block, hidden rule, memo, draft, briefing or stakeholder figure carries the
+wrong answer; the queue survey is the programme's own calibration of arrivals and is true at every crossing, and the
+register's risk score is the rail manager's own measure for another purpose.
+No certified replay: no certified or published delay figure exists in the pack, so the method cannot be recovered by
+reproducing one; the survey records queues at barrier rise, which every route reproduces.
+Lesson: a model that gets it right learns that a stoppage's cost is set by the tightest capacity its released queue
+meets, so a delay estimate has to walk the network beyond the stoppage; no build on file teaches a queue paced by a
+second control within its storage reach.
+
+## Survivor anatomy
+
+Actor: the deciding property, that Mill Lane's released queues meet a second control within seven vehicles of
+storage, is a relation between the crossing's node, a 42-metre link and a timing-register row; no file has a column
+for it, and no file names both the crossing and the bridge.
+Link: the crossing register gives the railway's reference and an OS grid reference, the network gives node numbers
+with coordinates, and the timing register gives a site, a node and its greens; the bridge is reached only by matching
+the crossing to its node by coordinates and walking the links to the next node, a join no shared key offers.
+Reflex: the field's closure model (deterministic queueing at the saturation flow once the barriers rise) is rung 3 and
+names Station Road.
+Back-test: the 2026 queue survey's vehicles in queue at barrier rise agree with the closure model's arrivals at every
+crossing, Mill Lane's two approaches included, because a queue at the rise does not depend on how it leaves.
+Second use: the network links file carries each approach's lane count, which the closure model needs (Common Road's
+two lanes a direction), and the timing register shares its workbook with the count-site sheet the default path
+reads to map counts to crossings; every file the decisive step reads ships for the default path too.
+Shock: Mill Lane is unremarkable on every shipped statistic: second in closure minutes, fourth in closures per
+morning, third in traffic, mid-table on the register's risk score; its delay rises only once its queues are walked to
+the bridge.
+Pins: the brief files population, outcome, window, unit and comparison, and the method files saturation flow, vehicle
+length and the count spreading; no sentence names the bridge, a signal, a storage or a queue's route, and deleting any
+filed sentence leaves the call where it is.
+
+## Readability screen
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 closures per morning (Common Road) | no | no | no | no | no | yes | no | readable |
+| R1 closure minutes (Station Road) | no | no | no | no | no | yes | no | readable |
+| R2 vehicles held (Station Road) | no | no | no | no | no | yes | no | readable |
+| R3 closure model at 1,800 (Station Road) | no | no | yes | no | no | no | no | readable |
+| R4 the bridge for the westbound queue only (Mill Lane) | no | no | no | no | no | no | no | silent |
+| R5 replay through every control in the section (decisive) | no | no | no | no | no | no | no | silent |
+
+Test 1: no clause names a downstream control, a storage or a queue's route. Test 2: no column or flag marks the bridge
+as Mill Lane's; the timing register is keyed by node. Test 3: the reflex is the closure model (R3), which names Station
+Road. Test 4: the survey agrees with every route. Test 5: the battery (bounces, clocks, calendars) moves no rank.
+Test 6: the gated delay is a replay through two controls with storage, not one subtraction. Test 7: every file R5 reads
+ships for R3 as well (Second use).
+
+## Semantic fork table
+
+| ID | Term or convention | Alternatives | Ruled out by |
+|---|---|---|---|
+| SF1 | a closure | lowering to raising as logged; lights to raising | the method files lowering to raising; the log has only those events |
+| SF2 | the barrier log's clock | UTC; local | the column is `event_time_utc`; the counts' local clock shows in both clock changes |
+| SF3 | school days | term weekdays of the crossing's county; any county's; all weekdays | the brief files the crossing's own county's term dates with bank holidays out |
+| SF4 | the vehicles counted | counted 07:00 to 10:00; held in the window | the brief files vehicles counted at the approach sites 07:00 to 10:00; same call |
+| SF5 | delay | extra time to the far count site against no closures; time at the barrier | the brief's sentence; Station Road and every non-Mill crossing identical either way |
+| SF6 | saturation flow | 1,800 per lane; per approach | the method files 1,800 an hour per lane; lanes in the links file |
+| SF7 | arrivals within a quarter hour | evenly spread; at the start; random | the method files evenly spread; the start reading moves no figure out of its bin |
+| SF8 | storage between the stop lines | 42 m at 5.75 m a vehicle, seven; six; eight | the method files 5.75 m; floor and nearest agree on seven; six and eight keep every bin |
+| SF9 | effective green | the displayed green; less a lost time | the timing register's note: effective green is taken as the displayed green |
+| SF10 | travel inside the section | point queues; a few seconds stop line to stop line | same call; up to five seconds keeps Mill Lane's bin |
+| SF11 | sensor-bounce repeats | dropped; kept | a repeat of the same event within three seconds; kept, a lowering pairs with the next raising either way; same call |
+| SF12 | vehicles counted before 07:00 | out of the sum, in the replay; out of both | the brief counts vehicles from 07:00 and the replay starts at 06:00; starting at 07:00 keeps every bin |
+| SF13 | delay running past 10:00 | counted in full; cut at 10:00 | the brief sums each counted vehicle's extra time; same call |
+| SF14 | the gap | from unrounded figures; from rounded | the prompt rounds the figures and the gap; both give 2,000 |
+| SF15 | closures per morning | closures begun 07:00 to 10:00 per school morning | the asking sentence |
+| SF16 | a closure a fault held down | a closure during which a road-closing fault was reported or reset | the asking sentence's words and both fault records |
+| SF17 | the heavy goods vehicle share | both approaches' vehicles counted 07:00 to 10:00 on school days | the asking sentence |
+| SF18 | the fault window | 1 September 2025 to 31 August 2026, every hour the log covers | the asking sentence |
+| SF19 | count dropouts | none in the window | asserted: no school-day site misses a quarter hour from 06:00 to 11:00 |
+| SF20 | Common Road's lanes | two a direction | the links file; the closure model and the replay agree |
+
+## Ladder
+
+| Rung | Route | Names | Margin over the next |
+|---|---|---|---|
+| R0 | closures begun per school morning | Common Road | about 1.5 |
+| R1 | barrier-down minutes per school morning | Station Road | about 1.14 over Mill Lane |
+| R2 | vehicles arriving while the barriers are down | Station Road | about 1.2 |
+| R3 | the closure model at 1,800 an hour per lane (the field's reflex) | Station Road | about 1.4 over Mill Lane |
+| R4 | the bridge for the westbound queue only | Mill Lane | about 1.19 over Station Road |
+| R5 | the replay through every control in the section (golden) | Mill Lane | about 1.25 over Station Road |
+
+Every rung's margin is asserted in `checks.py` on the cut pack at 1.15 or more except R1, whose leader is not the call;
+the cheap routes that reach Mill Lane are R4 and R5, both through the bridge.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | vehicles counted on each shortlisted crossing's approaches 07:00 to 10:00 on its county's school days | filed in the brief; C1 |
+| 2 Unit of account | the vehicle | filed; C1 |
+| 3 Attribution window | the 2025/26 school year, 3 September 2025 to 22 July 2026 as each county's terms run | filed; C1 |
+| 4 As-of dating | the record as exported in September 2026 | C1 |
+| 5 Version basis | one export of each file | C1 |
+| 6 Denominator | none (a sum) | C1 |
+| 7 Weighting | none, each vehicle once | filed; C1 |
+| 8 Window length | the three-hour morning | filed; C1 |
+| 9 Boundary inclusivity | counted from 07:00 up to 10:00 | filed by quarter hours; C1 |
+| 10 Rounding path | vehicle-hours summed, rounded once to the nearest thousand | the prompt; asserted mid-bin |
+| 11 Tie-break | none needed | C1 |
+| 12 Maturity and censoring | the year is closed | C1 |
+| 13 Order of operations | pair, convert, select days, replay, sum | C1 |
+| 14 Row order | file order | asserted over shuffles |
+| 15 Duplicate resolution | bounce repeats dropped | SF11; same call |
+| 16 Identity normalisation | crossing to node by coordinates, count site to node by register | C4, asserted |
+| 17 Netting against gross | the no-closure morning netted from the closure morning | filed (SF5) |
+| 18 Dimensional units | seconds, vehicles, metres, vehicle-hours | filed |
+| 19 Code and status semantics | LOWERED and RAISED | C1 |
+| 20 Integerisation | storage seven vehicles | SF8 |
+| 21 Clause scope | saturation flow per lane at every stop line | filed (SF6, SF9) |
+| 22 Forward window contents | the 2027 scheme replaces one shortlisted crossing | filed in the brief |
+
+## Literal reader
+
+Executed on paper word for word: the brief's sentence fixes the population (vehicles counted 07:00 to 10:00 on the
+crossing's county's school days), the outcome (the extra time to reach the far count site because the barriers were
+lowered), the comparison (the same morning with the barriers left raised), the window and the unit; the method fixes
+the saturation flow, the vehicle length and the spreading of counts; the timing register fixes each signal site's
+greens. Executing it at Mill Lane means replaying the section between its two count sites, which holds the crossing
+and the bridge; the literal execution is the golden, and the closure model is its execution at a crossing with no
+control in its section.
+
+## Oracles
+
+None: no shipped figure ranks the crossings on delay; the queue survey agrees with every route; the risk score is the
+rail manager's own measure and is named a distractor in `metadata.json`.
+
+## Ask sheet
+
+Two asks per crossing, each a reconstruction across two systems or grains that no sentence states, sited on rows and
+columns the main call never reads (fault closures outside the school-day mornings; the heavy-vehicle column), each with
+two primaries from different families on disjoint figure blocks.
+
+**Ask A, fault-held closure hours.** Each crossing's hours of barrier closure, 1 September 2025 to 31 August 2026, in
+closures a fault held down. Use: the panel's reliability case (a replaced crossing has no barrier faults). H18 home: a
+measure every candidate carries that the call does not turn on. Primary F1 (D4, absence evidenced in a file no habitual
+join reaches): a fault the signaller cleared by resetting the crossing from the box raises no work order and lives only
+in the signaller's occurrence book, written after the reset, so its time falls after the closure it held. Primary F2
+(D9, a record true only in its scope): a work order runs from the fault report to the technician's sign-off, which is
+not the closure; the closure is the barrier log's lowering to raising. Primary F3 (D7, the true key elsewhere): Long
+Drove's barrier machine was renewed in February 2026 and its new asset number is in no register, so its later work
+orders join to no crossing until their times are matched to the barrier log. Hazards: the UTC log against local
+work orders (H1), a sensor flicker that splits a held closure (H2). Files: `rail/barrier_events_2025_26.csv`,
+`rail/fault_work_orders_2025_26.csv`, `rail/signaller_occurrences_2025_26.xlsx`, `rail/crossing_register_2025.pdf`;
+9 columns on the path. Stops: work-order spans by asset (the lazy read); barrier closures matched to work orders (the
+careful route); plus the occurrence book's faults matched to the closure before their entry (the full includer short
+of F3); every fault's closure, Long Drove's renewed machine matched by time (golden). Pin test: the sentence carries
+the window, the unit and "a fault held down"; the devices sit in which records are faults, which closure each one
+held and which crossing an unregistered machine serves, none of which the pins name.
+
+**Ask B, heavy goods vehicle share.** Each crossing's heavy goods vehicles as a share of the vehicles counted on its
+approaches 07:00 to 10:00 on school days. Use: the business case values goods-vehicle time above car time. Primary F4
+(D3, units set per source): the older counter model writes the heavy-vehicle column as a whole-number percentage of
+the quarter hour's vehicles, which reads as a count without an error; the evidence is internal (at those sites the
+column does not rise with the flow). Primary F5 (D2, a label stored before a silent switch): three sites changed from
+the older model to the newer on 5 January 2026, and the register shows each site's current counter with its install
+date only, so a model join by site reads their autumn rows as counts. Hazard: county term dates (H3). F4 moves Mill
+Lane, Long Drove and Moor Road; F5 moves Station Road, Common Road and Church Lane. Files:
+`highways/approach_counts_2025_26.csv`, `highways/network_register_2026.xlsx`, `schools/term_dates_2025_26.xlsx`,
+`rail/crossing_register_2025.pdf`; 8 columns on the path. Stops: the column read as counts everywhere (the lazy read
+and the careful route); the register's older-model sites converted (the full includer short of F5); every row of the
+older model converted by its own dates (golden). Pin test: the sentence carries the population, window, unit and
+rounding; the devices sit in which rows' heavy column is a share, which no pin names.
+
+Main population zero-counts (asserted in `checks.py` from the shipped rows): no fault work order, occurrence entry or
+long closure falls on a school day between 06:00 and 11:00 local; no count site misses a quarter hour on a school day
+between 06:00 and 11:00; deleting every ask device leaves every delay figure identical.
+
+| Hazard | Asks moved | Per-ask delta |
+|---|---|---|
+| H1 UTC log against local work orders and occurrences | A | every crossing's fault hours move when unconverted (matches lost in summer time) |
+| H2 sensor flicker inside a held closure | A | the held closure is split and the matched half understates it |
+| H3 county term dates | B, main | the share moves at the second decimal; the delay bins hold |
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | barrier-log closures matched to the work orders through the register's asset numbers, clocks converted, flickers merged | miss |
+| B | heavy column summed over vehicles counted 07:00 to 10:00 on school days, read as the counts its header says | miss |
+
+Mirror leakage: 0.0 per cent of ask weight, the best miss (the closure model, Station Road) taking the same careful
+routes on both asks.
+Pair ceiling: 28.5 on the cracker and mirror rows; 50.0 with the full includer on the call (every finding but F3 and
+F5), recomputed by the script.
+Measured by: `generator/ceiling.py` on the cut pack, with every route's figure-by-figure miss asserted in
+`generator/checks.py`, and no single finding keeping over a third of the ask weight.
 
 ## Tried and rejected
 
@@ -38,7 +319,23 @@ Architecture 1 of the reopened slot, re-rooted at the draw on 2026-11-02 in a fr
 - A1.21 A port passenger survey whose interviewers fall behind at peak hours, so realised sampling rates fall under the designed interval (Survey Research, sample-design-allocation-weighting): post-stratifying by hour is a grouping (stumping 1.1c), which the data separate by reflex.
 - A1.22 Plan-limit and pricing replays (seat licences, AI token costs under a new cache rule, per-organisation rate limits) over the 2026 history (Product Analytics, metric-definition): executing a filed plan rule over the history is rule application.
 - The four strongest written in full, as the orchestrating session asked. A1.1: default path, each matured monthly cohort (November 2024 to October 2025) built from the accounts table's sign-up date and country, a member retained when the analytics export shows a session in the twelfth month after the sign-up month, pooled by market (or cohort rates averaged, or a Kaplan-Meier on the last active month), the market with the highest rate named; the analytics vendor's own retention dashboard agrees because the vendor honours the same erasures; ends on the market whose leavers erase most (the prototype: Germany, 0.268, against Spain 0.210). Golden: retention over the month's sign-ups, the erased members placed in their cohorts by the account id's order among surviving ids and their country from the request register's residence field, counted not retained unless the erasure came after their twelfth month, those few bounded both ways: Spain, 0.192, bounds 0.190 to 0.195, Portugal next at 0.181. Swap: holds (a hospital cannot erase a patient's record under records-retention law and a utility keeps a leaver's account for years, so the route that removes leavers does not exist there). Anatomy: Actor holds (whether a sign-up later erased their account has no column; the erased are absent), Link holds (the register keys requests by an account id the accounts table no longer holds; the cohort comes from the id order), Reflex holds (the cohort retention table files the wrong market), Back-test holds (the vendor dashboard agrees with the survivors), Second use holds (the register sits for a GDPR one-month completion ask), Shock open (the high-erasure markets lead the survivors' ranking by a visible margin), Pins hold (the plan files retention over the month's sign-ups and no sentence names erasure). Bin: margins 1.08 on the survivors and 1.06 on the sign-ups, both under the 1.15 floor, with erasure shares of 9 to 37 per cent of sign-ups; realistic shares of 10 to 25 per cent bound the swing. Prototype: a seeded replay of ten markets' sign-ups, monthly activity and erasure behaviour (leavers erase at a market-specific rate, stayers rarely, a delay after the last session), run in the session scratchpad and not kept in the pack. Guard: BLOCK as A1.1 states. A1.2: default path, each request's latency weighted by its trace's recorded sample rate, the share over one second, which reconciles with the load balancer's per-minute counts within 2 per cent on monthly volume and understates the peak-minute tail; swap fails; Actor, Link (kept traces per second against the load balancer's counts), Reflex, Back-test, Second use, Shock and Pins hold on paper; bin not reached; dead on the swap. A1.3: default path, paid space-hours over available space-hours by block and rate period, validated on the 2019 sensor pilot's low-placard blocks; golden adds the unpaid occupancy the sweeps read cell by cell; swap holds; all seven anatomy lines hold; bin a ratio estimator with a corridor; dead on task275's abstraction. A1.4: default path, the rating before and after the release date; golden the daily rating regressed on the day's version mix; swap holds; Link holds (the store's reviews carry no version, the mix comes from the analytics); Shock open; dead on task263's driver.
-
-## Reopened
-
-Reopened 2026-10-25 at the author's direction: no number is retired. The slot is re-rooted in a fresh world as architecture 1; the screens and dead architectures above stay dead.
+- A2.0 (2026-11-03, architecture 2's draw): the count of vehicles held over five minutes as the deciding quantity. Died
+  on the prototype: with the bridge near its capacity the count above five minutes moved by a factor of four between
+  neighbouring storage settings, so the graded figure had no stable bin; the deciding quantity moved to the closures'
+  vehicle-hours, whose spread across every reasonable convention is about three per cent.
+- A2.1: the first card check BLOCKed on `ban.pattern` (C against task241) and on the older same-puzzle and same-driver
+  tests against task147 and task159 with G7 decisive; G7 with pick_one_of_n hard-blocks against task307 inside the
+  twelve. Redrawn to pattern none with G8 decisive and differentiation lines against task147 and task159.
+- A2.2: a downstream signal 400 metres beyond the crossing. Rejected: the estimand's section would have to reach it at
+  every crossing, and a far count site that counts departures records the slow discharge directly, a back-test that
+  refutes the closure model at the stump crossing in plain sight.
+- A2.3: approach counters that count both directions. Rejected for the same reason: the departure lane is a Newell
+  input-output measurement of the paced discharge, a second route to the golden that needs no network walk.
+- A2.4: vehicle-actuated bridge signals with logged greens. Rejected: the greens on a morning without closures are
+  unknowable, so the comparison the brief files has two readings (Gate C); fixed-time shuttle working in the
+  morning plan closes it.
+- A2.5: a signal lost-time convention left open. Rejected after measuring it: two seconds of lost time a green moved
+  Mill Lane's figure by 31 per cent, far outside any bin; the timing register's own note files effective green as the
+  displayed green.
+- A2.6: crossing, county and bridge names drawn as invented place names (Sallowby, Tewsley, Hawsby). Renamed to
+  descriptive road names under H21: two of them sat within two letters of real villages.

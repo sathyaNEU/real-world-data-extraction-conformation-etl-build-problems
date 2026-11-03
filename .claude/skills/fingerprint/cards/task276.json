@@ -1,0 +1,105 @@
+{
+  "task": "task276",
+  "architecture": "2",
+  "drawn": "2026-11-03",
+  "slot_note": "architecture 2 of the reopened slot, a re-root into urban-regional-science (network-analysis, descriptive) after architecture 1's twenty-two screens across nine task types, none registered; the DA26 developer-community world and the exposure-response draw stay dead",
+  "domain": "urban-regional-science",
+  "subdomain": "network-analysis",
+  "client_domain": "urban-regional-science",
+  "niche": "a sub-national transport body's level crossing replacement programme choosing the 2027 scheme by the road-user delay each shortlisted crossing's barrier closures cause on school-day mornings",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G8",
+    "G7"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who pairs the barrier events, reads each closure's arrivals off the approach counts and releases every held queue at 1,800 vehicles an hour per lane once the barriers rise, the closure model the queue survey validates at every crossing, names Station Road, when at Mill Lane both directions' queues can only leave in the greens of the river bridge's shuttle signals 42 metres on and its closures cost the most road time.",
+  "domain_test": "The deciding quantity is the road-user delay each crossing's barrier closures cause, which transport network analysis estimates by deterministic queueing at the network's controls, the held queue released at the saturation flow and, where it reaches another control, at that control's capacity in its own green; swapped into another field there is no barrier log, no saturation flow, no shuttle green and no storage in metres between two stop lines, so the task stops reading the same.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:downstream-control-gates-a-released-queue",
+  "layer1": [
+    "barrier events from the rail infrastructure manager in UTC with sensor-bounce repeats",
+    "quarter-hour approach counts in UK local time across both clock changes, with dropouts outside the peak",
+    "the crossing register as a scanned PDF under the railway's references and OS grid references",
+    "the road network as links and nodes under the highway authority's node numbers",
+    "a signal timing register keyed by site and node",
+    "four county term calendars with different half terms",
+    "fault work orders under the maintainer's asset numbers and a signaller's occurrence book",
+    "two counter models writing the heavy-vehicle column differently"
+  ],
+  "stakeholder_role": "the transport body's network planning lead, preparing the panel's 2027 crossing choice",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "rail/barrier_events_2025_26.csv",
+    "rows": 200000,
+    "entity": "one barrier down or up event at one level crossing",
+    "grain": "event",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "England (fictional shire counties)",
+    "currency": "GBP",
+    "org_type": "a sub-national transport body for four shire counties (the Shires Transport Board)",
+    "invented_names": [
+      "Shires Transport Board",
+      "Northshire",
+      "Southshire",
+      "Eastshire",
+      "Westshire"
+    ],
+    "people": [
+      "Andrew Stevens",
+      "Gareth Davis"
+    ]
+  },
+  "deliverables": [
+    "crossing_delay_2025_26.xlsx",
+    "crossing_choice_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A queue held by a stoppage can only leave as fast as the next control downstream lets it through, so where that control sits close enough for the released queue to fill the space between them, each stoppage costs far more than a release at the road's own capacity implies, and the cost has to be built through the downstream control's recorded opening periods rather than from the stoppage and the arrivals alone.",
+  "driver_concrete": "Each crossing's closure delay is each counted vehicle's extra time to reach the far count site; at Mill Lane both directions' queues pass the single-track river bridge 42 metres beyond the crossing only in its fixed-time shuttle greens, with seven vehicles of storage between the two stop lines, which lifts Mill Lane's closure delay from about 5,000 to about 9,000 vehicle-hours and puts it ahead of Station Road's 7,000.",
+  "stump": "A competent solver releases each closure's queue at 1,800 vehicles an hour per lane once the barriers rise and names Station Road; the step that lands it there is releasing Mill Lane's queues at the road's own rate when the river bridge's shuttle signals 42 metres on pass each direction only in its own green.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task147": "task147 loses a booking request when any unit of its run is full at the forecast date (a request taken whole or not at all); here nothing is lost or refused: every held vehicle crosses, and the decisive quantity is how long the queue a barrier closure releases takes to clear through a second control downstream whose recorded green periods and finite storage pace it.",
+    "task159": "task159 forecasts the riders a train cannot take because its room is set by the load it brings from its branch; here there is no service with room, only a continuous road queue released by a barrier and paced through a downstream signal with storage for a few vehicles, read retrospectively on the logged greens rather than forecast."
+  },
+  "lineage": [
+    {
+      "architecture": "1",
+      "fate": "spent at stage 1 on 2026-11-02, never registered: twenty-two screens across nine task types (A1.1 to A1.22 in the design note), none clearing guard.py check and the three rules together",
+      "driver": "survivors-only retention against the month's sign-ups, with the erased placed by identifier order (the strongest, A1.1)"
+    },
+    {
+      "architecture": "0",
+      "fate": "refused at the abstraction test on 2026-10-24, never registered",
+      "driver": "a member's acceptance rising with the number of seeded collaborators who invite, read at launch density (task175's driver in other nouns)"
+    }
+  ],
+  "notes": "",
+  "registered": "2026-11-03T15:16:43Z"
+}
