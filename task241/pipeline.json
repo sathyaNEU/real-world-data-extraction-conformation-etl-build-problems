@@ -1,50 +1,74 @@
 {
- "task": "task241",
- "status": "PAUSED",
- "domain": "physical-environmental-sciences/sensor-calibration-measurement",
- "objective": "data-quality-monitoring",
- "stage": 1,
- "stage_name": "draw, re-root to architecture 2",
- "updated": "2026-11-02",
- "stump": "A competent analyst differences each float's good 2027 salinity values between 1,400 and 1,900 dbar against the reference casts' mean salinity at the same pressure and files 14 of the 24 floats adjusted, the six whose sensors are off and eight whose sensors read true; only the offset on potential-temperature levels against reference water at each profile's own position gives the six.",
- "architecture": 1,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
- },
- "leak": {
-  "leak_py": "REVIEW (no LEAK)",
-  "reader": "two reads: question 1 none, question 6 analytical; realism fixes taken"
- },
- "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, repeat.deliverables, repeat.question_form, answered in the note)",
-  "nearest": "task240 0.06; surface promotes task148 (differentiated on the card)"
- },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "pass 1 FIX_NOW (write-up: 0.003 acceptance, rung ranges, fit range), pass 2 APPROVE",
-  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
- },
- "returned": [],
- "resume": "PAUSED at stage 1 on the orchestrating session's rule: the architecture 2 draw screened 21 candidates across seven task types on 11-02 and none cleared (the record is A2.1 to A2.21 in DESIGN_NOTE.md's Tried and rejected, the four strongest written in full, A2.13's prototype run on the clean truth). Architecture 1 stays spent (11-01 re-check) and its shipped pack (8dca2562) stays at the portal, pending; the card carries v1 in its lineage with architecture_spent true. Next action is the orchestrator's or the author's call: a fresh draw on Data Quality Monitoring ground that A2 does not cover (the open requirement: a field-native quantity the field estimates, a monitoring method whose precondition the organisation's own systems break, a records-fixed decisive step through a relation no key invites, not an independent reference (task236), an accrual rebuilt since a reset (task229 v2) or a stock-flow identity (task120)), or a ban waiver for the composition and causal labels once task166 and task157 leave the window.",
- "approved": null,
- "delivered": "2026-10-17",
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "architecture_spent": true,
- "recheck_2026_11_01": {
-  "rebuild": "reproduces the shipped target.zip byte for byte (8dca2562, 16 entries); generator 172 checks and verify green; matplotlib installed into the container",
-  "analyst_test": "clean truth, generator/checks.py R3: fixed pressure against the casts' mean adjusts 15 (9 clean), nearest casts at fixed pressure 13, pooled potential-temperature levels 12, drift from first profiles 4, the decisive step alone the golden 6; on the cut pack 14, 13, 13, 4 and 6",
-  "survivor_anatomy": "written honestly: Reflex, Back-test and Shock fail, Link holds only in part. The golden is the field's own delayed-mode calibration (potential-temperature levels, reference mapped to the float's position) applied as the textbook states it (stumping 1.1b), and the six are exactly the top six by magnitude on the pooled temperature-level rung",
-  "precut": "exit 0, 61 checks, 0 FAIL, 0 WARN once the anatomy lines are written (presence only; the lines record the failure); the method-family check passes only lexically",
-  "voice_check": "PASS with WARNs: 'the two tables' read as a count, shell quota (which 40 per cent, put 39 per cent, png+xlsx 24 per cent); the prompt's '24 floats' is a count the data hold that the script does not catch",
-  "leak_py": "LEAK: sweep 1 (DATA_DICTIONARY.md and README.md ship), sweep 12 (the dictionary names 57 columns, 100 per cent of the technical file's; README, float models summary and reference note REVIEW), sweep 13 (metadata.json stated_inputs carry the 24 WMO numbers and 0.001; subdomain and prompt_shape carry 0.010)",
-  "figures_check": "135 of 135",
-  "heart": "BLOCK on test.same_puzzle_older against task479 v6 (registered 2026-10-21, after this card), predating this re-check; nothing changed here causes it; shell.repeat and repeat.deliverables WARNs",
-  "surface": "exit 0, no personas in the cut pack",
-  "stage4": "not run: architecture spent before any repair"
- }
+  "task": "task241",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science/missing-data-censoring-measurement-error",
+  "objective": "data-quality-monitoring",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-03",
+  "stump": "A competent analyst carries the detector's certified false-machine rate (2.1 per cent, confirmed at 2.25 per cent by the firm's 2025 listening test on its pilot project) to every project and switches detection off nowhere; the step that lands it there is treating a classifier's error rate as a property of the classifier, when the people a detector mistakes for machines are the ones who answer with a long greeting, so the projects calling older people, farms and businesses lose a seventh to a third of their machine-classed calls to people the dialer hung up on, a share only the calls those people return within minutes, scaled by the same project's abandoned callers' prompt return rate, can measure.",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "guard.py check PASS on the registered card (2026-11-03T09:40:46Z, window task479, task188, task307 v3); nearest drivers 0.06 task455 v1, 0.05 task265 v0 and task449"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "Architecture 2 drawn and registered 2026-11-03 (Kettle River Research's answering machine detection review, general statistics, missing data and measurement error). Next: stage 2, the readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet in DESIGN_NOTE.md, then precut.py exit 0, then the generator.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "architecture_spent": false,
+  "architecture_1": {
+    "domain": "physical-environmental-sciences/sensor-calibration-measurement",
+    "delivered": "2026-10-17",
+    "zip": "8dca2562",
+    "portal": "pending review (absence is not a result)",
+    "precut": {
+      "exit": 0,
+      "date": "2026-10-17"
+    },
+    "leak": {
+      "leak_py": "REVIEW (no LEAK)",
+      "reader": "two reads: question 1 none, question 6 analytical; realism fixes taken"
+    },
+    "duplicate_check": {
+      "heart": "WARN (repeat.gate_g, repeat.deliverables, repeat.question_form, answered in the note)",
+      "nearest": "task240 0.06; surface promotes task148 (differentiated on the card)"
+    },
+    "judge": {
+      "verdict": "DETERMINISTIC",
+      "disposition": "pass 1 FIX_NOW (write-up: 0.003 acceptance, rung ranges, fit range), pass 2 APPROVE",
+      "report": "determinism_check_report.md, determinism_check_report_pass2.md"
+    },
+    "spent": "2026-11-01 at the re-check, on the honest survivor anatomy (DESIGN_NOTE.md, Tried and rejected)",
+    "recheck_2026_11_01": {
+      "rebuild": "reproduces the shipped target.zip byte for byte (8dca2562, 16 entries); generator 172 checks and verify green; matplotlib installed into the container",
+      "analyst_test": "clean truth, generator/checks.py R3: fixed pressure against the casts' mean adjusts 15 (9 clean), nearest casts at fixed pressure 13, pooled potential-temperature levels 12, drift from first profiles 4, the decisive step alone the golden 6; on the cut pack 14, 13, 13, 4 and 6",
+      "survivor_anatomy": "written honestly: Reflex, Back-test and Shock fail, Link holds only in part. The golden is the field's own delayed-mode calibration (potential-temperature levels, reference mapped to the float's position) applied as the textbook states it (stumping 1.1b), and the six are exactly the top six by magnitude on the pooled temperature-level rung",
+      "precut": "exit 0, 61 checks, 0 FAIL, 0 WARN once the anatomy lines are written (presence only; the lines record the failure); the method-family check passes only lexically",
+      "voice_check": "PASS with WARNs: 'the two tables' read as a count, shell quota (which 40 per cent, put 39 per cent, png+xlsx 24 per cent); the prompt's '24 floats' is a count the data hold that the script does not catch",
+      "leak_py": "LEAK: sweep 1 (DATA_DICTIONARY.md and README.md ship), sweep 12 (the dictionary names 57 columns, 100 per cent of the technical file's; README, float models summary and reference note REVIEW), sweep 13 (metadata.json stated_inputs carry the 24 WMO numbers and 0.001; subdomain and prompt_shape carry 0.010)",
+      "figures_check": "135 of 135",
+      "heart": "BLOCK on test.same_puzzle_older against task479 v6 (registered 2026-10-21, after this card), predating this re-check; nothing changed here causes it; shell.repeat and repeat.deliverables WARNs",
+      "surface": "exit 0, no personas in the cut pack",
+      "stage4": "not run: architecture spent before any repair"
+    }
+  }
 }

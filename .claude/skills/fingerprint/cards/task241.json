@@ -1,120 +1,121 @@
 {
- "task": "task241",
- "architecture": "v1",
- "drawn": "2026-10-17",
- "slot_note": "wave 3, seed DQ14 (which domain estimates fail the calibration margin check and are reissued); the seed's survey pairing is banned against task240, so the world moved to a sensor-calibration release: which floats' salinity records the delayed-mode release adjusts",
- "domain": "physical-environmental-sciences",
- "subdomain": "sensor-calibration-measurement",
- "niche": "a national ocean institute's delayed-mode quality control of its regional profiling-float array: which floats' 2027 salinity records the delayed-mode release adjusts, each float's conductivity-sensor offset read against ship reference casts in the deep water below the Mediterranean outflow",
- "objective": "data-quality-monitoring",
- "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Adjust the 2027 salinity of six of the 24 floats in the delayed-mode release: 1990001, 1990004, 1990005 and 1990008, which read fresh (offsets -0.022, -0.020, -0.027, -0.030), and 1990007 and 1990012, which read salty (+0.021, +0.020). The other 18 floats' 2027 salinity goes out as measured.",
- "answer_source": "submission.md, Final Recommendation",
- "gap": [
-  "time",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G16",
-  "G6",
-  "G14"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "other",
- "stump_strategy": "population_selection",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "planning_thread",
- "stakeholder_role": "the array's delayed-mode quality-control operator at the institute's ocean data centre",
- "role_family": "field_unit_lead",
- "scoring_unit": "per certified output",
- "spine": {
-  "file": "ibfa_profile_levels_2027.csv",
-  "rows": 93853,
-  "entity": "one pressure level of one float profile file",
-  "grain": "float x cycle x file version x level",
-  "source": "synthetic"
- },
- "forum": "line_manager_or_team",
- "forcing_event": "period_close",
- "org_family": "research_or_statistics_office",
- "world": {
-  "geography": "Portugal, the Iberian Basin of the eastern North Atlantic (a fictional national ocean institute and its float array; real ocean geography)",
-  "currency": "EUR",
-  "org_type": "national ocean research institute running a regional profiling-float array and its data centre",
-  "invented_names": [
-   "Instituto Oceânico do Atlântico",
-   "Iberian Basin Float Array"
-  ],
-  "people": [
-   "Naiara Nogueira",
-   "Tiago Tavares",
-   "Patrícia Araújo"
-  ]
- },
- "deliverables": [
-  "ioa_dmqc_salinity_2027.xlsx",
-  "ioa_dmqc_offsets_2027.png"
- ],
- "opening_move": "question-first",
- "question_form": "whether",
- "driver": "The decisive quantity is a sensor's own error read against an external reference whose value at a fixed position in the medium moves with a displacement of the medium that the reference years did not share and with a slow drift of the medium's properties across the area, so the error has to be read on a coordinate the displacement carries with it and against reference medium from the sensor's own place; read at fixed position against the area's average, the medium's shift and its gradient are taken for sensor error, and both false flags and misses follow.",
- "driver_concrete": "A float's conductivity offset is the difference between the salinity it reported and the true salinity of the water it sampled; below the Mediterranean outflow the deep layer heaves with eddies and sat deeper in 2027 than in the reference years, while the salinity of water at a given temperature falls westward as the outflow thins, so comparing at fixed pressure, or on temperature levels against the whole basin's reference, takes heave and position for sensor error; only the salinity on potential temperature levels against reference water at the profile's own position isolates the sensor.",
- "stump": "A competent analyst differences each float's good 2027 salinity values between 1,400 and 1,900 dbar against the reference casts' mean salinity at the same pressure and files 14 of the 24 floats adjusted, the six whose sensors are off and eight whose sensors read true; the step that lands it there is comparing at fixed pressure, when the deep layer sat deeper in 2027 than in the reference years and heaved with eddies and the salinity of water at a given temperature falls westward, so only the offset on potential-temperature levels against reference water at each profile's own position gives the six.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads every flag and file correctly, keeps the good 2027 ascending profiles and differences each float's salinity against the reference casts' salinity at the same pressures over the 1,400 to 1,900 dbar layer adjusts 14 floats (eight of them clean); one who compares on potential-temperature levels against the basin's pooled reference adjusts 10 to 14, and one who measures drift from each float's first profiles finds only the four drifting floats; only potential-temperature levels against reference water at each profile's position give the six.",
- "domain_test": "The deciding quantity is each float's conductivity-sensor offset estimated the way delayed-mode quality control of profiling floats estimates it, against ship CTD reference data on potential-temperature levels where the deep water masses' temperature-salinity relation is conserved, mapped to the float's position; with hospital thermometers or meter readings in place of ocean profiles there is no water column that heaves, no water mass whose temperature fixes its salinity and no basin-scale property gradient, so the task stops making sense.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task148": "task148 (v2) estimates queue patience from censored waits for a demand forecast; task241 reads a float sensor's salinity error against reference water on the coordinate that heave carries, at the float's own position: no quantity, mechanism or file shared"
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "drawn": "2026-10-17",
-   "fate": "spent 2026-11-01 at the re-check, on the honest survivor anatomy and not on a portal result (the shipped pack 8dca2562 stays at the portal, pending): the golden is the field's own delayed-mode salinity calibration (potential-temperature levels against reference water mapped to the float's position) applied as the textbook states it, so the field's method is the top rung rather than rung 0 or 1 (stumping 1.1b); the easy-route sort reproduces the golden six (they are exactly the top six by magnitude on the pooled temperature-level rung); Reflex, Back-test and Shock fail, Link holds only in part. The clean-truth easy routes (fixed pressure 15, nearest casts 13, pooled levels 12, drift 4) do file wrong sets.",
-   "driver": "The decisive quantity is a sensor's own error read against an external reference whose value at a fixed position in the medium moves with a displacement of the medium that the reference years did not share and with a slow drift of the medium's properties across the area, so the error has to be read on a coordinate the displacement carries with it and against reference medium from the sensor's own place; read at fixed position against the area's average, the medium's shift and its gradient are taken for sensor error, and both false flags and misses follow.",
-   "stump": "A competent analyst differences each float's good 2027 salinity values between 1,400 and 1,900 dbar against the reference casts' mean salinity at the same pressure and files 14 of the 24 floats adjusted, the six whose sensors are off and eight whose sensors read true; the step that lands it there is comparing at fixed pressure, when the deep layer sat deeper in 2027 than in the reference years and heaved with eddies and the salinity of water at a given temperature falls westward, so only the offset on potential-temperature levels against reference water at each profile's own position gives the six.",
-   "gap": [
-    "time",
+  "task": "task241",
+  "architecture": "v2",
+  "drawn": "2026-11-03",
+  "slot_note": "",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "niche": "a survey research firm's telephone centre deciding which of its recurring telephone projects run with the predictive dialer's answering machine detection switched off in 2027, judged on each project's share of the calls the dialer classed as answering machines that a person had in fact answered, against the firm's one-in-ten limit",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "decomposition_attribution",
-   "niche": "a national ocean institute's delayed-mode quality control of its regional profiling-float array: which floats' 2027 salinity records the delayed-mode release adjusts, each float's conductivity-sensor offset read against ship reference casts in the deep water below the Mediterranean outflow",
-   "domain": "physical-environmental-sciences",
-   "subdomain": "sensor-calibration-measurement"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G16",
+    "G6"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "classification_error",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "director of telephone operations",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "dialer_calls_2026.csv",
+    "rows": 280000,
+    "entity": "one answered outbound call placed by the predictive dialer in 2026",
+    "grain": "call",
+    "source": "synthetic: a fictional survey research firm's dialer call detail, generated"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "professional_services",
+  "world": {
+    "geography": "United States, Minnesota (a fictional survey research firm in Saint Paul)",
+    "currency": "USD",
+    "org_type": "independent survey research firm running a telephone centre for public-agency, university and association clients",
+    "invented_names": [
+      "Kettle River Research"
+    ],
+    "people": [
+      "Hailey Mullins",
+      "Vincent Armstrong",
+      "Brian Maynard"
+    ]
+  },
+  "deliverables": [
+    "amd_review_2027.xlsx",
+    "amd_review_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A recorded classification's error rate is a property of the population classified, not of the classifier, so the rate certified on the maker's reference set and confirmed on the one population checked by hand does not carry to the others; each population's rate is recovered from a reaction that only misclassified members produce, scaled by the same reaction's rate among members known to be in the true class, counting only reactions quick enough to exclude the delayed ones the other class produces.",
+  "driver_concrete": "Each project's share of machine-classed calls that a person answered is the share of those calls returned to the project's caller-ID line within minutes, divided by the share of the project's abandoned live calls returned within minutes: both groups heard the same recorded message as the dialer hung up, only a person returns a call that fast, and machine owners return calls hours later from voicemail; the detector's certified false-machine rate and the 2025 listening test on the pilot project hold only for populations that answer with a short greeting.",
+  "stump": "A competent analyst takes the detector's certified false-machine rate (about 2 per cent on the maker's reference set, confirmed by the firm's 2025 listening test on its pilot project) as every project's rate, finds every project far under the one-in-ten limit and keeps answering machine detection on all of them in 2027; the step that lands it there is carrying a classifier's certified error rate to populations that answer the phone differently, when the projects calling older people, farms and businesses lose a seventh to a third of their machine-classed calls to people the dialer hung up on.",
+  "stump_class": "analytical",
+  "analyst_test": "With every field and rule read correctly, the easy route carries the detector's certified false-machine rate (about 2 per cent, confirmed by the 2025 listening test on the pilot) to every project, puts all of them under the one-in-ten limit and keeps detection on everywhere; the golden switches it off on about six projects whose populations answer with long greetings (13 to 31 per cent), and counting every callback at any delay switches it off on all of them.",
+  "domain_test": "General statistics, missing data and measurement error: the deciding quantity is a recorded classification's error rate per population (each project's share of machine-classed calls a person answered), estimated as the ratio of two conditional reaction rates on the same project (prompt callbacks after machine-classed hang-ups over prompt callbacks after abandoned live calls); replacing it with the classifier's certified rate, a generic summary, moves the call from no project to six, so the swap of the method changes the answer.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task281": "task281 reads a wear-out failure share past a lifetime record too young to show its plateau; task241 recovers a classifier error rate per population from prompt return calls scaled by the same reaction among abandoned live calls: no quantity, mechanism or file in common",
+    "task454": "task454 fills uncovered items cost from a price survey whose coverage differs by presentation; task241 has no coverage gap to fill and no cost: its share is a misclassification rate read from a reaction only misclassified people produce",
+    "task468": "task468 (v1) corrects a per-unit count for a record matcher that fails more for some units and a cluster review that sees them unevenly; task241 has no matcher and no review sample: the decisive share comes from return calls against abandoned calls on each project"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-17",
+      "fate": "spent 2026-11-01 at the re-check, on the honest survivor anatomy and not on a portal result (the shipped pack 8dca2562 stays at the portal, pending): the golden is the field's own delayed-mode salinity calibration (potential-temperature levels against reference water mapped to the float's position) applied as the textbook states it, so the field's method is the top rung rather than rung 0 or 1 (stumping 1.1b); the easy-route sort reproduces the golden six (they are exactly the top six by magnitude on the pooled temperature-level rung); Reflex, Back-test and Shock fail, Link holds only in part. The clean-truth easy routes (fixed pressure 15, nearest casts 13, pooled levels 12, drift 4) do file wrong sets.",
+      "driver": "The decisive quantity is a sensor's own error read against an external reference whose value at a fixed position in the medium moves with a displacement of the medium that the reference years did not share and with a slow drift of the medium's properties across the area, so the error has to be read on a coordinate the displacement carries with it and against reference medium from the sensor's own place; read at fixed position against the area's average, the medium's shift and its gradient are taken for sensor error, and both false flags and misses follow.",
+      "stump": "A competent analyst differences each float's good 2027 salinity values between 1,400 and 1,900 dbar against the reference casts' mean salinity at the same pressure and files 14 of the 24 floats adjusted, the six whose sensors are off and eight whose sensors read true; the step that lands it there is comparing at fixed pressure, when the deep layer sat deeper in 2027 than in the reference years and heaved with eddies and the salinity of water at a given temperature falls westward, so only the offset on potential-temperature levels against reference water at each profile's own position gives the six.",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "decomposition_attribution",
+      "niche": "a national ocean institute's delayed-mode quality control of its regional profiling-float array: which floats' 2027 salinity records the delayed-mode release adjusts, each float's conductivity-sensor offset read against ship reference casts in the deep water below the Mediterranean outflow",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "sensor-calibration-measurement"
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "offsets",
+      "deliverable set": "png+xlsx"
+    }
+  ],
+  "notes": "Architecture 2, drawn 2026-11-03 after the 11-02 screen of 21 candidates and the 11-03 screen recorded in the design note's Tried and rejected (A3 lines): moved off Physical & Environmental Sciences and ocean data into General Statistics & Data Science (missing data, censoring and measurement error) with a survey research firm's telephone centre; architecture 1 stays in lineage (spent 2026-11-01). Strategy classification_error is unspent on Data Quality Monitoring; the decisive generator is G16 (the certified-rate method against the per-project estimate), G6 the composition of greetings behind it.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:classification-error-rate-per-population-from-prompt-callbacks",
+  "layer1": [
+    "phone numbers in three formats across the dialer, the inbound switch and the client sample files",
+    "inbound calls logged by the switch with each transfer as an extra leg",
+    "quality-assurance test calls to the firm's own lines inside the call detail",
+    "projects known by a client job number in the dialer and a project name in the inbound switch",
+    "the dialer's monthly exports overlapping by a day at each month boundary"
+  ],
+  "registered": "2026-11-03T09:40:46Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "the",
+    "rounding opener": "shares",
+    "deliverable set": "pdf+xlsx"
   }
- ],
- "notes": "Seed DQ14: the decision (the reissue list of a release) and the quantity (each estimate against a calibration margin) kept; the seed's world (raking margins in a survey release) and its pairing are banned against task240, so the release is an ocean data centre's delayed-mode salinity adjustment. The seed's pitfall (one raking pass) is not used. Built: the golden adjusts six floats (four drifting fresh, two salty from deployment); the default path (fixed pressure against the casts' mean) adjusts 14 (13 to 17 across implementations), the pooled temperature-level reference 10 to 14, drift from the first profiles 4; asks: reference casts reaching 2,000 dbar by year (RHD copies of the institute's casts) and on-time complete deliveries by month (model K's profile time at the start of the ascent). Architecture 1 spent at the 11-01 re-check: the golden is the field's own delayed-mode salinity calibration (potential-temperature levels against reference water mapped to the float's position) applied as the textbook states it, so the field's method is the top rung rather than rung 0 or 1 (Reflex, Back-test and Shock fail on the honest anatomy); the clean-truth easy routes (15, 13, 12, 4) do file wrong answers.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:float-salinity-offset-on-isotherms-against-local-reference",
- "layer1": [
-  "profiles at two grains (the profile index with each profile's time as days since 1950 in UTC and its position, the level file with pressure in dbar), joined on the decoded file's id",
-  "real-time quality flags on every value (1 good to 4 bad), salinity spikes flagged",
-  "profiles the data centre received twice when a transmission broke off, the first file cut short",
-  "descending profiles beside the ascending ones from four floats, and a partner institute's float decoded beside the array",
-  "the model K floats' firmware stamping each profile at the start of its ascent, model A at the surface",
-  "reference casts from the institute's archive (the 2015 and 2016 cruises in IPTS-68) and an international extract (depth in metres, positions to 0.01 degree, decimal-hour times, the institute's own casts again under the database's ids)",
-  "stations worked twice a few hours apart, and casts stopping at 1,500 or 1,800 dbar",
-  "the data centre's receipt log on the server's Lisbon clock against UTC float times"
- ],
- "registered": "2026-10-17T20:27:00Z",
- "architecture_spent": true,
- "lineage_shells": [
-  {
-   "question form": "which",
-   "second-sentence opener": "put",
-   "rounding opener": "offsets",
-   "deliverable set": "png+xlsx"
-  }
- ]
 }

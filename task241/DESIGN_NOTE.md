@@ -1,380 +1,205 @@
 # task241 design note
 
-Architecture 1, wave 3, seed DQ14 (which domain estimates fail the calibration margin check and are reissued): the
-seed's decision (a release's reissue list) and quantity (each estimate against its calibration margin) only. The
-seed's own pairing (survey research, nonresponse and calibration) is banned against task240, three builds back, so
-the release moves to an ocean data centre: the Instituto Oceânico do Atlântico runs a regional array of 24 profiling
-floats in the Iberian Basin, each surfacing every ten days with a temperature and salinity profile from 2,000 dbar,
-and once a year its data centre runs delayed-mode quality control on the year's salinity before the delayed-mode
-files go to the international data assembly centre. A float whose conductivity sensor has drifted or was off from
-deployment has its salinity adjusted in the release; the rest are released as measured.
+Architecture 2, drawn 2026-11-03, a re-root of the same number and objective (Data Quality Monitoring & Alerting)
+into another client domain, world and dataset. Architecture 1 (the Iberian Basin float array's delayed-mode
+salinity, shipped 2026-10-17 as 8dca2562 and still at the portal) was spent at the 11-01 re-check on its survivor
+anatomy; its record, the 11-02 screen (A2.1 to A2.21) and the 11-03 screen (A3.1 to A3.22) are in Tried and
+rejected.
+
+Kettle River Research, an independent survey research firm in Saint Paul, Minnesota, runs a telephone centre for
+public-agency, university and association clients. Its recurring projects (annual trackers fielded every year to
+a fresh landline and business sample) are placed by a predictive dialer whose answering machine detection listens
+to the first seconds of every answered call: a call it classes as a machine gets the project's recorded message
+and is closed as an answering machine without reaching an interviewer, and a call it classes as a person goes to a
+free interviewer or, when none is free inside two seconds, is abandoned with the same recorded message. Every
+project dials out on its own caller-ID line, and calls returned to that line land on the inbound switch. Before
+the 2027 project year opens in January, the director of telephone operations sets each project's detection on or
+off under the firm's 2027 dialer policy: detection stays on for a project only while fewer than one in ten of the
+calls it classed as answering machines on that project in 2026 had in fact been answered by a person.
 
 ## Draw
 
-Card `cards/task241.json` (architecture 1, registered 2026-10-17). Guard verdict WARN, each answered here:
-repeat.gate_g (decomposition_attribution against task194 v2, a provider-quality risk adjustment: the shared key is the
-generic mechanism, the builds share no quantity or file); repeat.deliverables (xlsx and png against task159, a
-forecast's table and chart: here a calibration scorecard and a figure of each float's offset); repeat.question_form
-(which, against task194: the decision designates floats, so the form follows it). test.same_puzzle_older against
-task148 v2 is differentiated on the card (queue patience from censored waits; nothing shared).
-
-- **Pairing.** Physical & Environmental Sciences / sensor-calibration-measurement, serving Data Quality Monitoring &
-  Alerting. Not banned against the last three builds (task240, task194, task159). The object is the health of the
-  float array's salinity record (whether each float's conductivity sensor still reads the ocean's salinity), the call
-  a monitoring decision on the delayed-mode release.
-- **Niche.** Delayed-mode calibration of profiling-float salinity against ship reference data: the float's
-  temperature sensor is stable and its conductivity cell drifts, so the water's temperature identifies the water
-  mass, and the reference gives that water's salinity at that place.
-- **The call.** Which of the 24 floats have their 2027 salinity adjusted in the delayed-mode release.
-- **Shape.** 10, scorecard against a threshold: each of the 24 floats' 2027 offset against the 0.010 tolerance and its
-  decision (24 offsets, 24 decisions), the call, the reference coverage by year (11 counts), the delivery record by
-  month (12 counts), the chart (bars, the band, the marked floats) and the two files: about 75 criteria before the
-  rubric folds them. Decision designation_set, answer set_of_items, question form which.
-- **Strategy.** population_selection (the reference water a float's reading is compared with: the same water mass, at
-  the same place), G16 decisive (the comparison the estimand entitles), G6 (the water at a fixed pressure changed
-  under the comparison), G14 (the basin's pooled relation does not apply at the float's position); gap time first
-  (the reference years' water column against 2027's) then population; Gate G decomposition_attribution (a float's
-  apparent offset split into the ocean's change and the sensor's error); calibration other (the ship reference casts,
-  an independent calibrated measurement of the water); context artifact planning_thread (the data management lead's
-  release thread carries the tolerance, layer and period); layer 2 family field_method, pattern
-  own:float-salinity-offset-on-isotherms-against-local-reference.
-- **Forum, event, organisation.** line_manager_or_team (the data management lead signs the release off), period_close
-  (the 2027 delayed-mode release closing the year's record), research_or_statistics_office. All clear the last three.
-- **People** (`guard.py names --geo Portugal --seed 241`, locale pt_PT): Naiara Nogueira, the array's delayed-mode
-  quality-control operator; Tiago Tavares, the data centre's data management lead, who wrote the release thread;
-  Patrícia Araújo, the float programme's engineer, who keeps the float register and wrote the float models summary.
-- **Deliverables.** `ioa_dmqc_salinity_2027.xlsx` (each float's offset and decision, the reference coverage and the
-  delivery record) and `ioa_dmqc_offsets_2027.png` (each float's offset against the tolerance band).
-- **As-of.** Friday 7 January 2028: the year's last profiles came in before 1 January, the reference data were frozen
-  on 15 December 2027, and the delayed-mode files are due at the assembly centre on 21 January. The call is
-  retrospective on 2027's record by design: a delayed-mode release corrects a closed year's data; what it settles is
-  what goes out on 21 January.
-- **Data-native sentence.** Below the Mediterranean outflow the deep water's temperature fixes its salinity, but the
-  layer heaves with eddies and sat about 17 dbar deeper in 2027 than in the reference years, and the salinity on a
-  given isotherm falls westward as the outflow thins; a float's salinity error therefore shows only against reference
-  water of the same temperature at the float's own position, while at fixed pressure the heave reads as sensor error.
-
-Sources, one line each (what it teaches; how this build differs):
-- Owens and Wong (2009) and the delayed-mode practice of profiling-float arrays: salinity calibrated against
-  reference data on potential-temperature levels, mapped to the float's position; here the comparison and the mapping
-  are the analyst's to choose, never named in the pack.
-- Böhme and Send (2005) on regional reference data: water-mass gradients across a basin bias a pooled reference;
-  here the gradient is the Mediterranean outflow thinning westward.
-- The physical oceanography of the Iberian Basin (Mediterranean water at 1,000 to 1,200 m, the deep layer's tight
-  temperature-salinity relation below it): the world's structure, generated, never a real dataset.
+1. **Pairing.** General Statistics & Data Science / `missing-data-censoring-measurement-error` / Data Quality
+   Monitoring & Alerting. The object is the health of the dialer's call-outcome data, the answering-machine
+   disposition the detector writes; the call is a monitoring decision, the projects whose detection is switched
+   off for 2027 because their machine-classed outcomes are not trustworthy. In General Statistics the swap is of
+   the method (`## Three rules`).
+2. **The 10/10 rules, answered first.** The deciding quantity is a recorded classification's error rate per
+   population, the task type's own measurement-error object, estimated as a ratio of two conditional reaction
+   rates; Layer 1 is the systems' own mess (formats, legs, test calls, two project keys, overlapping exports) and
+   decides nothing; the decisive step is analytical (the classifier's error rate does not carry from the population
+   it was certified on), not a plant, not a field reading and not a stated rule. The analyst test is answered in
+   `## Three rules`.
+3. **Niche.** A survey research firm's telephone centre deciding which recurring telephone projects run with the
+   dialer's answering machine detection switched off in 2027, judged on each project's 2026 share of machine-classed
+   calls that a person had answered, against the policy's one-in-ten limit.
+4. **Decision and forcing event.** The 2027 project year opens in January and detection is set per project at
+   project setup (`launch_or_rollout`); the forum is the telephone operations desk; the organisation is a
+   professional services firm; the role family `field_unit_lead`.
+5. **Shape.** 10, a scorecard: each project's false-machine share and its verdict against the limit (two
+   criteria per project over every recurring project, the per-project return-call and abandoned counts behind each
+   share), the call, the nearest project on each side of the limit and the share that would flip it, plus the
+   asks. The sum is written in `## Ask sheet` at stage 2 and clears 25.
+6. **Default path's answer against the golden.** The default path carries the detector's certified false-machine
+   rate (2.1 per cent on the maker's reference set at the balanced setting, confirmed by the firm's 2025 listening
+   test of 400 recorded machine-classed calls on the pilot project, 9 of them people) to every project and switches
+   detection off on none. The golden, from the prototype on the clean truth, switches it off on six projects
+   (seniors' care experience, employers, farm operators, alumni outcomes, veterans' health, home-based businesses)
+   whose shares run 13 to 33 per cent, while the other projects sit at 2 to 5 per cent.
+7. **Data-native sentence.** The detector decides in the first two seconds of an answer from how long the voice
+   runs before it pauses, so the people it hangs up on are the ones who answer with a long greeting, and how many of
+   them a project dials depends on whom the project calls; the call detail records only what the detector decided,
+   but the people it hung up on ring the project's caller-ID line back within minutes, as do the people the dialer
+   abandoned for want of a free interviewer, while answering machines' owners ring back hours later from voicemail.
+8. **Spine and files.** The dialer's 2026 call detail, about 280,000 answered calls (`dialer_calls_2026.csv`, one
+   row per answered outbound call, from twelve monthly exports); the inbound switch's 2026 call log (one row per
+   leg); the 2027 dialer policy (docx); the detector maker's specification sheet (pdf); the 2025 listening test
+   (xlsx); the project register (xlsx); and distractors (interviewer timesheets, the client sample deliveries'
+   metadata, the mobile consent log). The prototype priced the routes at 283,000 answered calls over thirteen
+   projects.
+9. **Nearest on file and the abstraction sentence.** `guard.py check` nearest drivers: 0.06 (task455 v1), 0.05
+   (task265 v0, task449). The sentence a reviewer holding this build and its nearest approved build would say is
+   the same: none can be written. task236 (approved) reads a capture rate against an independent fixed-protocol
+   sample's volume times positivity; task192 carries class-conditional rates forward across a moved population;
+   task230 v2 has detection falling with prevalence; this build measures a classifier's error rate on each
+   population from a reaction only its misclassified members produce, scaled by the same reaction among known
+   members of the true class, inside a window that excludes the other class's delayed reaction.
+10. **Guard.** `guard.py check` PASS against the window of task479, task188 and task307 v3. The window moved while
+    the card was drafted (task307 v3 registered at 11-03 and pushed task173 out): the first draft's
+    `monitoring_export` artifact then repeated task307 v3's and was redrawn to `register`, the honest one, since the
+    director decides on the firm's 2027 project setup register (one row per recurring project, its dialer settings
+    for the year); against the earlier window the draft carried one WARN, `repeat.decision` against task188 v2,
+    answered by the call being a set by its nature. Structural tests: `test.same_puzzle_older` against task281 and `test.same_driver_older` against
+    task454 and task468 v1, each differentiated on the card. Pattern C (a serviceable share behind a join: the
+    share of machine-classed calls that were people sits behind the join of the inbound log to the call detail);
+    generators G16 (the certified rate against the per-project estimate) and G6 (the greeting mix behind it).
+    Strategy `classification_error`, unspent on this objective. Personas from `guard.py names --geo us --seed 241`
+    (Hailey Mullins, director of telephone operations; Vincent Armstrong, quality assurance lead; Brian Maynard,
+    dialer administrator). The prompt shell is drawn new against architecture 1's (which, put, png+xlsx): the
+    second sentence leads with the deliverable's use, and the deliverable set is a workbook and a pdf note.
 
 ## Default path
 
-1. Read the release thread: a float's offset is the salinity it reported less the true salinity of the water it
-   sampled, the mean difference over each profile's good values between 1,400 and 1,900 dbar averaged over the
-   float's 2027 ascending profiles; more than 0.010 in magnitude is adjusted; good values are flags 1 or 2.
-2. Build each float's 2027 ascending profiles from the register and the profile index (the complete file of a resent
-   profile, no descending profiles, the partner float out) and their good values in the layer.
-3. Put both reference sources on pressure (the archive is in dbar; the RHD extract's depths taken to pressure, its
-   temperatures already ITS-90), interpolate every reference cast to a 10 dbar grid, and take the casts' mean
-   salinity at each pressure.
-4. Each good float value less the reference mean at its pressure; each profile's offset the mean over its values;
-   each float's the mean over its profiles; adjust where it exceeds 0.010.
+1. Load the dialer's twelve monthly exports of 2026, drop the day each export repeats from the month before, keep
+   every project's answered calls and read the dispositions: completed or partial interview, refusal, appointment,
+   live answer abandoned, answering machine (message played and closed).
+2. Read the 2027 dialer policy: detection stays on a project only while fewer than one in ten of its 2026
+   machine-classed calls had been answered by a person.
+3. Read the detector maker's specification sheet: at the balanced setting the detector classes 2.1 per cent of live
+   answers as machines on the maker's reference set of recorded greetings.
+4. Read the firm's 2025 listening test on the pilot project: 400 recorded machine-classed calls drawn at random, 9
+   answered by a person, 2.25 per cent, which confirms the maker's figure.
+5. The field's method for a classifier's error: take the certified rate, validated on the hand-checked sample, as
+   the detector's false-machine rate on every project; a few points either way for each project's mix leaves every
+   project far under the limit.
+6. File the scorecard: no project reaches one in ten; detection stays on everywhere in 2027.
 
-Ends on: 14 of the 24 floats adjusted, the six whose sensors are off and eight whose sensors read true.
+Ends on: no project switched off; every project's share about 2 per cent.
 
-Golden: 6 floats adjusted (1990001, 1990004, 1990005 and 1990008 reading fresh, 1990007 and 1990012 reading salty),
-from each profile's salinity on potential-temperature levels against the reference water at the profile's own
-position.
+Golden: six projects switched off (seniors' care experience, employers, farm operators, alumni outcomes, veterans'
+health, home-based businesses), shares 13 to 33 per cent on the prototype; the rest 2 to 5 per cent. Final figures
+from the generator at stage 3.
 
 ## Stump sentence
 
-A competent analyst differences each float's good 2027 salinity values between 1,400 and 1,900 dbar against the
-reference casts' mean salinity at the same pressure and files 14 of the 24 floats adjusted, the six whose sensors are
-off and eight whose sensors read true; the step that lands it there is comparing at fixed pressure, when the deep layer
-sat deeper in 2027 than in the reference years and heaved with eddies, and the salinity of water at a given
-temperature falls westward across the basin, so only the offset on potential-temperature levels against reference
-water at each profile's own position gives the six.
+A competent analyst carries the detector's certified false-machine rate (2.1 per cent, confirmed at 2.25 per cent by
+the firm's 2025 listening test on its pilot project) to every project and switches detection off nowhere, ending on
+no project; the step that lands it there is treating a classifier's error rate as a property of the classifier,
+when the people a detector mistakes for machines are the ones who answer with a long greeting, so the projects
+calling older people, farms and businesses lose 13 to 33 per cent of their machine-classed calls to people the
+dialer hung up on, a share that only the calls those people return within minutes, scaled by the same project's
+abandoned callers' prompt return rate, can measure.
 
 ## Three rules
 
-- **Task type:** physical-environmental-sciences / sensor-calibration-measurement, which serves Data Quality
-  Monitoring & Alerting (the calibration of an observing array's sensors and the health of the record they produce).
-- **Domain test:** the quantity that decides is each float's conductivity-sensor offset, estimated the way delayed-mode
-  quality control of profiling floats estimates it: against ship CTD reference data on potential-temperature levels,
-  where the deep water's temperature-salinity relation is conserved, mapped to the float's position.
-- **Swap:** "which floats have their 2027 salinity adjusted" rewritten as "which ward thermometers have their 2027
-  readings adjusted" with patients for water: there is no water column that heaves, no water mass whose temperature
-  fixes its salinity and no basin-scale property gradient, so the task stops making sense.
-- **Layer 1:** profiles at two grains (the profile index with times as days since 1950 in UTC, the level file); real-
-  time quality flags on every value; profiles received twice when a transmission broke off; descending profiles beside
-  ascending ones; a partner institute's float decoded beside the array; the model K floats' firmware stamping each
-  profile at the start of its ascent; reference casts from two sources, the institute's archive (the 2015 and 2016
-  cruises in IPTS-68) and an international extract (depth in metres, positions to 0.01 degree, decimal-hour times,
-  the institute's own casts again under the database's ids); stations worked twice a few hours apart; casts stopping
-  short of 2,000 dbar; the data centre's receipt log on the server's Lisbon clock. Each is how the float, the
-  satellite link, the ship's processing or the data centre writes the record; none is placed to be caught.
-- **Layer 2:** field_method: a sensor's error read against the true value of the medium it sampled, which here means
-  comparing salinity on potential-temperature levels (the water mass) against reference water at the float's position
-  (the basin's gradient), not at fixed pressure against the casts' mean.
-- **Decisive step:** reading each float's salinity against the reference on potential-temperature levels mapped to
-  the profile's position, the way delayed-mode calibration of float salinity is done, rather than at fixed pressure
-  against the reference casts' mean.
-- **Not semantics:** reading every flag, code, unit and time right (resent profiles once, descending profiles and the
-  partner float out, bad values out, IPTS-68 converted, depths taken to pressure) still leaves the default path on 14
-  floats: the false adjustments come from the comparison, not from any value read (R3a on the clean truth: 15).
-- **Not rule application:** the release thread files the estimand (each float's salinity error against the true
-  salinity of the water it sampled, averaged over its 2027 profiles in the layer), the tolerance and the period, and
-  no rule says how to know the water's true salinity, so executing every stated rule at fixed pressure still files 14.
-- **Analyst test:** a strong analyst who reads every flag and file right and differences each float's salinity against
-  the reference casts' salinity at the same pressures adjusts 14 floats (Ends on: 14 of the 24 floats adjusted, the
-  six whose sensors are off and eight whose sensors read true); one who compares on potential-temperature levels against
-  the basin's pooled reference adjusts 10 to 14 depending on the pooled fit (13 for a quadratic), and one who measures drift from each float's first profiles finds only the
-  four drifting floats; only potential-temperature levels against reference water at each profile's position give the
-  six.
-- **Estimand:** the release thread (`ioa_dmqc_2027_release_thread.eml`) fixes the population (the 24 floats' 2027
-  ascending profiles, good values in the 1,400 to 1,900 dbar layer), the quantity (the salinity the float reported
-  less the true salinity of the water it sampled, the mean over the profile's good layer values averaged over the
-  float's profiles), the tolerance (more than 0.010 in magnitude) and the decision (adjusted in the release).
-- **No decoy:** nothing is planted: no earlier calibration result, draft list or stakeholder figure ships; the 2027
-  heave and the basin's gradient are how the ocean is, not errors in a file; the recovered-sensor checks are other
-  floats' laboratory results and rank nothing in this array.
-- **No certified replay:** no certified or published 2027 offset exists for a method to reproduce.
-- **Lesson:** a sensor's error is measured against what the medium really held at that moment and place; when the
-  medium moves under a fixed coordinate, the comparison has to follow the property that identifies the medium, which
-  no build on file teaches (task229 converts a daily mean through a convex rating curve; task239 separates two levels
-  of a factor structure).
+Task type: general-statistics-data-science / missing-data-censoring-measurement-error, which serves Data Quality
+Monitoring & Alerting in the taxonomy.
+
+Domain test: the deciding quantity is each project's misclassification rate of a recorded outcome (the share of its
+machine-classed calls a person answered); the field's estimator for a classifier's error is the rate certified on a
+reference set and validated by a hand-checked sample; the estimator the data force is the ratio of two conditional
+reaction rates on the same project, prompt return calls after machine-classed hang-ups over prompt return calls
+after abandoned live answers.
+
+Swap: in General Statistics the swap is of the method: replace the per-project ratio with the classifier's certified
+rate, a generic summary, and the call moves from six projects to none; replace the prompt window with every return
+call at any delay and it moves to every project; the call reads only with the measurement-error estimator.
+
+Layer 1: the dialer's monthly exports each repeat the last day of the month before (the export runs after midnight
+and re-reads the late calls); phone numbers arrive as ten digits in the call detail, in +1 E.164 form in the inbound
+switch and with punctuation in the client sample files; the inbound switch writes one row per leg, so a transferred
+call appears two or three times; quality assurance places test calls from the firm's own extensions; the dialer
+knows projects by client job number and the inbound switch by the caller-ID line's label. Each is produced by the
+systems themselves and none decides the call.
+
+Layer 2: estimation_fit: a classifier's error rate estimated per population from a reaction only its misclassified
+members produce, scaled by the same reaction among members known to be in the true class, counted inside a window
+that excludes the other class's delayed reaction.
+
+Decisive step: measuring each project's false-machine share on that project's own calls rather than carrying the
+certified rate, from the calls people return within minutes of being hung up on, divided by the prompt return rate
+of the same project's abandoned live answers.
+
+Not semantics: every disposition, number and timestamp read correctly still leaves the certified rate as the reading
+of the detector's error; no field marks a machine-classed call as answered by a person and no definition says the
+error differs by project, so the right figure is an estimate, not a reading.
+
+Not rule application: no filed rule or procedure says how to measure the detector's error, and the 2027 policy files
+only the quantity, the limit, the window and the unit. The enumerated family on the prototype (the certified rate,
+the listening test's rate, the machine-classed share against the firm's norm, the return-call ratio at any delay,
+the prompt return-call ratio over a pooled abandoned rate, the prompt ratio over each project's own abandoned rate)
+spreads the flagged set from 0 to 13 projects; the standing family once the data are read (the prompt ratio, with
+each project's own abandoned callers' rate because those rates run from 18 to 36 per cent) spreads 0 projects on
+the call across prompt windows of 5 to 30 minutes, and the figure under 1.5 points; what rules the others out sits
+only in the inbound log and the calls' timing, which no document points to.
+
+Analyst test: with every field and rule read correctly, the easy route carries the detector's certified 2.1 per cent
+(confirmed by the 2025 listening test on the pilot) to every project, puts all of them under the one-in-ten limit and
+keeps detection on everywhere, ending on no project; the golden switches it off on six.
+
+Estimand: "Answering machine detection stays on for a project in 2027 only while fewer than one in ten of the calls
+the dialer classed as answering machines on that project in 2026 had been answered by a person" (the 2027 dialer
+policy, `dialer_policy_2027.docx`): population, every 2026 machine-classed call of the project; outcome, answered by
+a person; window, calendar 2026; unit, the call; comparison, the one-in-ten limit.
+
+No decoy: nothing is planted to be caught; the maker's specification sheet and the 2025 listening test are the
+organisation's genuine evidence and correct for the populations they describe; no memo, draft, briefing or
+stakeholder figure argues for keeping detection on.
+
+No certified replay: the method is not hidden and recovered by reproducing certified figures; the listening test
+validates both the certified rate and the return-call ratio on the pilot, and only the other projects separate them.
+
+Lesson: a classifier's certified error rate is a property of the population it was certified on, so where the
+populations it is applied to differ, its error is measured on each from a reaction only the misclassified produce,
+scaled by that reaction among known members of the true class; no build on file teaches it (task192 carries
+class-conditional rates forward, task230 v2 has detection falling with prevalence, neither measures the error per
+population from a reaction).
 
 ## Survivor anatomy
 
-Written at the 11-01 re-check from the clean-truth measurement (`generator/checks.py` R3) and the cut pack's routes.
+Actor: whether a machine-classed call was answered by a person has no column in any file; the call detail writes
+"answering machine" and nothing more, and the inbound log knows nothing of the detector.
 
-- **Actor:** holds. No column holds a potential temperature, a reference salinity or an offset (R1 asserted); the deciding property is each float's salinity against reference water of the same potential temperature at its position, a relation between the float levels and the reference casts that no file stores.
-- **Link:** holds only in part. No key joins a float level to reference water on potential temperature and position, and the key the schema offers (pres on both sides) is the wrong one; but the comparison itself is the release thread's premise (the true salinity of the water sampled), and positions and in-situ temperature sit on both sides, so the link is the field's own textbook join, not one the field's method never asks for.
-- **Reflex:** fails. The field's named method for a float's salinity offset (delayed-mode calibration on potential-temperature levels against reference data objectively mapped to the float's position, Owens and Wong 2009, the source this note's Draw cites) is the golden itself, the top rung; the Domain test and Decisive step lines name the same method, and the stump sentence reads "use the delayed-mode method on the floats" (the library test, stumping 1.1b). Rung 0 (fixed pressure against the casts' mean) is not the field's method, so the opponent's first move is the golden.
-- **Back-test:** fails. No validation record confirms the fixed-pressure route; nothing in the pack validates any route, and the textbook route a solver would validate against is the golden.
-- **Second use:** holds. The reference casts carry Ask A, the float levels and profile index carry Ask B, and the register and technical file are the array's own records; deleting the decisive step drops no file.
-- **Shock:** fails. Sorted by magnitude on the pooled potential-temperature rung (rung 3), the golden six are exactly the top six (0.019 to 0.043, the next 0.016), so the answer set is an interval of a one-dimensional sort one rung below the decisive step, and on the golden route they are the array's six largest offsets by a factor of six.
-- **Pins:** holds. The release thread files the population, layer, flags, averaging, tolerance and the estimand in plain words and names no coordinate, mapping or comparison (R3c asserted); deleting any of its sentences unforces nothing the stump rides on.
+Link: the evidence is the return call, read through the inbound switch's log and matched to the outbound call by the
+dialed number and the minutes between them; no call identifier links the two systems, and no document connects
+return calls to the detector.
 
-## Readability screen
+Reflex: the field's method for a classifier's error (the certified rate validated by a hand-checked sample: the
+maker's 2.1 per cent, the 2025 listening test's 2.25 per cent) sits at rung 1 and files no project.
 
-Six tests per rung (stumping 2.1): 1 a filed sentence names the decisive quantity or sends the solver to it; 2 a
-column, key or marker makes it a row predicate or a header-found join; 3 an opponent reflex reaches it; 4 a control
-or corpus scores the rules or refutes the naive read; 5 the hygiene battery finds it; 6 one subtraction, ratio or
-half of a reported figure.
+Back-test: the 2025 listening test confirms the certified rate on the pilot project, the one population it checked.
 
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 (default) every good value at fixed pressure against the reference casts' mean: 14 | the thread names the layer in dbar | pres on both sides | yes, the natural comparison of two profiles | none | no | one subtraction | readable |
-| 1 at fixed pressure against the nearest twelve casts: 13 | none | positions on both sides | yes, an analyst who knows the basin is not uniform | none | no | one subtraction | readable |
-| 2 drift from each float's own first profiles: 4 | none | juld | yes, the drift-detection reflex | none | no | one subtraction | readable |
-| 3 potential-temperature levels against the basin's pooled reference: 13 (10 to 14 across pooled fits) | none | temp, psal, pres | partly, an analyst who knows the water mass is the comparison | none | no | a fit and a subtraction | readable |
-| 4 (decisive) potential-temperature levels against the reference water at the profile's position: 6 | no sentence names temperature levels, position or the mapping; the thread says only "the true salinity of the water it sampled" | no potential temperature, reference salinity or offset ships; positions and in-situ temperature are ordinary columns | no: the reflex compares at fixed pressure or pools the reference | no earlier offset, calibration result or control ships | no | not linear: potential temperature, a reference field in temperature and position, per-level differences | silent |
+Second use: the inbound log carries the inbound-handling ask (calls returned to each caller-ID line and what became
+of them); the abandoned calls carry the abandoned-call-rate ask; the listening test carries the pilot's audit; the
+maker's sheet documents the setting each project ran at.
 
-## Semantic fork table
+Shock: the projects whose detection loses people are the ones whose answering-machine share is already high for
+ordinary reasons (older households keep landline answering machines, businesses run voicemail), so their
+machine-classed calls read as explained; sorting the projects on any shipped statistic (machine-classed share,
+abandoned rate, completion rate, return calls) does not give the golden set as an interval.
 
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | 2027 profiles | the profiles the floats surfaced with in 2027 | juld's year | same call (no profile's juld falls in another year than its surfacing) | the thread; same call (asserted) |
-| SF2 | good values | flag 1 or 2 in pressure, temperature and salinity | salinity's flag alone | same call (no pressure or temperature value in the layer is flagged) | the thread; same call (asserted) |
-| SF3 | a profile received twice | the file carrying every level | both files kept | same call | the thread ("the file that carried every level"); same call (asserted) |
-| SF4 | the array's floats | the register's 24 | the partner float too | same call (the partner reads true) | the thread; same call (asserted) |
-| SF5 | more than 0.010 | strictly greater in magnitude | 0.010 or more | same call (no offset within 0.006 of the tolerance) | the thread; same call (asserted) |
-| SF6 | the float's offset | the mean of its profiles' means | the mean of all its layer values | same call (offsets within 0.0005) | the thread ("averaged over the float's 2027 ascending profiles"); same call (asserted) |
-| SF7 | salinity | practical salinity | absolute salinity | same call (offsets scale by 1.005) | the dictionary; same call (asserted) |
-| SF8 | temperature levels | potential temperature | in-situ temperature | same call | same call (asserted) |
-| SF9 | the reference data | the archive and the RHD extract | either alone | same call | the thread and the reference note; same call (asserted) |
-| SF10 | between 1,400 and 1,900 dbar | the ends inclusive | exclusive | same call | same call (asserted) |
-| SF11 | the offset's sign | the float less the water | the water less the float | same set (magnitude) | the thread ("the salinity the float reported less the true salinity") |
-| SF12 | more than 0.010 in magnitude | either sign | fresh only | another set | the thread ("in magnitude") |
-
-## Ladder
-
-Four wrong rungs and the golden, each a defensible way to read a float's salinity error, each dying to one fact of
-the record (figures on the cut pack, asserted in `checks.py`).
-
-| Rung | Construction | Answer | Dies to |
-|---|---|---|---|
-| 0 (default) | each good value at fixed pressure against the reference casts' mean | 14: the six and 1990002, 1990003, 1990010, 1990015, 1990016, 1990022, 1990023, 1990024 | the 5.5 degree isotherm sat 17 dbar deeper in the 2027 float profiles than in the casts, and eddies move it further; water at a fixed pressure in 2027 is not the water the casts sampled there |
-| 1 | at fixed pressure against the nearest twelve casts | 13: the six and 1990002, 1990003, 1990010, 1990015, 1990016, 1990021, 1990024 | the same heave; position does not undo it |
-| 2 | drift measured from each float's own first 2027 profiles | 4: the drifting four | 1990007 and 1990012 were off from deployment, so their first profiles carry the same error |
-| 3 | potential-temperature levels against the basin's pooled reference | 13: the six and 1990009, 1990014, 1990016, 1990020, 1990021, 1990022, 1990023 (10 to 14 across pooled fits, every one keeping the six) | the reference water freshens westward on every temperature level (0.0036 per degree of longitude at 5.5 degrees) |
-| 4 (golden) | potential-temperature levels against the reference water at the profile's position | 6 | |
-
-- **Margins.** The adjusted six read 0.020 to 0.030 from the water; the largest of the other 18 reads 0.003. Every
-  position-mapped implementation checked (nearest 5 to 100 casts, casts within 1 to 5 degrees, Gaussian weights of 2 to
-  4 degrees, a fit in position, in-situ temperature, either source alone) files the same six, and the local ones
-  reproduce every offset within 0.003.
-- **Position.** The six are reached by no other rung: fixed-pressure variants file 13 to 17 (seven to eleven clean
-  floats among them), pooled references 10 to 14 (four to eight clean), the drift reading 4.
-- **Dominance.** The decisive move takes the eight clean floats of the default path from over 0.010 down to 0.003 or
-  less, and leaves the six over the tolerance.
-- **Grid.** Fixed pressure by mean, median, nearest 5, 12, 20 or 40 casts, standard levels every 10 or 50 dbar, depths
-  as pressure, archive alone (13 to 17); temperature levels pooled by quadratic, cubic or binned means, either source
-  alone or the layer alone (10 to 14); drift (4); temperature levels at position (6). On the simulator's clean truth the
-  same rungs file 15, 13, 12, 4 and the golden six (R3).
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | the register's 24 floats, their 2027 ascending profiles (the thread); the partner float and descending profiles out (SF4) |
-| 2 | Unit of account | one float's 2027 offset: the mean of its profiles' mean differences (the thread, SF6) |
-| 3 | Attribution window | profiles the floats surfaced with in 2027 (SF1) |
-| 4 | As-of dating | the pack drawn on 7 January 2028; every 2027 profile's complete file received by then |
-| 5 | Version basis | the file carrying every level of a resent profile (SF3); the reference data as frozen on 15 December 2027 |
-| 6 | Denominator | the true salinity of the water sampled; estimated from the reference data, the method open and forced by the record (C1 across implementations) |
-| 7 | Weighting | each profile equally within a float; each value equally within a profile (the thread) |
-| 8 | Window length | one year of profiles; the reference 2015 to 2025 |
-| 9 | Boundary inclusivity | more than 0.010 (SF5); no offset within 0.006 of it |
-| 10 | Rounding path | offsets from unrounded values, three decimals at the close; the call never depends on rounding |
-| 11 | Tie-break | none needed |
-| 12 | Maturity and censoring | every 2027 profile's complete file arrived before the as-of morning (asserted) |
-| 13 | Order of operations | profiles, good layer values, potential temperature, reference water at the value's temperature and the profile's position, differences, profile means, float means, tolerance |
-| 14 | Row order | no step depends on file order |
-| 15 | Duplicate resolution | profile files by version (SF3); the RHD copies of the institute's casts change no offset by more than 0.001 (asserted) |
-| 16 | Identity normalisation | WMO numbers and cycles join exactly across the profile, technical and receipt files |
-| 17 | Netting against gross | not applicable |
-| 18 | Dimensional units | practical salinity; pressure in dbar, RHD depth in metres taken to pressure; IPTS-68 taken to ITS-90 |
-| 19 | Code and status semantics | flags 1 and 2 good (SF2); file_version 2 the complete file; direction A ascending |
-| 20 | Integerisation | none for the offsets; the asks' counts are whole casts and profiles |
-| 21 | Clause scope | the thread's tolerance and layer apply to every float of the array |
-| 22 | Forward window contents | the release covers 2027's closed record; nothing is forecast |
-
-## Literal reader
-
-Executing the prompt and the release thread word for word: the 24 floats are the register's, their 2027 ascending
-profiles the profile index's, one file per profile (the one carrying every level), and each float's offset is the
-salinity it reported less the true salinity of the water it sampled, the mean over each profile's good values (flags 1
-or 2) between 1,400 and 1,900 dbar, averaged over its profiles; more than 0.010 in magnitude is adjusted. The literal
-estimand is the true salinity of the water sampled, which the reference casts give on the water's own identity (its
-potential temperature) at its place; that reading files the six under every position-mapped implementation, and the
-easy answer, 14, comes from an easy method on the same literal estimand (the casts' salinity at the same pressure),
-never from another reading: every row of the fork table files the six.
-
-## Oracles
-
-None for the call: no earlier offset, calibration result or adjusted file ships; the recovered-sensor checks (a
-distractor) are other floats' laboratory results and tie to nothing in the array; the oxygen profiles (a distractor)
-carry no salinity. For the asks, the archive's own station list is the referee for which RHD stations are the
-institute's casts, and the technical file's end of ascent for surfacing; neither ties to any count by itself.
-
-## Ask sheet
-
-**Ask A, reference casts reaching 2,000 dbar by year, 2015 to 2025** (11 counts). H18: the reference coverage the
-release report carries beside the offsets, an audit trail of the reference the offsets rest on; the call does not
-count casts. Use: the data management lead reports how much deep reference water each year supplies. Primary device D1
-(the same records under two key schemes or sources: 119 of the RHD extract's 190 stations are the institute's own
-casts as the institute submitted them, under RHD ids, positions to 0.01 degree, times as decimal hours shifted by up to
-three minutes, depth not pressure; nothing marks them, and the archive does not name its ship); hazards: the RHD's depth
-in metres (23 stations end between 1,981 and 1,999 m, past 2,000 dbar under any conversion, short of 2,000 m), stations
-worked twice a few hours apart (24 repeat casts: two casts, which a same-day, same-position dedup collapses), casts
-stopping where the plan or the bottom stopped them. Path: the archive's station and level files, the RHD's station and
-level files, the reference note, the thread, the dictionary (6 files, 13 columns: cast_id, cruise, station, time_utc,
-latitude, longitude, max_pres, station_id, date, time, lat, lon, max_depth_m). Stops: every row counted with depth as
-pressure +5 to +13 a year; every row counted with depth taken to pressure +7 to +14; copies matched but depth read as
-pressure -1 to -3 in ten years; same day and position collapsed -1 to -3 in eight years. Realism: a national archive
-submits its cruises to the international database every year, and the database serves them under its own ids and
-conventions; a station worked twice is two casts.
-
-**Ask B, the array's ascending profiles that reached the data centre in full within 24 hours of the float surfacing,
-by month of 2027** (12 counts). H18: the delivery record the assembly centre asks for, in the release report beside
-the offsets; the call does not read delivery times. Use: the assembly centre's real-time delivery target. Primary
-device D8 (an anchor on the wrong event: the model K floats' firmware stamps juld at the start of the ascent, about six
-hours before the float surfaces, while model A stamps it at the surface; surfacing is the end of the ascent in the
-cycle technical file; nothing in the profile index says which); hazards: the receipt log on the server's Lisbon clock
-(summer time from 28 March to 31 October), profiles whose first file broke off and came again (the complete file
-counts; an Iridium float sends it with its next profile), descending profiles sent with the next ascending one, the
-partner float. Path: the register, the profile index, the technical file, the receipt log, the thread, the float
-models summary, the dictionary (7 files, 11 columns: wmo, model, cycle, direction, juld, file_version, ascent_end,
-received, n_levels, file_name, profiles). Stops: juld as surfacing -6 to -13 in every month; the first file +2 to +5 in
-eleven months; the Lisbon clock read as UTC -1 to -2 in eight months; the partner float +2 to +3 in every month;
-descending profiles +9 to +13 in every month. Realism: firmware time-stamps differ between float models, and a server
-logs local time.
-
-Main population zero-counts: the call's rows are the array's 2027 ascending profiles and their good layer values; no
-receipt-log row, technical row, partner profile or descending profile is among them (asserted), and the call reads the
-reference data, where the RHD copies move no offset by more than 0.001 (asserted); every Layer 1 slip keeps the six
-(R2 in `checks.py`).
-
-| Hazard | Asks moved | Per-ask deltas (largest) |
-|---|---|---|
-| the RHD copies of the institute's casts (D1) | A | +14 (2015) |
-| the RHD depth in metres (D3) | A | -3 (2017, 2018, 2019, 2024, 2025) |
-| stations worked twice (D1, over-cleaning) | A | -3 (2015, 2024) |
-| juld at the start of the ascent (D8) | B | -13 (December) |
-| the Lisbon clock (D8) | B | -2 (March, June, August) |
-| the first file of a resent profile (D2) | B | +5 (September) |
-| the partner float (D5) | B | +3 |
-| descending profiles (D5) | B | +13 (January, May) |
-
-Referee: the archive's station list for the copies; the technical file's ascent_end for surfacing.
-
-| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
-|---|---|---|
-| Ask A, 2015 to 2019 | no exact duplicate or repeated key in either source; the RHD copies counted again | miss |
-| Ask A, 2020 to 2025 | the same | miss |
-| Ask B, January to June | the delivery record executed as filed (complete file, the array, the Lisbon clock), juld as surfacing | miss |
-| Ask B, July to December | the same | miss |
-
-Measured by: generator/pair.py on the cut pack: the cracker keeps 0 of the 23 ask figures, Lc 0; the mirror (stopped
-at the fixed-pressure comparison) keeps 0 of 23 whether careful or careless on the asks, Ls 0, and about 8 of the
-recommendation weight from the critical components it shares.
-
-Pair ceiling: 30.0 ((38 + 7 + 55 x 0) and (8 + 7 + 55 x 0), averaged)
-
-Mirror leakage: 0.0 per cent of ask weight
-
-## Pre-ship check
-
-1. Domain: the call stands on each float's conductivity-sensor offset read the way delayed-mode quality control of
-   profiling floats reads it, the float's salinity against ship reference water of the same potential temperature at
-   the float's position; with ward thermometers or warehouse scanners in place of floats there is no water column that
-   heaves, no water mass whose temperature fixes its salinity and no basin gradient, and the task stops making sense.
-2. Two layers: Layer 1 (profiles at two grains, real-time flags on all three variables, files received twice, descending
-   profiles and a partner float, model K's profile time at the start of the ascent, an archive in IPTS-68 for two
-   cruises, an extract in metres that holds the institute's casts again under its own ids, stations worked twice, a
-   receipt log on the server's Lisbon clock) is neutral on the call: every slip in R2 keeps the six. Layer 2 is the
-   comparison on potential-temperature levels against reference water at the profile's position, asserted alone to
-   move the default path to the golden on the simulator's clean truth (R3b).
-3. No banned stump decides: nothing is planted (no earlier offset, calibration result or draft list ships); not
-   semantics (the default path reads every field and unit right and files 14, 15 on the clean truth, R3a); not rule
-   application (the thread files the estimand, the layer, the flags and the tolerance and names no comparison, asserted
-   on its text).
-4. Gate G: no shipped artifact ranks the floats; the recovered-sensor checks are other floats' laboratory results and the
-   oxygen file carries no salinity.
-5. Determinism: the six hold under every position-mapped implementation checked (nearest 5 to 100 casts, radii of 1 to
-   5 degrees, Gaussian scales of 2 to 4 degrees, either source, in-situ temperature); the adjusted floats read 0.020 or
-   more and the others 0.003 or less; offsets are graded within 0.003, the spread of those implementations; the asks'
-   counts are integers with no RHD cast between 1,962 and 1,981 m and no delivery within 30 seconds of the 24 hour
-   line; the 12 fork rows are asserted in `checks.py` and the verifier recomputes every figure by its own route.
-6. Fingerprint: heart WARN (repeat.gate_g, repeat.deliverables, repeat.question_form, answered under Draw); the
-   question opens as whether-and-which since four of the lane's last six prompts open "Which"; surface promotes task148
-   (gap, pattern and decision family collide, surface 0.079), differentiated on the card; personas clean.
-7. Judge (one isolated thread at a time, Sonnet, medium, the bundle and the graded blocks only). Pass 1: DETERMINISTIC,
-   FIX_NOW on the write-up alone (carry the 0.003 acceptance into the grading; quote the easy routes as measured
-   ranges, its own runs giving 14 and 12; name the fit's theta range), all three taken. Pass 2: DETERMINISTIC,
-   APPROVE: the six, every offset within 0.001 bar 1990005 (-0.026 against -0.027, inside the 0.003), both tables
-   exactly; fixed pressure 15, pooled 11, drift 4; Gate G method_or_model_selection, analytical_non_defect; Gate H
-   domain, layers and decisive step pass.
-
-## Leak check
-
-`leak.py --asof 2028-01-07`: REVIEW, no LEAK. The REVIEW lines: data and document vocabulary shared with the stump
-paragraph (temperature, position, pressure, levels: the field's own words in a data dictionary and a reference note,
-none naming the comparison, asserted); Argo-style column names (temp, temp_qc, temp_scale). The float WMO numbers and
-the extract's stated precision are listed as stated inputs.
-
-Solver's-eye reads (two isolated reads, Sonnet, medium, the prompt and the bundle only; the second after the fix pass):
-- Question 1: none, both times: the thread files what the offset is and not how to know the water's true salinity;
-  both reads listed choosing the matching (pressure, nearest casts, temperature) as theirs to make.
-- Questions 2 to 4: none, both times.
-- Question 5: the thread's estimand, flags, layer, averaging and tolerance, each executing to the golden's population
-  and quantity.
-- Question 6: an analytical choice, both times (how the reference water of the sampled water is estimated).
-- Realism, fixed: RHD casts ending at 1,980 m (a rule-of-thumb conversion would have read them short of 2,000 dbar);
-  three deepest values across the archive; one 10 m grid for every RHD institute; resends exactly ten days later; no
-  temperature or pressure flag; the year's first descent exactly ten days before the next; no battery ageing; cruises
-  starting on the hour; one section on an exact latitude step; two receipts in the repeated October hour read a pass
-  early by the estimator. Kept: the overlap of the two reference sources (the first ask's device, how the database
-  serves submitted cruises), juld by model (the second ask's device), sequential WMO numbers (one programme's block),
-  cruise codes by the institute's running number, "as last year" in the thread.
+Pins: the 2027 dialer policy files the WHAT (the quantity, the limit, the window and the unit); no filed sentence
+names return calls, the prompt window or the per-project denominator.
 
 ## Tried and rejected
 
@@ -435,3 +260,26 @@ Solver's-eye reads (two isolated reads, Sonnet, medium, the prompt and the bundl
 - A2.20 Payroll software defects read by the Hidiroglou-Berthelot ratio method within industry (official statistics, admin data): the comparison group is composition_mix (banned) and the method is named.
 - A2.21 A laboratory's message loss at interface restarts read against its monthly volume report (disease surveillance): one subtraction against a filed total, readable.
 - The four strongest written in full, as the orchestrating session asked. A2.13: default path, per-tablet serial accountability (the census's questionnaire accountability) and the sync server's accountability report agree and flag none of the areas the truth flags; swap fails (meter readers); anatomy: Actor, Link (the re-image's time against the forms' timeline), Reflex, Back-test (the server report reconciles), Second use and Pins hold, Shock open (re-images cluster where a faulty batch went); bin: records-fixed bracketing against a productivity model that disagrees in 18 of 20 worlds, an implementation corridor to close. A2.12: default path, the share of probe readings over the limit; swap of the method holds; all seven anatomy lines hold; bin records-fixed; spent driver. A2.14: default path, coding depth against the national rate within each case-mix group, which reads the under-coding trusts as normal; swap holds; Link holds only in part (the administrative fields are columns); bin exact indirect standardisation; spent insight and banned label. A2.15: default path, each lab's quarter against its seasonal baseline, which alerts the lab that lost clinics and misses the lossy lab that gained them; swap holds; Link and Shock fail; bin a ratio estimator with a corridor; banned label.
+- Architecture 2 draw, 2026-11-03 (continuing the 11-02 screen after it cleared nothing; the guard window then held task173, task479 and task188, so decomposition_attribution, binding_constraint and population_selection, the patterns G5, G3 and G14 and the operations-log artifact were banned): 22 more candidates, one line each, the last carded.
+- A3.1 Parcel hubs' unscanned share placed by the trailer's departure from the hub before (supply chain, general statistics): every honest label is banned (population_selection or decomposition_attribution, G3, the operations log) and the signature (population, G3) repeats task270 v8 and task464 inside the last twelve.
+- A3.2 Blood-pressure terminal-digit preference under a device mix: shallow, a field reading, and task246's measurer offsets.
+- A3.3 Bounds for suppressed census cells by linear programming: the WHAT screen (the bound filed is the answer) and a fork on which bound.
+- A3.4 Annotators anchored on pre-filled labels: Gate F (the anchoring check is the reflex) and task238's ground.
+- A3.5 The seam effect in a rotating panel: the field's own method (the seam-adjusted transition rate) is the golden, the reflex at the top of the ladder.
+- A3.6 Filter-question misreporting and diary fatigue: both settle the outcome or the window (WHAT screen).
+- A3.7 Prorating a nine-item scale's missing item: multiple imputation is the reflex and the golden.
+- A3.8 Pooled PCR dilution with Ct truncation, and post-processing bias from a privacy mechanism: neither has a determinate figure across defensible estimators.
+- A3.9 Batching noise in weekly reports: retags as Anomaly Detection and is the overdispersed funnel task183 and task194 measured dead.
+- A3.10 Exposure-based alert floors: the reflex reaches it, and the call retags as Forecasting.
+- A3.11 Supplier-statement mismatches as the error rate of straight-through invoices, matched on vendor, amount and date (accounts payable): the supplier statement is an independent reference, task236's move.
+- A3.12 An analyser's carryover read from each specimen's predecessor in run order (laboratory data): task252 architecture 1's driver and task184's screen.
+- A3.13 Laboratory bias from patients tested at two laboratories against non-commutable quality-assessment material: task200 measured the split-specimen network dead (additive offsets collapse to a group-by, offset and scale fork the share).
+- A3.14 Trial sites' adverse-event under-reporting against a front-loaded hazard by infusion number: task228's screen (a stratification by time on study) and the grouping dichotomy.
+- A3.15 Reinterview response variance swollen by true change that grows with the reinterview lag: task244's organ, and the fork-is-the-stump test (filing "the same true situation" names the step, leaving it unfiled forks the index).
+- A3.16 Subscores' added value with passage-level dependence: task270 architecture 4 and task237's driver.
+- A3.17 Comorbidity under-coding found by bracketing an admission between the patient's coded admissions: task188's screen of a look-back through the patient's admissions elsewhere.
+- A3.18 Practice effects in a cognitive panel identified from missed waves: task270 architecture 3 died when the filed outcome named the practice effect, and task280 screened it.
+- A3.19 Women's ages displaced over the eligibility boundary, controlled by men's ages in the same households: interviewer falsification is the planted-defect class (A2.1).
+- A3.20 Mirror trade asymmetries reconciled through a hub's re-exports: the origin and consignment conventions make it a field reading, and the honest label, decomposition_attribution, is banned.
+- A3.21 A short form's validity inflated by part-whole overlap with the long form: retags as Descriptive, and the corrected correlation forks on the reliability estimator.
+- A3.22 Answering machine detection's false-machine share per project, from the calls people return within minutes of the hang-up over the same project's abandoned callers' prompt return rate (a survey research firm's telephone centre, general statistics): carded as architecture 2. The prototype on the clean truth (13 projects, 283,000 answered calls, 60 seeds) puts the golden on the true set 60 of 60 times, the certified rate, the raw return-call share and the all-delay ratio 0 of 60, the closest golden share 1.1 points from the limit; guard.py check WARN (repeat.decision), the structural tests differentiated against task281, task454 and task468 v1.
