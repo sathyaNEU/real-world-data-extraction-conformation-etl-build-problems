@@ -1,85 +1,87 @@
 {
   "task": "task402",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-11-03",
-  "slot_note": "Numbered from seed RC08 (a wind turbine's five faults and its one spring crew visit); the seed's world collides with shipped task187 and its client domain reaches Root-Cause only through interpretability, so architecture 1 moved to an NHS Talking Therapies service and died at stage 4 (lineage). Architecture 2 moves domain, world, dataset and shell: a regional bowel cancer screening programme's equity fund, keeping the decision kind (one of five changes gets the single fix) and the quantity's kind (what that change cost over the year, in the period's natural unit).",
-  "domain": "epidemiology-public-health",
-  "subdomain": "health-equity-disparity-decomposition",
-  "client_domain": "epidemiology-public-health",
-  "niche": "a regional bowel cancer screening programme's 2026-27 equity fund: which of five changes on its review costs the most deprived fifth the most completed screens in 2025-26, when the integrated care board's shared registration service, in force since April 2024, applied address changes months after they were asked for, so a kit despatched while a change was pending went to the address the person had left, a loss running at the same rate in both years that a comparison of 2025-26 against 2024-25 never sees",
+  "slot_note": "Numbered from seed RC08 (a wind turbine's five faults and its one spring crew visit). Architecture 1 (an NHS Talking Therapies service) died at stage 4 on the judge's SEND_BACK and architecture 2 (a bowel screening hub's equity fund) at stage 2 on honest levels (lineage). Architecture 3 moves domain, world, dataset and shell to a cold-climate electric membership cooperative's distribution system, keeping the decision kind (one of five changes gets the single fix) and the quantity's kind (what the change cost over the review year, in the period's natural unit).",
+  "domain": "energy-systems-utilities",
+  "subdomain": "grid-reliability-outage-analysis",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a cold-climate electric membership cooperative's 2027 reliability work plan: which of five changes in the twelve months to 30 September 2026 cost its members the most sustained interruptions, when the control centre withdrew its staged cold-weather restoration rule and sections picked up in one switching step after an hour or more without supply in hard frost tripped again within minutes on the cold load they took, overload trips the heat pump connection policy is blamed for",
   "objective": "root-cause",
-  "shape": "07",
+  "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "objective",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G8",
-    "G13"
+    "G9",
+    "G14"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and the fund's terms correctly age-standardises completion by deprivation fifth, costs each change on the review against 2024-25 (the localities for the outreach, the half-years for the reminder, the residual for the April changes) and files the reminder moved to eight weeks for the most deprived fifth's lost screens, setting the shared registration service aside because it ran through both years; its loss is a level, not a movement: kits despatched while the person's address change was still pending went to the address they had left, at the same rate in both years.",
-  "domain_test": "The deciding quantity is each change's cost in completed screens to the most deprived fifth on the programme's own completion measure, the equity decomposition of that fifth's shortfall by cause; it turns on the deprivation gradient in residential mobility (the most deprived fifth moves house about twice as often, so more of its kits fall inside a pending window), read on the round structure and the thirteen-week completion clock; swapped to parcels the misdelivery survives but the gradient, the fifth and the completion measure that make the decision an equity decomposition do not.",
+  "analyst_test": "A strong analyst who reads every field and the work plan policy correctly computes the year's IEEE 1366 sustained interruptions outside major event days by cause, books the rise in overload trips to the heat pump connection policy because they rose most on the sections where heat pumps were added, and costs the withdrawn restoration rule at nothing because it only shortens outages; the step they never take is pairing each trip with the same section's restoration minutes before it, which shows most of the rise as cold-load re-trips after the rule went.",
+  "domain_test": "The deciding quantity is the sustained interruptions that cold load pickup re-trips added after the staged-restoration rule was withdrawn: an outage of an hour or more in hard frost leaves every electric heating load calling at once, a section re-energised in one step draws two to four times its diversified load and its protection trips again within minutes, which distribution reliability engineering counts in IEEE 1366 customer interruptions; swapped to another field's nouns there is no loss of load diversity, no relay pickup and no restoration practice for the pairing to rest on.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:in-force-loss-against-a-year-on-year-comparison",
+  "layer2_pattern": "own:restoration-that-does-not-hold",
   "layer1": [
-    "a registration history whose address rows carry the date a change took effect, beside the shared service's own work queue of requests with received and completed dates",
-    "the programme's monthly uptake report computed on the address held at despatch, against the fund's terms reading the same address",
-    "kit results returned from the laboratory with spoilt and technical-failure rows that are re-tested under a new kit",
-    "an age extension adding first-time invitees mid-round",
-    "despatch dates in local time against laboratory receipt stamps in UTC",
-    "the review's localities defined on practice lists, against residence for deprivation"
+    "an outage management extract whose interruptions are logged in local time across the daylight saving changes and whose multi-step restorations sit in a separate step table",
+    "momentary operations under five minutes mixed into the device log beside sustained interruptions",
+    "five years of daily SAIDI history whose earliest two years come from the retired outage system in a different layout",
+    "a section and device register re-keyed in a GIS migration, with a crosswalk",
+    "heat pump rebate connections keyed by service address and meter, not by section",
+    "weather from an airport station in UTC hours"
   ],
-  "stakeholder_role": "programme manager for the regional bowel screening hub",
-  "role_family": "programme_officer",
+  "stakeholder_role": "manager of system reliability at the cooperative",
+  "role_family": "research_desk",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "kit_invitations_2024-04_to_2026-03.parquet",
-    "rows": 380000,
-    "entity": "one screening invitation with its posted kit",
-    "grain": "person x screening round",
+    "file": "outage_events_fy2022-fy2026.csv",
+    "rows": 0,
+    "entity": "one interruption or momentary operation of a protective device",
+    "grain": "device x interruption",
     "source": "synthetic"
   },
   "forum": "board_of_directors",
   "forcing_event": "vote_or_meeting",
-  "org_family": "hospital_or_health_provider",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "England, an invented region",
-    "currency": "GBP",
-    "org_type": "an NHS foundation trust hosting the region's bowel cancer screening hub",
+    "geography": "United States, Minnesota (an invented county north of the Twin Cities)",
+    "currency": "USD",
+    "org_type": "an electric membership cooperative distributing to about 136,000 members",
     "invented_names": [],
     "people": [
-      "Frances Greenwood",
-      "Terence Cooper"
+      "Kayla Dean",
+      "Lawrence Reed"
     ]
   },
   "deliverables": [
-    "equity_fund_paper_2026-27.docx",
-    "screens_lost_by_change_2025-26.csv"
+    "reliability_fix_2027.docx",
+    "interruption_costing_fy2026.xlsx",
+    "fy2026_interruptions_by_change.png"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "The decisive quantity is what a change in force through both compared years costs every year through a cohort no column marks, members whose change of record was still pending when their summons was sent and who were summoned at a place they had left; a comparison of the year against the last gives it nothing, because its loss is a level and not a movement, while the changes dated between the years take the year-on-year fall.",
-  "driver_concrete": "Each 2025-26 kit set against the shared registration service's own work queue: where an address change had been asked for before the kit was despatched and was applied after it, the kit went to the address the person had left and almost never came back completed; that loss runs at the same rate in 2024-25 and 2025-26, so costing each change against 2024-25 gives the shared service nothing while the reminder change takes the fall.",
-  "stump": "A solver who age-standardises completion by deprivation fifth and costs each change against 2024-25 files the reminder moved to eight weeks for the most deprived fifth's lost screens and sets the shared registration service aside as in force through both years; the step that lands them there is never setting each kit's despatch date against the person's pending address change, which shows the most deprived fifth losing more screens to kits sent to the address the person had left than to any change on the review, so the fund goes to the shared registration service.",
+  "question_form": "which",
+  "driver": "The decisive quantity is the interruptions a change in how units are brought back caused by making them fail again moments after they return: the second failure is filed under the cause its aftermath resembles, so a change whose stated effect is only on duration is costed at nothing on counts while the change that added load takes the rise, and only pairing each failure with the same unit's return minutes before separates them.",
+  "driver_concrete": "Each fiscal 2026 overload trip set against the same section's restoration minutes earlier: after the staged cold-weather restoration rule was withdrawn on 1 December 2025, sections re-energised in one step after an hour or more without supply in hard frost tripped again within minutes on the cold load they picked up, re-interrupting the same members; those re-trips, not the heat pumps connected without a load study, carry the winter's rise in overload interruptions.",
+  "stump": "A solver who books fiscal 2026's sustained interruptions by cause files the heat pump connection policy, because overload trips rose most and on the sections where heat pumps were added, and costs the restoration rule at nothing because it only shortens outages; the step that lands them there is never pairing each overload trip with the same section's restoration minutes earlier, which shows most of the winter's rise as cold-load re-trips after the rule went.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task303": "task303 sizes what an intervention on one unit removes from its recorded losses when part of that record is a shared loss every unit fed from one source carries; here the decisive relation is whether each posted kit reached the person, read by setting its despatch date against the shared service's pending address change, and the call names the change whose loss is a level that a year-on-year comparison cannot see.",
-    "task258": "task258 counts how many units an intervention moves across a threshold when its effect works through a reference each unit's own document must carry, and the back-test passes by construction; here nothing crosses a threshold: each kit's reach is read from its despatch date against a pending change in another service's queue, and the decisive point is that the loss runs at one rate through both compared years."
+    "task252": "task252 reads a channel's error recovering after each maintenance visit against an upstream reference; here nothing is calibrated: each interruption is paired with the same section's restoration minutes before, and the call names the restoration practice whose restored supply does not hold.",
+    "task129": "task129 books a vegetation rise to a trimming contractor and finds it in each unit's surroundings beyond the cleared zone; here no surroundings decide: the rise is a second interruption the restoration itself sets off, found only by pairing each trip with the same section's return minutes before.",
+    "task303": "task303 removes the losses every sibling feeder logs in the same minute from a shared upstream source; here the pairing is within one section across time, a trip minutes after its own restoration, and the call names the change in restoration practice."
   },
   "lineage": [
     {
@@ -145,6 +147,56 @@
         "deliverable set": "pptx+xlsx"
       },
       "fate": "spent 2026-11-03 at stage 4: judge SEND_BACK, Gate H rule_application (the filed per-change cost, executed with any-contact exposure, lands A at 250), ask 4 conventions unfiled. Measured: the plan filed each change's cost as expected minus actual recoveries read from the year's other referrals at the same step, largest wins; any-contact exposure gives A 249, the naive comparator 267, the golden 257 (all 250 to the nearest 50), last-clinician exposure 222; change C had no filed in-place date or wait threshold and tied A at 248 to 257 on the same patients; ask 4's monthly agency hours needed unfiled conventions (a dropped old booking, the later of two portal timesheets before 1 August and summing after, catch-up lumps spread over unclaimed weeks, working-day allocation, week-commencing moving June by about 1,200 hours); Gate F low to moderate."
+    },
+    {
+      "architecture": "v2 (Epidemiology and Public Health: a regional bowel cancer screening hub's 2026-27 equity fund, kits despatched while an address change sat pending in the shared registration service's queue going to the address the person had left, a loss at one rate in both compared years)",
+      "drawn": "2026-11-03",
+      "domain": "epidemiology-public-health",
+      "subdomain": "health-equity-disparity-decomposition",
+      "objective": "root-cause",
+      "shape": "07",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G8",
+        "G13"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "population_selection",
+      "context_artifact": "filed_standard",
+      "forum": "board_of_directors",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "hospital_or_health_provider",
+      "role_family": "programme_officer",
+      "layer2_pattern": "own:in-force-loss-against-a-year-on-year-comparison",
+      "world": {
+        "geography": "England, an invented region",
+        "currency": "GBP",
+        "org_type": "an NHS foundation trust hosting the region's bowel cancer screening hub",
+        "invented_names": [],
+        "people": [
+          "Frances Greenwood",
+          "Terence Cooper"
+        ]
+      },
+      "driver": "The decisive quantity is what a change in force through both compared years costs every year through a cohort no column marks, members whose change of record was still pending when their summons was sent and who were summoned at a place they had left; a comparison of the year against the last gives it nothing, because its loss is a level and not a movement, while the changes dated between the years take the year-on-year fall.",
+      "driver_concrete": "Each 2025-26 kit set against the shared registration service's own work queue: where an address change had been asked for before the kit was despatched and was applied after it, the kit went to the address the person had left and almost never came back completed; that loss runs at the same rate in 2024-25 and 2025-26, so costing each change against 2024-25 gives the shared service nothing while the reminder change takes the fall.",
+      "stump": "A solver who age-standardises completion by deprivation fifth and costs each change against 2024-25 files the reminder moved to eight weeks for the most deprived fifth's lost screens and sets the shared registration service aside as in force through both years; the step that lands them there is never setting each kit's despatch date against the person's pending address change, which shows the most deprived fifth losing more screens to kits sent to the address the person had left than to any change on the review, so the fund goes to the shared registration service.",
+      "shell": {
+        "question form": "where",
+        "second-sentence opener": "",
+        "rounding opener": "",
+        "deliverable set": "csv+docx",
+        "note": "planned at the draw; no prompt.txt was written before the architecture died"
+      },
+      "fate": "spent 2026-11-03 at stage 2: at honest levels the golden's lead sits inside the redraw spread of every rival's estimate (D 157 against E 145; rival estimates swing 120 to 280)"
     }
   ],
   "lineage_shells": [
@@ -153,8 +205,14 @@
       "second-sentence opener": "our",
       "rounding opener": "for",
       "deliverable set": "pptx+xlsx"
+    },
+    {
+      "question form": "where",
+      "second-sentence opener": "",
+      "rounding opener": "",
+      "deliverable set": "csv+docx"
     }
   ],
-  "notes": "Strategy population_selection: the deprived fifth's shortfall sits on a cohort built from two histories (the invitation's despatch date and the shared service's request and completion dates), never a status word or column. Gate G decomposition_attribution: a correctly counted shortfall assigned to the right change; the repeat WARN is answered by the strategy differing from the window's (binding_constraint, causal_design, decomposition_attribution). Decisive generator G8 (reachability against magnitude): every rival is costed on the size of its change between the years, the decisive step on whether each kit reached the person. G13 (horizon mismatch) carries the year-on-year comparison against a change in force since April 2024.",
-  "registered": "2026-11-03T18:12:57Z"
+  "notes": "Strategy decomposition_attribution: the year's rise in overload interruptions splits between new heat pump load (true overloads) and cold load pickup re-trips after one-step restoration, and only the pairing of each trip with the same section's prior restoration decides the split. Decisive generator G9 (downstream survival against upstream acquisition): the restoration is the acquisition the rule's purpose measures; whether the restored supply held is the outcome the decision is scored on. G14 (conditioned yield) behind it: the staged-era re-trip rate applies only to restorations after an hour or more in frost. G3 (record against operation) was refused by ban.pattern against task400; G7 and population-first gaps collide with task202 and task308. org_family cooperative_or_member_body is the honest key for a member-owned cooperative (task129 and task308 carry it); utility_or_infrastructure is banned against task401 and is not used.",
+  "registered": "2026-11-03T20:33:25Z"
 }

@@ -1,19 +1,19 @@
 {
   "task": "task402",
-  "status": "PAUSED",
-  "domain": "epidemiology-public-health/health-equity-disparity-decomposition",
+  "status": "DESIGN",
+  "domain": "energy-systems-utilities/grid-reliability-outage-analysis",
   "objective": "root-cause",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-03",
-  "seed": "RC08 (which of five faults on an underperforming wind turbine gets the one spring crew visit, and the winter energy it cost); architecture 1 moved to an NHS Talking Therapies service and died at stage 4 (judge SEND_BACK); architecture 2 moves domain, world, dataset and shell to a regional bowel cancer screening programme's equity fund, keeping the decision kind (one of five changes gets the single fix) and the quantity's kind (what that change cost over the year, in its natural unit).",
-  "stump": "A solver who standardises completion for age and costs each change on the review against 2024-25 files E, the reminder moved to eight weeks, at about 250 of the most deprived fifth's screens, setting D aside because it ran through both years; the step that lands them there is never setting each kit's despatch date against the shared registration service's open address requests, which shows kits posted while a change was pending going to the address the person had left, about 400 screens a year in the most deprived fifth, so the fund goes to D.",
-  "architecture": 2,
+  "seed": "RC08 (which of five faults on an underperforming wind turbine gets the one spring crew visit, and the winter energy it cost); architecture 1 moved to an NHS Talking Therapies service and died at stage 4 (judge SEND_BACK); architecture 2 moved to a regional bowel screening programme's equity fund and died at stage 2 on honest levels; architecture 3 moves domain, world, dataset and shell to a cold-climate electric membership cooperative's 2027 reliability work plan, keeping the decision kind (one of five changes gets the single fix) and the quantity's kind (what that change cost over the review year, in its natural unit).",
+  "stump": "A solver who books fiscal 2026's sustained interruptions by cause files the heat pump connection policy, because overload trips rose most and on the sections where heat pumps were added, and costs the withdrawn restoration rule at nothing because it only shortens outages; the step that lands them there is never pairing each overload trip with the same section's restoration minutes earlier, which shows most of the winter's rise as cold-load re-trips after the rule went and puts the fix on the restoration rule.",
+  "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": 1,
-    "date": "2026-11-03",
-    "detail": "61 checks, 3 FAIL, 1 WARN: no generator/ceiling.py, no cracker table, no prompt.txt; every design section and labelled line passes"
+    "exit": null,
+    "date": "",
+    "detail": "architecture 3 at stage 2; no precut run yet"
   },
   "leak": {
     "leak_py": "",
@@ -38,14 +38,26 @@
     {
       "architecture": 2,
       "fate": "spent 2026-11-03 at stage 2 before any generator: at honest levels (a 15-week mean FIFO backlog anchored to NAO HC 632 and PAC HC 698, a kit to the address left at 0.30 of normal, a 1.5-point mobility barrier) D costs the fifth 157 screens against E true 145 (1.08 times); every rival estimator has a sampling sd of 120 to 280 screens, so D clears every rival estimator by 1.15 in 1 of 20 redraws (3 of 20 with every lever at its honest edge, 4 of 20 at the old six-month exponential); the shape-07 rival cells carry the same noise"
+    },
+    {
+      "architecture": 3,
+      "fate": "drawn 2026-11-03: cold load pickup re-trips after the staged cold-weather restoration rule was withdrawn, at an electric membership cooperative"
     }
   ],
-  "resume": "stage 1, re-root (architecture 3): architecture 2 is spent at stage 2 before any data was cut (DESIGN_NOTE Tried and rejected, last line; scratch t402/a2 proto6.py and p6_sd.py). Per the coordinator, main decides the next step before any generator: (a) a re-root at stage 1 in another world, dataset and shell (guard.py recent, coverage, mechanisms --objective root-cause; the new card with v1 and v2 in lineage and both shells in lineage_shells; the sibling-card protocol before check and register), or (b) a same-world redesign that keeps D and replaces the diffuse rivals with changes whose exposure is filed and confined to identifiable groups so each rival is estimable to tens of screens, untested. The precut record below is architecture 2 stage 2 and is void for the next design.",
+  "resume": "stage 2, design: write Survivor anatomy, Readability screen, Semantic fork table, Ladder (pricing sequence, shape 01 sum), Closure table, Literal reader, Oracles, Ask sheet; prompt.txt (which, docx+png+xlsx); then the generator's checks.py and ceiling.py so precut.py can exit 0.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "target_zip_sha256": ""
+  "target_zip_sha256": "",
+  "go_no_go": {
+    "redraws": 20,
+    "screen1_lead": "every golden variant at least 1.5 times the best rival estimate in 20 of 20 redraws (worst 3.07); golden about 8,700 customer interruptions against rivals' 1,200 to 1,800; at the low edge of the unpublished re-trip lever (0.3) 17 of 20",
+    "screen2_method": "18 golden variants (pairing window 5 to 30 min, qualifying outage any to 60 min, frost filter, staged-era netting) average 8,500 to 9,100 and each names the rule in every redraw",
+    "screen3_easy_completion": "heat pump policy on its own sections' overloads names it 19 of 20 (animal guards 1); on the overload category 20 of 20; on peak-hour overloads the call goes to animal guards 6, terminations 2, transformers 1, heat pumps 9, the rule 1 (residual only)",
+    "screen4_literal": "every literal execution (scope across in-place date, cause category year on year, system residual) lands on the heat pump policy 19 or 20 of 20, animal guards otherwise, the rule 0 of 20",
+    "scratch": "t402/a3/proto_clpu3.py, screen_central.txt, screen_low.txt"
+  }
 }

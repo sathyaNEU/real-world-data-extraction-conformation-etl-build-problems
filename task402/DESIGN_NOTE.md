@@ -1,379 +1,231 @@
 # task402 design note
 
-Architecture 2, drawn 2026-11-03 (wave 7, Root-Cause lane), numbered from seed RC08 (a wind turbine's five faults and
-its one spring crew visit). Architecture 1 (an NHS Talking Therapies service) died at stage 4 on the determinism
-judge's SEND_BACK (`## Tried and rejected`, its line and the card's lineage). Architecture 2 moves domain, world,
-dataset and shell. Kept from the seed: the decision kind (one of five changes gets the single fix) and the quantity's
-kind (what that change cost over the period, in the period's natural unit). The kernel is new.
+Architecture 3, drawn 2026-11-03 (wave 7, Root-Cause lane), numbered from seed RC08 (a wind turbine's five faults and
+its one spring crew visit). Architecture 1 (an NHS Talking Therapies service) died at stage 4 on the determinism judge's
+SEND_BACK and architecture 2 (a bowel screening hub's equity fund) died at stage 2 on honest levels, before any
+generator (`## Tried and rejected`, their lines, and the card's `lineage`). Architecture 3 moves domain, world, dataset
+and shell. Kept from the seed: the decision kind (one of five changes gets the single fix) and the quantity's kind (what
+the change cost over the review year, in the period's natural unit). The kernel is new.
 
-A regional bowel cancer screening hub (hosted by an NHS foundation trust, invented region) posts a faecal
-immunochemical test kit to everyone aged 50 to 74 every two years; a completed screen is a kit that comes back with a
-usable result. The trust board commits its 2026-27 bowel screening equity fund in July 2026 to the fix for the one
-change on the programme's review that cost the most deprived fifth of the region the most completed screens in
-2025-26. The review lists five changes: A, the community screening champions in the most deprived localities ended
-(31 March 2025); B, the age extension, 50 and 51 year olds invited for the first time (from 1 April 2025); C, the kit
-helpline closed and queries moved to a web form (1 April 2025); D, the integrated care board's shared registration
-service took over general practices' registration administration (1 April 2024); E, the reminder letter moved from
-four to eight weeks after the kit (from 6 October 2025).
+An electric membership cooperative in central Minnesota (an invented county north of the Twin Cities; about 136,000
+members on some 190 feeders) adopts its 2027 reliability work plan at the board's November 2026 meeting. The plan funds
+one fix: the one change, among the five the reliability review lists for the twelve months to 30 September 2026, that
+cost the members the most sustained interruptions (IEEE 1366 customer interruptions, major event days excluded). The
+review's five changes, each with its filed in-place date and scope: heat pumps connected under the cooperative's rebate
+without a load study (1 November 2025, sections with such connections); the control centre's staged cold-weather
+restoration rule withdrawn, every section now picked up in one switching step (1 December 2025, all restorations); the
+pre-winter infrared inspection of underground terminations skipped (from 1 October 2025, underground sections); the
+animal guard programme ended (1 January 2026, its 2026 site list); a new pole-top transformer supplier (1 February
+2026, transformers fitted after).
 
-What nothing in the pack says: since April 2024 the shared service has applied address changes weeks to months after
-a patient asks for them, the hub posts each kit to the registered address on the despatch date, and a kit posted while
-a change is pending goes to the address the person has left and almost never comes back. The loss runs at the same
-rate in 2024-25 and 2025-26.
+What nothing in the pack says: after an hour or more without supply in hard frost every electric heating load on a
+section calls at once, so a section re-energised in one step draws two to four times its diversified load and its
+protection trips again within minutes. Under the staged rule the control centre picked such sections up in pieces and
+re-trips were rare; from 1 December they are common, each one a second sustained interruption of the same members,
+logged as an overload trip on the section that had just been restored. The heat pump policy takes the rise.
 
 ## Draw
 
-- Card: `.claude/skills/fingerprint/cards/task402.json`, architecture v2, registered 2026-11-03T18:12:57Z; `guard.py
-  check` on the registered card exits 0 (WARN only), `validate` clean. Architecture 1's identity sits in the card's
-  `lineage` with its fate and its shell in `lineage_shells`.
-- Pairing: Epidemiology and Public Health, task type health-equity-disparity-decomposition, objective Root-Cause
-  Analysis. The equity fund is decided on the most deprived fifth's shortfall split by cause, the task type's own
-  question. Probed with `guard.py check` on probe cards in both directions before the draw: this cell, the never-built
-  education multilevel cell and grid reliability are all legal for Root-Cause; no task-type BLOCK on any.
-- Shape 07, grid of cells: the five changes by the five deprivation fifths, each cell the completed screens that change
-  cost that fifth in 2025-26; the call is one column's largest row. Sum: 25 cells, call, runner-up, gap, flip (4), the
-  grid's chart with its parts (6), two files: 37 before the asks.
-- Strategy population_selection: the shortfall sits on a cohort built from two histories (each kit's despatch date and
-  the shared service's own request and completion dates for each address change), never a status word or column.
-  Decisive generator G8 (reachability against magnitude), G13 (horizon mismatch) behind it.
-- Decision, quantity and tense: pick one of five; the quantity is screens lost in a closed year (2025-26), the decision
-  forward (the 2026-27 fund). Retrospective quantity by design: the fund's terms cost the year just closed, and the
-  forward reading only widens the winner's lead (the pending cohort does not shrink while the service runs as it does).
-- Data-native sentence: the hub posts to whatever address the register holds on the day it despatches, and the
-  register's address is the one the shared service has applied, so the people the programme loses are the ones whose
-  change was asked for and not yet applied, a cohort that exists only as the overlap of a despatch date with an
-  open request in another organisation's queue.
-- Abstraction sentence, tried against the nearest builds and not writable: against task121 (a coincident change takes
-  the blame while a state rebuilt from consecutive records shows where the harm sits) a reviewer could say "a hidden
-  state shows which change the harm follows", and it does not hold here: nothing coincides, no state comes from
-  consecutive records, and the decisive point is that the winner's loss is a level present through both compared
-  years, so the comparison the terms invite gives it nothing. Against task51's lineage (two baselines rank drivers
-  differently, the step a choice of base) the step here is not a choice of base: the terms file the year's cost as a
-  level and one baseline; the step is identifying an in-force change's level through the cohort. Against task399 (an
-  actor's absence at each event read off a second roster) nothing is absent at an event: the kit was posted, to the
-  wrong door, and the person's own record says so only through a request's two dates.
-- One line per nearest spent insight, screened semantically: task121, rest rebuilt from consecutive shifts (no clock
-  here); task129, outages scaling with each unit's surroundings (no place property decides here); task202, a source's
-  input reaching the layer the response draws on (no transport); task398, a path-dependent counterfactual (none);
-  task399, an advocate's absence at each call (no presence at an event); task399 a3, unmet demand behind an empty
-  capacity stock (no capacity); task400, a staggered rollout's comparison (nothing staggered; the winner has no
-  contrast at all); task401 a1, composition by closures (B's composition is rung 0, not the step); task401 a2, a
-  dated shock meeting each unit's sensitive phase (no phase); task401 a3, expectation against delivery (none);
-  task402 a1, cases broken off when a fixed-term actor's assignment lapses (no actor); task187, a unit's shortfall
-  against a reference curve (no curve).
-- `slots` before any harness: mechanism nouns (registration, backlog, pending, address, despatch, kit) and setting
-  nouns (bowel, screening, FIT, kit, hub, deprivation, fifth, completion) return no slot at three terms or more; the
-  driver run returns only generic-word hits (task194, task135, task464, task474, task130, task170), none the insight.
-  The architecture 1 words were run too and return this slot first.
-- Guard WARNs answered: `overuse.objective` and `overuse.gate_g` (the lane is Root-Cause and decomposition_attribution is the honest Gate G
-  key for a fall assigned to a change; the strategy differs from all three window builds); `repeat.gate_g` against
-  task400 and task401 (same answer). `test.same_puzzle_older` against task258 and `test.same_driver_older` against
-  task303 are differentiated on the card.
-- Shell drawn with the world: question form "where" (whether-class in voice-check, 14 per cent of the corpus, not
-  either of the last two prompts), the second sentence opened by the deliverable's use rather than "Put", the rounding
-  sentence opened by the figures it governs, deliverable set docx and csv (no build in the window; architecture 1's was
-  pptx and xlsx). Architecture 1's shell (how-many, our, pptx+xlsx) is in `lineage_shells`.
-- People (`guard.py names --geo england`, seed 402 and then 4020; architecture 1's four skipped, and Lesley Thompson
-  and Ronald Bailey redrawn on the coordinator's read, `people.last` against task155 and `people.first` against
-  task110): Frances Greenwood, Terence Cooper, no people WARN on `check`.
-- The four go/no-go screens, run as a prototype on the clean truth before the card was registered (scratch proto4,
-  eight draws, about 58,000 most-deprived-fifth kits a year):
-  1. Realistic levels: completion within thirteen weeks about 55 per cent in the most deprived fifth to 74 in the
-     least [OHID Fingertips, bowel screening uptake by deprivation decile, 2023-24]; previous participants about 88,
-     previous non-participants about 22, first-time invitees about 58 [programme round reports]; moves of 50 to 74
-     year olds about 3 a year for owners, 6 social renters, 20 private renters, two thirds within the county [English
-     Housing Survey 2022-23]; a request applied on average six months later; mail to an address left reaches the
-     person about one time in five [redirection volumes against moves]; the reminder at four weeks worth 5 to 7 points,
-     so eight weeks loses about 0.8 inside thirteen weeks; outreach trials 1 to 2 points, its end 0.5. Measured: D costs
-     the most deprived fifth 370 to 395 screens in 2025-26 against 230 for E, the next real change; minimum ratio 1.60
-     across the draws, spread plus or minus 13, mid-bin at the nearest 100 (every draw in the 350 to 450 bin, at least
-     20 from an edge).
-  2. The golden's own method holds the call: D's cost by a matched comparison (non-pending kits by previous
-     participation, first invitation, sex and age band) 373 to 412, by the completion gap against all non-pending
-     kits 374 to 412; the next real change at most 232; minimum ratio 1.61. No fork in the method closes only by naming
-     the step.
-  3. No easy completion: the pending cohort is predicted from every visible attribute at AUC 0.5 to 0.6; the joint
-     model with year, the locality term, the October term and every visible covariate has no term for D because D
-     never varies inside the files; once the cohort is in hand the cost is a difference in completion, no functional
-     form. The cracker's flexible versions (age-standardised, by locality, by half-year, joint, by previous
-     participation) all name E, C or A.
-  4. Literal execution: the fund's terms file population, window, outcome, unit and the comparison (what those kits
-     would have completed without the change). Executed for every change with every natural operationalisation (the
-     year against 2024-25, the localities and half-years as differences in differences, a joint model with every
-     visible covariate, exposure by kit date or by request date), D's cost is zero every time: it was in force through
-     both years at one rate and the files hold nothing from before it. The literal winners: C or the April residual
-     422 to 748 when the whole fall is put on the April changes, A 90 below to 410, E 17 below to 335 by its half-year
-     difference, the joint model's year term 161 below to 408; never D. The golden needs a step the terms never ask
-     for: setting each kit's despatch date against the shared service's open request for that person.
-- Coordinator's stage-2 rows (2026-11-03, after the merge at bfe5590), measured on the clean truth (scratch proto5,
-  five draws) or decided, each to be re-measured on the generator and asserted in `checks.py`:
-  1. What the pack holds before April 2024: no file reaches before D's start (the invitation extract and the queue
-     export begin 1 April 2024; the registration history carries pre-2024 addresses but no request dates), so there is
-     no before-and-after for D. The counterfactual "without D" comes from one filed fact in the shared service's own
-     transfer document, in its voice and naming no method: before 1 April 2024 practice staff keyed an address change
-     on the day it was received or the next working day. D's cost in the most deprived fifth under the defensible
-     pre-D lags: 387 (none), 382 (2 days), 371 (7 days), 356 (14 days); the filed fact admits 0 to 3 days, 368 to 399,
-     every draw mid-bin at the nearest 100 (at least 18 from the 350 edge). A 14-day lag would sit 6 from the edge, so
-     the filed fact's words carry the day.
-  2. Returned kits: a regional hub logs a kit returned undelivered when the envelope comes back; most misaddressed
-     kits never do. Decided: the invitation extract carries a "returned undelivered" kit status for about one
-     misaddressed kit in eight plus a baseline of about 0.2 per cent of all kits (deaths, demolished and invalid
-     addresses), the same in both years. Costing D from returned kits alone gives about 105 screens in the fifth, a
-     lower rung below E; the count does not move between the years, so the year-on-year route never reads it.
-     Readability row for the field: test 2 schema fires on a twelfth of D's kits only; the decisive rung stays silent.
-     To measure on the generator.
-  3. The domain test and swap lines now stand on the epidemiology (the deprivation gradient in moving house, the
-     programme's completion measure, the decomposition by fifth); the graded quantity is completed screens lost in the
-     most deprived fifth on the programme's measure.
-  4. The April 2025 coincidence: B's new age band (first invitations at 50 and 51) is visible in the extract, so the
-     golden prices B by its own kits (it adds about 1,670 screens in the fifth) and C on settled kits outside B's band
-     and A's localities across 1 April 2025, standardised for age. C's true effect is nil; the prototype's quick
-     estimate (371 to 628) left B's first invitations in the comparison and is void; C's golden is re-measured on the
-     generator with B's band removed, and D must lead A, B, C and E by 1.15 times or more under every golden variant.
-  5. The literal solver who will not accept zero for D and costs it from the pack's own mobility evidence without the
-     decisive join: completion of people whose address took effect in the 12 months before despatch against everyone
-     else, times those movers. It lands D at 36 (6 to 75), below E and A, because a pending person's move has not
-     taken effect on the register at despatch: the register's movers are exactly the people whose kits reached them.
-     With a genuine 8-point mobility barrier the same row reads 214 (185 to 235), level with E, so the generator holds
-     the barrier at 2 points or less and asserts this row below E. The join that does land D is a kit's despatch set
-     against a request received in another organisation's queue and not yet applied: that is the decisive step, not a
-     field read.
-- Sources: every input file is synthetic, generated by `generator/` (seed and licence in `metadata.json`); the
-  deprivation lookup assigns invented small areas to national fifths in the published indices' format; the published
-  rates above set the generator's levels and are cited, not shipped.
+- Card: `.claude/skills/fingerprint/cards/task402.json`, architecture v3, drawn and registered 2026-11-03 (the
+  registered stamp and the last `check` are in `pipeline.json`); architecture 1's and 2's identities sit in the card's
+  `lineage` with their fates and their shells in `lineage_shells`. `guard.py validate` clean.
+- Pairing: Energy Systems and Utilities, task type grid-reliability-outage-analysis, objective Root-Cause Analysis. The
+  work plan is decided on which change raised the members' interruptions, the task type's own question, worked on the
+  outage record by cause, device and restoration. Probed with `guard.py check` on probe cards in both directions before
+  the draw: this cell is legal for Root-Cause (no task-type BLOCK), and the cell's builds (task129, task183, task187,
+  task197, task201) were read, with the `resume` of each grid slot (task201 paused at architecture 14 on shared-parameter
+  constructions; nothing on restoration practice or re-trips).
+- Shape 01, ranked list: the five changes, each with its fiscal 2026 cost in sustained customer interruptions and in
+  interruption events; the call, runner-up, gap and flip; a ranked bar chart with its parts; three files. The sum is
+  written in `## Ladder` at stage 2.
+- Strategy decomposition_attribution: the year's rise in overload interruptions splits between true overloads from new
+  heat pump load and cold-load re-trips after one-step restoration, and only pairing each trip with the same section's
+  restoration minutes before decides the split. Decisive generator G9 (downstream survival against upstream
+  acquisition: the restoration the rule's purpose measures is the acquisition, whether the restored supply held is the
+  outcome scored); G14 (conditioned yield) behind it, the staged-era re-trip rate applying only to restorations after an
+  hour or more in frost.
+- Decision, quantity and tense: pick one of five; the quantity is interruptions in a closed review year (12 months to
+  30 September 2026), the decision forward (the 2027 work plan's one fix). Retrospective quantity by design: the board
+  policy costs each change on the year just closed, and the forward reading only widens the winner's lead (the rule
+  stays withdrawn and every winter repeats it).
+- Data-native sentence: the outage record logs each interruption on the device that opened, with the cause the crew or
+  the control centre gives it, so a re-trip is a fresh overload trip on a section a few minutes after that section's
+  previous interruption ended; nothing marks it as the restoration's consequence, and the pairing exists only as a
+  relation between consecutive rows of one section.
+- Abstraction sentence, tried against the nearest builds and not writable: against task121 (a coincident change takes the
+  blame while a state rebuilt from consecutive records shows where the harm sits) a reviewer could say "a hidden state
+  built from consecutive records decides", and it does not hold: no state is rebuilt here, the decisive object is one
+  event that the previous event caused, and the change it implicates is the one whose stated effect is on durations;
+  against task303 (losses every sibling unit logs in the same minute come from a shared upstream source) the pairing is
+  within one unit across minutes, not across siblings at one minute; against task129 (a rise booked to a contractor is
+  the surroundings beyond the cleared zone) no surroundings decide and nothing outside the record's own sequence does;
+  against task173 (work on a unit raises failures in the following weeks) nothing is worked on: the restoration step
+  itself sets off the second interruption within minutes, by the physics of lost load diversity.
+- One line per nearest spent insight, screened semantically: task121, rest rebuilt from consecutive shifts (no rest, no
+  state; one event caused by the one before); task129, outages per exposure and surroundings (no surroundings); task202,
+  a source's input reaching the layer the response draws on (no transport); task398, a path-dependent counterfactual
+  (no rule replay; the counterfactual is the staged-era re-trip rate); task399 a3, unmet demand behind an empty
+  capacity stock (no capacity); task399, an advocate's absence at each call (no actor); task400, a staggered rollout's
+  natural comparison (nothing staggered: the rule went at once); task401 a1, composition by closures (none); task401 a2,
+  a dated shock meeting each unit's sensitive phase (no phase: the condition is the outage's own length and the day's
+  frost); task401 a3, expectation against delivery (none); task402 a1, cases broken off when a fixed-term actor's
+  assignment lapses (no actor); task402 a2, a level loss from a change in force through both compared years (the rule
+  went inside the year and its harm is a rise, not a level); task187, a unit's shortfall against a reference curve (no
+  curve); task13, outcomes re-attributed by evidence against their label (the label "overload" is right: the device did
+  trip on overload; what decides is which change made it trip).
+- `slots` before the first harness: mechanism nouns (cold load, restoration, re-trip, overload) return task129's realism
+  line only (re-trips after restoration on storm days as Layer 1); setting nouns (cooperative, heat pump, electric heat,
+  SAIFI, interruption, staged) return no slot at three terms; the driver run returns generic-word hits (task129, task118,
+  task174, task190, task201, task202), none the insight.
+- Guard WARNs answered: `overuse.objective` and `overuse.gate_g` (the lane is Root-Cause, and decomposition_attribution
+  is the honest Gate G key for a rise split between two changes); `repeat.gate_g` against task400 and task401 (same
+  answer; the strategy differs from all three window builds); `repeat.question_form` against task400 (a pick asks which;
+  the shell's second sentence and deliverable set are redrawn, below). `test.same_driver_older` against task252 is
+  differentiated on the card. Axis redraws, measured: G3 (record against operation) as the decisive generator BLOCKed on
+  `ban.pattern` against task400; G7 and population-first gaps BLOCKed on `test.same_puzzle` and `test.same_driver` against
+  task202, task308 and task487; utility_or_infrastructure would BLOCK on `ban.org_family` against task401 and is not
+  the honest key anyway: a member-owned cooperative is cooperative_or_member_body, as task129 and task308 carry it.
+- Shell drawn with the world: question form "which" (28 per cent of the corpus, under the 30 per cent quota), the second
+  sentence opened by the year's terms rather than "Put" or "The", the rounding sentence opened by the figures it governs,
+  deliverable set docx, png and xlsx (no build in the window and neither lineage shell: how-many, our, pptx+xlsx; where,
+  csv+docx).
+- People (`guard.py names --geo usa`, seeds 402 and 4020; Todd Holloway and Katherine Vazquez WARNed on `people.first`
+  against task454 and task191 and were redrawn): Kayla Dean, Lawrence Reed, no people WARN on `check`.
+
+### The four go/no-go screens (prototype on the clean truth, 20 redraws each, before the card was registered)
+
+Scratch: `t402/a3/proto_clpu3.py` (event timestamps to the minute, re-trips found by pairing) and its outputs
+`screen_central.txt` and `screen_low.txt`. A redraw re-draws every interruption, connection and re-trip; the realised
+weather of the two years is the world's own and stays fixed. Levels, each with its source or its stated absence:
+
+- Interruptions: about 155,000 sustained customer interruptions a year on 136,000 members, SAIFI about 1.1 outside major
+  event days, inside the range US distribution utilities report to the EIA (Form EIA-861 reliability data, 2021-2024,
+  SAIFI without major event days about 1.0 to 1.4) and the range public power and cooperative benchmarks show.
+- Cold load pickup: after an hour or more without supply in sub-freezing weather a section's load at re-energisation runs
+  two to four times its diversified level and decays over tens of minutes (the IEEE Power System Relaying Committee's
+  working group reports on cold load pickup and the papers behind them, from McDonald, Bruning and Mahieu, IEEE
+  Transactions on Power Apparatus and Systems, 1979, onward); phase overcurrent pickup is set near twice peak load, so a
+  one-step pickup of a heavily electric-heated section exceeds it; sectionalised (staged) restoration is the practice
+  those sources describe for it. The re-trip probability itself has no published figure: it is set to rise with the
+  outage's length past an hour, the day's frost below minus 3 C and the section's electric heating share, to at most 0.5
+  per qualifying restoration without staging and 0.02 with it, and the call is measured at 0.3 as well (below).
+- Electric heat: electric heating shares of 2 to 90 per cent by feeder (median about a third), the spread of a Minnesota
+  cooperative with off-peak and dual-fuel electric heat programmes; heat pumps under the rebate go to members already
+  heating electrically (the rebate's purpose is to displace resistance heat).
+- Rivals: true overload trips from new heat pump load on the coldest days, termination failures on underground sections
+  in frost, animal contacts on overhead sections, transformer infant failures; none has a published rate for this
+  cooperative and each is set small, under a third of the winner.
+
+1. **Realistic levels and the lever against the rivals' estimates.** The golden's cost of the restoration rule (pairing
+   each trip with the same section's restoration minutes before, net of the staged-era re-trip rate) is about 8,700
+   customer interruptions (sd 1,450) against the best rival estimate's 1,200 to 2,600 (heat pump overloads 1,229 sd
+   562; animal guards 1,778 sd 310; terminations 1,248 sd 464; transformers 831 sd 562). Every golden variant beats the
+   best rival estimate by 1.5 times or more in **20 of 20** redraws, worst ratio **3.07**. At the low edge of the
+   unpublished re-trip lever (0.3 at the worst exposure) the winner falls to about 4,800 and every variant still clears
+   1.5 times in 17 of 20 (worst 0.86); the shipped level is the central 0.5. Mid-bin is asserted on the generator.
+2. **The golden's own method holds the call.** Eighteen variants of the golden (a pairing window of 5, 10, 20 or 30
+   minutes after the restoration; a qualifying outage of any length, 15, 30 or 60 minutes or more; with and without a
+   frost condition; with and without netting the staged-era rate) give 8,500 to 9,100 on average and each is the winner
+   in every redraw; no specification choice moves the call, because a cold-load re-trip follows its restoration within
+   four minutes and a qualifying restoration is an hour or more in frost by the physics, so the windows agree.
+3. **No easy completion.** The decisive variable (the minutes between a trip and the same section's last restoration)
+   is not one the default path brings in: the default reads interruptions by cause and month and costs each change on
+   its scope. Once it is in hand the cost is a count of paired trips less the staged-era rate, no functional form. The
+   cracker's flexible versions of the default rungs land elsewhere: the heat pump policy costed on its own sections'
+   overload trips (a difference in differences against sections without heat pumps) names it in 19 of 20 (animal guards
+   once); costed on the overload category's whole rise, 20 of 20; costed on peak-hour overloads only, which deflates it,
+   the call goes to animal guards (6), terminations (2), transformers (1) or back to heat pumps (9), and to the
+   restoration rule in 1 of 20 only through a weather-noisy residual, never through its own mechanism.
+4. **Literal execution.** The board policy files the WHAT (population: the cooperative's members; outcome: sustained
+   customer interruptions under IEEE 1366, major event days excluded; window: the 12 months to 30 September 2026;
+   comparison: the year with the change against the year without it, everything else as it was) and the review table
+   files each change's in-place date and scope. Executed literally with every natural operationalisation (each scope
+   against the rest across the in-place date; each cause category against the year before; the system's residual after
+   the scoped changes), the call lands on the heat pump policy in 19 or 20 of 20 and on animal guards otherwise, never
+   on the restoration rule, whose filed effect is on restoration minutes and whose literal cost on interruptions is
+   nil. The golden needs a step the WHAT never asks for: pairing each trip with the same section's restoration minutes
+   earlier. Every candidate has its own in-place date and scope, so none ties the golden on the same interruptions.
 
 ## Default path
 
-The pipeline a strong analyst builds from the fund's terms and the files' grain, with the field's method in it.
+1. Read the outage management extract for fiscal 2025 and fiscal 2026 (local time; momentary operations under five
+   minutes excluded), drop major event days by the IEEE 1366 2.5 beta method on five years of daily SAIDI, and count
+   sustained customer interruptions by cause and month.
+2. Overload trips rose most, in the winter, and on sections where members connected heat pumps under the rebate since
+   1 November 2025; animal contacts, termination failures and transformer failures rose less.
+3. Cost each change on its scope across its in-place date: the heat pump policy on its sections' overload trips against
+   sections without heat pump connections; terminations on underground sections; animal guards on the programme's 2026
+   list; the transformer supplier on units fitted after 1 February; the restoration rule on restoration minutes, where
+   it cut SAIDI, and on interruptions at nothing, since restoring a section in one step changes how long members wait,
+   not whether they lose supply.
+4. File the heat pump connection policy for the 2027 fix.
 
-1. Read the fund's terms: kits despatched 1 April 2025 to 31 March 2026, the most deprived fifth by the registered
-   address on the despatch date, a completed screen as a usable result inside thirteen weeks, each change costed as
-   the screens those kits would have completed without it, less those they completed.
-2. Join each kit to the registration history at its despatch date, place the address in a deprivation fifth through
-   the area lookup, and keep the most deprived fifth; count a spoilt kit's re-test once.
-3. Standardise completion for age by five-year band (the field's method for comparing a group's rate across years),
-   2025-26 against 2024-25.
-4. Cost each change against 2024-25 by its natural exposure: B adds first-time invitees and their screens, so it costs
-   nothing; A by its localities against the rest of the fifth; E by kits from 6 October against April to September,
-   net of the same split a year earlier; C and whatever remains by the residual from April.
-5. D ran through both years and the files hold nothing before it, so its year-on-year contrast is zero; set aside.
-6. Rank the costs and file the largest.
-
-Ends on: E, the reminder moved to eight weeks, about 250 screens.
-Golden: D, the shared registration service, about 400 screens.
+Ends on: the heat pump connection policy, about 8,800 sustained customer interruptions in fiscal 2026 on the default's
+scope comparison.
+Golden: the staged cold-weather restoration rule's withdrawal, about 8,700 sustained customer interruptions from
+cold-load re-trips, more than three times the next change; the heat pump policy's own overload trips are about 1,200.
 
 ## Stump sentence
 
-A solver who standardises completion for age and costs each change on the review against 2024-25 files E, the
-reminder moved to eight weeks, at about 250 of the most deprived fifth's screens, setting D aside because it ran
-through both years; the step that lands them there is never setting each kit's despatch date against the shared
-registration service's open address requests, which shows kits posted while a change was pending going to the address
-the person had left, about 400 screens a year in the most deprived fifth, so the fund goes to D.
+A solver who books fiscal 2026's sustained interruptions by cause files the heat pump connection policy, at about 8,800
+customer interruptions, because overload trips rose most and on the sections where heat pumps were added, and costs the
+withdrawn restoration rule at nothing because it only shortens outages; the step that lands them there is never pairing
+each overload trip with the same section's restoration minutes earlier, which shows most of the winter's rise as
+cold-load re-trips after the rule went and puts the fix on the restoration rule.
 
 ## Three rules
 
-- Task type: health-equity-disparity-decomposition (Epidemiology and Public Health), which serves Root-Cause in the
-  taxonomy; the equity fund is decided on the most deprived fifth's shortfall split by cause.
-- Domain test: the deciding quantity is each change's cost in completed screens to the most deprived fifth on the
-  programme's own completion measure, the equity decomposition of that fifth's shortfall by cause; it turns on the
-  deprivation gradient in residential mobility (the most deprived fifth moves house about twice as often as the
-  least, so more of its kits fall inside a pending window), read on the round structure and the thirteen-week
-  completion clock, the way the field decomposes a screening gap by fifth.
-- Swap: swapped to parcels ("which change cost the poorest fifth of customers the most delivered parcels") the
-  misdelivery survives, but the decision does not: the cost is graded on the programme's completion measure in the
-  most deprived fifth, its size is set by the deprivation gradient in moving house and by the round and the
-  thirteen-week clock, and the fund is an equity decomposition by fifth; none of those has a parcel analogue.
-- Layer 1: a registration history whose rows carry the date each address took effect, beside the shared service's work
-  queue export (requests with received and completed dates, several request types); the programme's monthly uptake
-  report on the address held at despatch; spoilt and technical-failure results re-tested under a new kit number; first
-  invitations added mid-round by the age extension; despatch stamped in local time against laboratory receipt in UTC;
-  localities defined on practice lists against residence for deprivation. Each is produced by the system that holds it,
-  and none moves the call when mishandled.
-- Layer 2: estimand identification; the methodological choice is how to cost a change that never varies inside the
-  files: the year-on-year comparison the field reaches for gives it nothing, and its cost is identified only inside the
-  year, through the kits it touched against the kits it did not.
-- Decisive step: set each 2025-26 kit's despatch date against the shared registration service's queue for that person;
-  a kit posted after an address change was asked for and before it was applied went to the address the person had
-  left, and those kits, against comparable kits that reached their door, carry the most deprived fifth's largest loss.
-- Not semantics: every field (registered address, request received and completed dates, despatch date, result codes,
-  the fifth lookup) can be read correctly and the year-on-year costing still files E, because D's loss is identical in
-  both years and no field marks a kit as sent to a former address.
-- Not rule application: no filed rule or procedure says which kits reached a door or how to cost a change in force in
-  both years; the terms name the population, window, outcome, unit and comparison and nothing else. Enumerated family
-  (every construction a competent analyst reaches for, measured in proto4): D's cost from 0 (year-on-year, differences
-  in differences, the joint model, exposure by kit or request date) to 373 to 412 (the pending-cohort constructions).
-  Standing family (what the data and terms leave defensible once the cohort is seen): 373 to 412 across matched and
-  gap comparisons, all one bin at the nearest 100. What rules the zero out is loud once looked at: kits posted while a
-  change was pending complete at about a fifth of the rate of comparable kits, across thousands of kits.
-- Analyst test: a strong analyst who reads every field and the terms correctly standardises for age, costs each change
-  against 2024-25 and files E, the reminder moved to eight weeks, at about 250 screens, setting D aside as in force
-  through both years; executed on the generator's clean truth in `checks.py`.
-- Estimand: the equity fund's terms (the trust's governing document, `equity_fund_terms_2026-27.docx`): population,
-  kits despatched 1 April 2025 to 31 March 2026 whose registered address on the despatch date lies in the most
-  deprived fifth; outcome, a completed screen (a usable result inside thirteen weeks of despatch, a re-test counted
-  once); window 2025-26; unit, completed screens; comparison, for each change on the review, the screens those kits
-  would have completed without it, less those they completed; the fund goes to the change with the most.
-- No decoy: nothing is planted. Every change on the review is real and has its true effect (B adds screens, C has
-  none, A and E cost a little); no memo, draft, briefing or stakeholder figure argues for any change; the monthly
-  uptake report ranks nothing.
-- No certified replay: no figure in the pack is certified against a method; the uptake report states rates on the
-  programme's own convention and blesses no costing.
-- Lesson: an ongoing cost is a level, not a movement; a comparison of a year against the last cannot cost a change in
-  force in both, and the cohort it hurts is found by setting each action's date against another organisation's open
-  record. No build on file teaches it: the corpus's root-cause builds cost changes by their movement, timing or
-  exposure, and none has a winner whose loss is constant through the compared periods.
-
-## Survivor anatomy
-
-- Actor: the deciding property, a kit posted while the person's address change sat open in the shared service's
-  queue, has no column in any file: it is the overlap of the invitation extract's despatch date with the queue
-  export's received and completed dates for an address-change request; the registration history stores only the date
-  each address took effect, and the uptake report only the address held at despatch.
-- Link: read through a comparison no key invites and no sentence asks for: each kit's despatch date against another
-  organisation's work queue for the same person. The queue export is the shared service's own turnaround record, the
-  review's evidence for D's line; nothing in the terms, the review or the files sets its dates against despatch.
-- Reflex: the field's method for the deciding quantity (completion standardised for age by deprivation fifth, each
-  change costed against the year before, the fifth's fall split by change) sits at rung 1 and files E.
-- Back-test: the textbook route validates: the monthly uptake report reconciles to the invitation extract month by
-  month on its own convention, and the year-on-year costing accounts for the fifth's fall with A, C and E and leaves
-  nothing for D, which never moves inside the files.
-- Second use: every file the decisive step reads has its own use: the invitation extract carries the whole pathway
-  and every rung; the registration history places each kit in a deprivation fifth; the queue export is the review's
-  turnaround evidence for D and the source of the fifth-by-registered-address convention's audit.
-- Shock: the loss reads as ordinary non-response in the fifth whose completion is always lowest; no shipped statistic
-  sorts the pending cohort to an extreme, and the kits went out and did not come back, as one in four never do.
-- Pins: the WHAT sits once in the equity fund's terms (population, window, outcome, unit, comparison, decision rule);
-  no filed sentence names addresses held, the queue, open requests, despatch against requests or the year-on-year
-  comparison. Deleting each filed sentence in turn (asserted in `checks.py`): no deletion moves the call toward D, and
-  deleting the comparison clause leaves "cost" undefined, so it stays.
-
-## Readability screen
-
-Rungs: R0 B by the crude completion rate; R1 E by the age-standardised year-on-year costing; R2 C by the April
-residual left after A and E; R3 (decisive) D by the pending cohort. Tests: 1 filed sentence, 2 schema, 3 reflex, 4
-control bench, 5 hygiene, 6 linear, 7 dedicated organ.
-
-| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| R0 B, crude rate | no | yes (age column) | yes | no | no | yes | no | readable |
-| R1 E, year-on-year | no | yes (despatch date) | yes (the field's method) | no | no | yes | no | readable |
-| R2 C, April residual | no | no | yes | no | no | yes | no | readable |
-| R3 D, pending cohort (decisive) | no | no (three dates, two files, no column) | no (the field costs a change by its movement) | no (no control ties to it) | no (despatch inside a request's open interval is no consistency check) | no (a matched comparison inside the year) | no (the queue is the review's own evidence for D's line) | silent |
-
-## Semantic fork table
-
-Main-call terms and conventions. Each closure is a filed WHAT in the fund's terms or `same call`, asserted in
-`generator/checks.py` under these ids, with the cross product of SF2, SF4 and SF6 asserted together.
-
-| Id | Term or convention | Golden reading | Alternatives | Ruled out by |
-|---|---|---|---|---|
-| SF1 | completed screen | a usable result (normal or abnormal) within thirteen weeks of the kit's despatch | any kit returned; within six months; results dated in the year | the terms' outcome sentence; same call under each (asserted) |
-| SF2 | the most deprived fifth | the national fifth of the area holding the registered address on the despatch date | address at result; latest address; the address asked for | the terms' population sentence; same call under each (asserted) |
-| SF3 | 2025-26 | kits despatched 1 April 2025 to 31 March 2026, local date | invitation letter date; result date | the terms' window sentence; same call (asserted) |
-| SF4 | a change's cost | the screens those kits would have completed without the change, less those completed | the fall against 2024-25 | the terms' comparison sentence; the golden under either reading of the counterfactual's baseline is D (asserted) |
-| SF5 | B, the age extension | first invitations added screens, so B's cost is below zero | B's effect on the rate | the terms count screens; same call (asserted) |
-| SF6 | spoilt kits and re-tests | one person-round; a re-test's usable result completes the round | each kit counted | the terms' outcome sentence; same call (asserted) |
-| SF7 | people who died or left the region after despatch | in the population (the kit was posted) | removed | the terms' population sentence; same call (asserted) |
-| SF8 | D's in-place date | 1 April 2024, every request handled by the shared service from then | requests received before 1 April 2024 and completed after | the review's D line; same call (asserted) |
-
-## Ladder
-
-Positions and margins are re-measured on the cut pack by `checks.py` and written here from its output; the
-prototype (proto4, eight draws) gave the shape below.
-
-| Rung | Construction | Winner | Its figure | D's figure there | Dies to |
-|---|---|---|---|---|---|
-| R0 | crude completion rate in the fifth, 2025-26 against 2024-25 | B | the fall concentrated in first invitations | 0 | the terms count screens, and B's first invitations add them |
-| R1 | completion standardised for age, each change costed against 2024-25 by its natural exposure | E | about 250 | 0 | inside the year, kits whose address was settled show no change at October beyond E's own effect of about 230 |
-| R2 | the April residual after A's localities and E's half-years | C | 50 below to 450 by draw | 0 | kits whose address was settled show no change across April 2025 |
-| R3 | each kit's despatch date against the shared service's open requests; the pending kits against comparable settled kits | D | about 400 | about 400 | (the golden) |
-
-Pricing sequence (stumping Part 3), on the clean truth: residue the WHAT leaves, how a change in force through both
-years is costed; the ceiling, every pending kit's lost screen at about 0.4 of a screen each against about 1,000
-pending kits a year in the fifth; the one-group-by route, none (D never varies inside the files); the standard error
-of D's cost about 13 against a margin of about 150 over E; the lever and the ranked quantity are not one variance;
-the unit's own history is flat across both years by construction; the bound subset hands nothing over (no row is
-censored or capped); the reflex sweep as code, the pending cohort at AUC 0.5 to 0.6 on every visible attribute.
-Dominance asserted in `checks.py`: D's figure over every rival's widest estimate by 1.15 times or more, every rung's
-winner over its runner-up by the same floor.
-
-## Closure table
-
-| # | Axis | Reading here | Closure |
-|---|---|---|---|
-| 1 | Population | kits despatched in 2025-26 to people whose registered address on the despatch date is in the most deprived fifth | SF2, SF7 filed |
-| 2 | Unit of account | the person-round; a completed screen is one round | SF1, SF6 filed |
-| 3 | Attribution window | the despatch date | SF3 filed |
-| 4 | As-of dating | the extracts taken in July 2026, every kit despatched to 31 March 2026 with thirteen weeks run | filed in the terms |
-| 5 | Version basis | the extracts over the monthly uptake report | the report is a convention, not a rival; same call |
-| 6 | Denominator | none for the call (screens); rates only in R0 and R1 | SF4, SF5 |
-| 7 | Weighting | age standardisation to the 2024-25 kits' five-year bands, for the rungs only | same call under any standard |
-| 8 | Window length | one financial year | SF3 |
-| 9 | Boundary inclusivity | 1 April to 31 March inclusive, local dates | asserted inert |
-| 10 | Rounding path | whole screens, the call to the nearest 100, rounded once | in the prompt's rounding sentence |
-| 11 | Tie-break | not needed: D over every rival's widest estimate by the asserted floor | asserted |
-| 12 | Maturity and censoring | thirteen weeks run for every kit by the extract date | filed as-of |
-| 13 | Order of operations | place each kit in a fifth, then cost each change | same call in either order |
-| 14 | Row order | none | asserted over permutations |
-| 15 | Duplicate resolution | a re-test is the same round (SF6); re-sent despatch rows share a kit number | asserted |
-| 16 | Identity normalisation | NHS number across the invitation, registration and queue files | asserted single key |
-| 17 | Netting against gross | B's added screens net against nothing | SF5 |
-| 18 | Dimensional units | screens are counts | n/a |
-| 19 | Code and status semantics | result codes (normal, abnormal, spoilt, technical failure); request types and statuses | SF1, SF6, SF8 |
-| 20 | Integerisation | whole screens | rounding once |
-| 21 | Clause scope | the cost clause applies to every change alike | SF4 |
-| 22 | Forward window contents | none: the fund is decided on the closed year | n/a |
-
-## Literal reader
-
-A literal reader executes the fund's terms word for word: the population, window, outcome, unit and comparison are
-each filed once, and the comparison ("the screens those kits would have completed without the change") is executed
-for D, the one change that never varies inside the files, only within the year, through the kits D touched against
-comparable kits it did not; every other change's literal costing and the golden's agree within the bin, and D's
-literal cost is the golden once the kits it touched are identified (`determinism-check` §2).
-
-## Oracles
-
-- The programme's monthly uptake report: confirms the size of the fifth's fall on the wrong path and on the right one
-  alike (it states rates on the address held at despatch and ranks no change); ties under every basis.
-- The review's D line with the shared service's turnaround figure: confirms that requests take time on every path,
-  names no kit; ties under every basis.
-- No control ties only under the golden.
-
-## Ask sheet
-
-Design (to be cut and measured; the asks sit on the screening pathway's own records downstream of a completed screen
-and in the helpline's case log, files the main call never reads).
-
-- Ask 1, abnormal results seen within fourteen days, each month of 2025-26 (12 figures, whole people). H18 home: the
-  pathway's own timeliness measure every change's case carries. Use: the fund's paper reports the pathway behind the
-  screens. Files: specialist screening practitioner clinic bookings (ask-only), the laboratory results' abnormal rows
-  (read for dates only). Primary (D7, a reconstruction): appointments rebooked through the hospital switchboard carry
-  the hospital number only; the person is recovered through the booking they replaced. Second device (D3, disjoint
-  block): from the clinic's site merger on 3 November 2025 the second site's rows use its own status vocabulary.
-  Pin test: the sentence carries the clock (the result letter's date) and the counting unit (a person's first
-  attended appointment); both devices sit in which rows are the same person and which status is an attendance.
-- Ask 2, each endoscopist's adenoma detection rate on screening colonoscopies in 2025-26 (one figure per endoscopist,
-  per cent to one decimal). H18 home: the quality measure every colonoscopy the screens lead to carries. Files:
-  endoscopy procedure reports, pathology specimens, the endoscopist roster (all ask-only). Primary (D6, a
-  reconstruction): pathology is one row per specimen pot, linked to its procedure only through the accession prefix
-  of the specimen number; a procedure counts once. Second device (D7, disjoint block): trainee lists are recorded
-  under the supervising endoscopist's code with the trainee in the assisting field, and the sentence names the
-  endoscopist who performed it. Pin test: the sentence names the screening colonoscopy, the year by procedure date and
-  the performing endoscopist; the devices sit in which rows are one procedure and whose list it was.
-- Ask 3, web-form kit queries received and answered within two working days, each month from April 2025 to March 2026
-  (24 figures). H18 home: C's own measure. File: the web-form case log (ask-only) and the service calendar. Primary
-  (D1, a reconstruction): a person who writes again while a query is open is given a new case number; the queries are
-  one event by person and kit within the open interval, with no merge field. Second device (D8, disjoint block): the
-  case log stamps receipt in UTC and the service's working day is local, so receipts in the last hour before midnight
-  in British Summer Time fall on the next day. Pin test: the sentence carries the clock (working days in the service's
-  calendar) and the counting unit (a query, not a case).
-- Main population zero-counts: no device or hazard row in the invitation extract, registration history, queue export
-  or the lab's results for completion (asserted by count from the shipped rows).
-- Cracker sheet, full includer, no-repair profile and mirror: to be scored by `generator/ceiling.py` on the cut pack.
-- Pair ceiling: to be measured (target 51, bar 60).
-- Mirror leakage: to be measured (target under 40 per cent).
-- Measured by: generator/ceiling.py (to be written with the generator).
+- Task type: grid-reliability-outage-analysis (Energy Systems and Utilities), which serves Root-Cause Analysis in the
+  taxonomy; the call names which change raised the members' sustained interruptions.
+- Domain test: the deciding quantity is the sustained customer interruptions (IEEE 1366, major event days excluded) that
+  cold load pickup re-trips added once sections were re-energised in one step: the field counts interruptions by
+  device, cause and restoration, and the physics of lost load diversity after an hour or more in frost (two to four
+  times the diversified load against a pickup near twice peak) is what makes a restoration set off the next
+  interruption.
+- Swap: "which of five changes cost the most re-admissions, when a discharge practice sent patients home in one step"
+  keeps a sentence but loses the decisive object: there is no relay pickup, no load diversity and no minutes-long
+  re-trip on the same device for the pairing to find; the call stands only on the distribution system's own physics
+  and record.
+- Layer 1: an outage management extract logged in local time across the daylight saving changes, with multi-step
+  restorations in a separate step table (the control centre's own system); momentary operations under five minutes in
+  the same device log (the SCADA feed); five years of daily SAIDI whose first two years come from the retired outage
+  system in another layout (the 2023 migration); a section and device register re-keyed in a GIS migration with a
+  crosswalk (engineering); heat pump rebate connections keyed by service address and meter (member services); weather
+  from an airport station in UTC hours (the national weather service); nothing placed to be caught.
+- Layer 2: estimand_identification; the choice that flips the call is the comparison that costs the restoration rule:
+  its interruptions are the re-trips its one-step restorations set off, counted by pairing each trip with the same
+  section's restoration minutes before and netting the staged-era rate, not its filed effect on restoration minutes.
+- Decisive step: attributing the winter's overload interruptions between new heat pump load and cold load pickup by
+  pairing each trip with the section's own preceding restoration, which shows the restoration practice, not the load,
+  set most of them off.
+- Not semantics: every field reads right as it stands: the re-trips are correctly coded overload (the protection did
+  trip on overload), the restoration rule's withdrawal is correctly described as a change to how sections are picked
+  up, and the heat pump register is correct; a solver who reads all of it correctly still books the overload rise to
+  the heat pumps, because the relation that moves it is between rows, not in any field.
+- Not rule application: no filed rule pairs a trip with the restoration before it or says that a restoration can cause
+  an interruption; the board policy files only the WHAT, and executing it with every natural operationalisation (each
+  change's scope across its date, each cause category year on year, the system residual) costs the restoration rule at
+  nil and files the heat pump policy (19 or 20 of 20 redraws, animal guards otherwise). The licensed family that takes
+  the step (pairing windows of 5 to 30 minutes, qualifying outages of any length to an hour or more, with or without a
+  frost condition or the staged-era netting) spreads 8,500 to 9,100 customer interruptions and never changes the call;
+  the family that skips it spreads 1,200 to 10,000 on the heat pump policy and never reaches the rule.
+- Analyst test: a strong analyst who reads every field and the policy correctly books fiscal 2026's sustained
+  interruptions by cause, sees overload trips rise most on the sections given heat pumps, files the heat pump connection
+  policy (Ends on: the heat pump connection policy, about 8,800 customer interruptions on its scope comparison) and
+  costs the restoration rule at nothing because it only shortens outages.
+- Estimand: the cooperative's reliability work plan policy (a board policy in the pack, section on costing changes)
+  files population (the members), outcome (sustained customer interruptions under IEEE 1366, major event days
+  excluded), window (12 months to 30 September 2026), unit (customer interruptions) and comparison (the year with the
+  change against the same year without it, everything else as it was); the review table files each change's in-place
+  date and scope.
+- No decoy: nothing is planted to be caught: no copied block, hidden rule, memo, draft, briefing or stakeholder figure
+  carries the wrong answer; the review lists five real changes with their dates and scopes and ranks none of them.
+- No certified replay: the method is not hidden and recovered by reproducing certified or published figures; no
+  published figure in the pack is reproduced only by the golden.
+- Lesson: an interruption can be caused by the restoration of the one before it, so a change to restoration practice
+  can add interruptions while its own measure (restoration minutes) improves; no build on file teaches that a change
+  whose stated effect is on durations is costed on counts by pairing each failure with the same unit's return minutes
+  before (the corpus's restoration and re-trip lines are Layer 1 realism in task129).
 
 ## Tried and rejected
 
@@ -491,3 +343,28 @@ and in the helpline's case log, files the main call never reads).
   shape-07 grid's fifteen rival cells carry the same noise, and the earlier screens had compared D with the rivals'
   true costs, never with their estimators. The movers-in-12-months row (46, sd 18) and the returned-kit row (26) stayed
   below E. Architecture 2 is spent before any data was cut (scratch t402/a2 proto6.py and p6_sd.py).
+- Architecture 3 draw, screened and set aside before registering (2026-11-03, scratch t402/a3): a distribution network
+  operator's licence area (utility_or_infrastructure BLOCKs on `ban.org_family` against task401, and a city-owned utility
+  carries the same key in the corpus, task118); latent excavation damage on a cooperative's direct-buried cable after a
+  contract locator or a fiber partner's bores (proto1 to proto3: the golden 2,300 to 2,550 customer interruptions
+  against the default's paused aged-cable programme, every rival under 1,000, but it is task173's insight in other
+  nouns, work on or over a unit raising its failures in the weeks after, and its per-crossing damage lever has no
+  published level); lateral fuse upsizing and recloser miscoordination (already screened and set aside in task129's and
+  task398's notes: an event study finds it and the device codes name it); a component batch reaching depots as old
+  stock runs out (dilution preserves totals, so a vintage difference finds it, and the onset is task400's staggered one);
+  product-funnel mechanisms (a per-address rate limit on shared mobile addresses, saved drafts lost at releases, a card
+  issuer's authentication flow, a redesign's novelty decay: each readable by a segmentation or a lookup join, and the
+  drafts in flight at a release are architecture 2's pending window again); pull-forward after a promotion (task463's
+  buyers stocking up); education and pollution mechanisms (a phonics sequence against the check's items, ozone
+  titration read through total oxidant, a source's impact set by the river's flow when it discharges: noisy, reflexive
+  or task202's insight).
+- Cold load pickup, first calibration (2026-11-03, proto_clpu and proto_clpu2): heat pump overload trips at 0.9 per unit
+  of new heat pump share and animal contacts up 55 per cent made both rivals as large as the winner (107,000 and 18,000
+  against 77,000 customer interruptions), and with both years equally stormy the system residual after the scoped
+  changes picked the restoration rule in 3 of 10 redraws. Recalibrated: heat pump overloads 0.012, animal rise 12 per
+  cent, terminations 80 per cent, the comparison year stormier (9 per cent of days against 3), heat pumps going to
+  members already heating electrically; the residual then names the rule in 0 of 20 on the default's comparisons.
+- Cold load pickup with re-trips 1 to 8 minutes after restoration and qualifying outages from 30 minutes (proto_clpu3
+  run 1): the narrow pairing window (5 minutes) and the 60-minute qualifying variant fell to 0.92 times the best rival
+  (15 of 20 redraws at 1.5). Re-trips now follow within 4 minutes and qualify from an hour in frost, as the physics has
+  it; every variant clears 1.5 times in 20 of 20.
