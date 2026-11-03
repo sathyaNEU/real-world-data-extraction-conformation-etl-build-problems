@@ -1,0 +1,111 @@
+{
+  "task": "task200",
+  "architecture": "6",
+  "drawn": "2026-11-03",
+  "slot_note": "architecture 6, a re-root into human-factors-ergonomics (safety-incident-error-analysis, anomaly detection) after five dead architectures and no card on this number; the overidentification axis stays closed",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a council-owned regional airport's security department ordering its X-ray screening teams through the 2027 remedial image interpretation course from the threat image projection records of two generations of screening machine",
+  "objective": "anomaly-detection",
+  "shape": "06",
+  "decision_type": "schedule_or_sequence",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins both projection systems to the 31 December roster, drops the cancelled and repeated rows and reads the standard ranks the teams on their 2026 threat image projection detection rate, or on d-prime against the searches that found nothing, or on a logistic model with machine, threat type and experience, and sends Brook first, when Fell, whose operators had already met nearly every image in the Pier B library, finds only about 63 per cent of the images it meets for the first time and belongs at the front of the order.",
+  "domain_test": "The deciding quantity is each team's chance of detecting a threat article it has never seen, which aviation security estimates from threat image projection hits against false alarms on live bags; the projection mechanics (fictional threats superimposed on live bags from a fixed library per machine, scored per operator login, read against search outcomes) have no counterpart once the nouns are swapped into another field.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:practice-inflated-proficiency-measure",
+  "layer1": [
+    "two projection systems with different layouts, clocks (UTC against UK local) and result codes",
+    "operator identifiers that differ between systems, crosswalked through the roster",
+    "month-boundary repeat rows in the screening system exports",
+    "cancelled projections",
+    "team moves during 2026, the team read off the 31 December roster",
+    "legacy screen events with sign-ons that are never signed off",
+    "a January export holding the last days of December",
+    "reusable tray barcodes",
+    "externally assessed certificates keyed in weeks after the assessment"
+  ],
+  "stakeholder_role": "the airport's Head of Security Screening, setting the 2027 order of the remedial image interpretation course",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "screening_tip/ct_tip_export_2026.csv",
+    "rows": 34000,
+    "entity": "one threat image projection on a Central Search CT screen",
+    "grain": "projection",
+    "source": "synthetic"
+  },
+  "forum": "other",
+  "forcing_event": "season_or_peak",
+  "org_family": "other",
+  "world": {
+    "geography": "England (a fictional council-owned regional airport)",
+    "currency": "GBP",
+    "org_type": "a regional airport company owned by two councils, running its own security screening",
+    "invented_names": [
+      "Brackenford Airport",
+      "Arden",
+      "Brook",
+      "Cleve",
+      "Dene",
+      "Esk",
+      "Fell"
+    ],
+    "people": [
+      "Marian Taylor",
+      "Bernard Vincent"
+    ]
+  },
+  "deliverables": [
+    "remedial_course_2027.xlsx",
+    "remedial_course_2027_note.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "who",
+  "driver": "A unit's success rate is measured on test items drawn again and again from a small fixed pool, and a member succeeds more often on an item met before, so units whose members keep meeting the same few items look able while units drawing from a large pool look weak; only each member's first meeting with an item measures the ability the decision needs.",
+  "driver_concrete": "Each team's chance of spotting a threat article it has never seen is read from its operators' threat image projections on images they met for the first time, because the Pier B screens draw their projections from a small legacy library that Fell's operators have met several times each, which lifts Fell's overall projection score to the middle of the table while its first-meeting detection is the lowest at the airport.",
+  "stump": "A competent solver orders the 2027 remedial course by each team's 2026 threat image projection detection rate (Brook first at about 72 per cent, Fell fourth at about 78) or by d-prime against the false searches (Esk first); the step that lands it there is treating every projection as a fresh test, when most of Fell's projections were images its operators had met before, and on the images each operator met for the first time Fell finds about 63 per cent against 70 to 80 for the other teams.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "1 to 3",
+      "fate": "spent at stage 1 on measurement, never registered (criminology-justice and environmental monitoring grounds)",
+      "driver": "exposure denominators, displacement, journey-to-crime attribution and a reporting filter on a hotspot call; a variance lever on an exceedance call"
+    },
+    {
+      "architecture": "4",
+      "fate": "spent at stage 1, refused with four members priced (the propagation family), never registered",
+      "driver": "a propagation family across linked units"
+    },
+    {
+      "architecture": "5",
+      "fate": "spent at stage 1 on measurement, never registered; the overidentification axis is closed as a clause in any nouns",
+      "driver": "a few shared instrument parameters identified across many split samples"
+    }
+  ],
+  "notes": "Re-rooted 2026-11-03 into human-factors-ergonomics, a client domain this number had not used. No earlier architecture of this number was ever registered, so the lineage holds the dead drivers only. Axes redrawn at the draw: context_artifact filed_standard to planning_thread, forum line_manager_or_team to other (the Head of Security Screening sets the order with no formal forum), org_family local_government to other (a council-owned airport company), all three BLOCKed against task194 v17 registered the same day; gap population to objective and the decisive generator G14 to G6, because population plus G14 under method_or_model_selection is spent in nine builds and objective is the honester gap (the projection score is a correct number and is not what the course order is scored on).",
+  "registered": "2026-11-03T12:41:43Z"
+}
