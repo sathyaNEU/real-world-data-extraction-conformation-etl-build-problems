@@ -1,138 +1,146 @@
 {
-  "task": "task194",
-  "architecture": "v17",
-  "drawn": "2026-11-03",
-  "slot_note": "Re-rooted out of healthcare-delivery-health-economics after sixteen dead architectures in one world. Objective and number kept (anomaly-detection, task194). New domain physical-environmental-sciences, new world (a county council landfill with a composting tenant and a highways salt depot on the same aquifer), new dataset, new generator. No seed mechanism used.",
-  "domain": "energy-systems-utilities",
-  "subdomain": "grid-reliability-outage-analysis",
-  "niche": "a municipal water department sending its one leak detection crew for the week to the district metered area whose own leakage rose most in October 2026, read from inlet night flows when a boundary valve left open after a mains repair passes one area's supply through its neighbour's meter",
-  "objective": "anomaly-detection",
-  "shape": "07",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "objective",
-    "population"
+ "task": "task194",
+ "architecture": "v17",
+ "drawn": "2026-11-03",
+ "slot_note": "Re-rooted out of healthcare-delivery-health-economics after sixteen dead architectures in one world. Objective and number kept (anomaly-detection, task194). New domain physical-environmental-sciences, new world (a county council landfill with a composting tenant and a highways salt depot on the same aquifer), new dataset, new generator. No seed mechanism used.",
+ "domain": "energy-systems-utilities",
+ "subdomain": "grid-reliability-outage-analysis",
+ "niche": "a municipal water department sending its one leak detection crew for the week to the district metered area whose own leakage rose most in October 2026, read from inlet night flows when a boundary valve left open after a mains repair passes one area's supply through its neighbour's meter",
+ "objective": "anomaly-detection",
+ "shape": "07",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "Thrushgate",
+ "answer_source": "task194/generator/figures.json (call), recomputed by generator/verify.py from target/",
+ "gap": [
+  "objective",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G10",
+  "G3",
+  "G2"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "none",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who cleans every logger, takes each area's minimum night flow over the filed weeks, removes household and non-household night use the way the department's leakage procedure does and normalises to the night pressure with the procedure's leakage exponent sends the crew to the area whose inlet meter rose most, which is carrying its neighbour's supply through an open boundary valve, rather than to the area with the one unmatched rise.",
+ "domain_test": "The deciding quantity is each district metered area's own leakage change, which water loss management reads from the minimum night flow net of legitimate night use and corrected to pressure through the leakage-pressure exponent; swap in another field's nouns and the task stops making sense, because night flow, night use allowances, pressure-dependent leakage and areas fed through boundary valves are properties of a water distribution network.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:night-flow-change-netted-across-areas-sharing-an-open-boundary-valve",
+ "layer1": [
+  "inlet flow loggers in litres per second at some areas and cubic metres per hour at others",
+  "logger timestamps in UTC across the October clock change against local-time work orders",
+  "gaps and a stuck-at-last-value logger stretch",
+  "pressure loggers at the critical point for some areas and the average zone night point for others",
+  "property counts from billing with closed and vacant accounts",
+  "large-user logger readings as cumulative register values",
+  "work orders with free-text locations and asset IDs in two formats",
+  "the valve register carrying the GIS status, not the field status",
+  "one area renamed after a boundary change in 2025"
+ ],
+ "stakeholder_role": "the water department's leakage analyst",
+ "role_family": "other",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "historian_inlet_flows_20260801_20261102.csv",
+  "rows": 180405,
+  "entity": "one inlet meter reading",
+  "grain": "inlet tag x 15 minutes, UTC",
+  "source": "constructed operating layer (fictional organisation)"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "shift_or_daily_cycle",
+ "org_family": "local_government",
+ "world": {
+  "geography": "England",
+  "currency": "GBP",
+  "org_type": "municipal water department",
+  "invented_names": [
+   "Arnvale Water",
+   "Kestle Hill",
+   "Moorend Low"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G10",
-    "G3",
-    "G2"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans every logger, takes each area's minimum night flow over the filed weeks, removes household and non-household night use the way the department's leakage procedure does and normalises to the night pressure with the procedure's leakage exponent sends the crew to the area whose inlet meter rose most, which is carrying its neighbour's supply through an open boundary valve, rather than to the area with the one unmatched rise.",
-  "domain_test": "The deciding quantity is each district metered area's own leakage change, which water loss management reads from the minimum night flow net of legitimate night use and corrected to pressure through the leakage-pressure exponent; swap in another field's nouns and the task stops making sense, because night flow, night use allowances, pressure-dependent leakage and areas fed through boundary valves are properties of a water distribution network.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:night-flow-change-netted-across-areas-sharing-an-open-boundary-valve",
-  "layer1": [
-    "inlet flow loggers in litres per second at some areas and cubic metres per hour at others",
-    "logger timestamps in UTC across the October clock change against local-time work orders",
-    "gaps and a stuck-at-last-value logger stretch",
-    "pressure loggers at the critical point for some areas and the average zone night point for others",
-    "property counts from billing with closed and vacant accounts",
-    "large-user logger readings as cumulative register values",
-    "work orders with free-text locations and asset IDs in two formats",
-    "the valve register carrying the GIS status, not the field status",
-    "one area renamed after a boundary change in 2025"
-  ],
-  "stakeholder_role": "the water department's leakage analyst",
-  "role_family": "other",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "inlet_flows_15min_2026.csv",
-    "rows": 0,
-    "entity": "one inlet meter reading",
-    "grain": "meter x 15 minutes",
-    "source": "synthetic"
+  "people": [
+   "Kirsty Lloyd",
+   "Colin Ward"
+  ]
+ },
+ "deliverables": [
+  "crew_allocation_week46.xlsx",
+  "night_flow_changes.pdf"
+ ],
+ "opening_move": "question-first",
+ "question_form": "where",
+ "driver": "The decisive quantity is each unit's own new loss, read from a metered inflow that also carries what passes on to a neighbour through a connection the record shows as closed, so a unit's rise matched hour by hour by an equal fall in a connected neighbour is supply moved between them, and only the part of each unit's rise that its connected neighbours' simultaneous falls do not cancel is a new loss, while every per-unit test, corrected for legitimate use and for pressure, names the unit passing supply on.",
+ "driver_concrete": "Kestle Hill's inlet night flow rose by more than any other area's in October 2026 because the boundary valve to Moorend Low, opened for a mains repair and recorded closed, now feeds Moorend Low's night demand and leakage through Kestle Hill's meter; netting each area's change against the simultaneous falls of the areas it shares a boundary valve with leaves one unmatched rise, the new burst the crew should find.",
+ "stump": "A competent solver takes each area's minimum night flow change net of night use and corrected to pressure, as the leakage procedure does, and sends the crew to Kestle Hill, whose rise is its neighbour's supply passing through an open boundary valve, rather than to the area whose rise no neighbour's fall cancels.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task162": "task162 rebuilds net night flow and the night-day factor under pressure-reducing valves for a forecast; this build nets one area's night-flow rise against a neighbour's simultaneous fall through an open boundary valve to locate a new burst, and no pressure model decides it."
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "driver": "The decisive quantity is what a scarce intervention's measured effect is proportional to, recovered by fitting competing shapes of that effect to a closed corpus of past interventions against the sampling error of the outcome, where the corpus's own spread of pre-intervention level is what separates them and the shapes rank the candidates differently.",
+   "fate": "spent: SEND_BACK at stage 4, NOT_DETERMINISTIC, competing_defensible_answer with margin fragility",
+   "why": "the graded counts were a fitted counterfactual, so a functional form had to be chosen for the fall an embed produces, and two forms the record admits are collinear over the whole domain a hospital unit's standardised ratio can occupy: a share of standing excess and a power on the ratio fit at 1.02 to 1 and give 19 against 21 with a gap of 7 against 8. Separating them would need standardised ratios of three or four, which no real unit carries. The placement quarters were also under-dispersed at 0.47 per degree of freedom against 1.65 for the rest of the record, so every likelihood ratio was inflated about three and a half times, and fixing the dispersion makes the separation worse. Both forms named the same unit, so the call was robust and only the graded counts were not."
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "shift_or_daily_cycle",
-  "org_family": "local_government",
-  "world": {
-    "geography": "England",
-    "currency": "GBP",
-    "org_type": "municipal water department",
-    "invented_names": [
-      "Harrowgate Vale Water",
-      "Kestle Hill",
-      "Moorend Low"
-    ],
-    "people": [
-      "Kirsty Lloyd",
-      "Colin Ward"
-    ]
+  {
+   "architecture": "v2",
+   "driver": "The decisive quantity is each candidate's excess over the standard its own composition implies, and the only standard the pack publishes is an external one fixed at an earlier vintage whose component rates have since moved by different amounts, so a ratio against it carries composition as well as performance and re-ranks the candidates once the comparison is rebuilt from the record's own component rates.",
+   "fate": "spent: SEND_BACK at stage 4, NOT_DETERMINISTIC, underspecified_objective on Gates C and E, and Gate G surface_read_rejection with a surface-read dependency",
+   "gate_g": "decomposition_attribution",
+   "layer2_pattern": "own:internal-against-external-standardisation",
+   "niche": "measuring a unit against what its own patients should produce now, rather than against a standard fixed before the network's own performance moved",
+   "stump_strategy": "composition_mix",
+   "why": "The decisive step was which stratum rates answer the charter's comparison, and whose rates supply the expectation is the comparison, which determinism-check section 1 lists as one of the five parts of the WHAT the estimand must file. Executed word for word on the only rates the package carries, Appendix A's, the call is 41220 at 59.2 or 64.0; the golden's 41230 at 40 holds only if the comparison rates are re-estimated from the network's own record, and no shipped sentence says Appendix A is stale or asks anyone to re-estimate it. Filing the comparison does not rescue it: the next choice down is the comparison pool, where all in-scope network episodes give 41230 at 40.1 against 25.0 and the twelve eligible units give 41420 at 21.6 against 41230's 9.8, so filing one part obliges filing the other and the decisive step becomes execution. Every remaining lever was a part of the estimand."
   },
-  "deliverables": [
-    "crew_allocation_week46.xlsx",
-    "night_flow_changes.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "The decisive quantity is each unit's own new loss, read from a metered inflow that also carries what passes on to a neighbour through a connection the record shows as closed, so a unit's rise matched hour by hour by an equal fall in a connected neighbour is supply moved between them, and only the part of each unit's rise that its connected neighbours' simultaneous falls do not cancel is a new loss, while every per-unit test, corrected for legitimate use and for pressure, names the unit passing supply on.",
-  "driver_concrete": "Kestle Hill's inlet night flow rose by more than any other area's in October 2026 because the boundary valve to Moorend Low, opened for a mains repair and recorded closed, now feeds Moorend Low's night demand and leakage through Kestle Hill's meter; netting each area's change against the simultaneous falls of the areas it shares a boundary valve with leaves one unmatched rise, the new burst the crew should find.",
-  "stump": "A competent solver takes each area's minimum night flow change net of night use and corrected to pressure, as the leakage procedure does, and sends the crew to Kestle Hill, whose rise is its neighbour's supply passing through an open boundary valve, rather than to the area whose rise no neighbour's fall cancels.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task162": "task162 rebuilds net night flow and the night-day factor under pressure-reducing valves for a forecast; this build nets one area's night-flow rise against a neighbour's simultaneous fall through an open boundary valve to locate a new burst, and no pressure model decides it."
+  {
+   "architecture": "v3",
+   "drawn": "2026-10-17T21:52:23Z",
+   "niche": "developing an indicator's most recent quarters to what the period's own patients actually had, from the growth the series' earlier vintages show, before ranking providers on them",
+   "driver": "The decisive quantity is a count of events that crystallise after the period they belong to, so the record's most recent periods are short by a coding lag the record itself measures through two vintages of the same series, and ranking the candidates on the counts as reported names a different unit from ranking them on the counts developed to what the period's patients actually had.",
+   "stump_strategy": "maturity_censoring",
+   "gate_g": "confirm_surface_read",
+   "layer2_pattern": "own:immature-quarters-developed-from-the-series-own-vintages",
+   "fate": "spent: the healthcare provider-quality risk-adjustment world, coding-lag development of immature quarters; died on the reflex rule (finer internal standardisation reached the golden) and was followed by thirteen unregistered architectures on the same world (4 to 16), each refused on measurement before data was cut; architecture 16 found the propagation shape spent as a driver (task125). The world is spent and the slot moves domain.",
+   "why": "one architecture per world; the healthcare risk-adjustment ground left no decisive step a reflex, a filed sentence or task125 did not already own"
   },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "driver": "The decisive quantity is what a scarce intervention's measured effect is proportional to, recovered by fitting competing shapes of that effect to a closed corpus of past interventions against the sampling error of the outcome, where the corpus's own spread of pre-intervention level is what separates them and the shapes rank the candidates differently.",
-      "fate": "spent: SEND_BACK at stage 4, NOT_DETERMINISTIC, competing_defensible_answer with margin fragility",
-      "why": "the graded counts were a fitted counterfactual, so a functional form had to be chosen for the fall an embed produces, and two forms the record admits are collinear over the whole domain a hospital unit's standardised ratio can occupy: a share of standing excess and a power on the ratio fit at 1.02 to 1 and give 19 against 21 with a gap of 7 against 8. Separating them would need standardised ratios of three or four, which no real unit carries. The placement quarters were also under-dispersed at 0.47 per degree of freedom against 1.65 for the rest of the record, so every likelihood ratio was inflated about three and a half times, and fixing the dispersion makes the separation worse. Both forms named the same unit, so the call was robust and only the graded counts were not."
-    },
-    {
-      "architecture": "v2",
-      "driver": "The decisive quantity is each candidate's excess over the standard its own composition implies, and the only standard the pack publishes is an external one fixed at an earlier vintage whose component rates have since moved by different amounts, so a ratio against it carries composition as well as performance and re-ranks the candidates once the comparison is rebuilt from the record's own component rates.",
-      "fate": "spent: SEND_BACK at stage 4, NOT_DETERMINISTIC, underspecified_objective on Gates C and E, and Gate G surface_read_rejection with a surface-read dependency",
-      "gate_g": "decomposition_attribution",
-      "layer2_pattern": "own:internal-against-external-standardisation",
-      "niche": "measuring a unit against what its own patients should produce now, rather than against a standard fixed before the network's own performance moved",
-      "stump_strategy": "composition_mix",
-      "why": "The decisive step was which stratum rates answer the charter's comparison, and whose rates supply the expectation is the comparison, which determinism-check section 1 lists as one of the five parts of the WHAT the estimand must file. Executed word for word on the only rates the package carries, Appendix A's, the call is 41220 at 59.2 or 64.0; the golden's 41230 at 40 holds only if the comparison rates are re-estimated from the network's own record, and no shipped sentence says Appendix A is stale or asks anyone to re-estimate it. Filing the comparison does not rescue it: the next choice down is the comparison pool, where all in-scope network episodes give 41230 at 40.1 against 25.0 and the twelve eligible units give 41420 at 21.6 against 41230's 9.8, so filing one part obliges filing the other and the decisive step becomes execution. Every remaining lever was a part of the estimand."
-    },
-    {
-      "architecture": "v3",
-      "drawn": "2026-10-17T21:52:23Z",
-      "niche": "developing an indicator's most recent quarters to what the period's own patients actually had, from the growth the series' earlier vintages show, before ranking providers on them",
-      "driver": "The decisive quantity is a count of events that crystallise after the period they belong to, so the record's most recent periods are short by a coding lag the record itself measures through two vintages of the same series, and ranking the candidates on the counts as reported names a different unit from ranking them on the counts developed to what the period's patients actually had.",
-      "stump_strategy": "maturity_censoring",
-      "gate_g": "confirm_surface_read",
-      "layer2_pattern": "own:immature-quarters-developed-from-the-series-own-vintages",
-      "fate": "spent: the healthcare provider-quality risk-adjustment world, coding-lag development of immature quarters; died on the reflex rule (finer internal standardisation reached the golden) and was followed by thirteen unregistered architectures on the same world (4 to 16), each refused on measurement before data was cut; architecture 16 found the propagation shape spent as a driver (task125). The world is spent and the slot moves domain.",
-      "why": "one architecture per world; the healthcare risk-adjustment ground left no decisive step a reflex, a filed sentence or task125 did not already own"
-    },
-    {
-      "architecture": "v4 to v16 (never registered)",
-      "drawn": "2026-10-18 to 2026-11-01",
-      "niche": "provider-quality risk adjustment in the Mid-Rivers Health Network world: own-unit propensity from multi-unit patients, coding audits, documentation-path lags, over-adjustment and collider forms, propagation through placement cycles",
-      "driver": "measured screens only, each recorded in task194/pipeline.json (architecture_4 to architecture_8, architecture_8_9_note, architecture_spent) and the design note history",
-      "stump_strategy": "maturity_censoring, composition_mix, decomposition_attribution",
-      "gate_g": "method_or_model_selection",
-      "layer2_pattern": "own",
-      "fate": "refused on measurement before any row was cut; architecture 16 ruled the propagation shape task125s driver",
-      "why": "the world is spent"
-    }
-  ],
-  "notes": "Architecture 17 (third candidate of the day; the landfill and TB candidates are in Tried and rejected). The neighbour task162 is water network leakage too (forecasting, pressure management valves and the night-day factor); this build's driver is the transfer between areas through an open boundary valve, not pressure.",
-  "registered": "2026-11-03T12:06:58Z",
-  "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "put",
-    "rounding opener": "avoidable",
-    "deliverable set": "pdf+xlsx"
+  {
+   "architecture": "v4 to v16 (never registered)",
+   "drawn": "2026-10-18 to 2026-11-01",
+   "niche": "provider-quality risk adjustment in the Mid-Rivers Health Network world: own-unit propensity from multi-unit patients, coding audits, documentation-path lags, over-adjustment and collider forms, propagation through placement cycles",
+   "driver": "measured screens only, each recorded in task194/pipeline.json (architecture_4 to architecture_8, architecture_8_9_note, architecture_spent) and the design note history",
+   "stump_strategy": "maturity_censoring, composition_mix, decomposition_attribution",
+   "gate_g": "method_or_model_selection",
+   "layer2_pattern": "own",
+   "fate": "refused on measurement before any row was cut; architecture 16 ruled the propagation shape task125s driver",
+   "why": "the world is spent"
   }
+ ],
+ "notes": "Architecture 17 (third candidate of the day; the landfill and TB candidates are in Tried and rejected). The neighbour task162 is water network leakage too (forecasting, pressure management valves and the night-day factor); this build's driver is the transfer between areas through an open boundary valve, not pressure.",
+ "registered": "2026-11-03T12:06:58Z",
+ "shell": {
+  "question form": "whether",
+  "second-sentence opener": "under",
+  "rounding opener": "leakage",
+  "deliverable set": "pdf+xlsx"
+ },
+ "lineage_shells": [
+  {
+   "question form": "how-many",
+   "second-sentence opener": "put",
+   "rounding opener": "avoidable",
+   "deliverable set": "pdf+xlsx"
+  }
+ ]
 }

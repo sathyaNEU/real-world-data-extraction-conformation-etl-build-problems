@@ -12,7 +12,7 @@ generator; no seed mechanism used.
 | Card | `.claude/skills/fingerprint/cards/task194.json`, architecture v17, registered 2026-11-03 at WARN |
 | Client domain / task type | Energy Systems & Utilities (`energy-systems-utilities`), `grid-reliability-outage-analysis` (serves RC and AD): a water distribution network's burst detection is network reliability analysis on a utility grid |
 | Objective | Anomaly Detection & Diagnostics: a real event (a new burst) separated from artifacts that raise the same measurement (supply passed through an open boundary valve, a new night user, a pressure set-point change) |
-| Decision | where Harrowgate Vale Water's one leak detection crew works in week 46 (9 to 15 November 2026): the district metered area whose own leakage rose most between the September baseline nights and the October comparison nights; pick one of the areas (`pick_one_of_n`), forward facing (the crew's coming week) |
+| Decision | where Arnvale Water's one leak detection crew works in week 46 (9 to 15 November 2026): the district metered area whose own leakage rose most between the September baseline nights and the October comparison nights; pick one of the areas (`pick_one_of_n`), forward facing (the crew's coming week) |
 | Shape | 07, a grid of cells: every area by its own leakage change, plus the asks' per-area figures |
 | Gap / pattern / generators | `objective` then `population`; pattern `none`; `G10` cross-dimensional duplication decisive (one area's water metered on another area's inlet), `G3`, `G2` |
 | Gate G | `decomposition_attribution`: each area's metered night-flow change split into its own leakage, its night use, its pressure and what passes through it to a neighbour |
@@ -22,7 +22,7 @@ generator; no seed mechanism used.
 | Context artifact | `filed_standard`: Leakage Procedure LP04 rev 3 (night flow conventions, the allowances, the pressure exponent, the crew rule) |
 | Calibration | none |
 | Personas | Kirsty Lloyd, Colin Ward (`guard.py names --geo uk --seed 194`) |
-| WARNs answered | `repeat.question_form` (where): the decision is a place, so `where` is the honest form and `which` is over its quota; `shell.repeat` read off the dead architecture's prompt at register time, re-read at heart off the new prompt |
+| WARNs answered | `repeat.question_form` (where, against task307 v3): the decision is a place, so `where` is the honest form and `which` is over its quota; `repeat.deliverables` (pdf+xlsx, against task241 v2): a crew allocation sheet and a one-page chart are what the leakage team issues, and voice-check holds the set under its quota; `shell.repeat` cleared at heart once the card carried the new prompt's shell |
 
 **Data-native sentence.** A district metered area is defined by closed boundary valves, and the record of
 which valves are closed is the GIS's, not the street's: a valve opened to keep supply on during a repair and
@@ -73,7 +73,7 @@ Layer 1: inlet tags in l/s and m3/h (the historian keeps each instrument's nativ
 Layer 2: `field_method` / decomposition: the metered night-flow change is split into night use, pressure, transfer to a neighbour and own leakage; the methodological choice that flips the call is netting each area's change against the simultaneous opposite change of the areas it shares boundary valves with.
 Decisive step: recognising that a district metered area's inlet measures its own consumption only while its boundary is tight, and testing the boundary by netting each area's change against its valve-sharing neighbours' simultaneous changes, hour by hour over the whole day, before reading any rise as leakage.
 Not semantics: every field, unit, tag and status read correctly (including the GIS status, which says closed) still leaves the procedure's per-area net night flow on Kestle Hill; no code, unit or definition read differently moves the call, and the valve's true state is in no column.
-Not rule application: LP04 files the night window, the allowances and the exponent and nothing about boundaries, so executing every filed rule names Kestle Hill; the enumerated family (raw night-flow change, net of night use, pressure-normalised, per-property or per-km rates, the largest percentage rise) spreads over four different areas, Pellow Bridge, Calver Rise, Kestle Hill and a small area on percentages, and the standing family once the boundary is tested is one member (Thrushgate), the ruling-out done by a whole-day profile match that only a cross-area comparison shows.
+Not rule application: LP04 files the night window, the allowances and the exponent and nothing about boundaries, so executing every filed rule names Kestle Hill; the enumerated family (raw night-flow change, net of night use, pressure-normalised, per-property or per-km rates, the largest percentage rise) spreads over four different areas, Pellow Bridge, Calvert Rise, Kestle Hill and a small area on percentages, and the standing family once the boundary is tested is one member (Thrushgate), the ruling-out done by a whole-day profile match that only a cross-area comparison shows.
 Analyst test: a strong analyst who cleans every logger, converts every clock and unit, removes night use exactly as LP04 states and normalises to pressure with N1 = 1.15 ranks the areas on pressure-normalised net night flow change and sends the crew to Kestle Hill, the default path's answer.
 Estimand: LP04 section 6: the crew goes to the area whose own leakage, the water lost from the area's own mains and service pipes at night, rose most between the baseline and comparison nights, in cubic metres an hour; filed in `leakage_procedure_LP04_rev3.pdf`.
 No decoy: nothing is planted to be caught: no memo, draft, briefing or stakeholder figure carries Kestle Hill, the works order for the Moorend Low valve job reads as every job sheet does, and the open valve is an ordinary operational slip whose only trace is the flows themselves.
@@ -89,6 +89,113 @@ Back-test: the textbook route validates: Kestle Hill's rise starts on a single n
 Second use: the inlet export carries the asks' daily supply and the main call; the GIS valve export is the department's asset record; the works orders carry the repairs ask; deleting the decisive step removes no file.
 Shock: Kestle Hill's rise reads as an ordinary burst and Moorend Low's fall as the ordinary effect of a repair job on the same day; Thrushgate's rise is fourth on the raw change and is no sort's extreme.
 Pins: LP04 files the window, the allowances, the exponent and the estimand (own leakage); no filed sentence names boundaries, valves, transfers or neighbours.
+
+## Readability screen
+
+Reflex row from the field's vocabulary for a night-flow rise: minimum night flow, net night flow, legitimate night use, FAVAD pressure correction, night-day factor, leakage per property or per km (ILI-type rates), step-change and burst-detection tests, percentage rise.
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 raw MNF change (Pellow Bridge) | LP04 3 files it | inlet export | yes | none | no | one subtraction | no | readable |
+| R1 net of night use (Calvert Rise) | LP04 4 files it | large-user reads | yes | none | no | one subtraction | no | readable |
+| R2 pressure-normalised (Kestle Hill) | LP04 5.1 files it | AZNP export | yes | none | no | one factor | no | readable |
+| R3 boundary tested by netting each area against its valve-sharing neighbours' simultaneous change (decisive) | no sentence names boundaries, valves or neighbours | the GIS export lists the pair with status CLOSED; no column holds a crossing | no: the field's reflexes are per area | none: no record confirms a valve state | no: nothing is duplicated, missing or mis-keyed | no: needs both areas' whole-day profiles compared and the matched move split across the pair | no: the GIS export and the inlet export are both carried for their own uses (asset record, every per-area rung and the asks) | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | night hour clock | 03:00 to 04:00 local clock time | 03:00 UTC | same call | LP04 3 "local clock time"; asserted same call |
+| SF2 | MNF statistic | mean of the hour's readings | minimum reading | same call | LP04 3 "the mean"; asserted same call |
+| SF3 | hour boundary | readings from 03:00 up to but not including 04:00 | 04:00 reading included | same call | LP04 3 wording; asserted same call |
+| SF4 | household property count | register issue in force (LP04 7) | billing occupancy | same call | LP04 7; the count is one number in both periods, so it cancels in the change |
+| SF5 | the night crossing through the open valve | mean of the rise and the fall at night | the rise alone, the fall alone, a regression on the donor's own profile | same figures (Kestle Hill and Moorend Low print 0.0 l/s under all five) | asserted in checks.py |
+| SF6 | areas with two inlet meters | sum of the meters | one meter | same call | LP04 2 "the sum of its meters" |
+| SF7 | AZNP units | bar converted to metres | bar read as metres | same call and figures | the normalisation is a ratio; asserted |
+| SF8 | which nights are normalised | each set to the baseline pressure (baseline factor one) | none | same | LP04 5.1 |
+| SF9 | averaging | nightly means then their mean | pooled readings | same call | LP04 3; asserted |
+| SF10 | large users' night use | metered at each supply point | every logged meter by account area | same call and figures | constant night use cancels in the change; asserted |
+| SF11 | which pairs carry a crossing | equal and opposite whole-day volume moves | correlation of profiles only | one pair under both | asserted: no other pair moves equal and opposite |
+
+## Ladder
+
+| Rung | Construction | Names | Figure (l/s) | Runner-up (l/s) | Margin | Dies to |
+|---|---|---|---|---|---|---|
+| R0 | raw minimum night flow change | Pellow Bridge | 1.554 | Calvert Rise 1.171 | 1.33x | the depot's large-user logger (LP04 4.3) |
+| R1 | net of household and non-household night use | Calvert Rise | 1.170 | Kestle Hill 0.944 | 1.24x | the PRV log and AZNP rise (LP04 5.1) |
+| R2 | pressure-normalised, the procedure's full method (default path) | Kestle Hill | 0.943 | Thrushgate 0.610 | 1.55x | Moorend Low's equal and opposite move on BV-0412 |
+| R3 | boundary tested and the crossing netted (decisive) | Thrushgate | 0.610 | Ashworth Fold 0.306 | 1.99x | none |
+
+- Position: Thrushgate 4th on R0, 3rd on R1, 2nd on R2 (1.55x behind), first only on R3.
+- Dominance: the decisive move takes 0.94 l/s off Kestle Hill against Thrushgate's 0.30 l/s lead over the runner-up, 3.1x.
+- Worth in bins: the decisive move is 9.4 bins of 0.1 l/s; the spread of the five transfer estimators is 0.22 bins; the sampling noise of a period's mean night flow is under 0.1 bin.
+- Pricing: the residue the WHAT leaves is how an area's metered night-flow change divides into its own leakage and supply passing through it, a method; the move needed (0.33 l/s) against the ceiling of what the crossing could do (0.94 l/s); no one-column route: the crossing has no column and the cheapest route is two areas' profiles compared; nothing fitted, the crossing read off the pair's own matched move; Calvert Rise's PRV raise is a step in the PRV log, priced exactly by LP04 5.1.
+- Reflex sweep (checks.py): per household property, per km of main, percentage rise in MNF, percentage rise in net night flow, leakage per km and the largest raw MNF each name an area other than Thrushgate.
+
+## Closure table
+
+| Axis | Name | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | every area in the register | LP04 2, the register; all 18 rows graded |
+| 2 | Unit of account | area | LP04 6.1 |
+| 3 | Attribution window | baseline and comparison nights | LP04 Appendix B; the events sit clear of both sets |
+| 4 | As-of dating | nights dated by the date of 03:00 | LP04 2 |
+| 5 | Version basis | register issue in force | LP04 7 |
+| 6 | Denominator | none (a change in m3/h reported in l/s) | LP04 6.2 |
+| 7 | Weighting | each night equal | LP04 3; SF9 asserted |
+| 8 | Window length | the filed night sets | Appendix B |
+| 9 | Boundary inclusivity | 03:00 included, 04:00 excluded | LP04 3; SF3 |
+| 10 | Rounding path | compute in m3/h, convert, round once | prompt; bins asserted |
+| 11 | Tie-break | none needed | final margin 1.99x |
+| 12 | Maturity and censoring | none, every reading in | export complete for both sets, asserted |
+| 13 | Order of operations | night use off, then normalise, then net the crossing | LP04 4 then 5; the crossing is netted on normalised figures, SF5 shows the order inert |
+| 14 | Row order | not used | C1 |
+| 15 | Duplicate resolution | no duplicates in the night sets | asserted |
+| 16 | Identity normalisation | tags to areas through the register | register sheet; SF6 |
+| 17 | Netting against gross | the crossing nets the pair | SF5, SF11 |
+| 18 | Dimensional units | l/s and m3/h, bar and m | instrument units sheet; SF7 |
+| 19 | Code and status semantics | GIS status read as recorded | the status never decides; the flows do |
+| 20 | Integerisation | none on the call | one decimal of l/s |
+| 21 | Clause scope | LP04 6.1 for the allocation week | Appendix B |
+| 22 | Forward window contents | the crew week | the call is the week-46 allocation |
+
+## Literal reader
+
+Executing LP04 word for word gives each area's normalised net night flow change and, read literally, the "own leakage" of 6.1 is the water lost from the area's own mains and service pipes; Kestle Hill's normalised change carries Moorend Low's water, which is not lost from Kestle Hill's pipes, so the literal estimand already excludes it; every reading of the open conventions (SF1 to SF11) prints the same call, and no filed rule reads to Kestle Hill as the area whose own leakage rose.
+
+## Oracles
+
+None. No shipped figure is a leakage estimate for either period; the GIS valve export shows the pair CLOSED under every reading; the works order for the Moorend Low valve job is a planned replacement with no mention of supply arrangements; the find-and-fix history, rain gauge and contacts are distractors that rank nothing on the decision.
+
+## Ask sheet
+
+Three asks, every figure per area, each on rows outside the main call's population (the main call reads only the 03:00 night hour of the two night sets, the register's property counts and constant large-user night use).
+
+- **A1, each area's logged large users' metered consumption in October 2026 (m3, whole), 18 figures.** H18: an audit of the night-use input every area carries. Primary device (D7, the true key elsewhere): an area's large-user consumption is what passes its supply points, so three tenants' check meters on bulk supply points double count when every logged meter is summed, and two second supplies sit in other areas than the account's (the register's supply point sheet, not the account list, places them). Hazards: five-digit registers that roll over, a meter exchange on 14 October with a reconditioned register, accounts carrying the pre-2025 code D3305, local month against UTC. Stops: every meter by account area (11 of 18), plus UTC month (8 of 18), per-user span across the exchange (fewer).
+- **A2, occupied household properties at the end of 31 October 2026 (whole), 18 figures.** H18: a measure every area carries beside its register count. Primary device (D2/D8, a state rebuilt from an effective-dated log): a property's occupancy and class at the date come from its events in effective order, a conversion to non-household changing the class while later rows still carry the class the account was opened with. Hazards: landlord and tenant accounts on one property, back-dated postings, pre-2025 area codes. Stops: class from the latest row (2 of 18), posted order (2 of 18).
+- **A3, mains repairs completed August to October 2026 (whole), 18 figures.** H18: the repair record behind each area's change. Primary device (D7, a key carried in another job): repairs passed to the term contractor sit on the contractor's own job number with the in-house job number where the asset would be, so they are placed only through the job they took over. Hazards: parent jobs with child tasks, asset ids in two formats, job closure after the task, open in-house tasks. Stops: in-house rows only (cracker), job closed date (6 of 18).
+- Separation: zero device rows in the main population, asserted (stuck and missing readings and every device sit outside the 03:00 night hour of the two night sets or cancel in the change).
+
+| Ask | Cracker (lands the call, hygiene battery, every filed rule) | Mirror (stops at the procedure's route) | cracker verdict |
+|---|---|---|---|
+| A1 large-user October consumption | 11 of 18 by account meters | 8 of 18 | miss |
+| A2 occupied households | 2 of 18 | 2 of 18 | miss |
+| A3 mains repairs | 4 of 18 | 2 of 18 | miss |
+
+Pair ceiling: 43.3 (cracker 62.3 on the call, mirror 24.2 off it, 38 + 7 + 55 L)
+Mirror leakage: 22.2 per cent of ask weight
+Cracker keep: 31.5 per cent of ask weight, under two fifths; each ask is a third of the ask weight and has its own primary, so no single finding returns more than a third
+Measured by: generator/ceiling.py, run on the cut pack (digest printed by the script)
+
+## Leak sweep answers
+
+`leak.py --asof 2026-11-03`: REVIEW, no LEAK; each REVIEW line ruled harmless here.
+- LP04 sweep 3: the shared words are the procedure's own vocabulary (leak detection crew, own leakage, week); the PDF holds no area name and no golden figure.
+- LP04 sweep 4: register, record, pressure and export are the procedure's ordinary nouns (the DMA register, the records section, the pressure correction); no sentence names boundaries, valves, transfers or neighbours (checks.py R3c).
+- dma_register_2026-09.xlsx sweep 6: the register lists every area with its properties, mains length and tags; nothing in it is a leakage change or a ranking on the crew question.
+- large_user_accounts.xlsx sweep 6: account and supply-point records with area codes; no leakage figure and no ordering by area.
+- Works orders dated past the export (reinstatement completions) were an H16 defect, fixed in the generator: a task not done at the export carries no completion; the rain gauge column `flag` renamed `qc_code` as the gauge export writes it.
+
 ## Tried and rejected
 
 - **This pass, the judge's FIX_NOW and the reader's one finding, closed in one generator pass.** The judge
