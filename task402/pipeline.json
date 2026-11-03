@@ -1,0 +1,38 @@
+{
+  "task": "task402",
+  "status": "DESIGN",
+  "domain": "psychology-behavioral-science/mediation-moderation-process-modeling",
+  "objective": "root-cause",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-03",
+  "seed": "RC08 (which of five faults on an underperforming wind turbine gets the one spring crew visit, and the winter energy it cost); the seed's world collides with shipped task187 (a wind farm's lost production read against the warranted power curve) and its kernel, the turbine's own healthy year as the reference curve, is task187's family; its client domain (Supply Chain & Logistics) carries Root-Cause only through interpretability, a backdrop for an operations world (task129 v1). Moved to an NHS Talking Therapies service's 2025-26 fall in recoveries under the same objective and number, keeping the decision kind (one of five causes gets the single fix) and the quantity's kind (what that cause cost over the period, in recoveries).",
+  "stump": "A competent solver walks the year's fall in recoveries down the referral-to-recovery funnel, finds it in step 3 courses that end early, reads those early endings as the waiting list's because they climb with the wait, finds agency therapists' recovery rates level with employed therapists', and files C, the step 3 waiting list; the step that lands it there is never setting each step 3 course's run of therapists, rebuilt across the record migration, against the agency booking log's assignment ends, which puts the early endings on the courses an agency therapist's lapsing assignment broke off (agency cover was bought for the longest waiters), so the change is A.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "guard.py check WARN on the registered card 2026-11-03T14:20Z (overuse.objective; repeat.gate_g and overuse.gate_g against task400 and task401; repeat.question_form against task400); NOTE test.same_puzzle_older against task270 v6 (lineage) and test.same_driver_older against task245, differentiated; nearest driver 0.08 task130 v2 loop 1 (lineage); window read with task401's card merged from the parent's branch"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: write the harness that generates the clean truth and prices every rung (wait gradient, clinician rates, completion by allocated practitioner, the broken-course reading), measure the standing family's spread and the cheap routes, then the fork table, closure table, readability screen, ladder, asks with ceiling.py, prompt.txt, and precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}

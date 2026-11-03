@@ -1,0 +1,87 @@
+{
+  "task": "task402",
+  "architecture": "v1",
+  "drawn": "2026-11-03",
+  "slot_note": "Numbered from seed RC08 (a wind turbine's five faults and its one spring crew visit). The seed's world collides with shipped task187 (a wind farm's lost production read against the warranted curve) and its kernel, a unit's own healthy year as the reference curve, is task187's family; the seed's client domain (Supply Chain & Logistics) carries Root-Cause only through interpretability, ruled a backdrop for an operations world at task129 v1. Moved to another client domain, world and dataset under the same objective and number, keeping the decision kind (one of five causes gets the single fix) and the quantity's kind (what that cause cost over the period, in the period's natural unit).",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "mediation-moderation-process-modeling",
+  "client_domain": "psychology-behavioral-science",
+  "niche": "an NHS Talking Therapies service's 2025-26 fall in recoveries: which of five service changes gets the commissioner's one 2026-27 improvement, when the step 3 courses that agency high-intensity therapists' lapsing 12-week assignments broke off read as the waiting list's early leavers",
+  "objective": "root-cause",
+  "shape": "09",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G4",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and the national recovery definition correctly walks the year's fall down the referral-to-recovery funnel, finds it in step 3 courses that ended early, sees early endings climb with the wait while agency therapists' recovery rates match employed ones, and files C, the step 3 waiting list, as the cause that cost the most recoveries; the courses actually lost are the ones an agency therapist's lapsing assignment broke off, which no wait band or practitioner comparison isolates.",
+  "domain_test": "The deciding quantity is the recoveries each service change cost through the process by which a course of psychological therapy produces one (attending, finishing, crossing caseness on PHQ-9 and GAD-7), estimated as therapy outcome research models a service change through its mediators; with another field's nouns the call loses the continuity of a therapist's course and the session-by-session caseness measures it is decided on.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:broken-course-attrition",
+  "layer1": [
+    "an electronic record migration in October 2025 that re-keyed practitioner identifiers, joined back only through a directory whose names differ from the staffing system's",
+    "a temporary staffing register in which an assignment extended is a new row, not an end",
+    "outcome measures exported as item-level answers before the migration and totals after it",
+    "a monthly KPI report filed with preliminary figures that the refreshed extract revises",
+    "appointment times in local time against a staffing system stamped in UTC",
+    "fiscal year April to March against calendar-month extracts"
+  ],
+  "stakeholder_role": "head of psychological therapies for the service",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "care_contacts_2024-26.csv",
+    "rows": 0,
+    "entity": "one appointment booked within one referral's course of therapy",
+    "grain": "referral x appointment",
+    "source": "synthetic"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "period_close",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "England, a fictional county integrated care board area",
+    "currency": "GBP",
+    "org_type": "a mental health charity delivering the county's NHS Talking Therapies service under contract to the integrated care board (stepped care, steps 2 and 3)",
+    "invented_names": [],
+    "people": [
+      "Wendy Gibson",
+      "Jemma Fletcher",
+      "Josh Parry",
+      "Lesley Thompson"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the good outcomes lost from cases broken off when the actor handling them leaves at the end of a fixed-term assignment, read only by setting each case's run of actors against the assignment register; because the arrangement was used to clear the longest-waiting cases the loss reads as early leaving among the longest waits, and the outcome rate counts only cases that reach a second treatment contact.",
+  "driver_concrete": "Each step 3 course's run of high-intensity therapists, rebuilt from the care contacts across the record migration, set against the temporary staffing register's assignment end dates: the courses an agency therapist's lapsing 12-week assignment broke off lose most of their patients after the handover, and because agency cover was bought to clear the longest waiters the loss reads as the waiting list's, while the recovery rate on finished courses never sees the patients who left before a second treatment appointment.",
+  "stump": "A solver who walks the fall down the referral-to-recovery funnel finds it in step 3 courses ending early, sees early endings rise with the wait while agency therapists' recovery rates match employed ones, and files C, the waiting list; the step that lands it there is never reading each course's run of therapists against the assignment register, which puts the loss on the courses an agency assignment broke off and the call on A.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task245": "task245 rebuilds the periods a recorder missed because it fails under its heaviest load; here every appointment is recorded, and the loss is the courses an agency assignment's end broke off, found by setting each course's run of therapists against the staffing register's end dates.",
+    "task270": "task270 v6 places unscheduled advertising spots from a traffic system's past placements to read a schedule's reach; here the decisive relation is a therapy course's run of practitioners against assignment end dates, and the loss is the patients who leave after a handover, which the recovery rate on finished courses never counts."
+  },
+  "lineage": [],
+  "notes": "Strategy population_selection: the decisive move fixes which courses carry the cause (the courses an assignment end broke off, an exposure no column marks) and which cases the outcome is counted over (the recovery rate's finished courses drop the patients a broken course loses before a second treatment appointment). Gate G decomposition_attribution: the year's correctly counted fall assigned to the right change.",
+  "registered": "2026-11-03T14:20:49Z"
+}
