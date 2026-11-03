@@ -2,67 +2,93 @@
 
 ## Tags
 
-**Domain:** Physical & Environmental Sciences (sensor calibration and measurement: delayed-mode calibration of profiling-float salinity against ship CTD reference data).
-**Analytical objective:** Data Quality Monitoring & Alerting (which floats of an observing array have their year's salinity record adjusted in the delayed-mode release, with the reference coverage and the real-time delivery record the release report carries).
+**Domain:** General Statistics & Data Science (missing data, censoring and measurement error: each project's error rate of a dialer's answering machine detection, measured from what the people it hung up on did next).
+**Analytical objective:** Data Quality Monitoring & Alerting (which recurring telephone projects have the dialer's answering machine detection switched off for 2027 because the answering-machine outcomes it records are not trustworthy, with each project's calling-hours exceptions, completed interviews and interviewer hours for the 2027 setup).
 
 ## 1. Final Recommendation
 
-**Adjust the 2027 salinity of six of the 24 floats in the delayed-mode release: 1990001, 1990004, 1990005 and 1990008, which read fresh (offsets -0.022, -0.020, -0.027, -0.030), and 1990007 and 1990012, which read salty (+0.021, +0.020). The other 18 floats' 2027 salinity goes out as measured.**
+**Open six recurring projects in 2027 with answering machine detection switched off: KR-2612 Medicare Care Experience Survey, KR-2616 Farm Operator Survey, KR-2618 Alumni Outcomes Survey, KR-2620 Veterans Health Survey, KR-2621 Small Business Conditions Survey and KR-2623 Child Care Provider Survey; the other seven keep it on.**
 
-Each adjusted float reads 0.020 or more from the water it sampled, and the largest offset among the other floats is 0.003, against the tolerance of 0.010. Below the Mediterranean water the deep layer's temperature identifies the water, but in 2027 the layer sat deeper than in the reference years and heaved with eddies, and on a given potential-temperature level the water freshens westward across the basin. So each float's salinity is compared with the reference water of the same potential temperature at the profile's own position. Differencing at fixed pressure, against the reference casts' mean or the nearest casts, adjusts 13 to 17 floats depending on the levels and casts used, at least seven of them floats whose sensors read true, because water at a fixed pressure in 2027 was not the water the casts sampled there. Comparing on potential-temperature levels against the basin's pooled reference adjusts 10 to 14, at least four of them clean floats on the basin's eastern and western sides. Measuring each float against its own first profiles finds only the four floats that drifted during the year and misses 1990007 and 1990012, whose sensors were off from deployment.
+On the six, 17 to 32% of the calls the dialer classed as answering machines in 2026 had been answered by a person, against the 2027 policy's one in ten; the other seven ran 2 to 6%. Not the maker's certified 2.1% or the 2025 listening audit's 9 of 400, which describe the pilot's short household greetings and keep every project on. Not the four projects with the highest machine-classed shares, which picks large employers and retired educators for ordinary voicemail.
 
 ## 2. Critical Components
 
-1. The four floats reading fresh: 1990001 **-0.022**; 1990004 **-0.020**; 1990005 **-0.027**; 1990008 **-0.030**.
-2. The two floats reading salty: 1990007 **+0.021**; 1990012 **+0.020**.
-3. The largest offset among the other 18 floats is **-0.003** (1990016).
-
-Offsets are in practical salinity and are accepted within 0.003 of these values: any mapping of the reference water to the profile's position on potential-temperature levels (nearest casts, casts within a few degrees, a fit in position) reproduces each offset to within 0.003, the third decimal moving with the mapping, and every such mapping adjusts the same six floats.
+1. Each project's share of machine-classed calls answered by a person, measured on its own calls: KR-2611 **3%**; KR-2612 **18%**; KR-2613 **2%**; KR-2614 **4%**; KR-2615 **3%**; KR-2616 **20%**; KR-2617 **4%**; KR-2618 **17%**; KR-2619 **6%**; KR-2620 **18%**; KR-2621 **32%**; KR-2622 **2%**; KR-2623 **29%**.
+2. Nearest the limit: KR-2619 at **6%** stays on; KR-2618 at **17%** is the lowest switched off.
+3. The pilot, KR-2611, reads **3%**, in line with the 2025 listening audit; people who ring back mostly do so within five minutes and machine owners three quarters of an hour or more later, so every window from 5 to 40 minutes gives the same shares.
 
 ## 3. Step-by-Step Solution
 
-1. Took the array's 24 floats from ibfa_float_register.csv and their 2027 ascending profiles from ibfa_profiles_2027.csv: 878 profiles, 44 of them received twice (file_version 1 broke off part way; file_version 2 carries every level, and is the one used). The partner float 1990731, decoded beside the array, and the descending profiles of floats 1990010, 1990013, 1990015, 1990018 are left out (ioa_dmqc_2027_release_thread.eml).
-2. Joined the levels in ibfa_profile_levels_2027.csv and kept the good values, flag 1 or 2 in pressure, temperature and salinity, between 1,400 and 1,900 dbar: 8,794 values in 878 profiles.
-3. Built the reference water from both sources named in ioa_reference_data_note.docx: the institute's archive (ioa_ctd_archive_stations.csv and ioa_ctd_archive_levels.csv, 183 casts; the 35 casts of the 2015 and 2016 cruises in IPTS-68, divided by 1.00024 for ITS-90) and the RHD extract (rhd_extract_iberian_basin_stations.csv and rhd_extract_iberian_basin_levels.csv, 190 stations; depths taken to pressure by Saunders 1981).
-4. Computed potential temperature referred to the surface (EOS-80) for every float level and every reference level.
-5. Fitted the reference salinity between 1,300 and 2,050 dbar on potential temperature theta and position: S = a + b theta + c theta^2 + (theta - 3.5)(d longitude + e latitude), least squares. The reference levels' potential temperatures (4.03 to 8.29) span every float level's used (4.32 to 7.53), so the fit is read only inside its own range.
-6. For each profile, the mean over its good layer values of the float's salinity less the fitted reference salinity at the value's potential temperature and the profile's position; for each float, the mean over its 2027 ascending profiles (ioa_dmqc_2027_release_thread.eml).
-7. Applied the tolerance in ioa_dmqc_2027_release_thread.eml, an offset more than 0.010 in magnitude: six floats are adjusted.
-8. Reference casts reaching 2,000 dbar: an archive cast counts when its max_pres is 2,000 or more; an RHD station when its deepest depth, taken to pressure, is 2,000 dbar or more. 119 RHD stations are the institute's own casts under RHD ids (time within 15 minutes and position within 0.02 degree of an archive cast) and count once; casts the archive holds twice at one station a few hours apart are two casts. Counted by the year of the cast.
-9. Delivery record: each of the array's ascending profiles, by the month the float surfaced, the end of the ascent (ascent_end in ibfa_cycle_technical_2027.csv; the model K floats' juld is the start of the ascent, about six hours earlier). Its time of arrival is the receipt of the file carrying every level in ioa_dac_receipt_log_2027.csv, the server's Lisbon time taken to UTC. Counted when that is within 24 hours of surfacing: 781 of 878 profiles in 2027.
+1. Read the twelve exports in dialer_exports (letter codes and US dates to June, words and ISO dates from July) and dropped the day each export repeats from the month before by call id.
+2. Collapsed inbound_switch_2026.csv to one call per switch_call_id (its first leg's time and caller), dropped the test calls from extension 6517 and tied each call from a dialed number to the latest outbound call to that number, numbers normalised to ten digits.
+3. For each project in project_register_2027.xlsx, divided the share of its machine-classed calls rung back within 20 minutes by the share of its abandoned live answers rung back within 20 minutes.
+4. Applied section 3 of dialer_policy_2027.docx: detection off where the share is one in ten or more, six projects; on for the other seven.
+5. Calling hours: each answered call's household state from case_records_2026.csv, by the number dialed, else by the case number the dialer wrote from July, else (an appointment number the record lacks, before July) through the same case's calls to its recorded number; Central time converted with state_time_zones.csv, Arizona on standard time all year; counted calls before 8:00 or from 21:00 local.
+6. Completed interviews: the dialer's COMPLETE rows and the inbound calls with COMPLETE on any leg, each case counted once across the July case-number change (matched to its case record), a supervisor's verification call adding none (policy section 5).
+7. Interviewer hours: interviewer_hours_2026_h1.csv (decimal hours) and interviewer_hours_2026_h2.csv (hours.minutes, 4.30 being four and a half hours), each shift's hours shared by each project's talk and wrap time on the interviewer's calls inside the shift, shifts with no calls not charged (policy section 5).
+8. Detection is switched off for 2027 on KR-2612, KR-2616, KR-2618, KR-2620, KR-2621 and KR-2623.
 
 ## 4. Deliverable Answers
 
-### ioa_dmqc_salinity_2027.xlsx
+### amd_review_2027.xlsx
 
-1. Each float's 2027 offset (practical salinity, three decimals; accepted within 0.003, the third decimal moving with the mapping of the reference to the profile's position) and decision:
-   - 1990001: -0.022, adjust
-   - 1990002: 0.000, release as measured
-   - 1990003: -0.001, release as measured
-   - 1990004: -0.020, adjust
-   - 1990005: -0.027, adjust
-   - 1990006: -0.001, release as measured
-   - 1990007: +0.021, adjust
-   - 1990008: -0.030, adjust
-   - 1990009: 0.000, release as measured
-   - 1990010: +0.001, release as measured
-   - 1990011: 0.000, release as measured
-   - 1990012: +0.020, adjust
-   - 1990013: 0.000, release as measured
-   - 1990014: -0.001, release as measured
-   - 1990015: +0.001, release as measured
-   - 1990016: -0.003, release as measured
-   - 1990017: +0.001, release as measured
-   - 1990018: 0.000, release as measured
-   - 1990019: -0.001, release as measured
-   - 1990020: 0.000, release as measured
-   - 1990021: +0.001, release as measured
-   - 1990022: -0.001, release as measured
-   - 1990023: +0.002, release as measured
-   - 1990024: 0.000, release as measured
-2. Reference casts reaching 2,000 dbar, by year: 2015 21; 2016 17; 2017 19; 2018 24; 2019 19; 2020 13; 2021 21; 2022 17; 2023 22; 2024 23; 2025 17.
-3. The array's ascending profiles that reached the data centre in full within 24 hours of the float surfacing, by the month the float surfaced: January 69; February 58; March 62; April 67; May 65; June 67; July 63; August 66; September 63; October 69; November 67; December 65.
+1. Each project's 2026 share of machine-classed calls answered by a person (whole per cent) and its 2027 detection:
+   - KR-2611 Minnesota Adult Health Survey (landline): 3%, detection on
+   - KR-2612 Medicare Care Experience Survey: 18%, detection off
+   - KR-2613 Large Employer Benefits Survey: 2%, detection on
+   - KR-2614 Statewide Voter Attitudes Poll: 4%, detection on
+   - KR-2615 School Parents Survey: 3%, detection on
+   - KR-2616 Farm Operator Survey: 20%, detection off
+   - KR-2617 Crime Victimization Survey: 4%, detection on
+   - KR-2618 Alumni Outcomes Survey: 17%, detection off
+   - KR-2619 Cooperative Member Survey: 6%, detection on
+   - KR-2620 Veterans Health Survey: 18%, detection off
+   - KR-2621 Small Business Conditions Survey: 32%, detection off
+   - KR-2622 Retired Educators Survey: 2%, detection on
+   - KR-2623 Child Care Provider Survey: 29%, detection off
+2. Answered calls in 2026 that rang before 8 am or after 9 pm in the called household's own local time:
+   - KR-2611: 181
+   - KR-2612: 193
+   - KR-2613: 76
+   - KR-2614: 175
+   - KR-2615: 110
+   - KR-2616: 120
+   - KR-2617: 147
+   - KR-2618: 186
+   - KR-2619: 125
+   - KR-2620: 178
+   - KR-2621: 85
+   - KR-2622: 198
+   - KR-2623: 124
+3. Interviews completed in 2026:
+   - KR-2611: 3,488
+   - KR-2612: 2,311
+   - KR-2613: 1,407
+   - KR-2614: 2,745
+   - KR-2615: 1,927
+   - KR-2616: 1,982
+   - KR-2617: 2,305
+   - KR-2618: 1,877
+   - KR-2619: 2,073
+   - KR-2620: 2,034
+   - KR-2621: 1,416
+   - KR-2622: 1,868
+   - KR-2623: 1,971
+4. Interviewer hours used in 2026 (one decimal place):
+   - KR-2611: 9,114.6
+   - KR-2612: 6,666.6
+   - KR-2613: 4,427.6
+   - KR-2614: 7,496.1
+   - KR-2615: 5,430.6
+   - KR-2616: 5,475.9
+   - KR-2617: 6,478.2
+   - KR-2618: 5,502.8
+   - KR-2619: 5,836.9
+   - KR-2620: 6,118.9
+   - KR-2621: 4,235.3
+   - KR-2622: 5,623.2
+   - KR-2623: 5,418.5
 
-### ioa_dmqc_offsets_2027.png
+### amd_review_2027.pdf
 
-4. One bar per float with its 2027 offset, the tolerance band from -0.010 to +0.010 shaded, and the six adjusted floats (1990001, 1990004, 1990005, 1990007, 1990008, 1990012) marked.
+5. One-page note: detection switched off for KR-2612, KR-2616, KR-2618, KR-2620, KR-2621 and KR-2623 because a tenth or more of their machine-classed calls were people, measured from the calls rung back within minutes against each project's abandoned answers; the certified rate and the listening audit hold only for short household greetings; a bar chart of the projects' shares against the one-in-ten limit.

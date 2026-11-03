@@ -1,365 +1,325 @@
-"""task241 checks: the three rules executed on the simulator's clean truth (R1 to R3c), every semantic fork row (SF1 to
-SF12), the rungs and the corridor of position-mapped methods, every Layer 1 slip against the call, the ask devices and
-their stops, the separation of the call from the devices, the documents' pins, the input gates and the realism sweep."""
-import datetime as dt
-import itertools
+"""task241 checks: every semantic fork (SF1 to SF13), the ladder's rungs and margins, the analyst test on the clean
+truth, the oracles, the separation of the ask devices from the main population, each ask's golden against the truth
+and against the routes that miss it, and the input gates. Run from make.py after every build."""
+import glob
 import os
-import re
 
 import numpy as np
 import pandas as pd
+from openpyxl import load_workbook
 
-import estim as E
 import params as P
-import records as RC
+import solve as S_
 
 N = [0]
-GOLD = ["1990001", "1990004", "1990005", "1990007", "1990008", "1990012"]
+LOG = []
+EDGE = float(os.environ.get("TASK241_EDGE", "0.05"))   # points between a graded share and its rounding edge
 
 
-def ok(cond, label):
-    assert cond, label
+def ok(cond, msg):
+    assert cond, msg
     N[0] += 1
 
 
-def _pdf_text(path):
-    from pypdf import PdfReader
-    return " ".join(" ".join(pg.extract_text().split()) for pg in PdfReader(path).pages)
+def note(msg):
+    LOG.append(msg)
 
 
-def _docx_text(path):
-    import docx
-    d = docx.Document(path)
-    return " ".join([p.text for p in d.paragraphs] + [c.text for t in d.tables for row in t.rows for c in row.cells])
-
-
-# ------------------------------------------------------------------ the routes on the clean truth
-def truth_frames(W, R):
-    """the world before any record is written: each array float's 2027 levels in the layer (measured pressure and
-    salinity, the water's true potential temperature) and every reference cast's levels (true pressure, potential
-    temperature and salinity)"""
-    rows = []
-    for f in R.array:
-        for c in f["cycles"]:
-            m = (c["p"] >= P.LAYER[0]) & (c["p"] <= P.LAYER[1])
-            for p, th, s in zip(c["p"][m], c["theta_true"][m], c["s"][m]):
-                rows.append((f["wmo"], c["cycle"], c["lon"], c["lat"], p, th, s, c["delta"]))
-    fl = pd.DataFrame(rows, columns=["wmo", "cycle", "lon", "lat", "pres", "theta", "psal", "delta"])
-    refs = []
-    for c in R.casts:
-        m = (c["p"] <= c["pmax"]) & (c["p"] >= 1250) & (c["p"] <= 2050)
-        for p, th, s in zip(c["p"][m], c["theta"][m], c["s"][m]):
-            refs.append((c["id"], c["lon"], c["lat"], p, th, s))
-    for c in R.others:
-        m = (c["p"] >= 1250) & (c["p"] <= 2050)
-        for p, th, s in zip(c["p"][m], c["theta"][m], c["s"][m]):
-            refs.append((c["id"], c["lon"], c["lat"], p, th, s))
-    ref = pd.DataFrame(refs, columns=["cast", "lon", "lat", "pres", "theta", "psal"])
-    return fl, ref
-
-
-def truth_route(fl, ref, route):
-    fl = fl.copy()
-    if route in ("golden", "theta_global", "self"):
-        r = ref[(ref["pres"] >= 1300) & (ref["pres"] <= 2050)]
-        beta = E.ref_model(r, position=(route != "theta_global"))
-        fl["d"] = fl["psal"] - E.ref_s(beta, fl["theta"].values, fl["lon"].values, fl["lat"].values)
-    else:
-        grid = np.arange(1305.0, 1996.0, 10.0)
-        prof = {}
-        for c, g in ref.groupby("cast"):
-            g = g.sort_values("pres")
-            if g["pres"].min() <= grid[0] and g["pres"].max() >= grid[-1]:
-                prof[c] = (np.interp(grid, g["pres"].values, g["psal"].values), g["lon"].iloc[0], g["lat"].iloc[0])
-        names = list(prof)
-        M = np.array([prof[c][0] for c in names])
-        clon = np.array([prof[c][1] for c in names])
-        clat = np.array([prof[c][2] for c in names])
-        d = np.zeros(len(fl))
-        for (w, cyc), idx in fl.groupby(["wmo", "cycle"]).groups.items():
-            g = fl.loc[idx]
-            if route == "p_global":
-                refp = M.mean(axis=0)
-            else:
-                dist = ((clon - g["lon"].iloc[0]) * np.cos(np.radians(g["lat"].iloc[0]))) ** 2 + \
-                    (clat - g["lat"].iloc[0]) ** 2
-                refp = M[np.argsort(dist)[:12]].mean(axis=0)
-            d[fl.index.get_indexer(idx)] = g["psal"].values - np.interp(g["pres"].values, grid, refp)
-        fl["d"] = d
-    per = fl.groupby(["wmo", "cycle"])["d"].mean().reset_index().sort_values(["wmo", "cycle"])
-    out = {}
-    for w, g in per.groupby("wmo"):
-        out[w] = float(g["d"].mean() - (g["d"].iloc[0] if route == "self" else 0.0))
+def local_hours(placed, states, zones, arizona_dst=False):
+    zmap = dict(zip(zones["state"], zones["time_zone"].map(S_.ZONES)))
+    if arizona_dst:
+        zmap = {k: ("America/Denver" if v == "America/Phoenix" else v) for k, v in zmap.items()}
+    z = pd.Series(states).map(zmap).values
+    loc = pd.Series(placed).dt.tz_localize("America/Chicago", ambiguous="NaT", nonexistent="NaT")
+    out = np.full(len(z), np.nan)
+    for zone in pd.unique(z):
+        if not isinstance(zone, str):
+            continue                      # a household the route cannot place
+        idx = np.flatnonzero(z == zone)
+        lt = loc.iloc[idx].dt.tz_convert(zone)
+        out[idx] = (lt.dt.hour + lt.dt.minute / 60.0 + lt.dt.second / 3600.0).values
     return out
 
 
-def run(target, golden, o, X, A):
-    W, R = o["W"], o["R"]
-    F = X["files"]
-    D = X["D"]
-    off, adj, routes = X["off"], X["adjusted"], X["routes"]
-    ok(adj == GOLD, "golden: six floats adjusted (%s)" % adj)
+def interval(order, golden):
+    """is the golden set one contiguous block of this ordering"""
+    pos = sorted(order.index(j) for j in golden)
+    return pos[-1] - pos[0] == len(golden) - 1
 
-    # ---------------------------------------------------------------- the truth behind the golden
-    true = {f["wmo"]: float(np.mean([c["delta"] for c in f["cycles"]])) for f in R.array}
-    ok(sorted(w for w, v in true.items() if abs(v) > P.TOL) == GOLD, "truth: the six floats' sensors are off by more "
-       "than the tolerance over 2027")
-    ok(max(abs(off[w] - true[w]) for w in true) < 0.0012, "the golden offsets reproduce each float's true 2027 "
-       "sensor error to within 0.0012 (max %.4f)" % max(abs(off[w] - true[w]) for w in true))
-    ok(min(abs(true[w]) for w in GOLD) > 0.0195 and max(abs(true[w]) for w in true if w not in GOLD) < 0.0035,
-       "truth margins: adjusted floats 0.0195 or more, the rest under 0.0035")
-    kinds = {f["wmo"]: f["kind"] for f in R.array}
-    ok(sorted(w for w in GOLD if kinds[w] == "drift") == A["fresh"] and
-       sorted(w for w in GOLD if kinds[w] == "offset") == A["salty"], "the fresh four drifted, the salty two were off "
-       "from deployment")
 
-    # ---------------------------------------------------------------- R1: the field's raw material ships
-    for f in os.listdir(target):
-        if f.endswith(".csv"):
-            cols = pd.read_csv(os.path.join(target, f), nrows=1).columns
-            ok(not any(re.search(r"offset|adjust|drift|delta|theta|potential|error_est|reference_s|anomal", c, re.I)
-                       for c in cols if c != "lab_salinity_error" and c != "lab_temperature_error"),
-               "R1 no shipped column holds an offset, a potential temperature or a reference salinity (%s)" % f)
-    ok(len(D["lev"]) > 25000 and {"pres", "temp", "psal"} <= set(D["lev"].columns) and
-       {"pres", "temp", "psal"} <= set(D["al"].columns) and {"depth_m", "temperature", "salinity"} <= set(D["il"].columns),
-       "R1 the float levels and the reference casts' levels ship as measured (pressure or depth, in-situ "
-       "temperature, practical salinity)")
+def run(target, golden_dir, W, S, A):
+    N[0] = 0
+    LOG.clear()
+    calls, inbound, reg, jobs, cases, zones = S["calls"], S["inbound"], S["reg"], S["jobs"], S["cases"], S["zones"]
+    raw = S["raw"]
+    m = S["main"].set_index("job")
+    gold = sorted(m.index[m["off"]])
+    ret = S["ret"]
 
-    # ---------------------------------------------------------------- R3: the analyst test on the clean truth
-    fl, ref = truth_frames(W, R)
-    tr = {r: truth_route(fl, ref, r) for r in ("p_global", "p_local", "theta_global", "golden", "self")}
-    a0 = E.adjusted(tr["p_global"])
-    ok(a0 != GOLD and len(set(a0) - set(GOLD)) >= 6, "R3a the default path (every good value at fixed pressure "
-       "against the reference casts' mean) on the clean truth adjusts %d floats, %d of them clean" %
-       (len(a0), len(set(a0) - set(GOLD))))
-    ok(E.adjusted(tr["golden"]) == GOLD, "R3b the decisive step alone (potential-temperature levels, reference at the "
-       "profile's position) on the clean truth gives the six")
-    ok(E.adjusted(tr["p_local"]) != GOLD, "R3b position alone at fixed pressure stays wrong on the clean truth (%d)"
-       % len(E.adjusted(tr["p_local"])))
-    ok(E.adjusted(tr["theta_global"]) != GOLD, "R3b temperature levels alone (the pooled reference) stay wrong on the "
-       "clean truth (%d)" % len(E.adjusted(tr["theta_global"])))
-    ok(E.adjusted(tr["self"]) == sorted(w for w in GOLD if kinds[w] == "drift"), "R3b drift from the first profile "
-       "finds only the drifting floats on the clean truth")
-    # the default path on the shipped files, every filed rule applied
-    ok(len(E.adjusted(routes["p_global"])) == 14 and set(GOLD) <= set(E.adjusted(routes["p_global"])),
-       "default path on the pack ends on 14 floats, all six among them, eight clean")
-    ok(len(E.adjusted(routes["theta_global"])) == 13 and set(GOLD) <= set(E.adjusted(routes["theta_global"])),
-       "pooled temperature-level rung on the pack: 13")
-    ok(len(E.adjusted(routes["p_local"])) == 13, "nearest-casts rung at fixed pressure on the pack: 13")
-    ok(E.adjusted(routes["self"]) == A["fresh"], "drift-only rung on the pack: the four drifting floats")
-    for n, v in A["p_variants"].items():
-        ok(13 <= v["n"] <= 17 and v["extra"] >= 7, "fixed-pressure variant %s adjusts %d, %d clean" % (n, v["n"], v["extra"]))
-    for n, v in A["t_variants"].items():
-        ok(10 <= v["n"] <= 14 and v["extra"] >= 4 and not v["missed"], "pooled temperature-level variant %s adjusts %d, "
-           "%d clean" % (n, v["n"], v["extra"]))
-    ok(tuple(A["p_range"]) == (13, 17) and A["p_extra_min"] == 7 and tuple(A["t_range"]) == (10, 14) and
-       A["t_extra_min"] == 4, "the write-up's rung ranges are the measured ones")
-    ok(A["theta_span"][0] < A["theta_span"][2] and A["theta_span"][3] < A["theta_span"][1], "the reference levels' "
-       "potential temperatures span every float level's used")
-    # why the default path fails: the layer sat deeper in 2027, and the water freshens westward on a level
-    pr, lv = E.float_layer(D)
-    r = E.reference(D)
-    def iso(g, th0=5.5):
-        g = g.sort_values("pres")
-        t, p = g["theta"].values, g["pres"].values
-        return float(np.interp(th0, t[::-1], p[::-1])) if t.min() <= th0 <= t.max() else np.nan
-    fz = np.nanmean([iso(g) for _, g in lv.groupby("profile_id")])
-    rz = np.nanmean([iso(g) for _, g in r.groupby("cast")])
-    ok(fz - rz > 10.0, "the 5.5 degree isotherm sat %.1f dbar deeper in the 2027 float profiles than in the reference "
-       "casts" % (fz - rz))
-    beta = E.ref_model(r)
-    ok(beta[3] * 2.0 > 0.0025, "on the 5.5 degree level the reference water freshens westward, %.4f per degree of "
-       "longitude" % (beta[3] * 2.0))
+    # ---- the main call: the golden set, its margins and the fork table --------------------------------------------
+    ok(len(gold) == 6, "golden set is not six projects: %s" % gold)
+    ok(sorted(A["off"]) == gold, "write-up off set differs from the solve")
+    share = m["share"]
+    ok((share - P.LIMIT).abs().min() >= 0.03, "SF10: a project within three points of the limit")
+    note("nearest under the limit %s %.2f, lowest over %s %.2f" % (share[~m["off"]].idxmax(), 100 * share[~m["off"]].max(),
+                                                                  share[m["off"]].idxmin(), 100 * share[m["off"]].min()))
+    # SF1: the two detector codes are one detector result column
+    for p in sorted(glob.glob(os.path.join(target, "dialer_exports", "*.csv"))):
+        d = pd.read_csv(p, dtype=str, keep_default_na=False)
+        if "CallID" in d.columns:
+            ok(((d["AMD"] == "M") == (d["Disp"] == "A")).all(), "SF1: AMD letter and disposition disagree in " + p)
+        else:
+            ok(((d["amd_result"] == "MACHINE") == (d["outcome"] == "AMD_MACHINE")).all(), "SF1: amd_result disagrees in " + p)
+    by_col = calls[calls["amd"].eq("MACHINE")].groupby("job").size().reindex(jobs)
+    ok((by_col.values == m["n_am"].values).all(), "SF1: machine-classed counts differ by column")
+    # SF2 and SF5: one line per job, and every return within the window lands on the calling project's line
+    lines = S_.line_jobs(reg)
+    ok(len(set(lines)) == len(jobs) == len(set(lines.values())), "SF2: the register's lines are not one to one")
+    r20 = ret[(ret["delay_min"] <= 20) & ret["job"].isin(jobs)]
+    ok((r20["dialed_line"].map(lines) == r20["job"]).all(), "SF5: a return landed on another project's line")
+    # SF3: the repeated day is an exact copy, and the year window is the same in UTC
+    dup = raw[raw.duplicated("call_id", keep=False)]
+    ok(len(dup) > 0 and dup.drop_duplicates().shape[0] == dup["call_id"].nunique(), "SF3: a repeated row is not an exact copy")
+    raw_m = S_.main_call(raw.sort_values(["placed", "call_id"]).reset_index(drop=True), inbound, jobs)
+    ok(sorted(raw_m.loc[raw_m["off"], "job"]) == gold, "SF3: keeping the repeated rows moves the call")
+    note("SF3 repeated rows %d; shares with them kept %s" % (len(dup) - dup["call_id"].nunique(),
+                                                             (raw_m["share"] * 100).round().astype(int).tolist()))
+    edge = calls[(calls["placed"] < pd.Timestamp("2026-01-01 06:00")) | (calls["placed"] >= pd.Timestamp("2026-12-31 18:00"))]
+    ok(len(edge) == 0, "SF3: calls inside six hours of a year edge")
+    # SF4: no column records who answered a machine-classed call
+    ok(set(calls["amd"].unique()) <= {"MACHINE", "LIVE"}, "SF4: a detector value other than MACHINE or LIVE")
+    # SF6: the latest outbound call is the only one to that number in the four hours before the return
+    out = calls[["phone", "placed"]].sort_values("placed")
+    cnt = 0
+    grp = out.groupby("phone")["placed"].apply(np.array).to_dict()
+    for ph, st in zip(r20["phone"], r20["started"]):
+        a = grp[ph]
+        cnt += int(((a <= np.datetime64(st)) & (a > np.datetime64(st - pd.Timedelta(hours=4)))).sum() != 1)
+    note("SF6 returns with two outbound calls in the four hours before: %d" % cnt)
+    alt = r20.copy()
+    day = calls.assign(day=calls["placed"].dt.normalize()).sort_values("placed").drop_duplicates(["phone", "day"])
+    first = dict(zip(zip(day["phone"], day["day"]), zip(day["outcome"], day["job"], day["placed"])))
+    pick = [first.get((ph, st.normalize())) for ph, st in zip(alt["phone"], alt["started"])]
+    alt["outcome"] = [p[0] if p and p[2] <= st else o for p, o, st in zip(pick, alt["outcome"], alt["started"])]
+    alt["delay_min"] = 0.0
+    m6 = S_.main_call(calls, inbound, jobs, ret=alt).set_index("job")
+    ok(sorted(m6.index[m6["off"]]) == gold, "SF6: the day's first call moves the call")
+    ok(((m6["share"] * 100).apply(lambda x: int(np.floor(x + 0.5))) == (share * 100).apply(lambda x: int(np.floor(x + 0.5)))).all(),
+       "SF6: the day's first call moves a share")
+    # SF7: the corridor, 5 to 40 minutes
+    base = (share * 100).apply(lambda x: int(np.floor(x + 0.5)))
+    for w in (5, 10, 15, 20, 30, 40):
+        mw = S_.main_call(calls, inbound, jobs, window_min=w, ret=ret).set_index("job")
+        ok(((mw["share"] * 100).apply(lambda x: int(np.floor(x + 0.5))) == base).all(), "SF7: window %d moves a share" % w)
+        ok(sorted(mw.index[mw["off"]]) == gold, "SF7: window %d moves the call" % w)
+    # SF8: one return per leg
+    legs = inbound[inbound["phone"].ne("")].sort_values("started")
+    ml = pd.merge_asof(legs, calls[["call_id", "job", "phone", "ended", "outcome"]].sort_values("ended"),
+                       left_on="started", right_on="ended", by="phone", direction="backward")
+    ml = ml[ml["call_id"].notna()]
+    ml["delay_min"] = (ml["started"] - ml["ended"]).dt.total_seconds() / 60.0
+    ml["leg"] = "1"
+    mleg = S_.main_call(calls, inbound, jobs, ret=ml).set_index("job")
+    ok(sorted(mleg.index[mleg["off"]]) == gold, "SF8: counting legs moves the call")
+    note("SF8 per-leg shares %s" % (mleg["share"] * 100).round(1).tolist())
+    # SF9: the test calls never match a dialed number
+    tests = inbound[inbound["wrap_code"].eq("TEST")]
+    ok(len(tests) > 0 and (tests["phone"] == "").all(), "SF9: a test call carries a dialed number")
+    # SF11: the one-off study is in the exports, not on the register
+    ok(P.ONE_OFF[0] in set(calls["job"]) and P.ONE_OFF[0] not in jobs and len(jobs) == len(P.PROJECTS),
+       "SF11: the register's projects")
+    # SF12: returns landing in January 2027 are counted, and dropping them does not move the call
+    jan = ret[(ret["started"] >= pd.Timestamp("2027-01-01")) & (ret["delay_min"] <= 20)]
+    ok(len(jan) == 0, "SF12: a return inside the window crosses the year edge")
+    ok(len(ret[ret["started"] >= pd.Timestamp("2027-01-01")]) > 0, "SF12: the log holds no January calls")
+    mj = S_.main_call(calls, inbound, jobs, ret=ret[ret["started"] < pd.Timestamp("2027-01-01")]).set_index("job")
+    ok(sorted(mj.index[mj["off"]]) == gold, "SF12: dropping January returns moves the call")
+    # SF13: the share from counts, rounded once, clear of a rounding edge; monthly averaging gives the same call
+    frac = (share * 100) - np.floor(share * 100)
+    ok(((frac - 0.5).abs() >= EDGE).all(), "SF13: a share within %.2f of a rounding edge" % EDGE)
+    note("SF13 nearest rounding edge %.3f points" % (frac - 0.5).abs().min())
+    rr = (m["r_am"] / m["n_am"]).round(2) / (m["r_ab"] / m["n_ab"]).round(2)
+    ok(sorted(rr.index[rr >= P.LIMIT]) == gold, "SF13: rounding each rate first moves the call")
+    # row order
+    sh = calls.sample(frac=1.0, random_state=1)
+    ms = S_.main_call(sh, inbound.sample(frac=1.0, random_state=2), jobs).set_index("job")
+    ok(np.allclose(ms["share"].reindex(jobs).values, share.reindex(jobs).values), "axis 14: row order moves a share")
 
-    # ---------------------------------------------------------------- R3c: no plant
-    for k in ("thread", "refnote", "models", "readme", "dict"):
-        p = os.path.join(target, F[k])
-        txt = _pdf_text(p) if p.endswith(".pdf") else _docx_text(p) if p.endswith(".docx") else open(p).read()
-        ok(not re.search(r"0\.0(?!10\b)[1-4]\d|offset of|drift(ed|ing) float|potential temperature|isotherm|heave|"
-                         r"at the (profile|float)'s (own )?position|mapped|fixed pressure", txt, re.I),
-           "R3c no document carries an offset, a drift verdict or the method (%s)" % k)
-    th = open(os.path.join(target, F["thread"]), encoding="utf-8").read()
-    ok(not re.search(r"potential|isotherm|heave|theta|mapped|position|pressure level|fixed pressure", th, re.I),
-       "R3c the release thread files the estimand and names no method")
-    ok("true salinity of the water it sampled" in th and "more than 0.010 in magnitude" in th and
-       "between 1,400 and 1,900 dbar" in th and "flag 1 or 2" in th, "the estimand, tolerance, layer and good values "
-       "are filed in the release thread")
-    ok("in full within 24 hours of the float surfacing" in th and "by the month the float surfaced" in th,
-       "the delivery record is filed in the release thread")
+    # ---- the ladder ----------------------------------------------------------------------------------------------
+    # rungs 0 and 1: the dispositions at face value and the certified rate carried to every project
+    ok(m["off"].sum() > 0 and (P.CERTIFIED < P.LIMIT), "rung 1")
+    msh = S_.machine_share(calls, jobs)
+    live = 1 - msh
+    bayes = P.CERTIFIED * live / (P.CERTIFIED * live + (1 - 0.065) * msh)
+    ok((bayes < P.LIMIT).all(), "rung 1: the certified rate taken through each project's mix flags a project")
+    ok(9 / 400 < P.LIMIT, "rung 1: the listening audit")
+    order = list(msh.sort_values(ascending=False).index)
+    top4 = sorted(order[:4])
+    ok(top4 == sorted(["KR-2613", "KR-2612", "KR-2620", "KR-2622"]), "rung 2: the top four by machine share are %s" % top4)
+    ok(100 * (msh[order[3]] - msh[order[4]]) >= 1.0, "rung 2: the fourth and fifth machine shares within a point")
+    ok(len(set(top4) & set(gold)) == 2, "rung 2: two right")
+    for j in ("KR-2613", "KR-2622"):          # the note: higher machine-classed shares than most of the six
+        ok(int((msh[j] > msh[gold]).sum()) >= 4, "note: %s is not above most of the six on machine share" % j)
+    any_d = S_.main_call(calls, inbound, jobs, any_delay=True, ret=ret)
+    ok(any_d["off"].all(), "rung 3: returns at any delay do not flag every project")
+    pooled = S_.main_call(calls, inbound, jobs, pooled=True, ret=ret).set_index("job")
+    pset = sorted(pooled.index[pooled["off"]])
+    ok(len(pset) == 5 and set(pset) < set(gold), "rung 4: the pooled denominator flags %s" % pset)
+    miss = (set(gold) - set(pset)).pop()
+    ok(pooled.loc[miss, "share"] <= P.LIMIT - 0.02, "rung 4: the project it drops sits within two points")
+    note("rung 4 drops %s at %.2f; rung 2 gap %.2f points" % (miss, 100 * pooled.loc[miss, "share"],
+                                                              100 * (msh[order[3]] - msh[order[4]])))
+    # the shock line: the golden set is no interval of any shipped per-project statistic
+    g = calls[calls["job"].isin(jobs)]
+    answered = g.groupby("job").size().reindex(jobs)
+    stats = {"machine share": msh, "abandoned rate": m["n_ab"] / answered,
+             "machine-classed returned": m["r_am"] / m["n_am"], "abandoned returned": m["r_ab"] / m["n_ab"],
+             "completion rate": S["askB"] / answered, "answered calls": answered,
+             "line volume": inbound[inbound["leg"] == "1"].groupby(inbound["dialed_line"].map(lines)).size().reindex(jobs),
+             "cases": cases.groupby("job").size().reindex(jobs), "hours": S["askC"]}
+    for name, st in stats.items():
+        ok(not interval(list(st.sort_values().index), gold), "shock: the golden set is an interval of " + name)
+    # Gate F on the clean truth: the analyst test and the cheap routes
+    tc = W["calls"]
+    tr = tc[tc["outcome"].eq("AMD_MACHINE") & tc["job"].isin(jobs)]
+    truth = tr.groupby("job")["is_machine"].apply(lambda x: (~x).mean()).reindex(jobs)
+    ok(sorted(truth.index[truth >= P.LIMIT]) == gold, "the clean truth's set differs from the golden")
+    ok(((truth >= P.LIMIT) == m["off"].reindex(jobs)).all() and (truth - P.LIMIT).abs().min() >= 0.02,
+       "the clean truth sits near the limit")
+    note("clean truth %s" % (truth * 100).round(1).tolist())
+    note("estimate    %s" % (share.reindex(jobs) * 100).round(1).tolist())
+    se = np.sqrt(share * (1 - share) / m["r_am"].clip(lower=1) + share ** 2 / m["r_ab"])   # delta method, rough
+    ok(((truth - share.reindex(jobs)).abs() <= 3 * se.reindex(jobs)).all(), "the estimate strays from the clean truth")
+    cheap = {"certified": set(), "listening": set(), "top4": set(top4), "any delay": set(any_d.loc[any_d["off"], "job"]),
+             "pooled": set(pset)}
+    landed = [k for k, v in cheap.items() if v == set(gold)]
+    ok(not landed, "Gate F: a cheap route lands the call: %s" % landed)
+    # oracles: the pilot inside the 2025 audit's interval
+    from scipy.stats import beta
+    lo, hi = beta.ppf(0.025, 9, 392), beta.ppf(0.975, 10, 391)
+    ok(lo <= share[P.PILOT_JOB] <= hi, "oracle: the pilot's 2026 share %.3f outside the audit's %.3f to %.3f"
+       % (share[P.PILOT_JOB], lo, hi))
+    note("pilot %.2f inside the audit interval %.2f to %.2f" % (100 * share[P.PILOT_JOB], 100 * lo, 100 * hi))
 
-    # ---------------------------------------------------------------- the corridor of position-mapped methods (C1, C3)
-    for name, kw in [("near5", dict(k=5)), ("near10", dict(k=10)), ("near20", dict(k=20)), ("near60", dict(k=60)),
-                     ("near100", dict(k=100)), ("rad1", dict(radius=1.0)), ("rad2", dict(radius=2.0)),
-                     ("rad3", dict(radius=3.0)), ("rad4", dict(radius=4.0)), ("gauss2", dict(scale=2.0)),
-                     ("gauss3", dict(scale=3.0)), ("gauss4", dict(scale=4.0)), ("insitu10", dict(k=10, insitu=True)),
-                     ("ext10", dict(k=10, sources=("extract",))), ("arch10", dict(k=10, sources=("archive",)))]:
-        v = E.theta_local(D, **kw)
-        ok(E.adjusted(v) == GOLD, "C1 %s on potential-temperature levels at the profile's position gives the six" % name)
-        if name in ("near5", "near10", "near20", "rad1", "rad2", "gauss2", "insitu10", "ext10"):
-            ok(max(abs(v[w] - off[w]) for w in off) <= 0.003, "C1 %s reproduces every offset within 0.003 (max %.4f)"
-               % (name, max(abs(v[w] - off[w]) for w in off)))
-    v = E.theta_local(D, radius=5.0)
-    ok(E.adjusted(v) == GOLD, "C3 the corridor reaches a 5 degree radius")
+    # ---- the separation line: no ask device on the main population ------------------------------------------------
+    in_case = calls["phone"].isin(set(cases["phone"]))
+    ok(not calls.loc[~in_case, "outcome"].isin(["AMD_MACHINE", "ABANDONED"]).any(),
+       "separation: an appointment number carries a machine-classed or abandoned call")
+    ok(not calls.loc[calls["agent"].eq("SUP1"), "outcome"].isin(["AMD_MACHINE", "ABANDONED"]).any(),
+       "separation: a verification call is machine-classed or abandoned")
+    icomp = S_.inbound_calls(inbound)
+    icomp = icomp[icomp["complete"]]
+    ok(not icomp["switch_call_id"].isin(set(r20["switch_call_id"])).any(), "separation: an inbound interview is a return")
+    lean = calls[in_case & calls["agent"].ne("SUP1")]
+    ml2 = S_.main_call(lean, inbound[~inbound["switch_call_id"].isin(set(icomp["switch_call_id"]))], jobs).set_index("job")
+    ok(np.allclose(ml2["share"].values, share.values), "separation: deleting the ask devices moves a share")
 
-    # ---------------------------------------------------------------- semantic fork rows
-    reg = set(D["reg"]["wmo"])
-    tech = D["tech"].copy()
-    m = D["prof"][D["prof"]["direction"] == "A"].merge(tech[["wmo", "cycle", "ascent_end"]], on=["wmo", "cycle"])
-    jt = pd.to_datetime("1950-01-01") + pd.to_timedelta((m["juld"] * 86400).round(), unit="s")
-    ok(int((jt.dt.year != pd.to_datetime(m["ascent_end"]).dt.year).sum()) == 0,
-       "SF1 2027 profiles: the year of juld and the year of surfacing select the same profiles")
-    lvall = D["lev"].merge(pr[["profile_id"]], on="profile_id")
-    lay = lvall[(lvall["pres"] >= P.LAYER[0]) & (lvall["pres"] <= P.LAYER[1])]
-    Dp = dict(D, lev=D["lev"].assign(pres_qc=1, temp_qc=1))
-    ok(E.adjusted(E.offsets(Dp, "golden")) == GOLD, "SF2 good values: salinity's flag alone (%d pressure and %d "
-       "temperature values flagged in the layer) gives the same call" % (int((~lay["pres_qc"].isin([1, 2])).sum()),
-                                                                     int((~lay["temp_qc"].isin([1, 2])).sum())))
-    ok(int((D["lev"]["temp_qc"] == 4).sum()) > 0 and int((D["lev"]["pres_qc"] == 4).sum()) > 0,
-       "the real-time checks flag temperature and pressure as well as salinity")
-    ok(E.adjusted(E.offsets(D, "golden", dedup=None)) == GOLD, "SF3 a profile received twice, both files kept: same call")
-    D2 = dict(D, reg=pd.concat([D["reg"], pd.DataFrame({"wmo": A["partner"]})], ignore_index=True))
-    o2 = E.offsets(D2, "golden")
-    ok(E.adjusted(o2) == GOLD and len(o2) == 25, "SF4 the partner float included: it is not adjusted, same call")
-    ok(min(abs(off[w]) for w in GOLD) - P.TOL > 0.009 and P.TOL - max(abs(off[w]) for w in off if w not in GOLD) > 0.006,
-       "SF5 more than 0.010 or at least 0.010: no offset near the tolerance")
-    lv2 = lv.copy()
-    rb = E.reference(D)
-    beta = E.ref_model(rb)
-    lv2["d"] = lv2["psal"] - E.ref_s(beta, lv2["theta"].values, lv2["longitude"].values, lv2["latitude"].values)
-    pooled = lv2.groupby("wmo")["d"].mean().to_dict()
-    ok(E.adjusted(pooled) == GOLD and max(abs(pooled[w] - off[w]) for w in off) < 0.0005,
-       "SF6 the mean over all the float's layer values against the mean of profile means: same call")
-    ok(E.adjusted({w: v * 35.16504 / 35.0 for w, v in off.items()}) == GOLD, "SF7 absolute salinity against practical "
-       "salinity: same call")
-    ok(E.adjusted(E.theta_local(D, k=10, insitu=True)) == GOLD, "SF8 in-situ temperature levels: same call")
-    ok(E.adjusted(E.theta_local(D, k=10, sources=("archive",))) == GOLD and
-       E.adjusted(E.theta_local(D, k=10, sources=("extract",))) == GOLD, "SF9 either reference source alone: same call")
-    ok(E.adjusted(E.offsets(D, "golden", layer=(1400.5, 1899.5))) == GOLD, "SF10 the layer's ends inclusive or "
-       "exclusive: same call")
-    ok(all(np.sign(off[w]) == np.sign(true[w]) for w in GOLD), "SF11 the offset's sign: float less reference, the fresh "
-       "floats negative")
-    ok(E.adjusted({w: abs(v) for w, v in off.items()}) == GOLD, "SF12 more than 0.010 in magnitude, either sign")
+    # ---- ask A: calling hours ------------------------------------------------------------------------------------
+    rows = W["rows"]
+    rows = rows[rows["job"].isin(jobs)]
+    lh = local_hours(rows["placed"].values, rows["state"].values, zones)
+    tA = pd.Series((lh < 8) | (lh >= 21), index=rows.index).groupby(rows["job"]).sum().reindex(jobs).astype(int)
+    ok((tA.values == S["askA"].values).all(), "ask A: the golden differs from the truth")
+    on_edge = ((np.abs(lh - 8) < 1e-9) | (np.abs(lh - 21) < 1e-9)).sum()
+    ok(on_edge == 0, "ask A: %d calls ring exactly on 8:00 or 21:00" % on_edge)
+    routes = {"cracker": S_.calling_hours(calls, cases, zones, jobs, route="cracker"),
+              "mirror": S_.calling_hours(calls, cases, zones, jobs, route="mirror", arizona_dst=True),
+              "area code": calling_hours_area(calls, zones, jobs),
+              "phone only, unmatched dropped": calling_hours_drop(calls, cases, zones, jobs),
+              "Arizona on daylight time": S_.calling_hours(calls, cases, zones, jobs, arizona_dst=True)}
+    for k, v in routes.items():
+        hits = int((v.values == S["askA"].values).sum())
+        note("ask A %s keeps %d of 13" % (k, hits))
+    ok((routes["cracker"].values != S["askA"].values).all(), "ask A: the careful route hits a figure")
+    ok((routes["mirror"].values != S["askA"].values).sum() >= 11, "ask A: the mirror keeps more than two")
 
-    # ---------------------------------------------------------------- Layer 1 slips leave the call
-    ok(E.adjusted(E.offsets(D, "golden", good=False)) == GOLD, "L1 flagged values kept: same call")
-    ok(E.adjusted(E.offsets(D, "golden", ascending=False)) == GOLD, "L1 descending profiles kept: same call")
-    Dn = dict(D, ac=D["ac"].assign(temp_scale="ITS-90"))
-    ok(E.adjusted(E.offsets(Dn, "golden")) == GOLD, "L1 IPTS-68 read as ITS-90: same call")
-    Dd = dict(D)
-    il = D["il"].copy()
-    ic = D["ic"]
-    Dd["il"] = il.assign(depth_m=E.pres_from_depth(il["depth_m"].values, il.merge(ic[["station_id", "lat"]],
-                                                                                 on="station_id")["lat"].values))
-    ok(E.adjusted(E.offsets(Dd, "golden")) == GOLD, "L1 RHD depth read as pressure: same call")
-    keep = []
-    acw = D["ac"].assign(w=pd.to_datetime(D["ac"]["time_utc"]))
-    icw = ic.assign(w=pd.to_datetime(ic["date"]) + pd.to_timedelta((ic["time"] * 3600).round(), unit="s"))
-    for _, row in icw.iterrows():
-        mm = ((acw["w"] - row["w"]).abs() <= pd.Timedelta(minutes=15)) & ((acw["latitude"] - row["lat"]).abs() <= 0.02) \
-            & ((acw["longitude"] - row["lon"]).abs() <= 0.02)
-        keep.append(not mm.any())
-    Du = dict(D, ic=ic[keep], il=D["il"][D["il"]["station_id"].isin(set(ic[keep]["station_id"]))])
-    ou = E.offsets(Du, "golden")
-    ok(E.adjusted(ou) == GOLD and max(abs(ou[w] - off[w]) for w in off) < 0.001, "L1 the RHD copies of the institute's "
-       "casts dropped from the reference: same call, offsets within 0.001")
+    # ---- ask B: completed interviews ----------------------------------------------------------------------------
+    done = set(zip(tc.loc[tc["outcome"].eq("COMPLETE"), "job"], tc.loc[tc["outcome"].eq("COMPLETE"), "case_new"]))
+    ti = W["inbound"]
+    ti = ti[ti["kind"].eq("complete") & (ti["started"] < pd.Timestamp("2027-01-01"))]
+    done |= set(zip(ti["job"], ti["case_new"]))
+    tB = pd.Series([j for j, _ in done]).value_counts().reindex(jobs).fillna(0).astype(int)
+    ok((tB.values == S["askB"].values).all(), "ask B: the golden differs from the truth")
+    inv = invoices(target)
+    rB = {"cracker": S_.completes(calls, inbound, reg, cases, jobs, route="cracker"),
+          "invoiced": S_.completes(calls, inbound, reg, cases, jobs, route="invoiced")}
+    ok((inv.reindex(jobs).values == rB["invoiced"].values).all(), "ask B: the invoices do not tie to the dialer's rows")
+    for k, v in rB.items():
+        note("ask B %s keeps %d of 13, misses by %d to %d" % (k, int((v.values == S["askB"].values).sum()),
+                                                              int((v - S["askB"]).abs().min()), int((v - S["askB"]).abs().max())))
+    ok(((rB["cracker"] - S["askB"]).abs() >= 5).all(), "ask B: the careful route within five of a figure")
+    ok(((rB["invoiced"] - S["askB"]).abs() >= 5).all(), "ask B: the invoiced count within five of a figure")
 
-    # ---------------------------------------------------------------- separation: the ask devices sit outside the call
-    ok(all(w in reg for w in pr["wmo"].unique()), "separation: the call's profiles are the array's ascending profiles")
-    ok(not set(A["partner"]) & set(pr["wmo"]), "separation: the partner float is outside the call's population")
+    # ---- ask C: interviewer hours -------------------------------------------------------------------------------
+    sh_ = W["shifts"].set_index("shift")
+    cc = tc[(tc["shift"] >= 0)]
+    sec = (cc["talk"] + cc["wrap"]).groupby([cc["shift"], cc["job"]]).sum().rename("sec").reset_index()
+    sec["share"] = sec["sec"] / sec.groupby("shift")["sec"].transform("sum")
+    sec["h"] = sec["shift"].map(sh_["hours"]) * sec["share"]
+    tC = sec.groupby("job")["h"].sum().reindex(jobs).fillna(0)
+    ok(np.allclose(tC.values, S["askC"].values, atol=1e-6), "ask C: the golden differs from the truth")
+    frac = (S["askC"] * 10) - np.floor(S["askC"] * 10)
+    ok(((frac - 0.5).abs() >= 0.01).all(), "ask C: an hours figure on a rounding edge")
+    ts_dec = S_.load_hours(target, hhmm=False)
+    rC = {"cracker": S_.hours(calls, ts_dec, jobs), "mirror": S_.hours(calls, ts_dec, jobs, route="by_code"),
+          "by code, hours read right": S_.hours(calls, S["ts"], jobs, route="by_code"),
+          "training charged": hours_with_training(calls, S["ts"], jobs)}
+    for k, v in rC.items():
+        d = (v.round(1) - S["askC"].round(1)).abs()
+        note("ask C %s keeps %d of 13, misses by %.1f to %.1f" % (k, int((d < 0.05).sum()), d.min(), d.max()))
+    ok(((rC["cracker"].round(1) - S["askC"].round(1)).abs() >= 1).all(), "ask C: the careful route within an hour")
+    ok(((rC["mirror"].round(1) - S["askC"].round(1)).abs() >= 0.05).all(), "ask C: the mirror hits a figure")
+    ok(len(W["training"]) > 0, "ask C: no training shifts")
+    ok(not W["shifts"].duplicated(["agent", "date", "period"]).any(), "ask C: an interviewer on two shifts at once")
 
-    # ---------------------------------------------------------------- ask A: reference casts reaching 2,000 dbar
-    truthA = {y: 0 for y in range(2015, 2026)}
-    for c in R.casts:
-        truthA[c["year"]] += int(c["pmax"] >= 2000)
-    for c in R.others:
-        truthA[c["year"]] += int(c["pmax"] >= 2000)
-    ok(X["casts"] == truthA, "ask A: the golden counts are the distinct casts reaching 2,000 dbar each year")
-    ok(sum(1 for c in R.casts if c.get("dup")) == A["matched"], "ask A: every RHD copy of an institute cast is matched "
-       "(%d), none wrongly" % A["matched"])
-    stops = {"natural": E.ref_casts_2000(D, dedup=None, convert=False),
-             "no_dedup": E.ref_casts_2000(D, dedup=None),
-             "depth_as_pressure": E.ref_casts_2000(D, convert=False),
-             "loose_dedup": E.ref_casts_2000(D, dedup="loose")}
-    for k, v in stops.items():
-        moved = sum(v[y] != truthA[y] for y in truthA)
-        need = {"natural": 11, "no_dedup": 11, "depth_as_pressure": 8, "loose_dedup": 7}[k]
-        ok(moved >= need, "ask A stop %s moves %d of 11 years" % (k, moved))
-    ok(all(stops["no_dedup"][y] > truthA[y] for y in truthA), "ask A primary: the RHD copies counted again raise every "
-       "year")
-    ick = D["ic"].copy()
-    pm = E.pres_from_depth(ick["max_depth_m"].values, ick["lat"].values)
-    ok(np.min(np.abs(pm - 2000.0)) > 3.0, "ask A: no RHD station within 3 dbar of 2,000 (closest %.1f)" %
-       np.min(np.abs(pm - 2000.0)))
-    ok(np.min(np.abs(D["ac"]["max_pres"] - 2000.0)) > 3.0, "ask A: no archive cast within 3 dbar of 2,000")
-    md = D["ic"]["max_depth_m"].values
-    ok(not ((md > 1962) & (md < 1981)).any(), "ask A: no RHD station's deepest level between 1,962 and 1,981 m, where "
-       "the choice of depth-to-pressure conversion would decide it")
-    conv = {"saunders": E.pres_from_depth(md, D["ic"]["lat"].values), "factor_1.01": md * 1.01,
-            "factor_1.0094": md * 1.0094 + 2.2e-6 * md ** 2}
-    for k, pm2 in conv.items():
-        ok(np.array_equal(pm2 >= 2000, conv["saunders"] >= 2000), "ask A: the %s conversion selects the same RHD "
-           "stations as reaching 2,000 dbar" % k)
-    ok(len(D["ac"]["max_pres"].unique()) >= 8, "the archive's deepest levels differ from cast to cast (%d values)"
-       % len(D["ac"]["max_pres"].unique()))
-    plat = D["ic"].groupby("platform")["country"].nunique()
-    ok((plat == 1).all(), "each RHD platform has one country")
-    # the dedup rule's margins: copies within 3 minutes and 0.005 degree, repeats 3 hours or more apart
-    reps = [c for c in R.casts if c.get("repeat")]
-    ok(len(reps) >= 15, "ask A hazard: %d repeat casts at a station a few hours apart" % len(reps))
+    # ---- the goldens carry the figures ----------------------------------------------------------------------------
+    wb = load_workbook(os.path.join(golden_dir, "amd_review_2027.xlsx"), data_only=False)
+    ws = wb["2027 setup"]
+    got = {r[0]: r for r in ws.iter_rows(min_row=5, max_row=17, values_only=True)}
+    for r in A["rows"]:
+        x = got[r["job"]]
+        ok(abs(x[6] - r["pct"] / 100.0) < 1e-9 and (x[7] == "Off") == r["off"] and x[8] == r["outside"]
+           and x[9] == r["completes"] and abs(x[10] - r["hours"]) < 1e-9, "golden workbook row " + r["job"])
 
-    # ---------------------------------------------------------------- ask B: deliveries in full within 24 hours
-    cut = dt.datetime.strptime(RC.CUTOFF, "%Y-%m-%dT%H:%M:%SZ")
-    truthB = {mth: 0 for mth in range(1, 13)}
-    for f in R.array:
-        for c in f["cycles"]:
-            truthB[c["time"].month] += int(c["delivered"] <= cut and (c["delivered"] - c["time"]) <=
-                                           dt.timedelta(hours=24))
-    ok(X["timely"] == truthB, "ask B: the golden counts are the profiles whose complete file arrived within 24 hours of "
-       "surfacing")
-    ok(E.timely_by_month(D, repeated="winter") == X["timely"], "ask B: the hour the clocks went back read either way "
-       "gives the same counts")
-    dl = D["dlv"].copy()
-    dl["at"] = E.lisbon_to_utc(dl["received"])
-    dl = dl[dl["direction"] == "A"].sort_values("n_levels").drop_duplicates(["wmo", "cycle"], keep="last")
-    x = m.merge(dl[["wmo", "cycle", "at"]], on=["wmo", "cycle"])
-    x = x[x["wmo"].isin(reg)]
-    sec = (x["at"] - pd.to_datetime(x["ascent_end"]).dt.tz_localize(None)).dt.total_seconds() - 86400
-    ok(sec[sec > 0].min() >= 30 and -sec[sec <= 0].max() >= 30, "ask B: no profile within 30 seconds of the 24 hour "
-       "line on either side (closest %.0f s late, %.0f s early); both clocks are kept to the second" %
-       (sec[sec > 0].min(), -sec[sec <= 0].max()))
-    for combo in itertools.product(["ascent_end", "juld"], ["complete", "first"], ["lisbon", "utc"], [False, True],
-                                   [False, True]):
-        if combo == ("ascent_end", "complete", "lisbon", False, False):
-            continue
-        v = E.timely_by_month(D, anchor=combo[0], version=combo[1], clock=combo[2], partners=combo[3],
-                              descending=combo[4])
-        moved = sum(v.get(mth, 0) != truthB[mth] for mth in truthB)
-        need = 12 if combo[0] == "juld" and not (combo[1] == "first" and combo[3]) else 1
-        ok(moved >= need, "ask B stop %s moves %d of 12 months" % (combo, moved))
-    ok(all(E.timely_by_month(D, anchor="juld")[mth] < truthB[mth] for mth in truthB),
-       "ask B primary: the profile time read as surfacing lowers every month")
-
-    # ---------------------------------------------------------------- devices outside the call's rows
-    ok(E.adjusted(E.offsets(D, "golden")) == GOLD and set(A["partner"]).isdisjoint(set(pr["wmo"])),
-       "separation: no device row in the call's population")
-
-    # ---------------------------------------------------------------- input gates and realism
-    files = os.listdir(target)
-    ok(len(files) >= 10 and len({f.rsplit(".", 1)[1] for f in files}) >= 3, "input gates: %d files" % len(files))
-    big = max(sum(1 for _ in open(os.path.join(target, f))) for f in files if f.endswith(".csv"))
-    ok(big >= 25000, "input gates: a file of %d rows" % big)
-    for f in files:
-        p = os.path.join(target, f)
-        if f.endswith((".csv", ".md", ".eml")):
-            ok(not re.search("[\u2013\u2014]", open(p, encoding="utf-8").read()), "no en or em dash in %s" % f)
-    reg_df = D["reg"]
-    ok(reg_df["wmo"].is_unique and len(reg_df) == 24, "the register holds the 24 floats once each")
-    ok(D["prof"]["profile_id"].is_unique and D["ac"]["cast_id"].is_unique and D["ic"]["station_id"].is_unique,
-       "every shipped id is unique within its file")
-    oxy = pd.read_csv(os.path.join(target, F["oxygen"]))
-    ok(oxy["profile_id"].isin(D["prof"]["profile_id"]).all(), "the oxygen file's profiles are in the profile file")
-    nopt = D["prof"][D["prof"]["profile_id"].isin(oxy["profile_id"])]["wmo"].nunique()
-    ok(nopt == 6, "six floats carry an optode (%d)" % nopt)
-    ok(all(D["reg"].set_index("wmo").loc[w, "model"] == "A" for w in
-           D["prof"][D["prof"]["profile_id"].isin(oxy["profile_id"])]["wmo"].unique()), "the optode floats are model A")
+    # ---- input gates ----------------------------------------------------------------------------------------------
+    files = [p for p in glob.glob(os.path.join(target, "**", "*"), recursive=True) if os.path.isfile(p)]
+    ok(len(files) >= 10, "input gate: fewer than ten files")
+    ok(len({os.path.splitext(p)[1] for p in files}) >= 3, "input gate: fewer than three formats")
+    big = max(sum(1 for _ in open(p, encoding="utf-8")) for p in files if p.endswith(".csv"))
+    ok(big >= 25000, "input gate: no file of 25,000 rows")
+    for f in ("mobile_consent_log_2026.csv", "qa_monitoring_scores_2026.csv"):
+        ok(os.path.exists(os.path.join(target, f)), "input gate: distractor missing " + f)
+    for p in files:
+        if p.endswith((".csv",)):
+            ok("—" not in open(p, encoding="utf-8").read(), "an em dash in " + p)
     return N[0]
+
+
+def calling_hours_area(calls, zones, jobs):
+    g = calls[calls["job"].isin(jobs)]
+    lh = local_hours(g["placed"].values, g["phone"].str[:3].map(S_.AREA_STATE).values, zones)
+    return pd.Series((lh < 8) | (lh >= 21), index=g.index).groupby(g["job"]).sum().reindex(jobs).astype(int)
+
+
+def calling_hours_drop(calls, cases, zones, jobs):
+    g = calls[calls["job"].isin(jobs)]
+    st = g["phone"].map(dict(zip(cases["phone"], cases["address_state"])))
+    lh = local_hours(g["placed"].values, st.values, zones)
+    return pd.Series((lh < 8) | (lh >= 21), index=g.index).groupby(g["job"]).sum().reindex(jobs).astype(int)
+
+
+def hours_with_training(calls, ts, jobs):
+    """the allocated hours with the training shifts charged to the project code they were booked to"""
+    base = S_.hours(calls, ts, jobs)
+    tr = ts[ts["start"] == "13:30"]
+    return base.add(tr.groupby("project")["h"].sum().reindex(jobs).fillna(0), fill_value=0)
+
+
+def invoices(target):
+    wb = load_workbook(os.path.join(target, "client_invoices_2026.xlsx"), data_only=True)
+    ws = wb.active
+    out = {}
+    for r in ws.iter_rows(min_row=3, values_only=True):
+        if r[0] and str(r[0]).startswith("KR-"):
+            out[r[0]] = r[5]
+    return pd.Series(out)

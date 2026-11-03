@@ -1,25 +1,26 @@
 {
   "task": "task241",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science/missing-data-censoring-measurement-error",
   "objective": "data-quality-monitoring",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-03",
-  "stump": "A competent analyst carries the detector's certified false-machine rate (2.1 per cent, confirmed at 2.25 per cent by the firm's 2025 listening test on its pilot project) to every project and switches detection off nowhere; the step that lands it there is treating a classifier's error rate as a property of the classifier, when the people a detector mistakes for machines are the ones who answer with a long greeting, so the projects calling older people, farms and businesses lose a seventh to a third of their machine-classed calls to people the dialer hung up on, a share only the calls those people return within minutes, scaled by the same project's abandoned callers' prompt return rate, can measure.",
+  "stump": "A competent analyst carries the detector's certified false-machine rate (2.1 per cent, confirmed at 2.25 per cent by the firm's 2025 listening audit on its pilot project) to every project and switches detection off nowhere; the step that lands it there is treating a classifier's error rate as a property of the classifier, when the people a detector mistakes for machines are the ones who answer with a long greeting, so the projects calling older people, farms and businesses lose 17 to 32 per cent of their machine-classed calls to people the dialer hung up on, a share only the calls those people return within minutes, scaled by the same project's abandoned callers' prompt return rate, can measure.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-03"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW, no LEAK (2026-11-03, --asof 2027-01-15; reviews: the maker's 2.1 per cent in its own sheet, three benign stump words in the policy and the sheet, the register naming every project, the shell quota WARN)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "guard.py check PASS on the registered card (2026-11-03T09:40:46Z, window task479, task188, task307 v3); nearest drivers 0.06 task455 v1, 0.05 task265 v0 and task449"
+    "heart": "PASS 2026-11-03, read after the pull at ca2d4938 (NOTE same_puzzle_older task281, same_driver_older task454 and task468 v1, differentiated on the card)",
+    "surface": "5 pairs promoted for adjudication, none blocking: task239, task242 and task243 as number neighbours (gap and decision type; task242 also the calibration form), task454 and task281 on the structural tests; differentiation lines for all five on the card; personas in the pack: Hailey Mullins",
+    "nearest": "guard.py check PASS on the current card; nearest drivers 0.06 task455 v1, 0.05 task265 v0, task449, task20"
   },
   "judge": {
     "verdict": "",
@@ -27,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "Architecture 2 drawn and registered 2026-11-03 (Kettle River Research's answering machine detection review, general statistics, missing data and measurement error). Next: stage 2, the readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet in DESIGN_NOTE.md, then precut.py exit 0, then the generator.",
+  "resume": "Stage 4 hand-off, every free gate green on the final cut (target.zip sha256 9b957f2dd5394464dc3c94ac0277a004304e6f7cbd5a4ef1f75121b70aad67fb, not committed: rebuild with `python3 task241/generator/make.py`, about five minutes, two byte-identical builds, 125 checks and the verifier, and confirm the sha256 prefix 9b957f2dd539 before anything else). Next: spawn the leak reader (/leak-check step 4, model sonnet, effort medium, briefed with prompt.txt and the unzipped pack only) and the determinism-judge agent (medium) together in the background; meanwhile write the pre-ship check. Fix every finding in the generator in one pass, re-judge once on FIX_NOW, then re-run precut, voice-check, leak.py --asof 2027-01-15, guard.py heart and surface, figures_check and ceiling.py on the final rebuild and ship (commit target.zip and golden/ with git add -f at SHIPPED).",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -55,7 +56,7 @@
     "judge": {
       "verdict": "DETERMINISTIC",
       "disposition": "pass 1 FIX_NOW (write-up: 0.003 acceptance, rung ranges, fit range), pass 2 APPROVE",
-      "report": "determinism_check_report.md, determinism_check_report_pass2.md"
+      "report": "determinism_check_report.md and determinism_check_report_pass2.md, removed from the folder at architecture 2's stage 4 hand-off; both remain in the tree at commit c3db7051"
     },
     "spent": "2026-11-01 at the re-check, on the honest survivor anatomy (DESIGN_NOTE.md, Tried and rejected)",
     "recheck_2026_11_01": {
@@ -70,5 +71,16 @@
       "surface": "exit 0, no personas in the cut pack",
       "stage4": "not run: architecture spent before any repair"
     }
+  },
+  "call": "Detection off for 2027 on KR-2612, KR-2616, KR-2618, KR-2620, KR-2621 and KR-2623 (17 to 32 per cent); the other seven keep it on (2 to 6 per cent); nearest on KR-2619 at 6, lowest off KR-2618 at 17",
+  "gates": {
+    "generator": "125 checks (SF1 to SF13, the rungs and margins, the clean-truth analyst test, the oracles, the separation line, each ask against the truth and its wrong routes, the input gates)",
+    "verify": "independent verifier agrees on the call, the 13 shares, the three asks, the workbook and the write-up",
+    "rebuilds": "two byte-identical builds inside make.py",
+    "figures_check": "PASS, 78 figures in blocks 1 to 4",
+    "ceiling": "generator/ceiling.py on the cut pack: cracker 0 of 39, mirror 0 of 39, pair ceiling 28.5",
+    "voice": "PASS with the shell quota WARN (question form which at 38 per cent), answered in the note",
+    "realism": "golden-realism and reduce-house-fixes passes run (memo block, finding titles, checked palette, page footer, source line, print setup; PDFs read by pypdf strict and pdftotext; metadata scrubbed)",
+    "target_zip_sha256": "9b957f2dd5394464dc3c94ac0277a004304e6f7cbd5a4ef1f75121b70aad67fb"
   }
 }

@@ -10,8 +10,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Open six recurring projects in 2027 with answering machine detection switched off: KR-2612 Medicare Care Experience Survey, KR-2616 Farm Operator Survey, KR-2618 Alumni Outcomes Survey, KR-2620 Veterans Health Survey, KR-2621 Small Business Conditions Survey and KR-2623 Child Care Provider Survey (17 to 32 per cent of their 2026 machine-classed calls answered by a person); the other seven keep it on (2 to 6 per cent).",
+  "answer_source": "task241/submission.md block 1, from generator/figures.json (call.detection_off)",
   "gap": [
     "population"
   ],
@@ -33,9 +33,9 @@
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "dialer_calls_2026.csv",
-    "rows": 280000,
-    "entity": "one answered outbound call placed by the predictive dialer in 2026",
+    "file": "dialer_exports/kr_dialer_2026-MM.csv (twelve monthly exports, two layouts)",
+    "rows": 276323,
+    "entity": "one answered outbound call placed by the predictive dialer in 2026 (thirteen recurring projects, each export's repeated day counted once)",
     "grain": "call",
     "source": "synthetic: a fictional survey research firm's dialer call detail, generated"
   },
@@ -71,7 +71,10 @@
   "differentiation": {
     "task281": "task281 reads a wear-out failure share past a lifetime record too young to show its plateau; task241 recovers a classifier error rate per population from prompt return calls scaled by the same reaction among abandoned live calls: no quantity, mechanism or file in common",
     "task454": "task454 fills uncovered items cost from a price survey whose coverage differs by presentation; task241 has no coverage gap to fill and no cost: its share is a misclassification rate read from a reaction only misclassified people produce",
-    "task468": "task468 (v1) corrects a per-unit count for a record matcher that fails more for some units and a cluster review that sees them unevenly; task241 has no matcher and no review sample: the decisive share comes from return calls against abandoned calls on each project"
+    "task468": "task468 (v1) corrects a per-unit count for a record matcher that fails more for some units and a cluster review that sees them unevenly; task241 has no matcher and no review sample: the decisive share comes from return calls against abandoned calls on each project",
+    "task242": "task242 averages an assay's known decay curve over each zone's own spread of infection times (the curve given, the composition computed); task241 has no curve and no composition to average: each project's false-machine share is measured from a reaction only the misclassified produce (prompt return calls), scaled by the same reaction among known members of the true class (abandoned callers); the hand-checked subsample here confirms the wrong route rather than calibrating the right one",
+    "task239": "task239 judges a climate index's group-level loadings from the few members answering per team (psychometric structure); task241 measures a dialer detector's error per project from return calls: no quantity, method or file in common beyond a set-valued call and the population gap",
+    "task243": "task243 recovers a civil register's death coverage from two censuses' age balance net of migration; task241 measures a classifier's error per population from a reaction only its errors produce: different quantity, estimator and files, only the designation-set call and the population gap shared"
   },
   "lineage": [
     {
@@ -105,11 +108,14 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:classification-error-rate-per-population-from-prompt-callbacks",
   "layer1": [
-    "phone numbers in three formats across the dialer, the inbound switch and the client sample files",
-    "inbound calls logged by the switch with each transfer as an extra leg",
-    "quality-assurance test calls to the firm's own lines inside the call detail",
-    "projects known by a client job number in the dialer and a project name in the inbound switch",
-    "the dialer's monthly exports overlapping by a day at each month boundary"
+    "phone numbers in three formats across the dialer, the inbound switch and the case records",
+    "the dialer's two export layouts (letter codes and US dates to June, words and ISO dates from July)",
+    "the dialer's monthly exports repeating the previous month's last day",
+    "inbound calls logged by the switch one row per leg, a transferred call's outcome on its last leg",
+    "quality-assurance test calls from the firm's own extension on every project line",
+    "projects known by a job number in the dialer and by a caller-ID line in the inbound switch",
+    "case numbers renumbered at the July upgrade, the old numbers restarting in every project",
+    "the payroll's timekeeping system changed in July (decimal hours to hours.minutes, new headers and job codes)"
   ],
   "registered": "2026-11-03T09:40:46Z",
   "shell": {
