@@ -26,6 +26,23 @@ def lt_str(m):
     return [x.strftime("%Y-%m-%d %H:%M:%S") for x in loc]
 
 
+def members_served(end_count, seed, growth=0.010):
+    """Members served at the end of each local day from 1 October 2020: new services connect on working days, most in
+    the building season, a few accounts close, and the count meets the register's on 30 September 2026 (about 1 per
+    cent a year, the household growth of the exurban counties north of the Twin Cities)."""
+    rng = np.random.default_rng(seed)
+    days = pd.date_range(D0, periods=NDAY, freq="D")
+    work = (days.dayofweek < 5).astype(float)
+    season = np.array([0.7, 0.75, 0.95, 1.1, 1.25, 1.35, 1.3, 1.25, 1.2, 1.1, 0.9, 0.75])[days.month - 1]
+    net_year = end_count * growth
+    lam = work * season
+    adds = rng.poisson(lam / lam.sum() * net_year * NDAY / 365.25 * 1.15)
+    drops = rng.poisson(work / work.sum() * net_year * 0.15 * NDAY / 365.25)
+    net = adds - drops
+    after = np.r_[np.cumsum(net[::-1])[::-1][1:], 0]      # the net change after each day
+    return (end_count - after).astype(int)
+
+
 def scrub_parquet(path, new=b"parquet-mr version 1.13.1 (build db4183109d5b734ec5930d870cdae161e408ddba)"):
     b = open(path, "rb").read()
     flen = int.from_bytes(b[-8:-4], "little")
@@ -51,8 +68,9 @@ def ids(W, seed):
     old = ["%s-%d" % (fname[f], o) for f, o in zip(S.feeder.values, order.values)]
     dev = []
     nums = rng.choice(np.arange(1000, 9999), len(S), replace=False)
-    for t, n in zip(S.device.values, nums):
-        dev.append({"SECT": "SX-%04d" % n, "RCLR": "R%04d" % n, "FUSE": "FU-%05d" % (n * 7 % 100000)}[t])
+    fz = np.random.default_rng(seed + 29).choice(np.arange(10000, 99999), len(S), replace=False)
+    for t, n, z in zip(S.device.values, nums, fz):
+        dev.append({"SECT": "SX-%04d" % n, "RCLR": "R%04d" % n, "FUSE": "FU-%05d" % z}[t])
     xid = ["T%06d" % x for x in rng.choice(np.arange(100000, 999999), len(X), replace=False)]
     poles = rng.choice(np.arange(100000, 999999), len(G) + len(Rr), replace=False)
     gp = ["P%06d" % x for x in poles[:len(G)]]
@@ -71,9 +89,10 @@ def build(out, W, F, O, R, EMP, seed=4022):
     n = len(F)
     cmi = np.zeros(n); steps_rows = []
     eid = []
+    lgnum = 2100000 + np.cumsum(1 + np.random.default_rng(seed + 13).poisson(0.6, n))
     for i, r in enumerate(F.itertuples()):
         legacy = r.start < world.GIS_DAY * 1440
-        eid.append(("LG%07d" % (2100000 + i)) if legacy else None)
+        eid.append(("LG%07d" % lgnum[i]) if legacy else None)
     newids = world.uuid4s(rng, n)
     eid = [e if e else u for e, u in zip(eid, newids)]
     F = F.assign(event_id=eid)
@@ -87,8 +106,10 @@ def build(out, W, F, O, R, EMP, seed=4022):
             tk = [r.end]; parts = [r.ci]
         cmi[i] = sum(p * (t - r.start) for p, t in zip(parts, tk))
         if r.start >= world.day("2024-10-01") * 1440:
+            s = int(r.sec)
+            dev = K["xid"][int(r.xf)] if r.level == "transformer" else K["dev"][s]
             for j, (p, t) in enumerate(zip(parts, tk)):
-                steps_rows.append((r.event_id, j + 1, t, int(p)))
+                steps_rows.append((i, j + 1, dev, K["sid"][s], t, int(p)))
     F = F.assign(cmi=cmi)
     # ------------------------------------------------ the outage extract, fiscal 2022 to 2026
     E = F[F.start >= X0m].copy()
@@ -113,10 +134,21 @@ def build(out, W, F, O, R, EMP, seed=4022):
                "customers_interrupted", "customer_minutes", "cause_code", "planned", "structure_id", "transformer_id",
                "work_order"], rows)
     E["work_order"] = ["OW%d" % w for w in wo]
-    # ------------------------------------------------ restoration steps, fiscal 2025 and 2026
-    st = [(a, b, lt_str([c])[0], d) for a, b, c, d in steps_rows]
+    # ------------------------------------------------ the control centre's switching log, restoration steps, fiscal 2025 and 2026
+    # orders are numbered through each fiscal year with every other switching job the centre writes (maintenance,
+    # tagging, load transfers), so a restoration's number joins to nothing in the outage system: its device and its
+    # times do
+    rs = np.random.default_rng(seed + 9)
+    num, fy_cur, seq = {}, None, 0
+    for i in sorted({a for a, *_ in steps_rows}, key=lambda i: F.start.values[i]):
+        fy = (D0 + pd.Timedelta(minutes=float(F.start.values[i]))).year + ((D0 + pd.Timedelta(minutes=float(F.start.values[i]))).month >= 10)
+        if fy != fy_cur:
+            fy_cur, seq = fy, int(rs.integers(3, 30))
+        seq += 1 + int(rs.poisson(1.3))
+        num[i] = "SW%02d-%05d" % (fy % 100, seq)
+    st = [(num[a], b, dv, sc, lt_str([c])[0], d) for a, b, dv, sc, c, d in steps_rows]
     write_csv(os.path.join(out, "restoration_steps_fy2025-fy2026.csv"),
-              ["event_id", "step", "restored_local", "customers_restored"], st)
+              ["switching_order", "step", "device_id", "section_id", "restored_local", "customers_restored"], st)
     # ------------------------------------------------ recloser operations, fiscal 2026, UTC
     tu = asks.utc(O.t.values)
     dv = [("CB-" + K["fname"][int(i)]) if k == "B" else K["dev"][int(i)] for k, i in zip(O.kind.values, O.id.values)]
@@ -129,19 +161,27 @@ def build(out, W, F, O, R, EMP, seed=4022):
     # ------------------------------------------------ daily SAIDI, two systems
     U = F[~F.planned]
     dd = (U.start // 1440).astype(int)
-    daily = (U.cmi.groupby(dd).sum() / members).reindex(range(NDAY), fill_value=0.0)
-    dci = (U.ci.groupby(dd).sum() / members).reindex(range(NDAY), fill_value=0.0)
+    served = members_served(members, seed + 11)
+    legacy_served = served.copy()
+    for d in range(NDAY):                                 # the retired system took the billing count once a month
+        legacy_served[d] = served[(D0 + pd.Timedelta(days=d)).replace(day=1).toordinal() - D0.toordinal()]
+    cmi_d = U.cmi.groupby(dd).sum().reindex(range(NDAY), fill_value=0.0).values
+    ci_d = U.ci.groupby(dd).sum().reindex(range(NDAY), fill_value=0.0).values
+    cut = world.GIS_DAY
+    den = np.r_[legacy_served[:cut], served[cut:]]
+    daily = pd.Series(cmi_d / den, index=range(NDAY))
     path = os.path.join(out, "daily_reliability_fy2021-fy2026.xlsx")
     with pd.ExcelWriter(path, engine="openpyxl") as xw:
-        cut = world.GIS_DAY
         leg = pd.DataFrame({"Date": [(D0 + pd.Timedelta(days=d)).strftime("%-m/%-d/%Y") for d in range(cut)],
-                            "Cust Hrs Int": np.round(daily.values[:cut] * members / 60.0, 1),
-                            "Cust Served": members, "SAIDI Hrs": np.round(daily.values[:cut] / 60.0, 5)})
+                            "Cust Hrs Int": np.round(cmi_d[:cut] / 60.0, 1),
+                            "Cust Served": legacy_served[:cut], "SAIDI Hrs": np.round(cmi_d[:cut] / legacy_served[:cut] / 60.0, 5)})
         leg.to_excel(xw, sheet_name="Legacy OMS to Feb 2023", index=False)
         nw = pd.DataFrame({"date": [(D0 + pd.Timedelta(days=d)).date() for d in range(cut, NDAY)],
-                           "saidi_min": np.round(daily.values[cut:], 4), "saifi": np.round(dci.values[cut:], 6),
-                           "customers_served": members})
+                           "saidi_min": np.round(cmi_d[cut:] / served[cut:], 4), "saifi": np.round(ci_d[cut:] / served[cut:], 6),
+                           "customers_served": served[cut:]})
         nw.to_excel(xw, sheet_name="OMS daily", index=False)
+    daily = pd.Series(np.r_[np.round(cmi_d[:cut] / legacy_served[:cut] / 60.0, 5) * 60.0,
+                            np.round(cmi_d[cut:] / served[cut:], 4)], index=range(NDAY))
     docs.scrub_xlsx(path, "Kayla Dean", "2023-03-06T14:10:00Z", "2026-10-05T13:41:00Z", (2026, 10, 5, 8, 41, 0))
     # ------------------------------------------------ system register
     path = os.path.join(out, "system_register_2026-09-30.xlsx")
@@ -181,8 +221,11 @@ def build(out, W, F, O, R, EMP, seed=4022):
     rb = [r for r in rb if r[0] < NDAY]
     rb.sort()
     acct = rng.choice(np.arange(1000000, 9999999), len(rb), replace=False)
-    rbd = pd.DataFrame({"rebate_id": ["HPR-%05d" % (i + 1) for i in range(len(rb))], "account": acct,
-                        "meter": ["M%08d" % (a * 3 % 100000000) for a in acct],
+    rr_ = np.random.default_rng(seed + 17)
+    rnum = np.cumsum(1 + rr_.poisson(0.25, len(rb))) + int(rr_.integers(40, 400))
+    mtr = rr_.choice(np.arange(10000000, 99999999), len(rb), replace=False)
+    rbd = pd.DataFrame({"rebate_id": ["HPR-%05d" % x for x in rnum], "account": acct,
+                        "meter": ["M%08d" % x for x in mtr],
                         "service_transformer": ["T-" + K["xid"][r[1]][1:] for r in rb],
                         "section_id": [K["sid"][X.sec.values[r[1]]] for r in rb],
                         "connected": [(D0 + pd.Timedelta(days=r[0])).date() for r in rb],
@@ -235,7 +278,8 @@ def build(out, W, F, O, R, EMP, seed=4022):
         _, med = ladder.med_days(daily, start_hist=max(0, a - 5 * 365), end_hist=a)
         m = (U.start >= a * 1440) & (U.start < b * 1440) & ~(U.start // 1440).isin(med)
         ci_, cm_ = U.ci[m].sum(), U.cmi[m].sum()
-        idx.append(["FY%d" % fy, "%.3f" % (ci_ / members), "%.1f" % (cm_ / members), "%.1f" % (cm_ / ci_),
+        avg = float(served[a:b].mean())
+        idx.append(["FY%d" % fy, format(int(round(avg)), ","), "%.3f" % (ci_ / avg), "%.1f" % (cm_ / avg), "%.1f" % (cm_ / ci_),
                     str(sum(1 for d in med if a <= d < b))])
     docs.review(out, idx, members)
     docs.rebate_terms(out)

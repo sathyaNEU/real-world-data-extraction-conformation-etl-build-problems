@@ -3,7 +3,36 @@
 Architecture 3, drawn 2026-11-03 (wave 7, Root-Cause lane), numbered from seed RC08 (a wind turbine's five faults and
 its one spring crew visit). Architecture 1 (an NHS Talking Therapies service) died at stage 4 on the determinism judge's
 SEND_BACK and architecture 2 (a bowel screening hub's equity fund) died at stage 2 on honest levels, before any
-generator (`## Tried and rejected`, their lines, and the card's `lineage`). Architecture 3 moves domain, world, dataset
+generator (`## Pre-ship check
+
+Stage 4 fix pass, final cut target.zip af10a74f (round 2 pending; the call, the stump and the five printed costs as
+before):
+
+- The 10/10 rules re-read against the built pack: the decisive step is still the pairing of each overload trip with the
+  same section's restoration minutes before (analytical, no field or rule performs it); the mess is still Layer 1 only
+  (the legacy daily sheet now also carries the retired system's monthly member count, the step table is the switching
+  log joined by device and time).
+- Gates: `checks.py` 0 failures over 84 assertions (the 3,960 pairing operationalisations, the SOLUTION_STEPS executor on
+  all seven steps, 20 redraws; tightest graded figure May 2026's hours at 15 per cent of a unit from an edge);
+  `verify.py` 48 figures, 0 mismatches; two builds byte-identical over 22 files; `figures_check.py` 71 of 71;
+  `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS at 815 characters; `ceiling.py` pair ceiling 31.2.
+- `leak.py --asof 2026-11-03` REVIEW, no LEAK. Harmless, each: the policy and the review share generic words with the
+  stump paragraph (minutes, outage, section, switching, changes, system, record) and neither names the move;
+  `device_id` and `device_type` are what an outage system and a SCADA historian call those columns, and `device_id` is
+  the switching log's join key to the outage extract.
+- `guard.py heart` WARN, nearest driver 0.06 (task129). New beside the Draw's answered WARNs: `repeat.decision` against
+  task400 (a work plan funds one fix, so the call picks one of the changes) and `repeat.question_form` against task399
+  v4 (a pick asks which). `guard.py surface` promotes task400 and task252, both answered on the card's
+  `differentiation`.
+- `freeze.py check --mode rubric` with the 34 moved keys allowed: FAIL on one item, the ladder section's hash (its rung
+  figures re-measured on the new world: 10,924, 1,510, 1,068 and 8,714; every rung's winner and the order unchanged).
+  `--mode determinism`: the same and the workbook's Deliverable Answers (the ask figures moved, reasons in `## Ask
+  sheet`). The Final Recommendation and Critical Components numbers, the main-call keys, the stump in `pipeline.json`
+  and on the card, the card's driver, the default path and the call sentence are unchanged in both. Neither mode's
+  contract covers a world change that moves the ask side and re-measures the rungs; both outputs are recorded for the
+  author to choose.
+
+## Tried and rejected`, their lines, and the card's `lineage`). Architecture 3 moves domain, world, dataset
 and shell. Kept from the seed: the decision kind (one of five changes gets the single fix) and the quantity's kind (what
 the change cost over the review year, in the period's natural unit). The kernel is new.
 
@@ -19,7 +48,7 @@ pre-winter infrared inspection of underground terminations skipped (from 1 Octob
 animal guard programme ended (1 January 2026, its 2026 site list); a new pole-top transformer supplier (1 February
 2026, transformers fitted after).
 
-What nothing in the pack says: after an hour or more without supply in hard frost every electric heating load on a
+What nothing in the pack says: after a long outage in hard frost every electric heating load on a
 section calls at once, so a section re-energised in one step draws two to four times its diversified load and its
 protection trips again within minutes. Under the old template the control centre picked such sections up in pieces
 and re-trips were rare; from 1 December they are common, each one a second sustained interruption of the same members,
@@ -39,9 +68,10 @@ logged as an overload trip on the section that had just been restored. The heat 
 - Shape 01, ranked list: the five changes, each with its fiscal 2026 cost in sustained customer interruptions and in
   interruption events; the call, runner-up, gap and flip; a ranked bar chart with its parts; three files. The sum is
   written in `## Ladder` at stage 2.
-- Strategy decomposition_attribution: the year's rise in overload interruptions splits between true overloads from new
-  heat pump load and cold-load re-trips after one-step restoration, and only pairing each trip with the same section's
-  restoration minutes before decides the split. Decisive generator G9 (downstream survival against upstream
+- Strategy time_semantics, the decisive move: an as-of relation between records, each overload trip set against the
+  same section's last restoration minutes before it. decomposition_attribution stays the Gate G mechanism: the year's
+  rise in overload interruptions splits between true overloads from new heat pump load and cold-load re-trips after
+  one-step restoration, and only that pairing decides the split. Decisive generator G9 (downstream survival against upstream
   acquisition: the restoration the revision's own measure times is the acquisition, whether the restored supply held is the
   outcome scored); G14 (conditioned yield) behind it, the staged-era re-trip rate applying only to restorations after an
   hour or more in frost.
@@ -112,9 +142,13 @@ weather of the two years is the world's own and stays fixed. The figures below a
   working group reports on cold load pickup and the papers behind them, from McDonald, Bruning and Mahieu, IEEE
   Transactions on Power Apparatus and Systems, 1979, onward); phase overcurrent pickup is set near twice peak load, so a
   one-step pickup of a heavily electric-heated section exceeds it; sectionalised restoration is the practice those
-  sources describe for it. The re-trip probability itself has no published figure: it rises with the outage's length
-  past an hour, the day's frost below minus 3 C and the section's electric heating share, to at most 0.5 per qualifying
-  restoration without staging and 0.02 with it; the call is measured at 0.3 as well.
+  sources describe for it. The re-trip probability itself has no published figure: in the generator a section re-trips
+  only after an outage of two and a quarter hours or more whose start day and restoration day both average minus 7 C or
+  colder, the probability rising with the outage's length, the frost and the section's electric heating share to at
+  most 0.75 per such restoration without staging (about three in four on a well-heated section, which is why stepped
+  pickup was the practice) and 0.003 with it. Members served grow about 1 per cent a year (122,557 on 1 October 2020 to
+  the register's 130,325 on 30 September 2026), the household growth of the exurban counties north of the Twin Cities in
+  the U.S. Census Bureau's county population estimates since 2020.
 - Electric heat: electric heating shares of 2 to 90 per cent by feeder (median about a third), the spread of a Minnesota
   cooperative with off-peak and dual-fuel electric heat programmes. Rebate heat pumps go only to members already heating
   with electric resistance and replace it (the rebate's own eligibility and sizing terms, shipped), so a connection does
@@ -153,16 +187,21 @@ weather of the two years is the world's own and stays fixed. The figures below a
    literal cost on interruptions is nil. The golden needs a step the WHAT never asks for. Every candidate has its own
    in-place date and scope, so none ties the golden on the same interruptions.
 
-Re-measured on the generator at stage 2 (shipped draw, `generator/checks.py`, the files under `target/` read back): the
-switching revision costs **8,700** customer interruptions and all 21 licensed variants of the golden (pairing window 5 to
-30 minutes, qualifying outage of any length to an hour, with and without the frost condition, the staged era from fiscal
-2025 or from fiscal 2022, transformer-level records in or out, netted or not) print the same figure, because the staged
-era of the shipped draw carries no re-trip at all (stepped pickup at 0.3 per cent of the one-step lever); the rivals,
-each a replay of recorded facts, are the heat pump policy 1,520, animal guards 702, riser terminations 671 and the
-transformer supplier 118. The golden is 5.7 times the runner-up. The joint re-trip fork on the generator: 23 per cent of
-the re-trips sit on sections with a waiver connection; booked to the policy the revision still leads (6,691 against
-3,529), and over 20 redraws of the generator's world it leads in **20 of 20**, with the re-trip rate per qualifying
-restoration equal on electrically heated sections with and without a connection (mean difference -1.9 points, sd 8.4).
+Re-measured on the generator at the stage 4 fix pass (shipped draw, `generator/checks.py`, the files under `target/` read
+back): the switching revision costs **8,714** customer interruptions (printed 8,700) and all **3,960** operationalisations
+of the pairing print the same figure: a window of 5, 10, 15, 20 or 30 minutes; a qualifying outage of 30, 60, 90 or 120
+minutes; no frost filter, a day mean at or below 0, -2, -3 or -5 C or a day minimum at or below 0 C, on the trip's day
+or the outage's start day; overload trips or every trip; the section's own devices, every record of the section, or the
+latest restoration before a trip at either level; netted on fiscal 2025's staged era, on the staged era from fiscal
+2022, or not netted. Every re-trip follows an outage of 137 minutes or more on days averaging -9.22 C or colder, and
+no independent fault starts in the half hour after any restoration on its section, so no pair sits near any of those
+thresholds and the staged era holds none. The rivals, each a replay of recorded facts, are the heat pump policy 1,520,
+animal guards 702, riser terminations 671 and the transformer supplier 118; the golden is 5.7 times the runner-up and
+the gap 7,194 (printed 7,200). The joint re-trip fork on the generator: 22 per cent of the re-trips sit on sections
+with a waiver connection; booked to the policy the revision still leads (6,820 against 3,414), and over 20 redraws of
+the generator's world it leads in **17 of 20** (53 of 60 on a wider run), with the re-trip rate per qualifying
+restoration equal on electrically heated sections with and without a connection within the redraws' noise (mean
+difference 6.9 points, sd 14.7; 7.8 against 7.8 per cent on the shipped draw).
 
 The joint re-trip fork (the coordinator's review, measured on `screen_p4c.txt`): a quarter of the golden's re-trips
 (mean 25 per cent, sd 8) sit on sections that took a rebate heat pump; booked to the heat pump policy they leave the
@@ -231,13 +270,14 @@ rise as cold-load re-trips after one-step re-energisation began and puts the fix
 - Not rule application: no filed rule pairs a trip with the restoration before it or says that a restoration can cause
   an interruption; the board policy files only the WHAT, and executing it with every natural operationalisation (the
   overload category's rise, each change's scope across its date, the scope inside electric heating bands, the system
-  residual) costs the switching revision at nil and files the heat pump policy (10,928, 1,676 and 1,014 on the shipped
-  draw; the prototype's 20 redraws named the policy or animal guards, never the revision). The enumerated family of
-  costings for the revision spreads from nil (every route that skips the pairing) to 8,700; the standing family, the
-  21 pairing variants the WHAT and the data leave defensible (windows of 5 to 30 minutes, qualifying outages of any
-  length to an hour, with or without the frost condition, either staged era, netted or not), spreads 0 on the shipped
-  draw (every one prints 8,700, the staged era holding no re-trip) and never changes the call; what rules the skipping
-  routes out is quiet: only the restoration step table and the minutes between rows of one section show it.
+  residual) costs the switching revision at nil and files the heat pump policy (10,924, 1,510 and 1,068 on the shipped
+  draw; the overload category's rise files the policy in 20 of 20 redraws of the generator's world). The enumerated
+  family of costings for the revision spreads from nil (every route that skips the pairing) to 8,714; the standing
+  family, the 3,960 pairing operationalisations the WHAT and the data leave defensible (windows of 5 to 30 minutes,
+  qualifying outages of 30 to 120 minutes, eleven frost filters on the trip's or the outage's day, overload or every
+  trip, three pairing sequences, two staged eras or none), spreads 0 on the shipped draw (every one prints 8,714) and
+  never changes the call; what rules the skipping routes out is quiet: only the minutes between rows of one section
+  show it.
 - Analyst test: a strong analyst who reads every field and the policy correctly books fiscal 2026's sustained
   interruptions by cause, sees the overload category rise most after heat pumps were connected without a load study,
   files the heat pump connection policy (Ends on: the heat pump connection policy, about 10,900 sustained customer
@@ -260,7 +300,7 @@ rise as cold-load re-trips after one-step re-energisation began and puts the fix
 ## Survivor anatomy
 
 - Actor: the deciding property is a relation between two rows of one section in the outage record (a trip that begins
-  within minutes of the same section's restoration after an hour or more off in frost); no file carries a re-trip
+  within minutes of the same section's restoration after a long outage in hard frost); no file carries a re-trip
   flag, a parent-interruption key or a cold-load cause code, and the cause the record gives (overload) is right.
 - Link: the pairing is a within-section, across-time comparison the field's method never asks for (IEEE 1366 counts
   interruptions by cause and device and never relates one interruption to the restoration before it); no key joins
@@ -299,41 +339,42 @@ that to the overload trips and pair them: three moves from the text, not one que
 | R1 the heat pump policy on its own sections against the rest | none | heat pump register | yes | none | no | no | no | readable |
 | R2 the same comparison inside bands of electric heating share | none | section register's electric heat members | partly | none | no | no | no | readable |
 | R3 for the generalist: pairing each trip with the same section's restoration minutes before, net of the staged-era rate (decisive) | no sentence names it | no column or key marks it | no: IEEE 1366 never relates interruptions | no control scores it | no: the battery dedupes and converts, it does not pair | no: a sort, a lag within section and a count | no: the extract, its step table and the weather are read by other costings | silent |
-| R3 for the cold-load-aware reader (decisive) | no: the revision's line states no content and no purpose | no: the step table shows steps, not why | not from the text: the reflex fires only after the step table is opened and read against the overload trips | none | no | no | no | silent |
+| R3 for the cold-load-aware reader (decisive), re-run at the stage 4 fix pass, verdict unchanged | no: the revision's line states no content and no purpose | no: the step table is the control centre's switching log, keyed by its own order numbers and joined to the outage record only by device and restoration time, and it shows steps, not why | not from the text: the reflex fires only after the log is joined to the outage record and read against the overload trips, one move more than before | none | no | no | no | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | a sustained customer interruption | each interruption record in the outage extract, its customers interrupted, five minutes or longer | a trip within minutes of restoration merged into the interruption before it | the switching revision's cost falls and the heat pump policy files | the policy's words: interruptions are counted as the outage management system records them, one record one interruption |
-| SF2 | major event days excluded | IEEE 1366 2.5 beta on the five fiscal years before the review year (threshold 15.5 SAIDI minutes) | no exclusion; the review year's own days in the threshold | same call (no exclusion: 8,700 against 1,520) | asserted: no paired re-trip on a day within 25 per cent of the threshold |
+| SF2 | major event days excluded | IEEE 1366 2.5 beta on the five fiscal years before the review year (threshold 16.1 SAIDI minutes on each day's members served; the same six days as on a constant count) | no exclusion; the review year's own days in the threshold | same call (no exclusion: 8,714 against 1,520) | asserted: no paired re-trip on a day within 25 per cent of the threshold |
 | SF3 | unplanned | outage records other than planned work | planned switching included | same call | planned work sits in its own register; asserted inert |
 | SF4 | the review year | 1 October 2025 to 30 September 2026, local time | calendar 2026; UTC days | same call | the policy's dates; asserted: no paired trip within a day of either boundary |
-| SF5 | would not have occurred, everything else as it was | the staged-era re-trip rate per qualifying restoration netted from the revision's re-trips | no netting; another staged era; the rate without the frost condition | same figure (C1: the staged era of the shipped draw holds no re-trip, so all 21 variants print 8,700) | asserted over every reading |
+| SF5 | would not have occurred, everything else as it was | the staged-era re-trip rate per qualifying restoration netted from the revision's re-trips | no netting; the staged era from fiscal 2022; any frost filter on the qualifying restorations | same figure (C1: no pair in the staged era under any of the 3,960 operationalisations, so every one prints 8,714) | asserted over every reading (SF14) |
 | SF6 | each change's in-place date | the review table's date | the first day of the month after | same call (animal guards and risers from the month after: 702 and 671 or less) | the review table; asserted |
 | SF7 | the heat pump policy's scope | services connected under the waiver, after each connection, through the rebate register's service transformer | every rebate connection on the register | same figure (1,520 against 1,520) | asserted over both scopes |
 | SF8 | customers interrupted | the record's own count | members on the section or transformer from the register | same figure: the two agree on every record of the year | asserted |
 | SF9 | cost to the nearest 100 | each change's figure rounded once | rounded per month then summed | same call | the prompt's rounding sentence; every figure asserted mid-bin |
-| SF10 | the heat pump policy's cost, argument (i): the connections added the electric heating load whose diversity the pickup lost | re-trips are the revision's: the rebate goes only to homes already heated by electric resistance, so the load lost its diversity whether or not a heat pump came | re-trips on sections with a waiver connection booked to the policy | same call: 23 per cent of the re-trips sit there; booked to the policy the revision leads 6,691 to 3,529, and in 20 of 20 redraws | member services' rebate terms (eligibility); asserted: re-trip rate per qualifying restoration equal with and without a connection over 20 redraws (mean difference -1.9 points, sd 8.4), the share a minority, the booked margin |
+| SF10 | the heat pump policy's cost, argument (i): the connections added the electric heating load whose diversity the pickup lost | re-trips are the revision's: the rebate goes only to homes already heated by electric resistance, so the load lost its diversity whether or not a heat pump came | re-trips on sections with a waiver connection booked to the policy | same call: 22 per cent of the re-trips sit there; booked to the policy the revision leads 6,820 to 3,414, and in 17 of 20 redraws (53 of 60) | member services' rebate terms (eligibility); asserted: re-trip rate per qualifying restoration equal with and without a connection (7.8 against 7.8 per cent on the shipped draw; over 20 redraws a mean difference of 6.9 points, sd 14.7, inside the test), the share a minority, the booked margin |
 | SF11 | the heat pump policy's cost, argument (ii): a load study would have reinforced the section so a one-step pickup would not trip | a load study checks the service transformer and secondary serving the member, never the section's protection | re-trips on connected sections booked to the waived load studies | same call (as SF10) | the rebate terms' connection clause, which a literal reading executes as the transformer replay; asserted as SF10 |
 | SF12 | each rival's cost | a replay of its recorded facts: the 2026 list's sites, the 2025 list's risers, the units fitted from 1 February, the waiver's transformers | the cause category's rise year on year | same call: no rival's category rise reaches the revision's cost | asserted (`checks.py`, the ladder rungs and the residual) |
-| SF13 | the heat pump policy's cost, by a comparison | the interruptions a load study would have prevented: the trips of the transformers it checks | the policy's sections against the rest, all overload trips (1,700 bin) or inside electric-heat bands (1,000 bin) | same call; every estimator of the transformer trips a study checks holds 1,500 (replay 1,520, every rebate connection 1,520, scope on transformer trips 1,533, the banded scope on transformer trips in the same bin) and the gap holds 7,200 under each | the rebate terms' load study clause read with the extract's device_type at face value: a section device's trip is not one a study checks; asserted, with the other rivals netted by their own records (guarded sites 694, replaced risers none, the old supplier's infant failures 82), each in its bin |
+| SF13 | the heat pump policy's cost, by a comparison | the interruptions a load study would have prevented: the trips of the transformers it checks | the policy's sections against the rest, all overload trips (1,510, the 1,500 bin) or inside electric-heat bands (1,068, the 1,100 bin) | same call; every estimator of the transformer trips a study checks holds 1,500 (replay 1,520, every rebate connection 1,520, scope on transformer trips 1,533, the banded scope on transformer trips 1,535) and the gap holds 7,200 under each (7,194, 7,194, 7,181, 7,179) | the rebate terms' load study clause read with the extract's device_type at face value: a section device's trip is not one a study checks; asserted, with the other rivals netted by their own records (guarded sites 694, replaced risers none, the old supplier's infant failures 82), each in its bin |
+| SF14 | the pairing's operationalisation (lesson ii) | overload records of a section's own devices starting within 10 minutes of the section's restoration from an interruption of 60 minutes or more, no frost condition, netted on fiscal 2025's staged era | a window of 5 to 30 minutes; a qualifying outage of 30, 60, 90 or 120 minutes; a day mean at or below 0, -2, -3 or -5 C or a day minimum at or below 0 C on the trip's or the outage's day; every trip; every record of the section or the latest restoration at either level; the staged era from fiscal 2022 or no netting | same figure: all 3,960 print 8,714 and the gap 7,194 | C1, asserted (`checks.py` lesson (ii)): every re-trip follows an outage of 137 minutes or more on days at -9.22 C or colder, and no independent fault starts in the half hour after a restoration on its section |
 
 ## Ladder
 
 - Rungs, each named by the change it files, on the generator's shipped draw (`checks.py` prints each; the prototype's 20
   redraws in `## Draw`, screen 3, gave the same order of rungs):
   - R0, the overload category's rise booked to the heat pump policy, each other change on its own list or units: the
-    heat pump policy at 10,928 against animal guards 702; the switching revision nil.
+    heat pump policy at 10,924 against animal guards 702; the switching revision nil.
   - R1, the heat pump policy on its own sections against sections without a waiver connection, overloads year on year:
-    the policy at 1,676, still first among the costed changes; the switching revision nil.
-  - R2, the same comparison inside bands of electric heating share: the policy at 1,014, first; the revision nil.
+    the policy at 1,510, still first among the costed changes; the switching revision nil.
+  - R2, the same comparison inside bands of electric heating share: the policy at 1,068, first; the revision nil.
   - R3 (decisive), pairing each trip with the same section's restoration minutes earlier, net of the staged-era rate:
-    the switching revision 8,700 against the heat pump policy's own transformer trips 1,520, animal guards 702, riser
+    the switching revision 8,714 against the heat pump policy's own transformer trips 1,520, animal guards 702, riser
     terminations 671 and the transformer supplier 118.
 - Margins: R0's winner over its runner-up about 15 times; the golden over the runner-up 5.7 times; R1 and R2 lead by
-  1.4 to 2.4 times on a single scope comparison that the redraws show is noisy (the prototype's R1 named animal guards in
-  11 of 20).
+  1.5 to 2.2 times on a single scope comparison that the redraws show is noisy (on the generator's 20 redraws the flat
+  scope names the policy in 12 and the banded one in 8; the switching revision costs nil on each).
 - Position: the switching revision is last on R0 to R2 (no scope or category of its own to rise) and first on R3; only
   R3 reverses it.
 - Dominance and grid: each rung's winner clears its runner-up by the 1.15 floor on the shipped draw (asserted); no cell
@@ -347,9 +388,9 @@ that to the overload trips and pair them: three moves from the text, not one que
   are cold-load aware and both read the restoration record against the overload trips.
 - Pricing sequence: (1) the residue the WHAT leaves is how the year without the switching revision is estimated, a
   method; (2) the move needs about 8,700 of the year's customer interruptions and the affected population (every
-  restoration after an hour or more in frost) produces it; (3) the one-group-by route (interruptions by cause) is the
+  restoration after a long outage in hard frost) produces it; (3) the one-group-by route (interruptions by cause) is the
   default and lands the heat pump policy; (4) the golden has no sampling spread across its licensed variants on the
-  shipped draw (21 of 21 identical) against a lead of 7,180; (5) the lever is a count, not a variance; (6) no variance
+  shipped draw (3,960 of 3,960 identical) against a lead of 7,194; (5) the lever is a count, not a variance; (6) no variance
   correction; (7) the paired subset prints the revision's re-trips exactly, which is the step itself and no shipped
   column; (8) reflex sweep as code: R0 to R2 and the system residual land elsewhere (`checks.py`).
 - Shape 01 sum: five changes with their costs 5; call, runner-up and gap 3; the ranked chart with its parts (five bars,
@@ -367,8 +408,8 @@ that to the overload trips and pair them: three moves from the text, not one que
 | 5 Version basis | the extract as closed for the review | one extract shipped; C1 |
 | 6 Denominator | none for the call (a count) | C1 |
 | 7 Weighting | customers interrupted per record | filed; C1 |
-| 8 Window length | the pairing window | C1: 5 to 30 minutes print one figure, asserted |
-| 9 Boundary inclusivity | trips at exactly the window edge | C1: none within a minute of any edge, asserted |
+| 8 Window length | the pairing window and the qualifying outage | C1: windows of 5 to 30 minutes and qualifying outages of 30 to 120 minutes print one figure (SF14), asserted |
+| 9 Boundary inclusivity | trips at exactly the window edge | C1: every re-trip starts under 4 minutes after its restoration and no other fault within 35, asserted |
 | 10 Rounding path | each change's figure once, to the nearest 100 | prompt; asserted mid-bin |
 | 11 Tie-break | none needed | C4: the winner leads by 5.7 times |
 | 12 Maturity and censoring | the year is closed at extract | C1 |
@@ -376,7 +417,7 @@ that to the overload trips and pair them: three moves from the text, not one que
 | 14 Row order | sorting by section and start | C1, asserted over shuffles |
 | 15 Duplicate resolution | an interruption once | C1: the extract carries no duplicate interruption |
 | 16 Identity normalisation | sections across the GIS re-keying | the register's crosswalk; C4 |
-| 17 Netting against gross | the staged-era rate | C1: the staged era holds no re-trip; SF5 |
+| 17 Netting against gross | the staged-era rate | C1: the staged era holds no pair under any operationalisation; SF5, SF14 |
 | 18 Dimensional units | customers interrupted, minutes | C1 |
 | 19 Code and status semantics | cause codes are read as given and decide nothing on the golden path | C1 |
 | 20 Integerisation | whole interruptions | C1 |
@@ -392,7 +433,8 @@ cause category year on year, system residual) the heat pump policy or animal gua
 costs nil, because nothing filed says a restoration can cause an interruption; the golden is reached only by
 estimating the year without the revision from the records, which the WHAT requires and no sentence performs. The two
 readings that would book the revision's re-trips to the heat pump policy (SF10, SF11) are closed by member services'
-rebate terms and the connection policy, and are inert at the call besides (19 of 20). Every SF row is closed or
+rebate terms and the connection policy, and are inert at the call besides (two to one on the shipped draw, 17 of 20
+redraws). Every SF row is closed or
 convergent and asserted.
 
 ## Oracles
@@ -422,8 +464,9 @@ convergent and asserted.
   extract), the UTC clock against the local quarter boundaries, several trips and closes in one sequence (the
   five-minute rule). Pin test: the sentence names the measure, the district and the quarter; the devices sit in which
   rows are one event for a member and which feeder a section was on.
-- Ask B, crew callout hours and callout pay for restoration work in each month of the review year, hours to the nearest
-  hour and pay to the nearest dollar (24 figures). H18: the switching revision's own case is crew time. Files: the
+- Ask B, crew callout hours worked and callout pay for restoration work in each month of the review year, hours to the
+  nearest hour and pay to the nearest dollar (24 figures; the asking sentence says hours worked since the stage 4 fix
+  pass, so paid hours with the two-hour minimum, 6,156 for the year against 4,958 worked, are not a reading). H18: the switching revision's own case is crew time. Files: the
   timekeeping export (overtime and callout entries), the agreement's Article 14 and Schedule A, the outage extract.
   Primary P1 (D6 grain): a crew moved from one outage to the next has a row per job, the rows a few minutes apart for the
   drive; the agreement's callout runs from the start of work to release with travel included and carries one two-hour
@@ -449,7 +492,24 @@ convergent and asserted.
 
 - Measured on the cut pack: the cracker keeps 2 of 16 on A and 0 of 24 on B; the full includer (each member once across
   devices, each employee's chained jobs one callout) keeps 10 of 16 on A (P2's block missed) and 0 of 24 on B (rows dated
-  by their Monday entry), under two fifths of the ask figures; the no-repair reader keeps 1 of 40.
+  by their Monday entry), under two fifths of the ask figures; the no-repair reader keeps 0 of 40. Re-measured at the
+  stage 4 fix pass on the final cut, unchanged in shape: the feeder block now separates all six of its figures (the
+  build's nudge drops an ordinary lone recloser sequence where the two feeder readings printed the same cent).
+- Moved at the stage 4 fix pass (named with `--allow` in `freeze.py`; the call, the five printed costs, the gap and every
+  Critical Components figure unchanged): North's four momentary figures each by 0.01 (2.11, 1.41, 2.60, 3.50), because
+  section 518 now carries its drawn count of 1,149 members in place of the 1,000 bound; River Q3 from 2.27 to 2.26,
+  because the outage record the SCADA world is drawn from changed (the re-trips, the spacing rule) and the year-end
+  feeder reading fell into the golden's cent until the build's nudge dropped an ordinary lone recloser sequence; all 24
+  Ask B figures, because the crew world is drawn from the same outage record and no job now sits in a month other than
+  its own outage's; the threshold from 15.5 to 16.1 SAIDI minutes, because each day's SAIDI now divides by that day's
+  members served; the raw switching cost from 8,700 to 8,714 (printed 8,700), the re-trip mechanism's new draw.
+- Ask readings executed at the stage 4 fix pass (scratch `t402/a3/r2fix/readings.txt`): calendar against fiscal quarter
+  labels moves nothing (same partitions; the golden's labels say fiscal); the system's members as a district denominator
+  moves 16 and is not "per member in each district"; paying an original and its correction both moves 23, closed by
+  Article 14.4 (a correction replaces the earlier entry); paying rejected entries moves none and is closed by 14.4 too;
+  a job past midnight dated by its outage's own date moves none (asserted); service and capital callouts carry no
+  outage to date them and no work order holds two order types. The two devices stay open by design (P1 moves 14 of A
+  with P2, P2 moves all six of its block and every B figure).
 - Pair ceiling: 31.2 (cracker on the call 47.8, mirror off it 14.8).
 - Mirror leakage: 5.0 per cent of ask weight.
 - Measured by: generator/ceiling.py on the cut pack.
@@ -622,3 +682,28 @@ convergent and asserted.
   filed to say restoration work is defined by when supply returns; taken at face value all 24 figures moved (hours 14
   to 95 a month, pay 319 to 1,600), a competing defensible answer for a literal judge. The replacements are now booked
   to the outage's order, and the second device is the work date the export does not carry (D8, Monday entry).
+- Step 2's frost clause (stage 4, round-1 judge, FIX_NOW): the golden tested frost on the day the interruption before the
+  trip began (17 March 2026, -8.95 C) while the step read as the trip's own day (18 March, -2.44 C on local dates), so the
+  step executed as written printed 8,433 and a gap of 6,900. The clause is gone from every statement; the selection has
+  no frost condition.
+- The hour-long, minus-3 C re-trip mechanism (stage 4, lesson ii): re-trips followed outages of 75 to 297 minutes, so a
+  qualifying outage of 90 or 120 minutes printed 7,983 and less, and a 30-minute window with netting caught seven storm
+  coincidences in the staged era (8,533). Re-trips now need an outage of 135 minutes or more on days at -7 C or colder
+  at both ends, and no independent fault starts in the half hour after a restoration on its section.
+- Spacing faults only after a section's own restorations (stage 4, first cut of the rule): the every-record pairing still
+  caught eight coincidences after transformer restorations in fiscal 2022 to 2025 (8,533 at its lowest). The rule now
+  reads every restoration on the section.
+- The re-trip draw on the main stream at the new mechanism (stage 4): no realised total in the frozen bin (8,583, then
+  8,762). The draw has its own stream; the one-step lever set to 0.75, whose expected total on the shipped world is
+  8,709; stream 2045 of 36 mid-bin candidates, chosen for the overload rise, R1 and R2 nearest the round-1 ladder.
+- The joint re-trip fork's redraw floor at 18 of 20 (stage 4): the long-outage mechanism gives fewer, larger re-trips,
+  so the connected share is noisier; booked to the policy the revision stays first in 17 of 20 (53 of 60), two to one on
+  the shipped draw. The floor is restated at 16 of 20; the fork is closed by the rebate terms' eligibility sentence.
+- The round-1 reader's realism tells (stage 4): a constant 130,178 members served in both daily sheets (now a path at
+  about 1 per cent a year ending at the register's count); a section bounded at exactly 1,000 members and another at
+  35 (now their drawn 1,149 and 33); the transformers' 130,180 against the sections' 130,178 (each section's
+  transformers now serve exactly its members); the step table's event_id. On the judged bundle (f2a3c845) every step's
+  event_id did join the outage extract (the reader saw the legacy LG ids at the head of the extract and the UUIDs in the
+  step table); the table is now the control centre's switching log with its own order numbers, joined by device and
+  restoration time. Reduce-house-fixes H13 added four id patterns: legacy outage ids advancing by exactly one, rebate ids
+  by one, meter numbers three times the account number, fuse numbers all multiples of 7; each now has its own numbering.

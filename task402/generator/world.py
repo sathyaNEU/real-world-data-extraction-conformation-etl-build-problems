@@ -4,8 +4,8 @@ writes a file (pack.py does)."""
 import numpy as np
 import pandas as pd
 
-P = dict(seed=434, wseed=37, sseed=5, st1=0.09, st2=0.03, p_unst=0.42, p_st=0.003, xf_p=0.0016, conn_share=0.25, r_shift=40,
-         lam0=0.0019, r_t=-20.0)
+P = dict(seed=434, wseed=37, sseed=5, st1=0.09, st2=0.03, p_unst=0.75, p_st=0.003, xf_p=0.0016, conn_share=0.25, r_shift=40,
+         lam0=0.0019, r_t=-20.0, clpu_min=135.0, clpu_t=-7.0, clpu_k=5.0, rt_seed=2045)
 D0 = pd.Timestamp("2020-10-01")                      # day 0, start of fiscal 2021
 NDAY = (pd.Timestamp("2026-10-01") - D0).days        # through fiscal 2026
 def day(s):
@@ -53,7 +53,10 @@ def run(P=P, full=True):
     nsec_f = rng.integers(2, 5, nf)
     sec_f = np.repeat(np.arange(nf), nsec_f); ns = len(sec_f)
     f_dist = rng.choice(4, nf, p=[0.27, 0.24, 0.26, 0.23])
-    cust = np.clip(rng.lognormal(np.log(203), 0.55, ns), 35, 1000).round().astype(int)
+    raw_members = rng.lognormal(np.log(203), 0.55, ns)
+    # the bounded count drives the construction's own draws (transformers per section); every section's natural count
+    # replaces it once the world is drawn (natural_counts below), so no section sits on a bound
+    cust = np.clip(raw_members, 35, 1000).round().astype(int)
     eheat = np.clip(rng.beta(2.2, 4, nf), 0.02, 0.9)[sec_f]
     ehm = np.round(cust * eheat).astype(int)
     urd = rng.random(ns) < 0.45
@@ -80,7 +83,16 @@ def run(P=P, full=True):
     for s in range(ns):
         idx = np.where(X.sec.values == s)[0]
         m[idx] = rng.multinomial(cust[s], np.ones(len(idx)) / len(idx))
-    X["members"] = np.maximum(m, 1)
+    m = np.maximum(m, 1)
+    # a transformer serves at least one member; the section's largest transformers give up the extra, so each section's
+    # transformers serve exactly its members (the register's two sheets reconcile)
+    for s in range(ns):
+        idx = np.where(X.sec.values == s)[0]
+        extra = int(m[idx].sum() - cust[s])
+        while extra > 0:
+            j = idx[np.argmax(m[idx])]
+            m[j] -= 1; extra -= 1
+    X["members"] = m
     # rebate transformers on connected sections, each with its own connection date
     X["rebate"] = False; X["conn_day"] = -1
     for s in np.where(conn)[0]:
@@ -188,19 +200,28 @@ def run(P=P, full=True):
     gapm = rng.uniform(5, 15, len(E))
     E["steps"] = nst
     E["t_end"] = E.t0 + E.repair + (nst - 1) * gapm
-    # cold load re-trips after a restoration of an hour or more in frost
-    q = sec_lvl & (E.repair.values >= 60) & (E.temp.values <= -3) & ~np.isin(E.kind.values, ["stormrep"])
-    x = (np.minimum(E.repair.values, 360) - 60) / 60.0 * np.maximum(-E.temp.values - 3, 0) / 10.0 \
-        * np.maximum(eheat[E.sec.values] - 0.12, 0) * 5.0
+    # cold load re-trips: a section picked up in one step after a long outage in hard frost trips again within minutes.
+    # Load diversity is gone after two and a half hours or more without supply, and the pickup passes the relay's
+    # setting only when the day the outage began and the day supply came back both average -7 C or colder; stepped
+    # pickup almost never re-trips
+    d_end = np.minimum((E.t_end.values // 1440).astype(int), NDAY - 1)
+    warm = np.maximum(E.temp.values, dm[d_end])               # the warmer of the outage's two days
+    q = sec_lvl & (E.repair.values >= P["clpu_min"]) & (warm <= P["clpu_t"]) & ~np.isin(E.kind.values, ["stormrep"])
+    x = (np.minimum(E.repair.values, 420) - P["clpu_min"] + 30) / 60.0 * np.maximum(-warm + P["clpu_t"] + 2, 0) / 10.0 \
+        * np.maximum(eheat[E.sec.values] - 0.12, 0) * P["clpu_k"]
     pre = E.t_end.values < G_DAY * 1440
     p = np.where(pre, P["p_st"], P["p_unst"]) * (1 - np.exp(-np.maximum(x, 0)))
-    r = q & (rng.random(len(E)) < p)
+    rng.random(len(E))                                        # the main stream keeps its place
+    u_rt = np.random.default_rng(P["rt_seed"]).random(len(E))   # the re-trip draw has its own stream
+    r = q & (u_rt < p)
     RT = pd.DataFrame(dict(sec=E.sec.values[r], xf=-1, t0=E.t_end.values[r] + rng.integers(0, 4, r.sum()) + rng.random(r.sum()),
                            repair=rng.lognormal(np.log(40), 0.4, r.sum()), kind="retrip", ci=cust[E.sec.values[r]]))
     RT["d"] = (RT.t0 // 1440).astype(int); RT["temp"] = dm[np.minimum(RT.d.values, NDAY - 1)]
     RT["steps"] = rng.integers(2, 4, len(RT)); RT["t_end"] = RT.t0 + RT.repair + (RT.steps - 1) * rng.uniform(5, 15, len(RT))
     inyr = (E.t_end.values >= G_DAY * 1440) & (E.t_end.values < NDAY * 1440)
     G_true = float(((P["p_unst"] - P["p_st"]) * (1 - np.exp(-np.maximum(x, 0))) * cust[E.sec.values] * (q & inyr)).sum())
+    RTD = dict(q=q, x=x, u=u_rt, pre=pre, sec=E.sec.values.copy(), t_end=E.t_end.values.copy(), repair=E.repair.values.copy(),
+               warm=warm, lvl=sec_lvl.copy(), kind=E.kind.values.copy())
     OE = pd.DataFrame(ou_ev, columns=["sec", "xf", "t0", "repair", "kind", "ci"])
     OE["d"] = (OE.t0 // 1440).astype(int); OE["temp"] = dm[np.minimum(OE.d.values, NDAY - 1)]
     OE["steps"] = 1; OE["t_end"] = OE.t0 + OE.repair
@@ -219,6 +240,27 @@ def run(P=P, full=True):
         X.loc[xf, "members"] -= 1; X.loc[sib[0], "members"] += 1
         E.loc[E.xf == xf, "ci"] = E.loc[E.xf == xf, "ci"] - 1
         moved += int(hv[xf])
+    # every section at its natural count: the sections the construction bounded take their drawn size, their
+    # transformers share the difference, and every record on them carries the count
+    nat = np.round(raw_members).astype(int)
+    r3 = np.random.default_rng(P["seed"] + 91)
+    for s in np.where(nat != cust)[0]:
+        new = int(nat[s]); dlt = new - int(cust[s])
+        idx = np.where(X.sec.values == s)[0]
+        mm = X.members.values[idx].astype(int).copy()
+        if dlt > 0:
+            mm = mm + r3.multinomial(dlt, np.ones(len(idx)) / len(idx))
+        else:
+            for _ in range(-dlt):
+                mm[int(np.argmax(mm))] -= 1
+        X.loc[idx, "members"] = mm
+        S.loc[s, "members"] = new
+        S.loc[s, "eheat_members"] = int(round(new * eheat[s]))
+        cust[s] = new
+        on = E.sec.values == s
+        E.loc[on & (E.xf.values < 0), "ci"] = new
+        for j in idx:
+            E.loc[on & (E.xf.values == j), "ci"] = int(X.members.values[j])
     W = dict(S=S, X=X, G=G, Rr=Rr, U=U, NU=NU, OU=OU, E=E, dm=dm, wx=wx, storm=storm, rng=rng,
-             G_true=G_true)
+             G_true=G_true, RTD=RTD)
     return W

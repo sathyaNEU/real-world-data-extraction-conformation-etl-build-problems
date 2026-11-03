@@ -11,7 +11,7 @@
   },
   {
    "file": "restoration_steps_fy2025-fy2026.csv",
-   "description": "Outage management system restoration step table",
+   "description": "Control centre switching log, restoration steps, fiscal 2025 and 2026",
    "date": "2026-10-05",
    "source": "Synthetic records generated for this task by its generator (no real utility's data); CC0 1.0.",
    "license": "CC0-1.0"

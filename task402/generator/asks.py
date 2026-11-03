@@ -241,6 +241,10 @@ def crew(W, F, seed):
         m0 = (D0 + pd.Timedelta(days=d0)).month; m1 = (D0 + pd.Timedelta(days=d1)).month
         if m0 != m1 or e >= YE * 1440:
             return False
+        # every job sits in the month its own outage began: dated by the outage's date or by the clock rolling past
+        # midnight, a job falls in the same month
+        if any((D0 + pd.Timedelta(days=int(F.start[j] // 1440))).month != m0 for j, _, _ in ch["jobs"]):
+            return False
         if d0 != d1 and ((d0 in hol) != (d1 in hol)):
             return False
         if e - s < 120 and (d0 in hol or d1 in hol):

@@ -28,34 +28,39 @@ def frost_days(daymean, tmax=-3.0):
     return set(np.where(daymean <= tmax)[0])
 
 
-def pair(F, W=10.0, dmin=60.0, frost=None, levels=("section",)):
-    """For each interruption, minutes since the same section's previous restoration (section-level devices)."""
+def pair(F, W=10.0, dmin=60.0, frost=None, levels=("section",), cause=None, frost_on="outage"):
+    """Each interruption starting within W minutes of the end of the same section's previous record (records at the
+    given levels, by start) that lasted dmin minutes or more; optionally only trips with the cause, and only where the
+    previous outage's start day (frost_on "outage") or the trip's own day ("trip") is in the frost set."""
     S = F[F.level.isin(levels)].sort_values(["sec", "start"])
-    prev_end = S.groupby("sec").end.shift(1)
-    prev_dur = (S.end - S.start).groupby(S.sec).shift(1)
-    prev_day = (S.start.groupby(S.sec).shift(1) // 1440)
+    g = S.groupby("sec")
+    prev_end, prev_start = g.end.shift(1), g.start.shift(1)
     gap = S.start - prev_end
-    ok = (gap >= 0) & (gap <= W) & (prev_dur >= dmin)
+    ok = (gap >= 0) & (gap <= W) & ((prev_end - prev_start) >= dmin)
+    if cause is not None:
+        ok &= S.cause == cause
     if frost is not None:
-        ok &= prev_day.isin(frost)
+        ok &= ((prev_start // 1440) if frost_on == "outage" else (S.start // 1440)).isin(frost)
     out = pd.Series(False, index=F.index)
     out[S.index[ok.values]] = True
     return out
 
 
-def qualifying(F, dmin=60.0, frost=None, levels=("section",)):
+def qualifying(F, dmin=60.0, frost=None, levels=("section",), frost_on="outage"):
     q = F.level.isin(levels) & ((F.end - F.start) >= dmin)
     if frost is not None:
-        q &= (F.start // 1440).isin(frost)
+        q &= ((F.start // 1440) if frost_on == "outage" else (F.end // 1440)).isin(frost)
     return q
 
 
-def golden_switching(F, med, frost, W=10.0, dmin=60.0, staged=(Y1, G_DAY), net=True, levels=("section",)):
-    """The revision's cost: re-trips after its date in the review year, net of the staged-era re-trip rate."""
+def golden_switching(F, med, frost=None, W=10.0, dmin=60.0, staged=(Y1, G_DAY), net=True, levels=("section",),
+                     cause="OVLD", frost_on="outage"):
+    """The revision's cost: overload trips starting within ten minutes of the same section's restoration from an
+    interruption of an hour or more, after its date in the review year, net of the staged-era rate."""
     F = F[~F.planned]
     keep = ~(F.start // 1440).isin(med)
-    pr = pair(F, W, dmin, frost, levels) & keep
-    q = qualifying(F, dmin, frost, levels) & keep & ~pr
+    pr = pair(F, W, dmin, frost, levels, cause, frost_on) & keep
+    q = qualifying(F, dmin, frost, levels, frost_on) & keep & ~pr
     rest_min = F.end
     after = (rest_min >= G_DAY * 1440) & (F.start < YE * 1440)
     yr_pairs = F.ci[pr & (F.start >= G_DAY * 1440) & (F.start < YE * 1440)].sum()
