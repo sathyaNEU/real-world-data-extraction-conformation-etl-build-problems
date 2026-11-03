@@ -51,6 +51,30 @@ PROJECTS = [("NHU3", "Nordfjell helseundersokelse 3", 0.41),
             ("SEPSIS", "Sepsisregister Nordfjell", 0.10)]
 CONTRACT = [("KT-ALPHA", "AVT-2026-114"), ("KT-BORG", "AVT-2027-031")]
 EXTRACTION = ["magnetic bead", "silica column", "salting out"]
+
+# The LIMS method table. The 2026 table is the one the method group set up for routine extraction
+# from January 2026 (MG-2025-14). On 2 November 2026 the second extraction robot came into service
+# with its low-input program, and the method group re-coded the table so the codes follow the robots'
+# program numbers, the bench methods after them. An extraction keeps the code it was booked under;
+# the warehouse names every code by the table as it stands when the extract is pulled.
+METHOD_SWITCH = dt.date(2026, 11, 2)
+LOW_INPUT = "magnetic bead, low input"
+METHODS_2026 = {1: "magnetic bead", 2: "silica column", 3: "salting out"}
+METHODS_NOW = {1: LOW_INPUT, 2: "magnetic bead", 3: "silica column", 4: "salting out"}
+METHOD_ORDER = ["magnetic bead", LOW_INPUT, "silica column", "salting out"]
+# the method a specimen's DNA was extracted with, by project: small-volume and swab specimens went to
+# the silica column bench until the low-input program took most of them
+MIX_BEFORE = {"NHU3": (0.68, 0.22, 0.10), "BARN2": (0.40, 0.52, 0.08), "KARDIA": (0.64, 0.22, 0.14),
+              "OSTEO": (0.52, 0.18, 0.30), "SEPSIS": (0.55, 0.38, 0.07)}          # bead, silica, salting
+MIX_AFTER = {"NHU3": (0.68, 0.15, 0.07, 0.10), "BARN2": (0.40, 0.40, 0.12, 0.08),
+             "KARDIA": (0.64, 0.15, 0.07, 0.14), "OSTEO": (0.52, 0.12, 0.06, 0.30),
+             "SEPSIS": (0.55, 0.28, 0.10, 0.07)}                       # bead, low input, silica, salting
+# how strongly the screen in service flags each method's specimens, relative to the month's rate:
+# a hand-held column and a low input carry more of a second contributor's DNA through
+FLAG_WEIGHT = {"magnetic bead": 0.78, LOW_INPUT: 2.15, "silica column": 1.65, "salting out": 0.58}
+# the DNA concentration each method delivers, ng/ul: the median and the log spread
+DNA_CONC = {"magnetic bead": (63.4, 0.33), LOW_INPUT: (21.6, 0.42), "silica column": (47.8, 0.36),
+            "salting out": (83.1, 0.28)}
 INSTRUMENTS = ["GSQ-A", "GSQ-B"]
 DEPTH_FLOOR = 20                          # the pipeline's minimum mean depth
 PANEL_MARKERS = 96
@@ -96,7 +120,7 @@ FILES = {
     "platform": "extraction_platform_validation_2025.pdf",
     "plates": "plate_layout_map_2027q2.csv",
 }
-DISTRACTORS = ["runlog", "costs", "platform", "plates", "dilution"]
+DISTRACTORS = ["runlog", "costs", "plates", "dilution", "crosswalk", "weekly"]
 
 # the twelve reporting months' flag propensity in the warehouse extract, as the screen in service
 # ran: higher through the winter wave, when intake is heaviest and extraction is rushed

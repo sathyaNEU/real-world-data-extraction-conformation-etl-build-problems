@@ -4,9 +4,10 @@
  "distractor_files": [
   "target/assay_unit_costs_2027.csv",
   "target/dilution_panel_2027q1.xlsx",
-  "target/extraction_platform_validation_2025.pdf",
+  "target/identity_panel_weekly_reports_2027.pdf",
   "target/lims_run_log_2027-03_2027-05.csv",
-  "target/plate_layout_map_2027q2.csv"
+  "target/plate_layout_map_2027q2.csv",
+  "target/specimen_request_crosswalk.tsv"
  ],
  "domain": "Biomedical and clinical research (genomics, high-dimensional association)",
  "field_terms": [

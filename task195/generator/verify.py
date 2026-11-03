@@ -24,10 +24,9 @@ def same(label, a, b):
 
 
 def table(path, delim=","):
-    with open(path, encoding="utf-8") as fh:
-        lines = [l.rstrip("\n") for l in fh if not l.startswith("#")]
-    head = lines[0].split(delim)
-    return [dict(zip(head, l.split(delim))) for l in lines[1:] if l]
+    import csv
+    with open(path, encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader((l for l in fh if not l.startswith("#")), delimiter=delim))
 
 
 def run(target, figures_path):
@@ -102,56 +101,49 @@ def run(target, figures_path):
     same("the chosen cutoff's false-call rate", fig["cutoffs"][decision]["false_rate_pct"],
          fig["chosen_false_rate_pct"])
 
-    biobank = {r["specimen_id"]: r["biobank_ref"]
-               for r in table(os.path.join(target, "specimen_request_crosswalk.tsv"), "\t")}
-    weeks = {}
-    for r in table(os.path.join(target, "identity_panel_register_2027.csv")):
-        day = dt.date.fromisoformat(r["report_date"])
-        if day.year == 2027 and day.month in (4, 5):
-            w = weeks.setdefault(r["report_ref"], {"rows": 0, "spec": set()})
-            w["rows"] += 1
-            w["spec"].add(biobank[r["specimen_id"]])
-    same("report weeks", sorted(weeks), sorted(fig["panel_weeks"]))
-    for ref, w in sorted(weeks.items()):
-        same("%s specimens" % ref, len(w["spec"]), fig["panel_weeks"][ref]["specimens"])
-        same("%s difference" % ref, w["rows"] - len(w["spec"]), fig["panel_weeks"][ref]["difference"])
-        same("%s results issued" % ref, w["rows"], fig["panel_weeks"][ref]["results_issued"])
-
+    # the ask: per extraction method, the twelve reporting months to February 2027
+    import re
+    try:
+        import pypdf
+        report = "\n".join(p.extract_text() or "" for p in pypdf.PdfReader(
+            os.path.join(target, "extraction_platform_validation_2025.pdf")).pages)
+    except Exception:
+        report = ""
+    table_2026 = {m.group(1): m.group(2) for m in re.finditer(
+        r"(?m)^\s*([1-9])\s+(magnetic bead|silica column|salting out)\b", report)}
+    same("the 2026 method table as the platform validation prints it",
+         sorted(table_2026.items()), [("1", "magnetic bead"), ("2", "silica column"), ("3", "salting out")])
     amended = {}
     for a in table(os.path.join(target, "release_amendments_2027-04_2027-06.csv")):
         amended[(a["specimen_id"], a["field"])] = a["value_after"]
-    months, rel_seen, flag_seen = {}, set(), set()
-    with open(os.path.join(target, "qc_screen_history_2026-02-15_2027-02-28.csv"), encoding="utf-8") as fh:
-        head = fh.readline().rstrip("\n").split(",")
-        ix = {k: head.index(k) for k in ("specimen_id", "extraction_id", "released_date",
-                                         "release_status", "hetx_call", "review_outcome",
-                                         "call_source")}
-        for line in fh:
-            f = line.rstrip("\n").split(",")
-            if f[ix["release_status"]] != "RELEASED":
-                continue
-            sid = f[ix["specimen_id"]]
-            released = amended.get((sid, "released_date"), f[ix["released_date"]])
-            m = released[:7]
-            # a specimen is its extraction: a depth top-up carries an accession of its own
-            key = (m, f[ix["extraction_id"]])
-            d = months.setdefault(m, [0, 0])
-            if key not in rel_seen:
-                rel_seen.add(key)
-                d[0] += 1
-            field = "review_outcome" if f[ix["call_source"]] == "REVIEWED" else "hetx_call"
-            call = amended.get((sid, field), f[ix[field]])
-            if call in ("FLAG", "FLAGGED") and key not in flag_seen:
-                flag_seen.add(key)
-                d[1] += 1
-    for m, row in sorted(fig["baseline"].items()):
-        same("%s released" % m, months[m][0], row["released"])
-        same("%s flagged" % m, months[m][1], row["flagged"])
-        same("%s per thousand" % m, round(1000.0 * months[m][1] / months[m][0], 1), row["per_thousand"])
-    vol = {r["reporting_month"]: int(r["results_released"].replace(" ", ""))
-           for r in table(os.path.join(target, "release_volumes_monthly_2026-03_2027-02.csv"))}
-    same("the reporting pack counts releases, not specimens",
-         all(vol[m] >= fig["baseline"][m]["released"] for m in fig["baseline"]), True)
+    hist = table(os.path.join(target, "qc_screen_history_2026-02-15_2027-02-28.csv"))
+    first_new = min(r["extracted_date"] for r in hist if r["extraction_method_code"] not in table_2026)
+    same("the day the method table was re-coded", first_new, fig["method_table_recoded"])
+    months = ["2026-%02d" % m for m in range(3, 13)] + ["2027-01", "2027-02"]
+    per, seen = {}, set()
+    for r in hist:
+        if r["release_status"] != "RELEASED" or not r["released_date"]:
+            continue
+        sid = r["specimen_id"]
+        if amended.get((sid, "released_date"), r["released_date"])[:7] not in months or sid in seen:
+            continue
+        seen.add(sid)
+        # the code is the one the extraction was booked under; before the re-coding it reads on the
+        # 2026 table, after it on the table the warehouse names it by
+        method = (table_2026[r["extraction_method_code"]] if r["extracted_date"] < first_new
+                  else r["extraction_method"])
+        field = "review_outcome" if r["call_source"] == "REVIEWED" else "hetx_call"
+        call = amended.get((sid, field), r[field])
+        d = per.setdefault(method, [0, 0, 0])
+        d[0] += 1
+        d[1] += 1 if r["call_source"] == "REVIEWED" else 0
+        d[2] += 1 if call in ("FLAG", "FLAGGED") else 0
+    same("the methods", sorted(per), sorted(fig["methods"]))
+    for m, row in sorted(fig["methods"].items()):
+        same("%s released" % m, per[m][0], row["released"])
+        same("%s reviewed" % m, per[m][1], row["reviewed"])
+        same("%s flagged" % m, per[m][2], row["flagged"])
+        same("%s per thousand" % m, round(1000.0 * per[m][2] / per[m][0], 1), row["per_thousand"])
 
     return CHECKS[0]
 

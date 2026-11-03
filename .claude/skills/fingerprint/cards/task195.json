@@ -34,7 +34,7 @@
  "scoring_unit": "per certified output",
  "spine": {
   "file": "qc_screen_history_2026-02-15_2027-02-28.csv",
-  "rows": 32985,
+  "rows": 32644,
   "entity": "one specimen's quality-control screen record at release",
   "grain": "specimen",
   "source": "synthetic"
@@ -75,7 +75,7 @@
   "task478": "task478 estimates each unit's period output from a rate that rises with a supplier's monthly input property; here no rate or input is modelled: the call turns on reading a paired difference against zero rather than two intervals against each other"
  },
  "lineage": [],
- "notes": "architecture_spent set 2026-10-21: the decisive step is a reflex on measurement, 6 of 12 textbook routes to the interval filing the golden and two of them insight-free, and guard.py heart BLOCKs test.same_driver_older against task190 architecture 6 on the same gap, pattern and Gate G mechanism with the same measured death. Re-root at stage 1; the BLOCK is cleared by redrawing and not by a differentiation line.",
+ "notes": "architecture_spent set 2026-10-21: the decisive step is a reflex on measurement, 6 of 12 textbook routes to the interval filing the golden and two of them insight-free, and guard.py heart BLOCKs test.same_driver_older against task190 architecture 6 on the same gap, pattern and Gate G mechanism with the same measured death. Re-root at stage 1; the BLOCK is cleared by redrawing and not by a differentiation line. Reship of 11-03 (rubric scope, the call frozen): the identity-merge asks replaced by the screen in service's twelve reporting months by extraction method, on the LIMS method table re-coded at the second extraction robot's go-live; ceiling.py cracker 0 of 16, pair 36.8.",
  "layer2_family": "field_method",
  "layer2_pattern": "own:paired-difference-against-marginal-intervals",
  "layer1": [
@@ -84,7 +84,8 @@
   "specimen identifiers differing between systems",
   "thresholds recorded per batch",
   "a run split across two instruments",
-  "tables inside PDFs"
+  "tables inside PDFs",
+  "a LIMS reference table re-coded in place, older records named by today's table"
  ],
  "registered": "2026-10-17T15:41:53Z",
  "architecture_spent": true

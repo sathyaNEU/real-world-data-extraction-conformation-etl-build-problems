@@ -40,7 +40,10 @@ def _doc(path, title):
                              bottomMargin=17 * mm)
 
 
-def protocol(target):
+def protocol(target, shipped=False):
+    """KVAL-07 issue 4. shipped=True puts back 6.2's sentence on the export manifest, which the 10-17
+    cut carried and the pack no longer ships; checks.py proves that undoing the change reproduces the
+    shipped bytes."""
     path = os.path.join(target, W.FILES["protocol"])
     d = _doc(path, "KVAL-07 method validation")
     cut_rows = [["Cutoff", "Mixture fraction at or above", "Listed since"]]
@@ -114,7 +117,9 @@ def protocol(target):
                    "and closed before the decision is taken. A deviation that changes the comparison's "
                    "population or the decision rule voids the parallel run.", BODY),
          Paragraph("6.2 The validation file, its extracts and the exports they were taken from are "
-                   "retained for fifteen years.", BODY),
+                   "retained for fifteen years." + (
+                       " Each extract is listed in the file's export manifest with its source, the date "
+                       "it was pulled and the terms it is held under." if shipped else ""), BODY),
          Paragraph("7 References and revision history", H2),
          Paragraph("7.1 KVAL-02 instrument qualification. KVAL-11 reference standards and control "
                    "material. SOP-LAB-18 release of sequencing results. The candidate method's own "
@@ -143,7 +148,8 @@ def protocol(target):
     d.build(f)
 
 
-def model_card(target, estimates):
+def model_card(target, estimates, shipped=False):
+    """The estimator's card. shipped=True gives the 10-17 cut's addendum sentence."""
     path = os.path.join(target, W.FILES["modelcard"])
     d = _doc(path, "Mixture fraction estimator v3.4")
     vals = sorted(estimates)
@@ -175,12 +181,19 @@ def model_card(target, estimates):
          Paragraph("Addendum, 19 June 2027: what the estimator returned on the 2027 archive", H2),
          Table(wrap(rows), colWidths=[76 * mm, 40 * mm]),
          Spacer(1, 4 * mm),
-         Paragraph("Computed by the bioinformatics group on the accepted read sets of the March to May "
-                   "2027 re-run that had completed by 16 June 2027; the batches of 17 June are not "
-                   "included. The run's scope, reference build, marker panel and depth floor are in %s, "
-                   "filed with the re-run. The group reports this distribution as the estimator's "
-                   "behaviour on production material; where a share falls relative to any screening "
-                   "cutoff is KVAL-07's matter." % W.FILES["config"], SMALL),
+         Paragraph(("Computed by the bioinformatics group on the accepted read sets of the March to May "
+                    "2027 re-run that had completed by 16 June 2027; the file %s as filed also carries "
+                    "the batches of 17 June, so recomputing from the file moves these figures a little. "
+                    "The run's scope, reference build, marker panel and depth floor are in %s, filed "
+                    "with the re-run. The group reports this distribution as the estimator's behaviour "
+                    "on production material; where a share falls relative to any screening cutoff is "
+                    "KVAL-07's matter." % (W.FILES["mf"], W.FILES["config"])) if shipped else
+                   ("Computed by the bioinformatics group on the accepted read sets of the March to May "
+                    "2027 re-run that had completed by 16 June 2027; the batches of 17 June are not "
+                    "included. The run's scope, reference build, marker panel and depth floor are in %s, "
+                    "filed with the re-run. The group reports this distribution as the estimator's "
+                    "behaviour on production material; where a share falls relative to any screening "
+                    "cutoff is KVAL-07's matter." % W.FILES["config"]), SMALL),
          Paragraph("Known behaviour", H2),
          Paragraph("Specimens from the same donor sequenced twice return estimates within about 0.002 "
                    "of each other at low shares. A depth top-up library typed from the same extraction "
@@ -238,10 +251,12 @@ def weekly_reports(target, panel):
 def platform(target):
     path = os.path.join(target, W.FILES["platform"])
     d = _doc(path, "Extraction platform validation 2025")
-    rows = [["Method", "Specimens", "Median yield (ug)", "Median A260/A280", "Failures"],
-            ["magnetic bead", "384", "6.4", "1.84", "7"],
-            ["silica column", "192", "4.9", "1.79", "11"],
-            ["salting out", "96", "8.1", "1.72", "4"]]
+    rows = [["LIMS code", "Method", "Specimens", "Median yield (ug)", "Median A260/A280", "Failures"]]
+    rows += [["%d" % code, name, n, y, p, fails]
+             for (code, name), (n, y, p, fails) in zip(sorted(W.METHODS_2026.items()),
+                                                       [("384", "6.4", "1.84", "7"),
+                                                        ("192", "4.9", "1.79", "11"),
+                                                        ("96", "8.1", "1.72", "4")])]
     f = [Paragraph("%s: extraction platform validation, 2025" % W.LAB, H1),
          Paragraph("Method group report MG-2025-14, 20 November 2025. Approved for the cohort service's "
                    "routine extraction from January 2026.", SMALL),
@@ -250,10 +265,11 @@ def platform(target):
                    "purity and failure rate, over the 2025 verification specimens. It does not cover "
                    "sequencing, quality-control screening or the identity panel.", BODY),
          Paragraph("Results", H2),
-         Table(wrap(rows), colWidths=[34 * mm, 24 * mm, 34 * mm, 34 * mm, 20 * mm]),
+         Table(wrap(rows), colWidths=[18 * mm, 32 * mm, 22 * mm, 32 * mm, 32 * mm, 18 * mm]),
          Spacer(1, 4 * mm),
          Paragraph("Conclusion", H2),
          Paragraph("The magnetic bead method is retained as the default for the cohort service. The "
                    "silica column method is kept for specimens below 200 microlitres and the salting "
-                   "out method for the biobank's archived blood clots.", BODY)]
+                   "out method for the biobank's archived blood clots. The three methods are set up in "
+                   "the LIMS method table under the codes shown.", BODY)]
     d.build(f)

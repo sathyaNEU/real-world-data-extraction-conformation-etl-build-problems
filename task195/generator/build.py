@@ -24,7 +24,7 @@ def cut(target):
     PK.write_plates(target, specimens)
     counts["plates"] = len(specimens)
     PK.write_config(target)
-    hist_rows, released, flagged, events, amend = AS.history(target)
+    hist_rows, _truth, events, amend = AS.history(target)
     counts["history"] = hist_rows
     counts["volumes"] = AS.volumes(target, events)
     PK._write(os.path.join(target, W.FILES["amendments"]),
@@ -53,15 +53,21 @@ def cut(target):
     return specimens, counts
 
 
+PDF_DATES = {"protocol": b"D:20270219091500+01'00'", "modelcard": b"D:20270611143000+02'00'",
+             "weekly": b"D:20270604161000+02'00'", "platform": b"D:20251120103000+01'00'"}
+
+
+def stamp_pdf(target, keys):
+    """The documents carry the fiction's own producer and date, never the writer's."""
+    import postprocess as PP
+    for key in keys:
+        PP.normalize_pdf(os.path.join(target, W.FILES[key]), PDF_DATES[key], PDF_DATES[key])
+
+
 def stamp(target):
     """Containers carry the fiction's own producer and date, never the writer's."""
     import postprocess as PP
-    for name, created, modified in (
-            (W.FILES["protocol"], b"D:20270219091500+01'00'", b"D:20270219091500+01'00'"),
-            (W.FILES["modelcard"], b"D:20270611143000+02'00'", b"D:20270611143000+02'00'"),
-            (W.FILES["weekly"], b"D:20270604161000+02'00'", b"D:20270604161000+02'00'"),
-            (W.FILES["platform"], b"D:20251120103000+01'00'", b"D:20251120103000+01'00'")):
-        PP.normalize_pdf(os.path.join(target, name), created, modified)
+    stamp_pdf(target, ("protocol", "modelcard", "weekly", "platform"))
     PP.normalize_ooxml(os.path.join(target, W.FILES["dilution"]), W.PEOPLE["lead"],
                        W.PEOPLE["lead"], "2027-03-11T08:40:00Z", "2027-04-02T10:15:00Z",
                        title="Analytical sensitivity panel 2027Q1", excel=True)

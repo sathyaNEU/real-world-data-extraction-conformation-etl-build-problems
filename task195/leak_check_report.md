@@ -1,16 +1,16 @@
 # leak check, task195
 
-**Verdict: REVIEW.** 17 files read, 29 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 25 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: paired, asserted, difference, verdict, decisive, comparison, nothing, estimate, sentence, estimator, uncertainty, window, accepted, cutoffs, intervals, laboratory, parallel, population, method, corpus, closed, two-sample, objective, driver, estimators
+Stump terms swept: paired, asserted, difference, verdict, decisive, comparison, nothing, estimate, sentence, estimator, uncertainty, window, accepted, cutoffs, intervals, laboratory, parallel, population, corpus, closed, two-sample, objective, driver, estimators, quantity
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `method_validation_protocol_kval07.pdf`: carries 8 of 10 distinctive words of the committed call: 'Replace the contamination screen in service with the re-run mixture-fraction screen at the 0.030 cutoff for the quarter '
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `method_validation_protocol_kval07.pdf`: 11 of 25 stump-paragraph terms appear (verdict, comparison, estimator, window, accepted, cutoffs); read whether the document names the move
+- **REVIEW** `method_validation_protocol_kval07.pdf`: 10 of 25 stump-paragraph terms appear (verdict, comparison, estimator, window, accepted, cutoffs); read whether the document names the move
 - **REVIEW** `mixture_estimator_model_card_v34.pdf`: 5 of 25 stump-paragraph terms appear (estimate, estimator, accepted, cutoffs, laboratory); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
