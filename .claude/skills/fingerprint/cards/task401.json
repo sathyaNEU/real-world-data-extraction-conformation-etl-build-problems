@@ -1,0 +1,91 @@
+{
+  "task": "task401",
+  "architecture": "v1",
+  "drawn": "2026-11-03",
+  "slot_note": "Numbered against seed RC07 (a supplier's January imbalance bill and plant trips). The seed's world could not carry an honest unbanned draw: its volume channel is settlement accounting, its price and desk-response channels are task398's re-run counterfactual in other nouns, gate closure is a market rule, and its honest strategy (decomposition_attribution) and forum (board) are held by task398. Moved under CLAUDE.md's stuck-build rule to another client domain, world and dataset under the same objective and number.",
+  "domain": "epidemiology-public-health",
+  "subdomain": "health-equity-disparity-decomposition",
+  "niche": "a community trust's frailty virtual ward for residents aged 80 and over in an integrated care system's Core20 neighbourhoods (the most deprived fifth of England's small areas), credited by the trust's own reading with cutting the deprived fifth's emergency admissions in its pilot year, when a care group's administration closed eleven of the Core20 care homes in the year between the baseline and the pilot and their residents left Core20",
+  "objective": "root-cause",
+  "shape": "other",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who collapses episodes into continuous spells, places every admission in its neighbourhood and reads the evaluation framework correctly takes the age-standardised difference in differences between Core20 and the rest of the system from the baseline year to the pilot year and files roughly three times the admissions the ward prevented, enough to clear the extension bar, when Core20's pilot-year residents held several hundred fewer care home residents, whose admission rate is about five times the community's, and the admissions those residents would have had without the ward fall far short of the bar.",
+  "domain_test": "The deciding quantity is an intervention's prevented admissions read as expected against observed admissions for the population actually at risk, the expectation standardised on the care setting that drives the rate (indirect standardisation on a stratum the age bands do not capture); with retail or school nouns there is no at-risk pool whose care setting carries a fivefold rate and moves with a care capacity record, so the task no longer reads the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "epidemiology-public-health/health-equity-disparity-decomposition/1",
+  "layer1": [
+    "consultant episodes collapsed into continuous inpatient spells across two acute trusts, with transfers between them inside one spell",
+    "one acute trust's patient administration system migrated in April 2024, changing spell identifiers and admission method code formats",
+    "LSOA 2011 codes in the deprivation lookup against LSOA 2021 codes in the registration and admission extracts, with split and merged areas",
+    "quarterly registration snapshots against a December to March winter window",
+    "a care capacity tracker with weekly returns, missing weeks and homes re-registered under a new provider",
+    "admission source codes recorded inconsistently for care home residents between the two acute trusts"
+  ],
+  "stakeholder_role": "the trust's head of business intelligence",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "emergency admission episodes of residents aged 80 and over at the system's three acute trusts, October 2021 to September 2026",
+    "rows": 300000,
+    "entity": "one consultant episode of an emergency admission",
+    "grain": "episode",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "England, a northern integrated care system (invented): the city of Kirkhaven and four neighbouring boroughs",
+    "currency": "GBP",
+    "org_type": "community health NHS trust",
+    "invented_names": [
+      "Kirkhaven",
+      "Kirkhaven Community Healthcare NHS Trust"
+    ],
+    "people": [
+      "Aimee Williams",
+      "Gerard Norris",
+      "Sylvia Phillips"
+    ]
+  },
+  "deliverables": [
+    "core20_frailty_ward_pilot_year.xlsx",
+    "admissions_prevented_core20.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "An intervention in one group is credited with a fall in that group's rate against the others', but between the baseline and evaluation periods the group's pool lost a block of its highest-rate members when the places that held them closed, so the baseline rate overstates what the smaller pool would have had; standardised to the evaluation period's mix on that property, which no column of the outcome or population files carries and a capacity record shows, the intervention's effect is a fraction of the difference in differences.",
+  "driver_concrete": "A care group's administration closed eleven Core20 care homes between October 2024 and September 2025, and their residents moved to homes outside Core20 or outside the system, so Core20's residents aged 80 and over in the pilot year held several hundred fewer care home residents, whose emergency admission rate is about five times the community's; the difference in differences against the baseline year credits the virtual ward with admissions the closed homes' residents no longer had in Core20, and the expected admissions standardised to the pilot year's mix of care home and community residents leave the ward about a third of that, below the bar for extending it.",
+  "stump": "A competent solver files the age-standardised difference in differences, about three times the ward's prevented admissions, and recommends extending the ward, because it applies Core20's baseline-year rate, set while the eleven closed homes were full, to a pilot-year pool without them.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task156": "task156 v2 reads how often a fixed capacity is exceeded once a load is added, from a network share below a fluctuating level; here nothing is exceeded and no capacity binds: a pool lost its highest-rate members to closures between two periods, so a baseline rate stops fitting the evaluated pool.",
+    "task238": "task238 separates a channel effect from self-selection into the channel with a randomised nudge as an instrument; here nothing is chosen or randomised: the evaluated pool shrank on a setting a capacity register records, and the decisive move is standardising the expected admissions to that pool.",
+    "task303": "task303 removes a shared upstream loss that every sibling unit logs in the same minute; here no loss is shared or duplicated across units: one group lost a block of high-rate members to closures, and the difference in differences books their absence to the intervention."
+  },
+  "lineage": [],
+  "notes": "Strategy composition_mix: the decisive move is F5's own form, a stratum or pooled rate measured on one pool (winter 2023-24) applied to a pool whose mix on a property no column names (care home residence, read from a capacity register) has moved; it is not a split of one total between two movers.",
+  "registered": "2026-11-03T14:03:12Z"
+}
