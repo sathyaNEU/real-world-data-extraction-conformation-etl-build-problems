@@ -21,7 +21,7 @@ import world as W  # noqa: E402
 MONTH = {10: "Oct", 11: "Nov", 12: "Dec", 1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul",
          8: "Aug", 9: "Sep"}
 MONTHS = [(2025, m) for m in (10, 11, 12)] + [(2026, m) for m in range(1, 10)]
-COURTS = [("Kestrel Bay", "KB"), ("Dunmore", "DN"), ("Ashgrove", "AG"), ("Redcliff", "RC")]
+COURTS = [("Kestrel Bay", "KB"), ("Dunmore", "DN"), ("Ashgrove", "AG"), ("Thornmere", "RC")]
 
 
 def p1(v):
@@ -59,8 +59,6 @@ def workbook(f, path):
                round(f["kb_avl_mag_gap"], 1), round(f["kb_avl_judges_gap"], 1)])
     ws.append(["Called at other times", round(f["kb_other_gap"], 1), round(f["kb_other_mag_gap"], 1),
                round(f["kb_other_judges_gap"], 1)])
-    ws.append([])
-    ws.append(["Defendants with no lawyer of record called while the AVL list sat", f["kb_avl_unrepresented"]])
     ws.append([])
     ws.append(["Source: CMS appearance extract and court sitting calendar, pulled 2 November 2026."])
     ws.cell(row=ws.max_row, column=1).font = Font(italic=True, size=9)
@@ -273,14 +271,15 @@ def submission(f, path):
         "7. Occupied nights per clause 4 of bail_support_contract_schedule2.pdf: each placement from its \"Resident "
         "arrived\" incident to its exit incident in bail_house_incidents.csv, less nights in custody or hospital "
         "from the incidents and approved leave from the Away sheet of bail_house_register_2025-26.xlsx, by month.",
-        "8. Put the duty lawyer roster forward.", "",
+        "8. The duty lawyer roster is the only shortlisted line that acts on a first appearance's representation, "
+        "and the widening sits in calls made while the AVL list sat next door with one duty lawyer rostered that day: "
+        "put it forward.", "",
         "## 4. Deliverable Answers", "",
         "### remand_gap_briefing.pdf", "",
         "1. The call: the duty lawyer roster, a second rostered duty lawyer at Kestrel Bay District Court on every "
         "sitting day.",
         "2. Chart on page 1: the gap for the region and each courthouse in both years, then Kestrel Bay's year to "
-        "September 2026 split into calls made while the AVL remand list sat and other calls, each by presiding "
-        "officer.", "",
+        "September 2026 split into calls made while the AVL remand list sat and other calls.", "",
         "### remand_gap_drill.xlsx", "",
         "1. Gap by courthouse, year to September 2025 then 2026, percentage points:",
     ]
@@ -288,12 +287,8 @@ def submission(f, path):
         lines.append("   - %s: %s, %s" % (name, p1(a), p1(b)))
     lines += [
         "2. Kestrel Bay custody list, year to September 2026, percentage points:",
-        "   - Called while the AVL remand list sat: %s (community magistrate %s, judges %s)" % (
-            p1(f["kb_avl_gap"]), p1(f["kb_avl_mag_gap"]), p1(f["kb_avl_judges_gap"])),
-        "   - Called at other times: %s (community magistrate %s, judges %s)" % (
-            p1(f["kb_other_gap"]), p1(f["kb_other_mag_gap"]), p1(f["kb_other_judges_gap"])),
-        "   - Defendants with no lawyer of record called while the AVL list sat: %s" % (
-            "{:,}".format(int(f["kb_avl_unrepresented"]))),
+        "   - Called while the AVL remand list sat: %s" % p1(f["kb_avl_gap"]),
+        "   - Called at other times: %s" % p1(f["kb_other_gap"]),
         "3. EM bail assessment turnaround, average days by order month: %s." % em,
         "4. Occupied nights at the supported bail houses by month: %s." % bh,
     ]

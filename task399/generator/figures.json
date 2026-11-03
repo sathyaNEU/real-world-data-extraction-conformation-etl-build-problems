@@ -15,8 +15,7 @@
   "kb_avl_mag_gap",
   "kb_avl_judges_gap",
   "kb_other_mag_gap",
-  "kb_other_judges_gap",
-  "kb_avl_unrepresented"
+  "kb_other_judges_gap"
  ],
  "_default_path_same": [
   "region_gap_2025",
@@ -66,7 +65,6 @@
   "kb_avl_gap": 0.1,
   "kb_avl_judges_gap": 0.1,
   "kb_avl_mag_gap": 0.1,
-  "kb_avl_unrepresented": 1,
   "kb_other_gap": 0.1,
   "kb_other_judges_gap": 0.1,
   "kb_other_mag_gap": 0.1,

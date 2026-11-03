@@ -17,7 +17,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-11-03 (no LEAK; sweeps 3, 4 and 9 answered in ## Leak and duplicate review)",
-  "reader": "pending: brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t399/stage4/reader/reader_brief.md"
+  "reader": "clean (round 1): question 1 none, question 6 an analytical choice; realism note: CounselOfRecord blank about 74 per cent at every court"
  },
  "duplicate_check": {
   "heart": "WARN 2026-11-03 (overuse.org_family only)",
@@ -25,12 +25,12 @@
   "nearest": "task141 v1 (0.14), task253 v2, both differentiated"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": "pending: brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t399/stage4/judge/judge_brief.md (graded blocks in graded_blocks.md, opened only after derivation.md)"
+  "verdict": "NOT_DETERMINISTIC on the asks only",
+  "disposition": "FIX_NOW (round 1, on 5fa60b26)",
+  "report": "scratchpad t399/stage4/judge/verdict.md; main call forced, Gate F moderate to strong, Gate G decomposition_attribution analytical, Gate H pass"
  },
  "returned": [],
- "resume": "stage 4 fix pass: read the leak reader report and the judge verdict (scratch t399/stage4/reader/reader_report.md and t399/stage4/judge/verdict.md, or as the coordinator relays them); in one generator pass fix every finding from both plus the three held_fixes, asserting each moves no graded figure (freeze.py snapshot first, freeze.py check --mode determinism after); rebuild with build.py and re-run checks, verify, figures_check, ceiling, precut, leak.py, heart and surface; a FIX_NOW gets one re-judge and the Redcliff rename a second reader pass; then the ledger row and commit SHIPPED (task399) with target.zip and golden/ force-added",
+ "resume": "stage 4 fix pass, continue: (1) fix 7, give each court its own no-lawyer share by a court term in the own-lawyer threshold in world.first_appearances (no new draw), then re-run the main seed search (scratch a4/seed_search.py, figs.structure_ok and every bin at 0.07), the EM stream seed search (a4/inspect_seed.py), the 20-redraw count (a4/robust.py) and update every main number in DESIGN_NOTE.md and the card; (2) the ask layer: with the two new filed WHATs executed the cracker keeps 7 of 12 EM cells (March to September) and 12 of 12 bail-house cells, pair ceiling 53.4, so precut cracker gate fails on ask 2: re-site a device on a dimension the new WHATs leave open (supplemental-stumping), never an unstated rule, then update the device-mass assertions in checks.py and re-measure ceiling.py; (3) fix 8, assert in checks.py each extract saved or pulled date on or after its last record and before 2026-11-03; (4) design note: fork rows SF11 (F4), SF12 (F1), SF13 (F2), SF14 (F3) already asserted in checks.py, the ask sheet and cracker table, Tried-and-rejected lines for the spent devices, the leak review and pre-ship check updated; (5) every free gate: checks (tightest bin named), verify, two byte-identical builds, figures_check, precut, leak.py, heart and surface (after the rename), freeze.py check --mode determinism (expected moves: only kb_avl_unrepresented leaving _critical and _units); (6) round-2 briefs: scratch t399/stage4/judge_r2 (same verbatim brief and order, new graded blocks, the round-1 findings F1 to F4 and Gate E to confirm closed) and t399/stage4/reader_r2 (the same eight questions, noting the bid instructions, the EM standard and the contract schedule changed); then commit PAUSED and hand back",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -42,5 +42,13 @@
   "H13 AVL list call times evenly spaced inside each sitting (cms_appearances): draw interior calls, keep first and last on the margins",
   "H13 EM upload minutes step by 37 per order (em_document_uploads): draw them in the working day",
   "H21 Redcliff one letter from Christchurch Redcliffs: rename the courthouse in data and the bid instructions (owes a second reader pass)"
+ ],
+ "fix_pass_done": [
+  "F4: custody calls on an AVL finish minute re-timed one minute later (membership unchanged; SF11 asserted); held 1: AVL interior calls drawn on their own stream",
+  "Gate E: the 1,995 count dropped from every graded block; drill ask 2 is the window split alone; briefing ask 2 described without officers",
+  "F1: EM standard section 2 files the first report and the amended report as a later document",
+  "F2 and F3: contract schedule clause 4 files arrival to departure, entries before arrival or after departure, approved leave",
+  "fix 5: step 8 states the roster line as the inference",
+  "held 2: EM upload minutes drawn; held 3: Redcliff renamed Thornmere (code THM) in data and the bid instructions"
  ]
 }

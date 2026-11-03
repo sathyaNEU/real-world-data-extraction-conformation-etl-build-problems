@@ -23,14 +23,14 @@
 5. No first appearance in the extract carries an EM bail assessment order; every order sits on a later appearance.
 6. EM turnaround per section 2 of em_bail_service_standard_v4.pdf: each order's date from its "Remanded in custody, EM bail address assessment ordered" appearance in the extract (by CRN, else surname, first name and date of birth; orders carried into em_case_system_assessments.csv joined by their addresses), its report from the first "EM address assessment report" in em_document_uploads.csv on its New Zealand date, averaged by order month.
 7. Occupied nights per clause 4 of bail_support_contract_schedule2.pdf: each placement from its "Resident arrived" incident to its exit incident in bail_house_incidents.csv, less nights in custody or hospital from the incidents and approved leave from the Away sheet of bail_house_register_2025-26.xlsx, by month.
-8. Put the duty lawyer roster forward.
+8. The duty lawyer roster is the only shortlisted line that acts on a first appearance's representation, and the widening sits in calls made while the AVL list sat next door with one duty lawyer rostered that day: put it forward.
 
 ## 4. Deliverable Answers
 
 ### remand_gap_briefing.pdf
 
 1. The call: the duty lawyer roster, a second rostered duty lawyer at Kestrel Bay District Court on every sitting day.
-2. Chart on page 1: the gap for the region and each courthouse in both years, then Kestrel Bay's year to September 2026 split into calls made while the AVL remand list sat and other calls, each by presiding officer.
+2. Chart on page 1: the gap for the region and each courthouse in both years, then Kestrel Bay's year to September 2026 split into calls made while the AVL remand list sat and other calls.
 
 ### remand_gap_drill.xlsx
 
@@ -39,10 +39,9 @@
    - Kestrel Bay: 3.6, 13.9
    - Dunmore: 2.9, 0.8
    - Ashgrove: 4.4, 5.4
-   - Redcliff: 3.2, 6.5
+   - Thornmere: 3.2, 6.5
 2. Kestrel Bay custody list, year to September 2026, percentage points:
-   - Called while the AVL remand list sat: 38.6 (community magistrate 38.9, judges 35.7)
-   - Called at other times: 2.9 (community magistrate 3.5, judges 2.7)
-   - Defendants with no lawyer of record called while the AVL list sat: 1,995
+   - Called while the AVL remand list sat: 38.6
+   - Called at other times: 2.9
 3. EM bail assessment turnaround, average days by order month: Oct 2025 9.9, Nov 2025 19.8, Dec 2025 19.4, Jan 2026 20.5, Feb 2026 20.0, Mar 2026 20.3, Apr 2026 19.2, May 2026 18.6, Jun 2026 20.1, Jul 2026 19.7, Aug 2026 19.4, Sep 2026 19.8.
 4. Occupied nights at the supported bail houses by month: Oct 2025 401, Nov 2025 401, Dec 2025 410, Jan 2026 401, Feb 2026 326, Mar 2026 391, Apr 2026 362, May 2026 373, Jun 2026 368, Jul 2026 407, Aug 2026 370, Sep 2026 395.

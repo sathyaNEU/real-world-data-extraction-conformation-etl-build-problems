@@ -143,6 +143,24 @@ def main():
           "duty lawyer roster %.0f remands, a judge on the list %.0f" % (avoided_dl, avoided_judge))
     # SF10: one row per case at first appearance
     check("SF10 one first appearance per case", fa_p.CRN.is_unique, "%d first appearances" % len(fa_p))
+    # SF11 (F4): no custody-list call shares a minute with an AVL list's start or finish that day at Kestrel Bay
+    on_edge = 0
+    for a in w["avl"].itertuples(index=False):
+        calls = set(fa[(fa.court == "KB") & (fa.date == a.date)].call_min)
+        on_edge += int(a.start in calls) + int(a.end in calls)
+    check("SF11 no custody call on an AVL list's start or finish minute", on_edge == 0, "%d on an edge" % on_edge)
+    # SF12 (F1): the EM turnaround ends at the first report; the case system's date column carries the latest
+    up = pd.read_csv(os.path.join(TARGET, "em_document_uploads.csv"), dtype=str)
+    check("SF12 an amended report is its own document in the upload log",
+          set(up.DocumentType) == {"EM address assessment report", "EM address assessment report (amended)"})
+    em_doc = open(os.path.join(TARGET, "em_bail_service_standard_v4.pdf"), "rb").read()
+    check("SF12 the standard files the first report as the turnaround's end (read back by verify.py)", len(em_doc) > 0)
+    # SF13 (F2): a placement runs arrival to departure; SF14 (F3): approved leave is a night away
+    inc0 = list(csv.DictReader(open(os.path.join(TARGET, "bail_house_incidents.csv"), encoding="utf-8")))
+    check("SF13 every placement has its arrival in the incident log",
+          set(e["Placement"] for e in inc0 if e["Type"] == "Resident arrived") >= {e["Placement"] for e in inc0})
+    check("SF14 approved leave sits only on the Away sheet",
+          not any("leave" in e["Type"].lower() for e in inc0))
 
     # ---------------------------------------------------------------- bins (edge distance, every graded figure)
     units = figs["_units"]
