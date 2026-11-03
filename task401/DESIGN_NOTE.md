@@ -1,528 +1,178 @@
 # task401 design note
 
-Architecture 3, drawn 2026-11-03. The number was handed out against seed RC07 (a supplier's January imbalance bill
-blamed on low wind by the desk and on plant trips by operations). The seed's world could not carry an honest unbanned
-draw; architecture 1 (a frailty virtual ward's prevented admissions against care home closures, Epidemiology and Public
-Health) died at stage 2 on published admission rates, and architecture 2 (a canola hybrid blamed for a shortfall that
-July heat in late-seeded fields' flowering windows caused, Economics and Econometrics) died at stage 2 when the golden's
-own window variants straddled the bar and flexible seeding-date controls landed the golden (`## Tried and rejected`,
-the card's `lineage`). Architecture 3 re-roots in another client domain, world, dataset and shell under the same
-objective and number (`CLAUDE.md`, a dead design is re-rooted at once; one architecture per world).
+Architecture 4, drawn 2026-11-03. The number was handed out against seed RC07 (a supplier's January imbalance bill).
+The seed's world could not carry an honest unbanned draw; architecture 1 (a frailty virtual ward against care home
+closures, Epidemiology and Public Health) and architecture 2 (a canola hybrid against July heat, Economics and
+Econometrics) died at stage 2, and architecture 3 (a GB energy supplier's new-customer satisfaction fall booked to its
+billing platform that its quote journey caused, Marketing and Consumer Research) was spent at stage 4, round 2, on an
+ask's unfiled re-attribution while its main call held (`## Tried and rejected`, the card's `lineage`). One architecture
+per world: architecture 4 moves to Physical and Environmental Sciences, a water and sewerage company's river catchment,
+a new dataset and a new shell (`CLAUDE.md`, a dead design is re-rooted at once).
 
-The world: an invented GB domestic energy supplier (about 640,000 accounts, electricity and gas, credit and Direct
-Debit customers, traditional and smart meters) that tracks every new customer's satisfaction six months after the
-switch. Six-month satisfaction fell between the first halves of 2025 and 2026. In the same year the supplier relaunched
-its quote and switch journey (May 2025), moved billing to a new platform (phase 1 live 1 September 2025: every customer
-who joined from July 2025 is billed on it), raised its variable tariffs in October 2025 and moved its contact centre to
-an outsourcer in November 2025. Phase 2 of the billing platform (the remaining legacy accounts) is due to cut over on
-1 February 2027; the executive team wants the cause of the fall named before it signs the cutover off.
+The world: Wendmoor Water, an invented water and sewerage company in the English East Midlands. Its Coldmere Water
+Recycling Centre (an activated sludge works serving about 41,000 people and a handful of trade dischargers) discharges
+to the River Allery, a lowland, high-alkalinity river whose water body must reach good ammonia status. A continuous
+water quality monitor went in below the works in spring 2025 under the company's section 82 programme. From November
+2025 the monitor logged a run of days with total ammonia above the good-status standard. In the same weeks the works
+switched on an ammonia-based aeration control to save energy (27 October 2025), the housing growth of the last three
+years took the works close to its design load, the winter was cold, and Thornlea Dairy, a trade discharger to the
+works' sewer, commissioned a new yoghurt line with its own clean-in-place set (3 November 2025). The company's asset
+plan carries a GBP 14.2 million nitrification upgrade at Coldmere, and the environment programme submission due to the
+Environment Agency in January 2027 needs to say whether that upgrade is the answer.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task401.json`, architecture v3 (v1 and v2 in `lineage` with their
-  fates), registered 2026-11-03T16:08:03Z; `guard.py check` on the registered card returns WARN, exit 0, and `validate`
-  reads 312 cards with none invalid. Two BLOCKs on the draft were cleared before registration: `ban.pattern` (the first
-  decisive generator drafted, G9, repeats task402's) was redrawn to G6, which is the honest label (the per-customer
-  satisfaction curve does not move; the 2026 pool shifted on a state no column holds), and `test.same_driver_older`
-  against task181 v6 is answered on the card (task181 traces cases to a shared resource that handled them; nothing here
-  handled customers differently). The WARNs: `overuse.objective` (root cause in 5 of the last 12; the number sits in
-  the root-cause range); `repeat.gate_g` and `overuse.gate_g` against task400 and task402, answered under Strategy.
-  NOTEs: `test.same_puzzle_older` and `test.same_driver_older` differentiated on the card against task121 v4 and v5 and
-  task181 v6. Nearest driver 0.10 (task121 v4), under the 0.12 floor, screened below.
-- **Pairing:** Marketing and Consumer Research (client domain) / `customer-satisfaction-driver-analysis` / Root-Cause
-  Analysis. The task type serves Root-Cause Analysis only; `marketing-consumer-research x root-cause` has never been
-  built (`guard.py coverage`, 2026-11-03), and the probe card passed the task-type rule. The supplier is the setting;
-  the deciding quantity is the task type's own object, each driver's contribution to a fall in the share of satisfied
-  customers.
-- **Objective and call:** what pulled six-month satisfaction down between H1 2025 and H1 2026, and how much of the fall
-  it carries, so the executive team knows whether the billing platform is to blame before phase 2 cuts over. The
-  rivals on the record: the billing platform, the October tariff rise, the contact centre transfer and the quote
-  journey relaunch. The attribution is retrospective because H1 2026 is the closed window the tracker has measured; the
-  decision it feeds faces forward (the February 2027 cutover and what the 2027 quote journey does). It stays Root-Cause
-  Analysis: the work is naming what produced the fall with the rivals ruled out on the record; nothing is forecast.
-- **Shape:** `03`, a bridge between two totals: the H1 2025 share satisfied to the H1 2026 share, bridged by reconciling
-  items (the quote journey's typical-use default, the billing platform, the tariff rise, the contact centre, the rest),
-  by fuel; the criteria arithmetic is written at stage 2 with the asks' repeated units. Architecture 2 also carried a
-  bridge; the shell is redrawn (question form what, a new second-sentence opener and a new deliverable set at stage 2).
-- **Strategy and Gate G:** `composition_mix` (F5: the pooled reading does not fit this pool, because the pool's mix on a
-  property no column names shifted), Gate G `decomposition_attribution`. The fall is real and the ratings report it
-  correctly; they book it to billing accuracy and so to the platform, and the decisive move standardises the 2026 pool to
-  2025's distribution of each customer's quote-against-meter gap, which no column holds, at which satisfaction held. The
-  draw filed the strategy as `decomposition_attribution` (F8); at stage 3 `guard.py heart` blocked it against task398
-  (registered earlier the same day), and F5 is the honester label in any case: F8's split is decided by overlap, a transfer
-  or a shared driver, none of which decides this one, while F5's insight and generators (G6, G14) are the card's own. The
-  Gate G mechanism stays decomposition_attribution (`repeat.gate_g` against task400, answered: task400 a staggered
-  rollout's natural comparison, here the expectation a sale set against the use the meter then recorded). `causal_design`
-  and `population_selection` are barred in the window, and neither is honest here.
-- **Gap, pattern, generators:** gap objective (the ratings and the driver analysis report the fall correctly and are
-  not what the decision is scored on, the change that produced it); pattern none; generators G6 (composition shift: the
-  2026 pool shifted on each customer's disconfirmation while the satisfaction curve held) and G14 (conditioned yield:
-  the pooled driver weights do not apply to a pool conditioned on what each customer was quoted).
-- **Furniture** (read off `guard.py check` against the live window task399, task400, task402): forum `executive_team`
-  (the executive signs the phase 2 cutover off), forcing event `cutover_or_migration` (phase 2 on 1 February 2027),
-  organisation `utility_or_infrastructure`, role `programme_officer` (the billing programme director, whose cutover
-  question and readiness tables the prompt carries; the head of customer insight writes the review; `research_desk` was
-  redrawn at stage 3 when `heart` blocked it against task398),
-  context artifact `close_out_summary` (the platform's phase 1 close-out report, which reports the programme's own
-  defects and never ranks causes of the fall), calibration none. None is held by the window.
-- **People** (`guard.py names --geo uk --seed 401`): Rita Fisher (head of customer insight), Joanne O'Brien (chief
-  customer officer), Elliot Davies (billing programme director). The draw's first picks (Gerard Norris, Sylvia
-  Phillips) were architecture 1's personas, unshipped, and are set aside with Aimee Williams. None appears in the prompt.
-- **Data-native sentence:** a new customer's first bills and first Direct Debit review are set by what the meter records,
-  while what the customer was told to expect was set at the switch from the use they gave or, from May 2025, from
-  Ofgem's medium typical consumption when they gave none, so the six-month tracker measures the distance between the
-  two, and the supplier keeps the quote and the meter in different systems under different keys.
-- **Abstraction sentence:** a fall in a share of satisfied members is booked to the service the members' own ratings
-  blame, when it comes from the gap between what each member was told to expect at joining and what their own later use
-  then cost, visible only by setting the joining record against each member's measured use. It is not writable against
-  any approved build.
-- **Same-puzzle and library tests:** the stump sentence is not "use X on Y" with X a named correction. The field's
-  method (key driver analysis with Shapley shares, the client card's first pattern) is rung 0 and files the wrong
-  answer; the decisive step is the judgment that this fall was formed against an expectation the sale set, which the
-  driver analysis cannot see because no rating measures it. The guard's same-puzzle and same-driver NOTEs (task121 v5,
-  task181 v6) are differentiated on the card.
-- **Semantic screen, one line per nearest build on the insight it spends** (`guard.py mechanisms --objective
-  root-cause`, the brief's list and the guard's nearest drivers):
-  - task121 v4 (a satisfaction fall read on the operating conditions each journey ran under, because ratings of every
-    candidate move with the overall verdict): here the operating record is the default's own rung (bills, Direct Debit
-    reviews); what decides is a sales record no conditions file carries. task121 (rest rebuilt from duty records): no
-    rest or duty here.
-  - task129 (exposure and surroundings under a reliability standard), task202 (a source's input reaching the layer a
-    response draws on), task398 (a path-dependent rule re-run), task399 (an advocate's absence at each call), task400 (a
-    staggered rollout's natural comparison), task402 (courses broken off when an actor's block lapses, the loss read as
-    the wait's), task187 (a shortfall against a reference curve at matched conditions): none sets an expectation given
-    at entry against the cost the member then met.
-  - task401 v1 (a composition shift by closures behind a credited effect): no pool lost or gained members here; each
-    respondent's own quote moved. task401 v2 (a dated shock meeting each unit's own sensitive phase): no shock, no phase.
-  - task181 v6 (cases traced through time-ordered records to a shared resource that handled them): nothing handled the
-    customers differently. task474 v7 (an instrument's change read through members who sat both): no instrument changed.
-  - task13, task11, task36, task50, task72, task84, task111, task500 (labels against evidence, a threshold rebate, a
-    filed exclusion, exposure inside a funded window, an owner across transfers, copies on a composite key, which cause
-    operates forward, a matched-reference method): none is an expectation set at a sale.
-- **The three go/no-go screens, measured on the clean truth before the card** (`scratchpad/t401/a3/proto_e2.py` to
-  `proto_e5.py`, 20 seeds unless stated; levels set first and cited under Sources):
-  1. **Realistic levels.** Ofgem's medium typical consumption (2,700 kWh electricity, 11,500 kWh gas) against household
-     use spread as the national consumption statistics show (lognormal, about 0.5 and 0.45 in logs), 45 per cent of
-     switchers giving no use, six-month satisfaction near 78 per cent, a 30 per cent overrun worth about 25 points. In
-     the base-wide relationship tracker the quote default carries only 0.54 points (1.35 if 2025's joiners used a fifth
-     more) against a fall whose draw-to-draw spread is 0.66 (`proto_e2.py`): it fails, so the build runs on the
-     six-month new-customer tracker, where every respondent was quoted at the switch. There the quote default carries
-     2.31 points (sd 0.23) of a 3.14-point fall (sd 0.62), the platform's own effect is 0.36, and the default's driver
-     analysis books 1.61 (sd 0.22) to the platform: **lever 1.25 points (sd 0.22), 1.00 to 1.47 across overrun effects
-     of 3.0 to 5.5 in the logit.**
-  2. **The golden's method holds the call.** Every form of the disconfirmation that keeps the overrun's size names the
-     quote default: kinked log cost ratio 2.59, pounds 2.41, kWh ratio 2.01, first-review Direct Debit rise 2.70,
-     flags at 20 and 30 per cent 1.71 and 2.18, kinked linear probability 2.53; **the lowest, 1.71, against an
-     unexplained residual (the fall less the quote default, the tariff rise and the contact centre) of at most 0.83.**
-     A symmetric linear term (1.52) still clears it; a 10 per cent flag (0.93) falls inside it and is rejected by the
-     data, since satisfaction keeps falling with the overrun's size inside the flagged group (stage 2 asserts the fit).
-  3. **No easy completion.** The use each customer was quoted on enters no default rung; once it is in hand the call
-     holds across the forms above; and the cracker's flexible rungs all land wrong: **Shapley key driver analysis puts
-     62 per cent (sd 5) of the fall on billing accuracy (the platform); first-review Direct Debit rises over a quarter
-     went from 8.8 to 14.2 per cent of respondents, every one on the new platform (the platform's reviews); a use-by-
-     period model books the fall to high-use 2026 respondents (the October tariff rise).**
-- **Sources:** Ofgem, typical domestic consumption values (medium 2,700 kWh electricity, 11,500 kWh gas, from April
-  2023) for the quote default; the Department for Energy Security and Net Zero's sub-national and NEED domestic
-  consumption statistics for the spread of household use; the CMA Energy Market Investigation final report (2016) on
-  how many customers do not know their annual use; Ofgem's Direct Debit guidance (2023) for how payments are set and
-  reviewed; Oliver (1980, Journal of Marketing Research) and Anderson and Sullivan (1993, Marketing Science) for
-  expectation-disconfirmation and its asymmetry; Fornell and colleagues (1996, Journal of Marketing) for the ACSI's
-  expectations construct; Ofgem's consumer perceptions research for the level of supplier satisfaction. Every row in
-  the pack is constructed and declared synthetic in `metadata.json`; no real supplier, vendor or comparison site is
-  named.
+- **Card:** `.claude/skills/fingerprint/cards/task401.json`, architecture v4, registered after `guard.py check` at WARN
+  (overuse.objective: the slot's objective is fixed by its number; repeat.gate_g and overuse.gate_g: the mechanism that
+  carries the stump is a split of failures between sources, honestly `decomposition_attribution`, and the strategy
+  window is answered by the decisive move's family below). Structural tests against task36 R1, task83 v1 and task127 v2
+  answered by differentiation lines on the card: none of them reads a contributor's excursions through a shared
+  process's recovery.
+- **Pairing:** Physical and Environmental Sciences (client domain), task type `pollution-source-attribution`, which
+  serves Root-Cause Analysis in the taxonomy; objective Root-Cause Analysis; shape 12 (drill-down to one leaf: the
+  winter's exceedance days, river to works to the works' failure episodes to the one discharger and its excursions).
+- **Strategy:** `population_selection`, pattern C (the serviceable share behind a join): the deciding quantity is the
+  share of the exceedance days each option can reach, the dairy's pre-treatment against the works' upgrade, behind a
+  join of the dairy's fifteen-minute discharge record and the works' daily effluent record (strategies.md F7, approved
+  on 25 and 28). Generators G8 reachability versus magnitude (by load the dairy barely registers; by reach it carries
+  most exceedance days), G3 record versus operation, G7 operating window. Gap population (the works' failures are not
+  the works' own), objective second (the load apportionment is correct and is not what the decision is scored on).
+  The window bans `binding_constraint`, `causal_design` and `decomposition_attribution` (task399, task400, task402); the
+  decisive move is the construction of the reachable population, so the label is the move's own family, not a relabel.
+- **Data-native sentence:** Thornlea's clean-in-place cycles end in a caustic rinse that its own fifteen-minute
+  discharge monitor logs as a run of pH above 11 for twenty to forty minutes; the works receives it hours later, its
+  nitrifiers stop for two to four days, and the weekly composite and daily meter volume that charging rests on average
+  the run away, so nothing the charging or compliance records hold marks those days.
+- **Abstraction sentence:** a small contributor's short excursions switch off a shared process for days, so the share of
+  downstream failures that acting on the contributor would reach is read through the process's recovery in two records,
+  not apportioned by load. It is not writable against the nearest approved builds: task202 matched an input's physical
+  state to a receiver's layers (no process switched off), task303 paired sibling events in one minute to find a shared
+  upstream fault (no recovery window, no reach against magnitude), and task182's lineage read a running source's share
+  at receptors.
+- **Same-puzzle and library tests:** gap, pattern and decision type repeat only older lineage (task36 R1, task83 v1),
+  differentiated; the golden is not a named correction (no textbook names "set a discharger's pH log against a works'
+  recovery"), and the field's method for the deciding quantity, river source apportionment by load and the works'
+  process model, sits at rungs 0 and 1.
+- **Layers:** Layer 1 is the company's own record-keeping (fifteen-minute telemetry with logger gaps and the October
+  clock change, weekly composites against daily meter volumes, the monitor's provisional and ratified releases with
+  maintenance flags, returns in cubic metres against a meter in litres, SCADA tags renamed at the aeration upgrade).
+  Layer 2 is the reachable share read through the works' recovery.
+- **People** (`guard.py names --geo "United Kingdom, England" --seed 401`; Joanne O'Brien and Elliot Davies skipped,
+  architecture 3's card holds them): Gerard Norris (environment programme manager, who owns the submission), Katy Hughes
+  (trade effluent officer), Sylvia Phillips (Coldmere's process scientist). The prompt names no one.
+- **Furniture redrawn at registration:** task402's redraw took `capacity_planner` into the window, so the role family
+  moved to `programme_officer`: the environment programme manager owns the submission the upgrade goes into, the honest
+  owner of the call. Forum `regulator_or_inspector` (the Environment Agency's review of the submission), forcing event
+  `statutory_or_regulatory_filing`, organisation family `utility_or_infrastructure`, context artifact `register` (the
+  trade effluent consent register) and shape 12 all clear the window read off `guard.py check` on the registered card.
+- **Sources:** synthetic throughout, built to the structure of the public records it imitates: the Environment Agency's
+  water quality archive for spot samples; section 82 continuous monitoring for the river monitor; event duration
+  monitoring returns for the storm tank; Water UK and company charges schemes for the Mogden formula; the Water
+  Environment (Water Framework Directive) (England and Wales) Directions 2015 for the ammonia standards; levels from the
+  wastewater literature (nitrification optimum pH 7.5 to 8.6, inhibited above about 9.5; caustic clean-in-place at 1 to
+  2 per cent sodium hydroxide; recovery of two to five days after an upset). Every file's source, date and licence is
+  recorded in `metadata.json` at stage 3.
+
+### Go/no-go screens (prototype on the clean truth, 20 redraws each; `scratchpad/t401/a4/proto3.py`, `proto3b.py`)
+
+1. **Levels and the lever against the rivals' estimates.** At documented levels (good-status 0.6 mg/l, 90th
+   percentile, lowland high alkalinity; normal effluent 0.5 to 1.5 mg/l and 8 to 20 mg/l during inhibition; dilution of
+   four to ten; excursions at 0.95 to 2.1 a week from the new line), the exceedance days attributed to the dairy's
+   excursions beat the largest rival estimate (the aeration control, the cold, rain) by a minimum of 13.4 days (median
+   20.5) at 0.95 excursions a week and 23.8 (median 46.1) at 2.1, in 20 of 20 redraws each; the window holds 45 to 88
+   exceedance days against 3 to 7 the winter before. Every graded figure is set mid-bin at the shipped seed at stage 3.
+2. **The golden's own method holds the call.** Every exposure form (recovery windows of one to two, one to three, one to
+   four, one to five and nought to three days; the large-excursion and any-excursion definitions) names the dairy with a
+   margin over 10 days in 20 of 20. The share of exceedance days inside the windows spreads 0.50 to 1.00 across forms, so
+   no graded figure is a raw window share: stage 2 defines the reach on the works' own recovery episodes in its effluent
+   record and grades only at the precision every form reproduces.
+3. **No easy completion.** The decisive variable (the days inside the works' recovery after an excursion) is not one
+   the default path brings in: the dairy enters it only as a load and a compliance record, both normal. With the
+   excursions in hand the exposure is binary, so nothing rests on a functional form, and the cracker's flexible default
+   (cold in bins, cold by aeration, load by cold, no excursions) still books 61 to 93 per cent of the window's
+   exceedance days to the aeration control.
+4. **Literal execution.** The filed WHAT (stage 2: the population, outcome, window, unit and comparison, and the reach
+   of each option, in the company's own investigation brief) executed literally for every candidate lands wrong: mass
+   balance at the monitor names the works; the works' process review on temperature, load and the dated aeration
+   control names the control (61 to 93 per cent of exceedance days); a dated before-and-after with every candidate's own
+   filed date (the control on 27 October, the dairy's line on 3 November, the housing connections by month) cannot part
+   the control from the line a week apart and names the control. The golden needs the excursion days, which the WHAT
+   does not tell a solver to compute.
 
 ## Default path
 
-1. Read the six-month tracker for H1 2025 and H1 2026 (the vendor's export changed layout in January 2026) and take
-   the share satisfied the measurement framework files.
-2. Run the field's key driver analysis: overall satisfaction on the attribute ratings (billing accuracy, bill clarity,
-   value for money, ease of contact, resolution, the app), Shapley shares; carry each attribute's change through its
-   share: billing accuracy and bill clarity carry about two thirds of the 8.7-point fall, value for money a quarter.
-3. Link the respondents to their accounts and payments (account numbers re-mapped at migration): every H1 2026
-   respondent is billed on the new platform, the platform's close-out report shows estimated bills rising after
-   go-live, and the Direct Debit reviews moved little (the first payment is set from the meter point's industry
-   quantity), so nothing on the payment side competes with the platform.
-4. Check the other rivals: the October tariff rise (variable-tariff respondents), the contact centre transfer
-   (respondents who called), use bands: each moves a few tenths.
-5. Book the fall to the billing platform and hold phase 2 for remediation.
-
-Ends on: the billing platform carries most of the fall, about 6 of the 8.7 points through the billing ratings, so
-phase 2 is held.
-Golden: from May 2025 the quote journey stopped pre-filling each meter point's industry annual quantity, so customers
-were quoted on use they typed in or on typical values; those whose meter point's annual quantity cost more than their
-quote carry most of the 8.7 points, while customers whose quote covered it were as satisfied in H1 2026 on the new
-platform (81.0 per cent) as in H1 2025 on the old (79.1); the platform is not what pulled satisfaction down, phase 2 can
-cut over, and the fix is the quote journey.
+1. Load the downstream monitor's fifteen-minute record and the Environment Agency's spot samples, take daily means and
+   count the days above 0.6 mg/l from November 2025 to March 2026 against the winter before.
+2. Apportion the downstream ammonia by mass balance with the upstream monitor and the gauged flow (the field's river
+   source apportionment): the works' effluent carries about nine tenths of the excess, so the works is the source.
+3. Model the works' final-effluent ammonia from its SCADA export on wastewater temperature, the incoming load and the
+   aeration control's go-live (the field's process review): the control's term carries most of the winter's excess,
+   the cold the rest, and the works runs at 93 per cent of its design load.
+4. Check the trade dischargers by load and compliance: Thornlea's ammonia load from the charging data (weekly
+   composites times daily volumes) is a few per cent of the works' and its monthly pH compliance passes, so it is
+   dismissed; storm tank spills and upstream farming explain a handful of days.
+- **Ends on:** the aeration control and nitrification capacity in cold weather; the GBP 14.2 million upgrade goes into
+  the submission.
+- **Golden:** Thornlea Dairy's caustic clean-in-place excursions: most of the winter's exceedance days fall inside the
+  works' recovery after an excursion in the dairy's own fifteen-minute record; on excursion-free days the works meets
+  its permit at equal temperature and load and the aeration control costs nothing, so the upgrade would reach few of
+  the days and pre-treatment at the dairy would reach most.
 
 ## Stump sentence
 
-A competent solver runs key driver analysis on the six-month tracker, sees billing accuracy and bill clarity carry about
-two thirds of the 8.7-point fall, finds every H1 2026 respondent billed on the new platform, and books about 6 points to
-the billing platform, holding phase 2, because they never set the annual cost each customer was quoted at the switch
-against the cost of the annual quantity their meter point then showed, which puts most of the fall on the May 2025
-quote journey's quotes and leaves the platform about a point at most.
+A competent analyst apportions the Allery's ammonia to the works by mass balance, models the works' final-effluent
+ammonia on temperature, load and the aeration control, and books the winter's exceedance days to the new control and
+the works' nitrification capacity, ending on the GBP 14.2 million upgrade, because they never set Thornlea Dairy's
+fifteen-minute discharge record against the works' daily effluent record, which puts most of the exceedance days inside
+the works' recovery after the dairy's caustic excursions.
 
 ## Three rules
 
-Task type: `customer-satisfaction-driver-analysis` (Marketing and Consumer Research), which serves Root-Cause Analysis
-in the taxonomy; attributing a satisfaction movement to its drivers is the task type's core.
-Domain test: the deciding quantity is each driver's contribution to the fall in the share of satisfied new customers,
-estimated by a satisfaction driver model that carries each customer's disconfirmation (the cost of the use the meter
-recorded against the cost the customer was quoted at the switch), the expectation-disconfirmation paradigm and the
-ACSI's expectations construct.
-Swap: "six-month satisfaction fell because customers' bills ran above the use they were quoted on" read with school or
-grid nouns ("attainment fell because pupils' bills ran above their quote") no longer parses; no school, ward or
-substation has a sale that set an expectation, a meter that later measured the thing quoted, and a tracker of how the
-customer felt about the difference.
-Layer 1: the tracker vendor's export changed in January 2026 (coded columns and dd/mm/yyyy dates with numeric answers,
-then labels and UTC timestamps; partial responses and re-invited accounts answering twice in both) (the two survey
-vendors); legacy eight-digit account numbers against the platform's ten-digit ones, the crosswalk held only in the load
-log (the migration); registrations keyed by account and meter point, quotes by quote reference, the tracker by account
-(the sales system and the platforms); industry annual quantities as several dated rows per meter point, revised after
-reads (the industry data flows); dual fuel as two registration rows, gas often starting days later (the switching
-process); tariffs by region with effective dates, variable rates stepping each quarter and fixed products holding
-their launch rates (the pricing team); UTC in the platform's load log and the 2026 export against UK local dates in
-the legacy exports across the clock changes. Each is produced by the system named; none is placed to be caught.
-Layer 2: field method (the satisfaction driver model done right): the driver set must carry what each customer was led
-to expect, the disconfirmation that satisfaction is formed against, which no attribute rating measures.
-Decisive step: setting the annual cost each respondent was quoted at the switch against the cost, at the same tariff, of
-the annual quantity their meter point showed six months on (negative disconfirmation, a quantity of each customer that
-no file holds), and finding that customers whose quote covered that cost held their H1 2025 level on the new platform
-while the fall sits with those it did not cover.
-Not semantics: every field, code, unit and date can be read correctly (the reads' flags, the registers, kWh, pence
-against pounds, UTC against local time, the re-mapped accounts) and the driver analysis still books the fall to the
-platform, because the error is in which driver the model carries, not in reading any column.
-Not rule application: no filed rule or procedure sets a quote against metered use or says satisfaction is formed
-against expectation; executing the measurement framework, the cutover plan and the tariff terms files the
-default. The enumerated family (key driver analysis linear and Shapley; the payment linkage; after the link, metered use
-level, the Direct Debit change and the quote-basis split; the gap in seven forms) spans the platform at 5.5 to 8.1
-points on every route that skips the gap and the quote at 5.0 to 9.0 on every gap form (`## Ladder`); the standing
-family once the fit rules out the symmetric forms (twice the log-likelihood gap 119 and 225) spans 7.1 to 9.0 on the
-quote with the platform's residual between -0.9 and 1.1; the ruling-out is the fit itself, quiet, on a construction
-across three files the question gives no reason to join (the quotes, the meter point quantities, the tariffs).
-Analyst test: a strong analyst who reads every rating, quote and meter record correctly runs key driver analysis with
-Shapley shares, links the respondents to their accounts and payments, and books about 6 of the 8.7 points to the
-billing platform, holding phase 2 (the default path's `Ends on:`).
-Estimand: the supplier's satisfaction measurement framework (a governing document in its own genre) files the WHAT
-only: the population (customers who answered the tracker's six-month survey), the two half-years (responses received 1
-January to 30 June 2025 and 2026), the measure (the share answering 4 or 5 to the overall question) and the fall between
-them as the movement a review explains; it files no counterfactual and names no driver model, quote, consumption or
-expectation.
-No decoy: nothing is planted to be caught; no memo, briefing, draft or stakeholder figure argues for the platform, the
-close-out report states the programme's own defects and no cause of the fall, and no file computes a driver's share.
-No certified replay: no certified or published figure is reproduced to recover a method; the tracker's published
-monthly shares agree with the respondents' records under every route.
-Domain close call: Energy Systems and Utilities carries load, capacity, reliability, tariffs, assets and savings, and
-none of its task types reads customer satisfaction; the deciding quantity here is a satisfaction driver attribution, so
-the build sits in Marketing and Consumer Research, with the supplier as the setting and the energy shown where it is
-honest (metered use, tariffs, Direct Debit reviews).
-Lesson: satisfaction is formed against expectation, so before a fall is booked to the service the ratings name, a
-driver analysis must carry what each customer was led to expect at the sale; no build on file teaches
-expectation-disconfirmation from a sales record.
-
-## Survivor anatomy
-
-Actor: the deciding property, how far the cost of each customer's metered annual quantity ran above the cost their quote
-projected, has no column in any file; the quote log holds the quoted use and cost (no field says where the use came
-from), the meter point file holds each MPAN's EAC and each MPRN's AQ with their effective dates, and the tariffs hold
-the rates.
-Link: the comparison of the quote's assumed use with metered annual use is a cross-file comparison the driver analysis
-never asks for, joined through quote references and meter point numbers to accounts re-numbered at migration.
-Reflex: the field's method, key driver analysis with Shapley shares, is rung 0 and books about three fifths of the fall
-to billing accuracy, so to the platform.
-Back-test: the driver analysis explains H1 2025's satisfaction well with stable weights, and the platform's close-out
-report shows estimated bills rising after go-live (true and small); the textbook route validates.
-Second use: the quote log and the registrations carry an ask on switches by channel; the meter point quantities carry
-the phase 2 scope ask's annual quantities; the tracker carries the measure itself; the Direct Debit history is a declared
-distractor (the default reads it, the golden does not).
-Shock: the fall is modest, ordinary movement; the visible events of the year are the platform go-live, the October
-tariff rise and the contact centre transfer, and no shipped statistic sorts the quote default's customers to an end.
-Pins: the measurement framework files the population, the windows, the measure and the fall to be explained; the
-cutover plan files the asks' scope and weeks; no
-filed sentence names quotes, typical consumption, expectations, disconfirmation, a counterfactual or a comparison group.
-
-## Readability screen
-
-The reflex row is enumerated from the field's vocabulary for the deciding quantity (a driver's part in a satisfaction
-movement): key driver analysis, relative importance, operational linkage of responses, segment drill-down.
-
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| R0 key driver analysis, Shapley shares | the framework files the measure | ratings are columns | the field's method | none | n/a | n/a | n/a | readable |
-| R1 payment linkage: platform, estimated bills, Direct Debit reviews | the close-out report states the estimated-bill rise | platform by account, reviews by row | operational linkage | close-out ties | n/a | n/a | n/a | readable |
-| R2 after the link: use level, Direct Debit change, quote-basis split | none | each a column or one join | segment drill-down | none | n/a | one group-by | n/a | readable |
-| R3 (decisive) quoted annual cost against the cost of the meter point's annual quantity | silent: no sentence names quotes against quantities | silent: no column holds the gap and no field says where a quote's use came from | silent: the reflex is R0 | silent: nothing scores the quotes | silent: the battery never sets one system's quote against another's quantity | silent: a ratio of a quoted cost to a cost built from two other files at the quote's rates | silent: the quote log ships for the switches ask, the quantities for the phase 2 ask | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternatives and the call under each | Ruled out by |
-|---|---|---|---|---|
-| SF1 | satisfied | 4 or 5 on the 1 to 5 overall question | top box only; mean score: quote leads under each | the framework's measure sentence; same call (asserted) |
-| SF2 | the half-years | responses received 1 January to 30 June | invitations sent in the window; joined July to December: same call | the framework's window sentence; same call |
-| SF3 | a response | an answered overall question | any started survey: same call | the framework's counting sentence |
-| SF4 | a respondent twice in a wave | the first answered response | both, the last: same call | the framework's one-per-account sentence; same call |
-| SF5 | the 2026 export's text labels | the vendor's label for each scale point | numeric order by file position: same call | the framework's scale table |
-| SF6 | the quote that set the expectation | the accepted quote the registration names | the customer's latest or first quote: same call | the registration's quote reference; same call (asserted) |
-| SF7 | the meter point's annual quantity | the EAC or AQ in force on the response date | at six months from supply start; the latest held: same call | same call (asserted over the three) |
-| SF8 | dual fuel | the whole projected annual cost against the whole cost | fuel by fuel: same call | same call (asserted) |
-| SF9 | the rates the gap is costed at | the quote's own rates | current rates (adds October's rise): same call | same call (asserted) |
-| SF10 | two-rate meters | none: every tariff in the pack is single-rate | n/a | asserted (no two-rate tariff code) |
-| SF11 | the cause's name | the quote journey's quotes from May 2025 | the typical values alone; the use customers typed alone: each names the quote journey | same call; the basis split alone does not name it (`## Ladder`, point 2) |
-| SF12 | the fall | percentage points between the two shares | relative change: same call | the framework's reporting sentence |
-| SF13 | Ask A: a loss effective on 1 November | the meter point is not ours that day | ours that day: 11 more accounts | the plan's "no longer ours from the effective date of the loss"; every loss due by then completed or withdrawn by its effective date (asserted) |
-| SF14 | Ask A: the GWh totals | one electricity and one gas total for phase 2 as a whole | per region | the asking sentence's "phase 2's total ... across all the meter points it will move" (asserted) |
-| SF15 | Ask A: a closure dated before its own start | none ships; one account took each shared meter point on last | the Closed predecessor holds the point: Eastern and London one fewer | asserted over every account (round 1 Gate A) |
-| SF16 | Ask B: an account phase 1 moved | billed on the new platform at the end of 2 November 2025 | every loaded account (+377); every loaded account off the legacy extract (-417) | the plan's "An account counts as moved if the new platform was billing it at the end of 2 November 2025, when phase 1 closed" (asserted) |
-| SF17 | Ask C: a withdrawn registration | not counted, whatever its date; every withdrawal precedes the start it requested | withdrawn before the start only | the asking sentence's "no withdrawn registration counted"; by reference and by row the same rows (asserted) |
-| SF18 | Ask C: one customer | the accepted quote's registrations | the prospect; the account: same counts | same call (asserted) |
-| SF19 | Ask C: the month first supply started | the earliest live supply start | the electricity start: same; the registration month | the asking sentence; same call for the electricity start (asserted) |
-| SF20 | Ask C: the sale it was registered on | the prospect's latest quote dated on or before the registration | the quote the registration names; the prospect's earliest quote | the asking sentence; wherever the named quote predates the registration it is that latest quote (asserted) |
-| SF21 | Ask C: the sales channels | the quote log's four channel values | none | asserted |
-| SF22 | Ask B: the week | Monday to Sunday, UK time, of the last load | the UTC week: 2,876 accounts change week | the plan's "Monday to Sunday, UK time" (asserted) |
-
-## Ladder
-
-Measured on the clean truth (`generator/world.py`, `generator/ladder.py`, 20 seeds, mean (sd); the shipped seed is
-asserted in `checks.py` at the cut). Six-month satisfaction 76.1 to 67.4 per cent, a fall of 8.72 (0.60). Truth: the
-quote journey's quotes 7.95 (0.18), the platform 0.37, the October tariff rise 0.31, the contact centre 0.32. Mean log
-gap 0.00 in H1 2025 and 0.055 in H1 2026; respondents more than a tenth over their quote 10.0 and 44.2 per cent.
-
-| Route | Quote | Platform (the 2026 term) | Tariff rise | Contact | Names |
-|---|---|---|---|---|---|
-| R0 key driver analysis, Shapley | 0 | billing accuracy 57.0 and clarity 11.0 per cent of the fall (about 6 points) | value 26.0 per cent | 1.8 per cent | platform |
-| R2a metered use level | 0.00 (use) | 8.14 (0.74) | 0.27 | 0.42 | platform 20 of 20 |
-| R2b Direct Debit change | 0.35 (the change) | 8.13 (0.75) | -0.07 | 0.42 | platform 20 of 20 |
-| R2c quote-basis split | 2.89 (basis, collinear with 2026) | 5.54 (0.86) | 0.28 | 0.42 | platform 19 of 20 |
-| R3 gap, kinked at zero (best fit) | 8.98 (0.38) | -0.92 | 0.25 | 0.38 | quote 20 of 20 |
-| R3 gap, linear in the log | 5.22 (0.28) | 2.93 | 0.24 | 0.39 | quote 20 of 20 |
-| R3 gap, pounds | 4.97 (0.29) | 3.21 | 0.24 | 0.38 | quote 20 of 20 |
-| R3 gap, quintile bands | 7.63 (0.61) | 0.15 | 0.24 | 0.39 | quote 20 of 20 |
-| R3 gap, over by 10, 20, 30 per cent | 7.91, 8.93, 7.12 | 0.27, -0.84, 1.09 | 0.26 | 0.40 | quote 20 of 20 each |
-| Fall split on the kinked route, Shapley against every order | 8.99 (8.93 to 9.05) | -0.88 (-0.92 to -0.83) | 0.24 | 0.37 | quote |
-
-The coordinator's five points, each closed on these rows:
-1. **After the link the estimators still split.** With every respondent's quote joined to their meter point's quantity,
-   metered use level names the platform 20 of 20, the Direct Debit change 20 of 20, the quote-basis split 19 of 20 (it is
-   collinear with the 2026 platform), and only the gap names the quote, in every form. The rung where the link alone
-   still leaves the platform is R2: a solver holding both files who builds a level, a payment change or a basis split
-   files the platform. The analytical choice that survives the link is the expectation construct: the cost each customer
-   was told against the cost their own quantity then carried.
-2. **A default quote is not what decides.** No field says where a quote's use came from, and recognising Ofgem's medium
-   values names only the typical-value half: in H1 2026 the typical-value respondents were 66.4 per cent satisfied and
-   the typed-use respondents 68.1, both far under H1 2025's 76.1, with 40.3 and 47.3 per cent of them more than a tenth
-   over their quote. The default-or-not split dilutes; the gap decides.
-3. **The Direct Debit chain is quiet.** The first payment is set from the meter point's industry annual quantity (the
-   supplier's practice under Ofgem's best-available-information rule; no file states it), so reviews move by the quantity's own
-   revision and October's rise: the change books 0.35 points. The review records carry the codes a GB supplier's billing
-   system writes (scheduled review, tariff change, customer request, payment failure, meter exchange); none says why use
-   differed from a quote, and no record carries the quote.
-4. **The call's rule and margin.** The named cause is the largest contributor to the fall. The quote leads every other
-   candidate in every gap form, 20 of 20; the weakest form (pounds, symmetric) books 4.97 against a platform residual
-   of 3.21; the 10 per cent flag books 7.91. The fit rejects the symmetric forms (twice the log-likelihood gap 119 for
-   the linear form and 225 for pounds against the kinked form), asserted in `checks.py`. Shapley against every sequential
-   order moves the quote's part by 0.12. Key driver analysis in both forms names the platform.
-5. **The filed estimand is WHAT only.** The framework files the population, the windows, the measure and the fall; it
-   files no counterfactual and names no driver construction (`## Three rules`, Estimand).
-
-Literal-execution rows (the per-candidate attribution a rule-following solver runs once the records are linked, each
-candidate's in-place date filed: the close-out report dates the quote and switch journey relaunch (6 May 2025), new
-customers on the platform (1 September 2025), the Standard Variable rise (1 October 2025) and the contact centre move (10
-November 2025); the framework dates the survey vendor change (January 2026)). Shipped seed, points of the share satisfied,
-asserted in `checks.py`:
-
-| Candidate | Touched against not touched | Within the touched group | Names |
-|---|---|---|---|
-| Billing platform | -9.10 (every H1 2026 respondent, none of H1 2025) | -0.72, set up on it (Sep to Dec starters) against migrated onto it (Jul to Aug) | the platform or nothing; tied with two others |
-| Quote and switch journey | -9.10 (the same split: every 2026 respondent quoted after 6 May 2025) | -1.61, typical-value against typed quotes; each base 9.99 and 8.39 under 2025 | not the quote: the basis split clears it |
-| Survey vendor | -9.10 (the same split) | none (every 2026 response) | tie |
-| Tariff rise | -2.04, variable against fixed in 2026 | -1.56 difference in differences | a small part |
-| Contact centre | -1.53, contacted against not in 2026 | -1.10 difference in differences | a small part |
-
-Every touched-against-not row ties the platform, the quote journey and the vendor on the whole fall; no within-group row
-isolates a cause; the quote journey's own natural split (how each quote's use was set) clears it, both bases far under
-2025. A rule-following solver who runs these rows is left with the tie the key driver analysis then breaks toward the
-platform (R0). Only the gap names the quote's customers. The framework files nothing on how to cost or attribute a cause
-(population, half-years, measure and fall only).
-
-The graded set (frozen at stage 2): the named cause (the quote journey's quotes from May 2025, not the platform); the
-share satisfied in each half-year and the fall between them, each to one decimal (mid-bin, asserted at the cut); and the
-quote's part of the fall stated as more than half (the weakest form gives 57 per cent, the standing forms 82 per cent and
-up). No per-cause point figure is graded. The share satisfied among respondents whose quote covered the cost of their
-meter point's annual quantity (78.7 and 80.1 on the shipped seed, a comparison with no fitted parameter, the zero line set
-by the quote itself) is the evidence the write-up states, not a graded figure. The flip condition: the platform would carry
-the fall if respondents whose quote covered their cost had fallen as far as the rest.
-
-Pricing sequence, in the graded figure's units: (1) the residue the WHAT leaves is a method (which driver construction
-carries the expectation), not a knob; (2) the move needs about 7 points of a 9-point fall, and the affected population
-could produce 9; (3) the one-group-by routes are R2a to R2c, each measured above; (4) the gap's standard error on the
-quote's part is about 0.3 to 0.4 points; (5) the call is a verdict on one named cause about 7 points from the
-platform's, more than nine of its own standard errors; (6) n/a (no variance correction); (7) the zero line comes from
-the quote itself, so no subset hands over a rate; (8) the reflex sweep is the table above, run as code.
-
-## Closure table
-
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | respondents who answered the overall question in each half-year | filed in the framework; C1 |
-| 2 | Unit of account | the respondent (one account) | filed; SF4 one per account |
-| 3 | Attribution window | the response date | filed; C1, no response on a boundary day moves a share across a bin (asserted) |
-| 4 | As-of dating | the meter point quantity in force on the response date | C1 across three as-of rules (SF7, asserted) |
-| 5 | Version basis | the quote as accepted; the quantity as held | C1 (SF6, SF7) |
-| 6 | Denominator | answered overall questions | filed |
-| 7 | Weighting | unweighted shares | filed (the framework reports unweighted shares) |
-| 8 | Window length | half-years | filed |
-| 9 | Boundary inclusivity | 1 January to 30 June inclusive | filed; C1 |
-| 10 | Rounding path | shares to one decimal, once | filed in the prompt's rounding sentence |
-| 11 | Tie-break | none needed: the quote leads by about 7 points | C1 |
-| 12 | Maturity and censoring | none: every respondent has six months of supply | C1 |
-| 13 | Order of operations | cost the quoted and metered quantities at the same rates, then compare | C1 (SF9, asserted) |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | first answered response per account per wave | filed (SF4) |
-| 16 | Identity normalisation | quote reference to registration to account (legacy and platform numbers) | the systems' own keys and the migration crosswalk; C4 |
-| 17 | Netting against gross | customers under their quote are not netted against those over | the graded set reports both shares separately |
-| 18 | Dimensional units | kWh in the quote and the quantities; pounds a year in the quote | units in the data; C4 |
-| 19 | Code and status semantics | the vendor's scale labels; review reason codes | the framework's scale table; codes never decide |
-| 20 | Integerisation | none | C1 |
-| 21 | Clause scope | the framework's measure covers the six-month survey only | filed scope |
-| 22 | Forward window contents | the call names a cause; nothing is forecast | n/a |
-
-## Literal reader
-
-Executed word for word, the framework's measure gives 76.1 per cent satisfied in H1 2025 and 67.4 in H1 2026 (the shipped
-seed's values asserted at the cut); the question asks what pulled it down; the shipped documents name the year's
-changes with their dates (the close-out report: the quote and switch journey relaunch on 6 May 2025, new customers on
-the platform from 1 September 2025, the Standard Variable rise on 1 October 2025, the contact centre move on 10 November
-2025; the framework: the survey vendor change in January 2026);
-every reading of SF1 to SF12 names the quote journey's quotes as the largest contributor (asserted as a product over the
-rows that touch the deciding quantity, SF6 x SF7 x SF9); the default comes from an easy method (key driver analysis, a
-payment linkage) on the same literal estimand, never from another reading.
-
-## Oracles
-
-- The platform's phase 1 close-out report: estimated bills rose for six weeks after go-live (true, small); it confirms
-  the wrong path and ties under every basis.
-- The tariff table: the October 2025 Standard Variable step ties under every route; arbitrates nothing.
-- The Direct Debit history (a declared distractor): reviews move little under every route.
-- Nothing ties only under the golden.
-
-## Ask sheet
-
-Measured on the cut pack by `generator/ceiling.py` (reads only `target/` and `figures.json`, shares no code with the
-generator). Each ask sits on rows the call never reads, asserted in `checks.py` by count from the shipped rows (no
-respondent in a reload chain, a pilot row or on the legacy extract; no respondent quote split or re-pointed; every respondent
-meter point single-register). Each ask carries a primary and a silent second device from another family on a block the
-primary does not decide, and each second device is a reconstruction that can still go wrong once it is noticed. Every
-device draw comes from its own generator (`generator/devices.py`), so the main call's rows are byte for byte what they were
-(the frozen figures asserted). The contact centre ask planned at the draw was cut with its two call logs.
-
-- **Ask A, phase 2's scope** (16 figures: the accounts in each region; phase 2's total GWh of electricity and of gas across
-  all the meter points it will move). Files: the legacy accounts extract, the switching flows, the meter point annual
-  quantities, the cutover plan (the WHAT: accounts still supplied on 1 November 2026 on at least one meter point; a meter
-  point we lose is no longer ours from the loss's effective date; each meter point's industry annual quantity in force that
-  day, day and night together on a two-rate meter). Primary (D2, a state rebuilt
-  from an event log; the counts and both totals): a completed loss later returned as an erroneous transfer, so the meter
-  point is ours again on 1 November while the legacy status still reads final bill pending. Second (D6, a quantity held one
-  grain below the meter point; the electricity total): the quantities are held per register, and 736 two-rate meters
-  exchanged during 2026 for a single-rate smart meter carry a standard register from the exchange date while their day and
-  night registers simply stop (day and night are otherwise always revised together, 7,454 revisions); summing each
-  register's own latest quantity keeps the stopped registers and over-states electricity by 3.28 GWh; the registers in
-  force are the ones on the meter point's latest date. Gas carries no register, so this block is electricity only. Third
-  (D7, records held by another holder after a transfer; the counts and both totals): 420 changes of occupier in September
-  and October 2026, where the leaving occupier's account waits for its final bill while the new occupier is set up on the
-  legacy platform (prepayment stays there until phase 2) on the same meter points, starting on the move date; no switching
-  flow touches them, so the primary's own repair (the legacy status lags, trust the flows) keeps the leaving account and
-  counts its meter points twice, 7 or more in every region. The plan's scope sentence settles it as filed (an account we no
-  longer supply on any meter point stays on the legacy platform until its final bill): the meter point is supplied to the
-  account that took it on last. Hazards: withdrawn losses whose legacy status was never reverted; losses effective after 1 November; a dual-fuel account
-  lost on one fuel; later quantity revisions dated 2 to 5 November. The 389 accounts the legacy platform took back from
-  the new platform during 2026 (Ask B's second device) are live prepayment accounts here and count under every route.
-- **Ask B, phase 1's moves** (18 figures: nine UK weeks by electricity-only and dual fuel). Files: the load log, the legacy
-  accounts extract, the close-out report, the cutover plan (the WHAT: the accounts phase 1 moved to the new platform, each
-  once in the week its last load completed, UK time, with the fuels that load carried; an account counts as moved if the
-  new platform was billing it at the end of 2 November 2025, when phase 1 closed; the close-out files that prepayment
-  accounts remain on the legacy platform). Primary (D7, the true key in a chain; the dual fuel block): a reload carries the
-  failed load's platform number as its source reference, and validation failed on gas meter point data, so every one of
-  the 2,947 chains is a dual fuel account; benign twin: pilot accounts whose source reference is a platform number with no
-  earlier load. Hazard (D5, once the second device; the plan's moved sentence now executes it once noticed): 410 smart
-  prepayment accounts (300 electricity-only, 110 dual fuel) carried as credit on the legacy platform were loaded in the
-  batches and returned one to seven days later, live prepayment accounts on the legacy extract; 377 were back by the
-  close (6 to 40 in every week and split, so a response that keeps every load misses every cell) and 33 after it.
-  Second (D8, a dated system change against the date one filed WHAT pins; every week of both splits): 389 credit accounts
-  phase 1 moved changed to prepayment during 2026, and since prepayment stays on the legacy platform until phase 2 the
-  legacy platform took each back on its old number, live from the day of the change. On the extract they look exactly
-  like the returns, so the repair the moved sentence invites once the returns are noticed (leave out every loaded account
-  found live on the legacy extract) is right for a return dated by the close and wrong for one dated after it (6 to 45 in
-  every week and split); only dating each account's legacy status against the end of 2 November 2025 files the golden.
-  Hazard: UTC stamps against UK weeks across 26 October.
-- **Ask C, switches by channel** (24 figures: four channels by six months). Files: the registrations and the quote log. The
-  asking sentence files one switch per customer in the month its first supply started, credited to the sale it was
-  registered on, no withdrawn registration counted (every withdrawal precedes the start it requested). Primary (D1, one event in two records; the web and comparison-site
-  block): a gas registration rejected for a meter point mismatch after an address lookup is raised again under its own
-  reference, days after the electricity one. Second (D7, the true key elsewhere; every channel): a customer who rings the
-  phone team to change tariff before the switch is re-quoted and the pending registration is re-pointed at the new quote
-  (broker sales are confirmed on such a call, so they meet it most); 596 registrations then name a phone quote dated after
-  them (17 to 123 in every channel and month), and the sale each was registered on is the prospect's latest quote on or
-  before the registration, not its earliest (94 of the prospects quoted through another channel first). Hazards: withdrawals in the cooling-off period, re-registrations after a
-  withdrawal, dual fuel as two rows.
-
-Settled by (the filed sentence each device's handling executes; `checks.py`'s literal ask executor runs them word for
-word on `target/` and equals the golden on all 58 figures):
-- Ask A primary: the plan's scope sentence ("every prepayment account on the legacy platform that we still supply on 1
-  November 2026, on at least one of its meter points") and its last ("A meter point we lose to another supplier is no
-  longer ours from the effective date of the loss"), read against the switching flows, the industry's record of who
-  supplies each meter point (a completed loss later returned leaves it ours).
-- Ask A second: "each meter point's industry annual quantity in force on 1 November 2026, day and night together on a
-  two-rate meter": the meter point's latest revision on or before the day, all its registers; from an exchange the meter
-  point's revisions carry a standard register only.
-- Ask A third: the same scope sentence with the plan's next one ("An account we no longer supply on any meter point on
-  that date stays on the legacy platform until its final bill and closes there"), read against the extract's own records:
-  the leaving account set to final bill pending on the day the new occupier's account starts on the same meter points.
-- Ask B primary: "each account counted once, in the week its last load completed" with the close-out's "the platform
-  issues a new account number on each load": a load sourced from an earlier load's number is that account.
-- Ask B second and its hazard: the plan's "An account counts as moved if the new platform was billing it at the end of 2
-  November 2025, when phase 1 closed", read against the legacy extract's dating of each account's status: a loaded account
-  live on the legacy platform from a day on or before the close was billed there at the close (the returns); one live
-  there only from a later day was billed on the new platform at the close (the 2026 take-backs and the late returns).
-- Ask B fuels and clock: "with the fuels that load carried"; "Monday to Sunday, UK time".
-- Ask C primary: "one per customer in the month their first supply started": the two registrations name one accepted
-  quote and one account; "no withdrawn registration counted" leaves out every withdrawn registration, whatever its date.
-- Ask C second: "credited to the sale it was registered on": a registration raised before the quote it now names was
-  registered on the prospect's quote then live, the latest dated on or before the registration.
-
-Pin test: Ask A's pins carry the scope, the day and the register sum; the devices sit in which meter points are still
-ours (the flows and the loss's effective date), which account holds them (the move) and which registers the meter still
-has (the exchange); the totals are phase 2's whole. Ask B's pins carry the week, the clock, the last load, its fuels and
-the day moved is judged on (the end of 2 November 2025); the devices sit in which records are one account (the chain) and
-which loaded accounts the legacy platform was billing on that day (the dated take-back). Ask C's pins carry the month, one
-per customer, the withdrawals and the sale; the devices sit in which records are one switch (the split) and which quote
-was the sale (the re-point).
-
-| Response (cracker sheet) | Ask A | Ask B | Ask C | Verdict |
-|---|---|---|---|---|
-| Cracker: lands the call, every filed convention, the hygiene battery (keeps every load, one per legacy reference) | 0 of 16 | 0 of 18 | 0 of 24 | miss |
-| Mirror: the most attractive wrong rung (live accounts and latest quantities, loads by UTC week, registration rows) | 0 of 16 | 0 of 18 | 0 of 24 | miss |
-| Full includer: every device it can find handled (each primary, every hazard, every loaded account on the legacy extract left out), the silent ones left | 0 of 16 | 0 of 18 | 0 of 24 | miss |
-| No repair: every row taken as it stands | 0 of 16 | 0 of 18 | 0 of 24 | miss |
-
-Pair ceiling: 28.5 (the cracker or the full includer on the call at 45.0 with the mirror or the no-repair response off it at
-12.0, the worst of the four one-off pairings); the full includer and the cracker both on the call pair at 45.0, and two full
-includers on the call (the stress case) at 45.0, measured. Stress outside the four: a full includer that also dates every
-legacy return against the close keeps Ask B whole, 0.310 of the ask weight (under two fifths), pairing at 37.0 with the
-mirror off and 53.5 with the cracker on the call.
-Mirror leakage: 0.0 per cent.
-Measured by: generator/ceiling.py on the cut pack (target digest 1c1f695f), 2026-11-03.
-
-## Leak review
-
-`leak.py --asof 2026-11-06` on target digest 1c1f695f: REVIEW, no LEAK. Each line ruled harmless:
-- Direct Debit history, two golden figures: each is a change date's day running into the next field's amount
-  ("2025-12-10,341.00", "2024-07-11,155.00"); no amount in the file is a graded figure.
-- The close-out, the plan and the framework each carry four or five stump-paragraph words, all generic (direct, report,
-  contact, quantity, supplier); none names quotes against meter point quantities or an expectation.
-- The legacy extract, the quote log and the tariff table name every region beside numbers: an account's region, a quote's
-  region and a regional rate, none ranking a cause of the fall.
-- Switching flows, dates after the pull: the planned effective dates of losses notified by 5 November 2026; every flow is
-  dated on or before the pull (asserted).
+- **Task type:** physical-environmental-sciences / pollution-source-attribution, which serves Root-Cause Analysis.
+- **Domain test:** the deciding quantity is the share of the downstream exceedance days that fall inside the days the
+  works' nitrification needs to recover after a caustic excursion in one trade discharger's own fifteen-minute record,
+  worked as river source apportionment through the works' process response rather than by each source's load.
+- **Swap:** "most of the Allery's exceedance days follow Thornlea's caustic excursions within the works' recovery, so the
+  upgrade would not stop them", rewritten as "most of the ward's infections follow the supplier's batches", loses the
+  dilution, the nitrifiers' recovery after a pH excursion and the consented strength that make the share computable,
+  and stops reading.
+- **Layer 1:** fifteen-minute telemetry with logger gaps and the October clock change (the dairy's monitor); weekly
+  composites against daily meter volumes (charging); provisional against ratified monitor releases with maintenance
+  flags (the river monitor); cubic metres against litres (the returns against the meter); SCADA tags renamed at the
+  aeration upgrade (the works). Each is produced by the system named; nothing is placed to be caught.
+- **Layer 2:** estimand identification: the share each option reaches is the population of exceedance days inside the
+  works' recovery after an excursion, built by joining two records, not the load each source sends.
+- **Decisive step:** set Thornlea's fifteen-minute pH record against the works' daily effluent record, mark the days
+  inside the works' recovery after each excursion, and read the exceedance days on and off them: on excursion-free days
+  the works meets its permit at equal temperature and load, so the aeration control and the capacity reach almost none
+  of the days.
+- **Not semantics:** every field reads plainly (pH units, mg/l, the monitor's flags, the consent's limits), and reading
+  each correctly still leaves the mass balance on the works and the process model on the aeration control and the cold;
+  no field, code or definition marks an excursion as a trigger of anything at the works.
+- **Not rule application:** no filed rule or procedure links a discharger's pH record to the works' failures (the
+  consent's pH limits are met; charging rests on weekly composites), so executing every stated rule files the control.
+  The enumerated family the WHAT leaves open (recovery windows of one to five days, excursion thresholds from pH 10.5 to
+  11.5, the large-excursion and any-excursion definitions) spreads 0.50 to 1.00 in the share of exceedance days across
+  20 redraws with every member naming the dairy; the standing family (the consent's own excursion definition, recovery
+  read from the works' effluent record) is measured at stage 2 and graded only at the precision it shares; nothing does
+  the ruling-out but the two records set side by side.
+- **Analyst test:** a strong analyst with every field read and every rule applied apportions by mass balance to the works,
+  models the works' effluent on temperature, load and the aeration control, dismisses the dairy on load and compliance,
+  and ends on the aeration control and nitrification capacity, backing the GBP 14.2 million upgrade (`Ends on:`).
+- **Estimand:** filed at stage 2 in the company's investigation brief for the submission: the population (every day from
+  1 November 2025 to 31 March 2026 at the downstream monitor), the outcome (a day whose mean total ammonia exceeds the
+  good-status standard), the window, the unit (the monitor day) and the comparison (the same months a year earlier),
+  with the question each option answers (which days it would have prevented); no sentence names a recovery window, an
+  excursion or a join.
+- **No decoy:** nothing is planted: the aeration control's go-live, the housing growth, the cold and the storm spills are
+  real changes with their own records; no memo, draft, briefing or stakeholder figure argues for the upgrade or blames
+  the control or the dairy.
+- **No certified replay:** no certified or published figure is reproduced to recover a method; the golden's construction
+  reproduces nothing in the pack.
+- **Lesson:** a source's share of a failure is its reach through the process that fails, not its share of the load: a
+  small discharger whose excursions stop a works' nitrification owns the days the works needs to recover, and only its
+  own high-frequency record set against the works' daily record shows it; no build on file teaches a process switched off
+  by a minor contributor's excursions.
 
 ## Tried and rejected
 
@@ -665,3 +315,23 @@ Measured by: generator/ceiling.py on the cut pack (target digest 1c1f695f), 2026
   literal executor takes every field at its face value, so a golden that overrides a field's own link (a reference, a
   date, a status) carries a filed WHAT or the data are regenerated so the face value is the golden; and every quantity
   the write-up states for the main call holds at every natural granularity of the comparison, or is stated so it does.
+- 2026-11-03, architecture 4's draw, candidates set aside before the card (four go/no-go screens, `scratchpad/t401/a4/`).
+  The strategy window (binding_constraint, causal_design and decomposition_attribution held by task399, task400 and
+  task402) bars the natural attribution labels, so each candidate's decisive move was labelled before it was priced.
+  (a) An online retailer's checkout conversion fall booked to a checkout release, caused by a collection partner
+  withdrawing urban points while adding as many in suburbs (`proto1.py`, `proto2.py`, 20 redraws): it fails screens 2
+  and 3, since the access effect acts only on latent collection-preferring shoppers through a continuous distance, so its
+  share runs 0.84 to 2.50 points across defensible exposure forms and the release's residual -0.62 to 2.67, and it fails
+  the swap test (collection points read the same as clinics); it also sits beside task129's surroundings exposure and
+  task399 v3's supply behind a journey, and task177 had called a nearest-locker reading a replay. (b) Opportunity to
+  learn in a primary trust's mid-year maths tests, a new scheme's sequence placing tested topics after the test date:
+  an intrinsic fork, because the scheme's sequencing is itself a counterfactual cause of the measured spring fall, so
+  the default's "the scheme" and the golden's "the sequence against the test date" name one candidate. (c) A school
+  trust's illness absence driven by classroom ventilation cut to save energy: at published levels (about 0.5 to 0.9
+  points of absence per 1,000 ppm) the lever is a fifth to a half of the rise. (d) Deploy-spanning journeys breaking
+  in-flight checkouts: task129 v1 spent the first-use-after-a-version-change shape. (e) Split shipments across
+  fulfilment centres: task175's seed and task277's reflex. (f) Tampered HGVs read from roadside remote sensing: task202
+  screened it. (g) Storm overflows against the load apportionment model: the overflow record is the zeitgeist's first
+  check, and the move is attribution. (h) A charity upgrade appeal's anchored figure, a norm boomerang and a goal
+  difficulty gap: the levels are not documented, or the gap is architecture 3's family. (i) Composition designs in
+  every cell: this slot has spent two (architecture 1's closures, architecture 3's mix standardisation).
