@@ -145,6 +145,17 @@ def main():
             occ[grp["area"].iloc[-1]] = occ.get(grp["area"].iloc[-1], 0) + 1
     for c in names:
         check("occupied %s" % names[c], occ.get(c, 0) == figs["occupied"][names[c]])
+    # the latest row's class reads the same: no row after a conversion carries another class
+    last = ev.groupby("property_ref").tail(1).set_index("property_ref")
+    openp = ev[ev["event"] != "CONV"].groupby(["property_ref", "account_no"]).tail(1)
+    openp = set(openp[openp["event"] == "OCC"]["property_ref"])
+    occ2 = last[last.index.isin(openp) & (last["property_class"] == "HH")].groupby("area").size()
+    check("occupied counts unchanged with the class read from each property's latest row",
+          all(int(occ2.get(c, 0)) == figs["occupied"][names[c]] for c in names))
+    # the account list's revenue-role meters are the register's revenue meters, the same account's replacement
+    # and supply points connected since the issue
+    rr = set(acc.loc[acc["Meter role"] == "Revenue", "Meter serial"])
+    check("revenue-role meters are the meters placed for the large-user figures", rr == set(m2a))
     wo = pd.read_excel(os.path.join(T, "works_orders_aug_oct_2026.xlsx"))
     assets = pd.read_csv(os.path.join(T, "mains_asset_list.csv"))
     amap = dict(zip(assets["asset_id"], assets["dma"]))

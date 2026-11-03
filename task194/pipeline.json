@@ -1,8 +1,8 @@
 {
  "task": "task194",
- "status": "PAUSED",
- "stage": 4,
- "stage_name": "check",
+ "status": "SHIPPED",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-03",
  "domain": "energy-systems-utilities / grid-reliability-outage-analysis",
  "objective": "anomaly-detection",
@@ -14,22 +14,43 @@
   "date": "2026-11-03"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-11-03, every REVIEW line answered in the design note",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK), four REVIEW lines, each answered in the design note",
+  "reader": "r1 no leak (PRV raise read as possibly planted: fixed); r2 clean (billing posting times too regular: fixed); r3 no leak (question 6 read LP04 as the whole method: ruled the stump working, LP04 3 to 6.2 executed literally names Kestle Hill, asserted)"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.deliverables vs task241 v2, repeat.question_form vs task307 v3, both answered in the design note; nearest driver 0.07 task199)",
+  "heart": "WARN (repeat.deliverables vs task241 v2, repeat.question_form vs task307 v3, both answered in the design note; nearest driver 0.07 task199; final cut)",
   "nearest": "task199 0.07"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (r3)",
+  "disposition": "APPROVE (r3)",
+  "report": "determinism_check_report.md (r1), determinism_check_report_pass2.md (r2), determinism_check_report_pass3.md (r3)",
+  "passes": [
+   {
+    "run": "r1",
+    "verdict": "NOT_DETERMINISTIC on asks 4 and 5 (check meters, class after a conversion)",
+    "disposition": "SEND_BACK, read as an ask-layer repair (Gates G and H pass)",
+    "fix": "Meter role column, converted class carried, A1 and A2 devices re-sited, LP04 4.1 to the WHAT, PRV raise given its routine trail"
+   },
+   {
+    "run": "r2",
+    "verdict": "DETERMINISTIC, SOLUTION_WRONG (Ashworth Fold exact half, 2,756.5)",
+    "disposition": "FIX_NOW",
+    "fix": "register trim to 2,756.6 (prints 2,757), LP04 2 files local calendar months, exchange install read, every graded figure 0.1 of a unit clear of a half (asserted), BV-0412 share 0.52 to 0.495, historian quality codes, billing posting times, workbook protection element, Appendix A date"
+   },
+   {
+    "run": "r3",
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "gate_h": "decisive_step analytical",
+    "notes": "five low-severity residual forks ruled in the design note; the judge's Kestle Hill 0.898 against the r1 0.943 is the accepted BV-0412 share change, and its first affected night 7 October is the 03:00 dating of the 6 October opening (the night of 6 to 7 October is dated 7 October under LP04 2)"
+   }
+  ]
  },
  "returned": [],
- "resume": "stage 4: the main thread spawns the isolated leak reader (/leak-check task194, reader half only) and the determinism judge together at medium; fix every finding in the generator in one pass, re-run every free gate, then stage 5 ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-03",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -39,15 +60,31 @@
   "architecture_16_resume": "architecture 17. Architecture 16 refused, and its result is corpus-wide rather than local: the propagation shape (a change acting on a unit the data is not reported at, its effect carried through a cycle or cohort structure) is SPENT AS A DRIVER, being task125's. Proven four ways. The cheapest licensed route IS the golden: one join, one two-way group-by on (regime, position), one reweight reproduces the designed path at RMSE 0.0072 and max 0.0170 on the clean truth, 2.8 and 3.3 per cent of its level. The LINKAGE TRICHOTOMY makes that structural, not a generous register: the mixture weights must be shipped for the path to be computable and the position ships with them, so a row carries its cohort directly (one group-by), or a key a register maps (one join plus group-by, same cost), or nothing identifying the unit, in which case the profile is identifiable only from the published series, which is the quantity in question (a cubic with seasonal terms reproduces 90.5 per cent of the distortion path's variance). No fourth case. task125 shipped only because a TRUE operational sentence made the join look pointless, which is a device, and Part 6 licenses re-skinning a device and never a driver. And the guard refuses it: BLOCK on test.same_puzzle_older AND test.same_driver_older against task125 (v2), driver.near 0.19, nearest on file by three times against a next of 0.06, with task125's Lesson line stating the generalisation verbatim so a faithful instance fails its own Lesson test. The pass also confirmed the shape is genuinely NOT the closed multiplicative family (the correction is additive in cohort-position cells, the latent object is a profile over positions, and there is no candidate ranking, so no law has a term to bind). The forward-facing variant escapes the group-by but moves the decisive step onto a functional-form transport, which is architecture 1's fitted-counterfactual family, closed for this slot though its own separation rule is satisfied (663 to 1,417 against a likelihood ratio of 1.02 to 1), so reopening it is an author decision. TWO UNPRICED DIRECTIONS, neither a recommendation: the path's turning point graded instead of its levels (transports disagree 28, 32, 35, 35, 36 against a true 32, a discrete level-dependent object with a one-member standing family, but still task125's driver unless the propagation is not), and a structure whose position is NOT registered so the position is itself estimated, expected to die on the parametric horn with nothing on file measuring it. Harness at scratchpad/a16_194/, all four screens byte-identical."
  },
  "gates": {
-  "checks_py": "79 PASS, 0 FAIL",
-  "verify_py": "0 failed",
-  "byte_identical_rebuilds": "two, identical (16 files)",
+  "checks_py": "110 PASS, 0 FAIL",
+  "verify_py": "0 failed (77 checks)",
+  "byte_identical_rebuilds": "two, identical (16 files); final rebuild's target identical to the r3 pack",
   "figures_check": "75 figures, 0 absent",
   "precut": "61 checks, 0 FAIL, 0 WARN",
   "voice_check": "PASS",
-  "ceiling_py": "cracker 31.5, mirror 22.2, pair 43.3",
+  "ceiling_py": "cracker 13.0, mirror 9.3, pair 34.6",
   "scrub": "clean (target and golden)",
-  "surface": "PASS: 302 builds screened, 0 promoted, nearest surface 0.091 (task136)",
-  "heart": "WARN (repeat.deliverables vs task241 v2, repeat.question_form vs task307 v3, both answered in the design note; nearest driver 0.07 task199)"
- }
+  "surface": "PASS: 302 builds screened, 0 promoted, nearest task136 0.091 (final cut, 2026-11-03)",
+  "heart": "WARN (repeat.deliverables vs task241 v2, repeat.question_form vs task307 v3, both answered in the design note; nearest driver 0.07 task199; final cut)",
+  "freeze": "rubric: main call, stump, card and every main-call figure unchanged; one frozen item moved, the design note ladder's unrounded R1 and R2 entries (R1 runner-up 0.944 to 0.899, R2 0.943 to 0.898, margin 1.55x to 1.47x) after the BV-0412 share 0.52 to 0.495; determinism: that plus the Deliverable Answers block and 17 ask figures (16 households, Ashworth Fold large users 2,756 to 2,757)",
+  "leak_py": "REVIEW (no LEAK)",
+  "target_zip_sha256": "eb88508469d311d8ea96f328a2c36a394e572700783d501c20fa5644b3478082"
+ },
+ "freeze_allow": [
+  {
+   "item": "design note ladder sections (R1, R2 unrounded entries)",
+   "accepted": "2026-11-03, main thread, pre-ship",
+   "reason": "the every-figure rounding assertion found the night crossing (0.946 l/s, one estimator 0.949) and Kestle Hill's normalised rise (0.943) within 0.1 of a unit of the 0.95 rounding line; the share of Moorend Low's draw carried through BV-0412 moved from 0.52 to 0.495 so both sit near 0.90; every printed main-call figure, the call, the stump and the rung winners unchanged, every rung margin over 1.15x",
+   "command": "freeze.py check task194 --mode rubric --allow ladder: --allow reaches figures.json keys only, so the ladder line still prints as moved; recorded here as the accepted move rather than by editing freeze.py"
+  },
+  {
+   "item": "LP04 section 2 sentence filing local calendar days and months",
+   "accepted": "2026-11-03, main thread",
+   "reason": "a WHAT on ask 4 closing the local against UTC month fork"
+  }
+ ]
 }

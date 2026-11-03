@@ -20,8 +20,8 @@
 3. Normalised each night set to its baseline AZNP pressure from aznp_pressure_hourly_2026.csv with N1 of 1.15 (LP04 5.1, bar converted to metres): Calvert Rise's rise falls to nothing and Kestle Hill leads at 0.9 l/s.
 4. Compared every valve pair in gis_boundary_valves.geojson on its two areas' whole-day volume change: only BV-0412 shows an equal and opposite move, Kestle Hill up and Moorend Low down by the same profile.
 5. Took the night crossing as the mean of Kestle Hill's night rise and Moorend Low's night fall, 0.9 l/s, and netted it out of both areas' normalised changes.
-6. For the large users, summed hourly register advances per meter (adding 100,000 m3 where a five-digit register rolls over) over October local time for the register's revenue meter at each supply point, the same account's replacement meter and supply points connected since the register issue, leaving out tenants' check meters on bulk supplies.
-7. For households, ordered billing_account_events_extract.csv by effective date to 31 October and counted properties with an occupied account whose class, after any CONV event, is HH; for repairs, counted jobs in works_orders_aug_oct_2026.xlsx with a REPAIR MAIN task completed from 1 August to 31 October, a contractor's TC job placed through the job number in its Asset field, areas from mains_asset_list.csv.
+6. For the large users, summed hourly register advances (adding 100,000 m3 where a five-digit register rolls over) over October local time for every meter large_user_accounts.xlsx holds as a Revenue meter, each placed in the area of its supply point on the register's Supply points sheet, or the account's area for a supply point connected since the register issue.
+7. For households, ordered billing_account_events_extract.csv by effective date then posting to 31 October and counted properties on which at least one account's last OCC or VAC event is an OCC and whose class is HH; for repairs, counted jobs in works_orders_aug_oct_2026.xlsx with a REPAIR MAIN task completed from 1 August to 31 October, a contractor's TC job placed through the job number in its Asset field, areas from mains_asset_list.csv.
 8. Ranked the areas on own leakage change: Thrushgate first at 0.6 l/s, Ashworth Fold second at 0.3 l/s.
 
 ## 4. Deliverable Answers
@@ -50,7 +50,7 @@
    - Upper Sowden: 0.0
    - Whinlow Moor: -0.1
 4. Metered consumption of logged large users, October 2026, whole m3:
-   - Ashworth Fold: 2,756
+   - Ashworth Fold: 2,757
    - Barrowfold: 4,630
    - Calvert Rise: 2,835
    - Crake Bank: 688
@@ -69,24 +69,24 @@
    - Upper Sowden: 4,851
    - Whinlow Moor: 936
 5. Occupied household properties at the end of 31 October 2026:
-   - Ashworth Fold: 2,135
-   - Barrowfold: 3,034
-   - Calvert Rise: 3,384
-   - Crake Bank: 1,359
-   - Gorsey Bank: 1,647
-   - Hennick: 3,930
+   - Ashworth Fold: 2,156
+   - Barrowfold: 3,037
+   - Calvert Rise: 3,352
+   - Crake Bank: 1,384
+   - Gorsey Bank: 1,643
+   - Hennick: 3,936
    - Kestle Hill: 2,244
    - Lidden Common: 950
-   - Moorend Low: 1,702
-   - Netherby Road: 1,993
-   - Oakshaw: 1,505
-   - Pellow Bridge: 1,802
-   - Ravensclough: 1,196
-   - Stanecroft: 3,599
-   - Thrushgate: 2,564
-   - Tollbar: 2,407
-   - Upper Sowden: 1,160
-   - Whinlow Moor: 2,808
+   - Moorend Low: 1,703
+   - Netherby Road: 1,979
+   - Oakshaw: 1,522
+   - Pellow Bridge: 1,793
+   - Ravensclough: 1,204
+   - Stanecroft: 3,611
+   - Thrushgate: 2,562
+   - Tollbar: 2,422
+   - Upper Sowden: 1,169
+   - Whinlow Moor: 2,875
 6. Mains repairs completed August to October 2026:
    - Ashworth Fold: 5
    - Barrowfold: 1

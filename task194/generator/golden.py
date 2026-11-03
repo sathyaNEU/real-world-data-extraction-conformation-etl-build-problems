@@ -111,8 +111,10 @@ def advances(reads):
 
 def accounts(target):
     wb = openpyxl.load_workbook(os.path.join(target, F["accounts"]), read_only=True)
-    rows = list(wb.active.iter_rows(min_row=2, values_only=True))
-    return [dict(acc=r[0], name=r[1], area=r[2], serial=r[3], sp=r[4]) for r in rows if r[0]]
+    rows = list(wb.active.iter_rows(values_only=True))
+    h = {k: i for i, k in enumerate(rows[0])}
+    return [dict(acc=r[h["Account"]], name=r[h["Customer"]], area=r[h["Area (account)"]], serial=r[h["Meter serial"]],
+                 role=r[h["Meter role"]], sp=r[h["Supply point"]]) for r in rows[1:] if r[0]]
 
 
 def revenue_meters(target):

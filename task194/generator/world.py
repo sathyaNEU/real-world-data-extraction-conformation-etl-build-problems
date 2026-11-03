@@ -39,6 +39,11 @@ AREAS = [
 CODE = {a[1]: a[0] for a in AREAS}
 NAME = {a[0]: a[1] for a in AREAS}
 OLD_CODE = {"D3341": "D3305"}   # Gorsey Bank renumbered at the April 2025 boundary change
+# large users whose site moved to a neighbouring area at the April 2025 boundary change; the billing account
+# still carries the area it was opened in
+ACCOUNT_AREA_2019 = {"Hollin Dairies Ltd": "D4136", "Netherby Road Health Centre": "D4180", "OAKSHAW GOLF CLUB": "D4187",
+                     "Crake Bank Garden Centre": "D4211", "Upper Sowden Farm Shop": "D4149",
+                     "Lidden Common Primary School": "D4123"}
 
 # valve-sharing neighbours (GIS boundary valves, all status CLOSED in GIS)
 BOUNDARY = [
@@ -51,9 +56,12 @@ BOUNDARY = [
     ("BV-0594", "D4155", "D4136"), ("BV-0608", "D4117", "D4161"),
 ]
 
+# fractional start of a meter's register, as read off the meter at its last exchange
+REG_TRIM = {"Ashworth Fold Medical Practice": 0.06}
+
 # the events (UTC instants)
 VALVE_OPEN = dt.datetime(2026, 10, 6, 9, 40)      # BV-0412 opened for the Moorend Low valve job, left open
-TRANSFER_SHARE = 0.52                             # share of Moorend Low's draw carried through Kestle Hill
+TRANSFER_SHARE = 0.495                            # share of Moorend Low's draw carried through Kestle Hill
 BURST = ("D4155", dt.datetime(2026, 10, 11, 20, 50), 2.21)   # Thrushgate, m3/h at baseline night pressure
 NEW_USER = ("D4187", dt.datetime(2026, 10, 1, 5, 0), 6.27)   # Pellow Bridge depot, m3/h at night
 PRV = ("D4149", dt.datetime(2026, 9, 29, 13, 0), 38.0, 47.0) # Calvert Rise PRV set point raised

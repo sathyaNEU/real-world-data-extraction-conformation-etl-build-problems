@@ -20,14 +20,15 @@ SECTIONS = [
         "A district metered area (area) is a part of the network supplied through the inlet meters listed for it in "
         "the DMA register. Where an area has more than one inlet meter, its inlet flow is the sum of its meters.",
         "Each allocation compares two sets of nights, the baseline nights and the comparison nights, listed for the "
-        "allocation in Appendix B. A night is dated by the date on which its 03:00 falls."]),
+        "allocation in Appendix B. A night is dated by the date on which its 03:00 falls. Days and months in this "
+        "procedure and its records are local calendar days and months."]),
     ("3  Minimum night flow", [
         "An area's minimum night flow for a night is the mean of its inlet flow readings stamped from 03:00 up to but "
         "not including 04:00 local clock time. Its minimum night flow for a set of nights is the mean over those nights. "
         "Flows are worked in cubic metres an hour."]),
     ("4  Night use", [
-        "4.1  Legitimate night use is the water customers draw during the night hour, and it is taken off the minimum "
-        "night flow before leakage is read.",
+        "4.1  Legitimate night use is the water customers draw during the night hour. It is part of an area's minimum "
+        "night flow and is not leakage.",
         "4.2  Household night use is 1.7 litres an hour for each household property in the DMA register.",
         "4.3  Non-household night use is the metered consumption of the area's logged large users over the same hour, "
         "plus 6.0 litres an hour for each non-household property the register lists as not logged."]),
@@ -68,7 +69,7 @@ def build(path):
         for p in paras:
             st.append(Paragraph(p, body))
     st.append(Paragraph("Appendix A  Allocation calendar, winter 2026", h))
-    st.append(Paragraph("Allocations are made on the Friday before the crew week, from the export taken that morning.", body))
+    st.append(Paragraph("Allocations are made in the week before the crew week, from the export taken on its Tuesday morning.", body))
     st.append(Paragraph("Appendix B  Night sets for the week 46 allocation", h))
     tb = Table([["Allocation", "Crew week", "Baseline nights", "Comparison nights"],
                 ["2026-46", "9 to 15 November 2026", "7 September to 4 October 2026", "12 October to 1 November 2026"]],

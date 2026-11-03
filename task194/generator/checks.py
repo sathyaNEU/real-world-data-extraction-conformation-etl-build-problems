@@ -8,6 +8,7 @@ import re
 import shutil
 import sys
 import tempfile
+import zipfile
 
 import numpy as np
 import openpyxl
@@ -15,6 +16,7 @@ from pypdf import PdfReader
 
 import golden as G
 import pack as PK
+import sim
 import world as W
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -180,6 +182,197 @@ def main():
     ok("ask: every area has an October LU figure", len(res["lu_oct"]) == len(W.AREAS))
     ok("ask: occupied households below register counts everywhere", all(res["occupied"][c] <= R[c]["hh"] * 1.05 for c in R))
     ok("ask: repairs counted by job, not rows", sum(res["repairs"].values()) < rows_repair_main())
+    # ---------------- ask forks closed in the records (SF12, SF13)
+    acc = G.accounts(T)
+    rev = G.revenue_meters(T)
+    role_rev = {a["serial"] for a in acc if a["role"] == "Revenue"}
+    ok("SF12 the account list's revenue-role meters are exactly the meters that measure a supply point's draw",
+       role_rev == set(rev), str(sorted(role_rev ^ set(rev))))
+    reads = G.amr(T)
+    adv = {k: {t0: d for t0, t1, d in G.advances(v)} for k, v in reads.items()}
+    checks_ = [a for a in acc if a["role"] == "Check"]
+    behind = []
+    for a in checks_:
+        host = [b for b in acc if b["sp"] == a["sp"] and b["role"] == "Revenue" and b["acc"] != a["acc"]]
+        behind.append(len(host) == 1 and all(d <= adv[host[0]["serial"]].get(t, -1) for t, d in adv[a["serial"]].items()))
+    ok("SF12 every check meter shares its supply point with one revenue meter on another account and never reads above it",
+       len(checks_) == 3 and all(behind), str(len(checks_)))
+    sp_area = G.register(T)[1]
+    old_ = {a["prev"]: c for c, a in G.register(T)[0].items() if a["prev"]}
+    by_role = {a["serial"]: sp_area.get(a["sp"], old_.get(a["area"], a["area"])) for a in acc if a["role"] == "Revenue"}
+    lu_role = {c: 0.0 for c in R}
+    lo, hi = dt.datetime(2026, 9, 30, 23), dt.datetime(2026, 11, 1)
+    for serial, area in by_role.items():
+        for t0, t1, d in G.advances(reads.get(serial, [])):
+            if lo <= t0 and t1 <= hi:
+                lu_role[area] += d
+    ok("SF12 the revenue-role meters by supply point give every October large-user figure",
+       all(int(round(lu_role[c])) == int(round(res["lu_oct"][c])) for c in R))
+    stale = [a for a in acc if a["role"] == "Revenue" and a["sp"] in sp_area and sp_area[a["sp"]] != old_.get(a["area"], a["area"])]
+    ok("ask device A1: revenue meters whose supply point lies outside the account's own area", len(stale) >= 6, str(len(stale)))
+    evs = {}
+    with open(os.path.join(T, PK.FILES["billing"])) as f:
+        for e in csv.DictReader(f):
+            eff = dt.datetime.strptime(e["effective_date"], "%d/%m/%Y").date()
+            if eff <= dt.date(2026, 10, 31):
+                evs.setdefault(e["property_ref"], []).append((eff, e["posted"], e))
+    after_conv = 0
+    occ_latest = {c: 0 for c in R}
+    occ_prop = {c: 0 for c in R}
+    for pref, lst in evs.items():
+        lst.sort(key=lambda x: (x[0], x[1]))
+        seen = None
+        st = {}
+        for _, _, e in lst:
+            if seen is not None and e["property_class"] != seen:
+                after_conv += 1
+            if e["event"] == "CONV":
+                seen = e["property_class"]
+            if e["event"] == "OCC":
+                st[e["account_no"]] = True
+            elif e["event"] == "VAC":
+                st[e["account_no"]] = False
+        last = lst[-1][2]
+        area = old_.get(last["area_code"], last["area_code"])
+        if any(st.values()) and last["property_class"] == "HH":
+            occ_latest[area] += 1
+        if last["event"] != "VAC" and last["property_class"] == "HH":
+            occ_prop[area] += 1
+    ok("SF13 no row after a conversion carries a class other than the converted one", after_conv == 0, str(after_conv))
+    ok("SF13 the class on the latest row and the class after any conversion give the same occupied counts",
+       occ_latest == res["occupied"])
+    dmin = min(occ_prop[c] - res["occupied"][c] for c in R)
+    dmax = max(occ_prop[c] - res["occupied"][c] for c in R)
+    ok("ask device A2: same-day changes of occupier move every area's count when state is read per property",
+       all(occ_prop[c] != res["occupied"][c] for c in R), "%d to %d" % (dmin, dmax))
+
+    # ---------------- LP04 read literally
+    ok("LP04 4.1 to 6.2 executed literally with no boundary test names Kestle Hill", R[ranked(R, "r2")[0]]["name"] == "Kestle Hill")
+    S = sim.run(np.random.default_rng(W.SEED))
+    phys = {}
+    for code in R:
+        leak = S["truth"][code]["leak"]
+        m = {}
+        for per, rng_ in (("b", W.BASE_NIGHTS), ("c", W.COMP_NIGHTS)):
+            by = {}
+            for i, l in enumerate(S["loc"]):
+                if l.hour == 3 and rng_[0] <= l.date() <= rng_[1]:
+                    by.setdefault(l.date(), []).append(leak[i])
+            m[per] = np.mean([np.mean(v) for v in by.values()])
+        phys[code] = m["c"] * R[code]["fac"] - m["b"]
+    top_phys = max(phys, key=phys.get)
+    ok("LP04 6.1 read literally (water lost from the area's own pipes, normalised under 5.1) names Thrushgate",
+       top_phys == "D4155", W.NAME[top_phys])
+    worst = max(abs(ls(phys[c] - R[c]["own"])) for c in R)
+    ok("the golden own-leakage change recovers the physical loss in every area within 0.05 l/s", worst < 0.05, "%.4f" % worst)
+    ok("Kestle Hill and Moorend Low lost no more water from their own pipes", abs(ls(phys["D4117"])) < 0.05 and abs(ls(phys["D4123"])) < 0.05)
+    lp = " ".join(pdf_text(os.path.join(T, PK.FILES["procedure"])).split())
+    ok("LP04 positive control: night use is filed as not leakage", "is part of an area's minimum night flow and is not leakage" in lp)
+    ok("LP04 defines no leakage as the procedure's output", not re.search(r"before leakage is read|leakage is the (minimum|net) night flow", lp, re.I))
+
+    # ---------------- the Calvert Rise set point change reads as routine operations
+    with open(os.path.join(T, PK.FILES["prv"])) as f:
+        prv = list(csv.DictReader(f))
+    ok("PRV log: every PRV area has routine entries beside any change", all(sum(1 for r in prv if r["dma"] == c) >= 2 for c in ("D4136", "D4149", "D4180")))
+    wbw = openpyxl.load_workbook(os.path.join(T, PK.FILES["works"]), read_only=True)
+    prv_jobs = [r for r in wbw.active.iter_rows(min_row=2, values_only=True) if r[2] == "PRV ADJUST"]
+    ok("PRV raise has its works order, completed at the logged time", len(prv_jobs) == 1 and prv_jobs[0][5] == dt.datetime(2026, 9, 29, 14, 0)
+       and prv_jobs[0][0] in [r["note"].split("(")[-1].rstrip(")") for r in prv if r["dma"] == "D4149"])
+    with open(os.path.join(T, PK.FILES["contacts"])) as f:
+        lowp = [r for r in csv.DictReader(f) if r["dma"] == "D4149" and r["category"] == "Low pressure"
+                and dt.datetime(2026, 9, 1) <= dt.datetime.strptime(r["received"], "%d/%m/%Y %H:%M") < dt.datetime(2026, 9, 29)]
+    ok("PRV raise follows a trail of low pressure contacts in its area", len(lowp) >= 5, str(len(lowp)))
+
+    # ---------------- every graded figure clear of its rounding half, under every reading that survives
+    def half_dist(v, u):
+        x = round(v / u, 6)
+        return abs(abs(x - np.floor(x)) - 0.5)
+    lsfig = [("own change " + R[c]["name"], ls(R[c]["own"])) for c in R]
+    lsfig += [("gap", ls(R[order[0]]["own"] - R[order[1]]["own"])), ("default-path rise", ls(R[ranked(R, "r2")[0]]["r2"])),
+              ("night crossing", ls(res["open_pairs"][0]["transfer_night"]))]
+    p0 = res["open_pairs"][0]
+    for Tn in sf_transfer_estimates(res):
+        lsfig += [("SF5 Kestle Hill", ls(R[p0["a"]]["r2"] - Tn * R[p0["a"]]["fac"])), ("SF5 Moorend Low", ls(R[p0["b"]]["r2"] + Tn * R[p0["b"]]["fac"])),
+                  ("SF5 crossing", ls(Tn))]
+    worst_ls = min(lsfig, key=lambda x: half_dist(x[1], 0.1))
+    ok("rounding: every l/s figure sits at least 0.1 of its unit from a half, every transfer estimator included",
+       half_dist(worst_ls[1], 0.1) >= 0.1, "%s %.4f" % (worst_ls[0], worst_ls[1]))
+    reads_all = G.amr(T)
+    def lu_month(meters, lo, hi):
+        out = {c: 0.0 for c in R}
+        for serial, area in meters.items():
+            for t0, t1, d in G.advances(reads_all.get(serial, [])):
+                if lo <= t0 and t1 <= hi:
+                    out[area] += d
+        return out
+    LO, HI = dt.datetime(2026, 9, 30, 23), dt.datetime(2026, 11, 1)
+    lu_g = lu_month(G.revenue_meters(T), LO, HI)
+    worst_lu = min(lu_g, key=lambda c: half_dist(lu_g[c], 1.0))
+    ok("rounding: every October large-user figure sits at least 0.1 m3 from a half", half_dist(lu_g[worst_lu], 1.0) >= 0.1 - 1e-6,
+       "%s %.1f" % (W.NAME[worst_lu], lu_g[worst_lu]))
+    ok("rounding: every count graded (households, repairs) is a whole number", all(float(v).is_integer() for v in list(res["occupied"].values()) + list(res["repairs"].values())))
+    # the exchange hour: the old meter's last read and the new meter's install read share a time, so no October
+    # interval of any revenue meter lacks a read and estimating unmetered time adds nothing
+    spans = []
+    for serial in G.revenue_meters(T):
+        rs = [t for t, _ in reads_all.get(serial, []) if LO <= t <= HI]
+        spans += [(serial, b - a) for a, b in zip(rs, rs[1:]) if b - a != dt.timedelta(hours=1)]
+    ok("ask 4: every revenue meter reads every hour of October, so there is no unmetered interval to estimate", not spans, str(spans[:3]))
+    exch = [a for a in acc if a["role"] == "Revenue" and sum(1 for b in acc if b["acc"] == a["acc"] and b["sp"] == a["sp"]) > 1]
+    ends = sorted((reads_all[a["serial"]][0][0], reads_all[a["serial"]][-1][0], a["serial"]) for a in exch)
+    ok("ask 4: the exchanged meter's last read and its replacement's install read are one instant", len(ends) == 2 and ends[0][1] == ends[1][0] or
+       len(ends) == 2 and ends[1][1] == ends[0][0], str(ends))
+    # the gap-estimating handling: the time between the old meter's last read and the new meter's first, at the
+    # account's mean hourly rate over October, added to its area
+    est = 0.0
+    if len(ends) == 2:
+        (f0, l0, s0), (f1, l1, s1) = ends
+        unmetered = (f1 - l0).total_seconds() / 3600.0
+        rate = sum(d for t0, t1, d in G.advances(reads_all[s0]) if LO <= t0 and t1 <= HI) / max((l0 - LO).total_seconds() / 3600.0, 1)
+        est = unmetered * rate
+    ok("ask 4: zero spread between metered-only and gap-estimated handling of the exchange", abs(est) < 1e-12, "%.3f m3" % est)
+    ok("ask 4: the month is filed as the local calendar month (LP04 2)", "Days and months in this procedure and its records are local calendar days and months." in lp)
+    utc = lu_month(G.revenue_meters(T), dt.datetime(2026, 10, 1), HI)
+    ok("ask 4: the UTC-month reading, ruled out by LP04 2, differs (the filing is load-bearing)", any(int(round(utc[c])) != int(round(lu_g[c])) for c in R))
+    ok("LP04 Appendix A dates the allocation export within the setting", "from the export taken on its Tuesday morning" in lp and "Friday" not in lp)
+
+    # ---------------- historian quality codes sit off every graded figure
+    qrows = []
+    with open(os.path.join(T, PK.FILES["flows"])) as f:
+        rr = csv.reader(f)
+        next(rr)
+        for tag, ts, v, q in rr:
+            if q != "GOOD":
+                qrows.append((tag, ts, q))
+    inside = [r for r in qrows if W.BASE_NIGHTS[0] <= sim.local(G.parse(r[1])).date() <= W.BASE_NIGHTS[1]
+              or W.COMP_NIGHTS[0] <= sim.local(G.parse(r[1])).date() <= W.COMP_NIGHTS[1]]
+    ok("realism: the historian carries UNCERTAIN and BAD codes at a historian's rate", 100 <= len(qrows) <= 1500 and {r[2] for r in qrows} == {"UNCERTAIN", "BAD"}, str(len(qrows)))
+    ok("R2 no quality code other than GOOD on a night-set date, so dropping them moves no graded figure", not inside, str(len(inside)))
+
+    # ---------------- billing posting times
+    with open(os.path.join(T, PK.FILES["billing"])) as f:
+        posted = [r["posted"] for r in csv.DictReader(f)]
+    ok("realism: billing posting times are not on the hour", sum(p.endswith(":00") for p in posted) / len(posted) < 0.1)
+    with tempfile.TemporaryDirectory() as d:
+        shutil.copy(os.path.join(T, PK.FILES["register"]), d)
+        ev0, _ = PK.billing(np.random.default_rng(W.SEED + 2))
+        with open(os.path.join(d, PK.FILES["billing"]), "w", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(["property_ref", "account_no", "event", "effective_date", "posted", "area_code", "property_class"])
+            for e in ev0:
+                w.writerow([e[0], e[1], e[2], e[3].strftime("%d/%m/%Y"), e[4].strftime("%Y-%m-%d %H:%M"), e[5], e[6]])
+        ok("billing: spreading the posting times moves no household figure", G.ask_occupied(d) == res["occupied"])
+
+    # ---------------- container and golden hygiene
+    prot = [f for f in os.listdir(T) + ["../golden/crew_allocation_week46.xlsx"] if f.endswith(".xlsx")
+            and b"workbookProtection" in zipfile.ZipFile(os.path.join(T, f)).read("xl/workbook.xml")]
+    ok("no workbook carries an empty protection element", not prot, str(prot))
+    gwb = openpyxl.load_workbook(os.path.join(TASK, "golden", "crew_allocation_week46.xlsx"))
+    negz = [c.coordinate for ws in gwb for row in ws.iter_rows() for c in row
+            if isinstance(c.value, float) and c.value == 0 and np.copysign(1, c.value) < 0]
+    gpdf = pdf_text(os.path.join(TASK, "golden", "night_flow_changes.pdf"))
+    ok("golden prints no negative zero", not negz and "-0.0" not in gpdf, str(negz))
+
     # distractor deletion
     with tempfile.TemporaryDirectory() as d:
         t2 = os.path.join(d, "target")
@@ -253,6 +446,21 @@ def sf_transfer(res):
         b_own = R[p["b"]]["r2"] + Tn * R[p["b"]]["fac"]
         prints.add((round(ls(a_own), 1) + 0.0, round(ls(b_own), 1) + 0.0))
     return len(prints) == 1, str(sorted(prints)) + " from " + ", ".join("%.3f" % e for e in ests)
+
+
+def sf_transfer_estimates(res):
+    R = res["R"]
+    p = res["open_pairs"][0]
+    areas, sp, units = G.register(T)
+    fl = G.flows(T, units)
+    sa, sb = G.area_flow(fl, areas[p["a"]]["tags"]), G.area_flow(fl, areas[p["b"]]["tags"])
+    pb_b = G.profile(sb, G.BASE)
+    da = G.profile(sa, G.COMP) - G.profile(sa, G.BASE)
+    db = G.profile(sb, G.COMP) - pb_b
+    X = np.vstack([np.ones(96), pb_b]).T
+    k = np.linalg.lstsq(X, da, rcond=None)[0][1]
+    kb = np.linalg.lstsq(X, -db, rcond=None)[0][1]
+    return [da[12:16].mean(), -db[12:16].mean(), (da[12:16].mean() - db[12:16].mean()) / 2, k * pb_b[12:16].mean(), kb * pb_b[12:16].mean()]
 
 
 def sf_bar(res):

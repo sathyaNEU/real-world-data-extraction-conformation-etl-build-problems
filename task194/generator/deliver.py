@@ -106,15 +106,15 @@ def write(res, out):
         ["Boundary", "%s (%s / %s) moved %s's draw onto %s's inlet meter from 6 October; the night crossing, "
                      "%.1f l/s, is netted out of both areas" % (figs["open_valve"], figs["receiver"], figs["donor"],
                                                                   figs["donor"], figs["receiver"], figs["transfer_night"])],
-        ["Large users", "metered at each supply point (register revenue meter or its replacement); tenants' check meters not added"],
-        ["Households", "occupied at 23:59 on 31 October by effective date, class after any conversion"],
+        ["Large users", "revenue meters only, each in the area of its supply point on the register; check meters sit behind a revenue meter and are not added"],
+        ["Households", "occupied at 23:59 on 31 October by effective date, a property counted while any of its accounts is open"],
         ["Repairs", "jobs with a REPAIR MAIN task completed 1 August to 31 October, contractor jobs placed through the job they took over"],
         ["Export", "SCADA historian and AMR extracts of 3 November 2026, 06:12"],
     ]:
         basis.append(line)
     basis.column_dimensions["A"].width = 18
     basis.column_dimensions["B"].width = 110
-    PK.xlsx_props(wb, "Kirsty Lloyd", "Kirsty Lloyd", dt.datetime(2026, 11, 5, 15, 2), dt.datetime(2026, 11, 6, 9, 48))
+    PK.xlsx_props(wb, "Kirsty Lloyd", "Kirsty Lloyd", dt.datetime(2026, 11, 3, 13, 42), dt.datetime(2026, 11, 3, 16, 57))
     p = os.path.join(out, "crew_allocation_week46.xlsx")
     wb.save(p)
     PK.fixed_zip(p)

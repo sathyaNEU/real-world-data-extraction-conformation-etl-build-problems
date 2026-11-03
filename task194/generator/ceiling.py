@@ -26,13 +26,14 @@ def lu_oct(meter_area, local_month=True, per_user_span=False):
     return {c: int(round(v)) for c, v in out.items()}
 
 
-def account_meters():
+def account_meters(with_check=False):
+    """Every revenue meter on the account list by the account's own area (check meters only if asked)."""
     areas, _, _ = G.register(T)
     old = {a["prev"]: c for c, a in areas.items() if a["prev"]}
-    return {a["serial"]: old.get(a["area"], a["area"]) for a in G.accounts(T)}
+    return {a["serial"]: old.get(a["area"], a["area"]) for a in G.accounts(T) if with_check or a["role"] != "Check"}
 
 
-def occupied(order="effective", class_from="latest"):
+def occupied(order="effective", class_from="latest", state="account"):
     areas, _, _ = G.register(T)
     old = {a["prev"]: c for c, a in areas.items() if a["prev"]}
     ev = {}
@@ -53,7 +54,8 @@ def occupied(order="effective", class_from="latest"):
             elif e["event"] == "VAC":
                 st[e["account_no"]] = False
         cls = last["property_class"] if class_from == "latest" else lst[0][2]["property_class"]
-        if any(st.values()) and cls == "HH":
+        open_ = any(st.values()) if state == "account" else last["event"] != "VAC"
+        if open_ and cls == "HH":
             out[old.get(last["area_code"], last["area_code"])] += 1
     return out
 
@@ -94,8 +96,12 @@ def score(resp, gold):
 def main():
     res = G.compute(T)
     gold = {"lu": {c: int(round(v)) for c, v in res["lu_oct"].items()}, "occ": res["occupied"], "rep": res["repairs"]}
-    cracker = {"lu": lu_oct(account_meters()), "occ": occupied("effective", "latest"), "rep": repairs("task")}
-    mirror = {"lu": lu_oct(account_meters(), local_month=False), "occ": occupied("posted", "latest"), "rep": repairs("closed")}
+    # the cracker reads the account list's own area for each revenue meter, rebuilds each property's state from its
+    # latest event in effective order, and places in-house repair tasks only; the mirror stops one step earlier on each
+    cracker = {"lu": lu_oct(account_meters()), "occ": occupied("effective", "latest", "property"), "rep": repairs("task")}
+    mirror = {"lu": lu_oct(account_meters(), local_month=True), "occ": occupied("posted", "latest", "property"), "rep": repairs("closed")}
+    # the full includer on each ask: supply-point areas, per-account state, contractor jobs through the job they took over
+    full = {"lu": lu_oct(G.revenue_meters(T)), "occ": occupied("effective", "latest", "account"), "rep": res["repairs"]}
     hc, tot = score(cracker, gold)
     hm, _ = score(mirror, gold)
     Lc, Lm = hc / tot, hm / tot
@@ -104,7 +110,8 @@ def main():
     pair = (C + S) / 2
     per_ask = {k: (score({k: cracker[k]}, {k: gold[k]}), score({k: mirror[k]}, {k: gold[k]})) for k in gold}
     digest = hashlib.md5(open(os.path.join(os.path.dirname(HERE), "target", G.F["flows"]), "rb").read()).hexdigest()[:12]
-    out = dict(cracker_keep=round(100 * Lc, 1), mirror_keep=round(100 * Lm, 1), cracker_score=round(C, 1),
+    full_hits = {k: score({k: full[k]}, {k: gold[k]}) for k in gold}
+    out = dict(full_includer_per_ask=full_hits, cracker_keep=round(100 * Lc, 1), mirror_keep=round(100 * Lm, 1), cracker_score=round(C, 1),
                mirror_score=round(S, 1), pair=round(pair, 1), per_ask=per_ask, pack=digest)
     print(json.dumps(out, indent=1))
     return out

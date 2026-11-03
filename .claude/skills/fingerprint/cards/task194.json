@@ -38,14 +38,15 @@
  "layer2_pattern": "own:night-flow-change-netted-across-areas-sharing-an-open-boundary-valve",
  "layer1": [
   "inlet flow loggers in litres per second at some areas and cubic metres per hour at others",
-  "logger timestamps in UTC across the October clock change against local-time work orders",
+  "historian timestamps in UTC across the October clock change against local-time work orders, with UNCERTAIN and BAD quality codes",
   "gaps and a stuck-at-last-value logger stretch",
-  "pressure loggers at the critical point for some areas and the average zone night point for others",
-  "property counts from billing with closed and vacant accounts",
-  "large-user logger readings as cumulative register values",
-  "work orders with free-text locations and asset IDs in two formats",
+  "AZNP pressure loggers in bar at some areas and metres head at others",
+  "billing account events with effective and posted dates, final bills posted by an overnight run, landlord and tenant accounts on one property",
+  "large-user AMR reads as cumulative register values with five-digit rollovers and a meter exchange",
+  "large-user accounts carrying the area they were opened in, and tenants check meters behind a revenue meter on a bulk supply point",
+  "work orders as parent jobs with child tasks and asset IDs in two formats",
   "the valve register carrying the GIS status, not the field status",
-  "one area renamed after a boundary change in 2025"
+  "one area renumbered at the 2025 boundary change"
  ],
  "stakeholder_role": "the water department's leakage analyst",
  "role_family": "other",

@@ -52,6 +52,8 @@ def fixed_zip(path):
         for name, data in items:
             if name == "docProps/app.xml":
                 data = APP_XML
+            if name == "xl/workbook.xml":
+                data = data.replace(b"<workbookProtection/>", b"")
             if name == "docProps/core.xml" and LAST_MOD[0]:
                 data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
                               rb"\g<1>" + LAST_MOD[0].strftime("%Y-%m-%dT%H:%M:%SZ").encode() + rb"\g<2>", data)
@@ -81,6 +83,13 @@ def iso(t):
 def write_flows(target, S, rng):
     rows = []
     ts = S["ts"]
+    qrng = np.random.default_rng(W.SEED + 22)   # the historian's quality codes, own stream
+    nights = lambda d: W.BASE_NIGHTS[0] <= d <= W.BASE_NIGHTS[1] or W.COMP_NIGHTS[0] <= d <= W.COMP_NIGHTS[1]
+    outside = [not nights(sim.local(t).date()) for t in ts]
+
+    def gap_end(tag, prev, t):
+        return (tag in ("NR01_FT", "CRK_FM1") and prev == dt.datetime(2026, 8, 13, 8, 45)) or \
+               (tag == "HEN_FM2" and prev == dt.datetime(2026, 8, 27, 21, 45))
     for a in W.AREAS:
         code, name, tags = a[0], a[1], a[2]
         q = S["flows"][code]
@@ -99,7 +108,11 @@ def write_flows(target, S, rng):
             if tag == "OAK_FM1":
                 stuck_from = (dt.datetime(2026, 8, 22, 2, 15), dt.datetime(2026, 8, 22, 11, 30))
             last = None
+            u = qrng.random(len(ts))
+            qual = np.where(u < 0.0004, "BAD", np.where(u < 0.0019, "UNCERTAIN", "GOOD"))
             for i, t in enumerate(ts):
+                if i and outside[i] and gap_end(tag, ts[i - 1], t):
+                    qual[i] = "UNCERTAIN"   # first stored reading after a telemetry outage
                 if tag in ("NR01_FT", "CRK_FM1") and dt.datetime(2026, 8, 13, 9) <= t < dt.datetime(2026, 8, 13, 16, 30):
                     continue   # telemetry outage, nothing stored
                 if tag == "HEN_FM2" and dt.datetime(2026, 8, 27, 22) <= t < dt.datetime(2026, 8, 28, 1, 45):
@@ -108,7 +121,7 @@ def write_flows(target, S, rng):
                 if stuck_from and stuck_from[0] <= t < stuck_from[1]:
                     x = last
                 last = x
-                rows.append((tag, iso(t), ("%." + str(dec) + "f") % x, "GOOD"))
+                rows.append((tag, iso(t), ("%." + str(dec) + "f") % x, qual[i] if outside[i] else "GOOD"))
     with open(os.path.join(target, FILES["flows"]), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["TagName", "TimestampUTC", "Value", "Quality"])
@@ -179,11 +192,12 @@ def write_amr(target, S, rng):
     ts = S["ts"]
     hours = list(range(0, len(ts), 4))
     exchange = None
+    install = []
     for k, u in enumerate(S["users"]):
         for j, m in enumerate(u["meters"]):
             q = m["q"]
             hourly = np.array([q[i:i + 4].mean() for i in hours])     # m3 in each hour
-            reg = float(rng.uniform(1200, 88000))
+            reg = float(rng.uniform(1200, 88000)) + W.REG_TRIM.get(u["name"], 0.0)
             five = m["serial"].startswith("1") and len(rows) % 3 == 0
             if u["name"].startswith("Stanecroft") or u["name"].startswith("Tollbar"):
                 reg, five = 99170.0 + rng.uniform(0, 400), True
@@ -201,11 +215,15 @@ def write_amr(target, S, rng):
                     exchange = (serial, "15A%06d" % int(rng.integers(100000, 999999)))
                     rows.append((serial, iso(t), "%.1f" % reg))
                     serial, reg = exchange[1], 31442.6
+                    # the fitter's install read on the reconditioned meter, taken as the supply is turned back on
+                    install.append((len(rows), (serial, iso(t), "%.1f" % (reg + float(hourly[n + 1])))))
                     continue
                 reg += float(hourly[n])
                 shown = reg % 100000.0 if five else reg
                 rows.append((serial, iso(t), "%.1f" % shown))
             m["final_serial"] = serial
+    for pos, row in reversed(install):
+        rows.insert(pos, row)
     with open(os.path.join(target, FILES["amr"]), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["meter_serial", "read_time_utc", "register_m3"])
@@ -217,17 +235,20 @@ def write_accounts(target, S, exchange):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Large users"
-    ws.append(["Account", "Customer", "Area (account)", "Meter serial", "Supply point", "Logged since"])
+    ws.append(["Account", "Customer", "Area (account)", "Meter serial", "Meter role", "Supply point", "Logged since"])
     for u in S["users"]:
         acc_area = W.OLD_CODE.get(u["area"], u["area"]) if u["name"] in ("Gorsey Bank Hotel",) else u["area"]
         if u["name"].startswith("R. Pennock"):
             acc_area = W.OLD_CODE["D3341"]
+        # accounts opened before the April 2025 boundary change keep the area they were opened in
+        acc_area = W.ACCOUNT_AREA_2019.get(u["name"], acc_area)
         for m in u["meters"]:
             serial = m["serial"]
             since = "2019-03" if u["start"] is None else u["start"].strftime("%Y-%m")
-            ws.append([u["uid"], u["name"], acc_area, serial, m["sp"], since])
+            role = "Check" if m.get("sub") else "Revenue"
+            ws.append([u["uid"], u["name"], acc_area, serial, role, m["sp"], since])
             if exchange and serial == exchange[0]:
-                ws.append([u["uid"], u["name"], acc_area, exchange[1], m["sp"], "2026-10"])
+                ws.append([u["uid"], u["name"], acc_area, exchange[1], "Revenue", m["sp"], "2026-10"])
     xlsx_props(wb, "Billing Operations", "Kirsty Lloyd", dt.datetime(2023, 6, 1, 14, 20), dt.datetime(2026, 10, 30, 16, 5))
     p = os.path.join(target, FILES["accounts"])
     wb.save(p)
@@ -240,6 +261,7 @@ def billing(rng):
     ev = []
     truth = {}
     pref_no = 410000
+    side = np.random.default_rng(W.SEED + 20)   # same-day changes of occupier and earlier occupiers' accounts
     for a in W.AREAS:
         code, hh, nhh = a[0], a[3], a[4]
         nprop = int(hh * rng.uniform(0.985, 1.01)) + nhh
@@ -251,7 +273,8 @@ def billing(rng):
             occ_from = dt.date(int(rng.integers(2008, 2026)), int(rng.integers(1, 13)), int(rng.integers(1, 28)))
             posted = dt.datetime.combine(occ_from, dt.time(9)) + dt.timedelta(days=int(rng.integers(0, 20)), hours=int(rng.integers(0, 8)))
             area_at = W.OLD_CODE.get(code, code) if posted < dt.datetime(2025, 4, 1) else code
-            ev.append([pref, acc, "OCC", occ_from, posted, area_at, typ])
+            occ_row = [pref, acc, "OCC", occ_from, posted, area_at, typ]
+            ev.append(occ_row)
             state, cur_type = True, typ
             r = rng.random()
             if r < 0.06:      # vacated, sometimes re-let
@@ -259,11 +282,21 @@ def billing(rng):
                 if vdate <= dt.date(2026, 11, 1):
                     vpost = dt.datetime.combine(vdate, dt.time(10)) + dt.timedelta(days=int(rng.integers(0, 45)))
                     if vpost <= dt.datetime(2026, 11, 2, 18):
-                        ev.append([pref, acc, "VAC", vdate, vpost, W.OLD_CODE.get(code, code) if vpost < dt.datetime(2025, 4, 1) else code, cur_type])
+                        vac_row = [pref, acc, "VAC", vdate, vpost, W.OLD_CODE.get(code, code) if vpost < dt.datetime(2025, 4, 1) else code, cur_type]
+                        ev.append(vac_row)
                         state = vdate > dt.date(2026, 10, 31)
                         if rng.random() < 0.55:
                             ndate = vdate + dt.timedelta(days=int(rng.integers(5, 300)))
-                            npost = dt.datetime.combine(ndate, dt.time(11)) + dt.timedelta(days=int(rng.integers(0, 12)))
+                            noff = int(rng.integers(0, 12))
+                            npost = dt.datetime.combine(ndate, dt.time(11)) + dt.timedelta(days=noff)
+                            if vdate <= dt.date(2026, 10, 24) and side.random() < 0.45:
+                                # the incoming occupier's account opens on the day the outgoing one closes; the move-in
+                                # is keyed at once and the outgoing final bill posts when its closing read is in
+                                ndate = vdate
+                                npost = dt.datetime.combine(ndate, dt.time(11)) + dt.timedelta(days=noff % 3, minutes=int(side.integers(0, 300)))
+                                if vac_row[4] <= npost:
+                                    vac_row[4] = npost + dt.timedelta(days=int(side.integers(1, 6)), hours=int(side.integers(1, 7)))
+                                    vac_row[5] = W.OLD_CODE.get(code, code) if vac_row[4] < dt.datetime(2025, 4, 1) else code
                             if npost <= dt.datetime(2026, 11, 2, 18):
                                 acc2 = "%08d" % int(rng.integers(10000000, 99999999))
                                 ev.append([pref, acc2, "OCC", ndate, npost, code if npost >= dt.datetime(2025, 4, 1) else W.OLD_CODE.get(code, code), cur_type])
@@ -278,7 +311,13 @@ def billing(rng):
                 cdate = dt.date(int(rng.integers(2016, 2027)), int(rng.integers(1, 11)), int(rng.integers(1, 28)))
                 if cdate <= dt.date(2026, 10, 31):
                     cpost = dt.datetime.combine(cdate, dt.time(12)) + dt.timedelta(days=int(rng.integers(0, 30)))
-                    ev.append([pref, acc, "CONV", cdate, cpost, code if cpost >= dt.datetime(2025, 4, 1) else W.OLD_CODE.get(code, code), "NHH"])
+                    conv_acc = acc
+                    if (cdate, cpost) < (occ_from, posted):
+                        # converted under an earlier occupier: the class change sits on that occupier's account and the
+                        # present account was opened on the converted class
+                        conv_acc = "%08d" % int(side.integers(10000000, 99999999))
+                        occ_row[6] = "NHH"
+                    ev.append([pref, conv_acc, "CONV", cdate, cpost, code if cpost >= dt.datetime(2025, 4, 1) else W.OLD_CODE.get(code, code), "NHH"])
                     cur_type = "NHH"
             truth[pref] = (code, state, cur_type)
     order = rng.permutation(len(ev))
@@ -287,7 +326,36 @@ def billing(rng):
     return ev, truth
 
 
+def spread_posted(ev):
+    """Posting times as the billing system writes them: move-ins and conversions keyed by hand through the day, most
+    final bills posted by the overnight billing run, the rest keyed by hand. A property whose events would change
+    order within an effective date keeps its keyed times."""
+    rng = np.random.default_rng(W.SEED + 21)
+    cut = dt.datetime(2026, 11, 2, 18)
+    out = []
+    for e in ev:
+        p = e[4]
+        if e[2] == "VAC" and rng.random() < 0.62:
+            q = dt.datetime.combine(p.date() + dt.timedelta(days=1), dt.time(1, 20)) + dt.timedelta(minutes=int(rng.integers(0, 75)))
+            p = q if q <= cut else p + dt.timedelta(minutes=int(rng.integers(0, 60)))
+        else:
+            p = p + dt.timedelta(minutes=int(rng.integers(0, 60)))
+            if p > cut:
+                p = e[4]
+        out.append(e[:4] + [p] + e[5:])
+    def order(rows):
+        by = {}
+        for i, r in enumerate(rows):
+            by.setdefault(r[0], []).append((r[3], r[4].strftime("%Y-%m-%d %H:%M"), i))
+        return {k: [x[2] for x in sorted(v)] for k, v in by.items()}
+    o0, o1 = order(ev), order(out)
+    keep = {k for k in o0 if o0[k] != o1[k]}
+    return [ev[i] if ev[i][0] in keep else out[i] for i in range(len(ev))]
+
+
 def write_billing(target, ev):
+    ev = spread_posted(ev)
+    ev = sorted(ev, key=lambda e: e[4])
     with open(os.path.join(target, FILES["billing"]), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["property_ref", "account_no", "event", "effective_date", "posted", "area_code", "property_class"])
@@ -352,6 +420,12 @@ def works(rng, assets_):
                                  tclose if tclose is not None and tclose >= done else None])
                     continue
                 jobs.append([job, "/%02d" % (k + 1), tt, fmt, raised, done, closed if closed <= dt.datetime(2026, 11, 2, 17) else None])
+    # the Calvert Rise PRV job raised from the Calvert Top pressure complaints
+    pjob = "W26-0082471"
+    passet = by_area["D4149"][5]
+    jobs.append([pjob, "/01", "PRESSURE INVESTIGATE", passet, dt.datetime(2026, 9, 18, 9, 41), dt.datetime(2026, 9, 22, 14, 10), dt.datetime(2026, 10, 2, 8, 55)])
+    jobs.append([pjob, "/02", "PRV ADJUST", passet, dt.datetime(2026, 9, 18, 9, 41), dt.datetime(2026, 9, 29, 13, 0),
+                 dt.datetime(2026, 10, 2, 8, 55)])
     # the Moorend Low valve job
     vjob = "W26-%07d" % (jn + 17)
     t0 = dt.datetime(2026, 10, 6, 10, 15)
@@ -404,9 +478,13 @@ def write_valves(target, rng):
 
 
 def write_prv(target):
-    rows = [("D4136", "PRV-H2", "2026-03-17 10:20", "41.0", "41.0", "annual check, no change"),
+    rows = [("D4180", "PRV-S1", "2026-01-21 11:35", "43.5", "43.5", "annual check, no change"),
+            ("D4149", "PRV-C1", "2026-02-10 10:05", "38.0", "38.0", "annual check, strainer cleaned"),
+            ("D4136", "PRV-H2", "2026-03-17 10:20", "41.0", "41.0", "annual check, no change"),
+            ("D4149", "PRV-C1", "2026-04-28 13:50", "38.0", "38.0", "pilot diaphragm replaced, set point unchanged"),
             ("D4180", "PRV-S1", "2026-06-02 14:05", "43.5", "42.5", "fixed outlet lowered after pressure complaints review"),
-            ("D4149", "PRV-C1", "2026-09-29 14:00", "38.0", "47.0", "raised for low pressure complaints, Calvert Top"),
+            ("D4136", "PRV-H2", "2026-07-08 09:15", "41.0", "41.0", "outlet logger swapped, set point unchanged"),
+            ("D4149", "PRV-C1", "2026-09-29 14:00", "38.0", "47.0", "raised for low pressure complaints, Calvert Top (W26-0082471)"),
             ("D4136", "PRV-H2", "2026-10-20 09:40", "41.0", "41.0", "pilot serviced, set point unchanged")]
     with open(os.path.join(target, FILES["prv"]), "w", newline="") as f:
         w = csv.writer(f)
@@ -428,8 +506,14 @@ def write_distractors(target, rng):
         w = csv.writer(f)
         w.writerow(["contact_ref", "received", "dma", "category", "status"])
         n = 2200400
+        calvert_top = {35: ["Low pressure"], 38: ["Low pressure", "Low pressure"], 41: ["Low pressure"], 44: ["Low pressure", "No water"],
+                       47: ["Low pressure"], 52: ["Low pressure"], 57: ["Leak on property"], 61: ["Noisy pipes"]}
         for d in range(93):
             day = dt.datetime(2026, 8, 1) + dt.timedelta(days=d)
+            for j, cat in enumerate(calvert_top.get(d, [])):
+                n += 3 + 5 * j + d % 7
+                w.writerow(["C%08d" % n, (day + dt.timedelta(minutes=500 + 97 * j + 13 * (d % 5))).strftime("%d/%m/%Y %H:%M"),
+                            "D4149", cat, "Closed"])
             for _ in range(int(rng.poisson(5.5))):
                 n += int(rng.integers(1, 30))
                 code = W.AREAS[int(rng.integers(0, len(W.AREAS)))][0]
