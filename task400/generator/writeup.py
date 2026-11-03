@@ -75,8 +75,8 @@ def submission(F):
     L.append("1. Call: fund programme C, the collision avoidance alerting review on the haul truck units, for 2027")
     L.append("2. Vehicle interaction incidents: %d in July to October 2026, %d in July to October 2025"
              % (F["vi_jul_oct_2026"], F["vi_jul_oct_2025"]))
-    L.append("3. Bar chart of vehicle interaction incidents by month from January 2025 to October 2026, each bar labelled "
-             "with its count\n")
+    L.append("3. Chart of the monthly count of vehicle interaction incidents from January 2025 to October 2026, each "
+             "month's count readable\n")
     L.append("### vi_workings_2026.xlsx\n")
     L.append("1. Light-vehicle trips into the pits, and trips by vehicles whose collision avoidance tag the gate did not "
              "detect:")

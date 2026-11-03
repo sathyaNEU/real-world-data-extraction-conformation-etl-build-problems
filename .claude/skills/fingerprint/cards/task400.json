@@ -11,8 +11,8 @@
   "shape": "18",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "C, the collision avoidance alerting review on the haul truck units",
+  "answer_source": "submission.md block 1; generator/figures.json call",
   "gap": [
     "objective",
     "time"
@@ -92,6 +92,6 @@
     "task191": "v3 (never shipped) read each depot's failure-to-act rate on genuine warnings once planted fixed structures inflating the raw counts were caught; here nothing inflates a count to be caught and no count moves: the warnings and acknowledgements stay steady, and the step is the braking that followed them, compared across the firmware rollout."
   },
   "lineage": [],
-  "notes": "org_family other: a mining company (no mining key in the vocabulary). Mechanism redesigned at stage 2 before data was cut (the first design's widened zones, alarm flood and contractor newcomers dropped at the coordinator's review: a flood is a cheap route to C and a newcomer with a same-spring process change is task399 v4's narrative); figures are the cut pack's. Gate G decomposition_attribution: the rise is assigned to the right driver and the data give no other honest Gate G. Stage 4 round 1 (judge FIX_NOW, reader clean): the two ask units filed in the prompt as WHAT; ask B's device re-sited to runs that dip under the limit and run away again, told from continuations only by the shared sample; the incident draw re-drawn to a representative one (R3d) and the attribution cut to what the records show.",
+  "notes": "org_family other: a mining company (no mining key in the vocabulary). Mechanism redesigned at stage 2 before data was cut (the first design's widened zones, alarm flood and contractor newcomers dropped at the coordinator's review: a flood is a cheap route to C and a newcomer with a same-spring process change is task399 v4's narrative); figures are the cut pack's. Gate G decomposition_attribution: the rise is assigned to the right driver and the data give no other honest Gate G. Stage 4 round 1 (judge FIX_NOW, reader clean): the two ask units filed in the prompt as WHAT; ask B's device re-sited to runs that dip under the limit and run away again, told from continuations only by the shared sample; the incident draw re-drawn to a representative one (R3d) and the attribution cut to what the records show. Round 2 (judge DETERMINISTIC, FIX_NOW on the chart line only; reader clean): the chart line graded as the prompt asks; same-vehicle gate entries spaced 20 minutes and no ramp run on a limit-change day, no figure moved. Shipped 2026-11-03.",
   "registered": "2026-11-03T10:09:48Z"
 }

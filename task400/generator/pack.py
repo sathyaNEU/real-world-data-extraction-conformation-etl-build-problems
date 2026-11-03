@@ -24,6 +24,11 @@ LIMITS = [("NRP", 40, dt.date(2024, 7, 1)), ("NRP", 32, dt.date(2026, 6, 9)), ("
           ("CRU", 20, dt.date(2024, 7, 1)), ("NWD", 25, dt.date(2024, 7, 1)), ("SWD", 25, dt.date(2024, 7, 1))]
 GATE_FROM = dt.date(2026, 7, 1)
 NG2_FROM = dt.datetime(2026, 7, 14, 10, 40)
+MIN_TRIP = dt.timedelta(minutes=20)
+CHANGE_DAYS = {}
+for _seg in {x[0] for x in LIMITS}:
+    _effs = sorted(e for s_, l_, e in LIMITS if s_ == _seg)
+    CHANGE_DAYS[_seg] = set(_effs[1:])
 FMS72 = dt.datetime(2026, 8, 1, 9, 0)
 STAMP = dt.datetime(2026, 11, 2, 7, 15)
 
@@ -210,6 +215,8 @@ def fms_windows(S, crit):
                 excess = excess_draw()
                 peak = lim + excess
                 when = (s["start"] + dt.timedelta(seconds=float(r2.uniform(600, s["op_hours"] * 3600)))).replace(microsecond=0)
+                if when.date() in CHANGE_DAYS.get(seg, ()):
+                    when += dt.timedelta(days=1)       # the record holds no run on the day a ramp's limit changed
                 long_run = r2.random() < 0.34
                 ipk = int(r2.integers(2, 5))
                 trace = []
@@ -315,6 +322,43 @@ def gate_reads(lvs, faults):
         last[gate] = t
         spaced.append((t, lv, gate))
     passages = sorted(spaced, key=lambda p: (p[0], p[1]["rego"]))
+    # a vehicle's next entry comes after it has been into the pit and out again: twenty minutes at the least, so a
+    # later entry drawn inside that time is the same vehicle's next trip, a little later in the same month
+    import bisect
+    taken = {g_: sorted(p[0] for p in passages if p[2] == g_) for g_ in ("N", "S")}
+
+    def blank(lv, t):
+        return any(a <= t < b for a, b in faults[lv["rego"]])
+    by_v = {}
+    for i, p in enumerate(passages):
+        by_v.setdefault(p[1]["rego"], []).append(i)
+    def free(gate, cand, lv, t):
+        k = bisect.bisect_left(taken[gate], cand - dt.timedelta(seconds=16))
+        clash = k < len(taken[gate]) and taken[gate][k] <= cand + dt.timedelta(seconds=16)
+        return not clash and blank(lv, cand) == blank(lv, t) and (cand.year, cand.month) == (t.year, t.month)
+
+    for rego in sorted(by_v):
+        kept = []                      # this vehicle's entry times so far, in time order
+        for i in by_v[rego]:
+            t, lv, gate = passages[i]
+            if kept and t - kept[-1] < MIN_TRIP:
+                # later first; at a month's end, earlier, ahead of the entry it crowded
+                cand = kept[-1] + MIN_TRIP + dt.timedelta(seconds=37)
+                while not free(gate, cand, lv, t) and (cand.year, cand.month) == (t.year, t.month):
+                    cand += dt.timedelta(seconds=23)
+                if not free(gate, cand, lv, t) or cand > dt.datetime(2026, 10, 31, 23, 0):
+                    floor = kept[-2] + MIN_TRIP if len(kept) > 1 else None
+                    cand = kept[-1] - MIN_TRIP - dt.timedelta(seconds=37)
+                    while not free(gate, cand, lv, t):
+                        cand -= dt.timedelta(seconds=23)
+                    assert floor is None or cand >= floor
+                assert free(gate, cand, lv, t)
+                taken[gate].remove(t)
+                bisect.insort(taken[gate], cand)
+                passages[i] = (cand, lv, gate)
+                t = cand
+            bisect.insort(kept, t)
+    passages.sort(key=lambda p: (p[0], p[1]["rego"]))
 
     def tag_seen(lv, t):
         for a, b in faults[lv["rego"]]:
