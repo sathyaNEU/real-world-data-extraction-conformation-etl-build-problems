@@ -1,23 +1,51 @@
 {
   "task": "task398",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "quantitative-finance/factor-return-attribution",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-03",
-  "stump": "A competent solver attributes the 2025-26 shortfall by sleeve, overlay and cash, books the April-to-June rebound the defensive allocation missed to the drawdown overlay and files raising the trigger to 12 per cent; the step that lands it there is holding the overlay's recorded exposure fixed in each change's counterfactual, when the rule sets that exposure from the fund's own price and Penrose Bank's collapse in the value sleeve is what carried the March drawdown past 8 per cent.",
+  "stump": "A competent solver attributes the 2025-26 shortfall by sleeve, overlay and cash, books the April-to-June rebound the defensive allocation missed to the drawdown overlay and files raising the trigger to 12 per cent (520 bp against 310 for the value tracker); the step that lands it there is holding the overlay's recorded exposure fixed in each change's counterfactual, when the rule sets that exposure from the fund's own price and Penrose Bank's collapse in the value sleeve is what carried the March drawdown past 8 per cent.",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "seed": "RC04 (commuter rail); re-homed to quantitative finance under the same objective and number because no Root-Cause task type serves transport",
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "guard.py check PASS on the draft card 2026-11-03, nearest driver 0.06"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "call": "run the value sleeve as a tracker of the benchmark: 830 bp of the 970 bp shortfall removed; runner-up the higher trigger (12 per cent), 520 bp; gap 310 bp",
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-03"
+  },
+  "gates": {
+    "target_zip": "4d9a7a57 (md5 4d9a7a579a1109be9ef577bae53d9192)",
+    "checks": "70 assertions, 0 FAIL",
+    "verify": "PASS",
+    "rebuild": "byte-identical, goldens byte-identical",
+    "figures_check": "PASS, 58 figures",
+    "precut": "0 FAIL",
+    "voice_check": "PASS",
+    "ceiling": "pair 56.8, mirror leakage 41.7",
+    "edges": "every graded figure at least 0.07 of a bin from its edge, tightest the AIM share at 2025-12-31 at 0.081",
+    "office_properties": "every Office file's properties match its content and claimed application (asserted)"
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (2026-11-03, target.zip 4d9a7a57)",
+    "reader": "pass 1 on 896bc527 clean; pass 2 on 6749a0ae clean but for the review terms' library properties, scrubbed (word/document.xml byte-identical, no third pass owed)"
+  },
+  "duplicate_check": {
+    "heart": "PASS (after merging claude/jolly-hypatia-06c61h at fe35f42)",
+    "surface": "0 promoted, nearest 0.100",
+    "nearest": "guard.py check PASS, nearest driver 0.06"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task398/determinism_check_report.md",
+    "fixes": "SF31 filed in the review terms (the equitised change's quarter-end sizing); two ask figures moved off rounding edges"
+  },
   "returned": [],
-  "resume": "stage 2: ladder, fork table, closure, asks, prompt.txt, precut.py",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-03",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

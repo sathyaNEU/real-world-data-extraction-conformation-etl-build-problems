@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "run the value sleeve as a tracker of the benchmark: 830 bp of the 970 bp shortfall removed; runner-up the higher trigger (12 per cent), 520 bp; gap 310 bp",
+  "answer_source": "generator/figures.json (bp_A, bp_C, gap_bp, short_bp), recomputed from target/ by generator/verify.py; shipped target.zip 4d9a7a57",
   "gap": [
     "objective",
     "time"
@@ -32,24 +32,25 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every holdings, price and overlay file and reads the prospectus correctly attributes the year's shortfall by sleeve, overlay and cash, books the April-to-June rebound the defensive allocation missed to the drawdown overlay, prices each change on those effects (or replays each change holding the recorded exposure path), and files removing the overlay, when the replay with the overlay rule run on each changed fund's own price shows that indexing the value sleeve removes more.",
+  "analyst_test": "A strong analyst who conforms every holdings, price and overlay file and reads the prospectus correctly attributes the year's shortfall by sleeve, overlay and cash, books the April-to-June rebound the defensive allocation missed to the drawdown overlay, prices each change on those effects (or replays each change holding the recorded futures), and files raising the trigger to 12 per cent (547 linked, 519 held, against 306 and 313 for the value tracker), when the replay with the overlay rule run on each changed fund's own price shows that running the value sleeve as a tracker removes 830 bp against 520.",
   "domain_test": "The deciding quantity is the shortfall against the benchmark each change would have removed, which performance analysis prices by return attribution and, for a fund whose exposure a filed rule sets from the fund's own price path, by replaying the year with that rule run on the changed fund; with hospital or utility nouns the sentence loses its object, because only a portfolio carries an exposure that its own price sets and a benchmark it is measured against.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:endogenous-exposure-counterfactual",
   "layer1": [
     "a depositary and custody change on 1 April 2026: the old custodian's holdings keyed by SEDOL with prices in pence, the new one's keyed by ISIN with prices in pounds",
-    "accumulation and income share classes, the income class's price dropping at each ex-dividend date",
-    "the overlay manager's futures blotter with contract codes and quarterly rolls, timestamps in UTC across the March clock change",
-    "the fund's noon valuation point against the index's close",
-    "the bank's suspension and resolution: no price after suspension, a zero value at resolution",
-    "sub-adviser reports as a workbook with a header block and as a PDF table"
+    "both custodians report settled holdings and settlement-dated statements; trades in flight at the change settled late after Easter",
+    "accumulation and income share classes, the income class's price dropping at each ex-distribution date",
+    "the overlay manager's futures blotter stamped in UTC across the March clock change",
+    "the fund's noon valuation point against the index's close, a price index beside the total return",
+    "the bank's suspension and resolution: no price after suspension, a nil value at once, the custodian's last price until cancellation",
+    "sub-adviser reports as a workbook with a header block and as a PDF table, close to close against their style indices"
   ],
   "stakeholder_role": "the authorised fund manager's investment oversight analyst preparing the board's annual review",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "custody holdings, two custodians (security x dealing day)",
-    "rows": 29000,
+    "file": "custody holdings, two custodians (holloway_safekeeping_positions_2025-26.csv 25,766 rows and northcote_positions_daily_2026.csv 16,560 rows, security x sleeve x dealing day)",
+    "rows": 42326,
     "entity": "one security held in one sleeve on one dealing day",
     "grain": "security x sleeve x dealing day",
     "source": "synthetic"
@@ -62,14 +63,16 @@
     "currency": "GBP",
     "org_type": "an authorised fund manager running a UK open-ended fund with two external sub-advisers and a futures overlay manager",
     "invented_names": [
-      "Thornbury Fund Managers",
       "Ashcombe Investment Partners",
       "Fennick Capital",
-      "Merrow Overlay Services",
-      "Penrose Bank",
-      "Larkspur Indices",
       "Holloway Trustee",
-      "Northcote Depositary"
+      "Kestle Futures",
+      "Larkspur Indices",
+      "Merrow Overlay Services",
+      "Northcote Depositary",
+      "Penrose Bank",
+      "Thornbury Fund Managers",
+      "Thornbury Sterling Liquidity Fund"
     ],
     "people": [
       "Carol Rowe",
@@ -85,10 +88,11 @@
   "question_form": "which",
   "driver": "The decisive quantity is what removing one component's loss does to a whole whose exposure a filed rule sets from the whole's own path: the loss carried the path across the rule's line, so the rule's cut and the recovery it missed belong to that component's counterfactual, while an attribution that holds the recorded exposure books them to the rule.",
   "driver_concrete": "Indexing the value sleeve removes not only Penrose Bank's collapse but the move to the 40 per cent defensive allocation that the collapse made the drawdown rule order on 20 March, because without the Penrose position the fund's drawdown stays inside the 8 per cent line, so the year replayed with the rule run on the changed fund's own price credits the value sleeve with the rebound the defensive allocation missed.",
-  "stump": "A competent solver attributes the 2025-26 shortfall by sleeve, overlay and cash, books the April-to-June rebound the defensive allocation missed to the drawdown overlay, and files removing the overlay; the step that lands it there is holding the recorded exposure fixed in each change's counterfactual, when the overlay sets the exposure from the fund's own price and Penrose Bank's collapse is what carried the drawdown past 8 per cent.",
+  "stump": "A competent solver attributes the 2025-26 shortfall by sleeve, overlay and cash, books the April-to-June rebound the defensive allocation missed to the drawdown overlay, and files raising the trigger to 12 per cent (520 bp against 310 for the value tracker); the step that lands it there is holding the recorded exposure fixed in each change's counterfactual, when the overlay sets the exposure from the fund's own price and Penrose Bank's collapse is what carried the drawdown past 8 per cent.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [],
-  "notes": "Spent screens for this number's draw are in the design note's Tried and rejected.",
-  "registered": "2026-11-03T06:40:40Z"
+  "notes": "Spent screens for this number's draw are in the design note's Tried and rejected. Asks: dividend income by sleeve and quarter (elective events absent from the old custodian's report; a due dividend never paid), dealing costs by quarter of trade (settlement-dated statements across the New Year holiday), AIM holdings at quarter-ends (listing transfers to the Main Market).",
+  "registered": "2026-11-03T06:40:40Z",
+  "shipped": "2026-11-03"
 }
