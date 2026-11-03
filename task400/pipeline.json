@@ -1,26 +1,27 @@
 {
   "task": "task400",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "human-factors-ergonomics/safety-incident-error-analysis",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-03",
   "seed": "RC06 (an area control centre's summer of tripled en-route delay); the seed's world could not carry an honest unbanned draw (its queue replay is task398's re-run counterfactual and task399's stock in other nouns; decomposition_attribution and a statutory filing are held by task398 in the window), so the build moved to a Pilbara iron ore mine's collision avoidance warnings under the same objective and number",
-  "stump": "A competent solver rates vehicle interaction incidents per million hours by employer, finds Westray's operators (on site from April 2026) at about two and a half times the mine's, sees the incidents gather at the North ramp junction and the system's interactions up more than four times as production rose, and funds A, Westray operator retraining; the step that lands it there is reading the alarms as hazards detected and the acknowledgements as responses, when each truck's speed after each alarm shows that operators of both employers stopped slowing for alarms once the warning zone was widened in March, so the rise belongs to the zone setting and the programme is C.",
+  "stump": "A competent solver counts the register's vehicle interaction incidents (22 to 86), finds them gathered at the North ramp junction, where the notice's 28 July collision happened and where stage 3 put more trucks from June, reads the vendor's steady alert and acknowledgement rates as a working system, and funds B; the step that lands it there is never reading each critical alert against the truck's speed by the unit's firmware, which shows that in the weeks 5.0.2 went on (2 to 23 June 2026) the same crews slowed for about 85 per cent of critical alerts on 4.3 units and about 30 per cent on 5.0.2 units, so the programme is C.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-03"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (no LEAK; --asof 2026-11-02), 2026-11-03",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "guard.py check WARN on the registered card 2026-11-03 (repeat.gate_g and repeat.question_form against task398); NOTE test.same_driver_older against task107 v2 and task121 v4, differentiated; nearest driver 0.09 task191 v3 (lineage, never shipped); window read with task399 architecture 4 (batch4-task399, 11e8631) in place"
+    "heart": "WARN (nearest driver 0.11 task191 v3, lineage, never shipped), 2026-11-03",
+    "nearest": "guard.py check WARN on the registered card 2026-11-03 (repeat.gate_g and repeat.question_form against task398); NOTE test.same_driver_older against task107 v2 and task121 v4, differentiated; nearest driver 0.09 task191 v3 (lineage, never shipped); window read with task399 architecture 4 (batch4-task399, 11e8631) in place",
+    "surface": "exit 0; promoted pair task398 vs task400 (two apart: decisive gap objective and decision pick_one_of_n collide, pattern G4 against G3; Part 6's same-puzzle test needs all three) for the author's adjudicated /clone-check"
   },
   "judge": {
     "verdict": "",
@@ -28,11 +29,20 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: write the world model (generator/world.py) and the pricing harness on the clean truth: alarm onsets by zone and level per truck, operator response probability by alarm credibility over time (habituation over weeks after the 9 March 2026 widening), speed traces, incidents generated from unheeded critical alarms, Westray on the denser North waste circuit from April, production up from May; size the ladder (rung 0 Westray per million hours, rung 1 the junction, rung 2 interactions as exposure, rung 3 the response collapse), then the readability screen, fork table, closure table, asks and ceiling.py, prompt.txt; precut.py exit 0",
+  "resume": "stage 4: spawn together, in the background, the leak reader from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t400/leak_brief.md (isolated copy /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t400/leak-task400) and the determinism judge thread from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t400/judge_brief.md (isolated copy /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t400/judge-task400), both general-purpose, sonnet, medium, both copies cut from target.zip md5 36837e7e; if the scratch copies are gone, rebuild with python3 task400/generator/build.py and re-run the scratch scripts make_copies.py and make_briefs.py (or recreate them from the briefs' instructions). Append the reader's answers to task400/leak_check_report.md under ## Solver's-eye read and the judge's verdict to task400/determinism_check_report.md; fix every finding in the generator in one pass, then re-run build.py, checks.py, verify.py, ceiling.py (update the note's stamp), figures_check.py, precut.py, leak.py --asof 2026-11-02, guard.py heart and surface after the sibling-card merge protocol; re-judge once on FIX_NOW. Then ship: ledger row, card current, git add -f task400/target.zip task400/golden/, commit SHIPPED (task400): fund C, the collision avoidance alerting review.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "call": "C, the collision avoidance alerting review on the haul truck units",
+  "gates": {
+    "checks": "64 assertions, 0 FAIL",
+    "verify": "30 figures, 0 mismatch",
+    "byte_identical": true,
+    "target_zip_md5": "36837e7eb138409e347383e28aa70307",
+    "figures_check": "45 figures, 0 absent",
+    "ceiling": "pair 47.0, mirror leakage 20.8 per cent (generator/ceiling.py)"
+  }
 }
