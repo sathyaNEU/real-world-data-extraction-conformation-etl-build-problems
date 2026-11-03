@@ -30,14 +30,14 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 4, resume here. The two briefs are written under the session scratchpad t402/reader and t402/judge (each with its own copy of prompt.txt and target/ verified against target.zip sha256 3d00ce51...). (1) When the reader's and the judge's outputs come back, fix every finding in the generator in one pass (task402/generator/build.py rebuilds everything; checks.py, verify.py, ceiling.py, figures_check, precut, leak.py --asof 2026-05-11, guard.py heart and surface after the sibling-card merge), re-judge once on FIX_NOW with round1_findings.md beside graded_blocks.md, re-read only if a document or the prompt changed. (2) Where the reader and the judge split on Gate H, recompute the easy routes on the clean truth (generator/harness.py at seed 402) before anything ships. (3) Ship: pre-ship check in the design note, every gate re-run on the final cut, ledger row, card answer current, commit SHIPPED (task402): A, the agency cover, about 250 recoveries, with git add -f task402/target.zip task402/golden/.",
+  "resume": "stage 4, resume here. The two briefs are written under the session scratchpad t402/reader and t402/judge (each with its own copy of prompt.txt and target/ verified against target.zip sha256 c9874081...). (1) When the reader's and the judge's outputs come back, fix every finding in the generator in one pass (task402/generator/build.py rebuilds everything; checks.py, verify.py, ceiling.py, figures_check, precut, leak.py --asof 2026-05-11, guard.py heart and surface after the sibling-card merge), re-judge once on FIX_NOW with round1_findings.md beside graded_blocks.md, re-read only if a document or the prompt changed. (2) Where the reader and the judge split on Gate H, recompute the easy routes on the clean truth (generator/harness.py at seed 402) before anything ships. (3) Ship: pre-ship check in the design note, every gate re-run on the final cut, ledger row, card answer current, commit SHIPPED (task402): A, the agency cover, about 250 recoveries, with git add -f task402/target.zip task402/golden/.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "target_zip_sha256": "3d00ce51861b202bcacb6f07cd72e35c47969a7dbb72faf0d8b88210a09183c8",
+  "target_zip_sha256": "c9874081eabec719a0b48873362682e90a151af9ec45c058c74c3df82f5291fb",
   "gates": {
     "checks": "68 of 68",
     "verify": "PASS",
@@ -46,5 +46,10 @@
     "pair_ceiling": 28.5,
     "mirror_leakage": 0.0,
     "full_includer_keep": 0.0
+  },
+  "briefs": {
+    "leak_reader": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/reader/reader_brief.md",
+    "judge": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/judge/judge_brief.md",
+    "judge_graded_blocks": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/judge/graded_blocks.md"
   }
 }

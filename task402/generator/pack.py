@@ -506,6 +506,8 @@ class Pack:
             uid = "%08x-%04x-4%03x-%04x-%012x" % tuple(int(r.integers(0, 16 ** k)) for k in (8, 4, 3, 4, 12))
             users.append(dict(user_id=uid, service_ref=self.rid[t.ref],
                               invited_utc=utc_z(datetime.combine(t.start, time(int(r.integers(9, 17)), 5)))))
+        # the export holds what the platform had recorded when it ran
+        events = [e for e in events if e["at_utc"] <= "2026-05-06T07:14:52Z"]
         events.sort(key=lambda e: (e["at_utc"], e["user_id"], e["event"]))
         users.sort(key=lambda u: u["invited_utc"])
         doc = {"export": {"exported_utc": "2026-05-06T07:14:52Z", "organisation": "Fenwold Talking Therapies",

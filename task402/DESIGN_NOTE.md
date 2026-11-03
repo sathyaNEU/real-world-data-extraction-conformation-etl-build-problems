@@ -114,7 +114,8 @@ so the early endings it causes read as the waiting list's.
   harmless. The plan and the provisional report carry 7 and 6 of the stump paragraph's terms (course, recovery,
   assignment, therapist, clinician, monthly, report), the service's ordinary vocabulary; neither names a handover, a
   lapse or a course's run of therapists: harmless. The vendor export's "generated_utc" key read as a generator's word:
-  renamed "exported_utc".
+  renamed "exported_utc". House fix H16 at the last pass: the vendor export held 133 events after its own run
+  (programmes begun in March running on to June); cut at the export stamp, no graded figure moved.
 
 ## Default path
 
