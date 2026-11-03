@@ -1,6 +1,6 @@
 {
   "task": "task401",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "economics-econometrics/panel-data-estimation",
   "objective": "root-cause",
   "stage": 2,
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: build the generator prototype at pack scale (stations' daily weather with the 10 to 18 July 2026 heat, field register across seasons, seeder pass logs, harvest loads and scale tickets, seed delivery register), measure the ladder (raw, season-long panel, farm-by-year, linear seeding date, the flowering-window exposure and its threshold, window and heat-unit variants, same-day matching) and the bridge pieces by soil zone with their family spread, fix the bar margins and graded precision mid-bin; write the readability screen, fork table, closure table, literal reader, oracles, asks with devices and ceiling.py, prompt.txt; run precut.py",
+  "resume": "stage 2, architecture 2 (canola hybrid against heat in each field's flowering window). Read the note's ## Ladder first (measured routes and the two findings). Next, in order: (1) world.py: set 2026's May to July monthly anomalies to normal apart from the heat wave so the incumbent and hybrid flowering clusters sit about 12 days apart, re-time the wave inside the hybrid's flowering (about 20 to 28 July at normals), rerun ladder.py over several seeds and record every route (linear, week bins, spline, same-day matching, window variants by base 0 or 5 C, heat units, length, threshold 28 to 32 C); (2) decide the graded set: the call with a band on the hybrid's own effect, bridge items only at a precision every defensible window reproduces or model-free figures; (3) write the readability screen table (assume heat blast is known), the SF fork table (the estimand's other conditions held as they were, the 2027 order's standing terms, yields calibrated to scale tickets), the 22-axis closure table, literal reader, oracles; (4) design three to five decoupled asks (seed cost per acre net of the hybrid's premium, seed delivered against sown by yard, production reconciliation to scale tickets, frost or harvest-weather counts on stations and months the call never reads) and write pack.py, docs and ceiling.py; measure the cracker and mirror on the cut pack; (5) prompt.txt through voice-check; precut.py exit 0; message main with the ladder and pair ceiling. Also: invented station names and climate identifiers (Mossbank is a real Saskatchewan town, rename Mossbank Creek), unbranded crop insurer series, check every invented name against real Saskatchewan places and companies, redraw the Caldwell persona (people.last against task189), and bring the card's driver_concrete and stump to the re-timed wave.",
   "approved": null,
   "delivered": null,
   "portal": null,
