@@ -1,226 +1,197 @@
 # task401 design note
 
-Architecture 1, drawn 2026-11-03. The number was handed out against seed RC07 (a supplier's January imbalance bill,
-three times a normal winter month, blamed on low wind by the trading desk and on plant trips by operations, with the
-board filing the trips' cost as the reference figure for an outage-cover decision). The seed's world could not carry an
-honest unbanned draw (`## Tried and rejected`, the first lines), so the build keeps the seed's decision shape (one
-figure filed as the reference for a buy-or-not decision on a protective programme, with rival explanations for a
-move) and moves to another client domain, world and dataset under the same objective and number (`CLAUDE.md`, a stuck
-build is unblocked, never parked; task398 and task400 moved on the same grounds).
+Architecture 2, drawn 2026-11-03. The number was handed out against seed RC07 (a supplier's January imbalance bill
+blamed on low wind by the desk and on plant trips by operations, the trips' cost filed as the reference for an
+outage-cover decision). The seed's world could not carry an honest unbanned draw, and architecture 1 (a frailty virtual
+ward's prevented admissions against care home closures, Epidemiology and Public Health) died at stage 2 when the
+admission rates were set to published levels (`## Tried and rejected`). Architecture 2 keeps the seed's decision shape (a
+loss with rival explanations, one figure filed as the reference for a buy-or-not decision) and re-roots in another
+client domain, world and dataset under the same objective and number (`CLAUDE.md`, a dead design is re-rooted at once).
 
-The world: the Kirkhaven integrated care system (an invented city in the north of England and four neighbouring
-boroughs, about 2.6 million people). Kirkhaven Community Healthcare NHS Trust ran a frailty virtual ward (hospital at
-home for frail older people) for residents aged 80 and over in the system's Core20 neighbourhoods (the small areas in
-the most deprived fifth of England's by the 2019 index) from 1 October 2025. The integrated care board will commission
-the ward across the whole system from April 2027 only if the pilot year prevented at least a filed number of emergency
-admissions among those residents. Between the year before the pilot was commissioned and the pilot year, the Wrenford
-Care Group went into administration and eleven of its Core20 care homes closed; their residents moved to homes outside
-Core20 or outside the system.
+The world: Larkspur Hills Grain Ltd. (invented), a farmland operating company farming about 150,000 acres of owned and
+leased land in west-central Saskatchewan from 31 farm yards in the Dark Brown and Black soil zones, canola on roughly
+two fifths of its acres each year. In 2026 it moved about two fifths of its canola acres from the incumbent hybrid to a
+new hybrid of the same maturity class. Its 2026 canola came in well below the 2020 to 2025 average, and the hybrid's
+fields came in about a tenth below the incumbent's. The summer had a dry June and a heat wave from 10 to 18 July. The
+executive team decides by the seed company's early-order deadline (15 December 2026) whether the hybrid stays on the
+2027 order; the operator's variety policy keeps a hybrid when it gives up no more than five per cent of the incumbent's
+yield on the operator's own fields.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task401.json`, architecture v1, drawn and registered 2026-11-03.
-  `guard.py check` on the draft returned WARN: `overuse.objective` (root cause in 4 of the last 12; the number sits in
-  the root-cause range) and `repeat.gate_g` against task400 (answered below). Two older structural repeats are
-  differentiated on the card (task156 v2, task238, task303). Nearest driver 0.06 (task89 lineage); task156's v1 loop 3
-  lineage (a pool whose leaving rate falls as its fast leavers go first) reads 0.05 and is screened below.
-- **Pairing:** Epidemiology & Public Health (client domain) / `health-equity-disparity-decomposition` / Root-Cause
-  Analysis. The task type serves Root-Cause only, and `epidemiology-public-health x root-cause` has never been built
-  (`guard.py coverage`, 2026-11-03).
-- **Objective and call:** whether the pilot cleared the board's bar, decided by how many emergency admissions of Core20
-  residents aged 80 and over the ward prevented in its pilot year. The move to explain is the fall in Core20's admission
-  rate against the rest of the system; the rivals are the ward, the winter vaccination drive, the season, and a change
-  in who Core20's residents aged 80 and over were. The decision faces forward (the extension runs from April 2027); the
-  pricing is retrospective because the commissioner's bar is set on the pilot year, the only year the ward ran. The tag
-  stays Root-Cause Analysis: the work is naming what moved Core20's rate, rivals ruled out on the record; nothing is
-  forecast.
-- **Shape:** `other`, written out in `## Ladder` at stage 2: the call (bid or not) with the prevented admissions, the
-  move and its pieces, and the asks' repeated units.
-- **Strategy and Gate G:** `composition_mix`, Gate G `decomposition_attribution`. The decisive move is F5's own form: a
-  rate measured on one pool (Core20's residents aged 80 and over in the year before commissioning) applied to a pool
-  whose mix on a property no outcome or population column carries (living in a care home, read from the care homes'
-  own records) has moved. It is not a split of one total between two movers: the graded quantity is one causal
-  quantity, the admissions the ward prevented, and the decisive step is the expected admissions those residents would
-  have had. Gate G names the mechanism carrying the stump, the fall booked to the wrong cause. `repeat.gate_g` against
-  task400 is answered: Gate G is the honest label for what carries this stump, and the decisive families differ
-  (task400's natural comparison inside a staggered rollout against a composition shift here).
-- **Gap, pattern, generators:** gap population (the pool the baseline rate was measured on is not the pool the pilot
-  year evaluates), then time (the closures fall between the two years); pattern none; generators G14 (does the pooled
-  rate apply to this pool), G6 (did the population shift under it).
-- **Furniture:** forum `executive_team` (the trust's executive decides whether to bid for the extension), forcing event
-  `purchase_order_or_contract` (the board's commissioning round for April 2027 closes on a filed date), organisation
-  `hospital_or_health_provider` (a community health NHS trust), role `programme_officer` (the trust's head of business
-  intelligence, who owns the pilot's evaluation), context artifact `capacity_report` (the care capacity tracker the
-  discharge teams read every week), calibration none. None is held by the last three live cards (task398, task399,
-  task400).
-- **People** (`guard.py names --geo "United Kingdom" --seed 401`): Aimee Williams (head of business intelligence, owner
-  of the evaluation framework), Gerard Norris (director of community services, the ward's sponsor), Sylvia Phillips (the
-  board's commissioning manager for older people's services). None appears in the prompt.
-- **Data-native sentence:** a care home resident aged 80 and over goes into hospital as an emergency about five times as
-  often as a neighbour of the same age living at home, care home places sit unevenly across neighbourhoods and move with
-  the care market rather than with anything the NHS records, and the admission and registration extracts carry each
-  person's neighbourhood but not whether they live in a care home, so a care group's failure between two years moves
-  Core20's admission rate with no change in anyone's risk.
-- **The abstraction sentence** (what a reviewer holding this build beside its nearest approved build would call the
-  same): "a group's rate is read before and after an intervention against the other groups, but between the periods
-  the group lost a block of members whose rate is several times the rest's, to an event no outcome or population record
-  names; the earlier rate does not fit the later pool, and standardising on that property, read from a capacity record,
-  leaves the intervention its own share." Written against every driver `guard.py mechanisms --objective root-cause`
-  prints and the near composition drivers on file; it cannot be written against any of them (the screen below).
-- **Same-puzzle and same-driver tests:** gap population, decisive G14, decision go-or-hold repeats no card in the last
-  twelve; the older repeats are differentiated on the card.
-- **Library test:** the golden is not a named correction applied as a card states it. The field's method for the
-  deciding quantity, age-standardised rates compared across the deprivation fifths in a difference in differences, sits
-  at rung 1; the decisive step is recognising that this dataset violates that method's precondition (a stable pool on
-  the property that drives the rate), which the data shows only through the care homes' own records.
-
-**The semantic screen, one line per nearest build** (`guard.py mechanisms --objective root-cause`, plus the near
-composition drivers the guard printed):
-
-- task13 spends re-attribution by physical evidence against a filed reason label in an exceptions-only log: nothing here
-  is relabelled.
-- task11 spends a threshold rebate's value on a ledger rebuilt from omitted channels: no threshold or ledger.
-- task36 spends a filed eligibility exclusion and a counterfactual conditioned on a property that cancels it: no filed
-  exclusion; the counterfactual here is a pool's mix.
-- task50 spends exposure inside a funded window projected by a filed issue order: no window or order.
-- task72 spends the owner at the time under a filed clause across a hand-over: no ownership.
-- task84 spends identical copies that compete and raise each other's price: no competition.
-- task111 spends which measured cause still operates in the forward window: the window here is closed and the cause is
-  a composition change.
-- task500 spends a matched-reference method, a spillover through another entity's register and a hold line crossed by
-  block consolidation: none of them.
-- task129 spends a rise booked to a provider that arises outside the zone it touches and scales with each unit's
-  surroundings: no surroundings property; the property is a care setting whose population a capacity record shows
-  moving out of the group.
-- task121 spends rest rebuilt from worked periods, a self-healing exposure, identity behind signed-out accounts, a daily
-  cycle read case-crossover, the halo in ratings, and feeder schools' carried effect: none of them.
-- task202 spends how much of each source's input reaches the layer the response draws on: nothing travels or arrives.
-- task398 spends a path-dependent counterfactual re-running a filed rule on the changed path: no rule is re-run; the
-  expectation is built on the pilot year's own pool.
-- task399 spends an advocate's absence at each call and unmet demand behind an empty capacity stock: the capacity record
-  here says who is in the pool, not what demand went unmet.
-- task400 spends a staggered rollout's natural comparison separating a system change from its users: no rollout.
-- task156 v1 loop 3 (lineage) spends a pool whose leaving rate falls as its fast leavers go first: no dynamic selection
-  here; an identifiable stratum was removed by an outside event, and its members' rates did not change.
-- task68 spends entrant inflow masking a matched incumbent base's collapse: no entrants; the construction is a
-  setting-standardised expectation, not a matched panel.
-- task134 v2 and task83 spend a hazard by time since entry and conditioning on prior treatment history: the property
-  here is a place of residence, not a history.
-- task262 and task473 spend an attenuation correction and a detection share: nothing is mismeasured.
-
-The decisive step is none of these in other nouns.
-
-- **Sources** (every file synthetic, generated by `generator/` from seed 401, invented world, no real organisation;
-  licence CC BY 4.0, recorded in `metadata.json` at stage 3): emergency admission episodes of residents aged 80 and
-  over at the system's three acute trusts (the spine), the quarterly GP registration extract, the 2019 deprivation
-  lookup and the 2011-to-2021 small-area lookup, the regulator's care home register, the care capacity tracker, the
-  trust's pilot evaluation framework, the board's commissioning letter, the ward's monthly returns, the winter
-  vaccination uptake, and distractors named in `metadata.json` (stage 2 fixes the list).
+- **Card:** `.claude/skills/fingerprint/cards/task401.json`, architecture v2 (v1 in `lineage` with its fate), drawn and
+  registered 2026-11-03. `guard.py check` on the draft returned WARN: `overuse.objective` (root cause in 5 of the last
+  12; the number sits in the root-cause range), `repeat.gate_g` and `overuse.gate_g` against task400 and task402
+  (answered below). One older structural repeat is differentiated on the card (task111 v1). Nearest driver 0.05 (task118
+  v3, task130 v4, task254 v2, task301 v1, task31 lineage), each screened below. A first draft drew `ban.artifact`
+  (`register`, held by task402) and the context artifact was redrawn to `published_series`.
+- **Pairing:** Economics & Econometrics (client domain) / `panel-data-estimation` / Root-Cause Analysis. The task type
+  serves Experiment & Causal and Root-Cause; `economics-econometrics x root-cause` has never been built (`guard.py
+  coverage`, 2026-11-03), and no slot note mentions canola, flowering, degree days, seeding, hybrids or crop yields
+  (`guard.py slots`, mechanism and setting nouns run separately).
+- **Objective and call:** how much of the 2026 canola shortfall the new hybrid itself caused, and so whether it stays on
+  the 2027 seed order. The move to explain is the 2026 shortfall against the operator's 2020 to 2025 yields and the
+  hybrid's deficit against the incumbent inside it; the rivals are the hybrid, the July heat, the dry June, and how the
+  season's operations ran (seeding dates, which fields carried which hybrid). The call faces forward (the 2027 order);
+  the attribution is retrospective because 2026 is the only season the hybrid ran at scale. The tag stays Root-Cause
+  Analysis: the work is naming what produced the deficit, rivals ruled out on the record; nothing is forecast beyond
+  carrying the hybrid's own effect into a season with normal seed delivery.
+- **Shape:** `03`, bridge between two totals: the 2026 canola production against the 2020 to 2025 expectation, bridged
+  by reconciling items (heat in the flowering window, the dry June, the hybrid fields' timing, the hybrid's own effect,
+  the rest), by soil zone; written out in `## Ladder` at stage 2 with the asks' repeated units.
+- **Strategy and Gate G:** `decomposition_attribution` (F8, whose movement it is: a shared external driver decides the
+  split), Gate G `decomposition_attribution`. The decisive move splits the hybrid fields' deficit between the hybrid
+  and the July heat, which harmed a field only while that field was in flower; the hybrid's fields flowered into it
+  because their seed reached most farms late and they were seeded about ten days after the incumbent's. Gate G names the
+  mechanism carrying the stump, a correct deficit booked to the wrong cause. `repeat.gate_g` against task400 and task402
+  is answered: it is the honest label, and the decisive families differ (task400 a staggered rollout's natural
+  comparison of warning response, task402 attrition of broken-off therapy courses, here a crop's own phenological clock
+  against a dated shock).
+- **Gap, pattern, generators:** gap objective (the yield by hybrid is reported correctly and is not what the order is
+  scored on, the hybrid's own effect), then time (2026's seed arrived late; the 2027 order does not repeat it); pattern
+  none; generators G7 (operating window: the heat counts only inside each field's flowering window) and G13 (horizon
+  mismatch: the 2026 deficit carries a timing the 2027 season does not).
+- **Furniture:** forum `executive_team` (the operator's executive team signs the 2027 seed order), forcing event
+  `purchase_order_or_contract` (the seed company's early-order deadline, 15 December 2026), organisation
+  `agriculture_or_food_producer` (one build on file), role `research_desk` (the agronomy director, who owns the variety
+  policy's evaluation), context artifact `published_series` (the provincial crop insurer's published average canola
+  yields by risk zone and year, which answer what the region yielded), calibration none. None is held by the last three
+  live cards (task399, task400, task402).
+- **People** (`guard.py names --geo canada --seed 401`): Lacey Caldwell (agronomy director, owner of the variety
+  policy), Brandi Carlson (chief operating officer, signs the seed order), Elaine Gregory (seed and inputs buyer). None
+  appears in the prompt.
+- **Data-native sentence:** canola loses most of what heat costs it only while it is in flower, and when a field
+  flowers is set by the heat units it has gathered since its own seeding date at its own station, so in a season with a
+  nine-day July heat wave two fields of the same hybrid seeded ten days apart lose very different shares; the operator
+  keeps no seeding date on the field record, only the seeder's own timestamped passes.
+- **Abstraction sentence:** a candidate is blamed for a loss a dated shock caused, because a one-off delay started its
+  units' own clocks late enough that their sensitive phase sat on the shock, and every season-wide, unit-level or linear
+  start-date control leaves the loss on the candidate.
+- **Same-puzzle and library tests:** the stump sentence is not "use X on Y" with X a named correction. The field's named
+  method (the season-long degree-day panel of Schlenker and Roberts, with farm and year effects) is rung 1 and files the
+  wrong answer; the decisive step is the judgment that this season's heat struck through each field's own flowering
+  window, which the season-long exposure averages away.
+- **Semantic screen, one line per nearest build on the insight it spends** (`guard.py mechanisms --objective
+  root-cause`, the brief's list, and the guard's nearest drivers):
+  - task121: rest rebuilt from duty records as each event's exposure to an unstated condition. Here the exposure is
+    weather every field at a station shares; what is rebuilt is when each field was vulnerable to it. Different insight.
+  - task129: a provider blamed for a rise that scales with each unit's surroundings. Here fields at one station share
+    their surroundings and still lose differently; the loss turns on each field's own timing against a dated shock, not
+    a static property. Different insight.
+  - task111 (now and v1): which cause operates in the forward window; failures traced back to an earlier period's work
+    through a crosswalk. Here nothing carries over from an earlier period or system; the forward step only carries the
+    hybrid's own effect into a season whose seed arrives on time. Differentiated on the card.
+  - task202: how much of each source's input reaches the layer a response draws on. No transport or receiving layer
+    here. task398: a path-dependent counterfactual re-running a rule on the changed path. No rule is re-run here.
+  - task399: an advocate's absence at each call, and a capacity stock rebuilt from its events. task400: a staggered
+    rollout separating a system change from its users. task402: outcomes lost from courses broken off when the actor
+    leaves. None is a growth-stage exposure.
+  - task13 (labels against physical evidence), task11 (a threshold rebate), task36 (a filed exclusion), task50 (exposure
+    inside a funded window), task72 (an owner by agreement across transfers), task84 (identical copies grouped on a
+    composite key), task500 (a matched-reference method; household spillover): none is a timing of vulnerability.
+  - Nearest drivers at 0.05: task118 v3 (a harm easing with time since exposure began, priced from the first record),
+    task130 v4 (a cover paying only for events reported inside its own window), task254 v2 (a cut of a time-to-event
+    distribution seen through events already observed), task301 v1 (a deposit falling off with distance from a source),
+    task31 (plan volume phased over a year). None places a unit's sensitive phase by its own start date against a shock.
+- **Sources:** Schlenker and Roberts (2009, PNAS) for the season-long degree-day yield panel the field reaches for first;
+  the Canola Council of Canada's crop development guidance on heat during flowering and growth stages by heat units;
+  Environment and Climate Change Canada's daily climate data (Open Government Licence, Canada) as the template for the
+  station files; Saskatchewan Crop Insurance's published yields by risk zone as the template for the context series.
+  Every row in the pack is constructed and declared synthetic in `metadata.json`.
 
 ## Default path
 
-The route a competent analyst builds without thinking, from the prompt's words and the files' grain, with the field's
-method for the deciding quantity in it:
+1. Read the field register and the harvest records for 2020 to 2026; calibrate each farm's combine yield-monitor totals
+   to its elevator scale tickets; key fields across seasons by legal land description; keep the canola field-seasons.
+2. Link each field to its nearest weather station and build the season's growing degree days and extreme degree days
+   above 29.5 C over May to August, and June rainfall, from the daily station records.
+3. Fit the field's standard yield-weather panel: log yield on the hybrid indicator, the season's degree days and extreme
+   degree days, June rainfall, farm effects and year effects (Schlenker and Roberts); check it on 2020 to 2025, where it
+   tracks each farm's yields.
+4. Read the hybrid's coefficient as what it costs: about nine per cent of yield in 2026. The within-farm comparison of
+   2026 hybrid and incumbent fields agrees (about nine), and a seeding-date term built from the seeder's logs, entered
+   linearly, still leaves about seven.
+5. Compare with the variety policy's five per cent and drop the hybrid from the 2027 order.
 
-1. Collapse the three acute trusts' episodes into continuous inpatient spells (one trust's patient administration
-   system changed in April 2024; transfers between trusts inside one spell count once), keep emergency admissions of
-   residents aged 80 and over, and place each by the patient's small area through the 2021-to-2011 lookup into Core20 or
-   the rest of the system.
-2. Build the population at risk from the quarterly registration extract, by Core20 and age band, for each year from
-   October to September.
-3. Compute age-standardised emergency admission rates for Core20 and the rest in the baseline year (October 2023 to
-   September 2024) and the pilot year (October 2025 to September 2026), and check the pre-period: the two groups moved
-   in parallel from 2021-22 to 2023-24.
-4. Take the difference in differences as the ward's effect on Core20's rate and multiply by Core20's pilot-year
-   population: the admissions the ward prevented. Read the vaccination drive and the season against it (both small).
-5. Read the result against the board's bar and recommend.
-
-Ends on: about 1,000 admissions prevented in the pilot year, clearing the bar of 750, so the trust bids for the
-extension (the prototype's expected default is 912 with a draw-to-draw spread of 208; stage 3 fixes the shipped figure).
-
-Golden: about 400 admissions prevented, below the bar, so the trust does not bid: Core20's pilot-year residents aged 80
-and over held about 440 fewer care home residents than its baseline-year residents, after the Wrenford homes closed,
-and the expected admissions standardised to the pilot year's mix of care home and community residents by age band, with
-the change outside Core20 standing for Core20's change, leave the ward about 400 (the prototype's trend-adjusted forms
-agree within a median of 6 and at most 30 admissions; stage 3 fixes the shipped figure, mid-bin).
+Ends on: a hybrid penalty of about 9 per cent, past the 5 per cent bar, so the hybrid comes off the 2027 order.
+Golden: about 0 per cent once the heat enters inside each field's own flowering window (placed by heat units from its
+seeding date at its station), so the hybrid stays on the order; the deficit was the July heat meeting fields its late
+seed delivery had pushed about ten days later.
 
 ## Stump sentence
 
-A competent solver collapses the episodes into spells, places every admission in Core20 or the rest, takes the
-age-standardised difference in differences from the baseline year to the pilot year and files about 1,000 admissions
-prevented (the `Ends on:`), clearing the bar of 750, so the trust bids for the extension; the step that lands it there
-is applying Core20's baseline-year rate, set while the eleven Wrenford homes were full, to a pilot-year pool that held
-about 440 fewer care home residents, whose emergency admission rate is about five times the community's, so the
-difference in differences books the closed homes' missing admissions to the ward.
+A competent solver fits the season-long degree-day yield panel with farm and year effects, files a hybrid penalty of
+about 9 per cent, past the 5 per cent bar, and drops the hybrid from the 2027 order, because it compares hybrid fields
+with incumbent fields that had flowered before the July heat, when the hybrid's fields, seeded about ten days later after
+their seed arrived late, flowered into it.
 
 ## Three rules
 
-Task type: health-equity-disparity-decomposition (Epidemiology & Public Health), which the taxonomy serves with
-Root-Cause Analysis: the move is a narrowed deprivation gap in emergency admission rates, decomposed into what the
-population's mix did and what the ward did.
-Domain test: the deciding quantity is the admissions the ward prevented, read as expected against observed admissions
-for the population actually at risk, the expectation built by indirect standardisation on the strata that drive the
-rate (age band and care setting) with the comparison area's change standing for the counterfactual trend.
-Swap: "how many sales did the loyalty scheme add in the poorest postcodes, against the other postcodes" keeps a
-difference in differences but loses the care homes whose residents carry five times the rate and whose places move with
-a market the outcome records never see, so the call stops reading the same.
-Layer 1: three acute trusts' episode extracts to be collapsed into continuous spells across a patient administration
-system change and inter-trust transfers (the trusts' own systems); 2021 small-area codes in the extracts against 2011
-codes in the deprivation lookup, with splits and merges (the national geography); quarterly registration snapshots
-against an October-to-September year (the registration service); a capacity tracker with missed weekly returns and homes
-re-registered under a new operator (the care providers' own returns); nothing placed to be caught.
-Layer 2: `estimand_identification`: the counterfactual for the pilot year's own residents, which the baseline rate
-supplies only for a pool with the same mix on the property that drives the rate.
-Decisive step: recognising that Core20's pool of residents aged 80 and over lost several hundred care home residents
-between the two years, and building the expected admissions on the pilot year's own mix of care home and community
-residents by age band rather than carrying the baseline year's pooled rate forward.
-Not semantics: every field, code, unit and date read correctly (spells, small areas, ages, the year, the bar) still
-leaves the difference in differences on about 1,000, because no outcome or population column says who lives in a care
-home; the property is a relation between each person's address and the care homes' own register and returns.
-Not rule application: the evaluation framework files the population, the outcome, the years, the comparison and the
-bar, and no filed rule or procedure says on what the expected admissions are standardised; the enumerated family
-(crude, age-standardised and ratio differences in differences, with or without the vaccination and season terms)
-spreads from about 850 to about 1,150, all over the bar, while the standing family (expectations standardised on care
-setting, by age band or not, with the comparison's change pooled, by setting or by stratum) spreads by a median of 6
-and at most 30 admissions around about 400, and the property that rules the enumerated family out is visible only in the
-care homes' records, which the field's method never opens.
-Analyst test: a strong analyst who collapses the spells, maps every small area and reads the framework and the bar
-correctly takes the age-standardised difference in differences and files about 1,000 admissions prevented, clearing the
-bar of 750, when the setting-standardised expectation leaves about 400.
-Estimand: the trust's pilot evaluation framework (a governing document in the pack) files the population (residents
-aged 80 and over of Core20 small areas registered with the system's practices), the outcome (emergency admissions
-counted as continuous inpatient spells beginning in the year), the window (the pilot year, October 2025 to September
-2026), the comparison (the year before the pilot was commissioned, with the change outside Core20 over the same years
-standing for the change Core20 would have seen without the ward), and the quantity (the admissions the pilot-year
-Core20 residents would have had without the ward, less the admissions they had); the board's letter files the bar.
-No decoy: nothing is planted; the care homes closed because their operator failed, the trust's own interim reading of
-the pilot is not shipped, no memo or draft argues a figure, and no stakeholder figure is set to be overturned.
-No certified replay: the method is not recovered by reproducing published figures; no file publishes a prevented-
-admissions figure, a standardised rate or an expectation the golden must match.
-Lesson: an evaluation that carries a baseline rate onto a later pool is right only if the pool kept its mix on what
-drives the rate, and a care market can move that mix between two years without any health record noticing; no build on
-file teaches a composition shift read off the providers' own capacity record behind an intervention's credited effect.
+Task type: `panel-data-estimation` (Economics & Econometrics), which serves Root-Cause Analysis in the taxonomy; the
+field-by-season yield panel with weather exposure is its applied core in agricultural economics.
+Domain test: the deciding quantity is the hybrid's own yield effect in a field-season panel once weather enters as the
+crop meets it, inside each field's flowering window placed by thermal time from its seeding date; the field's estimator
+is the yield-weather panel with farm and year effects and a growth-stage exposure.
+Swap: "the new protocol's wards had more readmissions because the July heat struck each ward's patients only in their
+flowering window" no longer parses; no hospital, school or shop has a unit whose own planting date and local heat
+accumulation decide when a dated heat wave can harm it.
+Layer 1: yield monitors that read above the elevator scale tickets (combines), fields renamed, split and merged between
+seasons and typed by operators into the seeder (farm operations), seeder logs in UTC against the farm's year-round
+Central Standard Time (the seeder's controller), climate records with flagged missing days and a station that changed
+climate identifier (the weather service), bushels per acre against tonnes per hectare (the farm against the crop
+insurer), seeded acres that differ from GPS areas (the insurance reports); each is produced by the system named, and none
+is placed to be caught.
+Layer 2: estimand identification (the right counterfactual): the hybrid's effect is read against the incumbent at the
+same exposure to the season's shock, and the exposure that matters is the heat inside each field's own flowering
+window, which the season-long and farm-level forms average away.
+Decisive step: entering the July heat through each field's own flowering window, timed by heat units from that field's
+seeding date (read from the seeder's passes) at its nearest station, and reading the hybrid's coefficient at equal
+heat in flower; or, equivalently, comparing hybrid and incumbent fields seeded on the same days on the same farm.
+Not semantics: every field, code, unit and date can be read correctly (bushels against tonnes, UTC against CST, the
+calibrated yields, the station link) and the season-long panel still files about 9 per cent, because the error is in
+which weather the crop met, not in reading any column.
+Not rule application: no filed rule or procedure places a field's flowering window or says that heat counts only in
+flower; executing the variety policy, the crop insurer's definitions and the yield calibration files the default. The
+enumerated family (raw 2026 means, the season-long panel, farm-by-year effects, a linear seeding-date term, the
+flowering-window exposure at thresholds of 28 to 31 C and windows of 14 to 22 days, matching on seeding date within
+farm) spans about minus 12 to plus 1 per cent on the prototype; the standing family once the data rule out the
+season-long and linear forms (their residuals carry the timing) spans about minus 3.5 to plus 0.5, every member inside
+the bar; the ruling-out is the fit itself, quiet, in a file the question gives no reason to open (the seeder's logs).
+Analyst test: a strong analyst who calibrates the yields, keys every field and links every station fits the season-long
+degree-day panel with farm and year effects and files a hybrid penalty of about 9 per cent, past the 5 per cent bar, and
+drops the hybrid (the default path's `Ends on:`).
+Estimand: the variety policy (a governing document in the operator's own genre) files the WHAT: the share of yield the
+hybrid would give up against the incumbent on the operator's fields in the coming season, with its seed delivered under
+the order's standing terms; it names no method, no weather window and no seeding date.
+No decoy: nothing is planted to be caught; no memo, briefing, draft or stakeholder figure argues for dropping the
+hybrid, and no file computes the hybrid's yield penalty.
+No certified replay: no certified or published figure is reproduced to recover a method; the provincial yields by risk
+zone answer what the region yielded and agree with the operator's own records under every route.
+Lesson: weather harms a crop through its growth stage, so a variety compared across fields seeded on different dates
+must be read at equal exposure inside each field's own sensitive window; no build on file teaches a growth-stage
+exposure or a clock started by each unit's own date against a dated shock.
 
 ## Survivor anatomy
 
-Actor: the property that decides, whether each resident aged 80 and over lived in a care home in each year, has no
-column in the admission or registration extracts; it is a relation between a person's address and the regulator's care
-home register, and its movement shows only in the capacity tracker's weekly returns.
-Link: the step reads the care homes' register and returns against the population and the admissions through postcodes
-and neighbourhoods; no key joins a care home to the evaluation's population, and no sentence in the framework, the letter
-or the prompt invites the comparison of the two years' pools on care setting.
-Reflex: the field's method for the deciding quantity, an age-standardised difference in differences across the
-deprivation fifths, sits at rung 1 and files about 1,000, over the bar.
-Back-test: the textbook route validates: Core20 and the rest moved in parallel through the three pre-commissioning years
-(their age-standardised rates within a point of a common trend), so the difference in differences reads as a sound design.
-Second use: every file the step reads is in the pack for its own reason: the register and the tracker serve the discharge
-teams' vacancy reporting (an ask), the registration extract is the denominator, the admissions are the outcome.
-Shock: nothing reads as an anomaly: the closures are eleven quiet deregistrations among several hundred homes, Core20's
-pilot-year fall sits inside its own year-to-year range, and no sort of the neighbourhoods on a shipped statistic puts
-the care homes' movement first.
-Pins: the framework files the population, the outcome, the years, the comparison and the quantity, and the letter files
-the bar; no filed sentence names care homes, a setting, a standardisation stratum or the closures, and deleting the
-quantity's sentence leaves the step where it was.
+Actor: the deciding property, how much of the July heat fell inside each field's flowering window, has no column; no
+file stores a flowering date or a seeding date on the field (the seeder's logs hold timestamped passes with operator-typed
+field names, the stations hold daily temperatures).
+Link: each field's seeding date is rebuilt from the seeder's passes (a name that only partly matches the register,
+located by legal land description) and its flowering by heat units at the nearest station, a link no key offers and no
+sentence invites; the delivery register shows when each farm's seed arrived, never when it was due.
+Reflex: the field's named method, the season-long degree-day panel with farm and year effects (Schlenker and Roberts),
+is rung 1 and files about 9 per cent, past the bar.
+Back-test: the season-long panel tracks every farm's 2020 to 2025 canola yields, and the provincial yields by risk zone
+agree with the operator's own; the textbook route validates.
+Second use: the seeder's logs carry the seeding-rate and seed-use asks and reconcile seed delivered against seed sown;
+the station files feed the season-long panel the default already uses; the delivery register is the buyer's record of
+inputs received.
+Shock: the July heat wave is the season's ordinary explained weather, read by every route; nothing in the hybrid's
+fields is an outlier on any shipped statistic, and the hybrid's deficit is not the pack's largest movement (the dry
+June and the heat move every field).
+Pins: the variety policy files the WHAT (the share of the incumbent's yield the hybrid gives up on the operator's fields
+in a season under the order's standing delivery terms); no filed sentence names seeding dates, flowering, a weather
+window, a threshold or a comparison group.
 
 ## Readability screen
 
@@ -284,3 +255,30 @@ quantity's sentence leaves the step where it was.
   208) against a golden of 392 (spread 215, truth 389), and the trend-adjusted golden forms agree within a median of 6.4
   admissions once the framework files the comparison; without the comparison filed, the no-trend form differs from them
   by a median of 77 (a fork the framework's comparison sentence closes, a WHAT naming no method).
+- 2026-11-03, architecture 1 dies at stage 2 on the coordinator's realism check, before any data was cut. Set to published
+  English levels (a care home resident aged 80 and over about 0.70 to 0.75 emergency admissions a year, community
+  residents by band 0.24 to 0.58, a same-age ratio near two, not the prototype's five), the composition lever is about
+  113 admissions for the 440 Core20 residents the closures moved (sd 26), against draw-to-draw spreads of 202 in the
+  default and 214 in the golden on a one-year baseline and about 160 on three years (`scratchpad/t401/proto4.py`, 400
+  draws). A bar at the midpoint separates default above from golden below in 22 per cent of draws (27 on three years);
+  900 residents moved gives 41 to 51 per cent and 1,400 gives 58 to 72, and 1,400 is two fifths of Core20's care home
+  places in one system closing in a year, which no honest care group failure produces. A larger 80 and over population
+  scales the spread with the lever, and a bar nearer the truth only moves the coin flip. The stump was the noise. Re-rooted.
+- 2026-11-03, the redraw's other candidates, set aside before the card: regression to the mean of units chosen on a
+  noisy outcome (task130 v3 landed it; task149 and task174 rejected it on that lineage); a satisfaction fall read against
+  the conditions each respondent met, or a tracker's mode or response shift (task121 v4); a storable good's purchases
+  pulled forward before an announced price rise and paid back after (the pre-rise spike is the pack's largest movement
+  and announces the step); a distributor's orders falling as channel stock is drawn down (sell-through is the field's
+  reflex and lands it); a local policy confounded by a common shock loading on each unit's exposure (the council
+  furniture is banned in the window and the exposure needs data no operator holds); transformer insulation ageing under
+  new loads (electricity is spent, task129, task196, task201, task303, and F6's 46 already holds a rate stationary in a
+  constructed exposure); in the crop world itself, a hybrid placed on clubroot or hail-struck fields (a lab result or an
+  adjuster's claim names the field, readable), and a hybrid whose own later flowering met the heat (`crop2.py`: a three-day
+  shift moves the season-long panel only 3 to 5 per cent, and the forward step then needs a climatology fork).
+- 2026-11-03, prototypes for architecture 2 (`scratchpad/t401/crop1.py`, `crop3.py`, ten weather draws each, the
+  hybrid's own effect nil and equal phenology): with most of the hybrid's seed late by 8 to 14 days, the season-long
+  panel files minus 9.1 per cent (sd 9.8 across weather draws), farm-by-year effects minus 9.3, a linear seeding-date term
+  minus 7.0, raw 2026 means minus 11.6, the flowering-window exposure minus 0.1 (sd 0.9), its variants (thresholds 28 and
+  31 C, windows 14 and 22 days, 490 and 550 heat units to flower) minus 3.5 to plus 0.5, and fields seeded on the same
+  days on the same farm minus 0.6 (the same insight by matching). The spread across draws is the weather's: the pack's
+  July heat wave and seed delay are set by design, never picked from draws.
