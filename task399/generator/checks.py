@@ -1,6 +1,7 @@
-"""The generator's assertions for task399: every semantic fork (SF1 to SF10), the ladder on the clean truth, the
+"""The generator's assertions for task399: every semantic fork (SF1 to SF16), the ladder on the clean truth, the
 three-rules block (the analyst test executed), every graded figure's bin edge, the separation of the ask devices
-from the main population, the device masses, the input gates and the realism screens. Exit 1 on any failure.
+from the main population, each ask device's forcing figure and mass, each extract's own date against its last record,
+the input gates and the realism screens. Exit 1 on any failure.
 
     python3 task399/generator/checks.py
 """
@@ -33,6 +34,17 @@ def check(name, ok, detail=""):
 
 def gap(df):
     return F.gap(df)
+
+
+def load_xlsx_rows(path, sheet):
+    from openpyxl import load_workbook
+    it = load_workbook(path, read_only=True)[sheet].iter_rows(values_only=True)
+    hdr = list(next(it))
+    return [dict(zip(hdr, r)) for r in it]
+
+
+def load_xlsx_col(path, sheet, col):
+    return [r[col] for r in load_xlsx_rows(path, sheet)]
 
 
 def main():
@@ -161,6 +173,46 @@ def main():
           set(e["Placement"] for e in inc0 if e["Type"] == "Resident arrived") >= {e["Placement"] for e in inc0})
     check("SF14 approved leave sits only on the Away sheet",
           not any("leave" in e["Type"].lower() for e in inc0))
+    # SF15: an EM order the High Court made on a case transferred to it is outside the standard's section 1 (the
+    # District Courts' orders); the shipped rows fix which orders those are
+    hc_doc = "assessments of the District Courts' orders"
+    from pypdf import PdfReader as _PR
+    bid_text = " ".join(" ".join((pg.extract_text() or "").split()) for pg in
+                        _PR(os.path.join(TARGET, "budget2027_bid_instructions_halsey_coast.pdf")).pages)
+    std_text = " ".join(" ".join((pg.extract_text() or "").split()) for pg in
+                        _PR(os.path.join(TARGET, "em_bail_service_standard_v4.pdf")).pages)
+    check("SF15 the bid's EM cost base and the standard's scope name the District Courts' orders",
+          hc_doc in bid_text and "the District Courts of the Halsey Coast region order" in std_text)
+    em_w = w["em"]
+    moved = app[app.Outcome == "Transferred to the High Court"]
+    ordered = app[app.Outcome == "Remanded in custody, EM bail address assessment ordered"]
+    hc_rows = em_w[em_w.hc == 1]
+    moved_first = {c: min(pd.to_datetime(g.AppearanceDate).dt.date) for c, g in moved.groupby("CRN")}
+    check("SF15 every High Court order sits on a case the extract shows transferred before it, with no District Court "
+          "order on the case", all(c in moved_first and moved_first[c] < d and c not in set(ordered.CRN)
+                                   for c, d in zip(hc_rows.crn, hc_rows.order_date)), "%d High Court orders" % len(hc_rows))
+    check("SF15 every District Court order has its order appearance in the extract",
+          set(em_w[em_w.hc == 0].crn) <= set(ordered.CRN), "%d District Court orders" % int((em_w.hc == 0).sum()))
+    check("SF15 the unit's court columns name the courthouse alike for both courts' orders",
+          set(load_xlsx_col(os.path.join(TARGET, "em_bail_tracker_2025-26.xlsx"), "Tracker", "Court"))
+          <= set(W.COURT_NAME.values())
+          and set(pd.read_csv(os.path.join(TARGET, "em_case_system_assessments.csv"), dtype=str).Court)
+          <= set(W.COURT_CODE.values()))
+    # SF16: from the app (1 October 2025) a departure the log leaves open is closed by the app's absence record; a
+    # departure neither a logged return nor an absence record closes is the resident leaving
+    pl_w, ab_w = w["bh_place"], w["bh_abs"]
+    away_sheet = load_xlsx_rows(os.path.join(TARGET, "bail_house_register_2025-26.xlsx"), "Away")
+    returns_after = [e for e in inc0 if e["Type"] in ("Returned from hospital", "Resident returned")
+                     and e["ReportedAt"] >= "2025-09-30T11:00:00Z"]
+    check("SF16 from the app no hospital or curfew return is logged; custody returns still are",
+          not returns_after and any(e["Type"] == "Returned from police custody" and e["ReportedAt"] >= "2026"
+                                    for e in inc0))
+    open_after = ab_w[(ab_w.back_date >= W.BH_SWITCH) & (ab_w.back_date <= W.EXTRACT)]
+    check("SF16 every absence closed from the app has its record on the Away sheet",
+          len(away_sheet) == len(open_after), "%d absences, %d Away rows" % (len(open_after), len(away_sheet)))
+    check("SF16 clause 4 counts a night away as no night at the house and clause 2 ends a placement on the day the "
+          "resident leaves (read back by verify.py)", len(open(os.path.join(TARGET, "bail_support_contract_schedule2.pdf"),
+                                                                "rb").read()) > 0)
 
     # ---------------------------------------------------------------- bins (edge distance, every graded figure)
     units = figs["_units"]
@@ -177,7 +229,11 @@ def main():
 
     # ---------------------------------------------------------------- separation and device mass
     check("separation: no ask device row in the main population",
-          not fa_p.Outcome.str.contains("EM bail").any())
+          not fa_p.Outcome.str.contains("EM bail").any() and not fa_p.Outcome.str.contains("High Court").any())
+    hc_out = app[app.Outcome.str.contains("High Court")]
+    check("separation: the High Court is in the extract only as a transfer on a later appearance, never an order",
+          (hc_out.Outcome == "Transferred to the High Court").all()
+          and (hc_out.AppearanceType != "First appearance (custody)").all(), "%d transfers" % len(hc_out))
     sys.path.insert(0, HERE)
     import ceiling as C
     cr = {}
@@ -186,6 +242,76 @@ def main():
     for k in [k for k in units if k.startswith(("em_", "bh_"))]:
         dist = abs(cr[k] - float(figs[k])) / units[k]
         check("device mass %s" % k, dist >= 3, "the careful route %.1f bins off" % dist)
+
+    # ---------------------------------------------------------------- fix 8: each extract's own date
+    # a CSV is dated by its pull (metadata.json), a workbook by its saved stamp, a PDF by its own; each is on or after
+    # the last record it holds and before 3 November 2026 (New Zealand time); scheduled dates (NextDate) are not records
+    import zipfile as _zf8
+    import re as _re8
+    from pypdf import PdfReader as _PR8
+    from zoneinfo import ZoneInfo as _ZI
+    nzt = _ZI("Pacific/Auckland")
+    md8 = json.load(open(os.path.join(TASK, "metadata.json")))
+    pulled = {x["file"]: dt.date.fromisoformat(x["date"]) for x in md8["files"]}
+    limit = dt.date(2026, 11, 3)
+
+    def nzdate(sv):
+        sv = str(sv)
+        if sv.endswith("Z"):
+            return dt.datetime.strptime(sv, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc).astimezone(nzt).date()
+        if "T" in sv:
+            return dt.datetime.fromisoformat(sv).astimezone(nzt).date()
+        return dt.date.fromisoformat(sv[:10])
+
+    def asdate(v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, dt.datetime):
+            return v.date()
+        if isinstance(v, dt.date):
+            return v
+        sv = str(v)
+        if "/" in sv:
+            dd, mm, yy = sv.split("/")
+            return dt.date(int(yy), int(mm), int(dd))
+        return nzdate(sv)
+
+    record_cols = {
+        "cms_appearances_oct2024_sep2026.csv": ["AppearanceDate", "CalledAt"],
+        "police_bail_summaries_2024-2026.csv": ["ArrestDate"],
+        "em_case_system_assessments.csv": ["OrderDate", "ReportFiledDate"],
+        "em_document_uploads.csv": ["UploadedAt"],
+        "bail_house_incidents.csv": ["ReportedAt"],
+        "remand_centre_daily_muster.csv": ["MusterDate"],
+        "court_reminder_service_log.csv": ["SentAt", "HearingDate"],
+        "court_sitting_calendar_2024-2026.xlsx": [("Sittings", "Sitting date")],
+        "duty_lawyer_returns_2024-25.xlsx": [("Returns", "Date")],
+        "duty_lawyer_returns_2025-26.xlsx": [("Returns", "Sitting date")],
+        "duty_lawyer_returns_2026-27.xlsx": [("Returns", "Sitting date")],
+        "em_bail_tracker_2025-26.xlsx": [("Tracker", "Referral date"), ("Tracker", "Report filed")],
+        "bail_house_register_2025-26.xlsx": [("Placements", "First night"), ("Placements", "Left"),
+                                             ("Away", "Away from"), ("Away", "Away to (last night away)")],
+    }
+    for x in sorted(os.listdir(TARGET)):
+        pth = os.path.join(TARGET, x)
+        if x.endswith(".csv"):
+            own = pulled[x]
+            last = None
+            if x in record_cols:
+                rr = list(csv.DictReader(open(pth, encoding="utf-8")))
+                ds = [asdate(r[c]) for r in rr for c in record_cols[x]]
+                last = max(d for d in ds if d)
+        elif x.endswith(".xlsx"):
+            core = _zf8.ZipFile(pth).read("docProps/core.xml").decode()
+            own = nzdate(_re8.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1))
+            ds = [asdate(r.get(c)) for sh, c in record_cols[x] for r in load_xlsx_rows(pth, sh)]
+            last = max(d for d in ds if d)
+        else:
+            mod = str(_PR8(pth).metadata.get("/ModDate"))[2:10]
+            own = dt.date(int(mod[:4]), int(mod[4:6]), int(mod[6:8]))
+            last = None
+        check("fix 8 %s dated %s, on or after its last record%s and before 3 November 2026" % (
+              x, own, " (%s)" % last if last else ""), (last is None or last <= own) and own < limit)
 
     # ---------------------------------------------------------------- input gates and realism
     files = sorted(os.listdir(TARGET))

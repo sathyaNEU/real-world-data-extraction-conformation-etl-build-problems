@@ -60,20 +60,50 @@ def nz(s):
 
 # ------------------------------------------------------------------ ask 1, EM turnaround by month
 def em_cracker(t):
+    """Section 2 executed: the court's order day from the court's own record (the extract's order appearance, by CRN or
+    else surname, first name and date of birth), the unit's own order date where the extract has no order appearance
+    for the case, the first report filed (the upload log in New Zealand time), one order an assessment, the tracker's
+    carried-over rows dropped for their case-system copies, every courthouse of the region kept."""
+    app = rcsv(os.path.join(t, "cms_appearances_oct2024_sep2026.csv"))
+    by_crn, by_person = {}, {}
+    for r in app:
+        if r["Outcome"] == "Remanded in custody, EM bail address assessment ordered":
+            d = dt.date.fromisoformat(r["AppearanceDate"])
+            by_crn.setdefault(r["CRN"], []).append(d)
+            by_person.setdefault((r["Surname"].upper(), r["GivenNames"].upper(), r["DateOfBirth"]), []).append(d)
+
+    def order_day(crn, pk, unit_day):
+        c = [d for d in (by_crn.get(crn, []) if crn else by_person.get(pk, [])) if d <= unit_day]
+        return max(c) if c else unit_day
+
     leg = rxlsx(os.path.join(t, "em_bail_tracker_2025-26.xlsx"), "Tracker")
     case = rcsv(os.path.join(t, "em_case_system_assessments.csv"))
-    orders = {}
+    region = {"Kestrel Bay", "Dunmore", "Ashgrove", "Thornmere", "KBY", "DUN", "ASH", "THM"}
+    orders, carried, addr = {}, {}, defaultdict(set)
     for r in leg:
-        if r["Status"] == "Migrated":
-            continue                                   # carried into the case system: keep the case system's copy
-        orders.setdefault(r["Ref"].split("/")[0], (day(r["Referral date"]), day(r["Report filed"])))
+        addr[r["Ref"].split("/")[0]].add(r["Address"])
+    for r in leg:
+        if r["Court"] not in region:
+            continue
+        pk = (str(r["Surname"]).upper(), str(r["First name"]).upper(), day(r["DOB"]).isoformat())
+        od = order_day(r["CRN"], pk, day(r["Referral date"]))
+        if r["Status"] == "Migrated":                  # carried into the case system: its copy is kept, with the
+            carried[frozenset(addr[r["Ref"].split("/")[0]])] = od    # legacy record's order day
+            continue
+        orders.setdefault(r["Ref"].split("/")[0], (od, day(r["Report filed"])))
     first = {}
     for u in rcsv(os.path.join(t, "em_document_uploads.csv")):
         if u["DocumentType"] == "EM address assessment report":     # section 2: the first report filed
             dd = nz(u["UploadedAt"]).date()
             first[u["OrderRef"]] = min(dd, first.get(u["OrderRef"], dd))
+    caddr = defaultdict(set)
     for r in case:
-        orders.setdefault(r["OrderRef"], (day(r["OrderDate"]), first.get(r["OrderRef"], day(r["ReportFiledDate"]))))
+        caddr[r["OrderRef"]].add(r["Address"])
+    for r in case:
+        if r["Court"] not in region or r["OrderRef"] not in first:
+            continue
+        od = carried.get(frozenset(caddr[r["OrderRef"]])) or order_day(r["CRN"], None, day(r["OrderDate"]))
+        orders.setdefault(r["OrderRef"], (od, first[r["OrderRef"]]))
     return _months(orders.values())
 
 
@@ -95,22 +125,31 @@ def _months(pairs):
 
 # ------------------------------------------------------------------ ask 2, bail house occupied nights by month
 def bh_cracker(t):
+    """Clause 4 executed on a state rebuilt from the incident log in New Zealand time: a placement runs from its
+    arrival to the night before the resident leaves; each departure (police custody, hospital, not back by curfew)
+    closed by its return is an absence, tested at midnight, and a departure never closed is the resident leaving;
+    every absence on the app's Away sheet is joined to the log's (a union, never a sum)."""
     reg = rxlsx(os.path.join(t, "bail_house_register_2025-26.xlsx"), "Placements")
     away = rxlsx(os.path.join(t, "bail_house_register_2025-26.xlsx"), "Away")
     inc = rcsv(os.path.join(t, "bail_house_incidents.csv"))
     ev = defaultdict(list)
     for e in inc:
         ev[e["Placement"]].append((nz(e["ReportedAt"]), e["Type"]))
-    gone = defaultdict(set)
+    closes = {"Taken into police custody": "Returned from police custody", "Admitted to hospital": "Returned from hospital",
+              "Resident did not return": "Resident returned"}
+    gone, span = defaultdict(set), {}
     for pid, es in ev.items():
         es.sort()
-        outs = [x for x, k in es if k in ("Taken into police custody", "Admitted to hospital")]
-        backs = [x for x, k in es if k in ("Returned from police custody", "Returned from hospital")]
-        for o in outs:
-            nxt = [b for b in backs if b > o]
-            if not nxt:
+        arr = [x for x, k in es if k == "Resident arrived"]
+        leave = [x for x, k in es if k == "Resident moved out"]
+        for i, (o, k) in enumerate(es):
+            if k not in closes:
                 continue
-            b = min(nxt)
+            back = [x for x, kb in es[i + 1:] if kb == closes[k]]
+            if not back:
+                leave.append(o)                        # never back: the resident left
+                continue
+            b = min(back)
             d = o.date()
             while True:
                 mid = dt.datetime(d.year, d.month, d.day, tzinfo=NZT) + dt.timedelta(days=1)
@@ -119,20 +158,12 @@ def bh_cracker(t):
                 if mid >= b:
                     break
                 d += dt.timedelta(days=1)
+        span[pid] = (min(arr).date() if arr else None, min(leave).date() if leave else None)
     for a in away:                                     # every sheet read: the app's absences joined to the log's
         d, last = day(a["Away from"]), day(a["Away to (last night away)"])
         while d <= last:
             gone[a["Placement"]].add(d)
             d += dt.timedelta(days=1)
-    # clause 4: a placement runs from the night the resident arrives to the night before the resident leaves
-    span = {}
-    for pid, es in ev.items():
-        arr = [x for x, k in es if k == "Resident arrived"]
-        ex = [x for x, k in es if k in ("Resident moved out", "Resident did not return")]
-        outs = [x for x, k in es if k == "Taken into police custody"]
-        backs = [x for x, k in es if k == "Returned from police custody"]
-        ex += [o for o in outs if not [b for b in backs if b > o]]
-        span[pid] = (min(arr).date() if arr else None, min(ex).date() if ex else None)
     reg2 = []
     for p in reg:
         a0, e0 = span.get(p["Placement"], (None, None))

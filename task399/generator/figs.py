@@ -70,9 +70,11 @@ def structure_ok(f):
 
 
 def em_month_means(em, kind="golden"):
-    """Average days from the court's order to the first filing of the report, by the month of the order."""
+    """Average days from a District Court's order to the first filing of the report, by the month of the order (the
+    standard's section 1 scope: the High Court's orders on cases transferred to it are not the District Courts')."""
     e = em.copy()
-    e = e[(e.order_date >= W.P2_START) & (e.order_date <= W.END)]
+    e = e[(e.order_date >= W.P2_START) & (e.order_date <= W.END) & (e.hc == 0)]
+    assert (e.filed <= W.EXTRACT).all(), "every District Court order in the year has its report by the extract"
     e["days"] = [(a - b).days for a, b in zip(e["filed"], e["order_date"])]
     e["ym"] = [(d.year, d.month) for d in e["order_date"]]
     return {ym: float(e[e.ym == ym]["days"].mean()) for ym in MONTHS}

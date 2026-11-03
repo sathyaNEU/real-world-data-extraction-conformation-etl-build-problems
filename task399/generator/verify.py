@@ -124,13 +124,21 @@ def main_figures(target):
 
 
 def em_figures(target):
+    """Section 2 of the standard on section 1's population: the District Courts' orders. An order the unit holds with no
+    District Court order behind it sits on a case the District Court had transferred to the High Court, which sits at
+    the Kestrel Bay courthouse and made the order itself."""
     app = rows_csv(os.path.join(target, "cms_appearances_oct2024_sep2026.csv"))
     orders_by_crn, orders_by_person = defaultdict(list), defaultdict(list)
+    moved_by_crn, moved_by_person = defaultdict(list), defaultdict(list)
     for r in app:
+        d = dt.date.fromisoformat(r["AppearanceDate"])
+        pk = (r["Surname"].upper(), r["GivenNames"].upper(), r["DateOfBirth"])
         if r["Outcome"] == "Remanded in custody, EM bail address assessment ordered":
-            d = dt.date.fromisoformat(r["AppearanceDate"])
             orders_by_crn[r["CRN"]].append(d)
-            orders_by_person[(r["Surname"].upper(), r["GivenNames"].upper(), r["DateOfBirth"])].append(d)
+            orders_by_person[pk].append(d)
+        elif r["Outcome"] == "Transferred to the High Court":
+            moved_by_crn[r["CRN"]].append(d)
+            moved_by_person[pk].append(d)
     leg = rows_xlsx(os.path.join(target, "em_bail_tracker_2025-26.xlsx"), "Tracker")
     case = rows_csv(os.path.join(target, "em_case_system_assessments.csv"))
     ups = rows_csv(os.path.join(target, "em_document_uploads.csv"))
@@ -139,6 +147,17 @@ def em_figures(target):
         if u["DocumentType"] == "EM address assessment report":
             d = local_of_utc(u["UploadedAt"]).date()
             first_up[u["OrderRef"]] = min(d, first_up.get(u["OrderRef"], d))
+
+    def court_order(crn, pk, on_or_before, exact=None):
+        """The District Court's order behind a unit's order, or None where the case had gone to the High Court."""
+        cands = orders_by_crn.get(crn, []) if crn else orders_by_person.get(pk, [])
+        cands = [d for d in cands if d <= on_or_before and (exact is None or d == exact)]
+        if cands:
+            return max(cands)
+        moved = moved_by_crn.get(crn, []) if crn else moved_by_person.get(pk, [])
+        assert any(d < on_or_before for d in moved), ("an order with no court order and no transfer", crn, pk)
+        return None
+
     lorders, laddr = {}, defaultdict(set)
     for r in leg:
         key = r["Ref"].split("/")[0]
@@ -146,17 +165,17 @@ def em_figures(target):
         laddr[key].add(r["Address"])
     migrated = {}
     done = []
+    high_court = 0
     for key, r in lorders.items():
         ref = to_date(r["Referral date"])
         crn = (r["CRN"] or "").strip() if r["CRN"] else ""
-        if crn:
-            cands = [d for d in orders_by_crn.get(crn, []) if d <= ref]
-        else:
-            pk = (str(r["Surname"]).upper(), str(r["First name"]).upper(), to_date(r["DOB"]).isoformat())
-            cands = [d for d in orders_by_person.get(pk, []) if d <= ref]
-        od = max(cands)
+        pk = (str(r["Surname"]).upper(), str(r["First name"]).upper(), to_date(r["DOB"]).isoformat())
+        od = court_order(crn, pk, ref)
         if r["Status"] == "Completed":
-            done.append((od, to_date(r["Report filed"])))
+            if od is None:
+                high_court += 1
+            else:
+                done.append((od, to_date(r["Report filed"])))
         else:
             migrated[frozenset(laddr[key])] = od          # carried over: the same addresses in the case system
     corders, caddr = {}, defaultdict(set)
@@ -168,9 +187,14 @@ def em_figures(target):
         if od == dt.date(2026, 2, 2) and frozenset(caddr[ref]) in migrated:
             od = migrated.pop(frozenset(caddr[ref]))
         else:
-            assert od in orders_by_crn.get(r["CRN"], []), ("case system order date is the court's", ref)
+            od = court_order(r["CRN"], None, od, exact=od)
+        if od is None:
+            high_court += 1
+            continue
+        assert ref in first_up, ("a District Court order with no report filed", ref)
         done.append((od, first_up[ref]))
     assert not migrated, "every carried-over order found in the case system"
+    assert high_court > 0, "the High Court's orders are in the unit's records"
     out = {}
     for ym in MONTHS:
         v = [(rep - od).days for od, rep in done if (od.year, od.month) == ym]
@@ -179,48 +203,62 @@ def em_figures(target):
 
 
 def bh_figures(target):
+    """Clause 4 on the incident log and the case app's absence records: since the app went live the log records a
+    departure and the app's absence record closes it on the resident's return, so a departure that neither a logged
+    return nor an absence record closes is the resident leaving."""
     reg = rows_xlsx(os.path.join(target, "bail_house_register_2025-26.xlsx"), "Placements")
     away = rows_xlsx(os.path.join(target, "bail_house_register_2025-26.xlsx"), "Away")
     inc = rows_csv(os.path.join(target, "bail_house_incidents.csv"))
     by = defaultdict(list)
     for e in inc:
         by[e["Placement"]].append((local_of_utc(e["ReportedAt"]), e["Type"]))
+    away_by = defaultdict(list)
+    for a in away:
+        away_by[a["Placement"]].append((to_date(a["Away from"]), to_date(a["Away to (last night away)"]), a["Reason"]))
+    went = {"Taken into police custody": "Returned from police custody", "Admitted to hospital": "Returned from hospital",
+            "Resident did not return": "Resident returned"}
     nights = {ym: 0 for ym in MONTHS}
     for p in reg:
         pid = p["Placement"]
         ev = sorted(by.get(pid, []))
-        arrived = [t for t, k in ev if k == "Resident arrived"]
-        first = min(arrived).date()
+        first = min(t for t, k in ev if k == "Resident arrived").date()
         assert first >= to_date(p["First night"]), ("the register's first night is never after the arrival", pid)
-        exits = [t for t, k in ev if k in ("Resident moved out", "Resident did not return")]
-        outs = [t for t, k in ev if k in ("Taken into police custody", "Admitted to hospital")]
-        backs = [t for t, k in ev if k in ("Returned from police custody", "Returned from hospital")]
-        away_n = set()
-        pairs = []
-        for o in outs:
-            nxt = [b for b in backs if b > o]
-            if nxt:
-                pairs.append((o, min(nxt)))
+        away_n, exits, used = set(), [t.date() for t, k in ev if k == "Resident moved out"], set()
+        for i, (t, k) in enumerate(ev):
+            if k not in went:
+                continue
+            back = [b for b, kb in ev[i + 1:] if kb == went[k]]
+            rows = [a for a in away_by.get(pid, []) if a[0] == t.date() and a[2] != "Approved leave"]
+            if back:
+                used.update(rows)                   # the app's record of the same absence, where it kept one
+                b = min(back)
+                d = t.date()
+                while True:
+                    midnight = dt.datetime(d.year, d.month, d.day, tzinfo=NZT) + dt.timedelta(days=1)
+                    if t < midnight < b:
+                        away_n.add(d)
+                    if midnight >= b:
+                        break
+                    d += dt.timedelta(days=1)
+            elif rows:
+                lo, hi, _ = rows[0]
+                used.add(rows[0])
+                while lo <= hi:
+                    away_n.add(lo)
+                    lo += dt.timedelta(days=1)
             else:
-                exits.append(o)          # taken into custody and never back: the exit
-        depart = min(exits).date() if exits else None
-        for o, b in pairs:
-            d = o.date()
-            while True:
-                midnight = dt.datetime(d.year, d.month, d.day, tzinfo=NZT) + dt.timedelta(days=1)
-                if o < midnight < b:
-                    away_n.add(d)
-                if midnight >= b:
-                    break
-                d += dt.timedelta(days=1)
-        for a in away:
-            if a["Placement"] == pid and a["Reason"] == "Approved leave":
-                d, last = to_date(a["Away from"]), to_date(a["Away to (last night away)"])
+                exits.append(t.date())              # never back: the day the resident left
+        for a in away_by.get(pid, []):
+            if a[2] == "Approved leave":
+                d, last = a[0], a[1]
                 while d <= last:
                     away_n.add(d)
                     d += dt.timedelta(days=1)
-        if p["Left"] and depart is not None and depart >= dt.date(2026, 6, 1):
-            assert to_date(p["Left"]) == depart, ("the app's Left is the day the resident left", pid)
+            else:
+                assert a in used, ("every absence record has its departure in the log", pid, a)
+        depart = min(exits) if exits else None
+        if depart is not None and p["Left"]:
+            assert to_date(p["Left"]) >= depart, ("the register's Left is never before the departure", pid)
         end = depart if depart is not None else P2[1] + dt.timedelta(days=1)
         d = first
         while d < end:
@@ -240,14 +278,17 @@ def documents(target):
     """Each governing document read back through one extractor, a positive control first."""
     want = {
         "budget2027_bid_instructions_halsey_coast.pdf": ["Budget 2027", "every first appearance from police custody",
-                                                         "no lawyer of record", "percentage points"],
+                                                         "no lawyer of record", "percentage points",
+                                                         "assessments of the District Courts' orders"],
         "em_bail_service_standard_v4.pdf": ["Electronically monitored bail", "the day the court orders the assessment",
                                             "filed with the court", "the first assessment report is filed",
                                             "an amended report is a later document"],
         "bail_support_contract_schedule2.pdf": ["Schedule 2", "at the house at midnight",
                                                 "police custody or in hospital", "approved leave",
                                                 "the night the resident arrives at the house",
-                                                "neither starts nor extends a placement"],
+                                                "neither starts nor extends a placement",
+                                                "ends on the day the resident leaves it",
+                                                "although the bed is held for the resident"],
     }
     for f, phrases in want.items():
         t = pdf_text(os.path.join(target, f))

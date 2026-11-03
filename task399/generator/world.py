@@ -10,14 +10,17 @@ EM bail assessments slow from November 2025, which lengthens custody remands but
 appearance.
 
 The ask worlds ride their own random streams so that nothing added to them moves a main-call draw: the EM bail unit's
-assessments (its legacy tracker until 30 January 2026, its case system from 2 February 2026) and the supported bail
-houses (the provider's spreadsheet until 31 May 2026, its case app from 1 June 2026).
+assessments (its legacy tracker until 30 January 2026, its case system from 2 February 2026), which include the
+orders of the High Court sitting at the Kestrel Bay courthouse on cases transferred there, and the supported bail
+houses (the provider's spreadsheet and standalone incident log until 30 September 2025, its case app from 1 October
+2025).
 
 Nothing here is recorded as such in the pack: pack.py writes each system's own extract from these tables.
 """
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import math
 
 import numpy as np
@@ -26,15 +29,19 @@ import pandas as pd
 SEED = 4147          # first appearances (the main call)
 SEED_PEOPLE = 3996   # names, dates of birth, case numbers
 SEED_LATER = 3991    # later appearances and the AVL list
-SEED_EM = 3993       # the EM bail unit
+SEED_EM = 4022       # the EM bail unit
 SEED_BH = 3993       # the supported bail houses
+SEED_HC = 3994       # transfers to the High Court and its EM bail orders (keyed per case, so no other stream moves)
 START = dt.date(2024, 10, 1)
 END = dt.date(2026, 9, 30)
 P2_START = dt.date(2025, 10, 1)
 REORG = dt.date(2025, 12, 1)          # the Kestrel Bay custody list reorganisation (magistrate and AVL list)
 EM_SLOW = dt.date(2025, 11, 3)        # EM bail assessment turnaround lengthens
 EM_SWITCH = dt.date(2026, 2, 2)       # the EM unit's case system goes live; open legacy orders migrate
-BH_SWITCH = dt.date(2026, 6, 1)       # the bail houses' provider moves to its case app
+BH_SWITCH = dt.date(2025, 10, 1)      # the bail houses' provider moves to its case app (contract schedule clause 6)
+EM_FROM = dt.date(2025, 8, 1)         # the EM Bail Unit's first referrals in the pack
+P_TRANSFER = 0.80                     # a Kestrel Bay band 4 or 5 case still in custody at its remand appearance
+P_HC_EM = 0.85                        # the High Court then orders an EM bail address assessment
 EXTRACT = dt.date(2026, 11, 2)        # the date every extract was pulled
 
 COURTS = ["KB", "DN", "AG", "RC"]
@@ -42,6 +49,9 @@ COURT_NAME = {"KB": "Kestrel Bay", "DN": "Dunmore", "AG": "Ashgrove", "RC": "Tho
 COURT_CODE = {"KB": "KBY", "DN": "DUN", "AG": "ASH", "RC": "THM"}
 COURT_NUM = {"KB": "041", "DN": "043", "AG": "044", "RC": "047"}
 LAMBDA = {"KB": 34.0, "DN": 11.0, "AG": 9.0, "RC": 6.0}          # first appearances from custody per sitting day
+# each court's own pull of defendants who already have a lawyer (the local bar, legal aid assignment): a shift on the
+# own-lawyer threshold's logit, with no draw of its own
+COURT_OWN = {"KB": 0.0, "DN": 0.38, "AG": -0.31, "RC": 0.16}
 DOW_MULT = [1.45, 0.95, 0.9, 0.9, 1.0]                          # Monday carries the weekend's arrests
 
 HOLIDAYS = {
@@ -187,7 +197,7 @@ def first_appearances(seed=SEED):
                 onb = int(rng.random() < min(0.6, 0.10 + 0.018 * pri))
                 fv = int(rng.random() < 0.31)
                 nfa = int(rng.random() < 0.075)
-                lo = -0.62 + 0.08 * (ser - 3) - 0.22 * math.log1p(pri) - 0.55 * nfa
+                lo = -0.62 + COURT_OWN[c] + 0.08 * (ser - 3) - 0.22 * math.log1p(pri) - 0.55 * nfa
                 own = int(rng.random() < 1.0 / (1.0 + math.exp(-lo)))
                 dur = 3 + int(rng.integers(0, 6)) + (5 if ser >= 4 else 0) + (2 if not own else 0)
                 order.append(dict(def_id=did, ser=ser, pri=pri, fta=fta, onb=onb, fv=fv, nfa=nfa, own=own, dur=dur))
@@ -390,16 +400,51 @@ def _bail_chain(rng, r, d, judges):
     return rows
 
 
+def _case_key(crn):
+    return int(hashlib.sha256(crn.encode()).hexdigest()[:12], 16)
+
+
+def high_court_transfers(later, seed=SEED_HC):
+    """Kestrel Bay cases on band 4 and 5 charges still in custody at their remand appearance are, most of them,
+    transferred there to the High Court, which sits at the Kestrel Bay courthouse; the High Court then hears the
+    defendant's application for EM bail and orders the address assessment itself. The District Court's extract records
+    the transfer and nothing after it; the High Court's order is in no District Court record. Each case draws from its
+    own keyed stream, so no other draw moves."""
+    band = {code: b for code, _, b in OFFENCES}
+    later = later.copy()
+    orders = []
+    for i in later.index[(later.appearance_type == "Remand appearance") & (later.court == "KB")
+                         & (later.outcome == "Remanded in custody")]:
+        r = later.loc[i]
+        if band[r.offence_code] < 4:
+            continue
+        g = np.random.default_rng([seed, _case_key(r.crn)])
+        if g.random() >= P_TRANSFER:
+            continue
+        later.at[i, "outcome"] = "Transferred to the High Court"
+        if g.random() >= P_HC_EM:
+            continue
+        od = add_sitting_days(r.date, int(g.integers(3, 15)))
+        if EM_FROM <= od <= END:
+            orders.append(dict(crn=r.crn, person=r.person, surname=r.surname, given=r.given, dob=r.dob, court="KB",
+                               order_date=od, hc=1))
+    return later, pd.DataFrame(orders)
+
+
 def em_world(em_orders, seed):
     """The EM bail unit's truth: one order may assess several addresses; the turnaround runs from the order to the
-    first filing of the assessment report; an amended report is a second filing."""
+    first filing of the assessment report; an amended report is a second filing. A High Court order's report also
+    carries the complainant's views and the police's position on each address, which the High Court's bail timetable
+    allows for; the District Courts' orders slow from November 2025."""
     rng = np.random.default_rng(seed)
     rows = []
     for i, o in enumerate(em_orders.sort_values(["order_date", "crn"]).itertuples(index=False)):
         n_addr = int(rng.choice([1, 2, 3], p=[0.78, 0.19, 0.03]))
         slow = o.order_date >= EM_SLOW
         base = rng.gamma(6.0, 1.5) if not slow else rng.gamma(9.0, 2.1)
-        days = int(min(30, max(3, round(base + 2.2 * (n_addr - 1)))))
+        if o.hc:                         # the High Court's timetable, unmoved by the District Courts' slowdown
+            base = 22.0 + base * (9.0 / 18.9 if slow else 1.0)
+        days = int(min(45 if o.hc else 30, max(3, round(base + 2.2 * (n_addr - 1)))))
         filed = o.order_date + dt.timedelta(days=days)
         while filed.weekday() >= 5:
             filed += dt.timedelta(days=1)
@@ -413,17 +458,22 @@ def em_world(em_orders, seed):
         rows.append(dict(order_id=i + 1, crn=o.crn, person=o.person, surname=o.surname, given=o.given, dob=o.dob,
                          court=o.court, order_date=o.order_date, logged=logged, n_addr=n_addr, filed=filed,
                          amended=amended, suitable=int(rng.random() < 0.68),
-                         crn_on_tracker=int(rng.random() < 0.85)))
+                         crn_on_tracker=int(rng.random() < 0.85), hc=int(o.hc)))
     return pd.DataFrame(rows)
 
 
 def bail_house_world(fa_bailed, seed):
     """The supported bail houses' truth: placements (the first night and the day the resident left), the exit as the
-    provider's incident system logged it, the nights each resident was away in police custody or hospital, and from
-    the case app (1 June 2026) the approved overnight leave it introduced. Until 31 May 2026 the provider's
-    spreadsheet recorded a placement's end on the working day the exit was processed, after the resident had left;
-    from 1 June 2026 the case app's start column carries the day the placement was approved, before the resident
-    arrived. The incident system logs each arrival and each exit when it happens."""
+    provider's incident system logged it, and the nights each resident was away: in police custody, in hospital, out
+    past curfew without leave, and from the case app (1 October 2025) on the approved overnight leave it introduced.
+    Until 30 September 2025 the provider kept a spreadsheet register, which recorded a placement's end on the working
+    day the exit was processed, and a standalone incident log, which logged each departure from the house and each
+    return to it. From 1 October 2025 the case app keeps the register, with its start column carrying the day the
+    placement was approved, before the resident arrived, and an absence record that staff close when the resident
+    comes back; the incident log goes on recording each arrival, each departure and each exit as it happens, and of
+    the returns only the police bringing a resident back, which is an incident in its own right: a resident back from
+    hospital or back after a night out past curfew is the absence record closing. An absence that ends the placement
+    is the placement's exit in the app, never an absence."""
     rng = np.random.default_rng(seed)
     houses = {"KB": ("Kestrel Bay house", 8), "DN": ("Dunmore house", 6)}
     occupied = {h: [] for h in houses}
@@ -469,7 +519,8 @@ def bail_house_world(fa_bailed, seed):
                                house=houses[h][0], start=start, end=end, exit=exit_reason, exit_type=exit_type,
                                exit_min=exit_min, end_recorded=(recorded if end < BH_SWITCH else end),
                                start_recorded=start_rec, arrive_min=int(rng.integers(11 * 60, 18 * 60))))
-        # absences inside the stay: police custody (most), hospital (few); approved leave once the app allowed it
+        # absences inside the stay: police custody (most), hospital (few), out past curfew; approved leave once the
+        # app allowed it
         t = start + dt.timedelta(days=int(rng.integers(3, 12)))
         while t < end - dt.timedelta(days=3):
             u = rng.random()
@@ -478,7 +529,11 @@ def bail_house_world(fa_bailed, seed):
                 nights = int(rng.choice([1, 1, 1, 2, 2, 3, 4, 5]))
                 out_min = (int(rng.integers(19 * 60, 23 * 60 + 50)) if kind == "custody"
                            else int(rng.integers(600, 1260)))
-            elif u < 0.48 and t >= BH_SWITCH:
+            elif u < 0.34:
+                kind = "awol"                 # not back by curfew; back the next day or the one after
+                nights = int(rng.choice([1, 1, 1, 2]))
+                out_min = int(rng.integers(22 * 60, 23 * 60 + 50))
+            elif u < 0.55 and t >= BH_SWITCH:
                 kind = "leave"
                 nights = int(rng.choice([1, 1, 2, 2, 3]))
                 out_min = int(rng.integers(15 * 60, 19 * 60))
@@ -498,6 +553,10 @@ def build_world(seed: int = SEED, seed_em: int = SEED_EM, seed_bh: int = SEED_BH
     fa, avl, sessions = first_appearances(seed)
     fa = _people(fa, SEED_PEOPLE)
     later, em_orders, avl = later_appearances(fa, avl, SEED_LATER)
+    later, hc_orders = high_court_transfers(later)
+    em_orders = em_orders.assign(hc=0)
+    if len(hc_orders):
+        em_orders = pd.concat([em_orders, hc_orders], ignore_index=True)
     em = em_world(em_orders, seed_em)
     bailed = fa[(fa.ric == 0)]
     bh_place, bh_abs = bail_house_world(bailed, seed_bh)

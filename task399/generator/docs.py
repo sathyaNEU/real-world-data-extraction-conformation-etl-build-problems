@@ -85,8 +85,9 @@ def bid_instructions(path):
          Paragraph("5. Cost bases", H2),
          Paragraph("Each shortlist line is costed from its own operating record for the year to 30 September 2026: "
                    "the judge line from the sitting hours in the court sitting calendar; the duty lawyer line from "
-                   "the duty lawyer returns; the EM line from the EM Bail Unit's assessments, at the turnaround the "
-                   "Department's service standard defines, month by month; the bail house line from occupied nights "
+                   "the duty lawyer returns; the EM line from the EM Bail Unit's assessments of the District Courts' "
+                   "orders, at the turnaround the Department's service standard defines, month by month; the bail "
+                   "house line from occupied nights "
                    "as the support contract's schedule defines them, month by month; the reminder line from the "
                    "reminder service log.", BODY),
          Paragraph("6. Contacts", H2),

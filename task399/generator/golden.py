@@ -30,7 +30,10 @@ def figures(w):
     out["_critical"] = LEVEL1 + LEVEL2
     out["_default_path_same"] = LEVEL1
     out["call"] = CALL
-    out["em_orders_p2"] = int(((w["em"].order_date >= W.P2_START) & (w["em"].order_date <= W.END)).sum())
+    em = w["em"]
+    p2 = (em.order_date >= W.P2_START) & (em.order_date <= W.END)
+    out["em_orders_p2"] = int((p2 & (em.hc == 0)).sum())
+    out["em_hc_orders_p2"] = int((p2 & (em.hc == 1)).sum())
     return out
 
 
