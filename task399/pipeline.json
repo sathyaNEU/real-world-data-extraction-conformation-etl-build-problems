@@ -30,12 +30,17 @@
   "report": "pending: brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t399/stage4/judge/judge_brief.md (graded blocks in graded_blocks.md, opened only after derivation.md)"
  },
  "returned": [],
- "resume": "stage 4 hand-off: read the leak reader report (stage4/reader/reader_report.md) and the judge verdict (stage4/judge/verdict.md) from the scratch stage4 folder; fix every finding from both in the generator in one pass (build.py, then checks, verify, figures_check, ceiling, leak.py, precut); a FIX_NOW gets one re-judge; then the stage-5 pre-ship check in the design note, the golden-realism and reduce-house-fixes passes on the goldens and pack, every gate re-run on the final cut, the ledger row, and commit SHIPPED (task399) with target.zip and golden/ force-added",
+ "resume": "stage 4 fix pass: read the leak reader report and the judge verdict (scratch t399/stage4/reader/reader_report.md and t399/stage4/judge/verdict.md, or as the coordinator relays them); in one generator pass fix every finding from both plus the three held_fixes, asserting each moves no graded figure (freeze.py snapshot first, freeze.py check --mode determinism after); rebuild with build.py and re-run checks, verify, figures_check, ceiling, precut, leak.py, heart and surface; a FIX_NOW gets one re-judge and the Redcliff rename a second reader pass; then the ledger row and commit SHIPPED (task399) with target.zip and golden/ force-added",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "free_gates": "2026-11-03: checks.py 99 of 99, verify.py 41 of 41 graded figures, two builds byte-identical, figures_check 67 of 67, ceiling.py pair 31.3 (cracker 0 of 24 ask cells), precut 61 of 61, voice-check PASS, leak.py REVIEW, guard heart WARN, surface answered"
+ "free_gates": "2026-11-03 after the house-fix pass: checks.py 124 of 124, verify.py 41 of 41, two builds byte-identical, figures_check 67 of 67, precut 61 of 61, voice-check PASS, freeze --mode determinism PASS, leak.py REVIEW (sweeps 3, 4, 9 answered), heart WARN, surface 2 pairs answered; target.zip sha256 09ee0ff39ebde8e0 (members at the root; content as 5fa60b26 except the three duty lawyer workbooks docProps/core.xml)",
+ "held_fixes": [
+  "H13 AVL list call times evenly spaced inside each sitting (cms_appearances): draw interior calls, keep first and last on the margins",
+  "H13 EM upload minutes step by 37 per order (em_document_uploads): draw them in the working day",
+  "H21 Redcliff one letter from Christchurch Redcliffs: rename the courthouse in data and the bid instructions (owes a second reader pass)"
+ ]
 }

@@ -194,8 +194,11 @@ def build_pack(w, out):
         else:
             hdr = ["Court", "Sitting date", "Duty lawyer", "Hours claimed", "Session claimed"]
             body = [(W.COURT_NAME[c], d, l, h, se) for d, c, l, se, h in rr]
+        stamp = {"2024-25": ("2025-07-08T22:10:00Z", "2025-07-09T02:35:00Z"),
+                 "2025-26": ("2026-07-07T21:55:00Z", "2026-07-08T03:20:00Z"),
+                 "2026-27": ("2026-10-30T21:40:00Z", "2026-10-30T23:05:00Z")}[fy]
         write_xlsx(os.path.join(out, "duty_lawyer_returns_%s.xlsx" % fy), [("Returns", hdr, body)],
-                   "Legal Aid Services", "2026-10-30T21:40:00Z", "2026-10-30T21:40:00Z", widths={"Court": 28})
+                   "Legal Aid Services", stamp[0], stamp[1], widths={"Court": 28})
 
     # ---------------------------------------------------------------- police bail summaries and the offence scale
     bs = []

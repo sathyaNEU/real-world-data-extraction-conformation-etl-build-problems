@@ -243,6 +243,40 @@ def main():
     check("R3c no copied block: no two Kestrel Bay sitting days share a call sequence",
           fa[fa.court == "KB"].groupby("date").call_min.apply(tuple).duplicated().sum() == 0)
 
+    # H1 and H13: each workbook and PDF carries its own saved stamp, created no later than modified
+    import re as _re
+    import zipfile as _zf
+    stamps = []
+    for x in files + ["../golden/" + g for g in sorted(os.listdir(os.path.join(TASK, "golden")))]:
+        pth = os.path.normpath(os.path.join(TARGET, x))
+        if x.endswith(".xlsx"):
+            core = _zf.ZipFile(pth).read("docProps/core.xml").decode()
+            app_xml = _zf.ZipFile(pth).read("docProps/app.xml").decode()
+            cr = _re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1)
+            mo = _re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+            check("H1 %s names its owner, not the writing library" % os.path.basename(x),
+                  "openpyxl" not in core + app_xml and "<Application>Microsoft Excel</Application>" in app_xml)
+            nsheets = len(_zf.ZipFile(pth).read("xl/workbook.xml").decode().split("<sheet ")) - 1
+            check("H1 %s app.xml lists its %d sheets" % (os.path.basename(x), nsheets),
+                  app_xml.count("<vt:lpstr>") >= nsheets)
+            stamps.append((os.path.basename(x), cr, mo))
+        elif x.endswith(".pdf"):
+            from pypdf import PdfReader
+            r = PdfReader(pth)
+            cr, mo = str(r.metadata.get("/CreationDate")), str(r.metadata.get("/ModDate"))
+            lenient = " ".join((p.extract_text() or "") for p in r.pages)
+            strict = " ".join((p.extract_text() or "") for p in PdfReader(pth, strict=True).pages)
+            check("H25 %s reads the same strictly and leniently" % os.path.basename(x), lenient == strict and lenient)
+            check("H1 %s carries no library banner" % os.path.basename(x),
+                  b"ReportLab" not in open(pth, "rb").read() and b"matplotlib" not in open(pth, "rb").read())
+            stamps.append((os.path.basename(x), cr, mo))
+    check("H13 every document's created stamp is its own", len({s[1] for s in stamps}) == len(stamps),
+          ", ".join("%s %s" % (s[0], s[1]) for s in stamps if [t[1] for t in stamps].count(s[1]) > 1))
+    check("H13 no document modified before it was created",
+          all(s[1].replace("D:", "")[:14] <= s[2].replace("D:", "")[:14] for s in stamps if s[1] and s[2]))
+    check("H9 no file under target/ describes the pack",
+          not any(_re.search(r"readme|dictionar|manifest|field.?notes|codebook|schema", x, _re.I) for x in files))
+
     bad = [r for r in RESULTS if not r[1]]
     for name, ok, detail in RESULTS:
         if not ok or os.environ.get("VERBOSE"):
