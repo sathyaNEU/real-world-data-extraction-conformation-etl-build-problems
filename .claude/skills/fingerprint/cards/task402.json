@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Fund the 2027 fix for the SO-7 restoration switching revision: about 8,700 sustained customer interruptions in fiscal 2026, 7,200 more than the runner-up, the heat pumps connected without a load study (about 1,500).",
+  "answer_source": "task402/submission.md, Final Recommendation; generator/figures.json",
   "gap": [
     "objective",
     "population"
@@ -26,13 +26,13 @@
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "time_semantics",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and the work plan policy correctly computes the year's IEEE 1366 sustained interruptions outside major event days by cause, books the rise in overload trips to the heat pump connection policy because they rose most on the sections where heat pumps were added, and costs the withdrawn restoration rule at nothing because it only shortens outages; the step they never take is pairing each trip with the same section's restoration minutes before it, which shows most of the rise as cold-load re-trips after the rule went.",
+  "analyst_test": "A strong analyst who reads every field and the work plan policy correctly counts the year's IEEE 1366 sustained interruptions outside major event days by cause, books the overload category's rise (about 10,900) to the heat pump connection policy as the one change that adds load, and costs the SO-7 switching revision at nothing because it only shortens restorations; the step they skip is pairing each trip with the same section's restoration minutes before.",
   "domain_test": "The deciding quantity is the sustained interruptions that cold load pickup re-trips added after the staged-restoration rule was withdrawn: an outage of an hour or more in hard frost leaves every electric heating load calling at once, a section re-energised in one step draws two to four times its diversified load and its protection trips again within minutes, which distribution reliability engineering counts in IEEE 1366 customer interruptions; swapped to another field's nouns there is no loss of load diversity, no relay pickup and no restoration practice for the pairing to rest on.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:restoration-that-does-not-hold",
@@ -45,23 +45,28 @@
     "weather from an airport station in UTC hours"
   ],
   "stakeholder_role": "manager of system reliability at the cooperative",
-  "role_family": "research_desk",
+  "role_family": "capacity_planner",
   "scoring_unit": "per covered member",
   "spine": {
     "file": "outage_events_fy2022-fy2026.csv",
-    "rows": 0,
-    "entity": "one interruption or momentary operation of a protective device",
-    "grain": "device x interruption",
+    "rows": 10822,
+    "entity": "one sustained interruption record (unplanned or planned) in the outage management system",
+    "grain": "interruption record",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
+  "forum": "trustees_or_governors",
   "forcing_event": "vote_or_meeting",
   "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United States, Minnesota (an invented county north of the Twin Cities)",
+    "geography": "United States, central Minnesota (no county named)",
     "currency": "USD",
     "org_type": "an electric membership cooperative distributing to about 136,000 members",
-    "invented_names": [],
+    "invented_names": [
+      "Norvale Electric Cooperative",
+      "Brekke Power Products",
+      "Halvorsen Electric",
+      "Dunmore Transformer"
+    ],
     "people": [
       "Kayla Dean",
       "Lawrence Reed"
@@ -75,13 +80,14 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is the interruptions a change in how units are brought back caused by making them fail again moments after they return: the second failure is filed under the cause its aftermath resembles, so a change whose stated effect is only on duration is costed at nothing on counts while the change that added load takes the rise, and only pairing each failure with the same unit's return minutes before separates them.",
-  "driver_concrete": "Each fiscal 2026 overload trip set against the same section's restoration minutes earlier: after the staged cold-weather restoration rule was withdrawn on 1 December 2025, sections re-energised in one step after an hour or more without supply in hard frost tripped again within minutes on the cold load they picked up, re-interrupting the same members; those re-trips, not the heat pumps connected without a load study, carry the winter's rise in overload interruptions.",
-  "stump": "A solver who books fiscal 2026's sustained interruptions by cause files the heat pump connection policy, because overload trips rose most and on the sections where heat pumps were added, and costs the restoration rule at nothing because it only shortens outages; the step that lands them there is never pairing each overload trip with the same section's restoration minutes earlier, which shows most of the winter's rise as cold-load re-trips after the rule went.",
+  "driver_concrete": "Each fiscal 2026 overload trip set against the same section's restoration minutes earlier: after the control centre's switching template SO-7 was revised on 1 December 2025 to shorten restorations, sections re-energised in one step after an hour or more without supply on a frost day tripped again within minutes on the cold load they picked up, re-interrupting the same members; those re-trips (about 8,700 customer interruptions), not the heat pumps connected without a load study (whose own harm is about 1,500 on the service transformers a study checks), are most of the winter's overload rise.",
+  "stump": "A solver who books fiscal 2026's sustained interruptions by cause files the heat pump connection policy, at about 10,900 customer interruptions, because the overload category rose most once heat pumps were connected without a load study, and costs the switching revision at nothing because it only shortens restorations; the step that lands them there is never pairing each overload trip with the same section's restoration minutes earlier, which shows most of the winter's rise as cold-load re-trips after one-step re-energisation began and puts the fix on the switching revision.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task252": "task252 reads a channel's error recovering after each maintenance visit against an upstream reference; here nothing is calibrated: each interruption is paired with the same section's restoration minutes before, and the call names the restoration practice whose restored supply does not hold.",
     "task129": "task129 books a vegetation rise to a trimming contractor and finds it in each unit's surroundings beyond the cleared zone; here no surroundings decide: the rise is a second interruption the restoration itself sets off, found only by pairing each trip with the same section's return minutes before.",
-    "task303": "task303 removes the losses every sibling feeder logs in the same minute from a shared upstream source; here the pairing is within one section across time, a trip minutes after its own restoration, and the call names the change in restoration practice."
+    "task303": "task303 removes the losses every sibling feeder logs in the same minute from a shared upstream source; here the pairing is within one section across time, a trip minutes after its own restoration, and the call names the change in restoration practice.",
+    "task400": "task400 reads a staggered rollout through the natural comparison of units adopting at different dates; here nothing is staggered and no comparison group decides: the decisive variable is the minutes between consecutive records of one section, a restoration setting off the next interruption on the same device."
   },
   "lineage": [
     {
@@ -213,6 +219,12 @@
       "deliverable set": "csv+docx"
     }
   ],
-  "notes": "Strategy decomposition_attribution: the year's rise in overload interruptions splits between new heat pump load (true overloads) and cold load pickup re-trips after one-step restoration, and only the pairing of each trip with the same section's prior restoration decides the split. Decisive generator G9 (downstream survival against upstream acquisition): the restoration is the acquisition the rule's purpose measures; whether the restored supply held is the outcome the decision is scored on. G14 (conditioned yield) behind it: the staged-era re-trip rate applies only to restorations after an hour or more in frost. G3 (record against operation) was refused by ban.pattern against task400; G7 and population-first gaps collide with task202 and task308. org_family cooperative_or_member_body is the honest key for a member-owned cooperative (task129 and task308 carry it); utility_or_infrastructure is banned against task401 and is not used.",
-  "registered": "2026-11-03T20:33:25Z"
+  "notes": "Strategy decomposition_attribution: the year's rise in overload interruptions splits between new heat pump load (true overloads) and cold load pickup re-trips after one-step restoration, and only the pairing of each trip with the same section's prior restoration decides the split. Decisive generator G9 (downstream survival against upstream acquisition): the restoration is the acquisition the rule's purpose measures; whether the restored supply held is the outcome the decision is scored on. G14 (conditioned yield) behind it: the staged-era re-trip rate applies only to restorations after an hour or more in frost. G3 (record against operation) was refused by ban.pattern against task400; G7 and population-first gaps collide with task202 and task308. org_family cooperative_or_member_body is the honest key for a member-owned cooperative (task129 and task308 carry it); utility_or_infrastructure is banned against task401 and is not used. Stage 3 (2026-11-03): heart BLOCKed four axes against task398 once task401's architecture 3 was spent and left the window (ban.role, ban.artifact, ban.strategy, ban.forum). Redrawn: the work plan is adopted by the cooperative's elected Board of Trustees (the pack's documents now name it so); the manager of system reliability sits in system planning (capacity_planner, research_desk was the looser fit); the stakeholder's context artifact is the fiscal year's reliability review, a close-out of the year (close_out_summary); the decisive variable is the minutes between a trip and the same section's last restoration, a relation in time between records (time_semantics), with decomposition_attribution kept as the Gate G mechanism.",
+  "registered": "2026-11-03T20:33:25Z",
+  "invented_names": [
+    "Norvale Electric Cooperative",
+    "Brekke Power Products",
+    "Halvorsen Electric",
+    "Dunmore Transformer"
+  ]
 }
