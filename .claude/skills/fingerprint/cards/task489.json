@@ -1,0 +1,99 @@
+{
+  "task": "task489",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Architecture 1. Seed ET46 (retail comparable sales in a 53-week year) moved out of retail FP&A, whose pitfalls are calendar and definition readings rule 3 bars from deciding a call, into Physical & Environmental Sciences, emissions-inventory: an Alberta gas producer's 2026 source-level inventory of its pneumatic controllers and the 2027 zero-emission conversion list it fixes.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a Deep Basin gas producer's source-level methane inventory of the snap-acting level controllers on its wellsite separators, each venting supply gas once per dump, built to fix which well sites its 2027 zero-emission controller conversion covers",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G14",
+    "G19"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the equipment register, the controller data sheets, the gas analyses, the closed daily allocations and the plunger controllers' event logs, and reads the reduction plan correctly, counts each separator's 2026 dumps as the liquid it handled over its level band (vessel bore times controller span), which the five separators with dump counters confirm to within half a per cent, and files the conversion list with the sites whose plunger wells lift slugs larger than their band, because nothing records that such a slug empties the band in one dump, so those controllers dumped once per arrival, a fraction of the volume count.",
+  "domain_test": "The deciding quantity is each controller's 2026 dump count, which emissions engineering estimates from the liquid each separator handled over its level band, and here the plunger wells' slugs either overfill the band (one dump per arrival) or accumulate under it (one dump per band), so only each well's slug (its day's liquid over its arrivals) against its own separator's band gives the count; with another field's nouns (a clinic's visits, a school's seats) there is no level band, no slug and no dump, and the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:separator dumps under plunger slugs against each level controller's band",
+  "layer1": [
+    "well identifiers in three systems' formats (the production accounting UWI with slashes, the lift controllers' short legal land description, the register's well name)",
+    "plunger controller event logs in Mountain local time with the November repeated hour and the March gap, against production days that run 08:00 to 08:00",
+    "controller data sheets in US units (scf at 60 F and 14.696 psia, psig, inches) against a reporting standard in m3 at 15 C and 101.325 kPa",
+    "vessel bores and controller spans in inches in the register, band volumes to be derived",
+    "event types mixed in one log (arrivals, non-arrivals, opens, closes, afterflow ends), with firmware-reset rows",
+    "devices replaced or removed mid-year, dated only in the work orders",
+    "a SCADA dump counter that rolls over at 65,535"
+  ],
+  "stakeholder_role": "the producer's methane reduction lead, who brings the 2027 conversion list to the capital budget",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "plunger_events_2026.csv",
+    "rows": 0,
+    "entity": "one event recorded by a wellsite plunger lift controller (arrival, non-arrival, open, close, afterflow end)",
+    "grain": "event",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "other",
+  "world": {
+    "geography": "Canada (Alberta)",
+    "currency": "CAD",
+    "org_type": "independent natural gas producer",
+    "invented_names": [
+      "Larchmere Resources Ltd.",
+      "Sheldrake Field Measurement Ltd.",
+      "Corrigan Controls",
+      "Aldous Valve and Instrument",
+      "Brannick Instrument"
+    ],
+    "people": [
+      "Kimberly Hinton",
+      "Stacy Frost",
+      "Valerie Sanders",
+      "Gregory Cook"
+    ]
+  },
+  "deliverables": [
+    "larchmere_controllers_2026.csv",
+    "controller_conversion_2027.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A device vents a fixed amount each time the level in a vessel it guards falls from a high setting to a low one, and where the liquid arrives in discrete loads, a load larger than the band between the settings empties it once however large while loads much smaller than the band accumulate until it fills, so the count is set by each load against its own vessel's band, not by the volume over the band (which the instrumented, continuously fed vessels confirm) nor by the number of loads.",
+  "driver_concrete": "Each wellsite separator's snap-acting level controller vents its supply gas once per dump, and the plunger wells deliver their liquid as one slug per arrival, so a separator whose slugs exceed its level band (vessel bore times controller span) dumped once per arrival while one whose slugs are a small fraction of it dumped once per band of liquid; the liquid-over-band count every engineer uses, confirmed by the five dump counters on flowing wells, overcounts the first kind and the arrival count overcounts the second.",
+  "stump": "The default path counts every separator's dumps as its 2026 liquid over its level band, which the five dump counters confirm, and so puts on the conversion list the sites whose plunger wells lift slugs larger than their band; each such slug empties the band in one dump, so those controllers vented once per arrival and the sites fall under the plan's 0.5 tonne line.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task210": "task210 reads each pumping station's delivered pump rate from its wet well's fill and draw times between control levels against the rated duty, an anomaly call on a rate; here no rate is read: the count of controller dumps is set by each plunger slug against its own separator's level band, and the call is which sites' 2026 controller methane passes a conversion line.",
+    "task488": "task488 tracks a recalled batch through always-full conduits by the volume drawn downstream of each segment; here nothing is traced: liquid arrives at one vessel in slugs and the question is how many times its level band empties.",
+    "task182": "task182 v1 recovers each unit's own lagged driver-only path to separate an effect from a shared external driver; here no driver, lag or effect is separated: a vent count is rebuilt from how each delivered slug compares with its own vessel's level band.",
+    "task270": "task270 v4 judges whether a part of a composite score measures standing better than the whole, its own error sitting inside the composite; here nothing is scored or compared for accuracy: each controller's dumps are counted from slug against band.",
+    "task465": "task465's draft averages a kinked payoff over a prediction's error where a target went unobserved; here nothing is predicted or averaged over error: the dumps are set exactly by each slug against its vessel's band, arrival by arrival."
+  },
+  "lineage": [],
+  "notes": "Seed ET46's world (retail comparable sales) was set aside at the draw: its 53rd week, shifted calendar and comparable-store rule are readings, and every analytical candidate screened in that world settled the WHAT (the store population) or repeated a spent driver (calendarisation task123, trading-day exposure task477, price index task463).",
+  "registered": "2026-11-04T14:29:40Z"
+}
