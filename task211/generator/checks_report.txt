@@ -1,0 +1,75 @@
+PASS  reader lands wrong: first look (crude rate against the reference)  names Halvorne (Halvorne 15.5, Pellbrook 10.8, Corwen 7.3, Tessard 5.6, Wynfield 0.9)
+PASS  reader lands wrong: (a) field-decomposing: age, resistance and centre standardised  names Halvorne (Halvorne 15.4, Pellbrook 10.9, Corwen 8.2, Tessard 5.5, Wynfield 0.6)
+PASS  reader lands wrong: (b) constructing: first 90 days on a product excluded  names Halvorne (Halvorne 13.6, Pellbrook 10.1, Corwen 5.7, Tessard 6.1, Wynfield 0.2)
+PASS  reader lands wrong: (b) constructing: 90 days after a change of product excluded  names Halvorne (Halvorne 11.7, Pellbrook 0.4, Corwen 1.2, Tessard 4.0, Wynfield -1.4)
+PASS  reader lands wrong: (c) per-record: product, month, centre, age, resistance  names Halvorne (Halvorne 15.4, Pellbrook 11.3, Corwen 7.2, Tessard 6.0, Wynfield 0.7)
+PASS  reader lands wrong: (d) switching: a transient after a change of product  names Halvorne (Halvorne 11.2, Pellbrook 5.2, Corwen 4.9, Tessard 1.3, Wynfield -4.7)
+PASS  reader lands wrong: (d) new site: the new site's stock as the cause  names Halvorne (Halvorne 15.6, Pellbrook 10.8, Corwen 7.4, Tessard 5.7, Wynfield 0.8)
+PASS  reader lands wrong: (d) colour dated by the register's approval date  names Halvorne (Halvorne 9.1, Pellbrook 4.1, Corwen 3.4, Tessard 4.9, Wynfield -0.1)
+PASS  reader lands wrong: (d) colour from the letter, dated by its centre date, 90 days  names Halvorne (Halvorne 12.0, Pellbrook 10.8, Corwen 7.4, Tessard 5.7, Wynfield 0.8)
+PASS  reader lands wrong: (d) colour from the letter, dated by its centre date, 180 days  names Pellbrook (Halvorne 1.6, Pellbrook 10.7, Corwen 7.4, Tessard 5.7, Wynfield 0.8)
+PASS  reader lands wrong: (d) switching and the letter date together  names Halvorne (Halvorne 7.3, Pellbrook 5.2, Corwen 4.9, Tessard 1.4, Wynfield -4.6)
+PASS  reader lands wrong: (e) literal joint replay: standardised excess against the reference  names Halvorne (Halvorne 15.6, Pellbrook 10.8, Corwen 7.4, Tessard 5.7, Wynfield 0.8)
+PASS  reader lands wrong: temporal: the last two months' standardised rates  names Pellbrook (Halvorne 18.2, Pellbrook 30.1, Corwen 4.1, Tessard 6.6, Wynfield 2.6)
+PASS  golden family names the call: first supply after an appearance change  Tessard 4.25, next Pellbrook 1.10, lead 3.86
+PASS  golden family names the call: first supply after a colour change (narrow reading)  Tessard 4.25, next Pellbrook 1.10, lead 3.86
+PASS  golden family names the call: first supply with month and centre  Tessard 4.28, next Pellbrook 1.27, lead 3.36
+PASS  golden family names the call: first supply split by its days of supply  Tessard 4.25, next Pellbrook 1.01, lead 4.19
+PASS  golden family names the call: days since the appearance change, 90-day clock  Tessard 4.01, next Pellbrook 1.96, lead 2.05
+PASS  golden family names the call: days since the appearance change, 120-day clock  Tessard 3.76, next Pellbrook 2.66, lead 1.41
+PASS  golden family names the call: days since the appearance change, fourteen-day bins  Tessard 4.09, next Pellbrook 0.54, lead 7.56
+PASS  corridor: Tessard's excess in one whole-visit bin across the golden family  3.76 to 4.28
+PASS  none is ruled out with margin under every specification  lowest Tessard excess 3.76 against the 2.0 bar
+PASS  the call's lead is at least 1.2 under every specification  lowest lead 1.41
+PASS  the record prefers the appearance clock to the site clock and the switch clock  log-likelihood gains 483.7 over site, 673.5 over switch
+PASS  the record prefers the first supply to every fixed clock  30 days 412.6, 60 days 413.9, 90 days 289.7, 120 days 379.7, 180 days 492.3
+PASS  none is ruled out under every transient specification: first supply after an appearance change  largest Tessard 4.25
+PASS  none is ruled out under every transient specification: first supply after a colour change (narrow reading)  largest Tessard 4.25
+PASS  none is ruled out under every transient specification: first supply with month and centre  largest Tessard 4.28
+PASS  none is ruled out under every transient specification: first supply split by its days of supply  largest Tessard 4.25
+PASS  none is ruled out under every transient specification: days since the appearance change, 90-day clock  largest Tessard 4.01
+PASS  none is ruled out under every transient specification: days since the appearance change, 120-day clock  largest Tessard 3.76
+PASS  none is ruled out under every transient specification: days since the appearance change, fourteen-day bins  largest Tessard 4.09
+PASS  none is ruled out under every transient specification: days since the appearance change, 30-day clock  largest Halvorne 9.31
+PASS  none is ruled out under every transient specification: days since the appearance change, 60-day clock  largest Halvorne 5.55
+PASS  none is ruled out under every transient specification: days since the appearance change, 180-day clock  largest Pellbrook 3.44
+PASS  SF1 a change of tablet read as colour or as the whole description: the same fills  
+PASS  SF2 each centre's change date is one date (letter date, first pink fill on or after it, last white fill before it)  
+PASS  SF3 dating by UTC moves no visit across the window's edges  0 visits on 31 Dec or 30 Jun after 16:00
+PASS  SF4 transfers counted twice: the same call  transfers are spread over every product; asserted inert below
+PASS  SF5 reversed claims kept: the same call  asserted inert below
+PASS  SF6 a member's first fill in the extract carries no change: inert inside the window  the extract starts 1 April 2025, more than 90 days before the window
+PASS  SF7 age band at the window's start: the same call  bands are 18 and 65; asserted on the golden
+PASS  Tessard excess mid-bin (whole visits)  0.246 from an edge
+PASS  Tessard excess mid-bin under every golden specification  tightest 0.218
+PASS  R2 mess item mishandled, SF3 the partner feed dated by its UTC day: the call and Tessard's whole-visit excess  names Tessard, Tessard 4.25
+PASS  R2 mess item mishandled, SF3 the partner feed dated by its UTC day: the per-generic counts  unchanged
+PASS  R2 mess item mishandled, SF9 merged record numbers left unlinked: the call and Tessard's whole-visit excess  names Tessard, Tessard 3.96
+PASS  R2 mess item mishandled, SF9 merged record numbers left unlinked: the per-generic counts  moves Halvorne, Pellbrook, Corwen, Tessard, Wynfield; ruled out by MS-12 2.4
+PASS  R2 mess item mishandled, SF7 age band on 2025 less birth year: the call and Tessard's whole-visit excess  names Tessard, Tessard 4.26
+PASS  R2 mess item mishandled, SF7 age band on 2025 less birth year: the per-generic counts  unchanged
+PASS  R2 mess item mishandled, SF4 transfers counted at both hospitals: the call and Tessard's whole-visit excess  names Tessard, Tessard 4.32
+PASS  R2 mess item mishandled, SF4 transfers counted at both hospitals: the per-generic counts  moves Halvorne, Pellbrook, Corwen, Tessard, Wynfield; ruled out by MS-12 2.3
+PASS  R2 mess item mishandled, SF5 reversed claims kept as fills: the call and Tessard's whole-visit excess  names Tessard, Tessard 4.31
+PASS  R2 mess item mishandled, SF5 reversed claims kept as fills: the per-generic counts  moves Halvorne, Pellbrook, Corwen, Tessard, Wynfield; ruled out by MS-12 2.4
+PASS  R2 mess item mishandled, SF8 an overlap carried forward instead of given to the later fill: the call and Tessard's whole-visit excess  names Tessard, Tessard 4.10
+PASS  R2 mess item mishandled, SF8 an overlap carried forward instead of given to the later fill: the per-generic counts  moves Halvorne, Pellbrook, Corwen, Tessard, Wynfield; ruled out by MS-12 2.4
+PASS  patient-months mid-bin (nearest 10)  tightest 1.48
+PASS  ask 1: the receipt-day device (D8) moves every Halvorne and Corwen figure by three bins or more  Corwen Q1 +4651, Corwen Q2 +1766, Halvorne Q1 -2243, Halvorne Q2 +10261
+PASS  ask 1: the catch-up device (D6) moves every spend figure by three bins or more for the cracker  Corwen Q1 -2800, Corwen Q2 +2800, Halvorne Q1 -6190, Halvorne Q2 +6190, Pellbrook Q1 +4840, Pellbrook Q2 -2090, Tessard Q1 +4350, Tessard Q2 -1790, Wynfield Q1 +4250, Wynfield Q2 -2830
+PASS  ask 2: the legacy item numbers (D7) move Halvorne, Pellbrook and Corwen in the first quarter, Pellbrook in the second and Wynfield in the first  Corwen Q1 12 against 11, Halvorne Q1 0 against 14, Pellbrook Q1 0 against 59, Pellbrook Q2 0 against 33, Wynfield Q1 16 against 12
+PASS  ask 2: the case-level shipments (D4) move the other five figures  Corwen Q2 15 against 11, Halvorne Q2 21 against 14, Tessard Q1 51 against 44, Tessard Q2 15 against 9, Wynfield Q2 24 against 17
+PASS  ask 2: each legacy notice resolves to one product, the two without a listed former number by which one stopped shipping  [('2026-01-05', 'Tessard'), ('2026-01-12', 'Halvorne'), ('2026-01-15', 'Wynfield'), ('2026-02-01', 'Pellbrook'), ('2026-02-26', 'Tessard')]
+PASS  ask 1: each catch-up line's bottles are one run of that centre's lines from one first dispatch, no quarter's receipts  35 catch-up lines, first covered dispatch ['2025-12-03', '2025-12-04', '2026-02-09', '2026-02-10']
+PASS  ask 1 spend mid-bin (nearest 10 dollars)  tightest 1.05
+PASS  separation: no device row in the main call's files  
+PASS  input gates: 10 or more files, 3 or more formats  22 files, ['csv', 'json', 'parquet', 'pdf', 'xlsx']
+PASS  input gates: a file of 25,000 rows or more  551845 claim lines
+PASS  pack under 15 MB  12.8 MB
+PASS  R1 the raw material ships: claim lines and encounter records at the patient-day grain, no column holding a tablet's look, a change, a first fill or an excess  64 columns read
+PASS  R3a the analyst test: standardised rates with the switching allowance file a wrong product  names Halvorne at 11.2
+PASS  R3b the decisive step alone: the same model with each patient's first supply held files Tessard  Tessard 4.25
+PASS  R3b every lower rung's single correction stays on a wrong product  13 readers
+PASS  R3c no plant: the supply monitor carries no product column, no copied claim block  monitor columns ['month', 'distribution_centre', 'fills', 'tablets']; 0 repeated claim lines
+PASS  container metadata scrubbed (OOXML properties, PDF info, chart PNG, parquet footer)  clean
+PASS  input gates: two or more distractors named in metadata.json  

@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Tessard, 4 excess qualifying visits per 1,000 patient-months",
+  "answer_source": "task211/generator/figures.json (call, call_excess), recomputed by generator/verify.py",
   "gap": [
     "population",
     "objective"
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who nets the claim reversals, links every fill to its patient, counts each product's seizure-related emergency visits and patient-months of supply in January to June 2026, adjusts for age and drug-resistant epilepsy and allows for patients moved between manufacturers names Halvorne at about 11 excess visits per 1,000 patient-months, when Halvorne's excess is the weeks after each patient's first fill of its new pink tablets and the excess that persists is Tessard's, about 6.",
+  "analyst_test": "A strong analyst who nets the claim reversals, links both hospital feeds, counts each product's seizure-related emergency visits and patient-months of supply in January to June 2026, adjusts for age and drug-resistant epilepsy and allows for changes of product names Halvorne at 11.2 excess visits per 1,000 patient-months; the excess the tablets carry, with each patient's first supply of a differently looking tablet held as it was, is Tessard's, 4.",
   "domain_test": "The deciding quantity is each interchangeable product's excess of seizure-related emergency visits over what its own patients would have had on tablets releasing levetiracetam as the reference does, estimated the way post-market pharmacoepidemiology estimates a generic's performance from dispensing and encounter records; in another field's nouns no tablet's colour drives missed doses and no breakthrough seizure follows.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:tablet-appearance-change-transient-against-persistent-product-effect",
@@ -48,8 +48,8 @@
   "role_family": "other",
   "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "dispensing_claims_2025-07_2026-06.parquet",
-    "rows": 230000,
+    "file": "dispensing_claims_2025-04_to_2026-06.parquet",
+    "rows": 551845,
     "entity": "one dispensing claim line, a fill or its reversal",
     "grain": "claim line",
     "source": "synthetic"
@@ -83,10 +83,10 @@
     "levetiracetam_products.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "whether",
   "driver": "The decisive quantity is each candidate's persistent excess once a transient that follows every member's own first encounter with a changed version of the item is removed, where the change reached members on dates set by which supply point served them and is recorded only in a register's dated descriptions, not in the column naming the candidate supplied, so per-candidate rates and any model keyed on changes of candidate book the transient to the candidate whose version changed.",
-  "driver_concrete": "Patients whose levetiracetam tablets change colour at a fill miss doses for a few weeks and have more seizure visits; Halvorne's new-site tablets turned pink as each distribution centre switched, so Halvorne's patients carry that transient across the window while Tessard's tablets carry a persistent excess, and only the product register's dated descriptions with the transition letter show which fills changed colour.",
-  "stump": "A competent analyst counts each product's seizure-related emergency visits per 1,000 patient-months in January to June 2026, adjusts for age, drug-resistant epilepsy and manufacturer switches and names Halvorne at about 11 excess visits; the step that lands them there is reading the excess per product, when Halvorne's excess is the weeks after each patient's first fill of its new pink tablets, and with that transient estimated from every colour change in the record the persistent excess is Tessard's, about 6.",
+  "driver_concrete": "Patients whose levetiracetam tablets look different from their previous fill miss doses through that first supply and have more seizure visits; Halvorne's new-site tablets turned pink as each distribution centre and its pharmacies switched, and Pellbrook's backorder and every stock-out moved patients between tablets of different colours, so those products carry the response while Tessard's tablets carry a persistent excess of their own.",
+  "stump": "A competent analyst nets the reversals, links both hospital feeds, adjusts each generic's qualifying visits per 1,000 patient-months against Levaril's for age and drug-resistant epilepsy, allows for changes of product and names Halvorne at 11.2 excess visits; the step that lands them there is reading the excess per product, when Halvorne's excess is the first supply of its new pink tablets, filled as the Fort Wayne stock reached each distribution centre in turn, and with every patient's first supply of a differently looking tablet held as it was, the excess the tablets themselves carry is Tessard's, 4.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task121": "task121 reads a rise against each event's exposure to the operator's rest before the shift, built from consecutive worked periods; here the excess is a transient each patient carries after their own first fill of a differently coloured tablet, dated by the distribution centre that served their pharmacy, and the decision sends the product whose persistent excess remains once that transient is removed.",
