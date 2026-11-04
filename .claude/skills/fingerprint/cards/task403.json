@@ -11,8 +11,8 @@
   "shape": "09",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "(C) the winter release slate: about 2,100 paid conversions lost to its cause; runner-up (A) the first-month price hold, about 200; gap 1,900",
+  "answer_source": "submission.md",
   "gap": [
     "objective",
     "population"
@@ -32,25 +32,25 @@
   "validated_decoy": false,
   "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly builds trial-start cohorts in Toronto time, matures each trial to its first charge, compares the November 2025 to January 2026 trials with the same months a year earlier, finds conversion down about 13 points in every plan, device, channel and province and about 10 points among the trialists who joined on library titles no slate change touched, sees the step land on the first charges from 1 November when the price for new subscribers rose and the cancellation survey's price reason climb, and books the fall to the price, funding (A) the first-month price hold on about 3,700 lost conversions.",
-  "domain_test": "The deciding quantity is the paid conversions each cause cost the winter's trials, read through each trialist's content runway at the day-7 charge (whether a show they were watching had episodes released after their trial ended), worked as streaming trial-journey analysis against the release calendar; in another field's nouns weekly drops, full-season releases and a holiday pause have no counterpart and the task stops reading.",
+  "analyst_test": "A strong analyst who reads every file correctly builds trial-start cohorts in Toronto time, matures each trial to its first charge, compares the November 2025 to January 2026 trials with the same months a year earlier, finds conversion down about 15 points in every plan, device, channel and province and 11 points among the trialists who signed up on seasons that had already finished, sees the step land on the first charges from 1 November when the price for new subscribers rose and the cancellation survey's price reason climb, and books the fall to the price, funding (A) the first-month price hold on about 2,500 lost conversions.",
+  "domain_test": "The deciding quantity is the paid conversions each cause cost the winter's trials, read through each trialist's content runway at the day-7 charge (whether a season they played had an episode released after their trial ended), worked as streaming trial-conversion analysis against the release calendar; in another field's nouns weekly episode drops, a season finale and a winter release slate have no counterpart and the task stops reading.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:trial-conversion-read-at-each-trialist's-content-runway-against-the-release-calendar",
   "layer1": [
-    "viewing heartbeats logged in UTC against trial clocks run in each subscriber's local time, across the 2 November 2025 clock change, with Saskatchewan on standard time all year",
-    "the June 2025 content management migration that gave every title and episode a new identifier, with a crosswalk",
-    "English and French records of the same series under different titles",
-    "billing exports in cents with GST, HST and QST by province, and partner trials billed through the telecom partner",
-    "duplicate heartbeat summaries written on app reconnects"
+    "plays logged in UTC against trials counted in Toronto time, across the 2 November 2025 clock change",
+    "the June 2025 platform cut-over: legacy content and account numbers with crosswalks, a sign-up pause, and the old platform's rows of 9 to 19 June in Toronto time stamped as UTC",
+    "English and French versions of each episode under their own identifiers",
+    "two card processors: tax-included cents and four attempts to 7 September 2025, pre-tax dollars with tax beside them, local time with an offset and three attempts from 8 September",
+    "a viewing row written twice when an app reconnects"
   ],
   "stakeholder_role": "the streaming service's head of subscriber growth, who funds one programme before the 2026-27 winter sign-up peak (the prompt names no one)",
   "role_family": "product_manager",
   "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "trial_viewing_2024-08_2026-02.parquet",
-    "rows": 450000,
-    "entity": "one trialist's viewing of one episode during the free trial: title, season, episode, first play and minutes watched",
-    "grain": "trial x episode",
+    "file": "trial_viewing_2024-11_2026-02.parquet",
+    "rows": 440424,
+    "entity": "one play during a free trial (the smart TV app's rows from its February to its October 2025 release cover an autoplay run)",
+    "grain": "trial x play",
     "source": "synthetic"
   },
   "forum": "executive_team",
@@ -70,12 +70,15 @@
       "Tamara Delgado"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "trial_conversion_review.xlsx",
+    "winter_conversion_note.pdf"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A fall in a conversion rate is booked to a price change that took effect the same week, because the fall holds in every visible group, in the units drawn in by things no other change touched, and in the stated reasons, but each unit decides at the end of a fixed window and what decides it is whether something it was following still had more to come after that point, a state no column holds that only the unit's own activity set against a second calendar shows; the share of units in that state moved with the calendar in the same week, and at equal state the price moved the rate by almost nothing.",
-  "driver_concrete": "Trial-to-paid conversion for the November 2025 to January 2026 trial starts at Ellesmere fell about 13 points against a year earlier, within every plan, device, channel, province and library acquisition title, from the first charges of 1 November when the price for new subscribers rose from CAD 9.99 to 11.99; but a trialist pays at day 7 when a show they were watching still has episodes to be released after their trial ends, a weekly season was airing every week from November 2024 until the autumn finales of 30 and 31 October 2025, and the winter's weekly original slipped to April while its other originals arrived as full-season drops, so the share of trialists with episodes still to come fell from about three in five to about one in seven; at equal runway the price cost about a point (about 300 conversions) and the slate about 3,400.",
-  "stump": "A competent solver compares the November to January trials with a year earlier, finds conversion down about 13 points in every segment and about 10 among the library-title trialists no slate change touched, sees the step arrive with the 1 November first charges at the new price, and funds (A) the first-month price hold on about 3,700 lost conversions, because they never set each trialist's viewing against the release calendar to ask whether a show they were watching still had episodes to come after day 7, which puts about 3,400 of the loss on the winter release slate (C) and leaves the price about 300.",
+  "driver_concrete": "Trial-to-paid conversion for the November 2025 to January 2026 trial starts at Ellesmere fell from 51.7 to 37.1 per cent against a year earlier, within every plan, device, channel and province and among trialists who signed up on seasons that had already finished, from the first charges of 1 November when the price for new subscribers rose from CAD 9.99 to 11.99; but a trialist pays at day 7 when a season they were playing still has an episode to be released after their trial ends, a weekly season was airing every week from November 2024 until the autumn finales of 24 and 31 October 2025, and the winter's original slipped to April 2026, so the share of trialists with an episode still to come fell from 70.2 per cent to none; at equal runway the price cost about 200 paid conversions and the slate about 2,100.",
+  "stump": "A competent solver compares the November to January trials with a year earlier, finds conversion down about 15 points in every segment and 11 among the trialists who signed up on finished seasons no slate change touched, sees the step arrive with the 1 November first charges at the new price, and funds (A) the first-month price hold on about 2,500 lost conversions, because they never set each trialist's played seasons against the release calendar to ask whether one still had an episode to come after day 7, which puts about 2,100 of the loss on the winter release slate (C) and leaves the price about 200.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task306": "v4 prices a strategy's trading cost at the scale it is given against the market's daily volume (an edge kept at scale); here no cost or scale: a conversion fall booked to a coincident price change is a shift in how many trialists had a show still to come at day 7, read from viewing against the release calendar",
@@ -85,7 +88,8 @@
     "task83": "conditions a holdout's measured effect on each unit's prior treatment history to transport it to a new pool; here nothing is transported from a measurement corpus: the fall itself is decomposed into a shift in the share of trialists with episodes still to come and the change within that state",
     "task162": "prices a fix by the hours its operating state lets it act; here no fix acts by the hour: trialists' conversion turns on the content calendar's state at each trial's end",
     "task134": "v2 reads a conversion hazard by time since entry after a surge filled the pool; here the state that decides is not time since entry but whether a show the trialist was watching was still mid-season at day 7, read off a second calendar",
-    "task137": "v1 round 2 reads a repricing share as a mixture of two kinds of unit rebuilt from each unit's price against its entry cohort's floor, to carry a forward round; here nothing is carried forward and no price class is rebuilt: the observed winter fall is split by whether each trialist's show still had episodes to come at day 7, from viewing against the release calendar"
+    "task137": "v1 round 2 reads a repricing share as a mixture of two kinds of unit rebuilt from each unit's price against its entry cohort's floor, to carry a forward round; here nothing is carried forward and no price class is rebuilt: the observed winter fall is split by whether each trialist's show still had episodes to come at day 7, from viewing against the release calendar",
+    "task402": "task402 (shipped 11-04) re-files a cooperative's second failures under the cause their aftermath resembles, a re-labelling of events read from one section's restoration minutes earlier; here nothing is re-labelled: a conversion fall booked to a coincident price change is a shift in how many trialists had a season still to come at their own day 7, rebuilt from viewing against the release calendar; the pick is among programmes with a licensed non-pick, shape 09 against 01, pattern E against none."
   },
   "lineage": [],
   "notes": "Strategy composition_mix, pattern E, G14 conditioned yield: the year-on-year conversion fall is a shift in the trial pool's content-runway mix, and conversion within each runway state barely moved. Gate G decomposition_attribution: the honest mechanism is booking a correctly measured fall to the right driver; no forecasting, binding or method-selection step carries the call (answered in the design note). Persona Thomas Mcneil replaced by Julie Jacobson from the same guard.py names draw (people.first WARN against task126). Forcing event redrawn at registration from budget_or_appropriation to season_or_peak: task401's card went architecture_spent with the merge of 2026-11-04, the live window became task399, task400 and task402, and task399 holds budget_or_appropriation; the honest forcing event is the winter sign-up peak the programme must be in place for (the review runs in early March 2026, once the January trials' first charges have matured), so the replacement is the truer label and makes the call forward-facing.",
