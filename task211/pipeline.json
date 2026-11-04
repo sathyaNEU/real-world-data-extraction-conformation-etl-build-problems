@@ -1,34 +1,34 @@
 {
   "task": "task211",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "pharmacology-pharmacoepidemiology-safety / safety-signal-detection",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-04",
   "seed": "AD34 (the number and objective only; architecture 1 world spent)",
-  "stump": "A competent analyst counts each product's seizure-related emergency visits per 1,000 patient-months in January to June 2026, adjusts for age, drug-resistant epilepsy and manufacturer switches and names Halvorne at about 11 excess visits; the step that lands them there is reading the excess per product, when Halvorne's excess is the weeks after each patient's first fill of its new pink tablets, and with that transient estimated from every colour change in the record the persistent excess is Tessard's, about 6.",
+  "stump": "A competent analyst nets the reversals, links both hospital feeds, adjusts each generic's qualifying visits per 1,000 patient-months against Levaril's for age and drug-resistant epilepsy, allows for changes of product and names Halvorne at 11.2 excess visits; the step that lands them there is reading the excess per product, when Halvorne's excess is the first supply of its new pink tablets, filled as the Fort Wayne stock reached each distribution centre in turn, and with every patient's first supply of a differently looking tablet held as it was, the excess the tablets themselves carry is Tessard's, 4.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-04"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (the 2.0 bar in MS-12; generic stump terms in the letters, MS-12 and the manual; MS-12 naming ordinary column words); ruled harmless in the main thread",
+    "reader": "brief written, not run"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "guard check at the draw: WARN exit 0, nearest driver 0.07 (task98 v4 lineage)"
+    "heart": "WARN, no BLOCK (repeat.gate_g and overuse.gate_g, answered at the draw); shell.repeat against task244 cleared by the prompt redraw",
+    "nearest": "driver 0.07 task98 v4 lineage; surface exit 0, task129 0.087 and task121 0.080 promoted on card axes, both differentiated on the card"
   },
   "judge": {
     "verdict": "",
     "disposition": "",
-    "report": ""
+    "report": "brief written: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/a2/stage4/judge/BRIEF.md"
   },
   "returned": [],
-  "resume": "Stage 2 of architecture 2 (Larkhaven Health, levetiracetam re-test): write the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet; file the WHAT in the committee surveillance procedure; build the generator with checks.py asserting the five screens on the shipped seed; leave stage 2 on precut exit 0.",
+  "resume": "Stage 4 of architecture 2 (shipped seed 5007, target.zip sha256 f7e348d0c841919a2ae76ea53b24cdddc11453501451a76c2b6de85486c4fbfd): spawn the leak reader and the determinism judge together from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/a2/stage4/reader/BRIEF.md and /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/a2/stage4/judge/BRIEF.md (each folder holds its own copy of the cut pack, byte-identical to target.zip); fix every finding in the generator in one pass, re-run the stage-3 gates (checks.py, verify.py, two byte-identical builds, figures_check, precut, leak.py, guard heart and surface), re-judge a FIX_NOW once; then stage 5 (ship).",
   "approved": null,
   "delivered": null,
   "portal": null,

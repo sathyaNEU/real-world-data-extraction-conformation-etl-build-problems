@@ -1,0 +1,83 @@
+{
+ "call": "Tessard",
+ "call_excess": 4,
+ "referral_bar": 2.0,
+ "rate_base": 1000,
+ "age_band_edges": [
+  18,
+  64,
+  65
+ ],
+ "filed_sections": [
+  "2.3",
+  "2.4",
+  "2.5",
+  "2.6",
+  "3.1",
+  "7.3"
+ ],
+ "excess_raw": {
+  "Halvorne": 0.08685444447462635,
+  "Pellbrook": 1.101118968023234,
+  "Corwen": -0.9581797712092266,
+  "Tessard": 4.2537912949414585,
+  "Wynfield": -0.7644525941363911
+ },
+ "patient_months": {
+  "Halvorne": 104190,
+  "Pellbrook": 33310,
+  "Corwen": 19260,
+  "Tessard": 53040,
+  "Wynfield": 54140
+ },
+ "patient_months_raw": {
+  "Halvorne": 104186.48049281315,
+  "Pellbrook": 33309.99589322382,
+  "Corwen": 19261.897330595482,
+  "Tessard": 53038.91581108829,
+  "Wynfield": 54138.77618069815
+ },
+ "visits": {
+  "Halvorne": 4882,
+  "Pellbrook": 1402,
+  "Corwen": 744,
+  "Tessard": 1960,
+  "Wynfield": 1743
+ },
+ "spend": {
+  "Corwen Q1": 105850,
+  "Corwen Q2": 106590,
+  "Halvorne Q1": 307200,
+  "Halvorne Q2": 251490,
+  "Pellbrook Q1": 70640,
+  "Pellbrook Q2": 114700,
+  "Tessard Q1": 77180,
+  "Tessard Q2": 168640,
+  "Wynfield Q1": 164840,
+  "Wynfield Q2": 133850
+ },
+ "spend_raw": {
+  "Corwen Q1": 105848.15000000001,
+  "Corwen Q2": 106590.0,
+  "Halvorne Q1": 307203.8000000001,
+  "Halvorne Q2": 251492.69999999992,
+  "Pellbrook Q1": 70641.00000000004,
+  "Pellbrook Q2": 114703.94999999995,
+  "Tessard Q1": 77183.5,
+  "Tessard Q2": 168642.24999999997,
+  "Wynfield Q1": 164839.14999999997,
+  "Wynfield Q2": 133853.94999999998
+ },
+ "backorder_days": {
+  "Corwen Q1": 11,
+  "Corwen Q2": 11,
+  "Halvorne Q1": 14,
+  "Halvorne Q2": 14,
+  "Pellbrook Q1": 59,
+  "Pellbrook Q2": 33,
+  "Tessard Q1": 44,
+  "Tessard Q2": 9,
+  "Wynfield Q1": 12,
+  "Wynfield Q2": 17
+ }
+}
