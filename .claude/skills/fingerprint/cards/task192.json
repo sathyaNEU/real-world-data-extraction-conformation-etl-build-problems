@@ -1,137 +1,185 @@
 {
- "task": "task192",
- "architecture": "v3",
- "drawn": "2026-10-17",
- "slot_note": "Seed AD15 kept its decision shape only: one figure committed at a date to a standing body, about coordinated contention. Architecture 1 counted the operations behind overlapping bursts and died on measurement (see lineage). Architecture 2 re-rooted on the register's two ways for a dispute episode to end and was blocked at the draw by the remote merge (see lineage). Architecture 3 keeps the world (a Portuguese conflict monitoring association, three access routes, a settlement gazetteer, partner organisations under data agreements) and the ask layer's shape, and re-roots the decisive step on the press classifier the association measures against its own double-coding sample.",
- "domain": "political-science-public-policy",
- "subdomain": "conflict-protest-event-data-analysis",
- "client_domain": "political-science-public-policy",
- "niche": "how many of a protest register's recorded actions were confrontational when most of the labels come from a classifier whose hand-coded validation batches only ever reached the opening of the period",
- "objective": "anomaly-detection",
- "shape": "17",
- "decision_type": "quantity_figure",
- "answer_unit": "count",
- "answer": "450 confrontational actions between 1 May and 30 October 2026, to the nearest fifty",
- "answer_source": "the accepted items of registo_itens_imprensa.csv with relatos_rede_parceiros.csv and relatos_linha_publica.csv collapsed to the protocol's action grain, the press classifier's 302 marked actions among 4,200 rebuilt from the classifier's measured recall of 0.4933 and false-mark rate of 0.0247, which the coding desk's two rounds of 1,000 hand-coded reports fix, plus the 30 actions a filer coded, to the nearest fifty",
- "gap": [
-  "objective",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G12",
-  "G3"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "gold_standard_subsample",
- "context_artifact": "published_series",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who resolves the three routes, drops the re-imported month, resolves the superseded place names, applies the protocol's action grain and its list of confrontational codes and then corrects the classifier's labels with the confrontational shares the hand coding found on each side of them files 600 confrontational actions, where the period's record gives 450, because those shares were measured on the four months the coding desk audited and the record's composition moves after them.",
- "domain_test": "The deciding quantity is the count of confrontational actions in a contentious event record, which protest event analysis estimates from a machine-coded corpus read against a hand-coded validation batch, because an automatic coder of news text misses about half of a confrontational action's reports and marks a small share of the many ordinary ones. The field's own method carries the coder's sensitivity and false-mark rate, which hold wherever it ran; a generalist carries the batch's own confrontational shares, which hold only where they were measured.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:machine-coded-record-corrected-in-both-directions",
- "layer1": [
-  "a media monitor's item log with accepted and rejected items, a report entering with its first item",
-  "three access routes reporting the same action",
-  "two language feeds of one media group overlapping",
-  "one month of partner reports loaded twice, and the ingest counter counting the second arrival",
-  "UTC reception stamps against the local clock of each action's district, a summer-time change and an island district an hour behind",
-  "a partner's deliveries changing code after a merger",
-  "superseded settlement names in the gazetteer",
-  "two dispute themes entering the register with the autumn wave"
- ],
- "stakeholder_role": "the association's coding and methods desk",
- "role_family": "research_desk",
- "scoring_unit": "per accepted item",
- "spine": {
-  "file": "registo_itens_imprensa.csv",
-  "rows": 26055,
-  "entity": "one item the media monitor matched to a candidate contentious action, accepted or rejected",
-  "grain": "item",
-  "source": "synthetic"
- },
- "forum": "trustees_or_governors",
- "forcing_event": "vote_or_meeting",
- "org_family": "nonprofit_or_charity",
- "world": {
-  "geography": "Portugal",
-  "currency": "EUR",
-  "org_type": "conflict monitoring association",
-  "invented_names": [
-   "Observatorio de Acao Coletiva",
-   "Vigilancia Nacional"
+  "task": "task192",
+  "architecture": "v4",
+  "drawn": "2026-11-04",
+  "slot_note": "Architecture 4, a re-root out of political-science-public-policy into energy-systems-utilities (grid-reliability-outage-analysis), drawn after the 2026-11-04 pass that screened 55 candidates (A4.1 to A4.55 in the design note) and the coordinator's order to draw in the cells the window had just opened. Architecture 3 (a classifier corrected by hand-coded audits) is spent and sits in the lineage. New client domain, world, dataset, generator and prompt shell; no seed mechanism used.",
+  "domain": "energy-systems-utilities",
+  "subdomain": "grid-reliability-outage-analysis",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a city-owned electric utility sending its one overhead line patrol crew for the week to the distribution feeder where a component is failing, read from the feeder head relays' fault records, when one cracked insulator flashes over on damp mornings and clears each time the breaker recloses",
+  "objective": "anomaly-detection",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
   ],
-  "people": [
-   "Rafaela Carvalho",
-   "Joel Branco"
-  ]
- },
- "deliverables": [
-  "boletim_vigilancia_2026S2.xlsx",
-  "boletim_confrontos_2026S2.pdf"
- ],
- "opening_move": "question-first",
- "question_form": "how-many",
- "driver": "The decisive count is of the units that truly carry a property the record labels by instrument, where the instrument's validation batch only ever covered the opening of the observation window and the population's composition moved after it, so the quantities that carry forward are what the instrument does to a unit of a given class and never what share of the batch's units were of that class, and every stratified route has no rate for the part of the population the batch never reached.",
- "driver_concrete": "Most of the register's actions are known only from the press monitor, whose classifier the coding desk measures against hand coding twice a reporting period. Both rounds closed before the autumn surge, so the hand coding covers 1 May to 31 August and the autumn that trebles the record's volume has no hand-coded report in it, while the classifier's marked rate falls from 9.7 to 4.9 per cent between the two stretches: the audited reports' own confrontational shares are a property of the audited weeks and the classifier's recall and false-mark rate are a property of the coder.",
- "stump": "A competent solver builds the action record, reads the clause that says the count is of the actions and not of the codes, corrects the classifier's labels with the confrontational shares the hand coding found on each side of them and files 600, which carries shares measured on the audited opening of the period onto a period whose composition moved under them.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task445": "task445 v1 completes a period total for reporters whose reports have not arrived, carrying each silent reporter forward from its own last filing: the gap is in the recording, each unit is its own evidence and nothing is wrong with the reports that did arrive. Here nothing is late and nothing is carried forward: every report of the period is in hand and the error is in the label each one was given, so the figure moves on the classifier's two measured error rates read off a hand-coded sample of those same items, and the correction takes wrongly marked actions out as well as putting missed ones in, which no carry-forward of a reporter's own history does.",
-  "task446": "task446 v2's decisive quantity is a forward count for a population whose base rate has moved, and its error is carrying a yield measured on earlier populations onto that one; here nothing is carried anywhere, the double-coding sample and the record are the same items at the same time, and the error is that a correction built on one of the instrument's two arms is wrong whichever arm it takes. Neither route reaches the other's answer: there is no second population here for a yield to be carried to, and there is no recorded label set there to rebuild, its count being of outcomes that have not happened yet.",
-  "task448": "task448 completes a register that misses whole producers by estimating a second list's capture on the producers both lists hold and carrying it within route strata to the producers the register never saw; here nothing is missing from the record, every action is in it and the question is which class it belongs to, so the correction takes wrongly marked actions out as well as putting missed ones in, which a completeness estimate never does and cannot do.",
-  "task455": "task455's live v2 designates establishment continuity from worker flows and shares nothing here; its dead v1 (spent at stage 4) counted a class a coroner's certificates list both too often and too rarely, but its decisive step was which drug codes constitute the class, which the judge found to be semantics, and no error rate was ever measured. Here the class is filed by the protocol and settled before the decisive step, and what decides the call is the classifier's two measured rates applied together."
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "fate": "spent at stage 3 on measurement 2026-10-17, before any file was cut. The default path's grouping of flagged location-days is a single-linkage clustering whose one free parameter takes the count from 673 through 65, 22 and 9 to 1: no parameter-free reading gives a plausible count and the range covers the golden, so a solver can land 9 by tuning and the note's 23 was never reproducible. Rule 1 also fails on measurement: the number of arithmetic progressions in a union of them is not a quantity conflict event analysis estimates, and the swap reads unchanged with machines on fixed maintenance cycles.",
-   "domain": "political-science-public-policy",
-   "objective": "anomaly-detection",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G10",
-    "G6"
-   ],
-   "gate_g": "decomposition_attribution",
-   "decision_type": "quantity_figure",
-   "driver": "The decisive count is of the distinct generating processes behind overlapping bursts, recovered from the interval each process repeats on, where counting flagged items counts the targets they share and counting flagged intervals counts their overlaps.",
-   "stump": "A competent solver takes the flagged location-days, groups the ones that touch in time and place, counts the groups and files that number, which counts the overlaps of the operations rather than the operations."
+  ],
+  "generators": [
+    "G2",
+    "G10"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins the relay records to the SCADA operations, groups reclosing operations into momentary interruption events, sets aside the storm days the lightning and wind records mark, normalises by overhead line length and compares August to October 2026 with the same months of 2025 sends the patrol to a feeder whose blinks are storms, squirrels or line exposure, when the feeder with a failing component is the one whose faults keep returning at one recorded current on one phase.",
+  "domain_test": "The deciding quantity is where on the network a component is breaking down, which distribution protection reads from the fault current each operation records, because the current a fault draws falls with its distance from the substation through the feeder's impedance, so one insulator flashing over again and again records one current on one phase; with another field's nouns there is no feeder impedance, no fault current, no flashover that clears when the breaker recloses and no momentary interruption to count.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:repeat-faults-located-by-their-recorded-fault-current",
+  "layer1": [
+    "head-breaker relay fault records in UTC against the SCADA sequence-of-events log in local time, the same operation in both",
+    "reclosing shots within five minutes forming one momentary interruption event",
+    "mid-line recloser logs in kiloamps against the relays' amps, and phase labels in two conventions",
+    "OMS outage tickets in two layouts across the 2025 to 2026 system upgrade, with partial restorations as child tickets",
+    "the device register's customer counts downstream of each device, and feeders renumbered at a substation rebuild",
+    "lightning strokes and hourly weather in UTC, the storm-day screen on local calendar days"
+  ],
+  "stakeholder_role": "the utility's distribution reliability engineer, who assigns the overhead line patrol crew each week",
+  "role_family": "other",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "weather/lightning_strokes_2025_2026.csv",
+    "rows": 0,
+    "entity": "one cloud-to-ground lightning stroke in the service territory's box",
+    "grain": "stroke",
+    "source": "synthetic"
   },
-  {
-   "architecture": "v2",
-   "fate": "blocked at the draw on 2026-10-17 after the remote merge, with the pack built and every free gate green: the competing-exit mechanism had been taken the same day by task266 (own:competing-endings-cumulative-incidence), and the gap, decisive pattern and decision type repeated task157 (time, G12, quantity_figure) while the stakeholder role repeated task190 v2. The world, the ask layer and every pack writer that is not about the decisive quantity were kept.",
-   "domain": "political-science-public-policy",
-   "objective": "anomaly-detection",
-   "gap": [
-    "time",
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G12",
-    "G7"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "quantity_figure",
-   "driver": "The decisive quantity is how many units of a cohort will have shown an event by the end of their own lives, and because a unit that has already reached the other, terminal end can never show it while a unit still running can, the count has to treat that other end as leaving the population at risk and the running units as the only ones with an event still to come, which is exactly what both natural corrections get wrong.",
-   "stump": "A competent solver builds the register, counts the 89 episodes of the period's cohort that have already recorded a confrontational action and files that number, which counts the confrontations the record has already seen rather than the confrontations the cohort will have recorded by the time its episodes close."
+  "forum": "operations_desk",
+  "forcing_event": "shift_or_daily_cycle",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States (a fictional city in Missouri)",
+    "currency": "USD",
+    "org_type": "municipal electric utility (a city department)",
+    "invented_names": [
+      "Kestrel Falls Municipal Utilities"
+    ],
+    "people": [
+      "Kelsey Sanford",
+      "Shawn Hartman"
+    ]
+  },
+  "deliverables": [
+    "patrol_week46.xlsx",
+    "momentary_fault_currents.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is where a unit's repeated failures come from, and the record places each failure only through a measured signature that falls with distance along the unit, so one point failing again and again shows as several events sharing one signature, while every count of events, with or without the weather, per unit length or against last year, ranks first the unit with the most independent events.",
+  "driver_concrete": "Each feeder's momentary faults are grouped by faulted phase and the fault current its head relay recorded, because a cracked insulator flashing over on damp mornings draws the same current on the same phase every time, so the feeder with a failing component is the one whose faults return at one current, not the one with the most momentary events, the most outside storm days, the most per mile or the biggest rise on 2025.",
+  "stump": "A competent solver counts each feeder's momentary interruption events for August to October 2026, sets aside storm days, normalises by overhead miles and sets the result against 2025, and sends the patrol to a feeder whose blinks are storms, squirrels or exposure, when the feeder whose faults repeat at one current on one phase has an insulator failing.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task311": "task311 splits a survey's variance between groups and the units within them to price added interviews; here nothing about variance is estimated: each feeder's momentary faults are grouped by the phase and fault current each operation recorded, and one failing insulator shows as several operations at one current.",
+    "task65": "task65 constitutes capped entities from child records by the child's own location for a fee; here no total is capped or constituted: each protective operation is placed at a point on its feeder by the current it recorded, and the call is the feeder where one point keeps failing.",
+    "task84": "task84 groups an advertiser's live campaigns on a composite target key to price their competition; here the grouping key is physical, the recorded fault current and phase, and the repeated group is one failing component, not competing copies.",
+    "task183": "task183 forecasts next year's cable failures from each section's own recorded failure history, sections known by their ids; here no part is identified in any record: the failing insulator is found only because its flashovers record one current on one phase, and the call is where to patrol now, not a forward count.",
+    "task194": "task194 nets one metered area's night-flow rise against a neighbour's simultaneous fall through an open boundary valve; here nothing passes between feeders and nothing is netted: the step is grouping one feeder's own faults by the current each recorded.",
+    "task303": "task303 removes the breaker tickets every feeder opened in the same minute as one upstream supply loss; here no event is shared across feeders: the repeated group is one feeder's faults at one current on separate damp mornings."
+  },
+  "lineage": [
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-17",
+      "fate": "spent, confirmed at the 2026-11-01 re-check (commit 91cee50) and marked architecture_spent on 2026-11-04: its seventh cell (a logistic fit of hand code on the classifier mark plus a month index, extrapolated over September and October) files 504 and prints 500 against the golden 450, and the sentence that would close it names what the decisive step recognises, so the fork is the stump; shipped 2026-10-17 (060f8959) and left at the portal, pending",
+      "domain": "political-science-public-policy",
+      "subdomain": "conflict-protest-event-data-analysis",
+      "objective": "anomaly-detection",
+      "niche": "how many of a protest register's recorded actions were confrontational when most of the labels come from a classifier whose hand-coded validation batches only ever reached the opening of the period",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "other",
+      "decision_type": "quantity_figure",
+      "shape": "17",
+      "forum": "trustees_or_governors",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "nonprofit_or_charity",
+      "role_family": "research_desk",
+      "context_artifact": "published_series",
+      "driver": "The decisive count is of the units that truly carry a property the record labels by instrument, where the instrument's validation batch only ever covered the opening of the observation window and the population's composition moved after it, so the quantities that carry forward are what the instrument does to a unit of a given class and never what share of the batch's units were of that class, and every stratified route has no rate for the part of the population the batch never reached.",
+      "stump": "A competent solver builds the action record, reads the clause that says the count is of the actions and not of the codes, corrects the classifier's labels with the confrontational shares the hand coding found on each side of them and files 600, which carries shares measured on the audited opening of the period onto a period whose composition moved under them.",
+      "shell": {
+        "question form": "how-many",
+        "second-sentence opener": "the",
+        "rounding opener": "the",
+        "deliverable set": "pdf+xlsx"
+      }
+    },
+    {
+      "architecture": "v1",
+      "fate": "spent at stage 3 on measurement 2026-10-17, before any file was cut. The default path's grouping of flagged location-days is a single-linkage clustering whose one free parameter takes the count from 673 through 65, 22 and 9 to 1: no parameter-free reading gives a plausible count and the range covers the golden, so a solver can land 9 by tuning and the note's 23 was never reproducible. Rule 1 also fails on measurement: the number of arithmetic progressions in a union of them is not a quantity conflict event analysis estimates, and the swap reads unchanged with machines on fixed maintenance cycles.",
+      "domain": "political-science-public-policy",
+      "objective": "anomaly-detection",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G10",
+        "G6"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive count is of the distinct generating processes behind overlapping bursts, recovered from the interval each process repeats on, where counting flagged items counts the targets they share and counting flagged intervals counts their overlaps.",
+      "stump": "A competent solver takes the flagged location-days, groups the ones that touch in time and place, counts the groups and files that number, which counts the overlaps of the operations rather than the operations."
+    },
+    {
+      "architecture": "v2",
+      "fate": "blocked at the draw on 2026-10-17 after the remote merge, with the pack built and every free gate green: the competing-exit mechanism had been taken the same day by task266 (own:competing-endings-cumulative-incidence), and the gap, decisive pattern and decision type repeated task157 (time, G12, quantity_figure) while the stakeholder role repeated task190 v2. The world, the ask layer and every pack writer that is not about the decisive quantity were kept.",
+      "domain": "political-science-public-policy",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G7"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive quantity is how many units of a cohort will have shown an event by the end of their own lives, and because a unit that has already reached the other, terminal end can never show it while a unit still running can, the count has to treat that other end as leaving the population at risk and the running units as the only ones with an event still to come, which is exactly what both natural corrections get wrong.",
+      "stump": "A competent solver builds the register, counts the 89 episodes of the period's cohort that have already recorded a confrontational action and files that number, which counts the confrontations the record has already seen rather than the confrontations the cohort will have recorded by the time its episodes close."
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "the",
+      "rounding opener": "the",
+      "deliverable set": "pdf+xlsx"
+    }
+  ],
+  "notes": "Architecture 4 drawn 2026-11-04 in energy-systems-utilities after task461 v2 and task193 v3 registered and task194 v17 left the last three. Axes drawn against the window: forum operations_desk (the distribution operations desk dispatches the crew; line_manager_or_team is banned against task193), forcing event shift_or_daily_cycle (the weekly crew assignment), org family local_government (a city department, not an investor-owned utility; utility_or_infrastructure is banned against task193), role family other (a reliability engineer; operations_director and field_unit_lead are banned against task461 and task193), context artifact filed_standard (the utility's distribution reliability procedure; monitoring_export and operations_log are banned against task193 and task461). Gate G decomposition_attribution: each feeder's momentary events are attributed to storms, animals, vegetation and one repeating point. stump_strategy grain_or_unit: the record's unit is a protective operation and the decision's is a failing point on a feeder, so operations are grouped into the points they came from; identity_resolution was the other honest label. Decisive generator G2 (the operation grain against the point grain), G10 second (one point's failures counted as many events). Strategy risk WARN answered by the analyst test: every field and rule read correctly still files a storm, squirrel or exposure feeder. Architecture 3 moved into the lineage with its shell.",
+  "registered": "2026-11-04T04:24:23Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "list",
+    "rounding opener": "currents",
+    "deliverable set": "svg+xlsx"
   }
- ],
- "notes": "stump_strategy is `other`: no vocab strategy names a measurement-error correction. calibration_form gold_standard_subsample is the coding desk's own hand-coding worksheet, which measures the classifier and states no count and no rate. Architecture 3 was returned by the stage-4 determinism judge on 2026-10-17 (NOT_DETERMINISTIC, competing_defensible_answer: eight routes standing between 226 and 237) and re-rooted inside the architecture rather than away from it: the audit's window stops before the autumn surge, the confrontational share falls fourfold across the period, every stratified route is left without a rate for the autumn, and the indicator is stated to the nearest fifty actions, which is 0.87 of its own sampling standard deviation. The re-judged pack returned DETERMINISTIC, APPROVE, no repair and no rerun, with Gate G statistical_rigor / method_or_model_selection, Gate H passing with the decisive step analytical, and Gate F moderate to good; the judge measured the gap between the two families of correction at 2.8 standard deviations with P(gap at or below zero) 0.4 per cent and the record's daily noise at 1.01 per degree of freedom against a weekday mean. Architecture 3 spent, confirmed at the 2026-11-01 re-check (commit 91cee50): the seventh cell (a logistic fit of hand code on the classifier mark plus a month index) files 504 and prints 500 against the golden 450, and the sentence that would close it names what the decisive step recognises (the fork is the stump). Marked architecture_spent on 2026-11-04; the shipped pack (060f8959) stays at the portal, pending. The 2026-11-04 architecture 4 draw screened 55 candidates across 13 task types and carded none (DESIGN_NOTE.md, Tried and rejected, A4.1 to A4.55); this identity moves into the lineage when architecture 4 registers.",
- "registered": "2026-10-17T15:52:44Z",
- "architecture_spent": true
 }
