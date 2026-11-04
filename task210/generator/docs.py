@@ -28,10 +28,24 @@ def _styles():
     return body, h, t, small
 
 
-def _pdf(path, story, title):
+def _pdf(path, story, title, created, modified):
+    """Write the PDF, then set its own creation and modification stamps (the issuing office's, local time with the
+    offset) in place of the invariant-mode date, and blank the writer's comment lines; both at equal byte length, so
+    the cross-reference offsets stand."""
+    import re
     doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.9 * inch, rightMargin=0.9 * inch, topMargin=0.8 * inch,
                             bottomMargin=0.8 * inch, title=title, author="", subject="", creator="", producer="")
     doc.build(story)
+    b = open(path, "rb").read()
+    n0 = len(b)
+    inv = b"D:20000101000000+00'00'"
+    for key, stamp in ((b"/CreationDate (", created), (b"/ModDate (", modified)):
+        s = stamp.encode()
+        assert len(s) == len(inv) and b.count(key + inv) == 1
+        b = b.replace(key + inv, key + s)
+    b = re.sub(rb"(?m)^(%[^\n]*?)( ?ReportLab [^\n]*)$", lambda m: m.group(1) + b" " * len(m.group(2)), b)
+    assert len(b) == n0 and b"ReportLab" not in b
+    open(path, "wb").write(b)
 
 
 def _tbl(rows, widths=None, fs=8.5):
@@ -46,7 +60,7 @@ def srm07(path):
     body, h, t, small = _styles()
     P = lambda s: Paragraph(s, body)
     st = [Paragraph("Ashcombe Regional Transit<br/>Safety Risk Management Procedure SRM-07: Seasonal Restricted Speed Orders (Streetcar)", t),
-          Paragraph("Revision 3. Effective 1 September 2025. Procedure owner: Chief Safety Officer. Approved by the Accountable "
+          Paragraph("Revision 4. Effective 1 October 2026. Procedure owner: Chief Safety Officer. Approved by the Accountable "
                     "Executive under the Agency Safety Plan, section 5 (Safety Risk Management).", small), Spacer(1, 6),
           Paragraph("1. Purpose", h),
           P("This procedure sets how the Rail Safety Office places Restricted Speed Orders (RSOs) on the streetcar for each service "
@@ -82,13 +96,13 @@ def srm07(path):
           Paragraph("6. Records", h),
           P("The assessment, the slot plan and the record extracts it used are kept for three years by the Rail Safety Office."),
           Paragraph("Appendix C. Station normals: Ashcombe Municipal Airport (ASH), 1991 to 2020, published separately with this procedure.", small)]
-    _pdf(path, st, "SRM-07 Seasonal Restricted Speed Orders")
+    _pdf(path, st, "SRM-07 Seasonal Restricted Speed Orders", "D:20260916101204-06'00'", "D:20260924163548-06'00'")
 
 
 def pick(path):
     body, h, t, small = _styles()
     geo = S.geometry()
-    runs = S.section_runs(geo)
+    runs = S.section_runs(geo, W.PICK_RUN_ADJ)
     st = [Paragraph("Ashcombe Regional Transit: Streetcar Service Pick, January 2027", t),
           Paragraph("Pick dates: Monday 4 January to Friday 26 February 2027. Scheduling Department, issued 2 November 2026.", small), Spacer(1, 6),
           Paragraph("Service pattern (both lines, both directions)", h),
@@ -102,11 +116,11 @@ def pick(path):
           Paragraph("Scheduled running times (seconds, stop to stop, dwell included)", h)]
     rows = [["Line", "Section", "From", "To", "Outbound s", "Inbound s"]]
     for line in ("J", "F"):
-        rt = dict(runs[(line, "O")])
+        ro, ri = dict(runs[(line, "O")]), dict(runs[(line, "I")])
         for _, g in geo[geo["line"] == line].iterrows():
-            rows.append([W.LINES[line][0], g["section"], g["from_stop"], g["to_stop"], f"{rt[g['section']]:.0f}", f"{rt[g['section']]:.0f}"])
+            rows.append([W.LINES[line][0], g["section"], g["from_stop"], g["to_stop"], f"{ro[g['section']]:.0f}", f"{ri[g['section']]:.0f}"])
     st.append(_tbl(rows, [1.1 * inch, 0.6 * inch, 1.3 * inch, 1.3 * inch, 0.9 * inch, 0.9 * inch]))
-    _pdf(path, st, "January 2027 streetcar pick")
+    _pdf(path, st, "January 2027 streetcar pick", "D:20261027140951-06'00'", "D:20261102081733-07'00'")
 
 
 def normals(path):
@@ -121,33 +135,41 @@ def normals(path):
     st = [Paragraph("Ashcombe Municipal Airport (ASH): Climate Normals 1991 to 2020", t),
           Paragraph("Monthly normals. Possible sunshine is the share of the hours between sunrise and sunset with the sun not obscured.", small), Spacer(1, 6),
           _tbl(rows, [1.45 * inch] + [0.42 * inch] * 12, fs=7.5)]
-    _pdf(path, st, "ASH climate normals 1991-2020")
+    _pdf(path, st, "ASH climate normals 1991-2020", "D:20210504112617-06'00'", "D:20210611090258-06'00'")
 
 
-def dashboard(path, T, Rr):
+WB_CREATED = dt.datetime(2026, 5, 1, 5, 52, 11)      # UTC: the first month-end download (23:52 on 30 April, MDT)
+WB_MODIFIED = "2026-11-01T05:14:37Z"                  # the October download (23:14 on 31 October, MDT)
+
+
+def dashboard(path, T, Rr, target):
+    """The month-end downloads: each month's trips and section passes as the AVL system logged them (by service day)
+    and the recorder system's FB, EB and OS counts (by the recorder's UTC month), April to October."""
     import openpyxl
-    P = T["passes"]
+    A = pd.read_parquet(os.path.join(target, "avl_section_passes_2026.parquet"),
+                        columns=["service_date", "line", "trip_id", "section_id"])
+    A["month"] = pd.to_datetime(A["service_date"]).dt.strftime("%Y-%m")
+    A["linen"] = A["line"].astype(str).map({"JUN": "Juniper", "FDY": "Foundry"})
     E = Rr["edr"]
     E = E.assign(month=E["t_utc"].dt.strftime("%Y-%m"), line=E["car"].astype(int).map(lambda c: "Juniper" if c < 120 else "Foundry"))
-    P = P.assign(month=P["entry_local"].dt.strftime("%Y-%m"), linen=P["line"].map({"J": "Juniper", "F": "Foundry"}))
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Monthly KPIs"
     ws.append(["Rail Operations dashboard, streetcar, 2026 (figures as downloaded at each month end)"])
     ws.append([])
-    ws.append(["Month", "Line", "Revenue trips", "Section passes (AVL)", "FB events (EDR)", "FB per 1,000 passes", "EB events (EDR)",
-               "OS events (EDR)"])
-    for m in sorted(P["month"].unique()):
+    ws.append(["Month", "Line", "Revenue trips (AVL)", "Section passes (AVL)", "FB events (EDR)", "FB per 1,000 passes",
+               "EB events (EDR)", "OS events (EDR)"])
+    for m in ["2026-%02d" % k for k in range(4, 11)]:
         for ln in ("Juniper", "Foundry"):
-            p = P[(P["month"] == m) & (P["linen"] == ln)]
+            p = A[(A["month"] == m) & (A["linen"] == ln)]
             e = E[(E["month"] == m) & (E["line"] == ln)]
             fb = int((e["code"] == "FB").sum())
-            ws.append([m, ln, int(p["trip"].nunique()), int(len(p)), fb, round(fb / max(len(p), 1) * 1000, 2),
-                       int((e["code"] == "EB").sum()), int((e["code"] == "OS").sum())])
+            ws.append([m, ln, int(p[["service_date", "trip_id"]].drop_duplicates().shape[0]), int(len(p)), fb,
+                       round(fb / max(len(p), 1) * 1000, 2), int((e["code"] == "EB").sum()), int((e["code"] == "OS").sum())])
     wb.properties.creator = ""
     wb.properties.lastModifiedBy = ""
-    wb.properties.created = FIXED
-    wb.properties.modified = FIXED
+    wb.properties.created = WB_CREATED
+    wb.properties.modified = WB_CREATED
     bio = io.BytesIO()
     wb.save(bio)
     _recut_zip(bio.getvalue(), path)
@@ -155,15 +177,20 @@ def dashboard(path, T, Rr):
 
 def _recut_zip(data, path):
     """Re-cut the workbook with fixed entry times; openpyxl stamps the save time as the modified date, so the core
-    properties are reset to the download time."""
+    properties are reset to the last download, and the extended properties name the spreadsheet application the
+    office keeps the dashboard in, with that application's own version."""
     import re
     src = zipfile.ZipFile(io.BytesIO(data))
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as z:
         for n in sorted(src.namelist()):
             body = src.read(n)
             if n == "docProps/core.xml":
-                body = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>2026-11-02T09:00:00Z\g<2>", body)
-            zi = zipfile.ZipInfo(n, date_time=(2026, 11, 2, 9, 0, 0))
+                body = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + WB_MODIFIED.encode() + rb"\g<2>", body)
+            if n == "docProps/app.xml":
+                body = re.sub(rb"<Application>[^<]*</Application><AppVersion>[^<]*</AppVersion>",
+                              b"<Application>Microsoft Excel</Application><AppVersion>16.0300</AppVersion>", body)
+                assert b"penpyxl" not in body
+            zi = zipfile.ZipInfo(n, date_time=(2026, 10, 31, 23, 14, 36))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, body)
@@ -173,4 +200,4 @@ def write_documents(target, files, T, Rr):
     srm07(os.path.join(target, files["srm"]))
     pick(os.path.join(target, files["pick"]))
     normals(os.path.join(target, files["normals"]))
-    dashboard(os.path.join(target, files["dash"]), T, Rr)
+    dashboard(os.path.join(target, files["dash"]), T, Rr, target)

@@ -28,7 +28,7 @@ SOURCES = {
     "roster": ("Ashcombe Regional Transit, operator roster", "as of 31 October 2026"),
     "cards": ("Ashcombe Regional Transit, badge card register", "as of 31 October 2026"),
     "mms": ("Ashcombe Regional Transit, maintenance management system", "defect reports created 1 April to 2 November 2026"),
-    "srm": ("Ashcombe Regional Transit, Safety Risk Management Procedure SRM-07", "revision 3, effective 1 September 2025"),
+    "srm": ("Ashcombe Regional Transit, Safety Risk Management Procedure SRM-07", "revision 4, effective 1 October 2026"),
     "pick": ("Ashcombe Regional Transit, Scheduling Department", "January 2027 pick, issued 2 November 2026"),
     "normals": ("Ashcombe Municipal Airport climate normals", "1991 to 2020"),
     "dash": ("Ashcombe Regional Transit, Rail Operations dashboard", "monthly downloads, 2026"),

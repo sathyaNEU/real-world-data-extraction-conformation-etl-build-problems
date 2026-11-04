@@ -310,11 +310,12 @@ def operating(target=TARGET):
     return pd.DataFrame(out, columns=["day", "block", "car", "start", "end"])
 
 
-def ask_a(target=TARGET, revenue="operating", dedupe="pair", window_s=360, month="local"):
+def ask_a(target=TARGET, revenue="operating", dedupe="pair", window_s=None, month="local"):
+    window_s = PAIR_S if window_s is None else window_s
     E = pd.read_csv(path("edr", target))
     E = E[E["event_code"] == "EB"].copy()
     E["t"] = to_local(E["event_time_utc"])
-    E["day"] = (E["t"] - pd.Timedelta(hours=3)).dt.normalize()     # service day: the last trips run past midnight
+    E["day"] = (E["t"] - pd.Timedelta(hours=DAY_HOURS)).dt.normalize()     # service day: the last trips run past midnight
     if revenue == "operating":
         O = operating(target)
         x = E.reset_index().merge(O, on=["day", "car"], how="inner")
@@ -349,7 +350,7 @@ def ask_a(target=TARGET, revenue="operating", dedupe="pair", window_s=360, month
                     dt = abs((E.at[j, "t"] - E.at[i, "t"]).total_seconds())
                     dd = np.hypot((E.at[j, "lat"] - E.at[i, "lat"]) * M_LAT,
                                   (E.at[j, "lon"] - E.at[i, "lon"]) * M_LAT * np.cos(np.radians(E.at[i, "lat"])))
-                    if dt <= window_s and (dedupe == "window" or dd <= 80):
+                    if dt <= window_s and (dedupe == "window" or dd <= PAIR_M):
                         keep[j] = False
                         used.update((i, j))
                         break
@@ -407,15 +408,22 @@ def write_golden(r, obs, G, a, b, target=TARGET):
     S = sec.set_index("section")
     sl = slate(r)
     rows = []
+    window = {"AM": "06:30-08:59", "PM": "16:00-18:29"}          # SRM-07 3.5, by section entry, Mountain local time
     for s in sec["section"]:
         for dname, dk in (("outbound", "O"), ("inbound", "I")):
             fs, ts = (S.loc[s, "from_stop"], S.loc[s, "to_stop"]) if dk == "O" else (S.loc[s, "to_stop"], S.loc[s, "from_stop"])
             for pk in ("AM", "PM"):
-                rows.append((s, dname, pk, fs, ts, "yes" if (f"{s}-{dk}", pk) in sl else "no"))
-    pd.DataFrame(rows, columns=["section_id", "direction", "peak", "from_stop", "to_stop", "restricted_speed_slot"]).to_csv(
+                on = (f"{s}-{dk}", pk) in sl
+                rows.append((S.loc[s, "line"], s, dname, fs, ts, pk, window[pk], "yes" if on else "no", "10" if on else ""))
+    pd.DataFrame(rows, columns=["line", "section_id", "direction", "from_stop", "to_stop", "peak", "peak_window",
+                                "restricted_speed_slot", "rso_limit_mph"]).to_csv(
         os.path.join(GOLDEN, "slot_plan_jan_feb_2027.csv"), index=False, lineterminator="\n")
     import chart
     chart.draw(os.path.join(GOLDEN, "braking_shift.png"), r, obs, sl, sec)
+
+
+PAIR_S, PAIR_M = 360, 80      # ask A: a two-car train's records on one block within 6 minutes and 80 metres are one
+DAY_HOURS = 3                  # a record before 03:00 belongs to the service day before (the last trips run past midnight)
 
 
 def compute(target=TARGET):
@@ -425,16 +433,31 @@ def compute(target=TARGET):
     b = ask_b(target)
     sl = sorted(f"{sd} {pk}" for sd, pk in slate(r))
     rs = r.sort_values(ascending=False)
+    sec, _, _ = survey(target)
+    pk = pick(target)
+    days = [d for d in pd.date_range(pk["start"], pk["end"]) if d.weekday() < 5 and d not in pk["holidays"]]
+    nfb = int((pd.read_csv(path("edr", target))["event_code"] == "FB").sum())
+    ps = normals_sunshine(target)
     fig = {"slate": sl, "G_hat": round(G, 3), "fourth_rate": round(float(rs.iloc[3]), 2), "fifth_rate": round(float(rs.iloc[4]), 2),
            "fifth_cell": " ".join(rs.index[4]), "separation_pct": round(100 * (rs.iloc[3] / rs.iloc[4] - 1), 1),
            "expected_rates": {f"{k[0]} {k[1]}": round(float(v), 2) for k, v in r.items()},
            "observed_sepoct": {f"{k[0]} {k[1]}": round(float(v), 2) for k, v in obs.items()},
-           "ask_a": a, "ask_b": b}
+           "ask_a": a, "ask_b": b,
+           # what the write-up states besides the call and the asks, each computed here from target/ or taken from the
+           # constant the golden itself uses
+           "bearings_out_deg": {s: int(round(v)) for s, v in zip(sec["section"], sec["bearing_out"])},
+           "fb_records": nfb, "fb_on_logged_pass_pct": int(round(100 * int(A["n_fb"].sum()) / nfb)),
+           "glare_form_deg": {"cone": 25, "full_below": 12, "none_from": 25}, "G_one_decimal": round(G, 1),
+           "pick_weekdays": len(days), "normals_sunshine_jan_feb_pct": int(round(100 * ps[1])) if ps[1] == ps[2] else None,
+           "rate_per_passes": 1000, "slot_plan_rows": int(len(r)), "rows_without_slot": int(len(r)) - CAP,
+           "ask_a_pair": {"minutes": PAIR_S // 60, "metres": PAIR_M}, "service_day_from_hour": DAY_HOURS}
     return fig, r, obs, G
 
 
 if __name__ == "__main__":
     fig, r, obs, G = compute()
     write_golden(r, obs, G, fig["ask_a"], fig["ask_b"])
-    json.dump(fig, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
+    with open(os.path.join(HERE, "figures.json"), "w") as f:      # the same bytes build.py writes (H33)
+        json.dump(fig, f, indent=1, sort_keys=True)
+        f.write("\n")
     print(json.dumps({k: v for k, v in fig.items() if k not in ("expected_rates", "observed_sepoct")}, indent=1))

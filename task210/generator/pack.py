@@ -14,7 +14,7 @@ import records as RC
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
-FIXED_ZIP_TIME = (2026, 11, 2, 9, 0, 0)
+FIXED_ZIP_TIME = (2026, 11, 2, 15, 40, 0)     # the bundle's export, after the MMS extract of 11:00 that morning
 
 FILES = {
     "edr": "edr_event_export_2026-04-01_2026-10-31.csv",
@@ -76,7 +76,10 @@ def build(seed=W.SEED, T=None, Rr=None):
 
     # 2 AVL section passes (lead vehicle, local time)
     A = Rr["avl"].sort_values(["entry_local", "line", "dir", "section"]).reset_index(drop=True)
-    trip_id = [f"{l}{int(t) % 100000:05d}" for l, t in zip(A["line"], A["trip"])]
+    # the scheduling system's trip key: line, scheduled departure from the outer stop, direction (repeats each day)
+    dep = T["passes"].drop_duplicates("trip").set_index("trip")["dep_min"]
+    trip_id = [f"{l}-{int(m // 60):02d}{int(m % 60):02d}-{'OB' if d == 'O' else 'IB'}"
+               for l, m, d in zip(A["line"], A["trip"].map(dep).values, A["dir"])]
     tbl = pa.table({
         "service_date": pa.array(A["date"].dt.date.values, pa.date32()),
         "line": pa.array(A["line"].map({"J": "JUN", "F": "FDY"}).values).dictionary_encode(),
@@ -113,10 +116,15 @@ def build(seed=W.SEED, T=None, Rr=None):
     M = M[(M["hour_local"] >= pd.Timestamp(W.OBS_START)) & (M["hour_local"] < pd.Timestamp(W.OBS_END) + pd.Timedelta(days=1))]
     t_obs = pd.DatetimeIndex(M["hour_local"] + pd.Timedelta(minutes=53)).tz_localize(W.TZ, ambiguous=True, nonexistent="shift_forward").tz_convert("UTC").tz_localize(None)
     temp = 55 + 18 * np.sin((M["hour_local"].dt.dayofyear.values - 105) / 365 * 2 * np.pi) + 9 * np.sin((M["hour_local"].dt.hour.values - 9) / 24 * 2 * np.pi)
-    met = pd.DataFrame({"station": "ASH", "valid_utc": t_obs.strftime("%Y-%m-%d %H:%M"),
-                        "tmpf": np.round(temp + rng.normal(0, 3, len(M)), 0).astype(int),
-                        "sknt": rng.integers(0, 18, len(M)), "vsby": np.where(rng.random(len(M)) < 0.03, 5, 10),
-                        "skyc": [sky_string(c, rng) for c in M["cover"].values]})
+    # the weather departs from the seasonal and daily cycle in spells, not hour by hour (same draws, filtered)
+    from scipy.signal import lfilter
+    dev = lfilter([np.sqrt(1 - 0.88 ** 2)], [1.0, -0.88], rng.normal(0, 3, len(M)))
+    tmpf = np.round(temp + dev, 0).astype(int)
+    sknt = rng.integers(0, 18, len(M))
+    u = rng.random(len(M))
+    vsby = np.where(u < 0.03, np.array([9, 8, 7, 6, 5, 4, 3, 2.5, 2, 1.5, 1])[np.minimum((u / 0.03 * 11).astype(int), 10)], 10)
+    met = pd.DataFrame({"station": "ASH", "valid_utc": t_obs.strftime("%Y-%m-%d %H:%M"), "tmpf": tmpf, "sknt": sknt,
+                        "vsby": [f"{v:g}" for v in vsby], "skyc": [sky_string(c, rng) for c in M["cover"].values]})
     drop = rng.random(len(met)) < 0.012
     met = met[~drop]
     write_csv(met, FILES["metar"])
@@ -141,7 +149,8 @@ def build(seed=W.SEED, T=None, Rr=None):
                             "revenue_hours": D["revenue_hours"].map(lambda v: f"{v:.2f}")}),
               FILES["runs"])
     write_csv(pd.DataFrame({"operator_no": O["emp"], "training_class": O["cls"].replace("", "pre-2026"),
-                            "qualified": O["qualified"].dt.strftime("%Y-%m-%d"), "status": "active"}), FILES["roster"])
+                            "qualified": O["qualified"].dt.strftime("%Y-%m-%d"), "status": "active"}).sort_values("operator_no"),
+              FILES["roster"])
     cards = []
     for _, o in O.iterrows():
         if o["qualified"] >= pd.Timestamp(W.BADGE_MIGRATION):
@@ -156,7 +165,7 @@ def build(seed=W.SEED, T=None, Rr=None):
     write_csv(pd.DataFrame({"wo_no": Mm["wo_no"], "created": Mm["created"].dt.strftime("%Y-%m-%d %H:%M"),
                             "reported": Mm["reported"].dt.strftime("%Y-%m-%d"), "source": Mm["source"],
                             "car": Mm["car"].astype(int), "block": Mm["block"], "defect_group": Mm["group"],
-                            "defect": Mm["defect"], "status": "Closed"}), FILES["mms"])
+                            "defect": Mm["defect"]}), FILES["mms"])
 
     # 14 to 17 distractors and context
     _distractors(rng)
@@ -168,7 +177,7 @@ def build(seed=W.SEED, T=None, Rr=None):
 def _distractors(rng):
     days = pd.date_range(W.OBS_START, W.OBS_END, freq="D")
     rows = []
-    for c, base in (("PC-1 Laurel and 4th", 140), ("PC-2 Market Square", 210), ("PC-3 Pike and Arsenal", 95)):
+    for c, base in (("PC-4 Laurel and 4th", 140), ("PC-2 Market Square", 210), ("PC-7 Pike and Arsenal", 95)):
         for d in days:
             wk = d.weekday() < 5
             for h in range(6, 22):

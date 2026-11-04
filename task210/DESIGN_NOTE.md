@@ -63,7 +63,8 @@ the yard's block sheets, the Foundry depot's release log, the run sheets (duty a
 roster, the badge card register, the maintenance system's defect reports (operator cards and inspection findings),
 SRM-07 (PDF), the January pick timetable (PDF), the station normals (PDF), the rail operations dashboard (workbook), and
 three distractors named only in `metadata.json` (pedestrian counters, the arena's events, track maintenance) beside
-the school calendar the careful readers use. Eighteen files, five formats, the AVL log about 630,000 rows. SRM-07
+the school calendar the careful readers use. Eighteen files, five formats, the AVL log 623,214 rows at the actual
+running (trips leave late and run times vary; the pick gives scheduled times, revised by direction). SRM-07
 files no definition of low sun or darkness: the survey's coordinates, the pick's clock and the normals are plain
 operating facts, and the glare response is the analyst's to estimate.
 
@@ -89,16 +90,16 @@ numbers are asserted in `generator/checks.py`:
    Transportation Research Record 2120, 12 to 17); darkness raises pedestrian risk severalfold (Sullivan and Flannagan
    2002, Accident Analysis and Prevention 34, 487 to 498). World-set: firm braking 20 per 1,000 street passes and 8 on
    reserved track; the full-alignment multiplier 3.2 under full sun. The golden recovers the true slate in 19 of 20
-   redraws; at the shipped seed the fourth slot clears the fifth by 27.3 per cent on the clean truth, 23.7 per cent
-   from `target/` (F3-O PM fifth) and 22.7 per cent in the independent verifier.
+   redraws; at the shipped seed the fourth slot clears the fifth by 27.3 per cent on the clean truth, 24.1 per cent
+   from `target/` (F3-O PM fifth) and 23.0 per cent in the independent verifier.
 2. **The golden's own method holds the call, and the record decides the glare form.** No sentence defines low sun, so
    the response's cone, elevation profile and shape are the analyst's. On `target/` all 75 forms were fitted (cones 15
    to 35, five elevation profiles, cosine-squared, linear and flat shapes): every tapering form at every cone and
-   profile, and every flat form to 20 degrees, prints the golden slate (60 cells, the fourth slot at least 10.4 per
-   cent clear); the 20 forms the record supports (twice the log-likelihood within 10 of the best: cones 15 to 30, all
-   three shapes) print it too. The 10 forms that print another slate are all flat from 25 degrees out, and the record
-   refutes them by 45.5 or more: its own excess is 1.98 with the sun 0 to 5 degrees off the line of travel, 0.99 at 10
-   to 15, 0.20 at 15 to 25 and 0.02 at 25 to 30 (standard errors near 0.15).
+   profile, and every flat form to 20 degrees, prints the golden slate (60 cells, the fourth slot at least 10.6 per
+   cent clear); the 21 forms the record supports (twice the log-likelihood within 10 of the best) print it too. The 10
+   forms that print another slate are all flat from 25 degrees out, and the record refutes them by 45.4 or more: its
+   own excess is 1.97 with the sun 0 to 5 degrees off the line of travel, 1.03 at 10 to 15, about 0.2 at 15 to 25 and
+   0.00 at 25 to 30 (standard errors 0.13 to 0.24).
 3. **The first look lands wrong**: 20 of 20, at most one slot shared.
 4. **The careful readers land wrong**, 20 of 20 each: (a) field-decomposing (the default path), at most one shared;
    (b) constructing (a non-directional low-sun term; sun-time by elevation bins), at most one and one; (c) per-record
@@ -245,7 +246,7 @@ literal execution of every filed rule (rung L) files a wrong slate.
 | SF10 | darkness (a control) | sun below the horizon | sunset at minus 0.833, minus 3, civil twilight minus 6; no darkness term | same call | same call asserted (C3) |
 | SF11 | the glare response's width | a 25-degree cosine-squared taper | 15, 20, 30, 35 degrees | same call | same call asserted; the record decides (C3 over its supported forms) |
 | SF12 | the glare response's elevation profile | full below 12 degrees, none from 25 | flat to 15 or 20; 8 to 20; 15 to 30 | same call | same call asserted (C3) |
-| SF13 | the glare response's form | any tapering form (cosine-squared or linear, every cone 15 to 35, every elevation profile), or a flat form to 20 degrees | a flat form at 25 degrees or more | another call (10 of 75 cells) | the record's own fit (2dlogL 45.5 or more worse) and its offset profile (excess 0.02 at 25 to 30 degrees); the call holds across every supported form (asserted) |
+| SF13 | the glare response's form | any tapering form (cosine-squared or linear, every cone 15 to 35, every elevation profile), or a flat form to 20 degrees | a flat form at 25 degrees or more | another call (10 of 75 cells) | the record's own fit (2dlogL 45.4 or more worse) and its offset profile (excess 0.00 at 25 to 30 degrees); the call holds across every supported form (asserted) |
 | SF14 | controls | section direction, hour, weekend, darkness | none; no hour effects | same call | same call asserted |
 | SF15 | the detector outage week | passes and brakes both left out | the week dropped on every section | same call | same call asserted |
 | SF16 | clock | Mountain local time, MDT in the record and MST in the pick | UTC as stamped | same call once converted | SRM-07 3.5 ("Mountain local time") |
@@ -269,7 +270,7 @@ literal execution of every filed rule (rung L) files a wrong slate.
 | 4 | the golden: the sun against each direction at every pass, the response estimated, carried to the pick's passes | J4-O AM, J5-O AM, F5-O PM, F6-O PM | 4 of 4 |
 
 Every rung below 4 is a complete pipeline that files a definite wrong slate; asserted in `generator/checks.py`. The
-fourth slot (F5-O PM) clears the fifth (F3-O PM) by 23.7 per cent; across the 20 redraws the readers share at most
+fourth slot (F5-O PM) clears the fifth (F3-O PM) by 24.1 per cent; across the 20 redraws the readers share at most
 three slots and the default path at most one.
 ## Closure table
 
@@ -285,7 +286,7 @@ three slots and the default path at most one.
 | 8 Window length | the whole record fits the model | C3, the slate identical across every glare form the record supports (SF11 to SF14) |
 | 9 Boundary inclusivity | the peak by entry time, 06:30 to 08:59 and 16:00 to 18:29 | filed, SRM-07 3.5; SF3 |
 | 10 Rounding path | no graded rate; the slate is graded; the asks are whole numbers | C3 corridor: membership fixed across the supported glare forms; the asks' counts are integers |
-| 11 Tie-break | none needed, the fourth clears the fifth by 23.7 per cent (10.4 or more in every corridor cell) | C4, asserted |
+| 11 Tie-break | none needed, the fourth clears the fifth by 24.1 per cent (10.6 or more in every corridor cell) | C4, asserted |
 | 12 Maturity and censoring | none in the main call; ask B's cards keyed after the 2 November export are not in it, and every card in it dates to a service day in the window or before 1 April | C1, asserted |
 | 13 Order of operations | attach, fit, project | C1, the variants agree |
 | 14 Row order | file order irrelevant | C1 |
@@ -358,8 +359,60 @@ day. The normals and the pick are drivers, not checks.
 |---|---|---|---|
 | cracker | 0 of 14 | 0 of 6 | miss |
 | second cracker | 1 of 14 | 0 of 6 | miss |
+## Realism pass (stage 3)
+
+Texture only, each change on its own random stream or on the same draws, so the realization is unchanged: the slate,
+ask A's 14 figures, ask B's 6 and the slot plan's marks are the same; the fitted G moved from 2.292 to 2.296 and the
+chart's rates by hundredths, from the AVL log's actual running. Asserted in `checks.py` (`realism 1` to `realism 8`,
+the three-rules block R1 to R3c and the write-up's steps executed as written): 155 of 155.
+- The AVL log carried the timetable (one run time per section direction, trips on the exact headway, entry seconds on 32
+  values). It carries the actual running now: trips leave late, never early (a gamma lateness, mean near 45 seconds,
+  now and then a disruption of minutes), street run times vary with signal stops; the recorder's event times and the
+  run sheets' revenue hours follow it, and the hazard truth stays on the schedule.
+- The January pick printed one running time for both directions of every section; its revised times differ by a few
+  seconds by direction, the forward truth and the PDF read from one table.
+- Ids: the recorder's event numbers and the MMS work orders stepped by one, and the depot's repair work orders were
+  random and out of time order. The recorder numbers every event it logs and the export carries FB, EB and OS only; the
+  MMS rows and the depot repairs share one agency series with gaps, in the order opened. The AVL trip key is the
+  scheduling system's (line, scheduled departure, direction), not a counter from 00000.
+- Operator numbers rose along each day's runs (the rotation over the roster in number order). The same numbers now
+  follow the order operators qualified; who drove which pass is unchanged.
+- The dashboard was cut from the clean truth: identical trip and pass counts for both lines, the same in April as in
+  June, and a November row of 2 trips at an FB rate of 2750. It is now the AVL log as shipped by service month beside
+  the recorder's counts by UTC month, April to October, with Excel's own application properties, created at the first
+  month-end download and modified at the last.
+- The three PDFs carried reportlab's invariant stamp (1 January 2000 on all three) and its comment lines; each carries
+  its office's own creation and modification stamps now, at equal length, with the comment lines blank. SRM-07 is
+  revision 4, effective 1 October 2026: revision 3 of September 2025 cited the April 2026 commissioning and the January
+  2027 pick.
+- The MMS status column read Closed on every row, cards keyed that morning included: dropped. The airport's temperature
+  jumped hour to hour and its visibility took two values: the same draws, filtered and binned. The bundle's export
+  stamp now follows the MMS extract of 11:00 on 2 November. The pedestrian counters' codes no longer run in alphabetical
+  order. Decelerations thin out above the firm brake's 1.3 trigger and centre near 2.75 for an emergency application,
+  from the same draws.
+- Goldens: the slot plan carries the line, the peak window and the order's 10 mph limit (SRM-07 3.5 and 5.2); the chart
+  takes the finding as its title, states its basis and sources, and fits its frame.
+## Leak sweep rulings
+
+`leak.py --asof 2026-11-02`: REVIEW, no LEAK, sweeps 1, 2, 5, 7, 8, 10 and 11 clean. Each REVIEW line, harmless:
+- Sweep 3, SRM-07 names the Juniper Line beside decision words: its scope sentence names both lines as the population.
+- Sweep 3, the pick names the Juniper Line beside numbers: its running-time table lists every section of both lines.
+- Sweep 3, the pick carries 22 of the call's 30 words: the call names four sections by their stops and the pick's dates,
+  and the pick names every section, every stop and its own dates alike.
+- Sweep 4, SRM-07 holds four stump terms (record, passes, survey, normals): the procedure's filed WHAT (the record since
+  1 April, passes as the denominator, the survey's sections, the normals' weather); it names no sun, glare, bearing or
+  excess (asserted).
+- Sweep 6, the pick names every candidate beside numbers: scheduled running times in network order, ranking nothing.
+- Sweep 6, the survey names every candidate beside numbers: coordinates and lengths in network order (the raw material
+  R1 asserts), ranking nothing.
+- Sweep 9, the school calendar's 154 dates after 2 November: a district publishes its school year ahead of it.
 ## Tried and rejected
 
+- 2026-11-04 (a2 stage 3), the Foundry blocks alternated to fix their one-way working (each Foundry block runs one
+  direction all day, the trip index modulo eight, which no car or operator could work): the change moves every
+  operator's passes and so the whole realization, and at seed 21019 the slate holds on the clean truth but the
+  separation falls from 27.3 to 17.2 per cent, short of what the corridor's 10 per cent floor needs from `target/`; not
+  taken at stage 3 (a seed reselection would carry it), flagged to the author.
 - 2026-11-04 (a2 resume), the generator's sun: `solar.py` never wrapped the hour angle, so for UTC hours 00 to 06
   (Mountain evenings after 18:00 MDT and 17:00 MST) the sun's azimuth was mirrored into the east (20 June at 20:00 MDT
   it gave 62.7 degrees against 297.2); the truth put summer-evening glare on east-heading passes and the golden only
