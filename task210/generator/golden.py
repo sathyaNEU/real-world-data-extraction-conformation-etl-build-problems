@@ -111,6 +111,19 @@ def hourly(mp1, tr):
     return H
 
 
+def road_summary(survey):
+    """Haul road 2 and the Phase 4 haul road from the survey: lengths, and their distance from MP1 at each end."""
+    ref = survey['points']['MP1 Ulverthorpe Lane']
+    out = {}
+    for key, name in (('hr2', 'Haul road 2'), ('ext', 'Phase 4 haul road')):
+        c = np.array(survey['roads'][name])
+        x, y = local_xy(c[:, 1], c[:, 0], ref)
+        out['len_' + key] = float(np.hypot(np.diff(x), np.diff(y)).sum())
+        out['r_start_' + key] = float(np.hypot(x[0], y[0])); out['r_end_' + key] = float(np.hypot(x[-1], y[-1]))
+    out['r_crest'] = out['r_start_hr2']; out['r_hopper'] = out['r_end_hr2']
+    return out
+
+
 def fit(H, cols):
     X = np.c_[np.ones(len(H))] if not cols else np.c_[np.ones(len(H)), H[cols].to_numpy()]
     b = np.linalg.lstsq(X, H['E'].to_numpy(), rcond=None)[0]
@@ -128,9 +141,9 @@ def call_from(e_mov):
 
 def read_belt(tgt):
     raw = open(find(tgt, 'primary_belt_scale')).read().splitlines()
-    k = [i for i, l in enumerate(raw) if l.startswith('Timestamp')][0]
+    k = [i for i, l in enumerate(raw) if l.startswith('Interval start')][0]
     b = pd.read_csv(io.StringIO('\n'.join(raw[k:])))
-    b['t'] = pd.to_datetime(b['Timestamp'], format='%d/%m/%Y %H:%M')
+    b['t'] = pd.to_datetime(b['Interval start'], format='%d/%m/%Y %H:%M')
     return b
 
 
@@ -256,7 +269,7 @@ def compute(tgt):
     G = dict(e_mov=e_mov, e_other=b['no'], intercept=b['a'], nmax=nmax, adts=adts, dial=dial,
              sel_in=10 * math.log10(e_mov), sel_other=10 * math.log10(max(b['no'], 1e-9)),
              n_trips=len(tr), n_hr2=int((tr['route'] == 'haul road 2').sum()), hours=len(H),
-             plant=asks_plant(tgt, tr), sales=asks_sales(tgt), H=H, trips=tr, mp1=mp1)
+             plant=asks_plant(tgt, tr), sales=asks_sales(tgt), H=H, trips=tr, mp1=mp1, geo=road_summary(survey))
     lv = lambda k: dial[k - 1][2]
     G['level_call'] = lv(adts); G['level_next'] = lv(adts + 1)
     return G
@@ -332,14 +345,18 @@ def note(G, path):
                        if G['adts'] == 3 else 'Allocate %d trucks.' % G['adts'], body),
              Paragraph('Why three, when the pilot ran up to seven', h),
              Paragraph('The loud hours at MP1 between May and October were not the busy hours. They came when north face '
-                       'loads went to the primary up Haul road 2, which climbs out on the original ground towards '
-                       'Ulverthorpe Lane. North face loads tipped on the run-of-mine stockpile stay in the pit, and south '
-                       'and west face loads to the primary come up Haul road 1 and behind the plant compound bund. Each '
-                       'working hour\'s sound energy at MP1 was split across that hour\'s movements by where each truck '
-                       'loaded and where it tipped, from the trucks\' GPS tracks against the April survey. One Haul road 2 '
-                       'movement puts several times the energy of any other movement on MP1. The Phase 4 haul road runs '
-                       'on the same kind of ground at the same distances from the Lane, so every Phase 4 movement counts at '
-                       'the Haul road 2 rate, not at the site average that would allow far more trucks.', body),
+                       'loads went to the primary: up the North face ramp and along Haul road 2, over the original ground '
+                       'from the pit crest to the plant compound. North face loads tipped on the run-of-mine stockpile stay '
+                       'in the pit, and south and west face loads to the primary come up Haul road 1 inside the pit and '
+                       'behind the compound bund. Each working hour\'s sound energy at MP1 was split across that hour\'s '
+                       'movements by where each truck loaded and where it tipped, from the trucks\' GPS tracks against the '
+                       'April survey. One Haul road 2 movement puts several times the energy of any other movement on MP1. '
+                       'The Phase 4 haul road in the scheme runs %.0f m from the bench crest to the same hopper, as Haul road '
+                       '2 runs %.0f m from the pit crest, and along its length it stays within a metre of Haul road 2\'s '
+                       'distance from MP1, from %.0f m at the crest to %.0f m at the hopper; the bench\'s access ramp lies '
+                       'below its crest as the North face ramp lies below the pit\'s. So every Phase 4 movement counts at '
+                       'the Haul road 2 rate, not at the site average that would allow far more trucks.'
+                       % (G['geo']['len_ext'], G['geo']['len_hr2'], G['geo']['r_crest'], G['geo']['r_hopper']), body),
              Image(buf, width=150 * mm, height=70 * mm)]
     rows = [['Month', 'Tonnes per haul load to the primary', 'Primary tonnes per running hour']]
     for m in MONTHS:

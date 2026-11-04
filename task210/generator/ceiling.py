@@ -51,8 +51,8 @@ def hopper_loads():
 
 
 def plant_routes():
-    belt = table('primary_belt_scale', 'Timestamp')
-    belt['t'] = pd.to_datetime(belt['Timestamp'], format='%d/%m/%Y %H:%M')
+    belt = table('primary_belt_scale', 'Interval start')
+    belt['t'] = pd.to_datetime(belt['Interval start'], format='%d/%m/%Y %H:%M')
     belt['Tonnes'] = belt['Tonnes'].astype(float)
     flow = belt.set_index('t')['Tonnes']
     L = table('wheel_loader', 'Date,Time')
@@ -207,7 +207,9 @@ def score():
     for p, route in PERSONAS.items():
         per[p] = sum(table_['%s:%s' % (b, r)][0] for b, r in route.items()) / n_all
     # the response on the call takes the better of the cracker's and the full includer's keep
-    pair = ((38 + 7 + 55 * max(per['cracker'], per['full_includer'])) + (5 + 7 + 55 * per['mirror'])) / 2
+    on = 38 + 7 + 55 * max(per['cracker'], per['full_includer'])
+    pair = (on + (5 + 7 + 55 * per['mirror'])) / 2
+    per['_pair_both_on'] = on   # both top responses land the call and keep the best persona's asks
     return table_, per, pair, n_all, R, gold
 
 
@@ -215,7 +217,8 @@ if __name__ == '__main__':
     t, per, pair, n, R, gold = score()
     for k, v in t.items():
         print('%-28s keeps %d of %d' % (k, v[0], v[1]))
-    print('persona keep:', {k: round(v, 3) for k, v in per.items()}, 'of', n, 'figures; pair ceiling %.1f' % pair)
+    print('persona keep:', {k: round(v, 3) for k, v in per.items() if not k.startswith('_')}, 'of', n,
+          'figures; pair ceiling %.1f (one on the call, one off); both on the call %.1f' % (pair, per['_pair_both_on']))
     if '-v' in sys.argv:
         for k, v in R.items():
             print(k, {a: round(b, 1) for a, b in v.items()})

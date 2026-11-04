@@ -102,6 +102,35 @@ nmax = 10 ** 4.4 * 3600 / e
 call = int(math.floor(nmax / 4.5))
 fig = json.load(open(os.path.join(HERE, 'figures.json')))
 ok('the call recomputes independently', call == fig['call_adts'], '%d trucks (%.2f movements an hour at the share)' % (call, nmax))
+# the noise plan's residual, read with this verifier's own extractor, and the call with the baseline fixed at it
+nmp = ' '.join(' '.join(pg.extract_text().split()) for pg in PdfReader(path('ravensby_noise_management_plan')).pages)
+mr = re.search(r'residual sound level of (\d+\.\d) dB', nmp)
+ok('NMP 5.2 files the residual measured with the site stopped', mr is not None, mr.group(0) if mr else 'missing')
+if mr:
+    base = 3600.0 * (10 ** 3.75 + 10 ** (float(mr.group(1)) / 10))
+    bf = np.linalg.lstsq(np.array(X[1:]).T, Hh['E'].to_numpy() - base, rcond=None)[0]
+    nf = 10 ** 4.4 * 3600 / bf[keys.index(('North face', 'hopper'))]
+    ok('the call recomputes with the baseline fixed at the plant and the filed residual', int(math.floor(nf / 4.5)) == fig['call_adts'],
+       '%.2f movements an hour' % nf)
+# the note's geometry sentence: the Phase 4 haul road against Haul road 2, from the survey alone
+lines = {ft['properties']['name']: ft['geometry']['coordinates'] for ft in sv['features'] if ft['geometry']['type'] == 'LineString'}
+mp = pts['MP1 Ulverthorpe Lane']
+def loc(cs):
+    return [((c[0] - mp[0]) * 111320.0 * math.cos(math.radians(mp[1])), (c[1] - mp[1]) * 111132.0) for c in cs]
+def walk(cs, n=300):
+    p = loc(cs); seg = [math.dist(p[i], p[i + 1]) for i in range(len(p) - 1)]; L = sum(seg); out = []
+    for j in range(n + 1):
+        s, i = L * j / n, 0
+        while i < len(seg) - 1 and s > seg[i]:
+            s -= seg[i]; i += 1
+        f = min(1.0, s / seg[i]); out.append(math.hypot(p[i][0] + f * (p[i + 1][0] - p[i][0]), p[i][1] + f * (p[i + 1][1] - p[i][1])))
+    return L, out
+L2, r2 = walk(lines['Haul road 2']); L4, r4 = walk(lines['Phase 4 haul road'])
+ok('the Phase 4 haul road is Haul road 2\'s length within a metre and its distance from MP1 within a metre all along it',
+   abs(L2 - L4) < 1.0 and max(abs(a - b) for a, b in zip(r2, r4)) < 1.0,
+   'lengths %.1f and %.1f m, largest distance gap %.2f m, %.0f to %.0f m from MP1' % (L2, L4, max(abs(a - b) for a, b in zip(r2, r4)), r2[0], r2[-1]))
+ok('the belt scale export states interval-start stamps on the site clock',
+   open(path('primary_belt_scale')).read(200).count('Interval start,Tonnes') == 1)
 
 # the golden deliverables carry the graded figures
 with open(os.path.join(GLD, 'extension_haul_dial.csv')) as fh:

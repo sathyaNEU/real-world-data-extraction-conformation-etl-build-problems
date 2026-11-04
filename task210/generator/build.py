@@ -56,11 +56,30 @@ def complaints_xlsx(path, Wd):
     m, ends = Wd['mp1'], Wd['ends']
     addrs = ['3 Ulverthorpe Lane', '7 Ulverthorpe Lane', '12 Ulverthorpe Lane', 'Rose Cottage, Ulverthorpe Lane',
              '2 Low Green', '5 Low Green', 'The Old Forge, Low Green', '1 Back Lane', '9 Back Lane', 'Garth House, Back Lane']
-    texts = ['Noise from the quarry again this afternoon.', 'Engine noise from the quarry most of the day.',
-             'Constant revving from the quarry, could hear it with windows shut.', 'Reversing beepers all morning.',
-             'Noisy today, worse than usual.', 'Quarry noise from about 2 until they stopped.', 'Dust on the cars again.',
-             'Loud rumbling from the quarry over lunch time.', 'Heavy engines going up and down, very wearing.',
-             'Can the quarry keep the noise down in the evenings?']
+    texts = ['Noise from the quarry again this afternoon.', 'Engine noise most of the afternoon, could hear it indoors.',
+             'Constant revving from about half one, windows shut and still hear it.', 'Reversing alarms going all morning.',
+             'Very noisy today, worse than last week.', 'Heavy diesel noise on and off since 8.',
+             'Rumbling from the quarry over lunch time.', 'Can the quarry keep it down please, we have a new baby.',
+             'Loud engines, could not sit out in the garden.', 'Banging and engine noise from about 2 until they stopped.',
+             'Dust on the cars and windowsills again.', 'Grinding noise from the crusher all day.',
+             'Lorries revving hard, very wearing.', 'Noisy from first thing, heard it over the radio.',
+             'Same as Tuesday, engine noise most of the day.', 'Is something different going on? Much louder today.',
+             'Beeping and engines, on and off.', 'Woken at 7 by engine noise.', 'Heavy plant noise late afternoon.',
+             'Droning noise, worse when the wind is this way.', 'Noise carried right across Low Green this afternoon.',
+             'Very loud this morning, quieter after lunch.', 'Constant drone from the quarry, it gives me a headache.',
+             'Engine noise all day, the dog will not settle.', 'Worse than usual today, the plant and the trucks.',
+             'Asked about working hours, says noise heard after 5.', 'Revving and clanking from about 10.',
+             'Louder than it has been for months.', 'Can hear the quarry with the windows closed.',
+             'Wanted to know if the quarry is working Saturdays now.']
+    actions = [('Acknowledged by email.', 6), ('Phoned back, MP1 record checked for the afternoon.', 4),
+               ('Letter sent with the quarterly monitoring summary.', 3), ('Called back and explained the working hours.', 3),
+               ('Visited caller; period to be looked at on the MP1 record.', 2), ('Acknowledged; passed to Garry Fry.', 3),
+               ('No answer on callback, email sent.', 3), ('MP1 data checked for the hour given; caller informed.', 4),
+               ('Logged, MP1 download pending.', 2), ('Spoke to caller; reversing alarm on T41 to be changed to a white-noise type.', 1),
+               ('Bowser out; dust reported to the manager.', 1), ('Acknowledged; caller to keep a diary for two weeks.', 2),
+               ('Phoned, caller satisfied with the explanation.', 2), ('Acknowledged by letter within two days.', 3),
+               ('Visited; noise audible at the gate, noted in the site diary.', 1)]
+    aw = np.array([w for _a, w in actions], float); aw = aw / aw.sum()
     rows = []
     ref = 233
     hourly = {}
@@ -74,9 +93,13 @@ def complaints_xlsx(path, Wd):
         if rng.random() < pr:
             ref += 1
             recv = dt.datetime.combine(d, dt.time(hr, 0)) + dt.timedelta(minutes=float(rng.uniform(20, 300)))
+            txt = texts[int(rng.integers(0, len(texts)))]
+            act = actions[int(rng.choice(len(actions), p=aw))][0]
+            if 'dust' in txt.lower():
+                act = 'Bowser out; dust reported to the manager.'
             rows.append(('CR-26-%03d' % ref, recv.strftime('%d/%m/%Y'), recv.strftime('%H:%M'),
                          ['Phone', 'Email', 'Email', 'Web form'][int(rng.integers(0, 4))], addrs[int(rng.integers(0, len(addrs)))],
-                         texts[int(rng.integers(0, len(texts)))], 'Acknowledged; MP1 record reviewed'))
+                         txt, act))
     docs.xlsx(path, [('Log', ['Ref', 'Received', 'Time', 'Method', 'Address', 'Description', 'Action'], rows)],
               docs.MANAGER, 'Calderwick Stone Ltd', '2026-01-02T09:12:00Z|2026-11-02T10:05:00Z', 'Complaints log 2026',
               widths={'Log': [11, 11, 7, 9, 28, 60, 30]})
@@ -118,9 +141,8 @@ def tickets_xlsx(path, rows):
 def orders_xlsx(path, orders, seed):
     rng = np.random.default_rng(seed + 23)
     rows = []
-    for (onum, acc, cust, prod, placed) in sorted(orders):
-        rows.append((onum, placed.strftime('%d/%m/%Y'), acc, cust, prod, int(rng.choice([20, 28, 28, 56, 84, 112, 140])),
-                     'Collected'))
+    for (onum, acc, cust, prod, placed, qty, delivery) in sorted(orders):
+        rows.append((onum, placed.strftime('%d/%m/%Y'), acc, cust, prod, qty, delivery))
     docs.xlsx(path, [('Orders', ['Order no', 'Placed', 'Account', 'Customer', 'Product', 'Quantity (t)', 'Delivery'], rows)],
               'Sales office', 'Calderwick Stone Ltd', '2026-02-03T09:00:00Z', 'Sales orders December 2025 to January 2026',
               widths={'Orders': [9, 11, 9, 28, 18, 12, 10]})
@@ -148,7 +170,7 @@ def main(seed=W.SEED):
     complaints_xlsx(p('complaints'), Wd)
     shifts_xlsx(p('shifts'), Wd)
     docs.conditions(p('conditions'))
-    docs.nmp(p('nmp'))
+    docs.nmp(p('nmp'), round(W.filed_residual(Wd['mp1'], Wd['ends']), 1))
     docs.scheme(p('scheme'))
     docs.register(p('register'))
     docs.dno(p('dno'), Wd['outages'])

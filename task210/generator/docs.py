@@ -175,7 +175,7 @@ def conditions(path):
 
 # ----------------------------------------------------------------------------------------- noise management plan
 
-def nmp(path):
+def nmp(path, residual_db):
     body, h, t, small = st()
     def story():
         s = [Paragraph('Calderwick Stone Ltd, Ravensby Quarry', small),
@@ -204,9 +204,10 @@ def nmp(path):
              Paragraph('5. Apportionment of the limit', h),
              Paragraph('5.1 Two activities contribute to the specific sound level at MP1 during the working day: the '
                        'processing plant and haulage on the site\'s haul roads.', body),
-             Paragraph('5.2 The processing plant\'s specific sound level at MP1 is 37.5 dB LAeq,1h, from the plant-only '
-                       'survey of 3 March 2026. Of the 45 dB limit at MP1, haulage on the site\'s haul roads is held to '
-                       '44.0 dB LAeq,1h.', body),
+             Paragraph('5.2 The baseline survey of 2 and 3 March 2026 measured at MP1, with the site stopped, a residual '
+                       'sound level of %.1f dB LAeq over 07:00 to 17:00, and from plant-only running the processing plant\'s '
+                       'specific sound level of 37.5 dB LAeq,1h. Of the 45 dB limit at MP1, haulage on the site\'s haul '
+                       'roads is held to 44.0 dB LAeq,1h.' % residual_db, body),
              Paragraph('6. Working schemes', h),
              Paragraph('6.1 Each monthly working scheme under condition 19 states the number of articulated dump trucks '
                        'allocated to the scheme\'s haul road and the loaded haul movements each truck makes in an hour on '
@@ -237,25 +238,30 @@ def scheme(path):
     doc.add_heading('Ravensby Quarry: Phase 4 working scheme, January 2027 (draft)', level=1)
     doc.add_paragraph('Condition 19 of R/2019/0447. For submission to Holmeshire County Council by 10 December 2026. '
                       'Prepared by %s, quarry manager. Draft of 27 November 2026.' % MANAGER)
+    def table(rows):
+        tb = doc.add_table(rows=1, cols=4)
+        tb.style = 'Table Grid'
+        for i, hd in enumerate(['Point', 'Latitude', 'Longitude', 'Level (m AOD)']):
+            tb.rows[0].cells[i].text = hd
+        for (lab, x, y, z) in rows:
+            la, lo = W.to_latlon(x, y)
+            row = tb.add_row().cells
+            row[0].text = lab
+            row[1].text = '%.6f' % la
+            row[2].text = '%.6f' % lo
+            row[3].text = '%.1f' % z
     doc.add_heading('1. Area worked', level=2)
-    doc.add_paragraph('Extraction moves to the first bench of the Phase 4 extension, east of the existing pit, from Monday '
-                      '4 January 2027. The existing faces are held for blasting and stocking during the month. All loads '
-                      'from Phase 4 are hauled to the primary crusher feed hopper.')
+    doc.add_paragraph('Extraction moves to the first bench of the Phase 4 extension, on the east side of the existing pit, '
+                      'from Monday 4 January 2027. Bench 1 is worked at 46 m AOD. The existing faces are held for blasting '
+                      'and stocking during the month. All loads from Phase 4 are hauled to the primary crusher feed hopper. '
+                      'Bench 1 crest as set out:')
+    table([('C-%d' % (i + 1), x, y, z) for i, (x, y, z) in enumerate(W.bench_crest())])
     doc.add_heading('2. Haul road', level=2)
-    doc.add_paragraph('Loaded trucks leave the bench by its access ramp and run north on the Phase 4 haul road to the '
-                      'primary crusher, returning empty by the same road. Alignment and levels as surveyed for '
-                      'construction:')
-    tb = doc.add_table(rows=1, cols=4)
-    tb.style = 'Table Grid'
-    for i, hd in enumerate(['Point', 'Latitude', 'Longitude', 'Level (m AOD)']):
-        tb.rows[0].cells[i].text = hd
-    for i, (x, y, z) in enumerate(W.ROADS['ext']['pts']):
-        la, lo = W.to_latlon(x, y)
-        row = tb.add_row().cells
-        row[0].text = 'P4-%d' % (i + 1)
-        row[1].text = '%.6f' % la
-        row[2].text = '%.6f' % lo
-        row[3].text = '%.1f' % z
+    doc.add_paragraph('Loaded trucks climb out of the bench by its access ramp (R-1 to R-3) and run north-west on the Phase 4 '
+                      'haul road (P4-1 to P4-6) to the primary crusher, returning empty by the same road. Alignment and '
+                      'levels as surveyed for construction:')
+    table([('R-%d' % (i + 1), x, y, z) for i, (x, y, z) in enumerate(W.ROADS['ext_up']['pts'][:-1])] +
+          [('P4-%d' % (i + 1), x, y, z) for i, (x, y, z) in enumerate(W.ROADS['ext']['pts'])])
     doc.add_heading('3. Haulage', level=2)
     doc.add_paragraph('Haulage hours 07:00 to 17:00 Monday to Friday, with a half-hour break at 12:00. No haulage on '
                       'Friday 1 January 2027 (Bank Holiday).')
@@ -284,7 +290,7 @@ def register(path):
                 'T44': '20/04/2026', 'T52': '20/04/2026'}
         for (fn, unit, model) in W.FLEET:
             rows.append([fn, 'Articulated dump truck', model, sers[fn], unit, '39.0' if 'Volvo' in model else ('38.0' if 'Cat' in model else '40.0'),
-                         '109', hire[fn]])
+                         '%d' % W.DECLARED_LWA[model], hire[fn]])
         rows += [['L3104', 'Wheel loader', 'Volvo L150H', 'VCE0L150HE04112', '-', '-', '106', '11/03/2024'],
                  ['E2201', 'Tracked excavator', 'Komatsu PC490LC-11', 'KMTPC490K31027', '-', '-', '107', '02/09/2024'],
                  ['E2207', 'Tracked excavator', 'Volvo EC480E', 'VCEC480EK20418', '-', '-', '107', '17/02/2025']]
