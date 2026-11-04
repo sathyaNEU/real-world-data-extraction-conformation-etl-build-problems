@@ -234,8 +234,11 @@ def workorders(tgt, S):
         else:
             lead = OPEN[int(rng_n.integers(0, len(OPEN)))].format(t=lt)
             tail = ends[int(rng_n.integers(0, len(ends)))].format(u=lu)
-        if tail == " All ok." and main.endswith(("ok", "fine", "all ok")):
-            tail = " NFA."
+        # a closing remark never restates the note it closes
+        if tail == " All ok." and (" ok" in " " + main or "fine" in main):
+            tail = ""
+        if tail == " Back in auto." and "auto" in main:
+            tail = ""
         body = main[0].upper() + main[1:] if not lead or lead.endswith(". ") else main
         note = lead + body + ("." + tail if tail else "")
         rows.append(("WO%07d" % wo, st["code"], st["name"] + " SPS", pack.local_dt(t).date().isoformat(), task,

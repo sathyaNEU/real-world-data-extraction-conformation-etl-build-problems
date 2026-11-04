@@ -372,6 +372,8 @@ def run(tgt, S, g, info, figs):
         ok("SF19.retirement follows exactly one batch %s" % old, all(0 <= (rem - i2).days <= 9 for c, (o, i2, r2) in W.EDM_REPLACED.items() if r2 == rem)
            and not [c for c, (o, i2, r2) in W.EDM_REPLACED.items() if r2 != rem and 0 <= (rem - i2).days <= 9])
         ok("SF19.batch in distinct radar zones %s" % old, len({W.BY_CODE[c]["zone"] for c in batch}) == len(batch))
+        ok("SF19.step 5's span: installed six to eight days before the retirement %s" % old,
+           all(6 <= (rem - i2).days <= 8 for c, (o, i2, r2) in W.EDM_REPLACED.items() if r2 == rem))
     cur_only = {}
     for c in st:
         iv = g["log"].get(st[c]["edm"], [])
@@ -425,14 +427,18 @@ def run(tgt, S, g, info, figs):
         G.BST1 - 3600 <= a < G.BST1 + 3600 for recs in g["log"].values() for (a, b) in recs))
     ok("asks.no discharge spans a clock change", not any(a < G.BST0 < b or a < G.BST1 < b for recs in g["log"].values() for (a, b) in recs))
     # every graded ask figure clear of its rounding edge
-    # hours: seven seconds or more from the edge (the record is to the second and no licensed reading moves it)
-    ok("bins.hours clear of the edge", min(edge(g["lines"][c]["hours"]) for c in st) >= 0.02,
-       {c: round(edge(g["lines"][c]["hours"]), 3) for c in st})
+    # hours: every graded hours figure, the year's in the return and each month's on the chart, a minute or more from
+    # its rounding line, so a reader working to the minute rounds it the same way
+    sec = lambda h: edge(h) * 360.0
+    ok("bins.return hours a minute clear of the line", min(sec(g["lines"][c]["hours"]) for c in st) >= 60,
+       {c: round(sec(g["lines"][c]["hours"]), 1) for c in st})
+    near = [(c, k + 1, round(h, 4)) for c in st for k, h in enumerate(g["lines"][c]["months"]) if h > 0 and sec(h) < 60]
+    ok("bins.every chart month a minute clear of the line", not near, near)
+    ok("bins.settling moved a few discharge ends only", 0 < info["ends_settled"] <= 80, info["ends_settled"])
     # operational time: a reader who caps 25 October at 24 hours lowers a figure by 0.0114, so none sits that close
     # above an edge
     above = {c: ((g["lines"][c]["operational"] * 10) % 1 - 0.5) % 1 for c in st}
     ok("bins.operational clear above the edge", min(above.values()) >= 0.13, {c: round(v, 3) for c, v in above.items()})
-    ok("bins.no month cell on a half", min(edge(h) for c in st for h in g["lines"][c]["months"] if h > 0) > 0.0005)
     # independent detection: no EDM discharge shares both bounds with an overflow alarm
     shared = 0
     for c in st:
@@ -458,6 +464,10 @@ def run(tgt, S, g, info, figs):
     ok("realism.technician notes vary", notes.most_common(1)[0][1] <= 0.08 * len(wo_rows) and len(notes) >= 0.4 * len(wo_rows),
        notes.most_common(3))
     ok("realism.closure codes from the system's list", {r["closure_code"] for r in wo_rows} <= {"COMPLETE", "NFF", "ATTENDED", "SECURED"})
+    restate = [r["technician_notes"] for r in wo_rows
+               if (r["technician_notes"].endswith("Back in auto.") and "auto" in r["technician_notes"][:-len("Back in auto.")])
+               or (r["technician_notes"].endswith("All ok.") and re.search(r"\bok\b|fine", r["technician_notes"][:-len("All ok.")]))]
+    ok("realism.no closing remark restates its note", not restate, restate[:3])
     ok("realism.work orders name no fault at Gallowfen", not re.search(r"block|restrict|rising main|ragg|impeller|drawdown|"
                                                                         r"under ?perform|low flow|duty point", wo_txt))
     ok("dates.work orders inside 2026", all("2026-01-01" <= r["completed"] <= "2026-12-31" for r in wo_rows))

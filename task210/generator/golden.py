@@ -195,7 +195,7 @@ def coincide(recs, alarms):
 def map_monitors(stations, log, mlist, alarms, restrict=True):
     """Every serial to its overflow: the register's monitor where it lists one; a retired serial to the station whose
     telemetry overflow alarms its discharges start with, among the stations whose register monitor was installed in
-    the week before the serial retired (restrict=False tries every station)."""
+    the nine days before the serial retired (restrict=False tries every station)."""
     serial_site = {st["edm"]: code for code, st in stations.items()}
     evidence = {}
     for ser, row in sorted(mlist.items()):

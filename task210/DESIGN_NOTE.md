@@ -227,7 +227,7 @@ before onset, which this build keeps out of the decisive step.
 | Rung | Route (in `generator/routes.py`) | Files | Refused by |
 |---|---|---|---|
 | 0 | `rated_check` (`R1` in the code): the running pump's duty, the meter at the three metered stations | none: duties 1.17 to 1.24 times the permits, meters 117.8, 83.8, 66.6 against 101, 73, 56 | the cycles: Gallowfen's pumps move 48 l/s, not 85.3 |
-| 0b | `naive_drawdown`: the volume between the duty pump's control levels over the pump-on time alone; the median of every run, of the night runs, or the 90th percentile | Hagworth Wold, far the lowest: 12.2 l/s against 31 (0.39 of its permit; 0.44 at night, 0.48 at the 90th percentile), then Gallowfen 39.5 against 72 (0.55; 0.59 at night, 0.59 at the 90th percentile) and Marram End 15.0 against 16 (0.94; above it at night); the other eleven clear their permits at 1.02 to 1.10 | Hagworth Wold's groundwater runs into the well through every cycle (its fill-and-draw rate is 36 l/s against 31); the meters read 9 to 14 per cent above the pump-on route at their own stations; adding back the inflow timed from the fill before each run gives the golden |
+| 0b | `naive_drawdown`: the volume between the duty pump's control levels over the pump-on time alone; the median of every run, of the runs starting between midnight and 05:00, or the 90th percentile | Hagworth Wold, far the lowest: 12.2 l/s against 31 (0.39 of its permit; 0.44 on the midnight-to-05:00 runs, 0.48 at the 90th percentile), then Gallowfen 39.5 against 72 (0.55; 0.59, 0.59) and Marram End 15.0 against 16 (0.94 on the median of every run); the other eleven clear their permits at 1.02 to 1.10 | Hagworth Wold's groundwater runs into the well through every cycle (its fill-and-draw rate is 36 l/s against 31); the meters read 9 to 14 per cent above the pump-on route at their own stations; adding back the inflow timed from the fill before each run gives the golden |
 | 1 | `dry_day_spills` (`R0`): the procedure's dry-day annex | Hagworth Wold, 110 dry-day spills, every other overflow none | the station was pumping 36 l/s against a permitted 31 through them: groundwater, not a pass forward failure |
 | 2 | the high spiller (`R2`): the most 12/24 spills and hours | Marram End, 57 spills and 198.2 hours | Marram End delivers 19 l/s against 16 |
 | 3 (decisive) | `delivered` in `generator/golden.py`: each station's median cycle rate against its permit | Gallowfen, 48 l/s against 72 (0.666 of the permit); the next lowest Sallowholme 57 against 50 (1.139) | |
@@ -245,8 +245,8 @@ l/s against 31 and Gallowfen alone below its permit. The meters, 9 to 14 per cen
 own stations, are the other way out (asserted in `checks.py`, `rung0b.` labels, on every build).
 
 Separation: Gallowfen sits fourth of fourteen on rung 0's headroom (rated duty over permitted flow 1.185, against
-1.173 to 1.235), is second to Hagworth Wold on rung 0b by 0.16 of a permit (0.15 at night, 0.10 at the 90th
-percentile), has no dry-day spill on rung 1 and is tenth on rung 2's spill count; the final margin is 1.139
+1.173 to 1.235), is second to Hagworth Wold on rung 0b by 0.16 of a permit (0.15 on the runs starting between
+midnight and 05:00, 0.10 at the 90th percentile), has no dry-day spill on rung 1 and is tenth on rung 2's spill count; the final margin is 1.139
 against 0.666, a factor of 1.71. The reflex routes priced in `routes.py` (run hours, starts per day, run per start,
 hours per spill, rain before onset, spills per 100 mm, high level alarms and their hours and their rate per spill,
 call-outs, work orders) never put Gallowfen alone at either end (asserted).
@@ -272,7 +272,7 @@ call-outs, work orders) never put Gallowfen alone at either end (asserted).
 | SF15 | the cycle estimator | median of each cycle's volume over on-time plus volume over the off-time before it | mean, trimmed mean; mean of the two off-times; night cycles | 24 members, Gallowfen 47.88 to 48.29 | same call |
 | SF16 | the metered stations | the cycles, as everywhere | the meter | same whole l/s at all three | same call |
 | SF17 | the grain of the rate | the station | each pump | same whole l/s | same call |
-| SF18 | which overflow a retired serial watched | the station whose overflow alarms its discharges match most closely, among those whose register monitor went in the week before it retired | the handover week's discharges against the new units' | every serial placed the same way, the runner-up at 0.55 of the best or less | same call (asks only) |
+| SF18 | which overflow a retired serial watched | the station whose overflow alarms its discharges match most closely, among those whose register monitor went in the nine days before it retired (six to eight days in every batch) | the handover week's discharges against the new units' | every serial placed the same way, the runner-up at 0.58 of the best or less | same call (asks only) |
 | SF19 | the candidate set for a retired serial | the batch whose register installs fall in the nine days before its retirement | every station | each retirement follows exactly one batch, its stations in distinct radar zones | same call (asks only) |
 | SF20 | "each storm overflow" in the return | every serial the platform holds for the overflow | the serial the register lists today | the register serial alone misses spills, hours and operational time at all eleven replaced overflows | WW-ENV-PR-014 sections 3 to 5 count, time and monitor "each storm overflow" |
 | SF21 | the discharge log's clock (the chart's months, the count, the hours, the serial mapping) | UK local time, converted | the log read as UTC | no graded figure moves: every count, every hours figure and every chart cell is the same at one decimal, and every retired serial still lands on its overflow (the batch carries it); only the summer discharges stop meeting the alarms, 0 of 101 within five minutes of one against 99 of 101 on local time | the data: the log's starts sit about a minute after the UTC overflow alarms in winter and about an hour after them in summer |
@@ -291,7 +291,7 @@ call-outs, work orders) never put Gallowfen alone at either end (asserted).
 | 7 | Weighting | the median over a station's cycles | C1: the 24-member estimator family gives the same whole figure |
 | 8 | Window length | every 2026 cycle | C1: night-only and all-cycle windows agree |
 | 9 | Boundary inclusivity | strictly less than the permit's flow; a 24-hour block counts when any part of a discharge falls in it | C1: no station within 1 l/s; the block filed in section 3 (SF22) |
-| 10 | Rounding path | rates rounded once to whole l/s, hours and percentages once to a decimal | asserted: delivered rates 0.17 l/s or more inside their bins across the family, hours 26 seconds or more from their edges, operational time 0.015 of a point or more above one |
+| 10 | Rounding path | rates rounded once to whole l/s, hours and percentages once to a decimal | asserted: delivered rates 0.17 l/s or more inside their bins across the family; every hours figure, the year's in the return and each month's on the chart, a minute or more from its rounding line (settled in `settle.py`, 66 seconds at the closest); operational time 0.015 of a point or more above one |
 | 11 | Tie-break | none needed | C1: no tie at any step |
 | 12 | Maturity and censoring | a complete year | C1: every record closes inside 2026 |
 | 13 | Order of operations | pool the overflow's serials, merge, then count and time | filed per overflow in sections 3 and 4; the per-serial order differs (SF11, SF12) |
@@ -356,7 +356,7 @@ flow.
   stop meeting the overflow alarms, but the batch still places every retired serial and no count, hours figure or
   chart cell moves (SF21, asserted), so the clock is texture here and not a device.
 - Stops per replaced overflow (Cressfleet as the example): the register's serial alone 5 spills, 10.6 hours,
-  29.5 per cent; every serial pooled without merging 17, 27.0, 99.3; the golden 15, 24.1, 97.4. Every figure of
+  29.5 per cent; every serial pooled without merging 17, 27.1, 99.3; the golden 15, 24.1, 97.4. Every figure of
   A1 to A4 moves at all eleven (asserted, SF20).
 - Pin test: the asking sentence pins the unit, the rounding, "counted as our reporting procedure counts them" and
   "the percentage of the year", and the procedure files per overflow, a period counted once and the year's hours;
@@ -382,7 +382,7 @@ Pair ceiling: 55.4 (cracker 75.3 on the call, mirror 35.6 off it, on 38, 7 and 5
 
 Mirror leakage: 42.9 per cent of ask weight
 
-Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest f94819412554bc16
+Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest c6e59728678c48a4
 
 ## Leak sweep answered
 
@@ -408,7 +408,7 @@ the word telemetry.
 ## Build record
 
 - Generator: `python3 build.py` from `task210/generator` (sim, pack, documents, golden, deliverables,
-  figures.json, metadata.json, submission.md, then 514 assertions in `checks.py`, 155 in `verify.py`, the ceiling
+  figures.json, metadata.json, submission.md, then 527 assertions in `checks.py`, 155 in `verify.py`, the ceiling
   sheet, target.zip). Two rebuilds byte-identical (target.zip, goldens, submission, metadata, figures.json).
 - Stage 4, pass 1: the leak reader found no leak and the judge returned DETERMINISTIC, APPROVE. Closed after it with
   nothing graded moving (figures.json, the goldens, submission.md and metadata.json byte-identical): the 12/24 block
@@ -421,6 +421,15 @@ the word telemetry.
   rate, permitted flow and met verdict and Gallowfen's whole line are as they were, while the spills, hours and
   monitored percentages of eleven overflows moved (25 cells) and the golden, figures.json and submission.md were
   regenerated. The monitors' draw stays 35, which clears every margin on the new hydraulics.
+- Stage 4, pass 2 (judge DETERMINISTIC, FIX_NOW; reader no leak), closed with nothing graded moving: solution step 5,
+  SF18 and SF19 now give the same true span (a retired serial's batch went in six to eight days before it retired,
+  and the mapping looks nine days back); `settle.py` moves the end (or, where another unit's record of the same
+  discharge holds the end, the start) of a few discharges by the seconds that put every hours figure, the year's and
+  each month's, a minute clear of its rounding line on the side it already rounds to, 47 stretches across the
+  fourteen overflows, every spill count and rounded figure held (asserted); a technician's closing remark no longer
+  restates the note. The return lines, figures.json and every rounded chart label are byte-for-byte as they were;
+  the chart's fill shades moved a step at eight cells and three rows of the self-report's discharge table (the three
+  Gallowfen discharges whose months were settled) show their new ends.
 - The monitors' own draw (`MON_VARIANT` 35 in `world.py`) was chosen from 260 by a search that kept every hours
   figure 7 seconds or more from its rounding edge, every operational percentage 0.013 of a point or more above
   one (a 24-hour cap on 25 October lowers it 0.011), no month cell on an exact half, no day with two part-reporting
@@ -492,3 +501,6 @@ the word telemetry.
   fill-and-draw or named its one outlier, and both landed the call. Hagworth Wold's year-round groundwater now makes
   it the route's outlier (0.39 against Gallowfen's 0.55) and the other stations' dry weather flows were set so the
   route flags three overflows, not thirteen.
+- 2026-11-04, hours figures exact to the second left where they fell (stage 4, pass 2): 47 of the year's and the
+  months' hours sat under a minute from a rounding line, seven of them within seconds, where a reader working to the
+  minute would round them the other way; settled in the generator, a minute clear on the side each rounded to.

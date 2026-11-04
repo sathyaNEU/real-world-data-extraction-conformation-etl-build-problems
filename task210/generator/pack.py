@@ -229,10 +229,13 @@ def telemetry(tgt, S, info):
 
 # ---------------------------------------------------------------- event duration monitoring
 def edm(tgt, S, info):
+    import settle
     log_rows, status_rows, list_rows = [], [], []
     hours_truth = {}
+    info["ends_settled"] = 0
     for k, st in enumerate(W.STATIONS):
         r = S["stations"][st["code"]]
+        info["ends_settled"] += settle.station(st["code"], r["monitors"])
         rng = np.random.default_rng([W.SEED, 11, k])
         for m in r["monitors"]:
             for (a, b) in m["events"]:

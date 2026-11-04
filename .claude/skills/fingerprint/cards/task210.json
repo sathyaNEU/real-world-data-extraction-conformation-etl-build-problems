@@ -50,7 +50,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "telemetry/marsh_wolds_sps_telemetry_2026.sqlite",
-    "rows": 460344,
+    "rows": 324394,
     "entity": "one pump start or stop event logged by a pumping station's telemetry outstation",
     "grain": "station x pump x event",
     "source": "synthetic"

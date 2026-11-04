@@ -19,7 +19,7 @@
 2. From `registers/marsh_wolds_wastewater_assets.xlsx`, took each wet well's plan area from its internal dimensions and the volume between the duty pump's start and stop levels.
 3. From `pump_event` in `telemetry/marsh_wolds_sps_telemetry_2026.sqlite`, exact duplicates dropped, took each clean cycle's delivered rate as that volume over the pump-on time plus that volume over the pump-off time before it, and each station's median: Gallowfen 48 l/s against its 72.
 4. Compared every station's delivered rate with its permitted flow: Gallowfen alone falls short, the closest of the rest Sallowholme at 57 against 50.
-5. Mapped each retired serial in `edm/edm_monitor_list_2027-01-15.csv` to the overflow whose `alarm` OVERFLOW OPERATING periods its discharges coincide with, among the stations whose register monitor was installed in the week before it retired, and pooled every serial per overflow.
+5. Mapped each retired serial in `edm/edm_monitor_list_2027-01-15.csv` to the overflow whose `alarm` OVERFLOW OPERATING periods its discharges coincide with, among the stations whose register monitor was installed in the nine days before it retired (one crew batch per retirement date, six to eight days before it in every batch), and pooled every serial per overflow.
 6. On each overflow's discharges from every serial, starts and ends converted from UK local time and overlapping periods counted once, applied WW-ENV-PR-014's 12/24 count and summed the hours, split by local month for the chart.
 7. Monitoring percentage: for each local day the most hours any of the overflow's monitors reported in `edm/edm_monitor_daily_status_2026.csv`, summed over 2026, over 8,760 hours.
 8. Self-reported Gallowfen PS storm overflow, 12 spills and 20.4 hours of discharge in 2026.

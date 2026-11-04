@@ -45,7 +45,8 @@ def write(task_dir, f):
                                                             f["tightest_pff_ls"]))
     md.append("5. Mapped each retired serial in `edm/edm_monitor_list_2027-01-15.csv` to the overflow whose `alarm` "
               "OVERFLOW OPERATING periods its discharges coincide with, among the stations whose register monitor was "
-              "installed in the week before it retired, and pooled every serial per overflow.")
+              "installed in the nine days before it retired (one crew batch per retirement date, six to eight days "
+              "before it in every batch), and pooled every serial per overflow.")
     md.append("6. On each overflow's discharges from every serial, starts and ends converted from UK local time and "
               "overlapping periods counted once, applied WW-ENV-PR-014's 12/24 count and summed the hours, split by "
               "local month for the chart.")

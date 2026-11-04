@@ -15,14 +15,14 @@
  "card": ".claude/skills/fingerprint/cards/task210.json, registered 2026-11-04T11:53:28Z at WARN (overuse.objective fixed by the number; repeat.geography against task313 answered in the design note); brought up to date at the build (answer, deliverables, layer1, spine, invented names)",
  "clean_truth": "checks.py R3a and R3b on the simulation's own records before any mess: the rated-duty route files none (every station's rated duty clears its permit, the three meters clear theirs while spilling), the cycle-measured delivered rate files Gallowfen alone (48 l/s against 72; every other station 1.14 to 1.26 times its permit)",
  "gates": {
-  "generator_assertions": 514,
+  "generator_assertions": 527,
   "independent_checks": 155,
   "rebuilds_byte_identical": true,
   "figures_check": "PASS, 74 figures",
   "realism_sweep": "in checks.py, PASS",
   "container_audit": "clean (pack and goldens)",
-  "input_gates": "12 files, 4 formats (sqlite, csv, xlsx, pdf), 460,344-row pump event table, 4 distractors",
-  "ceiling": "pair 55.4, mirror leakage 42.9, cracker keep 55.1; the drawdown-without-inflow response scores 33.3, pair 54.3 beside it (ceiling.py, pack digest f94819412554bc16)"
+  "input_gates": "12 files, 4 formats (sqlite, csv, xlsx, pdf), 324,394-row pump event table, 4 distractors",
+  "ceiling": "pair 55.4, mirror leakage 42.9, cracker keep 55.1; the drawdown-without-inflow response scores 33.3, pair 54.3 beside it (ceiling.py, pack digest c6e59728678c48a4)"
  },
  "precut": {
   "exit": 0,
@@ -30,7 +30,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-11-04 --asof 2027-01-15 (sweeps 3, 4 and 12 on the procedure PDF, answered in the design note); no LEAK",
-  "reader": "pass 1 on 7cec1223: no leak; a fresh pass due on the hardened cut (the procedure, the meters, the work orders and the hydraulics changed)"
+  "reader": "pass 1 on 7cec1223 and pass 2 on bab3e321: no leak; pass 2's realism note (closing remarks restating their notes) fixed in the generator"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective, repeat.geography), nearest 0.05",
@@ -39,11 +39,11 @@
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (pass 1, on 7cec1223); a fresh pass due on the hardened cut",
-  "report": "task210/determinism_check_report.md (pass 1 on 7cec1223); its forks closed: the 12/24 block membership filed in PR-014 section 3 (SF22), SF13's averaging reading recorded, SF21 rewritten to what the data show"
+  "disposition": "FIX_NOW (pass 2, on bab3e321); closed, the one re-judge due",
+  "report": "task210/determinism_check_report.md (pass 1), task210/determinism_check_report_pass2.md (pass 2): step 5's span aligned with SF18 and SF19, every hours figure settled a minute clear of its rounding line, Marram End's night claim dropped"
  },
  "returned": [],
- "resume": "stage 4: a fresh leak reader and determinism judge pass on the hardened cut, target.zip sha256 bab3e3210c945c61fffd26f0d722a54c328a74f6e763181a757851ae6549c9b7 (rebuild: cd task210/generator && python3 build.py, byte-identical, prints 514 generator assertions, 155 independent checks and pair 55.4); then ship",
+ "resume": "stage 4: the one re-judge on target.zip sha256 ce1842d66373e7efafe941e03367d49fb310e43f45b7b5a962c92170f723a0da (rebuild: cd task210/generator && python3 build.py, byte-identical, prints 527 generator assertions, 155 independent checks and pair 55.4); then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
