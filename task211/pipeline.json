@@ -1,37 +1,34 @@
 {
   "task": "task211",
-  "status": "DRAWING",
-  "domain": "supply-chain-logistics / transportation-network (client: general-statistics-data-science / exploratory-data-analysis-distribution-assessment)",
+  "status": "DESIGN",
+  "domain": "pharmacology-pharmacoepidemiology-safety / safety-signal-detection",
   "objective": "anomaly-detection",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-04",
-  "seed": "AD34",
-  "stump": "A competent analyst replays each floating vessel's weather procedure over the buoy record, credits the jack-up with the downtime of the vessel it releases and names Fjernhav at 38 days; the step that lands them there is treating the vessels as independent, when Skarvgrund's and Lillevig Banke's share Bramso Havn's one heavy-lift berth and the past progress reports show the later arrival going on to Kalvholm, so the jack-up at Skarvgrund also removes Lillevig Banke's diversions and avoids 42 days.",
+  "seed": "AD34 (the number and objective only; architecture 1 world spent)",
+  "stump": "A competent analyst counts each product's seizure-related emergency visits per 1,000 patient-months in January to June 2026, adjusts for age, drug-resistant epilepsy and manufacturer switches and names Halvorne at about 11 excess visits; the step that lands them there is reading the excess per product, when Halvorne's excess is the weeks after each patient's first fill of its new pink tablets, and with that transient estimated from every colour change in the record the persistent excess is Tessard's, about 6.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-11-04"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK",
-    "reader": "round 1: no leak, but question 6 leaned to rule application (the plan states the measure and the procedure)"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "PASS 2026-11-04, corpus at 9b820fa (parent merged) with every batch4 sibling card present",
-    "nearest": "0.06 task472 (stump); surface promotes task160 (0.101, corpus top 1 percent) and task147, task159 (card axes, differentiated on the card)"
+    "heart": "",
+    "nearest": "guard check at the draw: WARN exit 0, nearest driver 0.07 (task98 v4 lineage)"
   },
   "judge": {
-    "verdict": "round 1 NOT_DETERMINISTIC",
-    "disposition": "SEND_BACK on Gate H (decisive_step: planted)",
-    "why": "the decisive berth-contention practice (a vessel finding Bramso Havn's one heavy-lift berth taken goes on to Kalvholm) is filed in no governing document and was recovered from 26 settled cases in the progress reports: a withheld rule; executing the campaign plan literally names Fjernhav (38 days), runner-up Skarvgrund (35). Asks 4 to 6 carried further unforced readings, and ask 5's golden read a code against its filed definition.",
-    "gate_g": "other (withheld operational rule recovered from settled cases)",
-    "gate_h": "domain pass, layers pass, decisive step planted",
-    "reports": "scratchpad t211/stage4/judge and reader"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "Re-root at architecture 2 from stage 1 in another client domain, world, dataset and shell under Anomaly Detection & Diagnostics (one architecture per world: the offshore jack-up world is spent). Architecture 1 (Nordvig Marine's jack-up for five North Sea sites, the shared heavy-lift berth at Bramso Havn) died at stage 4 round 1 on Gate H: its decisive practice was recovered from settled cases and filed in no governing document (a withheld rule), and filed it would have been executable. Move its identity into the card's lineage at the new draw, register, commit DRAWN.",
+  "resume": "Stage 2 of architecture 2 (Larkhaven Health, levetiracetam re-test): write the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet; file the WHAT in the committee surveillance procedure; build the generator with checks.py asserting the five screens on the shipped seed; leave stage 2 on precut exit 0.",
   "approved": null,
   "delivered": null,
   "portal": null,

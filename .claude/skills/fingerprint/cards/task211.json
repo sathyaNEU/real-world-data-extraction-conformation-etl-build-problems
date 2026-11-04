@@ -1,104 +1,137 @@
 {
   "task": "task211",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-11-04",
-  "slot_note": "Seed AD34 (which of five offshore sites gets the contractor's one jack-up for the winter campaign, and the floating-vessel weather downtime it avoids): the world, the decision and the quantity kept. The seed's own mechanism (storm sequences against the shelter round trip) was screened and set aside as the decisive step: the per-site replay it implies names the same site as storms times the round trip in 20 of 20 redraws, so it stays as a lower rung. The decisive step was re-found in the data: two sites share one marshalling port with a single heavy-lift berth.",
-  "domain": "supply-chain-logistics",
-  "subdomain": "transportation-network",
-  "client_domain": "general-statistics-data-science",
-  "niche": "an offshore wind foundation contractor's winter installation campaign: which of five sites gets its one jack-up, when two of the sites shelter their floating heavy-lift vessels at one marshalling port whose single heavy-lift berth the western site's vessel reaches first in nearly every passing front",
+  "slot_note": "Re-rooted at architecture 2 after architecture 1 (the offshore jack-up world, seed AD34) was spent at stage 4 on Gate H, a withheld operating practice. Nothing is kept from the seed but the number and the objective: a new client domain (pharmacology), world, dataset and prompt shell.",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "safety-signal-detection",
+  "niche": "an integrated health system's post-market surveillance of its interchangeable levetiracetam 500 mg tablets: which product goes to the contract laboratory's assay and dissolution re-test, when one generic's tablets turned from white to pink as its new manufacturing site's supply reached each distribution centre in turn, and a patient's first fill of a differently coloured tablet brings weeks of excess seizure visits",
   "objective": "anomaly-detection",
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Skarvgrund, 42 days of floating-vessel weather downtime avoided (Lillevig Banke 39, Fjernhav 38)",
-  "answer_source": "task211/generator/figures.json",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective",
-    "population"
+    "population",
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G8",
-    "G5",
-    "G3"
+    "G4",
+    "G3",
+    "G13"
   ],
-  "gate_g": "binding_constraint",
-  "calibration_form": "counterparty_acknowledgement",
-  "stump_strategy": "binding_constraint",
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks both buoy exports, keeps the 2016/17 winter once, cuts each winter to the Danish-time window and replays every floating vessel's filed weather procedure with the registers' limits, passage hours and berth counts credits each placement with the downtime of the vessel it releases and names Fjernhav at 38 days, when the jack-up at Skarvgrund also removes Lillevig Banke's recorded passages on to Kalvholm and avoids 42.",
-  "domain_test": "The deciding quantity is the campaign's floating-vessel weather downtime under each jack-up placement, estimated the way installation logistics planning estimates it, by running every floating vessel's shelter procedure over the storm record with the marshalling ports' heavy-lift berths shared between vessels; in another field's nouns there is no front passing west to east, no shelter passage and no berth two vessels reach in the order the weather sets.",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:shared-shelter-berth-taken-by-the-first-vessel-the-front-reaches",
+  "analyst_test": "A strong analyst who nets the claim reversals, links every fill to its patient, counts each product's seizure-related emergency visits and patient-months of supply in January to June 2026, adjusts for age and drug-resistant epilepsy and allows for patients moved between manufacturers names Halvorne at about 11 excess visits per 1,000 patient-months, when Halvorne's excess is the weeks after each patient's first fill of its new pink tablets and the excess that persists is Tessard's, about 6.",
+  "domain_test": "The deciding quantity is each interchangeable product's excess of seizure-related emergency visits over what its own patients would have had on tablets releasing levetiracetam as the reference does, estimated the way post-market pharmacoepidemiology estimates a generic's performance from dispensing and encounter records; in another field's nouns no tablet's colour drives missed doses and no breakthrough seizure follows.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:tablet-appearance-change-transient-against-persistent-product-effect",
   "layer1": [
-    "buoy record in two export layouts: centimetres and tenths of a second under the old buoy names with compact UTC stamps for 2008/09 to 2016/17, metres and seconds under station ids with ISO UTC stamps for 2016/17 to 2025/26, the 2016/17 winter in both, servicing gaps filled from the regional model and flagged",
-    "a UTC record against a campaign filed in Danish time",
-    "daily progress reports kept in local time as activity blocks split at midnight",
-    "developer statements in quarter days with revisions under new numbers",
-    "the jack-up's shift reports across a reporting-system go-live, codes reused",
-    "a payables extract across an ERP change, weekly port statements and yearly invoice sequences"
+    "dispensing claims across a pharmacy claims-platform cut-over: NDC-11 product codes before, the system's item codes with a crosswalk after, claim reversals as negative lines and resubmissions under new claim numbers",
+    "emergency encounters from two hospital feeds, one stamped in Pacific local time and one in UTC, inter-facility transfers recorded as two encounters",
+    "member numbers against medical record numbers, with a merge crosswalk where a patient holds two record numbers",
+    "a product register kept as dated description revisions in free text (colour, shape, debossing)",
+    "a manufacturer's supply transition letter giving each distribution centre's date as a scanned PDF table",
+    "a wholesaler backorder log whose shortages move pharmacies between interchangeable products"
   ],
-  "stakeholder_role": "marine operations manager",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
+  "stakeholder_role": "director of pharmacy quality and formulary",
+  "role_family": "other",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "buoy_hs_2016_2026.csv",
-    "rows": 148800,
-    "entity": "one hourly sea-state reading at one site's buoy",
-    "grain": "site x hour",
-    "source": "synthetic",
-    "companion": "buoy_hm0_2008_2017.csv, 133,920 rows in the old export layout, winters 2008/09 to 2016/17"
+    "file": "dispensing_claims_2025-07_2026-06.parquet",
+    "rows": 230000,
+    "entity": "one dispensing claim line, a fill or its reversal",
+    "grain": "claim line",
+    "source": "synthetic"
   },
   "forum": "committee_or_panel",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "other",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "Denmark, a fictional Danish marine contractor working five fictional North Sea wind farm sites",
-    "currency": "EUR",
-    "org_type": "a marine contractor installing offshore wind foundations",
+    "geography": "United States, Oregon and southwest Washington",
+    "currency": "USD",
+    "org_type": "an integrated health system with its own pharmacies and formulary",
     "invented_names": [
-      "Nordvig Marine",
-      "Skarvgrund",
-      "Lillevig Banke",
-      "Osterrev",
-      "Molleflak",
-      "Fjernhav",
-      "Bramso Havn",
-      "Kalvholm",
-      "Tranevig",
-      "Hjortby Havn"
+      "Larkhaven Health",
+      "Levaril",
+      "Halvorne Generics",
+      "Pellbrook Pharmaceuticals",
+      "Corwen",
+      "Tessard Laboratories",
+      "Wynfield Pharma",
+      "Marrowby Pharma Services",
+      "Brennick Contract Manufacturing"
     ],
     "people": [
-      "Andreas Jespersen",
-      "Simone Schou",
-      "Gert Skov",
-      "Marine Operations"
+      "Annette Yang",
+      "Mariah Guerrero",
+      "Lauren Byrd"
     ]
   },
   "deliverables": [
-    "placement.xlsx",
-    "panel_deck.pptx"
+    "retest_referral.docx",
+    "levetiracetam_products.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "The decisive quantity is the system total that each placement of one immune unit leaves, because two exposed units share a resource that admits one at a time and every shock reaches one of them first, so the second's delays at the resource disappear when the scarce unit stands at the first; a per-unit measure books those delays where they appear and never credits the unit that causes them.",
-  "driver_concrete": "Fronts reach the western site hours before the eastern one, so the western site's floating vessel takes the one heavy-lift berth at the shared marshalling port first and the eastern vessel steams on to the alternate shelter; the jack-up at the western site avoids that site's own downtime and the eastern vessel's extra passages, which per-site downtime books at the eastern site.",
-  "stump": "A competent analyst replays each floating vessel's weather procedure over the buoy record, credits the jack-up with the downtime of the vessel it releases and names Fjernhav at 38 days; the step that lands them there is treating the vessels as independent, when Skarvgrund's and Lillevig Banke's share Bramso Havn's one heavy-lift berth and the past progress reports show the later arrival going on to Kalvholm, so the jack-up at Skarvgrund avoids 42 days.",
+  "question_form": "which",
+  "driver": "The decisive quantity is each candidate's persistent excess once a transient that follows every member's own first encounter with a changed version of the item is removed, where the change reached members on dates set by which supply point served them and is recorded only in a register's dated descriptions, not in the column naming the candidate supplied, so per-candidate rates and any model keyed on changes of candidate book the transient to the candidate whose version changed.",
+  "driver_concrete": "Patients whose levetiracetam tablets change colour at a fill miss doses for a few weeks and have more seizure visits; Halvorne's new-site tablets turned pink as each distribution centre switched, so Halvorne's patients carry that transient across the window while Tessard's tablets carry a persistent excess, and only the product register's dated descriptions with the transition letter show which fills changed colour.",
+  "stump": "A competent analyst counts each product's seizure-related emergency visits per 1,000 patient-months in January to June 2026, adjusts for age, drug-resistant epilepsy and manufacturer switches and names Halvorne at about 11 excess visits; the step that lands them there is reading the excess per product, when Halvorne's excess is the weeks after each patient's first fill of its new pink tablets, and with that transient estimated from every colour change in the record the persistent excess is Tessard's, about 6.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task147": "task147 loses a request when any unit of its run of consecutive nights is already full at the forecast date, a run-length capacity inside one unit's own intake; this build credits one scarce vessel's placement with the shelter diversions its absence lifts from a second site whose vessel reaches a shared single-berth port after it in every passing front.",
-    "task159": "task159 separates a backlog that builds while services arrive with less room than an interval's arrivals from the one-interval stock at each stop; this build has no backlog and no stock, it counts the extra passages one site's vessel makes because another site's vessel already holds the one berth, and books them to the placement that removes the first vessel.",
-    "task160": "task160 carries a recurring wave's lag between groups into a fixed forward window and asks which groups' waves fall inside it; here the west-to-east lag only sets which of two vessels reaches one shared berth first, and the decisive step credits a placement with the other vessel's diversions, a contention cost read from the past records, not a timing window."
+    "task121": "task121 reads a rise against each event's exposure to the operator's rest before the shift, built from consecutive worked periods; here the excess is a transient each patient carries after their own first fill of a differently coloured tablet, dated by the distribution centre that served their pharmacy, and the decision sends the product whose persistent excess remains once that transient is removed.",
+    "task129": "task129 separates a maintenance handover's booked rise from a surroundings term by reading units at equal time since servicing; here no service changes hands and no surroundings term exists: each patient's own change of tablet appearance at a fill brings a transient, and the product's effect is what persists through a staggered regional rollout.",
+    "task232": "task232 recovers each recorder's own effect from units whose recorder changed between waves; here what changes is what the patient is handed (the tablet's colour), not who records, and the transient it brings is separated from the product's persistent effect rather than attributed to a person.",
+    "task243": "task243 balances two complete counts against recorded exits with migration as the missing term; here there is no balance equation: an excess of encounters is split between a per-patient transient after an appearance change and the product's own persistent effect.",
+    "task162": "task162 v1 forecast the reports that follow each unit's first use of a new version from when its restarts fall in a forward release week; here nothing is forecast from adoption timing: an excess already recorded is split between the transient each patient carries after their own first differently coloured fill and the product's persistent effect, and the decision rests on the persistent part."
   },
-  "lineage": [],
-  "notes": "Strategy binding_constraint and family allocation_constraints: the single heavy-lift berth binds and moves the pick; both unspent on anomaly detection. The seed mechanism (round trip against storm sequences) is a lower rung. Keyed gap objective with G8 decisive (which vessel reaches the shared berth first, against each site's downtime magnitude); forum redrawn from executive_team (ban.forum against task403) to committee_or_panel, the campaign planning panel that signs vessel allocations; deliverable set moved off pdf+xlsx (task403) to a planning-panel deck and a workbook.",
-  "registered": "2026-11-04T13:58:39Z",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent at stage 4 on 2026-11-04: the determinism judge returned NOT_DETERMINISTIC, SEND_BACK on Gate H (decisive step planted). The practice the golden needed, the later arrival at Bramso Havn's one heavy-lift berth going on to Kalvholm, was filed in no governing document and was recovered from 26 settled cases in the progress reports, a withheld operating practice; filed, it makes the literal replay of the campaign plan reach the golden, so the mechanism had no legal form. Executing the plan literally named Fjernhav (38 days), runner-up Skarvgrund (35).",
+      "domain": "supply-chain-logistics",
+      "subdomain": "transportation-network",
+      "client_domain": "general-statistics-data-science",
+      "objective": "anomaly-detection",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G8",
+        "G5",
+        "G3"
+      ],
+      "gate_g": "binding_constraint",
+      "stump_strategy": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "world": "Denmark, Nordvig Marine's one jack-up for five North Sea offshore wind sites (seed AD34)",
+      "driver": "The decisive quantity is the system total that each placement of one immune unit leaves, because two exposed units share a resource that admits one at a time and every shock reaches one of them first, so the second's delays at the resource disappear when the scarce unit stands at the first; a per-unit measure books those delays where they appear and never credits the unit that causes them.",
+      "driver_concrete": "Fronts reach the western site hours before the eastern one, so the western site's floating vessel takes the one heavy-lift berth at the shared marshalling port first and the eastern vessel steams on to the alternate shelter; the jack-up at the western site avoids that site's own downtime and the eastern vessel's extra passages, which per-site downtime books at the eastern site.",
+      "stump": "A competent analyst replays each floating vessel's weather procedure over the buoy record, credits the jack-up with the downtime of the vessel it releases and names Fjernhav at 38 days; the step that lands them there is treating the vessels as independent, when Skarvgrund's and Lillevig Banke's share Bramso Havn's one heavy-lift berth and the past progress reports show the later arrival going on to Kalvholm, so the jack-up at Skarvgrund avoids 42 days."
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "build",
+      "rounding opener": "downtime",
+      "deliverable set": "pptx+xlsx"
+    }
+  ],
+  "notes": "Strategy causal_design: the transient after a change in the tablets' appearance is a time-varying confounder of the product comparison (the right counterfactual holds each patient's dispensing history fixed and changes only what is in the tablet); Layer 2 family estimand_identification (staggered adoption across distribution centres). Gate G decomposition_attribution: the excess is split between the transient and the product's persistent effect. Gap population leads (the dispensing record names the product supplied, not what the patient was handed), objective second. Role family other: a director of pharmacy quality and formulary sits between compliance and procurement and neither label is honest alone.",
+  "registered": "2026-11-04T16:56:55Z"
 }
