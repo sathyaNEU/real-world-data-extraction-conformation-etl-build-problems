@@ -1,28 +1,26 @@
 {
  "task": "task476",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-04",
- "stump": "The default path joins the 2021 and 2026 tallies by plot and tag, counts every 2021 live tree without a live 2026 record under its tag as lost, and marks eight stands (CF-104, CF-118, CF-129, CF-144 and CF-160 at 21.5 to 27.2 per cent with CF-112, CF-138 and CF-152), because it never asks whether the added trees of 9 inches and more standing where a tree was not found are those trees tagged again; placed on the 2021 stem map they are, the burned stands lost 3.5 to 5.6 per cent, and three stands are marked.",
- "architecture": 4,
+ "stump": "The default path converts the stage record through Rating 7 and files no deviation, because the plant's controller held the rated flow on its targets; on the relation the post-storm measurements establish, the reach fell below its minimum from 29 July through 13 September and from 21 September through 31 October.",
+ "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-04",
-  "detail": "61 checks, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-04 --asof 2026-11-04 (no LEAK; sweep 3 stand numbers in the burn and fire reports and Table 1, sweep 4 the WHAT's own nouns, each answered in the design note)",
+  "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-11-04 after the final pull (identity_resolution strategy risk; Gate G and question form after task461 v3 and task192 v4), no BLOCK",
-  "heart": "WARN 2026-11-04 after the final pull, no BLOCK",
-  "surface": "0 promoted of 303 pairs, 2026-11-04",
-  "nearest": "task455 at 0.08 (answered in the design note's abstraction line)"
+  "guard_check": "PASS 2026-11-04 on the registered v5 card (NOTE: same-driver signature against task274, differentiated)",
+  "heart": "",
+  "nearest": "task178 lineage at 0.08"
  },
  "judge": {
   "verdict": "",
@@ -30,14 +28,14 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 4: spawn the leak reader and the determinism judge together (medium) on a fresh unzip of task476/target.zip (sha256 998b67498d06488c9293b292204748855fbd7f4a467b57048d02f70be0a30870) with prompt.txt and submission.md's graded blocks; fix every finding in the generator in one pass, rebuild with `python3 task476/generator/build.py` (two byte-identical builds, target.zip from the final rebuild), re-run precut.py, figures_check.py, leak.py --asof 2026-11-04 and guard.py heart and surface, then ship.",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "source_note": "re-root of seed ET33's number: architecture 1 (ACS tract poverty change) spent 10-20; architecture 2 (a city gas utility's leak methane by district) spent at the 11-01 re-check; architecture 3 (energy-based groundwater extraction) abandoned at the 11-04 re-judge on Gate C, G and H passing; architecture 4 keeps nothing of any earlier world",
+ "source_note": "re-root of seed ET33's number: architecture 1 (ACS tract poverty change) spent 10-20; architecture 2 (a city gas utility's leak methane by district) spent at the 11-01 re-check; architecture 3 (energy-based groundwater extraction) abandoned at the 11-04 re-judge on Gate C, G and H passing; architecture 4 (remeasured plot trees re-linked where tags were lost) spent at stage 4 on Gate H; architecture 5 keeps nothing of any earlier world",
  "replaces_architecture": {
   "architecture": 2,
   "delivered": "2026-10-20",
@@ -66,14 +64,16 @@
    "task476/determinism_check_report_arch3_pass2.md"
   ]
  },
- "call": "mark CF-112, CF-138 and CF-152 for the 2027 salvage program",
- "gates_2026_11_04": {
-  "generator": "checks.py 0 failures (I, R, L, G, SF1 to SF12, A, X blocks); verify.py 0 failures",
-  "rebuild": "two builds byte-identical; target.zip cut from the final rebuild",
-  "figures_check": "105 figures in blocks 1 to 4, 0 absent",
-  "voice_check": "PASS (652 characters)",
-  "ceiling": "generator/ceiling.py: cracker 45.0, mirror 10.0, pair ceiling 27.5, mirror leakage 0.0; with the full includer on the call 55.0",
-  "scrub": "target and golden clean (no writer signature, no out-of-band stamp)"
+ "architecture_4": {
+  "target_zip_sha256_8": "998b6749",
+  "fate": "spent 2026-11-04 at stage 4 (judge SEND_BACK on Gate H: the destroyed tags classed a planted identity defect, Layer 2 missing; the reader found no leak)",
+  "reports": [
+   "task476/determinism_check_report_arch4.md",
+   "task476/leak_check_report_arch4.md"
+  ]
  },
- "target_zip_sha256": "998b67498d06488c9293b292204748855fbd7f4a467b57048d02f70be0a30870"
+ "draw_2026_11_04c": {
+  "drawn": "a hydro licensee's bypass minimum flow on a gauge whose riffle control a storm moved while the plant's controller held the rated flow on target; priced on the clean truth in screen5.py before carding",
+  "card_registered": "2026-11-04T09:00:03Z"
+ }
 }
