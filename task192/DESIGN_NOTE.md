@@ -997,6 +997,118 @@ the desk's own calendar, capacity, rota, notes and failures to code.
   is a construction a competent analyst would use and it is an open Gate C candidate on the shipped
   pack, which the loop-4 judge never tested; recorded here because it would have to be closed by any
   repair and cannot be closed by a magnitude.
+- **(2026-11-04) Architecture 3 spent, confirmed; the re-root to architecture 4 opened at stage 1 and no
+  candidate cleared, so nothing was carded.** Architecture 3 (confrontational actions in an event record, a
+  classifier corrected by hand-coded audits) was confirmed spent at the 2026-11-01 re-check (commit 91cee50):
+  its seventh cell (a logistic fit of hand code on the classifier mark plus a month index, extrapolated over
+  September and October) files 504 and prints 500 against the golden 450, and the sentence that would close it
+  names what the decisive step recognises, so the fork is the stump (`stumping` 1.2). Its shipped pack
+  (060f8959) stays at the portal, pending, and its card is marked `architecture_spent`. The architecture 4 draw
+  screened 55 candidates across 13 task types (A4.1 to A4.55 below) on 2026-11-04, each against
+  `guard.py mechanisms --objective anomaly-detection`, `guard.py slots` on the mechanism and the setting nouns,
+  the default path, the swap, the survivor anatomy and the bin. The window moved during the pass: task461 v2 and
+  task193 v3 registered at 03:18 and 03:21 UTC, which closed physical-environmental-sciences x
+  anomaly-detection and environmental-monitoring-exceedance and opened energy-systems-utilities and
+  human-factors-ergonomics (task194 v17 and task200 v6 left the last three). The three strongest are written in
+  full first.
+  - **A4.5, the storm overflow capacity fault (physical-environmental-sciences / environmental-monitoring-exceedance;
+    prototyped, then banned against task193 v3).** Draw: a regulator's area team sends its one winter compliance
+    investigation to the storm overflow whose own pass-forward capacity fell (a partly blocked throttle), read
+    from event duration monitoring against the rain gauge network. Default path: each overflow's 2026 spills by
+    the 12/24 count against its 2021 to 2025 counts, adjusted for its gauge's 2026 rainfall, dry-day spills
+    screened, files the overflow whose rain-adjusted count rose most. Golden: the overflow whose spills now begin
+    after far less rain (the rain before each spill's onset, 2026 against 2021 to 2025). Swap holds (rainfall
+    runoff on dry-weather flow, a setting a blockage lowers, a tipping-bucket gauge, 12/24 counting). Anatomy
+    answered on paper (no column holds the setting; the onset rain is a relation between the spill log and the
+    gauge record; the count is the field's method; the published returns reconcile with it). Measured on the
+    clean truth (scratchpad `cso/proto3.py`, 16 overflows on 6 gauges at 15 minutes, 2021 to 2026, six seeds):
+    the onset family (rain in the 3, 6, 12 and 24 hours before onset, event depth to onset, its lower quartile)
+    names the faulty overflow in 5 of 6 seeds at onset ratios of 0.44 to 0.51 against 0.73 to 1.71 elsewhere,
+    but the rain-adjusted 12/24 count names it in 3 of 6, spill hours per unit rain in 4 of 6 and spill events per
+    unit rain in 3 of 6. The easy route is a crude member of the same capacity family (`stumping` 1.1, convergence
+    and reach are one dial), and the confounds strong enough to move it off the fault (a showery year, long winter
+    spells counted in 24-hour blocks, a catchment that grew) move the onset family with it, because intense
+    storms and wet antecedents also lower the rain an unchanged overflow needs to spill. Dead on the dial.
+  - **A4.48, a PV fleet's hardware fault against soiling (energy-systems-utilities / grid-reliability-outage-analysis).**
+    Draw: the O&M company's one repair crew to the site whose arrays lost output to a fault it can fix, when a
+    new dust source soils another site. Default path: the IEC 61724 temperature-corrected performance ratio over
+    the last 60 days, curtailment and outages netted, against the same weeks of 2025, files the soiled site.
+    Golden: the ratio on the days just after the latest cleaning rain. Swap holds. Dead on `stumping` 1.1b:
+    soiling read from the recovery after rain (the soiling ratio, RdTools' stochastic rate and recovery) is the
+    field's own method for a site-wide loss in a dry spell, so the golden is the opponent's first move; the
+    upper-quantile, recency and trend routes also read the clean state, so the dial fails as well.
+  - **A4.44, wrong blood in tube against detection opportunity (human-factors-ergonomics / safety-incident-error-analysis).**
+    Draw: which clinical area gets the 2027 electronic bedside labelling first, by how often its samples are taken
+    from a patient other than the one on the tube, when a mislabel is caught only where the sample can be
+    compared with an earlier, independently taken group of the same patient. Default path: detected WBIT per
+    1,000 samples (the haemovigilance metric) files the area with the most repeat patients. Golden: detected WBIT
+    per comparable sample, the emergency department. Swap holds (ABO and D groups, historical group checks, the
+    two-sample rule). Dead twice: on the bin (about one WBIT in 2,000 samples leaves 10 to 25 detected events per
+    area over two years, so the area ranking is seed-hostage at any plausible volume) and on the abstraction test
+    against task200 v6 in the same task type (a safety rate re-measured on the subset of records each person's own
+    history makes valid).
+  - Environmental monitoring: A4.1 river phosphorus concentration-discharge hysteresis, spent (task249 v5's
+    driver, task279's screen, landed by the field's hysteresis reflex); A4.2 reservoir manganese aligned to the
+    turnover date from a thermistor chain, spent (the phase of a recurring cycle read from a continuous record);
+    A4.3 autosampler carryover after high samples and A4.4 cross-contamination by non-dedicated purge pumps on a
+    fixed route, Layer 1 carrying the stump (data validation, planted in effect); A4.6 roadside remote-sensing NOx
+    with a thermal-window defeat strategy, task273 v2's re-weighting to the year's conditions by stratum, and the
+    "same conditions" fork closes only by naming temperature; A4.7 accelerated monitoring after an exceedance
+    inflating a sample mean, the fork (sample mean against time-weighted) closes only by naming the weighting;
+    A4.8 ozone titration near roads, not an artifact; A4.9 fenceline benzene with a near-field source, the
+    method's own correction and task201's wind-sector screen; A4.10 landfill gas probes under barometric pumping,
+    task279's screen.
+  - General statistics: A4.11 central statistical monitoring, low within-patient variability at a fabricating
+    trial site, the client's own planted-defect example (copied readings); A4.12 Benford tests on expense claims
+    with fixed-rate allowances, swap and task185's heaping; A4.13 Mahalanobis against univariate outliers, the
+    library test.
+  - Payment claims: A4.14 ambulance trips with no claim at the destination, swap (billed against actual distance
+    reads the same for taxis) and the OIG's own audit; A4.15 capitated groups' encounters against their pharmacy
+    and laboratory claims, task188 v2's driver; A4.16 coding intensity from diagnoses with no treatment evidence,
+    a filed crosswalk executed (rule application, code semantics); A4.17 completion factors with one provider's
+    faster submission, the grouping dichotomy (1.1c); A4.18 multiple-provider episodes counted by prescriber or
+    by practice, the unit (WHAT screen); A4.19 provider-based billing after an acquisition, the outcome
+    definition (WHAT screen).
+  - Disease surveillance: A4.20 wastewater at a sewershed holding the regional hospital, task182's approved driver
+    (a unit's level less its response to an external series) and the resident population is the WHAT; A4.21
+    positivity with negatives reported in weekly batches, task181 v2's nowcast family; A4.22 a community cancer
+    cluster drawn around its cases, task191's extremum against a null extremum; A4.23 community urine resistance
+    under selective testing, task273 v2's re-weighting; A4.24 imported cases in a reproduction number, the field's
+    reflex; A4.25 PMMoV normalisation at a works taking a pepper processor's effluent, planted in effect and an
+    estimator choice.
+  - Survey research: A4.26 chain drift in a scanner-data index, task463; A4.27 interviewer falsification from
+    impossible travel between interviews, swap; A4.28 a stratum jumper's weighted impact, the surprise-stratum
+    reflex; A4.29 a hot-deck donor reused across recipients, the imputation flag is a column; A4.30 mirror-trade
+    asymmetry from goods in transit at the year end, time semantics and task68's world; A4.31 head-office
+    allocation in regional statistics, task194's driver.
+  - Banking fraud and AML: A4.32 bid rotation in a procurement ring, AD25 (task202's seed); A4.33 AIS dark gaps on
+    financed voyages, swap; A4.34 mule deposits in bursts at one deposit machine, the aggregation reflex (fraud
+    card 4); A4.35 cheque kiting across two banks, no float left to exploit in 2026.
+  - Safety signals: A4.36 the Weber effect against older comparators, swap and reflex; A4.37 nocebo reports after
+    a forced biosimilar switch, the stratify-by-switch reflex; A4.38 hot vaccine lots, age and week
+    standardisation (reflex); A4.39 febrile seizures after co-administration, the co-prescribed-cause family.
+  - Provider quality: A4.40 breast screening readers whose women's prior images were missing, the "same reading
+    conditions" fork names the step; A4.41 surgeons' early learning-curve cases, task200's driver and the swap;
+    A4.42 cardiac arrest calls and resuscitation decisions, the population of arrests (WHAT screen); A4.43 complex
+    cases allocated to a senior surgeon by a multidisciplinary meeting, the meeting log one join from a column.
+  - Human factors (open from 03:21 UTC): A4.45 drug diversion read within patient across nurses, swap and an
+    individual accusation; A4.46 dispensing-cabinet overrides against the pharmacist's verification time, the
+    population of inappropriate overrides (WHAT screen); A4.47 takeoff performance entered for the wrong weight or
+    intersection, a column comparison (FMS weight against the load sheet) and a filed SOP (rule application).
+  - Energy systems (open from 03:21 UTC): A4.49 a recloser's repeated self-clearing faults at one location,
+    task183's driver; A4.50 a service reservoir's structural leak against an outlet meter's low-flow error,
+    separable only by a fitted two-driver regression (Gate C), and the natural drop test is the field's named
+    method; A4.51 a failing service connection from its own voltage against its own load, Ohm's law the reflex
+    and the sibling-netted form task303's driver; A4.52 a peaking unit's failed starts against standby time,
+    small numbers and the swap; A4.53 FLISR commissioning hiding sustained interruptions, a dated cutover in the
+    register; A4.54 a reconfiguration moving customers behind a fault-prone spur, task194's driver; A4.55
+    sympathetic trips on DER-rich feeders, task303's driver.
+  - What the pass leaves: on every cell this objective holds, each decisive step screened here was the field's
+    method, a WHAT (population, unit, comparison), a grouping, a crude member of its own estimator family (the
+    dial), or a driver already on file (task182, task188, task191, task194, task200, task273 v2, task303). The two
+    cells that opened during the pass (energy-systems-utilities and human-factors-ergonomics) were screened last;
+    the next draw starts there, from what a file the question gives no reason to open pins (`stumping` Part 6),
+    with the cheapest licensed member priced before the anatomy is written.
 
 ## Architecture 2, blocked at the draw by the remote merge
 
