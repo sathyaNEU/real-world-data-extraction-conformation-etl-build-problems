@@ -40,9 +40,34 @@ def utc(local_ts):
     return pd.DatetimeIndex(local_ts).tz_localize(W.TZ, ambiguous=True, nonexistent="shift_forward").tz_convert("UTC").tz_localize(None)
 
 
+def realised(P, seed):
+    """The actual running against the schedule, on its own random stream: each trip leaves its outer stop late (never
+    early; a gamma lateness with a mean near 45 seconds and now and then a disruption of several minutes) and each
+    section's run varies around its scheduled time (street sections more, with a stop at a signal on some passes;
+    reserved track less). The AVL log, the recorder's event times and the run sheets follow the actual running; the
+    hazard truth stays on the schedule, a minute or two from it."""
+    r = np.random.default_rng(seed + 41)
+    Q = P[["trip", "entry_local", "exit_local", "track"]].sort_values(["trip", "entry_local"], kind="mergesort")
+    tr = np.sort(Q["trip"].unique())
+    late = r.gamma(1.4, 32.0, len(tr))
+    late = np.round(late + np.where(r.random(len(tr)) < 0.015, r.uniform(180.0, 540.0, len(tr)), 0.0))
+    street = Q["track"].values == "street"
+    sched = (Q["exit_local"] - Q["entry_local"]).dt.total_seconds().values
+    fac = np.exp(r.normal(0.0, 1.0, len(Q)) * np.where(street, 0.07, 0.035))
+    sig = np.where(street & (r.random(len(Q)) < 0.16), r.uniform(12.0, 50.0, len(Q)), 0.0)
+    rt = np.round(sched * fac + sig)
+    cs = pd.Series(rt, index=Q.index).groupby(Q["trip"].values).cumsum().values - rt
+    t0 = Q.groupby("trip")["entry_local"].transform("min")
+    enter = t0 + pd.to_timedelta(late[np.searchsorted(tr, Q["trip"].values)] + cs, unit="s")
+    out = P.copy()
+    out.loc[Q.index, "entry_local"] = enter.values
+    out.loc[Q.index, "exit_local"] = (enter + pd.to_timedelta(rt, unit="s")).values
+    return out
+
+
 def records(T, seed=W.SEED):
     rng = np.random.default_rng(seed + 7)
-    P = T["passes"]
+    P = realised(T["passes"], seed)
     geo = T["geo"].set_index("section")
     O = T["operators"].copy()
     C = T["consists"]
@@ -134,7 +159,15 @@ def records(T, seed=W.SEED):
                               np.where(street, rng.uniform(8, 27, len(E)), rng.uniform(14, 42, len(E))))
     E["slow"] = E["slow"].fillna(False).astype(bool)
     E.loc[E["slow"], "speed_mph"] = rng.uniform(3, 7, int(E["slow"].sum()))
-    E["decel_mps2"] = np.where(E["code"] == "FB", rng.uniform(1.3, 2.15, len(E)), np.where(E["code"] == "EB", rng.uniform(2.35, 3.05, len(E)), np.nan))
+    # decelerations: a firm brake clears the 1.3 m/s2 trigger and thins out above it (a truncated exponential, most
+    # just over the trigger); an emergency application centres near 2.75 m/s2 with the rail's adhesion. The same two
+    # uniform draws as before, mapped through each shape, so the stream and every later draw are unchanged
+    q_fb = (rng.uniform(1.3, 2.15, len(E)) - 1.3) / 0.85
+    q_eb = (rng.uniform(2.35, 3.05, len(E)) - 2.35) / 0.70
+    from scipy.stats import norm
+    fb_dec = 1.3 - 0.18 * np.log(1 - q_fb * (1 - np.exp(-0.9 / 0.18)))
+    eb_dec = np.clip(2.75 + 0.15 * norm.ppf(np.clip(q_eb, 1e-6, 1 - 1e-6)), 2.3, 3.2)
+    E["decel_mps2"] = np.where(E["code"] == "FB", fb_dec, np.where(E["code"] == "EB", eb_dec, np.nan))
     E["speed_mph"] = E["speed_mph"].round(1)
     E["decel_mps2"] = E["decel_mps2"].round(2)
     # a copy is logged at the trailing car's own speed reading, a few tenths away from the lead's
@@ -148,9 +181,13 @@ def records(T, seed=W.SEED):
     E["badge"] = np.where(born_new | (E["date"].values >= bmap.loc[eo, "card_reissued"].values),
                           bmap.loc[eo, "badge_new"].values, bmap.loc[eo, "badge_old"].values)
 
-    # each recorder numbers its own events
+    # each recorder numbers every event it logs (door interlocks, track brake, gong and the rest, the March
+    # commissioning runs included); the export carries the FB, EB and OS rows only, so its numbers run with gaps
     E = E.sort_values(["t_utc", "car"]).reset_index(drop=True)
-    E["seq"] = E.groupby("car").cumcount() + 1
+    rq = np.random.default_rng(seed + 43)
+    start = {c: int(rq.integers(140, 960)) for c in cars}
+    stepn = 1 + rq.poisson(2.6, len(E))
+    E["seq"] = E["car"].astype(int).map(start).values + pd.Series(stepn).groupby(E["car"].astype(int).values).cumsum().values
     E["event_id"] = [f"{c}-{s:06d}" for c, s in zip(E["car"].astype(int), E["seq"])]
 
     # AVL section-pass log (lead vehicle, local time). Onboard units drop out for a stretch on some block-days (A3), and
@@ -192,7 +229,8 @@ def records(T, seed=W.SEED):
     rev = E[(E["code"] == "EB") & (~E["copy"]) & (~E["test"])]
     eb_truth = rev.groupby(["line", rev["t_local"].dt.month]).size()
     import defects
-    mms, cards_truth = defects.defect_reports(T, dict(swaps=SW), seed)
+    mms, cards_truth, rel_wo = defects.defect_reports(T, dict(swaps=SW), seed)
+    R["work_order"] = rel_wo          # the repairs' numbers in the agency's work-order series (the draw above is spent)
     defect_truth = defects.ask_b_truth(cards_truth)
     return dict(edr=E, avl=avl, releases=R, dispatch=disp, consist=C, operators=O, eb_truth=eb_truth, mms=mms, cards_truth=cards_truth,
                 defect_truth=defect_truth,

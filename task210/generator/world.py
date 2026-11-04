@@ -15,6 +15,10 @@ PICK_HOLIDAYS = ["2027-01-18", "2027-02-15"]          # Martin Luther King Jr. D
 OBS_HOLIDAYS = ["2026-05-25", "2026-07-03", "2026-09-07"]  # Memorial Day, Independence Day observed, Labor Day
 PEAKS = {"AM": (6 * 60 + 30, 9 * 60), "PM": (16 * 60, 18 * 60 + 30)}   # SRM-07 weekday peak windows, minutes local
 CAP = 4                                               # restricted-speed slots the January pick's running times carry
+# The January pick's revised running times: seconds added to each section's base time, (outbound, inbound), from the
+# scheduling department's direction-by-direction review (grades, signal phasing, stop positions)
+PICK_RUN_ADJ = {"J1": (6, -2), "J2": (-3, 4), "J3": (0, 5), "J4": (4, -4), "J5": (-2, 3), "J6": (5, 1),
+                "F1": (-4, 3), "F2": (2, -3), "F3": (5, 1), "F4": (-1, 6), "F5": (3, -2), "F6": (1, 4), "F7": (-5, 2)}
 
 # Network: (section, line, from stop, to stop, outbound bearing in degrees true, length m, track type)
 LINES = {

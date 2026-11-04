@@ -10,7 +10,9 @@ C3 corridor (the slate under every cone from 15 to 35 degrees, every elevation p
 term, with the fourth slot's separation from the fifth under each); the separation; removing each competing cause
 leaves the slate; the slate holds across the published range of the glare multiplier and the base rate; the asks'
 figures equal the flag truth and are missed by the cracker; the separation line; the input gates; Gate G; the
-metadata scrub.
+metadata scrub; the realism sweep on target/ (realism 1 to 8: ids, timestamps, counts, orderings, constant columns,
+document stamps, readers and margins, no describing file); the client's three rules (R1 to R3c); and submission.md's
+SOLUTION_STEPS executed as written, each step's stated figure asserted.
 """
 import json
 import os
@@ -121,8 +123,6 @@ def main():
     for sf, kw in (("SF10 sunset", dict(dark_at=-0.833)), ("SF10 minus 3", dict(dark_at=-3.0)), ("SF10 civil", dict(dark_at=-6.0)),
                    ("SF14 no controls", dict(controls=())), ("SF14 no hour", dict(hourfe=False))):
         check("%s prints the same call" % sf, key(GD.slate(call(**kw))) == gold)
-    # SF11 to SF13, the C3 corridor: no shipped sentence defines low sun, so the glare term's cone, elevation profile and
-    # shape are the analyst's; the slate is the same, with the fourth slot clear of the fifth, across all of them
     # SF11 to SF13, the corridor. No shipped sentence defines low sun, so the glare term's cone, elevation profile and
     # shape are the analyst's, and the record decides them: every form the record supports (twice the log-likelihood
     # within SUPPORT of the best-fitting form) prints the golden slate, and every form that prints another slate is
@@ -388,7 +388,282 @@ def main():
     check("H1: the parquet carries no pandas schema", b"pandas" not in (pq.read_schema(os.path.join(TARGET, pack.FILES["avl"])).metadata or {}))
     z = zipfile.ZipFile(os.path.join(TASK, "target.zip"))
     check("target.zip holds exactly target/", sorted(n.split("/", 1)[1] for n in z.namelist()) == files)
+    realism_sweep(files)
+    three_rules(T, Rr, P, gold, A, sec, lat, lon, X, ps, coef, G)
+    literal_steps(gold)
     print("ALL %d CHECKS PASS" % len(OK))
+
+
+def steps_text():
+    import re
+    sub = open(os.path.join(TASK, "submission.md")).read()
+    blk = sub.split("## 3. Step-by-Step Solution")[1].split("## 4.")[0]
+    steps = {int(m.group(1)): m.group(2).strip() for m in re.finditer(r"^(\d+)\. (.+)$", blk, re.M)}
+    return steps, blk, sub.split("## 4. Deliverable Answers")[1]
+
+
+def literal_steps(gold):
+    """SOLUTION_STEPS executed as written on the shipped files: each step's own words read at face value (its parameters
+    parsed from its text) and the figure it states asserted. The asks run through ceiling.py's own routes."""
+    import re
+    import ceiling
+    steps, blk, b4 = steps_text()
+    lines = [x for x in blk.strip().splitlines() if x.strip()]
+    check("literal: at most eight steps, one line each", 1 <= len(steps) <= 8 and len(lines) == len(steps), "%d steps" % len(steps))
+    n_ = lambda s: int(s.replace(",", ""))
+    # step 1: UTC to Mountain time, each FB record on its car's pass whose section lies nearest the recorded position
+    m = re.search(r"(\d+) per cent of the ([\d,]+) FB records fall on a logged pass", steps[1])
+    E = pd.read_csv(GD.path("edr"))
+    nfb = int((E["event_code"] == "FB").sum())
+    A, sec, lat, lon = GD.passes(assign="position", at="mid", sky="hour")
+    check("literal step 1: the FB records and the share on a logged pass it states", bool(m) and n_(m.group(2)) == nfb and
+          int(m.group(1)) == int(round(100 * A["n_fb"].sum() / nfb)), "%d of %d" % (A["n_fb"].sum(), nfb))
+    # step 2: the bearings it states, from the survey's coordinates
+    m = re.search(r"J4 and J5 outbound head (\d+) and (\d+) degrees, F5 and F6 outbound (\d+) and (\d+)", steps[2])
+    b = sec.set_index("section")["bearing_out"]
+    got = [int(round(b[s])) for s in ("J4", "J5", "F5", "F6")]
+    check("literal step 2: the bearings it states", bool(m) and got == [int(x) for x in m.groups()], str(got))
+    check("literal step 2: the bearings sit clear of their rounding edges", all(abs(b[s] - round(b[s])) < 0.4 for s in ("J4", "J5", "F5", "F6")))
+    # step 3: the stated glare form, fitted on every logged pass
+    m = re.search(r"25 degrees off gives none and h one with the sun under (\d+) degrees up, falling to none at (\d+): G is (\d+\.\d+)", steps[3])
+    coef, G = GD.fit(A, cone=25.0, efull=float(m.group(1)), ezero=float(m.group(2)), shape="cos2")
+    check("literal step 3: G as it states", round(G, 1) == float(m.group(3)) and abs(G - round(G, 1)) < 0.04, "%.3f" % G)
+    # step 4: the pick's passes on its weekdays, at the normals' January and February sunshine, the four highest
+    pk = GD.pick()
+    days = [d for d in pd.date_range(pk["start"], pk["end"]) if d.weekday() < 5 and d not in pk["holidays"]]
+    ps = GD.normals_sunshine()
+    m = re.search(r"on its (\d+) weekdays.*?at the (\d+) per cent possible sunshine.*?the four highest are (.+)\.$", steps[4])
+    r = GD.project(coef, G, GD.pick_passes(sec, pk, lat, lon), ps)
+    stated = set(m.group(3).replace(" and ", ", ").split(", "))
+    check("literal step 4: the weekdays, the sunshine and the four slots it states", len(days) == int(m.group(1)) and
+          ps[1] == ps[2] == int(m.group(2)) / 100 and key(GD.slate(r)) == stated == gold, str(sorted(stated)))
+    # step 5: ask A as written, against block 4
+    m = re.search(r"before (\d\d):00 counts to the day before.*?within (\d+) minutes and (\d+) metres", steps[5])
+    a_lit = ceiling.ask_a(TARGET, "operating", window=int(m.group(2)) * 60, metres=int(m.group(3)))
+    sec3 = b4.split("### Emergency brake applications")[1].split("###")[0]
+    a_b4 = [int(x) for ln in ("Juniper", "Foundry") for x in re.findall(r"\b(?:April|May|June|July|August|September|October) (\d+)",
+                                                                        re.search(r"%s Line: (.+)" % ln, sec3).group(1))]
+    check("literal step 5: ask A as written gives block 4's fourteen figures", int(m.group(1)) == 3 and a_lit == a_b4, str(a_lit))
+    # step 6: ask B as written, against block 4
+    b_lit = ceiling.ask_b(TARGET, "block")
+    sec4 = b4.split("### Defect cards")[1]
+    b_b4 = [int(x) for ln in ("Juniper", "Foundry") for x in
+            re.search(r"%s Line: brakes (\d+), doors (\d+), all other defects (\d+)" % ln, sec4).groups()]
+    check("literal step 6: ask B as written gives block 4's six figures", "before 07:00" in steps[6] and b_lit == b_b4, str(b_lit))
+    # step 7 and block 4's slot plan lines: the golden CSV as stated
+    csv = pd.read_csv(os.path.join(TASK, "golden", "slot_plan_jan_feb_2027.csv"))
+    yes = {"%s-%s %s" % (s, d[0].upper(), p) for s, d, p, v in
+           zip(csv["section_id"], csv["direction"], csv["peak"], csv["restricted_speed_slot"]) if v == "yes"}
+    check("literal step 7: the slot plan marks the four slots among its 52 rows", len(csv) == n_(re.search(r"among its (\d+) rows",
+          steps[7]).group(1)) and yes == gold)
+    marks = re.findall(r"- ([JF]\d) (outbound|inbound), .*?: AM (yes|no), PM (yes|no)", b4)
+    want = {(s, d): (csv[(csv.section_id == s) & (csv.direction == d) & (csv.peak == "AM")].restricted_speed_slot.iloc[0],
+                     csv[(csv.section_id == s) & (csv.direction == d) & (csv.peak == "PM")].restricted_speed_slot.iloc[0])
+            for s, d in zip(csv["section_id"], csv["direction"])}
+    check("literal block 4: every slot plan line states the CSV's marks", len(marks) == 26 and
+          all(want[(s, d)] == (am, pm) for s, d, am, pm in marks))
+    png = open(os.path.join(TASK, "golden", "braking_shift.png"), "rb").read()
+    check("H1: the chart carries no writer's name", b"atplotlib" not in png and b"Software" not in png)
+
+
+def _steps(v):
+    d = np.diff(np.sort(np.asarray(v, dtype=float)))
+    return set(np.round(d[d > 0], 6))
+
+
+def realism_sweep(files):
+    """The realism sweep on target/ (dataset-generation sections 7, 9 and 11; house fixes H1 and H13). Constant columns
+    the producing systems really write are accepted and named: the airport file's station id (one station's
+    download), the roster's status (a roster of active operators) and the depot release log's check (the release
+    form's printed check)."""
+    import datetime as dtm
+    import re
+    import pypdf
+    import pyarrow.parquet as pq
+    from pandas.api.types import is_numeric_dtype
+    rd = lambda k, **kw: pd.read_csv(os.path.join(TARGET, pack.FILES[k]), **kw)
+    edr, mms, rel = rd("edr"), rd("mms", dtype={"block": str}), rd("releases")
+    ros, bdg, runs, awos = rd("roster"), rd("cards"), rd("runs"), rd("metar")
+    av = pd.read_parquet(os.path.join(TARGET, pack.FILES["avl"]))
+    # 1 no id column steps by one constant
+    seq = edr["event_id"].str.split("-").str[1].astype(int)
+    ids = {"EDR event numbers, fewest step sizes in any car": min(len(_steps(seq[edr["car"] == c])) for c in edr["car"].unique()),
+           "MMS work orders": len(_steps(mms["wo_no"].str[3:].astype(int))),
+           "depot release work orders": len(_steps(rel["work_order"].str[3:].astype(int))),
+           "roster operator numbers": len(_steps(ros["operator_no"])), "badge numbers": len(_steps(bdg["badge"])),
+           "track survey lengths": len(_steps([f["properties"]["length_ft"] for f in json.load(open(os.path.join(
+               TARGET, pack.FILES["survey"])))["features"] if "length_ft" in f["properties"]]))}
+    check("realism 1: no id or number column steps by one constant (H13)", all(v > 1 for v in ids.values()), str(ids))
+    wr = rel.sort_values("released")["work_order"].str[3:].astype(int)
+    check("realism 1: the depot's repair work orders run in time order inside the agency's series, apart from every MMS row",
+          wr.is_monotonic_increasing and not set(wr) & set(mms["wo_no"].str[3:].astype(int)))
+    # 2 no timestamp rises by a fixed increment: the AVL log carries the actual running, not the timetable
+    rt = (av["exit_local"] - av["enter_local"]).dt.total_seconds()
+    nrt = rt.groupby([av["section_id"].astype(str), av["direction"].astype(str)]).nunique()
+    check("realism 2: AVL running times vary within every section direction (fewest distinct values 30 or more)",
+          nrt.min() >= 30, "fewest %d" % nrt.min())
+    first = av[av["section_id"].astype(str).isin(["J1", "F1"]) & (av["direction"].astype(str) == "OB")]
+    check("realism 2: AVL entry stamps use every second of the minute, and outer-stop departures leave late by varying amounts",
+          av["enter_local"].dt.second.nunique() == 60 and first["enter_local"].dt.second.nunique() == 60)
+    rh = runs[runs["duty"] == "operator"].groupby("run")["revenue_hours"].nunique()
+    check("realism 2: each run's revenue hours vary day to day", rh.min() > 10, "fewest distinct %d" % rh.min())
+    gaps = pd.to_datetime(mms["created"]).sort_values().diff().dt.total_seconds().dropna()
+    check("realism 2: the MMS keying times do not step by a constant", gaps.nunique() > 50)
+    # 3 no identical counts across periods, sites or entities
+    pc = av.groupby([av["line"].astype(str), pd.to_datetime(av["service_date"]).dt.month]).size()
+    check("realism 3: AVL passes per line and month all differ", pc.nunique() == len(pc), str(pc.to_dict()))
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(TARGET, pack.FILES["dash"]))
+    rows = [r for r in wb.active.iter_rows(min_row=4, values_only=True) if r[0]]
+    check("realism 3: the dashboard's trips and passes differ across every line and month, April to October only",
+          len({r[2] for r in rows}) == len(rows) and len({r[3] for r in rows}) == len(rows)
+          and [r[0] for r in rows][::2] == ["2026-%02d" % m for m in range(4, 11)])
+    dash_pass = {(r[0], r[1]): r[3] for r in rows}
+    av_pass = {("2026-%02d" % m, {"JUN": "Juniper", "FDY": "Foundry"}[ln]): int(v) for (ln, m), v in pc.items()}
+    check("realism 3: the dashboard's section passes tie to the AVL log as shipped", dash_pass == av_pass)
+    pk = GD.pick()
+    check("realism 3: the January pick's running times differ by direction on most sections",
+          sum(o != i for o, i in pk["run"].values()) >= 10, str(pk["run"]))
+    # 4 no round headline totals
+    sizes = {f: (pq.ParquetFile(os.path.join(TARGET, f)).metadata.num_rows if f.endswith(".parquet") else
+                 sum(1 for _ in open(os.path.join(TARGET, f))) - 1) for f in files if f.endswith((".csv", ".parquet"))}
+    tot = list(sizes.values()) + [v for r in rows for v in r[2:5] + r[6:8]]
+    check("realism 4: no file's row count and no dashboard count is a multiple of 100", not any(v % 100 == 0 for v in tot),
+          str(sizes))
+    # 5 no ordering follows the alphabet; names take more than two shapes; nothing dealt round-robin
+    stops = [f["properties"]["stop_name"] for f in json.load(open(os.path.join(TARGET, pack.FILES["survey"])))["features"]
+             if "stop_name" in f["properties"]]
+    ctr = list(dict.fromkeys(rd("peds")["counter"]))
+    by_code = [c.split(" ", 1)[1] for c in sorted(ctr, key=lambda c: int(c.split()[0][3:]))]
+    check("realism 5: stops in line order and the pedestrian counters in code order are not alphabetical",
+          stops != sorted(stops) and by_code != sorted(by_code))
+    shapes = {s.split()[-1] if len(s.split()) > 1 else "one word" for s in stops}
+    check("realism 5: stop names take more than two shapes", len(shapes) > 2, str(sorted(shapes)))
+    op = runs[runs["duty"] == "operator"].sort_values(["service_date", "run"])
+    mono = op.groupby("service_date")["operator_no"].apply(lambda s: s.is_monotonic_increasing or s.is_monotonic_decreasing)
+    check("realism 5: no day's runs take operators in number order (no round-robin over the roster)", mono.mean() < 0.05,
+          "%.3f of days" % mono.mean())
+    const = {f"{k}.{c}" for k, d in (("metar", awos), ("roster", ros), ("releases", rel), ("mms", mms), ("edr", edr),
+                                     ("runs", runs)) for c in d.columns if d[c].nunique() == 1}
+    check("realism 5: the only constant columns are the accepted ones",
+          const == {"metar.station", "roster.status", "releases.release_check"}, str(sorted(const)))
+    big = awos["tmpf"].diff().abs()
+    check("realism 5: the airport temperature moves in spells, not hour by hour", big.quantile(0.95) <= 6, "95th %.0f" % big.quantile(0.95))
+    # 6 timestamps coherent: every record precedes the bundle's export, documents' own stamps in order and in the fiction
+    zt = pd.Timestamp(dtm.datetime(*pack.FIXED_ZIP_TIME))
+    last = max(pd.to_datetime(mms["created"]).max(), GD.to_local(edr["event_time_utc"]).max(), av["exit_local"].max(),
+               pd.to_datetime(rel["released"]).max(), GD.to_local(awos["valid_utc"] + "Z").max())
+    check("realism 6: every record precedes the bundle's export stamp", last < zt, "%s before %s" % (last, zt))
+    zi = zipfile.ZipFile(os.path.join(TASK, "target.zip")).infolist()
+    check("realism 6: every bundle entry carries the export stamp", {i.date_time for i in zi} == {pack.FIXED_ZIP_TIME})
+    stamps = {}
+    for f in files:
+        if f.endswith(".pdf"):
+            raw = open(os.path.join(TARGET, f), "rb").read()
+            md = pypdf.PdfReader(os.path.join(TARGET, f)).metadata
+            c_, m_ = (pd.Timestamp(dtm.datetime.strptime(md[k][2:16], "%Y%m%d%H%M%S")) for k in ("/CreationDate", "/ModDate"))
+            stamps[f] = (c_, m_)
+            check("realism 6 H1: %s carries no writer name and its own stamps, created before modified, before the export" % f,
+                  b"ReportLab" not in raw and b"reportlab" not in raw and c_ < m_ < zt and c_.year >= 2021)
+    check("realism 6 H13: no two documents share a creation stamp", len({c for c, _ in stamps.values()}) == len(stamps))
+    srm_c = stamps[pack.FILES["srm"]][0]
+    srm_t = " ".join((pg.extract_text() or "") for pg in GD.pdfplumber.open(GD.path("srm")).pages)
+    check("realism 6: SRM-07's revision is dated after the recorder commissioning it cites and before its effective date",
+          "Revision 4. Effective 1 October 2026" in srm_t and pd.Timestamp("2026-04-01") < srm_c < pd.Timestamp("2026-10-01"))
+    pick_m = stamps[pack.FILES["pick"]][1]
+    check("realism 6: the pick timetable was last saved on its issue date", pick_m.date() == dtm.date(2026, 11, 2))
+    zx = zipfile.ZipFile(os.path.join(TARGET, pack.FILES["dash"]))
+    app, core = zx.read("docProps/app.xml"), zx.read("docProps/core.xml").decode()
+    cr = re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1)
+    mo = re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+    check("realism 6 H1 H13: the workbook names Excel with Excel's version, created at the first download, modified at the last",
+          b"<Application>Microsoft Excel</Application><AppVersion>16." in app and b"penpyxl" not in app and
+          cr < mo and cr.startswith("2026-05-01") and mo.startswith("2026-11-01"), "%s %s" % (cr, mo))
+    # 7 every PDF reads the same in a strict reader, a lenient one and pdftotext, and no text runs past the margin
+    import subprocess
+    sq = lambda s: re.sub(r"\s+", "", s)
+    for f, ctl in ((pack.FILES["srm"], "One section, in one direction of travel, in one weekday peak"),
+                   (pack.FILES["pick"], "Holidays in this pick (Sunday timetable)"), (pack.FILES["normals"], "Possible sunshine, %")):
+        p_ = os.path.join(TARGET, f)
+        strict = " ".join(pg.extract_text() or "" for pg in pypdf.PdfReader(p_, strict=True).pages)
+        plumb = " ".join(pg.extract_text() or "" for pg in GD.pdfplumber.open(p_).pages)
+        ptt = subprocess.run(["pdftotext", "-layout", p_, "-"], capture_output=True, text=True, check=True).stdout
+        check("realism 7 H25: %s reads the same in a strict reader, a lenient one and pdftotext" % f,
+              all(sq(ctl) in sq(t) for t in (strict, plumb, ptt)) and len(sq(strict)) > 200)
+        over = max(max((c["x1"] for c in pg.chars), default=0) - (pg.width - 36) for pg in GD.pdfplumber.open(p_).pages)
+        check("realism 7 H13: no text in %s runs past the right margin" % f, over <= 0, "%.1f pt inside the half-inch" % -over)
+    # 8 nothing under target/ describes the data; one write-up and one prompt in the task tree
+    check("realism 8 H9: no file or sheet under target/ describes the data",
+          not any(re.search(r"readme|dictionar|manifest|notes|schema|field.?guide|codebook", f, re.I) for f in files)
+          and not any(re.search(r"readme|notes|dictionar|about|how to", s, re.I) for s in wb.sheetnames), str(wb.sheetnames))
+    tree = sorted(f for _, _, fs in os.walk(TASK) for f in fs if f in ("submission.md", "prompt.txt", "prompt.md"))
+    check("realism 8 H11: one submission.md and one prompt.txt in the task tree", tree == ["prompt.txt", "submission.md"], str(tree))
+
+
+def three_rules(T, Rr, P, gold, A, sec, lat, lon, X, ps, coef, G):
+    """The client's three rules on the clean truth and on target/ (dataset-generation section 7.1)."""
+    import pyarrow.parquet as pq
+    # R1: the field's raw material ships, and no shipped column holds the deciding quantity
+    heads = []
+    for f in sorted(os.listdir(TARGET)):
+        p_ = os.path.join(TARGET, f)
+        if f.endswith(".csv"):
+            heads += list(pd.read_csv(p_, nrows=1).columns)
+        elif f.endswith(".parquet"):
+            heads += pq.read_schema(p_).names
+        elif f.endswith(".geojson"):
+            heads += [k for ft in json.load(open(p_))["features"] for k in ft["properties"]]
+    bad = [h for h in heads if any(w in h.lower() for w in ("sun", "elev", "azim", "glare", "bearing", "heading", "rate", "risk"))]
+    check("R1 no shipped column holds the sun's position, a heading, a glare term or a cell's rate (%d headers read)" % len(heads),
+          len(heads) > 30 and not bad, str(bad))
+    nfb = int((pd.read_csv(GD.path("edr"))["event_code"] == "FB").sum())
+    check("R1 the field's raw material ships: every logged pass and every firm brake, the survey's coordinates and the "
+          "airport's hourly sky (the golden reads them all)", len(A) > 600000 and int(A["n_fb"].sum()) > 0.9 * nfb,
+          "%d passes, %d of %d FB attached" % (len(A), int(A["n_fb"].sum()), nfb))
+    # R2: every Layer 1 item is real and neutral: mishandled, it leaves the call or announces itself
+    E = pd.read_csv(GD.path("edr"))
+    E = E[E["event_code"] == "FB"].copy()
+    E["car"] = E["car"].astype("int64")
+    for label, shift in (("the recorder's UTC stamps read as Mountain time", 0), ("a fixed UTC-7 offset all season", -7)):
+        E["t"] = (pd.to_datetime(E["event_time_utc"].str[:19]) + pd.Timedelta(hours=shift)).astype("datetime64[ns]")
+        att = int(GD._attach(A, E, sec, "position").sum())
+        check("R2 clock: %s is loud (%d of %d firm brakes find a pass of their car)" % (label, att, len(E)), att < 0.4 * len(E))
+    Xb = X.copy()
+    mid = Xb["enter"] + (Xb["exit"] - Xb["enter"]) / 2
+    from solar import sun_position as _sp
+    el_, az_ = _sp(np.asarray((mid + pd.Timedelta(hours=6)).dt.round("s").values, dtype="datetime64[s]"), lat, lon)
+    Xb["elev"], Xb["az"] = el_, az_
+    sh = len(key(GD.slate(GD.project(coef, G, Xb, ps))) & gold)
+    check("R2 clock: the pick's January times converted at the summer offset (UTC-6) %s" %
+          ("keeps the call" if sh == 4 else "moves the call (%d of 4): SRM-07 3.5 files Mountain local time" % sh),
+          sh == 4 or "Mountain local time" in GD.pdfplumber.open(GD.path("srm")).pages[0].extract_text())
+    # (GPS scatter, the drop-outs and outage week, and the :53 sky reports are R2 items asserted above as SF9, SF15, SF8)
+    swk = set(zip(pd.to_datetime(Rr["swaps"]["date"]), Rr["swaps"]["block"]))
+    on_sw = np.array([(d, b) in swk for d, b in zip(A["service_date"], A["block"].astype(str))])
+    c_s, g_s = GD.fit(A[~on_sw].reset_index(drop=True))
+    check("R2 cars swapped in service: the swapped Foundry block-days dropped from the fit (%d passes) print the same call"
+          % int(on_sw.sum()), key(GD.slate(GD.project(c_s, g_s, X, ps))) == gold)
+    sched = GD.pick()
+    check("R2 the pick as a PDF table: its weekday spans, holidays and 26 running times read back",
+          len(sched["spans"]) == 3 and len(sched["holidays"]) == 2 and len(sched["run"]) == 13)
+    # R3a: the analyst test, the default path on the clean truth files the named wrong slate
+    rung1 = key(M.slate(M.reader_a(P)))
+    check("R3a the default path (rates netted for operators, darkness, sky and school, October carried) files "
+          "F3-I AM, F4-I AM, J1-O AM and J2-O AM on the clean truth", rung1 == {"F3-I AM", "F4-I AM", "J1-O AM", "J2-O AM"},
+          str(sorted(rung1)))
+    # R3b: the decisive step alone moves the default path's model onto the golden; each lower rung's correction does not
+    g_only, _ = M.golden(P)
+    check("R3b the default path's model with only the sun-against-direction term added and carried to the pick's passes "
+          "files the golden", key(M.slate(g_only)) == gold)
+    for name in ("b_lowsun", "b_suntime", "c_sepoct", "d3_held_sepoct"):
+        check("R3b the lower rung %s alone stays off the golden" % name, key(M.slate(M.READERS[name](P))) != gold)
+    # R3c: no plant: no copied or backfilled block, no memo, draft or stakeholder figure, nothing ranks the cells
+    daily = P[P["peak"] != "OFF"].groupby(["date", "sd"])["n_fb"].sum().unstack(fill_value=0)
+    dup = daily.duplicated().sum()
+    check("R3c no day's firm-brake counts across the section directions repeat another day's", dup == 0, "%d repeats" % dup)
+    kinds = {os.path.splitext(f)[1] for f in os.listdir(TARGET)}
+    check("R3c no memo, email, draft or briefing ships (no docx, eml, txt, md or pptx)",
+          not kinds & {".docx", ".eml", ".txt", ".md", ".pptx", ".msg"}, str(sorted(kinds)))
 
 
 if __name__ == "__main__":

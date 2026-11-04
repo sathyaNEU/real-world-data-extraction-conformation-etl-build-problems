@@ -6,9 +6,9 @@ it was keyed, and its reported date is the MMS default, the day of keying. Mecha
 the day they are found and name no block. Ask B counts the operator cards by the service day they were written on,
 which only the card's car and block against the yard's block sheets recover (a recorded date for the event date).
 
-defect_reports(T, Rr, seed) -> (mms, truth): the export rows, and one truth row per operator card (service day, line,
-group, weekday service). Its own random stream, drawn after every other record, so the main call's records and ask A's
-are unchanged by it.
+defect_reports(T, Rr, seed) -> (mms, truth, release_wos): the export rows, one truth row per operator card (service
+day, line, group, weekday service), and the work-order numbers of the depot's bad-order repairs (in the swaps' order).
+Its own random streams, drawn after every other record, so the main call's records and ask A's are unchanged by it.
 """
 import numpy as np
 import pandas as pd
@@ -92,12 +92,22 @@ def defect_reports(T, Rr, seed=W.SEED):
     I = pd.DataFrame(ins)
     M = pd.concat([K.drop(columns=["sday", "weekday"]), I], ignore_index=True)
     M = M.sort_values(["created", "car"], kind="mergesort").reset_index(drop=True)
-    M["wo_no"] = ["WO-%06d" % (712040 + i) for i in range(len(M))]
+    # one work-order series for the whole agency (the buses, the facilities and the streetcar's other work take the
+    # numbers between), the Foundry depot's bad-order repairs included, numbered in the order each was opened; its own
+    # random stream, so nothing above moves
+    opened = pd.to_datetime(SW["t_first"]) - pd.Timedelta(minutes=17)
+    seq = pd.DataFrame({"t": list(M["created"]) + list(opened), "kind": ["m"] * len(M) + ["r"] * len(SW),
+                        "i": list(range(len(M))) + list(range(len(SW)))})
+    seq = seq.sort_values(["t", "kind", "i"], kind="mergesort").reset_index(drop=True)
+    num = 712040 + np.cumsum(1 + np.random.default_rng(seed + 31).poisson(3.4, len(seq)))
+    wo_m = dict(zip(seq.loc[seq["kind"] == "m", "i"], num[(seq["kind"] == "m").values]))
+    wo_r = dict(zip(seq.loc[seq["kind"] == "r", "i"], num[(seq["kind"] == "r").values]))
+    M["wo_no"] = ["WO-%06d" % wo_m[i] for i in range(len(M))]
     M["reported"] = M["created"].dt.normalize()
     truth = K.copy()
     truth["line"] = np.where(truth["car"] < 120, "Juniper", "Foundry")
     truth["bucket"] = np.where(truth["group"].isin(["Brakes", "Doors"]), truth["group"], "All other")
-    return M, truth
+    return M, truth, ["WO-%06d" % wo_r[i] for i in range(len(SW))]
 
 
 def ask_b_truth(truth):

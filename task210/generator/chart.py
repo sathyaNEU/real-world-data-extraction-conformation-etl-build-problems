@@ -41,11 +41,15 @@ def draw(path, expected, observed, slate, sec):
     axes[0].set_yticklabels(labels)
     axes[0].set_ylim(-0.7, len(order) - 0.3)
     h, lab = axes[0].get_legend_handles_labels()
-    fig.legend(h, lab, loc="upper right", ncol=2, frameon=False, fontsize=8.5, bbox_to_anchor=(0.985, 0.955))
-    fig.suptitle("Streetcar firm braking by section and direction, weekday peaks", x=0.012, y=0.985, ha="left", fontsize=12,
-                 color=INK, fontweight="bold")
-    fig.text(0.012, 0.952, "Shaded rows take the four restricted-speed slots for the January 2027 pick (4 Jan to 26 Feb).",
-             fontsize=8.5, color=INK2)
-    fig.subplots_adjust(left=0.12, right=0.985, top=0.9, bottom=0.07, wspace=0.06)
+    fig.legend(h, lab, loc="upper right", ncol=2, frameon=False, fontsize=8.5, bbox_to_anchor=(0.985, 0.925))
+    fig.suptitle("January's four slots are not this autumn's highest rows: J4 and J5 outbound (AM), F5 and F6 outbound (PM)",
+                 x=0.012, y=0.985, ha="left", fontsize=11.5, color=INK, fontweight="bold")
+    fig.text(0.012, 0.952, "Firm brakes per 1,000 passes by section direction and weekday peak. Observed: 1 Sep to 31 Oct 2026. "
+             "Expected: the January 2027 pick (4 Jan to 26 Feb)\nat its scheduled passes in normal weather. Shaded rows take the "
+             "four restricted-speed slots.", fontsize=8.2, color=INK2, va="top", linespacing=1.35)
+    fig.text(0.012, 0.012, "Source: ART event data recorder export and AVL section-pass log (observed); January 2027 pick "
+             "timetable and ASH 1991 to 2020 normals (expected). Peaks by section entry time, Mountain local time.",
+             fontsize=7.4, color=INK2)
+    fig.subplots_adjust(left=0.12, right=0.985, top=0.87, bottom=0.085, wspace=0.06)
     fig.savefig(path, dpi=150, metadata={"Software": None}, facecolor="white")
     plt.close(fig)

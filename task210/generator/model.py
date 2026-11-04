@@ -18,7 +18,8 @@ _FWD = {}
 def forward():
     """The January pick's weekday peak passes (entry inside SRM-07's peak windows), with the sun at each pass."""
     if "F" not in _FWD:
-        T = S.simulate(seed=W.SEED, start=W.PICK_START, end=W.PICK_END, holidays=W.PICK_HOLIDAYS)
+        T = S.simulate(seed=W.SEED, start=W.PICK_START, end=W.PICK_END, holidays=W.PICK_HOLIDAYS,
+                       runs_adj=W.PICK_RUN_ADJ)
         F = T["passes"]
         F = F[(F["peak"] != "OFF")].copy()
         F["newop"] = 0.0

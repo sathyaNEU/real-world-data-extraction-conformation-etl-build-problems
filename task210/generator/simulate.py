@@ -78,20 +78,23 @@ def trips_for(days, holidays):
     return pd.DataFrame(rows, columns=["date", "daytype", "line", "dir", "dep_min"])
 
 
-def section_runs(geo):
+def section_runs(geo, adj=None):
+    """Scheduled stop-to-stop running times (dwell included) by direction; adj adds whole seconds per section and
+    direction (the January pick's revised running times)."""
     out = {}
+    adj = adj or {}
     for line in ("J", "F"):
         g = geo[geo["line"] == line]
         secs = list(g["section"])
         run = {s: g.set_index("section").loc[s, "length_m"] / (W.SPEED_KMH[g.set_index("section").loc[s, "track"]] / 3.6) + W.DWELL_S
                for s in secs}
-        out[(line, "O")] = [(s, run[s]) for s in secs]
-        out[(line, "I")] = [(s, run[s]) for s in reversed(secs)]
+        out[(line, "O")] = [(s, run[s] + adj.get(s, (0, 0))[0]) for s in secs]
+        out[(line, "I")] = [(s, run[s] + adj.get(s, (0, 0))[1]) for s in reversed(secs)]
     return out
 
 
 def simulate(seed=W.SEED, start=W.OBS_START, end=W.OBS_END, holidays=None, G=None, base=None, new_op=None, school=None,
-             dark=None, forward=False):
+             dark=None, forward=False, runs_adj=None):
     rng = np.random.default_rng(seed)
     G = W.G_TRUE if G is None else G
     base = dict(W.BASE) if base is None else base
@@ -106,7 +109,7 @@ def simulate(seed=W.SEED, start=W.OBS_START, end=W.OBS_END, holidays=None, G=Non
     # blocks: trips of a line rotate over its blocks; Juniper blocks 1 to 3 run coupled in the peak windows
     nblocks = {"J": 9, "F": 8}
     trips["block"] = [f"{l}{(i % nblocks[l]) + 1:02d}" for i, l in zip(trips.groupby(["date", "line"]).cumcount(), trips["line"])]
-    runs = section_runs(geo)
+    runs = section_runs(geo, runs_adj)
     rows = []
     for (line, dirn), seq in runs.items():
         sub = trips[(trips["line"] == line) & (trips["dir"] == dirn)]
@@ -177,6 +180,9 @@ def simulate(seed=W.SEED, start=W.OBS_START, end=W.OBS_END, holidays=None, G=Non
             emp += int(rng.integers(3, 17))
             ops.append(dict(emp=emp, cls=cls, qualified=pd.Timestamp(qd)))
     O = pd.DataFrame(ops)
+    # employee numbers run in the order operators qualified (the draws above are kept, only reassigned), so the day's
+    # rotation over the eligible operators carries no visible order in the numbers
+    O.loc[O.sort_values("qualified", kind="mergesort").index, "emp"] = np.sort(O["emp"].values)
     O["badge_old"] = [f"{b:04d}" for b in rng.choice(np.arange(1200, 9800), len(O), replace=False)]
     O["badge_new"] = [f"{b:06d}" for b in rng.choice(np.arange(210000, 289999), len(O), replace=False)]
     O["card_reissued"] = pd.Timestamp(W.BADGE_MIGRATION) + pd.to_timedelta(rng.integers(0, 42, len(O)), unit="D")
