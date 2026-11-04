@@ -1,20 +1,33 @@
 {
  "task": "task313",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-04",
- "stump": "The default path carries the Copperfield trial's 28-day intention-to-treat readmission ratio to every eligible readmission at each maternity unit, so Ravensby Royal and St Aldric's, whose discharge notifications reach the community office days late, are credited with readmissions that fall before a nurse could reach the baby, and the posts and the readmissions avoided both come out wrong.",
+ "stump": "The default path carries the Copperfield trial's 28-day risk ratio (0.43, a 57 per cent cut) to every eligible readmission at each maternity unit and files posts of 8, 8, 5, 4 and 5 and about 375 readmissions avoided; the outreach line can first reach a family only once the community midwifery office holds the unit's discharge notification, which at Ravensby Royal and St Aldric's often arrives a day or more after discharge, so on the readmissions each baby could be reached for the posts are 7, 9, 6, 3 and 5 and the readmissions avoided about 325.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "guard.py check PASS 2026-11-04 (NOTE same_puzzle_older vs task127 lineage, same_driver_older vs task259, both differentiated), nearest driver 0.06"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-04"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (2026-11-04, --asof 2026-11-02); every REVIEW line ruled in the design note",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN only (repeat.deliverables: the svg+xlsx pair repeats task462); surface exit 0",
+  "nearest": "guard.py check PASS 2026-11-04 (NOTE same_puzzle_older vs task127 lineage, same_driver_older vs task259, both differentiated), nearest driver 0.06"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "",
+ "resume": "Stage 4: spawn the leak reader and the determinism judge together (medium) on the cut pack target.zip sha256 e0d62b0dae0b29b19c5a399bde7e8b5090bc07c8fd59a404980685223a600493 (15 files at the archive root), rebuilt byte-identically by `python3 task313/generator/build.py`; fix every finding in the generator, re-run every gate on the final cut (checks.py, verify.py, ceiling.py, two byte-identical builds, figures_check.py, precut.py, voice-check.py, leak.py --asof 2026-11-02, guard.py heart and surface), then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,

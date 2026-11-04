@@ -11,8 +11,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Kellingworth University Hospital 9 posts, Ravensby Royal Infirmary 7, Sedgefold Hospital 6, Wennby Community Hospital 5, St Aldric's Hospital 3; about 325 readmissions avoided in 2027/28",
+  "answer_source": "task313/generator/figures.json (call), recomputed from target/ by task313/generator/verify.py",
   "gap": [
     "time",
     "population"
@@ -38,19 +38,19 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:a-trial-effect-re-based-on-the-window-after-each-babys-earliest-outreach-visit",
   "layer1": [
-    "two maternity systems with different layouts, unit codes and risk-flag fields",
+    "two maternity systems with different layouts, unit codes and risk-flag fields, one of them changing layout in April 2026",
     "community office receipt times in UTC against ward discharge times in local time across the clock changes",
-    "notifications re-sent after a correction, the first receipt the one the office acts on",
-    "NHS number missing on some ward records, a hospital number and a crosswalk carrying the link",
-    "a preliminary and a final trial extract overlapping by one quarter",
-    "financial-year quarters against calendar months"
+    "notifications re-sent by the interface and amended after the first receipt, the first receipt the one the office acts on",
+    "NHS numbers missing on some PAS rows and transposed on some paper notifications, a hospital number and the master patient index carrying the link",
+    "cross-trust hospital numbers for babies admitted at the other trust",
+    "a baby back on Copperfield's postnatal ward filed under the mother's record"
   ],
   "stakeholder_role": "the integrated care board's neonatal outreach programme lead",
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "community_midwifery_notifications_2024-10_2026-10.csv",
-    "rows": 0,
+    "file": "community_midwifery_notifications_2024-04_2026-10.csv",
+    "rows": 60840,
     "entity": "one notification of a baby's discharge received by the community midwifery office",
     "grain": "notification x receipt",
     "source": "synthetic"
@@ -79,7 +79,7 @@
   },
   "deliverables": [
     "outreach_posts_2027-28.xlsx",
-    "readmissions_reachable_by_unit.png"
+    "outreach_posts_by_unit.svg"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",

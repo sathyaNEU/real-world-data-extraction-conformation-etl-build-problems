@@ -1,0 +1,184 @@
+{
+ "task": "task313",
+ "architecture": 1,
+ "title": "How many of the 30 neonatal outreach nurse posts funded from April 2027 go to each maternity unit in the Ravensby and Weald area, and how many readmissions of newborn babies the service avoids in 2027/28",
+ "domain": "Healthcare Delivery & Health Economics",
+ "subdomain": "patient-flow-beds-workforce-optimization",
+ "client_task_type": "patient-flow-beds-workforce-optimization",
+ "objective": "Opportunity Sizing & Decision Support",
+ "prompt_shape": "05 allocation to a fixed total",
+ "as_of": "2026-11-02",
+ "deliverables": [
+  "outreach_posts_2027-28.xlsx",
+  "outreach_posts_by_unit.svg"
+ ],
+ "distractor_files": [
+  "lmns_maternity_dashboard_2025-26.xlsx",
+  "community_midwifery_establishment_2026-10.csv"
+ ],
+ "stated_inputs": [
+  "30",
+  "April 2027",
+  "2027/28",
+  "28 days",
+  "25"
+ ],
+ "field_terms": [],
+ "input_gates": {
+  "files": 15,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "community_midwifery_notifications_2024-04_2026-10.csv",
+  "largest_file_rows": 60840
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task313/generator/build.py (seeded, deterministic) in the layouts of two NHS trusts' maternity discharge extracts, a community midwifery office's notification log, an integrated care board admissions extract and master patient index, a trial's randomisation list, contact log and final report, a commissioning service specification, code lists, a local maternity dashboard and a staffing establishment; the board, the trusts, the hospitals and the people are fictional.",
+   "date": "2026-11-02",
+   "license": "CC0 (original work)"
+  }
+ ],
+ "created": "2026-11-02",
+ "generator": "task313/generator/build.py",
+ "files": [
+  {
+   "path": "Copperfield neonatal outreach trial final report.pdf",
+   "format": "pdf",
+   "bytes": 5793,
+   "rows": null,
+   "source": "Constructed: Copperfield neonatal outreach trial final report, version 1.0",
+   "date": "2026-06-26",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "Neonatal outreach service specification 2027-28.pdf",
+   "format": "pdf",
+   "bytes": 3928,
+   "rows": null,
+   "source": "Constructed: Ravensby and Weald Integrated Care Board service specification SS-MAT-027 version 1.2",
+   "date": "2026-09-21",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "admission_method_codes.csv",
+   "format": "csv",
+   "bytes": 272,
+   "rows": 7,
+   "source": "Constructed: admission method codes as used in the admissions extract",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "community_midwifery_establishment_2026-10.csv",
+   "format": "csv",
+   "bytes": 374,
+   "rows": 7,
+   "source": "Constructed: community midwifery establishment by team, October 2026",
+   "date": "2026-10-31",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "community_midwifery_notifications_2024-04_2026-10.csv",
+   "format": "csv",
+   "bytes": 4615200,
+   "rows": 60840,
+   "source": "Constructed: Ravensby and Weald Community Health NHS Trust community midwifery office, notification receipt log",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "copperfield_outreach_contacts.csv",
+   "format": "csv",
+   "bytes": 836144,
+   "rows": 14830,
+   "source": "Constructed: Ravensby and Weald Community Health NHS Trust, outreach tablet application contact log",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "copperfield_trial_randomisation_final.xlsx",
+   "format": "xlsx",
+   "bytes": 179220,
+   "rows": 4226,
+   "source": "Constructed: Copperfield neonatal outreach trial, final randomisation list",
+   "date": "2026-04-30",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "lmns_maternity_dashboard_2025-26.xlsx",
+   "format": "xlsx",
+   "bytes": 8033,
+   "rows": 72,
+   "source": "Constructed: local maternity and neonatal system monthly dashboard 2025/26",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "mpi_baby_hospital_numbers.csv",
+   "format": "csv",
+   "bytes": 2153136,
+   "rows": 59808,
+   "source": "Constructed: master patient index, hospital numbers to NHS numbers for babies",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "neonatal_paediatric_admissions_2024-04_2026-10.csv",
+   "format": "csv",
+   "bytes": 345694,
+   "rows": 3176,
+   "source": "Constructed: Ravensby and Weald Integrated Care Board admissions extract (both trusts' patient administration systems)",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "newborn_risk_reasons.csv",
+   "format": "csv",
+   "bytes": 200,
+   "rows": 6,
+   "source": "Constructed: newborn feeding or jaundice risk reason codes",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "outreach_contact_types.csv",
+   "format": "csv",
+   "bytes": 199,
+   "rows": 4,
+   "source": "Constructed: outreach contact type codes",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "rk_maternity_postnatal_discharges_2024-04_2026-10.csv",
+   "format": "csv",
+   "bytes": 2831064,
+   "rows": 28323,
+   "source": "Constructed: Ravensby and Kellingworth Hospitals NHS Foundation Trust maternity system, postnatal discharges home extract",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "site_codes.csv",
+   "format": "csv",
+   "bytes": 721,
+   "rows": 6,
+   "source": "Constructed: site code crosswalk across the maternity systems, the community office and the PAS",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "sw_maternity_postnatal_discharges.xlsx",
+   "format": "xlsx",
+   "bytes": 2822049,
+   "rows": 31142,
+   "source": "Constructed: Sedgefold and Wennby NHS Trust maternity information system, postnatal discharges by financial year",
+   "date": "2026-11-02",
+   "license": "CC0 (original work, constructed for this task)"
+  }
+ ]
+}

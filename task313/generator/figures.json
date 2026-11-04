@@ -1,0 +1,154 @@
+{
+ "ask_a": {
+  "BFP": {
+   "outreach_babies": 643,
+   "outreach_readmitted": 25,
+   "risk_ratio": 0.64,
+   "usual_care_babies": 656,
+   "usual_care_rate_pct": 6.1,
+   "usual_care_readmitted": 40
+  },
+  "EDC": {
+   "outreach_babies": 1260,
+   "outreach_readmitted": 33,
+   "risk_ratio": 0.4,
+   "usual_care_babies": 1303,
+   "usual_care_rate_pct": 6.6,
+   "usual_care_readmitted": 86
+  },
+  "LPT": {
+   "outreach_babies": 201,
+   "outreach_readmitted": 6,
+   "risk_ratio": 0.35,
+   "usual_care_babies": 212,
+   "usual_care_rate_pct": 8.5,
+   "usual_care_readmitted": 18
+  },
+  "SPH": {
+   "outreach_babies": 135,
+   "outreach_readmitted": 5,
+   "risk_ratio": 0.65,
+   "usual_care_babies": 140,
+   "usual_care_rate_pct": 5.7,
+   "usual_care_readmitted": 8
+  },
+  "VJD": {
+   "outreach_babies": 183,
+   "outreach_readmitted": 7,
+   "risk_ratio": 0.49,
+   "usual_care_babies": 203,
+   "usual_care_rate_pct": 7.9,
+   "usual_care_readmitted": 16
+  },
+  "WTL": {
+   "outreach_babies": 168,
+   "outreach_readmitted": 3,
+   "risk_ratio": 0.29,
+   "usual_care_babies": 192,
+   "usual_care_rate_pct": 6.2,
+   "usual_care_readmitted": 12
+  }
+ },
+ "ask_b": {
+  "BFP": {
+   "calls": 2.81,
+   "home_visits": 1.24
+  },
+  "EDC": {
+   "calls": 2.6,
+   "home_visits": 1.2
+  },
+  "LPT": {
+   "calls": 2.93,
+   "home_visits": 1.8
+  },
+  "SPH": {
+   "calls": 2.59,
+   "home_visits": 1.33
+  },
+  "VJD": {
+   "calls": 2.54,
+   "home_visits": 1.48
+  },
+  "WTL": {
+   "calls": 3.02,
+   "home_visits": 1.53
+  }
+ },
+ "call": {
+  "posts": {
+   "KUH": 9,
+   "RRI": 7,
+   "SAH": 3,
+   "SDH": 6,
+   "WCH": 5
+  },
+  "readmissions_avoided_2027_28": 325
+ },
+ "components": {
+  "reached_share_pct": {
+   "KUH": 99,
+   "RRI": 73,
+   "SAH": 72,
+   "SDH": 98,
+   "WCH": 90
+  },
+  "trial_itt_reduction_pct": 57,
+  "trial_post_call_reduction_pct": 57
+ },
+ "constants": {
+  "planning_basis": "1 October 2025 to 30 September 2026",
+  "posts": 30,
+  "total_step": 25,
+  "window_days": 28
+ },
+ "counts": {
+  "admissions": 3176,
+  "contacts": 14830,
+  "maternity_a": 28323,
+  "maternity_b": 31142,
+  "mpi": 59808,
+  "notifications": 60840,
+  "trial_final": 4226
+ },
+ "default_path": {
+  "posts": {
+   "KUH": 8,
+   "RRI": 8,
+   "SAH": 4,
+   "SDH": 5,
+   "WCH": 5
+  },
+  "readmissions_avoided": 375
+ },
+ "eligible": {
+  "KUH": 2419,
+  "RRI": 2803,
+  "SAH": 1514,
+  "SDH": 1908,
+  "WCH": 1639
+ },
+ "eligible_total": 10283,
+ "reason_labels": {
+  "BFP": "Breastfed first baby",
+  "EDC": "Discharged under 18 hours",
+  "LPT": "Late preterm (35 to 36 weeks)",
+  "SPH": "Sibling needed phototherapy",
+  "VJD": "Visible jaundice at discharge",
+  "WTL": "Weight loss 8% or more"
+ },
+ "trial": {
+  "analysed_outreach": 2092,
+  "analysed_usual_care": 2134,
+  "randomised": 4262,
+  "rr": 0.43,
+  "withdrawn": 36
+ },
+ "units": {
+  "KUH": "Kellingworth University Hospital",
+  "RRI": "Ravensby Royal Infirmary",
+  "SAH": "St Aldric's Hospital",
+  "SDH": "Sedgefold Hospital",
+  "WCH": "Wennby Community Hospital"
+ }
+}
