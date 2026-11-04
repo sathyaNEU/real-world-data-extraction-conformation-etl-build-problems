@@ -211,6 +211,57 @@
       },
       "driver": "A fall in a share of satisfied members is booked to the service the members' own ratings blame, because those ratings fell furthest and every later member was served by that service, but what moved is the gap between the amount each member was told to expect when they joined and the amount their own later use then cost, which no column holds and only the joining record set against the member's own measured use reveals; members told accurately are as satisfied as before on the same service.",
       "fate": "spent 2026-11-03 at stage 4, round 2: judge SEND_BACK on an ask's unfiled re-attribution (the golden overrode a registration's own quote reference), after a round-1 fix pass; the main call held both rounds"
+    },
+    {
+      "architecture": "v4 (Physical and Environmental Sciences: an invented water and sewerage company's River Allery winter ammonia failures below the Coldmere Water Recycling Centre, booked to the new aeration control and nitrification capacity that a dairy's evening acid whey discharges caused)",
+      "drawn": "2026-11-03",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "pollution-source-attribution",
+      "objective": "root-cause",
+      "shape": "12",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G8",
+        "G3",
+        "G7"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "population_selection",
+      "context_artifact": "register",
+      "forum": "regulator_or_inspector",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "utility_or_infrastructure",
+      "role_family": "programme_officer",
+      "layer2_pattern": "own:the-share-of-river-exceedances-a-discharger's-pre-treatment-reaches-read-through-the-works'-nitrification-recovery",
+      "world": {
+        "geography": "England, the East Midlands (an invented water and sewerage company's catchment; invented river, works and dischargers)",
+        "currency": "GBP",
+        "org_type": "water and sewerage company",
+        "invented_names": [
+          "Wendmoor Water",
+          "River Allery",
+          "Coldmere Water Recycling Centre",
+          "Thornlea Dairy"
+        ],
+        "people": [
+          "Gerard Norris",
+          "Katy Hughes",
+          "Sylvia Phillips",
+          "Leonard James",
+          "Ben Hurst",
+          "Jade Evans"
+        ]
+      },
+      "driver": "A run of failures downstream of a shared processing unit is booked to that unit's own capacity and to a control change it made the same week, because the failures began then and the unit's own records validate it, but every one of them falls on the first or second day after a short discharge in one small contributor's own high-frequency record, which starves the unit's process for a day whatever the other contributors send; by load the contributor barely registers and its periodic strength samples and compliance read normal, so only its high-frequency record set against the unit's daily record and the downstream days shows the share each remedy can reach.",
+      "fate": "spent 2026-11-04 at stage 4, round 1: the judge's blind derivation reached the call and every ask figure; effluent spikes from midnight on every failure day aligned one to one with the discharger's evening pH dips in its own monitor file, and the prompt's chart sentence announced the trace"
     }
   ],
   "lineage_shells": [
@@ -219,6 +270,12 @@
       "second-sentence opener": "write",
       "rounding opener": "in",
       "deliverable set": "pdf+xlsx"
+    },
+    {
+      "question form": "whether",
+      "second-sentence opener": "answer",
+      "rounding opener": "days",
+      "deliverable set": "pptx+xlsx"
     }
   ],
   "notes": "Strategy population_selection, pattern C: the deciding quantity is the share of the exceedance days each option can reach (the dairy's pre-treatment against the works' upgrade), behind a join of the dairy's fifteen-minute record and the works' daily record, the shape strategies.md F7 records as approved on 25 and 28. G8 reachability versus magnitude: by load the dairy barely registers; by reach it carries most exceedance days. Role redrawn at registration from capacity_planner to programme_officer: task402's redraw took capacity_planner into the window; the environment programme manager owns the submission the upgrade goes into, so the replacement is the honest owner of the call, not merely the passing label.",

@@ -1,6 +1,6 @@
 {
   "task": "task401",
-  "status": "DRAWING",
+  "status": "PAUSED",
   "domain": "physical-environmental-sciences/pollution-source-attribution",
   "objective": "root-cause",
   "stage": 1,
@@ -8,7 +8,7 @@
   "updated": "2026-11-04",
   "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw. Architecture 1 (Epidemiology and Public Health) and architecture 2 (Economics and Econometrics) died at stage 2; architecture 3 (Marketing and Consumer Research, a GB energy supplier's satisfaction fall) was spent at stage 4, round 2. Architecture 4 re-roots in Physical and Environmental Sciences: Wendmoor Water's Coldmere Water Recycling Centre and the River Allery.",
   "stump": "A competent analyst apportions the Allery's ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control, costs Thornlea Dairy at its charging strength and books the winter's exceedance days to the aeration control and nitrification capacity in the cold, ending on the GBP 14.2 million upgrade, because they never set the dairy's fifteen-minute chamber record against the works' daily effluent and the monitor's days, which puts all 35 exceedance days on the first or second day after an evening whey discharge.",
-  "architecture": 4,
+  "architecture": 5,
   "loops": 0,
   "go_no_go": {
     "redraws": 20,
@@ -40,7 +40,7 @@
     "report": "scratchpad t401/a4/stage4/judge/verdict.md"
   },
   "returned": [],
-  "resume": "architecture 4 spent at stage 4, round 1 (2026-11-04): the determinism judge returned DETERMINISTIC with a wording FIX_NOW, but its blind derivation (written before the graded blocks were opened) reached the call and all 15 ask figures: the works effluent ammonia spiked from 00:00 on every failure day, each after an evening pH dip in the discharger's own monitor file (38 of 38), and the prompt's chart sentence announced the trace. Re-root at architecture 5 from stage 1 in another domain, world, dataset and shell (build agent running; evidence in the scratchpad t401/a4/stage4/).",
+  "resume": "architecture 5, end of stage 1, stopped by a container restart (2026-11-04 about 01:55Z) before the card was registered. Done: architecture 4 recorded in the card lineage and the note Tried and rejected; cells and mechanisms screened (Tried and rejected tail); prototypes proto1.py to proto4.py and screens.py with 20 redraws in the scratchpad t401/a5/ (screens_final.json); the new card drafted at scratchpad t401/a5/task401_card_a5.json. Next: read the note tail and the scratch screens, re-run screens.py to confirm, write the Draw section, guard.py check and register the drafted card, check again, commit DRAWN, message main.",
   "approved": null,
   "delivered": null,
   "portal": null,
