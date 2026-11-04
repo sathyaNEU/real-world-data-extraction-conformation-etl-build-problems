@@ -1,10 +1,10 @@
 {
   "task": "task211",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "pharmacology-pharmacoepidemiology-safety / safety-signal-detection",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-04",
   "seed": "AD34 (the number and objective only; architecture 1 world spent)",
   "stump": "A competent analyst nets the reversals, links both hospital feeds, adjusts each generic's qualifying visits per 1,000 patient-months against Levaril's for age and drug-resistant epilepsy, allows for changes of product and names Halvorne at 11.2 excess visits; the step that lands them there is reading the excess per product, when Halvorne's excess is the first supply of its new pink tablets, filled as the Fort Wayne stock reached each distribution centre in turn, and with every patient's first supply of a differently looking tablet held as it was, the excess the tablets themselves carry is Tessard's, 4.",
@@ -15,24 +15,38 @@
     "date": "2026-11-04"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (the 2.0 bar in MS-12; generic stump terms in the letters, MS-12 and the manual; MS-12 naming ordinary column words); ruled harmless in the main thread",
-    "reader": "brief written, not run"
+    "leak_py": "REVIEW on the final cut (--asof 2026-07-20), no LEAK",
+    "reader": "round 1 (f7e348d0): no decisive-step sentence, no ranking or helper file, decisive step analytical"
   },
   "duplicate_check": {
-    "heart": "WARN, no BLOCK (repeat.gate_g and overuse.gate_g, answered at the draw); shell.repeat against task244 cleared by the prompt redraw",
-    "nearest": "driver 0.07 task98 v4 lineage; surface exit 0, task129 0.087 and task121 0.080 promoted on card axes, both differentiated on the card"
+    "heart": "WARN, no BLOCK (final cut)",
+    "surface": "4 pairs promoted on card axes, differentiated on the card",
+    "nearest": "0.07 (task98 v4, task129 v1)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "brief written: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/a2/stage4/judge/BRIEF.md"
+    "verdict": "round 1 DETERMINISTIC",
+    "disposition": "APPROVE, no fix",
+    "report": "task211/determinism_check_report.md",
+    "gate_f": "good; the blind derivation found the appearance-change transient (the known risk, ruled in the pre-ship check)",
+    "gate_g": "decomposition_attribution, analytical_non_defect",
+    "gate_h": "domain pass, layers pass, decisive step analytical"
   },
   "returned": [],
-  "resume": "Stage 4 of architecture 2 (shipped seed 5007, target.zip sha256 f7e348d0c841919a2ae76ea53b24cdddc11453501451a76c2b6de85486c4fbfd): spawn the leak reader and the determinism judge together from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/a2/stage4/reader/BRIEF.md and /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/a2/stage4/judge/BRIEF.md (each folder holds its own copy of the cut pack, byte-identical to target.zip); fix every finding in the generator in one pass, re-run the stage-3 gates (checks.py, verify.py, two byte-identical builds, figures_check, precut, leak.py, guard heart and surface), re-judge a FIX_NOW once; then stage 5 (ship).",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-04",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "call": "send Tessard to the contract lab's Q3 2026 re-test: 4 excess seizure-related emergency visits per 1,000 patient-months over Levaril (the default path files Halvorne)",
+  "gates": {
+    "checks_py": "75 of 75",
+    "verify_py": "0 mismatches",
+    "byte_identical": "two builds identical, target.zip sha256 f7e348d0c841919a2ae76ea53b24cdddc11453501451a76c2b6de85486c4fbfd",
+    "figures_check": "37 figures",
+    "precut": "61/0/0",
+    "voice_check": "PASS",
+    "ceiling": "cracker 5/20, full includer 0/20, pair 35.4 one on, 58.8 two crackers on"
+  }
 }

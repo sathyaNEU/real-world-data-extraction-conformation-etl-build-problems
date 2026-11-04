@@ -415,3 +415,42 @@ Measured by: generator/ceiling.py (shares no code with the generator; reads targ
   backorder figures. Reworked: a second amendment (a reduction for Halvorne and Corwen from 9 February, credited 19 June)
   and Pellbrook's rise billed after its backorder put a catch-up on every spend figure, and Halvorne's legacy item number,
   reissued to Corwen with no former owner listed, joins Pellbrook's, resolved by which product stopped shipping.
+
+## Pre-ship check
+
+Stage 4 round 1 and ship, 2026-11-04, final cut target.zip f7e348d0 (rebuilt on the merged branch in a clean copy and
+again in place, byte-identical across the zip, the goldens and submission.md):
+
+- The 10/10 rules re-read against the built pack: the decisive step is still holding each patient's first supply of a
+  differently looking tablet as it was, so the release-attributable excess separates from the appearance-change
+  transient; analytical, a response estimated from the record, and no field, rule or filed sentence performs it or
+  ties appearance to adherence. The mess is still Layer 1 only (two claim code schemes, reversals, merged MRNs, UTC
+  against local feeds, transfers, split receipts, the item-number cut-over).
+- Judge round 1 (order kept): DETERMINISTIC, APPROVE, no fix. Every golden figure reproduced: patient-months, visits,
+  spend by quarter received, backorder days, Tessard's excess 4 (4.07 to 4.45 on every adjusted estimator). Gate F
+  good (the crude and the case-mix adjusted excess file Halvorne at 15.5), Gate G decomposition_attribution and
+  analytical_non_defect, Gate H domain pass, layers pass, decisive step analytical.
+- Known stump-power risk, ruled by the coordinator: the judge's own blind derivation found the appearance-change
+  transient and filed Tessard before it opened the graded blocks, by an adjustment beyond the natural route. The judge
+  rated Gate F good, the bar needs one of the top two responses stumped, and the portal is the only stump oracle; a
+  same-day re-root waits for the portal's word unless the judge has killed the version, and this judge approved it.
+  Shipped with the risk named here and in the ledger row.
+- Leak reader round 1: no decisive-step sentence, no ranking or helper file, nothing reads as the answer, the decisive
+  step analytical (round and rulings in leak_check_report.md).
+- Coordinator's rulings on the build's flags:
+  - The refuted 60 and 180-day clocks name Halvorne and Pellbrook at the shipped seed: the record's own fit refutes
+    them (likelihood gains of 383 or more), and the judge's family stayed in one bin.
+  - The judge's residual fork 1 (the backorder ask's reissued item numbers): the golden's reading is the only one
+    consistent with the item list's effective date, its former-number column and the ship notices; the naive lookup
+    contradicts the list's own columns. Its optional hardening line declined (it would execute the reconstruction).
+  - The judge's residual fork 2 (whole-visit rounding of 4.07 to 4.45): every estimator it ran stays in the bin; the
+    steady-state-only additive standardisation (4.9) drops the first-supply days the estimand keeps.
+  - Realism: 60,000 members on the molecule and 620 pharmacies is large for the stated region. Neither reviewer
+    flagged it, and it is left as is rather than change the judged pack.
+  - guard.py surface promotes four pairs on card axes (task129, task232, task121 and one more), each carrying the
+    same-driver signature and a differentiation line on the card; no surface tell; nearest driver 0.07.
+- Gates re-run on the final cut: `checks.py` 75 checks, 0 failed; `verify.py` 0 mismatches; two builds byte-identical;
+  `figures_check.py` 37 figures, 0 absent; `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS; `ceiling.py`
+  (inside checks) cracker 5 of 20, full includer 0 of 20, pair 35.4 one on the call, 58.8 two crackers on it;
+  `leak.py --asof 2026-07-20` REVIEW, 0 LEAK (the answered lines); `guard.py heart` WARN, no BLOCK; `guard.py surface`
+  exit 0.

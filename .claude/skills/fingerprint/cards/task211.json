@@ -133,5 +133,11 @@
     }
   ],
   "notes": "Strategy causal_design: the transient after a change in the tablets' appearance is a time-varying confounder of the product comparison (the right counterfactual holds each patient's dispensing history fixed and changes only what is in the tablet); Layer 2 family estimand_identification (staggered adoption across distribution centres). Gate G decomposition_attribution: the excess is split between the transient and the product's persistent effect. Gap population leads (the dispensing record names the product supplied, not what the patient was handed), objective second. Role family other: a director of pharmacy quality and formulary sits between compliance and procurement and neither label is honest alone.",
-  "registered": "2026-11-04T16:56:55Z"
+  "registered": "2026-11-04T16:56:55Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "for",
+    "rounding opener": "excess",
+    "deliverable set": "docx+xlsx"
+  }
 }
