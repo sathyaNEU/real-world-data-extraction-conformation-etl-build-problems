@@ -1,0 +1,382 @@
+{
+ "task": "task476",
+ "title": "Ochre Flats Farming Company water year 2026 groundwater extraction return and transfer purchase",
+ "setting": "A fictional farming company in a fictional subbasin of California's San Joaquin Valley; every record is synthetic.",
+ "as_of": "2026-11-02",
+ "files": [
+  {
+   "path": "agency/sallow_plains_gsa_wy2026_allocation_notice.pdf",
+   "source": "Sallow Plains Groundwater Sustainability Agency (fictional), synthetic records",
+   "date": "2026-10-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "agency/wy2026_extraction_return_template.csv",
+   "source": "Sallow Plains Groundwater Sustainability Agency (fictional), synthetic records",
+   "date": "2026-10-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 15,
+   "role": "input"
+  },
+  {
+   "path": "district/alkali_slough_wd_deliveries_wy2026.csv",
+   "source": "Alkali Slough Water District (fictional), synthetic records",
+   "date": "2026-10-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 36,
+   "role": "distractor"
+  },
+  {
+   "path": "levels/2066318_barologger.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40908,
+   "role": "input"
+  },
+  {
+   "path": "levels/2079416.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40908,
+   "role": "input"
+  },
+  {
+   "path": "levels/2079433.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40908,
+   "role": "input"
+  },
+  {
+   "path": "levels/2079458.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/2080962.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/2081044.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40908,
+   "role": "input"
+  },
+  {
+   "path": "levels/2081107.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40908,
+   "role": "input"
+  },
+  {
+   "path": "levels/922341.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/922357.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/922362.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/922380.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/922394.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/922401.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/922415.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/922428.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/922433.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 40905,
+   "role": "input"
+  },
+  {
+   "path": "levels/logger_download_log.csv",
+   "source": "the ranch's level loggers and technician log (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 160,
+   "role": "input"
+  },
+  {
+   "path": "power/vrp_agricultural_tou_schedules_2026.pdf",
+   "source": "Valley Rural Power (fictional), synthetic records",
+   "date": "2026-02-18",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "power/vrp_interval_data_2026-04-01_2026-10-31.csv",
+   "source": "Valley Rural Power (fictional), synthetic records",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 308220,
+   "role": "input"
+  },
+  {
+   "path": "power/vrp_rate_change_confirmation_2026-05-14.pdf",
+   "source": "Valley Rural Power (fictional), synthetic records",
+   "date": "2026-05-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "power/vrp_usage_export_2025-09-01_2026-03-31.csv",
+   "source": "Valley Rural Power (fictional), synthetic records",
+   "date": "2026-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 76325,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/BHS-1874.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/BHS-2294.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/BHS-2297.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/BHS-2299.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/BHS-2301.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/BHS-2305.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/BHS-2309.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/BHS-2313.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-23-0611.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-23-0629.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-25-0824.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-25-0831.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-25-0835.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-25-0839.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-25-0844.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-25-0851.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-25-0858.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "pump_tests/GPT-25-0861.pdf",
+   "source": "the ranch's pump test contractors (fictional), synthetic reports",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "ranch/ochre_flats_well_register.xlsx",
+   "source": "Ochre Flats Farming Company (fictional), synthetic records",
+   "date": "2026-10-28",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "ranch/totalizer_reads_wy2026.xlsx",
+   "source": "Ochre Flats Farming Company (fictional), synthetic records",
+   "date": "2026-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "weather/sallow_plains_west_station_daily_2025-09_2026-10.csv",
+   "source": "a weather station record in the style of a state network (fictional station), synthetic",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 426,
+   "role": "distractor"
+  }
+ ],
+ "distractors": [
+  {
+   "file": "district/alkali_slough_wd_deliveries_wy2026.csv",
+   "why": "the district's canal deliveries to the ranch's turnouts: surface water, which the agency's groundwater allocation and extraction return do not count"
+  },
+  {
+   "file": "weather/sallow_plains_west_station_daily_2025-09_2026-10.csv",
+   "why": "daily reference evapotranspiration and weather at a nearby station: crop demand, not a record of what any well pumped"
+  }
+ ],
+ "deliverables": [
+  "wy2026_extraction_return.csv",
+  "transfer_purchase_memo.docx"
+ ]
+}

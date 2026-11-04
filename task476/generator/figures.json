@@ -1,0 +1,255 @@
+{
+ "acre_foot_gal": 325851,
+ "allocation_af": 14878.9,
+ "available_af": 15358.9,
+ "band_pct": {
+  "ranch": 0.5,
+  "well": 1
+ },
+ "block_af": 50,
+ "blocks": 5,
+ "carryover_af": 480.0,
+ "deep_understatement_pct": [
+  4,
+  6
+ ],
+ "energy_charge_total_usd": 1767688,
+ "energy_charge_usd": {
+  "W-01": 62185,
+  "W-02": 59205,
+  "W-03": 62095,
+  "W-04": 55271,
+  "W-05": 65316,
+  "W-06": 49307,
+  "W-07": 140560,
+  "W-08": 158019,
+  "W-09": 153428,
+  "W-10": 175837,
+  "W-11": 140790,
+  "W-12": 154906,
+  "W-13": 159362,
+  "W-14": 159270,
+  "W-15": 172137
+ },
+ "excess_af": 224.1,
+ "excess_af_whole": 224,
+ "fall_back_day": 2,
+ "kwh_af_ft": 1.0241,
+ "lower_af": 10709,
+ "metered_af": 3270,
+ "purchase_af": 250,
+ "purchase_usd": 296250,
+ "r0_inside_af": 338.9,
+ "r0_inside_af_whole": 339,
+ "r0_ranch_af": 15020,
+ "r0_wells_af": {
+  "W-01": 824,
+  "W-02": 864,
+  "W-03": 838,
+  "W-04": 744,
+  "W-05": 898,
+  "W-06": 693,
+  "W-07": 1057,
+  "W-08": 1160,
+  "W-09": 1105,
+  "W-10": 1247,
+  "W-11": 956,
+  "W-12": 1109,
+  "W-13": 1098,
+  "W-14": 1154,
+  "W-15": 1273
+ },
+ "r1_ranch_af": 14719,
+ "ranch_af": 15583,
+ "static_dtw_ft": {
+  "W-01": {
+   "fall": "145.1",
+   "spring": "139.0"
+  },
+  "W-02": {
+   "fall": "126.1",
+   "spring": "120.2"
+  },
+  "W-03": {
+   "fall": "128.5",
+   "spring": "123.9"
+  },
+  "W-04": {
+   "fall": "127.2",
+   "spring": "124.1"
+  },
+  "W-05": {
+   "fall": "129.8",
+   "spring": "125.0"
+  },
+  "W-06": {
+   "fall": "136.3",
+   "spring": "129.1"
+  },
+  "W-07": {
+   "fall": "370.7",
+   "spring": "258.2"
+  },
+  "W-08": {
+   "fall": "359.0",
+   "spring": "246.1"
+  },
+  "W-09": {
+   "fall": "370.8",
+   "spring": "264.2"
+  },
+  "W-10": {
+   "fall": "382.1",
+   "spring": "258.6"
+  },
+  "W-11": {
+   "fall": "365.1",
+   "spring": "250.7"
+  },
+  "W-12": {
+   "fall": "375.3",
+   "spring": "266.8"
+  },
+  "W-13": {
+   "fall": "353.8",
+   "spring": "244.0"
+  },
+  "W-14": {
+   "fall": "367.5",
+   "spring": "261.0"
+  },
+  "W-15": {
+   "fall": "373.4",
+   "spring": "267.7"
+  }
+ },
+ "switched_accounts": 13,
+ "tests": {
+  "W-01": {
+   "date": "2025-08-28",
+   "kwh_per_af": 362.0,
+   "ope_pct": 71.6,
+   "pwl_ft": 163.2,
+   "total_head_ft": 252.9
+  },
+  "W-02": {
+   "date": "2025-09-04",
+   "kwh_per_af": 358.8,
+   "ope_pct": 68.1,
+   "pwl_ft": 144.5,
+   "total_head_ft": 238.6
+  },
+  "W-03": {
+   "date": "2025-08-31",
+   "kwh_per_af": 352.0,
+   "ope_pct": 70.7,
+   "pwl_ft": 148.9,
+   "total_head_ft": 243.0
+  },
+  "W-04": {
+   "date": "2025-09-15",
+   "kwh_per_af": 398.9,
+   "ope_pct": 66.1,
+   "pwl_ft": 149.0,
+   "total_head_ft": 257.6
+  },
+  "W-05": {
+   "date": "2025-08-31",
+   "kwh_per_af": 396.0,
+   "ope_pct": 68.0,
+   "pwl_ft": 157.7,
+   "total_head_ft": 262.8
+  },
+  "W-06": {
+   "date": "2025-09-05",
+   "kwh_per_af": 370.9,
+   "ope_pct": 70.1,
+   "pwl_ft": 156.7,
+   "total_head_ft": 253.7
+  },
+  "W-07": {
+   "date": "2025-09-16",
+   "kwh_per_af": 738.0,
+   "ope_pct": 69.4,
+   "pwl_ft": 399.4,
+   "total_head_ft": 500.2
+  },
+  "W-08": {
+   "date": "2025-08-26",
+   "kwh_per_af": 721.4,
+   "ope_pct": 70.1,
+   "pwl_ft": 398.8,
+   "total_head_ft": 493.9
+  },
+  "W-09": {
+   "date": "2025-09-08",
+   "kwh_per_af": 765.0,
+   "ope_pct": 67.6,
+   "pwl_ft": 401.1,
+   "total_head_ft": 504.7
+  },
+  "W-10": {
+   "date": "2025-09-01",
+   "kwh_per_af": 760.4,
+   "ope_pct": 70.6,
+   "pwl_ft": 417.8,
+   "total_head_ft": 524.2
+  },
+  "W-11": {
+   "date": "2025-09-19",
+   "kwh_per_af": 766.0,
+   "ope_pct": 65.7,
+   "pwl_ft": 390.7,
+   "total_head_ft": 491.6
+  },
+  "W-12": {
+   "date": "2025-08-29",
+   "kwh_per_af": 780.2,
+   "ope_pct": 67.3,
+   "pwl_ft": 405.6,
+   "total_head_ft": 512.7
+  },
+  "W-13": {
+   "date": "2025-08-26",
+   "kwh_per_af": 796.0,
+   "ope_pct": 63.8,
+   "pwl_ft": 389.1,
+   "total_head_ft": 496.0
+  },
+  "W-14": {
+   "date": "2025-09-16",
+   "kwh_per_af": 745.0,
+   "ope_pct": 69.2,
+   "pwl_ft": 402.2,
+   "total_head_ft": 503.3
+  },
+  "W-15": {
+   "date": "2025-09-10",
+   "kwh_per_af": 722.0,
+   "ope_pct": 70.5,
+   "pwl_ft": 403.4,
+   "total_head_ft": 496.9
+  }
+ },
+ "transfer_price_usd": 1185,
+ "true_up_day": 15,
+ "uncovered_charge_usd": 1500,
+ "unmetered_af": 12313,
+ "wells_af": {
+  "W-01": 824,
+  "W-02": 864,
+  "W-03": 838,
+  "W-04": 744,
+  "W-05": 905,
+  "W-06": 699,
+  "W-07": 1121,
+  "W-08": 1219,
+  "W-09": 1165,
+  "W-10": 1313,
+  "W-11": 1005,
+  "W-12": 1169,
+  "W-13": 1169,
+  "W-14": 1216,
+  "W-15": 1332
+ }
+}

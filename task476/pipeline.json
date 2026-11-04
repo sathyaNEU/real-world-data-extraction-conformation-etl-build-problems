@@ -1,25 +1,27 @@
 {
  "task": "task476",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-04",
- "stump": "The default path converts each unmetered well's water year 2026 energy at its pump test's kilowatt-hours per acre-foot, which the metered upper-aquifer wells confirm within about 2 per cent, and files no transfer to buy, because it never asks what head each hour's power lifted water against.",
+ "stump": "The default path converts each unmetered well's water year 2026 energy at its pump test's kilowatt-hours per acre-foot, which the metered upper-aquifer wells confirm within 1.5 per cent, and files no transfer to buy (the ranch at 15,020 acre-feet, 339 inside), because it never asks what head each interval's power lifted water against; converted at each interval's recorded head the ranch pumped 15,583, 224 over its 15,358.9 available, and buys 250 acre-feet in whole blocks of 50.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-04",
+  "detail": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-04 (asof 2026-11-02), no LEAK: coincidental numbers in one hourly kWh row and a superseded 2023 report, the notice's own vocabulary and template fields, the superseded report's bowl note",
   "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-11-04 on the registered v3 card (the old prompt's shell, replaced at stage 2; test.same_puzzle_older against task140 differentiated)",
-  "heart": "",
+  "guard_check": "WARN 2026-11-04 at registration (old prompt shell, replaced)",
+  "heart": "PASS 2026-11-04 after the stage-3 redraw of forcing event and role (task461 v3 registered after this card and put task276 in its window)",
+  "surface": "1 promoted pair (task140, differentiated on the card), no shared persona",
   "nearest": "task244 at 0.09"
  },
  "judge": {
@@ -28,7 +30,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "PAUSED at the stage-4 hand-off: the orchestrating session runs the isolated leak reader and the determinism judge on the cut pack (target.zip sha256 7e8bf4aa718d934980021ecab4934c68a1dbc0df434918f3de4b1ec402f5ae7c, rebuilt byte for byte by `python3 task476/generator/build.py`, which reruns checks.py and verify.py, cuts a second build into task476/.rebuild and compares, and writes target.zip and generator/figures.json); fix every finding in the generator in one pass, rebuild, re-run the free gates (figures_check.py, precut.py, voice-check.py, leak.py --asof 2026-11-02, guard.py heart and surface after a pull), then ship on the orchestrator's word.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -70,5 +72,16 @@
   "s344_retest": "dead on C2 confirm and C1 converge (proto_s344.py, four seeds, six rival corrections)",
   "window_at_card": "task461 v2, task193 v3, task192 v4",
   "drawn": "S3.60 energy-based groundwater extraction converted at each hour's pumping head (GSDS data-integration), priced in proto_lift.py on six seeds"
+ },
+ "call": "buy 250 acre-feet of transfer water before the Sallow Plains GSA's December 15 true-up",
+ "build": {
+  "target_zip_sha256": "7e8bf4aa718d934980021ecab4934c68a1dbc0df434918f3de4b1ec402f5ae7c",
+  "checks": "45 of 45",
+  "verify": "clean",
+  "byte_identical": true,
+  "figures_check": "96 of 96",
+  "pair_ceiling": 49.8,
+  "mirror_leakage_pct": 35.2,
+  "rebuild": "python3 task476/generator/build.py"
  }
 }

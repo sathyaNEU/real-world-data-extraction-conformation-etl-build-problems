@@ -11,8 +11,8 @@
  "shape": "15",
  "decision_type": "quantity_figure",
  "answer_unit": "count",
- "answer": "",
- "answer_source": "",
+ "answer": "Buy 250 acre-feet of transfer water before the Sallow Plains GSA's December 15 true-up: the wells pumped 15,583 acre-feet in water year 2026 against 15,358.9 available, 224 over, transfers recorded in whole blocks of 50",
+ "answer_source": "task476/generator/figures.json (purchase_af, ranch_af, available_af)",
  "gap": [
   "objective"
  ],
@@ -32,29 +32,29 @@
  "validated_decoy": false,
  "context_artifact": "register",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms both utility exports, links every service agreement to its well through the pump test reports, reads the meters with their rollovers and replacements and converts each unmetered well's water year 2026 kilowatt-hours at its pump test's kilowatt-hours per acre-foot (which the metered upper-aquifer wells confirm within 2 per cent) files the ranch inside its allocation with no transfer to buy, while each hour's power converted at the head the pump lifted against that hour puts the lower-aquifer wells about 9 per cent higher and the ranch over its allocation.",
+ "analyst_test": "A strong analyst who conforms both utility exports, links every service agreement to its well through the register, reads the meters with their rollovers and the June exchange and converts each unmetered well's water year 2026 kilowatt-hours at its pump test's kilowatt-hours per acre-foot (which the metered upper-aquifer wells confirm within 1.5 per cent) files the ranch at 15,020 acre-feet, 339 inside its allocation and carryover, with no transfer to buy, while each interval's energy converted at the head the pump lifted against puts the deep wells 4 to 6 per cent higher and the ranch 224 over, buying 250.",
  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, each unmetered well's volume integrated from the utility's hourly energy and the well's own level record through its pump test, each hour's energy converted at the total head of that hour (the test's head moved by the gap between the hour's pumping level and the test's) at the test's overall efficiency; replacing it with a single-source summary (the test's kilowatt-hours per acre-foot, run hours times the tested flow, an average over tests) files the ranch inside its allocation.",
  "layer2_family": "field_method",
  "layer2_pattern": "own:energy-based-extraction-converted-at-each-hour's-own-pumping-head",
  "layer1": [
-  "the electric utility's interval data in two export layouts across its April 2026 portal change: hourly kWh in local prevailing time with duplicated and missing daylight-saving hours against 15-minute Wh in UTC, a meter exchange with a new multiplier, estimated intervals flagged",
-  "pump efficiency test reports from two testing contractors as PDFs, one giving total lift and total head, the other pumping level, discharge pressure in psi and total dynamic head, flow in gpm against acre-feet per 24 hours",
-  "water level transducer logs per well, vented loggers in depth to water below the measuring point and non-vented loggers in absolute pressure needing the ranch barologger, measuring points above ground surface by a stick-up recorded in the well register",
-  "totalizer meter reads on the upper-aquifer wells in acre-feet, thousands of gallons and gallons with six-digit rollovers and one meter replaced in June 2026",
-  "a well register naming wells by ranch name, state well number and the agency's well ID, with service agreement numbers renumbered at the utility's account migration"
+  "the electric utility's interval data in two export layouts across its April 2026 portal change: hourly kWh in local prevailing time with the fall-back hour twice and the spring-forward hour absent, against 15-minute Wh in UTC, service agreements renumbered, estimated intervals flagged",
+  "pump efficiency test reports from two contractors as PDFs, one giving total head and plant efficiency with its own definitions, the other PWL, discharge psi and TDH with flow in gpm and acre-feet a day, and three superseded 2023 reports on pumps replaced in 2024",
+  "water level loggers every 15 minutes on Pacific standard time all year, vented loggers in depth to water below the top of the sounding tube and absolute-pressure loggers on the metered wells needing the shop barologger, whose clock runs on UTC",
+  "totalizer meter reads in acre-feet, thousands of gallons and hundreds of gallons with six-digit rollovers and one meter exchanged in June 2026",
+  "a well register naming wells by ranch name, state well number and the agency's well ID, with the prior and current service agreements and the current rate schedule"
  ],
  "stakeholder_role": "the ranch's water manager, who files its water year extraction return with the agency and arranges any transfer water before the true-up",
- "role_family": "procurement_lead",
+ "role_family": "compliance_or_audit",
  "scoring_unit": "other",
  "spine": {
-  "file": "power/interval_kwh_wy2025_wy2026.csv",
-  "rows": 0,
-  "entity": "one interval's energy on one well's electric service agreement",
-  "grain": "service agreement x interval",
+  "file": "power/vrp_interval_data_2026-04-01_2026-10-31.csv",
+  "rows": 308220,
+  "entity": "one 15-minute interval's energy on one well's electric service agreement",
+  "grain": "service agreement x 15-minute interval",
   "source": "synthetic"
  },
  "forum": "executive_team",
- "forcing_event": "purchase_order_or_contract",
+ "forcing_event": "statutory_or_regulatory_filing",
  "org_family": "agriculture_or_food_producer",
  "world": {
   "geography": "United States (a fictional subbasin in California's San Joaquin Valley)",
@@ -80,7 +80,7 @@
  "question_form": "how-much",
  "driver": "The decisive quantity is a volume read through a metered input whose yield per unit of input is set by a physical state the meter does not see, measured once at one setting of that state; the state moves through the period and another system records it interval by interval, so the period's volume is each interval's input converted at its own state, and the single test's yield files the volume as if the state had stayed where the test found it.",
  "driver_concrete": "Each unmetered lower-aquifer well's water year 2026 extraction is each hour's kilowatt-hours times its pump test's overall efficiency over 1.0241 times the head the pump lifted against that hour, the test's total head moved by the gap between the hour's pumping level in the well's transducer log and the test's; the late-summer 2025 tests found the confined aquifer at its seasonal low, so their kilowatt-hours per acre-foot charge the spring and early-summer pumping, lifted 60 to 110 feet less, at the deep-season rate and file the ranch short of what it pumped.",
- "stump": "The default path converts each unmetered well's 2026 kilowatt-hours at its pump test's kilowatt-hours per acre-foot, which the metered upper-aquifer wells confirm within 2 per cent, and files the ranch inside its allocation with no transfer to buy, because it never asks what head each hour's power lifted water against.",
+ "stump": "The default path converts each unmetered well's 2026 kilowatt-hours at its pump test's kilowatt-hours per acre-foot, which the metered upper-aquifer wells confirm within 1.5 per cent, and files no transfer to buy, because it never asks what head each interval's power lifted water against: the deep wells were tested near the confined aquifer's late-summer low and pumped their March to May water 40 to 110 feet higher.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task140": "task140 solves a reserved capacity tier together with a dependent service whose load rises with it; this build converts a metered energy record to water at each hour's own pumping head, a physical conversion with no reservation, tier or dependency"
@@ -139,13 +139,13 @@
    }
   }
  ],
- "notes": "stump_strategy decomposition_attribution: each hour's metered energy is the product of the water lifted and the head it was lifted against, and the step splits it between them by the hour's own head; the field's energy-based method attributes the whole of it to water at the test's head.",
+ "notes": "stump_strategy decomposition_attribution: each hour's metered energy is the product of the water lifted and the head it was lifted against, and the step splits it between them by the hour's own head; the field's energy-based method attributes the whole of it to water at the test's head. Stage 3 on 2026-11-04: target.zip 7e8bf4aa, checks 45 of 45, two builds byte-identical, precut 61 checks 0 FAIL, leak.py REVIEW (no LEAK), pair ceiling 49.8; the wells are graded as 1 per cent bands and the ranch as a 0.5 per cent band because licensed pairings of interval and logger reading move a deep well by up to 0.11 per cent, while the purchase (whole blocks of 50) is the same under every pairing. Redrawn 2026-11-04 after task461 v3 registered at 05:38:59Z and moved task276 into the three builds before this card: the forcing event (purchase_order_or_contract to statutory_or_regulatory_filing, the agency's extraction return and true-up) and the role family (procurement_lead to compliance_or_audit, the water manager who files the return), neither one task461 v3's.",
  "registered": "2026-11-04T05:06:12Z",
  "shell": {
-  "question form": "how-many",
-  "second-sentence opener": "in",
-  "rounding opener": "give",
-  "deliverable set": "pdf+xlsx"
+  "question form": "how-much",
+  "second-sentence opener": "conform",
+  "rounding opener": "report",
+  "deliverable set": "csv+docx"
  },
  "lineage_shells": [
   {

@@ -24,10 +24,10 @@ re-check; architectures 1 and 2 are in the card's lineage with their shell, and 
 - **Shape:** 15, fields conformed to one schema: each well's method, its monthly and water-year acre-feet and its
   spring and fall 2026 static depths to water on the agency's template, with the purchase and the power charges in
   the memo.
-- **Strategy:** decomposition_attribution. Each hour's metered energy is the product of the water the pump lifted and
+- **Strategy:** decomposition_attribution. Each interval's metered energy is the product of the water the pump lifted and
   the head it lifted it against, divided by the plant's efficiency; the field's energy-based method attributes the
-  whole of it to water at the head of the day the pump was tested, and the step splits each hour's energy between
-  water and head by that hour's own pumping level. Decisive generator G1 (energy standing in for water at an
+  whole of it to water at the head of the day the pump was tested, and the step splits each interval's energy between
+  water and head by that interval's own pumping level. Decisive generator G1 (energy standing in for water at an
   exchange rate that moves), with G16 (the conversion chosen from the data's structure) and G19 (the agency's
   allocation, carryover and transfer blocks). Gate G etl_conformance.
 - **World:** United States, a fictional subbasin in California's San Joaquin Valley. Ochre Flats Farming Company, a
@@ -42,8 +42,12 @@ re-check; architectures 1 and 2 are in the card's lineage with their shell, and 
   call faces forward (a purchase still to make); its quantity is the closed water year 2026 (1 October 2025 to 30
   September 2026), retrospective because the true-up settles a closed year.
 - **Forum and forcing event:** executive_team (the managing partners approve the purchase),
-  purchase_order_or_contract (the transfer purchase agreement). Organisation agriculture_or_food_producer; role
-  procurement_lead (the water manager buys the ranch's water). Context artifact register (the well register).
+  statutory_or_regulatory_filing (the agency's water year extraction return, due November 30, and its December 15
+  true-up). Organisation agriculture_or_food_producer; role compliance_or_audit (the water manager who files the
+  return). Context artifact register (the well register). Redrawn at stage 3 from purchase_order_or_contract and
+  procurement_lead: task461 v3 registered at 05:38:59Z after this card, which put task276 among the three builds
+  before it, and guard.py heart BLOCKed both axes against task276; neither new axis is task461 v3's, and heart then
+  read PASS for this build and WARN, no BLOCK, for task461.
 - **Data-native sentence:** Ochre Flats' deep wells draw from the confined aquifer below the clay, whose level swings
   a hundred feet through the year, deepest in August and September when the pump contractor makes its annual round
   and shallowest in late winter, while its upper wells sit in water that barely moves; a turbine pump's energy per
@@ -52,7 +56,7 @@ re-check; architectures 1 and 2 are in the card's lineage with their shell, and 
 - **The WHAT screen.** Population: every well on the ranch's parcels (the agency's notice lists them by its well ID).
   Outcome: the volume of groundwater each well pumped. Window: water year 2026, 1 October 2025 to 30 September 2026,
   local time. Unit: acre-feet. Comparison: the ranch's total against its allocation plus carryover, the excess
-  covered by a transfer recorded in blocks of 10 acre-feet. The decisive step settles none of them: it is how an
+  covered by a transfer recorded in whole blocks of 50 acre-feet. The decisive step settles none of them: it is how an
   unmetered well's energy record converts to water.
 - **Deliverables:** `wy2026_extraction_return.csv` (the agency's template: each well's method, monthly and
   water-year acre-feet and its spring and fall 2026 static depths to water) and `transfer_purchase_memo.docx` (the
@@ -75,10 +79,10 @@ re-check; architectures 1 and 2 are in the card's lineage with their shell, and 
 ## Survivor anatomy
 
 Actor: the head each lower-aquifer pump lifted against in each hour it ran has no column in any file: it is a
-relation between the utility's interval energy and the same hour's reading in the well's logger file, two systems on
+relation between the utility's interval energy and the same interval's readings in the well's logger file, two systems on
 two clocks, joined through the well register, against the pump test's head on its own day.
 
-Link: the conversion is read by pairing every power interval with that hour's pumping level from the logger keyed by
+Link: the conversion is read by pairing every power interval with that interval's pumping level from the logger keyed by
 its serial, a cross-system join no key offers (the exports are keyed by service agreement, renumbered at the April
 2026 portal change, the loggers by serial, the tests by the contractor's own well names) and no sentence invites.
 
@@ -87,7 +91,7 @@ latest pump efficiency test measured) sits at rung 0 and files the ranch inside 
 transfer to buy (the default path's Ends on).
 
 Back-test: the textbook route validates: on the four metered upper-aquifer wells the energy-based estimate at each
-well's own test agrees with the totalizer within about 2 per cent, because their water hardly moves, so a solver who
+well's own test agrees with the totalizer within 1.5 per cent, because their water hardly moves, so a solver who
 checks the method against the meters finds it confirmed.
 
 Second use: every file the step reads is read for its own reason: the power exports carry every well's energy for
@@ -112,50 +116,202 @@ was.
    15-minute Wh in UTC, inside 1 October 2025 to 30 September 2026 local time.
 3. Read the four metered wells' totalizers (rollovers, units and the June 2026 replacement) for their volumes.
 4. Convert every unmetered well's energy at its latest test's kilowatt-hours per acre-foot (the field's energy-based
-   method), checked against the metered wells, where it agrees within about 2 per cent.
-5. Sum the ranch, set it against the allocation plus carryover in the agency's notice and buy the excess in blocks
-   of 10 acre-feet.
+   method), checked against the metered wells, where it agrees within 1.5 per cent.
+5. Sum the ranch, set it against the allocation plus carryover in the agency's notice and buy the excess in whole
+   blocks of 50 acre-feet.
 
-Ends on: no transfer to buy (0 acre-feet), the ranch about 300 acre-feet inside what it had available.
+Ends on: no transfer to buy (0 acre-feet), the ranch at 15,020 acre-feet, 339 inside the 15,358.9 it had available.
 
-Golden: buy about 390 acre-feet of transfer water, the lower-aquifer wells converted hour by hour at the head each
-pump lifted against.
+Golden: buy 250 acre-feet of transfer water (five blocks of 50), the ranch at 15,583 acre-feet, 224 over, the
+unmetered wells converted interval by interval at the head each pump lifted against.
 
 ## Stump sentence
 
 The default path converts each unmetered well's water year 2026 energy at its pump test's kilowatt-hours per
-acre-foot, which the metered upper-aquifer wells confirm within about 2 per cent, and files no transfer to buy (0
-acre-feet), because it never asks what head each hour's power lifted water against: the deep wells were tested at
-the confined aquifer's August low and pumped most of their water on spring and early-summer levels 60 to 110 feet
-higher, so each of their kilowatt-hours bought about a tenth more water than the test's rate gives.
+acre-foot, which the metered upper-aquifer wells confirm within 1.5 per cent, and files no transfer to buy (0
+acre-feet), because it never asks what head each interval's power lifted water against: the deep wells were tested
+near the confined aquifer's late-summer low and pumped their March to May water 40 to 110 feet higher, so over each
+deep well's year its kilowatt-hours bought 4 to 6 per cent more water than the test's rate gives, 563 acre-feet on
+the ranch against a 224 acre-foot excess.
 
 ## Three rules
 
 Task type: data-integration-record-linkage-entity-resolution (General Statistics & Data Science): the utility's two interval exports, two contractors' pump test reports, the ranch's logger files and its totalizer reads integrated through the well register into the agency's extraction return, a conformation serving Data Extraction & Conformation (ETL).
 
-Domain test: General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, each unmetered lower-aquifer well's water year 2026 volume integrated from the utility's interval energy and the well's own logger record through its pump test, each interval's energy converted at that hour's total head (the test's head moved by the gap between the hour's pumping level and the test's) at the test's overall efficiency; replacing it with a single-source summary (the test's kilowatt-hours per acre-foot, run hours times the tested flow, an average over tests) files no purchase.
+Domain test: General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, each unmetered lower-aquifer well's water year 2026 volume integrated from the utility's interval energy and the well's own logger record through its pump test, each interval's energy converted at that interval's total head (the test's head moved by the gap between the interval's pumping level and the test's) at the test's overall efficiency; replacing it with a single-source summary (the test's kilowatt-hours per acre-foot, run hours times the tested flow, an average over tests) files no purchase.
 
 Swap: "how many servers must the data centre lease to cover the requests its racks served in 2026, from the racks' power and a benchmark's requests per kilowatt-hour" keeps a metered input converted to an output and loses the step's ground: no head a pump lifts against, no pumping level falling and recovering through the year in another system's record, no test taken at the aquifer's low, so the swapped task has no counterpart to the hours a deep pump lifted water 100 feet less than on its test day.
 
 Layer 1: the utility's two exports across its April 2026 portal change (hourly kWh in local prevailing time, the fall-back hour twice and the spring-forward hour absent, against 15-minute Wh in UTC, service agreements renumbered), the contractors' two report layouts (gpm against acre-feet a day, total lift and head against pumping level, discharge psi and total dynamic head), three superseded 2023 reports on pumps replaced in 2024, vented loggers reporting depth below the measuring point against non-vented loggers reporting total pressure head that the barologger compensates, logger clocks on Pacific standard time all year, totalizer reads in different units with a rollover and a replaced meter, and the register's three naming schemes; each is how the producing system writes, nothing is placed to be caught, and checks.py asserts the call holds under every mishandling that leaves the conversion alone.
 
-Layer 2: field_method, the field's own method done right: the choice that flips the call is converting each hour's energy at that hour's head rather than at the head of the test day, which the confined aquifer's seasonal swing makes the deciding term.
+Layer 2: field_method, the field's own method done right: the choice that flips the call is converting each interval's energy at that interval's head rather than at the head of the test day, which the confined aquifer's seasonal swing makes the deciding term.
 
-Decisive step: rebuilding each lower-aquifer well's volume hour by hour as the interval's kilowatt-hours times the test's overall efficiency over 1.0241 times that hour's total head, the head read from the well's logger as the test's total head plus the hour's pumping level less the test's, so the spring and early-summer hours, lifted 60 to 110 feet less than on the late-summer test day, buy about a tenth more water per kilowatt-hour.
+Decisive step: rebuilding each lower-aquifer well's volume interval by interval as the interval's kilowatt-hours times the test's overall efficiency over 1.0241 times that interval's total head, the head read from the well's logger as the test's total head plus the interval's pumping level less the test's, so the March to May intervals, lifted 40 to 110 feet less than on the late-summer test day, buy up to a quarter more water per kilowatt-hour, and each deep well's year 4 to 6 per cent more (an energy-weighted head 20 to 28 feet under the test's).
 
 Not semantics: every field, unit and definition read correctly (both exports' clocks and units, the renumbered accounts, both report layouts, the loggers' references and compensation, the totalizers, the notice's terms) still leaves the easy route converting each well's energy at its test's kilowatt-hours per acre-foot, a figure that is exactly what its column says (the test day's energy per acre-foot); the step is the physical inference that the rate moved with the head through the year, which no field states.
 
-Not rule application: the notice files the population, outcome, window, unit and comparison, the meter for a metered well and the transfer blocks, and says only that an unmetered well reports the volume it pumped estimated from its records; no rule says how energy becomes water, so executing every filed rule files no purchase; the enumerated family (the test's rate 0, run hours times tested flow 0, an average of tests 0, the nearest test 0, scaling by the pumping-level ratio alone well over 1,000, the hour's total head about 390, the month's mean pumping level about 390) spreads 0 to over 1,000 acre-feet of purchase, the standing family (the conversion at the recorded head under every licensed convention of the fork table) spreads about 380 to 400, and the ruling-out is silent: no sentence names a head, a pumping level or a conversion.
+Not rule application: the notice files the population, outcome, window, unit and comparison, the meter for a metered well and the transfer blocks, and says only that an unmetered well reports the volume it pumped estimated from its records; no rule says how energy becomes water, so executing every filed rule files no purchase; the enumerated family (the test's rate 0, run hours times tested flow 0, an average or the nearest of the tests 0, scaling the test's rate by the pumping-level ratio alone 450, each interval's total head 250, the month's mean pumping level 250) spreads 0 to 450 acre-feet of purchase, the standing family (the conversion at the recorded head under every licensed pairing of interval and reading, start, end, mean or monthly, and under a daylight-saving-hour misreading) spreads 250 to 250, each well within 0.11 per cent, and the ruling-out is silent: no sentence names a head, a pumping level or a conversion for the year.
 
-Analyst test: a strong analyst who conforms both exports, links every account and report to its well, reads the meters right and converts each unmetered well's energy at its latest test's kilowatt-hours per acre-foot, checked within about 2 per cent on the metered wells, files the ranch about 300 acre-feet inside what it had available and buys no transfer (0 acre-feet, the default path's Ends on); one who uses run hours times tested flow files further inside; only the hour-by-hour conversion at the recorded head files the ranch over, buying about 390 acre-feet; checks.py runs each route on the clean truth.
+Analyst test: a strong analyst who conforms both exports, links every account and report to its well, reads the meters right and converts each unmetered well's energy at its latest test's kilowatt-hours per acre-foot, checked within 1.5 per cent on the metered wells, files the ranch at 15,020 acre-feet, 339 inside what it had available, and buys no transfer (0 acre-feet, the default path's Ends on); one who uses run hours times tested flow files 14,719; only the interval-by-interval conversion at the recorded head files the ranch over, 15,583 and 224 over, buying 250 acre-feet; checks.py runs each route on the clean truth (the test's rate 15,038 against the head conversion's 15,602 and the truth's 15,828).
 
-Estimand: the agency's water year 2026 allocation and true-up notice (Sallow Plains GSA, 15 October 2026, sections 2 to 4): the population (every well on the ranch's parcels, listed by agency well ID), the outcome (the volume of groundwater each well pumped), the window (water year 2026, 1 October 2025 to 30 September 2026, local time), the unit (acre-feet) and the comparison (the ranch's total against its allocation plus carryover, any excess covered by a transfer recorded in blocks of 10 acre-feet), a metered well reporting its meter.
+Estimand: the agency's water year 2026 allocation and true-up notice (Sallow Plains GSA, 15 October 2026, sections 2 to 4): the population (every well on the ranch's parcels, listed by agency well ID), the outcome (the volume of groundwater each well pumped), the window (water year 2026, 1 October 2025 to 30 September 2026, local time), the unit (acre-feet) and the comparison (the ranch's total against its allocation plus carryover, any excess covered by a transfer recorded in whole blocks of 50 acre-feet), a metered well reporting its meter.
 
 No decoy: nothing is planted: the utility exports, the pump test reports, the logger files, the meter reads, the register, the notice and the tariff are the producing systems' records; no memo, earlier return, draft or stakeholder figure states or ranks the ranch's water year 2026 extraction, and the agency's template ships blank.
 
 No certified replay: no certified, filed or published water year 2026 extraction figure ships, and the method is not recovered by reproducing any figure; the pump tests are measurements on their own day, which both routes use.
 
-Lesson: a pump's energy per acre-foot follows the head it lifts against, so where a well's water swings through the year its metered energy converts to water only at each hour's own head, read from the well's level record, never at the head of the day it was tested; no build on file converts an energy record to a volume at a state another system records.
+Lesson: a pump's energy per acre-foot follows the head it lifts against, so where a well's water swings through the year its metered energy converts to water only at each interval's own head, read from the well's level record, never at the head of the day it was tested; no build on file converts an energy record to a volume at a state another system records.
+
+## Readability screen
+
+The reflex row comes from the field's vocabulary for an unmetered well's extraction: the test's kilowatt-hours per
+acre-foot, run hours times the tested flow, an average of tests.
+
+| Rung | Tests (1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear, 7 dedicated organ) | Verdict |
+|---|---|---|
+| R0 the latest test's kWh per acre-foot on each unmetered well's energy | 3: the field's energy-based method, and the metered wells confirm it | readable |
+| R1 run hours times the tested flow | 3: the field's hours method, a reflex where energy is messy | readable |
+| R1b an average of the well's tests, or the test nearest each month | 3: a reflex; with one current test per pump it equals R0 | readable |
+| R2 (decisive) each interval's energy converted at that interval's total head | 1 silent: the notice files the volume pumped and says an unmetered well's volume is calculated from its own records; the reports' definitions say how the test day's kWh per acre-foot and total head were figured, which the default path reads as the derivation of the number it uses; no sentence names a head, a pumping level or a conversion for the year. 2 silent: no column holds an hour's head; the energy is keyed by service agreement (renumbered in April), the levels by logger serial, the tests by the contractors' names, and the pairing is a time join across three clocks no key or header forces. 3 silent: the field's reflex is R0. 4 silent: the metered wells validate R0. 5 silent: every file is internally consistent. 6 silent: the head moves interval by interval through the season and the volume is a sum over every running interval, not a ratio of a reported figure. 7 silent: every file it reads is carried for its own reason (power for the return and the energy charges, tests for R0, loggers for the return's static depths of every well) | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternatives and the call under each | Ruled out by |
+|---|---|---|---|---|
+| SF1 | "pumped" (extraction) | the volume of groundwater each well's pump lifted in water year 2026 | the water applied to fields net of district deliveries (a different quantity, no file holds the split); the energy-based estimate taken as the reportable figure whatever the head | notice section 3: "the volume of groundwater the well pumped" |
+| SF2 | water year bounds | 1 October 2025 00:00 to 1 October 2026 00:00, local prevailing time | bounds in UTC or Pacific standard time | notice section 3 ("local time"); same call, asserted (the shift moves the ranch by under 5 acre-feet) |
+| SF3 | a metered well's volume | the difference between its reads nearest 1 October 2025 and 1 October 2026, months between consecutive first-of-month reads | the energy-based estimate for metered wells | notice section 3, the metered-well sentence |
+| SF4 | W-03's meter exchange | old meter's final read less its October 2025 read, plus the new meter's October 2026 read | the two registers differenced as one | notice section 3 ("allowing for any meter exchange"); the reads sheet's notes |
+| SF5 | the acre-foot | 325,851 gallons | 43,560 cubic feet | same call (the same unit) |
+| SF6 | the water available | the allocation plus the 480 acre-feet of carryover | the allocation alone | notice section 2: "the allocation plus the carryover" |
+| SF7 | the ranch's extraction | the sum of the wells' reported whole-acre-foot volumes | the unrounded sum | notice section 3 ("The Agency sums the wells' reported water year volumes"); same call, asserted |
+| SF8 | the purchase | the excess over the water available rounded up to whole blocks of 50 acre-feet | the excess to the nearest block (200), or exact | notice section 4 (whole blocks of 50, the smallest transfer recorded; extraction not covered is charged), asserted |
+| SF9 | the test that applies | each pump's August or September 2025 test | the 2023 reports on the three pumps replaced in 2024 | the register's pump-installed dates and the 2023 reports' bowl notes |
+| SF10 | the level paired with an interval | the mean of the logger readings from the interval's start to its end (15-minute logging) | the start reading, the end reading, the month's mean pumping level | same call, asserted: every pairing buys 250, each well within 0.11 per cent, so the wells are graded as 1 per cent bands and the ranch as a 0.5 per cent band |
+| SF11 | the three clocks | old export in local prevailing time, new export in UTC, loggers in Pacific standard time all year, each as its header states | one clock read for all three | the export headers and the logger headers; a daylight-saving-hour misreading buys the same 250 (asserted), an 8-hour one 400, ruled out by the headers |
+| SF12 | estimated intervals | the utility's estimates kept as the energy record | estimated intervals dropped | same call, asserted |
+| SF13 | the fall-back hour | both 01:00 rows of 2 November 2025 counted, the absent 02:00 of 8 March 2026 absent | one 01:00 row kept | same call, asserted |
+| SF14 | the datum of a level difference | the logger's depth below the top of the sounding tube less the tube height, against the tests' depths below ground surface | the logger's depth used as it stands | the reports' text ("measured from ground surface"; "the tube height is taken off"), the logger header, the register's MP height |
+| SF15 | the efficiency | the 2025 test's overall plant efficiency | none other in the pack (one current test per pump) | same call |
+
+## Ladder
+
+| Rung | Construction | Ranch extraction | Against 15,519 available | Purchase |
+|---|---|---|---|---|
+| R0 | meters for the four metered wells, the latest test's kWh per acre-foot for the rest | 15,020 | 339 inside | 0 (the default path's Ends on) |
+| R1 | run hours times the tested flow for the unmetered wells | 14,719 | 640 inside | 0 |
+| R1b | an average or the nearest of each well's tests | equals R0 | inside | 0 |
+| R2 | each interval's energy at that interval's total head and the test's efficiency (golden) | 15,583 | 224 over | 250 |
+| R3 | the test's rate scaled by the ratio of pumping levels alone (an over-correction that drops the discharge and column head) | 15,762 | 403 over | 450 |
+
+The figures are the cut pack's, printed by checks.py and ceiling.py. The decisive rung sits mid-ladder: the reflex rungs under it
+validate on the metered wells, the over-correction above it fails the reports' own definition of total head.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | every well on the ranch's parcels, listed in the notice by agency well ID | filed (notice section 3), C1 |
+| 2 Unit of account | the well, the agency's return row | filed (notice section 6) |
+| 3 Attribution window | water year 2026, local time; months by calendar month local | filed; SF2 asserted |
+| 4 As-of dating | the notice of 15 October 2026; data through 31 October 2026 | filed; nothing after the water year enters the call |
+| 5 Version basis | each pump's 2025 test; the 2023 reports superseded by the pump replacements | SF9, the register |
+| 6 Denominator | none (a volume, not a rate) | not applicable, stated |
+| 7 Weighting | none; the ranch is the sum of its wells | filed (notice section 3) |
+| 8 Window length | the water year | filed |
+| 9 Boundary inclusivity | intervals starting at or after the start and before the end | C1, asserted (SF2) |
+| 10 Rounding path | each well's water year volume to whole acre-feet, the ranch the sum, the excess up to whole blocks of 50 | filed (notice sections 3 and 4), SF7 and SF8 asserted |
+| 11 Tie-break | none arises (no candidates to rank) | not applicable |
+| 12 Maturity and censoring | the water year is closed; October 2026 data are outside it | filed window |
+| 13 Order of operations | convert each interval, sum by month and year, round each well, sum the ranch, compare, round the excess up | filed rounding path; C1 |
+| 14 Row order | sums over intervals | C1 by construction |
+| 15 Duplicate resolution | the fall-back hour's two rows are two hours | SF13, asserted |
+| 16 Identity normalisation | service agreements, old and new, contractors' well names and state well numbers through the register | the register's own crosswalk, C4 |
+| 17 Netting against gross | none (no negative volumes; meters only advance) | not applicable |
+| 18 Dimensional units | kWh against Wh, gpm against acre-feet a day, gallons x 100 and x 1000 against acre-feet, psi against feet | units in the data; C4 |
+| 19 Code and status semantics | the quality flags (ACT, EST, Estimated) and the test reports' defined figures | SF12; the reports' definitions |
+| 20 Integerisation | whole acre-feet per well, whole blocks of 50 for the purchase | filed |
+| 21 Clause scope | section 3 applies to every listed well, section 5 to every listed well | filed scope |
+| 22 Forward window contents | none: the call's quantity is the closed water year | not applicable, stated |
+
+## Literal reader
+
+Executed word for word, the prompt and the notice give the volume of groundwater each listed well pumped in water year
+2026 (1 October 2025 to 30 September 2026, local time) in whole acre-feet, metered wells from their reads nearest the
+year's ends allowing for W-03's exchange, unmetered wells calculated from their own records, summed and set against the
+allocation plus the 480 acre-feet carried over, the excess bought in whole blocks of 50; every reading in the fork table gives
+the golden's figures except those each ruled out by a quoted sentence (SF1 and SF3 by section 3, SF4 by section 3 and the
+reads sheet, SF6 by section 2, SF8 by section 4, SF9 by the register, SF14 by the reports' text and the register), and the
+easy answer, no purchase, comes from the easy method on the same literal estimand (each unmetered well's energy at its
+test day's rate), not from another reading. The relation the golden inverts is printed on every test report (kilowatt-
+hours per acre-foot equal 1.0241 times total head over the overall plant efficiency; total head equals the pumping
+water level plus the discharge head and the column loss), and the loggers record the pumping level every hour, so the
+calculation the records support is the golden's, and no filed sentence gives the test day's rate for any other hour.
+
+## Oracles
+
+- The metered wells' totalizers: confirm R0 within 1.5 per cent on the upper aquifer, and the golden too; they tie on
+  every basis because the upper aquifer's water barely moves, so they arbitrate nothing about the deep wells.
+- The pump test reports: confirm each pump's rate on its test day, which both routes use.
+- The download log's manual soundings: confirm the loggers' levels (both routes, and the static depths).
+- The utility's rate letter and tariff: the energy charges only; nothing about volumes.
+- No published, certified or filed water year 2026 extraction figure ships; the template ships blank.
+
+## Ask sheet
+
+- **Ask A, the absolute-pressure loggers' static depths: 8 figures** (W-01 to W-04, spring and fall 2026, feet below
+  ground to one decimal). H18 home: notice section 5, the agency's upper-aquifer level reporting. Path: the four
+  Levelogger files, the barologger file, the register (sensor depth, MP height, logger model), the download log, both
+  power exports (pump off for 24 hours), the notice: eight files, eleven columns. Primary device: D3, a quantity at
+  another meaning than its column name: a Levelogger 5 records total pressure head (water plus atmosphere) in its
+  LEVEL column, so the depth is the sensor depth less LEVEL less the barologger, less the tube height. Second device:
+  D8, the barologger's clock runs on the office computer's UTC while every well logger runs Pacific standard time (the
+  download log's barologger rows say so), so a compensation by clock face pairs each reading with the pressure eight
+  hours away. Hazard: D7, the June 2026 swap of the loggers at Pumps 2 and 5 (download log), which moves W-02's and
+  W-04's spring figures. The call reads no absolute-logger row (the four wells are metered).
+- **Ask D, each well's April to September 2026 energy charge: 15 figures** (dollars). H18 home: the partners' pumping
+  cost review in the memo. Path: the new power export, the register (current schedule), the rate letter, the tariff:
+  four files, nine columns. Primary device: D2, a label stored before a silent switch: the register's rate schedule is
+  today's, and the utility's letter moved thirteen service agreements from AG-2T to AG-3T on 1 June 2026, so April and May
+  are priced on AG-2T. Second device: D8, the export's interval starts are UTC and the schedule's periods are local time
+  with half-hour edges (8:30 a.m., 9:30 p.m.), so an hourly roll-up or a clock-face reading misplaces the shoulders.
+  Hazards: holidays (Memorial Day, the observed Independence Day, Labor Day), the June 1 season change. The call reads
+  energy totals, which neither device moves.
+- **The construction layer:** the vented loggers' static depths (W-05 to W-15, spring and fall, 22 figures) and the
+  return's monthly volumes; the cracker has them.
+- **Main population zero-counts (asserted):** the call reads no absolute-logger row, no barologger row, no rate
+  schedule, letter or tariff cell, and no download-log row.
+
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
+|---|---|---|
+| A, absolute loggers' static depths | compensates each Levelogger reading with the barologger reading of the same clock face, so every figure carries the pressure difference of eight hours, and W-02's and W-04's spring readings come from the other well's logger | miss |
+| D, April to September energy charges | prices each interval on the register's schedule in local time with every holiday; April and May on AG-3T for the thirteen switched agreements, so every switched well's charge falls outside its bin | miss |
+
+- Mirror leakage: 35.2 per cent of ask weight (the mirror keeps the construction layer, three absolute-logger depths and
+  the two AG-2T wells' charges).
+- Pair ceiling: 49.8 on the cut pack (weights 38 / 7 / 55, the wells graded as 1 per cent bands and the ranch as a 0.5
+  per cent band; the asks split 14 Ask A, 10 the construction layer's static depths, 31 Ask D; the cracker 64.4, the
+  mirror, R0, 35.2, keeping the four metered wells and W-05 and W-06 inside their bands).
+- Measured by: generator/ceiling.py
+
+## Pre-ship check
+
+- Free gates on the final cut (2026-11-04, target.zip 7e8bf4aa): checks.py 45 of 45 (the input gates, every route,
+  the clean-truth analyst test, SF1 to SF15, the zero-counts, the ask devices, a strict PDF reader on every report,
+  the deliverables), verify.py clean, two builds byte-identical, figures_check.py 96 of 96, precut.py 61 checks with
+  0 FAIL and 0 WARN, voice-check.py PASS, leak.py REVIEW with no LEAK (coincidental numbers in an hourly kWh row and a
+  superseded 2023 report, the notice's own vocabulary and template fields, the superseded report's bowl note),
+  guard.py heart PASS after the stage-3 axis redraw, surface one promoted pair (task140, differentiated on the
+  card), the producer-metadata audit clean on the pack and the goldens.
+- The analyst test on the clean truth: the test's rate files 15,038 acre-feet and buys nothing, the head
+  conversion 15,602 and buys, the truth is 15,828.
+- golden-realism: the memo's subject line states the purchase, a plain table with a source line, precision by
+  quantity; reduce-house-fixes: a real road address, a real weather network's name in a file name and schedule
+  names that mirrored a real utility's were renamed (H21), the energy-charge ask framed in the memo as the season's
+  pumping bill beside the transfer (H18).
+- Grading: the purchase is exact (whole blocks of 50 under every licensed pairing); each well's water year volume is
+  a 1 per cent band and the ranch a 0.5 per cent band, because the pairing of intervals with logger readings moves a
+  deep well by up to 0.11 per cent and whole acre-feet by one; R0 sits 4 to 6 per cent under on every deep well.
 
 ## Tried and rejected
 
