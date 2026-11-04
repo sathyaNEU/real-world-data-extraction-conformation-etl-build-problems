@@ -1,98 +1,98 @@
 {
   "task": "task401",
-  "architecture": "v5",
+  "architecture": "v6",
   "drawn": "2026-11-04",
-  "slot_note": "Root-Cause Analysis slot re-rooted at architecture 5 after architecture 4 was spent at stage 4, round 1 (lineage). One architecture per world: the epidemiology, econometrics, marketing and environmental worlds are closed to this slot; architecture 5 moves to Psychology and Behavioural Science, an invented English leisure trust's membership base, a new dataset and a new shell.",
-  "domain": "psychology-behavioral-science",
-  "client_domain": "psychology-behavioral-science",
-  "subdomain": "mediation-moderation-process-modeling",
-  "niche": "a leisure trust's membership cancellations after a savings programme, read through members' lapsed attendance and the lag between a member's last visit and their cancellation",
+  "slot_note": "Root-Cause Analysis slot re-rooted at architecture 6 after architecture 5 was spent at stage 4, round 1 (lineage). One architecture per world: the epidemiology, econometrics, marketing, environmental and psychology worlds are closed to this slot; architecture 6 moves to Education and Learning Sciences, an invented Scottish council's S1 to S3 mathematics, a new dataset and a new shell.",
+  "domain": "education-learning-sciences",
+  "client_domain": "education-learning-sciences",
+  "subdomain": "multilevel-classroom-school-research",
+  "niche": "a Scottish council's S1 to S3 mathematics: which of its 2025-26 changes cost the most marks in the June 2026 common assessment, read through each pupil's own first-homework errors against their June items unit by unit",
   "objective": "root-cause",
   "shape": "18",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "Reverse the Rewards closure.",
-  "answer_source": "submission.md block 1; generator/figures.json",
+  "answer": "The homework platform switch of August 2025 cost the most marks in the June 2026 S1 to S3 assessment; the new maths framework is second.",
+  "answer_source": "submission.md block 1; generator/figures.json (draft at the draw, final at ship)",
   "gap": [
-    "time",
-    "objective"
+    "objective",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G13",
-    "G3",
-    "G12"
+    "G2",
+    "G14"
   ],
   "gate_g": "decomposition_attribution",
-  "calibration_form": "realised_outcome_roster",
-  "stump_strategy": "maturity_censoring",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly compares each change's cancellations since 2 February 2026 with the same weeks of 2025 among the members it reached, finds the legacy terms letters behind the February spike and nothing yet from the Rewards closure, and books the year to the terms change, because they never count the members on the 2023 tariffs who stopped coming after Rewards closed and still pay, whom last year's lapsed members show will mostly cancel within the year.",
-  "domain_test": "The deciding quantity is each change's cancellations through members' lapsed attendance, the indirect path a conditional process model carries from a change to attendance to cancellation, timed by the lag between a member's last visit and their cancellation (DellaVigna and Malmendier 2006 put it at 2.31 months on average over all cancellers; members who drift away rather than quit take about three); swap the members for a shop's customers or a clinic's patients and nobody keeps paying for a service they have stopped using, so the deciding quantity disappears.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:cancellations-still-to-come-from-lapsed-paying-members-timed-by-the-last-visit-to-cancellation-lag",
+  "analyst_test": "A strong analyst who reads every file correctly fits pupils' June scores on P7 attainment, deprivation, school, class and each change's reach, finds the asymmetric week, the support bases and the shared staffing each cost little on their own pupils, sees the framework's rewritten units fall most while homework completion and review volume rose on the new platform, and books the fall to the new framework, never setting each pupil's first-homework results against that pupil's June items unit by unit, where the units each pupil got most wrong fell several points further once review stopped following their errors.",
+  "domain_test": "The deciding quantity is the June loss on each pupil's own first-practice weak units once retrieval practice stopped following their errors, the targeted-review retention effect learning science measures (Lindsey, Shroyer, Pashler and Mozer 2014: personalised review beat one-size spaced review by 10.0 per cent on a cumulative exam), read within pupils across the multilevel structure of pupils in classes in schools; put megawatt-hours or patients in place of marks and pupils and there is no first practice, no per-learner review and no cumulative paper, so the call stops parsing.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:targeted-retrieval-loss-read-on-each-pupils-own-first-practice-weak-units",
   "layer1": [
-    "membership register with tariff codes renamed at the 2023 migration and statuses as at the extract",
-    "cancellation requests from three channels with members asking twice",
-    "access-control weekly export with a turnstile outage week at one centre",
-    "letters posted in five batches with returned post",
-    "a care-call log keyed by membership number with its leading zeros dropped",
-    "class bookings with no-shows and cancellations",
-    "two Direct Debit bureaux with different dating, units and references, and household mandates",
-    "two reception till systems with different line grains, voids and refunds",
-    "a duty managers' log of pool shutdowns"
+    "two homework platforms' exports with different pupil keys (the Scottish Candidate Number against platform user ids through class rosters), time units and task vocabularies",
+    "June item marks exported paper by paper, absent pupils coded A, mid-year transfers carrying their old school's class codes",
+    "a skills-to-units crosswalk in two vintages (the old framework's units and the new framework's)",
+    "P7 standardised numeracy scores from two assessment years, with pupils who arrived from outside the council lacking one",
+    "SIMD 2020 deciles from home postcodes, pupils who moved mid-year carrying two",
+    "a support base log keyed by teacher entry and base entry, so a removal can appear twice",
+    "timetables in two week structures (33 periods of 50 minutes against the asymmetric week's periods)",
+    "staffing by term with job-shares and two shared posts across schools"
   ],
-  "stakeholder_role": "the trust's head of membership, who must tell the council's April contract review which of February's changes the 2026-27 plan reverses",
-  "role_family": "operations_director",
-  "scoring_unit": "per active unit per period",
+  "stakeholder_role": "the council education service's performance and improvement lead, who must tell the 2027-28 budget which of the 2025-26 changes to reverse",
+  "role_family": "research_desk",
+  "scoring_unit": "index points",
   "spine": {
-    "file": "access_weekly_usage_2024-01-01_to_2026-03-15.parquet",
-    "rows": 1405711,
-    "entity": "one membership's gate entries in one week",
-    "grain": "membership x week",
+    "file": "june_maths_item_marks_2025_2026.parquet",
+    "rows": 330000,
+    "entity": "one pupil's marks on one item of a June paper",
+    "grain": "pupil x item x year",
     "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "period_close",
-  "org_family": "nonprofit_or_charity",
+  "forum": "council_or_assembly",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "local_government",
   "world": {
-    "geography": "England (an invented borough's charitable leisure trust)",
+    "geography": "Scotland (an invented council area's secondary schools)",
     "currency": "GBP",
-    "org_type": "charitable leisure trust running a borough's leisure centres under contract",
+    "org_type": "a Scottish council's education service and its secondary schools",
     "invented_names": [
-      "Wrenford Leisure Trust",
-      "Wrenford Borough Council"
+      "Strathcorrie Council"
     ],
     "people": [
-      "Sophie Newman",
-      "Shaun Steele",
-      "Clifford Pope"
+      "Aimee Williams",
+      "Elliot Davies",
+      "Joanne O'Brien"
     ]
   },
   "deliverables": [
-    "change_review.pdf",
-    "monthly_return.xlsx"
+    "maths_change_review.docx",
+    "school_year_marks.csv"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A rise in exits is booked to the change whose letters visibly triggered a spike, because the exits so far sit with the units that received them, but a second change made the same week stopped other units using the service without yet ending their subscriptions; those lapsed units still pay and will leave over the coming months at the rate earlier lapsed units did, so the year's cost belongs to the change whose exits have barely begun.",
-  "driver_concrete": "Wrenford Leisure Trust's February 2026 savings programme moved legacy members onto the current terms at an unchanged price and closed the Rewards scheme in the same week; the legacy terms letters produced the visible spike in cancellations, but about twelve hundred members on the 2023 tariffs stopped coming after Rewards closed and are still paying at the 16 March extract, and at the rate last year's lapsed members cancelled over the following ten months the Rewards closure costs several times the terms change over the twelve months from 2 February 2026.",
-  "stump": "A competent analyst compares each change's cancellations since 2 February with the same weeks of 2025 among the members it reached, finds the legacy terms letters behind the February spike and nothing yet from the Rewards closure, and recommends reversing the terms change, because they never count the 2023-tariff members who have stopped coming since the closure but have not yet cancelled, whom last year's lapsed members show will mostly cancel within the year.",
+  "driver": "A fall in a cumulative test is booked to the whole-system change made the same term, because the fall holds in every visible group, the most changed parts fell most and the other coincident change's usage rose, but the loss sits on each learner's own weakest components, which the earlier support system revisited according to that learner's own early errors and its replacement revisits uniformly, so only each learner's early record set against its own later outcomes component by component shows that the larger cost belongs to the support switch.",
+  "driver_concrete": "Strathcorrie Council's S1 to S3 maths fell in the June 2026 common assessment after it replaced its maths framework, switched homework platforms, moved to an asymmetric week, opened support bases and shared maths staff across schools in 2025-26; the framework's rewritten units fell most and homework completion and review volume rose on the new platform, but within each pupil the units they got most wrong in their first homework fell several points further than their other units, because the old platform drew each retrieval task from the pupil's own wrong answers and the new one sets one mixed review per class, so the platform switch, not the framework, cost the most marks.",
+  "stump": "A competent analyst models each pupil's June score on P7 attainment, deprivation, school and class, reads each change's cost off the pupils and units it reached, finds the framework's rewritten units down and homework completion and review volume up on the new platform, and books the fall to the new framework, because they never set each pupil's own first-homework results against that pupil's June items unit by unit, where the units each pupil got most wrong fell several points further than the rest once review stopped following their errors.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task122": "task122 v2 re-attributes outcomes a log credits to the wrong session back to the exposure that produced them; here nothing is re-attributed: the decisive quantity is cancellations not yet made by members who have stopped coming, counted from their last visits and timed by last year's lapsed members, a forward count no record holds.",
-    "task274": "task274 completes defendants inside a recorded programme stage through the stage's own month-by-month termination hazard to size one randomised offer's effect; here no record marks a member as pending (the pending state is a relation between the visits record and a still-active membership), and the call ranks two changes made in one week whose timing biases run opposite ways: one change's exits arrived at once and were partly brought forward from later in the year, the other's are still to come.",
-    "task402": "task402 pairs each trip with the same section's restoration minutes before; nothing here is paired: the call turns on members who stopped coming and still pay, carried through last year's yield, against a change whose exits were only brought forward.",
-    "task400": "task400 reads a staggered rollout against the units not yet switched; here every change is in place at once on its own members, and the call turns on the exits still to come and the exits a reminder pulled forward.",
-    "task230": "task230 corrects a category count for the late part of an output still to be processed; here nothing is reclassified: the unobserved part is cancellations by lapsed payers, read from a stock against the same date a year earlier, and the rival change's exits net out within the year."
+    "task403": "task403 reads each trialist's remaining runway, its own viewing set against a release calendar at the day-7 decision; here nothing is timed against a calendar: the decisive quantity is a contrast within each learner between the components it first got wrong and the rest, which a support system either followed or did not.",
+    "task402": "task402 pairs each failure with the same unit's restoration minutes before; here no event is paired with an earlier event: each learner's components are compared with one another across two systems' records of the same content.",
+    "task399": "task399 reads whether an advocate was in the room when each case was called; here no actor's presence is read: the learner is always present and the quantity is what its practice returned to.",
+    "task121": "task121 rebuilds the rest each worker had before each shift; here no fatigue or rest is built: the quantity is retention of content by component.",
+    "task482": "task482 splits one shared meter's fuel among products by each process's own fuel response (mass melted against hours fired); here nothing is metered or apportioned: the decisive quantity is each learner's contrast between the components it first got wrong and its other components, under two review rules in two years.",
+    "task65": "task65 rebuilds entities from child records by each child's own location so that regrouping moves a capped sum; here no entity is reconstituted and no cap binds: the quantity is a within-learner retention contrast across components between two years.",
+    "task84": "task84 groups an entity's concurrently live units on a composite key to price the copies that compete; here nothing competes for anything: the quantity is the retention lost on each learner's own weakest components once review stopped following them.",
+    "task174": "task174 forecasts gains per repetition within a session from a stopping rule; here the call is a root cause booked across five changes, and the quantity is each learner's cross-component contrast between two years under two review rules."
   },
-  "notes": "Strategy maturity_censoring, gap time: the cancellations each change causes in the twelve months from 2 February 2026 are mostly unobserved at the 16 March 2026 extract for the Rewards closure (its lapsed members cancel on a lag of about three months from their last visit) and mostly observed for the legacy terms letters (they prompted long-lapsed legacy members at once). Gate G decomposition_attribution: the year's cancellations assigned to the right change. Calibration: last year's inactive members' ten-month outcomes (a realised roster). Shape 18: five filed changes are the hypotheses, each with its own in-place date and reach. Furniture redrawn against the live window: forum customer_or_counterparty (the council is the trust's contracting client; committee_or_panel, trustees_or_governors and executive_team are held by task400, task402 and task403), forcing event period_close (the 2025-26 year end sets the 2026-27 plan; vote_or_meeting and season_or_peak are held), role operations_director (product_manager is held by task403). Personas drawn from guard.py names --geo 'United Kingdom, England' --seed 401 --n 60: the first three in draw order whose first name and surname sit on no other card (lineage included) and fire no guard people rule, skipping the names this slot's architectures 3 and 4 used.",
+  "notes": "Strategy grain_or_unit (F2: the grain that carries the cost is pupil by unit, not the pupil; redrawn from decomposition_attribution when task210 registered with it in the live window; the honest family for a move whose whole content is the unit of analysis), gap objective then population (the within-learner weak components are the population the cost sits on); generators G2 (the grain that carries the cost is pupil by unit) then G14 (the pooled homework-to-June relation does not hold on each pupil's weak units). Gate G decomposition_attribution. Calibration none. Shape 18: five changes against evidence lines. Context artifact register: the education service's change register for S1 to S3 mathematics, whose remit section files the estimand and names no method (redrawn from filed_standard when task210 registered with it). Forum council_or_assembly (the education committee recommends to full council), forcing event budget_or_appropriation (the 2027-28 budget, set in February 2027), org family local_government.",
   "lineage": [
     {
       "architecture": "v1 (Epidemiology and Public Health: a community trust's frailty virtual ward in an integrated care system's Core20 neighbourhoods, its pilot-year prevented admissions against care home closures)",
@@ -260,6 +260,52 @@
       },
       "driver": "A run of failures downstream of a shared processing unit is booked to that unit's own capacity and to a control change it made the same week, because the failures began then and the unit's own records validate it, but every one of them falls on the first or second day after a short discharge in one small contributor's own high-frequency record, which starves the unit's process for a day whatever the other contributors send; by load the contributor barely registers and its periodic strength samples and compliance read normal, so only its high-frequency record set against the unit's daily record and the downstream days shows the share each remedy can reach.",
       "fate": "spent 2026-11-04 at stage 4, round 1: the judge's blind derivation reached the call and every ask figure; effluent spikes from midnight on every failure day aligned one to one with the discharger's evening pH dips in its own monitor file, and the prompt's chart sentence announced the trace"
+    },
+    {
+      "architecture": "v5 (Psychology and Behavioural Science: Wrenford Leisure Trust's February 2026 changes, the Rewards closure's lapsed but still paying members against the legacy terms letters' visible cancellation spike)",
+      "drawn": "2026-11-04",
+      "domain": "psychology-behavioral-science",
+      "subdomain": "mediation-moderation-process-modeling",
+      "objective": "root-cause",
+      "shape": "18",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G3",
+        "G12"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "maturity_censoring",
+      "context_artifact": "filed_standard",
+      "forum": "customer_or_counterparty",
+      "forcing_event": "period_close",
+      "org_family": "nonprofit_or_charity",
+      "role_family": "operations_director",
+      "layer2_pattern": "own:cancellations-still-to-come-from-lapsed-paying-members-timed-by-the-last-visit-to-cancellation-lag",
+      "world": {
+        "geography": "England (an invented borough's charitable leisure trust)",
+        "currency": "GBP",
+        "org_type": "charitable leisure trust running a borough's leisure centres under contract",
+        "invented_names": [
+          "Wrenford Leisure Trust",
+          "Wrenford Borough Council"
+        ],
+        "people": [
+          "Sophie Newman",
+          "Shaun Steele",
+          "Clifford Pope"
+        ]
+      },
+      "driver": "A rise in exits is booked to the change whose letters visibly triggered a spike, because the exits so far sit with the units that received them, but a second change made the same week stopped other units using the service without yet ending their subscriptions; those lapsed units still pay and will leave over the coming months at the rate earlier lapsed units did, so the year's cost belongs to the change whose exits have barely begun.",
+      "fate": "spent 2026-11-04 at stage 4, round 1: the judge's blind derivation reached the call; the forward-facing estimand forced a projection, and the careful projector (the letters' spike split by prior visits as a pull-forward, Rewards holders' dormancy carried through last year's conversion) named the closure under every projection; the accepted activity residual fired"
     }
   ],
   "lineage_shells": [
@@ -280,8 +326,19 @@
       "second-sentence opener": "answer",
       "rounding opener": "days",
       "deliverable set": "pptx+xlsx"
+    },
+    {
+      "question form": "which",
+      "second-sentence opener": "the",
+      "rounding opener": "admissions",
+      "deliverable set": "pdf+xlsx"
     }
   ],
-  "registered": "2026-11-04T02:24:47Z",
-  "architecture_spent": true
+  "registered": "2026-11-04T08:08:49Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "its",
+    "rounding opener": "marks",
+    "deliverable set": "csv+docx"
+  }
 }
