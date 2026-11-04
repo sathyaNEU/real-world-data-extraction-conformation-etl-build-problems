@@ -1,105 +1,134 @@
 {
   "task": "task462",
-  "architecture": "v1",
-  "drawn": "2026-10-15",
-  "slot_note": "seed ET19 used for its decision and quantity (an ESG data company's published emissions intensity built across EPA's greenhouse gas reporting, production statistics and keys that join many-to-many); its own world (CAMD and GHGRP joined to EIA plant data through the EPA-EIA crosswalk) is task459's pack, so the intensity is a gas producer's methane intensity measured from aerial surveys",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "niche": "measurement-based methane intensity of gas producers from repeated aerial plume surveys, for an emissions data company's low-methane rating",
+  "architecture": "v2",
+  "drawn": "2026-11-04",
+  "slot_note": "re-root of the ETL number after architecture 1 was found spent at the 2026-11-02 re-check",
+  "domain": "supply-chain-logistics",
+  "subdomain": "inventory-demand-planning",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a coastal steelworks' winter reserve of iron-bearing material in its ore yard, measured from a year of monthly drone surveys flown by two survey contractors in different grids and height systems",
   "objective": "etl",
-  "shape": "01",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Rate four Tollaver Basin producers low-methane for 2027: Calbrent Energy, Ostrel Energy, Corrandale Petroleum and Brushy Mesa Operating (0.104, 0.108, 0.119 and 0.134 per cent against the 0.20 line; Ashmund Production, the nearest of the rest, at 0.232).",
-  "answer_source": "task462/submission.md block 1; golden tollaver_producer_methane_ratings_2027.xlsx, sheet 2027 ratings",
+  "shape": "other",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G12",
-    "G16",
-    "G13"
+    "G5",
+    "G16"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "physical_verification",
-  "stump_strategy": "maturity_censoring",
+  "calibration_form": "none",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "the head of methane ratings at an emissions data company that rates a basin's gas producers for the buyers of their gas",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "per certified output",
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "With both contractors' surveys aligned and the reserve procedure applied as written, a strong analyst takes each bed's December volume above a plane fitted through its toe, the stock surveyor's standard base, which the new bed's own bare survey and the year's book roll-forward both confirm, and files about 671,000 t, 50.1 days against the 52-day floor, nominating the winter option cargo.",
+  "domain_test": "The deciding quantity is a stockpile inventory worked the way a stock-survey team integrates its surveys, each bed's volume between the December surface and the pad beneath it with the base surface conformed from the year's surveys across two contractors' grids and height systems; in another field's nouns the task is gone, because what decides is a pad consolidating under ore beds on reclaimed land, seen only where a bed was reclaimed to the pad.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:stockpile base surface where the pad has settled under long-standing beds",
+  "layer1": [
+    "two survey contractors on different grids (works grid, ETRS-TM35FIN) and height systems (N60, N2000)",
+    "ESRI ASCII grids against semicolon XYZ exports with decimal commas",
+    "NODATA cells where a machine stood on a bed",
+    "the laboratory's density unit changed mid-year (kg/m3 to t/m3)",
+    "the port's berth log in UTC against the works' Finnish time",
+    "a plant historian computing interval tonnage from totalisers, with catch-up after communication losses",
+    "a belt-scale integrator replaced mid-year, its totaliser restarting",
+    "a trading house shipping a producer's cargoes under its own name"
+  ],
+  "stakeholder_role": "the works' raw materials manager, who decides whether to nominate the supplier's winter option cargo",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
   "spine": {
-    "file": "ogc_well_production_tollaver_2025_2026.csv",
-    "rows": 38150,
-    "entity": "one well's reported gas production for one month, original or amended",
-    "grain": "well x month x report",
-    "source": "synthetic (constructed in the layout of a state oil and gas commission's well production reports)"
+    "file": "surveys/yard_2026-12-16.xyz",
+    "rows": 30000,
+    "entity": "one surveyed point of the ore yard surface",
+    "grain": "survey x 2 m point",
+    "source": "synthetic"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "professional_services",
+  "forcing_event": "season_or_peak",
+  "org_family": "manufacturer",
   "world": {
-    "geography": "an unnamed US state's gas basin (invented), twelve producers",
-    "currency": "USD",
-    "org_type": "emissions data and ratings company",
+    "geography": "Finland (a fictional steelworks on the Gulf of Bothnia coast)",
+    "currency": "EUR",
+    "org_type": "integrated steelworks",
     "invented_names": [
-      "Tarvane Methane Ratings",
-      "Talmora Aerial",
-      "Tollaver Basin",
-      "Calbrent Energy",
-      "Pinyon Draw Production",
-      "Brushy Mesa Operating",
-      "Lechuza Creek Resources",
-      "Anchell Oil & Gas",
-      "Corrandale Petroleum",
-      "Marrowind Operating",
-      "Ostrel Energy",
-      "Pellisto Gas Partners",
-      "Ruskmoor Exploration",
-      "Ashmund Production",
-      "Sunmere Natural Gas"
+      "Perämeren Teräs Oy",
+      "Tornedal Mineral AB",
+      "Ofoten Ore AS",
+      "Kattegat Ore Trading ApS",
+      "Kuvamitta Oy",
+      "Geodrone Pohjoinen Oy"
     ],
     "people": [
-      "Aaron Watkins",
-      "Kimberly Clements"
+      "Kirsi Salo",
+      "Aaro Miettinen",
+      "Maarit Vainio",
+      "Pekka Jalonen"
     ]
   },
   "deliverables": [
-    "tollaver_producer_methane_ratings_2027.xlsx",
-    "talmora_plumes_conformed_2025_2026.csv"
+    "winter_reserve_2026.xlsx",
+    "yard_stock_2026.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is a period total of many intermittent sources seen only through a few snapshot surveys, each of which records a source only while it is active and then only with a probability that rises with its size, so a blank at a surveyed place is partly a miss: each detection has to stand for the instances its detection probability implies, measured on blind trials of known size, while counting blanks as zeros understates the units whose total sits in many small sources and carrying each detected source through the period overstates the units whose total sits in large intermittent ones.",
-  "driver_concrete": "Each producer's methane over the rating year to 30 September 2026 is the time-averaged emission rate of its sites over four basin-wide aerial campaigns, each plume weighted by one over the survey's probability of detecting a plume of its rate (measured on the provider's blind controlled releases), not the campaigns' detected plumes alone with blanks as zeros (which understates producers whose methane leaks from many 5 to 15 kg/h sources) nor each detected source at its detected rate all year (which overstates producers whose methane comes from tank dumps part of the time).",
-  "stump": "The default path averages each producer's plume rates over its passes and campaigns, counting every imaged site without a plume as zero, and rates eight producers low-methane, among them Anchell, Pinyon Draw, Pellisto and Ashmund (0.150, 0.155, 0.179 and 0.181 per cent), whose methane leaks from many 5 to 15 kg/h sources a pass catches less than half the time; carrying each detected source through the year instead rates none; only weighting each plume by one over the detection probability at its rate, fitted to the provider's blind controlled releases, rates the golden four.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who attributes every plume to its producer, reads every field and applies the rating standard averages each producer's detected rates over its passes and campaigns with a blank counted as zero and rates eight producers low-methane, four of them over the 0.20 per cent line though it puts them at 0.150, 0.155, 0.179 and 0.181 per cent.",
-  "domain_test": "The deciding quantity is a producer's measurement-based methane intensity, built the way methane inventories build it from aerial surveys (plume rates weighted by a detection probability that depends on rate and wind, measured on controlled releases, averaged over campaigns against the methane in the gas produced); with another field's nouns the rate- and wind-dependent detection of intermittent plumes and the produced gas's methane content no longer read.",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is the amount held above a surface that has sunk beneath the loads it carries, so under each load it lies below the level at the load's edge; the record shows that surface only on the occasions each load was taken away, and an amount taken against a surface through the load's edge leaves out the part filling the hollow.",
+  "driver_concrete": "Each ore bed's tonnage at the December 2026 survey is its volume above the yard pad as the year's surveys expose it in the month the bed was reclaimed to the pad, aligned across the two contractors' grids and height systems, times its product's bulk density, not its volume above a plane through its toe, which leaves out the ore lying in the bowl the pad has settled into under years of stockpiling.",
+  "stump": "The default path takes each bed's December volume above a plane fitted through its toe and files a reserve of about 671,000 t, 50.1 days against the 52-day floor, so it nominates the winter option cargo; the pad under the five long-standing beds has settled into bowls up to about two metres deep, and measured against the pad the year's clearances exposed the reserve is about 728,000 t, 54.2 days, and no cargo is needed.",
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task180": "task180 forecasts a plant's earthquake count once a network change removes the daily masking of its small events (completeness varying with the hour); task462 estimates a time-averaged emission total from four snapshot surveys whose detection probability rises with each plume's rate, each detection standing for the instances its probability implies: no forecast of a record change and no time-of-day masking",
-    "task255": "task255 fits a severity distribution's tail with each claim truncated at its deductible and censored at the retention; task462 fits no size distribution: it weights each detected plume by the survey's detection probability at its rate, measured on blind releases, and averages the campaigns to a total",
-    "task456": "task456 classifies unit-days from three imperfect categorical records with a latent class model; task462 scales one instrument's continuous detections by its measured detection curve across repeated snapshots of intermittent sources"
-  },
-  "lineage": [],
-  "notes": " Architecture 1 spent at the 11-02 re-check: the golden is the field's own POD-corrected aerial methane inventory (each plume over its detection probability fitted to controlled releases) applied as the literature states it, so the field's method is the top rung rather than rung 0 or 1 (Link, Reflex, Back-test, Second use and Shock fail on the honest anatomy; the golden four are the bottom four of the default sort); the clean-truth easy routes (eight, none, ten) do file wrong slates.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:detection-weighted snapshot totals",
-  "layer1": [
-    "several sources for one picture: the survey provider's plume detections and flight-line coverage, the state commission's well production reports, the producers' site register, gas composition analyses and the producers' greenhouse gas reports",
-    "imperfect keys: plumes located by coordinates and attributed to the nearest site, a few between two producers' pads; wells and sites that changed operator during 2026; one site under two spellings",
-    "vintages and revisions: amended production reports superseding the originals; one campaign's rates reprocessed by the provider",
-    "units and time: plume rates in kg per hour, production in Mcf, reports in metric tons, survey passes stamped in UTC",
-    "genuine overlap: plumes imaged twice on overlapping flight lines in one campaign",
-    "real coverage: flight lines lost to cloud, a few sites not imaged in a campaign"
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-15",
+      "registered": "2026-10-15T15:36:19Z",
+      "fate": "spent 2026-11-02 at the re-check under the new gates: the golden was the field's own POD-corrected aerial methane inventory (each plume over its detection probability fitted to the provider's controlled releases) applied as the literature states it, so the field's method was the top rung rather than rung 0 or 1 (Link, Reflex, Back-test, Second use and Shock fail on the honest anatomy); its shipped pack, target.zip 33e6d0c4, stays at the portal pending; re-rooted 2026-11-04 into a new domain, world, dataset and shell",
+      "driver": "The decisive quantity is a period total of many intermittent sources seen only through a few snapshot surveys, each of which records a source only while it is active and then only with a probability that rises with its size, so a blank at a surveyed place is partly a miss: each detection has to stand for the instances its detection probability implies, measured on blind trials of known size, while counting blanks as zeros understates the units whose total sits in many small sources and carrying each detected source through the period overstates the units whose total sits in large intermittent ones.",
+      "stump": "The default path averages each producer's plume rates over its passes and campaigns, counting every imaged site without a plume as zero, and rates eight producers low-methane, among them Anchell, Pinyon Draw, Pellisto and Ashmund (0.150, 0.155, 0.179 and 0.181 per cent), whose methane leaks from many 5 to 15 kg/h sources a pass catches less than half the time; carrying each detected source through the year instead rates none; only weighting each plume by one over the detection probability at its rate, fitted to the provider's blind controlled releases, rates the golden four.",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G16",
+        "G13"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "niche": "measurement-based methane intensity of gas producers from repeated aerial plume surveys, for an emissions data company's low-methane rating",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory"
+    }
   ],
-  "registered": "2026-10-15T15:36:19Z",
-  "architecture_spent": true
+  "lineage_shells": [
+    {
+      "architecture": "v1",
+      "question form": "which",
+      "second-sentence opener": "put",
+      "deliverable set": "csv+xlsx"
+    }
+  ],
+  "notes": "architecture 2 re-root 2026-11-04 after architecture 1 was found spent at the 2026-11-02 re-check (its golden was the field's own method applied as stated). Designed to the survivor anatomy: the field's method (a base through the toe) is rung 0 and validates on the new bed and on the book roll-forward; the decisive step is recognising that the long-standing beds violate its precondition (the pad under a bed continues the pad at its toe), forced by the year's own surveys with no filed method and no outside constant.",
+  "registered": "2026-11-04T08:31:13Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "each",
+    "rounding opener": "cubic",
+    "deliverable set": "svg+xlsx"
+  }
 }
