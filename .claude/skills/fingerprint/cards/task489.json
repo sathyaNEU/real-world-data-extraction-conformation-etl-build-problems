@@ -52,7 +52,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "plunger_cycles_2026.csv",
-    "rows": 240855,
+    "rows": 240864,
     "entity": "one cycle a plunger lift controller sent the SCADA host (valve open, result, cycle and arrival counters)",
     "grain": "cycle",
     "source": "synthetic"

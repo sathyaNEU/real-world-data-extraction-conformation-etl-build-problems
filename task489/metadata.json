@@ -114,7 +114,7 @@
   {
    "path": "deep_basin_work_orders_2026.csv",
    "format": "csv",
-   "bytes": 19123,
+   "bytes": 19470,
    "rows": 136,
    "source": "Constructed: the maintenance system's 2026 work orders for the Deep Basin pads",
    "date": "2027-01-25",

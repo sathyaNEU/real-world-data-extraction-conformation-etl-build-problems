@@ -449,7 +449,20 @@ def make_bleed_history(wd):
                 when.strftime("%b %d %H:%M"), (when + D(hours=hrs)).strftime("%b %d %H:%M")), techs[int(r.integers(0, 5))])
     # plunger controller units moved between wells, and the donors' new units
     by = {(s["site"], int(s["tag"][-2:]) - 1): (s, w) for s, w in zip(wd["seps"], wd["wells"])}
-    for (dsite, di), (rsite, ri), moved, fixed, back in W.MOVES:
+    dead = ["Plunger controller dead on {r} (no display, no comms). Pulled controller s/n {s} off {d} and had it running "
+            "here at {t} to keep the well cycling. {d} shut in until a replacement controller arrives.",
+            "{r} controller blank, lost comms to host. Borrowed PCX-300 s/n {s} from {d}; installed and cycling at {t}. "
+            "{d} left shut in pending a new controller.",
+            "No display on {r} plunger controller, main board failed. Moved unit s/n {s} over from {d}, well back on "
+            "cycle at {t}. {d} shut in, new controller on order.",
+            "Found {r} plunger controller dead, board burnt. Took s/n {s} off {d} and put it on this well, running at "
+            "{t}. {d} stays down until the replacement arrives."]
+    fitted = ["Installed new plunger controller s/n {n} on {d} at {t}, timers set from old unit's settings, well back "
+              "on production",
+              "New PCX-300 s/n {n} mounted on {d}, settings copied from the old unit, opened to cycle at {t}.",
+              "Replacement controller s/n {n} in service on {d} from {t}; travel timer tuned, well producing.",
+              "{d}: set the new controller s/n {n}, programmed from the old settings and cycling at {t}."]
+    for k_mv, ((dsite, di), (rsite, ri), moved, fixed, back) in enumerate(W.MOVES):
         dsep, dwell = by[(dsite, di)]
         rsep, rwell = by[(rsite, ri)]
         ser_d = dwell["ctl_serial"]
@@ -457,12 +470,10 @@ def make_bleed_history(wd):
         tm = dt.datetime(*moved)
         tb = dt.datetime(*back)
         add(tm - D(minutes=int(r.integers(30, 200))), rsite, rsep["lc_tag"].replace("LC", "PLC"), "Corrective",
-            "Plunger controller dead on %s (no display, no comms). Pulled controller s/n %s off %s and had it running "
-            "here at %s to keep the well cycling. %s shut in until a replacement controller arrives." % (
-                rwell["name"], ser_d, dwell["name"], tm.strftime("%H:%M"), dwell["name"]), techs[int(r.integers(0, 5))])
+            dead[k_mv].format(r=rwell["name"], s=ser_d, d=dwell["name"], t=tm.strftime("%H:%M")),
+            techs[int(r.integers(0, 5))])
         add(tb - D(hours=int(r.integers(2, 20))), dsite, dsep["lc_tag"].replace("LC", "PLC"), "Corrective",
-            "Installed new plunger controller s/n %s on %s at %s, timers set from old unit's settings, well back on "
-            "production" % (new, dwell["name"], tb.strftime("%H:%M")), techs[int(r.integers(0, 5))])
+            fitted[k_mv].format(n=new, d=dwell["name"], t=tb.strftime("%H:%M")), techs[int(r.integers(0, 5))])
     for site, done in W.RETAGGED:
         when = dt.datetime(*done, 16, 30)
         add(when - D(days=int(r.integers(10, 25))), site, "", "Project",
@@ -471,18 +482,40 @@ def make_bleed_history(wd):
     # shift, corrective work mostly on day shift with call-outs at night and at weekends
     r2 = rng(33)
     jobs = {
-        "V": [("Preventive", "Annual PSV test, all set points OK"), ("Corrective", "Cleaned sand from separator"),
-              ("Preventive", "Tested high level shutdown, tripped and reset OK"), ("Corrective", "Painted separator skid"),
-              ("Corrective", "Replaced sight glass gaskets, weeping at bottom cock")],
+        "V": [("Preventive", "Annual PSV test, popped at {p} kPa, reseated and tagged"),
+              ("Preventive", "PSV bench tested, set {p} kPa, OK"),
+              ("Corrective", "Cleaned sand from separator, about {l} L of fines out"),
+              ("Corrective", "Sand in separator bottom, flushed and drained to tank"),
+              ("Preventive", "Tested high level shutdown, tripped and reset OK"),
+              ("Preventive", "Function test LSHH, well shut in on trip, reset"),
+              ("Corrective", "Painted separator skid and ladder"), ("Corrective", "Touched up paint on vessel and piping"),
+              ("Corrective", "Replaced sight glass gaskets, weeping at bottom cock"),
+              ("Preventive", "Vessel inspected for insurance, no findings"),
+              ("Corrective", "Drain line heat trace dead, replaced thermostat")],
         "LC": [("Corrective", "Changed out dump valve trim, LLC re-zeroed"),
+               ("Corrective", "Dump valve seat worn, replaced trim kit"),
                ("Preventive", "LLC pilot cleaned, stroked through span"),
-               ("Corrective", "Dump valve stem packing weeping, repacked")],
-        "PLC": [("Corrective", "Replaced battery in plunger controller"), ("Preventive", "Cleaned solar panel, charging OK"),
+               ("Preventive", "Checked LLC operation, snaps clean at both settings"),
+               ("Corrective", "Dump valve stem packing weeping, repacked"),
+               ("Corrective", "Supply line to LLC froze overnight, thawed and drained drip pot"),
+               ("Corrective", "Dump valve chattering, cleaned seat and plug")],
+        "PLC": [("Corrective", "Replaced battery in plunger controller, old one at {v} V"),
+                ("Corrective", "Controller showing low battery, swapped battery"),
+                ("Preventive", "Cleaned solar panel, charging OK"), ("Preventive", "Snow off solar panel, charging restored"),
                 ("Preventive", "Plunger inspected, within wear limits, returned to service"),
-                ("Corrective", "Lubricator spring replaced"), ("Corrective", "Arrival sensor cable chafed, re-routed and tested")],
-        "FE": [("Preventive", "Calibrated sales meter, no change"), ("Preventive", "Orifice plate inspected, no change")],
-        "H": [("Preventive", "Line heater fire tube inspected"), ("Corrective", "Line heater pilot out, relit")],
-        "PCV": [("Corrective", "Replaced instrument supply regulator, set 241 kPa")],
+                ("Preventive", "Pulled plunger for inspection, pads OK, dropped back in"),
+                ("Corrective", "Lubricator spring replaced"), ("Corrective", "Catcher not holding, adjusted and tested"),
+                ("Corrective", "Arrival sensor cable chafed, re-routed and tested"),
+                ("Corrective", "Motor valve leaking by, replaced trim and stroked")],
+        "FE": [("Preventive", "Calibrated sales meter, no change"), ("Preventive", "Meter calibration, DP and static as found OK"),
+               ("Preventive", "Orifice plate inspected, edge sharp, no change"),
+               ("Corrective", "Flow computer battery low, replaced")],
+        "H": [("Preventive", "Line heater fire tube inspected"), ("Corrective", "Line heater pilot out, relit"),
+              ("Corrective", "Heater pilot would not stay lit, replaced thermocouple"),
+              ("Preventive", "Burner management system test, OK")],
+        "PCV": [("Corrective", "Replaced instrument supply regulator, set 241 kPa"),
+                ("Preventive", "Drained instrument supply filter, changed element"),
+                ("Corrective", "Instrument gas regulator freezing, added insulation")],
     }
     wo2 = [wo + 900]
 
@@ -501,6 +534,8 @@ def make_bleed_history(wd):
                 (["H"] if s["code"] in heater_sites else [])
         kind = kinds[int(r2.integers(0, len(kinds)))]
         wtype, text = jobs[kind][int(r2.integers(0, len(jobs[kind])))]
+        text = text.format(p=int(r2.integers(1380, 1720)), l=int(r2.integers(15, 95)),
+                           v="%.1f" % float(r2.uniform(10.4, 11.8)))
         tag = {"V": sep["tag"], "LC": sep["lc_tag"], "PLC": sep["lc_tag"].replace("LC", "PLC"),
                "FE": "FE-%s1" % s["code"][1:], "H": "H-%s1" % s["code"][1:], "PCV": "PCV-%s1" % s["code"][1:]}[kind]
         day = dt.date(2026, 1, 2) + D(days=int(r2.integers(0, 360)))
@@ -509,6 +544,11 @@ def make_bleed_history(wd):
         orders.append({"wo": "WO-%d" % wo2[0], "created": shift_time(day, wtype), "site": s["code"], "tag": tag,
                        "type": wtype, "text": text, "tech": techs[int(r2.integers(0, 5))], "status": status})
     orders.sort(key=lambda o: o["created"])
+    r3 = rng(34)
+    no = 260388
+    for o in orders:
+        no += int(r3.integers(3, 29))
+        o["wo"] = "WO-%d" % no
     return orders, hist
 
 

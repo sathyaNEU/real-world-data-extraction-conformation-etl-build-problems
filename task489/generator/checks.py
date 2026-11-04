@@ -263,6 +263,15 @@ def run(target, golden, wd=None, n=None, g=None, meta_path=None, fig_path=None):
             lab[sp["site"]] = lab.get(sp["site"], 0.0) + arr * sp["kpc"] / 1000.0
         ok("physics: at %.1f of the band neither liquid over band nor one dump per arrival files the golden" % b,
            set_of(r1b) != gold and set_of(lab) != gold, "%d / %d" % (len(set_of(r1b)), len(set_of(lab))))
+    fit = [row["dumps"]["counter"] / row["dumps"]["volume"] for row in tr["lc"] if row["sep"]["auto"]]
+    for scale in (min(fit), max(fit), 1.0 / max(fit), 1.0 / min(fit)):
+        t_sc = {}
+        for row in tr["lc"]:
+            sp = row["sep"]
+            k_sc = scale if (sp["group"] == "F" and not sp["auto"]) else 1.0
+            t_sc[sp["site"]] = t_sc.get(sp["site"], 0.0) + row["kg"]["golden"] * k_sc / 1000.0
+        ok("SF20 uncounted flowing separators scaled by %.3f to a counter's fit keep the call (MRS-03 4.2's literal "
+           "text files liquid over band; no file licenses the scaling)" % scale, set_of(t_sc) == gold, str(set_of(t_sc)))
     ok("SF16 the liquid comes to surface with the plunger (PCX-300 specification); spread over the afterflow it would "
        "file another set, a reading the specification's operation paragraph rules out",
        spread_set(wd, tr) != gold, "")
@@ -444,6 +453,18 @@ def run(target, golden, wd=None, n=None, g=None, meta_path=None, fig_path=None):
     ok("control: each maker's sheet extracts to its rated gas per cycle and its bleed",
        VB["per_cycle"] == {m: v["scf_per_cycle"] for m, v in W.LC_MODELS.items()} and
        VB["bleed_rate"] == {m: v["scf_per_h"] for m, v in W.BLEED_MODELS.items()}, str(VB["per_cycle"]))
+    mv = V.moves(VB)
+    by_idx = {(s["site"], int(s["tag"][-2:]) - 1): (s, w) for s, w in zip(wd["seps"], wd["wells"])}
+    want = []
+    for (dsite, di), (rsite, ri), moved, fixed, back in W.MOVES:
+        dwell, rwell = by_idx[(dsite, di)][1], by_idx[(rsite, ri)][1]
+        want.append((dwell["ctl_serial"], rwell["name"], dwell["name"], dt.datetime(*moved)))
+    got = sorted((m["serial"], m["to"], m["from"], m["at"]) for m in mv)
+    ok("realism: every controller move reads, in its technician's own wording, as the unit, both wells and the time it "
+       "moved (no move's date or well shifts)", got == sorted(want), str(got))
+    nos = [int(o["wo"].split("-")[1]) for o in sorted(wd["orders"], key=lambda o: o["created"])]
+    ok("realism: work order numbers rise with the time each job was raised, one stream for every job",
+       all(b > a for a, b in zip(nos, nos[1:])), "")
     pcx = re.sub(r"\s+", " ", V.pdf_text(os.path.join(target, W.FILES["sheet_trellick"]))).lower()
     ok("control: the PCX-300 specification says the plunger brings the liquid above it to surface as it arrives",
        "brings that liquid to surface ahead of it as it arrives" in pcx, "")

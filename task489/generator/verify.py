@@ -102,12 +102,15 @@ def moves(B):
     """Controller units moved between wells, from the work orders: serial, receiving well, local time it ran there."""
     out = []
     for w in B["wo"]:
-        m = re.search(r"Plunger controller dead on (LRL [A-Z]+ [\d-]+ #\d)\b.*?Pulled controller s/n (PCX-\d+) off "
-                      r"(LRL [A-Z]+ [\d-]+ #\d) and had it running here at (\d\d):(\d\d)", w["description"])
-        if m:
+        t = w["description"]
+        donor = re.search(r"(?:off|from) (LRL [A-Z]+ [\d-]+ #\d)", t)
+        sn = re.search(r"s/n (PCX-\d+)", t)
+        hm = re.search(r"\b(\d\d):(\d\d)\b", t)
+        names = re.findall(r"LRL [A-Z]+ [\d-]+ #\d", t)
+        if donor and sn and hm and len(set(names)) == 2 and re.search(r"dead|blank|failed|No display", t):
             day = local(w["created_local"]).date()
-            out.append({"serial": m.group(2), "to": m.group(1), "from": m.group(3),
-                        "at": dt.datetime(day.year, day.month, day.day, int(m.group(4)), int(m.group(5)))})
+            out.append({"serial": sn.group(1), "to": next(n for n in names if n != donor.group(1)), "from": donor.group(1),
+                        "at": dt.datetime(day.year, day.month, day.day, int(hm.group(1)), int(hm.group(2)))})
     return out
 
 
