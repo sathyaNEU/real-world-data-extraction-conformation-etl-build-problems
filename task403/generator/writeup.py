@@ -29,7 +29,8 @@ def main():
     L += ['## 2. Critical Components', '',
           '1. The slate\'s cost, last winter\'s conversion less that of last winter\'s trialists with no season still to come, '
           'at this winter\'s trials (none of which had one): **%s** paid conversions.' % c(F['conv_slate']),
-          '2. The price\'s cost, the rest of the fall less first-charge recovery and the channel mix: **%s**.' % F['conv_price'],
+          '2. The price\'s cost, the fall among trialists with no season still to come (last winter\'s against this '
+          'winter\'s, at this winter\'s trials) net of first-charge recovery and the channel mix: **%s**.' % F['conv_price'],
           '3. First-charge recovery **%s** and the paid acquisition mix **%s**; the slate leads the price by **%s**.'
           % (F['conv_recovery'], F['conv_channel'], c(F['conv_gap'])), '']
     L += ['## 3. Step-by-Step Solution', '',
@@ -47,18 +48,21 @@ def main():
           'winter none had.' % (F['runway_share_w24'], F['paid_rate_w24_runway'], F['paid_rate_w24_norunway']),
           '4. The slate: last winter\'s %.1f per cent less %.1f per cent, at this winter\'s trials: %s; first-charge recovery: '
           'declined first charges recovered fell from %.1f to %.1f per cent, on this winter\'s declined first charges: %s; the '
-          'channel mix: last winter\'s channel shares at this winter\'s paid rate by channel: %s; the price takes the rest: %s.'
+          'channel mix: last winter\'s channel shares at this winter\'s paid rate by channel: %s; the price: the fall among '
+          'trialists with no season still to come, %.1f per cent last winter against this winter\'s %.1f at this winter\'s '
+          'trials, net of the recovery and channel effects: %s.'
           % (F['paid_rate_w24'], F['paid_rate_w24_norunway'], c(F['conv_slate']), F['recovered_w24'], F['recovered_w25'],
-             F['conv_recovery'], F['conv_channel'], F['conv_price']),
-          '5. Paid, trials started February to October 2025: a plan change made on the old platform before 9 June '
-          'or in the apps before 14 October opened a subscription that no file links to its trial; each such first charge was '
-          'matched to the trial without a charge whose end most closely precedes its first attempt, in the provinces its tax '
-          'rate names: the shares in block 4.',
+             F['conv_recovery'], F['conv_channel'], F['paid_rate_w24_norunway'], F['paid_rate_w25'], F['conv_price']),
+          '5. Paid, trials started February to October 2025 (section 4): a plan change made on the old platform before 9 June '
+          'or in the apps before 14 October opened a subscription that never reached plan_changes.csv; each first charge on '
+          'a subscription that no file links to a trial was matched to the trial without a charge whose end most closely '
+          'precedes its first attempt, in the provinces its tax rate names: the shares in block 4.',
           '6. Episodes, the same trials: the smart TV app\'s rows from 8 February to 27 October 2025 each cover an autoplay run, the '
           'episode named and the season\'s following episodes as far as the minutes reach on the calendar\'s runtimes; episodes '
           'counted once a trial (section 5) and averaged over every trial, including those that played nothing: the averages in block 4.',
-          '7. Ranked the four causes: the slate at %s against %s for the price takes the budget.'
-          % (c(F['conv_slate']), F['conv_price']), '']
+          '7. Funded the programme with the highest valuation, as the Funding line of growth_programmes_2026-27.xlsx files: '
+          'the slate at %s against %s for the price, a gap of %s.'
+          % (c(F['conv_slate']), F['conv_price'], c(F['conv_gap'])), '']
     L += ['## 4. Deliverable Answers', '', '### trial_conversion_review.xlsx', '',
           '1. Share of each winter\'s November to January trials that played an episode: %.1f per cent in 2024-25, %.1f per '
           'cent in 2025-26.' % (F['stage_played_w24'], F['stage_played_w25']),

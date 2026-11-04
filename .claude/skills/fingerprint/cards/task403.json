@@ -38,7 +38,8 @@
   "layer2_pattern": "own:trial-conversion-read-at-each-trialist's-content-runway-against-the-release-calendar",
   "layer1": [
     "plays logged in UTC against trials counted in Toronto time, across the 2 November 2025 clock change",
-    "the June 2025 platform cut-over: legacy content and account numbers with crosswalks, a sign-up pause, and the old platform's rows of 9 to 19 June in Toronto time stamped as UTC",
+    "the June 2025 platform cut-over: legacy content and account numbers with crosswalks, a sign-up pause, and the old platform's rows of 9 to 19 June in Toronto time stamped as UTC, its mirror of web and phone sign-ups switched on at 04:00 on 9 June",
+    "plan changes that opened a new subscription (3 February to 14 October 2025) and never reached the plan-change log when made on the old platform or in the apps, each trial's changes all logged or none",
     "English and French versions of each episode under their own identifiers",
     "two card processors: tax-included cents and four attempts to 7 September 2025, pre-tax dollars with tax beside them, local time with an offset and three attempts from 8 September",
     "a viewing row written twice when an app reconnects"

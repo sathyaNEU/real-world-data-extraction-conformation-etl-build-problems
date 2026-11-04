@@ -3,7 +3,8 @@
 Systems and the conventions each one writes (none of this ships as a description; each file carries its own form):
 - the subscription platform's trial register: the old platform's account, trial and subscription numbers before the
   9 June 2025 cut-over, the new platform's ids after. From 9 to 19 June the old platform kept running beside the new
-  one: web and phone sign-ups were written by both (the old copy under numbers nothing else uses), TV and tablet
+  one: web and phone sign-ups were written by both from 04:00 on 9 June, when the old platform's mirror of them was
+  switched on two hours after the new platform opened (the old copy under numbers nothing else uses), TV and tablet
   sign-ups by the old platform alone until the TV apps moved on 19 June. The old platform's rows of those days carry
   Toronto wall-clock time with a Z;
 - the viewing service (UTC; legacy content and account numbers before the cut-over, ids after; French versions under
@@ -13,7 +14,10 @@ Systems and the conventions each one writes (none of this ships as a description
   8 September (dollars before tax, tax beside it, Toronto time with an offset, three attempts);
 - the account service's plan-change log (no dates): from the plan-change launch on 3 February 2025 to the rebuilt flow
   of 14 October a change opened a new subscription; the old platform's changes before 9 June never reached the log, and
-  until 14 October the apps' changes did not either; from 14 October a change keeps the subscription;
+  until 14 October the apps' changes did not either; from 14 October a change keeps the subscription. While a change
+  opened a new subscription, a subscription opened in an app was managed in the apps and one opened on the web or by
+  support on the web, so a trialist's second change went through the same kind of surface as the first: a trial's
+  changes are all logged or none of them is;
 - the content system's release calendar (Toronto time) and the cut-over crosswalks (content and accounts).
 """
 import numpy as np
@@ -33,6 +37,7 @@ PLAN_LAUNCH = world.PLATFORM_72.value               # plan changes during the fr
 PLAN_REBUILT = world.PLATFORM_76.value              # plan change flow rebuilt (14 October 2025)
 MIG = world.MIGRATION.value
 DUAL_END = world.DUAL_END.value
+MIRROR_START = world.ts('2025-06-09 04:00').value  # the old platform's mirror of web and phone sign-ups
 SWITCH = world.PROCESSOR_SWITCH.value
 
 
@@ -133,7 +138,10 @@ def systems(W):
     T['chain'] = chain
     via = np.where(rng.random(N) < 0.07, 'support', np.where(rng.random(N) < 0.495, 'web', 'app'))
     T['via1'] = via
-    T['via2'] = np.where(rng.random(N) < 0.5, 'web', 'app')
+    # while a change opened a new subscription (7.2 to 8.4), the new subscription was managed where it was opened: an
+    # app's in the apps, the web's and support's on the web; after 8.4 a trialist changes wherever they like
+    v2 = np.where(rng.random(N) < 0.5, 'web', 'app')
+    T['via2'] = np.where(chain, np.where(via == 'app', 'app', 'web'), v2)
     s1_old = rnum(rng, N, 100_000_000, 999_999_999, 'S', exclude=set(old_subs))
     s2_old = rnum(rng, N, 100_000_000, 999_999_999, 'S', exclude=set(old_subs) | set(s1_old))
     s1_new = rid(rng, N, 12, 'sb_')
@@ -162,7 +170,11 @@ def systems(W):
                                      'requested_via'])
     CH = CH.iloc[rng.permutation(len(CH))].reset_index(drop=True)
     CH.insert(0, 'change_ref', rid(rng, len(CH), 8, 'PC-'))
-    C = charges(T, rng)
+    # the charges draw on their own stream, so the log's length never moves an attempt
+    C = charges(T, np.random.default_rng(W['seed'] + 17))
+    # the old platform mirrored web and phone sign-ups from 04:00 Toronto on 9 June; the first two hours' were written
+    # by the new platform alone (their copy numbers stay drawn, so no other identifier moves)
+    tw = tw[tw.start.values >= MIRROR_START]
     return T, tw, C, CH
 
 
