@@ -399,8 +399,8 @@ which the sixteen ask figures carry alone.
 | Classes | codes to names on both sheets term by term, names normalised to initial and surname, persons per class, the establishment unread | 2 of 8 | miss |
 
 Full includer (every device a record or the battery surfaces, each with its natural repair): lessons 1 of 8, classes 5
-of 8, 6 of 16 ask figures (37.5 per cent, at the two-fifths line of 6.4); it keeps the class the roll and the platform
-agree on, reads every name to its establishment holder with previous surnames, and reads a name change on a code with
+of 8, 6 of 16 ask figures (37.5 per cent, at the two-fifths line of 6.4); they keep the class the roll and the platform
+agree on, read every name to its establishment holder with previous surnames, and read a name change on a code with
 a leaver and a starter on the post as a hand-over, the repair the Christmas replacements teach, never setting the
 leaver's last day against the row's first lesson (6, 5, 15, 11, 3, 16, 3, 5). No-repair 0 of 8 and 4 of 8 (one code
 as one teacher is right where no code changed holder or style, Glenwhinnie, Lochbrannie, Muirlees and St Moluag's, and
@@ -769,3 +769,43 @@ device and never a graded figure; allowed by name for that reason, the mode pass
   statements carried one response count per school and stage; each statement now loses its own item nonresponse. The
   sign-in reasons sat near equal; they now follow a base's own mix (disruption about a third, a few rare reasons). The
   survey is the pack's last random draw and the reasons are chosen by hash with the old draw kept, so no other row moved.
+
+## Pre-ship check
+
+Stage 4 rounds 1 and 2 and ship, 2026-11-04, final cut target.zip 1875a727 (rebuilt on the merged branch in a clean
+copy and again in place, byte-identical across the zip, target/, golden/, submission.md, figures.json and metadata.json):
+
+- The 10/10 rules re-read against the built pack: the decisive step is still the within-pupil contrast of each pupil's
+  first-practice weak units against their other units, June 2026 against June 2025, analytical, and no field, rule or
+  filed sentence performs it; the mess is still Layer 1 only (two homework platforms' exports with their own keys, the
+  June marks in two layouts, the unit map in two vintages, the two rolls, typed-name sign-ins, staff codes that change
+  between terms, the establishment).
+- Before the judge, the coordinator moved the two June shares to whole per cents (at one decimal 42.154 and 35.856 sat
+  0.004 and 0.006 from a rounding edge); target.zip did not change; the Bins paragraph in the Closure table records it.
+- Judge round 1 (order kept): NOT_DETERMINISTIC, labelled SEND_BACK, on the classes ask alone (the job-share rule and two
+  naming conventions unstated). Read against the gate table: the main call forced (the switch 2.5 times or more ahead
+  under every reading), Gate F strong (its blind derivation filed the asymmetric week, the switch unidentified), Gate G
+  decomposition_attribution and analytical_non_defect, Gate H analytical: an ask-layer repair, no architecture spent.
+- The fix pass closed the fork in the world (each job-share holder on their own days and code, Previous_Surname on the
+  establishment, the three summer leavers listed with their last day in post before the first lesson), re-sited the
+  classes device onto those leavers' dates, and fixed the reader's realism list; no graded figure moved; freeze rubric
+  PASS, determinism mode moving only the eight ceiling keys (allowed, reason in the Ask sheet).
+- Judge round 2 (order kept): DETERMINISTIC, APPROVE, no fix. Its blind derivation again filed the asymmetric week first
+  with the switch unidentified; every headline, chart, reach, lessons and classes figure reproduced; the switch about
+  5.2k to 5.7k marks against about 2.0k for the week under every tie rule. Gate G and Gate H as round 1.
+- Leak reader rounds 1 and 2: no decisive-step sentence, no ranking or helper file, nothing reads as the answer, the
+  decisive step analytical (both rounds and rulings in leak_check_report.md).
+- Coordinator's rulings on the fix pass's flags:
+  - The full includer sits at the two-fifths line (6 of 16): accepted, at or under the bar, with the pair 49.1 with one
+    top response on the call and 65.6 with both on it, both under 70.
+  - The residual Gate C risk on the summer leavers (read as hand-overs they file 15, 11 and 16): settled, a person whose
+    last day in post precedes the session's first lesson taught none of it, and the round-2 judge executed it so.
+  - guard.py surface promotes 7 pairs: task400, task402 and task399 are this wave's Root-Cause builds sharing the
+    objective's decisive gap and decision type; task84, task482 and task65 carry the same-driver signature, each
+    differentiated on the card; task100 shares the generic rounding construction "are to one decimal place". None is a
+    surface tell; nearest driver 0.07.
+  - The Ask sheet's pronoun line for the full includer corrected to "they".
+- Gates re-run on the final cut: build checks 0 failed; `verify.py` PASS; `figures_check.py` 38 figures, 0 absent;
+  `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS; `ceiling.py` (inside checks) cracker 3 of 16, full
+  includer 6 of 16, mirror 6 of 16, pair 49.1; `leak.py --asof 2026-06-15` REVIEW, 0 LEAK (the answered lines);
+  `guard.py heart` WARN, no BLOCK, nearest driver 0.07 (task403); `guard.py surface` exit 0, persona Aimee Williams.
