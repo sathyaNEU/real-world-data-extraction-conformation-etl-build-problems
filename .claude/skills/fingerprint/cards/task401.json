@@ -1,100 +1,89 @@
 {
   "task": "task401",
-  "architecture": "v4",
-  "drawn": "2026-11-03",
-  "slot_note": "Root-Cause Analysis slot re-rooted at architecture 4 after architecture 3 was spent at stage 4, round 2 (lineage). One architecture per world: the epidemiology, econometrics and marketing worlds are closed to this slot, and this draw moves to Physical and Environmental Sciences, a water and sewerage company's river catchment, a new dataset and a new shell.",
-  "domain": "physical-environmental-sciences",
-  "client_domain": "physical-environmental-sciences",
-  "subdomain": "pollution-source-attribution",
-  "niche": "a lowland river's winter ammonia exceedances below a sewage works, apportioned through the works' nitrification and its trade dischargers' telemetered discharges rather than by load",
+  "architecture": "v5",
+  "drawn": "2026-11-04",
+  "slot_note": "Root-Cause Analysis slot re-rooted at architecture 5 after architecture 4 was spent at stage 4, round 1 (lineage). One architecture per world: the epidemiology, econometrics, marketing and environmental worlds are closed to this slot; architecture 5 moves to Psychology and Behavioural Science, an invented English leisure trust's membership base, a new dataset and a new shell.",
+  "domain": "psychology-behavioral-science",
+  "client_domain": "psychology-behavioral-science",
+  "subdomain": "mediation-moderation-process-modeling",
+  "niche": "a leisure trust's membership cancellations after a savings programme, read through members' lapsed attendance and the lag between a member's last visit and their cancellation",
   "objective": "root-cause",
-  "shape": "12",
+  "shape": "18",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "Thornlea Dairy's evening acid whey discharges drive the River Allery's ammonia failures, and the GBP 14.2 million nitrification upgrade would not stop them: all 35 exceedance days from November 2025 to March 2026 fell on the first or second day after a whey evening and none on load and cold alone, so the aeration control and the upgrade reach 0 of 35 and stopping the discharges reaches all 35.",
-  "answer_source": "submission.md block 1; generator/figures.json (exc_window, dairy_reach, upgrade_reach)",
+  "answer": "",
+  "answer_source": "submission.md block 1; generator/figures.json",
   "gap": [
-    "population",
+    "time",
     "objective"
   ],
   "pattern": [
-    "C"
+    "none"
   ],
   "generators": [
-    "G8",
+    "G13",
     "G3",
-    "G7"
+    "G12"
   ],
   "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "calibration_form": "realised_outcome_roster",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly apportions the downstream ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control (34.6 of 35 days to the control), costs the dairy's evening discharges at its charging strength (2 per cent of the works' load), and books the winter's exceedance days to the control and the works' nitrification capacity, backing the GBP 14.2 million upgrade, while the dairy's composites and pH compliance all read normal.",
-  "domain_test": "The deciding quantity is the share of the downstream exceedance days that fall inside the works' recovery after a trade discharger's oxygen-demand shock in its own fifteen-minute record, worked as river source attribution through the works' process response rather than by each source's load; in another field's nouns dilution, the nitrifiers' oxygen starvation and recovery and the consented trade effluent strength have no counterpart and the task stops reading.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:the-share-of-river-exceedances-a-discharger's-pre-treatment-reaches-read-through-the-works'-nitrification-recovery",
+  "analyst_test": "A strong analyst who reads every file correctly compares each change's cancellations since 2 February 2026 with the same weeks of 2025 among the members it reached, finds the legacy terms letters behind the February spike and nothing yet from the Rewards closure, and books the year to the terms change, because they never count the members on the 2023 tariffs who stopped coming after Rewards closed and still pay, whom last year's lapsed members show will mostly cancel within the year.",
+  "domain_test": "The deciding quantity is each change's cancellations through members' lapsed attendance, the indirect path a conditional process model carries from a change to attendance to cancellation, timed by the lag between a member's last visit and their cancellation (DellaVigna and Malmendier 2006 put it at 2.31 months on average over all cancellers; members who drift away rather than quit take about three); swap the members for a shop's customers or a clinic's patients and nobody keeps paying for a service they have stopped using, so the deciding quantity disappears.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:cancellations-still-to-come-from-lapsed-paying-members-timed-by-the-last-visit-to-cancellation-lag",
   "layer1": [
-    "a discharger chamber logger in clock time with logger gaps",
-    "a river monitor in UTC with maintenance-visit flags and ratified then provisional releases",
-    "works SCADA tags renamed at the October 2025 works",
-    "laboratory results dated by report weeks after the sampling round",
-    "automatic meter reads kept by meter point across meter exchanges",
-    "an energy register stating its meters as they stand now"
+    "access-control entries in local time with gate re-entries minutes apart and a turnstile outage week",
+    "membership register whose tariff codes were renamed at the 2023 tariff migration",
+    "cancellation requests from three channels with request, notice and effective dates and duplicate requests",
+    "price letters posted in batches over a week with returned mail",
+    "a call log keyed by member number as text with leading zeros",
+    "a 2025 and a 2026 extract of the same register with different column names"
   ],
-  "stakeholder_role": "the water company's environment programme manager, who must say whether the nitrification upgrade at the works goes into the company's environment programme submission to the Environment Agency (the prompt names no one)",
-  "role_family": "programme_officer",
-  "scoring_unit": "other",
+  "stakeholder_role": "the trust's head of membership, who must tell the council's April contract review which of February's changes the 2026-27 plan reverses",
+  "role_family": "operations_director",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "allery_d_s_coldmere_wq_monitor_2024-10_2026-03.csv",
-    "rows": 52512,
-    "entity": "one fifteen-minute reading of the downstream river water quality monitor: ammonium, temperature, pH, status, maintenance flag",
-    "grain": "monitor x 15 minutes",
+    "file": "member_visits_weekly_2024-01_2026-03.parquet",
+    "rows": 1100000,
+    "entity": "one member's recorded visits in one week",
+    "grain": "member x week",
     "source": "synthetic"
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "utility_or_infrastructure",
+  "forum": "customer_or_counterparty",
+  "forcing_event": "period_close",
+  "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "England, the East Midlands (an invented water and sewerage company's catchment; invented river, works and dischargers)",
+    "geography": "England (an invented borough's charitable leisure trust)",
     "currency": "GBP",
-    "org_type": "water and sewerage company",
+    "org_type": "charitable leisure trust running a borough's leisure centres under contract",
     "invented_names": [
-      "Wendmoor Water",
-      "River Allery",
-      "Coldmere Water Recycling Centre",
-      "Thornlea Dairy"
+      "Wrenford Leisure Trust",
+      "Wrenford Borough Council"
     ],
     "people": [
-      "Gerard Norris",
-      "Katy Hughes",
-      "Sylvia Phillips",
-      "Leonard James",
-      "Ben Hurst",
-      "Jade Evans"
+      "Aimee Williams",
+      "Marilyn Patel",
+      "Abdul Norman"
     ]
   },
-  "deliverables": [
-    "coldmere_ammonia_briefing.pptx",
-    "coldmere_evidence.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "A run of failures downstream of a shared processing unit is booked to that unit's own capacity and to a control change it made the same week, because the failures began then and the unit's own records validate it, but every one of them falls on the first or second day after a short discharge in one small contributor's own high-frequency record, which starves the unit's process for a day whatever the other contributors send; by load the contributor barely registers and its periodic strength samples and compliance read normal, so only its high-frequency record set against the unit's daily record and the downstream days shows the share each remedy can reach.",
-  "driver_concrete": "Below Coldmere Water Recycling Centre the River Allery's 35 ammonia exceedance days of November 2025 to March 2026 (against 4 a year earlier) are booked by mass balance to the works and, by the works' process record, to its ammonia-based aeration control (live 27 October 2025) and to nitrification capacity in the cold; every one falls on the first or second day after an evening on which Thornlea Dairy ran acid whey to its drain after a missed tanker collection (its new line from 3 November 2025), visible only in the dairy's own fifteen-minute chamber record as an evening hour at production flow and pH 6.1 to 6.4 inside its consent, whose whey starves the works' nitrifiers of oxygen for a day; costed at its charging strength an evening is 2 per cent of the works' load, and its weekly composites never hold one.",
-  "stump": "A competent analyst apportions the Allery's ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control, costs Thornlea Dairy at its charging strength and books the winter's exceedance days to the aeration control and nitrification capacity in the cold, ending on the GBP 14.2 million upgrade, because they never set the dairy's fifteen-minute chamber record against the works' daily effluent and the monitor's days, which puts all 35 exceedance days on the first or second day after an evening whey discharge.",
+  "question_form": "how-many",
+  "driver": "A rise in exits is booked to the change whose letters visibly triggered a spike, because the exits so far sit with the units that received them, but a second change made the same week stopped other units using the service without yet ending their subscriptions; those lapsed units still pay and will leave over the coming months at the rate earlier lapsed units did, so the year's cost belongs to the change whose exits have barely begun.",
+  "driver_concrete": "Wrenford Leisure Trust's February 2026 savings programme moved legacy members onto the current terms at an unchanged price and closed the Rewards scheme in the same week; the legacy terms letters produced the visible spike in cancellations, but about twelve hundred members on the 2023 tariffs stopped coming after Rewards closed and are still paying at the 16 March extract, and at the rate last year's lapsed members cancelled over the following ten months the Rewards closure costs several times the terms change over the twelve months from 2 February 2026.",
+  "stump": "A competent analyst compares each change's cancellations since 2 February with the same weeks of 2025 among the members it reached, finds the legacy terms letters behind the February spike and nothing yet from the Rewards closure, and recommends reversing the terms change, because they never count the 2023-tariff members who have stopped coming since the closure but have not yet cancelled, whom last year's lapsed members show will mostly cancel within the year.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task202": "same cell, a lake's phosphorus reaching the layer the bloom draws on by matching the inflow's density to the lake's stratification; here no transport or layer decides anything: a contributor's short excursions switch off a treatment process, and the share each option reaches is read through that process's recovery",
-    "task398": "both read a component's effect through what it does to the whole, but there a filed rule set the whole's exposure from its own path; here a biological process fails for days after a discharge excursion, with no rule and no path",
-    "task468": "a water utility's trade waste charging basis converted between COD and TOC (ETL); here trade effluent is furniture for charges and the decisive move is a discharger's excursions against the works' recovery",
-    "task36": "there a decline lived in the joint distribution of two factors with flat marginals, read as a computed feasibility margin that a dated re-pairing moved; here a contributor's short excursions switch off a shared treatment process for days, read against the process's own recovery in two records",
-    "task83": "there a retrained selection model learned its own intervention's successes as low risk, enumerable only by re-scoring under the archived model; here no model is involved: a discharger's fifteen-minute excursions are set against a works' daily effluent record",
-    "task127": "there the recorded wait fused the step an intervention replaces with a concurrent one, rebuilt by joining operational logs; here no wait or fused step: the share of river exceedance days a discharger's pre-treatment reaches is read through the works' recovery after its excursions"
+    "task122": "task122 v2 re-attributes outcomes a log credits to the wrong session back to the exposure that produced them; here nothing is re-attributed: the decisive quantity is cancellations not yet made by members who have stopped coming, counted from their last visits and timed by last year's lapsed members, a forward count no record holds.",
+    "task274": "task274 completes defendants inside a recorded programme stage through the stage's own month-by-month termination hazard to size one randomised offer's effect; here no record marks a member as pending (the pending state is a relation between the visits record and a still-active membership), and the call ranks two changes made in one week whose timing biases run opposite ways: one change's exits arrived at once and were partly brought forward from later in the year, the other's are still to come."
   },
+  "notes": "Strategy maturity_censoring, gap time: the cancellations each change causes in the twelve months from 2 February 2026 are mostly unobserved at the 16 March 2026 extract for the Rewards closure (its lapsed members cancel on a lag of about three months from their last visit) and mostly observed for the legacy terms letters (they prompted long-lapsed legacy members at once). Gate G decomposition_attribution: the year's cancellations assigned to the right change. Calibration: last year's inactive members' ten-month outcomes (a realised roster). Shape 18: five filed changes are the hypotheses, each with its own in-place date and reach. Furniture redrawn against the live window: forum customer_or_counterparty (the council is the trust's contracting client; committee_or_panel, trustees_or_governors and executive_team are held by task400, task402 and task403), forcing event period_close (the 2025-26 year end sets the 2026-27 plan; vote_or_meeting and season_or_peak are held), role operations_director (product_manager is held by task403). Personas drawn from guard.py names --geo 'United Kingdom, England' --seed 401 --n 30, skipping the names this slot's architectures 3 and 4 used.",
   "lineage": [
     {
       "architecture": "v1 (Epidemiology and Public Health: a community trust's frailty virtual ward in an integrated care system's Core20 neighbourhoods, its pilot-year prevented admissions against care home closures)",
@@ -276,15 +265,13 @@
       "second-sentence opener": "answer",
       "rounding opener": "days",
       "deliverable set": "pptx+xlsx"
+    },
+    {
+      "question form": "whether",
+      "second-sentence opener": "answer",
+      "rounding opener": "days",
+      "deliverable set": "pptx+xlsx"
     }
   ],
-  "notes": "Strategy population_selection, pattern C: the deciding quantity is the share of the exceedance days each option can reach (the dairy's pre-treatment against the works' upgrade), behind a join of the dairy's fifteen-minute record and the works' daily record, the shape strategies.md F7 records as approved on 25 and 28. G8 reachability versus magnitude: by load the dairy barely registers; by reach it carries most exceedance days. Role redrawn at registration from capacity_planner to programme_officer: task402's redraw took capacity_planner into the window; the environment programme manager owns the submission the upgrade goes into, so the replacement is the honest owner of the call, not merely the passing label.",
-  "registered": "2026-11-03T22:18:07Z",
-  "shell": {
-    "question form": "whether",
-    "second-sentence opener": "answer",
-    "rounding opener": "days",
-    "deliverable set": "pptx+xlsx"
-  },
-  "architecture_spent": true
+  "registered": "2026-11-04T02:24:47Z"
 }

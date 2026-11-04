@@ -1,64 +1,48 @@
 {
   "task": "task401",
-  "status": "PAUSED",
-  "domain": "physical-environmental-sciences/pollution-source-attribution",
+  "status": "DESIGN",
+  "domain": "psychology-behavioral-science/mediation-moderation-process-modeling",
   "objective": "root-cause",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-04",
-  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw. Architecture 1 (Epidemiology and Public Health) and architecture 2 (Economics and Econometrics) died at stage 2; architecture 3 (Marketing and Consumer Research, a GB energy supplier's satisfaction fall) was spent at stage 4, round 2. Architecture 4 re-roots in Physical and Environmental Sciences: Wendmoor Water's Coldmere Water Recycling Centre and the River Allery.",
-  "stump": "A competent analyst apportions the Allery's ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control, costs Thornlea Dairy at its charging strength and books the winter's exceedance days to the aeration control and nitrification capacity in the cold, ending on the GBP 14.2 million upgrade, because they never set the dairy's fifteen-minute chamber record against the works' daily effluent and the monitor's days, which puts all 35 exceedance days on the first or second day after an evening whey discharge.",
+  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw. Architectures 1 and 2 died at stage 2, architecture 3 was spent at stage 4 round 2 and architecture 4 at stage 4 round 1. Architecture 5 re-roots in Psychology and Behavioural Science: Wrenford Leisure Trust's membership base and its February 2026 changes.",
+  "stump": "A competent analyst compares each change's cancellations since 2 February with the same weeks of 2025 among the members it reached, finds the legacy terms letters behind the February spike and nothing yet from the Rewards closure, and recommends reversing the terms change, because they never count the 2023-tariff members who have stopped coming since the closure but have not yet cancelled, whom last year's lapsed members show will mostly cancel within the year.",
   "architecture": 5,
   "loops": 0,
   "go_no_go": {
     "redraws": 20,
-    "window_days": "20 to 40 across redraws, 35 on the shipped seed, against 4 the winter before",
-    "slug_free_max": 0.336,
-    "forms": "every reach form 35 of 35 on the pack, equal to the window count in 20 of 20 redraws",
-    "default_control_share": "34.6 of 35 (process model), 30.4 (flexible form)",
-    "literal": "mass balance names the works, the process review and the dated before-and-after the control, the load costing puts the dairy at 2 per cent of the works"
+    "setting": "extract 16 March 2026, drift lag mean 13 weeks at gamma shape 6 (screens2.py on proto5.py)",
+    "truth": "closure first in 20 of 20 (712 to 844 against the letters' 91 to 158)",
+    "lever_vs_rival_estimates": "golden over the largest rival estimate 1.34x lowest, 2.77x median, 1.5x or more in 19 of 20",
+    "golden_method_holds": "all 24 specifications name the closure in 19 of 20 (seed 3 excepted, not shippable)",
+    "first_look": "outcome first look names the letters 20 of 20 (and net of 2025, 20 of 20); visits first look names the closure 4 of 20; flexible crackers wrong 20 of 20 each",
+    "literal": "the filed WHAT executed on cancellations to the extract names the letters 20 of 20 (difference-in-differences and year-on-year)"
   },
   "precut": {
-    "exit": 0,
-    "date": "2026-11-04",
-    "checks": 61,
-    "fail": 0,
-    "warn": 0
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK; REVIEW lines: the metering register conventions sheet, the terms carrying the standard and the upgrade estimate, common words in the terms, the works record and the scheme, the round sheets and consents naming the dischargers, qc_flag)",
-    "reader": "brief written, not yet run"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.objective, repeat.gate_g, overuse.gate_g) against the merged corpus with batch4-task402 card 4907602, 2026-11-04",
-    "nearest": "task201 v1a lineage 0.05",
-    "surface": "personas found as planned (Gerard Norris, Katy Hughes, Sylvia Phillips)"
+    "heart": "",
+    "nearest": ""
   },
   "judge": {
-    "verdict": "DETERMINISTIC, SOLUTION_WRONG (wording)",
-    "disposition": "FIX_NOW (wording); architecture spent on the blind derivation",
-    "report": "scratchpad t401/a4/stage4/judge/verdict.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "architecture 5, end of stage 1, stopped by a container restart (2026-11-04 about 01:55Z) before the card was registered. Done: architecture 4 recorded in the card lineage and the note Tried and rejected; cells and mechanisms screened (Tried and rejected tail); prototypes proto1.py to proto4.py and screens.py with 20 redraws in the scratchpad t401/a5/ (screens_final.json); the new card drafted at scratchpad t401/a5/task401_card_a5.json. Next: read the note tail and the scratch screens, re-run screens.py to confirm, write the Draw section, guard.py check and register the drafted card, check again, commit DRAWN, message main.",
+  "resume": "architecture 5, stage 2 (design): the card is registered and committed DRAWN; next write the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet in DESIGN_NOTE.md, prompt.txt, then the generator skeleton so precut.py can exit 0.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "previous_architectures": "v1 and v2 died at stage 2; v3 spent 2026-11-03 at stage 4, round 2 (judge SEND_BACK on an ask's unfiled re-attribution after a round-1 fix pass; the main call held both rounds). Their records are in the design note's Tried and rejected and the card's lineage.",
-  "asks": {
-    "A": "each trade discharger chargeable volume, settled COD and suspended solids strengths 2025-26 (15 figures): P1 meter exchanges (D2), P2 two-bottle composites weighted by the samplers logged volumes (D6)",
-    "ceiling": "cracker 3 of 15, full includer 5 of 15 plain mean or 15 of 15 volume-weighted, no repair 2, mirror 3; pair ceiling 39.5; plain: both on 59.7, one on one off 43.2; weighted: both on 78.0, one on one off 61.5; mirror leakage 20.0"
-  },
-  "gates": {
-    "checks": "0 failures (74 PASS, 20 redraws)",
-    "verify": "34 of 34",
-    "figures_check": "33 figures, 0 absent",
-    "rebuilds": "two byte-identical cuts, target digest 974d0139b6d7",
-    "voice_check": "PASS",
-    "target_zip_sha256": "ff0dd0e00ff24c18fd943207e2ebe1655d226f8f8256ee6701ad263091709201",
-    "golden_metadata": "clean (scrub_producer_metadata audit)"
-  }
+  "previous_architectures": "v1 and v2 died at stage 2; v3 spent 2026-11-03 at stage 4, round 2 (judge SEND_BACK on an ask's unfiled re-attribution); v4 spent 2026-11-04 at stage 4, round 1 (the judge's blind derivation reached the call and every ask figure). Their records are in the design note's Tried and rejected and the card's lineage."
 }
