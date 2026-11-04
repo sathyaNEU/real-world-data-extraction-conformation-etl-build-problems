@@ -1,25 +1,28 @@
 {
  "task": "task192",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities/grid-reliability-outage-analysis",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-04",
- "stump": "A competent solver who groups every feeder's reclosing operations into momentary interruption events, sets aside the storm days, normalises by overhead miles and compares August to October 2026 with 2025 sends the patrol to a feeder whose new blinking is squirrels, when the feeder whose faults keep returning at one recorded current on one phase has an insulator breaking down.",
+ "stump": "A competent solver who groups every feeder's reclosing operations into momentary interruption events, sets aside the storm days, normalises by overhead miles and compares August to October 2026 with 2025 sends the patrol to NYD-3, whose new blinking is squirrels, when MLR-2's breaker has recorded eleven momentary faults on phase C at one current since mid-August because an insulator on its main line is breaking down.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-04",
+  "detail": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-04 (asof 2026-11-04), no LEAK: sweep 3 (DRP-04 shares the patrol vocabulary of the call and names no feeder, device, date or count), sweep 8 (the field's own noun device in the register, transformer list and OMS columns, declared under field_terms), sweep 12 (DRP-04's ordinary words coinciding with column names); each answered in DESIGN_NOTE.md, Leak sweep answers",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task132 0.07 at the draw"
+  "guard_check": "WARN 2026-11-04 at registration (three_rules.strategy_risk, overuse.objective, repeat.deliverables), no BLOCK",
+  "heart": "WARN 2026-11-04 on the batch branch's cards at de6e354 (three_rules.strategy_risk, overuse.objective, repeat.deliverables against task193 v3, each answered in the design note's Draw table), no BLOCK",
+  "surface": "exit 0, 4 pairs promoted for the author's adjudication, all B-track card axes: task194 (two apart: same domain and objective pairing, gap, decision type and context artifact type; the prompt shell was redrawn off its crew-allocation shell), task65 and task84 (gap, pattern and Gate G mechanism), task190 (two apart: gap and decision type); each differentiated on the card; personas Kelsey Sanford and Shawn Hartman only, no shared name",
+  "nearest": "task250 v2 and task303 v2 at 0.07 (driver and stump text)"
  },
  "judge": {
   "verdict": "",
@@ -27,13 +30,29 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "PAUSED at the stage-4 hand-off: the orchestrating session runs the isolated leak reader and the determinism judge on the cut pack (target.zip sha256 a82127037dc5f8594d116ee6d5d69a517567df80f074ba62d3e8fa0ccbacf097, rebuilt byte for byte by `python3 task192/generator/build.py`, which cuts target/ and writes golden/, generator/figures.json, metadata.json, target.zip and submission.md; then `python3 task192/generator/checks.py` (105 checks) and `python3 task192/generator/verify.py` (15 checks)); fix every finding in the generator in one pass, rebuild twice and compare, re-run the free gates (figures_check.py, ceiling.py, precut.py, voice-check.py, leak.py --asof 2026-11-04, guard.py heart and surface after a pull), then ship on the orchestrator's word.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
+ "call": "send the overhead line patrol crew to MLR-2 for the week of 9 November 2026, walking the main line from the feeder breaker MLR-F2-52 to recloser R-2207 at pole MLR2-P071 with the taps fused off it",
+ "default_path": "NYD-3 (North Yard 3, up 2.53 non-storm momentary events a mile on 2025; its new blinking is squirrels)",
+ "build": {
+  "target_zip_sha256": "a82127037dc5f8594d116ee6d5d69a517567df80f074ba62d3e8fa0ccbacf097",
+  "zip": "14 files at the archive root, no enclosing folder or directory entries (H4, asserted in checks.py)",
+  "design_point": "fault-process seed 19268 (SIM_SEED in generator/build.py), chosen by a search with every acceptance test in code",
+  "checks": "105 of 105",
+  "verify": "15 of 15",
+  "byte_identical": true,
+  "figures_check": "70 figures in blocks 1 to 4, 0 absent",
+  "pair_ceiling": 41.7,
+  "cracker_keep_pct": 27.1,
+  "mirror_leakage_pct": 20.8,
+  "voice_check": "PASS, no WARN (shell: what, list, minutes, svg+xlsx)",
+  "rebuild": "python3 task192/generator/build.py"
+ },
  "draw": {
   "date": "2026-11-04",
   "card_registered": "2026-11-04T04:24:23Z",

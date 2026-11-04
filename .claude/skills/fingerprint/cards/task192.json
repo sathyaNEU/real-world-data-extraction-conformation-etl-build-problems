@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "MLR-2",
+  "answer_source": "golden/line_patrol_2026-11-09.xlsx, sheet Patrol assignment: send the crew to MLR-2 and walk the main line from the feeder breaker MLR-F2-52 to recloser R-2207 at pole MLR2-P071 with the taps fused off it; generator/figures.json call",
   "gap": [
     "objective"
   ],
@@ -48,7 +48,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "weather/lightning_strokes_2025_2026.csv",
-    "rows": 0,
+    "rows": 39364,
     "entity": "one cloud-to-ground lightning stroke in the service territory's box",
     "grain": "stroke",
     "source": "synthetic"
@@ -69,14 +69,14 @@
     ]
   },
   "deliverables": [
-    "patrol_week46.xlsx",
-    "momentary_fault_currents.svg"
+    "line_patrol_2026-11-09.xlsx",
+    "reliability_2026.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
+  "question_form": "what",
   "driver": "The decisive quantity is where a unit's repeated failures come from, and the record places each failure only through a measured signature that falls with distance along the unit, so one point failing again and again shows as several events sharing one signature, while every count of events, with or without the weather, per unit length or against last year, ranks first the unit with the most independent events.",
   "driver_concrete": "Each feeder's momentary faults are grouped by faulted phase and the fault current its head relay recorded, because a cracked insulator flashing over on damp mornings draws the same current on the same phase every time, so the feeder with a failing component is the one whose faults return at one current, not the one with the most momentary events, the most outside storm days, the most per mile or the biggest rise on 2025.",
-  "stump": "A competent solver counts each feeder's momentary interruption events for August to October 2026, sets aside storm days, normalises by overhead miles and sets the result against 2025, and sends the patrol to a feeder whose blinks are storms, squirrels or exposure, when the feeder whose faults repeat at one current on one phase has an insulator failing.",
+  "stump": "A competent solver who groups every feeder's reclosing operations into momentary interruption events, sets aside the storm days, normalises by overhead miles and compares August to October 2026 with 2025 sends the patrol to NYD-3, whose new blinking is squirrels, when MLR-2's breaker has recorded eleven momentary faults on phase C at one current since mid-August because an insulator on its main line is breaking down.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task311": "task311 splits a survey's variance between groups and the units within them to price added interviews; here nothing about variance is estimated: each feeder's momentary faults are grouped by the phase and fault current each operation recorded, and one failing insulator shows as several operations at one current.",
@@ -84,7 +84,8 @@
     "task84": "task84 groups an advertiser's live campaigns on a composite target key to price their competition; here the grouping key is physical, the recorded fault current and phase, and the repeated group is one failing component, not competing copies.",
     "task183": "task183 forecasts next year's cable failures from each section's own recorded failure history, sections known by their ids; here no part is identified in any record: the failing insulator is found only because its flashovers record one current on one phase, and the call is where to patrol now, not a forward count.",
     "task194": "task194 nets one metered area's night-flow rise against a neighbour's simultaneous fall through an open boundary valve; here nothing passes between feeders and nothing is netted: the step is grouping one feeder's own faults by the current each recorded.",
-    "task303": "task303 removes the breaker tickets every feeder opened in the same minute as one upstream supply loss; here no event is shared across feeders: the repeated group is one feeder's faults at one current on separate damp mornings."
+    "task303": "task303 removes the breaker tickets every feeder opened in the same minute as one upstream supply loss; here no event is shared across feeders: the repeated group is one feeder's faults at one current on separate damp mornings.",
+    "task190": "task190 picks the waste stream whose recovery shortfall is established once the survey's design variance is read with the enumerated stratum contributing nothing; here nothing is sampled and no interval is computed: each feeder's momentary faults are grouped by the phase and fault current its relay recorded, and the pick is the feeder where one point keeps failing."
   },
   "lineage": [
     {
@@ -174,12 +175,12 @@
       "deliverable set": "pdf+xlsx"
     }
   ],
-  "notes": "Architecture 4 drawn 2026-11-04 in energy-systems-utilities after task461 v2 and task193 v3 registered and task194 v17 left the last three. Axes drawn against the window: forum operations_desk (the distribution operations desk dispatches the crew; line_manager_or_team is banned against task193), forcing event shift_or_daily_cycle (the weekly crew assignment), org family local_government (a city department, not an investor-owned utility; utility_or_infrastructure is banned against task193), role family other (a reliability engineer; operations_director and field_unit_lead are banned against task461 and task193), context artifact filed_standard (the utility's distribution reliability procedure; monitoring_export and operations_log are banned against task193 and task461). Gate G decomposition_attribution: each feeder's momentary events are attributed to storms, animals, vegetation and one repeating point. stump_strategy grain_or_unit: the record's unit is a protective operation and the decision's is a failing point on a feeder, so operations are grouped into the points they came from; identity_resolution was the other honest label. Decisive generator G2 (the operation grain against the point grain), G10 second (one point's failures counted as many events). Strategy risk WARN answered by the analyst test: every field and rule read correctly still files a storm, squirrel or exposure feeder. Architecture 3 moved into the lineage with its shell.",
+  "notes": "Architecture 4 drawn 2026-11-04 in energy-systems-utilities after task461 v2 and task193 v3 registered and task194 v17 left the last three. Axes drawn against the window: forum operations_desk (the distribution operations desk dispatches the crew; line_manager_or_team is banned against task193), forcing event shift_or_daily_cycle (the weekly crew assignment), org family local_government (a city department, not an investor-owned utility; utility_or_infrastructure is banned against task193), role family other (a reliability engineer; operations_director and field_unit_lead are banned against task461 and task193), context artifact filed_standard (the utility's distribution reliability procedure; monitoring_export and operations_log are banned against task193 and task461). Gate G decomposition_attribution: each feeder's momentary events are attributed to storms, animals, vegetation and one repeating point. stump_strategy grain_or_unit: the record's unit is a protective operation and the decision's is a failing point on a feeder, so operations are grouped into the points they came from; identity_resolution was the other honest label. Decisive generator G2 (the operation grain against the point grain), G10 second (one point's failures counted as many events). Strategy risk WARN answered by the analyst test: every field and rule read correctly still files a storm, squirrel or exposure feeder. Architecture 3 moved into the lineage with its shell. Stage 3 closed 2026-11-04 on fault-process seed 19268 (checks 105, verify 15, two byte-identical builds, figures_check 70 of 70, precut 61 checks 0 FAIL 0 WARN, leak.py REVIEW with no LEAK). The prompt shell was redrawn at stage 3 after guard.py surface promoted task194: the first shell (\"Where should our overhead line patrol crew work in the week of 9 November 2026\", patrol_week46.xlsx, the runner-up, the feeder marked) echoed task194's crew-allocation shell; the shipped shell is a what question with no week number (a which question sits over the corpus cap and a whether question repeats task193 v3), line_patrol_2026-11-09.xlsx, the second choice and what keeps it second, the chart sentence opening 'In reliability_2026.svg'. The draw's strip chart of fault currents (momentary_fault_currents.svg) was dropped at stage 2 for a scatter of SAIDI against MAIFI-E. Paused at the stage-4 hand-off.",
   "registered": "2026-11-04T04:24:23Z",
   "shell": {
-    "question form": "whether",
+    "question form": "what",
     "second-sentence opener": "list",
-    "rounding opener": "currents",
+    "rounding opener": "minutes",
     "deliverable set": "svg+xlsx"
   }
 }

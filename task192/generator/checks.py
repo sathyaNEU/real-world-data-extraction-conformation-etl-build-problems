@@ -1,865 +1,505 @@
-"""Every claim the build rests on, asserted against the cut bundle.
-
-The three-rules block (R1, R2, R3a, R3b, R3c) runs on the register the bundle rebuilds and on the
-clean truth behind it, so the client's three rules are executed rather than argued. The candidate
-block executes every route to the indicator that the record leaves standing, names each one, and
-asserts which cell of the stated granularity it lands in.
-"""
+"""Assertions on the cut pack, the goldens and the clean truth. Exit 1 on any failure."""
+import collections
 import csv
 import datetime as dt
 import json
 import math
 import os
-import statistics
+import re
+import sys
+import zipfile
 
 import numpy as np
+import openpyxl
+from pypdf import PdfReader
 
+import build
 import golden as G
+import pack as PK
+import sim
+import truth
 import world as W
 
-N = 0
-
-# the full candidate set: every route to the period's confrontational count that the shipped record
-# leaves standing, with the family each one belongs to
-RIGHT = ["rg_pooled", "matrix_inverse", "hybrid", "continuity", "rg_fb_month", "rg_fb_theme",
-         "rg_coded_month", "rg_coded_theme", "rg_r1", "rg_r2"]
-WRONG = ["naive", "remove_fp_ppv", "remove_fp_fpr", "recall_only", "pv_pooled", "audit_prevalence",
-         "hand_where_audited", "pv_fb_month", "pv_fb_theme"]
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+RES = []
 
 
 def ok(label, cond, detail=""):
-    global N
-    N += 1
-    if not cond:
-        raise AssertionError("%s failed %s" % (label, detail))
+    RES.append((label, bool(cond), str(detail)[:300]))
 
 
-def rows_of(target, name):
-    with open(os.path.join(target, name), encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+def edge(v, u):
+    return u / 2 - abs(v - round(v / u) * u)
 
 
-def candidates(g):
-    return {"naive": g["raw_rung0"], "remove_fp_ppv": g["raw_rung1"],
-            "remove_fp_fpr": g["raw_rung1b"], "recall_only": g["raw_rung2"],
-            "pv_pooled": g["raw_rung3"], "audit_prevalence": g["raw_rung4"],
-            "hand_where_audited": g["raw_rung5"], "rg_pooled": g["raw_total"],
-            "matrix_inverse": g["variant_matrix_inverse"], "hybrid": g["variant_hybrid"],
-            "continuity": g["variant_continuity"], "rg_fb_month": g["variant_rg_fb_month"],
-            "rg_fb_theme": g["variant_rg_fb_theme"], "pv_fb_month": g["variant_pv_fb_month"],
-            "pv_fb_theme": g["variant_pv_fb_theme"],
-            "rg_coded_month": g["variant_rg_coded_month"],
-            "rg_coded_theme": g["variant_rg_coded_theme"],
-            "rg_r1": g["variant_rg_r1"], "rg_r2": g["variant_rg_r2"]}
+def ranked(L, k):
+    return sorted(L, key=lambda f: -L[f][k])
 
 
-def two_by_two_p(a, b, c, d):
-    """A chi-square p for a 2x2 table, without a dependency the shipped bundle does not need."""
-    n = a + b + c + d
-    if min(a + b, c + d, a + c, b + d) == 0:
-        return 1.0
-    chi = n * (a * d - b * c) ** 2 / float((a + b) * (c + d) * (a + c) * (b + d))
-    return math.erfc(math.sqrt(chi / 2.0))
+def groups(recs, band, days=True, use_ig=False):
+    if use_ig:
+        recs = [dict(r, current=r["ig"]) if (r.get("ig") is not None and len(r["phases"]) == 1) else r for r in recs]
+    best = G.largest_group(recs, band=band, days=days)
+    return {f: v[0] for f, v in best.items()}
 
 
-def dispersion(counts):
-    m = statistics.mean(counts)
-    return statistics.variance(counts) / m if m else 0.0
+def const_step(xs):
+    d = {b - a for a, b in zip(xs, xs[1:])}
+    return len(d) == 1
 
 
-def dispersion_by_week(pairs):
-    """Poisson dispersion against a weekday-specific mean: the register has a working week, so the
-    unconditional dispersion of a daily count carries that cycle and only the conditional one says
-    whether the noise itself is plausible."""
-    groups = {}
-    for day, n in pairs:
-        groups.setdefault(day.weekday(), []).append(n)
-    chi, df = 0.0, 0
-    for wd, xs in groups.items():
-        m = statistics.mean(xs)
-        if m <= 0:
-            continue
-        chi += sum((x - m) ** 2 / m for x in xs)
-        df += len(xs) - 1
-    return chi / df if df else 0.0
+def main():
+    res = G.compute(T)
+    F = json.load(open(os.path.join(HERE, "figures.json")))
+    md = json.load(open(os.path.join(TASK, "metadata.json")))
+    net = res["net"]
+    files = []
+    for root, _, fs in os.walk(T):
+        for f in fs:
+            files.append(os.path.relpath(os.path.join(root, f), T))
+    files.sort()
 
-
-def bootstrap(g, draws=20000, seed=7):
-    """The sampling spread of the two families on this record, resampling the audit's four cells."""
-    cells = (g["tp"], g["fn"], g["fp"], g["tn"])
-    n = sum(cells)
-    N_, O, H = g["press_only"], g["press_marked"], g["hand_confrontational"]
-    rng = np.random.default_rng(seed)
-    dr = rng.multinomial(n, np.array(cells, float) / n, size=draws)
-    rg, pv = [], []
-    for tp, fn, fp, tn in dr:
-        if (tp + fn) == 0 or (fp + tn) == 0 or (tp + fp) == 0 or (fn + tn) == 0:
-            continue
-        se, fm = tp / float(tp + fn), fp / float(fp + tn)
-        if se - fm <= 0:
-            continue
-        rg.append(H + (O - fm * N_) / (se - fm))
-        pv.append(H + O * tp / float(tp + fp) + (N_ - O) * fn / float(fn + tn))
-    rg, pv = np.array(rg), np.array(pv)
-    gap = pv - rg
-    return dict(sd_rg=float(rg.std()), sd_pv=float(pv.std()), sd_gap=float(gap.std()),
-                mean_gap=float(gap.mean()), lo=float(np.percentile(rg, 2.5)),
-                hi=float(np.percentile(rg, 97.5)), draws=int(len(gap)),
-                positive=float((gap > 0).mean()))
-
-
-def counts(acts, sample):
-    inper = [a for a in acts if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO]
-    press = [a for a in inper if a["press_only"]]
-    other = [a for a in inper if not a["press_only"]]
-    H = sum(1 for a in other if a["coded_conf"])
-    N_ = len(press)
-    O = sum(1 for a in press if a["coded_conf"])
-    cells = G.matrix(sample)
-    raw, se, fm = G.rogan_gladen(N_, O, cells)
-    tp, fn, fp, tn = cells
-    return dict(n=len(inper), N=N_, H=H, O=O, g=H + raw, r0=H + O,
-                r1=H + O * tp / float(tp + fp), r2=H + O / se,
-                r3=H + G.predictive(N_, O, cells), se=se, fm=fm)
-
-
-def run(target, g=None):
-    global N
-    N = 0
-    g = g or G.compute(target)
-    b = G.load(target)
-    acts = G.actions(b["reports"])
-    files = sorted(os.listdir(target))
-    from openpyxl import load_workbook
-    _wb = load_workbook(os.path.join(target, "dicionario_dados.xlsx"), read_only=True)
-    conv = " ".join(str(c.value) for row in _wb["convencoes"].iter_rows() for c in row
-                    if c.value is not None)
-    conv_all = " ".join(str(c.value) for sh in _wb.worksheets for row in sh.iter_rows()
-                        for c in row if c.value is not None)
-    _wb.close()
-    cand = candidates(g)
-    cell = {k: G.grain(v) for k, v in cand.items()}
-    gold_cell = G.grain(g["raw_total"])
-
-    # ---------------------------------------------------------------- input gates
-    ok("gate.files", len(files) >= 10, "%d files" % len(files))
-    ok("gate.formats", len({os.path.splitext(f)[1] for f in files}) >= 3)
-    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1
-              for f in files if f.endswith(".csv"))
-    ok("gate.bulk", big >= 25000, "%d rows" % big)
-    mpath = os.path.join(os.path.dirname(target), "metadata.json")
-    if not os.path.exists(mpath):
-        mpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir,
-                             "metadata.json")
-    meta = json.load(open(mpath))
-    ok("gate.distractors", len(meta["distractor_files"]) >= 2)
-    for dd in meta["distractor_files"]:
-        ok("gate.distractor.present", dd["file"] in files, dd["file"])
-    text = ""
+    # ------------------------------------------------------------------ input gates
+    ok("gate: 10 or more files", len(files) >= 10, len(files))
+    fmts = {f.rsplit(".", 1)[1] for f in files}
+    ok("gate: 3 or more formats", len(fmts) >= 3, sorted(fmts))
+    big = {f: sum(1 for _ in open(os.path.join(T, f))) - 1 for f in files if f.endswith(".csv")}
+    ok("gate: a file of 25,000 or more rows", max(big.values()) >= 25000, max(big.items(), key=lambda kv: kv[1]))
+    ok("gate: two or more distractors declared", len(md["distractor_files"]) >= 2, md["distractor_files"])
+    ok("gate: every declared distractor ships", all(os.path.exists(os.path.join(TASK, p)) for p in md["distractor_files"]))
+    ok("gate: no distractor named as one", not [f for f in files if re.search(r"distract|decoy|noise", f, re.I)])
+    bad = [f for f in files if re.search(r"readme|dictionar|manifest|notes|schema|field.?guide|about", f, re.I)]
+    ok("gate: no file describes the pack by name", not bad, bad)
+    sheets = []
     for f in files:
-        if f.endswith((".csv", ".json")):
-            text += open(os.path.join(target, f), encoding="utf-8", errors="replace").read(600000)
-    ok("gate.no_answer_key", not any(k in text.lower() for k in
-                                     ("is_correct", "should_exclude", "verdadeiro_codigo",
-                                      "sensibilidade", "especificidade", "taxa_de_erro")))
+        if f.endswith(".xlsx"):
+            wb = openpyxl.load_workbook(os.path.join(T, f), read_only=True)
+            sheets += wb.sheetnames
+            wb.close()
+    ok("gate: no sheet describes the pack", not [s for s in sheets if re.search(r"readme|dictionar|notes|about|how to|legend",
+                                                                                 s, re.I)], sheets)
+    ok("gate: provenance for every file", all(("target/" + f) in md["files"] for f in files))
+    ok("gate: metadata names no method", not re.search(r"current|phase|group|repeat|cluster", json.dumps(md["decision"]), re.I))
 
-    # ---------------------------------------------------------------- the call reproduces
-    ok("call.actions", g["actions_in_period"] == 4656, g["actions_in_period"])
-    ok("call.press_reported", g["press_only"] == 4228, g["press_only"])
-    ok("call.other_actions", g["filed_by_hand"] == 428, g["filed_by_hand"])
-    ok("call.hand_conf", g["hand_confrontational"] == 49, g["hand_confrontational"])
-    ok("call.press_marked", g["press_marked"] == 271, g["press_marked"])
-    ok("call.sample", g["sample_rows"] == 1064, g["sample_rows"])
-    ok("call.matrix", (g["tp"], g["fn"], g["fp"], g["tn"]) == (77, 84, 18, 877),
-       str((g["tp"], g["fn"], g["fp"], g["tn"])))
-    ok("call.total", g["total"] == 450, g["total"])
-    ok("call.raw", abs(g["raw_total"] - 454.9100) < 0.01, "%.4f" % g["raw_total"])
-    ok("call.grain", g["grain"] == 50 and G.GRAIN == 50)
-    ok("call.recall", abs(g["recall"] - 0.4783) < 0.0005, g["recall"])
-    ok("call.false_mark", abs(g["false_mark"] - 0.0201) < 0.0005, g["false_mark"])
-    ok("call.parts", g["press_only"] + g["filed_by_hand"] == g["actions_in_period"])
+    # ------------------------------------------------------------------ the call
+    ok("call: MLR-2 from the pack", res["call"] == "MLR-2", res["call"])
+    ok("call: runner-up SYC-3 from the pack", res["runner_up"] == "SYC-3", res["runner_up"])
+    sc, sr = res["sep"]["MLR-2"], res["sep"]["SYC-3"]
+    ok("call: eleven momentary faults on phase C recorded by the MLR-2 breaker", sc["n"] == 11 and sc["phase"] == "C"
+       and sc["device"] == "MLR-F2-52", sc)
+    ok("call: seven on phase A recorded by recloser R-3114", sr["n"] == 7 and sr["phase"] == "A" and sr["device"] == "R-3114", sr)
+    others = max(v[0] for f, v in res["best"].items() if f not in ("MLR-2", "SYC-3"))
+    ok("call: no other feeder above five at one phase and one current since 1 August", others <= 5, others)
+    ok("call: final margin 11 to 7, 1.57x", sc["n"] / sr["n"] >= 1.5, sc["n"] / sr["n"])
+    ok("call: the stretch is the breaker's zone to R-2207 at MLR2-P071", sc["zone_to"] == [("R-2207", "MLR2-P071")],
+       sc["zone_to"])
+    ok("call: figures.json carries the call", F["call"] == "MLR-2" and F["runner_up"] == "SYC-3")
 
-    # ---------------------------------------------------------------- the candidate set
-    for k in RIGHT + WRONG:
-        ok("cand.present.%s" % k, k in cand and cand[k] == cand[k])
-    for k in RIGHT:
-        ok("cand.converge.%s" % k, cell[k] == gold_cell,
-           "%s %.3f -> %d, golden cell %d" % (k, cand[k], cell[k], gold_cell))
-    for k in WRONG:
-        ok("cand.separated.%s" % k, cell[k] != gold_cell,
-           "%s %.3f lands in the golden's cell %d" % (k, cand[k], gold_cell))
-        ok("cand.six_percent.%s" % k,
-           abs(cand[k] - g["raw_total"]) >= 0.06 * g["raw_total"],
-           "%s %.3f is %.2f per cent from %.3f"
-           % (k, cand[k], 100 * abs(cand[k] - g["raw_total"]) / g["raw_total"], g["raw_total"]))
-    for k in RIGHT:
-        ok("cand.family_band.%s" % k,
-           min(cand[k] - (gold_cell - 25), (gold_cell + 25) - cand[k]) >= 5.0,
-           "%s %.2f sits %.2f from the cell's edge"
-           % (k, cand[k], min(cand[k] - (gold_cell - 25), (gold_cell + 25) - cand[k])))
-    ok("cand.rounds_agree",
-       abs(cand["rg_r1"] - cand["rg_r2"]) <= 40.0,
-       "the two rounds alone give %.2f and %.2f, %.2f apart"
-       % (cand["rg_r1"], cand["rg_r2"], abs(cand["rg_r1"] - cand["rg_r2"])))
-    ok("cand.identities", abs(cand["matrix_inverse"] - cand["rg_pooled"]) < 1e-9
-       and abs(cand["hybrid"] - cand["rg_pooled"]) < 1e-9,
-       "%.6f %.6f" % (cand["matrix_inverse"], cand["hybrid"]))
-    ok("cand.nearest_wrong",
-       min(abs(cand[k] - g["raw_total"]) for k in WRONG) >= 0.06 * g["raw_total"],
-       "%.2f" % min(abs(cand[k] - g["raw_total"]) for k in WRONG))
-    ok("cand.no_empty_cell", min(g["tp"], g["fn"], g["fp"], g["tn"]) > 0,
-       "a continuity adjustment is for an empty cell and no cell is empty")
-    ok("cand.distinct_cells", len({cell[k] for k in WRONG}) >= 4,
-       str(sorted({cell[k] for k in WRONG})))
+    recs = res["recs"]
+    win_all = [e for e in res["ev"] if W.WIN0 <= e["day"] <= W.WIN1]
+    recs_trip = G.fault_records(T, net, win_all)
+    yr = [e for e in res["ev"] if W.REP0 <= e["day"] <= W.REP1]
+    recs_yr = G.fault_records(T, net, yr)
+    so = [e for e in res["ev"] if dt.date(2026, 9, 1) <= e["day"] <= W.WIN1]
+    recs_so = G.fault_records(T, net, so)
+    sf10 = []
+    for band in (1.02, 1.03, 1.04, 1.06, 1.08, 1.10):
+        for days in (True, False):
+            for ig in (False, True):
+                for name, rr in (("aug-oct", recs), ("jan-oct", recs_yr), ("sep-oct", recs_so)):
+                    g = groups(rr, band, days, ig)
+                    top = max(g, key=lambda f: g[f])
+                    sf10.append((band, days, ig, name, top, g["MLR-2"], g.get("SYC-3", 0),
+                                 max(v for f, v in g.items() if f not in ("MLR-2", "SYC-3"))))
+    ok("SF10 every licensed grouping names MLR-2", all(x[4] == "MLR-2" for x in sf10),
+       [x for x in sf10 if x[4] != "MLR-2"][:4])
+    a1 = [x for x in sf10 if x[3] == "aug-oct" and x[0] >= 1.03]
+    ok("SF10 since 1 August, every band from 1.5 to 5 per cent: MLR-2 by 1.3x or more",
+       all(x[5] >= 1.3 * max(x[6], x[7]) for x in a1), [x for x in a1 if x[5] < 1.3 * max(x[6], x[7])][:4])
+    a2 = [x for x in sf10 if x[3] == "jan-oct" and x[0] <= 1.06]
+    ok("SF10 over the whole of 2026, every band to 3 per cent: MLR-2 by 1.3x or more",
+       all(x[5] >= 1.3 * max(x[6], x[7]) for x in a2), [x for x in a2 if x[5] < 1.3 * max(x[6], x[7])][:4])
+    a3 = [x for x in sf10 if x[3] == "sep-oct"]
+    ok("SF10 September and October alone, every band: MLR-2 first", all(x[5] > max(x[6], x[7]) for x in a3),
+       [x for x in a3 if x[5] <= max(x[6], x[7])][:4])
+    sf11 = [x for x in sf10 if x[0] <= 1.06 and x[3] == "aug-oct"]
+    ok("SF11 SYC-3 is second under every grouping to a three per cent band", all(x[6] > x[7] for x in sf11),
+       [x for x in sf11 if x[6] <= x[7]][:4])
+    ok("SF11 SYC-3 is second over the whole year at a two per cent band, separate days",
+       all(x[6] > x[7] for x in sf10 if x[3] == "jan-oct" and x[0] <= 1.04 and x[1]))
+    ok("SF12 MLR-2 leads SYC-3 on every patrol criterion: count, customers behind, onset, latest",
+       sc["n"] > sr["n"] and sc["behind"] > sr["behind"] and sc["first"] < sr["first"] and sc["last"] >= sr["last"],
+       (sc["n"], sr["n"], sc["behind"], sr["behind"], sc["first"], sr["first"], sc["last"], sr["last"]))
+    ok("SF13 the patrol stretch is the recording device's zone (DRP-04 5.4)",
+       F["stretch"]["device"] == "MLR-F2-52" and F["stretch"]["to"] == ["R-2207"])
+    # the group's records: one device, on separate mornings, each cleared on the first reclose
+    g = sorted((r for r in recs if r["feeder"] == "MLR-2" and r["phases"] == "C" and 1400 <= r["current"] <= 1480),
+               key=lambda r: r["t"])
+    ok("call: the eleven are single operations on separate days at dawn", len(g) == 11 and all(r["ops"] == 1 for r in g)
+       and len({r["day"] for r in g}) == 11 and all(5 <= G.local(r["t"]).hour <= 7 for r in g), [(r["day"], r["ops"]) for r in g])
+    damp = G.damp_days(T)
+    ok("call: every one on a damp morning at the airport (RH 97 per cent or more)", all(r["day"] in damp for r in g))
+    # the available fault current places the eleven between two devices on the main line inside the zone
+    afc = []
+    for d, rows in net.rows.items():
+        r = net.row(d, W.REP1)
+        if r and r["feeder"] == "MLR-2" and r["type"] in ("FUSE", "RECLOSER"):
+            pass
+    with open(os.path.join(T, PK.FILES["devices"])) as fh:
+        for r in csv.DictReader(fh):
+            if r["feeder"] == "MLR-2" and r["device_type"] in ("FUSE", "RECLOSER"):
+                afc.append((int(r["pole"].split("-P")[1]), int(r["available_fault_slg_a"])))
+    afc.sort()
+    lo_side = [a for p, a in afc if a >= sc["hi"]]
+    hi_side = [a for p, a in afc if a <= sc["lo"]]
+    ok("call: the register's available fault currents fall along the feeder and bracket the eleven",
+       all(b <= a for (_, a), (_, b) in zip(afc, afc[1:])) and lo_side and hi_side, afc[:6])
 
-    # ---------------------------------------------------------------- the stratified families die
-    for name, d in sorted(g["dead"].items()):
-        ok("dead.%s" % name, d["value"] is None, "%s is computable" % name)
-        ok("dead.%s.reason" % name, len(d["broken"]) > 0, name)
-    ok("dead.month_reason", set(g["dead"]["rg_by_month"]["broken"]) == {"9", "10"},
-       str(g["dead"]["rg_by_month"]["broken"]))
-    ok("dead.theme_reason", set(g["dead"]["rg_by_theme"]["broken"]) >= set(W.LATE_THEMES),
-       str(g["dead"]["rg_by_theme"]["broken"]))
-    ok("dead.late_themes_after_surge",
-       all(min(a["day"] for a in acts if a["theme"] == t) >= W.SURGE_FROM for t in W.LATE_THEMES),
-       str(W.LATE_THEMES))
-    ok("dead.late_themes_present",
-       all(sum(1 for a in acts if a["theme"] == t) > 40 for t in W.LATE_THEMES))
-    ok("dead.audit_window", g["audit_covers"] == [5, 6, 7, 8], str(g["audit_covers"]))
-    ok("dead.population_wider",
-       sorted({a["day"].month for a in acts
-               if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO}) == [5, 6, 7, 8, 9, 10])
-    ok("dead.rounds_disjoint",
-       all(W.SAMPLE_ROUNDS[i][3] < W.SAMPLE_ROUNDS[i + 1][2]
-           for i in range(len(W.SAMPLE_ROUNDS) - 1)))
+    # ------------------------------------------------------------------ the ladder and the stump
+    L = G.ladder(T, res)
+    ok("R0 raw momentary events Aug-Oct 2026 name another feeder, MLR-2 fifth or lower",
+       ranked(L, "raw")[0] != "MLR-2" and ranked(L, "raw").index("MLR-2") + 1 >= 5,
+       [(f, L[f]["raw"]) for f in ranked(L, "raw")[:3]])
+    ok("R0b change on 2025 names NYD-3, MLR-2 not in the top five", ranked(L, "chg")[0] == "NYD-3"
+       and ranked(L, "chg").index("MLR-2") >= 5)
+    ok("R1 non-storm events name NYD-3", ranked(L, "ns")[0] == "NYD-3" and L["NYD-3"]["ns"] >= 1.5 * L["MLR-2"]["ns"])
+    ok("R2 non-storm events per overhead mile name NYD-3", ranked(L, "nsmi")[0] == "NYD-3")
+    ok("R3 the default path (non-storm per overhead mile against 2025) names NYD-3 at 2.5 a mile",
+       ranked(L, "dflt")[0] == "NYD-3" and L["NYD-3"]["dflt"] >= 1.5 * L[ranked(L, "dflt")[1]]["dflt"],
+       [(f, round(L[f]["dflt"], 2)) for f in ranked(L, "dflt")[:3]])
+    ok("R3 the default path per thousand customers names NYD-3", ranked(L, "per_cust")[0] == "NYD-3")
+    ok("R4 damp-morning non-storm events name NYD-2", ranked(L, "damp")[0] == "NYD-2"
+       and L["NYD-2"]["damp"] >= 1.5 * L["MLR-2"]["damp"])
+    ok("R5 phase skew (chi-square, share) names BLV-3", ranked(L, "chi")[0] == "BLV-3" and ranked(L, "share")[0] == "BLV-3"
+       and L["BLV-3"]["share"] >= 1.2 * L["MLR-2"]["share"] and L["BLV-3"]["chi"] >= 1.3 * L["MLR-2"]["chi"])
+    for k in ("raw", "chg", "ns", "nsmi", "dflt", "damp", "chi", "share", "per_cust", "nsd"):
+        order = ranked(L, k)
+        ok("position: MLR-2 never first and never second within 1.2x on %s" % k,
+           order[0] != "MLR-2" and not (order[1] == "MLR-2" and L["MLR-2"][k] * 1.2 > L[order[0]][k]), order[:3])
+    # the worst-performing-circuit reflex: the asks' own indices, over the year and over the weeks since August
+    ix = {f: res["idx"][f] for f in res["idx"]}
+    mom3 = collections.Counter()
+    for e in res["ev"]:
+        if W.WIN0 <= e["day"] <= W.WIN1:
+            mom3[e["feeder"]] += e["n"]
+    for key, val in (("SAIDI", lambda f: ix[f]["saidi"]), ("MAIFI-E", lambda f: ix[f]["maifi"]),
+                     ("CEMI-2", lambda f: ix[f]["cemi"]), ("CEMI-2 share", lambda f: ix[f]["cemi"] / ix[f]["nt"]),
+                     ("MAIFI-E since August", lambda f: mom3[f] / ix[f]["nt"])):
+        order = sorted(ix, key=lambda f: -val(f))
+        ok("position: the %s ranking does not single out MLR-2" % key,
+           order[0] != "MLR-2" and not (order[1] == "MLR-2" and val("MLR-2") * 1.2 > val(order[0])),
+           [(f, round(val(f), 2)) for f in order[:3]])
+    ok("dominance: the decisive group outruns the default path's carried edge",
+       (sc["n"] - sr["n"]) / sr["n"] >= 1.2 * 0 and sc["n"] >= 1.5 * others)
+    ok("figures.json carries the ladder", F["ladder"]["NYD-3"]["dflt"] == round(L["NYD-3"]["dflt"], 4))
 
-    # ------------------------------------------------- the data forces the method, and shows it
-    audited = [a for a in acts if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO and a["press_only"]
-               and a["day"] <= W.SAMPLE_ROUNDS[-1][3]]
-    rest = [a for a in acts if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO and a["press_only"]
-            and a["day"] > W.SAMPLE_ROUNDS[-1][3]]
-    ma = sum(1 for a in audited if a["coded_conf"])
-    mr = sum(1 for a in rest if a["coded_conf"])
-    p_marked = two_by_two_p(ma, len(audited) - ma, mr, len(rest) - mr)
-    ok("force.marked_rate_moves", p_marked < 0.001,
-       "the marked rate is %.4f inside the audited window and %.4f outside it, p %.2e"
-       % (ma / float(len(audited)), mr / float(len(rest)), p_marked))
-    ok("force.marked_rate_direction", ma / float(len(audited)) > 1.5 * mr / float(len(rest)),
-       "%.4f %.4f" % (ma / float(len(audited)), mr / float(len(rest))))
-    ok("force.audit_prevalence_above_record",
-       g["audit_prevalence"] >= 1.4 * g["record_prevalence"],
-       "audit %.4f record %.4f" % (g["audit_prevalence"], g["record_prevalence"]))
-    r1, r2 = g["audit_rounds"]["R1"], g["audit_rounds"]["R2"]
-    p_prev = two_by_two_p(r1["cells"][0] + r1["cells"][1],
-                          r1["cells"][2] + r1["cells"][3],
-                          r2["cells"][0] + r2["cells"][1],
-                          r2["cells"][2] + r2["cells"][3])
-    p_recall = two_by_two_p(r1["cells"][0], r1["cells"][1], r2["cells"][0], r2["cells"][1])
-    p_fm = two_by_two_p(r1["cells"][2], r1["cells"][3], r2["cells"][2], r2["cells"][3])
-    ok("force.rates_homogeneous", p_recall > 0.15 and p_fm > 0.15,
-       "recall p %.3f, false mark p %.3f" % (p_recall, p_fm))
-    ok("force.prevalence_falls_in_audit", r1["prevalence"] > r2["prevalence"],
-       "%.4f %.4f" % (r1["prevalence"], r2["prevalence"]))
-    months = sorted(g["audit_by_month"])
-    prevs = [g["audit_by_month"][m][1] / float(g["audit_by_month"][m][0]) for m in months]
-    ok("force.audit_prevalence_trend", prevs[0] > prevs[-1],
-       str([round(x, 4) for x in prevs]))
-    ok("force.model_fact_shipped",
-       "treinado_em" in open(os.path.join(target, "config_monitor.json"), encoding="utf-8").read())
+    # ------------------------------------------------------------------ the asks: golden from the pack = clean truth
+    net0, wx, stk, S, TR, added = build.world()
+    per = collections.Counter()
+    for sp, k in TR["per_sp"].items():
+        if k > truth.CEMI_N and truth.active(net0["sps"][sp], W.REP1):
+            per[truth.sp_feeder(net0, sp, W.REP1)] += 1
+    diffs = []
+    for f in W.FID:
+        t_, g_ = TR["idx"][f], res["idx"][f]
+        if not (t_["nt"] == g_["nt"] and abs(t_["saidi"] - g_["saidi"]) < 1e-6 and abs(t_["maifi"] - g_["maifi"]) < 1e-9
+                and per[f] == g_["cemi"]):
+            diffs.append(f)
+    ok("asks: SAIDI, MAIFI-E, CEMI-2 and customers served from the pack equal the clean truth", not diffs, diffs)
+    ok("asks: major event days from the pack equal the clean truth", res["meds"] == TR["meds"] ==
+       [dt.date(2026, 5, 19), dt.date(2026, 6, 27)], res["meds"])
+    ok("asks: the filed threshold and denominator are the generator's", abs(res["tmed"] - W.T_MED_2026) < 1e-9
+       and res["nsys"] == TR["n_sys"])
+    nonmed = sorted((v, d) for d, v in res["daily"].items() if d.year == 2026 and d not in set(res["meds"]))
+    ok("SF2 every other 2026 day sits under 0.6 of the threshold", nonmed[-1][0] < 0.6 * res["tmed"], nonmed[-1])
+    ok("SF2 the major event days sit over twice the threshold", min(res["daily"][d] for d in res["meds"]) > 2 * res["tmed"])
+    ok("asks: workbook figures equal figures.json", wb_matches(F))
+    edges = []
+    for f, v in F["feeders"].items():
+        if edge(v["saidi_raw"], 0.1) < 0.01 or edge(v["maifi_raw"], 0.01) < 0.001:
+            edges.append(f)
+    ok("SF9 every graded figure clears its rounding edge by a tenth of a unit", not edges, edges)
+    ok("asks: CEMI-2 is zero on at most two feeders (the blind nil response keeps under a quarter)",
+       sum(1 for v in F["feeders"].values() if v["cemi"] == 0) <= 2)
+    ok("asks: no two feeders share a customers-served count", len({v["nt"] for v in F["feeders"].values()}) == 16)
 
-    # ------------------------------------------------- the separation is wider than the noise
-    boot = bootstrap(g)
-    g["boot"] = boot
-    ok("noise.gap_beats_sd", boot["mean_gap"] >= 2.5 * boot["sd_gap"],
-       "mean gap %.1f, sd of the gap %.1f, ratio %.2f"
-       % (boot["mean_gap"], boot["sd_gap"], boot["mean_gap"] / boot["sd_gap"]))
-    ok("noise.gap_observed", (cand["pv_pooled"] - cand["rg_pooled"]) >= 2.5 * boot["sd_gap"],
-       "observed gap %.1f against sd %.1f"
-       % (cand["pv_pooled"] - cand["rg_pooled"], boot["sd_gap"]))
-    ok("noise.gap_positive", boot["draws"] >= 20000 and boot["positive"] >= 0.99,
-       "the gap is positive on %.3f of %d resamples of the four cells"
-       % (boot["positive"], boot["draws"]))
-    ok("noise.grain_not_finer_than_sd", G.GRAIN <= boot["sd_rg"],
-       "grain %d, sampling sd %.1f" % (G.GRAIN, boot["sd_rg"]))
-    daily = {}
-    for a in acts:
-        if W.PERIOD_FROM <= a["day"] <= W.SURGE_FROM - dt.timedelta(days=1):
-            daily[a["day"]] = daily.get(a["day"], 0) + 1
-    disp = dispersion_by_week(sorted(daily.items()))
-    ok("noise.dispersion_plausible", 0.8 <= disp <= 1.35,
-       "chi-square per degree of freedom %.3f on daily action counts before the surge, against a "
-       "weekday mean" % disp)
-    surge_daily = {}
-    for a in acts:
-        if W.SURGE_FROM <= a["day"] <= W.PERIOD_TO:
-            surge_daily[a["day"]] = surge_daily.get(a["day"], 0) + 1
-    disp_surge = dispersion_by_week(sorted(surge_daily.items()))
-    ok("noise.dispersion_plausible_surge", 0.85 <= disp_surge <= 1.45,
-       "chi-square per degree of freedom %.3f on daily action counts from the surge, against a "
-       "weekday mean" % disp_surge)
-    ok("noise.fair_to_truth",
-       abs(g["raw_total"] - g["pack"]["truth"]) <= 0.8 * boot["sd_rg"],
-       "the estimate is %.2f against the %d confrontational actions behind the record, %.2f of the "
-       "audit's own sampling standard deviation"
-       % (g["raw_total"], g["pack"]["truth"],
-          abs(g["raw_total"] - g["pack"]["truth"]) / boot["sd_rg"]))
-    ok("noise.weekly_cycle_present", dispersion(list(daily.values())) > 1.2,
-       "unconditional dispersion %.3f" % dispersion(list(daily.values())))
-    conf_daily = {}
-    for a in acts:
-        if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO:
-            conf_daily[a["day"]] = conf_daily.get(a["day"], 0) + (1 if a["coded_conf"] else 0)
-    dm = dispersion_by_week(sorted(conf_daily.items()))
-    ok("noise.dispersion_marked", 0.75 <= dm <= 1.4, "%.3f" % dm)
+    # the conventions each ask turns on
+    items = res["items"]
+    leg = [o for o in items if o["src"] == "legacy"]
+    inc = [o for o in items if o["src"] == "incident"]
+    oms_cnt = [o for o in leg + inc if o["oms_customers"] != len(o["reach"])]
+    ok("SF1 the connectivity reproduces every OMS customer count at the ticket's date", not oms_cnt,
+       [(o["id"], o["oms_customers"], len(o["reach"])) for o in oms_cnt[:5]])
+    end_ok = all(net.feeder(sp, W.REP1) == v["feeder"] for sp, v in net.sp.items() if net.active(sp, W.REP1))
+    ok("SF1 customers served by the extract's feeder column equal those by the register's tree", end_ok)
+    tcs = [o for o in items if o["src"] == "scada"]
+    medset = set(res["meds"])
+    tcs_w = [o for o in tcs if W.REP0 <= o["day"] <= W.REP1 and o["day"] not in medset]
+    ok("SF15 sustained openings with no ticket sit between 5.7 and 13.6 minutes",
+       all(5.6 * 60000 < o["restore"] - o["start"] < 13.7 * 60000 for o in tcs), [(o["id"], o["restore"] - o["start"]) for o in tcs][:4])
+    ok("SF15 they reach four feeders in the window", len({o["feeder"] for o in tcs_w}) >= 4, sorted({o["feeder"] for o in tcs_w}))
+    gaps = []
+    for dev, seq in res["soe"].items():
+        for a, b in G.open_intervals(seq):
+            if 4.5 * 60000 <= b - a <= 5.6 * 60000:
+                gaps.append((dev, a))
+    ok("SF4 no SCADA opening lasts between 4.5 and 5.6 minutes", not gaps, gaps[:3])
+    stepped = [o for o in items if o["steps"]]
+    ok("SF5 every stepped restoration reached all its customers (nothing nested in it)",
+       all(len(o["hit"]) == o["oms_customers"] for o in stepped))
+    leg_steps = [o for o in stepped if o["src"] == "legacy" and W.REP0 <= o["day"] <= W.REP1]
+    ok("SF18 stepped legacy tickets in 2026 on four or more feeders", len({o["feeder"] for o in leg_steps}) >= 4,
+       sorted({o["feeder"] for o in leg_steps}))
+    nest = [o for o in items if o["continues"] is None and len(o["hit"]) < len(o["reach"])]
+    ok("SF16 customers already without supply are left out of a later outage's count, the OMS counting them in",
+       nest and all(o["oms_customers"] in (None, len(o["reach"])) for o in nest), len(nest))
+    cont = [o for o in items if o["continues"] is not None]
+    ok("SF14 continuation tickets begin at the minute the device above closed, on ten or more feeders",
+       len({o["feeder"] for o in cont if W.REP0 <= o["day"] <= W.REP1 and o["day"] not in medset}) >= 10,
+       len(cont))
+    ok("SF3 a continuation belongs to the day its outage began", all(o["day"] == G.lday(o["began"]) for o in cont))
+    absb = [e for e in res["ev"] if e["n_abs"]]
+    ok("SF17 momentary events absorbed by a sustained interruption on twelve or more feeders",
+       len({e["feeder"] for e in absb if W.REP0 <= e["day"] <= W.REP1}) >= 12)
+    amb = []
+    starts = sorted((o["start"], o["id"]) for o in items)
+    for e in res["ev"]:
+        em = G.floor_min(e["t"])
+        for o in items:
+            if em - 3 * 60000 <= o["start"] < em and (o["reach"] & net.customers(e["device"], e["day"])):
+                if not (o["start"] < em and e["t"] < o["restore"]):
+                    amb.append((e["device"], e["t"]))
+    ok("SF17 no sustained interruption begins in the minutes just before a momentary event", not amb, amb[:3])
+    near = []
+    ev_by_f = collections.defaultdict(list)
+    for e in res["ev"]:
+        if W.REP0 <= e["day"] <= W.REP1 and e["day"] not in medset:
+            ev_by_f[e["feeder"]].append(e)
+    for f, es in ev_by_f.items():
+        es.sort(key=lambda e: e["t"])
+        for a, b in zip(es, es[1:]):
+            if a["device"] != b["device"] and 0 < b["t"] - a["t"] <= 5 * 60000:
+                if net.customers(a["device"], a["day"]) & net.customers(b["device"], b["day"]):
+                    near.append((a["device"], b["device"], b["t"]))
+    merged = sum(e.get("n_merged", 0) for e in res["ev"] if W.REP0 <= e["day"] <= W.REP1 and e["day"] not in medset)
+    ok("SF6 a customer's momentary interruptions within five minutes of the first count once, whichever devices "
+       "opened (the few such pairs are merged per customer)", len(near) <= 6 and (merged > 0) == bool(near), (len(near), merged))
+    crew = [o for o in items if o["src"] != "scada" and o["dtype"] in ("BREAKER", "RECLOSER")]
+    pre = [o["id"] for o in crew if any(e["device"] == o["device"] and o["start"] - 5 * 60000 <= e["t"] <= o["start"] + 60000
+                                        for e in res["ev"])]
+    ok("SF21 the trips before a lockout are part of the sustained interruption, not momentary events", not pre, pre[:3])
+    moved = [l for l, rows in net.rows.items() if len({r["feeder"] for r in rows}) > 1 and rows[0]["type"] == "FUSE"
+             and len(rows) >= 2]
+    ok("SF19 the moved taps' tickets before the move sit with the old feeder", moved_ok(res, net), len(moved))
+    ok("SF7 a feeder's interruptions are those of its devices when each began (3.2)",
+       all(o["feeder"] == net.feeder(o["device"], o["day"]) or o["continues"] is not None for o in items))
+    ok("SF8 the window is local January to October 2026", all(W.REP0 <= o["day"] for o in items if o["day"].year == 2026))
+    end_ms = G.ms(dt.datetime(2026, 11, 1, 5, tzinfo=dt.timezone.utc))
+    late_items = [o["id"] for o in items if W.REP0 <= o["day"] <= W.REP1 and o["restore"] > end_ms]
+    ok("axis 12: no interruption in the window runs past 31 October", not late_items, late_items[:3])
+    tidy = tidy_ok(res, net)
+    ok("SF20 no service point is connected or retired on a day an interruption reached it", not tidy, tidy[:3])
 
-    # ---------------------------------------------------------------- the ladder and the bins
-    order = [cand["remove_fp_fpr"], cand["remove_fp_ppv"], cand["naive"],
-             cand["hand_where_audited"], cand["rg_pooled"], cand["pv_pooled"],
-             cand["recall_only"], cand["audit_prevalence"]]
-    ok("ladder.order", all(order[i] < order[i + 1] for i in range(len(order) - 1)),
-       str([round(x, 1) for x in order]))
-    ok("ladder.bracketed", cand["naive"] < cand["rg_pooled"] < cand["pv_pooled"])
-    ok("ladder.decisive_move_largest",
-       (cand["pv_pooled"] - cand["rg_pooled"]) > (cand["rg_pooled"] - cand["hand_where_audited"]))
-    half = G.GRAIN / 2.0
-    edge = min(abs(g["raw_total"] - (gold_cell - half)), abs((gold_cell + half) - g["raw_total"]))
-    ok("bin.total", edge >= 12.0, "the call sits %.2f from its nearest bin edge" % edge)
-    ok("bin.total_mid", abs(g["raw_total"] - gold_cell) <= 0.55 * half,
-       "%.3f against the bin centre %d" % (g["raw_total"], gold_cell))
-    for k in WRONG:
-        e = min(abs(cand[k] - (cell[k] - half)), abs((cell[k] + half) - cand[k]))
-        ok("bin.cand.%s" % k, e >= 1.5, "%s %.3f sits %.2f from its bin edge" % (k, cand[k], e))
-    for code, v in sorted(g["a3"].items()):
-        ok("bin.euros.%s" % code, 0.5 - abs(v["raw_euros"] - round(v["raw_euros"])) >= 0.25,
-           "%.4f" % v["raw_euros"])
-    # the fortnight's partner column is a count of actions, so it has no rounding and no edge. the
-    # measurement that named the wrong share is kept as a record rather than as a gate: a share is
-    # printed to one decimal, so its edge is at x.x5 and the distance to that edge is half a tenth
-    # LESS the distance to the nearest printed value, not that distance itself.
-    two_step, edges = [], {}
-    for label, a, bb in W.fortnights():
-        inside = [x for x in acts if a <= x["day"] <= bb]
-        par = [x for x in inside if "PAR" in x["routes"]]
-        ok("bin.partner_count.%s" % label,
-           float(len(par)).is_integer() and 0 < len(par) < len(inside),
-           "%s %d of %d actions, a whole count with nothing to round"
-           % (label, len(par), len(inside)))
-        share = 100.0 * len(par) / len(inside)
-        tenths = share * 10.0
-        edges[label] = round((0.5 - abs(tenths - round(tenths))) / 10.0, 4)
-        if round(round(share, 2), 1) != round(share, 1):
-            two_step.append("%s %.6f (%.1f against %.1f)"
-                            % (label, share, round(round(share, 2), 1), round(share, 1)))
-    g["share_edges"] = edges
-    g["share_two_step"] = two_step
-    # no graded figure is a percentage, so axis 10 carries no percentage at all; the bulletin's own
-    # rounding rule for a percentage is filed anyway, which closes the axis for anything later
-    ok("bin.share_rounding_filed",
-       "arredondada uma vez" in conv and "nao truncada" in conv,
-       "the percentage rule is in the dictionary's convencoes sheet")
-    here = os.path.dirname(os.path.abspath(__file__))
-    body = open(os.path.join(here, os.pardir, "submission.md"),
-                encoding="utf-8").read().split("## 4. Deliverable Answers", 1)[-1]
-    ok("bin.no_graded_percentage", "per cent" not in body and "%" not in body,
-       "the deliverable answers state no percentage, so no graded figure is one")
-    ok("bin.prompt_rounds_no_share",
-       "share" not in open(os.path.join(here, os.pardir, "prompt.txt"), encoding="utf-8").read(),
-       "the prompt asks for no share")
-    for route, v in g["a2"].items():
-        ok("bin.median.%s" % route, abs(v["median_minutes"] * 10
-                                        - round(v["median_minutes"] * 10)) < 1e-9,
-           "%.4f" % v["median_minutes"])
-        ok("bin.median_pair.%s" % route, v["median_pair_equal"], route)
+    # ------------------------------------------------------------------ the three rules on the clean truth
+    ok("R1 the relays' records carry each trip's faulted phase and per-phase currents",
+       open(os.path.join(T, PK.FILES["relay"])).readline().strip().split(",")[3:9] ==
+       ["event_type", "shot", "ia_a", "ib_a", "ic_a", "ig_a"])
+    ok("R1 the controls' logs carry fault terminals and kA, the register their phasing",
+       "fault_terminals" in open(os.path.join(T, PK.FILES["recloser"])).readline()
+       and "terminal_phasing" in open(os.path.join(T, PK.FILES["devices"])).readline())
+    ok("R1 the OMS ships device-level tickets and the GIS service points", len(leg) > 500 and len(net.sp) > 30000)
+    clean = clean_truth_call(S)
+    ok("R2 clean-data test: on the clean truth the decisive grouping names MLR-2 and the default path NYD-3",
+       clean == ("MLR-2", "NYD-3"), clean)
+    ok("R2 the decisive population carries no ask device: every Aug-Oct breaker opening has its relay record",
+       relay_complete(res, net))
+    ok("R2 clocks differ by system (relay UTC, SCADA Central, controls CST)",
+       open(os.path.join(T, PK.FILES["relay"])).readlines()[1].split(",")[2].endswith("Z")
+       and open(os.path.join(T, PK.FILES["soe"])).readlines()[1].split(",")[0][-3:] in ("CDT", "CST")
+       and "time_cst" in open(os.path.join(T, PK.FILES["recloser"])).readline())
+    text = G.procedure_constants(T)[2]
+    ok("R3a no file names a feeder for the patrol or ranks the feeders", no_ranking(text))
+    hits = [w for w in ("current", "phase", "repeat", "recur", "impedance", "distance", "fault", "location", "same")
+            if re.search(r"\b%s" % w, text, re.I)]
+    ok("R3c DRP-04 names no current, phase, repeat, distance or fault", not hits, hits)
+    ok("R3b reading every field right still files NYD-3 on the procedure's indices and screen",
+       ranked(L, "dflt")[0] == "NYD-3")
+    ok("R3c executing every filed rule names no patrol feeder (DRP-04 files purposes, definitions, thresholds)",
+       "5.2" in text and "breaking down" in text and not re.search(r"most momentary|highest|rank", text, re.I))
 
-    # ---------------------------------------------------------------- R1, raw material
-    heads = []
+    # ------------------------------------------------------------------ realism sweep
+    wb = openpyxl.load_workbook(os.path.join(T, PK.FILES["oms"]), read_only=True)
+    tk = [r[0] for r in wb["Legacy tickets"].iter_rows(min_row=2, values_only=True) if r[0] and not r[1]]
+    incs = [r[0] for r in wb["Incidents"].iter_rows(min_row=2, values_only=True) if r[0]]
+    wb.close()
+    ok("realism: ticket numbers are not an arithmetic sequence", not const_step([int(x.split("-")[1]) for x in tk if x.startswith("T26")]))
+    ok("realism: incident numbers are not an arithmetic sequence", not const_step([int(x.split("-")[2]) for x in incs]))
+    with open(os.path.join(T, PK.FILES["relay"])) as fh:
+        ev_no = collections.defaultdict(list)
+        for r in csv.DictReader(fh):
+            ev_no[r["relay"]].append(int(r["event_no"]))
+    ok("realism: relay event numbers run with gaps", all(not const_step(sorted(v)) for v in ev_no.values() if len(v) > 3))
+    ok("realism: service point ids are not sequential", not const_step(sorted(int(x) for x in list(net.sp)[:500])))
+    ok("realism: the eleven are a minority of the relay file", 11 / sum(len(v) for v in ev_no.values()) < 0.02)
+    ok("realism: personas from guard.py names", "Kelsey Sanford" in text and "Shawn Hartman" in text)
+    ok("realism: the procedure issued before the year it governs", "12 January 2026" in text)
+    scrub = []
     for f in files:
-        if f.endswith(".csv"):
-            with open(os.path.join(target, f), encoding="utf-8") as fh:
-                heads += next(csv.reader(fh))
-    ok("R1.raw_rows", "codigo_monitor" in heads and "codigo_manual" in heads)
-    ok("R1.no_rate_column", not any(h.lower().startswith(("taxa", "sensib", "especif", "erro"))
-                                    for h in heads), str(heads))
-    ok("R1.no_truth_column", not any("verdad" in h.lower() or "real" in h.lower() for h in heads))
-    base = counts(acts, b["sample"])
-    ok("R1.register_from_rows", base["n"] == 4656 and G.grain(base["g"]) == 450)
+        p = os.path.join(T, f)
+        b = open(p, "rb").read()
+        if f.endswith(".xlsx"):
+            with zipfile.ZipFile(p) as z:
+                b = b"".join(z.read(n) for n in z.namelist())
+        if re.search(rb"openpyxl|ReportLab|reportlab|python", b):
+            scrub.append(f)
+    ok("realism: containers scrubbed of the writing libraries", not scrub, scrub)
+    late = []
+    with open(os.path.join(T, PK.FILES["soe"])) as fh:
+        for r in csv.DictReader(fh):
+            if G.scada_t(r["time"]) >= G.ms(dt.datetime(2026, 11, 1, 5, tzinfo=dt.timezone.utc)):
+                late.append(r["time"])
+    ok("realism: no operation after the period", not late, late[:2])
+    ok("realism: SCADA openings are stamped apart from the relays' trips (two observers)", soe_offsets(T, net))
+    ok("realism: phases spread across the relay file", len({r["phases"] for r in recs_trip}) >= 6)
+    for f, n in sorted(big.items()):
+        pass
+    tree = sorted(os.path.relpath(os.path.join(r, f), T).replace(os.sep, "/") for r, _, fs in os.walk(T) for f in fs)
+    with zipfile.ZipFile(os.path.join(TASK, "target.zip")) as z:
+        members = z.namelist()
+        same = all(z.read(m) == open(os.path.join(T, m), "rb").read() for m in members if m in tree)
+    ok("H4: target.zip holds the tree's files at its root, no enclosing folder or directory entries",
+       members == tree and not any(m.endswith("/") or m.startswith("target/") for m in members), members[:3])
+    ok("H7: target.zip agrees with the tree by content", same)
+    fails = [r for r in RES if not r[1]]
+    for label, good, detail in RES:
+        print("%s  %s%s" % ("PASS" if good else "FAIL", label, ("  [" + detail + "]") if (detail and not good) else ""))
+    print("%d checks, %d failed" % (len(RES), len(fails)))
+    return 1 if fails else 0
 
-    # ---------------------------------------------------------------- R2, mess neutral
-    def call_of(reports):
-        return counts(G.actions(reports), b["sample"])
 
-    ok("R2.base", G.grain(call_of(b["reports"])["g"]) == 450)
-    one_load = [r for r in b["reports"] if r.get("load") != "C20260802"]
-    ok("R2.reimport", G.grain(call_of(one_load)["g"]) == 450 and call_of(one_load)["n"] == 4656)
-    shifted = [dict(r, recv=r["recv"] + dt.timedelta(hours=1)) for r in b["reports"]]
-    ok("R2.clocks", G.grain(call_of(shifted)["g"]) == 450)
-    cur = {r["codigo_localidade"]: r["nome"] for r in rows_of(target, "gazeteiro_localidades.csv")
-           if r["estado_nome"] == "atual"}
-    renamed = [dict(r, place=cur.get(r["loc"], r["place"])) for r in b["reports"]]
-    ok("R2.former_names", G.grain(call_of(renamed)["g"]) == 450)
-    items = rows_of(target, "registo_itens_imprensa.csv")
-    per_report = {}
-    for r in items:
-        if r["estado"] == "aceite":
-            per_report.setdefault(r["id_relato"], set()).add(r["codigo_acao"])
-    ok("R2.one_code_per_report", all(len(v) == 1 for v in per_report.values()))
-    ok("R2.items_above_reports", len([r for r in items if r["estado"] == "aceite"]) > len(per_report))
-    ids = {r["ident"] for r in b["reports"]}
-    ok("R2.exceptions_disjoint", not ({e["ident"] for e in b["exceptions"]} & ids))
-
-    # ---------------------------------------------------------------- R3, the three rules executed
-    ok("R3a.analyst_test", G.grain(base["r3"]) == 600 and G.grain(base["g"]) == 450
-       and G.grain(base["r3"]) != G.grain(base["g"]),
-       "the default path files %d, the golden is %d" % (G.grain(base["r3"]), G.grain(base["g"])))
-    ok("R3a.codes_as_filed_wrong", G.grain(base["r0"]) == 300)
-    ok("R3b.decisive_only", G.grain(base["r2"]) == 600 and G.grain(base["g"]) == 450)
-    ok("R3b.each_rung_wrong", 450 not in {300, 400, 600, 250, 700})
-    with open(os.path.join(target, "registo_itens_imprensa.csv"), encoding="utf-8") as fh:
-        lines = fh.read().splitlines()[1:]
-    blocks = {}
-    for i in range(0, len(lines) - 20, 20):
-        key = "|".join(x.split(",", 1)[1] for x in lines[i:i + 20])
-        blocks[key] = blocks.get(key, 0) + 1
-    ok("R3c.no_copied_block", max(blocks.values()) == 1)
-    for word in ("sensib", "especif", "recall", "precis", "falso positivo", "falso negativo",
-                 "corrig", "taxa de erro", "representativ", "extrapol"):
-        ok("R3c.no_method_word.%s" % word[:9], word not in text.lower(), word)
-    pdfs = "".join(open(os.path.join(target, f), "rb").read().decode("latin-1")
-                   for f in files if f.endswith(".pdf"))
-    for word in ("sensibilidade", "especificidade", "falso positivo", "falso negativo",
-                 "representativ", "453", "450 acoes"):
-        ok("R3c.no_method_in_pdf.%s" % word[:9], word not in pdfs, word)
-
-    # ---------------------------------------------------------------- the semantic fork table
-    ok("SF1.action_grain", g["actions_in_period"] < len(b["reports"]))
-    ok("SF2.codes_not_actions", G.grain(g["raw_rung0"]) != g["total"])
-    ok("SF3.codes", set(W.CONFRONTATIONAL) == {"CF", "RF", "DP"})
-    ok("SF4.window", all(W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO
-                         for a in acts if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO))
-    ok("SF5.code_kept", all((a["code"] == a["press_code"]) if a["press_code"] else True
-                            for a in acts))
-    ok("SF6.sample_scope", {r["id_relato"][:3] for r in b["sample"]} == {"IMP"})
-    ok("SF7.action_date_fixed", all(r["start"].date() == r["day"] for r in b["reports"]))
-    ok("SF8.place_resolution", all(r["loc"] for r in b["reports"]))
-    ok("SF9.reimport_neutral", G.grain(call_of(one_load)["g"]) == 450)
-    ok("SF10.twin_in_items", any(r["orgao"] == W.TWIN_FEED[1] for r in items))
-    ok("SF11.rounding", abs(g["raw_total"] - gold_cell) <= 0.55 * half)
-    ok("SF12.ties", len({450, 300, 400, 600, 250, 700}) == 6)
-    ok("SF13.accepted_only", all(r["estado"] in ("aceite", "rejeitado") for r in items))
-    ok("SF14.extract", max(r["day"] for r in b["reports"]) <= W.EXTRACT)
-    ok("SF15.outside_period", any(a["day"] > W.PERIOD_TO for a in acts))
-    ok("SF16.hand_coding_present",
-       sum(1 for r in b["sample"] if r["codigo_manual"]) >= 0.98 * len(b["sample"])
-       and all(r["nota"] for r in b["sample"] if not r["codigo_manual"]),
-       "the hand coding is the standard on every row the desk could code, and the few it could "
-       "not say so")
-    ok("SF17.unplaced_not_actions", len(b["exceptions"]) > 0)
-    ok("SF18.no_carry_in", min(r["day"] for r in b["reports"]) >= W.OPEN_DAY)
-    ok("SF19.fortnight_days", all((bb - a).days + 1 == W.FORTNIGHT_DAYS
-                                  for _, a, bb in W.fortnights()[:-1]))
-    ok("SF20.last_fortnight", (W.fortnights()[-1][2] - W.fortnights()[-1][1]).days + 1
-       == W.FORTNIGHT_DAYS + 1)
-    ok("SF21.delivery_codes_mapped",
-       W.MERGED[1] in {r["codigo_parceiro"] for r in rows_of(target,
-                                                             "relatos_rede_parceiros.csv")})
-    ok("SF22.azores_split", {"Acores", "Madeira"} <=
-       {r["distrito"] for r in rows_of(target, "gazeteiro_localidades.csv")})
-    cfg = json.load(open(os.path.join(target, "config_monitor.json"), encoding="utf-8"))
-    ok("SF23.offsets_shipped", "fusos_horarios" in cfg
-       and "acores" in cfg["fusos_horarios"] and "25 de outubro" in str(cfg["fusos_horarios"]))
-    ok("SF24.azores_actions_present",
-       any(a["district"] == W.AZORES_DISTRICT for a in acts))
-    ok("SF25.route_reported_filed", "ainda que outras vias" in conv,
-       "the convention that a route reported an action even when other routes did is shipped")
-    ok("SF25.route_reported_bites",
-       sum(1 for a in acts if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO
-           and a["routes"] == {"PAR"}) < sum(1 for a in acts
-                                             if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO
-                                             and "PAR" in a["routes"]),
-       "the two readings of a reported action give different counts")
-
-    # SF26, the route table's window. The convention fixes the basis (a report counts in the
-    # period it was received in) and nothing else: with the row deleted two further windows
-    # compute, so the row is load-bearing, and it survives every receipt zone in the pack.
-    def _route_triple(pick):
-        out = []
-        for route, _ in W.ROUTES:
-            kept = 0
-            for r in G.once_per_report(b["reports"], route):
-                if pick(r):
-                    kept += 1
-            kept += sum(1 for e in b["exceptions"] if e["route"] == route and pick(e))
-            out.append(kept)
-        return tuple(out)
-    _gold = _route_triple(lambda r: W.PERIOD_FROM <= r["recv"].date() <= W.PERIOD_TO)
-    _to_extract = _route_triple(lambda r: r["recv"].date() <= W.EXTRACT)
-    # an unplaced report carries no action, so the by-action-date reading keeps it on its receipt
-    _by_action = _route_triple(
-        lambda r: W.PERIOD_FROM <= r.get("day", r["recv"].date()) <= W.PERIOD_TO)
-    ok("SF26.route_window_filed", "recebeu entre 1 de" in conv,
-       "the convention fixing the route table's window is shipped")
-    ok("SF26.route_window_golden",
-       _gold == tuple(g["a2"][route]["received"] for route, _ in W.ROUTES), str(_gold))
-    ok("SF26.route_window_bites", _gold != _to_extract and _gold != _by_action,
-       "golden %s, to the extract %s, by action date %s" % (_gold, _to_extract, _by_action))
-    # the median's own population, which the loop-3 judge found unnamed: over the received set PAR
-    # is 1327.0 and over the reports of actions dated in the period it is 1331.0, so the clause
-    # naming it is load-bearing on the median as well as on the counts
-    def _median_over(pick):
-        out = []
-        for route, _ in W.ROUTES:
-            seen, lags = set(), []
-            for r in b["reports"]:
-                if r["route"] != route or r["ident"] in seen:
-                    continue
-                seen.add(r["ident"])
-                if pick(r) and r["lag"] is not None:
-                    lags.append(r["lag"])
-            out.append(round(statistics.median(lags), 1) if lags else 0.0)
-        return tuple(out)
-    _med_gold = _median_over(lambda r: W.PERIOD_FROM <= r["recv"].date() <= W.PERIOD_TO)
-    _med_act = _median_over(lambda r: W.PERIOD_FROM <= r["day"] <= W.PERIOD_TO)
-    ok("SF26.median_population_filed", "sobre estes que a mediana" in conv,
-       "the convention names the reports the median is computed over")
-    ok("SF26.median_population_golden",
-       _med_gold == tuple(g["a2"][route]["median_minutes"] for route, _ in W.ROUTES), str(_med_gold))
-    ok("SF26.median_population_bites", _med_gold != _med_act,
-       "received %s, by action date %s" % (str(_med_gold), str(_med_act)))
-    ok("SF26.median_ignores_unplaced", all(e.get("lag") is None for e in b["exceptions"]),
-       "an unplaced report has no action, so it carries no lag and cannot enter the median")
-
-    for _h in (-1, 1):
-        _d = dt.timedelta(hours=_h)
-        ok("SF26.route_window_zone_invariant.%+dh" % _h,
-           _route_triple(lambda r, _d=_d: W.PERIOD_FROM <= (r["recv"] + _d).date() <= W.PERIOD_TO)
-           == _gold,
-           "every receipt stamp moved %+dh still gives %s" % (_h, str(_gold)))
-
-    # SF27, the rows the desk could not code. They carry no manual code, so they are no comparison
-    # and no cell holds them; read instead as ordinary codings the call does not move.
-    _blank = [r for r in b["sample"] if not r["codigo_manual"]]
-    _tp = _fn = _fp = _tn = 0
-    for r in b["sample"]:
-        m, h = r["codigo_monitor"] in G.CONF, r["codigo_manual"] in G.CONF
-        if h and m:
-            _tp += 1
-        elif h:
-            _fn += 1
-        elif m:
-            _fp += 1
-        else:
-            _tn += 1
-    _alt_raw = base["H"] + G.rogan_gladen(base["N"], base["O"], (_tp, _fn, _fp, _tn))[0]
-    ok("SF27.uncodable_present", len(_blank) > 0, "%d rows carry no manual code" % len(_blank))
-    ok("SF27.uncodable_filed", "nao conseguiu codificar" in conv_all,
-       "the dictionary says what an empty codigo_manual means")
-    ok("SF27.uncodable_same_call", G.grain(_alt_raw) == gold_cell
-       and min(abs(_alt_raw - (gold_cell - half)), abs((gold_cell + half) - _alt_raw)) >= 12.0,
-       "reading the %d uncoded rows as ordinary gives %.2f against %.2f, the same cell"
-       % (len(_blank), _alt_raw, g["raw_total"]))
-
-    # SF28, the reposted August load. The portal stamped its rows on the day the load arrived, so a
-    # report delivered twice has two stamps and the dictionary says the delivery moment is the
-    # first load's; the other reading moves the partner route's median.
-    _par_rows = rows_of(target, "relatos_rede_parceiros.csv")
-    _loads = {r["id_carga"]: r for r in rows_of(target, "registo_importacoes.csv")}
-    _second = [r for r in _par_rows if r["id_carga"] == "C20260802"]
-    ok("SF28.repost_rows_present", len(_second) > 100, "%d rows in the second load" % len(_second))
-    ok("SF28.repost_stamped_on_arrival",
-       all(r["carimbo_entrega_utc"][:10] == _loads["C20260802"]["concluida_em"] for r in _second)
-       and all(r["data_ocorrencia"][:7] == "2026-08" for r in _second),
-       "every row of the second load carries the day the import log gives it, %s"
-       % _loads["C20260802"]["concluida_em"])
-    ok("SF28.repost_first_load_filed", "primeira carga que o trouxe" in conv_all,
-       "the dictionary fixes which of a reposted report's two stamps is its delivery")
-    _last = {}
-    for r in b["reports"]:
-        if r["route"] == "PAR" and (r["ident"] not in _last
-                                    or r["recv_utc"] > _last[r["ident"]]["recv_utc"]):
-            _last[r["ident"]] = r
-    _lags = sorted(r["lag"] for r in _last.values()
-                   if r["lag"] is not None and W.PERIOD_FROM <= r["recv"].date() <= W.PERIOD_TO)
-    _k = len(_lags) // 2
-    _last_med = _lags[_k] if len(_lags) % 2 else (_lags[_k - 1] + _lags[_k]) / 2.0
-    ok("SF28.repost_reading_bites", abs(_last_med - g["a2"]["PAR"]["median_minutes"]) > 5,
-       "the last load's stamps give a median of %.1f against the first load's %.1f"
-       % (_last_med, g["a2"]["PAR"]["median_minutes"]))
-
-    # every graded figure's distance to the edge of the value it prints, in units of its own
-    # rounding: the count to the nearest fifty, the counts as whole numbers, the medians in tenths
-    # of a minute and the euro totals to the euro
-    _graded = [("the confrontational count", g["raw_total"], 50.0)]
-    for label, v in sorted(g["a1"].items()):
-        _graded += [("%s actions" % label, float(v["actions"]), 1.0),
-                    ("%s municipalities" % label, float(v["municipalities"]), 1.0),
-                    ("%s partner actions" % label, float(v["partner_actions"]), 1.0)]
-    for route, v in sorted(g["a2"].items()):
-        _graded += [("%s received" % route, float(v["received"]), 1.0),
-                    ("%s unplaced" % route, float(v["unplaceable"]), 1.0),
-                    ("%s median" % route, v["median_minutes"], 0.1)]
-    for code, v in sorted(g["a3"].items()):
-        _graded += [("%s filed" % code, float(v["filed"]), 1.0),
-                    ("%s after the close" % code, float(v["after_close"]), 1.0),
-                    ("%s euros" % code, v["raw_euros"], 1.0)]
-    _edges = [(unit / 2.0 - abs(val - round(val / unit) * unit), name, val, unit)
-              for name, val, unit in _graded]
-    _tight = min(_edges)
-    ok("bin.graded_unit_edge", _tight[0] >= 0.15 * _tight[3],
-       "%d graded figures, the tightest is %s at %.4f, %.3f of its rounding unit from the edge"
-       % (len(_graded), _tight[1], _tight[2], _tight[0] / _tight[3]))
-
-    # ---------------------------------------------------------------- realism
-    by_fn = [v["actions"] for v in g["a1"].values()]
-    ok("real.no_identical_periods", max(by_fn.count(x) for x in by_fn) <= 2, str(by_fn))
-    ok("real.no_round_call", g["raw_total"] % 1 != 0)
-    for route, a2 in g["a2"].items():
-        ok("real.median_not_round.%s" % route, a2["median_minutes"] % 10 != 0,
-           "%s %s" % (route, a2["median_minutes"]))
-    for p, a3 in g["a3"].items():
-        ok("real.euros_not_round.%s" % p, a3["euros"] % 100 != 0, "%s %s" % (p, a3["euros"]))
-    for name in W.PEOPLE.values():
-        hit = [f for f in files if name.split()[0].encode() in open(os.path.join(target, f), "rb").read()]
-        ok("real.persona_only_where_filed.%s" % name.split()[0],
-           all(f.endswith((".pdf", ".xlsx")) for f in hit), str(hit))
-    ok("real.coders_are_initials",
-       {r["codificador"] for r in b["sample"]} <= {c for c, _, _, _ in W.CODERS})
-    ok("real.coder_loads_differ", len({sum(1 for r in b["sample"] if r["codificador"] == c)
-                                       for c, _, _, _ in W.CODERS}) == len(W.CODERS))
-    load = sorted(sum(1 for r in b["sample"] if r["codificador"] == c) for c, _, _, _ in W.CODERS)
-    ok("real.coder_spread", load[-1] >= 1.5 * load[0], str(load))
-    ok("real.sample_two_rounds", {r["ronda"] for r in b["sample"]} == {"R1", "R2"})
-    ok("real.adjudication_present",
-       0.04 <= sum(1 for r in b["sample"] if r["revisto_por"]) / float(len(b["sample"])) <= 0.14)
-    ok("real.adjudication_decided",
-       {r["decisao_da_mesa"] for r in b["sample"] if r["revisto_por"]} == {"mantido", "alterado"})
-    ok("real.notes_present", 10 <= sum(1 for r in b["sample"] if r["nota"]) <= 90)
-    # the desk's lot is as big as the days it had, not a share of the window, and the rounds differ
-    _pool, _lot = {}, {}
-    for _nm, _close, _fa, _fb, _op in W.SAMPLE_ROUNDS:
-        _pool[_nm] = sum(1 for r in b["reports"]
-                         if r["route"] == "IMP" and _fa <= r["day"] <= _fb)
-        _lot[_nm] = sum(1 for r in b["sample"] if r["ronda"] == _nm)
-    _share = dict((k, _lot[k] / float(_pool[k])) for k in _lot)
-    for _nm, _sh in sorted(_share.items()):
-        ok("real.round_share_uneven.%s" % _nm, abs(_sh - 0.50) >= 0.02,
-           "%s took %d of the %d reports its window holds, %.4f" % (_nm, _lot[_nm], _pool[_nm], _sh))
-    ok("real.round_shares_differ",
-       abs(_share["R1"] - _share["R2"]) >= 0.04, str({k: round(v, 4) for k, v in _share.items()}))
-    ok("real.lot_not_a_round_number", len(b["sample"]) % 10 != 0, str(len(b["sample"])))
-    _ids = [r["id_relato"] for r in b["sample"]]
-    _asc = sum(1 for i in range(len(_ids) - 1) if _ids[i] < _ids[i + 1]) / float(len(_ids) - 1)
-    ok("real.written_order_not_the_identifier", 0.30 <= _asc <= 0.70,
-       "%.3f of consecutive rows run up the identifier" % _asc)
-    _load = {}
-    for r in b["sample"]:
-        _load[r["data_codificacao"]] = _load.get(r["data_codificacao"], 0) + 1
-    _vals = sorted(_load.values())
-    ok("real.coding_in_same_day_blocks",
-       _vals[-1] >= 3 * _vals[0] and len(set(_vals)) >= 12
-       and max(_vals.count(v) for v in _vals) <= 6,
-       "%d coding days, loads %d to %d, %d distinct" % (len(_vals), _vals[0], _vals[-1],
-                                                        len(set(_vals))))
-    ok("real.notes_only_where_due",
-       all(r["revisto_por"] or not r["codigo_manual"] for r in b["sample"] if r["nota"]),
-       "every note sits on a row a second coder read or a row nobody could code")
-    _notes = [r["nota"] for r in b["sample"] if r["nota"]]
-    ok("real.notes_are_not_stock",
-       len(set(_notes)) >= 20 and max(_notes.count(x) for x in set(_notes)) <= 5,
-       "%d notes, %d of them distinct" % (len(_notes), len(set(_notes))))
-    _alt = [r for r in b["sample"] if r["decisao_da_mesa"] == "alterado"]
-    ok("real.changed_decision_changes_the_code",
-       len(_alt) >= 8
-       and sum(1 for r in _alt if r["codigo_manual"] != r["codigo_monitor"]) >= 0.6 * len(_alt),
-       "%d of %d changed decisions end on a code the classifier did not give"
-       % (sum(1 for r in _alt if r["codigo_manual"] != r["codigo_monitor"]), len(_alt)))
-    _ag = {}
-    for _c, _, _, _ in W.CODERS:
-        _mine = [r for r in b["sample"] if r["codificador"] == _c and r["codigo_manual"]]
-        _ag[_c] = sum(1 for r in _mine if r["codigo_manual"] == r["codigo_monitor"]) / float(len(_mine))
-    ok("real.coder_agreement_differs", max(_ag.values()) - min(_ag.values()) >= 0.06,
-       str({k: round(v, 3) for k, v in _ag.items()}))
-    _unc = [r for r in b["sample"] if not r["codigo_manual"]]
-    ok("real.uncodable_rows_present", 3 <= len(_unc) <= 25,
-       "%d of %d rows carry no manual code" % (len(_unc), len(b["sample"])))
-    ok("real.uncodable_rows_explained",
-       all(r["nota"] and not r["revisto_por"] and not r["decisao_da_mesa"] for r in _unc),
-       "every row with no manual code says why and went to no second coder")
-    # the desk opened each lot when the previous round closed, so no stretch of the period is unworked
-    _cal = sorted({dt.date.fromisoformat(r["data_codificacao"]) for r in b["sample"]})
-    _gaps = [(_cal[i + 1] - _cal[i]).days for i in range(len(_cal) - 1)]
-    ok("real.coding_calendar_has_no_hole", max(_gaps) <= 12,
-       "the longest stretch with no coding is %d days, from %s"
-       % (max(_gaps), _cal[_gaps.index(max(_gaps))].isoformat()))
-    ok("real.coding_covers_every_month", {d.month for d in _cal} == {5, 6, 7, 8, 9},
-       str(sorted({d.month for d in _cal})))
-    for _i in range(1, len(W.SAMPLE_ROUNDS)):
-        _prev_close = W.SAMPLE_ROUNDS[_i - 1][1]
-        _first = min(dt.date.fromisoformat(r["data_codificacao"]) for r in b["sample"]
-                     if r["ronda"] == W.SAMPLE_ROUNDS[_i][0])
-        ok("real.round_opens_on_the_previous_close.%s" % W.SAMPLE_ROUNDS[_i][0],
-           (_first - _prev_close).days <= 5,
-           "%s starts coding on %s, %d days after %s closed"
-           % (W.SAMPLE_ROUNDS[_i][0], _first.isoformat(), (_first - _prev_close).days,
-              W.SAMPLE_ROUNDS[_i - 1][0]))
-    ok("real.coding_after_action",
-       all(r["data_codificacao"] > r["data_ocorrencia"] for r in b["sample"]))
-    ok("real.coding_before_extract",
-       max(r["data_codificacao"] for r in b["sample"]) <= W.EXTRACT.isoformat())
-    cal = {r["data_codificacao"] for r in b["sample"]}
-    ok("real.coding_calendar_uneven", len(cal) >= 30 and max(
-        sum(1 for r in b["sample"] if r["data_codificacao"] == dd) for dd in cal) >= 2 * min(
-        sum(1 for r in b["sample"] if r["data_codificacao"] == dd) for dd in cal))
-    mins = [int(r["inicio_acao"][14:16]) for r in items if r["inicio_acao"]]
-    ok("real.minutes_not_all_round",
-       0.6 <= sum(1 for m in mins if m % 5 == 0) / float(len(mins)) <= 0.92,
-       "%.3f on multiples of five" % (sum(1 for m in mins if m % 5 == 0) / float(len(mins))))
-    hours = {int(r["inicio_acao"][11:13]) for r in items if r["inicio_acao"]}
-    ok("real.midday_present", {12, 13} <= hours, str(sorted(hours)))
-    # each route sees its own hours of the day
-    _hrs = {}
-    for route, _ in W.ROUTES:
-        _hrs[route] = [r["start"].hour for r in b["reports"] if r["route"] == route]
-    _mean = dict((k, statistics.mean(v)) for k, v in _hrs.items())
-    for _a, _b2 in (("IMP", "PAR"), ("IMP", "LIN"), ("PAR", "LIN")):
-        ok("real.route_clocks_differ.%s_%s" % (_a, _b2), abs(_mean[_a] - _mean[_b2]) >= 1.0,
-           "%s %.2f against %s %.2f" % (_a, _mean[_a], _b2, _mean[_b2]))
-    ok("real.route_clock_ranges_differ",
-       min(_hrs["LIN"]) < min(_hrs["IMP"]) <= min(_hrs["PAR"])
-       and max(_hrs["LIN"]) > max(_hrs["IMP"]) >= max(_hrs["PAR"]),
-       str({k: (min(v), max(v)) for k, v in sorted(_hrs.items())}))
-    # the minute an action is reported to start: a quarter-hour mode, not a quarter-hour lattice
-    _mc = dict((m, mins.count(m)) for m in set(mins))
-    _quarter = sum(_mc.get(m, 0) for m in (0, 15, 30, 45)) / float(len(mins))
-    _off5 = sum(n for m, n in _mc.items() if m % 5) / float(len(mins))
-    ok("real.minute_mode_is_the_quarter_hour",
-       max(_mc, key=lambda m: _mc[m]) in (0, 15, 30, 45) and 0.30 <= _quarter <= 0.55,
-       "%.3f of start minutes are on a quarter hour" % _quarter)
-    ok("real.minute_lattice_broken", len(_mc) == 60 and _off5 >= 0.12,
-       "%d of the 60 minute values appear and %.3f of starts are off a multiple of five"
-       % (len(_mc), _off5))
-    # the autumn's volume brings its own geography with it
-    _permonth = {}
-    for a in acts:
-        if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO:
-            _permonth.setdefault(a["day"].month, set()).add(a["muni"])
-    _pre = max(len(_permonth[m]) for m in (5, 6, 7, 8))
-    _post = min(len(_permonth[m]) for m in (9, 10))
-    _total_muni = len({r["codigo_municipio"] for r in rows_of(target, "gazeteiro_localidades.csv")})
-    ok("real.geography_moves_with_the_volume", _post - _pre >= 8,
-       "the busiest month before the surge touches %d municipalities and the quieter of the two "
-       "after it touches %d, of %d in the gazetteer" % (_pre, _post, _total_muni))
-    ok("real.register_does_not_start_saturated", _pre <= _total_muni - 7,
-       "%d of %d municipalities in the busiest month before the surge" % (_pre, _total_muni))
-    _first = {}
-    for a in sorted(acts, key=lambda x: x["day"]):
-        _first.setdefault(a["muni"], a["day"])
-    _new = [m for m, d0 in _first.items() if d0 >= W.SURGE_FROM]
-    ok("real.surge_reaches_new_ground", len(_new) >= 8,
-       "%d municipalities have no action in the register before 5 September" % len(_new))
-    _shr = {}
-    for label, lo, hi2 in (("pre", W.PERIOD_FROM, W.SURGE_FROM - dt.timedelta(days=1)),
-                           ("post", W.SURGE_FROM, W.PERIOD_TO)):
-        tot = [a for a in acts if lo <= a["day"] <= hi2]
-        _shr[label] = {}
-        for a in tot:
-            _shr[label][a["district"]] = _shr[label].get(a["district"], 0) + 1.0 / len(tot)
-    _doubled = [d0 for d0 in _shr["post"]
-                if _shr["pre"].get(d0, 0) > 0 and _shr["post"][d0] >= 2.0 * _shr["pre"][d0]]
-    _grp = {}
-    for _lab in ("pre", "post"):
-        _grp[_lab] = {}
-        for d0, v0 in _shr[_lab].items():
-            _grp[_lab][W.DISTRICT_GROUP[d0]] = _grp[_lab].get(W.DISTRICT_GROUP[d0], 0.0) + v0
-    ok("real.surge_concentrates_in_districts",
-       _grp["post"]["interior"] >= 1.2 * _grp["pre"]["interior"]
-       and _grp["post"]["metro"] < _grp["pre"]["metro"] and len(_doubled) >= 1,
-       "the interior districts take %.4f of the register's actions before the surge and %.4f after, "
-       "the metro districts %.4f against %.4f, and %s at least doubles"
-       % (_grp["pre"]["interior"], _grp["post"]["interior"], _grp["pre"]["metro"],
-          _grp["post"]["metro"], str(sorted(_doubled))))
-    weekday, weekend = [], []
-    for day, n in daily.items():
-        (weekend if day.weekday() >= 5 else weekday).append(n)
-    ok("real.weekend_effect", statistics.mean(weekend) <= 0.8 * statistics.mean(weekday),
-       "%.1f against %.1f" % (statistics.mean(weekend), statistics.mean(weekday)))
-    par_hours = [int(r["carimbo_entrega_utc"][11:13])
-                 for r in rows_of(target, "relatos_rede_parceiros.csv")]
-    peak = max(par_hours.count(h) for h in set(par_hours))
-    ok("real.partner_hours_diurnal", peak <= 0.30 * len(par_hours)
-       and len({h for h in set(par_hours) if par_hours.count(h) > len(par_hours) / 48.0}) >= 8,
-       "busiest hour holds %.3f of the deliveries" % (peak / float(len(par_hours))))
-    lags = [r["lag"] for r in b["reports"] if r["route"] == "LIN" and r["lag"] is not None]
-    ok("real.line_lag_spread", max(lags) / min(max(lags[0], 1), max(1, min(lags))) >= 20,
-       "%d to %d minutes" % (min(lags), max(lags)))
-    _cmp = [r for r in b["sample"] if r["codigo_manual"]]
-    agree = sum(1 for r in _cmp if r["codigo_monitor"] == r["codigo_manual"])
-    ok("real.classifier_is_an_instrument", agree / float(len(_cmp)) >= 0.45,
-       "%.3f exact code agreement over the %d comparisons" % (agree / float(len(_cmp)), len(_cmp)))
-    near = far = 0
-    pos = {c: i for i, (c, _, _) in enumerate(W.ACTION_CODES)}
-    for r in _cmp:
-        if r["codigo_monitor"] == r["codigo_manual"]:
+def wb_matches(F):
+    wb = openpyxl.load_workbook(os.path.join(TASK, "golden", "line_patrol_2026-11-09.xlsx"), read_only=True)
+    ws = wb["Feeders Jan-Oct 2026"]
+    good = True
+    seen = 0
+    for r in ws.iter_rows(min_row=4, values_only=True):
+        if r[0] not in F["feeders"]:
             continue
-        if abs(pos[r["codigo_monitor"]] - pos[r["codigo_manual"]]) <= 2:
-            near += 1
-        else:
-            far += 1
-    ok("real.confusion_is_local", near > far, "near %d far %d" % (near, far))
-    ok("real.extract_coherent", all(r["recv"].date() <= W.EXTRACT for r in b["reports"]))
-    man = {r["ficheiro"]: r for r in rows_of(target, "manifesto_extracao.csv")}
-    ok("real.manifest_covers", set(files) - set(man) == {"manifesto_extracao.csv"},
-       str(set(files) - set(man)))
-    ok("real.manifest_extract_date",
-       all(r["extraido_em"] == W.EXTRACT.isoformat() for r in man.values()))
-    ok("real.item_rows_match", int(man["registo_itens_imprensa.csv"]["linhas"]) == big)
+        seen += 1
+        v = F["feeders"][r[0]]
+        good &= (r[1] == v["nt"] and abs(r[2] - v["saidi"]) < 1e-9 and abs(r[3] - v["maifi"]) < 1e-9 and r[4] == v["cemi"])
+    wb.close()
+    return good and seen == 16
 
-    # ---------------------------------------------------------------- the ask layer
-    ok("ask.a1_fortnights", len(g["a1"]) == 13)
-    ok("ask.a1_last_fortnight", (W.fortnights()[-1][2] - W.fortnights()[-1][1]).days == 14)
-    ok("ask.a2_routes", len(g["a2"]) == 3 and all(v["unplaceable"] > 0 for v in g["a2"].values()))
-    ok("ask.a3_partners", len(g["a3"]) == 7 and all(v["filed"] > 0 for v in g["a3"].values()))
-    par_rows = rows_of(target, "relatos_rede_parceiros.csv")
-    ok("cracker.a2_received", len(par_rows) != g["a2"]["PAR"]["received"],
-       "%d %d" % (len(par_rows), g["a2"]["PAR"]["received"]))
-    counter = {}
-    for r in b["totals"]:
-        counter[r["via"]] = counter.get(r["via"], 0) + int(r["relatos_recebidos"])
-    ok("cracker.a2_counter_overcounts", counter["PAR"] > g["a2"]["PAR"]["received"],
-       "counter %d against %d" % (counter["PAR"], g["a2"]["PAR"]["received"]))
-    for route in ("IMP", "LIN"):
-        inside = sum(int(r["relatos_recebidos"]) for r in b["totals"] if r["via"] == route
-                     and W.PERIOD_FROM <= G.pdate(r["data"]) <= W.PERIOD_TO)
-        ok("ask.a2_counter_reconciles.%s" % route, inside == g["a2"][route]["received"],
-           "%s counter %d against %d" % (route, inside, g["a2"][route]["received"]))
-    ok("cracker.a2_unplaceable", g["a2"]["IMP"]["unplaceable"] > 0)
-    naive_med = statistics.median(sorted(
-        (r["recv_utc"] - r["start"]).total_seconds() / 60.0
-        for r in b["reports"] if r["route"] == "IMP"
-        and W.PERIOD_FROM <= r["recv"].date() <= W.PERIOD_TO))
-    ok("cracker.a2_median", abs(naive_med - g["a2"]["IMP"]["median_minutes"]) > 5,
-       "%.1f %s" % (naive_med, g["a2"]["IMP"]["median_minutes"]))
-    seen = {}
-    for r in b["reports"]:
-        if r["route"] == "PAR":
-            seen.setdefault(r["ident"], r)
-    flat = sum(dict((p[0], p[3]) for p in W.PARTNERS)[W.AMENDED[0]] for r in seen.values()
-               if r["src"] == W.AMENDED[0] and W.PERIOD_FROM <= r["day"] <= W.PERIOD_TO
-               and r["recv"].date() <= W.PERIOD_TO)
-    ok("cracker.a3_amendment", round(flat) != g["a3"][W.AMENDED[0]]["euros"],
-       "%d %d" % (round(flat), g["a3"][W.AMENDED[0]]["euros"]))
-    one_code = sum(1 for r in seen.values() if r["src"] == W.MERGED[0]
-                   and W.PERIOD_FROM <= r["day"] <= W.PERIOD_TO)
-    ok("cracker.a3_merged", one_code != g["a3"][W.MERGED[0]]["filed"],
-       "%d %d" % (one_code, g["a3"][W.MERGED[0]]["filed"]))
-    all_rows = sum(1 for r in seen.values())
-    ok("cracker.a3_window", all_rows != sum(v["filed"] for v in g["a3"].values()),
-       "%d %d" % (all_rows, sum(v["filed"] for v in g["a3"].values())))
-    ok("cracker.a1_scope", any(a["day"] > W.PERIOD_TO for a in acts))
 
-    # ---------------------------------------------------------------- the separation line
-    ok("sep.devices_outside_call", all(e["ident"] not in ids for e in b["exceptions"]))
-    ok("sep.totals_carry_no_code",
-       set(rows_of(target, "totais_por_via.csv")[0]) == {"data", "via", "relatos_recebidos"})
-    ok("sep.sample_carries_no_total",
-       "total" not in ",".join(rows_of(target, "amostra_dupla_codificacao.csv")[0]).lower())
-    return N
+def moved_ok(res, net):
+    for o in res["items"]:
+        if o["dtype"] == "FUSE":
+            rows = net.rows[o["device"]]
+            if len({r["feeder"] for r in rows}) > 1 and o["feeder"] != net.row(o["device"], o["day"])["feeder"]:
+                return False
+    return True
+
+
+def tidy_ok(res, net):
+    days = collections.defaultdict(set)
+    for o in res["items"]:
+        d = o["day"]
+        for sp in o["reach"]:
+            days[sp].add(lday_safe(o["start"]))
+    out = []
+    for sp, v in net.sp.items():
+        for k in ("con", "dis"):
+            d = v[k]
+            if d and d in days.get(sp, ()):
+                out.append((sp, k, d))
+    return out
+
+
+def lday_safe(t):
+    return G.lday(t)
+
+
+def clean_truth_call(S):
+    """The decisive grouping and the default path on the simulation's own operations, no file read."""
+    ops = [o for o in S["ops"] if W.WIN0 <= o["day"] <= W.WIN1 and (not o["lockout"] or o.get("test_close"))]
+    by = collections.defaultdict(list)
+    for o in ops:
+        by[(o["feeder"], o["device"], o["phases"])].append((o["rec"][0][o["phases"][0]], o["day"]))
+    best = collections.Counter()
+    for k, xs in by.items():
+        xs.sort()
+        for i in range(len(xs)):
+            best[k[0]] = max(best[k[0]], len({d for c, d in xs if xs[i][0] <= c <= xs[i][0] * 1.04}))
+    call = max(best, key=lambda f: best[f])
+    return call, clean_default(S)
+
+
+def clean_default(S):
+    """The default path on the clean truth: momentary events, the storm screen, per overhead mile, against 2025."""
+    net = build.world_cache["net"]
+    wx = build.world_cache["wx"]
+    stk = build.world_cache["stk"]
+    TR = build.world_cache["TR"]
+    gust = {sim.local_day(int(h)) for j, h in enumerate(wx["hours"]) if wx["gust"][j] >= 34.76}
+    near = collections.defaultdict(set)
+    for (t, x, y, amp, kind) in stk:
+        if kind == "CG":
+            for sid, v in W.SUBS.items():
+                if math.hypot(x - v[1], y - v[2]) <= 8.047:
+                    near[sid].add(sim.local_day(t))
+    rate = {}
+    for f in W.FID:
+        F = net["feeders"][f]
+        sd = near[F["sub"]] | gust
+        a = sum(1 for e in TR["events"] if e["feeder"] == f and W.WIN0 <= e["day"] <= W.WIN1 and e["day"] not in sd)
+        b = sum(1 for e in TR["events"] if e["feeder"] == f and W.BASE0 <= e["day"] <= W.BASE1 and e["day"] not in sd)
+        rate[f] = (a - b) / round(F["main"] + F["lat_mi"], 1)
+    return max(rate, key=lambda f: rate[f])
+
+
+def relay_complete(res, net):
+    rel = collections.defaultdict(list)
+    with open(os.path.join(T, PK.FILES["relay"])) as fh:
+        for r in csv.DictReader(fh):
+            rel[net.nb(r["relay"])].append(G.utc_iso(r["utc_time"]))
+    for dev, seq in res["soe"].items():
+        if net.rows[dev][0]["type"] != "BREAKER":
+            continue
+        ts_ = sorted(rel.get(dev, []))
+        for t, s in seq:
+            if s == "OPEN" and W.WIN0 <= G.lday(t) <= W.WIN1:
+                i = __import__("bisect").bisect_left(ts_, t - 200)
+                if i >= len(ts_) or ts_[i] > t:
+                    return False
+    return True
+
+
+def no_ranking(text):
+    bad = []
+    for f in ("vegetation/line_clearance_work_2023_2026.csv", "customers/blinking_lights_contacts_2025_2026.csv"):
+        h = open(os.path.join(T, f)).readline()
+        if re.search(r"rank|score|priority|patrol", h, re.I):
+            bad.append(f)
+    return not bad and not re.search(r"MLR-2|NYD-3|SYC-3", text)
+
+
+def soe_offsets(T_, net):
+    rel = []
+    with open(os.path.join(T_, PK.FILES["relay"])) as fh:
+        for r in csv.DictReader(fh):
+            rel.append(G.utc_iso(r["utc_time"]))
+    rel = set(rel)
+    n = same = 0
+    with open(os.path.join(T_, PK.FILES["soe"])) as fh:
+        for r in csv.DictReader(fh):
+            if r["state"] == "OPEN":
+                n += 1
+                same += G.scada_t(r["time"]) in rel
+    return n > 0 and same == 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,377 +1,544 @@
-"""The register's own extracts: the press monitor's item log, the two report files, the gazetteer,
-the import log, the route control totals, the crawler configuration and the extract manifest."""
+"""Cut the evidence pack: every file as the system that produces it would export it."""
 import csv
 import datetime as dt
+import io
 import json
+import math
 import os
-import random
 
+import numpy as np
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment
+
+import postprocess as PP
 import sim
+import truth
 import world as W
 
-# the press monitor stamps every item with its collection server's UTC clock; the partner portal
-# stamps deliveries in UTC; the public line stamps in the association's own local clock.
-REJECT = [("fora_do_ambito", 44), ("sem_acao_coletiva", 27), ("duplicado_de_item", 9),
-          ("desporto_ou_espetaculo", 11), ("texto_insuficiente", 9)]
-RELOAD_ARRIVED = dt.date(2026, 9, 14)
+FILES = {
+    "relay": "protection/feeder_relay_events_2025_2026.csv",
+    "recloser": "protection/recloser_control_events_2025_2026.csv",
+    "soe": "scada/soe_breakers_reclosers_2025_2026.csv",
+    "oms": "oms/oms_outage_history_2025_2026.xlsx",
+    "feeders": "assets/feeder_register.xlsx",
+    "devices": "assets/protective_device_register.csv",
+    "transformers": "assets/distribution_transformers.csv",
+    "sps": "customers/service_points_2026-10-31.csv",
+    "strokes": "weather/lightning_strokes_2025_2026.csv",
+    "asos": "weather/airport_hourly_obs_2025_2026.csv",
+    "subs": "gis/substations.geojson",
+    "veg": "vegetation/line_clearance_work_2023_2026.csv",
+    "blinks": "customers/blinking_lights_contacts_2025_2026.csv",
+    "procedure": "procedures/DRP-04_distribution_reliability_procedure_rev6.pdf",
+}
+DISTRACTORS = ["veg", "blinks", "strokes"]
+STATION = "KKFR"
+EXPORT_STAMP = "2026-11-03T07:41:00Z"
+
+LEGACY_CAUSE = {"lightning": "LTNG", "tree": "VEG", "wet_tree": "VEG", "storm_damage": "WTHR", "animal": "ANML",
+                "ice": "WTHR",
+                "equipment": "EQUIP", "vehicle": "PUB", "public": "PUB", "unknown": "UNK", "planned": "PLAN",
+                "incipient": "UNK"}
+NEW_CAUSE = {"LTNG": "LIGHTNING", "VEG": "VEGETATION", "WTHR": "WEATHER OTHER", "ANML": "ANIMAL",
+             "EQUIP": "EQUIPMENT FAILURE", "PUB": "PUBLIC DAMAGE", "UNK": "UNKNOWN", "PLAN": "PLANNED"}
 
 
-def write_csv(path, head, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(head)
-        w.writerows(rows)
+def path(target, key):
+    p = os.path.join(target, FILES[key])
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    return p
+
+
+def iso_utc(t, ms=True):
+    u = sim.utc_dt(t)
+    if ms:
+        return u.strftime("%Y-%m-%dT%H:%M:%S.") + "%03dZ" % (t % 1000)
+    return u.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def local_zone(t):
+    return "CDT" if sim.offset_ms(t) == -5 * sim.MS_H else "CST"
+
+
+def scada_time(t):
+    l = sim.local_dt(t)
+    return l.strftime("%Y-%m-%d %H:%M:%S.") + "%03d %s" % (t % 1000, local_zone(t))
+
+
+def cst_time(t):
+    return (sim.EPOCH + dt.timedelta(milliseconds=t - 6 * sim.MS_H)).strftime("%m/%d/%Y %H:%M:%S")
+
+
+def legacy_time(t):
+    return sim.local_dt(t).strftime("%m/%d/%Y %H:%M")
+
+
+def write_csv(p, header, rows, crlf=False):
+    with open(p, "w", newline="") as fh:
+        w = csv.writer(fh, lineterminator="\r\n" if crlf else "\n")
+        w.writerow(header)
+        for r in rows:
+            w.writerow(r)
     return len(rows)
 
 
-def local_offset(district, day):
-    """Hours the local clock of a district is ahead of UTC on a local calendar day. Summer time ends
-    on 25 October 2026; the Azores run an hour behind the mainland and Madeira all year."""
-    summer = day < W.DST_BACK
-    pair = W.OFFSET_AZORES if district == W.AZORES_DISTRICT else W.OFFSET_MAINLAND
-    return pair[0] if summer else pair[1]
+# --------------------------------------------------------------------------- names the systems carry
+def breaker_id(net, fid, day):
+    return W.breaker_name(net, fid, day)
 
 
-WORK_HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-WORK_WEIGHTS = [9, 14, 15, 12, 7, 6, 10, 11, 9, 7, 5, 3]
+def scada_point(net, dev, day):
+    D = net["devices"][dev]
+    fid = D["feeder"]
+    spec = W.FEEDERS[W.FIX[fid]]
+    if D["type"] == "BREAKER":
+        if spec.get("legacy") and day < W.REBUILD:
+            return "COTTER.%s.CB" % spec["legacy"][3:]
+        return "%s.F%s.CB" % (D["feeder"][:3], fid[-1])
+    return "%s.%s.REC" % (fid.replace("-", ""), dev.replace("-", ""))
 
 
-def work_moment(day, rng):
-    """A moment inside a partner organisation's own working day."""
-    return dt.datetime.combine(day, dt.time(rng.choices(WORK_HOURS, weights=WORK_WEIGHTS)[0],
-                                            rng.randrange(0, 60)))
+def terminal_of(net, dev, phases):
+    order = net["devices"][dev]["terminals"]
+    ts_ = sorted(order.index(p) + 1 for p in phases)
+    if len(ts_) == 1:
+        return "%d-G" % ts_[0]
+    return "-".join(str(x) for x in ts_)
 
 
-def snap_working(local_moment, rng):
-    """A partner organisation delivers through the portal in its own working hours, so a report
-    whose turn comes outside them waits for the next working day."""
-    for _ in range(4):
-        if local_moment.weekday() >= 5 and rng.random() < 0.74:
-            local_moment = work_moment(local_moment.date() + dt.timedelta(days=1), rng)
-            continue
-        if local_moment.hour < 8:
-            return work_moment(local_moment.date(), rng)
-        if local_moment.hour >= 20:
-            local_moment = work_moment(local_moment.date() + dt.timedelta(days=1), rng)
-            continue
-        return local_moment
-    return local_moment
-
-
-def stamp(district, day_off, start_h, start_m, lag_min):
-    """The action's start in the local clock of its place, and the report's moment in UTC."""
-    start = dt.datetime.combine(sim.d(day_off), dt.time(start_h, start_m))
-    start_utc = start - dt.timedelta(hours=local_offset(district, start.date()))
-    recv_utc = start_utc + dt.timedelta(minutes=lag_min)
-    return start, recv_utc
-
-
-def place_text(loc, rng):
-    if loc["former"] and rng.random() < 0.45:
-        return loc["former"]
-    return loc["name"]
-
-
-def intake_window(local_moment, rng):
-    """The monitor's collection and the public line both run on the association's own intake hours,
-    06:00 to 23:00: whatever lands outside them is written at the next intake."""
-    if local_moment.hour >= W.INTAKE_TO:
-        local_moment = dt.datetime.combine(local_moment.date() + dt.timedelta(days=1),
-                                           dt.time(W.INTAKE_FROM, rng.randrange(0, 56)))
-    elif local_moment.hour < W.INTAKE_FROM:
-        local_moment = dt.datetime.combine(local_moment.date(),
-                                           dt.time(W.INTAKE_FROM, rng.randrange(0, 56)))
-    return local_moment
-
-
-def build_reports(reps, locs, rng):
-    """Add the dates, stamps and place text every report file needs."""
-    cap = dt.datetime.combine(W.EXTRACT, dt.time(20, 30))   # the record was pulled that evening
-    for r in reps:
-        a = r["action"]
-        dist = a["district"]
-        start, recv_utc = stamp(dist, a["day"], r["start_h"], r["start_m"], r["lag_min"])
-        if r["route"] == "PAR":
-            own = recv_utc + dt.timedelta(hours=local_offset(dist, recv_utc.date()))
-            own = snap_working(own, rng)
-            recv_utc = own - dt.timedelta(hours=local_offset(dist, own.date()))
-        recv_lisbon = recv_utc + dt.timedelta(hours=local_offset("Lisboa", recv_utc.date()))
-        if r["route"] != "PAR":
-            own = intake_window(recv_lisbon, rng)
-            if own != recv_lisbon:
-                recv_lisbon = own
-                recv_utc = own - dt.timedelta(hours=local_offset("Lisboa", own.date()))
-        if recv_utc > cap:                                 # a report that had not arrived is not in it
-            recv_utc = max(start - dt.timedelta(hours=local_offset(dist, start.date()))
-                           + dt.timedelta(minutes=12),
-                           cap - dt.timedelta(minutes=r["lag_min"] % 97))
-            recv_lisbon = recv_utc + dt.timedelta(hours=local_offset("Lisboa", recv_utc.date()))
-        r["start"] = start
-        r["recv_lisbon"] = recv_lisbon
-        r["recv_local"] = recv_lisbon
-        r["recv_utc"] = recv_utc
-        r["place"] = place_text(a["loc"], rng)
-    return reps
-
-
-def exceptions(rng, n_imp=151, n_par=63, n_lin=94):
-    """Reports the association received and could not place: they never became actions."""
-    bogus = ["Zona Industrial (sem localidade)", "A25 km 42", "Barragem do Vale Grande",
-             "Terminal Portuario Norte", "Estrada Nacional 125, Pocinho", "Area de Servico do Pinhal",
-             "Fronteira de Vilar Formoso", "Nao indicado", "Centro Coordenador (indefinido)",
-             "Parque Eolico da Cumeada"]
-    reasons = ["localidade_nao_encontrada", "texto_insuficiente", "fora_do_territorio"]
-    out = []
-    for route, n, base in (("IMP", n_imp, 900000), ("PAR", n_par, 900000), ("LIN", n_lin, 900000)):
-        for i in range(n):
-            off = rng.randrange(0, (W.PERIOD_TO - W.PERIOD_FROM).days + 6)
-            recv = dt.datetime.combine(sim.d(off), dt.time(rng.randrange(7, 22),
-                                                               rng.choice([5, 15, 25, 40, 55])))
-            out.append(dict(route=route, ident="%s-2026-%06d" % (route, base + i + 1),
-                            recv=recv, place=rng.choice(bogus), theme=rng.choice([t for t, _, _, _, o in W.THEMES if o is None]),
-                            reason=rng.choices(reasons, weights=[62, 23, 15])[0]))
-    out.sort(key=lambda e: (e["recv"], e["ident"]))
-    return out
-
-
-def write_item_log(target, reps, rng):
-    """One row per item the press monitor matched. The items of one action share the report the
-    monitor filed and the code its classifier put on that report."""
-    items, n_rep = [], 0
-    for r in reps:
-        if r["route"] != "IMP":
-            continue
-        n_rep += 1
-        a = r["action"]
-        for k, title in enumerate(r["titles"]):
-            drift = dt.timedelta(minutes=rng.choice([0, 7, 19, 34, 56, 88, 121]) * (1 if k else 0))
-            items.append((r["recv_utc"] + drift, dict(
-                estado="aceite", motivo="", ident=r["ident"], orgao=title, tema=a["theme"],
-                codigo=r["code"], place=r["place"], ocorr=sim.d(a["day"]), start=r["start"],
-                recv=r["recv_utc"] + drift)))
-    titles = [o[0] for o in W.OUTLETS]
-    weights = [o[3] for o in W.OUTLETS]
-    for i in range(19900):
-        off = rng.randrange(0, (W.EXTRACT - W.PERIOD_FROM).days + 1)
-        recv = dt.datetime.combine(sim.d(off), dt.time(rng.randrange(6, 23), rng.randrange(0, 60)))
-        items.append((recv, dict(
-            estado="rejeitado", motivo=rng.choices([r for r, _ in REJECT],
-                                                   weights=[w for _, w in REJECT])[0],
-            ident="", orgao=rng.choices(titles, weights=weights)[0], tema="", codigo="",
-            place="", ocorr=None, start=None, recv=recv)))
-    items.sort(key=lambda t: (t[0], t[1]["orgao"], t[1]["ident"]))
+# --------------------------------------------------------------------------- protection records
+def write_relay(target, net, S, rng):
     rows = []
-    for i, (_, it) in enumerate(items, 1):
-        rows.append(["IT-2026-%07d" % i, it["recv"].date().isoformat(), it["orgao"], it["estado"],
-                     it["motivo"], it["ident"], it["tema"], it["codigo"], it["place"],
-                     it["ocorr"].isoformat() if it["ocorr"] else "",
-                     it["start"].strftime("%Y-%m-%d %H:%M") if it["start"] else "",
-                     it["recv"].strftime("%Y-%m-%d %H:%M")])
-    head = ["id_item", "data_recolha", "orgao", "estado", "motivo_rejeicao", "id_relato", "tema",
-            "codigo_acao", "local_texto", "data_ocorrencia", "inicio_acao", "carimbo_recepcao"]
-    return write_csv(os.path.join(target, "registo_itens_imprensa.csv"), head, rows), n_rep
-
-
-def write_double_coding(target, dc):
-    """The coding desk's hand-coding worksheet, one row per press report drawn."""
-    rows = []
-    for x in dc:
-        r = x["report"]
-        a = r["action"]
-        rows.append([r["ident"], sim.d(a["day"]).isoformat(), a["theme"], x["machine"], x["hand"],
-                     x["coder"], x["coded_day"].isoformat(), x["round_name"], x["second"],
-                     x["decision"], x["note"]])
-    head = ["id_relato", "data_ocorrencia", "tema", "codigo_monitor", "codigo_manual",
-            "codificador", "data_codificacao", "ronda", "revisto_por", "decisao_da_mesa", "nota"]
-    return write_csv(os.path.join(target, "amostra_dupla_codificacao.csv"), head, rows)
-
-
-def write_partner_reports(target, reps):
-    """The partner network's filings, with the August extract as both of its two loads."""
-    rows = []
-    for r in reps:
-        if r["route"] != "PAR":
+    evno = {}
+    busy = {}
+    for op in S["ops"]:
+        if net["devices"][op["device"]]["type"] != "BREAKER":
             continue
-        a = r["action"]
-        recv_utc = r["recv_utc"]
-        load = "C2026%02d01" % sim.d(a["day"]).month
-        rows.append([r["ident"], load, r["src"], a["theme"], r["code"], r["place"],
-                     sim.d(a["day"]).isoformat(), r["start"].strftime("%Y-%m-%d %H:%M"),
-                     recv_utc.strftime("%Y-%m-%dT%H:%MZ")])
-    # The second load is the August file sent again after the receiving server failed, so the portal
-    # stamped its rows on the day it arrived rather than on the day the network first delivered
-    # them: fresh stamps on old content, which is what counts the month twice.
-    extra = [list(x) for x in rows if x[6][:7] == "2026-08"]
-    for e in extra:
-        e[1] = "C20260802"                      # the second load of the same month
-        e[8] = (dt.datetime.combine(RELOAD_ARRIVED, dt.time(8, 12))
-                + dt.timedelta(minutes=int(e[0][-5:]) % 287)).strftime("%Y-%m-%dT%H:%MZ")
-    rows = rows + extra
-    rows.sort(key=lambda x: (x[1], x[0]))
-    head = ["id_relato", "id_carga", "codigo_parceiro", "tema", "codigo_acao", "local_texto",
-            "data_ocorrencia", "inicio_acao", "carimbo_entrega_utc"]
-    return write_csv(os.path.join(target, "relatos_rede_parceiros.csv"), head, rows), len(extra)
-
-
-def write_public_line(target, reps, rng):
-    rows = []
-    for r in reps:
-        if r["route"] != "LIN":
+        busy.setdefault((op["device"], op["day"]), 0)
+        busy[(op["device"], op["day"])] += len(op["trips"])
+    dropped = 0
+    for op in sorted(S["ops"], key=lambda o: o["t"]):
+        dev = op["device"]
+        if net["devices"][dev]["type"] != "BREAKER":
             continue
-        a = r["action"]
-        rows.append([r["ident"], rng.choices(["web", "telefone"], weights=[68, 32])[0], a["theme"],
-                     r["code"], r["place"], sim.d(a["day"]).isoformat(),
-                     r["start"].strftime("%Y-%m-%d %H:%M"),
-                     r["recv_local"].strftime("%Y-%m-%d %H:%M")])
-    rows.sort(key=lambda x: (x[7], x[0]))
-    head = ["id_relato", "canal", "tema", "codigo_acao", "local_texto", "data_ocorrencia",
-            "inicio_acao", "carimbo_recepcao"]
-    return write_csv(os.path.join(target, "relatos_linha_publica.csv"), head, rows)
+        fid = op["feeder"]
+        relay = breaker_id(net, fid, op["day"])
+        heavy = busy[(dev, op["day"])] >= 4 and not (W.WIN0 <= op["day"] <= W.WIN1) and op["cause"] != "incipient"
+        for (tt, shot), rec in zip(op["trips"], op["rec"]):
+            if relay not in evno:
+                evno[relay] = int(rng.integers(1200, 9800))
+            evno[relay] += int(rng.choice([1, 1, 1, 2, 2, 3]))
+            if heavy and rng.random() < 0.45:
+                dropped += 1
+                continue
+            ph = op["phases"]
+            etype = (ph + "G" if len(ph) == 1 else ph) + " T"
+            elem = ("50G1" if len(ph) == 1 else "50P1") if shot == 0 else ("51G" if len(ph) == 1 else "51P")
+            rows.append([evno[relay], relay, iso_utc(tt), etype, shot, int(round(rec["A"])), int(round(rec["B"])),
+                         int(round(rec["C"])), int(round(rec["G"])), elem,
+                         "%.2f" % (60 + float(rng.normal(0, 0.012)))])
+    rows.sort(key=lambda r: (r[2], r[1]))
+    write_csv(path(target, "relay"), ["event_no", "relay", "utc_time", "event_type", "shot", "ia_a", "ib_a",
+                                      "ic_a", "ig_a", "trip_element", "freq_hz"], rows)
+    return len(rows), dropped
 
 
-def write_gazetteer(target, muni, locs):
-    by_code = {m["code"]: m for m in muni}
+def _restore_close(S, op):
+    """When a device that locked out was closed back in: the desk's test close, the first step of a stepped
+    restoration, or the crew's restoration."""
+    if op.get("test_close"):
+        return op["test_close"], "REMOTE"
+    o = op.get("outage_ref")
+    if o is None:
+        return None, None
+    t = o["steps"][0][0] if o["steps"] else o["restore"]
+    return t + 17000, "LOCAL"
+
+
+def write_recloser(target, net, S, rng):
     rows = []
-    for l in locs:
-        m = by_code[l["muni"]]
-        rows.append([l["code"], l["name"], "atual", m["code"], m["name"], m["district"], m["region"]])
-        if l["former"]:
-            rows.append([l["code"], l["former"], "anterior", m["code"], m["name"], m["district"],
-                         m["region"]])
-    rows.sort(key=lambda r: (r[0], r[2]))
-    head = ["codigo_localidade", "nome", "estado_nome", "codigo_municipio", "municipio", "distrito",
-            "regiao"]
-    return write_csv(os.path.join(target, "gazeteiro_localidades.csv"), head, rows)
-
-
-def write_import_log(target, rows_par, dup_rows):
-    rows, months = [], [(2026, m) for m in range(5, 12)]
-    for y, m in months:
-        first = dt.date(y, m, 1)
-        last = min(dt.date(y + (m == 12), (m % 12) + 1, 1) - dt.timedelta(days=1), W.EXTRACT)
-        for route, label in (("IMP", "itens_imprensa"), ("PAR", "relatos_parceiros"),
-                             ("LIN", "linha_publica")):
-            load = "C2026%02d01" % m
-            done = min(last + dt.timedelta(days=2), W.EXTRACT)
-            state = "concluida" if last < W.EXTRACT else "em curso"
-            rows.append([load, route, "%s_%04d%02d.csv" % (label, y, m), "%s a %s" % (first, last),
-                         done.isoformat(), state, ""])
-    rows.append(["C20260802", "PAR", "relatos_parceiros_202608.csv", "2026-08-01 a 2026-08-31",
-                 "2026-09-14", "concluida",
-                 "reposicao do mes de agosto apos falha no servidor de recepcao"])
-    rows.sort(key=lambda r: (r[4], r[0], r[1]))
-    head = ["id_carga", "via", "ficheiro", "periodo_coberto", "concluida_em", "estado", "nota"]
-    return write_csv(os.path.join(target, "registo_importacoes.csv"), head, rows)
-
-
-def write_route_totals(target, reps, exc):
-    """The association's own daily count of reports received on each route, in local time, with the
-    reports it could not place included."""
-    counts = {}
-    seen = set()
-    for r in reps:
-        if r["ident"] in seen:
+    for op in sorted(S["ops"], key=lambda o: o["t"]):
+        dev = op["device"]
+        if net["devices"][dev]["type"] != "RECLOSER":
             continue
-        seen.add(r["ident"])
-        counts[(r["recv_local"].date(), r["route"])] = counts.get((r["recv_local"].date(), r["route"]), 0) + 1
-    for e in exc:
-        counts[(e["recv"].date(), e["route"])] = counts.get((e["recv"].date(), e["route"]), 0) + 1
-    # the counter is written by the ingest process as each delivery arrives, so the second load of
-    # the reposted August month is counted again on the day it arrived
-    again = sum(1 for r in reps if r["route"] == "PAR"
-                and r["action"]["day"] is not None
-                and sim.d(r["action"]["day"]).year == W.REIMPORT_MONTH[0]
-                and sim.d(r["action"]["day"]).month == W.REIMPORT_MONTH[1])
-    counts[(RELOAD_ARRIVED, "PAR")] = counts.get((RELOAD_ARRIVED, "PAR"), 0) + again
-    rows = [[day.isoformat(), route, n] for (day, route), n in sorted(counts.items())]
-    head = ["data", "via", "relatos_recebidos"]
-    return write_csv(os.path.join(target, "totais_por_via.csv"), head, rows)
+        term = terminal_of(net, dev, op["phases"])
+        for k, ((tt, shot), rec) in enumerate(zip(op["trips"], op["rec"])):
+            ka = max(rec[p] for p in op["phases"]) / 1000.0
+            rows.append([dev, cst_time(tt), "TRIP", shot + 1, term, "%.3f" % ka, ""])
+            if k < len(op["closes"]):
+                rows.append([dev, cst_time(op["closes"][k]), "RECLOSE", shot + 1, "", "", "AUTO"])
+        if op["lockout"]:
+            rows.append([dev, cst_time(op["lockout"]), "LOCKOUT", len(op["trips"]), "", "", ""])
+            t, src = _restore_close(S, op)
+            if t is not None:
+                rows.append([dev, cst_time(t), "CLOSE", 0, "", "", src])
+    rows.sort(key=lambda r: (dt.datetime.strptime(r[1], "%m/%d/%Y %H:%M:%S"), r[0]))
+    write_csv(path(target, "recloser"), ["control", "time_cst", "event", "op_count", "fault_terminals",
+                                         "fault_ka", "close_source"], rows)
+    return len(rows)
 
 
-def write_exceptions(target, exc):
-    rows = [[e["ident"], e["route"], e["recv"].strftime("%Y-%m-%d %H:%M"), e["place"], e["theme"],
-             e["reason"]] for e in exc]
-    head = ["id_relato", "via", "carimbo_recepcao", "local_texto", "tema", "motivo"]
-    return write_csv(os.path.join(target, "excecoes_geocodificacao.csv"), head, rows)
+def write_soe(target, net, S, rng):
+    rows = []
+    for op in S["ops"]:
+        dev = op["device"]
+        D = net["devices"][dev]
+        if not (D["type"] == "BREAKER" or D.get("scada")):
+            continue
+        for (tt, shot) in op["trips"]:
+            pt = scada_point(net, dev, sim.local_day(tt))
+            rows.append((tt + sim.soe_open_lag(tt), pt, "OPEN"))
+        for c in op["closes"]:
+            rows.append((c + sim.soe_close_lag(c), scada_point(net, dev, sim.local_day(c)), "CLOSED"))
+        if op["lockout"]:
+            t, _ = _restore_close(S, op)
+            if t is not None:
+                if op.get("test_close"):
+                    t = op["test_close"]
+                rows.append((t, scada_point(net, dev, sim.local_day(t)), "CLOSED"))
+    rows.sort()
+    out = [[scada_time(t), p, s, "GOOD"] for t, p, s in rows]
+    write_csv(path(target, "soe"), ["time", "point", "state", "quality"], out, crlf=True)
+    return len(out)
 
 
-def write_config(target):
-    cfg = {
-        "versao": "4.2",
-        "atualizado_em": "2026-04-28",
-        "janela_de_recolha": {"inicio": "2026-05-01", "cadencia": "horaria",
-                              "horas": "06:00 as 23:00, hora local do servidor; o que chega fora "
-                                       "destas horas e escrito na recolha seguinte"},
-        "orgaos": [{"codigo": o[0], "titulo": o[1], "distritos": o[2],
-                    "peso_de_circulacao": o[3]} for o in W.OUTLETS],
-        "regra_de_aceitacao": ("um item e aceite quando o classificador identifica uma acao coletiva "
-                               "com local e data; os restantes ficam no registo com o motivo da rejeicao"),
-        "palavras_chave": ["manifestacao", "concentracao", "bloqueio", "greve", "paralisacao",
-                           "ocupacao", "vigilia", "marcha", "protesto", "corte de via"],
-        "classificador": {"modelo": "vn-codificador-1.3", "treinado_em": W.CLS_TRAINED.isoformat(),
-                          "alteracoes_no_periodo": "nenhuma",
-                          "saida": "um codigo de acao do protocolo 2.2 por relato aceite"},
-        "nota_de_relogio": ("o carimbo_recepcao de cada item vem no relogio UTC do servidor de "
-                            "recolha; o inicio_acao vem no relogio local do local da acao, pelo "
-                            "distrito do gazeteiro"),
-        "fusos_horarios": {
-            "continente_e_madeira": ("UTC+01:00 ate 25 de outubro de 2026 as 01:00 UTC e "
-                                     "UTC+00:00 a partir desse momento"),
-            "acores": ("UTC+00:00 ate 25 de outubro de 2026 as 01:00 UTC e UTC-01:00 a partir "
-                       "desse momento"),
-            "nota": ("o fuso de uma acao e o do distrito que o gazeteiro da a sua localidade; os "
-                     "Acores e a Madeira sao distritos distintos no gazeteiro"),
-        },
-    }
-    path = os.path.join(target, "config_monitor.json")
-    with open(path, "w", encoding="utf-8") as fh:
-        json.dump(cfg, fh, ensure_ascii=False, indent=1, sort_keys=False)
+# --------------------------------------------------------------------------- outage management system
+def ticket_rows(net, S, TR, rng):
+    """The OMS's own tickets: one per sustained interruption still on after fifteen minutes."""
+    legacy, inc, steps = [], [], []
+    seq25, seq26 = int(rng.integers(1400, 2600)), int(rng.integers(1100, 2300))
+    inc_no = int(rng.integers(150, 420))
+    for o in sorted(TR["outages"], key=lambda o: o["start"]):
+        if o.get("no_ticket"):
+            continue
+        d = sim.local_day(o["start"])
+        dev = o["device"]
+        fid = o["feeder"]
+        if dev in net["sps"]:
+            dtype, did = "SERVICE", dev
+        elif dev in net["transformers"]:
+            dtype, did = "TRANSFORMER", dev
+        else:
+            dtype = net["devices"][dev]["type"]
+            did = breaker_id(net, fid, d) if dtype == "BREAKER" else dev
+        cause = LEGACY_CAUSE.get(o["cause"], "UNK")
+        if o["cause"] in ("tree", "lightning", "animal", "wet_tree") and rng.random() < 0.13:
+            cause = "UNK"
+        n = o["n_all"]
+        crew = "C%d" % int(rng.choice([11, 12, 14, 15, 21, 22, 23, 31]))
+        if d < W.OMS_CUTOVER:
+            if d.year == 2025:
+                seq25 += int(rng.choice([1, 1, 2, 3]))
+                tno = "T25-%06d" % seq25
+            else:
+                seq26 += int(rng.choice([1, 1, 2, 3]))
+                tno = "T26-%06d" % seq26
+            circuit = W.legacy_name(fid, d)
+            legacy.append([tno, "", circuit, did, dtype, legacy_time(o["start"]), legacy_time(o["restore"]), n,
+                           cause, crew])
+            for k, (t, cnt) in enumerate(o["step_counts"][:-1]):
+                logged = t - int(rng.integers(3, 13)) * sim.MS_MIN
+                legacy.append(["%s-%d" % (tno, k + 1), tno, circuit, did, dtype, legacy_time(logged), legacy_time(t),
+                               cnt, cause, crew])
+        else:
+            inc_no += int(rng.choice([1, 1, 1, 2]))
+            iid = "INC-2026-%05d" % inc_no
+            inc.append([iid, fid, did, dtype, iso_utc(o["start"], ms=False), iso_utc(o["restore"], ms=False), n,
+                        NEW_CAUSE[cause]])
+            if o["steps"]:
+                for k, (t, cnt) in enumerate(o["step_counts"]):
+                    steps.append([iid, k + 1, iso_utc(t, ms=False), cnt])
+    return legacy, inc, steps
+
+
+def write_oms(target, net, S, TR, rng):
+    legacy, inc, steps = ticket_rows(net, S, TR, rng)
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Legacy tickets"
+    hdr = ["Ticket", "Parent Ticket", "Circuit", "Device", "Device Type", "Out", "Energized", "Customers", "Cause",
+           "Crew"]
+    _sheet(ws, hdr, legacy, widths=[14, 14, 9, 13, 13, 17, 17, 10, 7, 6])
+    ws2 = wb.create_sheet("Incidents")
+    _sheet(ws2, ["Incident", "Feeder", "Device", "Device Class", "Start (UTC)", "End (UTC)", "Customers Out", "Cause"],
+           inc, widths=[16, 8, 13, 13, 21, 21, 13, 19])
+    ws3 = wb.create_sheet("Restoration Steps")
+    _sheet(ws3, ["Incident", "Step", "Step Time (UTC)", "Customers Restored"], steps, widths=[16, 6, 21, 18])
+    p = path(target, "oms")
+    wb.save(p)
+    PP.normalize_ooxml(p, "omsreport", "omsreport", "2026-11-03T07:38:12Z", "2026-11-03T07:38:12Z", excel=True)
+    return len(legacy), len(inc), len(steps)
+
+
+def _sheet(ws, header, rows, widths=None, bold=True):
+    ws.append(header)
+    for r in rows:
+        ws.append([None if x == "" else x for x in r])
+    if bold:
+        for c in ws[1]:
+            c.font = Font(bold=True)
+    if widths:
+        for i, w in enumerate(widths):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = w
+    ws.freeze_panes = "A2"
+
+
+# --------------------------------------------------------------------------- assets and customers
+def write_devices(target, net, rng):
+    rows = []
+    for fid in W.FID:
+        F = net["feeders"][fid]
+        spec = W.FEEDERS[W.FIX[fid]]
+        inst = lambda: (W.DATA0 - dt.timedelta(days=int(rng.integers(400, 9000)))).isoformat()
+        if spec.get("legacy"):
+            old = spec["legacy"].replace("-", "") + "-BKR"
+            rows.append([old, "BREAKER", spec["legacy"], "%s-P000" % F["prefix"], "", inst(),
+                         (W.REBUILD - dt.timedelta(days=1)).isoformat(), "COTTER.%s.CB" % spec["legacy"][3:], 3, "", ""])
+            rows.append([F["breaker"], "BREAKER", fid, "%s-P000" % F["prefix"], "", W.REBUILD.isoformat(), "",
+                         scada_point(net, F["breaker"], W.REBUILD), 3, "", ""])
+        else:
+            rows.append([F["breaker"], "BREAKER", fid, "%s-P000" % F["prefix"], "", inst(), "",
+                         scada_point(net, F["breaker"], W.DATA1), 3, "", ""])
+        for rid in F["reclosers"]:
+            D = net["devices"][rid]
+            ph = "-".join(D["terminals"])
+            sp = scada_point(net, rid, W.DATA1) if D.get("scada") else ""
+            par = D["parent"]
+            if spec.get("legacy") and par == F["breaker"]:
+                old = spec["legacy"].replace("-", "") + "-BKR"
+                rows.append([rid, "RECLOSER", spec["legacy"], D["pole"], old, inst(),
+                             (W.REBUILD - dt.timedelta(days=1)).isoformat(), sp, 4, ph, ""])
+                rows.append([rid, "RECLOSER", fid, D["pole"], par, W.REBUILD.isoformat(), "", sp, 4, ph, ""])
+            else:
+                rows.append([rid, "RECLOSER", fid, D["pole"], par, inst(), "", sp, 4, ph, ""])
+        for lat in F["laterals"]:
+            L = net["laterals"][lat]
+            size = str(rng.choice(["25K", "40K", "40K", "65K", "65K", "80T", "100T"]))
+            par = L["parent"]
+            installed = inst()
+            seg = []
+            if spec.get("legacy") and par == F["breaker"]:
+                old = spec["legacy"].replace("-", "") + "-BKR"
+                seg.append((spec["legacy"], old, installed, W.REBUILD - dt.timedelta(days=1)))
+                start2 = W.REBUILD
+            elif spec.get("legacy"):
+                seg.append((spec["legacy"], par, installed, W.REBUILD - dt.timedelta(days=1)))
+                start2 = W.REBUILD
+            else:
+                start2 = None
+            if L["moved"]:
+                mv = L["moved"]
+                if start2 is not None and mv["date"] > start2:
+                    seg.append((fid, par, start2.isoformat(), mv["date"] - dt.timedelta(days=1)))
+                elif start2 is None:
+                    seg.append((fid, par, installed, mv["date"] - dt.timedelta(days=1)))
+                seg.append((mv["feeder"], mv["parent"], mv["date"].isoformat(), None))
+            else:
+                seg.append((fid, par, start2.isoformat() if start2 else installed, None))
+            for (feeder, parent, a, b) in seg:
+                rows.append([lat, "FUSE", feeder, L.get("pole_id") or "%s-P%03d" % (F["prefix"], L["tap_pole"]),
+                             parent, a if isinstance(a, str) else a.isoformat(), b.isoformat() if b else "", "", "", "",
+                             size])
+    legacy_of = {f["legacy"]: f["id"] for f in W.FEEDERS if f.get("legacy")}
+    for r in rows:
+        r.append(available_fault(net, r[0], r[1], legacy_of.get(r[2], r[2])))
+    order = {k: i for i, k in enumerate(rng.permutation(len(rows)))}
+    rows = [r for _, r in sorted(((order[i], r) for i, r in enumerate(rows)), key=lambda x: (x[1][2], x[0]))]
+    write_csv(path(target, "devices"), ["device_id", "device_type", "feeder", "pole", "upstream_device",
+                                        "in_service_from", "in_service_to", "scada_point", "shots_to_lockout",
+                                        "terminal_phasing", "fuse_link", "available_fault_slg_a"], rows)
+    return len(rows)
+
+
+def available_fault(net, dev, dtype, feeder):
+    """The protection study's bolted single-line-to-ground fault current at a device's location (to 10 A)."""
+    if dtype == "BREAKER":
+        sub = W.SUBS[net["feeders"][feeder]["sub"]]
+        z1, z0 = sub[3], sub[4]
+    elif dtype == "RECLOSER":
+        z1, z0 = W.z_at(net, feeder, net["devices"][dev]["pos"])
+    else:
+        L = net["laterals"][dev]
+        if L["moved"] and feeder == L["moved"]["feeder"]:
+            z1, z0 = W.z_at(net, feeder, 0.0, dev, 0.0, L["moved"]["date"])
+        else:
+            z1, z0 = W.z_at(net, L["feeder"], L["tap"])
+    return int(round(W.fault_current(z1, z0, "A", 0.0) / 10.0)) * 10
+
+
+def write_transformers(target, net, rng):
+    rows = []
+    for tid, T in sorted(net["transformers"].items()):
+        day = W.DATA1
+        fid = W.device_feeder(net, T["device"], day) if T["lateral"] else T["feeder"]
+        dev = T["device"]
+        if net["devices"].get(dev, {}).get("type") == "BREAKER":
+            dev = W.breaker_name(net, T["feeder"], day)
+        rows.append([tid, fid, T["pole"], T["phase"], T["kva"], dev])
+    rows.sort(key=lambda r: (r[1], r[2], r[0]))
+    write_csv(path(target, "transformers"), ["transformer_id", "feeder", "pole", "phase", "kva",
+                                             "protective_device"], rows)
+    return len(rows)
+
+
+def write_sps(target, net, rng):
+    rows = []
+    for sp, v in sorted(net["sps"].items()):
+        T = net["transformers"][v["transformer"]]
+        fid = W.device_feeder(net, T["device"], W.DATA1) if T["lateral"] else T["feeder"]
+        rows.append([sp, v["transformer"], fid, v["cls"], v["connected"].isoformat(),
+                     v["disconnected"].isoformat() if v["disconnected"] else ""])
+    rows.sort(key=lambda r: (r[2], r[1], r[0]))
+    write_csv(path(target, "sps"), ["service_point", "transformer_id", "feeder", "rate_class", "service_connected",
+                                    "service_disconnected"], rows)
+    return len(rows)
+
+
+def write_feeders(target, net, rng):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Feeders"
+    rows = []
+    for f in W.FEEDERS:
+        F = net["feeders"][f["id"]]
+        plan = int(round(f["cust"] * float(rng.uniform(0.985, 1.01))))
+        rows.append([f["id"], W.SUBS[f["sub"]][0], 12.47, round(F["main"] + F["lat_mi"], 1), f["ug"],
+                     len(F["laterals"]), plan, F["breaker"]])
+    _sheet(ws, ["Feeder", "Substation", "kV", "Overhead miles", "Underground miles", "Fused taps",
+                "Customers (2025 plan)", "Feeder breaker"], rows, widths=[8, 13, 6, 15, 18, 11, 20, 14])
+    ws2 = wb.create_sheet("Cotter Road 2026-03-14")
+    rows2 = []
+    for f in W.FEEDERS:
+        if f.get("legacy"):
+            F = net["feeders"][f["id"]]
+            rows2.append([f["legacy"], f["id"], f["legacy"].replace("-", "") + "-BKR", F["breaker"],
+                          "COTTER.%s.CB" % f["legacy"][3:], scada_point(net, F["breaker"], W.REBUILD)])
+    _sheet(ws2, ["Old feeder", "New feeder", "Old breaker", "New breaker", "Old SCADA point", "New SCADA point"],
+           rows2, widths=[11, 11, 12, 13, 16, 16])
+    p = path(target, "feeders")
+    wb.save(p)
+    PP.normalize_ooxml(p, "Shawn Hartman", "Shawn Hartman", "2024-02-19T15:02:44Z", "2026-03-16T13:27:05Z",
+                       excel=True)
+    return len(rows)
+
+
+def write_subs(target):
+    feats = []
+    for sid, (name, x, y, _, _) in W.SUBS.items():
+        lat, lon = W.to_latlon(x, y)
+        feats.append({"type": "Feature", "properties": {"substation": sid, "name": name, "voltage_kv": "69/12.47"},
+                      "geometry": {"type": "Point", "coordinates": [round(lon, 5), round(lat, 5)]}})
+    gj = {"type": "FeatureCollection", "name": "substations", "crs": {"type": "name", "properties":
+          {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}}, "features": feats}
+    with open(path(target, "subs"), "w") as fh:
+        json.dump(gj, fh, indent=1)
         fh.write("\n")
-    return path
+    return len(feats)
 
 
-def write_notifications(target, muni, rng):
-    """Notifications of public gatherings filed with the municipal authorities (a distractor)."""
-    promoters = ["Associacao de Moradores", "Sindicato dos Transportes", "Comissao de Utentes",
-                 "Juventude Operaria", "Associacao de Pais", "Nucleo de Agricultores",
-                 "Grupo de Cidadaos", "Federacao Desportiva", "Associacao Comercial"]
+# --------------------------------------------------------------------------- weather
+def write_strokes(target, stk, rng):
     rows = []
-    for i in range(1123):
-        m = rng.choice(muni)
-        day = W.PERIOD_FROM + dt.timedelta(days=rng.randrange(0, (W.EXTRACT - W.PERIOD_FROM).days + 20))
-        rows.append(["NT-2026-%05d" % (i + 1), day.isoformat(), m["name"], m["district"],
-                     "%s de %s" % (rng.choice(promoters), m["name"]),
-                     rng.choice([30, 50, 80, 120, 150, 200, 250, 400, 600, 900, 1500]),
-                     rng.choice(["concentracao", "marcha", "vigilia", "desfile", "concentracao"])])
-    rows.sort(key=lambda r: (r[1], r[0]))
-    head = ["id_notificacao", "data_prevista", "municipio", "distrito", "promotor",
-            "participantes_previstos", "tipo_declarado"]
-    return write_csv(os.path.join(target, "notificacoes_reuniao_publica.csv"), head, rows)
+    for (t, x, y, amp, kind) in stk:
+        lat, lon = W.to_latlon(x, y)
+        rows.append([iso_utc(t), "%.4f" % lat, "%.4f" % lon, "%.1f" % amp, kind,
+                     "%.1f" % float(rng.uniform(0.2, 1.9)), int(rng.integers(4, 23))])
+    write_csv(path(target, "strokes"), ["utc_time", "latitude", "longitude", "peak_current_ka", "type",
+                                        "semi_major_km", "sensors"], rows)
+    return len(rows)
 
 
-def write_coverage(target):
+def write_asos(target, wx, rng):
     rows = []
-    for o in W.OUTLETS:
-        for dist in (list(W.DISTRICTS) if "*" in o[2] else o[2]):
-            rows.append([o[0], o[1], dist, "%.2f" % o[3]])
-    rows.sort(key=lambda r: (r[0], r[2]))
-    head = ["orgao", "titulo", "distrito", "peso_de_circulacao"]
-    return write_csv(os.path.join(target, "cobertura_meios.csv"), head, rows)
+    for j, h in enumerate(wx["hours"]):
+        h = int(h)
+        if h < sim.T0 - 7 * sim.MS_H or h > sim.T1 + sim.MS_H:
+            continue
+        t = h + 53 * sim.MS_MIN
+        miss = rng.random() < 0.004
+        wxc = []
+        if wx["ts"][j]:
+            wxc.append("TSRA" if wx["precip"][j] > 0.02 else "TS")
+        elif wx["precip"][j] > 0.08:
+            wxc.append("RA")
+        elif wx["precip"][j] > 0.0:
+            wxc.append("-RA")
+        if wx["fog"][j]:
+            wxc.append("FG")
+        elif wx["mist"][j]:
+            wxc.append("BR")
+        g = wx["gust"][j]
+        rows.append([STATION, iso_utc(t, ms=False)[:16].replace("T", " "),
+                     "M" if miss else "%.1f" % wx["temp"][j], "M" if miss else "%.1f" % wx["dew"][j],
+                     "M" if miss else "%.2f" % wx["rh"][j], int(round(wx["wspd"][j])),
+                     int(round(g)) if g > 0 else "M", "%.2f" % wx["vis"][j],
+                     "%.2f" % wx["precip"][j] if wx["precip"][j] >= 0.005 else ("T" if wx["precip"][j] > 0 else "0.00"),
+                     " ".join(wxc) if wxc else "M"])
+    write_csv(path(target, "asos"), ["station", "valid", "tmpf", "dwpf", "relh", "sknt", "gust", "vsby", "p01i",
+                                     "wxcodes"], rows)
+    return len(rows)
 
 
-def write_tension_index(target, rng):
+# --------------------------------------------------------------------------- distractors
+def write_veg(target, net, rng):
     rows = []
-    for dist in W.DISTRICTS:
-        for m in range(5, 11):
-            rows.append([dist, "2026-%02d" % m, "%.1f" % (rng.uniform(18, 74)),
-                         rng.choice(["estavel", "em subida", "em descida"])])
-    head = ["distrito", "mes", "indice_de_tensao", "tendencia"]
-    return write_csv(os.path.join(target, "indice_tensao_distrital.csv"), head, rows)
+    wo = int(rng.integers(30000, 34000))
+    contractors = ["Weller Line Clearance", "Hackberry Hollow Tree Co.", "Brennan Utility Forestry"]
+    plan = {"MLR-2": [(W.CLEARANCE[0], W.CLEARANCE[1])]}
+    for f in W.FEEDERS:
+        fid = f["id"]
+        F = net["feeders"][fid]
+        jobs = plan.get(fid, [])
+        if fid not in plan and fid != "NYD-2":
+            k = int(rng.integers(1, 3))
+            for _ in range(k):
+                d0 = dt.date(2023, 1, 9) + dt.timedelta(days=int(rng.integers(0, 1300)))
+                jobs.append((d0, d0 + dt.timedelta(days=int(rng.integers(3, 21)))))
+        for (a, b) in sorted(jobs):
+            wo += int(rng.integers(3, 40))
+            full = fid == "MLR-2"
+            miles = round(F["main"] + F["lat_mi"], 1) if full else round(float(rng.uniform(0.8, 0.55 * (F["main"] + F["lat_mi"]))), 1)
+            rows.append(["VM-%d" % wo, fid if (fid not in ("CTR-1", "CTR-2", "CTR-3") or a >= W.REBUILD) else
+                         W.FEEDERS[W.FIX[fid]]["legacy"], a.isoformat(), b.isoformat(), miles,
+                         "FULL CIRCUIT" if full else str(rng.choice(["HOT SPOT", "MID-CYCLE", "HOT SPOT"])),
+                         contractors[int(rng.integers(0, 3))]])
+    rows.sort(key=lambda r: (r[2], r[1]))
+    no = int(rows[0][0][3:])
+    for r in rows:
+        r[0] = "VM-%d" % no
+        no += int(rng.integers(4, 61))
+    write_csv(path(target, "veg"), ["work_order", "circuit", "start_date", "completed", "miles_cleared", "scope",
+                                    "contractor"], rows)
+    return len(rows)
 
 
-def write_manifest(target, counts):
+def write_blinks(target, net, S, TR, rng):
+    R = truth.Reach(net)
     rows = []
-    for name, n, first, last, note in counts:
-        rows.append([name, n, first, last, W.EXTRACT.isoformat(), note])
-    head = ["ficheiro", "linhas", "primeiro_registo", "ultimo_registo", "extraido_em", "nota"]
-    return write_csv(os.path.join(target, "manifesto_extracao.csv"), head, rows)
+    by_dev = {}
+    for sp, v in net["sps"].items():
+        by_dev.setdefault(v["transformer"], []).append(sp)
+    for e in TR["events"]:
+        lt = sim.local_dt(e["t"])
+        awake = 0.25 if (lt.hour < 6 or lt.hour >= 23) else (0.6 if lt.hour < 8 else 1.0)
+        n = int(rng.poisson(0.0011 * e["n"] * awake))
+        if n == 0:
+            continue
+        trs = R.transformers(e["device"], e["day"])
+        for _ in range(n):
+            tid = trs[int(rng.integers(0, len(trs)))]
+            sps = by_dev.get(tid, [])
+            if not sps:
+                continue
+            sp = sps[int(rng.integers(0, len(sps)))]
+            t = e["t"] + int(rng.uniform(4, 600)) * sim.MS_MIN
+            rows.append([sim.local_dt(t).strftime("%Y-%m-%d %H:%M"), sp, str(rng.choice(["PHONE", "PHONE", "WEB", "IVR"])),
+                         str(rng.choice(["LIGHTS BLINKING", "LIGHTS BLINKING", "FLICKER", "CLOCKS RESET"]))])
+    rows.sort()
+    out = []
+    no = int(rng.integers(500000, 600000))
+    for r in rows:
+        no += int(rng.integers(1, 30))
+        out.append(["C%d" % no] + r)
+    write_csv(path(target, "blinks"), ["contact_id", "contact_time", "service_point", "channel", "reason"], out)
+    return len(out)

@@ -1,228 +1,487 @@
 {
- "actions_in_period": 4656,
- "actions_with_a_filer_report": 428,
- "audit_months": [
-  5,
-  6,
-  7,
-  8
- ],
- "audit_prevalence_share": 0.1525,
- "call_actions": 450,
- "candidate_cells": {
-  "audit_prevalence": 700,
-  "hand_where_audited": 400,
-  "naive": 300,
-  "pv_pooled": 600,
-  "recall_only": 600,
-  "remove_fp_fpr": 250,
-  "remove_fp_ppv": 250
+ "call": "MLR-2",
+ "call_group": {
+  "behind": 2625,
+  "device": "MLR-F2-52",
+  "first": "2026-08-14",
+  "hi": 1448,
+  "last": "2026-10-31",
+  "lo": 1423,
+  "n": 11,
+  "phase": "C"
  },
- "candidates": {
-  "audit_prevalence": 693.61,
-  "hand_where_audited": 386.0,
-  "naive": 320.0,
-  "pv_pooled": 614.53,
-  "recall_only": 615.64,
-  "remove_fp_fpr": 234.97,
-  "remove_fp_ppv": 268.65
+ "constants": {
+  "added_late": {
+   "CTR-3": 1,
+   "NYD-1": 3,
+   "NYD-2": 4,
+   "NYD-3": 2,
+   "SYC-2": 1
+  },
+  "band_per_cent": 2,
+  "drp04_sections": [
+   2.1,
+   2.2,
+   2.3,
+   2.4,
+   2.5,
+   2.6,
+   3.1,
+   3.2,
+   4.1,
+   4.2,
+   5.2,
+   5.3,
+   5.4,
+   6.1
+  ],
+  "n_sys": 35404,
+  "patrol_week": 46,
+  "sim_seed": 19268,
+  "t_med": 38.03,
+  "window": [
+   "2026-08-01",
+   "2026-10-31"
+  ]
  },
- "classifier_false_mark_rate": 0.0201,
- "classifier_recall": 0.4783,
- "fortnight_rows": 13,
- "fortnights": {
-  "Q1": {
-   "actions": 264,
-   "marked_actions": 28,
-   "municipalities": 70,
-   "partner_actions": 65
+ "feeders": {
+  "BLV-1": {
+   "cemi": 980,
+   "maifi": 5.77,
+   "maifi_raw": 5.767713365539453,
+   "nt": 2484,
+   "saidi": 308.4,
+   "saidi_raw": 308.38325281803543
   },
-  "Q10": {
-   "actions": 639,
-   "marked_actions": 39,
-   "municipalities": 112,
-   "partner_actions": 157
+  "BLV-2": {
+   "cemi": 7,
+   "maifi": 2.0,
+   "maifi_raw": 1.998502994011976,
+   "nt": 2004,
+   "saidi": 83.2,
+   "saidi_raw": 83.16067864271457
   },
-  "Q11": {
-   "actions": 589,
-   "marked_actions": 30,
-   "municipalities": 112,
-   "partner_actions": 155
+  "BLV-3": {
+   "cemi": 434,
+   "maifi": 27.23,
+   "maifi_raw": 27.22994863690241,
+   "nt": 2531,
+   "saidi": 169.2,
+   "saidi_raw": 169.23824575266693
   },
-  "Q12": {
-   "actions": 588,
-   "marked_actions": 23,
-   "municipalities": 111,
-   "partner_actions": 156
+  "CTR-1": {
+   "cemi": 113,
+   "maifi": 43.0,
+   "maifi_raw": 42.99797843665768,
+   "nt": 1484,
+   "saidi": 144.6,
+   "saidi_raw": 144.57310832210243
   },
-  "Q13": {
-   "actions": 598,
-   "marked_actions": 25,
-   "municipalities": 111,
-   "partner_actions": 157
+  "CTR-2": {
+   "cemi": 467,
+   "maifi": 37.35,
+   "maifi_raw": 37.35307138904261,
+   "nt": 1807,
+   "saidi": 208.4,
+   "saidi_raw": 208.3907028223575
   },
-  "Q2": {
-   "actions": 251,
-   "marked_actions": 21,
-   "municipalities": 63,
-   "partner_actions": 65
+  "CTR-3": {
+   "cemi": 15,
+   "maifi": 14.66,
+   "maifi_raw": 14.65981308411215,
+   "nt": 2675,
+   "saidi": 76.7,
+   "saidi_raw": 76.66009835514018
   },
-  "Q3": {
-   "actions": 240,
-   "marked_actions": 26,
-   "municipalities": 68,
-   "partner_actions": 52
+  "MLR-1": {
+   "cemi": 241,
+   "maifi": 13.72,
+   "maifi_raw": 13.723679349833764,
+   "nt": 2707,
+   "saidi": 301.1,
+   "saidi_raw": 301.125969708164
   },
-  "Q4": {
-   "actions": 263,
-   "marked_actions": 24,
-   "municipalities": 68,
-   "partner_actions": 50
+  "MLR-2": {
+   "cemi": 1030,
+   "maifi": 35.79,
+   "maifi_raw": 35.79085714285714,
+   "nt": 2625,
+   "saidi": 139.3,
+   "saidi_raw": 139.29475467936507
   },
-  "Q5": {
-   "actions": 222,
-   "marked_actions": 17,
-   "municipalities": 65,
-   "partner_actions": 59
+  "MLR-3": {
+   "cemi": 14,
+   "maifi": 14.6,
+   "maifi_raw": 14.603114186851212,
+   "nt": 2890,
+   "saidi": 87.7,
+   "saidi_raw": 87.69411764705882
   },
-  "Q6": {
-   "actions": 237,
-   "marked_actions": 23,
-   "municipalities": 66,
-   "partner_actions": 56
+  "NYD-1": {
+   "cemi": 0,
+   "maifi": 4.76,
+   "maifi_raw": 4.760432766615147,
+   "nt": 647,
+   "saidi": 23.6,
+   "saidi_raw": 23.632148377125194
   },
-  "Q7": {
-   "actions": 252,
-   "marked_actions": 28,
-   "municipalities": 66,
-   "partner_actions": 68
+  "NYD-2": {
+   "cemi": 2237,
+   "maifi": 47.12,
+   "maifi_raw": 47.118930957683745,
+   "nt": 2245,
+   "saidi": 411.5,
+   "saidi_raw": 411.4969232887899
   },
-  "Q8": {
-   "actions": 260,
-   "marked_actions": 17,
-   "municipalities": 66,
-   "partner_actions": 67
+  "NYD-3": {
+   "cemi": 0,
+   "maifi": 44.83,
+   "maifi_raw": 44.829417773238,
+   "nt": 2937,
+   "saidi": 64.3,
+   "saidi_raw": 64.27170582226762
   },
-  "Q9": {
-   "actions": 253,
-   "marked_actions": 19,
-   "municipalities": 69,
-   "partner_actions": 58
+  "NYD-4": {
+   "cemi": 393,
+   "maifi": 3.68,
+   "maifi_raw": 3.6772993088782564,
+   "nt": 1881,
+   "saidi": 113.7,
+   "saidi_raw": 113.71451355661883
+  },
+  "SYC-1": {
+   "cemi": 1950,
+   "maifi": 43.64,
+   "maifi_raw": 43.6376217324449,
+   "nt": 1951,
+   "saidi": 151.8,
+   "saidi_raw": 151.82482911327529
+  },
+  "SYC-2": {
+   "cemi": 137,
+   "maifi": 45.29,
+   "maifi_raw": 45.28742268041237,
+   "nt": 2425,
+   "saidi": 126.9,
+   "saidi_raw": 126.93768041237114
+  },
+  "SYC-3": {
+   "cemi": 2325,
+   "maifi": 22.92,
+   "maifi_raw": 22.9186295503212,
+   "nt": 2335,
+   "saidi": 356.1,
+   "saidi_raw": 356.0860181156317
   }
  },
- "gap_positive_share": 0.9988,
- "grain": 50,
- "hand_coded_confrontational": 49,
- "marked_rate_inside_the_audited_window_pct": 8.8,
- "marked_rate_outside_it_pct": 4.3,
- "mean_gap": 156.7,
- "partner_rows": 7,
- "partners": {
-  "P01": {
-   "after_close": 0,
-   "euros": 926,
-   "filed": 147
+ "ladder": {
+  "BLV-1": {
+   "chg": 0,
+   "chi": 0.0,
+   "damp": 0,
+   "dflt": -0.3448,
+   "n1": 3,
+   "ns": 0,
+   "ns25": 2,
+   "nsd": -2,
+   "nsmi": 0.0,
+   "oh": 5.8,
+   "per_cust": -0.8052,
+   "raw": 3,
+   "raw25": 3,
+   "share": 0.0
   },
-  "P02": {
-   "after_close": 12,
-   "euros": 2386,
-   "filed": 413
+  "BLV-2": {
+   "chg": -1,
+   "chi": 0.0,
+   "damp": 0,
+   "dflt": -0.3571,
+   "n1": 1,
+   "ns": 1,
+   "ns25": 2,
+   "nsd": -1,
+   "nsmi": 0.3571,
+   "oh": 2.8,
+   "per_cust": -0.499,
+   "raw": 1,
+   "raw25": 2,
+   "share": 0.0
   },
-  "P03": {
-   "after_close": 1,
-   "euros": 2212,
-   "filed": 304
+  "BLV-3": {
+   "chg": 2,
+   "chi": 44.24,
+   "damp": 8,
+   "dflt": 0.0,
+   "n1": 25,
+   "ns": 22,
+   "ns25": 22,
+   "nsd": 0,
+   "nsmi": 2.0561,
+   "oh": 10.7,
+   "per_cust": 0.0,
+   "raw": 25,
+   "raw25": 23,
+   "share": 0.96
   },
-  "P04": {
-   "after_close": 0,
-   "euros": 370,
-   "filed": 61
+  "CTR-1": {
+   "chg": 16,
+   "chi": 2.6667,
+   "damp": 3,
+   "dflt": -0.0935,
+   "n1": 27,
+   "ns": 5,
+   "ns25": 7,
+   "nsd": -2,
+   "nsmi": 0.2336,
+   "oh": 21.4,
+   "per_cust": -1.3477,
+   "raw": 28,
+   "raw25": 12,
+   "share": 0.4815
   },
-  "P05": {
-   "after_close": 1,
-   "euros": 545,
-   "filed": 80
+  "CTR-2": {
+   "chg": 10,
+   "chi": 12.3333,
+   "damp": 3,
+   "dflt": 0.0,
+   "n1": 18,
+   "ns": 6,
+   "ns25": 6,
+   "nsd": 0,
+   "nsmi": 0.4255,
+   "oh": 14.1,
+   "per_cust": 0.0,
+   "raw": 19,
+   "raw25": 9,
+   "share": 0.7222
   },
-  "P06": {
-   "after_close": 1,
-   "euros": 354,
-   "filed": 45
+  "CTR-3": {
+   "chg": 4,
+   "chi": 1.2727,
+   "damp": 0,
+   "dflt": -0.3774,
+   "n1": 11,
+   "ns": 1,
+   "ns25": 5,
+   "nsd": -4,
+   "nsmi": 0.0943,
+   "oh": 10.6,
+   "per_cust": -1.4953,
+   "raw": 11,
+   "raw25": 7,
+   "share": 0.4545
   },
-  "P07": {
-   "after_close": 1,
-   "euros": 701,
-   "filed": 115
+  "MLR-1": {
+   "chg": 5,
+   "chi": 1.0,
+   "damp": 3,
+   "dflt": 0.4167,
+   "n1": 6,
+   "ns": 3,
+   "ns25": 0,
+   "nsd": 3,
+   "nsmi": 0.4167,
+   "oh": 7.2,
+   "per_cust": 1.1082,
+   "raw": 6,
+   "raw25": 1,
+   "share": 0.5
+  },
+  "MLR-2": {
+   "chg": 4,
+   "chi": 9.125,
+   "damp": 5,
+   "dflt": -0.1042,
+   "n1": 16,
+   "ns": 6,
+   "ns25": 7,
+   "nsd": -1,
+   "nsmi": 0.625,
+   "oh": 9.6,
+   "per_cust": -0.381,
+   "raw": 16,
+   "raw25": 12,
+   "share": 0.6875
+  },
+  "MLR-3": {
+   "chg": 3,
+   "chi": 4.5714,
+   "damp": 1,
+   "dflt": -0.4082,
+   "n1": 7,
+   "ns": 2,
+   "ns25": 4,
+   "nsd": -2,
+   "nsmi": 0.4082,
+   "oh": 4.9,
+   "per_cust": -0.692,
+   "raw": 7,
+   "raw25": 4,
+   "share": 0.7143
+  },
+  "NYD-1": {
+   "chg": -1,
+   "chi": 0.0,
+   "damp": 0,
+   "dflt": -0.5263,
+   "n1": 2,
+   "ns": 0,
+   "ns25": 2,
+   "nsd": -2,
+   "nsmi": 0.0,
+   "oh": 3.8,
+   "per_cust": -3.0912,
+   "raw": 2,
+   "raw25": 3,
+   "share": 0.0
+  },
+  "NYD-2": {
+   "chg": 4,
+   "chi": 8.9677,
+   "damp": 18,
+   "dflt": -0.6195,
+   "n1": 31,
+   "ns": 18,
+   "ns25": 25,
+   "nsd": -7,
+   "nsmi": 1.5929,
+   "oh": 11.3,
+   "per_cust": -3.118,
+   "raw": 33,
+   "raw25": 29,
+   "share": 0.5806
+  },
+  "NYD-3": {
+   "chg": 25,
+   "chi": 5.7059,
+   "damp": 7,
+   "dflt": 2.5275,
+   "n1": 34,
+   "ns": 29,
+   "ns25": 6,
+   "nsd": 23,
+   "nsmi": 3.1868,
+   "oh": 9.1,
+   "per_cust": 7.8311,
+   "raw": 34,
+   "raw25": 9,
+   "share": 0.4706
+  },
+  "NYD-4": {
+   "chg": 1,
+   "chi": 0.0,
+   "damp": 0,
+   "dflt": 0.0,
+   "n1": 1,
+   "ns": 0,
+   "ns25": 0,
+   "nsd": 0,
+   "nsmi": 0.0,
+   "oh": 3.1,
+   "per_cust": 0.0,
+   "raw": 2,
+   "raw25": 1,
+   "share": 0.0
+  },
+  "SYC-1": {
+   "chg": 13,
+   "chi": 6.32,
+   "damp": 12,
+   "dflt": 0.2674,
+   "n1": 25,
+   "ns": 15,
+   "ns25": 10,
+   "nsd": 5,
+   "nsmi": 0.8021,
+   "oh": 18.7,
+   "per_cust": 2.5628,
+   "raw": 29,
+   "raw25": 16,
+   "share": 0.56
+  },
+  "SYC-2": {
+   "chg": -5,
+   "chi": 2.8,
+   "damp": 5,
+   "dflt": -1.2195,
+   "n1": 15,
+   "ns": 5,
+   "ns25": 15,
+   "nsd": -10,
+   "nsmi": 0.6098,
+   "oh": 8.2,
+   "per_cust": -4.1237,
+   "raw": 17,
+   "raw25": 22,
+   "share": 0.5333
+  },
+  "SYC-3": {
+   "chg": 5,
+   "chi": 12.3333,
+   "damp": 7,
+   "dflt": 0.2419,
+   "n1": 18,
+   "ns": 9,
+   "ns25": 6,
+   "nsd": 3,
+   "nsmi": 0.7258,
+   "oh": 12.4,
+   "per_cust": 1.2848,
+   "raw": 19,
+   "raw25": 14,
+   "share": 0.7222
   }
  },
- "press_marked_confrontational": 271,
- "press_only_actions": 4228,
- "protocol_paragraphs": [
-  "2.1",
-  "2.2",
-  "2.3",
-  "2.4",
-  "2.5",
-  "2.6",
-  "2.7",
-  "3.2",
-  "3.3",
-  "3.4",
-  "4.1",
-  "4.2",
-  "4.3",
-  "4.4",
-  "4.5",
-  "4.6",
-  "6.1",
-  "6.2"
+ "meds": [
+  "2026-05-19",
+  "2026-06-27"
  ],
- "raw_total": 454.91,
- "record_prevalence_share": 0.0977,
- "route_rows": 3,
- "routes": {
-  "IMP": {
-   "median_minutes": 115.0,
-   "received": 4374,
-   "unplaceable": 147
-  },
-  "LIN": {
-   "median_minutes": 107.0,
-   "received": 947,
-   "unplaceable": 93
-  },
-  "PAR": {
-   "median_minutes": 1385.0,
-   "received": 1207,
-   "unplaceable": 58
-  }
+ "nsys": 35404,
+ "others_max": 5,
+ "pack": {
+  "asos": 16063,
+  "blinks": 1806,
+  "devices": 376,
+  "feeders": 16,
+  "oms": [
+   1245,
+   646,
+   18
+  ],
+  "recloser": 920,
+  "relay": 1027,
+  "relay_dropped": 67,
+  "soe": 2696,
+  "sps": 35906,
+  "strokes": 39364,
+  "subs": 5,
+  "transformers": 5519,
+  "veg": 22
  },
- "rung_audited_shares": 600,
- "rung_codes_as_filed": 300,
- "rung_false_marks_out": 250,
- "rung_hand_where_audited": 400,
- "rung_recall_only": 600,
- "sample_comparisons": 1056,
- "sample_fn": 84,
- "sample_fp": 18,
- "sample_rows": 1064,
- "sample_rows_without_a_manual_code": 8,
- "sample_tn": 877,
- "sample_tp": 77,
- "sampling_sd": 53.5,
- "sampling_sd_of_the_gap": 47.1,
- "themes_without_an_audited_report": [
-  "ENE",
-  "FLO"
- ],
- "variant_continuity": 450.32,
- "variant_hybrid": 454.91,
- "variant_matrix_inverse": 454.91,
- "variant_pv_fb_month": 590.37,
- "variant_pv_fb_theme": 615.79,
- "variant_rg_coded_month": 432.7,
- "variant_rg_coded_theme": 466.75,
- "variant_rg_fb_month": 448.7,
- "variant_rg_fb_theme": 466.08,
- "variant_rg_r1": 450.21,
- "variant_rg_r2": 464.98
+ "ru_group": {
+  "behind": 863,
+  "device": "R-3114",
+  "first": "2026-09-23",
+  "hi": 1005,
+  "last": "2026-10-31",
+  "lo": 996,
+  "n": 7,
+  "phase": "A"
+ },
+ "ru_stretch": {
+  "device": "R-3114",
+  "from_pole": "SYC3-P055",
+  "to": []
+ },
+ "runner_up": "SYC-3",
+ "stretch": {
+  "device": "MLR-F2-52",
+  "to": [
+   "R-2207"
+  ],
+  "to_poles": [
+   "MLR2-P071"
+  ]
+ },
+ "tmed": 38.03
 }

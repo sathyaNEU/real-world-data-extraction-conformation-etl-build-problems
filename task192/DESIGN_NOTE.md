@@ -4,8 +4,8 @@ Architecture 4, drawn 2026-11-04. The slot keeps its number and its objective (A
 Diagnostics) and leaves the Portuguese protest register for good: architecture 3 (a classifier corrected by
 hand-coded audits) is spent, its shipped pack (060f8959) stays at the portal, pending, and its design is in the
 git history of this file (commit 826dc6b and earlier). New client domain, world, dataset, generator and prompt
-shell; no seed mechanism used. The 55 screens that preceded this draw are in `## Tried and rejected` (A4.1 to
-A4.55).
+shell; no seed mechanism used. The 55 screens that preceded this draw are in the Tried and rejected section
+(A4.1 to A4.55).
 
 ## Draw
 
@@ -14,24 +14,26 @@ A4.55).
 | Card | `.claude/skills/fingerprint/cards/task192.json`, architecture v4, registered 2026-11-04T04:24:23Z at WARN |
 | Client domain / task type | Energy Systems & Utilities (`energy-systems-utilities`), `grid-reliability-outage-analysis` (serves RC and AD): finding the component that is breaking down on a distribution feeder is the network's reliability analysis of its own protective-device records |
 | Objective | Anomaly Detection & Diagnostics: a real event (one insulator breaking down) separated from the ordinary momentary interruptions that raise the same counts (lightning, wind and tree contacts, squirrels, the exposure of long rural lines) |
-| Decision | which feeder Kestrel Falls Municipal Utilities' one overhead line patrol crew works in the week of 9 November 2026 (week 46), or none; pick one of the city's feeders (`pick_one_of_n`), forward facing (the crew's coming week, before the component fails outright and causes a sustained outage) |
-| Shape | 07, a grid of cells: every feeder by its momentary events and its 2026 reliability indices (the asks), plus the call, the poles to walk, the runner-up and what separates them |
+| Decision | which feeder Kestrel Falls Municipal Utilities' one overhead line patrol crew works in the week of 9 November 2026, and the stretch of it to walk, or none; pick one of the city's feeders (`pick_one_of_n`), forward facing (the crew's coming week, before the component fails outright and locks the feeder out) |
+| Shape | 07, a grid of cells: every feeder by its 2026 reliability indices (SAIDI, MAIFI-E, CEMI-2: the asks), plus the call, the stretch, the second choice and what keeps it second |
 | Gap / pattern / generators | `objective` (the momentary counts are correct and are not what the patrol is scored on); pattern `none`; `G2` decisive (the record's unit is a protective operation, the decision's a failing point on a feeder), `G10` second (one point's failures counted as several events) |
 | Gate G | `decomposition_attribution`: each feeder's momentary events attributed to storms, wind and trees, animals, exposure and one repeating point |
 | Strategy | `grain_or_unit` (operations grouped into the points they came from); Layer 2 family `field_method`; pattern `own:repeat-faults-located-by-their-recorded-fault-current` |
-| Forum, forcing event, org family | `operations_desk` (the distribution operations desk dispatches the crew Monday morning), `shift_or_daily_cycle` (the weekly crew assignment), `local_government` (a city department, the electric division of a municipal utility) |
+| Forum, forcing event, org family | `operations_desk` (the distribution operations desk dispatches the crew), `shift_or_daily_cycle` (the weekly crew assignment), `local_government` (a city department, the electric division of a municipal utility) |
 | Role | the utility's distribution reliability engineer (`other`) |
-| Context artifact | `filed_standard`: the utility's Distribution Reliability Procedure (the patrol's purpose, the index definitions, the major event day rule, the storm-day screen) |
+| Context artifact | `filed_standard`: the utility's Distribution Reliability Procedure DRP-04 (the patrol's purpose, the definitions and indices, the major event day rule, the storm patrol) |
 | Calibration | none |
 | Personas | Kelsey Sanford, Shawn Hartman (`guard.py names --geo us --seed 192`) |
-| WARNs answered | `three_rules.strategy_risk` (grain_or_unit): the analyst test below files a storm, squirrel or exposure feeder with every field and rule read correctly, so the step is analytical; `overuse.objective`: the number's objective is fixed by START_HERE.md; `repeat.deliverables` (svg+xlsx, against task193 v3): a strip chart of fault currents is the species that makes a repeated current read at a glance, and the prompt's other shell classes are under their quotas |
+| Deliverables | `line_patrol_2026-11-09.xlsx` (the call, the stretch, the second choice, the per-feeder indices, the eleven operations), `reliability_2026.svg` (each feeder's SAIDI against its MAIFI-E, the feeder the crew walks labelled) |
+| WARNs answered | `three_rules.strategy_risk` (grain_or_unit): the analyst test below files a squirrel feeder with every field and rule read correctly, so the step is analytical; `overuse.objective`: the number's objective is fixed by START_HERE.md; `repeat.deliverables` (svg+xlsx, against task193 v3): a scatter of the two indices is the species that makes a feeder's standing read at a glance, and the prompt's other shell classes are under their quotas; the shell itself (question form `what`, second sentence `List`, the chart sentence `In ...`, no week number in the question or the file name) is drawn away from task194's crew-allocation shell, which `guard.py surface` promoted for adjudication |
 
 **Data-native sentence.** A feeder head relay records, for every fault it trips on, the faulted phase and the
 current the fault drew, and on a radial overhead feeder that current falls with the fault's distance from the
-substation through the line's impedance; one cracked insulator that flashes over on damp mornings and recovers
-when it dries draws the same current on the same phase every time, so its flashovers are several momentary
-events sharing one signature, which no count of events, no storm screen and no per-mile rate can tell from the
-squirrels, trees and lightning that make up the rest of the record.
+substation through the line's impedance (the device register's protection-study currents fall the same way,
+device by device); one cracked insulator that flashes over on damp mornings and recovers when it dries draws the
+same current on the same phase every time, so its flashovers are several momentary events sharing one signature,
+which no count of events, no storm screen and no per-mile rate can tell from the squirrels, trees and lightning
+that make up the rest of the record.
 
 **Abstraction sentence (written to be refused).** "The decisive quantity is where a unit's repeated failures
 come from, recovered by grouping its events on a recorded signature that stands for position along the unit."
@@ -42,60 +44,202 @@ against a neighbour's simultaneous fall (supply passed between units), task200 r
 meetings with an image (a history-defined subset). Nearest driver on file 0.07 (task132).
 
 **Sources.** Fully constructed operating layer for a fictional municipal electric utility in Missouri: the
-feeder head relays' fault records, the mid-line reclosers' event logs, the SCADA sequence-of-events log, the
-outage management system's tickets, the device register, the feeder register and impedance model, the
-lightning detection network's strokes, the airport weather station's hourly observations, the vegetation
-management log, customer contacts, and the Distribution Reliability Procedure. Provenance in `metadata.json`.
+feeder head relays' event records, the mid-line recloser controls' logs, the SCADA sequence-of-events log, the
+outage management system's tickets (two layouts across its April 2026 replacement), the protective device
+register with its in-service history and the protection study's available fault currents, the transformer list
+and the service point extract from the GIS, the feeder register, the lightning detection network's strokes, the
+airport weather station's hourly observations, the substation locations, the line clearance log, customer
+contacts about blinking lights, and the Distribution Reliability Procedure. Provenance in `metadata.json`.
 
 ## Default path
 
-1. Read the Distribution Reliability Procedure: the patrol goes to the feeder where a component is failing;
-   momentary interruption events are counted the IEEE 1366 way (reclosing operations within five minutes are one
-   event); storm days are the calendar days the procedure's storm screen marks.
-2. Join the feeder head relay records to the SCADA operations and the mid-line recloser logs, convert UTC to
-   Central time, keep the momentary operations (the breaker closed back in and held), and group them into
-   momentary interruption events per feeder for August to October 2026.
-3. Set aside the storm days (lightning within the screen's distance of the feeder's substation, or gusts at or
-   over the screen's speed at the airport station).
-4. Normalise each feeder's non-storm momentary events by its overhead miles, and set the result against August
-   to October 2025 to see which feeder's blinking is new.
-5. Send the crew to the feeder whose non-storm momentary rate rose most.
+1. Read DRP-04: the patrol goes to the feeder where a component on the overhead line is breaking down (5.2);
+   a momentary interruption event is a customer's interruptions within five minutes of the first (2.5); a storm
+   day for a substation is a day with a cloud-to-ground stroke within five miles or an airport gust of 40 mph or
+   more (6.1).
+2. Count each feeder's momentary interruption events for August to October 2026 from the SCADA log (feeder
+   breakers) and the recloser controls' logs, operations within five minutes of the first making one event,
+   converting the controls' standard time and SCADA's Central time.
+3. Set aside each substation's storm days (the lightning file within five miles of the substation, the airport's
+   gusts in knots against 40 mph).
+4. Normalise each feeder's non-storm events by its overhead miles from the feeder register, and set the result
+   against August to October 2025 to see which feeder's blinking is new.
+5. Send the crew to the feeder whose non-storm rate rose most: NYD-3, up 2.53 events a mile, against 0.42 for
+   the next feeder (MLR-1); the outage tickets' animal causes on NYD-3 (6 since August against 1 a year earlier)
+   read as confirming that the rise is real.
 
-Ends on: the squirrel feeder (fixed by the generator's design point; written in at stage 2)
-Golden: the feeder whose momentary faults repeat at one recorded current on one phase
+Ends on: NYD-3 (North Yard 3, up 2.53 non-storm momentary events a mile on 2025)
+Golden: MLR-2 (Millrace 2, eleven momentary faults on phase C at 1,423 to 1,448 A recorded by its breaker)
 
 ## Stump sentence
 
 A competent solver who groups every feeder's reclosing operations into momentary interruption events, sets aside
-the storm days, normalises by overhead miles and compares August to October 2026 with 2025 sends the patrol to a
-feeder whose new blinking is squirrels, when the feeder whose faults keep returning at one recorded current on
-one phase has an insulator breaking down.
+the storm days, normalises by overhead miles and compares August to October 2026 with 2025 sends the patrol to
+NYD-3, whose new blinking is squirrels, when MLR-2's breaker has recorded eleven momentary faults on phase C at one
+current since mid-August because an insulator on its main line is breaking down.
 
 ## Three rules
 
 Task type: `grid-reliability-outage-analysis` in `energy-systems-utilities`, which serves anomaly detection; locating the component that is breaking down on a distribution feeder from its protective devices' fault records is the utility's reliability analysis of its own network.
-Domain test: the deciding quantity is where on the network a component is failing, which distribution protection reads from the fault current each operation records, because a fault's current falls with its distance from the substation through the feeder's impedance, so one insulator flashing over again and again records one current on one phase; the field's estimator for where a fault is is the impedance-based distance to fault.
+Domain test: the deciding quantity is whether a feeder's momentary faults keep coming from one place on its line, which distribution protection reads from the current each fault drew, because that current falls with the fault's distance from the substation through the feeder's impedance (the register's protection-study currents fall device by device the same way), so one insulator flashing over again and again records one current on one phase.
 Swap: "send the inspector to the ward where a device is failing, read from the alarms each bed raised" keeps none of it: there is no feeder impedance, no fault current that falls with distance, no flashover that clears when the breaker recloses and no momentary interruption to count.
-Layer 1: relay records in UTC against the SCADA log in Central time with the same operation in both (the relays and SCADA); reclosing shots grouped into five-minute events (the protection scheme); mid-line reclosers in kiloamps against relays in amps, and phase labels in two conventions (two device vendors); outage tickets in two layouts across the 2026 system upgrade, partial restorations as child tickets (the outage management system); customers downstream of each device from the device register, feeders renumbered at the Cotter Road rebuild (the asset register); none placed to be caught.
-Layer 2: `field_method` / grain: the feeder's operations are grouped into the points they came from; the methodological choice that flips the call is reading each momentary operation's recorded phase and fault current as a position on the feeder and looking for the position that keeps failing, instead of counting, screening and normalising the operations.
-Decisive step: recognising that a breaking-down component announces itself as repeated self-clearing faults at one place, and finding that place by grouping each feeder's momentary operations on the faulted phase and the fault current the head relay recorded (equivalently, the impedance-based distance to fault each current implies).
-Not semantics: every field, unit, clock and code read correctly (the relays' amps, the reclosers' kiloamps, UTC and Central time, the phase conventions, the five-minute event rule, the storm screen) still leaves the counts, the storm-screened counts, the per-mile rates and the change on 2025 on a storm, squirrel or exposure feeder; no column holds a location or a repeat.
-Not rule application: the procedure files the patrol's purpose, the event rule and the storm screen and nothing about where faults come from, so executing every filed rule files the squirrel feeder; the enumerated family (momentary events, events per customer, storm-screened events, per overhead mile, the change on 2025, the phase-skew test, damp-weather events) spreads over several feeders and never names the failing one, and the standing family once the faults are placed by their current is one member, the ruling-out done by a group of same-phase, same-current operations that no other feeder carries.
-Analyst test: a strong analyst who joins the relays to SCADA, groups the reclosing operations into momentary events, sets aside storm days, normalises by overhead miles and compares with 2025 files the default path's feeder, the squirrel feeder, and never asks where on each feeder the faults were.
-Estimand: Distribution Reliability Procedure section 5: the weekly patrol goes to the feeder where a component on the overhead line is breaking down, so that it is found and replaced before it fails outright; storm damage, animal contacts and tree contacts are left to the storm, animal-guard and line-clearance programmes; filed in `procedures/DRP-04_distribution_reliability_procedure.pdf`.
-No decoy: nothing is planted to be caught: no memo, draft, briefing or stakeholder figure names a feeder; the failing insulator is an ordinary component failure whose only trace is its own flashovers in the relay records.
-No certified replay: the method is not recovered by reproducing certified or published figures; no shipped figure is a fault location or a repeat count.
+Layer 1: relay records in UTC against the SCADA log in Central time and the recloser controls on standard time all year (three systems, one event in two of them); fault terminals against feeder phases and kiloamps against amps (the controls' vendor); Cotter Road's old feeder, breaker and SCADA names before the 14 March 2026 rebuild (the asset register's crosswalk); outage tickets in two layouts across the April 2026 OMS replacement, partial restorations as child tickets in one and a steps sheet in the other; relay records lost on busy storm days outside August to October (the event buffer); taps moved between feeders at three dates (the register's dated rows); service points connected and retired through the period (the GIS); none placed to be caught.
+Layer 2: `field_method` / grain: the feeder's operations are grouped into the points they came from; the methodological choice that flips the call is reading each momentary operation's recorded phase and fault current as a place on the feeder and looking for the place that keeps failing, instead of counting, screening and normalising the operations.
+Decisive step: recognising that a breaking-down component announces itself as self-clearing faults that keep returning to one place, and finding that place by grouping each device's momentary operations on the faulted phase and the current the device recorded for them, counted across separate mornings.
+Not semantics: every field, unit, clock and code read correctly (the relays' amps and UTC, the controls' kiloamps, terminals and standard time, SCADA's Central time, the five-minute event rule, the storm screen, the old Cotter Road names) still leaves the counts, the storm-screened counts, the per-mile rates and the change on 2025 on NYD-3, NYD-2, BLV-3 or SYC-1; no column holds a place or a repeat.
+Not rule application: DRP-04 files the patrol's purpose, the definitions, the indices, the major event day rule and the storm patrol and nothing about where faults come from, so executing every filed rule files NYD-3; the enumerated family (momentary events, storm days set aside, per overhead mile, per customer, against 2025, damp mornings, phase share and chi-square, and the asks' own SAIDI, MAIFI-E and CEMI-2) spreads its first place over five feeders (NYD-3, NYD-2, BLV-3, SYC-1, SYC-3) and never puts MLR-2 first or second (ninth on the screen); the standing family once faults are placed by their current is one member whose band is a corridor (eleven against seven at every band from 1 to 5 per cent since August), and the ruling-out is loud: eleven same-phase operations at one current that no other feeder approaches (at most five).
+Analyst test: a strong analyst who reads the SCADA log and the controls' logs into momentary events, sets aside storm days, normalises by overhead miles and compares with 2025 files the default path's feeder, NYD-3, whose rise the outage tickets put on squirrels, and never asks where on each feeder the faults were.
+Estimand: DRP-04 5.2 to 5.4: the weekly patrol goes to the feeder where a component on the overhead line is breaking down, so that it is found and replaced before it fails outright; storm damage, animal contacts and tree contacts are the other programmes' work; the assignment names the feeder and the stretch to walk as a protective device's zone; filed in `procedures/DRP-04_distribution_reliability_procedure_rev6.pdf`.
+No decoy: nothing is planted to be caught: no memo, draft, briefing or stakeholder figure names a feeder; the failing insulator is an ordinary component failure whose only trace is its own flashovers in the relay records, and the squirrel year, the overgrown taps and the phase B taps are the seasons those feeders have.
+No certified replay: the method is not recovered by reproducing certified or published figures; no shipped figure is a fault location, a repeat count or a ranking of feeders.
 Lesson: a feeder's momentary interruptions are a mixture of independent events and one repeating source, and the repeating source is found only by placing each fault on the line through the current it drew; no build on file teaches locating a failing component from repeated fault-current signatures.
 
 ## Survivor anatomy
 
-Actor: the deciding property (one point on a feeder failing again and again) has no column in any file; it is a relation between a feeder's own momentary operations, the same phase and the same recorded current on different days.
-Link: the signal is read through a comparison the field's momentary-interruption method never asks for, each operation's fault current against the other operations' currents on the same feeder and phase; the impedance model turns a current into a distance, but no key joins an operation to a pole.
-Reflex: the field's named method for targeting patrols (momentary interruption events, IEEE 1366, storm days set aside, per overhead mile, against last year) sits at rungs 0 to 3 and files a storm, squirrel or exposure feeder.
-Back-test: the textbook route validates: the storm-screened, per-mile momentary rate tracks the animal and tree contacts the outage tickets confirm on the other feeders, and last spring's line clearance on the failing feeder lowered its counts exactly as the clearance programme expects.
-Second use: the relay records carry every rung and the asks' momentary events; the SCADA log is the operations record the relays are reconciled to; the impedance model is the protection study's model; the weather and lightning files carry the storm screen; deleting the decisive step removes no file.
-Shock: the failing feeder's August to October count is ordinary, its rise on 2025 near zero (spring line clearance took out its tree contacts), its phase mix unremarkable; it is no sort's extreme.
-Pins: the procedure files the patrol's purpose, the event rule, the storm screen and the major event day rule; no filed sentence names fault currents, positions, repeats or phases.
+Actor: the deciding property (one point on a feeder failing again and again) has no column in any file; it is a relation between a feeder's own momentary operations, the same phase and the same recorded current on separate mornings.
+Link: the signal is read through a comparison the field's momentary-interruption method never asks for, each operation's fault current against the other operations' currents on the same device and phase; the register's available fault currents say a current is a place, but no key joins an operation to a pole.
+Reflex: the field's named method for targeting patrols (momentary interruption events, storm days set aside, per overhead mile, against last year: IEEE 1366's worst-performing-circuit screen) sits at rung 0 and files NYD-3; the indices the prompt asks for file NYD-2, SYC-3 or SYC-1.
+Back-test: the textbook route validates: NYD-3's rise is matched by its outage tickets' animal causes (6 since August against 1 a year earlier), and the line clearance log shows MLR-2 fully trimmed in March and April 2026, which is why its tree contacts and its counts fell exactly as the clearance programme expects.
+Second use: the relay records carry every rung and the asks' momentary events; the controls' logs carry the recloser zones' events; the register carries the tree every ask walks and the protection study's currents its fuse links are sized against; the weather and lightning files carry the storm screen; deleting the decisive step removes no file.
+Shock: MLR-2's August to October count is 16, ninth of sixteen; its rise on 2025 is 4 events (clearance took out its tree contacts); its non-storm change per mile is ninth; its phase-C share 0.69 is fifth; its SAIDI 139.3 is mid-pack; it is no sort's extreme.
+Pins: the procedure files the patrol's purpose, the definitions, the indices, the major event day rule and the stretch's form; no filed sentence names fault currents, positions, repeats or phases.
+
+## Readability screen
+
+Reflex row from the field's vocabulary for where to patrol: momentary interruption events, MAIFI-E, worst-performing circuits by SAIDI, SAIFI and CEMI-n, storm-day screens, per mile and per customer rates, the change on last year, damp-weather flashover counts, single-phase concentration.
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the momentary screen, storm days set aside, per mile, against 2025 (NYD-3) | DRP-04 2.5 and 6.1 define the event and the storm day | SCADA and the controls' logs | yes: the worst-performing-circuit screen | the OMS animal causes confirm it | no | one subtraction per mile | no | readable |
+| R1 damp-morning momentary events (NYD-2) | no sentence | the airport file's humidity and fog codes | yes: contaminated insulators flash over in fog and dew | none | no | one filter | no | readable |
+| R2 single-phase concentration (BLV-3) | no sentence | the relays' event types | yes: a phase problem shows on one phase | none | no | one share | no | readable |
+| R2b the asks' indices, worst circuit first (NYD-2, SYC-3) | DRP-04 3.1 defines them | OMS and GIS | yes: patrol the worst circuit | none | no | one ratio | no | readable |
+| R3 momentary faults grouped by device, faulted phase and recorded current across separate mornings (decisive) | no sentence names currents, phases, repeats or places (checks.py R3c) | no column holds a place or a repeat; the relays carry each trip's currents as every event summary does | no: the field's patrol reflex is the momentary screen; a fault is located by its current after a lockout, never across months of self-clearing faults | none: no record names a component | no: nothing duplicated, missing or mis-keyed in the window (every August to October breaker opening has its relay record) | no: a grouping per device and phase on a current band, counted on separate days | no: the relay archive serves every rung and the asks' momentary events, the register's currents its fuse coordination | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | customers served | service points supplied on 31 October 2026 | the feeder register's 2025 planning count; every row of the extract | same call (asks move) | DRP-04 2.1; the extract's feeder column and the register's dated tree agree on every service point, asserted |
+| SF2 | major event days | days whose daily system SAIDI exceeds the filed 38.03 minutes over the filed 35,404 customers | a threshold recomputed from 2025 alone; UTC days | same call; 19 May and 27 June under every reading | DRP-04 4.1 and 4.2; every other 2026 day sits under 0.6 of the threshold and both sit over twice it, asserted |
+| SF3 | an interruption's day | the local day it began, a continuation the day its outage began | the day a later ticket opened | same call | DRP-04 2.6 and 2.3; asserted |
+| SF4 | sustained against momentary | more than five minutes against five or less | the OMS's tickets as the sustained record | same call | DRP-04 2.2; no SCADA opening lasts between 4.5 and 5.6 minutes, asserted |
+| SF5 | customer minutes of a stepped restoration | each step's customers from the outage's start to their step | the parent's whole duration for everyone | same call (asks move) | DRP-04 2.4; asserted |
+| SF6 | a momentary interruption event | per customer, the interruptions within five minutes of the first | per device | same call | DRP-04 2.5 says a customer's; the few two-device pairs inside five minutes are merged per customer, asserted |
+| SF7 | a feeder's interruptions | those of its devices as the feeder stood when each began | today's tree | same call | DRP-04 3.2; asserted |
+| SF8 | January to October 2026 | local calendar days 1 January to 31 October | UTC days | same call | the prompt and DRP-04 2.6; asserted |
+| SF9 | rounding | minutes to one decimal, events per customer to two | other precisions | same call | the prompt; every figure clears its rounding edge by a tenth of a unit, asserted |
+| SF10 | the band and window a repeat is read in | plus or minus 2 per cent since 1 August, separate days | 1 to 5 per cent; all trips or one per day; the phase current or the residual; since 1 August, September and October, or all of 2026 | MLR-2 under every one | asserted across 72 groupings: by 1.3x or more since August at every band from 1.5 per cent and over the year to 3 per cent, first under every grouping |
+| SF11 | the runner-up | SYC-3, seven operations of recloser R-3114 on phase A at 996 to 1,005 A | the next feeder at a 5 per cent band | SYC-3 to a 3 per cent band | asserted; at 5 per cent unrelated faults on busy feeders join wide bands, which is why the band follows the relays' own spread |
+| SF12 | which of two failing components the one crew takes | MLR-2 | SYC-3 | MLR-2 under every criterion | more operations (11 against 7), more customers behind the device (2,625 against 863), earlier onset, as recent; asserted |
+| SF13 | the stretch to walk | the breaker MLR-F2-52's zone to recloser R-2207 at MLR2-P071 | a span of poles | same call | DRP-04 5.4 files the stretch as a device's zone; asserted |
+| SF14 | a service ticket opened at the minute the device above closed | the same customer's interruption carrying on | a second interruption | same call (asks move) | DRP-04 2.3: the customer never regained supply; asserted |
+| SF15 | an opening SCADA holds for 5.7 to 13.6 minutes with no ticket | a sustained interruption | not an interruption | same call (asks move) | DRP-04 2.2 defines it by duration, not by ticket; asserted |
+| SF16 | customers already without supply when a device locks out | not interrupted again | counted by the OMS's device count | same call (asks move) | DRP-04 2.3; asserted |
+| SF17 | a momentary followed in its minute by a fuse blowing | part of that customer's sustained interruption | a momentary event | same call (asks move) | DRP-04 2.5 second sentence; no sustained interruption begins in the minutes just before an event, asserted |
+| SF18 | a legacy child ticket's Out | when the step was logged; the customers were out from the parent's Out | the customers' outage start | same call (asks move) | DRP-04 2.4; asserted |
+| SF19 | a tap moved between feeders | its interruptions before the move with the old feeder | today's feeder | same call (asks move) | DRP-04 3.2; asserted |
+| SF20 | a service point connected or retired during the period | interrupted only while connected | interrupted all period | same call | no service point is connected or retired on a day an interruption reached it, asserted |
+| SF21 | the trips before a lockout | part of the sustained interruption | momentary events | same call | DRP-04 2.5; no momentary event sits in the five minutes before a crew lockout on its device, asserted |
+
+## Ladder
+
+| Rung | Construction | Names | Figure | Runner-up | Margin | Dies to |
+|---|---|---|---|---|---|---|
+| R0 | momentary events since August, storm days set aside, per overhead mile, against 2025 (default path) | NYD-3 | 2.53 a mile | MLR-1 0.42 | 6.0x | its rise is squirrels (DRP-04 5.3), its operations scattered over the feeder: largest same-phase group 2 |
+| R1 | non-storm momentary events on damp mornings (the insulator reflex) | NYD-2 | 18 | SYC-1 12 | 1.50x | wet limbs on overgrown taps (its tickets' vegetation causes), scattered currents: largest group 2 |
+| R2 | single-phase concentration of momentary first trips (the phase reflex) | BLV-3 | share 0.96, chi-square 44.2 | CTR-2 0.72, 12.3 | 1.33x, 3.6x | its long phase B taps through the oaks: the concentration is its taps' phase, the currents spread (largest group 5) |
+| R2b | the asks' indices, worst circuit first | NYD-2 (SAIDI 411.5, MAIFI-E 47.12), SYC-3 (CEMI-2 2,325) | | SYC-3 356.1, SYC-2 45.29, NYD-2 2,237 | 1.16x, 1.04x, 1.04x | the indices measure what customers lived through, not where a component is failing |
+| R3 | momentary faults grouped by device, faulted phase and recorded current on separate mornings (decisive) | MLR-2 | 11 at 1,423 to 1,448 A, phase C, breaker MLR-F2-52 | SYC-3 7 at 996 to 1,005 A, phase A, recloser R-3114 | 1.57x | none |
+
+- Position: MLR-2 ninth on R0, sixth on R1, fourth and fifth on R2, ninth on SAIDI, seventh on MAIFI-E and fourth on CEMI-2; first only on R3; never second within 1.2x on any rung (asserted on ten cheap constructions and five indices).
+- Dominance: the decisive construction takes the screen's pick NYD-3 from first to a largest group of 2, against MLR-2's 11; MLR-2 leads the runner-up by 4 operations (1.57x) and every other feeder by 6 or more.
+- Worth in bins: the call is a named feeder; the graded figures are exact counts and sums with no fitted parameter, each clear of its rounding edge by a tenth of a unit or more (asserted).
+- Pricing: (1) the residue the WHAT leaves is which feeder's momentary faults keep coming from one place, a method; its band is a corridor (11 against 7 at every band from 1 to 5 per cent since August, SF10), not a knob. (2) MLR-2 must climb from ninth on the screen to first; the construction carries it there by 11 against at most 7. (3) The one-group-by routes a solver writes first (counts, rates, changes, shares by feeder) all file other feeders; the one grouping that files MLR-2 is the decisive step itself, on a current band no column holds. (4) No estimation: the group sizes are counts, MLR-2's 9 to 11 across the bands is the corridor's whole spread. (5) No variance lever. (6) MLR-2's own history shows no step: 12 momentary events in August to October 2025, 16 in 2026. (7) The eleven are 11 of 1,027 relay records, ordinary single-trip momentaries among 1,016 others. (8) The reflex sweep runs as code in checks.py: raw, change, non-storm, per mile, per customer, against 2025, damp mornings, phase share and chi-square, SAIDI, MAIFI-E (over the year and since August), CEMI-2 and its share each name another feeder.
+- Clean truth: on the simulation's own operations, before any file is cut, the grouping names MLR-2 and the default path NYD-3 (checks.py R2).
+
+## Closure table
+
+| Axis | Name | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | every feeder in the register, every service point the GIS lists | DRP-04 1.1 and 2.1; all sixteen graded |
+| 2 | Unit of account | the feeder for the call and the asks; the customer inside each index | DRP-04 3.1 and 3.2 |
+| 3 | Attribution window | January to October 2026 for the asks; the call's operations since August, corridor to the whole year | prompt; SF10 asserted |
+| 4 | As-of dating | an interruption's local start day | DRP-04 2.6; SF3 |
+| 5 | Version basis | the register's row in force on the day | DRP-04 3.2; SF7, SF19 |
+| 6 | Denominator | customers served on 31 October 2026; daily SAIDI over the filed 35,404 | DRP-04 2.1 and 4.2; SF1 |
+| 7 | Weighting | each customer equally | DRP-04 3.1 |
+| 8 | Window length | ten months for the asks | prompt |
+| 9 | Boundary inclusivity | five minutes or less is momentary | DRP-04 2.2; SF4 asserted |
+| 10 | Rounding path | compute exactly, round once at print | prompt; SF9 asserted |
+| 11 | Tie-break | none needed: 11 against 7, and MLR-2 leads SYC-3 on every patrol criterion | SF12 asserted |
+| 12 | Maturity and censoring | no interruption runs past 31 October | asserted by the build (the period's last restorations close inside it) |
+| 13 | Order of operations | major event days first, then the indices | DRP-04 4.2 |
+| 14 | Row order | not used | C1 |
+| 15 | Duplicate resolution | SCADA reclosers in two logs counted once (the controls' logs carry every recloser); continuations not a second interruption | SF14; asserted |
+| 16 | Identity normalisation | old Cotter Road names to new through the register's crosswalk | the Cotter Road sheet; asserted (OMS counts reproduced) |
+| 17 | Netting against gross | customers already out netted from a later outage | SF16 |
+| 18 | Dimensional units | kiloamps and amps, knots and mph | the files' headers; same call |
+| 19 | Code and status semantics | event types and terminals to phases through the register's phasing | asserted (the verifier reads them independently) |
+| 20 | Integerisation | CEMI-2 counts whole customers | DRP-04 3.1 |
+| 21 | Clause scope | DRP-04 5.3 sets storm, animal and tree contacts aside from the patrol | SF12; same call |
+| 22 | Forward window contents | the crew's week of 9 November | DRP-04 5.1; the call is the assignment for the week of 9 November |
+
+## Literal reader
+
+Executing DRP-04 word for word gives the indices (2.1 to 4.2, every convention closed by a quoted sentence, SF1 to SF9 and SF14 to SF21) and leaves the call to 5.2's literal estimand, the feeder where a component on the overhead line is breaking down: read literally, that is a fact about the line, and the only records of a component breaking down are the eleven same-phase operations at one current on MLR-2's breaker (and SYC-3's seven, which the one crew takes second under every criterion, SF12); no filed rule names a feeder, the storm screen of 6.1 is the storm patrol's, and every reading of the open band and window prints MLR-2 (SF10).
+
+## Oracles
+
+None that ties only under the golden. The OMS's cause codes confirm the screen's picks on the wrong path (NYD-3's animal causes, NYD-2's vegetation causes); the line clearance log explains MLR-2's fall in counts and confirms the screen's reading of it; the blinking-light contacts track momentary counts and rank NYD-3 and NYD-2 highest; the register's available fault currents bracket every feeder's faults alike and rank nothing.
+
+## Ask sheet
+
+Three asks, every figure per feeder, each on rows outside the main call's population (the call reads the feeder relays' first-trip records and the controls' TRIP rows of the momentary events since 1 August, and the register's terminal phasing).
+
+- **A1, minutes of interruption per customer served, January to October 2026, major event days left out (one decimal), 16 figures.** H18: a measure every candidate carries that the call does not turn on. Primary device (D4, absence evidenced in a file no habitual join reaches): the breaker and recloser openings SCADA holds for 5.7 to 13.6 minutes after the desk test-closes a lockout, which the OMS never ticketed because it opens an incident only for an outage still on after fifteen minutes. Second primary (D6/D8): in the legacy layout a partial restoration is a child ticket whose Out is when the step was logged, while its customers were out from the parent's Out. Hazards: customers already out, the steps sheet carrying the final step, the old Cotter Road names, the major event days, UTC against local. Stops: OMS parents at face value (mirror, 5 of 16), children at their own Out and no SCADA (cracker, 6 of 16), either primary handled alone (9 of 16).
+- **A2, momentary interruption events per customer served, same window (two decimals), 16 figures.** H18: the momentary record behind every feeder's blinking. Primary device (D6/D7): a fuse-saving fast trip that a fuse or transformer fuse blows behind in the same minute is part of those customers' sustained interruption (DRP-04 2.5), found only by matching each device event to the OMS tickets that begin in its minute on the devices below it. Second: customers already without supply when the device opens, and two devices opening on one customer inside five minutes (one event for that customer). Hazards: the relay archive's lost records on busy storm days (SCADA is complete), the SCADA reclosers in both SCADA and their logs, test closes inside five minutes (momentary, in SCADA and the logs only), the controls' standard time. Stops: device events times the customers below them (cracker and mirror, 1 of 16), absorption handled alone (9 of 16).
+- **A3, customers with more than two sustained interruptions, same window (whole), 16 figures.** H18: the customers each feeder's record leaves worst off. Primary device (D1, one event under two records): a service ticket opened at the minute the device above it closed is that customer's interruption carrying on (a storm-damaged drop), not a second one. Second (D4): the SCADA-only sustained openings. Hazards: the register's dated rows (taps moved at three dates), connections and retirements, customers already out, the old names. Stops: tickets through today's tree (mirror, 4 of 16), the dated tree with every ticket counted (cracker, 6 of 16), continuations merged alone (8 of 16), SCADA found alone (11 of 16).
+- Separation: zero ask-device rows in the main population: the devices live in the OMS (continuations, child tickets, fuse tickets), SCADA (test-close durations) and the GIS; every August to October breaker opening has its relay record, and the call is the same on the clean truth (asserted).
+
+| Ask | Cracker (lands the call, hygiene battery, every filed rule) | Mirror (the procedure's screen, the OMS as the record) | cracker verdict |
+|---|---|---|---|
+| A1 SAIDI | 6 of 16, children at their own Out, no SCADA openings | 5 of 16 | miss |
+| A2 MAIFI-E | 1 of 16, device events times customers below | 1 of 16 | miss |
+| A3 CEMI-2 | 6 of 16, every ticket counted on the dated tree | 4 of 16 | miss |
+
+Pair ceiling: 41.7 (cracker 59.9 on the call, mirror 23.5 off it, 38 + 7 + 55 L)
+Mirror leakage: 20.8 per cent of ask weight
+Cracker keep: 27.1 per cent of ask weight, under two fifths; the full includer who finds one ask's primary keeps 9 of 16 on A1 or A2 and 8 or 11 of 16 on A3, and still misses the other primary's block
+Measured by: generator/ceiling.py, run on the cut pack (digest printed by the script)
+
+## Leak sweep answers
+
+`leak.py task192 --asof 2026-11-04` on the cut pack (target.zip a8212703): REVIEW, no LEAK. One line per REVIEW line.
+
+- **Sweep 3, DRP-04 carries 12 of 17 distinctive words of the committed call: harmless.** The shared words are the
+  procedure's own subject in sections 5.1 to 5.4 (the overhead line patrol crew, the week, the feeder, the breaker,
+  recloser or fuse whose zone is the stretch to walk, the taps fused off it), which is the WHAT the call is filed
+  against and the prompt states in the same words. DRP-04 names no feeder, device, pole, date, phase, current or
+  count; the call's own words (MLR-2, MLR-F2-52, R-2207, MLR2-P071, 9 November) appear nowhere in the pack's
+  documents, and `checks.py` lands MLR-2 on the clean truth without reading any document.
+- **Sweep 8, `device_id`, `device_type`, `upstream_device` (protective device register), `protective_device`
+  (transformer list) and `Device` (OMS export): harmless.** The sweep matches the house word "device"; here it is
+  the field's own noun for breakers, reclosers and fuses, and the key a utility's GIS and OMS hold connectivity and
+  outages under. No column carries a flag, a truth, a seed or a marker. `metadata.json` declares it under
+  `field_terms`.
+- **Sweep 12, DRP-04 names column names verbatim (Bluffview, event, feeder, gust, point, station): harmless.** They
+  are ordinary words of the procedure's sentences (the feeders of the Bluffview substation, a momentary
+  interruption event, a gust of 40 mph, a metered service point, the airport weather station) that coincide with
+  column names or values in the data files. The procedure names no file, defines no column and describes no
+  layout; it is the utility's governing document in its own genre (issued 12 January 2026 with its revision
+  table), filed for the WHAT: the definitions, the indices, the major event day rule, the patrol and the storm
+  patrol.
+- **The single-use test.** Every file has a use beside the call: the relay and recloser records and the SCADA log
+  feed the asks' momentary and sustained counts; the register and the service points feed every index; DRP-04
+  governs the indices and the storm patrol; the weather, lightning, line clearance and blinking-lights files are
+  the storm patrol's, the line clearance programme's and the call centre's own records (the three distractors).
+  No sentence was added to the pack in this pass.
 
 ## Tried and rejected
 - The loop-4 reader, cold on the re-drawn record, **missed the call**: it filed 550 at 50 per cent
@@ -490,6 +634,48 @@ Pins: the procedure files the patrol's purpose, the event rule, the storm screen
   clearance on the failing feeder, a 2026 squirrel year on another, single-phase laterals that concentrate faults on
   one phase, a short urban feeder) and the relays' stated 1 per cent current accuracy, and `checks.py` asserts every
   cheap route off the call.
+- **(2026-11-04, architecture 4 stage 2 to 3) The fault-current strip chart dropped from the prompt.** The draw's
+  prompt asked for one strip per feeder of the fault current each momentary operation recorded, coloured by
+  phase: that hands the solver the decisive dimension in the deliverable's specification. Replaced by a scatter of
+  each feeder's SAIDI against its MAIFI-E, the patrol's feeder marked.
+- **SAIFI dropped from the asks.** Its only silent device was the sustained openings SCADA holds with no OMS
+  ticket, and at realistic lockout rates those reach six or seven feeders in ten months, so a cracker executing
+  the OMS kept most SAIFI cells. SAIDI keeps the same device beside the legacy child-ticket times, and CEMI-2 beside
+  the continuation tickets.
+- **CEMI-3 replaced by CEMI-2.** With realistic interruption rates CEMI-3 was zero on three to five feeders at
+  the design points tried, so a blind nil response would have kept up to a third of the cells; CEMI-2 is zero on
+  two.
+- **A 2.5 beta threshold from 2025 alone was unstable as the filed value** (12 to 146 minutes across the
+  realizations tried, putting ordinary storm days over it). The filed threshold is the 2.5 beta value or 1.8 times the
+  largest ordinary 2026 day, whichever is higher (38.03 minutes here), stated in DRP-04 as computed from 2021 to
+  2025, and every ordinary day sits under 0.6 of it (asserted).
+- **Rate tuning alone could not keep the failing feeder ordinary on every cheap route.** At realistic background
+  rates its eleven flashovers lead the non-storm counts, the damp-morning counts or the phase shares on most
+  realizations (one seed in 40 passed every route at one stage of the acceptance set, scratchpad `a4gen/search_r6.out`). The competitors' signatures became the seasons those
+  feeders are known for (North Yard 3's squirrel year, North Yard 2's wet-limb mornings, Bluffview 3's phase B
+  taps), drawn at fixed counts with free times and places, and the design point is a fault-process seed chosen by
+  a search with every acceptance test in code (scratchpad `a4gen/search.py`).
+- **Design points 19207, 19211 and 19219 passed earlier acceptance sets and died on later ones**: 19207 and 19211
+  on the major event day threshold and the CEMI zeros once the threshold was calibrated, 19219 because the
+  failing feeder had the system's worst SAIDI (the worst-performing-circuit reflex, the asks' own index, would
+  have landed the call) and its runner-up group borrowed an unrelated operation. 19268 passes every test,
+  including the indices over the year and since August.
+- **The coordinator's heads-up on task461 (external dependency) answered in the pack**: the protective device
+  register carries the protection study's available fault current at every device, so "a fault's current marks
+  its place on the feeder" is a shipped fact rather than outside physics; the call rests on the eleven recorded
+  operations and needs no formula.
+- **Momentary events counted per device were a fork against DRP-04 2.5**, which counts a customer's interruptions
+  within five minutes of the first: three pairs of nested devices opened inside five minutes. The golden, the
+  truth and the verifier now merge per customer (SF6).
+- **(2026-11-04, stage 3) The first prompt shell, "Where should our overhead line patrol crew work in the week of 9
+  November 2026", with `patrol_week46.xlsx`.** `guard.py surface` promoted task194 (same domain, subdomain,
+  objective and decision type), whose prompt asks "Where should the leak detection crew work in week 46?" of
+  `crew_allocation_week46.xlsx`, with "the runner-up and the gap between them" and "the crew's area marked". The
+  shell is redrawn: a what question with no week number, `line_patrol_2026-11-09.xlsx`, "the second choice and
+  what keeps it second", and a chart sentence opening "In reliability_2026.svg". A `which` question was tried first
+  and dropped because the corpus holds that form at 38 per cent against the 30 per cent cap, then a `whether`
+  question, dropped because it repeats task193 v3's form, one of the last two prompts (`guard.py heart`).
+
 
 ## Architecture 2, blocked at the draw by the remote merge
 
