@@ -1,10 +1,10 @@
 {
   "task": "task401",
-  "status": "PAUSED",
+  "status": "DRAWING",
   "domain": "psychology-behavioral-science/mediation-moderation-process-modeling",
   "objective": "root-cause",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-11-04",
   "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw. Architectures 1 and 2 died at stage 2, architecture 3 was spent at stage 4 round 2 and architecture 4 at stage 4 round 1. Architecture 5 re-roots in Psychology and Behavioural Science: Wrenford Leisure Trust's membership base and its February 2026 changes.",
   "stump": "A competent analyst compares each change's cancellations since 2 February with the same weeks of 2025 among the members it reached, finds the legacy terms letters behind the February spike and nothing yet from the Rewards closure, and recommends reversing the terms change, because they never count the 2023-tariff members who have stopped coming since the closure but have not yet cancelled, whom last year's lapsed members show will mostly cancel within the year.",
@@ -27,8 +27,8 @@
     "warn": 0
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK; the contract schedule and the savings paper carry the review's and the changes' own words, ruled harmless in the note)",
-    "reader": "brief written, not yet run"
+    "leak_py": "REVIEW, no LEAK (the contract schedule and the savings paper use the review's and the changes' own words; one metadata word fixed)",
+    "reader": "clean on the main call (Schedule 4.3 files the estimand, not a procedure; decisive step analytical); findings on the asks: admissions EPOS family lines, vouchers and refunds unfiled; fees month paid for, two-month collections and returns unfiled; minor realism tells (bacs_returns reason_code constant, care-call ids unpadded). Report: scratchpad t401/a5/stage4/reader/reader_answers.md"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective, repeat.gate_g, overuse.gate_g; NOTE same_driver_older vs task122, differentiated)",
@@ -36,12 +36,12 @@
     "surface": "three pairs promoted for the author (task402 and task400 back to back, task230), each differentiated on the card; personas none in the pack"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC on the main call; SOLUTION_WRONG candidate on the November to January fee figures",
+    "disposition": "FIX_NOW (fees reconciliation, the 13 against 12 week class window, two admissions conventions unfiled: Gate C fails on admissions); architecture spent on the blind derivation",
+    "report": "scratchpad t401/a5/stage4/judge/verdict.md and derivation.md"
   },
   "returned": [],
-  "resume": "stage 4 check: the parent runs the leak reader (stage4.reader_brief, general-purpose, sonnet, medium) and the determinism judge thread (stage4.judge_brief, sonnet, medium) together on byte-identical copies of target.zip (sha256 41b0cd38...4688) in scratchpad t401/a5/stage4/. On their outputs: fix every finding in the generator in one pass (python3 task401/generator/build.py twice, byte-identical), re-run every free gate (checks, verify, figures_check, precut, leak.py, guard heart and surface, ceiling), re-judge once on FIX_NOW, re-read only if a document or the prompt changed; then the pre-ship check, the ledger row and SHIPPED.",
+  "resume": "architecture 5 spent at stage 4, round 1 (2026-11-04): the determinism judge returned DETERMINISTIC on the main call with a FIX_NOW on the asks, but its blind derivation (written before the graded blocks were opened) reached the call: it found the legacy letters' February spike almost entirely members with no gate entry in the previous three weeks, the legacy hazard below last year's once the spike passed (a pull-forward), and the Rewards holders' dormancy up (z 5.9), and projected each change's dormant members through last year's conversion, putting the Rewards closure first under every projection it tried. The readability screen's recorded residual (activity read by change) fired: a reader who projects the year, which the forward-facing estimand requires, lands the call. Re-root at architecture 6 from stage 1 in another domain, world, dataset and shell (evidence in the scratchpad t401/a5/stage4/).",
   "approved": null,
   "delivered": null,
   "portal": null,
