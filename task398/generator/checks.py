@@ -255,13 +255,34 @@ def main():
         pmoved[how] = [m for m in pg if round(rr[m]) != round(pg[m])]
     check("device D4: setpoints with no feeder interruption (the cracker's route) move every carbon month",
           len(pmoved["nodown"]) == 4, pmoved["nodown"])
-    check("device D4 half-repairs: run status alone, or a trip until its return-to-normal, each move at least two "
-          "months", len(pmoved["runonly"]) >= 2 and len(pmoved["alarmspan"]) >= 2, pmoved)
+    check("device D4 half-repair: run status alone, missing the empty hopper, moves at least two months",
+          len(pmoved["runonly"]) >= 2, pmoved)
+    pa = A.pac(TARGET, "alarmspan")
+    check("SF14 an overload outage ended at the trip's return-to-normal and one ended at the next RUN STATUS ON give "
+          "identical carbon, May to August (the latched trip clears in the restart's minute)",
+          all(abs(pa[m] - pg[m]) < 1e-9 for m in pg), {m: (round(pa[m], 3), round(pg[m], 3)) for m in pg})
+    trips = rtn_restart_pairs()
+    check("SF14 every MOTOR OVERLOAD TRIP return-to-normal is logged in the same minute as the next RUN STATUS ON",
+          bool(trips) and all(a == b for a, b in trips), trips)
     check("hazard D8: setpoints and alarms left on UTC move every carbon month", len(pmoved["utc"]) == 4,
           pmoved["utc"])
     check("misread: the hopper's LOW alarm taken for the outage moves at least two months", len(pmoved["lowalarm"]) >= 2,
           pmoved["lowalarm"])
     check("no carbon device touches the main call's rows: the call reads no plant SCADA file or ops report", True)
+    # the loggers' clock: their own header states it; months cut on UTC converge (SF11); stamps read as local do not
+    heads = logger_heads()
+    check("SF15 the DC-04 and LB-05 logger exports state their clock in their own header (Project ID: ... logger "
+          "clock UTC)", all("logger clock UTC" in h for h in heads.values()), heads)
+    G.LOGGER_CLOCK = "local"
+    try:
+        loc = A.monthly(TARGET, **A.LOAD_ROUTES["golden"])
+    finally:
+        G.LOGGER_CLOCK = "UTC"
+    lmoved = [c for c in cells if round(loc[c]) != round(gold[c])]
+    check("SF15 the logger stamps read as local clock times move Dunmore Creek cells only (%s), so the header's UTC "
+          "is load-bearing" % ", ".join("%s %d" % c for c in lmoved),
+          bool(lmoved) and all(c[0] == "DUN" for c in lmoved), lmoved)
+    distractor_deletion(R)
 
     # ---------------------------------------------------------------- realism and gates
     realism(R)
@@ -477,6 +498,28 @@ def realism(R):
     bad = [fn for fn in glob.glob(os.path.join(TARGET, "**", "*"), recursive=True)
            if re.search(r"readme|dictionary|manifest|field_notes|codebook|data_notes", os.path.basename(fn), re.I)]
     check("realism: no file under target describes the data", not bad, bad)
+    from pypdf import PdfReader
+    dr = os.path.join(TARGET, "lake/intake_tower_record_drawing_S-4.pdf")
+    info = PdfReader(dr, strict=True).metadata
+    check("realism: the 2011 record drawing carries its CAD plot driver's metadata, not the department's toolchain",
+          info.get("/Producer") == "pdfplot10.hdi 10.0.46.0" and str(info.get("/CreationDate", "")).startswith("D:2011")
+          and "AutoCAD" in str(info.get("/Creator", "")), dict(info))
+    texts = pdf_texts(dr)
+    check("realism: three PDF readers read the drawing's text alike", len(set(len(t.split()) for t in texts)) == 1,
+          [len(t.split()) for t in texts])
+    wb = openpyxl.load_workbook(os.path.join(TARGET, "lab/city_lab_ELISA_tributaries_2026.xlsx"), read_only=True)
+    rows = list(wb["Results"].iter_rows(values_only=True))
+    empty = [h for j, h in enumerate(rows[0]) if not any(r[j] not in (None, "") for r in rows[1:])]
+    check("realism: the department laboratory's export carries no column empty on every row", not empty, empty)
+
+
+def pdf_texts(path):
+    import subprocess
+    from pypdf import PdfReader
+    from pdfminer.high_level import extract_text
+    a = " ".join(pg.extract_text() or "" for pg in PdfReader(path, strict=True).pages)
+    b = subprocess.run(["pdftotext", path, "-"], capture_output=True, text=True).stdout
+    return [a, b, extract_text(path)]
 
 
 def alarm_mix():
@@ -512,6 +555,58 @@ def gates():
     check("gate: two or more distractors named in metadata.json", len(md["distractor_files"]) >= 2 and
           all(os.path.exists(os.path.join(TASK, p)) for p in md["distractor_files"]), md["distractor_files"])
     check("gate: no file name says distractor", not any("distract" in fn.lower() for fn in files))
+
+
+def rtn_restart_pairs():
+    """For each overload trip: (the minute of its return-to-normal, the minute of the next RUN STATUS ON)."""
+    rows = []
+    with open(os.path.join(TARGET, "plant/scada_alarm_event_history_2026.csv"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if r["Tag"] == "PAC-FDR-1":
+                rows.append((r["Time (UTC)"], r["Description"], r["Type"]))
+    out = []
+    for n, (t, d, ty) in enumerate(rows):
+        if d == "MOTOR OVERLOAD TRIP" and ty == "RTN":
+            nxt = [tt for tt, dd, yy in rows[n + 1:] if dd == "RUN STATUS ON"][:1] or [None]
+            out.append((t, nxt[0]))
+    return out
+
+
+def logger_heads():
+    out = {}
+    for k, rel in (("DUN", "hydro/DC-04_logger_2087445_2026.csv"), ("LAD", "hydro/LB-05_logger_2087519_2026.csv")):
+        with open(os.path.join(TARGET, rel), encoding="utf-8") as fh:
+            lines = fh.read().splitlines()
+        out[k] = " | ".join(lines[:lines.index("Date,Time,ms,LEVEL,TEMPERATURE")])
+    return out
+
+
+def distractor_deletion(R):
+    """Delete every declared distractor, the extension survey among them, and recompute: the call, the counts, the
+    load-share rung (the Tessel River) and every ask figure stay where they are."""
+    import shutil
+    import tempfile
+    md = json.load(open(os.path.join(TASK, "metadata.json")))
+    gone = [p[len("target/"):] for p in md["distractor_files"]]
+    check("Gate G: the extension survey is the declared wrong-basis distractor and is among the distractor files",
+          md["wrong_basis_distractor"]["file"] in md["distractor_files"] and "survey" in md["wrong_basis_distractor"]["file"],
+          md.get("wrong_basis_distractor"))
+    tmp = tempfile.mkdtemp(prefix="task398_nodistractor_")
+    try:
+        dst = os.path.join(tmp, "target")
+        shutil.copytree(TARGET, dst)
+        for rel in gone:
+            os.remove(os.path.join(dst, rel))
+        R2 = G.compute(dst)
+        same = ({k: len(v) for k, v in R2["per"].items()} == {k: len(v) for k, v in R["per"].items()}
+                and R2["rungs"]["r1_mixed30"] == R["rungs"]["r1_mixed30"]
+                and all(abs(R2["loads"][k] - R["loads"][k]) < 1e-9 for k in R["loads"])
+                and all(abs(R2["pac"][m] - R["pac"][m]) < 1e-9 for m in R["pac"]))
+        check("distractor deletion: with the %d declared distractors deleted the call (Fennick Creek 47), the load-share "
+              "rung (the Tessel River %d days) and every ask figure are unchanged" % (len(gone), R2["rungs"]["r1_mixed30"]["TES"]),
+              same and max(R2["rungs"]["r1_mixed30"], key=R2["rungs"]["r1_mixed30"].get) == "TES", gone)
+    finally:
+        shutil.rmtree(tmp)
 
 
 def figures_agree(R, F):

@@ -42,6 +42,15 @@ def metadata():
         "decision": "which sub-watershed above Lake Merrin receives Brennick Water's 2027 atrazine cost-share program",
         "deliverables": ["cost_share_placement_2027.docx", "atrazine_sources_2026.xlsx", "raw_water_atrazine_2026.png"],
         "distractor_files": ["target/" + PK.FILES[k] for k in PK.DISTRACTORS],
+        "wrong_basis_distractor": {
+            "file": "target/" + PK.FILES["survey"],
+            "basis": "atrazine applied in 2026 by sub-watershed (treated acres times the reported rate), which ranks "
+                     "the Tessel River first; it measures what the farms put on the fields, not the days of raw water "
+                     "above the trigger each sub-watershed's atrazine caused",
+            "ruled_out_by": "plan SWP-01 5.1 (program/source_water_protection_plan_rev2.pdf): the program goes to the "
+                            "sub-watershed whose atrazine was behind the most days on which the raw water was above "
+                            "the carbon-feed trigger, a day counting when the raw water would have stayed at or below "
+                            "the trigger without that sub-watershed's atrazine"},
         "files": {},
     }
     for k, fn in PK.FILES.items():

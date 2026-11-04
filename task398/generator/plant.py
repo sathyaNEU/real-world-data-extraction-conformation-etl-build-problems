@@ -134,11 +134,13 @@ def carbon(rng, res, mgd):
                 downtime.append((t0, refill))
     for p in picks:
         if p[0] == "overload":
+            # the overload relay latches: the trip alarm clears only when the operator resets it at the panel and
+            # restarts the feeder, so its return-to-normal and the run status come back in the same minute
             _, t0, rtn, run = p
             events += [(t0, "PAC-FDR-1", "MOTOR OVERLOAD TRIP", "ALM"),
                        (t0 + dt.timedelta(seconds=2), "PAC-FDR-1", "RUN STATUS OFF", "EVT"),
-                       (rtn, "PAC-FDR-1", "MOTOR OVERLOAD TRIP", "RTN"),
-                       (run, "PAC-FDR-1", "RUN STATUS ON", "EVT")]
+                       (run + dt.timedelta(seconds=5), "PAC-FDR-1", "MOTOR OVERLOAD TRIP", "RTN"),
+                       (run + dt.timedelta(seconds=15), "PAC-FDR-1", "RUN STATUS ON", "EVT")]
         else:
             _, low, t0, refill = p
             events += [(low, "PAC-FDR-1", "HOPPER LEVEL LOW", "ALM"),

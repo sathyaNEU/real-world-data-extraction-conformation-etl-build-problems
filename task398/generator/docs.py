@@ -1,6 +1,7 @@
 """The pack's governing and reference documents: the Source Water Protection Plan (revision 2), the carbon-feed
 procedure SOP-WQ-07 and the intake tower's record drawing sheet S-4."""
 import os
+import re
 
 from reportlab import rl_config
 rl_config.invariant = 1
@@ -255,6 +256,26 @@ def drawing(path):
     c.showPage()
     c.save()
     PP.normalize_pdf(path, b"D:20110815103000-05'00'", b"D:20110815103000-05'00'")
+    cad_export_info(path)
+
+
+def cad_export_info(path):
+    """The sheet as the engineers' CAD plot driver wrote it in August 2011: that driver's producer and creator, the
+    drafter's login and the plot's title, written over the information dictionary at equal length (the surplus as
+    whitespace between tokens, never inside a value) so every other byte and every offset holds."""
+    b = open(path, "rb").read()
+    n = len(b)
+    m = re.search(rb"\d+ 0 obj\n<<\n(/Author \(\).*?/Trapped /False)\n>>\nendobj", b, re.S)
+    assert m, "info dictionary not found"
+    old = m.group(1)
+    new = (b"/Author (cball) /CreationDate (D:20110815103000-05'00') "
+           b"/Creator (AutoCAD 2011 - English 2011 \\(18.1s \\(LMS Tech\\)\\)) "
+           b"/ModDate (D:20110815103000-05'00') /Producer (pdfplot10.hdi 10.0.46.0) /Title (11-0347 S-4)")
+    assert len(new) <= len(old), (len(new), len(old))
+    b = b[:m.start(1)] + new + b" " * (len(old) - len(new)) + b[m.end(1):]
+    b = b.replace(b"%PDF-1.3\n", b"%PDF-1.5\n", 1)
+    assert len(b) == n and b"PDFlib" not in b and b"unspecified" not in b
+    open(path, "wb").write(b)
 
 
 def build(target, paths):

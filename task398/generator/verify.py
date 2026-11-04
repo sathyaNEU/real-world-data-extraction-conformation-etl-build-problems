@@ -175,7 +175,7 @@ val = {}
 wb = openpyxl.load_workbook(p("lab/city_lab_ELISA_tributaries_2026.xlsx"), read_only=True)
 for row in wb.worksheets[0].iter_rows(min_row=2, values_only=True):
     if row[0]:
-        val[row[1].replace("-", "")] = 0.0 if row[8] == "<" else float(row[5])
+        val[row[1].replace("-", "")] = 0.0 if str(row[5]).startswith("<") else float(row[5])
 for r in csv.DictReader(open(p("lab/SHL_EDD_brennick_source_water_2026.csv"), encoding="utf-8")):
     if r["Analyte"] == "Atrazine":
         val[r["Client_Sample_ID"]] = 0.0 if r["Qualifier"] == "U" else float(r["Result"])

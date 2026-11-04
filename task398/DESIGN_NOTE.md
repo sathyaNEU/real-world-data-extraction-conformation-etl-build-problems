@@ -15,7 +15,7 @@ shell are new, and the seed's mechanism is not used (Tried and rejected, first l
 | Decision | which sub-watershed above Lake Merrin gets Brennick Water's one 2027 atrazine cost-share program (`root_cause_named`), forward facing: the program must sign its farms before the April 2027 applications, and it is judged on the 2026 season, the last one closed |
 | Shape | 12, drill-down to one leaf: the 2026 days above the trigger, by sub-watershed (each sub-watershed's days caused), with each sampled sub-watershed's atrazine past its station by month (April to July) and the plant's carbon by month (May to August) as the asks |
 | Gap / pattern / generators | `objective` (each sub-watershed's load is correct and is not what the intake drew); pattern `none`; `G8` decisive (reachability: whether a tributary's water reached the intake's layer at all), `G7` second (the operating window: only while the lake is stratified) |
-| Gate G | `decomposition_attribution`: the raw water's correctly recorded days above the trigger attributed among the sources |
+| Gate G | `decomposition_attribution`: the raw water's correctly recorded days above the trigger attributed among the sources. No shipped artifact ranks the sub-watersheds on days caused; the one file that ranks them at all, the Haldane extension survey (atrazine applied, the Tessel River first), is the declared wrong-basis distractor in `metadata.json`, ruled out by plan 5.1's basis (days of raw water above the trigger caused, not atrazine applied), and deleting it with the other two declared distractors leaves the call, the load-share rung (the Tessel River, 39 days) and every ask figure unchanged (asserted) |
 | Strategy | `decomposition_attribution`; Layer 2 family `field_method`; pattern `own:inflow-entry-depth-against-the-intake-layer` |
 | Forum, forcing event, org family | `board_of_directors` (the Board of Water Commissioners approves the program's placement), `season_or_peak` (the 2027 application season), `local_government` (a city department) |
 | Role | the water production superintendent, whose treatment budget pays for the carbon and funds the program (`operations_director`; `programme_officer` was the first label and task313 holds it in the window) |
@@ -163,6 +163,8 @@ above.
 | SF11 | ask conventions | left 15-minute sum, mean offset per hang, local months | trapezoid; closing stamp in; median offset per hang; DC-04 months on UTC | the same 16 cells | same figures (asserted) |
 | SF12 | the samples a month's flows take | the samples either side of each flow, whatever their month | samples inside the month only | cells move | the prompt: interpolating its samples linearly in time against the 15-minute flows |
 | SF13 | the look-back into the mixed spring | stops where the lake was mixed | the presence test carried into April | days left unattributed | plan 5.1: the spring residue (at most 0.21 ug/L) cannot hold a day above the trigger |
+| SF14 | when an overload outage ends (carbon ask) | the next RUN STATUS ON | the trip's return-to-normal | the same four months to the pound | same figures: the trip latches and its return-to-normal is logged in the restart's minute (asserted) |
+| SF15 | the DC-04 and LB-05 loggers' clock (asks; inert for the call) | UTC | the stamps read as local clock times | Dunmore Creek's May, June and July move | the loggers' own header: Project ID "Brennick Water source water, logger clock UTC" |
 
 ## Ladder
 
@@ -236,14 +238,15 @@ no file states a bottle's position or a feeder outage's length.
   logged-time route moves all 16 cells; the k-th bottle at the k-th position moves 8. Second primary D3 on a disjoint
   block (Dunmore Creek): gage height is the logger's level plus the staff-gage offset, and the logger slid 0.25 ft in
   its pipe on a dry afternoon between two visits; one mean offset moves May, June and July, offsets stepping at the
-  visits or prorated between them move July. Hazards: the loggers' UTC clock, DC-04's rating change, the
-  hyphenless State laboratory numbers, the split bottles (plan 3.2).
+  visits or prorated between them move July. Hazards: the loggers' UTC clock (stated in their header, SF15; months
+  cut on UTC converge, SF11), DC-04's rating change, the hyphenless State laboratory numbers, the split bottles
+  (plan 3.2).
 - **Ask B, the powdered carbon fed in each month from May to August (4 figures).** Home: the treatment budget's
   carbon line. Files: the setpoint historian, the alarm and event history, the operating report, SOP-WQ-07. Primary
   D4 (absence evidenced in a file no habitual join reaches): the feeder fed nothing while it was stopped by a motor
-  overload until it was started again (the trip's return-to-normal comes hours before the restart) and while the
-  hopper stood at low-low; the setpoints alone move all four months, run status alone moves three, a trip until its
-  return-to-normal moves three. Hazard: the historian's UTC clock moves all four.
+  overload until it was started again (the trip latches, so its return-to-normal comes with the restart, SF14) and
+  while the hopper stood at low-low; the setpoints alone move all four months and run status alone, missing the
+  empty hopper, moves three. Hazard: the historian's UTC clock moves all four.
 - **Chart:** the daily result against the trigger; it carries no ask figure and no decision quantity in its title.
 - Separation: the asks read the stations' discharge columns, the bottles, the laboratories, the ratings, the run
   logs and the plant's SCADA and operating report; the call reads none of them but the stations' temperature columns,
@@ -278,16 +281,42 @@ Verdict REVIEW, no LEAK; each REVIEW line ruled here.
   header and one value a day; it describes no other file. Harmless.
 - Sweep 3, the plan carries the call's words: the words are the plan's own (program, sub-watershed, atrazine,
   cost-share) and Fennick Creek is one row of Table 2's five; no sentence places the program anywhere. Harmless.
-- Sweep 4, the plan carries nine stump-paragraph terms: they are a source water plan's own nouns (intake, source,
-  tributary, sampled, the sub-watersheds' names); the plan says nothing of layering, depth, temperature or an entry
-  level, and deleting it leaves the call forced by the data. Harmless; not handed to a reader.
+- Sweep 4, the plan carries nine to ten stump-paragraph terms (the count moves with the note's own wording; the
+  plan's bytes have not changed since pass 1): they are a source water plan's own nouns (intake, source, tributary,
+  sampled, record, the sub-watersheds' names), and its one "temperature" is 3.1's statement that LB-05 records flow
+  and temperature; the plan says nothing of layering, depth or an entry level, and deleting it leaves the call
+  forced by the data. Harmless; not handed to a reader.
 - Sweep 6, the extension survey names the candidates beside numbers: it ranks by atrazine applied, a different
-  question, correctly (the Tessel River first); the plan's Table 2 gives areas. Neither ranks on days caused.
-  Harmless.
-- Sweep 8, the department laboratory's `Flag` column: the qualifier column its LIMS export carries (`<` below the
-  reporting limit), not a generator flag. Harmless.
+  question, correctly (the Tessel River first), and is the declared wrong-basis distractor; the plan's Table 2
+  gives areas. Neither ranks on days caused. Harmless.
+- Sweep 8 (pass 1), the department laboratory's `Flag` column: blank on every row, since no ELISA result fell
+  below the reporting limit; dropped in stage 4 round 1, a below-limit result now reading `<0.05` in its Result cell
+  as the export writes it.
 - Sweep 9, the buoy service log's 2026-11-09: a planned recovery date written on 31 October, forward-looking by
   nature. Harmless.
+
+## Stage 4 round 1 (on target.zip 8fd1530d) and the fix pass
+
+- Leak reader (isolated, medium): no leak. Its question 1 quoted plan 5.1's counterfactual as the nearest sentence,
+  which defines what counts and not how to compute it; question 6 read the decisive step as an analytical choice.
+  Realism tells: the 2011 record drawing carried the department's PDF producer; the laboratory's `Flag` column was
+  blank on every row.
+- Determinism judge: DETERMINISTIC, APPROVE (`determinism_check_report.md`). Every figure reproduced (47 days;
+  Fennick within 0.44 m of the intake on all 47, the others at least 4.85 m away; 47 against 0 in all 20 cells of
+  tolerance 1 to 4 m by look-back 1 to 60 days; the 16 load cells; the four carbon months). Its optional pin of the
+  attribution criterion was declined: it would file the main call's HOW, and plan 5.1 files the WHAT.
+- Residuals closed in the generator, no graded figure moved (figures.json, the goldens and submission.md
+  byte-identical to the pass 1 cut):
+  1. The overload outage's end: the trip now latches, its return-to-normal logged in the restart's minute, so the
+     return-to-normal and RUN STATUS ON readings give identical carbon (SF14, asserted); no sentence states it.
+  2. The loggers' clock: reading the stamps as local moves Dunmore Creek's May, June and July by 3 to 4 kg, so the
+     two readings do not converge; the loggers' own header now carries the clock (Project ID "... logger clock UTC",
+     SF15, asserted), and months cut on UTC converge (SF11).
+  3. The Haldane survey is declared in `metadata.json` as the wrong-basis distractor (atrazine applied, not days
+     caused, ruled out by plan 5.1's basis); deleting the three declared distractors moves nothing (asserted).
+  4. The drawing carries its 2011 CAD plot driver's metadata (AutoCAD 2011, pdfplot10.hdi, author cball, 15 August
+     2011), its text unchanged in three readers; the laboratory export drops the empty `Flag` column. The plan's and
+     the SOP's bytes are unchanged.
 
 ## Tried and rejected
 
@@ -348,3 +377,8 @@ Verdict REVIEW, no LEAK; each REVIEW line ruled here.
   county in the same corner of Iowa; renamed Haldane County.
 - A prompt opening "Where should" (2026-11-04, guard check): `repeat.question_form` against task488 v2, delivered;
   the decision is a pick, so the prompt asks which sub-watershed.
+- An overload trip whose return-to-normal came hours before the restart (2026-11-04, stage 4 round 1): the two ends
+  of an outage were an untested fork on the carbon ask; a latched trip clears in the restart's minute, which closes
+  it in the data.
+- Months cut on the loggers' UTC clock offered as the whole clock closure (2026-11-04, stage 4 round 1): reading the
+  stamps as local clock times moves Dunmore Creek's May to July, so the clock is carried by the loggers' own header.

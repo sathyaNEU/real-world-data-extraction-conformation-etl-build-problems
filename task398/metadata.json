@@ -12,8 +12,14 @@
  ],
  "distractor_files": [
   "target/lab/tributary_nitrate_2026.csv",
-  "target/lake/merrin_beach_ecoli_2026.csv"
+  "target/lake/merrin_beach_ecoli_2026.csv",
+  "target/program/haldane_extension_atrazine_use_survey_2026.xlsx"
  ],
+ "wrong_basis_distractor": {
+  "file": "target/program/haldane_extension_atrazine_use_survey_2026.xlsx",
+  "basis": "atrazine applied in 2026 by sub-watershed (treated acres times the reported rate), which ranks the Tessel River first; it measures what the farms put on the fields, not the days of raw water above the trigger each sub-watershed's atrazine caused",
+  "ruled_out_by": "plan SWP-01 5.1 (program/source_water_protection_plan_rev2.pdf): the program goes to the sub-watershed whose atrazine was behind the most days on which the raw water was above the carbon-feed trigger, a day counting when the raw water would have stayed at or below the trigger without that sub-watershed's atrazine"
+ },
  "files": {
   "target/hydro/TR-01_tessel_r_halvard_br_2026.csv": {
    "source": "constructed for this task (a fictional city water department, its reservoir and laboratories)",

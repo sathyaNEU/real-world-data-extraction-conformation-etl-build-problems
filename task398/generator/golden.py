@@ -105,6 +105,9 @@ def station_series(target, k, offsets=None):
     return ts, np.array(q), np.array(tc)
 
 
+LOGGER_CLOCK = "UTC"           # the loggers keep UTC; "local" reads their stamps as local clock times (an ask check)
+
+
 def logger_levels(target, k):
     """A logger's readings: local times, level (ft) and water temperature (C), from its UTC record."""
     with open(p(target, STATION_FILE[k]), encoding="utf-8") as fh:
@@ -113,7 +116,8 @@ def logger_levels(target, k):
     ts, lev, tc = [], [], []
     for ln in lines[start + 1:]:
         d, t, ms, lv, tmp = ln.split(",")
-        ts.append(utc_to_local(dt.datetime.strptime(d + " " + t, "%Y/%m/%d %H:%M:%S")))
+        stamp = dt.datetime.strptime(d + " " + t, "%Y/%m/%d %H:%M:%S")
+        ts.append(utc_to_local(stamp) if LOGGER_CLOCK == "UTC" else stamp)
         lev.append(float(lv))
         tc.append(float(tmp))
     return ts, np.array(lev), np.array(tc)
@@ -378,7 +382,7 @@ def sample_values(target, mode="golden"):
     for row in wb["Results"].iter_rows(min_row=2, values_only=True):
         if row[0] is None:
             continue
-        v = 0.0 if row[8] == "<" else float(row[5])
+        v = 0.0 if str(row[5]).startswith("<") else float(row[5])
         city[row[1].replace("-", "")] = v
     site_k = {v: k for k, v in SITE.items()}
     out = {k: [] for k in SUBS}

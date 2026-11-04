@@ -42,7 +42,7 @@ FILES = {
     "nitrate": "lab/tributary_nitrate_2026.csv",
     "beach": "lake/merrin_beach_ecoli_2026.csv",
 }
-DISTRACTORS = ["nitrate", "beach"]
+DISTRACTORS = ["nitrate", "beach", "survey"]
 EXPORT_STAMP = (2026, 11, 2, 8, 14)
 
 
@@ -231,7 +231,7 @@ def flow_of(k, local_t, stage_ft):
 def write_logger(target, key, k, q, tt, rng):
     serial = {"DUN": "2087445", "LAD": "2087519"}[k]
     loc = {"DUN": "DC-04 Dunmore Cr at 230th St", "LAD": "LB-05 Ladd Br at Merrin Park Rd"}[k]
-    pre = ["Serial_number:", serial, "Project ID:", "Brennick Water source water", "Location:", loc,
+    pre = ["Serial_number:", serial, "Project ID:", "Brennick Water source water, logger clock UTC", "Location:", loc,
            "LEVEL", "UNIT: ft", "Offset: 0.000 ft", "TEMPERATURE", "UNIT: Deg C", ""]
     rows = []
     for t, qq, tc in zip(STEPS, q, tt):
@@ -470,9 +470,8 @@ def write_city(target, bottles, rng):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Results"
-    ws.append(["LIMS ID", "Bottle", "Site", "Logged in", "Test", "Result", "Units", "RL", "Flag", "Analyst",
-               "Kit lot"])
-    header_style(ws, 11)
+    ws.append(["LIMS ID", "Bottle", "Site", "Logged in", "Test", "Result", "Units", "RL", "Analyst", "Kit lot"])
+    header_style(ws, 10)
     n = 1180
     lots = ["ATZ-25K118", "ATZ-26B044", "ATZ-26E201"]
     for b in bottles:
@@ -480,17 +479,14 @@ def write_city(target, bottles, rng):
             continue
         n += int(rng.integers(1, 4))
         v = b["elisa"]
-        if v < 0.05:
-            res, fl = 0.05, "<"
-        else:
-            res, fl = round(v, 2), ""
+        res = "<0.05" if v < 0.05 else round(v, 2)
         login = b["logged"] + dt.timedelta(minutes=int(rng.integers(70, 260)))
         if login.hour >= 17:
             login = (login + dt.timedelta(days=1)).replace(hour=7, minute=int(rng.integers(30, 59)))
         ws.append(["SW26-%04d" % n, b["bottle"], SITE[b["k"]], login.strftime("%m/%d/%Y %H:%M"), "Atrazine ELISA",
-                   res, "ppb", 0.05, fl, "BD" if rng.random() < 0.7 else "BC",
+                   res, "ppb", 0.05, "BD" if rng.random() < 0.7 else "BC",
                    lots[0] if b["logged"].month < 5 else (lots[1] if b["logged"].month < 7 else lots[2])])
-    for col, wdt in zip("ABCDEFGHIJK", (11, 12, 9, 17, 15, 8, 6, 5, 5, 8, 12)):
+    for col, wdt in zip("ABCDEFGHIJ", (11, 12, 9, 17, 15, 8, 6, 5, 8, 12)):
         ws.column_dimensions[col].width = wdt
     xlsx_save(wb, path(target, "city"), "Brandi Dougherty", W.DEPT, "2026-04-29T16:02:33Z", "2026-10-30T14:47:20Z")
 
