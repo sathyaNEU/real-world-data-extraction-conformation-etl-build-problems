@@ -8,6 +8,9 @@ DESK = {"W01": "Fenmoor", "W02": "Callowby", "W03": "Hatherby", "W04": "Tollingh
         "W06": "Wellanby"}
 
 
+WORDS = {0: "none", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+
+
 def c(n):
     return "{:,}".format(n)
 
@@ -55,10 +58,11 @@ def main():
       "workstation_layout_export_r8.2.1.json and measured the two exits' buttons on their screen: %d were drawn "
       "%s to %s pixels apart, the other %d wrong routes %s pixels or more." % (
           F["slip_count"], F["gap_close_min_px"], F["gap_close_max_px"], F["rs1_far"], c(int(F["gap_far_min_px"]))))
-    a("4. Read roc_signaller_actions_20251001_20260930.csv: every route cancelled within twenty seconds and reset from "
-      "the same entrance falls on a drawn-close pair, and there slips run alike for first-two-years and other "
-      "signallers and in quiet and busy hours, so only the renewal's redraw would have prevented the %d, per terms of "
-      "reference 2.3." % F["slip_count"])
+    a("4. Read roc_signaller_actions_20251001_20260930.csv: of the %d routes cancelled within twenty seconds of being "
+      "set, all but %s were followed from the same entrance by a request for the exit drawn beside the one cancelled, "
+      "and at the drawn-close routes slips run alike for first-two-years and other signallers and in quiet and busy "
+      "hours, so only the renewal's redraw would have prevented the %d, per terms of reference 2.3." % (
+          F["quick_cancels"], WORDS[F["quick_cancels"] - F["quick_cancels_beside"]], F["slip_count"]))
     a("5. Added the workstation display faults the renewal's new display system removes: the display renewal's cause "
       "produced %s minutes, more than any other programme's cause." % c(F["call_minutes"]))
     a("6. Split those minutes by the register's workstation: %s %s leads with %s, so delivery begins there, per terms "
@@ -90,8 +94,8 @@ def main():
       "else:")
     for w in DESK:
         a("   - %s %s: %s and %s" % (w, DESK[w], h(F["hours"][w]["first two years"]), h(F["hours"][w]["other"])))
-    a("4. Sub-area hours with automatic route setting switched off, October to December 2025, January to March, "
-      "April to June and July to September 2026:")
+    a("4. Sub-area hours with automatic route setting switched off, in total for each workstation, October to "
+      "December 2025, January to March, April to June and July to September 2026:")
     for w in DESK:
         q = F["ars"][w]
         a("   - %s %s: %s, %s, %s and %s" % (w, DESK[w], h(q["2025 Q4"]), h(q["2026 Q1"]), h(q["2026 Q2"]),

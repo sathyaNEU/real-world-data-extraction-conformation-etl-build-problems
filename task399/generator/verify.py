@@ -233,6 +233,20 @@ def main(T):
     by_log = {i["ref"] for i in rs1 if i["set"] and i["req"] and (i["req"][0], frozenset((i["set"][1], i["req"][1])))
               in quick}
     check("log: the quick-reset pairs pick out the same wrong routes", by_log == {i["ref"] for i in near})
+    n_quick = n_beside = 0
+    for u, lst in per_user.items():
+        set_at = {}
+        for k, (t, a, e, x) in enumerate(lst):
+            if a == "ST":
+                set_at[(e, x)] = t
+            elif a == "CN" and (t - set_at.get((e, x), dt.datetime.min)).total_seconds() <= 20:
+                n_quick += 1
+                after = [r[3] for r in lst[k + 1:] if r[1] == "RQ" and r[2] == e]
+                if after and after[0] != x:
+                    p1, p2 = pos[x], pos[after[0]]
+                    n_beside += p1[:2] == p2[:2] and math.dist(p1[2:], p2[2:]) <= 12
+    check("step 4: routes cancelled within twenty seconds, and those followed by the exit drawn beside",
+          (n_quick, n_beside) == (F["quick_cancels"], F["quick_cancels_beside"]), "%d, %d" % (n_quick, n_beside))
 
     # ------------------------------------------------------------------------- ask: hours by band
     comp = sheet(J("staffing", "signaller_competence_register.xlsx"), "Competence")

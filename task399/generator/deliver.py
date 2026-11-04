@@ -30,6 +30,7 @@ def figures(res):
              default_by_programme=M["by_prog_findings"],
              default_call="A", default_minutes=M["by_prog_findings"].get("A"),
              cited=dict(window_end_day=30, tor_sections=["2.2", "2.3", "2.4", "2.5"]),
+             quick_cancels=M["quick_cancels"], quick_cancels_beside=M["quick_cancels_beside"],
              rs1_count=len(M["rs1_gaps"]), rs1_far=sum(1 for g in M["rs1_gaps"] if g > 12),
              # bounds round toward the bound: a range's floor down, its ceiling up
              gap_close_min_px=math.floor(10 * min(g for g in M["rs1_gaps"] if g <= 12)) / 10,

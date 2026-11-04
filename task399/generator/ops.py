@@ -488,6 +488,7 @@ def ars(idx):
             p["off"], p["on"] = d["off"], d["ons"][p["sa"]]
     periods.sort(key=lambda p: (p["off"], p["sa"]))
     nudge_mid_bin(periods)
+    clear_subarea_cells(periods)
     return periods, drops
 
 
@@ -556,6 +557,87 @@ def nudge_mid_bin(periods):
             break
         assert done, (ws, k)
 
+
+
+def subarea_cells(periods):
+    cells = {}
+    for p in periods:
+        for k in range(4):
+            q0 = W.local_to_utc(dt.datetime.combine(BOUNDS[k], dt.time(0)))
+            q1 = W.local_to_utc(dt.datetime.combine(BOUNDS[k + 1], dt.time(0)))
+            x, y = max(p["off"], q0), min(p["on"], q1)
+            if y > x:
+                cells[(p["sa"], k)] = cells.get((p["sa"], k), 0.0) + (y - x).total_seconds()
+    return cells
+
+
+def clearance(secs):
+    resid = secs % 360.0
+    resid = resid - 360.0 if resid > 180.0 else resid
+    return 180.0 - abs(resid), resid
+
+
+def clear_subarea_cells(periods, need=90.0):
+    """No sub-area's quarterly hours sit within a minute and a half of a tenth-of-an-hour line: one ordinary
+    switch-on of the near sub-area moved by a few seconds and one of another sub-area of the same workstation moved
+    back by the same milliseconds, so every workstation's quarterly total is unchanged to the millisecond."""
+    before = ars_cells(periods)
+    sub_ws = {sa: ws for ws in W.WS_IDS for sa in W.SUBAREAS[ws]}
+    by_sa = {}
+    for p in periods:
+        by_sa.setdefault(p["sa"], []).append(p)
+    for lst in by_sa.values():
+        lst.sort(key=lambda p: p["off"])
+
+    def movable(sa, k, delta):
+        q0 = W.local_to_utc(dt.datetime.combine(BOUNDS[k], dt.time(0))) + dt.timedelta(hours=3)
+        q1 = W.local_to_utc(dt.datetime.combine(BOUNDS[k + 1], dt.time(0))) - dt.timedelta(hours=3)
+        lst = by_sa[sa]
+        for i in sorted(range(len(lst)), key=lambda j: -(lst[j]["on"] - lst[j]["off"]).total_seconds()):
+            p = lst[i]
+            if p.get("ws_event") or not (q0 < p["off"] and p["on"] < q1):
+                continue
+            new_on = p["on"] + dt.timedelta(milliseconds=delta)
+            nxt = lst[i + 1]["off"] if i + 1 < len(lst) else None
+            if new_on <= p["off"] + dt.timedelta(minutes=5) or (nxt is not None and new_on > nxt - dt.timedelta(minutes=8)):
+                continue
+            return p
+        return None
+
+    for _ in range(3):
+        cells = subarea_cells(periods)
+        near = sorted(key for key, v in cells.items() if clearance(v)[0] < need)
+        if not near:
+            break
+        for sa, k in near:
+            cells = subarea_cells(periods)
+            gap, resid = clearance(cells[(sa, k)])
+            if gap >= need:
+                continue
+            done = False
+            # the pair's residuals sum to a constant under any shift between them, so split it evenly: both cells
+            # land at the same residual, at least a quarter of a bin from either line
+            for sa2 in W.SUBAREAS[sub_ws[sa]]:
+                if sa2 == sa or (sa2, k) not in cells:
+                    continue
+                r2 = clearance(cells[(sa2, k)])[1]
+                tot = (resid + r2) % 360.0
+                tot = tot - 360.0 if tot > 180.0 else tot
+                delta = int(round((tot / 2.0 - resid) * 1000))
+                if clearance(cells[(sa, k)] + delta / 1000.0)[0] < need or \
+                        clearance(cells[(sa2, k)] - delta / 1000.0)[0] < need:
+                    continue
+                p1, p2 = movable(sa, k, delta), movable(sa2, k, -delta)
+                if p1 is None or p2 is None:
+                    continue
+                p1["on"] += dt.timedelta(milliseconds=delta)
+                p2["on"] -= dt.timedelta(milliseconds=delta)
+                done = True
+                break
+            assert done, (sa, k)
+    after = ars_cells(periods)
+    assert all(abs(after[key] - before[key]) < 1e-6 for key in before), "a workstation total moved"
+    assert all(clearance(v)[0] >= need for v in subarea_cells(periods).values())
 
 
 def failovers():

@@ -48,7 +48,8 @@ ST = styles("route")
 BODY, H1, H2, SMALL, CELL, CELLB = ST["BODY"], ST["H1"], ST["H2"], ST["SMALL"], ST["CELL"], ST["CELLB"]
 
 
-def normalize_pdf(path, created, modified, title, producer="LibreOffice 24.2"):
+def normalize_pdf(path, created, modified, title, producer="LibreOffice 24.2", creator="Writer", extra=None,
+                  version="1.7"):
     """Re-serialised through a second library, so the writing library's banners and its info dictionary do not
     survive: in-fiction dates, the exporting suite's creator and producer strings, the title, and the font subset
     tags as other producers draw them (renamed at equal length inside the name tokens before the re-write)."""
@@ -70,9 +71,11 @@ def normalize_pdf(path, created, modified, title, producer="LibreOffice 24.2"):
     info = wr._info.get_object() if hasattr(wr._info, "get_object") else wr._info
     for k in list(info.keys()):
         del info[k]
-    for k, v in (("/Title", title), ("/Creator", "Writer"), ("/Producer", producer),
-                 ("/CreationDate", created.decode()), ("/ModDate", modified.decode())):
-        info[NameObject(k)] = TextStringObject(v)
+    meta = [("/Title", title), ("/Creator", creator), ("/Producer", producer),
+            ("/CreationDate", created.decode()), ("/ModDate", modified.decode())] + list((extra or {}).items())
+    for k, v in meta:
+        info[NameObject(k)] = NameObject(v) if v.startswith("/") else TextStringObject(v)
+    wr.pdf_header = "%PDF-" + version
     digest = hashlib.md5(b + created).digest()
     wr._ID = ArrayObject([ByteStringObject(digest), ByteStringObject(digest)])
     out = io.BytesIO()
@@ -81,8 +84,7 @@ def normalize_pdf(path, created, modified, title, producer="LibreOffice 24.2"):
     low = data.lower()
     assert b"reportlab" not in low and b"pypdf" not in low and b"AAAAAA+" not in data
     back = PdfReader(io.BytesIO(data), strict=True)
-    assert dict(back.metadata) == {"/Title": title, "/Creator": "Writer", "/Producer": producer,
-                                   "/CreationDate": created.decode(), "/ModDate": modified.decode()}
+    assert dict(back.metadata) == dict(meta)
     open(path, "wb").write(data)
 
 
@@ -139,7 +141,8 @@ def furniture(doc_id, org_line, classification, house):
     return draw
 
 
-def two_pass(path, story_fn, doc_id, title, org_line, created, modified, classification="OFFICIAL", house="route"):
+def two_pass(path, story_fn, doc_id, title, org_line, created, modified, classification="OFFICIAL", house="route",
+             tool=None):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     total = "?"
     for _ in range(2):
@@ -149,7 +152,7 @@ def two_pass(path, story_fn, doc_id, title, org_line, created, modified, classif
         f = furniture(doc_id, org_line, classification, house)
         d.build(story_fn(), onFirstPage=f, onLaterPages=f)
         total = str(d.page)
-    normalize_pdf(path, created, modified, title)
+    normalize_pdf(path, created, modified, title, **(tool or {}))
 
 
 def signatures(rows, st=None):
@@ -279,8 +282,12 @@ def workload_assessment(path):
                         ["Checked", "Julian Thomson", "", "27 March 2025"],
                         ["Accepted for the route", "Alan Pope", "", "7 April 2025"]], st=C),
         ]
+    # the consultancy typesets its reports in LaTeX; the route's own documents come out of an office suite
     two_pass(path, story, "LE-2512-R2", "Signaller workload assessment: Fenmoor ROC", "Linwell Ergonomics Ltd",
-             b"D:20250328110407+00'00'", b"D:20250328110407+00'00'", classification="", house="consultant")
+             b"D:20250328110407Z", b"D:20250328110407Z", classification="", house="consultant",
+             tool=dict(creator="LaTeX with hyperref", producer="pdfTeX-1.40.25", version="1.5",
+                       extra={"/PTEX.Fullbanner": "This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) "
+                                                  "kpathsea version 6.3.5", "/Trapped": "/False"}))
 
 
 def catalogue(path):
@@ -301,7 +308,18 @@ def catalogue(path):
     ftr.text = "OFFICIAL"
     ftr.alignment = WD_ALIGN_PARAGRAPH.CENTER
     ftr.runs[0].font.size = Pt(8)
+    pg = sec.footer.add_paragraph()
+    pg.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    for k, piece in enumerate(("Page ", "PAGE", " of ", "NUMPAGES")):
+        r = pg.add_run(piece if k % 2 == 0 else "")
+        r.font.size = Pt(8)
+        if k % 2:
+            field(r, piece, "1" if piece == "PAGE" else "2")
     d.add_heading("Improvement catalogue 2027", level=1)
+    ref = d.add_table(rows=1, cols=4)
+    ref.style = "Table Grid"
+    for k, v in enumerate(("Reference ROC-IC-2027", "Issue 2", "30 July 2026", "OFFICIAL")):
+        ref.cell(0, k).text = v
     d.add_paragraph("The programmes the operating centre can deliver in 2027, for the route's operating improvement "
                     "plan. Issue 2, 30 July 2026. Owner: operating centre manager.")
     progs = [
@@ -313,7 +331,8 @@ def catalogue(path):
         ("B", "Workstation display renewal",
          "The six workstations' display system (Corvane VDS-3, in service since 2013 and supported to March 2028) "
          "replaced by the supplier's current product, VDS-5, on larger screens, with every screen's track layout "
-         "redrawn on the new product from the signalling plans. Delivered one workstation at a time.",
+         "redrawn on the new product from the signalling plans. The VDS-3 equipment removed from every workstation. "
+         "Delivered one workstation at a time.",
          "1,860,000", "March to November 2027, about six weeks a workstation.", "Head of operations"),
         ("C", "Eight-hour shifts",
          "The operating centre's 12-hour day and night shifts replaced by 8-hour early, late and night shifts, with "
@@ -347,10 +366,102 @@ def catalogue(path):
                                                    "E's position on the operating floor confirmed."))):
         for c, v in enumerate(row):
             t.cell(k, c).text = v
+    d.add_paragraph("")
+    d.add_heading("Approval", level=2)
+    t = d.add_table(rows=4, cols=3)
+    t.style = "Table Grid"
+    for k, row in enumerate((("", "Name and role", "Date"),
+                             ("Prepared", "Alan Pope, Operating centre manager", "30 July 2026"),
+                             ("Checked", "Helen Douglas, Operating centre safety and assurance manager", "30 July 2026"),
+                             ("Approved", "Jake Bray, Head of operations, Wyvern", "30 July 2026"))):
+        for c, v in enumerate(row):
+            t.cell(k, c).text = v
     os.makedirs(os.path.dirname(path), exist_ok=True)
     d.save(path)
     PP.normalize_ooxml(path, "Alan Pope", "Helen Douglas", "2026-06-18T09:31:00Z", "2026-07-30T15:12:00Z",
                        title="Improvement catalogue 2027")
+    finish_docx(path, revision=9, total_time=287, pages=2)
+
+
+def field(run, code, shown):
+    """A Word field (PAGE, NUMPAGES) in a run, with its last computed value as Word stores it."""
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    for kind, text in (("begin", None), (None, " %s " % code), ("separate", None), (None, shown), ("end", None)):
+        if kind:
+            el = OxmlElement("w:fldChar")
+            el.set(qn("w:fldCharType"), kind)
+        else:
+            el = OxmlElement("w:instrText" if text.strip() == code else "w:t")
+            el.set(qn("xml:space"), "preserve")
+            el.text = text
+        run._r.append(el)
+
+
+def finish_docx(path, revision, total_time, pages):
+    """What Word itself leaves in a saved document: the template's own extras gone (its thumbnail, the 2010 styles
+    part, the bibliography stub), the statistics Word computes on save, one company, and the revision count."""
+    import zipfile
+    import docx
+    drop = {"docProps/thumbnail.jpeg", "word/stylesWithEffects.xml", "customXml/item1.xml",
+            "customXml/_rels/item1.xml.rels", "customXml/itemProps1.xml"}
+    with zipfile.ZipFile(path) as z:
+        items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
+    doc = docx.Document(path)
+    paras = [p.text for p in doc.paragraphs if p.text.strip()]
+    for t in doc.tables:
+        for row in t.rows:
+            seen = set()
+            for c in row.cells:
+                if id(c._tc) not in seen and c.text.strip():
+                    seen.add(id(c._tc))
+                    paras.append(c.text)
+    text = " ".join(paras)
+    words = len(text.split())
+    chars = len(re.sub(r"\s", "", text))
+    chars_sp = len(text)
+    lines = sum(max(1, -(-len(p) // 92)) for p in paras)
+    out = []
+    for name, data in items:
+        if name in drop:
+            continue
+        if name == "[Content_Types].xml":
+            data = re.sub(rb'<Override PartName="/(customXml/itemProps1\.xml|word/stylesWithEffects\.xml|'
+                          rb'docProps/thumbnail\.jpeg)"[^>]*/>', b"", data)
+            data = re.sub(rb'<Default Extension="jpeg"[^>]*/>', b"", data)
+        elif name == "_rels/.rels":
+            data = re.sub(rb'<Relationship [^>]*Target="docProps/thumbnail\.jpeg"/>', b"", data)
+        elif name == "word/_rels/document.xml.rels":
+            data = re.sub(rb'<Relationship [^>]*Target="(stylesWithEffects\.xml|\.\./customXml/item1\.xml)"/>', b"", data)
+        elif name == "docProps/app.xml":
+            data = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<Properties xmlns="http://schemas.'
+                    'openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats'
+                    '.org/officeDocument/2006/docPropsVTypes"><Template>Normal.dotm</Template><TotalTime>%d</TotalTime>'
+                    '<Pages>%d</Pages><Words>%d</Words><Characters>%d</Characters><Application>Microsoft Office Word'
+                    '</Application><DocSecurity>0</DocSecurity><Lines>%d</Lines><Paragraphs>%d</Paragraphs><ScaleCrop>'
+                    'false</ScaleCrop><HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Title'
+                    '</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs>'
+                    '<TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>Improvement catalogue 2027</vt:lpstr>'
+                    '</vt:vector></TitlesOfParts><Company>Wyvern Route</Company><LinksUpToDate>false</LinksUpToDate>'
+                    '<CharactersWithSpaces>%d</CharactersWithSpaces><SharedDoc>false</SharedDoc><HyperlinksChanged>'
+                    'false</HyperlinksChanged><AppVersion>16.0000</AppVersion></Properties>'
+                    % (total_time, pages, words, chars, lines, len(paras), chars_sp)).encode()
+        elif name == "docProps/core.xml":
+            data = data.replace(b"</cp:lastModifiedBy>", b"</cp:lastModifiedBy><cp:revision>%d</cp:revision>" % revision)
+        out.append((name, data))
+    with zipfile.ZipFile(path, "w") as z:
+        for name, data in out:
+            zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(zi, data)
+    with zipfile.ZipFile(path) as z:
+        names = z.namelist()
+        assert not (set(names) & drop) and z.read("docProps/app.xml").count(b"<Company>") == 1
+        for n in names:
+            if n.endswith(".rels") or n == "[Content_Types].xml":
+                body = z.read(n)
+                assert b"thumbnail" not in body and b"stylesWithEffects" not in body and b"customXml" not in body, n
+    docx.Document(path)
 
 
 def build(target, paths):

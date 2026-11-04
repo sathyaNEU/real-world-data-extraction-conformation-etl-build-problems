@@ -4,15 +4,15 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: register, incident, signaller, window, routes, competence, review, export, incidents, finding, control, findings, layout, driver, hatherby, sentence, geometry, screen, display, recorded, request, performance, workload, category, changes
+Stump terms swept: register, routes, incident, signaller, window, competence, incidents, review, export, finding, control, geometry, findings, layout, driver, hatherby, recorded, sentence, request, screen, display, performance, workload, category, changes
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `governance/2027_improvement_plan_terms_of_reference.pdf`: carries 10 of 14 distinctive words of the committed call: "Fund programme B, the workstation display renewal: its cause produced 8,985 of the operating centre's delay minutes in t"
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `governance/2027_improvement_plan_terms_of_reference.pdf`: 5 of 25 stump-paragraph terms appear (register, incident, review, incidents, performance); read whether the document names the move
+- **REVIEW** `governance/2027_improvement_plan_terms_of_reference.pdf`: 5 of 25 stump-paragraph terms appear (register, incident, incidents, review, performance); read whether the document names the move
 - **REVIEW** `governance/improvement_catalogue_2027.docx`: 6 of 25 stump-paragraph terms appear (signaller, competence, layout, hatherby, screen, display); read whether the document names the move
-- **REVIEW** `reference/fenmoor_roc_workload_assessment_2025.pdf`: 6 of 25 stump-paragraph terms appear (signaller, routes, hatherby, recorded, request, workload); read whether the document names the move
+- **REVIEW** `reference/fenmoor_roc_workload_assessment_2025.pdf`: 6 of 25 stump-paragraph terms appear (routes, signaller, hatherby, recorded, request, workload); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `staffing/signalling_roster_2026-27_P01-P07.xlsx`: 12 ISO dates after 2026-10-09, e.g. 2026-10-10
@@ -36,3 +36,40 @@ Stump terms swept: register, incident, signaller, window, routes, competence, re
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+
+## Solver's-eye read
+
+Isolated reader, 2026-11-04 (general-purpose, sonnet, medium), architecture 1, on a fresh copy of prompt.txt and target/ (target.zip sha256 63ad083e621bf1a437906359dc06e73fbb240272f7aa2ed899ec150d1134cd3b). Sweep 4's lines were kept out of the brief and ruled in the main thread (the catalogue's programme B scope says the layouts are redrawn and names no slip; the terms of reference file a but-for WHAT). Verdict: no leak; question 6 an analytical choice; the realism tells below (the catalogue docx's generator residue, a shared PDF producer and sign-off names across organisations) go to the generator.
+
+# Leak reader answers, task399
+
+1. Decisive step. governance/2027_improvement_plan_terms_of_reference.pdf 2.3: "An incident counts for a programme when it would not have happened had that programme been in place." That states the counterfactual question but not how to decide it. 2.1 states the selection rule: "The plan funds the programme whose cause produced the most of the operating centre's delay minutes in the twelve months from 1 October 2025 to 30 September 2026." 2.5: "the plan begins with the stage that would have removed the most of those minutes." No sentence names a data field or the method.
+
+2. Ranking or scoring of candidates: none. No file totals minutes by programme or cause. The registers carry a per-incident "Finding" (2025-26) / "Underlying cause" (2026-27) column; this is raw record, not a ranking. (The 2025-26 register has "Finding" values Workload/Competence/Attention/Fatigue/ARS data/Equipment; these are the organisation's per-incident labels, not a programme score.)
+
+3. Files only to help the analyst: governance/2027_improvement_plan_terms_of_reference.pdf (it defines the population, window, delay-minute definition and counting test, so it works as the brief). The "Category codes" sheet in operating_incident_register_2026-27.xlsx maps 2026-27 codes to 2025-26 categories (a crosswalk), which reads slightly like an analyst aid but is plausible as a register legend. The workstation_layout_export JSON "ars_subareas" block with "replaces" (FM-A replaces "FENM N") is similar, a crosswalk between new and old ARS sub-area names.
+
+4. Reads as the answer: none. No figure of minutes, no programme named as the recommendation.
+
+5. Filed sentences fixing the computation:
+- ToR 2.2: "The operating centre's incidents are those in its operating incident register whose delay is attributed to the operating centre (responsible code OCF). An incident belongs to the twelve months by the date and time it occurred, UK time." Fixes population (register incidents with OCF), window (1 Oct 2025 to 30 Sep 2026 by local occurrence time), unit (incident).
+- ToR 2.4: "An incident's delay minutes are the primary and reactionary minutes held against its TRUST incident in the delay attribution records, after the moves the attribution review log records as agreed." Fixes the minutes measure: pfpi minutes of the TRUST incident, delay types P and R, with Agreed moves applied.
+- ToR 2.1 fixes the selection: the programme whose cause produced the most minutes.
+- ToR 2.3 fixes the attribution test (counterfactual) without a method. Literal result: minutes summed per programme over the stated population and window; the assignment of incident to programme is left to analysis.
+- The prompt's own wording fixes the asks (hours by workstation, first two years since qualifying, ARS-off sub-area hours per calendar quarter).
+
+6. What decides the main answer: mostly an analytical choice, with the data-reading and rule-following steps feeding it. ToR 2.3 ("would not have happened had that programme been in place") asks the analyst to judge causal counterfactual attribution of each incident to a programme (e.g. whether the cause is competence, a display/layout cause, shift length, ARS data, a workstation split), which is not read off one field: the register's cause/finding labels are the organisation's own and the filed test (2.3) points beyond them. The mechanical steps (OCF filter, UK-time window, TRUST join, agreed review moves) are rule application from 2.2 and 2.4. I see nothing in the pack that reads as a planted defect announced in a file. Caveat: the register category/finding labels may not align one to one with programmes, so the attribution rests on the analyst using the control-system logs; nothing quotes that route.
+
+## Mechanical sweep items
+a. harmless, because it names no programme to fund and carries no minutes figure; it only states the selection rule (most delay minutes in the twelve months), the window, the counting test and the minutes definition, which is what a terms of reference would hold. Note it does state the method of selection in plain words, so it is a brief, not an answer.
+b. harmless, because the 2026-27 roster is an operational forward roster (rows run to 10 Oct 2026, a week or so past the 30 Sep window end; the roster file was last modified... created 2026-03-04 by "ROC Rostering"). A roster issued for P01-P07 would plausibly extend to the period end (P07 ends 10 Oct 2026). Mild caveat: the title says P01-P07 and the setting date is after 9 Oct only in that the file covers through 10 Oct, which is within a period boundary, not out of place.
+c. harmless, because it is a third-party consultant report (Linwell Ergonomics, LE-2512-R2, accepted by Alan Pope) from March 2025 that uses the organisation's workstation names (W01 Fenmoor etc.) and task kinds; it reads as an independent assessment of the organisation, not a note describing the data. Its content is a distractor-like workload index, with no minutes or programme named.
+d. harmless, because each programme entry only gives scope, cost, delivery and sponsor. None says which incidents its cause produced or points to a data field. Only slight nudges: B names "Corvane VDS-3" (matches the JSON vds_product), D mentions "ARS timetable data", A names "first two years since qualifying" (matches the prompt's staffing cut); these are scope descriptions, not pointers.
+
+## Realism
+- governance/improvement_catalogue_2027.docx: tells of a generated file. app.xml says Words 0, Characters 0, Lines 0, Paragraphs 0, TotalTime 0, and a Company element appears twice (empty `<Manager/>`, `<Company/>` and then `<Company>Wyvern Route</Company>`). The package holds the python-docx default template (stylesWithEffects.xml, customXml item1, docProps/thumbnail.jpeg, Normal.dotm, all file dates 1980-01-01). Core properties are creator Alan Pope / lastModifiedBy Helen Douglas with plausible dates, which are fine. The body has a revision table but no document reference number, page numbering visible in text (header/footer exist), or sign-off block, unlike the two PDFs.
+- The two PDFs (both LibreOffice 24.2 "Writer", creator "Writer") read as plausible, with doc numbers, revision tables, sign-off tables with names and blank signature cells, "Page 1 of 1". Mild tell: both PDFs and the docx use the same two names (Alan Pope, Helen Douglas) in the sign-off, and the third-party consultant's PDF carries the same producer string (LibreOffice 24.2 Writer) as the client's internal ToR, though a consultant using a different tool would be expected. Also the ToR "Signature" column is empty.
+- Systems: the control-system CSVs use UTC ISO timestamps with milliseconds and numeric user ids and servers ROC-A/ROC-B; the incident registers differ by year (2025-26 desk names and prose categories, 2026-27 W0n names and codes with a legend sheet); the delay records use UK dd/mm/yyyy and "2025/26 P01"; rosters differ in layout (per-period grids vs a flat list). These do read as different systems. 
+- Too uniform: workstation_layout_export JSON has all six workstations with four 1920x1200 screens each and a regular x/y coordinate list with random ids (FM871 etc.), which looks synthetic but is plausible for a layout export. In the actions log the ROC-B server has only 647 rows against ROC-A 356,456 (reads like a standby server, fine). The ARS log is split almost evenly across ROC-A and ROC-B (7431 / 7463) and its reasons look neat (OOC, TTD, POSS, FAIL).
+- Overall: docx is the file most likely to read as exercise-built (python-docx template residue with zero word counts). Others: none.

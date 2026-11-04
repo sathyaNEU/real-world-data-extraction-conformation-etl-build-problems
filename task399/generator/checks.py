@@ -166,7 +166,7 @@ def run(S_, target, res):
     late = [k for k, v in comp_from.items() if v > dt.date(2026, 8, 28)]
     C.ok("realism: nobody works a workstation before the competence date the register gives it, and no date is "
          "later than the register", not early and not late, "%d early, %d late" % (len(early), len(late)))
-    people = ["Helen Douglas", "Alan Pope", "Zoe Hayward", "Joanna Bryan", "Julian Thomson"]
+    people = ["Helen Douglas", "Alan Pope", "Zoe Hayward", "Joanna Bryan", "Julian Thomson", "Jake Bray"]
     drawn = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "names_drawn.txt")).read()
     C.ok("realism: every persona drawn with guard.py names", all(p in drawn for p in people))
 
@@ -199,6 +199,9 @@ def run(S_, target, res):
                                                             L["routes"][i["route_required"]][1]))) in close_pairs]
     C.ok("SF6: no ARS wrong route falls on a drawn-close pair, so the geometry reads the same with ARS included",
          not ar_close, "%d" % len(ar_close))
+    qc, qb = M["quick_cancels"], M["quick_cancels_beside"]
+    C.ok("step 4: of the routes cancelled within twenty seconds of being set, all but three were followed from the "
+         "same entrance by the exit drawn beside", qc - qb == 3 and qb >= 300, "%d of %d" % (qb, qc))
     C.ok("evidence: quick resets fall only on the drawn-close pairs", prone <= close_pairs,
          "%d of %d reset pairs" % (len(prone & close_pairs), len(prone)))
 
@@ -335,6 +338,11 @@ def run(S_, target, res):
          {"FROC/25", "FROC/26"})
     C.ok("SF5: the investigations' findings never name the display for a wrong route", not any(
         i["finding"] == "equipment" for i in wr))
+    C.ok("SF19: the catalogue files that B removes the VDS-3 equipment from every workstation",
+         "The VDS-3 equipment removed from every workstation." in cat)
+    C.ok("SF19: the figure moves without the display faults (so the scope sentence closes it)",
+         M["slip_minutes"] != M["b_minutes"] and M["n_eq"] == 10, "%d against %d" % (M["slip_minutes"],
+                                                                                     M["b_minutes"]))
     C.ok("SF19: the display faults counted for B or left out, the call stands",
          M["slip_minutes"] >= 1.5 * rival and M["eq_minutes"] > 0, "%d without the faults against %d" % (
              M["slip_minutes"], rival))
@@ -384,6 +392,8 @@ def run(S_, target, res):
         band = "first two years" if W.first_two_years(byp[s], a.date()) else "other"
         th[(ws, band)] += (W.local_to_utc(b) - W.local_to_utc(a)).total_seconds() / 3600.0
     C.ok("ask 1: every hours cell recomputes from the pack to the truth", max(abs(th[k] - H[k]) for k in H) < 1e-9)
+    C.ok("ask 1: every hours cell sits at least 0.02 h from its rounding edge",
+         min(edge_min(v) for v in H.values()) >= 1.2, "%.2f min" % min(edge_min(v) for v in H.values()))
     C.ok("ask 1: every hours cell sits at least a minute from its rounding edge",
          min(edge_min(v) for v in H.values()) >= 1.0, "%.2f min" % min(edge_min(v) for v in H.values()))
     ta = collections.defaultdict(float)
@@ -396,6 +406,24 @@ def run(S_, target, res):
     C.ok("ask 2: every ARS cell recomputes from the pack to the truth", max(abs(ta[k] - A[k]) for k in A) < 1e-9)
     C.ok("realism: no two ask cells print the same figure", len({round(v, 1) for v in A.values()}) == len(A) and
          len({round(v, 1) for v in H.values()}) == len(H))
+    C.ok("ask 2: every ARS cell sits at least 0.02 h from its rounding edge",
+         min(edge_min(v) for v in A.values()) >= 1.2, "%.2f min" % min(edge_min(v) for v in A.values()))
+    _, ivals = G.ars_hours(target, L)
+    sa_cell = collections.defaultdict(float)
+    for sa, lst in ivals.items():
+        for a_, b_ in lst:
+            for name, q0, q1 in G.QUARTERS:
+                x = max(a_, W.local_to_utc(dt.datetime.combine(q0, dt.time(0))))
+                y = min(b_, W.local_to_utc(dt.datetime.combine(q1, dt.time(0))))
+                if y > x:
+                    sa_cell[(sa, name)] += (y - x).total_seconds() / 3600.0
+    C.ok("SF21: a per-sub-area table would meet no cell within 0.02 h of a rounding line",
+         min(edge_min(v) for v in sa_cell.values()) >= 1.2 and len(sa_cell) >= 55,
+         "%d cells, nearest %.2f min" % (len(sa_cell), min(edge_min(v) for v in sa_cell.values())))
+    no_fail, _ = G.ars_hours(target, L, keep=lambda row: row["reason"] != "FAIL")
+    moved = sum(1 for k in A if abs(no_fail[k] - A[k]) >= 0.05)
+    C.ok("SF20: the FAIL rows read OFF, and leaving them out would move the cells", moved >= 6,
+         "%d of %d cells move" % (moved, len(A)))
     C.ok("ask 2: every ARS cell sits at least a minute from its rounding edge",
          min(edge_min(v) for v in A.values()) >= 1.0, "%.2f min" % min(edge_min(v) for v in A.values()))
     nights = []

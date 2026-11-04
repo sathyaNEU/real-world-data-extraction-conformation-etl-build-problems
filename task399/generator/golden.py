@@ -349,11 +349,13 @@ def hours_by_band(target, L=None):
 
 # --------------------------------------------------------------------------------------------- ask 2: ARS
 
-def ars_hours(target, L=None):
+def ars_hours(target, L=None, keep=None):
     L = L or load_layout(target)
     ev = []
     with open(P(target, "control_system/ars_status_log_20251001_20260930.csv"), newline="", encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
+            if keep is not None and not keep(row):
+                continue
             code = row["subarea"]
             if code in L["sub"]:
                 key = ("SA", code)
@@ -416,9 +418,40 @@ def ars_hours(target, L=None):
     return res, intervals
 
 
+def quick_cancels(target, L):
+    """Routes cancelled within twenty seconds of being set, each with the exit next requested from the same
+    entrance by the same user: (count, count whose next exit is drawn within a dozen pixels of the one
+    cancelled on the same screen)."""
+    per_user = defaultdict(list)
+    seen = set()
+    with open(P(target, "control_system/roc_signaller_actions_20251001_20260930.csv"), newline="", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            k = (row["user"], row["action"], row["entrance"], row["exit"], row["event_utc"][:19])
+            if k in seen:
+                continue
+            seen.add(k)
+            per_user[row["user"]].append((parse_utc(row["event_utc"]), row["action"], row["entrance"], row["exit"]))
+    total = beside = 0
+    for u, lst in per_user.items():
+        lst.sort()
+        last_set = {}
+        for i, (t, a, e, x) in enumerate(lst):
+            if a == "ST":
+                last_set[(e, x)] = t
+            elif a == "CN" and (e, x) in last_set and (t - last_set[(e, x)]).total_seconds() <= 20:
+                total += 1
+                nxt = next((x2 for t2, a2, e2, x2 in lst[i + 1:] if a2 == "RQ" and e2 == e), None)
+                if nxt and nxt != x:
+                    p, q = L["sig"][x], L["sig"][nxt]
+                    if p["screen_no"] == q["screen_no"] and math.hypot(p["x"] - q["x"], p["y"] - q["y"]) <= 12.0:
+                        beside += 1
+    return total, beside
+
+
 def compute(target):
     M = main_call(target)
     L = M["layout"]
+    M["quick_cancels"], M["quick_cancels_beside"] = quick_cancels(target, L)
     H = hours_by_band(target, L)
     A, _ = ars_hours(target, L)
     return dict(main=M, hours=H, ars=A)
