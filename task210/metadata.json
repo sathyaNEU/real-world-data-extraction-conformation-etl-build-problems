@@ -1,0 +1,135 @@
+{
+ "task": "task210",
+ "objective": "Anomaly Detection & Diagnostics",
+ "domain": "Human Factors & Ergonomics",
+ "task_type": "safety-incident-error-analysis",
+ "files": [
+  {
+   "file": "edr_event_export_2026-04-01_2026-10-31.csv",
+   "source": "Ashcombe Regional Transit, event data recorder export",
+   "coverage": "streetcar fleet recorders, 1 April to 31 October 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "avl_section_passes_2026.parquet",
+   "source": "Ashcombe Regional Transit, AVL section-pass log",
+   "coverage": "streetcar revenue trips, 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "streetcar_track_survey_2025.geojson",
+   "source": "Ashcombe Regional Transit GIS, streetcar track survey",
+   "coverage": "2025 survey",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "ash_awos_hourly_obs_2026.csv",
+   "source": "Ashcombe Municipal Airport AWOS",
+   "coverage": "hourly observations, 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "yard_block_sheets_2026.csv",
+   "source": "Ashcombe Regional Transit, rail yard block sheets",
+   "coverage": "daily, 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "foundry_depot_releases_2026.csv",
+   "source": "Ashcombe Regional Transit, Foundry depot maintenance releases",
+   "coverage": "2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "run_sheets_2026.csv",
+   "source": "Ashcombe Regional Transit, dispatch run sheets",
+   "coverage": "daily, 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "operator_roster_2026.csv",
+   "source": "Ashcombe Regional Transit, operator roster",
+   "coverage": "as of 31 October 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "badge_card_register.csv",
+   "source": "Ashcombe Regional Transit, badge card register",
+   "coverage": "as of 31 October 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "SRM-07_seasonal_restricted_speed_orders.pdf",
+   "source": "Ashcombe Regional Transit, Safety Risk Management Procedure SRM-07",
+   "coverage": "revision 3, effective 1 September 2025",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "january_2027_pick_timetable.pdf",
+   "source": "Ashcombe Regional Transit, Scheduling Department",
+   "coverage": "January 2027 pick, issued 2 November 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "ash_climate_normals_1991-2020.pdf",
+   "source": "Ashcombe Municipal Airport climate normals",
+   "coverage": "1991 to 2020",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "rail_ops_dashboard_2026.xlsx",
+   "source": "Ashcombe Regional Transit, Rail Operations dashboard",
+   "coverage": "monthly downloads, 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "downtown_pedestrian_counts_2026.csv",
+   "source": "Ashcombe Downtown Partnership, pedestrian counters",
+   "coverage": "hourly, 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "ashcombe_arena_events_2026.csv",
+   "source": "Ashcombe Arena, event calendar with scans",
+   "coverage": "2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "track_maintenance_log_2026.csv",
+   "source": "Ashcombe Regional Transit, track maintenance log",
+   "coverage": "2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
+   "file": "school_district_calendar_2026-27.csv",
+   "source": "Ashcombe School District, 2026-27 calendar",
+   "coverage": "August 2026 to June 2027",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  }
+ ],
+ "distractors": [
+  "downtown_pedestrian_counts_2026.csv",
+  "ashcombe_arena_events_2026.csv",
+  "track_maintenance_log_2026.csv"
+ ],
+ "distractor_note": "relevant enough to weigh (pedestrian volumes, arena crowds, track work, the school calendar), unused by the golden solution",
+ "generated": "2026-11-02",
+ "seed": 21009
+}

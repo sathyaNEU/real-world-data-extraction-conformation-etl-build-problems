@@ -57,46 +57,53 @@ the same: here an external, computable source re-sorts which units carry an exce
 units that will. The driver with the nouns stripped is on the card.
 
 **Sources.** Every file synthetic, generated from one seed, invented world, no real organisation, licence CC BY 4.0,
-recorded in `metadata.json` at stage 3: the recorder export (UTC, WGS84), the AVL section-pass log (local time), the
-track survey (State Plane, US survey feet), hourly airport observations (METAR sky condition), the operator roster and
-training register, the yard's consist log, the January pick timetable (PDF), SRM-07 (PDF), the station normals table,
-and distractors (pedestrian counters, the arena's events calendar, track maintenance) named only in `metadata.json`.
+recorded in `metadata.json`: the recorder export (UTC, WGS84), the AVL section-pass log (local time, lead vehicle), the
+track survey (GeoJSON, RFC 7946 longitude and latitude), hourly airport observations (METAR sky strings at :53 UTC),
+the yard's pull-out sheets, the Foundry depot's release log, the run sheets (duty and revenue hours), the operator
+roster, the badge card register, SRM-07 (PDF), the January pick timetable (PDF), the station normals (PDF), the rail
+operations dashboard (workbook), and four distractors named only in `metadata.json` (pedestrian counters, the arena's
+events, track maintenance, the school calendar). Seventeen files, five formats, the AVL log about 620,000 rows.
 
-**The five go/no-go screens** (prototype `scratchpad t210/a2/proto/screens_a2.py`, 24 redraws on the clean truth,
-seeds 21001 to 21024; results in `screens_a2.json`; to be re-run and asserted in `generator/checks.py` at stage 2):
+**Task400 setting line.** task400 is an iron-ore mine's haul-truck collision alerts after a firmware change, read from
+vehicle event recorders and braking-type events: its driver is a device change's effect on alert counts; here no device
+changes, and the driver is an external light source computed from a clock and a bearing that re-sorts which directions
+of travel carry the excess in the forward window.
 
-1. **Realistic levels and the lever.** Levels and their sources:
-   - sun position: NOAA Global Monitoring Laboratory, General Solar Position Calculations (the golden's geometry);
-   - January and February sunshine about 68 per cent of possible: NOAA NCEI, Comparative Climatic Data (Front Range
-     stations near 70 per cent in winter); April to October 62 to 72 per cent;
-   - sun glare raises crash risk on approaches facing a low sun (Mitra 2014, Safety Science 70, 246 to 254); glare
-     situations predicted from road alignment and sun position (Jurado-Pina and Pardillo Mayora 2009, Transportation
-     Research Record 2120, 12 to 17). The full-alignment multiplier here is 3.2 under full sun (glare-weighted mean
-     about 1.9 on the exposed passes), at the upper end of the published excesses, a modelling choice stated as such;
-   - darkness raises pedestrian crash risk severalfold (Sullivan and Flannagan 2002, Accident Analysis and Prevention 34,
-     487 to 498); here 1.30 on street-running firm braking, 1.15 on reserved track;
-   - US daylight saving time ends on 1 November 2026 (Energy Policy Act of 2005 schedule);
-   - world-set, no published rate to cite: firm braking at 20 per 1,000 street-running section passes and 8 on reserved
-     track (about one firm brake in 50 street passes, ART's own 2025 dashboard level), new operators 1.3 times for
-     their first months, the school term 1.1 times in the morning peak.
-   Lever: the golden recovers the true slate in 23 of 24 redraws; every rival's slate differs from the golden in 24 of
-   24, sharing at most two of the four cells; the golden's fourth cell stands above the best rival-only pick by a
-   median 12 per cent of its own estimate (minimum 1 per cent); the shipping candidate (seed 21009) has its fourth and
-   fifth cells 27.6 per cent apart and every rival-only pick 28 per cent below the fourth. Pack size planned under 15 MB.
-2. **The golden's own method holds the call.** Nine specifications (glare half-widths 20, 25 and 35 degrees; linear and
-   box forms; elevation profiles 8 to 20 and 15 to 30 degrees; a log-linear glare term; sunshine at 85 per cent of the
-   normals; no hour effects) give the same slate in 18 of 24 redraws and all nine at the shipping candidate.
-3. **The first look lands wrong** (each cell's April to October rate): 24 of 24, at most one golden cell shared.
-4. **The careful readers land wrong**, 24 of 24 each:
-   (a) field-decomposing (cell, month, darkness, sky cover; October's level carried): at most two shared;
-   (b) constructing, two forms (a non-directional low-sun term from solar elevation; sun-time bins read by elevation):
-   at most two and one shared;
-   (c) per-record, three month pools (section direction by peak by clock hour by sky, all months, September and
-   October, October): at most one, two and two shared.
-5. **Literal execution** of SRM-07's WHAT, five operationalisations (April to October rate, October, September to
-   October, the rate re-weighted to the normals' sky cover, the rate re-weighted to January's dark share): 24 of 24
-   wrong, at most two shared. The golden needs a step SRM-07 never names: the sun's computed position against each
-   direction of travel, the excess it produced fitted on the record and carried to the pick's passes.
+**Gate G.** No shipped artifact ranks or sorts section-direction cells or flags a top set: the dashboard is monthly
+and line-level, unsorted, with FB, EB and OS counts and the line's FB rate as data; no file lists cells with a rate.
+
+**The five go/no-go screens, on the real generator** (`scratchpad t210/a2/proto/screens_gen.py`, 20 redraws, seeds
+21001 to 21020, `screens_gen_run.txt`; the shipped seed's numbers asserted in `generator/checks.py`):
+
+1. **Realistic levels and the lever.** Sun position from NOAA's General Solar Position Calculations; January and
+   February sunshine 68 per cent of possible (station normals); glare raises crash risk on approaches facing a low sun
+   (Mitra 2014, Safety Science 70, 246 to 254), glare situations predicted from alignment and sun position (Jurado-Pina
+   and Pardillo Mayora 2009, Transportation Research Record 2120, 12 to 17); darkness raises pedestrian risk severalfold
+   (Sullivan and Flannagan 2002, Accident Analysis and Prevention 34, 487 to 498). World-set: firm braking 20 per 1,000
+   street passes and 8 on reserved track; the full-alignment multiplier 3.2 under full sun, a modelling choice at the
+   upper end of the published excesses. The slate holds across full-alignment multipliers 2.2 to 4.5 and street bases
+   12 to 30 per 1,000 on the shipped realization (asserted). Lever: the golden recovers the true slate in 17 of 20
+   redraws; at the shipped seed (21009) the fourth slot clears the fifth by 21.0 per cent on the clean truth and 15.0
+   per cent from `target/`.
+2. **The golden's own method holds the call.** Fifteen generator specifications agree in 11 of 20 redraws, every redraw
+   with a separation of 10 per cent or more; at the shipped seed twenty readings from `target/` (sun time, sky join,
+   brake assignment, darkness, cone 15 to 35, four elevation profiles, linear and box shapes, no controls, no hour
+   effects) print the same slate, so only slot membership is graded (rates spread 27.8 to 40.8).
+3. **The first look lands wrong**: 20 of 20, at most two cells shared.
+4. **The careful readers land wrong**, 20 of 20 each: (a) field-decomposing, at most two shared; (b) constructing (a
+   non-directional low-sun term; sun-time by elevation bins), at most two and one; (c) per-record in three month pools,
+   at most two, one and three; (d) the glare-naming reader that carries the record forward (the observed September to
+   October alignment, or the fitted model with each cell's April to October or September to October alignment held),
+   at most one shared; (f) each cell's monthly trend carried to January (four forms), at most three shared. Reader (e)
+   is the golden; its inputs are plain facts in the pack: the location and each section's bearing (the survey's
+   coordinates), what low sun and darkness are (SRM-07 3.8 and 3.9), the January peak hours (SRM-07 3.5 and the pick
+   timetable), the clock (the timetable on local time, the recorder's stamps labelled UTC). Executing those facts alone
+   on the pick files three of four (J6 outbound AM, reserved track, in place of F5 outbound PM): the golden needs each
+   cell's base and the low-sun excess estimated from the record.
+5. **Literal execution** of SRM-07's WHAT, five operationalisations: 20 of 20 wrong, at most three shared.
+
+Competing causes (new operators, school mornings, darkness) are real, documented and modest; removing each from the
+shipped realization (thinned, not redrawn) leaves the golden slate (asserted).
 
 ## Three rules
 
@@ -111,13 +118,11 @@ seeds 21001 to 21024; results in `screens_a2.json`; to be re-run and asserted in
   pharmacists go in January" keeps a rise, a slate and a capped resource but loses the operator's line of sight, the
   sun standing ahead of a direction of travel and the season moving it onto other directions, so the call stops
   reading.
-- Layer 1: the recorder's UTC stamps against the AVL log and timetable on Mountain time across the 1 November clock
-  change (the recorder system and the AVL system each keep their own clock); recorder positions in WGS84 with GPS scatter
-  against a survey in State Plane US survey feet (the GIS team's standard); the trailing car's copy of each brake on
-  two-car consists (each car carries its own recorder); short-turned and cancelled trips and a timepoint outage week in
-  the AVL log; operator badges renumbered in the July HR migration; the August firmware update that renamed the event
-  codes; METAR sky-condition codes with missing hours; the January pick published as a PDF table of headways. None is
-  placed to be caught and none decides the call.
+- Layer 1: the recorder's UTC stamps against the AVL log on Mountain daylight time and the January pick on standard
+  time (the recorder system and the scheduling system keep their own clocks); recorder positions with GPS scatter; the
+  AVL onboard units' drop-outs and a detector outage week at Arsenal Road; cars swapped in service with the yard sheet
+  keeping the pull-out car; METAR sky-condition strings at :53 with missing hours; the January pick as a PDF table of
+  headways and running times. None is placed to be caught and none decides the call (each asserted inert in checks.py).
 - Layer 2: estimation that fits the data (`estimation_fit`): the excess braking is attributed to the low sun ahead of
   each direction of travel, fitted on every pass of the record, and carried to the pick's passes under January's and
   February's sun; the choice that flips the call is reading the excess as a property of the sun's position rather than
@@ -125,9 +130,9 @@ seeds 21001 to 21024; results in `screens_a2.json`; to be re-run and asserted in
 - Decisive step: the sun's position at every pass, computed from the clock and the city's latitude and longitude, set
   against each section direction's line from the survey, with the excess it produced fitted on the record and carried
   to the January and February peaks.
-- Not semantics: reading every field, code, clock and unit correctly (the UTC stamps, the coordinates, the consist
-  copies, the badges, the firmware codes, the sky codes) still leaves each cell's measured rate, which is the autumn
-  sun's rate, and no field, code or definition anywhere states where the sun stands.
+- Not semantics: reading every field, code, clock and unit correctly (the UTC stamps, the coordinates, SRM-07's
+  definitions of low sun and darkness, the sky codes) still leaves each cell's measured rate, which carries the autumn
+  sun's excess, and executing the filed definitions on the pick alone files J6 outbound AM in place of F5 outbound PM.
 - Not rule application: SRM-07 files the population, outcome, window, basis and comparison and nothing about how the
   expected rate is formed, so executing it leaves the projection open; the enumerated family (rate tables, the
   field-decomposing and per-record models, two sun-elevation constructions, five literal executions) files 0 of 24
@@ -153,8 +158,8 @@ seeds 21001 to 21024; results in `screens_a2.json`; to be re-run and asserted in
 
 ## Default path
 
-1. Read the recorder export, convert its UTC stamps to Mountain time, and map each firm brake to its section and
-   direction against the track survey; drop the trailing car's copy on two-car consists.
+1. Read the recorder export, convert its UTC stamps to Mountain time, and attach each firm brake to the AVL pass of the
+   car that logged it (section and direction from the log, checked against the survey's coordinates).
 2. Count each section direction's passes in each weekday peak, April to October, from the AVL log.
 3. Rate each section-direction peak as firm brakes per 1,000 passes (the field's exposure rate for near misses).
 4. Net the autumn's visible confounders with a Poisson model by cell and month: the September operator class (from the
@@ -174,7 +179,175 @@ each cell's measured rate, adjusted for operators, darkness, sky cover and the s
 will see; the excess was the low sun standing ahead of those directions in September and October, and in January and
 February it stands ahead of the south-east and south-west-running directions, which take the four slots.
 
+## Survivor anatomy
+
+- Actor: the deciding property is how much firm braking the low sun adds on each section direction and where January's
+  low sun will stand, and no file has a column for either: SRM-07 3.8 files what low sun is (the geometry, as plain
+  fact), the survey two coordinates per section and the AVL log each pass's times, but the sun's position at a pass,
+  the excess it produced and each cell's low-sun-free base are relations nothing stores.
+- Link: the signal is read by setting the sun's computed position (from the pass's clock and the city's coordinates)
+  against the bearing the survey's coordinates give each direction of travel, a comparison the field's incident rate
+  never asks for and no key, code or clause offers; SRM-07 names neither the sun nor a heading.
+- Reflex: the field's own estimator for the deciding quantity, the near-miss exposure rate per section direction
+  (firm brakes per 1,000 passes), adjusted for the visible confounders by a Poisson model by cell and month, sits at
+  rung 1 and files the cells that rose this autumn (`## Default path`).
+- Back-test: OPEN. The default path's month-by-cell model fits the record it is fitted on and the dashboard's line
+  rates tie to the cell totals, but month-over-month carry-forward is weak on the shipped seed (Spearman 0.49 between
+  September and October cell rates, top-four overlap 1; April to August against September to October 0.41), so a
+  careful solver sees cell rates move; the resumed session decides whether this is a search signal to answer.
+- Second use: every file the decisive step reads is in the pack for its own reason: the survey for the section ids
+  and the asks' positions, the AVL log as the exposure every reader needs, the airport observations for sky cover
+  (every careful reader nets it), the pick timetable for the pick's passes and SRM-07 for the WHAT; delete the glare
+  step and the pack loses nothing.
+- Shock: the autumn excess reads as ordinary explained movement (a new operator class in September, the school term
+  from 17 August, darker October mornings), and the golden slate is not an interval of any shipped statistic: the four
+  golden cells rank 4, 12, 32 and 39 of 52 on April to October rates, 7, 9, 16 and 19 on September to October and 2,
+  5, 7 and 10 on October alone.
+- Pins: SRM-07 files the WHAT in the agency's own procedure (every section-direction peak, firm brakes per 1,000
+  passes, the pick's weekdays at the pick's scheduled times in the normal weather, the four highest expected rates) and,
+  as plain fact, what low sun (3.8) and darkness (3.9) are; no filed sentence names the model, the excess, a clock rule
+  or which cells January's low sun reaches.
+
+## Readability screen
+
+| Rung | What it reads | Verdict |
+|---|---|---|
+| 0 first look | each cell's April to October rate | readable |
+| 1 the field's rate, netted (default path) | rates by cell and month, Poisson-netted for operators, darkness, sky and school | readable |
+| 2 low sun, non-directional | a low-sun term from the sun's elevation | readable |
+| 3 glare named, record carried (reader d) | the glare model with each cell's autumn alignment held | readable |
+| 3x stated facts alone | SRM-07 3.8's low sun on the pick's passes at the normals' sunshine (J6 outbound AM in for F5 outbound PM) | readable |
+| 4 each cell's low-sun-free base and the low-sun excess estimated from the record, carried to the pick's sun (decisive) | the record's passes with the sun's position against each direction, fitted, then the pick's passes | silent |
+
+Rung 4 is silent: SRM-07 3.8 says what low sun is, never how much firm braking it adds, on which cells, or where
+January's sun stands; executing the filed facts alone (rung 3x) files a wrong slate, so the step is an estimate.
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | pass | one train's traverse, one or two cars | one per car | same call | SRM-07 3.3; same call asserted |
+| SF2 | firm brake | an FB record from the active cab | FB and EB records together | same call | SRM-07 3.4; same call asserted |
+| SF3 | weekday peak | by the time the train enters the section | by the pass's midpoint or exit | same call | SRM-07 3.5; same call asserted |
+| SF4 | normal weather | the normals' 68 per cent sunshine in January and February | 50, 90 or 100 per cent | same call | SRM-07 4.1 and Appendix C; same call asserted |
+| SF5 | rate | per 1,000 passes | per pass | same call | SRM-07 3.7; a scale |
+| SF6 | the pick's weekdays | weekdays with the weekday timetable (holidays run Sunday service) | holidays kept as weekdays | same call | the pick timetable's holiday line; same call asserted |
+| SF7 | the sun's time at a pass | the pass's midpoint | its entry | same call | same call asserted |
+| SF8 | sky cover for a pass | the observation in the pass's clock hour | the nearest observation; the :53 report read as the next hour's | same call | same call asserted |
+| SF9 | a firm brake's pass | the car's pass whose section is nearest the recorded position | the pass by time alone | same call | same call asserted |
+| SF10 | darkness | sun below the horizon | sunset at minus 0.833, minus 3, civil twilight minus 6 | same call | SRM-07 3.9; same call asserted |
+| SF11 | low-sun cone | 25 degrees either side of the direction | 15, 20, 30, 35 | same call | SRM-07 3.8; same call asserted |
+| SF12 | low-sun elevation profile | greatest below 12, none from 25 degrees | boxes to 15 and 20; 8 to 20; 15 to 30 | same call | SRM-07 3.8; same call asserted |
+| SF13 | low-sun shape | fading off the line of travel (cosine squared) | linear, box | same call | SRM-07 3.8; same call asserted |
+| SF14 | controls | section direction, hour, weekend, darkness | none; no hour effects | same call | same call asserted |
+| SF15 | the detector outage week | passes and brakes both left out | the week dropped on every section | same call | same call asserted |
+| SF16 | clock | Mountain local time, MDT in the record and MST in the pick | UTC as stamped | same call once converted | SRM-07 3.5 ("Mountain local time") |
+| SF17 | the candidate | one section, one direction, one weekday peak | a section pooled over directions | another call | SRM-07 3.6, quoted |
+| SF18 | the basis | the pick's scheduled passes | the record's own passes | another call | SRM-07 4.1 ("at the pick's scheduled times on the pick's weekdays") |
+| SF19 | ask A's month | the Mountain-time month | the UTC month (moves 11 of 14 figures) | another figure | the asking sentence ("each Mountain-time month") |
+| SF20 | ask B's day | the service day | the calendar day | same figures | same figures asserted |
+| SF21 | a record on a month's edge | none within 15 seconds of a month boundary | a recorder clock moving one across | same figures | asserted on the shipped rows |
+| SF22 | ask B's window | 30 calendar days from each operator's first day in revenue service | 30 days worked | another figure | the asking sentence ("in the 30 days from") |
+
+## Ladder
+
+| Rung | Route | Slate on the shipped seed | Shares with the golden |
+|---|---|---|---|
+| 0 | first look, each cell's April to October rate | autumn's east-running AM and west-running PM cells | 1 of 4 |
+| 1 | default path: the field's rate netted by a Poisson model by cell and month, October's level carried | the cells that rose this autumn | 0 of 4 |
+| 2 | non-directional low sun, or sun-time by elevation bins | the low-sun-exposed autumn cells | 0 and 1 of 4 |
+| 3 | per-record models in three month pools | the autumn cells | 0 to 1 of 4 |
+| 3d | glare named, each cell's observed alignment carried to January | the autumn-aligned cells | 0 to 1 of 4 |
+| L | five literal executions of SRM-07 (April to October, October, September to October, normal-weather, dark share) | the autumn cells | 0 to 2 of 4 |
+| 4 | the golden: the sun against each direction at every pass, fitted, carried to the pick's passes | J4 outbound AM, J5 outbound AM, F5 outbound PM, F6 outbound PM | 4 of 4 |
+
+Every rung below 4 is a complete pipeline that files a definite wrong slate; asserted in `generator/checks.py`.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | every section of track in each direction in each weekday peak of the pick | filed, SRM-07 2 and 3.6 |
+| 2 Unit of account | the section-direction peak | filed, SRM-07 3.6; SF17 |
+| 3 Attribution window | the pick's weekdays, 4 January to 26 February 2027 | filed, SRM-07 5.1 and the pick |
+| 4 As-of dating | the record to 31 October 2026, the procedure in force | C1, one revision shipped |
+| 5 Version basis | one export per system, no restatement | C1 |
+| 6 Denominator | passes, one per train | filed, SRM-07 3.3 and 3.7; SF1 |
+| 7 Weighting | each pass of the pick equally | filed, SRM-07 4.1 (the rate its passes see) |
+| 8 Window length | the whole record fits the model | C3, the slate identical across the specifications (SF11 to SF14) |
+| 9 Boundary inclusivity | the peak by entry time, 06:30 to 08:59 and 16:00 to 18:29 | filed, SRM-07 3.5; SF3 |
+| 10 Rounding path | no graded rate; the slate is graded | C3 corridor: rates spread 27.8 to 40.8 across variants, membership fixed |
+| 11 Tie-break | none needed, the fourth clears the fifth by 15 per cent | C4, asserted |
+| 12 Maturity and censoring | none in the main call; ask B's windows close inside the record | C1, asserted |
+| 13 Order of operations | attach, fit, project | C1, the variants agree |
+| 14 Row order | file order irrelevant | C1 |
+| 15 Duplicate resolution | no FB copies (active cab only) | filed, SRM-07 3.4; separation asserted |
+| 16 Identity normalisation | car to AVL vehicle; badge to operator through the register | the systems' own keys |
+| 17 Netting against gross | none | not applicable, stated |
+| 18 Dimensional units | firm brakes per 1,000 passes | filed, SRM-07 3.7 |
+| 19 Code and status semantics | FB is the firm brake, EB the emergency loop, OS overspeed | filed, SRM-07 3.4 |
+| 20 Integerisation | four slots | filed, SRM-07 5.1 |
+| 21 Clause scope | weekdays only, both lines | filed, SRM-07 2 and 3.5 |
+| 22 Forward window contents | the pick timetable's trips and running times, the normals' sunshine | shipped driver files (the pick PDF, the normals PDF) |
+
+## Literal reader
+
+Executed word for word, SRM-07 gives the population, outcome, window, basis and comparison and leaves the expected rate
+to be formed; every reading of a term or convention (SF1 to SF22) prints the golden slate, or is ruled out by a quoted
+sentence, and the five literal executions that carry the record's own rates (rungs L) file wrong slates, so the
+easy answer comes from an easy method on the same literal estimand, never from another reading.
+
+## Oracles
+
+None that ties only under the golden. The dashboard's line-level monthly FB rates tie to the per-cell totals under
+every reading and rank nothing; its EB column is the raw record count (copies and depot tests included), which agrees
+with the naive ask A route and is a seen-wrong control, never an arbiter. The normals and the pick are drivers, not
+checks.
+
+## Ask sheet
+
+- Ask A: each line's emergency brake applications in revenue service in each Mountain-time month, April to October
+  2026 (14 figures). Primary devices: A1 (D1 duplication under two clocks: a two-car train's application logged by the
+  trailing car's free-running recorder up to 3.5 minutes off, paired only by block, position and time); A2 (D5 scope:
+  a car bad-ordered in service is repaired and brake-tested on the depot loop the same day, so the yard sheet puts it
+  on a block while it sits in the depot, and the spare that took the block over is on no sheet); hazard A3 (D4: AVL
+  onboard-unit drop-outs leave revenue trips unlogged, so revenue read off the AVL log loses applications); the UTC
+  month (pinned).
+- Ask B: the May and August 2026 classes' overspeeds in the 30 days from each operator's first day in revenue
+  service, with the class's revenue hours and overspeeds per 100 revenue hours (6 figures). Primary devices: B2 (D5
+  window: route-training ride-alongs put each new operator on the run sheets with an instructor before the first solo
+  run, so the first run-sheet row and the class date both open the window early); B1 (D7 keys: old four-digit badges
+  until each card's reissue after the July migration, mapped only through the card register).
+- Pair ceiling: 47.8 (one response on the call keeping 35 per cent of the ask figures, the other off it with the same
+  ask handling); both on the call 64.2.
+- Mirror leakage: 35.0 per cent of the ask weight.
+- Full includer: keeps 30 to 35 per cent of the ask figures across its three routes (yard sheets with the Loop
+  signature, yard sheets with the release log, the AVL log), under two fifths.
+- OPEN: with the coordinator's filed meanings (the run sheet's duty column, the release log's check, the yard's
+  pull-out cars, SRM-07 3.4's codes) ask B is rule application with no silent device on the careful path, and the
+  cracker keeps all six of its figures; ask B is redrawn before precut (resume line).
+- Measured by: generator/ceiling.py on the cut pack (shares no code with the generator; its own golden handling is
+  asserted equal to figures.json).
+
+| Ask | Cracker handling | Cracker keeps | Verdict |
+|---|---|---|---|
+| A (14 figures) | revenue read off the AVL log; copies and depot tests fall away, drop-out trips lose applications | 1 of 14 | miss |
+| B (6 figures) | each window opened at the first operator duty; badges through the register | 6 of 6 | keeps |
+
 ## Tried and rejected
+
+- 2026-11-04 (a2), the low-sun geometry left unfiled and carried as a C3 corridor (cones 15 to 35, bands, shapes all
+  giving the golden slate): the coordinator's lesson from task211 (a withheld practice recovered from the records is a
+  planted step at Gate H) binds every input the projection needs, so SRM-07 now files low sun (3.8) and darkness (3.9)
+  as plain fact; measured, executing the filed facts alone (the pick's low-sun exposure at the normals) files J4, J5 and
+  J6 outbound AM with F6 outbound PM, three of four, and the golden needs each cell's base and the excess estimated
+  from the record.
+- 2026-11-04 (a2), asks resting on unfiled conventions (two-car copies, depot running tests, ride-along rows, the yard
+  sheet's meaning): lesson 2 files each in the producing system's own form (SRM-07 3.4's codes and what each car
+  records, the release log's check column, the yard's pull-out cars, the run sheet's duty column); ask A still holds
+  (the cracker keeps 1 of 14), ask B became rule application and the cracker keeps 6 of 6, so ask B is redrawn.
+- 2026-11-04 (a2), competing causes tested by redrawing the world without them: a redraw changes the Poisson draws, so
+  the school-free redraw moved the slate by sampling noise alone; the test now thins or tops up the same realization.
 
 - 2026-11-04, seed AD33's world itself (a data-centre battery's January FCR-D offer): undrawable on this objective
   while task402 holds energy-systems-utilities/grid-reliability-outage-analysis in the window (`ban.subdomain`); its
