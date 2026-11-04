@@ -578,3 +578,42 @@ reading, and the samplers' download log records volumes, not strengths or a tota
   the bottler's suspended solids under a plain mean, three under the second bottle dropped). Raised to about a third of
   weeks with the night bottle at 45 to 65 per cent of the day's strength; every wrong reading now moves every strength by
   3 bins or more.
+- 2026-11-04, architecture 4 spent at stage 4, round 1: the judge's blind derivation reached the call and every ask
+  figure. Every free gate had passed, precut was clean, the leak reader found no decisive-step sentence, and the judge
+  returned DETERMINISTIC with a wording FIX_NOW and Gate F "moderate to good"; but its derivation, written before it
+  opened the graded blocks, landed the call and all 15 ask figures in 26 tool calls. The works' hourly final-effluent
+  ammonia jumped to 10 to 17 mg/l from midnight on every failure day (against 0.7 to 1.0), the spikes aligned one to one
+  with the discharger's evening pH dips in its own fifteen-minute monitor file (a file the pack carried for that
+  discharger alone; 38 of 38 such evenings were followed by a failure day), and the prompt's chart sentence ("tracing the
+  winter's exceedance days from the river down through the works to whatever sets them off") announced the trace. The ask
+  fell the same way: the scheme's filed WHAT ("the strength of a composite sample is the strength of the effluent it
+  holds") beside the sampler log's volume column made volume-weighting the bottles the obvious move. The deeper cause: a
+  graded count that holds under every operationalisation needed a clean, short, visible alignment, which is exactly what
+  one look finds, so the stump sat in finding the signal and determinism and difficulty pulled against each other.
+  Lessons carried to architecture 5: the first-look reader (the outcome at its finest grain beside every candidate's own
+  record, aligned by date and lag, plus a before-and-after on each dated change) is coded and must land the wrong call;
+  every candidate's evidence sits in records all candidates share at one grain; the prompt names the WHAT, never the
+  route; a filed WHAT never names the property its ask's remedy needs while the column that supplies it ships.
+- 2026-11-04, architecture 5's draw, cells and candidates set aside before the card (screens in `scratchpad/t401/a5/`).
+  Cells: workload-fatigue-shift-analysis is barred by `ban.pairing` against task400 (human factors on root-cause);
+  funnel-journey-analysis registered to task403 at 01:15Z the same day (shape 09, `executive_team`, `product_manager`, a
+  price change booked for a subscription conversion fall), so it, those axes and any price-change rival are kept clear
+  of; interpretability (directly or through the nonprofit and audit house domains) reads as a backdrop on every world
+  tried. Mechanisms screened on paper, each with its reason: an age-matched comparison against units' life-cycle curves
+  (the pre-trend check and unit trends are reflexes); a remedy targeted at members already lapsing (confounding by
+  indication is a reflex once the targeting is read); a change's harm reaching the comparison units through shared
+  demand (task500 v2's spillover through a link); a timetable change breaking members' habitual slots (architecture 2's
+  dated shock meeting each unit's own phase); a detector's precision falling with prevalence (the swap test fails);
+  separating two same-day changes by a dose rebuilt from records (task129 v1 and task129's surroundings); an
+  instructor's departure breaking classes (task402 v1's lapsed actor); a consumable's stock running out unit by unit
+  (task50's rotation); members leaving at a contract's end (a column); a reward's withdrawal read on the dose alone (the
+  dose test lands it whenever its cancellations fall inside the window).
+- 2026-11-04, architecture 5's prototypes (`proto1.py` to `proto4.py`, `screens.py`, 20 redraws each): a permanent visit
+  loss after the Rewards closure kept producing lapses after the cut, which no snapshot can count (the golden reached a
+  third of the truth); with the closure in January its lapsed members were harvested by the February letter, so its
+  in-window effect was 550 of 870 and the two causes tangled; with disjoint reaches and a 1 March cut the golden's figure
+  moved with the inactivity rule (an eight-week rule cannot see five-week-old lapses), closed by the contract's 28-day
+  active-member definition; a Direct Debit notification to every member put part of the letter's spike inside the
+  closure's own reach, so the mixed extrapolation landed on the closure in 15 of 20; the legacy terms letter (legacy
+  members only, price unchanged) restored every screen. The price rise first used for the letter was dropped for task403's
+  price-change rival in the same wave.
