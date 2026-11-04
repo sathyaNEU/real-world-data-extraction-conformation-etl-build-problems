@@ -1,0 +1,196 @@
+{
+ "task": "task314",
+ "architecture": 1,
+ "title": "Which Stage 2 drought rate option takes the most water off Ardley Springs single-family bills in summer 2027, and the 2026 base for the City's own Stage 2 measures",
+ "domain": "Economics & Econometrics",
+ "subdomain": "elasticity-welfare-policy-impact-estimation",
+ "client_task_type": "elasticity-welfare-policy-impact-estimation",
+ "objective": "Opportunity Sizing & Decision Support",
+ "prompt_shape": "07 grid of cells",
+ "as_of": "2026-11-03",
+ "deliverables": [
+  "stage2_drought_rates_2027.xlsx",
+  "stage2_rate_recommendation.docx",
+  "summer_2027_savings.png"
+ ],
+ "distractor_files": [
+  "bvw03_daily_weather_2022-04-01_2026-10-31.csv",
+  "state_pws_water_use_2025.xlsx",
+  "conservation_rebates_2022-2026.csv"
+ ],
+ "wrong_basis_distractors": [],
+ "stated_inputs": [
+  "Stage 2",
+  "June to September",
+  "2027",
+  "2026"
+ ],
+ "field_terms": [],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "cis_water_bills_2022-06_to_2026-10.csv",
+  "largest_file_rows": 276883
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task314/generator/build.py (seeded, deterministic) in the layouts of a small city water utility's billing export and account master, its council's rate resolutions, its drought plan and draft agenda report, a wholesale water district's allocation notice, a bulk fill station's transaction export and vendor report, a facility meter read log and meter list, a meter shop's work orders, a weather station record, a state water use table and a rebate register; the city, the district, the companies and the people are fictional.",
+   "date": "2026-11-03",
+   "license": "CC0 (original work)"
+  }
+ ],
+ "created": "2026-11-03",
+ "generator": "task314/generator/build.py",
+ "files": [
+  {
+   "path": "Agenda Report Stage 2 Drought Rate Options DRAFT 2026-10-27.docx",
+   "format": "docx",
+   "bytes": 39065,
+   "rows": null,
+   "source": "the department's draft council agenda report on the Stage 2 rate options",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "Drought Contingency Plan Rev 2 (2025).pdf",
+   "format": "pdf",
+   "bytes": 12062,
+   "rows": null,
+   "source": "the Water Department's drought contingency plan, revision 2",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "RES 2021-44.pdf",
+   "format": "pdf",
+   "bytes": 5314,
+   "rows": null,
+   "source": "City Council resolution setting water rates from January 2022",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "RES 2023-12.pdf",
+   "format": "pdf",
+   "bytes": 5427,
+   "rows": null,
+   "source": "City Council resolution setting water rates from July 2023",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "RES 2024-17.pdf",
+   "format": "pdf",
+   "bytes": 5655,
+   "rows": null,
+   "source": "City Council resolution establishing the Fenwick Mesa capital recovery charge from July 2024",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "UBBWCD Notice 2026-07 Dry-Year Allocation 2027.pdf",
+   "format": "pdf",
+   "bytes": 3366,
+   "rows": null,
+   "source": "the wholesale district's notice of its 2027 dry-year allocation",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "bvw03_daily_weather_2022-04-01_2026-10-31.csv",
+   "format": "csv",
+   "bytes": 63507,
+   "rows": 1675,
+   "source": "a regional agricultural weather station's daily record",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cis_water_accounts_2026-11-02.csv",
+   "format": "csv",
+   "bytes": 690737,
+   "rows": 7124,
+   "source": "the billing system's account master as at the export date",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cis_water_bills_2022-06_to_2026-10.csv",
+   "format": "csv",
+   "bytes": 42402056,
+   "rows": 276883,
+   "source": "the billing system's bill export, every water bill issued June 2022 to October 2026",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "city_facility_meter_reads_2025-09_2026-10.csv",
+   "format": "csv",
+   "bytes": 11047,
+   "rows": 213,
+   "source": "the read log of the City's own facility meters",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "city_facility_meters_2026-10-30.csv",
+   "format": "csv",
+   "bytes": 1467,
+   "rows": 15,
+   "source": "the meter list of the City's own facility services",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "conservation_rebates_2022-2026.csv",
+   "format": "csv",
+   "bytes": 97772,
+   "rows": 884,
+   "source": "the conservation program's rebate register",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "corvane_bws_monthly_activity_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 6325,
+   "rows": 35,
+   "source": "the fill station vendor's monthly activity report",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "fill_station_transactions_2026-01-01_2026-10-31.csv",
+   "format": "csv",
+   "bytes": 243705,
+   "rows": 1943,
+   "source": "the bulk fill station controller's card transaction export, January to October 2026",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "meter_shop_completed_work_orders_2025-2026.xlsx",
+   "format": "xlsx",
+   "bytes": 17844,
+   "rows": 162,
+   "source": "the meter shop's completed work orders, 2025 and 2026",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "state_pws_water_use_2025.xlsx",
+   "format": "xlsx",
+   "bytes": 7467,
+   "rows": 44,
+   "source": "the state water use program's 2025 public water system table for the region",
+   "date": "2026-11-03",
+   "license": "CC0 (original work, constructed for this task)"
+  }
+ ]
+}

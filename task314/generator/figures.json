@@ -1,0 +1,128 @@
+{
+ "accounts": 4341,
+ "ask": {
+  "facilities_af": {
+   "August": 31.2,
+   "July": 29.7,
+   "June": 22.6,
+   "September": 23.7
+  },
+  "fill_kgal": {
+   "August": 630,
+   "July": 717,
+   "June": 678,
+   "September": 682
+  },
+  "fills": {
+   "August": 229,
+   "July": 258,
+   "June": 244,
+   "September": 240
+  }
+ },
+ "ask_unrounded": {
+  "facilities_af": {
+   "August": 31.2138,
+   "July": 29.6927,
+   "June": 22.5644,
+   "September": 23.7113
+  },
+  "fill_kgal": {
+   "August": 629.773,
+   "July": 717.127,
+   "June": 677.943,
+   "September": 682.17
+  }
+ },
+ "baseline_af": 772.1,
+ "baseline_af_nearest_10": 770,
+ "call": "Option C, drought surcharge",
+ "ccf_gallons": 748.052,
+ "elasticity": -0.28,
+ "elasticity_4dp": -0.2798,
+ "elasticity_accounts": {
+  "fenwick_mesa": 1247,
+  "rest_of_city": 2739
+ },
+ "elasticity_band": [
+  -0.27,
+  -0.32
+ ],
+ "fenwick_mesa_price_change_pct": 18.5,
+ "fenwick_mesa_use_change_pct": -4.6,
+ "fenwick_mesa_use_fall_pct": 4.6,
+ "fm_charge_usd": 14.0,
+ "gap_af": 9.9,
+ "gap_af_nearest_10": 10,
+ "redesign_marginal_price_elasticity": -0.12,
+ "redesign_marginal_price_elasticity_4dp": -0.1202,
+ "rungs": {
+  "rung0_mp_literature": {
+   "elasticity": -0.4,
+   "savings": {
+    "A": 50.6,
+    "B": 26.0,
+    "C": 0.0
+   },
+   "winner": "A"
+  },
+  "rung1_mp_own": {
+   "elasticity": -0.12,
+   "savings": {
+    "A": 15.9,
+    "B": 7.9,
+    "C": 0.0
+   },
+   "winner": "A"
+  },
+  "rung2_vap_own": {
+   "elasticity": -0.4,
+   "savings": {
+    "A": 9.5,
+    "B": 37.0,
+    "C": 0.0
+   },
+   "winner": "B"
+  },
+  "rung3_ap_fenwick": {
+   "elasticity": -0.28,
+   "savings": {
+    "A": 7.9,
+    "B": 19.0,
+    "C": 28.9
+   },
+   "winner": "C"
+  }
+ },
+ "runner_up": "Option B, drought volume charge",
+ "saving_af": {
+  "A": 7.9,
+  "B": 19.0,
+  "C": 28.9
+ },
+ "saving_af_by_month": {
+  "A": {
+   "August": 3.1,
+   "July": 4.1,
+   "June": 0.5,
+   "September": 0.2
+  },
+  "B": {
+   "August": 5.1,
+   "July": 5.3,
+   "June": 4.3,
+   "September": 4.2
+  },
+  "C": {
+   "August": 7.3,
+   "July": 7.2,
+   "June": 7.2,
+   "September": 7.2
+  }
+ },
+ "saving_af_nearest_10": {
+  "A": 10,
+  "B": 20,
+  "C": 30
+ }
+}
