@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
+  "answer": "missed: the base building KPI was 18.5 kg CO2e per m2 against the 17.6 target, 0.9 kg over (1,915 MWh, 396.5 t CO2e)",
+  "answer_source": "golden/pellow_house_2026_kpi_report.xlsx (KPI 2026 sheet) and golden/pellow_house_2026_kpi_letter.pdf; generator/figures.json call",
   "gap": [
     "objective"
   ],
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "With the settlement data and the BMS registers conformed and the loan's KPI schedule applied, a strong analyst subtracts every meter the register lists as a tenancy supply from the building's import and files about 16 kg CO2e per square metre, inside the 17.6 kg target, because nothing asks whether one tenancy meter sits inside another.",
+  "analyst_test": "With the settlement data and the BMS registers conformed and the loan's KPI schedule applied, a strong analyst subtracts every meter the register lists as a tenancy supply from the building's import and files 15.9 kg CO2e per square metre, inside the 17.6 kg target, because nothing asks whether one tenancy meter sits inside another.",
   "domain_test": "The deciding quantity is the base building's electricity, worked the way an energy auditor works a sub-metered building: the building's import less each tenancy's supply, each supply counted at the point it leaves the landlord's switchboard, with the metering hierarchy read from the interval data (a sub-meter's half-hours inside its parent's, both at zero when the parent supply was isolated).",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own: the tenancy supply population for a base building residual identified from the meters' own half-hourly data, nested sub-meters counted once inside their parent supply",
@@ -47,7 +47,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "bms_energy_meter_registers_2026.csv",
-    "rows": 0,
+    "rows": 281585,
     "entity": "one meter's cumulative register at one half-hour",
     "grain": "meter x half-hour",
     "source": "synthetic"
@@ -79,7 +79,7 @@
   "question_form": "whether",
   "driver": "A total is turned into a remainder by subtracting the parts metered below it, but some metered parts sit inside other metered parts, so subtracting every listed part takes the nested ones out twice; the list holds every part at one level, and only the parts' own time series, each nested part contained in its parent and falling to zero with it, show the hierarchy.",
   "driver_concrete": "The base building's electricity is the building's import less each tenancy's supply; three tenant comms-room meters sit inside their tenancies' main meters, so subtracting every tenancy meter the register lists takes those rooms out twice and puts the base building under the loan's target, while the half-hourly registers (each room inside its tenancy's supply, both at zero when the June shutdown isolated that supply) show the nesting; the roof licensee's equipment room, named like a comms room, is a supply of its own.",
-  "stump": "The default path subtracts every tenancy meter in the register from the building's import and files about 16 kg CO2e per square metre for 2026, inside the loan's 17.6 kg target; three of those meters measure comms rooms inside other tenancies' supplies, so the base building's intensity is about 18.4 kg and the target was missed.",
+  "stump": "The default path subtracts every tenancy meter in the register from the building's import and files 15.9 kg CO2e per square metre for 2026, inside the loan's 17.6 kg target; three of those meters measure comms rooms inside their occupiers' own supply meters, so the base building's intensity is 18.5 kg and the target was missed by 0.9.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -147,6 +147,6 @@
       "deliverable set": "csv+pdf+xlsx"
     }
   ],
-  "notes": "architecture 3 re-root 2026-11-04 after architecture 2 died at the stage-4 determinism judge (external dependency: its golden needed outside method knowledge no shipped file carried). Designed to that lesson: the KPI schedule files the WHAT (the import less each tenancy's supply, metered at the supply), its literal reading is the golden once the hierarchy is known, and the hierarchy is forced by the building's own half-hourly data (containment all year and the June shutdown's isolations), with no outside constant in the decisive step.",
+  "notes": "architecture 3 re-root 2026-11-04 after architecture 2 died at the stage-4 determinism judge (external dependency: its golden needed outside method knowledge no shipped file carried). Designed to that lesson: the KPI schedule files the WHAT (the import less each tenancy's supply, metered at the supply), its literal reading is the golden once the hierarchy is known, and the hierarchy is forced by the building's own half-hourly data (containment all year and the June shutdown's isolations), with no outside constant in the decisive step. Stage 3 closed 2026-11-04 on world seed 4613: checks.py 69 of 69, verify, two byte-identical builds, figures_check 61 of 61, precut 61 checks 0 FAIL, leak.py REVIEW (no LEAK); the careful route keeps none of the 16 ask figures (pair ceiling 26.0 by generator/ceiling.py); paused at the stage-4 hand-off for the leak reader and the determinism judge.",
   "registered": "2026-11-04T05:38:59Z"
 }

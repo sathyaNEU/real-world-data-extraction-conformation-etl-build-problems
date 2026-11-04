@@ -1,0 +1,65 @@
+{
+ "base_building_mwh_month": {
+  "Apr": 141,
+  "Aug": 174,
+  "Dec": 154,
+  "Feb": 144,
+  "Jan": 158,
+  "Jul": 190,
+  "Jun": 176,
+  "Mar": 156,
+  "May": 150,
+  "Nov": 152,
+  "Oct": 153,
+  "Sep": 166
+ },
+ "call": {
+  "kpi_kg_m2": 18.5,
+  "margin_kg_m2": 0.9,
+  "missed": true,
+  "target_kg_m2": 17.6
+ },
+ "components": {
+  "base_building_mwh": 1915,
+  "import_mwh": 3477,
+  "nested_rooms_mwh": 268,
+  "scope2_t": 396.5,
+  "tenancy_supplies_mwh": 1562
+ },
+ "constants": {
+  "diesel_kg_per_l": 2.6594,
+  "factor_kg_per_kwh": 0.20705,
+  "gwp_r134a": 1430,
+  "nla_m2": 21460,
+  "target_kg_m2": 17.6,
+  "wh_per_kwh": 1000
+ },
+ "diesel_kg_co2e": {
+  "Q1": 1516,
+  "Q2": 843,
+  "Q3": 846,
+  "Q4": 1191
+ },
+ "diesel_l": {
+  "Q1": 570,
+  "Q2": 317,
+  "Q3": 318,
+  "Q4": 448
+ },
+ "refrigerant_kg": {
+  "CH-1": 10.8,
+  "CH-2": 20.7,
+  "CH-3": 14.8,
+  "CH-4": 20.5
+ },
+ "refrigerant_kg_co2e": {
+  "CH-1": 15444,
+  "CH-2": 29601,
+  "CH-3": 21164,
+  "CH-4": 29315
+ },
+ "rungs_kpi_kg_m2": {
+  "all": 15.9,
+  "names": 19.8
+ }
+}

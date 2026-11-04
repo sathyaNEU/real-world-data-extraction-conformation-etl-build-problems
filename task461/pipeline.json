@@ -1,33 +1,35 @@
 {
  "task": "task461",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-04",
  "architecture": 3,
- "stump": "The default path subtracts every tenancy meter in the register from the building's import and files about 15.8 kg CO2e per square metre for 2026, inside the loan's 17.6 kg target; three of those meters measure comms rooms inside their occupiers' own supply meters, so the base building's intensity is about 18.3 kg, over the target.",
+ "stump": "The default path subtracts every tenancy meter in the register from the building's import and files 15.9 kg CO2e per square metre for 2026, inside the loan's 17.6 kg target; three of those meters measure comms rooms that sit inside their occupiers' own supply meters, so the default takes them out twice, and the base building's intensity is 18.5 kg, over the target by 0.9.",
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-04",
+  "result": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-04, no LEAK (each REVIEW answered in the design note's Leak review)",
+  "reader": "pending: the orchestrating session runs it at stage 4"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-11-04 against the batch branch at f4dcddb (repeat.gate_g and repeat.decision against task476 v3, answered in the note), no BLOCK",
+  "nearest": "task471 v3 lineage and task270 v4 lineage at 0.06 (driver)",
+  "surface": "exit 0 (no BLOCK); 5 pairs promoted for the author's adjudication: task459, task460, task462 and task478 on the shared physical-environmental-sciences x etl pairing, task477 on surface similarity"
  },
  "judge": {
   "verdict": "",
-  "disposition": "",
+  "disposition": "pending: the orchestrating session runs it at stage 4",
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design sections, then the generator (stage 3)",
+ "resume": "stage 4: the orchestrating session runs the leak reader and the determinism judge on prompt.txt and target.zip (sha256 686519e805067906d17f195fe3a964f49732590b216357a077303e06fc2ab2d5); every finding is fixed in task461/generator in one pass, the pack rebuilt with `python3 task461/generator/build.py` (generator checks, verify, a second byte-identical build, target.zip cut last), and the free gates re-run (precut.py, voice-check.py, figures_check.py, leak.py --asof 2027-01-15, guard.py heart and surface after a pull) before the ship the orchestrator calls",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -49,5 +51,20 @@
   "date": "2026-11-04",
   "carded": "office tower base building residual with nested tenancy sub-meters, the hierarchy forced by the half-hourly data",
   "guard_check": "WARN (repeat.gate_g and repeat.decision against task476 v3), no BLOCK"
- }
+ },
+ "call": "report the 2026 KPI as missed: 18.5 kg CO2e per m2 against the 17.6 target, 0.9 kg over (1,915 MWh, 396.5 t)",
+ "default_path_answer": "15.9 kg CO2e per m2, inside the 17.6 target (every tenancy meter in the register subtracted)",
+ "as_of": "2027-01-15",
+ "world_seed": 4613,
+ "gates": {
+  "generator_checks": "69 of 69 (python3 task461/generator/build.py)",
+  "verify": "base building by month and year, the KPI, gas oil by quarter, refrigerant by chiller recomputed on the verifier's own path; every format read back",
+  "byte_identical": "two full builds byte-identical (13 target files, 2 goldens, metadata.json, submission.md, figures.json)",
+  "figures_check": "61 figures in blocks 1 to 4, 0 absent",
+  "voice_check": "PASS (985 characters)",
+  "input_gates": "13 files, 3 formats (csv, pdf, xlsx), the BMS export 281,585 rows, 2 distractors",
+  "realism": "checks.py realism sweep green; scrub audit clean (pack 2009 to 2027-01-15, goldens January 2027); every PDF read by pdfplumber and strict pypdf",
+  "ceiling": "generator/ceiling.py: the careful route keeps 0 of 16 ask figures, pair ceiling 26.0, mirror 0.0"
+ },
+ "target_zip_sha256": "686519e805067906d17f195fe3a964f49732590b216357a077303e06fc2ab2d5"
 }

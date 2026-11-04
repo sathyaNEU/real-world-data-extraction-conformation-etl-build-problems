@@ -1,0 +1,167 @@
+{
+ "task": "task461",
+ "architecture": 3,
+ "title": "Whether the base building of Wexmoor Office Trust's Pellow House met its 2026 Scope 2 emissions intensity target under the trust's sustainability-linked loan with Corvane Bank, and by how much, with the building's Scope 1 generator and refrigerant lines",
+ "domain": "Physical & Environmental Sciences",
+ "subdomain": "emissions-inventory",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "other: the base building's electricity by month and for the year, its Scope 2 emissions and intensity against the target, the generator's gas oil by quarter and each chiller's refrigerant with their emissions, in a KPI workbook with a covering letter and chart",
+ "as_of": "2027-01-15",
+ "deliverables": [
+  "pellow_house_2026_kpi_report.xlsx",
+  "pellow_house_2026_kpi_letter.pdf"
+ ],
+ "distractor_files": [
+  "met_wexmoor_daily_2026.csv",
+  "pellow_house_epc_2024.pdf"
+ ],
+ "stated_inputs": [
+  17.6,
+  21460,
+  0.20705,
+  2.6594,
+  1430
+ ],
+ "field_terms": [
+  "generator"
+ ],
+ "input_gates": {
+  "files": 13,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "bms_energy_meter_registers_2026.csv",
+  "largest_file_rows": 281585
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task461/generator/build.py (seeded, deterministic) in the layouts of an electricity supplier's half-hourly data, a building management system's meter export, meter and tenancy registers, generator dips, dockets and controller events, an F-gas log, a refrigeration contractor's recovery record, weather observations, a facility agreement schedule and an energy performance certificate; the trust, the building, the bank, the occupiers, the contractors, the city and the people are fictional.",
+   "date": "2027-01-15",
+   "license": "CC0 (original work)"
+  }
+ ],
+ "created": "2027-01-15",
+ "generator": "task461/generator/build.py",
+ "files": [
+  {
+   "path": "bms_energy_meter_registers_2026.csv",
+   "format": "csv",
+   "bytes": 10715310,
+   "rows": 281585,
+   "source": "Constructed: the building management system's export of its energy meters' cumulative registers, half-hourly",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "calbrook_recovery_record_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 6917,
+   "rows": null,
+   "source": "Constructed: the refrigeration contractor's refrigerant recovery record for the site, 2026",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "corvane_rcf_schedule9_sustainability_kpis.pdf",
+   "format": "pdf",
+   "bytes": 63722,
+   "rows": null,
+   "source": "Constructed: Schedule 9 (sustainability performance targets and KPI reporting) of the facility agreement",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "fgas_log_chillers_2026.csv",
+   "format": "csv",
+   "bytes": 2770,
+   "rows": 28,
+   "source": "Constructed: the facilities team's F-gas log for the four chillers, 2026",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "gas_oil_delivery_dockets_2026.csv",
+   "format": "csv",
+   "bytes": 190,
+   "rows": 2,
+   "source": "Constructed: the fuel supplier's delivery dockets for the generator day tank, 2026",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "generator_controller_events_2026.csv",
+   "format": "csv",
+   "bytes": 9261,
+   "rows": 174,
+   "source": "Constructed: the standby generator controller's event log, 2026",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "generator_day_tank_calibration.xlsx",
+   "format": "xlsx",
+   "bytes": 24298,
+   "rows": null,
+   "source": "Constructed: the generator day tank's calibration chart",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "generator_tank_dips_2026.csv",
+   "format": "csv",
+   "bytes": 1620,
+   "rows": 54,
+   "source": "Constructed: the facilities team's weekly dips of the generator day tank",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "met_wexmoor_daily_2026.csv",
+   "format": "csv",
+   "bytes": 9209,
+   "rows": 365,
+   "source": "Constructed: daily weather observations at the city's weather station, 2026",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "pellow_house_epc_2024.pdf",
+   "format": "pdf",
+   "bytes": 62942,
+   "rows": null,
+   "source": "Constructed: the building's 2024 non-domestic energy performance certificate",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "pellow_house_meter_register.xlsx",
+   "format": "xlsx",
+   "bytes": 7581,
+   "rows": null,
+   "source": "Constructed: the building's register of BMS energy meters (January 2027)",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "pellow_house_tenancy_schedule_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 7101,
+   "rows": null,
+   "source": "Constructed: the building's tenancy schedule at 31 December 2026",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "supplier_hh_import_1600004417286_2026.csv",
+   "format": "csv",
+   "bytes": 645015,
+   "rows": 17520,
+   "source": "Constructed: the electricity supplier's half-hourly import data for the building's revenue meter, 2026",
+   "date": "2027-01-15",
+   "license": "CC0 (original work, constructed for this task)"
+  }
+ ]
+}
