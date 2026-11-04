@@ -44,7 +44,7 @@
     "SIMD 2020 deciles from home postcodes, pupils who moved mid-year carrying two",
     "a support base log keyed by teacher entry and base entry, so a removal can appear twice",
     "timetables in two week structures (33 periods of 50 minutes against the asymmetric week's periods)",
-    "staffing by term with job-shares and two shared posts across schools"
+    "staffing by term with job-share holders on their own days and codes, three teachers renamed over Christmas (previous surnames on the establishment), three posts changing holder on the eve of the session while the autumn code sheet still names the leaver, and two shared posts across schools"
   ],
   "stakeholder_role": "the council education service's performance and improvement lead, who must tell the 2027-28 budget which of the 2025-26 changes to reverse",
   "role_family": "research_desk",
@@ -83,6 +83,8 @@
   "stump": "A competent analyst models each pupil's June score on P7 attainment, deprivation, school and class, reads each change's cost off the pupils and units it reached, finds the framework's rewritten units down and homework completion and review volume up on the new platform, and books the fall to the new framework, because they never set each pupil's own first-homework results against that pupil's June items unit by unit, where the units each pupil got most wrong fell several points further than the rest once review stopped following their errors.",
   "mechanism_source": "design_note",
   "differentiation": {
+    "task400": "task400 separates a device update from the people it warns by comparing updated with not-yet-updated devices inside a staggered rollout (a mine's vehicle interactions, a pick among candidates); here nothing is staggered: the framework and the platform switch reach every pupil on the same day, so no rollout or reach comparison exists, and the separation is each learner's own components against that learner's first-practice errors across two sessions.",
+    "task100": "task100 shares only the rounding sentence's form (figures 'are to one decimal place'), a surface promotion on prompt wording; its call is a designation set of schools scored on pupils still to come, here a single named change booked within each learner, and the sentence carries no device in either build.",
     "task403": "task403 reads each trialist's remaining runway, its own viewing set against a release calendar at the day-7 decision; here nothing is timed against a calendar: the decisive quantity is a contrast within each learner between the components it first got wrong and the rest, which a support system either followed or did not.",
     "task402": "task402 pairs each failure with the same unit's restoration minutes before; here no event is paired with an earlier event: each learner's components are compared with one another across two systems' records of the same content.",
     "task399": "task399 reads whether an advocate was in the room when each case was called; here no actor's presence is read: the learner is always present and the quantity is what its practice returned to.",

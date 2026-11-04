@@ -57,9 +57,9 @@
  "call": "B",
  "ceiling": {
   "classes|cracker": 2,
-  "classes|full_includer": 2,
+  "classes|full_includer": 5,
   "classes|names_exact": 1,
-  "classes|no_repair": 0,
+  "classes|no_repair": 4,
   "lessons|cracker": 1,
   "lessons|cracker_base_scope": 1,
   "lessons|first_period": 0,
@@ -93,6 +93,7 @@
    "share": 35.85630366018979
   }
  },
+ "mirror": 6,
  "pair": {
   "careful": {
    "C": 55.3125,
@@ -102,14 +103,14 @@
    "pair": 38.8125
   },
   "full_includer": {
-   "C": 55.3125,
-   "Lc": 0.1875,
-   "Ls": 0.1875,
-   "S": 22.3125,
-   "pair": 38.8125
+   "C": 65.625,
+   "Lc": 0.375,
+   "Ls": 0.375,
+   "S": 32.625,
+   "pair": 49.125
   }
  },
- "pair_both_on_call": 55.3125,
+ "pair_both_on_call": 65.625,
  "paper": {
   "max_marks": 60,
   "secure_mark": 36

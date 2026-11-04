@@ -35,24 +35,34 @@
     "date": "2026-11-04"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (register carries the changes own names; school names beside numbers in six data files, no ranking)",
-    "reader": "round 1 clean on the main call (no decisive-step sentence, no ranking file, analytical choice); realism tells for the fix pass",
-    "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/briefs/task401_leak_reader_brief.md",
-    "reader_copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/leak-task401/"
+    "leak_py": "REVIEW, no LEAK (run with --asof 2026-06-15, dates clean; the register carries the changes own names; school names beside numbers in six data files, no ranking), same categories as round 1",
+    "reader": "round 1 clean on the main call (no decisive-step sentence, no ranking file, analytical choice); its realism tells fixed in the fix pass; round 2 briefed (a document changed)",
+    "reader_brief_r1": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/briefs/task401_leak_reader_brief.md",
+    "reader_copy_r1": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/leak-task401/",
+    "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/briefs/task401_leak_reader_brief_r2.md",
+    "reader_copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/leak-task401-r2/",
+    "reader_prompt_file": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/leak-task401-r2/BRIEF.md"
   },
   "duplicate_check": {
-    "heart": "exit 0, WARN only (strategy_risk, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.question_form); nearest 0.06 task150 ledger row",
-    "surface": "exit 0, no promoted pair; persona in pack Aimee Williams (the card persona)",
-    "sibling_cards": "task210, task402, task403 read from their branches for the run, restored after"
+    "heart": "exit 0, WARN only (strategy_risk, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.question_form); nearest driver 0.07 task403",
+    "surface": "exit 0; 7 pairs promoted for the author's adjudication (task400 and task402 back to back on the same decisive gap, task399 two apart, task100 a shared rounding-sentence form, task84, task482 and task65 the same-driver signature), identical on the round-1 pack in today's corpus, so not this pass; task400 and task100 answered on the card, the other five already were; persona in pack Aimee Williams",
+    "sibling_cards": "no batch4 card missing from the tree; task402 and task403 here are newer than their branches, task210 equal to its branch; nothing copied in"
   },
   "judge": {
-    "status": "not yet run",
-    "brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/briefs/task401_determinism_judge_brief.md",
-    "copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/determinism-check-task401-a6r1/",
-    "graded_blocks": "graded_blocks.md, opened only after derivation.md"
+    "round1": {
+      "verdict": "NOT_DETERMINISTIC",
+      "disposition": "SEND_BACK (read against the gate table: Gate C on the classes ask alone; main call forced, F strong, G decomposition_attribution analytical_non_defect, H analytical), an ask-layer repair that spends no architecture",
+      "report": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/determinism-check-task401-a6r1/verdict.md"
+    },
+    "status": "round 2 briefed, not yet run",
+    "brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/briefs/task401_determinism_judge_brief_r2.md",
+    "copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/determinism-check-task401-a6r2/",
+    "prompt_file": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/determinism-check-task401-a6r2/BRIEF.md",
+    "graded_blocks": "graded_blocks.md and round1_findings.md, opened only after derivation.md",
+    "rule": "round 2 must return DETERMINISTIC with APPROVE, or a FIX_NOW confined to wording the parent can close; otherwise architecture 6 is spent"
   },
   "returned": [],
-  "resume": "Stage 4 round 1 running. Before the judge: the two June shares were moved from one decimal to whole per cents (42 and 36; at one decimal they sat 0.0037 and 0.0063 from a rounding edge), with bins asserts in checks.py and the note's Closure Bins line; target.zip unchanged (e002e59b...). Leak reader round 1 done, clean on the main call (answers in the build scratch leak-task401/reader_answers.md; realism tells: survey response counts equal across statements, regular post refs). Determinism judge round 1 running on determinism-check-task401-a6r1/ (verdict.md). Next: collect the verdict, fix every finding from both in one generator pass (the realism tells included), re-judge once on FIX_NOW and re-read if a document or the prompt changed; on APPROVE re-run every gate on the final cut and ship.",
+  "resume": "Stage 4 round 2 running. The round-1 fix pass is done and committed: the classes ask's Gate C fork is closed in the world (each job-share holder on their own days and code, Previous_Surname on the establishment, the three summer leavers listed with their last day 15/08/2025), its device re-sited onto those leavers (full includer 6 of 16, pair 49.1), realism fixed (post references, survey item nonresponse, sign-in reasons); no graded figure moved; every free gate green on target.zip 1875a727. Next: the parent spawns the judge (determinism-check-task401-a6r2/BRIEF.md) and the leak reader (leak-task401-r2/BRIEF.md) together; on DETERMINISTIC with APPROVE (or a FIX_NOW confined to wording) and a clean reader, re-run every gate on the final cut and ship; otherwise architecture 6 is spent and the slot re-roots.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -65,20 +75,67 @@
     "check_after_register": "WARN after register (2026-11-04): three_rules.strategy_risk, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.question_form, each answered in the design note's Draw; no BLOCK; nearest driver task403 at 0.07; shell which | its | csv+docx (provisional prompt)"
   },
   "asks": {
-    "measured_by": "generator/ceiling.py on the cut pack",
-    "full_includer": "3 of 16 (lessons 1 of 8, classes 2 of 8)",
+    "measured_by": "generator/ceiling.py on the cut pack (target.zip 1875a727)",
+    "full_includer": "6 of 16 (lessons 1 of 8, classes 5 of 8), at the two-fifths line of 6.4",
     "cracker": "lessons 1 of 8 miss, classes 2 of 8 miss",
-    "no_repair": "0 of 8 and 0 of 8",
-    "mirror": "2 of 16 (12.5 per cent)",
-    "pair_one_on_one_off": 38.8,
-    "pair_both_on_call": 55.3
+    "no_repair": "lessons 0 of 8, classes 4 of 8",
+    "mirror": "6 of 16 (37.5 per cent; the most-keeping wrong route on each ask)",
+    "pair_one_on_one_off": 49.1,
+    "pair_both_on_call": 65.6,
+    "classes_device": "D7 re-sited: three summer leavers (last day 15/08/2025) still named on the autumn code sheet; the hand-over reading adds 4 to 6 classes at Glenwhinnie, Kilbraith and Muirlees",
+    "literal_vs_golden_by_school": {
+      "Ardcorrie Academy": [
+        6,
+        6
+      ],
+      "Balmorran High School": [
+        5,
+        5
+      ],
+      "Glenwhinnie Academy": [
+        9,
+        9
+      ],
+      "Kilbraith Academy": [
+        7,
+        7
+      ],
+      "Lochbrannie High School": [
+        3,
+        3
+      ],
+      "Muirlees High School": [
+        12,
+        12
+      ],
+      "St Moluag's High School": [
+        3,
+        3
+      ],
+      "Torranbrae High School": [
+        5,
+        5
+      ]
+    }
   },
-  "gates_stage3": {
+  "gates_fix_pass": {
     "checks_py": "0 failed",
     "verify": "PASS",
-    "byte_identical_builds": "two, every artifact equal",
+    "byte_identical_builds": "two, all 22 artifacts equal",
     "figures_check": "PASS, 38 figures",
     "voice_check": "PASS",
-    "target_zip_sha256": "e002e59bb89ed608e6f21ac2fefc771d63f99f85bb25b71929c1598849deae9b"
+    "freeze_rubric": "exit 0: PASS, the main call, the stump and every frozen figure unchanged; ask files moved: none",
+    "freeze_determinism": "exit 1 on eight ceiling-measurement keys only (ceiling.classes|full_includer, ceiling.classes|no_repair, pair.full_includer C Lc Ls S pair, pair_both_on_call); exit 0 with those eight allowed by name (reason in the note's Ask sheet)",
+    "golden_realism": "invoked; golden docx and csv unchanged, container clean",
+    "reduce_house_fixes": "invoked; H1 clean, H13 post references fixed, H30 scope paragraph in the note",
+    "files_changed_in_pack": [
+      "maths_staffing_establishment_2025-26.xlsx",
+      "maths_timetable_2025-26.csv",
+      "pupil_homework_survey_2025_2026.xlsx",
+      "support_base_signins_2025-11-03_to_2026-05-29.csv",
+      "timetable_staff_codes_2025-26.xlsx"
+    ],
+    "target_zip_sha256": "1875a727ed33339d0dcba2b30af23b284a77ea08c72cc82fdf94769bcd8d76e7",
+    "target_zip_sha256_round1": "e002e59bb89ed608e6f21ac2fefc771d63f99f85bb25b71929c1598849deae9b"
   }
 }

@@ -54,9 +54,10 @@ def run():
           'the next bell); maths periods of the class the pupil was in that day on the timetable valid that day, each pupil and '
           'period once. The roll and Mathsbridge give the class from January; before it, a pupil\'s class is the June class '
           'most held by the pupils who were set the same review in every autumn week.',
-          '7. Teachers per class: timetable codes by term to names on the staff code sheets, names to holders on the establishment '
-          '(a job-share post\'s two holders both teach its classes; a leaver on the establishment and the starter after them are '
-          'two teachers; a name no 2025-26 holder carries is the same teacher as the code that took all its classes in January).', '']
+          '7. Teachers per class: each timetable row\'s code, term by term, to the name on that term\'s staff code sheet, and the '
+          'name to its holder on the establishment (first initial and surname or Previous_Surname); a holder is one of the '
+          'class\'s teachers where their time in post overlaps the row\'s days that term, so a holder whose time in post ended '
+          'before the session\'s first lesson taught none of it; a class counts where it had two or more.', '']
     L += ['## 4. Deliverable Answers', '', '### maths_change_review.docx', '',
           '1. Change to reverse: the homework platform switch, Mathsbridge in place of Corvella (18 August 2025).',
           '2. Why each other change cost fewer: the framework\'s rewritten units fell less than each pupil\'s weak units and are '

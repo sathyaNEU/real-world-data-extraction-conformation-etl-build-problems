@@ -312,47 +312,65 @@ def norm_staff(name):
     return parts[0][0].upper(), ' '.join(parts[1:]).upper()
 
 
-def ask_classes():
+def dmy(s):
+    return dt.datetime.strptime(s, '%d/%m/%Y').date() if s else None
+
+
+def staff_tables():
+    """the timetable, the two terms' staff code sheets and the establishment, with each term's dates read off the
+    timetable's own validity windows (the autumn rows end and the spring rows begin at the Christmas holiday)"""
     tt = rd('maths_timetable_2025-26.csv')
     xl = os.path.join(T, 'timetable_staff_codes_2025-26.xlsx')
     sheets = {'autumn': pd.read_excel(xl, sheet_name='Autumn 2025', dtype=str),
               'spring': pd.read_excel(xl, sheet_name='Spring 2026', dtype=str)}
-    est = pd.read_excel(os.path.join(T, 'maths_staffing_establishment_2025-26.xlsx'), dtype=str)
-    est['FTE'] = est['FTE'].astype(float)
+    est = pd.read_excel(os.path.join(T, 'maths_staffing_establishment_2025-26.xlsx'), dtype=str).fillna('')
     est['ini'] = est['Holder'].str.split(', ').str[1].str[0].str.upper()
     est['sur'] = est['Holder'].str.split(', ').str[0].str.upper()
-    est['open'] = est['In_Post_To'].fillna('') == ''
-    aut_cls, spr_cls = {}, {}
-    for _, r in tt.iterrows():
-        if r['Valid_From'] == '18/08/2025':
-            aut_cls.setdefault((r['School'], r['Staff']), set()).add(r['Class'])
-        if r['Valid_To'] == '26/06/2026':
-            spr_cls.setdefault((r['School'], r['Staff']), set()).add(r['Class'])
-    def person(school, phase, code):
-        nm = sheets[phase][(sheets[phase]['School'] == school) & (sheets[phase]['Code'] == code)]['Name'].iloc[0]
-        ini, sur = norm_staff(nm)
-        cand = est[est['School'].str.contains(school, regex=False) & (est['ini'] == ini) & (est['sur'] == sur)]
-        if len(cand) == 0 and phase == 'autumn':
-            # no holder under this name: the spring code that took over every one of its classes, on a post with no leaver
-            mine = aut_cls[(school, code)]
-            succ = [k for (sc, k), v in spr_cls.items() if sc == school and mine <= v]
-            assert len(succ) == 1, (school, code, nm, succ)
-            return person(school, 'spring', succ[0])
-        assert len(cand) == 1, (school, code, nm, len(cand))
-        r = cand.iloc[0]
-        mates = est[(est['Post_Ref'] == r['Post_Ref']) & (est['FTE'] < 1.0) & est['open']]
-        return set(mates['Holder']) | {r['Holder']} if r['FTE'] < 1.0 else {r['Holder']}
+    est['prev'] = est['Previous_Surname'].str.upper()
+    est['from'] = est['In_Post_From'].map(dmy)
+    est['to'] = est['In_Post_To'].map(dmy)
+    vf = sorted({dmy(x) for x in tt['Valid_From']})
+    vt = sorted({dmy(x) for x in tt['Valid_To']})
+    terms = {'autumn': (vf[0], vt[0]), 'spring': (vf[-1], vt[-1])}
+    return tt, sheets, est, terms
+
+
+def holders_named(est, sheets, school, term, code):
+    """the establishment rows of the person a term's code sheet names on a code: same first initial, and the surname
+    the holder carries or carried before (Previous_Surname)"""
+    sh = sheets[term]
+    nm = sh[(sh['School'] == school) & (sh['Code'] == code)]['Name'].iloc[0]
+    ini, sur = norm_staff(nm)
+    cand = est[est['School'].str.contains(school, regex=False) & (est['ini'] == ini) &
+               ((est['sur'] == sur) | (est['prev'] == sur))]
+    assert cand['Holder'].nunique() == 1, (school, term, code, nm, list(cand['Holder']))
+    return cand
+
+
+def class_teachers(in_post=True):
+    """each class's teachers in the session: every timetable row, for each term its validity runs through, the person
+    that term's code sheet names on the row's code; with in_post, only where that person held a post on a day of the
+    row's window in that term (a holder whose contract ended before the row's first lesson taught none of it)"""
+    tt, sheets, est, terms = staff_tables()
     out = {}
-    for (sch, cls), g in tt.groupby(['School', 'Class']):
-        ppl = set()
-        for _, r in g.iterrows():
-            phase = 'spring' if r['Valid_From'] == '06/01/2026' else 'autumn'
-            ppl |= person(sch, phase, r['Staff'])
-            if r['Valid_To'] == '26/06/2026' and r['Valid_From'] == '18/08/2025':
-                ppl |= person(sch, 'spring', r['Staff'])
-        out.setdefault(sch, 0)
-        if len(ppl) > 1:
-            out[sch] += 1
+    for _, r in tt.iterrows():
+        f, t = dmy(r['Valid_From']), dmy(r['Valid_To'])
+        ppl = out.setdefault((r['School'], r['Class']), set())
+        for term, (a, b) in terms.items():
+            lo, hi = max(f, a), min(t, b)
+            if lo > hi:
+                continue
+            cand = holders_named(est, sheets, r['School'], term, r['Staff'])
+            if in_post:
+                cand = cand[(cand['from'] <= hi) & cand['to'].map(lambda x: x is None or x >= lo)]
+            ppl |= set(cand['Holder'])
+    return out
+
+
+def ask_classes():
+    out = {}
+    for (sch, cls), ppl in sorted(class_teachers().items()):
+        out[sch] = out.get(sch, 0) + int(len(ppl) > 1)
     return out
 
 

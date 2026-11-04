@@ -22,6 +22,19 @@ BASE = {'ARC': 'Ardcorrie Base', 'BAL': 'Balmorran Base', 'GLW': 'Glenwhinnie Ba
 SUBJECTS = ['English', 'Science', 'Social Subjects', 'French', 'Spanish', 'PE', 'Art and Design', 'Music', 'Technical',
             'Computing Science', 'RMPS', 'Drama', 'Home Economics', 'PSE', 'Business']
 REASONS = ['Disruption', 'Refusal to work', 'Dysregulated', 'Conflict with peer', 'Defiance', 'Disruption']
+# the kiosk's reason list as base staff use it: disruption most, a few rarely
+REASON_SHARES = [('Disruption', 0.31), ('Refusal to work', 0.19), ('Dysregulated', 0.14), ('Conflict with peer', 0.11),
+                 ('Defiance', 0.09), ('Unsafe behaviour', 0.06), ('Left class without permission', 0.05), ('Other', 0.05)]
+
+
+def reason(key):
+    u = St.hh(key, 7) / float(16 ** 7)
+    acc = 0.0
+    for name, share in REASON_SHARES:
+        acc += share
+        if u < acc:
+            return name
+    return REASON_SHARES[-1][0]
 END = dt.date(2026, 6, 26)
 STAMP = (2026, 6, 15, 9, 30, 0)
 OWNER = 'Aimee Williams'
@@ -300,27 +313,31 @@ def styled(fn, sn, fem, key):
 
 
 def staff_codes(st):
-    """every (school, post) code and person by phase; job-share posts carry one code; the shared posts from January"""
+    """every (school, post, holder) code and person by phase: a job-share post's two holders each carry their own
+    code; the shared posts from January"""
     rek = {s[0]: s[4] for s in Wd.SCHOOLS}
-    out = []  # (phase, school, code, forename, surname, fem, post)
+    out = []  # (phase, school, code, forename, surname, fem, post, holder)
     used = {c: set() for c in Wd.SCODES}
     for (c, post), code in sorted(st.old_code.items()):
-        p = st.people[(st.people['school'] == c) & (st.people['post'] == post)].iloc[0]
-        a = st.stale.get((c, post), dict(forename=p['forename'], surname=p['surname'], fem=bool(p['fem'])))
-        out.append(('autumn', c, code, a['forename'], a['surname'], bool(a['fem']), post))
-        if st.replaced.get(c) == post:
-            p = st.extra[c]
-            p = dict(forename=p['forename'], surname=p['surname'], fem=p['fem'])
-        else:
-            p = dict(forename=p['forename'], surname=st.renamed.get((c, post), p['surname']), fem=bool(p['fem']))
-        if rek[c]:
-            nc = (p['forename'][0] + p['surname'][:2]).upper()
-            while nc in used[c]:
-                nc = nc[:2] + chr(ord(nc[2]) + 1) if nc[2] < 'Z' else nc + '2'
-            used[c].add(nc)
-        else:
-            nc = code
-        out.append(('spring', c, nc, p['forename'], p['surname'], p['fem'], post))
+        hold = st.people[(st.people['school'] == c) & (st.people['post'] == post)]
+        for k in range(len(hold)):
+            p = hold.iloc[k]
+            kc = code if k == 0 else st.js_code_b[(c, post)]
+            a = st.stale.get((c, post), dict(forename=p['forename'], surname=p['surname'], fem=bool(p['fem'])))
+            out.append(('autumn', c, kc, a['forename'], a['surname'], bool(a['fem']), post, k))
+            if st.replaced.get(c) == post:
+                q = st.extra[c]
+                q = dict(forename=q['forename'], surname=q['surname'], fem=q['fem'])
+            else:
+                q = dict(forename=p['forename'], surname=st.renamed.get((c, post), p['surname']), fem=bool(p['fem']))
+            if rek[c]:
+                nc = (q['forename'][0] + q['surname'][:2]).upper()
+                while nc in used[c]:
+                    nc = nc[:2] + chr(ord(nc[2]) + 1) if nc[2] < 'Z' else nc + '2'
+                used[c].add(nc)
+            else:
+                nc = kc
+            out.append(('spring', c, nc, q['forename'], q['surname'], q['fem'], post, k))
     for key, pair in (('SH1', ('KIL', 'TOR')), ('SH2', ('GLW', 'MUI'))):
         p = st.extra[key]
         for c in pair:
@@ -331,21 +348,26 @@ def staff_codes(st):
                 used[c].add(nc)
             else:
                 nc = 'T%04d' % (St.hh(key + c, 6) % 9000 + 1000)
-            out.append(('spring', c, nc, p['forename'], p['surname'], p['fem'], key))
-    return pd.DataFrame(out, columns=['phase', 'school', 'code', 'forename', 'surname', 'fem', 'post'])
+            out.append(('spring', c, nc, p['forename'], p['surname'], p['fem'], key, 0))
+    return pd.DataFrame(out, columns=['phase', 'school', 'code', 'forename', 'surname', 'fem', 'post', 'holder'])
 
 
 def timetable(st, codes):
     slots = st.maths_slots()
     sl = {(r['school'], r['yg'], r['maths_class'], r['phase']): r['slots'] for _, r in slots.iterrows()}
-    cd = {(r['phase'], r['school'], r['post']): r['code'] for _, r in codes.iterrows()}
+    cd = {(r['phase'], r['school'], r['post'], r['holder']): r['code'] for _, r in codes.iterrows()}
+    nh = codes.groupby(['school', 'post'])['holder'].max().to_dict()
     shared = {'KIL': 'SH1', 'TOR': 'SH1', 'GLW': 'SH2', 'MUI': 'SH2'}
     split = set(st.split_classes)
+
+    def own(phase, c, post, d, p):
+        # a job-share post's period goes to the holder who works that day (staffing.js_holder)
+        return cd[(phase, c, post, St.js_holder(d, p) if nh[(c, post)] else 0)]
     rows = []
     for _, r in st.cls.iterrows():
         c, g, k, post = r['school'], r['yg'], r['maths_class'], r['post']
         room = 'M%d' % (St.hh(c + g + k, 4) % 7 + 1)
-        aut = [(d, p, cd[('autumn', c, post)]) for d, p in sl[(c, g, k, 'autumn')]]
+        aut = [(d, p, own('autumn', c, post, d, p)) for d, p in sl[(c, g, k, 'autumn')]]
         spr_slots = sl[(c, g, k, 'spring')]
         spr = []
         sh_pick = set()
@@ -353,7 +375,7 @@ def timetable(st, codes):
             order = sorted(range(4), key=lambda j: St.hh(c + g + k + str(j), 6))
             sh_pick = set(order[:2])
         for j, (d, p) in enumerate(spr_slots):
-            code = cd[('spring', c, shared[c])] if j in sh_pick else cd[('spring', c, post)]
+            code = cd[('spring', c, shared[c], 0)] if j in sh_pick else own('spring', c, post, d, p)
             spr.append((d, p, code))
         if aut == spr:
             for d, p, code in aut:
@@ -389,15 +411,38 @@ def staff_list(st, codes):
     write_xlsx(os.path.join(T, 'timetable_staff_codes_2025-26.xlsx'), sheets, '2025-08-14T08:55:00Z', '2026-01-08T16:21:00Z')
 
 
+def post_refs(st, c):
+    """HR post references for a school's mathematics posts: the school's establishment number and the post's own
+    number, which keeps gaps where posts were deleted or regraded over the years; the Principal Teacher's post carries
+    the lowest number and the rest are numbered in no particular order"""
+    est_no = dict((s[0], s[2][-3:]) for s in Wd.SCHOOLS)[c]
+    posts = sorted(st.people[st.people['school'] == c]['post'].unique())
+    pool = sorted(range(1, 13), key=lambda n: St.hh('%s%dpostno' % (c, n), 6))[:len(posts)]
+    nums = sorted(pool)
+    rest = sorted(posts[1:], key=lambda p: St.hh(c + p + 'order', 6))
+    out = {posts[0]: nums[0]}
+    out.update(dict(zip(rest, nums[1:])))
+    return {p: 'MA-%s-%02d' % (est_no, n) for p, n in out.items()}
+
+
 def establishment(st, rng):
     rows = []
     for c in Wd.SCODES:
         sub = st.people[st.people['school'] == c]
         posts = sorted(sub['post'].unique())
+        refs = post_refs(st, c)
         for n, post in enumerate(posts):
             title = 'Principal Teacher Mathematics' if n == 0 else 'Teacher of Mathematics'
             hold = sub[sub['post'] == post]
             fte = 1.0 / len(hold)
+            if (c, post) in st.stale:
+                # the holder until the summer: the contract ran to 15 August 2025, before the session's first day
+                a = st.stale[(c, post)]
+                a_start = dt.date(2009 + int(St.hh(a['forename'] + a['surname'], 5) % 13), 8,
+                                  1 + int(St.hh(a['surname'], 3) % 20))
+                rows.append(dict(Post_Ref=refs[post], School=NAME[c], Post_Title=title, FTE=1.0,
+                                 Holder=a['surname'].upper() + ', ' + a['forename'], Previous_Surname='',
+                                 In_Post_From=ddmmyyyy(a_start), In_Post_To=ddmmyyyy(St.LEFT_BEFORE)))
             for _, p in hold.iterrows():
                 start = dt.date(2008 + int(St.hh(p['forename'] + p['surname'], 5) % 17), 8, 1 + int(St.hh(p['surname'], 3) % 20))
                 if (c, post) in st.stale:
@@ -406,19 +451,24 @@ def establishment(st, rng):
                 if st.replaced.get(c) == post:
                     end = '19/12/2025'
                 sn = st.renamed.get((c, post), p['surname'])
-                rows.append(dict(Post_Ref='MA-%s-%02d' % (St.hh(c, 4) % 90 + 10, n + 1), School=NAME[c], Post_Title=title,
-                                 FTE=round(fte, 1), Holder=sn.upper() + ', ' + p['forename'],
+                prev = p['surname'].upper() if (c, post) in st.renamed else ''
+                rows.append(dict(Post_Ref=refs[post], School=NAME[c], Post_Title=title,
+                                 FTE=round(fte, 1), Holder=sn.upper() + ', ' + p['forename'], Previous_Surname=prev,
                                  In_Post_From=ddmmyyyy(start), In_Post_To=end))
             if st.replaced.get(c) == post:
                 e = st.extra[c]
-                rows.append(dict(Post_Ref='MA-%s-%02d' % (St.hh(c, 4) % 90 + 10, n + 1), School=NAME[c], Post_Title=title,
-                                 FTE=1.0, Holder=e['surname'].upper() + ', ' + e['forename'], In_Post_From='06/01/2026',
-                                 In_Post_To=''))
+                rows.append(dict(Post_Ref=refs[post], School=NAME[c], Post_Title=title,
+                                 FTE=1.0, Holder=e['surname'].upper() + ', ' + e['forename'], Previous_Surname='',
+                                 In_Post_From='06/01/2026', In_Post_To=''))
     for key, pair, ref in (('SH1', ('KIL', 'TOR'), 'MA-SH-01'), ('SH2', ('GLW', 'MUI'), 'MA-SH-02')):
         e = st.extra[key]
         rows.append(dict(Post_Ref=ref, School=NAME[pair[0]] + ' / ' + NAME[pair[1]], Post_Title='Teacher of Mathematics (shared)',
-                         FTE=1.0, Holder=e['surname'].upper() + ', ' + e['forename'], In_Post_From='06/01/2026', In_Post_To=''))
+                         FTE=1.0, Holder=e['surname'].upper() + ', ' + e['forename'], Previous_Surname='',
+                         In_Post_From='06/01/2026', In_Post_To=''))
     df = pd.DataFrame(rows)
+    order = {NAME[c]: i for i, c in enumerate(Wd.SCODES)}
+    df['_k'] = df['School'].map(order).fillna(len(order))
+    df = df.sort_values(['_k', 'Post_Ref'], kind='stable').drop(columns='_k').reset_index(drop=True)
     write_xlsx(os.path.join(T, 'maths_staffing_establishment_2025-26.xlsx'), [('Mathematics posts', df)],
                '2025-08-04T11:10:00Z', '2026-01-12T09:47:00Z')
     return df
@@ -465,7 +515,7 @@ def signins(st, rng):
             typed = nm.lower() if St.hh(e['scn'] + 'case', 3) % 5 == 0 else nm
             scn, yr = '', p['yg']
         stf = staff[base][St.hh(e['scn'] + str(d) + 's', 3) % len(staff[base])]
-        rea = REASONS[St.hh(e['scn'] + str(d) + 'r', 3) % len(REASONS)]
+        rea = reason(e['scn'] + str(d) + 'r')
         row = (BASE[base], d.strftime('%d/%m/%Y'), tin.strftime('%H:%M'), tout, scn, typed, yr, rea, stf)
         rows.append(row)
         if e['card'] and rng.random() < 0.02:
@@ -489,8 +539,9 @@ def signins(st, rng):
             scn, typed, ytyp = str(int(rng.integers(100000000, 199999999))), '', ''
         else:
             scn, typed, ytyp = '', (fk.first_name() + ' ' + fk.last_name()), yr
+        rng.integers(0, len(REASONS))        # the draw the old reason took, kept so the stream after it does not move
         rows.append((BASE[base], d.strftime('%d/%m/%Y'), tin, tout, scn, typed, ytyp,
-                     REASONS[int(rng.integers(0, len(REASONS)))], staff[base][int(rng.integers(0, len(staff[base])))]))
+                     reason('%s%s%s%d' % (base, d.isoformat(), tin, n)), staff[base][int(rng.integers(0, len(staff[base])))]))
     rows.sort(key=lambda r: (r[1][6:] + r[1][3:5] + r[1][:2], r[2], r[0]))
     df = pd.DataFrame(rows, columns=['Base', 'Date', 'Time_In', 'Time_Out', 'SCN', 'Name_Typed', 'Year_Typed',
                                      'Reason', 'Staff'])
@@ -520,14 +571,16 @@ def survey(w, rng):
              'I know where to get help with my maths homework', 'The homework website is easy to use',
              'I feel confident in maths']
     lift = [3.0, 4.0, 0.5, 6.0, -0.5]
+    skip = [0.012, 0.035, 0.05, 0.022, 0.065]   # pupils who left a statement blank (item nonresponse)
     rows = []
     for c in Wd.SCODES:
         for g in Wd.YG:
             n5, n6 = int(rng.integers(70, 160)), int(rng.integers(70, 160))
-            for it, lf in zip(items, lift):
+            for it, lf, sk in zip(items, lift, skip):
                 a = 58 + rng.normal(0, 6)
-                rows.append({'School': NAME[c], 'Stage': g, 'Statement': it, 'Responses 2025': n5,
-                             'Agree % 2025': round(a, 0), 'Responses 2026': n6,
+                r5, r6 = n5 - int(rng.binomial(n5, sk)), n6 - int(rng.binomial(n6, sk))
+                rows.append({'School': NAME[c], 'Stage': g, 'Statement': it, 'Responses 2025': r5,
+                             'Agree % 2025': round(a, 0), 'Responses 2026': r6,
                              'Agree % 2026': round(a + lf + rng.normal(0, 3), 0)})
     write_xlsx(os.path.join(T, 'pupil_homework_survey_2025_2026.xlsx'), [('Survey results', pd.DataFrame(rows))],
                '2026-04-02T10:15:00Z', '2026-04-20T15:03:00Z')
