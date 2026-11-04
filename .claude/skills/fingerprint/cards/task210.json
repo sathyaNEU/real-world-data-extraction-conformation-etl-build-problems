@@ -1,0 +1,94 @@
+{
+  "task": "task210",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Seed AD33's world (a data-centre battery's FCR-D offer) sits only in energy-systems-utilities/grid-reliability-outage-analysis, held by task402 inside the live window (ban.subdomain), so the draw moved to another client domain, world and dataset under the same objective and number (CLAUDE.md, A stuck build is unblocked).",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a limestone quarry's January haul allocation on a new extension road, held to the noise management plan's haulage share of the village noise limit and sized on the sound exposure each haul movement in view of the village monitor delivers",
+  "objective": "anomaly-detection",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G3",
+    "G13"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who aligns the clocks, drops the reprinted tickets and reads every condition correctly calibrates the haul movements' sound exposure at the village monitor on the whole monitoring record, or predicts it by the standard method from the trucks' declared sound power on the extension road, and allocates eight or more trucks, where only the movements that ran in view of the monitor carry the extension road's exposure and allow five.",
+  "domain_test": "The deciding quantity is the sound exposure one haul movement in line of sight delivers at the receptor, estimated by apportioning the monitor's measured sound energy among the movements by the route each one ran, which is the source-attribution work of environmental noise monitoring; with another field's nouns there is no energy summation, no screening by the pit face and no receptor, and the call stops reading.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:in-view-exposure-apportioned-by-route-state",
+  "layer1": [
+    "telematics fixes in UTC against the monitor's local clock across the 26 October change",
+    "telematics positions in WGS84 latitude and longitude against the site survey's British National Grid coordinates",
+    "the monitor's 15-minute records stamped at the period end",
+    "a field calibration adjustment on the monitor after the August check",
+    "reprinted weighbridge tickets",
+    "a telematics outage on one truck",
+    "declared sound power levels in a scanned plant register"
+  ],
+  "stakeholder_role": "quarry manager",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "adt_telematics_2026.parquet",
+    "rows": 500000,
+    "entity": "one truck position fix",
+    "grain": "truck x minute",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "England, a fictional limestone quarry and village in the north of England",
+    "currency": "GBP",
+    "org_type": "an aggregates company operating one limestone quarry",
+    "invented_names": [
+      "Ravensby Quarry",
+      "Calderwick Stone",
+      "Ulverthorpe"
+    ],
+    "people": [
+      "Harriet Kirk",
+      "Maurice Russell",
+      "Hollie Brown"
+    ]
+  },
+  "deliverables": [
+    "mp1_haul_intervals.csv",
+    "extension_scheme_note.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is the exposure one unit of an activity delivers at a receptor in the configuration the forward plan runs, and because the record mixes units that ran in that configuration with units screened from the receptor and nothing in the record says which ran where, an exposure calibrated on the whole record, or taken from the units' declared ratings, misstates it; only each unit's own position track read against a survey of the ground separates the two.",
+  "driver_concrete": "Each haul movement's sound exposure at the village monitor depends on whether it ran the north crest road in view of Ulverthorpe or the in-pit ramp and the west crest road behind the pit face and the bund, which no ticket records and only the trucks' GPS tracks against the site survey show; the January extension road runs in view, so its per-movement exposure is the in-view movements' one, which allows five trucks where the whole-record calibration allows sixteen or more and the declared-sound-power prediction eight.",
+  "stump": "A competent solver calibrates the haul movements' exposure at the village monitor on the whole monitoring record, or predicts it from the plant register's declared sound power, and allocates eight or more trucks to the January extension road; the step that lands them there is pooling movements screened in the pit with the movements that ran in view of the village.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task488": "task488 equates new test items to an established scale through the members each was given to (an ETL conformance of levels); this build apportions a monitor's sound energy among haul movements by the route each ran, a physical source attribution with no scale or calibration sample.",
+    "task122": "task122 v4 reads a discretionary aid's effect against working periods that hold more of one kind of unit (a composition confound on a causal comparison); this build has no intervention or comparison of arms, and its decisive state is each movement's line of sight to a receptor, read from position tracks against a survey."
+  },
+  "lineage": [],
+  "notes": "Moved from seed AD33's battery world (energy grid reliability, banned by task402's subdomain in the window). Screened and rejected before this card: rain-induced radon-progeny washout at a fence-line gamma network (the golden needs a fitted dynamic model; event routes land 6 to 12 nSv/h off), occupational blood lead (task181 shared-resource and task182 lagged-response abstractions), UPS battery thermal age and uptime counters (task139's wear clock), hydropeaking under a rating curve (task156's level from a separate record).",
+  "registered": "2026-11-04T07:48:47Z"
+}
