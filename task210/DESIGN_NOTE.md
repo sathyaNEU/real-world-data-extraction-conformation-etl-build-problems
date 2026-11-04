@@ -727,3 +727,37 @@ corrected world and re-sites ask A), so its contract does not match the repair a
   record, so the golden's own slate moved between 3 and 25 cells across seeds and its threshold sat inside the noise;
   repaired by the firm-braking flag (20 per 1,000 street passes), every pass of the record in the fit and a slate
   capped at four (`proto/g5.py`, `g6.py`, `screens_a2.py`).
+
+## Pre-ship check
+
+Stage 4 rounds 1 and 2 and ship, 2026-11-04, final cut target.zip 0d608249 (rebuilt on the merged branch in a clean
+copy and again in place, byte-identical across the zip and the goldens):
+
+- The 10/10 rules re-read against the built pack: the decisive step is still the low sun's computed position against
+  each section-direction's bearing at the winter pick's scheduled passes, a response estimated from the record and
+  projected to an unobserved season; analytical, and no shipped sentence names the sun or the step. The mess is still
+  Layer 1 only (UTC against Mountain time, reissued badges, AVL drop-outs, the yard sheets' pull-out cars, the late-keyed
+  defect cards, trailing-car duplicate records, depot tests).
+- Judge round 1 (order kept): NOT_DETERMINISTIC on the asks only (revenue service read two ways; the cards' day, the
+  weekday holidays and the period unfiled), labelled SEND_BACK and read against the gate table as an ask-layer repair:
+  the main call forced, Gate F high, Gate G forecasting and analytical_non_defect, Gate H analytical. Closed in the world
+  with the WHAT filed (the Ask repair section); the main call did not move.
+- Judge round 2 (order kept): DETERMINISTIC, APPROVE. Every committed answer reproduced by an independent route. Its
+  optional wording fix (the sun as the driver that moves between rows, the newly qualified class a transient
+  direction-neutral part, rates on logged passes) was applied to submission.md; target.zip did not change.
+- Known stump-power risk, ruled by the coordinator as for task211: both judges' blind derivations found the four slots
+  from sun geometry; both rated Gate F high or good, every easy route (the autumn rates, the pooled record, a glare
+  allowance carried forward) files a wrong slate, and the bar needs one of the top two responses stumped. The portal
+  is the only stump oracle; shipped with the risk named here and in the ledger row.
+- Leak reader rounds 1 and 2: no decisive-step sentence, no ranking or helper file, nothing reads as the answer, the
+  decisive step analytical (rounds and rulings in leak_check_report.md).
+- Coordinator's rulings on the flags:
+  - The ask's April, May and June applications are each 99: the record's own counts, asserted equal to the truth, kept.
+  - The full includer's misses are thin (ask A by 1 to 4 a month, ask B's Foundry brakes and doors by one card each);
+    the ceiling stays under two fifths and the pair under 60 both ways.
+  - Stale goldens from architecture 1 found in the main checkout's gitignored golden/ during the ship gates and removed
+    before the commit (the name screen had read the quarry's personas from them); golden/ now equals the clean build.
+- Gates re-run on the final cut: `checks.py` 197 of 197; `verify.py` PASS; two builds byte-identical; `figures_check.py`
+  38 figures, 0 absent; `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS; `leak.py --asof 2026-11-02`
+  REVIEW, 0 LEAK (the seven ruled lines); `guard.py heart` WARN, no BLOCK; `guard.py surface` exit 0, one promoted pair
+  (task102, answered on the card), no personas.

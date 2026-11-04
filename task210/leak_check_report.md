@@ -36,3 +36,35 @@ Stump terms swept: record, passes, sentence, excess, driver, default, golden, po
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+### Round 1 (stage 4, target.zip 1c38083e, one isolated reader at medium effort), and the main thread's rulings
+
+- Q1 none: the closest are SRM-07 5.1 (slots on the section-direction peaks with the highest expected rates) and 4.1
+  (the rate the pick's passes are expected to see at its scheduled times in normal weather), which file the selection
+  criterion and the estimand, not how the expected rate is built. Ruling: no decisive-step sentence.
+- Q2 none: the dashboard gives line-level monthly rates, no section-direction-peak ranking.
+- Q3 none outright; the adjacent-agency records read as ordinary distractors. Q4 none.
+- Q5 SRM-07 3.3 to 3.7 and 4.1 fix the unit, window, outcome and denominator; the expectation's estimation stays open.
+  Ruling: the estimand is filed and the method stays open where the data separate the candidates.
+- Q6 an analytical choice (how the autumn rise is attributed and projected to the winter pick). Ruling: rule 3 holds;
+  the judge's Gate H reads the same.
+- Q7 mild regularities (flat monthly event counts, the defect cards' entry hours). Ruling: kept, system output.
+- Q8 and Q9 the asks' terms (two-car applications, depot tests, revenue service, the card's day, holidays): carried to
+  the judge, whose round-1 Gate C findings on the same terms the fix pass closed in the world (SRM-07 6.2, the yard
+  sheets' times, the cards dated uniquely, the run sheets' timetable column, the asking sentence's WHAT).
+- REVIEW lines: harmless, as ruled in the design note's Leak sweep rulings.
+
+The fix pass changed the prompt and documents a figure reads, so round 2 reads again on target.zip 0d608249.
+
+### Round 2 (stage 4, target.zip 0d608249, one isolated reader at medium effort), and the main thread's rulings
+
+- Q1 none: SRM-07 5.1 and 4.1 as before, the criterion and the target, not the route. Ruling: no decisive-step sentence.
+- Q2 to Q4 none. Q5 the same filed WHAT; the projection stays open. Q6 an analytical choice. Ruling: rule 3 holds.
+- Q7 nothing conclusive (operator cards only on weekday-timetable days, read as the operating pattern).
+- Q8 and Q9: each term settled by SRM-07 3.4 and 6.2, the yard sheets' out and in times, the run sheets' timetable
+  column and the asking sentence; the reader's open points (an after-midnight pull-in carries no date, a month-end
+  application, the entry date read as the writing day) were resolved by the round-2 judge, which reproduced the seven
+  monthly applications and the six card counts exactly, the cards' writing day forced by each card's car and block.
+- Q10 the changed sentences and columns state WHAT counts and name no step of the main call. Ruling: harmless.

@@ -1,6 +1,6 @@
 {
  "task": "task210",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "human-factors-ergonomics/safety-incident-error-analysis",
  "objective": "anomaly-detection",
  "stage": 5,
@@ -8,7 +8,7 @@
  "updated": "2026-11-04",
  "seed": "AD33 (a data-centre battery's January FCR-D offer); its world became legal on the subdomain axis once task211 registered, and was set aside on screen 4 (every driver it could carry is one pairwise join and a per-cell rate); the build moved to Human Factors & Ergonomics: Ashcombe Regional Transit's streetcar, the four restricted-speed slots of the January and February 2027 weekday peaks",
  "stump": "The default path ends on F3-I AM, F4-O PM, J2-O AM and J3-O AM, the east-running morning and west-running evening cells with the record's highest rates, because it reads each cell's measured rate, adjusted for operators, darkness, sky cover and the school term, as the rate January's peaks will see; their excess was the low sun standing ahead of those directions from April to October, and in January and February it stands ahead of the south-east-running morning and south-west-running evening directions (J4-O AM, J5-O AM, F5-O PM, F6-O PM), which take the four slots.",
- "call": "J4-O AM, J5-O AM, F5-O PM, F6-O PM",
+ "call": "the four January to February 2027 restricted-speed slots on J4 and J5 outbound AM and F5 and F6 outbound PM (the default path files the rows that rose this autumn)",
  "architecture": 2,
  "loops": 0,
  "drawn": "2026-11-04, card registered 2026-11-04T14:49:22Z, guard WARN (overuse.org_family answered; same_driver_older differentiated)",
@@ -18,29 +18,26 @@
   "passes": "61 of 61"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (7 REVIEW lines on the final cut, the same four files as round 1, each ruled in the design note's ## Leak sweep rulings; sweeps 1, 2, 5, 7, 8, 10 and 11 clean, no writer signature)",
-  "reader": "round 1 (scratchpad t210/a2/stage4/reader/answers.md): clean on the main call (no decisive-step sentence, an analytical choice); flagged the ask terms (two-car EB counting, depot test EBs, UTC against Mountain months, line by car, 2026 holidays), each closed in the stage-4 ask repair; round 2 brief written (scratchpad t210/a2/stage4_r2/reader/BRIEF.md), not yet run"
+  "leak_py": "REVIEW on the final cut (--asof 2026-11-02), no LEAK, seven lines ruled",
+  "reader": "rounds 1 (1c38083e) and 2 (0d608249): no decisive-step sentence, decisive step analytical"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.org_family answered on the card; same_driver_older NOTE differentiated), re-run 2026-11-04 on the final cut with every batch4 card present (task212's branch carries no card yet; claude/jolly-hypatia-06c61h at 70d341d already in HEAD)",
-  "surface": "one promoted pair, task102 vs task210 (surface 0.075, corpus pct 32), answered on the card's differentiation.task102; no persona in the cut pack",
-  "nearest": "0.07 task478 v4 lineage"
+  "heart": "WARN, no BLOCK",
+  "surface": "task102 promoted, answered on the card; no personas",
+  "nearest": "0.07 (task478 v4)"
  },
  "judge": {
-  "round1": {
-   "verdict": "NOT_DETERMINISTIC",
-   "disposition": "SEND_BACK as labelled; read against the gate table an ask-layer repair (the main call forced and correct, reproduced from sun geometry; Gate F high, Gate G forecasting and analytical_non_defect, Gate H analytical; Gates C and E failed on the asks alone)",
-   "report": "scratchpad t210/a2/stage4/judge/verdict.md and derivation.md"
-  },
   "verdict": "round 1 NOT_DETERMINISTIC on the asks only; round 2 DETERMINISTIC",
-  "disposition": "round 1 labelled SEND_BACK, read as an ask-layer repair; round 2 APPROVE",
+  "disposition": "round 1 labelled SEND_BACK, read as an ask-layer repair (main call forced, G and H passing); round 2 APPROVE (optional wording fix applied)",
   "report": "task210/determinism_check_report.md",
-  "brief": "scratchpad t210/a2/stage4_r2/judge/BRIEF.md (round 2, not yet run)"
+  "gate_f": "high and good; both blind derivations found the slots from sun geometry (the known risk)",
+  "gate_g": "forecasting, analytical_non_defect",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
  },
  "returned": [],
- "resume": "Stage 5, ship in progress: judge round 2 DETERMINISTIC, APPROVE on target.zip 0d608249 (round 1 Gate C on the asks closed in the world); its optional wording fix applied to submission.md (the sun names the driver that moves between rows, the newly qualified class a transient direction-neutral part, rates on logged passes); determinism_check_report.md written with both verdicts. Remaining: confirm the gate re-run on the final cut (checks, verify, two builds identical, figures_check, precut, voice-check, leak.py --asof 2026-11-02, guard heart and surface), append both leak-reader rounds with rulings to leak_check_report.md, the pre-ship check at the end of the design note, the card shell from guard.shell_of_task, the ledger row after task204, pipeline.json SHIPPED, then commit SHIPPED with target.zip and golden/ force-added.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-04",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -52,5 +49,14 @@
  "flags": "ask A's golden reads April 99, May 99, June 99: the record's own counts (asserted equal to the flag truth), kept; the full includer's misses are thin (A by 1 to 4 per month, B's Foundry brakes and doors by 1 card each); the stress rows show a solver who reconstructs the in-service map across the yard sheets and the AVL log keeps ask A whole, and one who puts the yard sheets' undated cards on the business day before entry keeps ask B whole; the shared stream's GPS offset is one constant for every record (pre-existing, kept: changing it moves the main call); the parent re-runs guard.py heart and surface after merging (H31)",
  "blocks": "stage-4 hand-off block repair (design note ## Block repair): every block on both lines out and back from its pull-out at the outer end, layovers at the termini (9.9 to 27.6 minutes), pull-ins there, reliefs at the outer end between trips, J01 and J02 coupling in Union Yard, bad-ordered Foundry cars swapped at Foundry Loop, 17, 13 and 9 blocks on weekdays, Saturdays and Sundays; the truth untouched (section noise byte-identical), the realization moved; seed reselected 21019 to 21030; freeze.py exit 1 in both modes, as recorded in the note (determinism 6 items, rubric 4: the stump sentence, the card's stump, the ladder, the default path, and in determinism mode both ask blocks), 131 moved figures.json keys named by --allow",
  "ask_repair": "stage 4 round 1 (2026-11-04, one generator pass, no architecture spent): ask A's WHAT filed in SRM-07 6.2 (a car in service on a block from its pull-out onto it until it pulls in, the depot loop's running brake test after a release excepted, a two-car train's two records one application), the yard sheets carry out and in times, ask A re-sited onto the streetcar's monthly totals (7 figures: 99, 99, 99, 113, 105, 97, 95), the yards' monthly brake checks added (147 records, joined after every shared draw), the trailing recorder's clock scaled to 45 s; ask B's world fixed (the entry day never a candidate, one card per defect per car per day, every car that ran a block writing cards), the MMS export's dates entered_at and entered_date, the run sheets' schedule column, the asking sentence filing the day written, the weekday timetable and the months as a whole (6 figures: Juniper 46, 55, 171; Foundry 44, 34, 122); the trip reading, 6.2's literal reading and the golden's in-service map count the same 707 applications and the AVL-only reading differs only by the 42 the AVL log lost (SF23, SF24); every card dates to its written day under the cars that ran each block, C1 on 558 cards (SF20, SF22, SF25, SF26); the call, the stump, the ladder, the default path, the chart and the slot plan unchanged (freeze.py rubric PASS); design note ## Ask repair (stage 4 round 1)",
- "freeze": "freeze.py check task210 --mode rubric --allow <the 20 moved ask keys>: exit 0, PASS (27 ask figures moved); --mode determinism with the same keys: exit 1, 4 items, the Deliverable Answers blocks of both asks (the repair re-derives the asks from a corrected world; recorded, scratchpad t210/a2/fix/freeze_determinism.txt and freeze_rubric.txt)"
+ "freeze": "freeze.py check task210 --mode rubric --allow <the 20 moved ask keys>: exit 0, PASS (27 ask figures moved); --mode determinism with the same keys: exit 1, 4 items, the Deliverable Answers blocks of both asks (the repair re-derives the asks from a corrected world; recorded, scratchpad t210/a2/fix/freeze_determinism.txt and freeze_rubric.txt)",
+ "gates": {
+  "checks_py": "197 of 197",
+  "verify_py": "PASS",
+  "byte_identical": "two builds identical, target.zip sha256 0d60824923ff4b4979aa0d561076105d1d6c7d0118bbabdea308f072fc0136b7",
+  "figures_check": "38",
+  "precut": "61/0/0",
+  "voice_check": "PASS",
+  "ceiling": "full includer max 4 of 13, cracker 0 of 13, pair 32.7 one on, 49.2 two crackers on"
+ }
 }
