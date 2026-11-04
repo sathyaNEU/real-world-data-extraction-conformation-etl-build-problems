@@ -1,228 +1,177 @@
-"""task401 architecture 3: the generator's clean truth.
+"""task401 world: Wendmoor Water's Coldmere Water Recycling Centre, the River Allery below it, Thornlea Dairy's
+discharge, and the records the asks read. One seeded simulation; every file is cut from it in pack.py.
 
-A GB domestic energy supplier. Customers who joined July to December 2024 answer the six-month survey
-January to June 2025 (period 0, legacy billing platform); customers who joined July to December 2025 answer
-January to June 2026 (period 1, every one billed on the new platform). From May 2025 the quote journey stopped
-pre-filling each meter point's industry annual quantity (EAC, AQ): a customer was quoted on use they typed in,
-or on Ofgem's medium typical values when they gave none. Six-month satisfaction responds to how far the cost of
-the meter point's annual quantity runs above the cost the quote projected, at the quote's own rates (negative
-disconfirmation, asymmetric), plus small real effects of the platform, the October 2025 variable-rate rise and
-the November 2025 contact centre move. Files are cut from this truth by pack.py.
-"""
-import datetime as dt
-from math import log
+Levels (design note, Draw and Ladder): good status for total ammonia in a lowland, high-alkalinity river is 0.6 mg/l as N
+(90th percentile, the Water Environment (Water Framework Directive) (England and Wales) Directions 2015); a nitrifying
+activated sludge works runs its final effluent at about 0.5 to 2 mg/l; acid whey carries about 50 to 80 g/l COD at pH
+about 4.5; domestic load is about 120 g COD a person a day; nitrifiers need dissolved oxygen above about 1 mg/l and clear an
+oxygen-limited backlog over one to two days once the demand passes."""
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 import numpy as np
 
+UK = ZoneInfo('Europe/London')
+UTC = ZoneInfo('UTC')
+D0 = date(2024, 10, 1)
+D1 = date(2026, 3, 31)
+DAYS = [D0 + timedelta(days=i) for i in range((D1 - D0).days + 1)]
+N = len(DAYS)
+AER_GO_LIVE = date(2025, 10, 27)
+NEW_LINE = date(2025, 11, 3)
+CT_SWAP = datetime(2025, 10, 20, 10, 30, tzinfo=UK)
+WIN = (date(2025, 11, 1), date(2026, 3, 31))
+PRIOR = (date(2024, 11, 1), date(2025, 3, 31))
+STANDARD = 0.6
 SEED = 4012026
-D = dt.date
-TYPICAL_E, TYPICAL_G = 2700.0, 11500.0
-# Ofgem region names with their distribution network operator ids (the first two MPAN core digits), weights
-REGIONS = [('Eastern', 10, .10), ('East Midlands', 11, .08), ('London', 12, .09), ('North Wales and Mersey', 13, .05),
-           ('West Midlands', 14, .08), ('North East', 15, .05), ('North West', 16, .09), ('North Scotland', 17, .03),
-           ('South Scotland', 18, .06), ('South East', 19, .08), ('Southern', 20, .10), ('South Wales', 21, .04),
-           ('South West', 22, .06), ('Yorkshire', 23, .09)]
-SCOTLAND = {7, 8}
-N_RESP = {0: 9150, 1: 9900}
-N_JOIN = {0: 26140, 1: 28320}
-CHANNELS = ['Direct web', 'Comparison site', 'Phone', 'Broker']
-CH_P = {0: [.40, .32, .13, .15], 1: [.37, .36, .12, .15]}
-B0, HALO = 1.30, 0.35
-BETA_NEG, BETA_POS = 4.2, 1.0
-ENGAGED = 0.10
-PLATFORM, PRICE, CONTACT = -0.02, -0.03, -0.05
-P_CUSTOMER = 0.55
-CUST_BIAS, CUST_SD = -0.10, 0.28
-REG_SD, SIX_SD = 0.10, 0.05
-P_NOQTY0, PROP_SD = 0.05, 0.25
-# standard variable rates: multipliers on each region's base, by effective date (the October 2025 step is +2 per cent)
-SVT_STEPS = [(D(2024, 4, 1), 1.071), (D(2024, 7, 1), 1.000), (D(2024, 10, 1), 1.098), (D(2025, 1, 1), 1.112), (D(2025, 4, 1), 1.183),
-             (D(2025, 7, 1), 1.101), (D(2025, 10, 1), 1.123), (D(2026, 1, 1), 1.125), (D(2026, 4, 1), 1.071)]
-FIX_LAUNCH = [D(2024, 5, 1), D(2024, 9, 2), D(2024, 12, 2), D(2025, 3, 3), D(2025, 6, 2), D(2025, 9, 1), D(2025, 12, 1)]
-PHASE1_START, PHASE1_END = D(2025, 9, 1), D(2025, 11, 2)
-PHASE2_ASOF = D(2026, 11, 1)
-# the extracts, each named for the span of the records it holds; the switching flows were pulled on 6 November 2026
-F_QUOTES = 'quote_log_2024-05_2025-12.csv'
-F_REGS = 'supply_registrations_2024-05_2025-12.csv'
-F_FLOWS = 'switching_flows_2026-05-01_2026-11-05.csv'
-FLOWS_LAST = D(2026, 11, 5)
-F_DD = 'direct_debit_changes_2024-07_2026-06.csv'
-DD_LAST = D(2026, 6, 30)
 
 
-def mpan_core(dno, rng):
-    body = [int(c) for c in '%02d' % dno] + list(rng.integers(0, 10, 10))
-    w = [3, 5, 7, 13, 17, 19, 23, 29, 31, 37, 41, 43]
-    chk = sum(a * b for a, b in zip(body, w)) % 11 % 10
-    return ''.join(map(str, body)) + str(chk)
+def idx(d):
+    return (d - D0).days
 
 
-def region_bases(rng):
-    out = []
-    for i, (name, dno, _) in enumerate(REGIONS):
-        out.append(dict(e_unit=round(22.40 * (1 + rng.uniform(-.035, .045)), 2),
-                        e_sc=round(48.0 + rng.uniform(-6, 14), 2),
-                        g_unit=round(5.81 * (1 + rng.uniform(-.03, .03)), 2),
-                        g_sc=round(29.9 + rng.uniform(-1.2, 2.4), 2)))
+def daily_process(seed=SEED):
+    """The daily truth: river, works, dairy slugs. Returns arrays over DAYS and the slug list."""
+    rng = np.random.default_rng(seed)
+    doy = np.array([d.timetuple().tm_yday for d in DAYS])
+    temp = 14.8 + 4.6 * np.cos(2 * np.pi * (doy - 225) / 365) + rng.normal(0, 0.45, N)
+    wet = rng.random(N) < np.where(np.cos(2 * np.pi * (doy - 15) / 365) > 0, 0.55, 0.38)
+    rain = np.where(wet, rng.gamma(1.2, 4.2, N), 0.0)
+    noise = np.zeros(N)
+    for i in range(1, N):
+        noise[i] = 0.82 * noise[i - 1] + rng.normal(0, 0.18)
+    resp = np.zeros(N)
+    for i in range(N):
+        resp[i] = (resp[i - 1] * 0.62 if i else 0) + 0.035 * rain[i]
+    q_up = (0.62 + 0.48 * np.cos(2 * np.pi * (doy - 20) / 365)) * np.exp(noise) + resp      # m3/s, upstream gauge
+    q_up = np.maximum(q_up, 0.16)
+    c_up = np.clip(0.042 + 0.0035 * rain + rng.lognormal(np.log(0.012), 0.45, N), 0.02, 0.13)
+    growth = 1 + 0.045 * np.arange(N) / N
+    q_eff = 9300 * growth * (1 + 0.012 * np.minimum(rain, 25)) * np.exp(rng.normal(0, 0.03, N))   # m3/d
+    load = growth * np.exp(rng.normal(0, 0.035, N))
+    ctrl = np.array([0.04 if d >= AER_GO_LIVE else 0.0 for d in DAYS])
+    normal = (0.60 + 0.052 * np.clip(14.0 - temp, 0, None) + 0.35 * (load - 1.0) + ctrl
+              + rng.lognormal(np.log(0.10), 0.55, N))
+    normal = np.minimum(normal, 2.05)
+
+    # whey discharges: the old line's occasional losses, and the new line's from 3 November 2025, on the evenings
+    # after a missed tanker collection and always before midnight; the strained line stands every Wednesday for its
+    # weekly deep clean, so it makes no whey that day and none is run to the drain on a Wednesday evening
+    slugs = []
+    old_dates = [date(2024, 11, 21), date(2024, 12, 14), date(2025, 1, 30), date(2025, 2, 22),
+                 date(2025, 5, 17), date(2025, 7, 10), date(2025, 9, 13)]
+    for d in old_dates:
+        slugs.append(d)
+    d = NEW_LINE
+    while d <= D1 - timedelta(days=2):
+        if d.weekday() != 2 and rng.random() < 0.24:
+            slugs.append(d)
+        d += timedelta(days=1)
+    slugs = sorted(set(slugs))
+    slug_rows = []
+    eff = normal.copy()
+    for s in slugs:
+        i = idx(s)
+        vol = float(rng.uniform(17, 31))
+        cod = float(rng.uniform(55, 76))
+        kg = vol * cod
+        start = datetime(s.year, s.month, s.day, 21, 30, tzinfo=UK) + timedelta(minutes=15 * int(rng.integers(0, 4)))
+        dur = int(rng.integers(3, 7))
+        day1 = 3.2 + 0.0058 * kg * (1 + 0.035 * max(0.0, 12.5 - temp[i + 1])) + rng.normal(0, 0.6)
+        day2 = 0.34 * day1 + rng.normal(0, 0.25)
+        if i + 1 < N:
+            eff[i + 1] = max(eff[i + 1], day1)
+        if i + 2 < N:
+            eff[i + 2] = max(eff[i + 2], day2)
+        slug_rows.append(dict(day=s, start=start, intervals=dur, volume=vol, cod=cod, kg=kg))
+
+    spill = (rain > 14) & (rng.random(N) < 0.7)
+    spill_vol = np.where(spill, rng.uniform(600, 2500, N), 0.0)
+    def mix(e):
+        return (q_up * 86400 * c_up + q_eff * e + spill_vol * 7.0) / (q_up * 86400 + q_eff + spill_vol)
+    river = mix(eff)
+    # a day's mean never sits within 0.07 of the standard, so no reading of the monitor's validity rules moves a day
+    # across it: a recovering works' second day is either still well up or already back
+    for i in range(N):
+        if 0.53 < river[i] < 0.67:
+            target = 0.71 if river[i] >= 0.60 else 0.50
+            denom = q_up[i] * 86400 + q_eff[i] + spill_vol[i]
+            eff[i] = max(normal[i], (target * denom - q_up[i] * 86400 * c_up[i] - spill_vol[i] * 7.0) / q_eff[i])
+    river = mix(eff)
+    return dict(temp=temp, rain=rain, q_up=q_up, c_up=c_up, q_eff=q_eff, load=load, normal=normal, eff=eff,
+                river=river, spill=spill, spill_vol=spill_vol, slugs=slug_rows, ctrl=ctrl)
+
+
+def exceedance_days(P, lo, hi):
+    return [d for d in DAYS if lo <= d <= hi and P['river'][idx(d)] > STANDARD]
+
+
+def reach_forms(P, lo, hi):
+    """Every natural operationalisation of 'the exceedance days a discharge sets off'. Returns {form: count}."""
+    exc = exceedance_days(P, lo, hi)
+    big = {s['day'] for s in P['slugs']}
+    small = set(P.get('acid_nights', []))
+    out = {}
+    for name, lags, src in [('1-2', (1, 2), big), ('1-3', (1, 2, 3), big), ('1-4', (1, 2, 3, 4), big),
+                            ('1-5', (1, 2, 3, 4, 5), big), ('0-3', (0, 1, 2, 3), big),
+                            ('any 1-3', (1, 2, 3), big | small), ('any 0-5', (0, 1, 2, 3, 4, 5), big | small)]:
+        out[name] = sum(1 for d in exc if any((d - timedelta(days=L)) in src for L in lags))
+    # episode-based: runs of days whose works effluent is above three times its normal running level, started within a
+    # day of a discharge
+    ep = 0
+    for d in exc:
+        i = idx(d)
+        j = i
+        while j > 0 and P['eff'][j] > 3.0:
+            j -= 1
+        if any((DAYS[j] - timedelta(days=L)) in big for L in (0, 1)) or DAYS[j] in big:
+            ep += 1
+    out['episode'] = ep
     return out
 
 
-def tariff_table(bases, rng):
-    """Every tariff row: code, name, region index, effective from, to, the four rates (pence)."""
+def dairy_15min(P, seed=SEED):
+    """Thornlea Dairy's own discharge monitor at its sampling chamber: local time, 15-minute flow, pH and temperature."""
+    rng = np.random.default_rng(seed + 11)
     rows = []
-    for ri, b in enumerate(bases):
-        for k, (start, m) in enumerate(SVT_STEPS):
-            end = SVT_STEPS[k + 1][0] - dt.timedelta(days=1) if k + 1 < len(SVT_STEPS) else D(2026, 6, 30)
-            rows.append(dict(code='SVT', name='Standard Variable', region=ri, start=start, end=end,
-                             e_unit=round(b['e_unit'] * m, 2), e_sc=round(b['e_sc'] * m, 2),
-                             g_unit=round(b['g_unit'] * m, 2), g_sc=round(b['g_sc'] * m, 2)))
-    fix_factor = rng.uniform(0.985, 1.035, len(FIX_LAUNCH))
-    for j, launch in enumerate(FIX_LAUNCH):
-        m = svt_mult(launch) * fix_factor[j]
-        code = 'FIX12-%s' % launch.strftime('%y%m')
-        for ri, b in enumerate(bases):
-            rows.append(dict(code=code, name='Fixed 12 %s' % launch.strftime('%b %Y'), region=ri, start=launch,
-                             end=(FIX_LAUNCH[j + 1] - dt.timedelta(days=1)) if j + 1 < len(FIX_LAUNCH) else D(2026, 3, 1),
-                             e_unit=round(b['e_unit'] * m, 2), e_sc=round(b['e_sc'] * m, 2),
-                             g_unit=round(b['g_unit'] * m, 2), g_sc=round(b['g_sc'] * m, 2)))
-    return rows
-
-
-def svt_mult(day):
-    m = SVT_STEPS[0][1]
-    for start, mm in SVT_STEPS:
-        if day >= start:
-            m = mm
-    return m
-
-
-_INDEX = {}
-
-
-def rates_for(table, code, region, day):
-    """The rates of `code` for `region` in force on `day`; a fixed product keeps its launch rates."""
-    key = id(table)
-    if key not in _INDEX:
-        idx = {}
-        for r in table:
-            idx.setdefault((r['code'], r['region']), []).append(r)
-        for v in idx.values():
-            v.sort(key=lambda r: r['start'])
-        _INDEX.clear(); _INDEX[key] = idx
-    best = None
-    for r in _INDEX[key][(code, region)]:
-        if r['start'] <= day and (code != 'SVT' or day <= r['end']):
-            best = r
-    return best
-
-
-def cost_gbp(e, g, dual, r):
-    return (e * r['e_unit'] + 365 * r['e_sc'] + dual * (g * r['g_unit'] + 365 * r['g_sc'])) / 100.0
-
-
-def rand_date(rng, a, b, n):
-    span = (b - a).days + 1
-    return [a + dt.timedelta(days=int(k)) for k in rng.integers(0, span, n)]
-
-
-def build(seed=SEED, beta_neg=BETA_NEG, beta_pos=BETA_POS, p_customer=P_CUSTOMER,
-          cust_bias=CUST_BIAS, cust_sd=CUST_SD, n_scale=1.0, universe=False):
-    """Respondent arrays (and, with universe=True, every joiner and the tariff table)."""
-    rng = np.random.default_rng(seed)
-    bases = region_bases(rng)
-    table = tariff_table(bases, rng)
-    reg_w = np.array([w for _, _, w in REGIONS]); reg_w = reg_w / reg_w.sum()
-    joiners = []
-    for t in (0, 1):
-        nj = int(round(N_JOIN[t] * n_scale)); nr = int(round(N_RESP[t] * n_scale))
-        y = 2024 + t
-        start = rand_date(rng, D(y, 7, 1), D(y, 12, 31), nj)
-        dual = rng.random(nj) < 0.74
-        region = rng.choice(len(REGIONS), nj, p=reg_w)
-        channel = rng.choice(len(CHANNELS), nj, p=CH_P[t])
-        variable = rng.random(nj) < 0.55
-        qdate = [s - dt.timedelta(days=int(k)) for s, k in zip(start, rng.integers(16, 31, nj))]
-        e = rng.lognormal(log(2700), 0.50, nj)
-        g = np.where(dual, rng.lognormal(log(11000), 0.45, nj), 0.0)
-        e_reg = e * rng.lognormal(0, REG_SD, nj); g_reg = g * rng.lognormal(0, REG_SD, nj)
-        e_six = e * rng.lognormal(0, SIX_SD, nj); g_six = g * rng.lognormal(0, SIX_SD, nj)
-        if t == 0:
-            noqty = rng.random(nj) < P_NOQTY0
-            basis = np.where(noqty, 'property', 'industry')
-            pe = rng.lognormal(0, PROP_SD, nj)
-            qe = np.where(noqty, e * pe, e_reg); qg = np.where(noqty, g * pe, g_reg)
+    slug_at = {}
+    for s in P['slugs']:
+        for k in range(s['intervals']):
+            slug_at[s['start'] + timedelta(minutes=15 * k)] = s
+    acid_nights = []
+    t = datetime(D0.year, D0.month, D0.day, 0, 0, tzinfo=UK)
+    end = datetime(D1.year, D1.month, D1.day, 23, 45, tzinfo=UK) + timedelta(minutes=15)
+    t_utc = t.astimezone(UTC)
+    end_utc = end.astimezone(UTC)
+    acid_today = {}
+    while t_utc < end_utc:
+        lt = t_utc.astimezone(UK)
+        dd = lt.date()
+        if dd not in acid_today:
+            acid_today[dd] = (rng.random() < 0.16) and dd.weekday() in (0, 1, 2, 3, 4)
+            if acid_today[dd]:
+                acid_nights.append(dd)
+        h = lt.hour + lt.minute / 60
+        prod = 6.0 <= h < 22.5 and dd.weekday() != 6
+        # the strained line runs six days a week and stands every Wednesday for its weekly deep clean and maintenance,
+        # so from 3 November the chamber carries its flow on every day but Wednesday (and no whey is made that day)
+        line = 1.18 if (dd >= NEW_LINE and dd.weekday() != 2) else 1.0
+        flow = (rng.uniform(5.5, 11.5) if prod else rng.uniform(0.8, 2.6)) * line
+        if prod:
+            ph = float(6.75 + rng.gamma(4.0, 0.27))
+            while ph > 10.3:                        # the dairy doses its caustic rinses back below the consent's 11
+                ph = float(6.75 + rng.gamma(4.0, 0.27))
         else:
-            cust = rng.random(nj) < p_customer
-            basis = np.where(cust, 'customer', 'typical')
-            ce = rng.lognormal(cust_bias, cust_sd, nj)
-            qe = np.where(cust, e * ce, TYPICAL_E); qg = np.where(cust, g * ce, np.where(dual, TYPICAL_G, 0.0))
-        qe = np.round(qe); qg = np.round(qg)
-        tariff = []
-        for i in range(nj):
-            if variable[i]:
-                tariff.append('SVT')
-            else:
-                launch = max(l for l in FIX_LAUNCH if l <= qdate[i])
-                tariff.append('FIX12-%s' % launch.strftime('%y%m'))
-        quoted = np.zeros(nj); cost6 = np.zeros(nj); cost_reg = np.zeros(nj)
-        for i in range(nj):
-            r = rates_for(table, tariff[i], int(region[i]), qdate[i])
-            quoted[i] = round(cost_gbp(qe[i], qg[i], dual[i], r), 2)
-            cost6[i] = cost_gbp(round(e_six[i]), round(g_six[i]), dual[i], r)
-            cost_reg[i] = cost_gbp(round(e_reg[i]), round(g_reg[i]), dual[i], r)
-        x = np.log(cost6 / quoted)
-        x_cf = np.log(cost6 / cost_reg)
-        resp = np.zeros(nj, bool); resp[rng.choice(nj, nr, replace=False)] = True
-        joiners.append(dict(t=np.full(nj, t), start=np.array(start, dtype=object), qdate=np.array(qdate, dtype=object),
-                            dual=dual, region=region, channel=channel, variable=variable, tariff=np.array(tariff),
-                            e=e, g=g, e_reg=e_reg, g_reg=g_reg, e_six=e_six, g_six=g_six, basis=basis,
-                            qe=qe, qg=qg, quoted=quoted, cost6=cost6, cost_reg=cost_reg, x=x, x_cf=x_cf, resp=resp))
-    J = {k: np.concatenate([j[k] for j in joiners]) for k in joiners[0]}
-    # respondents: satisfaction truth
-    m = J['resp']; n = int(m.sum())
-    R = {k: v[m] for k, v in J.items()}
-    t = R['t']
-    lat = rng.normal(0, 1, n)
-    dis = beta_neg * np.maximum(R['x'], 0) + beta_pos * np.minimum(R['x'], 0)
-    dis_cf = beta_neg * np.maximum(R['x_cf'], 0) + beta_pos * np.minimum(R['x_cf'], 0)
-    engaged = (R['basis'] == 'customer')
-    newplat = (t == 1)
-    contacted = rng.random(n) < np.where(t == 0, 0.30, 0.34)
-    price_hit = R['variable'] & (t == 1)
-    other = PLATFORM * newplat + PRICE * price_hit + CONTACT * (contacted & (t == 1))
-    z = B0 + HALO * lat + ENGAGED * engaged - dis + other
-    P = lambda zz: 1 / (1 + np.exp(-zz))
-    p = P(z); sat = rng.random(n) < p
-    R.update(lat=lat, engaged=engaged, newplat=newplat, contacted=contacted, z=z, p=p, sat=sat,
-             p_cf_quote=np.where(t == 1, P(z + dis - dis_cf - ENGAGED * engaged), p),
-             p_cf_plat=P(z - PLATFORM * newplat), p_cf_price=P(z - PRICE * price_hit),
-             p_cf_contact=P(z - CONTACT * (contacted & (t == 1))))
-    over = np.maximum(R['x'], 0)
-    def rate5(mu, sd=0.55):
-        v = mu + 0.45 * lat + rng.normal(0, sd, n)
-        return np.clip(np.rint(v), 1, 5).astype(int)
-    R.update(bill_accuracy=rate5(4.0 - 2.4 * over - 0.10 * newplat),
-             bill_clarity=rate5(3.9 - 0.8 * over - 0.15 * newplat),
-             value=rate5(3.5 - 1.7 * over - 0.15 * price_hit),
-             contact_ease=rate5(3.8 - 0.35 * (contacted & (t == 1))),
-             resolution=rate5(3.7 - 0.25 * (contacted & (t == 1)) - 0.4 * over),
-             app=rate5(3.7 - 0.08 * newplat))
-    # overall answer on the 1 to 5 scale, consistent with sat (4 or 5 when satisfied)
-    u = rng.random(n)
-    R['overall'] = np.where(sat, np.where(u < 0.42 + 0.25 * P(lat), 5, 4), np.where(u < 0.55, 3, np.where(u < 0.82, 2, 1)))
-    # response dates: six months after supply start, inside the half-year window
-    rd = []
-    for s, tt in zip(R['start'], t):
-        d0 = s + dt.timedelta(days=182 + int(rng.integers(0, 22)))
-        lo, hi = D(2025 + int(tt), 1, 1), D(2025 + int(tt), 6, 30)
-        rd.append(min(max(d0, lo), hi))
-    R['response'] = np.array(rd, dtype=object)
-    # Direct Debit: first payment from the industry quantity at registration, review about five months on
-    R['dd0'] = np.round(R['cost_reg'] / 12)
-    R['dd1'] = np.zeros(n)
-    for i in range(n):
-        rv = R['start'][i] + dt.timedelta(days=150)
-        r = rates_for(table, R['tariff'][i], int(R['region'][i]), rv)
-        R['dd1'][i] = round(cost_gbp(round(R['e_six'][i]), round(R['g_six'][i]), R['dual'][i], r) / 12)
-    if universe:
-        return dict(R=R, J=J, table=table, bases=bases, rng=rng)
-    return R
+            ph = float(6.85 + rng.gamma(6.0, 0.09))
+        tc = float(rng.normal(27 if prod else 19, 2.2))
+        key = lt.replace(second=0, microsecond=0)
+        if key in slug_at:
+            flow = float(rng.uniform(8.2, 11.4))
+            ph = float(rng.uniform(6.08, 6.42))
+            tc = float(rng.uniform(17.5, 21.5))
+        elif acid_today[dd] and 1.0 <= h < 1.75:
+            flow = float(rng.uniform(2.0, 3.6))
+            ph = float(rng.uniform(6.35, 6.65))
+        rows.append((lt, round(flow, 2), round(ph, 2), round(tc, 1)))
+        t_utc += timedelta(minutes=15)
+    P['acid_nights'] = acid_nights
+    return rows

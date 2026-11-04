@@ -11,8 +11,8 @@
   "shape": "12",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Thornlea Dairy's evening acid whey discharges drive the River Allery's ammonia failures, and the GBP 14.2 million nitrification upgrade would not stop them: all 35 exceedance days from November 2025 to March 2026 fell on the first or second day after a whey evening and none on load and cold alone, so the aeration control and the upgrade reach 0 of 35 and stopping the discharges reaches all 35.",
+  "answer_source": "submission.md block 1; generator/figures.json (exc_window, dairy_reach, upgrade_reach)",
   "gap": [
     "population",
     "objective"
@@ -33,24 +33,25 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly apportions the downstream ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the new aeration control, finds the failures began the week the control went live and cluster in the coldest weeks with the works near its design load, and books the winter's exceedance days to the control and the works' nitrification capacity, backing the upgrade, while the dairy's charges, weekly composites and pH compliance all read normal.",
-  "domain_test": "The deciding quantity is the share of the downstream exceedance days that fall inside the days the works' nitrification needs to recover after a caustic excursion in one trade discharger's own fifteen-minute record, worked as river source apportionment through the works' process response rather than by each source's load; in another field's nouns dilution, nitrifier recovery and consented trade effluent strength have no counterpart and the task stops reading.",
+  "analyst_test": "A strong analyst who reads every file correctly apportions the downstream ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control (34.6 of 35 days to the control), costs the dairy's evening discharges at its charging strength (2 per cent of the works' load), and books the winter's exceedance days to the control and the works' nitrification capacity, backing the GBP 14.2 million upgrade, while the dairy's composites and pH compliance all read normal.",
+  "domain_test": "The deciding quantity is the share of the downstream exceedance days that fall inside the works' recovery after a trade discharger's oxygen-demand shock in its own fifteen-minute record, worked as river source attribution through the works' process response rather than by each source's load; in another field's nouns dilution, the nitrifiers' oxygen starvation and recovery and the consented trade effluent strength have no counterpart and the task stops reading.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:the-share-of-river-exceedances-a-discharger's-pre-treatment-reaches-read-through-the-works'-nitrification-recovery",
   "layer1": [
-    "fifteen-minute discharger telemetry with logger gaps and the October clock change",
-    "weekly composite strength samples against daily meter volumes",
-    "provisional against ratified river monitor data with flagged sonde maintenance",
-    "trade effluent returns in cubic metres against a meter in litres",
-    "works SCADA tags renamed at the aeration control upgrade"
+    "a discharger chamber logger in clock time with logger gaps",
+    "a river monitor in UTC with maintenance-visit flags and ratified then provisional releases",
+    "works SCADA tags renamed at the October 2025 works",
+    "laboratory results dated by report weeks after the sampling round",
+    "automatic meter reads kept by meter point across meter exchanges",
+    "an energy register stating its meters as they stand now"
   ],
   "stakeholder_role": "the water company's environment programme manager, who must say whether the nitrification upgrade at the works goes into the company's environment programme submission to the Environment Agency (the prompt names no one)",
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "river_monitor_downstream_15min_2024-10_2026-03.csv",
-    "rows": 52000,
-    "entity": "one fifteen-minute reading of the downstream river water quality monitor: ammonium, temperature, pH, flags",
+    "file": "allery_d_s_coldmere_wq_monitor_2024-10_2026-03.csv",
+    "rows": 52512,
+    "entity": "one fifteen-minute reading of the downstream river water quality monitor: ammonium, temperature, pH, status, maintenance flag",
     "grain": "monitor x 15 minutes",
     "source": "synthetic"
   },
@@ -70,7 +71,10 @@
     "people": [
       "Gerard Norris",
       "Katy Hughes",
-      "Sylvia Phillips"
+      "Sylvia Phillips",
+      "Leonard James",
+      "Ben Hurst",
+      "Jade Evans"
     ]
   },
   "deliverables": [
@@ -79,9 +83,9 @@
   ],
   "opening_move": "question-first",
   "question_form": "whether",
-  "driver": "A run of failures downstream of a shared processing unit is booked to that unit's own capacity and to a control change it made the same week, because the failures began then and cluster where its process is weakest, but nearly all of them fall inside the days the unit's process needs to recover after short excursions in one small contributor's discharge, which switch the process off for every contributor's load; by load the contributor barely registers and its daily strength and compliance read normal, so only its high-frequency record set against the unit's daily record shows the share of failures that acting on the contributor would reach, and read on excursion-free days the control change and the capacity cost almost nothing.",
-  "driver_concrete": "Below Coldmere Water Recycling Centre the River Allery's ammonia exceedance days of November 2025 to March 2026 are booked by mass balance to the works and, by the works' own process record, to its new ammonia-based aeration control (live 27 October 2025) and to nitrification capacity under housing growth and cold; most of them fall inside the two to four days the works needs to recover after caustic clean-in-place excursions in Thornlea Dairy's own fifteen-minute discharge monitor (its new line from 3 November 2025), whose ammonia load is a few per cent of the works' and whose weekly composites and pH consent compliance are normal; on excursion-free days the works meets its permit at equal temperature and load.",
-  "stump": "A competent analyst apportions the Allery's ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control, and books the winter's exceedance days to the new control and the works' nitrification capacity, backing the GBP 14 million upgrade, because they never set the dairy's fifteen-minute discharge record against the works' daily effluent record, which puts most of the exceedance days inside the works' recovery after the dairy's caustic excursions.",
+  "driver": "A run of failures downstream of a shared processing unit is booked to that unit's own capacity and to a control change it made the same week, because the failures began then and the unit's own records validate it, but every one of them falls on the first or second day after a short discharge in one small contributor's own high-frequency record, which starves the unit's process for a day whatever the other contributors send; by load the contributor barely registers and its periodic strength samples and compliance read normal, so only its high-frequency record set against the unit's daily record and the downstream days shows the share each remedy can reach.",
+  "driver_concrete": "Below Coldmere Water Recycling Centre the River Allery's 35 ammonia exceedance days of November 2025 to March 2026 (against 4 a year earlier) are booked by mass balance to the works and, by the works' process record, to its ammonia-based aeration control (live 27 October 2025) and to nitrification capacity in the cold; every one falls on the first or second day after an evening on which Thornlea Dairy ran acid whey to its drain after a missed tanker collection (its new line from 3 November 2025), visible only in the dairy's own fifteen-minute chamber record as an evening hour at production flow and pH 6.1 to 6.4 inside its consent, whose whey starves the works' nitrifiers of oxygen for a day; costed at its charging strength an evening is 2 per cent of the works' load, and its weekly composites never hold one.",
+  "stump": "A competent analyst apportions the Allery's ammonia to the works by mass balance, models the works' final-effluent ammonia on temperature, load and the aeration control, costs Thornlea Dairy at its charging strength and books the winter's exceedance days to the aeration control and nitrification capacity in the cold, ending on the GBP 14.2 million upgrade, because they never set the dairy's fifteen-minute chamber record against the works' daily effluent and the monitor's days, which puts all 35 exceedance days on the first or second day after an evening whey discharge.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task202": "same cell, a lake's phosphorus reaching the layer the bloom draws on by matching the inflow's density to the lake's stratification; here no transport or layer decides anything: a contributor's short excursions switch off a treatment process, and the share each option reaches is read through that process's recovery",
