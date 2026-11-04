@@ -183,20 +183,22 @@ acre-foot, run hours times the tested flow, an average of tests.
 | SF3 | a metered well's volume | the difference between its reads nearest 1 October 2025 and 1 October 2026, months between consecutive first-of-month reads | the energy-based estimate for metered wells | notice section 3, the metered-well sentence |
 | SF4 | W-03's meter exchange | old meter's final read less its October 2025 read, plus the new meter's October 2026 read | the two registers differenced as one | notice section 3 ("allowing for any meter exchange"); the reads sheet's notes |
 | SF5 | the acre-foot | 325,851 gallons | 43,560 cubic feet | same call (the same unit) |
-| SF6 | the water available | the allocation plus the 480 acre-feet of carryover | the allocation alone | notice section 2: "the allocation plus the carryover" |
+| SF6 | the water available | the allocation plus the 480 acre-feet of carryover, the allocation the total row of the notice's table, which is its rows' sum (14,878.9) | the allocation alone; the total row against the rows' sum | notice section 2: "the allocation plus the carryover"; the total row equals the rows' sum (asserted), and at whole acre-feet every reading files 15,359: same call |
 | SF7 | the ranch's extraction | the sum of the wells' reported whole-acre-foot volumes | the unrounded sum | notice section 3 ("The Agency sums the wells' reported water year volumes"); same call, asserted |
 | SF8 | the purchase | the excess over the water available rounded up to whole blocks of 50 acre-feet | the excess to the nearest block (200), or exact | notice section 4 (whole blocks of 50, the smallest transfer recorded; extraction not covered is charged), asserted |
 | SF9 | the test that applies | each pump's August or September 2025 test | the 2023 reports on the three pumps replaced in 2024 | the register's pump-installed dates and the 2023 reports' bowl notes |
 | SF10 | the level paired with an interval | the mean of the logger readings from the interval's start to its end (15-minute logging) | the start reading, the end reading, the month's mean pumping level | same call, asserted: every pairing buys 250, each well within 0.11 per cent, so the wells are graded as 1 per cent bands and the ranch as a 0.5 per cent band |
-| SF11 | the three clocks | old export in local prevailing time, new export in UTC, loggers in Pacific standard time all year, each as its header states | one clock read for all three | the export headers and the logger headers; a daylight-saving-hour misreading buys the same 250 (asserted), an 8-hour one 400, ruled out by the headers |
+| SF11 | the clocks | old export in local prevailing time, new export in UTC (its Z stamps), the TROLL loggers on Pacific standard time with no daylight saving as their headers state, the Levelogger 5 loggers on the same clock as the technician's log records at every relaunch ("clock set from field laptop, PST (UTC-08:00), no daylight saving") | one clock read for all; the Levelogger files read as UTC | the export headers, the TROLL headers and the download log; a daylight-saving-hour misreading buys the same 250 (asserted), an 8-hour one 400; the Leveloggers read as UTC would move 7 of the 8 absolute-logger depths, ruled out by the log (asserted) |
 | SF12 | estimated intervals | the utility's estimates kept as the energy record | estimated intervals dropped | same call, asserted |
 | SF13 | the fall-back hour | both 01:00 rows of 2 November 2025 counted, the absent 02:00 of 8 March 2026 absent | one 01:00 row kept | same call, asserted |
 | SF14 | the datum of a level difference | the logger's depth below the top of the sounding tube less the tube height, against the tests' depths below ground surface | the logger's depth used as it stands | the reports' text ("measured from ground surface"; "the tube height is taken off"), the logger header, the register's MP height |
 | SF15 | the efficiency | the 2025 test's overall plant efficiency | none other in the pack (one current test per pump) | same call |
+| SF16 | the level that moves the head | the logger's pumping level in each energised interval, against the test's pumping level | the standing level (the test's or the logger's static) as the reference, which files 14,694 acre-feet and no purchase | both report forms print total head from the pumping level ("Total head = pumping water level + discharge head (psi x 2.31) + column and fittings loss"; "TDH = PWL + discharge psi x 2.31 + column friction"), asserted on every report: the analytical step's own reference, closed by the reports' definition, not a pin |
+| SF17 | the 24 hours before a static reading (Ask A) | counted from the end of the last interval with energy at the export's own resolution (hourly before April, 15 minutes after) | the 15-minute data rolled up to hours (moves 10 depths), or counted from the start of the last energised interval (moves 1) | notice section 5: "counted from the end of the last interval in which the utility's data for the well's service record energy" (asserted); the October window could not converge in the data without moving September's pumping inside the water year |
 
 ## Ladder
 
-| Rung | Construction | Ranch extraction | Against 15,519 available | Purchase |
+| Rung | Construction | Ranch extraction | Against 15,358.9 available | Purchase |
 |---|---|---|---|---|
 | R0 | meters for the four metered wells, the latest test's kWh per acre-foot for the rest | 15,020 | 339 inside | 0 (the default path's Ends on) |
 | R1 | run hours times the tested flow for the unmetered wells | 14,719 | 640 inside | 0 |
@@ -241,7 +243,7 @@ Executed word for word, the prompt and the notice give the volume of groundwater
 year's ends allowing for W-03's exchange, unmetered wells calculated from their own records, summed and set against the
 allocation plus the 480 acre-feet carried over, the excess bought in whole blocks of 50; every reading in the fork table gives
 the golden's figures except those each ruled out by a quoted sentence (SF1 and SF3 by section 3, SF4 by section 3 and the
-reads sheet, SF6 by section 2, SF8 by section 4, SF9 by the register, SF14 by the reports' text and the register), and the
+reads sheet, SF6 by section 2, SF8 by section 4, SF9 by the register, SF14 by the reports' text and the register, SF16 by the reports' definitions of total head), and the
 easy answer, no purchase, comes from the easy method on the same literal estimand (each unmetered well's energy at its
 test day's rate), not from another reading. The relation the golden inverts is printed on every test report (kilowatt-
 hours per acre-foot equal 1.0241 times total head over the overall plant efficiency; total head equals the pumping
@@ -268,7 +270,8 @@ calculation the records support is the golden's, and no filed sentence gives the
   D8, the barologger's clock runs on the office computer's UTC while every well logger runs Pacific standard time (the
   download log's barologger rows say so), so a compensation by clock face pairs each reading with the pressure eight
   hours away. Hazard: D7, the June 2026 swap of the loggers at Pumps 2 and 5 (download log), which moves W-02's and
-  W-04's spring figures. The call reads no absolute-logger row (the four wells are metered).
+  W-04's spring figures. The call reads no absolute-logger row (the four wells are metered). The Levelogger 5 files carry no
+  clock of their own; the technician's log records each relaunch on Pacific standard time (SF11).
 - **Ask D, each well's April to September 2026 energy charge: 15 figures** (dollars). H18 home: the partners' pumping
   cost review in the memo. Path: the new power export, the register (current schedule), the rate letter, the tariff:
   four files, nine columns. Primary device: D2, a label stored before a silent switch: the register's rate schedule is
@@ -279,6 +282,8 @@ calculation the records support is the golden's, and no filed sentence gives the
   energy totals, which neither device moves.
 - **The construction layer:** the vented loggers' static depths (W-05 to W-15, spring and fall, 22 figures) and the
   return's monthly volumes; the cracker has them.
+- **Ask D's literal readings:** an independent pandas recompute in verify.py matches every charge to the dollar. No reading the shipped text admits reproduces the judge thread's flat 1.2 to 1.4 per cent shortfall: June priced as winter (minus 1.25 to 1.52 per cent) is ruled out by "Summer season: June 1 through September 30", holidays dropped (minus 1.0 to 1.9 per cent, uneven) by "off-peak all other hours", the morning or evening part-peak omitted (minus 1.6 to 1.9) and the winter part-peak omitted (minus 1.7 to 1.9) by the schedule's period sentences, and the estimated rows, the observed Independence Day, Juneteenth and the window's ends move it by other amounts or not at all; both quoted sentences are asserted in checks.py.
+- **Realism, the hourly power:** a constant-speed turbine pump draws steady power through a run, and each hour's input power follows its operating point at that hour's static level, so it drifts with the season's lift (deeper water, less flow, less power); the near-constant hourly kWh within a run is the record of a pump at steady load.
 - **Main population zero-counts (asserted):** the call reads no absolute-logger row, no barologger row, no rate
   schedule, letter or tariff cell, and no download-log row.
 
@@ -296,13 +301,15 @@ calculation the records support is the golden's, and no filed sentence gives the
 
 ## Pre-ship check
 
-- Free gates on the final cut (2026-11-04, target.zip 7e8bf4aa): checks.py 45 of 45 (the input gates, every route,
-  the clean-truth analyst test, SF1 to SF15, the zero-counts, the ask devices, a strict PDF reader on every report,
-  the deliverables), verify.py clean, two builds byte-identical, figures_check.py 96 of 96, precut.py 61 checks with
-  0 FAIL and 0 WARN, voice-check.py PASS, leak.py REVIEW with no LEAK (coincidental numbers in an hourly kWh row and a
-  superseded 2023 report, the notice's own vocabulary and template fields, the superseded report's bowl note),
-  guard.py heart PASS after the stage-3 axis redraw, surface one promoted pair (task140, differentiated on the
-  card), the producer-metadata audit clean on the pack and the goldens.
+- Free gates on the final cut after the stage-4 FIX_NOW pass (2026-11-04, target.zip 80bcc4b9): checks.py 54 of
+  54 (the earlier 45 plus SF6 at whole acre-feet, SF11 for every clock including the Levelogger relaunch notes,
+  SF16 the head reference, SF17 the pump-off boundary, and the schedule's ruling sentences for Ask D), verify.py
+  clean including an independent pandas recompute of the 15 energy charges to the dollar, two builds
+  byte-identical, figures_check.py 96 of 96, precut.py 61 checks with 0 FAIL and 0 WARN, voice-check.py PASS,
+  leak.py REVIEW with no LEAK (as before, plus sweep 4 now counting "interval" in the notice's new section 5
+  clause), guard.py check PASS, heart PASS, surface one promoted pair (task140, differentiated), the
+  producer-metadata audit clean. The pass changed two pack files (the notice and the download log) and no golden
+  figure: figures.json, the return and the memo are byte-identical to the 7e8bf4aa cut.
 - The analyst test on the clean truth: the test's rate files 15,038 acre-feet and buys nothing, the head
   conversion 15,602 and buys, the truth is 15,828.
 - golden-realism: the memo's subject line states the purchase, a plain table with a source line, precision by

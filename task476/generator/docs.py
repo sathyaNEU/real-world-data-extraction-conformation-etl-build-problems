@@ -156,12 +156,13 @@ def superseded_tests():
 def write_notice(path, available):
     d, frame = _doc(path, "Water Year 2026 Allocation and True-Up Notice", W.AGENCY)
     alloc_rows = [["APN", "Gross acres", "Sustainable yield (AF)", "Transitional (AF)", "Allocation (AF)"]]
-    tot = 0.0
+    t_ac = t_sy = t_tr = t_al = 0
     for apn, ac in W.PARCELS:
-        sy, tr = ac * W.SY_RATE, ac * W.TR_RATE
-        alloc_rows.append([apn, "%.1f" % ac, "%.1f" % sy, "%.1f" % tr, "%.1f" % (sy + tr)])
-        tot += sy + tr
-    alloc_rows.append(["Total", "%.1f" % sum(a for _, a in W.PARCELS), "", "", "%.1f" % tot])
+        # each column to a tenth, the row's allocation the sum of its two printed parts, the totals their columns' sums
+        ac10, sy10, tr10 = int(round(ac * 10)), int(round(ac * W.SY_RATE * 10)), int(round(ac * W.TR_RATE * 10))
+        alloc_rows.append([apn, "%.1f" % (ac10 / 10), "%.1f" % (sy10 / 10), "%.1f" % (tr10 / 10), "%.1f" % ((sy10 + tr10) / 10)])
+        t_ac, t_sy, t_tr, t_al = t_ac + ac10, t_sy + sy10, t_tr + tr10, t_al + sy10 + tr10
+    alloc_rows.append(["Total", "%.1f" % (t_ac / 10), "%.1f" % (t_sy / 10), "%.1f" % (t_tr / 10), "%.1f" % (t_al / 10)])
     wells = [["Agency well ID", "State well no.", "APN", "Aquifer"]] + \
         [[W.P[w]["gid"], W.P[w]["swn"], W.P[w]["apn"], W.P[w]["aq"]] for w in sorted(W.WELLS, key=lambda k: W.P[k]["gid"])]
     story = [Paragraph(W.AGENCY.upper(), TITLE),
@@ -198,8 +199,10 @@ def write_notice(path, available):
              Paragraph("5. Water levels", HEAD),
              Paragraph("Report each well's spring and fall static depth to water: the depth to water below ground "
                        "surface at the well at the first reading in the window at which the well's pump has been off "
-                       "for at least the preceding 24 hours. The spring window is February 1 to March 31, 2026 and the "
-                       "fall window October 1 to October 31, 2026, local time. Report feet to one decimal.", BODY),
+                       "for at least the preceding 24 hours, counted from the end of the last interval in which the "
+                       "utility's data for the well's service record energy. The spring window is February 1 to March "
+                       "31, 2026 and the fall window October 1 to October 31, 2026, local time. Report feet to one "
+                       "decimal.", BODY),
              Paragraph("6. Return format", HEAD),
              Paragraph("Use the Agency's template, one row per well, months in acre-feet and depths in feet, with the "
                        "measurement method (METER or CALCULATED). Questions to %s, Program Manager." % W.AGENCY_PM, BODY)]

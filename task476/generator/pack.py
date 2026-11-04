@@ -166,13 +166,14 @@ def download_log(x, path):
             running = bool(x[w]["on"][q])
             sound = x[w]["lvl"][q] + W.P[w]["stick"] + rng.normal(0, 0.05)
             action = "downloaded, relaunched"
-            note = ""
+            note = "clock set from field laptop, PST (UTC-08:00), no daylight saving"
             if t.date() == swap_day and w in W.SWAP:
                 other = W.SWAP[1] if w == W.SWAP[0] else W.SWAP[0]
                 s_new = W.LOGGER_NOW[w]
                 action = "downloaded; logger moved to %s; %s installed from %s" % (
                     W.P[other]["name"].split(" (")[0], s_new, W.P[other]["name"].split(" (")[0])
-                note = "relaunched at new site, location field not changed"
+                note = "relaunched at new site, location field not changed; clock set from field laptop, PST " \
+                       "(UTC-08:00), no daylight saving"
             rows.append((t.astimezone(W.LA).strftime("%Y-%m-%d %H:%M"), "J. Cox", W.P[w]["name"].split(" (")[0], s,
                          action, "%.2f" % sound, "running" if running else "off", note))
         tb = v + dt.timedelta(minutes=14 * len(W.WELLS) + 25)

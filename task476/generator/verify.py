@@ -121,7 +121,45 @@ def main(target, gdir):
     ok2 = m is not None and int(m.group(1).replace(",", "")) == purchase
     print("%s  verify: the memo's purchase %s equals the recomputed %d (ranch %d, available %.1f)" % (
         "PASS" if ok2 else "FAIL", m.group(1) if m else None, purchase, total, alloc + carry))
-    return ok and ok2
+    # energy charges, April to September 2026, recomputed from the schedule and the letter in pandas
+    tt = _text(os.path.join(target, "power", "vrp_agricultural_tou_schedules_2026.pdf"))
+    rates = {}
+    for line in tt.splitlines():
+        tok = line.split()
+        if len(tok) >= 4 and tok[0].startswith("AG-") and tok[1] in ("Summer", "Winter"):
+            nums = [float(x) for x in tok[2:]]
+            keys = ["peak", "part", "off"] if tok[1] == "Summer" else ["part", "off"]
+            rates[(tok[0], tok[1].lower())] = dict(zip(keys, nums))
+    lt = _text(os.path.join(target, "power", "vrp_rate_change_confirmation_2026-05-14.pdf"))
+    moved = set(re.findall(r"(SA-\d{7}) .*AG-2T AG-3T June 1, 2026", lt))
+    hol = {pd.Timestamp("2026-05-25").date(), pd.Timestamp("2026-07-03").date(), pd.Timestamp("2026-09-07").date()}
+    nw = new.copy()
+    nw["local"] = nw["start"].dt.tz_convert(LA)
+    nw = nw[(nw["local"] >= pd.Timestamp("2026-04-01", tz=LA)) & (nw["local"] < pd.Timestamp("2026-10-01", tz=LA))]
+    mins = nw["local"].dt.hour * 60 + nw["local"].dt.minute
+    summer = nw["local"].dt.month.between(6, 9)
+    wk = (nw["local"].dt.weekday < 5) & ~nw["local"].dt.date.isin(hol)
+    per = np.where(summer & wk & (mins >= 720) & (mins < 1080), "peak",
+                   np.where(wk & ((summer & (((mins >= 510) & (mins < 720)) | ((mins >= 1080) & (mins < 1290)))) |
+                                  (~summer & (mins >= 510) & (mins < 1290))), "part", "off"))
+    nw["per"], nw["season"] = per, np.where(summer, "summer", "winter")
+    cur = reg["Rate schedule"].to_dict()
+    sa_now = reg["Electric SA (from Apr 1, 2026)"].to_dict()
+    sch = [("AG-2T" if (sa_now[w] in moved and lc < pd.Timestamp("2026-06-01", tz=LA)) else cur[w])
+           for w, lc in zip(nw["well"], nw["local"])]
+    nw["rate"] = [rates[(s_, se)][p_] for s_, se, p_ in zip(sch, nw["season"], nw["per"])]
+    usd = (nw["kwh"] * nw["rate"]).groupby(nw["well"]).sum()
+    doc = Document(os.path.join(gdir, "transfer_purchase_memo.docx"))
+    memo_usd = {}
+    for row in doc.tables[0].rows[1:]:
+        c = [x.text for x in row.cells]
+        if c[0].startswith("W-"):
+            memo_usd[c[0].split()[0]] = int(c[4].replace(",", ""))
+    worst = max(abs(memo_usd[w] - int(round(usd[w]))) for w in memo_usd)
+    ok3 = worst == 0 and len(memo_usd) == len(reg)
+    print("%s  verify: every well's April to September energy charge equals the recomputed one to the dollar "
+          "(largest gap %d)" % ("PASS" if ok3 else "FAIL", worst))
+    return ok and ok2 and ok3
 
 
 if __name__ == "__main__":

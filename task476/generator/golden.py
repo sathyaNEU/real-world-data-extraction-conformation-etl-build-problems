@@ -24,11 +24,12 @@ def stick(d, w):
     return float(d["reg"][w]["MP height above ground (ft)"])
 
 
-def depth_gs(d, w, t_hour, baro_shift=0, swap_aware=True, compensate=True):
-    """Depth to water below ground at a Pacific standard hour, from whichever logger sat in the well then."""
+def depth_gs(d, w, t_hour, baro_shift=0, swap_aware=True, compensate=True, abs_shift=0):
+    """Depth to water below ground at a Pacific standard instant, from whichever logger sat in the well then
+    (abs_shift reads an absolute logger's clock face that many hours off, the misreading SF11 rules out)."""
     s = B.serial_at(d["hist"], w, t_hour.astimezone(B.LA)) if swap_aware else str(d["reg"][w]["Logger S/N"])
     kind, vals = d["log"][s]
-    v = vals.get(t_hour)
+    v = vals.get(t_hour + dt.timedelta(hours=abs_shift)) if kind == "absolute" else vals.get(t_hour)
     if v is None:
         return None
     if kind == "vented":
@@ -108,6 +109,10 @@ def unmetered_volumes(d, route="golden", pair="mean", clock_shift_h=0, datum=Tru
                 continue
             if route == "R0":
                 af = kwh / t["kwh_af"]
+            elif route == "SWL":
+                z = depth_gs(d, w, B.quarter_key(st))
+                z = t["pwl"] if z is None else z
+                af = kwh * ope / (KWH_AF_FT * (t["th"] + z - t["swl"]))
             elif route == "R1":
                 kw = t["kw"]
                 af = min(kwh / kw, mins / 60.0) * t["gpm"] * 60.0 / 325851.0
@@ -152,20 +157,29 @@ def extraction(d, route="golden", **kw):
 
 
 # ----------------------------------------------------------------------------------------------- static depths
-def running_hours(d, w):
-    """Instants (UTC) at which the pump drew energy, from both exports at their own resolution."""
-    on = []
+def running_hours(d, w, boundary="end"):
+    """The intervals (UTC) in which the pump drew energy, at each export's own resolution (the notice counts the
+    24 hours from the end of the last one). boundary="hour" rolls the 15-minute export up to hours and
+    boundary="start" counts from an interval's start: the two readings SF17 rules out."""
+    on = set()
     for st, mins, kwh in d["power"][w]:
-        if kwh > 0:
-            on.append((st, st + dt.timedelta(minutes=mins)))
-    return on
+        if kwh <= 0:
+            continue
+        s, e = st, st + dt.timedelta(minutes=mins)
+        if boundary == "hour":
+            s = B.hour_key(st).astimezone(B.UTC)
+            e = s + dt.timedelta(hours=1)
+        elif boundary == "start":
+            e = s + dt.timedelta(seconds=1)
+        on.add((s, e))
+    return sorted(on)
 
 
-def static_depths(d, w, baro_shift=0, swap_aware=True, compensate=True):
+def static_depths(d, w, baro_shift=0, swap_aware=True, compensate=True, abs_shift=0, boundary="end"):
     """The first reading in each window at which the pump had been off for at least the preceding 24 hours (off since
     the end of the last interval that drew energy)."""
     import bisect
-    runs = sorted(running_hours(d, w))
+    runs = sorted(running_hours(d, w, boundary))
     starts = [s for s, _ in runs]
     res = {}
     for name, w0, w1 in (("spring", dt.datetime(2026, 2, 1, tzinfo=B.LA), dt.datetime(2026, 4, 1, tzinfo=B.LA)),
@@ -181,7 +195,7 @@ def static_depths(d, w, baro_shift=0, swap_aware=True, compensate=True):
             last_end = runs[i][1] if i >= 0 else None
             if not running_now and (last_end is None or tt - last_end >= dt.timedelta(hours=24)):
                 z = depth_gs(d, w, t.astimezone(B.PST), baro_shift=baro_shift, swap_aware=swap_aware,
-                             compensate=compensate)
+                             compensate=compensate, abs_shift=abs_shift)
                 if z is not None:
                     found = (t, z)
                     break

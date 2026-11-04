@@ -15,22 +15,22 @@
   "detail": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-04 (asof 2026-11-02), no LEAK: coincidental numbers in one hourly kWh row and a superseded 2023 report, the notice's own vocabulary and template fields, the superseded report's bowl note",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-04 (asof 2026-11-02) on the 80bcc4b9 cut, no LEAK",
+  "reader": "arch 3 reader on the 7e8bf4aa cut: no leak, q6 names the procedural conformation and the analytical step; to be rerun on the two changed documents"
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-11-04 at registration (old prompt shell, replaced)",
-  "heart": "PASS 2026-11-04 after the stage-3 redraw of forcing event and role (task461 v3 registered after this card and put task276 in its window)",
+  "guard_check": "PASS 2026-11-04 on the current card after the FIX_NOW pass",
+  "heart": "PASS 2026-11-04 after the FIX_NOW pass and a pull",
   "surface": "1 promoted pair (task140, differentiated on the card), no shared persona",
   "nearest": "task244 at 0.09"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC on the main call (arch 3 pass 1), FIX_NOW limited to filing pins",
+  "disposition": "FIX_NOW, repaired 2026-11-04 in one pass, awaiting the single re-judge",
+  "report": "task476/determinism_check_report_arch3.md"
  },
  "returned": [],
- "resume": "PAUSED at the stage-4 hand-off: the orchestrating session runs the isolated leak reader and the determinism judge on the cut pack (target.zip sha256 7e8bf4aa718d934980021ecab4934c68a1dbc0df434918f3de4b1ec402f5ae7c, rebuilt byte for byte by `python3 task476/generator/build.py`, which reruns checks.py and verify.py, cuts a second build into task476/.rebuild and compares, and writes target.zip and generator/figures.json); fix every finding in the generator in one pass, rebuild, re-run the free gates (figures_check.py, precut.py, voice-check.py, leak.py --asof 2026-11-02, guard.py heart and surface after a pull), then ship on the orchestrator's word.",
+ "resume": "PAUSED at stage 4 after the FIX_NOW pass: the orchestrating session runs the single re-judge (and the leak reader on the two changed documents) on target.zip sha256 80bcc4b90d89a30ac623be605d548423d0410d71d7aa309d4a4e02eab9699545, rebuilt byte for byte by `python3 task476/generator/build.py`; then ship on the orchestrator's word.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -75,13 +75,27 @@
  },
  "call": "buy 250 acre-feet of transfer water before the Sallow Plains GSA's December 15 true-up",
  "build": {
-  "target_zip_sha256": "7e8bf4aa718d934980021ecab4934c68a1dbc0df434918f3de4b1ec402f5ae7c",
-  "checks": "45 of 45",
-  "verify": "clean",
+  "target_zip_sha256": "80bcc4b90d89a30ac623be605d548423d0410d71d7aa309d4a4e02eab9699545",
+  "checks": "54 of 54",
+  "verify": "clean (energy charges recomputed independently to the dollar)",
   "byte_identical": true,
   "figures_check": "96 of 96",
   "pair_ceiling": 49.8,
   "mirror_leakage_pct": 35.2,
   "rebuild": "python3 task476/generator/build.py"
+ },
+ "fixnow_2026_11_04": {
+  "changed_pack_files": [
+   "agency/sallow_plains_gsa_wy2026_allocation_notice.pdf",
+   "levels/logger_download_log.csv"
+  ],
+  "golden_figures_moved": "none (figures.json, the return and the memo byte-identical to the 7e8bf4aa cut)",
+  "fixes": [
+   "Levelogger 5 clock recorded in the download log at every relaunch; SF11 corrected and asserted",
+   "notice section 5 counts the 24 hours from the end of the last interval the utility data record with energy; SF17 added and asserted",
+   "SF16 added: the pumping level as the head reference, closed by both reports' printed total head definitions",
+   "notice allocation table: each row the sum of its printed parts, the total row the rows' sum (14,878.9); SF6 same call at whole acre-feet; the ladder label fixed",
+   "energy charges unchanged; no admitted reading reproduces the thread's shortfall, the ruling sentences quoted and asserted"
+  ]
  }
 }

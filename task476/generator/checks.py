@@ -188,6 +188,58 @@ def main(target, gdir, x=None):
     ok("SF14 the datum is stated and the mishandling moves the purchase", "below top of sounding tube" in txt and
        e_dat["purchase"] != g["purchase"], "ignoring the tube buys %d" % e_dat["purchase"])
     ok("SF15 one efficiency per pump", all(d["tests"][w]["ope"] > 0 for w in d["tests"]), "")
+    # SF6 at whole acre-feet: the notice's total row is its rows' sum, so either reading files 15,359
+    tot_line = re.search(r"^Total [\d.]+ [\d.]+ [\d.]+ ([\d.]+)$", d["notice"]["text"], re.M)
+    ok("SF6 the notice's total row equals its rows' sum", tot_line is not None and
+       abs(float(tot_line.group(1)) - d["notice"]["allocation"]) < 1e-6 and
+       round(float(tot_line.group(1)) + d["notice"]["carryover"]) == round(d["notice"]["available"]),
+       "total %s" % (tot_line.group(1) if tot_line else None))
+    # SF11: every clock the pack carries is stated where its producer records it
+    dl = d["dlog"]
+    lv5 = {str(d["reg"][w]["Logger S/N"]) for w in d["reg"] if "absolute" in str(d["reg"][w]["Level logger"])}
+    rows_lv5 = [r for r in dl if r["logger_sn"] in lv5 or r["site"] in [str(d["reg"][w]["Ranch name"]).split(" (")[0]
+                                                                        for w in d["reg"] if d["reg"][w]["Flow meter"] != "none"]]
+    ok("SF11 every Levelogger visit records its PST clock", rows_lv5 and all("PST (UTC-08:00), no daylight saving" in r["note"]
+                                                                            for r in rows_lv5), "%d visits" % len(rows_lv5))
+    troll = [str(d["reg"][w]["Logger S/N"]) for w in d["reg"] if "vented" in str(d["reg"][w]["Level logger"])]
+    ok("SF11 every TROLL header states PST with no daylight saving", all(
+        "(UTC-08:00) Pacific Standard Time, daylight saving not applied" in open(os.path.join(target, W.logger_file(s)),
+                                                                             encoding="utf-8").read(700) for s in troll), "")
+    absw0 = [w for w in d["reg"] if "absolute" in str(d["reg"][w]["Level logger"])]
+    as_utc = {w: G.static_depths(d, w, abs_shift=8) for w in absw0}
+    gs0 = {w: G.static_depths(d, w) for w in absw0}
+    moved_utc = sum(1 for w in absw0 for k in ("spring", "fall") if round(as_utc[w][k][1], 1) != round(gs0[w][k][1], 1))
+    ok("SF11 reading the Leveloggers as UTC is ruled out by the log, and moves depths", moved_utc >= 1,
+       "%d of %d depths move" % (moved_utc, 2 * len(absw0)))
+    # SF16: the head reference is the pumping level, as both report forms define total head
+    a_def = "Total head = pumping water level + discharge head (psi x 2.31) + column and fittings loss"
+    b_def = "TDH = PWL + discharge psi x 2.31 + column friction"
+    import pdfplumber
+    defs_a = defs_b = 0
+    for f in files:
+        if "pump_tests" in f:
+            with pdfplumber.open(f) as pdf:
+                tx = " ".join((pg.extract_text() or "").replace("\n", " ") for pg in pdf.pages)
+            defs_a += a_def in tx
+            defs_b += b_def in tx
+    e_swl = G.extraction(d, route="SWL")
+    ok("SF16 every report defines total head from the pumping level", defs_a + defs_b == len(d["all_tests"]),
+       "%d and %d reports" % (defs_a, defs_b))
+    ok("SF16 the standing-level reference buys nothing (ruled out)", e_swl["purchase"] == 0, "ranch %d" % e_swl["total"])
+    # SF17: the 24 hours run from the end of the last interval the utility's data record with energy
+    ok("SF17 the notice counts the 24 hours from the end of the last energised interval",
+       "counted from the end of the last interval in which the utility's data for the well's service record energy" in nt, "")
+    gs_all = {w: G.static_depths(d, w) for w in d["reg"]}
+    var = {}
+    for b in ("hour", "start"):
+        alt = {w: G.static_depths(d, w, boundary=b) for w in d["reg"]}
+        var[b] = sum(1 for w in d["reg"] for k in ("spring", "fall") if round(alt[w][k][1], 1) != round(gs_all[w][k][1], 1))
+    ok("SF17 the readings the sentence rules out would move depths", var["hour"] + var["start"] >= 1,
+       "hourly roll-up moves %d, interval start %d" % (var["hour"], var["start"]))
+    # Ask D: the schedule's own sentences rule out the shortfall readings
+    tf = " ".join(B.tariff_text(target).split())
+    ok("Ask D: the schedule files its season and its off-peak hours",
+       "Summer season: June 1 through September 30" in tf and "off-peak all other hours" in tf, "")
     # ---- zero-counts: the call reads no ask organ
     unmet = [w for w in d["reg"] if d["reg"][w]["Flow meter"] == "none"]
     ok("zero-count: no unmetered well on an absolute logger", all("vented" in str(d["reg"][w]["Level logger"]) for w in unmet), "")

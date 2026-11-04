@@ -202,6 +202,11 @@ def notice(target):
     return dict(text=text, allocation=round(alloc, 1), carryover=carry, available=round(alloc + carry, 1), block=block)
 
 
+def tariff_text(target):
+    with pdfplumber.open(find(target, "power", r"tou_schedules")[0]) as pdf:
+        return "\n".join(pg.extract_text() or "" for pg in pdf.pages)
+
+
 def tariff(target):
     with pdfplumber.open(find(target, "power", r"tou_schedules")[0]) as pdf:
         text = "\n".join(pg.extract_text() or "" for pg in pdf.pages)
