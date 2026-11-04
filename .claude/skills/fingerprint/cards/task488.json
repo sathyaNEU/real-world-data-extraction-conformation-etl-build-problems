@@ -1,92 +1,138 @@
 {
   "task": "task488",
-  "architecture": "v1",
-  "drawn": "2026-10-28",
-  "slot_note": "Drawn 2026-10-28 at the user's request for an education task with a data-engineering feel and an analytical stump; task488's ET45 world (barcode catalog matching) was paused at stage 1 with no card, and its resume line allows a redraw outside the seed's world.",
-  "domain": "education-learning-sciences",
-  "subdomain": "item-response-theory-test-equating",
-  "niche": "a regional consortium of Wisconsin school districts moving its own adaptive mathematics interim (grades 3 to 8) off its vendor's platform, whose bank holds about 500 teacher-written items the vendor ran on the writing panel's provisional difficulty ratings, to size the summer 2027 item-writing commission against the new platform's low-band floor",
+  "architecture": "v2",
+  "drawn": "2026-11-04",
+  "slot_note": "Architecture 2, a re-root after architecture 1 (IRT calibration of a consortium's adaptive item bank, spent at the 11-02 re-check) into a house world: an airport fuel facility corporation's hydrant system after a released batch of jet fuel is recalled.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "transportation-network",
+  "client_domain": "general-statistics-data-science",
+  "niche": "an airline-owned airport fuel facility corporation tracing a recalled jet fuel batch through its branched hydrant system to decide which hydrant sections are drained before fuelling resumes and which aircraft operators are told their uplift was off specification",
   "objective": "etl",
-  "shape": "other",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "commission 199 new items below the Approaching cut: 27, 39, 31, 33, 49 and 20 for grades 3 to 8",
-  "answer_source": "task488/submission.md block 1; task488/generator/figures.json (call, commission_3 to commission_8)",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective"
+    "objective",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G16",
+    "G13",
+    "G3",
     "G19"
   ],
   "gate_g": "etl_conformance",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "other",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the vendor's export, sees that an adaptive test's percent correct carries no difficulty information and calibrates the 502 workshop items with the Rasch model against each student's reported scale score files a commission of 138 items (against 199), because the vendor computed those scores with the panel's ratings, which put the multi-step word problems far too easy, so the students who met them were scored too low and the word problems look easy enough for the low band; estimated together with the students' abilities with the calibrated items held at their bank values, the word problems sit above the band and the commission is 199.",
-  "domain_test": "The deciding quantity is each new item's difficulty on the consortium's Rasch reporting scale, which item response theory estimates from the item's responses conditional on the takers' abilities while the calibrated items hold the scale; in another field's nouns the task loses its object, since its structure (each item served to the students its recorded difficulty matched, and those students scored from the recorded difficulties) exists only in an adaptive test.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:adaptive-calibration-against-contaminated-scores",
+  "analyst_test": "A strong analyst who conforms the tank line-up, the pump station meter, both into-plane agents' fuel tickets and the hydrant network register and applies the quality procedure takes the batch as reaching the pits while Tank 3 was on line or one line fill later, finds the hydrant has pumped several line fills since Tank 3 came off line, drains nothing and lists the aircraft fuelled in that window, because nothing records that each section's fuel moves only when its own pits draw, so the batch reached the low-use branches hours late and is still standing in them.",
+  "domain_test": "The deciding quantity is the recalled batch's position in each segment of the hydrant, a data-integration estimate that integrates the tank line-up, the network register's segment volumes and both agents' uplift records through the plug flow every always-full segment obeys, so it changes when the integration is replaced by a single-source summary (the line-up window, the pump station's turnover); in another field's nouns, a pharmacy lot's doses or a ledger's postings, there is no line fill, no branch that moves only when its own outlets draw and no batch left standing.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a recalled batch tracked through a branched always-full hydrant by the draws downstream of each segment",
   "layer1": [
-    "two item-identifier systems (the vendor's item keys and the consortium's authoring IDs) joined by a crosswalk in which edited items carry a new version",
-    "response events logged in UTC, with a resumed session re-logging the item that was on screen",
-    "scale scores reported as integers on a linear transform of the Rasch scale, with a separate standard error",
-    "invalidated and retested test events inside the same window",
-    "three testing windows a year, with students promoted a grade between years",
-    "district student identifiers mapped to the consortium's identifiers"
+    "two into-plane agents' fuel ticket exports, one in gross litres at fuel temperature and local time, one in net litres at 15 C and UTC",
+    "pit identifiers in the agents' stand-and-letter scheme against the register's pit tags",
+    "segment lengths and nominal bores in the register, volumes derived",
+    "a corrected ticket re-issued under a new number",
+    "the pump station meter's cumulative register with a reset at a meter proving",
+    "tank line-ups logged in the fuel farm's own shift log"
   ],
-  "stakeholder_role": "the consortium's director of assessment, who brings the summer item-writing commission to the consortium's board",
-  "role_family": "research_desk",
-  "scoring_unit": "per accepted item",
+  "stakeholder_role": "the fuel facility operator's fuel quality manager, who brings the resumption plan to the corporation's fuel quality committee",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
   "spine": {
-    "file": "tessaline_item_responses_2025-26.parquet",
-    "rows": 3925625,
-    "entity": "one student's response to one item in one test event",
-    "grain": "test event x item",
+    "file": "hydrant_scada_2026-10.csv",
+    "rows": 44640,
+    "entity": "one minute of the hydrant pump station's flow, pressure and meter register",
+    "grain": "minute",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
-  "forcing_event": "cutover_or_migration",
+  "forum": "committee_or_panel",
+  "forcing_event": "incident_or_complaint",
   "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United States (Wisconsin)",
-    "currency": "USD",
-    "org_type": "regional consortium of school districts running its own adaptive interim assessment",
-    "invented_names": [
-      "Quarrystone Regional Assessment Consortium",
-      "Tessaline Learning Systems",
-      "Corvane Assessment"
-    ],
+    "geography": "Canada",
+    "currency": "CAD",
+    "org_type": "airline-owned airport fuel facility corporation",
+    "invented_names": [],
     "people": [
-      "Sheri Brady",
-      "Timothy Fitzgerald"
+      "Natalie Daugherty",
+      "William Hopkins"
     ]
   },
   "deliverables": [
-    "bank_import_2027-28.csv",
-    "pool_summary_2027-28.xlsx",
-    "low_band_commission_memo.docx"
+    "j26-1187_recall_uplifts.csv",
+    "hydrant_resumption_plan.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is each new unit's level on an established scale, seen only through the responses of the members it was given to; each unit was given to the members its recorded level matched, and those members' published standings were computed from the recorded levels, so reading each unit against the published standings returns its recorded level, while estimating the units' levels and the members' standings together from every response, with the established units held at their known levels, recovers the true levels, which the established units' own levels confirm when recalibrated the same way.",
-  "driver_concrete": "Tessaline's adaptive engine served each of the 502 teacher-written items to students whose running estimate matched the writing panel's provisional rating and scored every student with those ratings, so the multi-step word problems the panel rated as easy were met by low-scoring students who mostly missed them and were scored lower still; calibrating against the reported scale scores leaves the word problems inside the low band, while a marginal-likelihood calibration with the calibrated items fixed puts them above it, and only that calibration recovers the calibrated items' own bank values when they are re-estimated from the same responses.",
-  "stump": "The default path files a commission of 138 items against 199 because it calibrates each workshop item against the students' reported scale scores, which Tessaline computed with the writing panel's ratings, so the multi-step word problems the panel rated far too easy land back inside the low band; estimated jointly with the students' abilities, the launch items fixed, 61 of them sit above it.",
+  "question_form": "which",
+  "driver": "A substance entering a branched network of always-full conduits reaches each outlet only after the volume drawn through every conduit on its path since it entered has displaced what that conduit held, so each branch's exposure is set by its own draws: timing it by when the substance entered, or by total throughput against the whole network's or the path's volume, misplaces which outlets received it and leaves it standing in the branches that drew little.",
+  "driver_concrete": "Batch J-26-1187 entered the hydrant at the pump station while Tank 3 was on line, but each section's fuel moves only when its own pits draw, so the batch reached the cargo branch and the hangar spur hours late, left them only as their own stands fuelled, and at the recall still stood in them, while the time window and every turnover check file the hydrant as clear.",
+  "stump": "The default path takes the batch as reaching the pits while Tank 3 was on line, finds the hydrant has turned over several line fills since, drains nothing and lists the aircraft fuelled in that window; each section's fuel moves only when its own pits draw, so the batch is still standing in the low-use branches and reached aircraft there after Tank 3 came off line.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task479": "task479's architecture 4 removed answers given too fast to have been read before scoring units; here no response is removed or cleaned, every response stays, and the decisive step is estimating the new items' levels jointly with the students' abilities from all responses with the calibrated items fixed, because the students met each new item because of its recorded level and their published scores were computed from those levels."
+    "task270": "task270's ninth architecture reads a variability standard fixed at one interval from readings taken at other intervals (mean square change against time between readings); here no interval or variability is read: a recalled fuel batch's plug-flow front is tracked through a branched hydrant by the volume drawn downstream of each segment, and the decision is which sections still hold it and which uplifts took it."
   },
-  "lineage": [],
-  "notes": "Strategy other: contaminated conditioning, the variable each estimate would condition on (the reported scale score) was computed from the quantities being estimated (the provisional ratings), so the estimate returns them; the separating check is the calibrated items' own bank values, which only the joint marginal-likelihood calibration reproduces. Pattern none with G14 decisive (an item's difficulty is its success rate conditioned on the takers' ability, the ability here having to be estimated jointly rather than read from the published scores). Gap objective: the panel's ratings, the percent correct and the reported scale scores are each correct as recorded and none is the item's difficulty on the scale. Gate G etl_conformance: the stump sits in the difficulty field of the conformed bank import that Corvane's import contract defines. Labels population/G16/method_or_model_selection were tried first and refused: that signature is spent in task177's lineage and eight older builds. Context artifact redrawn in place from close_out_summary to monitoring_export on 2026-10-28 after the DRAWN push, when task162's ship commit relabelled its own card close_out_summary and put that value in the window; the monitoring export (Tessaline's item-statistics report, which answers how each item fared among the students who met it, correctly) is the more exact label for the artifact the consortium works from. Architecture 1 spent at the 11-02 re-check: the golden is the field's own fixed-anchor calibration by marginal maximum likelihood (the launch items held at their 2021 values) applied as the textbook states it, nothing in the data violating its precondition and the standing spread 0, so the field's method is the top rung rather than rung 0 or 1 (Link, Reflex and Back-test fail on the honest anatomy, Actor in part); the clean-truth easy routes (reported scores 138, joint maximum likelihood 116, ratings 93) do file wrong commissions.",
-  "client_domain": "education-learning-sciences",
-  "registered": "2026-10-28T08:05:27Z",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-28",
+      "fate": "spent 2026-11-02 at the re-check: the golden is the field's own fixed-anchor calibration by marginal maximum likelihood with the launch items held at their 2021 values, applied as the textbook states it, with nothing in the data violating its precondition (standing spread 0); the field's method was the top rung, not rung 0 or 1, and the honest anatomy failed Link, Reflex and Back-test. Its shipped pack (target.zip bfca5a21) stays at the portal, pending; build files cleared from the folder 2026-11-04 and kept in history",
+      "driver": "The decisive quantity is each new unit's level on an established scale, seen only through the responses of the members it was given to; each unit was given to the members its recorded level matched, and those members' published standings were computed from the recorded levels, so reading each unit against the published standings returns its recorded level, while estimating the units' levels and the members' standings together from every response, with the established units held at their known levels, recovers the true levels, which the established units' own levels confirm when recalibrated the same way.",
+      "stump": "The default path files a commission of 138 items against 199 because it calibrates each workshop item against the students' reported scale scores, which Tessaline computed with the writing panel's ratings, so the multi-step word problems the panel rated far too easy land back inside the low band; estimated jointly with the students' abilities, the launch items fixed, 61 of them sit above it.",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G19"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "quantity_figure",
+      "niche": "a regional consortium of Wisconsin school districts moving its own adaptive mathematics interim (grades 3 to 8) off its vendor's platform, whose bank holds about 500 teacher-written items the vendor ran on the writing panel's provisional difficulty ratings, to size the summer 2027 item-writing commission against the new platform's low-band floor",
+      "domain": "education-learning-sciences",
+      "subdomain": "item-response-theory-test-equating",
+      "objective": "etl",
+      "forum": "board_of_directors",
+      "forcing_event": "cutover_or_migration",
+      "org_family": "cooperative_or_member_body",
+      "world": {
+        "geography": "United States (Wisconsin)",
+        "currency": "USD",
+        "org_type": "regional consortium of school districts running its own adaptive interim assessment",
+        "invented_names": [
+          "Quarrystone Regional Assessment Consortium",
+          "Tessaline Learning Systems",
+          "Corvane Assessment"
+        ],
+        "people": [
+          "Sheri Brady",
+          "Timothy Fitzgerald"
+        ]
+      }
+    }
+  ],
+  "notes": "Strategy population_selection (exposure): which hydrant sections and uplifts were exposed to the recalled batch is set by each segment's own downstream draws, not by the tank line-up window the records name. Gap objective (the line-up window and the hydrant's turnover are correct and are not what the drain decision is scored on), population second (the uplifts in the window are not the exposed uplifts). Pattern none with G13 decisive (each pit's exposure window differs from the tank's line-up window), G3 (the line-up record against the physical delivery) and G19 (the conformed uplift list against the quality procedure). Gate G etl_conformance repeats task476 v3 and task461 v3 (WARN, answered in the design note: the stump sits in the conformed recall list and section drain plan judged against the operator's quality procedure, another driver in another domain). House domain supply-chain-logistics (airport fuel supply) in its client domain general-statistics-data-science, task type data-integration-record-linkage-entity-resolution, which serves ETL; the card's subdomain transportation-network is the house's own. Priced in proto2.py (session scratchpad, six seeds) before carding: the time window, one line fill and the path volume against the pump station's meter all file the hydrant as clear at the recall while per-segment tracking leaves batch fuel standing in the low-use branches on five seeds of six, and the notified uplifts differ by 6 to 24 per seed.",
+  "lineage_shells": [
+    {
+      "architecture": "v1",
+      "question form": "how-many",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "csv+docx+xlsx"
+    }
+  ],
+  "registered": "2026-11-04T07:59:59Z"
 }
