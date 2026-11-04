@@ -55,8 +55,8 @@
     "grain": "sample x analyte x analysis",
     "source": "synthetic"
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "statutory_or_regulatory_filing",
+  "forum": "line_manager_or_team",
+  "forcing_event": "period_close",
   "org_family": "utility_or_infrastructure",
   "world": {
     "geography": "United States (Wisconsin, a fictional three-county solid waste district)",
@@ -133,7 +133,7 @@
     }
   ],
   "notes": "stump_strategy population_selection: the decisive move is which background results belong to the filed population (groundwater the landfill has not affected), read sample by sample from the hydraulic state on each sampling date; it is not a mix shift and not a completion. context_artifact monitoring_export: the laboratory deliverables and the gauging export are the district's own monitoring exports.",
-  "registered": "2026-11-04T03:19:59Z",
+  "registered": "2026-11-04T03:21:25Z",
   "shell": {
     "question form": "whether",
     "second-sentence opener": "for",
