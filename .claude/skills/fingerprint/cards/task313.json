@@ -1,0 +1,99 @@
+{
+  "task": "task313",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Seed OS15's world, decision and quantity kept (transitional-care posts placed across a health system's hospitals in whole posts by the readmissions the service avoids); its pitfall (next-day transfers counted as readmissions, an episode-unit reading) is a coding and identity stump the clean-truth test kills and was not used. The adult-ward version of the same window was measured too weak (post-visit shares 0.72 to 0.84, the fixed-lag partial correction recovering half of it) and moved to the neonatal transitional-care pathway, where readmissions for jaundice and feeding cluster in the first days after discharge.",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "patient-flow-beds-workforce-optimization",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "an integrated care board placing 30 new neonatal transitional-care outreach posts across its five maternity units for 2027/28, each unit's share following the readmissions the service will avoid among its babies discharged home with a jaundice or feeding risk flag, sized from the Copperfield unit's two-year randomised trial of the service",
+  "objective": "opportunity-sizing-decision",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G13",
+    "G14"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms both maternity systems, links every 28-day readmission to the right discharge and applies the service specification's allocation rule exactly carries the trial's intention-to-treat readmission ratio to every eligible readmission at each unit and over-weights Ravensby Royal and St Aldric's, whose community notifications arrive days after discharge, so the posts and the readmissions avoided both come out wrong.",
+  "domain_test": "The deciding quantity is the readmissions an outreach visit can still prevent at each unit, worked the way health services research transports a trial: the trial's effect read on the window after the first visit, which the trial's own arms show is where it lives, and applied to each unit's readmissions that fall after its babies could first be seen; with another field's nouns the clinical course of neonatal jaundice and feeding problems against the visit, which sets how much of the window is reachable, no longer exists.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a-trial-effect-re-based-on-the-window-after-each-babys-earliest-outreach-visit",
+  "layer1": [
+    "two maternity systems with different layouts, unit codes and risk-flag fields",
+    "community office receipt times in UTC against ward discharge times in local time across the clock changes",
+    "notifications re-sent after a correction, the first receipt the one the office acts on",
+    "NHS number missing on some ward records, a hospital number and a crosswalk carrying the link",
+    "a preliminary and a final trial extract overlapping by one quarter",
+    "financial-year quarters against calendar months"
+  ],
+  "stakeholder_role": "the integrated care board's neonatal outreach programme lead",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "community_midwifery_notifications_2024-10_2026-10.csv",
+    "rows": 0,
+    "entity": "one notification of a baby's discharge received by the community midwifery office",
+    "grain": "notification x receipt",
+    "source": "synthetic"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "England",
+    "currency": "GBP",
+    "org_type": "integrated care board, two hospital trusts and a community health trust",
+    "invented_names": [
+      "Ravensby and Weald Integrated Care Board",
+      "Ravensby Royal Infirmary",
+      "Kellingworth University Hospital",
+      "Sedgefold Hospital",
+      "St Aldric's Hospital",
+      "Wennby Community Hospital",
+      "Copperfield Hospital"
+    ],
+    "people": [
+      "Lucy Coates",
+      "Kathryn Thompson",
+      "Hugh Brown"
+    ]
+  },
+  "deliverables": [
+    "outreach_posts_2027-28.xlsx",
+    "readmissions_reachable_by_unit.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "An intervention can act on a case only from a start that waits on a hand-off whose delay differs case by case and unit by unit, so the outcomes it can remove are the ones that fall after that start; a trial's effect measured over the whole window at a unit where the hand-off is quick, carried as one ratio to units where it is slow, credits the slow units with outcomes that happen before the intervention could begin.",
+  "driver_concrete": "Each maternity unit's expected readmissions avoided is the trial's reduction in readmissions after the first outreach visit applied to the unit's own eligible readmissions that came after the day following the community office's receipt of the baby's discharge notification, not the trial's 28-day intention-to-treat ratio applied to all of a unit's readmissions; Ravensby Royal's and St Aldric's notifications often reach the office days late, so many of their early jaundice and feeding readmissions fall before any visit could happen.",
+  "stump": "The default path carries the trial's 28-day intention-to-treat ratio to every eligible readmission at each unit, so Ravensby Royal and St Aldric's are credited with readmissions that fall before a nurse could reach the baby and the posts and the readmissions avoided both come out wrong.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task309": "309 reads an effect class by class of an event's intensity and carries it to a forward set; here no effect varies by any class of case: the effect is constant once the service starts, and what moves is how much of each case's window the service can reach, set per case by a hand-off recorded in a second file.",
+    "task105": "105 v1's lead time was one filed season for one class of commitment against one opening date; here each case's start comes from its own receipt time in a separate log, and the trial's effect has to be re-based before it is carried.",
+    "task127": "127's first architecture counts the units a capacity-limited team can finish before a period closes; here no capacity binds the decisive step: each case's start is set by its own hand-off time in a second file, and what is counted is how many of a unit's outcomes fall after that start.",
+    "task259": "259 ages reported levels to a reference date by a trend read within units; here nothing is aged: each case's outcome counts only if it falls after the case's own start, recorded in a separate log, and a trial's effect is re-based on that window before it is carried."
+  },
+  "lineage": [],
+  "notes": "Architecture 1 of task313. Adult transitional-care readmissions measured first on the same window and dropped before registration (contrast 1.23x at the realistic edge, fixed-lag rung recovering half of it in the same direction).",
+  "registered": "2026-11-04T10:22:08Z"
+}
