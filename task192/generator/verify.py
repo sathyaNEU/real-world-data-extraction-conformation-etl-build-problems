@@ -293,7 +293,7 @@ def main():
                     if a < tm and t0 < b:
                         hit = True
                         break
-                    if tm <= a <= t0 + FIVE:
+                    if tm <= a < tm + 60000:
                         hit = True
                         break
                     if b < t0 - 86400000 * 40:

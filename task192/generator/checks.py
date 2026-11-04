@@ -237,8 +237,9 @@ def main():
     tcs = [o for o in items if o["src"] == "scada"]
     medset = set(res["meds"])
     tcs_w = [o for o in tcs if W.REP0 <= o["day"] <= W.REP1 and o["day"] not in medset]
-    ok("SF15 sustained openings with no ticket sit between 5.7 and 13.6 minutes",
-       all(5.6 * 60000 < o["restore"] - o["start"] < 13.7 * 60000 for o in tcs), [(o["id"], o["restore"] - o["start"]) for o in tcs][:4])
+    ok("SF15 sustained openings with no ticket sit open between 5.7 and 13.6 minutes from the lockout",
+       all(5.6 * 60000 < o["restore"] - o["lockout_open"] < 13.7 * 60000 for o in tcs),
+       [(o["id"], o["restore"] - o["lockout_open"]) for o in tcs if not 5.6 * 60000 < o["restore"] - o["lockout_open"] < 13.7 * 60000][:4])
     ok("SF15 they reach four feeders in the window", len({o["feeder"] for o in tcs_w}) >= 4, sorted({o["feeder"] for o in tcs_w}))
     gaps = []
     for dev, seq in res["soe"].items():
@@ -272,6 +273,98 @@ def main():
                 if not (o["start"] < em and e["t"] < o["restore"]):
                     amb.append((e["device"], e["t"]))
     ok("SF17 no sustained interruption begins in the minutes just before a momentary event", not amb, amb[:3])
+    # SF17: absorption is read at the outage system's minute; a sustained start after an event's minute and inside
+    # its five minutes comes only from a later fault inside a multi-fault event, which leaves the first momentary
+    late_abs, odd = [], []
+    for e in res["ev"]:
+        if not (W.REP0 <= e["day"] <= W.REP1) or e["day"] in medset:
+            continue
+        em = G.floor_min(e["t"])
+        reach = net.customers(e["device"], e["day"])
+        for o in items:
+            if em + 60000 <= o["start"] <= e["t"] + 5 * 60000 and reach & o["dark"]:
+                late_abs.append((e["feeder"], str(e["day"]), o["id"]))
+                if not (e["end"] - e["t"] > 60000 and o["start"] <= G.floor_min(e["end"])):
+                    odd.append((e["feeder"], str(e["day"]), o["id"]))
+    ok("SF17 a sustained start after an event's minute and inside its five minutes falls in a later fault's "
+       "operations of a multi-fault event (the event's first momentary stands)", not odd and len(late_abs) <= 2,
+       (late_abs, odd))
+    blown = []
+    for e in res["ev"]:
+        reach = net.customers(e["device"], e["day"])
+        for o in items:
+            if (o["dtype"] in ("FUSE", "TRANSFORMER") and G.floor_min(e["t"]) <= o["start"] <= e["t"] + 20000
+                    and reach & o["dark"] and o["start"] != G.floor_min(e["t"])):
+                blown.append((e["feeder"], str(e["day"]), o["id"]))
+    ok("SF17 a fuse that blew on the reclose carries its operation's minute in the OMS", not blown, blown[:3])
+    # SF22: where the OMS and the SCADA log both record an interruption the OMS's times govern (DRP-04 2.7), and the
+    # two records pair without a judgment: every SCADA opening over five minutes has its ticket within a minute or
+    # none within a day
+    proc = G.procedure_constants(T)[2]
+    ok("SF22 DRP-04 2.7 files the interruption clock: the OMS's times, the SCADA log where the OMS has no record",
+       "times the outage management system records for it" in proc and "SCADA sequence-of-events log" in proc)
+    tk = collections.defaultdict(list)
+    for o in items:
+        if o["src"] != "scada":
+            tk[o["device"]].append(o["start"])
+    pair_bad = []
+    for dev, seq in res["soe"].items():
+        for a, b in G.open_intervals(seq):
+            if b - a <= 5 * 60000:
+                continue
+            dmin = min((abs(x - a) for x in tk.get(dev, [])), default=None)
+            if dmin is not None and 60000 < dmin < 86400000:
+                pair_bad.append((dev, a, dmin))
+    ok("SF22 every SCADA opening over five minutes pairs with its ticket within a minute or has none within a day",
+       not pair_bad, pair_bad[:3])
+    # SF23: planned interruptions count (DRP-04 2.2)
+    planned = [o for o in items if o["src"] != "scada" and str(o["cause"]).upper().startswith("PLAN")
+               and W.REP0 <= o["day"] <= W.REP1 and o["day"] not in medset]
+    ok("SF23 DRP-04 2.2 counts planned interruptions, and the window holds planned tickets on several feeders",
+       "Planned interruptions" in proc and len({o["feeder"] for o in planned}) >= 5, len(planned))
+    # SF24: no service point is connected or retired on the period's last day or after it
+    edge_sp = [sp for sp, v in net.sp.items() if v["con"] >= W.REP1 or (v["dis"] and v["dis"] >= W.REP1)]
+    ok("SF24 no service point is connected or retired on 31 October 2026 or after it", not edge_sp, edge_sp[:3])
+    # SF25: a sustained interruption the OMS does not record runs from the opening that locked out its breaker or
+    # recloser (DRP-04 2.7, the closing sentence), as the OMS times every lockout it records (the corroboration)
+    ok("SF25 DRP-04 2.7 pins the start of an unrecorded sustained interruption at the opening that locked out its "
+       "breaker or recloser, with 2.5 left to the counting",
+       "does not record runs, for the indices, from the opening that locked out its breaker or recloser" in proc
+       and "are part of it under 2.5, not momentary interruption events, and do not move its start" in proc)
+    cross, cross_bad = 0, []
+    for o in items:
+        if o["src"] == "scada" or o["dtype"] not in ("BREAKER", "RECLOSER"):
+            continue
+        if o["device"] in res["soe"]:
+            opens = sorted(t for t, st in res["soe"][o["device"]] if st == "OPEN"
+                           and o["start"] - 2 * 60000 <= t <= o["start"] + 2 * 60000)
+        else:
+            opens = sorted(x["t"] for x in res["log"].get(o["device"], []) if x["ev"] == "TRIP"
+                           and o["start"] - 2 * 60000 <= x["t"] <= o["start"] + 2 * 60000)
+        if len(opens) < 2 or G.floor_min(opens[0]) == G.floor_min(opens[-1]):
+            continue
+        cross += 1
+        if o["start"] != G.floor_min(opens[-1]):
+            cross_bad.append(o["id"])
+    ok("SF25 corroboration: every ticketed lockout whose first opening and lockout fall in different minutes carries "
+       "the lockout's minute in the OMS (twenty or more)", cross >= 20 and not cross_bad, (cross, cross_bad[:3]))
+    seq_bad = []
+    for o in items:
+        if o["src"] != "scada":
+            continue
+        ops_ = res["soe"][o["device"]]
+        seq = [t for t, st in ops_ if st == "OPEN" and o["start"] - 5 * 60000 <= t <= o["start"]]
+        before = [t for t, st in ops_ if st == "OPEN" and min(seq) - 5 * 60000 <= t < min(seq)]
+        if o["start"] != o["lockout_open"] or before or not (0 < o["start"] - min(seq) < 30000):
+            seq_bad.append((o["device"], str(o["day"])))
+    ok("SF25 every unticketed lockout runs from its lockout opening, the last of a sequence under half a minute with "
+       "no other opening in the five minutes before it", not seq_bad, seq_bad[:3])
+    want = {"BLV-1": 308.4, "BLV-2": 83.2, "BLV-3": 169.5, "CTR-1": 146.6, "CTR-2": 209.8, "CTR-3": 76.8,
+            "MLR-1": 301.4, "MLR-2": 139.8, "MLR-3": 87.9, "NYD-1": 23.6, "NYD-2": 412.9, "NYD-3": 64.2,
+            "NYD-4": 113.9, "SYC-1": 153.2, "SYC-2": 127.5, "SYC-3": 356.4}
+    got = {f: F["feeders"][f]["saidi"] for f in want}
+    ok("SF25 the minutes of interruption per customer with unrecorded lockouts from their lockout opening",
+       got == want, {f: (got[f], want[f]) for f in want if got[f] != want[f]})
     near = []
     ev_by_f = collections.defaultdict(list)
     for e in res["ev"]:

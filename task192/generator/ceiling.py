@@ -88,7 +88,7 @@ def maifi_route(res, ev, absorb, out_now, merge, end_tree=False):
             for o in res["items"]:
                 if out_now and o["start"] < em and e["t"] < o["restore"]:
                     drop |= reach & o["dark"]
-                elif absorb and em <= o["start"] <= e["t"] + G.FIVE:
+                elif absorb and em <= o["start"] < em + G.MIN:
                     drop |= reach & o["dark"]
             reach = reach - drop
         mom[e["feeder"]] += len(reach)
@@ -138,11 +138,14 @@ def main():
     gc = {f: v["cemi"] for f, v in F["feeders"].items()}
     items = oms_only(res["items"])
     child_out_times(T, items)
+    with_tc = [o for o in res["items"]]
+    child_out_times(T, with_tc)
     # the cracker: every sheet read, children paired with their parents at their own Out times, steps applied,
-    # the filed rules executed, the register's dated rows used, the OMS taken as the record of sustained outages
-    c_s, _ = saidi_route(res, items, child_own_times=True)
+    # the filed rules executed (DRP-04 2.7 sends it to the SCADA log for the openings the OMS never ticketed), the
+    # register's dated rows used
+    c_s, _ = saidi_route(res, with_tc, child_own_times=True)
     c_m = maifi_route(res, res["ev"], absorb=False, out_now=False, merge=False)
-    c_c = cemi_route(res, items, tree_today=True, connect=True)
+    c_c = cemi_route(res, with_tc, tree_today=True, connect=True)
     # the mirror: the OMS's parent rows at face value, the relay archive's operations, today's network
     m_s, _ = saidi_route(res, items, child_own_times=None, steps_new=False)
     m_m = maifi_route(res, [e for e in res["ev"]], absorb=False, out_now=False, merge=False, end_tree=True)
@@ -162,20 +165,20 @@ def main():
         print("%-8s SAIDI %2d of %d   MAIFI-E %2d of %d   CEMI-2 %2d of %d   ask weight kept %.1f per cent" %
               (name, ks[0], ks[1], km[0], km[1], kc[0], kc[1], 100 * frac))
     print("cracker on the call %.1f, mirror off it %.1f, pair ceiling %.1f" % (c_score, m_score, (c_score + m_score) / 2))
-    # the full includer: a cracker that also finds one ask's primary device and handles it, and nothing else
-    with_tc = [o for o in res["items"]]
-    child_out_times(T, with_tc)
-    s_tc, _ = saidi_route(res, with_tc, child_own_times=True)
-    s_st, _ = saidi_route(res, items, child_own_times=False)
+    # the full includer: the cracker that also finds one more device and handles it, and nothing else
+    s_st, _ = saidi_route(res, with_tc, child_own_times=False)
+    s_oms, _ = saidi_route(res, items, child_own_times=False)
     m_ab = maifi_route(res, res["ev"], absorb=True, out_now=False, merge=False)
-    merged = [o for o in items if o.get("continues") is None]
+    m_ab_out = maifi_route(res, res["ev"], absorb=True, out_now=True, merge=False)
+    merged = [o for o in with_tc if o.get("continues") is None]
     c_mg = cemi_route(res, merged, tree_today=True, connect=True)
-    c_tc = cemi_route(res, [o for o in res["items"]], tree_today=True, connect=True)
-    for label, route, g, u, n_ in (("SAIDI, unticketed openings found", s_tc, gs, 0.1, nt),
-                                   ("SAIDI, children timed from the parent", s_st, gs, 0.1, nt),
+    c_oms = cemi_route(res, [o for o in items if o.get("continues") is None], tree_today=True, connect=True)
+    for label, route, g, u, n_ in (("SAIDI, children timed from the parent", s_st, gs, 0.1, nt),
+                                   ("SAIDI, children from the parent but the OMS alone", s_oms, gs, 0.1, nt),
                                    ("MAIFI-E, absorbed interruptions removed", m_ab, gm, 0.01, nt),
+                                   ("MAIFI-E, absorbed and already-out customers removed", m_ab_out, gm, 0.01, nt),
                                    ("CEMI-2, continuations merged", c_mg, gc, 1, None),
-                                   ("CEMI-2, unticketed openings found", c_tc, gc, 1, None)):
+                                   ("CEMI-2, continuations merged but the OMS alone", c_oms, gc, 1, None)):
         k = keep(route, g, u, n_)
         print("full includer, %s: %d of %d" % (label, k[0], k[1]))
     print("mirror leakage %.1f per cent of ask weight" % (100 * mi[4]))

@@ -56,21 +56,35 @@ def event_days(net, S):
 
 def tidy_dates(net, S):
     """No service point is connected or retired on a day an interruption or a momentary operation reached it, so
-    no reading of 'served on that day' moves a figure."""
+    no reading of 'served on that day' moves a figure; and none on the period's last day, so no reading of
+    'supplies on the last day' (DRP-04 2.1) moves the customers served. A date the forward step would carry onto
+    or past the last day goes back instead, to the latest free day before it."""
     days = event_days(net, S)
+    one = dt.timedelta(days=1)
     moved = 0
+
+    def free(d, busy):
+        return d not in busy and (d - one) not in busy
+
     for sp, v in sorted(net["sps"].items()):
         busy = days.get(v["transformer"], set())
         for key in ("connected", "disconnected"):
-            d = v[key]
-            if d is None or d < W.DATA0:
+            d0 = v[key]
+            if d0 is None or d0 < W.DATA0:
                 continue
-            while d in busy or (d - dt.timedelta(days=1)) in busy:
-                d += dt.timedelta(days=1)
+            d = d0
+            while not free(d, busy):
+                d += one
+                moved += 1
+            if d >= W.REP1:
+                d = min(d0, W.REP1) - one
+                while not free(d, busy):
+                    d -= one
                 moved += 1
             v[key] = d
         if v["disconnected"] and v["disconnected"] <= v["connected"]:
             v["disconnected"] = v["connected"] + dt.timedelta(days=30)
+            assert v["disconnected"] < W.REP1, (sp, v)
     return moved
 
 
@@ -241,7 +255,7 @@ def main():
     F["constants"] = dict(t_med=W.T_MED_2026, n_sys=TR["n_sys"], window=["2026-08-01", "2026-10-31"],
                           added_late=added, sim_seed=SIM_SEED, patrol_week=W.PATROL_WEEK.isocalendar()[1],
                           drp04_sections=[2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 4.1, 4.2, 5.2, 5.3, 5.4, 6.1],
-                          band_per_cent=2)
+                          band_per_cent=2, band_spread_per_cent=4)
     F["pack"] = info
     json.dump(F, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True, default=str)
     json.dump(metadata(info), open(os.path.join(TASK, "metadata.json"), "w"), indent=1)

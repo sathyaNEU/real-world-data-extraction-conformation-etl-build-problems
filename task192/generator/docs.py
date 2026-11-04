@@ -58,7 +58,8 @@ def build(path, t_med, n_sys):
          Paragraph("2.1 A customer is a metered service point. The customers served by a feeder are the service "
                    "points it supplies on the last day of the reporting period.", BODY),
          Paragraph("2.2 An interruption is the loss of supply to one or more customers. A sustained interruption "
-                   "lasts more than five minutes; a momentary interruption lasts five minutes or less.", BODY),
+                   "lasts more than five minutes; a momentary interruption lasts five minutes or less. Planned "
+                   "interruptions, taken for work on the system, are counted like any other.", BODY),
          Paragraph("2.3 A customer interruption is one customer losing supply in a sustained interruption.", BODY),
          Paragraph("2.4 Customer minutes of interruption are the minutes each interrupted customer was without "
                    "supply, summed over the customers.", BODY),
@@ -67,6 +68,14 @@ def build(path, t_med, n_sys):
                    "in a sustained interruption of that customer are part of the sustained interruption and are not "
                    "a momentary interruption event.", BODY),
          Paragraph("2.6 An interruption belongs to the local calendar day, Central time, on which it began.", BODY),
+         Paragraph("2.7 An interruption's start and end are the times the outage management system records for it. "
+                   "Interruptions the outage management system does not record, as with every momentary "
+                   "interruption, take their times from the SCADA sequence-of-events log, and a recloser's momentary "
+                   "interruptions from the recloser's own event log. A sustained interruption the outage management "
+                   "system does not record runs, for the indices, from the opening that locked out its breaker or "
+                   "recloser, as the outage management system times those it records; the trips and recloses before "
+                   "that lockout are part of it under 2.5, not momentary interruption events, and do not move its "
+                   "start.", BODY),
          Paragraph("3 Reliability indices", H2),
          Paragraph("3.1 For a reporting period, with major event days left out (section 4): SAIFI is the customer "
                    "interruptions divided by the customers served; SAIDI is the customer minutes of interruption "

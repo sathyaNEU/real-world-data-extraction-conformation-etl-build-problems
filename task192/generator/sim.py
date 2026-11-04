@@ -668,6 +668,15 @@ def simulate(rng, net, wx, stk):
                                       fl, storm, med, d))
             op["absorbed_ref"] = outages[-1]
     outages += continuations(rng, net, grid, outages)
+    outages += continuations(np.random.default_rng(LATER_SEED), net, grid, outages, LATER_P, LATER_COUNTS,
+                             tag="later_found")
+    # the outage management system takes the start of an outage behind an operating breaker or recloser from that
+    # device's operation, so a fuse that blew on the reclose carries the minute of the operation's first trip
+    for op in ops:
+        ref = op.get("absorbed_ref")
+        if ref is not None and ref["start"] != minute_floor(op["t"]):
+            ref["start"] = minute_floor(op["t"])
+            ref["from_operation"] = True
     outages.sort(key=lambda o: o["start"])
     return dict(faults=faults, ops=ops, outages=outages, storm_days=storm_days)
 
@@ -675,21 +684,26 @@ def simulate(rng, net, wx, stk):
 STORM_CAUSES = ("tree", "wet_tree", "lightning", "storm_damage", "ice")
 
 
-def continuations(rng, net, grid, outages):
+LATER_SEED = 4417
+LATER_P, LATER_COUNTS = 0.6, (1, 1, 2, 2, 3)
+
+
+def continuations(rng, net, grid, outages, p=0.6, counts=(1, 1, 1, 2, 3), tag=None):
     """After a storm outage is restored, a few customers whose service drops came down stay dark; the outage
-    management system opens a service ticket for each when it finds them, at the minute the device closed."""
+    management system opens a service ticket for each when it finds them, at the minute the device closed. The
+    crews' later sweep finds more of them (tag), drawn on its own stream."""
     import truth
     R = truth.Reach(net)
     out = []
     for o in outages:
         if o["kind"] not in ("FUSE", "BREAKER", "RECLOSER") or o["steps"] or o.get("no_ticket"):
             continue
-        if o["cause"] not in STORM_CAUSES or o["day"] in MED_STORMS or rng.random() > 0.6:
+        if o["cause"] not in STORM_CAUSES or o["day"] in MED_STORMS or rng.random() > p:
             continue
         sps = R.sps(o["device"], o["day"])
         if not sps:
             continue
-        for _ in range(int(rng.choice([1, 1, 1, 2, 3]))):
+        for _ in range(int(rng.choice(list(counts)))):
             sp = sps[int(rng.integers(0, len(sps)))]
             a = o["restore"]
             b = a + int(rng.uniform(40, 290)) * MS_MIN
@@ -699,6 +713,8 @@ def continuations(rng, net, grid, outages):
                 continue
             c = dict(start=a, restore=b, device=sp, kind="SERVICE", steps=[], cause=o["cause"], day=local_day(a),
                      nested_in=None, continues=o)
+            if tag:
+                c[tag] = True
             grid.out[sp] = (a, b, None)
             out.append(c)
     return out

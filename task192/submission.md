@@ -16,11 +16,11 @@
 ## 3. Step-by-Step Solution
 
 1. Read every momentary interruption event from soe_breakers_reclosers_2025_2026.csv (feeder breakers) and recloser_control_events_2025_2026.csv (operations within five minutes of the first, DRP-04 2.5), and took each one's first trip from feeder_relay_events_2025_2026.csv or the control's TRIP row (terminals to phases through protective_device_register.csv): its faulted phase and recorded current.
-2. Grouped each device's momentary faults since 1 August 2026 by faulted phase and current within 2 per cent, counted on separate days: MLR-2's breaker 11 on phase C at 1,423 to 1,448 A, SYC-3's recloser 7, no other feeder above 5.
+2. Grouped each device's momentary faults since 1 August 2026 by faulted phase and recorded current, a group's currents within plus or minus 2 per cent of its middle (the highest no more than 4 per cent above the lowest), counted on separate days: MLR-2's breaker 11 on phase C at 1,423 to 1,448 A, SYC-3's recloser 7, no other feeder above 5.
 3. Took the stretch as the recording device's zone (DRP-04 5.4) from protective_device_register.csv: MLR-F2-52 to recloser R-2207 at MLR2-P071, 2,625 customers behind the breaker against 863 behind R-3114.
 4. Found the 2026 major event days under DRP-04 4 (daily system SAIDI over 38.03 minutes on 35,404 customers): 19 May and 27 June.
-5. Built every sustained interruption from oms_outage_history_2025_2026.xlsx (legacy child tickets timed from their parent's Out, incidents with their restoration steps) and the openings over five minutes that soe_breakers_reclosers_2025_2026.csv holds with no ticket, each reaching the service points below its device on the day through the register's dated rows and service_points_2026-10-31.csv; customers already without supply are not interrupted again, and a service ticket opened at the minute the device above closed is the same interruption carrying on: SAIDI by feeder.
-6. Counted each customer's momentary interruption events under DRP-04 2.5: a device event reaches the customers below it, less those already out and those whose fuse or transformer fuse blew in the event's minute, and a customer's events within five minutes of the first are one: MAIFI-E by feeder.
+5. Built every sustained interruption, planned work included (DRP-04 2.2), from oms_outage_history_2025_2026.xlsx (legacy child tickets timed from their parent's Out, incidents with their restoration steps, each at the OMS's own times under 2.7) and the openings over five minutes that soe_breakers_reclosers_2025_2026.csv holds with no ticket, each running from the opening that locked out its breaker or recloser (2.7), each reaching the service points below its device on the day through the register's dated rows and service_points_2026-10-31.csv; customers already without supply are not interrupted again, and a service ticket opened at the minute the device above closed is the same interruption carrying on: SAIDI by feeder.
+6. Counted each customer's momentary interruption events under DRP-04 2.5: a device event reaches the customers below it, less those already out and those whose fuse or transformer fuse blew in the event's minute (an OMS Out in the minute of the event's first operation), and a customer's events within five minutes of the first are one: MAIFI-E by feeder.
 7. Counted the service points each feeder supplies on 31 October with more than two of those sustained interruptions: CEMI-2 by feeder.
 8. Sent the crew to MLR-2's breaker zone for the week of 9 November, SYC-3 next.
 
@@ -30,37 +30,37 @@
 
 1. Patrol feeder: MLR-2; stretch to walk: the main line from the feeder breaker MLR-F2-52 to recloser R-2207 at pole MLR2-P071, with the taps fused off it.
 2. Second choice: SYC-3 (recloser R-3114, 7 momentary faults on phase A at 996 to 1,005 A since 23 September).
-3. What keeps it second: 11 repeat faults against 7, MLR-2's beginning 14 August against 23 September, and a failure on MLR-2 locks out the feeder breaker and 2,625 customers against R-3114's 863.
+3. What keeps it second: fewer repeat faults at one current (7 against 11), over a shorter run (since 23 September against 14 August, both still recurring on 31 October), behind a recloser zone of 863 customers against the 2,625 a failure at MLR-2's breaker locks out.
 4. Minutes of interruption per customer served, January to October 2026, major event days (19 May and 27 June) left out, one decimal:
    - BLV-1: 308.4
    - BLV-2: 83.2
-   - BLV-3: 169.2
-   - CTR-1: 144.6
-   - CTR-2: 208.4
-   - CTR-3: 76.7
-   - MLR-1: 301.1
-   - MLR-2: 139.3
-   - MLR-3: 87.7
+   - BLV-3: 169.5
+   - CTR-1: 146.6
+   - CTR-2: 209.8
+   - CTR-3: 76.8
+   - MLR-1: 301.4
+   - MLR-2: 139.8
+   - MLR-3: 87.9
    - NYD-1: 23.6
-   - NYD-2: 411.5
-   - NYD-3: 64.3
-   - NYD-4: 113.7
-   - SYC-1: 151.8
-   - SYC-2: 126.9
-   - SYC-3: 356.1
+   - NYD-2: 412.9
+   - NYD-3: 64.2
+   - NYD-4: 113.9
+   - SYC-1: 153.2
+   - SYC-2: 127.5
+   - SYC-3: 356.4
 5. Momentary interruption events per customer served, same window, two decimals:
    - BLV-1: 5.77
    - BLV-2: 2.00
    - BLV-3: 27.23
    - CTR-1: 43.00
-   - CTR-2: 37.35
+   - CTR-2: 37.42
    - CTR-3: 14.66
    - MLR-1: 13.72
    - MLR-2: 35.79
    - MLR-3: 14.60
    - NYD-1: 4.76
-   - NYD-2: 47.12
-   - NYD-3: 44.83
+   - NYD-2: 47.18
+   - NYD-3: 44.76
    - NYD-4: 3.68
    - SYC-1: 43.64
    - SYC-2: 45.29

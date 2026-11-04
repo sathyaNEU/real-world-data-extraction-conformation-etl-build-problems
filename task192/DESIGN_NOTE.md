@@ -134,13 +134,17 @@ Reflex row from the field's vocabulary for where to patrol: momentary interrupti
 | SF12 | which of two failing components the one crew takes | MLR-2 | SYC-3 | MLR-2 under every criterion | more operations (11 against 7), more customers behind the device (2,625 against 863), earlier onset, as recent; asserted |
 | SF13 | the stretch to walk | the breaker MLR-F2-52's zone to recloser R-2207 at MLR2-P071 | a span of poles | same call | DRP-04 5.4 files the stretch as a device's zone; asserted |
 | SF14 | a service ticket opened at the minute the device above closed | the same customer's interruption carrying on | a second interruption | same call (asks move) | DRP-04 2.3: the customer never regained supply; asserted |
-| SF15 | an opening SCADA holds for 5.7 to 13.6 minutes with no ticket | a sustained interruption | not an interruption | same call (asks move) | DRP-04 2.2 defines it by duration, not by ticket; asserted |
+| SF15 | an opening SCADA holds for 5.7 to 13.6 minutes with no ticket | a sustained interruption, timed by the SCADA log | not an interruption | same call (asks move) | DRP-04 2.2 defines it by duration, not by ticket, and 2.7 times it from the SCADA log; asserted |
 | SF16 | customers already without supply when a device locks out | not interrupted again | counted by the OMS's device count | same call (asks move) | DRP-04 2.3; asserted |
-| SF17 | a momentary followed in its minute by a fuse blowing | part of that customer's sustained interruption | a momentary event | same call (asks move) | DRP-04 2.5 second sentence; no sustained interruption begins in the minutes just before an event, asserted |
+| SF17 | a momentary event whose customers' sustained interruption begins in the event's minute (a fuse or transformer fuse blowing behind the operating device) | part of that customer's sustained interruption; a sustained interruption beginning after the event's minute leaves the event standing | absorbed by any sustained start up to five minutes after the first trip (the earlier generator) | same call (asks move: CTR-2's MAIFI-E) | DRP-04 2.5 second sentence, read at the outage system's minute (2.7); a fuse that blew on the reclose carries its operation's minute in the OMS, asserted; in the window the one sustained start after an event's minute and inside its five minutes is CTR-2's fuse of 26 July, blown by a second fault two minutes into a breaker event, which leaves the customers' first momentary interruption a momentary event under every literal reading, asserted; no sustained interruption begins in the minutes just before an event, asserted |
 | SF18 | a legacy child ticket's Out | when the step was logged; the customers were out from the parent's Out | the customers' outage start | same call (asks move) | DRP-04 2.4; asserted |
 | SF19 | a tap moved between feeders | its interruptions before the move with the old feeder | today's feeder | same call (asks move) | DRP-04 3.2; asserted |
 | SF20 | a service point connected or retired during the period | interrupted only while connected | interrupted all period | same call | no service point is connected or retired on a day an interruption reached it, asserted |
 | SF21 | the trips before a lockout | part of the sustained interruption | momentary events | same call | DRP-04 2.5; no momentary event sits in the five minutes before a crew lockout on its device, asserted |
+| SF22 | an interruption's start and end where the OMS and the SCADA log both record it | the OMS's times, to the minute | the SCADA log's second | same call (asks move: SAIDI) | DRP-04 2.7, which also sends a recloser's momentary interruptions to its own event log (the log carries every recloser, SCADA or not); every SCADA opening over five minutes pairs with its ticket within a minute or has none within a day (73 paired, 13 with no ticket, the nearest 2.5 days away), asserted |
+| SF23 | planned interruptions | counted like any other | left out, as many utilities report | same call (asks move: SAIDI and CEMI-2) | DRP-04 2.2 last sentence; the window holds planned tickets on nine feeders, asserted |
+| SF24 | a service point connected or retired on the period's last day | none in the data | supplied or not on 31 October | same call | no service point is connected or retired on 31 October 2026 or after it: a date the event-day rule would carry onto the last day goes back to the latest free day before it, asserted |
+| SF25 | the start of a sustained interruption the OMS does not record | the opening that locked out its breaker or recloser; the trips and recloses before it are part of it for counting (2.5) and do not move its start | the sequence's first opening (2.5's "part of the sustained interruption" read as a time); the sequence's second opening | same call (asks move: seven feeders' SAIDI by 0.2 to 0.8) | DRP-04 2.7 last sentence, the closing pin ("runs, for the indices, from the opening that locked out its breaker or recloser, as the outage management system times those it records"); corroborated by the OMS, which carries the lockout's minute on all 25 ticketed lockouts whose first opening and lockout fall in different minutes; asserted: the sentence, the 25, every unticketed lockout the last opening of a sequence under half a minute with no other opening in the five minutes before it, and the sixteen figures |
 
 ## Ladder
 
@@ -149,7 +153,7 @@ Reflex row from the field's vocabulary for where to patrol: momentary interrupti
 | R0 | momentary events since August, storm days set aside, per overhead mile, against 2025 (default path) | NYD-3 | 2.53 a mile | MLR-1 0.42 | 6.0x | its rise is squirrels (DRP-04 5.3), its operations scattered over the feeder: largest same-phase group 2 |
 | R1 | non-storm momentary events on damp mornings (the insulator reflex) | NYD-2 | 18 | SYC-1 12 | 1.50x | wet limbs on overgrown taps (its tickets' vegetation causes), scattered currents: largest group 2 |
 | R2 | single-phase concentration of momentary first trips (the phase reflex) | BLV-3 | share 0.96, chi-square 44.2 | CTR-2 0.72, 12.3 | 1.33x, 3.6x | its long phase B taps through the oaks: the concentration is its taps' phase, the currents spread (largest group 5) |
-| R2b | the asks' indices, worst circuit first | NYD-2 (SAIDI 411.5, MAIFI-E 47.12), SYC-3 (CEMI-2 2,325) | | SYC-3 356.1, SYC-2 45.29, NYD-2 2,237 | 1.16x, 1.04x, 1.04x | the indices measure what customers lived through, not where a component is failing |
+| R2b | the asks' indices, worst circuit first | NYD-2 (SAIDI 412.9, MAIFI-E 47.18), SYC-3 (CEMI-2 2,325) | | SYC-3 356.4, SYC-2 45.29, NYD-2 2,237 | 1.16x, 1.04x, 1.04x | the indices measure what customers lived through, not where a component is failing |
 | R3 | momentary faults grouped by device, faulted phase and recorded current on separate mornings (decisive) | MLR-2 | 11 at 1,423 to 1,448 A, phase C, breaker MLR-F2-52 | SYC-3 7 at 996 to 1,005 A, phase A, recloser R-3114 | 1.57x | none |
 
 - Position: MLR-2 ninth on R0, sixth on R1, fourth and fifth on R2, ninth on SAIDI, seventh on MAIFI-E and fourth on CEMI-2; first only on R3; never second within 1.2x on any rung (asserted on ten cheap constructions and five indices).
@@ -162,15 +166,15 @@ Reflex row from the field's vocabulary for where to patrol: momentary interrupti
 
 | Axis | Name | Reading | Closure |
 |---|---|---|---|
-| 1 | Population | every feeder in the register, every service point the GIS lists | DRP-04 1.1 and 2.1; all sixteen graded |
+| 1 | Population | every feeder in the register, every service point the GIS lists, every interruption planned or not | DRP-04 1.1, 2.1 and 2.2; all sixteen graded; SF23 |
 | 2 | Unit of account | the feeder for the call and the asks; the customer inside each index | DRP-04 3.1 and 3.2 |
 | 3 | Attribution window | January to October 2026 for the asks; the call's operations since August, corridor to the whole year | prompt; SF10 asserted |
-| 4 | As-of dating | an interruption's local start day | DRP-04 2.6; SF3 |
+| 4 | As-of dating | an interruption's local start day, its start and end the OMS's where it holds the interruption and the SCADA log's where it does not | DRP-04 2.6 and 2.7; SF3, SF22 |
 | 5 | Version basis | the register's row in force on the day | DRP-04 3.2; SF7, SF19 |
 | 6 | Denominator | customers served on 31 October 2026; daily SAIDI over the filed 35,404 | DRP-04 2.1 and 4.2; SF1 |
 | 7 | Weighting | each customer equally | DRP-04 3.1 |
 | 8 | Window length | ten months for the asks | prompt |
-| 9 | Boundary inclusivity | five minutes or less is momentary | DRP-04 2.2; SF4 asserted |
+| 9 | Boundary inclusivity | five minutes or less is momentary; no service point starts or ends on the last day | DRP-04 2.2; SF4 and SF24 asserted |
 | 10 | Rounding path | compute exactly, round once at print | prompt; SF9 asserted |
 | 11 | Tie-break | none needed: 11 against 7, and MLR-2 leads SYC-3 on every patrol criterion | SF12 asserted |
 | 12 | Maturity and censoring | no interruption runs past 31 October | asserted by the build (the period's last restorations close inside it) |
@@ -187,7 +191,7 @@ Reflex row from the field's vocabulary for where to patrol: momentary interrupti
 
 ## Literal reader
 
-Executing DRP-04 word for word gives the indices (2.1 to 4.2, every convention closed by a quoted sentence, SF1 to SF9 and SF14 to SF21) and leaves the call to 5.2's literal estimand, the feeder where a component on the overhead line is breaking down: read literally, that is a fact about the line, and the only records of a component breaking down are the eleven same-phase operations at one current on MLR-2's breaker (and SYC-3's seven, which the one crew takes second under every criterion, SF12); no filed rule names a feeder, the storm screen of 6.1 is the storm patrol's, and every reading of the open band and window prints MLR-2 (SF10).
+Executing DRP-04 word for word gives the indices (2.1 to 4.2, every convention closed by a quoted sentence, SF1 to SF9 and SF14 to SF25) and leaves the call to 5.2's literal estimand, the feeder where a component on the overhead line is breaking down: read literally, that is a fact about the line, and the only records of a component breaking down are the eleven same-phase operations at one current on MLR-2's breaker (and SYC-3's seven, which the one crew takes second under every criterion, SF12); no filed rule names a feeder, the storm screen of 6.1 is the storm patrol's, and every reading of the open band and window prints MLR-2 (SF10).
 
 ## Oracles
 
@@ -197,25 +201,25 @@ None that ties only under the golden. The OMS's cause codes confirm the screen's
 
 Three asks, every figure per feeder, each on rows outside the main call's population (the call reads the feeder relays' first-trip records and the controls' TRIP rows of the momentary events since 1 August, and the register's terminal phasing).
 
-- **A1, minutes of interruption per customer served, January to October 2026, major event days left out (one decimal), 16 figures.** H18: a measure every candidate carries that the call does not turn on. Primary device (D4, absence evidenced in a file no habitual join reaches): the breaker and recloser openings SCADA holds for 5.7 to 13.6 minutes after the desk test-closes a lockout, which the OMS never ticketed because it opens an incident only for an outage still on after fifteen minutes. Second primary (D6/D8): in the legacy layout a partial restoration is a child ticket whose Out is when the step was logged, while its customers were out from the parent's Out. Hazards: customers already out, the steps sheet carrying the final step, the old Cotter Road names, the major event days, UTC against local. Stops: OMS parents at face value (mirror, 5 of 16), children at their own Out and no SCADA (cracker, 6 of 16), either primary handled alone (9 of 16).
-- **A2, momentary interruption events per customer served, same window (two decimals), 16 figures.** H18: the momentary record behind every feeder's blinking. Primary device (D6/D7): a fuse-saving fast trip that a fuse or transformer fuse blows behind in the same minute is part of those customers' sustained interruption (DRP-04 2.5), found only by matching each device event to the OMS tickets that begin in its minute on the devices below it. Second: customers already without supply when the device opens, and two devices opening on one customer inside five minutes (one event for that customer). Hazards: the relay archive's lost records on busy storm days (SCADA is complete), the SCADA reclosers in both SCADA and their logs, test closes inside five minutes (momentary, in SCADA and the logs only), the controls' standard time. Stops: device events times the customers below them (cracker and mirror, 1 of 16), absorption handled alone (9 of 16).
-- **A3, customers with more than two sustained interruptions, same window (whole), 16 figures.** H18: the customers each feeder's record leaves worst off. Primary device (D1, one event under two records): a service ticket opened at the minute the device above it closed is that customer's interruption carrying on (a storm-damaged drop), not a second one. Second (D4): the SCADA-only sustained openings. Hazards: the register's dated rows (taps moved at three dates), connections and retirements, customers already out, the old names. Stops: tickets through today's tree (mirror, 4 of 16), the dated tree with every ticket counted (cracker, 6 of 16), continuations merged alone (8 of 16), SCADA found alone (11 of 16).
+- **A1, minutes of interruption per customer served, January to October 2026, major event days left out (one decimal), 16 figures.** H18: a measure every candidate carries that the call does not turn on. Primary device (D6/D8): in the legacy layout a partial restoration is a child ticket whose Out is when the step was logged, while its customers were out from the parent's Out. Second (D5/D1): customers already without supply when a device locks out are not interrupted again, while the OMS counts them in its device count (SF16). Hazards: the breaker and recloser openings SCADA holds for 5.7 to 13.6 minutes after the desk test-closes a lockout, which the OMS never ticketed because it opens an incident only for an outage still on after fifteen minutes (DRP-04 2.7 now times an interruption the OMS does not record from the SCADA log, so a careful reader goes looking, and the cracker is priced finding them), the steps sheet carrying the final step, the old Cotter Road names, the major event days, UTC against local. Stops: OMS parents at face value (mirror, 5 of 16), children at their own Out with the SCADA openings (cracker, 8 of 16), children from the parent's Out but the OMS alone (8 of 16), children from the parent's Out with the SCADA openings and no netting (13 of 16).
+- **A2, momentary interruption events per customer served, same window (two decimals), 16 figures.** H18: the momentary record behind every feeder's blinking. Primary device (D6/D7): a fuse-saving fast trip that a fuse or transformer fuse blows behind in the same minute is part of those customers' sustained interruption (DRP-04 2.5), found only by matching each device event to the OMS tickets that begin in its minute on the devices below it. Second: customers already without supply when the device opens, and two devices opening on one customer inside five minutes (one event for that customer). Hazards: the relay archive's lost records on busy storm days (SCADA is complete), the SCADA reclosers in both SCADA and their logs, test closes inside five minutes (momentary, in SCADA and the logs only), the controls' standard time. Stops: device events times the customers below them (cracker and mirror, 1 of 16), absorption handled alone (9 of 16), absorption and the customers already out handled but not the per-customer merge (15 of 16).
+- **A3, customers with more than two sustained interruptions, same window (whole), 16 figures.** H18: the customers each feeder's record leaves worst off. Primary device (D1, one event under two records): a service ticket opened at the minute the device above it closed is that customer's interruption carrying on (a storm-damaged drop, found when the crew closes the device or on the crews' later sweep), not a second one. Second: the SCADA-only sustained openings, now pointed at by DRP-04 2.7. Hazards: the register's dated rows (taps moved at three dates), connections and retirements, customers already out, the old names. Stops: tickets through today's tree (mirror, 4 of 16), every ticket counted on the dated tree with the SCADA openings (cracker, 9 of 16), continuations merged but the OMS alone (8 of 16), both handled (15 of 16).
 - Separation: zero ask-device rows in the main population: the devices live in the OMS (continuations, child tickets, fuse tickets), SCADA (test-close durations) and the GIS; every August to October breaker opening has its relay record, and the call is the same on the clean truth (asserted).
 
 | Ask | Cracker (lands the call, hygiene battery, every filed rule) | Mirror (the procedure's screen, the OMS as the record) | cracker verdict |
 |---|---|---|---|
-| A1 SAIDI | 6 of 16, children at their own Out, no SCADA openings | 5 of 16 | miss |
+| A1 SAIDI | 8 of 16, children at their own Out, the SCADA openings found | 5 of 16 | miss |
 | A2 MAIFI-E | 1 of 16, device events times customers below | 1 of 16 | miss |
-| A3 CEMI-2 | 6 of 16, every ticket counted on the dated tree | 4 of 16 | miss |
+| A3 CEMI-2 | 9 of 16, every ticket counted on the dated tree, the SCADA openings found | 4 of 16 | miss |
 
-Pair ceiling: 41.7 (cracker 59.9 on the call, mirror 23.5 off it, 38 + 7 + 55 L)
+Pair ceiling: 44.5 (cracker 65.6 on the call, mirror 23.5 off it, 38 + 7 + 55 L)
 Mirror leakage: 20.8 per cent of ask weight
-Cracker keep: 27.1 per cent of ask weight, under two fifths; the full includer who finds one ask's primary keeps 9 of 16 on A1 or A2 and 8 or 11 of 16 on A3, and still misses the other primary's block
+Cracker keep: 37.5 per cent of ask weight, under two fifths; the full includer who handles one more device keeps 13 of 16 on A1, 9 of 16 on A2 (15 with the customers already out as well) and 15 of 16 on A3, and still misses the other asks' blocks
 Measured by: generator/ceiling.py, run on the cut pack (digest printed by the script)
 
 ## Leak sweep answers
 
-`leak.py task192 --asof 2026-11-04` on the cut pack (target.zip a8212703): REVIEW, no LEAK. One line per REVIEW line.
+`leak.py task192 --asof 2026-11-04` on the cut pack (target.zip a8212703 at the hand-off, db115928 after the stage-4 FIX_NOW pass, dbbb2dce after the lockout pin, the same five lines on each): REVIEW, no LEAK. One line per REVIEW line.
 
 - **Sweep 3, DRP-04 carries 12 of 17 distinctive words of the committed call: harmless.** The shared words are the
   procedure's own subject in sections 5.1 to 5.4 (the overhead line patrol crew, the week, the feeder, the breaker,
@@ -239,7 +243,37 @@ Measured by: generator/ceiling.py, run on the cut pack (digest printed by the sc
   feed the asks' momentary and sustained counts; the register and the service points feed every index; DRP-04
   governs the indices and the storm patrol; the weather, lightning, line clearance and blinking-lights files are
   the storm patrol's, the line clearance programme's and the call centre's own records (the three distractors).
-  No sentence was added to the pack in this pass.
+  No sentence was added to the pack in the stage-3 pass.
+- **The stage-4 reader's realism notes.** The service point, transformer and tap fuse numbers were uniformly random:
+  they now carry the customer system's and the asset register's numbering (service points set up before 2025 by
+  substation in meter-route order along each feeder, services connected since in the connection series 8; transformers
+  and tap fuses by substation along each feeder, with retired and cancelled numbers as gaps), drawn on their own stream
+  so no record and no graded figure moved with them. The workbooks' 1980 zip entry timestamps are what Excel itself
+  writes, and the lightning file's near-duplicate rows milliseconds apart are the return strokes of one flash, which a
+  detection network reports one row each, tens of milliseconds apart at or near one point: both harmless.
+- **The sentences the stage-4 passes added to DRP-04.** 2.2's last sentence (planned interruptions counted) and 2.7 (an interruption's times are the OMS's; interruptions the OMS does not record, as with every momentary
+  interruption, take the SCADA log's, and a recloser's momentary interruptions its own event log's; a sustained
+  interruption the OMS does not record runs from the opening that locked out its breaker or recloser, as the OMS
+  times those it records, the trips and recloses before it part of it under 2.5 and not moving its start) file
+  the WHAT of asks 4 to 6 in the procedure's own definitions, 2.5 for counting and 2.7 for times; none touches
+  the call's records, and 2.7 points a careful reader at the openings the OMS never ticketed, which the ask sheet
+  prices as found (the A3 re-site onto the later-found continuation tickets pays for it). Each is single-use
+  only in the sense every definition is: it governs every index the procedure reports.
+
+## Judge residuals
+
+The third judge pass returned DETERMINISTIC, APPROVE on dbbb2dce; its three residuals are ruled here and nothing in the
+pack changes.
+
+- **(1) The second choice against the grouping width: closed by the data.** MLR-2's eleven spread 1.8 per cent and
+  SYC-3's seven 0.9 per cent, while BLV-F3-52's phase B trips since August run 1,266 to 3,085 A, so the call holds at
+  every width tried (SF10) and SYC-3 stays second to a 3 per cent band (SF11). The optional DRP-04 sentence defining
+  "one current" is declined: it would file the call's signal in the procedure and announce the move, and the
+  solution's step 2 already states the plus or minus 2 per cent and the window for the graders.
+- **(2) The legacy child tickets: derivable** from the SOE closes and the restoration-step sheets; the alternative,
+  each child's customers out only from the child's own Out, is a clearly wrong reading (SF18).
+- **(3) The momentary exclusion:** the literal 2.5 reading ("end in a sustained interruption", at the outage
+  system's minute) reproduces the golden, as SF17 records.
 
 ## Tried and rejected
 - The loop-4 reader, cold on the re-drawn record, **missed the call**: it filed 550 at 50 per cent
@@ -675,6 +709,29 @@ Measured by: generator/ceiling.py, run on the cut pack (digest printed by the sc
   what keeps it second", and a chart sentence opening "In reliability_2026.svg". A `which` question was tried first
   and dropped because the corpus holds that form at 38 per cent against the 30 per cent cap, then a `whether`
   question, dropped because it repeats task193 v3's form, one of the last two prompts (`guard.py heart`).
+- **(2026-11-04, stage 4) Absorption read as any sustained start up to five minutes after an event's first trip.**
+  The generator absorbed a momentary event's customers into such a start; DRP-04 2.5 ("end in a sustained
+  interruption") and submission step 6 ("in the event's minute") read it at the event's minute, and the judge's literal
+  reading kept two events the golden had absorbed (CTR-1 on 17 June, CTR-2 on 26 July). The generator, golden and
+  verifier now absorb at the event's minute. The CTR-1 case was a fuse that blew two seconds after the recloser's
+  first trip, across a minute boundary; the OMS now takes the start of an outage behind an operating device from the
+  device's operation, so it sits in the event's minute and every reading absorbs it. The CTR-2 case is a second
+  fault two minutes into a breaker event, which leaves the customers' first momentary interruption standing under
+  every literal reading.
+- **(2026-11-04, stage 4) A1 re-sited by a later OMS cutover.** With 2.7 filed the cracker finds the SCADA-only
+  openings (A1 9 of 16, A3 11 of 16, 43.8 per cent of the ask weight kept). Moving the legacy layout's end from 31
+  March to 1 June, 1 July or 1 August 2026 moved no cell: the window's stepped restorations sit in January and
+  February and on the two major event days. The re-site went to A3 instead: the crews' later sweep finds more
+  storm-damaged drops still dark after their device closed, each a service ticket at the minute the device closed,
+  drawn on its own stream after the fault process so no protection record, weather file or main-call figure moves
+  (cracker 37.5 per cent, pair ceiling 44.5).
+- **(2026-11-04, stage 4 pass 2) An unrecorded lockout started at its sequence's first opening.** The second judge
+  pass read 2.5's "part of the sustained interruption" as moving the start and said every ticketed lockout starts at
+  the first operation; built, it moved seven SAIDI figures by 0.2 to 0.8. The OMS says otherwise: on all 25 ticketed
+  lockouts whose first opening and lockout fall in different minutes it carries the lockout's minute (the other 56
+  sit in one minute). The judge's table also matched the sequence's second opening, not the first (SYC-1 153.9
+  against 154.0). Reverted to the lockout opening, and the fork closed with a sentence in DRP-04 2.7 in the
+  procedure's own voice: 2.5 governs counting, 2.7 times.
 
 
 ## Architecture 2, blocked at the draw by the remote merge

@@ -98,10 +98,13 @@ def workbook(res, F, out):
          % (rg["device"], F["ru_stretch"]["from_pole"], rg["n"], rg["phase"], "{:,}".format(rg["lo"]),
             "{:,}".format(rg["hi"]), first(rg["first"]), first(rg["last"]))),
         ("Customers behind that recloser", rg["behind"]),
-        ("What keeps it second", "%d repeat faults against %d, %s's beginning %s against %s, and a failure on %s locks "
-                                "out the feeder breaker and %s customers against the recloser's %s"
-         % (cg["n"], rg["n"], call, first(cg["first"]), first(rg["first"]), call, "{:,}".format(cg["behind"]),
-            "{:,}".format(rg["behind"]))),
+        ("What keeps it second", "fewer repeat faults at one current (%d against %d), over a shorter run (since %s "
+                                "against %s, %s), behind a recloser zone of %s customers against the %s a failure "
+                                "at %s's breaker locks out"
+         % (rg["n"], cg["n"], first(rg["first"]), first(cg["first"]),
+            ("both still recurring on %s" % first(cg["last"])) if cg["last"] == rg["last"]
+            else ("%s's last on %s against %s" % (call, first(cg["last"]), first(rg["last"]))),
+            "{:,}".format(rg["behind"]), "{:,}".format(cg["behind"]), call)),
         ("Every other feeder", "no more than %d momentary faults at one phase and one current since 1 August"
          % F["others_max"]),
     ]
@@ -182,20 +185,24 @@ def workbook(res, F, out):
     notes = [
         ("As of", "Records to 31 October 2026; assignment made 4 November 2026."),
         ("Customers served", "Service points each feeder supplies on 31 October 2026 (DRP-04 2.1)."),
-        ("Sustained and momentary", "More than five minutes is sustained, five or less momentary (DRP-04 2.2). "
-                                    "Openings SCADA holds past five minutes are sustained whether or not the OMS "
-                                    "ticketed them."),
+        ("Sustained and momentary", "More than five minutes is sustained, five or less momentary, planned work "
+                                    "included (DRP-04 2.2). Openings SCADA holds past five minutes are sustained "
+                                    "whether or not the OMS ticketed them; times are the OMS's where it holds the "
+                                    "interruption and the SCADA log's where it does not, and one with no ticket runs "
+                                    "from the opening that locked out its breaker or recloser, as the OMS times "
+                                    "those it records (DRP-04 2.7)."),
         ("Momentary events", "Counted per customer: a customer's momentary interruptions within five minutes of the "
-                             "first are one event, and those ending in that customer's sustained interruption are part "
-                             "of it (DRP-04 2.5)."),
+                             "first are one event, and those ending in that customer's sustained interruption, one "
+                             "the OMS shows beginning in the event's minute, are part of it (DRP-04 2.5)."),
         ("Major event days", "%s, over the %s-minute threshold for 2026 on %s customers (DRP-04 4); every "
                              "interruption that began on them is left out."
          % (" and ".join(day_text(dt.date.fromisoformat(d)) for d in F["meds"]), F["tmed"],
             "{:,}".format(F["nsys"]))),
         ("CEMI-2", "Customers served on 31 October with more than two sustained interruptions in the period, each "
                    "customer's interruptions counted wherever it was supplied from (DRP-04 3.1 and 3.2)."),
-        ("Repeat faults", "A device's momentary faults on one phase whose recorded currents lie within 2 per cent of "
-                          "each other, counted on separate days; breaker currents from the relay event records, "
+        ("Repeat faults", "A device's momentary faults on one phase since 1 August 2026 whose recorded currents lie "
+                          "within plus or minus 2 per cent of the group's middle (the highest no more than 4 per cent "
+                          "above the lowest), counted on separate days; breaker currents from the relay event records, "
                           "recloser currents from the control logs with terminals read through the register's phasing."),
         ("Stretch", "The recording device's zone: the line to the next protective devices beyond it, with the taps "
                     "fused off it (DRP-04 5.4)."),

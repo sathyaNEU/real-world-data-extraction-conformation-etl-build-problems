@@ -347,9 +347,10 @@ def interruptions(T, net, S=None):
                 continue
             if any(abs(s - a) <= 2 * MIN for s in by_dev.get(dev, [])):
                 continue
+            # DRP-04 2.7: it runs from the opening that locked the device out, as the OMS times the lockouts it records
             items.append(dict(id="SCADA %s %d" % (dev, a), src="scada", device=dev,
                               dtype=net.rows[dev][0]["type"], start=a, restore=b, oms_customers=None, steps=[],
-                              cause=None, circuit=None))
+                              cause=None, circuit=None, lockout_open=a))
     items.sort(key=lambda o: o["start"])
     for o in items:
         o["day"] = lday(o["start"])
@@ -430,7 +431,7 @@ def indices(T, net, items, ev, meds):
         for o in items[lo:hi]:
             if o["start"] < em and e["t"] < o["restore"]:
                 out_now |= reach & o["dark"]
-            elif em <= o["start"] <= e["t"] + FIVE:
+            elif em <= o["start"] < em + MIN:
                 absorbed |= reach & o["dark"]
         e["reached"] = reach - out_now - absorbed
         e["n_reach"], e["n_out"], e["n_abs"] = len(reach), len(out_now), len(absorbed - out_now)

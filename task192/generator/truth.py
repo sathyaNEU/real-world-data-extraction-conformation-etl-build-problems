@@ -167,7 +167,9 @@ def compute(net, S):
             o = outs[i]
             if o["start"] < em and e["t"] < o["restore"]:
                 out_now |= sps & dark[i]
-            elif em <= o["start"] <= e["t"] + FIVE_MIN:
+            elif em <= o["start"] < em + sim.MS_MIN:
+                # DRP-04 2.5: the momentary interruptions end in a sustained interruption that began in the
+                # event's minute (a fuse or transformer fuse blowing behind the operating device)
                 absorbed |= sps & dark[i]
         e["n_all"] = len(sps)
         e["n_out"] = len(out_now)

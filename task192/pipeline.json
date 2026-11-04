@@ -1,38 +1,39 @@
 {
  "task": "task192",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities/grid-reliability-outage-analysis",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-04",
  "stump": "A competent solver who groups every feeder's reclosing operations into momentary interruption events, sets aside the storm days, normalises by overhead miles and compares August to October 2026 with 2025 sends the patrol to NYD-3, whose new blinking is squirrels, when MLR-2's breaker has recorded eleven momentary faults on phase C at one current since mid-August because an insulator on its main line is breaking down.",
  "architecture": 4,
- "loops": 0,
+ "loops": 3,
  "precut": {
   "exit": 0,
   "date": "2026-11-04",
-  "detail": "61 checks, 0 FAIL, 0 WARN"
+  "detail": "61 checks, 0 FAIL, 0 WARN (dbbb2dce)"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-04 (asof 2026-11-04), no LEAK: sweep 3 (DRP-04 shares the patrol vocabulary of the call and names no feeder, device, date or count), sweep 8 (the field's own noun device in the register, transformer list and OMS columns, declared under field_terms), sweep 12 (DRP-04's ordinary words coinciding with column names); each answered in DESIGN_NOTE.md, Leak sweep answers",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-04 (asof 2026-11-04) on dbbb2dce, no LEAK, the same five lines as before: sweep 3 (DRP-04 shares the patrol vocabulary of the call), sweep 8 (the field's own noun device, declared under field_terms), sweep 12 (DRP-04's ordinary words coinciding with column names); sweep 4 clean; each answered in DESIGN_NOTE.md, Leak sweep answers",
+  "reader": "clean three times: a8212703 (stage 4), db115928 (after the FIX_NOW repair) and dbbb2dce (the final read, on the cut with the 2.7 pin)"
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-11-04 at registration (three_rules.strategy_risk, overuse.objective, repeat.deliverables), no BLOCK",
-  "heart": "WARN 2026-11-04 on the batch branch's cards at de6e354 (three_rules.strategy_risk, overuse.objective, repeat.deliverables against task193 v3, each answered in the design note's Draw table), no BLOCK",
-  "surface": "exit 0, 4 pairs promoted for the author's adjudication, all B-track card axes: task194 (two apart: same domain and objective pairing, gap, decision type and context artifact type; the prompt shell was redrawn off its crew-allocation shell), task65 and task84 (gap, pattern and Gate G mechanism), task190 (two apart: gap and decision type); each differentiated on the card; personas Kelsey Sanford and Shawn Hartman only, no shared name",
+  "guard_check": "WARN 2026-11-04 on dbbb2dce against the batch branch's cards at b51dc1a (three_rules.strategy_risk, overuse.objective, repeat.deliverables), no BLOCK",
+  "heart": "WARN 2026-11-04 on dbbb2dce (the same three WARNs, answered in the Draw table), no BLOCK",
+  "surface": "exit 0 on dbbb2dce, the same 4 pairs promoted (task194, task65, task84, task190), each differentiated on the card; no shared persona",
   "nearest": "task250 v2 and task303 v2 at 0.07 (driver and stump text)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "pass 3 DETERMINISTIC (no SOLUTION_WRONG): the main call forced, all 48 index figures reproduced, Gate H pass (domain, layers, decisive step analytical), stump power strong",
+  "disposition": "APPROVE",
+  "report": "task192/determinism_check_report_pass3.md (passes 1 and 2: determinism_check_report.md, determinism_check_report_pass2.md)",
+  "residuals": "three, ruled in DESIGN_NOTE.md, Judge residuals: the second choice against the grouping width (closed by the data; the optional DRP-04 'one current' sentence declined), the legacy child tickets (derivable), the momentary exclusion (the literal 2.5 reading reproduces the golden, SF17)"
  },
  "returned": [],
- "resume": "PAUSED at the stage-4 hand-off: the orchestrating session runs the isolated leak reader and the determinism judge on the cut pack (target.zip sha256 a82127037dc5f8594d116ee6d5d69a517567df80f074ba62d3e8fa0ccbacf097, rebuilt byte for byte by `python3 task192/generator/build.py`, which cuts target/ and writes golden/, generator/figures.json, metadata.json, target.zip and submission.md; then `python3 task192/generator/checks.py` (105 checks) and `python3 task192/generator/verify.py` (15 checks)); fix every finding in the generator in one pass, rebuild twice and compare, re-run the free gates (figures_check.py, ceiling.py, precut.py, voice-check.py, leak.py --asof 2026-11-04, guard.py heart and surface after a pull), then ship on the orchestrator's word.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-04",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -40,15 +41,15 @@
  "call": "send the overhead line patrol crew to MLR-2 for the week of 9 November 2026, walking the main line from the feeder breaker MLR-F2-52 to recloser R-2207 at pole MLR2-P071 with the taps fused off it",
  "default_path": "NYD-3 (North Yard 3, up 2.53 non-storm momentary events a mile on 2025; its new blinking is squirrels)",
  "build": {
-  "target_zip_sha256": "a82127037dc5f8594d116ee6d5d69a517567df80f074ba62d3e8fa0ccbacf097",
+  "target_zip_sha256": "dbbb2dcec36e7503caf5f7d3edf6f61273ad77df9f5879db75923ab6b57eb140",
   "zip": "14 files at the archive root, no enclosing folder or directory entries (H4, asserted in checks.py)",
-  "design_point": "fault-process seed 19268 (SIM_SEED in generator/build.py), chosen by a search with every acceptance test in code",
-  "checks": "105 of 105",
+  "design_point": "fault-process seed 19268 (SIM_SEED in generator/build.py); later-found continuations on LATER_SEED 4417 (sim.py); identifiers on SEED + 91 (pack.present_ids)",
+  "checks": "115 of 115",
   "verify": "15 of 15",
   "byte_identical": true,
-  "figures_check": "70 figures in blocks 1 to 4, 0 absent",
-  "pair_ceiling": 41.7,
-  "cracker_keep_pct": 27.1,
+  "figures_check": "74 figures in blocks 1 to 4, 0 absent",
+  "pair_ceiling": 44.5,
+  "cracker_keep_pct": 37.5,
   "mirror_leakage_pct": 20.8,
   "voice_check": "PASS, no WARN (shell: what, list, minutes, svg+xlsx)",
   "rebuild": "python3 task192/generator/build.py"
@@ -123,5 +124,29 @@
    ]
   },
   "resume_before_architecture_4": "ARCHITECTURE 4 NOT DRAWN (2026-11-04). The re-root at stage 1 screened 55 candidates across 13 task types (A4.1 to A4.55 in DESIGN_NOTE.md's Tried and rejected, the strongest three written in full) and none cleared the three rules, the survivor anatomy and the dial together, so nothing was carded or registered and no file was cut. Strongest three: A4.5 the storm overflow capacity fault (prototyped on six seeds of a 15-minute clean-truth simulation: the onset-rain family names the fault 5 of 6, but the rain-adjusted 12/24 count names it 3 of 6, so the easy route is a crude member of the decisive family and the confounds that move it move the onset family too; the cell is now also banned against task193 v3); A4.48 a PV fleet's hardware fault against soiling (soiling read from the recovery after rain is the field's own method, stumping 1.1b); A4.44 wrong blood in tube against detection opportunity (about one event in 2,000 samples makes the area ranking seed-hostage, and the history-defined subset repeats task200 v6 in the same task type). Next action: a fresh stage-1 draw, starting in energy-systems-utilities or human-factors-ergonomics (both opened at 03:21 UTC when task461 v2 and task193 v3 registered and task194 v17 and task200 v6 left the last three), from what a file the question gives no reason to open pins, with the cheapest licensed member priced on the clean truth before the anatomy is written; physical-environmental-sciences x anomaly-detection stays banned until three more cards register. Architecture 3's shipped pack (060f8959) stays at the portal, pending; its card is marked architecture_spent and its identity moves into the card's lineage when architecture 4 registers. Prior resume line follows. RE-CHECK 2026-11-01: ARCHITECTURE 3 SPENT, CONFIRMED ON THE SHIPPED CUT, not re-rooted; the orchestrating session decides the next step. Rebuild reproduced target.zip byte for byte (060f8959; needs matplotlib, installed). Gates on the shipped cut: generator 310 assertions and verify 138 green; leak.py LEAK (sweep 12, protocolo_vigilancia_v4.pdf names 11 columns; sweep 13, metadata.json committed_answer carries 450); precut FAIL (SF27 asserted with no fork-table row) and 8 survivor-anatomy WARNs; voice-check PASS; figures_check 111 of 111; guard.py heart BLOCK on the inherited bans (task266 v1 role, forum, forcing event; task270 v2 same driver); guard.py surface exit 0, 302 builds screened, the same 3 pairs promoted as on 10-21 (task191, task193, task189), no personas. Seventh cell OPEN: logistic hand code on mark plus month index, extrapolated over September and October, 504.483, prints 500 against 450; the closing sentence names the decisive step (fork is the stump), so no repair was cut. Owed: a stage-1 re-root to architecture 4 in another world, with role, forum and forcing event redrawn. Prior resume line follows. THE SEVENTH CELL CANNOT BE CLOSED WITHIN ARCHITECTURE 3, measured 2026-10-25 by working all four closure moves. The open cell is confirmed by an independent blind reader: a calibration of hand code on the classifier mark plus a month index, extrapolated over the two unaudited months, files 504 and prints 500 against a golden of 450, a different fifty-bucket, and asked whether anything in the bundle rules it in the reader answered that nothing does. C1 converge would make the month term extrapolate the drift correctly, which turns the rival into a second correct route and spends Gate F. C2 confirm needs a criterion distinguishing the two corrections, and the distinguishing property (one is free of how common the class was inside the audited months, the other is not) IS the decisive step, so filing it hands over the stump. C3 corridor needs the answer invariant across the parameter the two corrections disagree about. C4 separate needs a shipped sentence the rival violates, which is C2 renamed. Filed as a general law in determinism-check: two corrections of one graded quantity cannot be separated by the record without either naming the separating property or making them agree. So /fix-determinism is REFUSED here and the number goes to a stage-1 re-root, which this build's own earlier measurement already concluded. STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED (450 exactly, the reader listing the whole ladder as its own rejected methods), asks 98 of 106 at 92.5 per cent; the seventh cell at 504 printing 500 is confirmed open by that reader. Owed: re-root the decisive step, and any repair owes the seventh cell's closure. Prior resume line follows. Stage 2 re-measurement of 2026-10-21 REFUSED the magnitude repair and the architecture, on measurement rather than on a portal result. The three screens were run on the generator's clean truth, each twice and byte-identical. Screen 1 PASSES: the family that differs in what it does spreads 458.642 actions over seven printed calls (250, 300, 400, 450, 500, 600, 700), 9.17 printed units, so the decisive step is not a reflex on the enumeration alone. Screen 2 PASSES: the designed construction is exactly affine in the one-group-by route R0 = H + M (slope 2.18270, intercept -136.600, residual 5.7e-14) but is not an identity in it, corr(RG, R0) = -0.0815 over 24 action redraws, max |RG - R0| = 254.850 actions, R0 in the call's printed cell in 0 of 24. Screen 3 FAILS, three ways. (i) The reach IS the signpost, by identity not correlation: PV - RG = N (p - p_a) [(PPV - (1 - NPV)) - 1/(r - f)] to 1.3e-13 at every seed, where p is one group-by on codigo_acao and p_a one group-by on codigo_monitor, so the shipped 159.6192-action reach is bought at z 5.934, p 2.962e-09 on that two-line comparison, at 26.90 actions of reach per sigma. (ii) The two separations the ladder needs are one quantity with two signs: over the composition drop the reach rises 36.95 to 206.33 actions while the margin on the nearest wrong rung falls 1.3588 to 1.0919, crossing the 1.15x floor between the shipped k = 2.6 (1.1785) and k = 3.2 (1.1423), so the shipped point is already the widest setting the floor allows and the widening this session was sent to do is not available. (iii) The one axis that buys reach without spending the floor, the surge volume, never delivers Gate C: the licensed error-rate family is unanimous on one printed call in 5 of 120 draws there. Counted over the two axes at 20 action seeds a setting, 245 of 300 draws give a printed cell of reach or more and 66 leave the window comparison insignificant, 22 do both, and 0 of those 22 have the licensed family unanimous; the family is unanimous in 9 of the 300 and all nine sit where the comparison is significant below 0.05. 0 of 320 draws give reach, a unanimous family, the 1.15x floor and a mid-bin call together. So every draw with reach and a quiet record forks the call and every draw that files one call announces the step. Architecture 3 is therefore spent on measurement. The author's call is re-root to architecture 4 or retire the number (the build-pipeline skill retires on the third architecture spent; the brief for this session allows one more re-root first). Also open and unrelated to magnitude: a calibration model on the classifier's label with a month term, extrapolated over the two unaudited months, files 504.483 and prints 500, a seventh cell with no candidate-table row and no cand.* assertion, which the loop-4 judge never tested. Nothing was moved in the call, the decisive step, the prompt, target/, golden/, target.zip or any graded figure; the design note's Three rules and Tried and rejected carry the measurement. Harness: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192 (truth.py, measurelib.py, screen1.py, screen2.py, screen3.py, screen3b.py, screen3c.py, shipped_point.py). ORCHESTRATOR, 2026-10-21: architecture 3 is spent on measurement and the number is NOT retired. The author file overrides build-pipeline's third-architecture retirement rule for this lane: this author's builds are never retired, so this goes back in a wave as FAILED_TO_STUMP and is re-rooted to architecture 4. Two things must be redrawn at that draw whatever the new mechanism is, because the card's axes have aged out: the stakeholder role family (research_desk), the deciding forum (trustees_or_governors) and the forcing event (vote_or_meeting) all BLOCK against task266 v1, delivered since; and test.same_driver_older BLOCKs against task270 v2 with no differentiation on the card. The surface screen also promotes three pairs now (task191, task193 and task189 against this build, 0.100 to 0.101 at the 98th to 99th percentile), two of them new since the ship, all B-track card-axis matches rather than driver text at a nearest neighbour of 0.06. One correction to the agent's report, measured here: guard.py heart exits 1 on BLOCK and 0 otherwise, as guard.py line 1296 says; its finding that heart exits 0 on a BLOCK verdict is false. The open Gate C it found stands and carries forward: a calibration fitted on the worksheet with the classifier's label and a month term files 504.483 and prints 500, a seventh cell the candidate table does not carry and checks.py does not assert, on a pack an earlier judge pass approved."
+ },
+ "fix_now_2026_11_04": {
+  "findings": "judge: OMS minute against SOE second (ask 4), planned interruptions, the last-day disconnect, the five-minute absorption window against DRP-04 2.5 and step 6 (ask 5), fork table rows; reader: random IDs",
+  "drp04": "2.2 last sentence: planned interruptions counted like any other; 2.7: an interruption's times are the OMS's; interruptions the OMS does not record (as with every momentary) take the SCADA log's, and a recloser's momentary interruptions its own event log's",
+  "absorption": "the event's minute in truth.py, golden.py, verify.py and ceiling.py; a fuse that blew on the reclose carries its operation's minute in the OMS (CTR-1 17 June now absorbed under every reading); CTR-2 26 July (a second fault two minutes into a breaker event) keeps its first momentary",
+  "boundary": "no service point connected or retired on 31 October 2026 or after (build.tidy_dates goes back to the latest free day); 56626244 and 60084470 moved off it",
+  "ids": "service points by substation in meter-route order, new services in series 8; transformers and tap fuses by substation along each feeder; on their own stream (pack.present_ids), no figure moved",
+  "ask_resite": "2.7 points at the unticketed SCADA openings, so the cracker is priced finding them (43.8 per cent); A3 re-sited onto later-found continuation tickets drawn on their own stream after the fault process (cracker 37.5 per cent, pair ceiling 44.5); a later OMS cutover moved no cell",
+  "fork_rows": "SF15 and SF17 rewritten, SF22 clock, SF23 planned, SF24 boundary day, each asserted in checks.py",
+  "moved": "SAIDI on 13 feeders (BLV-3 169.5, CTR-1 146.6, CTR-2 209.8, CTR-3 76.8, MLR-1 301.4, MLR-2 139.8, MLR-3 87.9, NYD-2 412.9, NYD-3 64.2, NYD-4 113.9, SYC-1 153.2, SYC-2 127.5, SYC-3 356.4); MAIFI-E CTR-2 37.42, NYD-2 47.18, NYD-3 44.76; customers served NYD-2 2,242, NYD-3 2,943; CEMI-2, the call, the runner-up, the faults, the stretch, the customers behind each device, the major event days and the threshold unchanged"
+ },
+ "lockout_start_2026_11_04": {
+  "decision": "(b) the lockout opening, closed by one sentence in DRP-04 2.7 (the orchestrator's call)",
+  "pin": "DRP-04 2.7 last sentence: a sustained interruption the outage management system does not record runs, for the indices, from the opening that locked out its breaker or recloser, as the outage management system times those it records; the trips and recloses before that lockout are part of it under 2.5, not momentary interruption events, and do not move its start",
+  "corroboration": "the OMS carries the lockout's minute on all 25 ticketed lockouts whose first opening and lockout fall in different minutes (56 others sit in one minute); asserted in checks.py with the pin",
+  "first_opening_rejected": "with every unticketed lockout started at the first opening of its sequence (the judge's and the coordinator's stated rule), six of the judge's seven figures reproduce and SYC-1 is 154.0 (154.0008), not 153.9; all seven of the judge's figures reproduce exactly when the start is the sequence's second opening (SYC-1 153.9299), so the judge's recomputation did not apply its own stated rule",
+  "kept": "the solution's tolerance (plus or minus 2 per cent of a group's middle, the highest no more than 4 per cent above the lowest), window (since 1 August 2026) and tightened second-choice rationale",
+  "moved": "no graded figure moved from the db115928 golden; figures.json gains one constant (band_spread_per_cent 4) for step 2's wording; only DRP-04 changed under target/"
+ },
+ "shipped": {
+  "date": "2026-11-04",
+  "target_zip_sha256": "dbbb2dcec36e7503caf5f7d3edf6f61273ad77df9f5879db75923ab6b57eb140",
+  "call": "send the overhead line patrol crew to MLR-2 for the week of 9 November 2026, walking the main line from the feeder breaker MLR-F2-52 to recloser R-2207 at pole MLR2-P071 with the taps fused off it",
+  "rebuild": "python3 task192/generator/build.py, then checks.py (115) and verify.py (15)"
  }
 }

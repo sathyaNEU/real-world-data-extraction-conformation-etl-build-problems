@@ -52,24 +52,30 @@ def main():
              "recloser_control_events_2025_2026.csv (operations within five minutes of the first, DRP-04 2.5), and "
              "took each one's first trip from feeder_relay_events_2025_2026.csv or the control's TRIP row (terminals "
              "to phases through protective_device_register.csv): its faulted phase and recorded current.")
-    L.append("2. Grouped each device's momentary faults since 1 August 2026 by faulted phase and current within 2 per "
-             "cent, counted on separate days: %s's breaker %d on phase %s at %s to %s A, %s's recloser %d, no other "
-             "feeder above %d." % (F["call"], c["n"], c["phase"], n(c["lo"]), n(c["hi"]), F["runner_up"], r["n"],
-                                   F["others_max"]))
+    L.append("2. Grouped each device's momentary faults since 1 August 2026 by faulted phase and recorded current, a "
+             "group's currents within plus or minus %d per cent of its middle (the highest no more than %d per cent "
+             "above the lowest), counted on separate days: %s's breaker %d on phase %s at %s to %s A, %s's recloser "
+             "%d, no other feeder above %d."
+             % (F["constants"]["band_per_cent"], F["constants"]["band_spread_per_cent"], F["call"], c["n"], c["phase"],
+                n(c["lo"]), n(c["hi"]), F["runner_up"], r["n"], F["others_max"]))
     L.append("3. Took the stretch as the recording device's zone (DRP-04 5.4) from protective_device_register.csv: "
              "%s to recloser %s at %s, %s customers behind the breaker against %s behind %s."
              % (c["device"], zone_to, zone_pole, n(c["behind"]), n(r["behind"]), r["device"]))
     L.append("4. Found the 2026 major event days under DRP-04 4 (daily system SAIDI over %s minutes on %s customers): "
              "%s." % (F["tmed"], n(F["nsys"]), meds))
-    L.append("5. Built every sustained interruption from oms_outage_history_2025_2026.xlsx (legacy child tickets timed "
-             "from their parent's Out, incidents with their restoration steps) and the openings over five minutes "
-             "that soe_breakers_reclosers_2025_2026.csv holds with no ticket, each reaching the service points below "
-             "its device on the day through the register's dated rows and service_points_2026-10-31.csv; customers "
-             "already without supply are not interrupted again, and a service ticket opened at the minute the device "
-             "above closed is the same interruption carrying on: SAIDI by feeder.")
+    L.append("5. Built every sustained interruption, planned work included (DRP-04 2.2), from "
+             "oms_outage_history_2025_2026.xlsx (legacy child tickets timed from their parent's Out, incidents with "
+             "their restoration steps, each at the OMS's own times under 2.7) and the openings over five minutes that "
+             "soe_breakers_reclosers_2025_2026.csv holds with no ticket, each running from the opening that locked out "
+             "its breaker or recloser (2.7), each reaching the service points below its device on the day through "
+             "the register's dated rows and "
+             "service_points_2026-10-31.csv; customers already without supply are not interrupted again, and a "
+             "service ticket opened at the minute the device above closed is the same interruption carrying on: "
+             "SAIDI by feeder.")
     L.append("6. Counted each customer's momentary interruption events under DRP-04 2.5: a device event reaches the "
              "customers below it, less those already out and those whose fuse or transformer fuse blew in the event's "
-             "minute, and a customer's events within five minutes of the first are one: MAIFI-E by feeder.")
+             "minute (an OMS Out in the minute of the event's first operation), and a customer's events within five "
+             "minutes of the first are one: MAIFI-E by feeder.")
     L.append("7. Counted the service points each feeder supplies on 31 October with more than two of those sustained "
              "interruptions: CEMI-2 by feeder.")
     L.append("8. Sent the crew to %s's breaker zone for the week of 9 November, %s next." % (F["call"], F["runner_up"]))
@@ -79,10 +85,12 @@ def main():
              "%s, with the taps fused off it." % (F["call"], c["device"], zone_to, zone_pole))
     L.append("2. Second choice: %s (recloser %s, %d momentary faults on phase %s at %s to %s A since %s)."
              % (F["runner_up"], r["device"], r["n"], r["phase"], n(r["lo"]), n(r["hi"]), day(r["first"])))
-    L.append("3. What keeps it second: %d repeat faults against %d, %s's beginning %s against %s, and a failure on %s "
-             "locks out the feeder breaker and %s customers against %s's %s."
-             % (c["n"], r["n"], F["call"], day(c["first"]), day(r["first"]), F["call"], n(c["behind"]), r["device"],
-                n(r["behind"])))
+    both = ("both still recurring on %s" % day(c["last"])) if c["last"] == r["last"] else (
+        "%s's last on %s against %s" % (F["call"], day(c["last"]), day(r["last"])))
+    L.append("3. What keeps it second: fewer repeat faults at one current (%d against %d), over a shorter run (since %s "
+             "against %s, %s), behind a recloser zone of %s customers against the %s a failure at %s's breaker "
+             "locks out." % (r["n"], c["n"], day(r["first"]), day(c["first"]), both, n(r["behind"]), n(c["behind"]),
+                             F["call"]))
     fs = sorted(F["feeders"])
     L.append("4. Minutes of interruption per customer served, January to October 2026, major event days (%s) left "
              "out, one decimal:" % meds)

@@ -98,6 +98,82 @@ def scada_point(net, dev, day):
     return "%s.%s.REC" % (fid.replace("-", ""), dev.replace("-", ""))
 
 
+SUB_DIGIT = {"BLV": "1", "CTR": "2", "MLR": "3", "NYD": "4", "SYC": "5"}
+
+
+def present_ids(net):
+    """The numbers the customer system and the asset register carry. Service points set up before 2025 are
+    numbered by substation in meter-route order along each feeder; services connected from 2025 on take the
+    connection series in the order they were connected. Transformers and tap fuses are numbered by substation along
+    each feeder, new transformers after the old. Gaps are retired and cancelled numbers. The numbering draws on its
+    own stream, so nothing the systems record moves with it."""
+    if "_ids" in net:
+        return net["_ids"]
+    rng = np.random.default_rng(W.SEED + 91)
+    fpos = {f["id"]: i for i, f in enumerate(W.FEEDERS)}
+    new_t = set()
+    by_t = {}
+    for sp, v in net["sps"].items():
+        by_t.setdefault(v["transformer"], []).append(v)
+    for tid, vs in by_t.items():
+        if all(v["connected"] >= W.DATA0 for v in vs):
+            new_t.add(tid)
+    tmap, fmap, smap = {}, {}, {}
+    for sub, digit in sorted(SUB_DIGIT.items(), key=lambda x: x[1]):
+        fus = sorted((L for L in net["laterals"].values() if L["feeder"][:3] == sub),
+                     key=lambda L: (fpos[L["feeder"]], L["tap"], L["id"]))
+        k = int(rng.integers(120, 900))
+        for L in fus:
+            fmap[L["id"]] = "F-%s%04d" % (digit, k)
+            k += int(rng.integers(3, 41))
+        assert k < 10000
+        trs = [T for T in net["transformers"].values() if T["feeder"][:3] == sub]
+        trs.sort(key=lambda T: (T["id"] in new_t, fpos[T["feeder"]], T["pos"], T["lpos"], T["id"]))
+        k = int(rng.integers(1000, 4000))
+        for T in trs:
+            tmap[T["id"]] = "T%s%05d" % (digit, k)
+            k += int(rng.integers(1, 12))
+        assert k < 100000
+    order_t = {tid: i for i, tid in enumerate(sorted(tmap, key=lambda t: tmap[t]))}
+    old = [(sp, v) for sp, v in net["sps"].items() if v["connected"] < W.DATA0]
+    for sub, digit in sorted(SUB_DIGIT.items(), key=lambda x: x[1]):
+        mine = sorted(((sp, v) for sp, v in old if net["transformers"][v["transformer"]]["feeder"][:3] == sub),
+                      key=lambda x: (order_t[x[1]["transformer"]], x[1]["connected"], x[0]))
+        k = int(rng.integers(100000, 400000))
+        for sp, v in mine:
+            smap[sp] = "%s%07d" % (digit, k)
+            k += int(rng.integers(1, 9))
+        assert k < 10000000
+    new = sorted(((sp, v) for sp, v in net["sps"].items() if v["connected"] >= W.DATA0),
+                 key=lambda x: (x[1]["connected"], order_t[x[1]["transformer"]], x[0]))
+    k = int(rng.integers(1000000, 2000000))
+    for sp, v in new:
+        smap[sp] = "8%07d" % k
+        k += int(rng.integers(1, 4))
+    assert len(set(smap.values())) == len(smap) == len(net["sps"])
+    assert len(set(tmap.values())) == len(tmap) == len(net["transformers"])
+    assert len(set(fmap.values())) == len(fmap) == len(net["laterals"])
+    net["_ids"] = dict(sp=smap, t=tmap, fuse=fmap)
+    return net["_ids"]
+
+
+def shown(net, dev):
+    """A device, transformer or service point under the number its system carries."""
+    ids = present_ids(net)
+    for k in ("sp", "t", "fuse"):
+        if dev in ids[k]:
+            return ids[k][dev]
+    return dev
+
+
+def shown_pole(net, T):
+    """A tap transformer's pole carries its lateral's number."""
+    if not T["lateral"]:
+        return T["pole"]
+    head, tail = T["pole"].split("-", 1)
+    return "L%s-%s" % (shown(net, T["lateral"])[2:], tail)
+
+
 def terminal_of(net, dev, phases):
     order = net["devices"][dev]["terminals"]
     ts_ = sorted(order.index(p) + 1 for p in phases)
@@ -208,19 +284,21 @@ def ticket_rows(net, S, TR, rng):
     legacy, inc, steps = [], [], []
     seq25, seq26 = int(rng.integers(1400, 2600)), int(rng.integers(1100, 2300))
     inc_no = int(rng.integers(150, 420))
+    rng_main, rng_later = rng, np.random.default_rng(W.SEED + 61)
     for o in sorted(TR["outages"], key=lambda o: o["start"]):
         if o.get("no_ticket"):
             continue
+        rng = rng_later if o.get("later_found") else rng_main
         d = sim.local_day(o["start"])
         dev = o["device"]
         fid = o["feeder"]
         if dev in net["sps"]:
-            dtype, did = "SERVICE", dev
+            dtype, did = "SERVICE", shown(net, dev)
         elif dev in net["transformers"]:
-            dtype, did = "TRANSFORMER", dev
+            dtype, did = "TRANSFORMER", shown(net, dev)
         else:
             dtype = net["devices"][dev]["type"]
-            did = breaker_id(net, fid, d) if dtype == "BREAKER" else dev
+            did = breaker_id(net, fid, d) if dtype == "BREAKER" else shown(net, dev)
         cause = LEGACY_CAUSE.get(o["cause"], "UNK")
         if o["cause"] in ("tree", "lightning", "animal", "wet_tree") and rng.random() < 0.13:
             cause = "UNK"
@@ -342,6 +420,8 @@ def write_devices(target, net, rng):
     legacy_of = {f["legacy"]: f["id"] for f in W.FEEDERS if f.get("legacy")}
     for r in rows:
         r.append(available_fault(net, r[0], r[1], legacy_of.get(r[2], r[2])))
+        if r[1] == "FUSE":
+            r[0] = shown(net, r[0])
     order = {k: i for i, k in enumerate(rng.permutation(len(rows)))}
     rows = [r for _, r in sorted(((order[i], r) for i, r in enumerate(rows)), key=lambda x: (x[1][2], x[0]))]
     write_csv(path(target, "devices"), ["device_id", "device_type", "feeder", "pole", "upstream_device",
@@ -374,7 +454,7 @@ def write_transformers(target, net, rng):
         dev = T["device"]
         if net["devices"].get(dev, {}).get("type") == "BREAKER":
             dev = W.breaker_name(net, T["feeder"], day)
-        rows.append([tid, fid, T["pole"], T["phase"], T["kva"], dev])
+        rows.append([shown(net, tid), fid, shown_pole(net, T), T["phase"], T["kva"], shown(net, dev)])
     rows.sort(key=lambda r: (r[1], r[2], r[0]))
     write_csv(path(target, "transformers"), ["transformer_id", "feeder", "pole", "phase", "kva",
                                              "protective_device"], rows)
@@ -386,7 +466,7 @@ def write_sps(target, net, rng):
     for sp, v in sorted(net["sps"].items()):
         T = net["transformers"][v["transformer"]]
         fid = W.device_feeder(net, T["device"], W.DATA1) if T["lateral"] else T["feeder"]
-        rows.append([sp, v["transformer"], fid, v["cls"], v["connected"].isoformat(),
+        rows.append([shown(net, sp), shown(net, v["transformer"]), fid, v["cls"], v["connected"].isoformat(),
                      v["disconnected"].isoformat() if v["disconnected"] else ""])
     rows.sort(key=lambda r: (r[2], r[1], r[0]))
     write_csv(path(target, "sps"), ["service_point", "transformer_id", "feeder", "rate_class", "service_connected",
@@ -539,6 +619,6 @@ def write_blinks(target, net, S, TR, rng):
     no = int(rng.integers(500000, 600000))
     for r in rows:
         no += int(rng.integers(1, 30))
-        out.append(["C%d" % no] + r)
+        out.append(["C%d" % no, r[0], shown(net, r[1])] + r[2:])
     write_csv(path(target, "blinks"), ["contact_id", "contact_time", "service_point", "channel", "reason"], out)
     return len(out)
