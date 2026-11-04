@@ -1,53 +1,63 @@
 {
  "task": "task476",
- "status": "PAUSED",
- "domain": "physical-environmental-sciences",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-04",
- "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
- "architecture": 2,
+ "stump": "The default path converts each unmetered well's water year 2026 energy at its pump test's kilowatt-hours per acre-foot, which the metered upper-aquifer wells confirm within about 2 per cent, and files no transfer to buy, because it never asks what head each hour's power lifted water against.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-20: the program line in the guidelines and its domain vocabulary; no LEAK",
-  "reader": "arch 2: three scored readers all missed the call (the midpoint start: Ashby, Elmwood, Ivers); readers 1 and 2 took Ask B 12 of 12 (re-sited), reader 3 on the shipped pack 0 of 24 ask figures"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-20 on the registered v2 card (time_semantics strategy risk, ETL and Gate G overuse, decision type and question form after task471); BLOCKs cleared at the draw: org family, forcing event and context artifact redrawn, structural matches differentiated",
-  "heart": "WARN 2026-10-20 at ship (strategy risk, ETL and Gate G overuse, repeats after task471); guard.py surface promoted 5 pairs for adjudication, none on a shared name: task470 and task473 on surface similarity 0.101 (same domain pairing or decision type), task501, task461 and task242 on the card signature (gap time, G13, method_or_model_selection), each differentiated on the card; adjudication is the author's /clone-check",
-  "nearest": "task129 v2 ledger row at 0.06"
+  "guard_check": "WARN 2026-11-04 on the registered v3 card (the old prompt's shell, replaced at stage 2; test.same_puzzle_older against task140 differentiated)",
+  "heart": "",
+  "nearest": "task244 at 0.09"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (arch 2 pass 4, 11-01 re-check)",
-  "disposition": "SEND_BACK",
-  "report": "task476/determinism_check_report_pass4.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "PAUSED at stage 1 on the orchestrating session's stop rule (forty screens across five task types): the 2026-11-04 architecture 3 re-root screened 55 candidates across the six task types that serve ETL (S3.1 to S3.52 in DESIGN_NOTE.md's Tried and rejected, the strongest written in full and priced in code) and none clears guard.py check and the three rules together; no card is registered and nothing is cut. The strongest, S3.1 (switch loading at a terminal's uncontrolled distillate bays: the loading-loss equation at each product's own vapour pressure files 0.2 to 0.8 tonnes per rack against 10 to 125 for the compartment-history construction on three seeds), was registered by task461 v2 at 03:18Z the same morning as its own driver, and emissions-inventory BLOCKs on ban.pairing and ban.subdomain against task461 v2 while it sits in the three-build window. The other five cells clear every axis and die on mechanism (a spent driver, the ETL pincer, a swap failure or a filed rule). Next action: re-draw architecture 3 in emissions-inventory on a physical mechanism that is neither capacity (task479 v7) nor a container's previous use (task461 v2) once task461 v2 leaves the window, or the author's call to move the number. Architecture 2's shipped pack (5a46ee5a) stays at the portal, pending, untouched.",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-20",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "source_note": "re-root of seed ET33's number: architecture 1 (ACS tract poverty change) spent at stage 4; architecture 2 drawn in emissions-inventory (a city gas utility's leak methane inventory)",
- "architecture_spent": true,
- "recheck_2026_11_01": {
-  "rebuild": "reproduces the shipped target.zip byte for byte (5a46ee5a), two builds byte-identical, checks 27 of 27, verify clean",
-  "shipped_cut": "precut 0 FAIL, 8 WARN (no survivor anatomy); voice-check PASS with a count WARN ('our 12 districts'); leak.py LEAK (sweeps 1 and 12: integrity_data_extract_notes.txt names 10 columns); figures_check 45 of 45",
-  "repair_not_shipped": "extract notes out, prompt count out, survivor anatomy written: precut 61 checks 0 WARN, voice-check PASS (how-many shell at cap WARN), leak.py REVIEW (sweeps 12 and 13 clean), figures_check 45 of 45, freeze.py determinism moved only the call sentence's dropped count; generator and pack restored to the shipped cut",
-  "heart": "BLOCK 2026-11-01 on inherited bans: ban.forcing_event (budget_or_appropriation) against task473 and ban.artifact (filed_standard) against task468 v4, both drawn 10-20 before this card; same-driver BLOCK against task174 v2 cleared with a differentiation line; escalated to the author",
-  "surface": "9 pairs promoted for the author's /clone-check, no shared persona or name",
-  "leak_reader": "clean: no decisive-step sentence, no helper file, no ranking artifact; names the surveyed leak's start as unstated",
-  "judge": "pass 4 NOT_DETERMINISTIC, SEND_BACK: the surveyed leak's start convention is an open fork (0, 12, 3 or 5 districts) and the closing sentence would name the decisive step; fork is the stump; architecture 2 spent"
+ "source_note": "re-root of seed ET33's number: architecture 1 (ACS tract poverty change) spent at stage 4 on 10-20; architecture 2 (a city gas utility's leak methane by district) spent at the 11-01 re-check; architecture 3 keeps nothing of either world",
+ "replaces_architecture": {
+  "architecture": 2,
+  "delivered": "2026-10-20",
+  "target_zip_sha256_8": "5a46ee5a",
+  "fate": "spent at the 2026-11-01 re-check (judge pass 4 NOT_DETERMINISTIC, SEND_BACK: the surveyed leak's start convention designates 0, 12, 3 or 5 districts and the closing sentence names the decisive step); the shipped pack stays at the portal, pending, until this build replaces it at ship",
+  "recheck_2026_11_01": {
+   "rebuild": "reproduces the shipped target.zip byte for byte (5a46ee5a), two builds byte-identical, checks 27 of 27, verify clean",
+   "shipped_cut": "precut 0 FAIL, 8 WARN (no survivor anatomy); voice-check PASS with a count WARN ('our 12 districts'); leak.py LEAK (sweeps 1 and 12: integrity_data_extract_notes.txt names 10 columns); figures_check 45 of 45",
+   "repair_not_shipped": "extract notes out, prompt count out, survivor anatomy written: precut 61 checks 0 WARN, voice-check PASS (how-many shell at cap WARN), leak.py REVIEW (sweeps 12 and 13 clean), figures_check 45 of 45, freeze.py determinism moved only the call sentence's dropped count; generator and pack restored to the shipped cut",
+   "heart": "BLOCK 2026-11-01 on inherited bans: ban.forcing_event (budget_or_appropriation) against task473 and ban.artifact (filed_standard) against task468 v4, both drawn 10-20 before this card; same-driver BLOCK against task174 v2 cleared with a differentiation line; escalated to the author",
+   "surface": "9 pairs promoted for the author's /clone-check, no shared persona or name",
+   "leak_reader": "clean: no decisive-step sentence, no helper file, no ranking artifact; names the surveyed leak's start as unstated",
+   "judge": "pass 4 NOT_DETERMINISTIC, SEND_BACK: the surveyed leak's start convention is an open fork (0, 12, 3 or 5 districts) and the closing sentence would name the decisive step; fork is the stump; architecture 2 spent"
+  },
+  "judge": {
+   "verdict": "NOT_DETERMINISTIC (arch 2 pass 4, 11-01 re-check)",
+   "disposition": "SEND_BACK",
+   "report": "task476/determinism_check_report_pass4.md"
+  }
  },
  "draw_2026_11_04": {
-  "screens": 55,
+  "screens": 62,
   "task_types": 6,
   "window": "task276, task461 v2, task193 (emissions-inventory BLOCKs ban.pairing and ban.subdomain against task461 v2; strategies binding_constraint, other and population_selection banned)",
   "probe_cards": "the other five ETL cells clear every axis (only the empty people list, a probe artifact, blocks)",
@@ -56,6 +66,9 @@
    "S3.44 seasonal closures imputed as open non-respondents (official time-series production): the ETL pincer, a confirming record makes it an inner join and an inference from past closures is a fork only the step's own sentence closes",
    "S3.35 a claims case definition's predictive value by setting from treatment fills (payment-claims): the abstraction test against task241 v2"
   ],
-  "card_registered": false
+  "card_registered": "2026-11-04T05:06:12Z",
+  "s344_retest": "dead on C2 confirm and C1 converge (proto_s344.py, four seeds, six rival corrections)",
+  "window_at_card": "task461 v2, task193 v3, task192 v4",
+  "drawn": "S3.60 energy-based groundwater extraction converted at each hour's pumping head (GSDS data-integration), priced in proto_lift.py on six seeds"
  }
 }

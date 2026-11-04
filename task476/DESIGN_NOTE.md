@@ -1,306 +1,161 @@
-# task476 design note: Hollister Gas's 2027 accelerated main replacement districts
+# task476 design note: Ochre Flats Farming Company's water year 2026 extraction return and transfer purchase
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first. Architecture 2, a
-re-root drawn 2026-10-20 after architecture 1 (ACS tract poverty change across the 2020 redrawing) was spent at
-stage 4; its identity is in the card's lineage.
+Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first. Architecture 3, a
+re-root drawn 2026-11-04 after architecture 2 (a city gas utility's leak methane by district) was spent at the 11-01
+re-check; architectures 1 and 2 are in the card's lineage with their shell, and architecture 2's shipped pack
+(5a46ee5a) stays at the portal, pending, until this build replaces it at ship.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task476.json` (architecture v2), registered 2026-10-20 (the flag
-  --force was passed over the slot's spent v1 card; the draft and the filed card showed WARNs only). Redrawn at the
-  draw: the organisation family (utility_or_infrastructure is task472's; a city-owned gas utility is
-  local_government), the forcing event (statutory_or_regulatory_filing is task471's; the council's capital budget
-  round), the context artifact (operations_log and register are task472's and task471's; the program's filed
-  guidelines). Structural matches on older builds differentiated on the card (task229 v2, task242, task461,
-  task501 v2). WARNs answered: time_semantics' strategy risk (the analyst test runs on the clean truth with every
-  field and rule read correctly and still files the wrong set); ETL in 5 of 12 (the lane); Gate G
-  method_or_model_selection in 9 of 12 and after task471 (the decisive step is how each surveyed leak's unobserved
-  start is estimated, among defensible methods, forced by the reports made at a leak's start); designation_set and
-  "which" after task471 (the program funds every district over its line). Nearest driver task468 v2 at 0.07.
-- **Seed:** ET33's number, re-rooted; nothing of ET33's world is kept. The lane's objective stays.
-- **Pairing:** Physical & Environmental Sciences / emissions-inventory / Data Extraction & Conformation (ETL). The
-  utility conforms its leak survey finds, the public odor-report log, the repair orders, the survey schedule and the
-  GIS main inventory into a district leak-methane inventory, each leak's emission rate times the time it emitted,
-  for the replacement program's designation.
-- **Shape:** 07, a grid: each of the 12 districts' leaks found, methane, methane per mile of cast-iron and bare-steel
-  main and its verdict against the line, the designated districts, the chart, the files.
-- **Strategy:** time_semantics. A leak found at a survey began at an unrecorded time since the district's previous
-  yearly survey; cast-iron and bare-steel leaks begin mostly in the frost months; so how long a found leak emitted
-  before the find depends on when in the year its district is surveyed. Decisive generator G13 (the record's horizon,
-  from the find, against the emission's, from the start), with G17 (the expectation of the start under the season's
-  profile). Gate G method_or_model_selection.
-- **World:** United States, a fictional northern city (unnamed state). Hollister Gas, the city-owned gas utility,
-  funds accelerated replacement of cast-iron and bare-steel mains district by district; the City Council approves the
-  2027 to 2029 capital program in its budget round. The program's guidelines designate every district whose 2026 leak
-  methane per mile of cast-iron and bare-steel main is at or above the program line. Personas from `guard.py names
-  --geo us --seed 476`: Marissa Harmon (distribution integrity engineer), Nicholas Wolf (gas operations manager).
-- **Forcing fact:** the capital program goes to the Council's budget hearing on 18 May 2027; the inventory is for
-  calendar 2026, closed with the repair orders through 15 March 2027. The call faces forward (the 2027 to 2029
-  program); its quantity is the closed 2026 inventory the guidelines name (retrospective by the program's rule).
-- **Forum and forcing event:** council_or_assembly (the Council approves the program), budget_or_appropriation (the
-  2027 capital budget round). Organisation local_government; role compliance_or_audit (distribution integrity).
-- **Data-native sentence:** Hollister's leak crews walk each district once a year in that district's own month, and
-  cast-iron joints and bare-steel mains crack when the ground freezes, so a district walked in April finds leaks a few
-  weeks old while one walked in October finds leaks that have been emitting since the winter; the public's odor
-  reports, made within days of a leak starting near a building, are the only record of when in the year leaks begin.
-- **The WHAT screen.** Population: the leaks found in 2026 on each district's mains and services (the leak survey
-  finds and the odor reports, guidelines 2.1). Outcome: the methane each emitted from when it began to its repair, or
-  to 31 December 2026 if still open, at the guidelines' emission rate for its grade. Window: leaks found in calendar
-  2026. Unit: tonnes of methane per mile of cast-iron and bare-steel main in the district (the GIS inventory at 31
-  December 2026). Comparison: the program line. The decisive step settles none of them: it is how each surveyed
-  leak's unrecorded start is estimated.
-- **Deliverables:** `leak_methane_inventory_2026.xlsx` (each district's figures and each leak's estimated start) and
-  `main_replacement_designations_2027.pdf` (the recommendation to the Council with a chart of the districts against
-  the line).
+- **Card:** `.claude/skills/fingerprint/cards/task476.json` (architecture v3), registered 2026-11-04T05:06:12Z;
+  `guard.py check` WARN only (the old prompt's shell, which this build replaces; test.same_puzzle_older against
+  task140 differentiated on the card). Window at the draw: task461 v2, task193 v3, task192 v4, so the strategies
+  other, population_selection and grain_or_unit, the forums regulator_or_inspector, line_manager_or_team and
+  operations_desk, the forcing events statutory_or_regulatory_filing, period_close and shift_or_daily_cycle, the
+  organisation families logistics_or_3pl, utility_or_infrastructure and local_government, the roles
+  operations_director, field_unit_lead and other, and the artifacts operations_log, monitoring_export and
+  filed_standard were all off the table; emissions-inventory BLOCKs on pairing and subdomain. Nearest driver
+  task244 at 0.09.
+- **Seed:** ET33's number, re-rooted twice; nothing of ET33's world is kept. The objective stays.
+- **Pairing:** General Statistics & Data Science / data-integration-record-linkage-entity-resolution / Data
+  Extraction & Conformation (ETL). The ranch conforms the electric utility's two interval exports, two contractors'
+  pump efficiency test reports, its water level loggers and its totalizer meter reads into the groundwater
+  sustainability agency's extraction return, one row per well, and the call is the transfer water it must buy.
+- **Shape:** 15, fields conformed to one schema: each well's method, its monthly and water-year acre-feet and its
+  spring and fall 2026 static depths to water on the agency's template, with the purchase and the power charges in
+  the memo.
+- **Strategy:** decomposition_attribution. Each hour's metered energy is the product of the water the pump lifted and
+  the head it lifted it against, divided by the plant's efficiency; the field's energy-based method attributes the
+  whole of it to water at the head of the day the pump was tested, and the step splits each hour's energy between
+  water and head by that hour's own pumping level. Decisive generator G1 (energy standing in for water at an
+  exchange rate that moves), with G16 (the conversion chosen from the data's structure) and G19 (the agency's
+  allocation, carryover and transfer blocks). Gate G etl_conformance.
+- **World:** United States, a fictional subbasin in California's San Joaquin Valley. Ochre Flats Farming Company, a
+  family-owned grower of pistachios and almonds, pumps its own wells above and below the regional clay and takes
+  Alkali Slough Water District's canal water in wet years; the Sallow Plains Groundwater Sustainability Agency
+  allocates groundwater per gross acre with a carryover, and extraction over what a grower has available must be
+  covered by a recorded transfer before the true-up. Personas from `guard.py names --geo "United States" --seed
+  476`: Melinda Walter (the ranch's water manager), Nicholas Wolf (managing partner), Tamara Larson (the agency's
+  program manager, who signs the notice).
+- **Forcing fact:** the agency's notice of 15 October 2026 sets the water year 2026 return due 30 November 2026 and
+  the transfer deadline 15 December 2026; the ranch's partners sign any transfer purchase agreement before then. The
+  call faces forward (a purchase still to make); its quantity is the closed water year 2026 (1 October 2025 to 30
+  September 2026), retrospective because the true-up settles a closed year.
+- **Forum and forcing event:** executive_team (the managing partners approve the purchase),
+  purchase_order_or_contract (the transfer purchase agreement). Organisation agriculture_or_food_producer; role
+  procurement_lead (the water manager buys the ranch's water). Context artifact register (the well register).
+- **Data-native sentence:** Ochre Flats' deep wells draw from the confined aquifer below the clay, whose level swings
+  a hundred feet through the year, deepest in August and September when the pump contractor makes its annual round
+  and shallowest in late winter, while its upper wells sit in water that barely moves; a turbine pump's energy per
+  acre-foot is set by the head it lifts against, so the kilowatt-hours per acre-foot each deep well's test measured
+  at the year's deepest water overcharge every hour the pump ran on the higher spring and early-summer water.
+- **The WHAT screen.** Population: every well on the ranch's parcels (the agency's notice lists them by its well ID).
+  Outcome: the volume of groundwater each well pumped. Window: water year 2026, 1 October 2025 to 30 September 2026,
+  local time. Unit: acre-feet. Comparison: the ranch's total against its allocation plus carryover, the excess
+  covered by a transfer recorded in blocks of 10 acre-feet. The decisive step settles none of them: it is how an
+  unmetered well's energy record converts to water.
+- **Deliverables:** `wy2026_extraction_return.csv` (the agency's template: each well's method, monthly and
+  water-year acre-feet and its spring and fall 2026 static depths to water) and `transfer_purchase_memo.docx` (the
+  purchase for the partners, the ranch's total against what it had available, each well's power charge for April
+  to September 2026).
 - **Sources, one line each:**
-  - `stumping/references/client/layer2-rigor-patterns.md`, emissions inventory: activity times emission factor with
-    the activity measured over the right exposure; here the activity is leak-hours and its unobserved part is the time
-    before discovery.
-  - The field's leaker-based inventories: a found leak is assigned a duration (the full interval since the last
-    survey, the regulatory convention, or half of it, the textbook one); here both conventions are rungs, and the
-    data's own start profile decides.
-  - `dataset-generation/references/layer1-messiness.md`: repair orders with several visits per leak, address-keyed
-    finds against GIS segment ids, a 2025 grade recode, local time against UTC, a GIS snapshot with abandoned
-    segments.
-  - The lane's spent drivers (`guard.py mechanisms --objective etl`): task462 (snapshot surveys whose detection rises
-    with source size) and task470 (a sensor missing whole units) complete what a survey does not see; here every
-    leak is seen and the quantity is how long it emitted before it was.
+  - The field's energy-based extraction estimate (power consumption coefficient, kilowatt-hours per acre-foot from a
+    pump efficiency test, applied to the well's metered energy) used where wells are unmetered; here it is rung 0.
+  - Pump efficiency test practice: a test reports standing and pumping levels, discharge pressure, total head, flow,
+    input power, overall plant efficiency and kilowatt-hours per acre-foot (1.0241 times total head over efficiency)
+    at the conditions of the day.
+  - `dataset-generation/references/layer1-messiness.md`: two utility exports across a portal change (local
+    prevailing time against UTC, kWh against Wh, renumbered accounts), two contractors' report layouts, vented and
+    non-vented loggers, totalizer rollovers and a replaced meter.
+  - The lane's spent drivers (`guard.py mechanisms --objective etl`): none converts an energy record to a volume at a
+    state another system records; task452's first architecture (a sampled concentration carried across unsampled
+    days) and task474 (activity-expanded counts) are the nearest abstractions, and neither has a physical law fixing
+    the conversion with no free parameter.
 
 ## Survivor anatomy
 
-Actor: the deciding property, when each surveyed leak began, has no column in any file: the finds record when a leak was found, the schedule when each segment was walked, the repair orders each visit, and no record stores a start or a season of starts; the profile exists only as the odor log's confirmed calls counted by month, a relation across rows of a file the inventory reads for other leaks.
-Link: the step carries the month mix of the called leaks' starts onto the surveyed leaks of another population, joined to each segment's own previous walk in the schedule; no key joins an odor call to a surveyed leak and no filed sentence invites setting the two populations against each other.
-Reflex: the field's interval conventions for an unseen start, the previous survey (rung 1, all 12 designated) and the midpoint between walks (rung 2, the default path), sit at the bottom of the ladder and file the default path's Ends on, Ashby, Elmwood and Ivers (checks.py on the pack and on the clean truth).
-Back-test: the midpoint validates on the survey record itself: every district is walked once a year in the same month, so every surveyed interval is a full year with no month signal in it, and the 2022 to 2026 finds per cast-iron and bare-steel mile run level by district (Fenwick 0.78 to 1.41, Ashby 0.68 to 1.13) with no ordering by walk month; only the odor log, a second record, refutes uniform starts.
-Second use: with the decisive step deleted the pack keeps every file it ships: the odor log feeds the called leaks' own starts, grades and segments on the default path, the schedule the previous walk every convention reads, the finds, repair orders and GIS the inventory itself; the cost lines, closeouts, tickets and premises carry the asks.
-Shock: the five designated districts are no interval of any shipped statistic: by walk month they run March, August, October, November and December with September (Dorrance) out; by 2026 finds per mile Ashby sits between them; on the default path Ashby is over the line and Brennan Hill, Fenwick and Harlow under, so no sort hands over the set.
-Pins: guidelines 2.1 to 2.3 file the WHAT (leaks found in calendar 2026 on cast-iron and bare-steel mains and services, methane from when the leak began to its repair or 31 December 2026 at Table 1's rate for the grade when found, a called leak begun at the call, per in-service cast-iron and bare-steel mile, at or above 3.30); no filed sentence names a season, a profile, a weighting or a start convention for a surveyed leak.
+Actor: the head each lower-aquifer pump lifted against in each hour it ran has no column in any file: it is a
+relation between the utility's interval energy and the same hour's reading in the well's logger file, two systems on
+two clocks, joined through the well register, against the pump test's head on its own day.
+
+Link: the conversion is read by pairing every power interval with that hour's pumping level from the logger keyed by
+its serial, a cross-system join no key offers (the exports are keyed by service agreement, renumbered at the April
+2026 portal change, the loggers by serial, the tests by the contractor's own well names) and no sentence invites.
+
+Reflex: the field's method for an unmetered well's extraction (its energy times the acre-feet per kilowatt-hour its
+latest pump efficiency test measured) sits at rung 0 and files the ranch inside what it had available, with no
+transfer to buy (the default path's Ends on).
+
+Back-test: the textbook route validates: on the four metered upper-aquifer wells the energy-based estimate at each
+well's own test agrees with the totalizer within about 2 per cent, because their water hardly moves, so a solver who
+checks the method against the meters finds it confirmed.
+
+Second use: every file the step reads is read for its own reason: the power exports carry every well's energy for
+the return and the memo's power charges, the pump tests carry the kilowatt-hours per acre-foot the default path
+uses, and the logger files and the register carry the static depths to water the agency's return asks for.
+
+Shock: the movement the step recovers reads as ordinary: water year 2026's energy by well is in line with the wells'
+sizes, no well is the pack's outlier on any statistic, and the step moves every lower-aquifer well by a similar
+share, so no sort of the wells on a shipped figure isolates the correction.
+
+Pins: the WHAT is filed in the agency's notice in its own genre (the population by well ID, the water year, the
+acre-foot, the allocation, carryover and transfer blocks, a metered well's meter); no filed sentence names a head, a
+pumping level, a conversion or a pump test for the volume, so deleting any filed sentence leaves the step where it
+was.
 
 ## Default path
 
-1. Read the program guidelines: designate every district whose 2026 leak methane per mile of cast-iron and
-   bare-steel main is at or above the line; a leak emits at its grade's rate from when it began to its repair, and a
-   called leak began at the call.
-2. Take the leaks found in 2026 from the survey finds and the confirmed odor calls, join each to its repair orders for
-   the repair date (open leaks to 31 December 2026), and to its segment's district.
-3. Start each surveyed leak halfway between its segment's 2025 survey and the find (the leak is known only to have
-   begun since the last walk), each called leak at the call; sum each leak's rate times its hours by district; divide
-   by the district's cast-iron and bare-steel miles; compare with the line.
+1. Read the well register, link each service agreement in both utility exports to its well (the April 2026
+   renumbering through the register's prior and current account columns) and each pump test report to its well
+   (the contractors' names and state well numbers through the register), keeping each pump's latest test.
+2. Sum each well's water year 2026 energy, the old export's hourly kWh in local prevailing time and the new export's
+   15-minute Wh in UTC, inside 1 October 2025 to 30 September 2026 local time.
+3. Read the four metered wells' totalizers (rollovers, units and the June 2026 replacement) for their volumes.
+4. Convert every unmetered well's energy at its latest test's kilowatt-hours per acre-foot (the field's energy-based
+   method), checked against the metered wells, where it agrees within about 2 per cent.
+5. Sum the ranch, set it against the allocation plus carryover in the agency's notice and buy the excess in blocks
+   of 10 acre-feet.
 
-Ends on: three districts designated, Ashby, Elmwood and Ivers.
+Ends on: no transfer to buy (0 acre-feet), the ranch about 300 acre-feet inside what it had available.
 
-Golden: five districts designated, Brennan Hill, Elmwood, Fenwick, Harlow and Ivers.
+Golden: buy about 390 acre-feet of transfer water, the lower-aquifer wells converted hour by hour at the head each
+pump lifted against.
 
 ## Stump sentence
 
-The default path counts each 2026 leak's methane only from its find to its repair, and the textbook correction starts
-each surveyed leak halfway back to the district's previous survey (Ends on), so both designate districts by how many
-leaks they find and how slowly they repair; leaks begin mostly in the frost months, so the districts walked in late
-autumn found leaks that had emitted since winter, and only starts estimated from the odor reports' monthly profile
-designate the districts the program should fund.
+The default path converts each unmetered well's water year 2026 energy at its pump test's kilowatt-hours per
+acre-foot, which the metered upper-aquifer wells confirm within about 2 per cent, and files no transfer to buy (0
+acre-feet), because it never asks what head each hour's power lifted water against: the deep wells were tested at
+the confined aquifer's August low and pumped most of their water on spring and early-summer levels 60 to 110 feet
+higher, so each of their kilowatt-hours bought about a tenth more water than the test's rate gives.
 
 ## Three rules
 
-Task type: Physical & Environmental Sciences, emissions-inventory, which the taxonomy tags for ETL: conforming leak
-survey finds, odor reports, repair orders, the survey schedule and the main inventory into the district methane
-inventory the program designates on.
+Task type: data-integration-record-linkage-entity-resolution (General Statistics & Data Science): the utility's two interval exports, two contractors' pump test reports, the ranch's logger files and its totalizer reads integrated through the well register into the agency's extraction return, a conformation serving Data Extraction & Conformation (ETL).
 
-Domain test: the quantity that decides the call is each district's 2026 leak methane per mile of cast-iron and
-bare-steel main, worked as a leaker-based emissions inventory works it: each leak's emission rate for its grade times
-the time it emitted, the unobserved time before discovery estimated from when leaks begin, which the odor reports
-measure.
+Domain test: General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, each unmetered lower-aquifer well's water year 2026 volume integrated from the utility's interval energy and the well's own logger record through its pump test, each interval's energy converted at that hour's total head (the test's head moved by the gap between the hour's pumping level and the test's) at the test's overall efficiency; replacing it with a single-source summary (the test's kilowatt-hours per acre-foot, run hours times the tested flow, an average over tests) files no purchase.
 
-Swap: "which school districts' absence days per pupil exceed the line, counting each absence from when the child fell
-ill" keeps the words but loses what makes the step: no second record catches every case at its start by a separate
-route, and the freeze-thaw cracking of cast-iron and bare-steel mains, a survey calendar walked district by district
-and the public smelling gas near buildings are what fix when leaks begin and how long they emit unseen.
+Swap: "how many servers must the data centre lease to cover the requests its racks served in 2026, from the racks' power and a benchmark's requests per kilowatt-hour" keeps a metered input converted to an output and loses the step's ground: no head a pump lifts against, no pumping level falling and recovering through the year in another system's record, no test taken at the aquifer's low, so the swapped task has no counterpart to the hours a deep pump lifted water 100 feet less than on its test day.
 
-Layer 1: repair orders with several visits under one leak number, survey finds keyed by street address against main
-segments keyed by GIS id, the 2025 recode of leak grades, the odor-call system's UTC times against the work orders'
-local time, the GIS snapshot carrying abandoned segments, a regrade that keeps the leak number; each the utility's
-own systems' output, each asserted neutral on the call.
+Layer 1: the utility's two exports across its April 2026 portal change (hourly kWh in local prevailing time, the fall-back hour twice and the spring-forward hour absent, against 15-minute Wh in UTC, service agreements renumbered), the contractors' two report layouts (gpm against acre-feet a day, total lift and head against pumping level, discharge psi and total dynamic head), three superseded 2023 reports on pumps replaced in 2024, vented loggers reporting depth below the measuring point against non-vented loggers reporting total pressure head that the barologger compensates, logger clocks on Pacific standard time all year, totalizer reads in different units with a rollover and a replaced meter, and the register's three naming schemes; each is how the producing system writes, nothing is placed to be caught, and checks.py asserts the call holds under every mishandling that leaves the conversion alone.
 
-Layer 2: estimation_fit. The methodological choice is how each surveyed leak's unrecorded start is estimated: at the
-find (the record), at the previous survey (the regulatory convention), halfway between (the textbook convention), or
-as the expectation under the monthly profile of leak starts the odor reports measure.
+Layer 2: field_method, the field's own method done right: the choice that flips the call is converting each hour's energy at that hour's head rather than at the head of the test day, which the confined aquifer's seasonal swing makes the deciding term.
 
-Decisive step: estimating each surveyed leak's start as its expected start between the district's previous survey and
-the find, weighted by the monthly profile of leak starts in the odor reports, before its methane is summed.
+Decisive step: rebuilding each lower-aquifer well's volume hour by hour as the interval's kilowatt-hours times the test's overall efficiency over 1.0241 times that hour's total head, the head read from the well's logger as the test's total head plus the hour's pumping level less the test's, so the spring and early-summer hours, lifted 60 to 110 feet less than on the late-summer test day, buy about a tenth more water per kilowatt-hour.
 
-Not semantics: every field, code, unit and definition read correctly (the grades, the visits under one leak number,
-the addresses, the time zones, the abandoned segments) still leaves the record route or a convention for the start;
-no field records when a surveyed leak began, and the step is the choice of estimate, not a reading.
+Not semantics: every field, unit and definition read correctly (both exports' clocks and units, the renumbered accounts, both report layouts, the loggers' references and compensation, the totalizers, the notice's terms) still leaves the easy route converting each well's energy at its test's kilowatt-hours per acre-foot, a figure that is exactly what its column says (the test day's energy per acre-foot); the step is the physical inference that the rate moved with the head through the year, which no field states.
 
-Not rule application: the guidelines file the population (leaks found in 2026), the outcome (methane from start to
-repair at the grade's rate), the unit (per mile of cast-iron and bare-steel main) and the line; no filed rule or
-procedure says how a surveyed leak's start is estimated, and executing every stated rule with either convention
-designates the wrong set.
+Not rule application: the notice files the population, outcome, window, unit and comparison, the meter for a metered well and the transfer blocks, and says only that an unmetered well reports the volume it pumped estimated from its records; no rule says how energy becomes water, so executing every filed rule files no purchase; the enumerated family (the test's rate 0, run hours times tested flow 0, an average of tests 0, the nearest test 0, scaling by the pumping-level ratio alone well over 1,000, the hour's total head about 390, the month's mean pumping level about 390) spreads 0 to over 1,000 acre-feet of purchase, the standing family (the conversion at the recorded head under every licensed convention of the fork table) spreads about 380 to 400, and the ruling-out is silent: no sentence names a head, a pumping level or a conversion.
 
-Analyst test: a strong analyst who reads every file and rule correctly counts each surveyed leak from the midpoint
-between its segment's previous survey and the find and files three districts designated, Ashby, Elmwood and Ivers (the
-default path's Ends on); only starts estimated from the odor reports' monthly profile designate Brennan Hill, Elmwood,
-Fenwick, Harlow and Ivers.
+Analyst test: a strong analyst who conforms both exports, links every account and report to its well, reads the meters right and converts each unmetered well's energy at its latest test's kilowatt-hours per acre-foot, checked within about 2 per cent on the metered wells, files the ranch about 300 acre-feet inside what it had available and buys no transfer (0 acre-feet, the default path's Ends on); one who uses run hours times tested flow files further inside; only the hour-by-hour conversion at the recorded head files the ranch over, buying about 390 acre-feet; checks.py runs each route on the clean truth.
 
-Estimand: the program guidelines (section 2) file the population (leaks found in calendar 2026 on the district's mains
-and services, by survey or by odor report), the outcome (methane from the leak's start to its repair or 31 December
-2026, at the grade's rate in the guidelines' table), the window, the unit (tonnes per mile of cast-iron and bare-steel
-main at 31 December 2026) and the comparison (at or above the line).
+Estimand: the agency's water year 2026 allocation and true-up notice (Sallow Plains GSA, 15 October 2026, sections 2 to 4): the population (every well on the ranch's parcels, listed by agency well ID), the outcome (the volume of groundwater each well pumped), the window (water year 2026, 1 October 2025 to 30 September 2026, local time), the unit (acre-feet) and the comparison (the ranch's total against its allocation plus carryover, any excess covered by a transfer recorded in blocks of 10 acre-feet), a metered well reporting its meter.
 
-No decoy: nothing is planted to be caught; no memo, draft, earlier list or stakeholder figure ships, and the survey
-schedule, the odor log and the repair orders are the utility's ordinary records, true as kept.
+No decoy: nothing is planted: the utility exports, the pump test reports, the logger files, the meter reads, the register, the notice and the tariff are the producing systems' records; no memo, earlier return, draft or stakeholder figure states or ranks the ranch's water year 2026 extraction, and the agency's template ships blank.
 
-No certified replay: no certified or published figure is reproduced to recover the method; the start profile is
-measured directly in the odor reports, not fitted to a reported total.
+No certified replay: no certified, filed or published water year 2026 extraction figure ships, and the method is not recovered by reproducing any figure; the pump tests are measurements on their own day, which both routes use.
 
-Lesson: an inspection finds a defect long after it began, and how long depends on when in the year the inspection
-falls against the season defects begin in; a convention for the unseen time that ignores the season misprices every
-unit inspected far from it. No build on file teaches the start of an unseen interval estimated from a second record of
-starts.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, each leak from its find (none designated) | guidelines 2.2, "from when the leak began": fires | none | none | none | none | one subtraction: fires | readable |
-| R1, each surveyed leak from the previous survey (all 12) | none | the survey schedule: fires | the regulatory leaker convention: fires | none | none | one lookup: fires | readable |
-| R2 (default path), each surveyed leak from the midpoint between surveys (Ashby, Elmwood, Ivers) | none | the survey schedule: fires | the textbook start for an interval-censored event: fires | none | none | one average: fires | readable |
-| G (decisive), each surveyed leak's expected start between its segment's surveys under the monthly profile of called-leak starts (Brennan Hill, Elmwood, Fenwick, Harlow, Ivers) | no clause names a season, a profile or a weighting; 2.2 files only that a called leak began at the call | the profile is in no column: it is the odor log's call months counted, a file the inventory reads for other leaks | none of the duration conventions uses the season | none | none | none | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | at or above the line | 3.30 tonnes per mile or more, unrounded | more than 3.30; the rounded figure | same call: no district within 0.10 of the line (asserted) | guidelines 2.1 |
-| SF2 | found in 2026 | the find in local time; a called leak's call converted from UTC | the call's UTC date | same call (asserted) | guidelines 2.2 "Dates and times are local" |
-| SF3 | the grade | the grade when found | a later regrade | same call (asserted by the guidelines' own wording) | guidelines 2.2 "the grade the leak was given when it was found" |
-| SF4 | a called leak's start | the call | the call less a reporting delay | same call (the calls are within days of the start) | guidelines 2.2 "began when the call was received" |
-| SF5 | the season's profile | the confirmed odor calls of 2016 to 2026 | 2026's calls only; 2016 to 2025 | same call; no per-mile figure is graded (asserted: the largest move, 0.130 for 2026 only, is under the nearest district's 0.346 from the line) | the call's discretisation; the prompt grades the set |
-| SF6 | until repaired | the REPAIRED visit; an open leak to 31 December 2026 | the last visit | same call | guidelines 2.2 |
-| SF7 | the previous survey | the segment's own 2025 survey date | the district's first survey day | same call (segments are walked within days of each other) | the survey schedule |
-| SF8 | miles | in-service cast-iron and bare-steel segments on 31 December 2026, feet over 5,280 | all mains | not the program's denominator | guidelines 2.3 |
-| SF9 | the weighting within the interval | day by day | month by month | same call (asserted) | the call's discretisation |
-| SF10 | a leak's district | its segment's district in the GIS | the crew's district | same call (the inventory reads no cost line) | guidelines 3.1 "a district's leaks are those on its own mains" |
-
-## Ladder
-
-Built figures, read from the cut pack by `generator/checks.py` (tonnes of methane per mile of cast-iron and bare-steel
-main, 2026, against 3.30).
-
-- **R0, each leak from its find (none designated).** The record's own interval leaves out most of a surveyed leak's
-  life: no district reaches 1.5. Dies to guidelines 2.2 (from when the leak began).
-- **R1, each surveyed leak from its segment's previous survey (all 12).** The regulatory convention charges a whole
-  year to every surveyed leak: 4.29 to 7.67. Dies to the called leaks themselves: a leak found within days of starting
-  shows that leaks do not all start the day after a walk.
-- **R2, the default path: the midpoint between surveys (Ashby 3.38, Elmwood 4.58, Ivers 3.46).** The textbook start
-  for an event known only to lie in an interval; it ignores the season, so every district's surveyed leaks get half a
-  year before the find. Dies to the odor log: 62.6 per cent of called leaks started in December to March.
-- **G, the decisive move (Brennan Hill 3.78, Elmwood 3.76, Fenwick 3.75, Harlow 3.68, Ivers 3.74).** Each surveyed
-  leak's expected start under the monthly profile: an October or November walk finds leaks most of a year old, a
-  March or April walk leaks a few weeks old; Ashby falls to 2.74 and the late-walked districts rise over the line.
-  The truth (every start known, generator only) designates the same five.
-- **Margins (cut pack):** the golden's nearest district is Juniper at 2.95, 0.35 below the line, and its lowest above
-  is Harlow at 3.68; the golden family (the profile from 2026 only or 2016 to 2025, the weighting by month, the calls
-  in UTC) moves no district more than 0.13 and names the same five.
-- **Position, separation and dominance:** a designation, not a ranking: the four routes name four different sets;
-  only the seasonal start brings Brennan Hill, Fenwick and Harlow in and keeps Ashby out together.
-- **Worth:** the call and the grid of 12 districts' leaks and verdicts; R2 keeps every district's leaks and 8 of 12
-  verdicts, so the asks carry the pair (Ask sheet).
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | leaks found in calendar 2026 on cast-iron and bare-steel mains and their services, by survey or after an odor call (guidelines 2.2) |
-| 2 | Unit of account | the district; tonnes of methane per mile of cast-iron and bare-steel main |
-| 3 | Attribution window | the find date in 2026, local time (SF2) |
-| 4 | As-of dating | the integrity extract of 15 March 2027; the GIS at 31 December 2026 |
-| 5 | Version basis | repairs as recorded by 15 March 2027; open leaks to 31 December 2026 |
-| 6 | Denominator | in-service cast-iron and bare-steel miles (SF8) |
-| 7 | Weighting | each leak's rate times its hours; no weighting across districts |
-| 8 | Window length | each leak's own life to 31 December 2026 |
-| 9 | Boundary inclusivity | at or above 3.30 (SF1) |
-| 10 | Rounding path | per mile compared unrounded; leaks and costs and interruptions whole |
-| 11 | Tie-break | none: each district against the line |
-| 12 | Maturity and censoring | a leak open at the year's end is counted to 31 December 2026 (guidelines 2.2) |
-| 13 | Order of operations | each leak's start, its hours, its methane, the district's sum, the per-mile |
-| 14 | Row order | no dependence |
-| 15 | Duplicate resolution | one leak per leak number; a leak's several visits are its visits |
-| 16 | Identity normalisation | grades A to C before 2025 and 1 to 3 after; every 2026 find and 2026 call carries the numeric grade Table 1 rates, so the recode reaches no graded figure |
-| 17 | Netting | none |
-| 18 | Dimensional units | kilograms per hour, hours, tonnes; feet over 5,280 |
-| 19 | Code and status semantics | REPAIRED against CHECKED and MONITORED; never the stump |
-| 20 | Integerisation | none before the comparison |
-| 21 | Clause scope | guidelines 2: the 2027 to 2029 program |
-| 22 | Forward window contents | the 2027 to 2029 program designated on the closed 2026 inventory (a retrospective quantity, Draw) |
-
-## Literal reader
-
-Executed word for word, the guidelines fix the population (leaks found in 2026 on cast-iron and bare-steel mains), the
-outcome (methane from each leak's start to its repair or 31 December 2026 at its grade's rate), that a called leak
-began at the call, the unit (per mile of in-service cast-iron and bare-steel main) and the line. One thing is left
-open: when a leak found by the survey began, which no file records. The candidates are the find, the previous survey,
-the midpoint and the expected start under the season leaks begin in. The data separate them: the called leaks, which
-2.2 dates at the call, are leaks the public smelled within days of their start, and they show the season directly
-(62.6 per cent in December to March); the survey schedule puts each segment's previous walk a year before the find;
-only the expected start under that season estimates the filed quantity, the methane from when the leak began, without
-assuming leaks start evenly or at a walk. Every variant of it (the profile's years, the weighting by day or month, the
-calls read in UTC) names the same five districts (checks.py). Every write-up step names the file and rule it executes.
-
-## Oracles
-
-None. No control, published figure or reconciliation ties only under the golden: the LAUF report is system-wide and
-not allocated to districts, and no earlier designation, memo or ranking ships.
-
-## Ask sheet
-
-- **Ask A, each district's 2026 leak repair cost: 12 figures.** H18 home: guidelines 3.1, the Council's budget hearing
-  weighs the program against what leaks already cost each district; a measure every district carries that the call
-  does not turn on. Path: the work-order cost lines, the closeouts, the finds and odor log (each leak's segment), the
-  GIS (the segment's district), the guidelines: six files, nine columns. Primary device: D6/D9, a ledger at another
-  grain than its name: each cost line carries the work order's cost of that type to date, so the 2026 lines summed
-  count the earlier postings again; only the year-end values less the prior year-end give 2026's cost, and the
-  closeouts' totals equal the last values, not the sums. Second device: D7, the true key elsewhere: the cost center is
-  the crew's district, and about one work order in eleven was worked by a neighbouring district's crew.
-- **Ask B, each district's 2026 customer interruptions from leak repairs: 12 figures.** H18 home: guidelines 3.1, the
-  disruption the program would add or avoid. Path: the interruption tickets, the meter premises, the guidelines:
-  three files, seven columns. Primary device (re-sited after stage 4 readers 1 and 2, which joined each ticket's
-  address to its meters and took all 12): D7, the true key elsewhere. A ticket names the premise where the crew shut
-  off the service line, and on older streets one service line feeds two to four neighbouring premises, so every
-  premise on the line was interrupted; only the premises file's service-line id finds the others. Hazards: an address
-  can carry several meters (apartment buildings up to 24), and dispatch and the field crew sometimes both opened a
-  ticket for the same address and leak.
-- **The construction layer:** the designated set, each district's leaks and verdict, the chart; the cracker has them.
-- **Main population zero-counts (asserted):** the call reads no cost line, closeout, ticket or premise.
-
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, 2026 leak repair cost | the 2026 cost lines summed by the leak's district, every hazard repaired; the lines are costs to date, so every district's cost falls outside its bin | miss |
-| B, 2026 customer interruptions | tickets for 2026 deduplicated by address and leak, the meters at each ticket's address counted; the other premises on each shared service line are left out, so every district's count falls outside its bin | miss |
-
-- Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction).
-- Pair ceiling: 37.9 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
-  and none of the 24 ask figures; the mirror, R2, keeps every district's leaks and 8 of 12 verdicts, 30.8).
-- Measured by: generator/ceiling.py
-
-
-## Pre-ship check
-
-- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each district's 2026 leak
-  methane per mile, a leaker-based inventory whose surveyed leaks' unobserved starts are estimated from the season the
-  odor calls measure; checks.py executes the analyst test on the clean truth (the midpoint start files Ashby, Elmwood
-  and Ivers, the true starts the golden five). Layers: the mess (UTC calls, the grade recode, the repair visits, the
-  cost lines to date, duplicate tickets, shared service lines) is the utility's own and is neutral on the call; the
-  call reads no cost line, ticket or premise. Three rules: no decoy, memo or earlier list ships; no field reading
-  decides; executing every filed rule with a convention for the start designates another set.
-- **Judge:** architecture 2 pass 1 DETERMINISTIC with FIX_NOW (a component's window label), fixed; pass 2 DETERMINISTIC
-  and APPROVE, Gate G method_or_model_selection and analytical_non_defect, Gate H pass.
-- **Free gates (2026-10-20):** checks.py 27 of 27, verify.py clean, two builds byte-identical, target.zip cut from the
-  final build (13 files), figures_check.py 45 of 45, precut.py 51 checks clean, voice-check clean, guard.py surface
-  5 pairs promoted for the author's adjudication (no shared name; card signatures differentiated) and heart WARN,
-  containers normalised.
-- **leak.py REVIEW lines, each harmless:** the program line 3.30 sits in the guidelines it is filed in, and the
-  guidelines carry the domain's nouns (survey, emitted, December in "31 December 2026") and name no season, profile
-  or weighting.
+Lesson: a pump's energy per acre-foot follows the head it lifts against, so where a well's water swings through the year its metered energy converts to water only at each hour's own head, read from the well's level record, never at the head of the day it was tested; no build on file converts an energy record to a volume at a state another system records.
 
 ## Tried and rejected
 
@@ -470,3 +325,42 @@ not allocated to districts, and no earlier designation, memo or ranking ships.
   test against task241 v2). What the draw leaves: the ETL ground outside emissions-inventory is closed on mechanism by
   this pass and the earlier maps; emissions-inventory reopens to a new physical mechanism (neither capacity, task479 v7,
   nor a container's previous use, task461 v2) once task461 v2 leaves the three-build window.
+- 2026-11-04, S3.44 re-tested on the orchestrating session's ruling (C2 confirm and C1 converge priced in
+  proto_s344.py, session scratchpad, four seeds, eight regions, six rival corrections): dead. With closure calendars
+  stable year to year, the field's own seasonality-aware imputation (same month of last year's final times the
+  stratum's year-on-year ratio, R0b) lands within 0.6 to 1.7 per cent of the truth and agrees with both closure-aware
+  corrections (last winter's status, a multi-winter pattern), so the easy route sits inside the golden family and two
+  corrections survive; with calendars shifting (establishments starting or stopping winter closure, a shock closing
+  more this winter) every family misses by 10 to 36 per cent on its worst region and the back-test's best basis (a
+  modelled closure probability, 8 to 13 per cent off) selects nothing with margin, because the deciding configuration
+  (this winter's new closures) is out of sample. No C2 criterion or C1 world serves both horns.
+- 2026-11-04, after the S3.44 re-test, on the orchestrating session's second ruling (move the world; any ETL task type,
+  house domains accepted, a fresh physical or behavioural mechanism): the window moved to task461 v2, task193 v3 and
+  task192 v4 at 04:24Z, freeing binding_constraint and banning grain_or_unit. Seven more screens died before the draw:
+- S3.53, census-register, dual-system estimates short for young men because the census and the coverage survey miss
+  the same men, corrected by the sex ratio that birth and migration records fix: task471 v5's driver (the abstraction
+  test).
+- S3.54, item-response-theory-test-equating, rapid guesses in a low-stakes interim test scored as wrong answers: the
+  estimand (achievement) is the scoring model's own construct, so the sentence closing a judge's fork would say that
+  answers given without engagement are not evidence (the fork is the stump), and the rapid-guess threshold is a knob.
+- S3.55, data-integration in an accounting world, a subsidiary's income translated at the year's average rate across a
+  mid-year devaluation: the standard's own rule (rates at the transaction dates) is the golden, so reading it flips
+  the call (data semantics and rule application at once).
+- S3.56, data-integration in a fleet world, off-road distance for a road-user charge refund from GPS tracks that
+  under-read winding forest roads: two road-type factors fitted from the hubodometer totals is an estimation grouping
+  (1.1c).
+- S3.57, payment-claims, grace-period members retro-terminated after the eligibility snapshot: the premium ledger
+  makes it an inner join under a filed grace rule, and without it a forecast of who pays (the pincer).
+- S3.58, data-integration in a contact-centre world, offered calls that include the attempts the carrier blocked when
+  every trunk was busy: the population (the WHAT screen).
+- S3.59, data-integration in a facilities world, office occupancy from each room's carbon dioxide balance: a model of
+  the measurement with free generation and ventilation rates (the pincer's sampled arm).
+- The draw that followed (energy-based groundwater extraction converted at each hour's pumping head, S3.60) is the
+  `## Draw` above; priced first in proto_lift.py (session scratchpad, six seeds): with each deep well tested once at
+  the confined aquifer's late-summer low, the test's rate files the ranch 5 to 6 per cent short of the truth (the deep
+  wells 8 to 9 per cent), run hours times tested flow 7 to 8 per cent, an average or the nearest of the tests about 5,
+  and every conversion at the recorded head within about 1 per cent, the family agreeing to about 1 acre-foot on the
+  ranch; with the allocation set 2.5 per cent under the golden, every easy route buys nothing and the golden family
+  buys 380 to 400 acre-feet on every seed. A first cut with half the deep wells also tested in an earlier spring
+  priced the averaging route inside the golden (the spring and summer tests bracket the season), so the pack ships
+  one current test per pump and the superseded reports only for pumps replaced since.
