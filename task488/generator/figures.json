@@ -1,0 +1,279 @@
+{
+ "call": {
+  "clear": [
+   "FARM",
+   "MAIN",
+   "A",
+   "C",
+   "G"
+  ],
+  "hydrant_uplifts": 73,
+  "section_names": {
+   "B": "Pier B",
+   "E": "Cargo apron",
+   "F": "Remote stands"
+  },
+  "sections": [
+   "B",
+   "E",
+   "F"
+  ],
+  "segments": {
+   "B": [
+    "HB-06",
+    "HB-07"
+   ],
+   "E": [
+    "HE-01",
+    "HE-02",
+    "HE-03"
+   ],
+   "F": [
+    "HF-01",
+    "HF-02"
+   ]
+  },
+  "standing_100": {
+   "B": 6600,
+   "E": 11000,
+   "F": 3600
+  }
+ },
+ "csv": {
+  "hydrant_rows": 73,
+  "refueller_rows": 13,
+  "rows": 86
+ },
+ "hydrant_counts_by_section": {
+  "A": 33,
+  "B": 20,
+  "C": 13,
+  "E": 4,
+  "F": 3,
+  "G": 0
+ },
+ "hydrant_tickets_by_section": {
+  "A": [
+   "CB418317",
+   "CB418318",
+   "CB418325",
+   "CB418328",
+   "CB418329",
+   "CB418332",
+   "CB418334",
+   "CB418335A",
+   "CB418336",
+   "CB418339",
+   "CB418341",
+   "CB418342",
+   "CB418345",
+   "CB418347",
+   "CB418348",
+   "CB418350",
+   "CB418352",
+   "CB418357",
+   "CB418358",
+   "CB418359",
+   "CB418361",
+   "CB418362",
+   "CB418365",
+   "CB418367",
+   "CB418371",
+   "CB418374",
+   "CB418377",
+   "CB418380",
+   "CB418381",
+   "CB418385",
+   "CB418386",
+   "CB418391",
+   "CB418393"
+  ],
+  "B": [
+   "CB418319",
+   "CB418321",
+   "NG2690191",
+   "NG2690193",
+   "NG2690198",
+   "NG2690200",
+   "NG2690201",
+   "NG2690204",
+   "NG2690205",
+   "CB418346",
+   "NG2690206",
+   "NG2690208",
+   "CB418354",
+   "NG2690210",
+   "NG2690214",
+   "NG2690215",
+   "CB418368",
+   "CB418379",
+   "NG2690217",
+   "NG2690219"
+  ],
+  "C": [
+   "CB418322",
+   "NG2690192",
+   "CB418330",
+   "NG2690196",
+   "CB418340",
+   "CB418351",
+   "CB418363",
+   "CB418366",
+   "CB418373",
+   "CB418375",
+   "CB418384",
+   "NG2690224",
+   "NG2690241"
+  ],
+  "E": [
+   "NG2690213",
+   "NG2690216",
+   "NG2690238",
+   "NG2690240"
+  ],
+  "F": [
+   "CB418378",
+   "CB418400",
+   "CB418417"
+  ],
+  "G": []
+ },
+ "rack_line_fill": 4222,
+ "refueller_rows": [
+  [
+   "NG2690190",
+   "Northcove Air",
+   "T-31 (tractor N-7)",
+   11209,
+   9910
+  ],
+  [
+   "CB418327",
+   "Brightwing Airlines",
+   "RF-23",
+   6313,
+   3220
+  ],
+  [
+   "NG2690197",
+   "Sablewood Air",
+   "T-31 (tractor N-7)",
+   7724,
+   6830
+  ],
+  [
+   "CB418343",
+   "Tallowmere Air",
+   "RF-23",
+   4919,
+   2510
+  ],
+  [
+   "CB418353",
+   "Brightwing Airlines",
+   "RF-24",
+   3401,
+   640
+  ],
+  [
+   "NG2690209",
+   "Northcove Air",
+   "T-35 (tractor N-7)",
+   6763,
+   830
+  ],
+  [
+   "CB418369",
+   "Tallowmere Air",
+   "RF-24",
+   2887,
+   280
+  ],
+  [
+   "CB418382",
+   "Orvelle Airways",
+   "RF-24",
+   3105,
+   240
+  ],
+  [
+   "NG2690218",
+   "Sablewood Air",
+   "T-35 (tractor N-7)",
+   5859,
+   720
+  ],
+  [
+   "CB418399",
+   "Brightwing Airlines",
+   "RF-24",
+   3557,
+   270
+  ],
+  [
+   "NG2690234",
+   "Vireo Airlines",
+   "T-35 (tractor N-7)",
+   2694,
+   330
+  ],
+  [
+   "CB418422",
+   "Tallowmere Air",
+   "RF-24",
+   2817,
+   110
+  ],
+  [
+   "CB418424",
+   "Tallowmere Air",
+   "RF-24",
+   3279,
+   120
+  ]
+ ],
+ "refuellers": {
+  "by_air_10": {
+   "Brightwing Airlines": 4130,
+   "Northcove Air": 10740,
+   "Orvelle Airways": 240,
+   "Sablewood Air": 7550,
+   "Tallowmere Air": 3020,
+   "Vireo Airlines": 330
+  },
+  "held_10": {
+   "RF-23": 3070,
+   "RF-24": 310,
+   "T-31": 14680,
+   "T-35": 2340
+  },
+  "refueller_uplifts": 13,
+  "set": [
+   "RF-23",
+   "RF-24",
+   "T-31",
+   "T-35"
+  ]
+ },
+ "rounding_litres": {
+  "hydrant_standing": 100,
+  "refuellers_and_rows": 10
+ },
+ "rung0": {
+  "edges": [
+   "09:27",
+   "18:19"
+  ],
+  "line_fill": 398781,
+  "uplifts": 64
+ },
+ "times": {
+  "coupling_t35": "11:58",
+  "hydrant_off": "15:40",
+  "hydrant_on": "06:00",
+  "rack_off": "12:20",
+  "rack_on": "06:00",
+  "stands_closed": "15:00"
+ },
+ "transfer_litres": 3843
+}

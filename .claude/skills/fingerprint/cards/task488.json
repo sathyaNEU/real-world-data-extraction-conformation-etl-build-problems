@@ -38,20 +38,20 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:a recalled batch tracked through a branched always-full hydrant by the draws downstream of each segment",
   "layer1": [
-    "two into-plane agents' fuel ticket exports, one in gross litres at fuel temperature and local time, one in net litres at 15 C and UTC",
-    "pit identifiers in the agents' stand-and-letter scheme against the register's pit tags",
-    "segment lengths and nominal bores in the register, volumes derived",
-    "a corrected ticket re-issued under a new number",
-    "the pump station meter's cumulative register with a reset at a meter proving",
-    "tank line-ups logged in the fuel farm's own shift log"
+    "two into-plane agents' ticket exports, Corbel's in local time with gross and 15 C litres and pit tags, Northgarth's in UTC with 15 C litres and stand numbers",
+    "a ticket voided for a mistyped registration and re-issued under a suffixed number",
+    "the pump station meter's totaliser restarted at a meter proving",
+    "segment lengths and internal diameters in the register with volumes derived",
+    "tank line-ups in the farm's shift log and as the historian's valve states",
+    "refueller tanks reconciled from the weekly Monday dip through two days of rack loads and tickets"
   ],
   "stakeholder_role": "the fuel facility operator's fuel quality manager, who brings the resumption plan to the corporation's fuel quality committee",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "hydrant_scada_2026-10.csv",
-    "rows": 44640,
-    "entity": "one minute of the hydrant pump station's flow, pressure and meter register",
+    "file": "hydrant_scada_2026-09-14_2026-10-14.csv",
+    "rows": 44070,
+    "entity": "one minute of the hydrant pump station's flow, meter totaliser, header pressure, pumps running and tank suction valves",
     "grain": "minute",
     "source": "synthetic"
   },
@@ -73,7 +73,7 @@
     "hydrant_resumption_plan.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "A substance entering a branched network of always-full conduits reaches each outlet only after the volume drawn through every conduit on its path since it entered has displaced what that conduit held, so each branch's exposure is set by its own draws: timing it by when the substance entered, or by total throughput against the whole network's or the path's volume, misplaces which outlets received it and leaves it standing in the branches that drew little.",
   "driver_concrete": "Batch J-26-1187 entered the hydrant at the pump station while Tank 3 was on line, but each section's fuel moves only when its own pits draw, so the batch reached the cargo branch and the hangar spur hours late, left them only as their own stands fuelled, and at the recall still stood in them, while the time window and every turnover check file the hydrant as clear.",
   "stump": "The default path takes the batch as reaching the pits while Tank 3 was on line, finds the hydrant has turned over several line fills since, drains nothing and lists the aircraft fuelled in that window; each section's fuel moves only when its own pits draw, so the batch is still standing in the low-use branches and reached aircraft there after Tank 3 came off line.",
@@ -134,5 +134,11 @@
       "deliverable set": "csv+docx+xlsx"
     }
   ],
-  "registered": "2026-11-04T07:59:59Z"
+  "registered": "2026-11-04T09:48:18Z",
+  "shell": {
+    "question form": "where",
+    "second-sentence opener": "nothing",
+    "rounding opener": "round",
+    "deliverable set": "csv+pdf"
+  }
 }

@@ -1,0 +1,203 @@
+{
+ "task": "task488",
+ "architecture": 2,
+ "title": "Which sections of the Windrell International Airport hydrant and which refuellers held fuel from recalled jet fuel batch J-26-1187 at the 05:30 suspension of fuelling on 14 October 2026, and which uplifts delivered any of it, for the fuel quality committee's resumption plan and the airlines' notices",
+ "domain": "Supply Chain & Logistics (house), in General Statistics & Data Science",
+ "subdomain": "transportation-network",
+ "client_task_type": "data-integration-record-linkage-entity-resolution",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "07: the hydrant's sections and the refuellers, each holding the batch or clear with its litres, the airlines' refueller litres, and one recall return row per uplift, in a CSV return and a PDF plan with a schematic",
+ "as_of": "2026-10-14",
+ "deliverables": [
+  "j26-1187_recall_uplifts.csv",
+  "hydrant_resumption_plan.pdf"
+ ],
+ "distractor_files": [
+  "pit_valve_inspections_2026-q3.xlsx",
+  "stock_reconciliation_2026-09.pdf"
+ ],
+ "stated_inputs": [
+  "J-26-1187",
+  "05:30",
+  "14 October",
+  "15 C",
+  "100 L",
+  "10 L"
+ ],
+ "field_terms": [],
+ "input_gates": {
+  "files": 17,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "hydrant_scada_2026-09-14_2026-10-14.csv",
+  "largest_file_rows": 44070
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task488/generator/build.py (seeded, deterministic) in the layouts of a fuel farm pump station historian, an operator's hydrant network register, shift log and maintenance record, two into-plane agents' ticket exports, check records and vehicle logs, a truck rack loading log, a certificates register, an equipment register, a supplier's recall notice, a quality manual procedure, pit inspections and a stock reconciliation; the airport, the corporation, the operator, the agents, the supplier, the airlines, the aircraft and the people are fictional.",
+   "date": "2026-10-14",
+   "license": "CC0 (original work)"
+  }
+ ],
+ "created": "2026-10-14",
+ "generator": "task488/generator/build.py",
+ "files": [
+  {
+   "path": "QM-09_product_quarantine_and_recall.pdf",
+   "format": "pdf",
+   "bytes": 64112,
+   "rows": null,
+   "source": "Constructed: the corporation's quality manual procedure QM-09, product quarantine and recall",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "batch_certificates_register_2026.csv",
+   "format": "csv",
+   "bytes": 1291,
+   "rows": 12,
+   "source": "Constructed: the Operator's register of batch receipts and certificates of quality, 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "corbel_daily_checks_2026-10.csv",
+   "format": "csv",
+   "bytes": 3708,
+   "rows": 53,
+   "source": "Constructed: Corbel Into-Plane Services' daily check records, October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "corbel_equipment_log_2026-10.csv",
+   "format": "csv",
+   "bytes": 2081,
+   "rows": 28,
+   "source": "Constructed: Corbel Into-Plane Services' equipment log, October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "corbel_fuel_tickets_2026-10-12_14.csv",
+   "format": "csv",
+   "bytes": 21524,
+   "rows": 201,
+   "source": "Constructed: Corbel Into-Plane Services' fuel ticket export, 12 to 14 October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "farm_shift_log_2026-10-12_14.pdf",
+   "format": "pdf",
+   "bytes": 45041,
+   "rows": null,
+   "source": "Constructed: the Operator's fuel farm shift log, 12 to 14 October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hydrant_maintenance_2026-wk42.xlsx",
+   "format": "xlsx",
+   "bytes": 11228,
+   "rows": null,
+   "source": "Constructed: the Operator's hydrant maintenance record for week 42: low point drains, filter vessels, pit valve tests",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hydrant_network_register.xlsx",
+   "format": "xlsx",
+   "bytes": 12833,
+   "rows": null,
+   "source": "Constructed: the Operator's hydrant network register: segments, draw points, sections and the rack line",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hydrant_scada_2026-09-14_2026-10-14.csv",
+   "format": "csv",
+   "bytes": 2849821,
+   "rows": 44070,
+   "source": "Constructed: the fuel farm pump station historian's one-minute export: flow, meter totaliser, header pressure, pumps running and the tank suction valves, 14 September to 14 October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "into_plane_equipment_register.xlsx",
+   "format": "xlsx",
+   "bytes": 7660,
+   "rows": null,
+   "source": "Constructed: the corporation's register of into-plane equipment authorised at Windrell",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "northgarth_qc_checks_oct2026.xlsx",
+   "format": "xlsx",
+   "bytes": 8740,
+   "rows": null,
+   "source": "Constructed: Northgarth Aviation Fuelling's quality control check records, October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "northgarth_tickets_20261012-20261014.xlsx",
+   "format": "xlsx",
+   "bytes": 14726,
+   "rows": null,
+   "source": "Constructed: Northgarth Aviation Fuelling's ticket export, 12 to 14 October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "northgarth_vehicle_log_2026-10.csv",
+   "format": "csv",
+   "bytes": 1904,
+   "rows": 25,
+   "source": "Constructed: Northgarth Aviation Fuelling's vehicle log, October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "pit_valve_inspections_2026-q3.xlsx",
+   "format": "xlsx",
+   "bytes": 8033,
+   "rows": null,
+   "source": "Constructed: the Operator's quarterly hydrant pit valve inspections, July to September 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "rack_loading_log_2026-10-12_14.csv",
+   "format": "csv",
+   "bytes": 2010,
+   "rows": 22,
+   "source": "Constructed: the truck rack's loading log, 12 to 14 October 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "recall_notice_RN-2026-031.pdf",
+   "format": "pdf",
+   "bytes": 64022,
+   "rows": null,
+   "source": "Constructed: the fuel supplier's recall notice for batch J-26-1187",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "stock_reconciliation_2026-09.pdf",
+   "format": "pdf",
+   "bytes": 63555,
+   "rows": null,
+   "source": "Constructed: the Operator's monthly stock reconciliation for September 2026",
+   "date": "2026-10-14",
+   "license": "CC0 (original work, constructed for this task)"
+  }
+ ]
+}
