@@ -152,7 +152,7 @@ lowest perimeter level, design pad level, base survey).
 | Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | R0 a plane through each pile's toe (138,000 t, 57 days) | PR-07 3.2 read on the December survey alone | the December lattice | yes | P6 and the roll-forward confirm it | no | yes | no | readable |
-| R1 the lowest or mean level of the ring round each pile (139,000 t, 57 days) | no | the December lattice | yes | P6 confirms it | no | yes | no | readable |
+| R1 the lowest or mean level of the ring round each pile (about 139,000 t on the generator's ring, under the floor) | no | the December lattice | yes | P6 confirms it | no | yes | no | readable |
 | R2 a bare base only where contractor B flew it, the toe elsewhere (140,000 t, 58 days) | no | B's lattice matches itself | no | no | no | no | no | readable |
 | G (decisive) each area's pad from the survey that recorded it bare, conformed across both contractors (150,000 t, 62 days) | no sentence names a base, the toe, settlement or the rotation surveys | no column holds a pad level or a base | no: the reflex reads the December survey only | no control ties only under it: the roll-forward lands as close under the toe route | no | no: a surface-to-surface volume over a year's conformed surveys | every survey serves the stock chart | silent |
 
@@ -184,7 +184,11 @@ lowest perimeter level, design pad level, base survey).
 - **Rung 0, the field's reflex (137,884 t, 56.73 days, nominate):** each pile's volume above a plane fitted through the
   ring just outside its toe on the December survey.
 - **Rung 1, a flat base at the ring's lowest or mean level (139,217 and 137,883 t, 57.28 and 56.73 days,
-  nominate):** the variants of the same idea; the design level (2.40 m N60) files 137,826 t.
+  nominate):** the variants of the same idea; the design level (2.40 m N60) files 137,826 t. These rung figures are the
+  generator's own construction (the ring 1.6 to 6 m outside the toe it detects) and move with the ring: the judge's
+  toe plane landed near 139,000 t, and a low percentile of each area's levels gave it about 156,000 t, a flat base no
+  survey measures that happens to sit in the bowls. None of them is a reading of the pad, so they stay out of
+  submission.md, which carries only the golden's own figures.
 - **Rung 2, half the insight (139,881 t, 57.55 days, nominate):** the bare survey used only where contractor B flew it
   (P4's October rotation), the toe elsewhere, the cross-contractor conformation skipped.
 - **Rung 3, decisive (149,846 t, 61.65 days, no nomination):** each area's pad from its own bare survey (P1 18 March,
@@ -258,6 +262,21 @@ level under each pile is read only from the surveys themselves.
 - Single-use test: every survey serves the stock chart, the control report places the register on every route, the
   historian, shift log, unloader log, berth log and contract register carry the asks, and the bunker levels and cargo
   analyses are declared distractors; no file's only use is the decisive step.
+
+Stage 4 (2026-11-04): the leak reader quoted nothing for question 1 and found no ranking or helper file and no realism
+tell. The determinism judge returned DETERMINISTIC, APPROVE on the first pass (determinism_check_report_arch2.md):
+every committed answer reproduced, stump power strong, the decisive step analytical, sole_data_defect no. Rulings, one
+line each, with nothing in the pack changed:
+- Reader q6 ("stated procedure plus datum handling", no pad level filed anywhere): that unfiled pad under each pile is
+  the intended analytical step, and the judge classed it analytical (Gate H). No change.
+- The chart's intermediate survey points carry PR-07 3.2's "last determined before the survey" density to every survey;
+  the judge found it touches no gated figure. The convention is named for the graders in submission.md's chart line,
+  not in the pack.
+- The xlsx files' 1980 zip entry dates are what Excel writes; leak.py's container sweep passed. No change.
+- The burn plan's February 2027 dates belong to a forward plan (sweep 9 above). No change.
+- submission.md section 1 no longer carries any wrong-route figure: the toe-plane and lowest-point tonnages are the
+  generator's construction and do not reproduce from the files (Gate A risk), so the rival clause names why the toe
+  base loses and states no figure; the ladder above keeps them.
 
 ## Ask sheet
 

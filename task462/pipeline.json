@@ -1,10 +1,10 @@
 {
  "task": "task462",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "business-operations-analytics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-04",
  "architecture": 2,
  "stump": "The default path takes each pile's December volume above a plane fitted through its toe and files 138,000 t, 57 days against the 60-day floor, so it nominates the winter option cargo; the pad under the five long-standing pile areas has settled into bowls up to about two metres deep, and measured against the pad the year's rotations exposed the reserve is 150,000 t, 62 days, and no cargo is needed.",
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK; --asof 2027-01-04; sweeps 3, 4, 9, 12 answered in the note's Leak review)",
-  "reader": ""
+  "reader": "2026-11-04, once, on target.zip 07da6cdd: nothing quoted for question 1, no ranking or helper file, no realism tell; q6 read stated procedure plus datum handling with no pad level filed, ruled the intended analytical step (the judge classed it analytical)"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective; same_driver_older NOTE, differentiated)",
@@ -24,14 +24,16 @@
   "surface": "exit 0; no persona in the cut pack"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_arch2.md",
+  "gate_h": "decisive step analytical; sole_data_defect no; stump power strong",
+  "note": "first pass; the thread's reserve 150,157 t, 61.78 days, every graded bin and the call agreeing"
  },
  "returned": [],
- "resume": "stage 4 hand-off: the leak reader and the determinism judge run in the orchestrating session on target.zip sha256 07da6cdd4d1288e828c3f52219dab9a76e11d9d712ba9fb0364539cde71169e3, rebuilt byte for byte by python3 task462/generator/build.py (pack, goldens, metadata.json, submission.md, figures.json, checks, verify, a second build compared, target.zip cut last); fix every finding in the generator in one pass, then SHIP (ledger row, card current, target.zip and golden/ added with git add -f)",
+ "resume": "shipped 2026-11-04: target.zip sha256 07da6cdd4d1288e828c3f52219dab9a76e11d9d712ba9fb0364539cde71169e3, rebuilt byte for byte by python3 task462/generator/build.py; the portal result goes to the ledger row the day the author reports it",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-04",
  "portal": null,
  "source_note": "no seed: a fictional Finnish city-owned energy company, its harbour power plant, its coal yard, its survey contractors, its yard systems and its supplier's winter option, invented; house domain business-operations-analytics mapped to the client domain general-statistics-data-science (data integration)",
  "replaces_architecture": {
@@ -50,7 +52,8 @@
   "generator_checks": "74 of 74",
   "verify": "green (plant-grid route)",
   "byte_identical_rebuilds": "two builds identical (target, golden, metadata.json, submission.md, figures.json)",
-  "figures_check": "PASS 65 of 65",
+  "figures_check": "PASS 62 of 62",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
   "voice_check": "PASS",
   "pair_ceiling": "28.5 (generator/ceiling.py)",
   "container_scrub": "target and golden clean"

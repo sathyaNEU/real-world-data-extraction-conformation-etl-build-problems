@@ -1,17 +1,18 @@
 # leak check, task462
 
-**Verdict: REVIEW.** 27 files read, 20 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 27 files read, 19 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: surface, screen, rejected, golden, lowest, decisive, asserted, height, contractor, register, conformed, density, sentence, method, reflex, contractors, inventory, checks, decimal, systems, record, nothing, lattice, interval, rotation
+Stump terms swept: surface, asserted, height, contractor, density, register, golden, sentence, conformed, contractors, systems, record, nothing, checks, decisive, lattice, rotation, procedure, roll-forward, report, lowest, control, laboratory, harbour, reclaimed
 
-## 3 answer figures in the pack (REVIEW 1)
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `fuel_security_procedure_PR-07.pdf`: golden figure 3.2 appears: ...wn in December by the plant's survey contractor. 3.2 Reserve: the tonnes of coal held in the coal yar...
 - **REVIEW** `fuel_security_procedure_PR-07.pdf`: carries 14 of 16 distinctive words of the committed call: "Do not nominate Silesia's winter option cargo: the coal yard held 150,000 t at the 16 December survey, 62 days of the fi"
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `fuel_security_procedure_PR-07.pdf`: 4 of 25 stump-paragraph terms appear (contractor, register, density, record); read whether the document names the move
-- **REVIEW** `survey_control_report_2026-07.pdf`: 5 of 25 stump-paragraph terms appear (surface, height, register, systems, lattice); read whether the document names the move
+- **REVIEW** `fuel_security_procedure_PR-07.pdf`: 8 of 25 stump-paragraph terms appear (contractor, density, register, record, procedure, control); read whether the document names the move
+- **REVIEW** `survey_control_report_2026-07.pdf`: 7 of 25 stump-paragraph terms appear (surface, height, register, systems, lattice, report); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `coal_burn_plan_2027Q1.xlsx`: 2 ISO dates after 2027-01-04, e.g. 2027-02-15, 2027-02-17
@@ -37,7 +38,7 @@ Stump terms swept: surface, screen, rejected, golden, lowest, decisive, asserted
 ## 11 prompt gate (clean)
 
 
-## Solver's-eye read
+## Solver's-eye read, architecture 1 (the old methane-ratings pack, target.zip 33e6d0c4, superseded; kept as history)
 
 1. Decisive step. No sentence names a correction, but the standard's definitions bound it. tarvane_low_methane_rating_standard_2026.pdf 4.3: "A site's methane emitted ... is the site's emission rate at 5 kg per hour or more, averaged over the campaigns flown in that part with each campaign counting equally, times the hours in that part." talmora_survey_methods_note_2026.pdf 2.1: "A pass does not detect every plume: the chance of detecting a plume rises with its emission rate." Also 4.2: "the chance that a pass detects a plume as a logistic function of the natural logarithm of the plume's emission rate alone, fitted by maximum likelihood to the study's releases". No file says to gross up for missed plumes. What I think decides it: detected plumes undercount emissions, especially just above 5 kg/h, so a fitted detection curve (controlled-release workbook) and perhaps a quantification-bias check should adjust the sum before intensity is compared with 0.20. Nothing states that step. The note and workbook only supply the ingredients. The pack never says "correct for detection".
 2. Ranking file. None. Closest context: ghgrp_subpart_w_tollaver_facilities_2023_2025.csv (producer CH4 by source, 2023-2025, a different basis) and the satellite JSON (basin total only, "does not resolve individual facilities or operators"). Neither ranks producers on the question.
@@ -62,3 +63,23 @@ Stump terms swept: surface, screen, rejected, golden, lowest, decisive, asserted
 9. Name check. Nothing misspelled-looking. All names read fictitious (Tollaver, Talmora Aerial, Tarvane, Mossreed, etc.). EPA GHGRP and "Subpart W" are real programme names used correctly, and "TROPOMI-class" is a real sensor family. "State Oil and Gas Commission" generic.
 
 Verdict: REVIEW. No file hands over the detection-correction step or any producer's rating. Items to look at: the undefined FR code (genuine semantic fork on the flaring ask), unstated PPA/revision precedence on the delivery ask, and the methods note section 4.2 ("logistic function of the natural logarithm of the plume's emission rate alone") which is close to announcing the method for the decisive step, though it is phrased as validation.
+
+## Solver's-eye read, architecture 2 (this pack, target.zip 07da6cdd)
+
+Isolated reader, 2026-11-04 (general-purpose, sonnet, medium), architecture 2, on a fresh copy of prompt.txt and target/ (target.zip sha256 07da6cdd4d1288e828c3f52219dab9a76e11d9d712ba9fb0364539cde71169e3). Sweep 4's lines were kept out of the brief and ruled in the main thread.
+
+1. Decisive step: none stated. Nearest is PR-07 3.2 "For each pile area it is the volume of coal above the yard pad at the survey multiplied by the bulk density the fuel laboratory last determined for that coal before the survey" (standing procedure; does not say how to find the pad or cross the datum change).
+2. none (no file ranks or scores the call; bunker file and plan give inputs only).
+3. none as an analyst-helper. survey_control_report_2026-07.pdf is a contractor handover report (control points, transformation) and is ordinary.
+4. none. Burn plan "Quarter ... 218740" and "Version 3, approved ... 9 December 2026" are inputs, not the answer.
+5. PR-07 3.3 "the coal burn of January to March in the first-quarter burn plan ... the plan's quarter total divided by the days of the quarter, in tonnes a day" (fixes 218,740 t / 90 days); 3.2 reserve = per-pile-area volume above the pad times the lab density last determined before the survey, summed; 3.4 "the reserve divided by the planned burn"; section 4 floor 60 days; section 5 nominate by 8 January if under 60. OH-12 1.1/1.2 fix receipts by CV-01 and deliveries by CV-21 weighed tonnes; 2.1 Finnish time, calendar months and quarters.
+6. Mostly following stated procedure plus a data-handling chain (datum and grid transformation, pad level, lab density by pile and unit). Deciding text: PR-07 3.2 to 3.4 and survey_control_report_2026-07.pdf section 3 and 4. The filed documents state the rule, so the call leans on rule application and unit/datum reading; I see no analytical-choice stump in the pack itself (a possible judgement on the yard pad level is not stated anywhere I could find). Flag for the author against the three rules.
+
+a. harmless, because it is a standing controlled procedure (rev 4, 2026-03-11, approved before the December survey) and states no December figure or outcome.
+b. harmless, because it is the plant's own controlled document with revision history, signatures and no address to an analyst; it refers to the pile area register and lab density tests by their ordinary names.
+c. harmless, because it reads as an ordinary approved forward plan (Version 3, 9 Dec 2026, monthly t/d by unit, availability, heat demand sheets).
+d. harmless, because .asc headers are standard ESRI grid headers, .xyz is a plain semicolon-delimited, decimal-comma contractor export, survey_deliveries.csv logs flights, checkpoints and RMSE, and pile_areas is a plain register. Note only: lab density units switch from kg/m3 to t/m3 from Aug 2026 and the grid/datum change at July are mess, not hints; nothing is remarked on in the files themselves.
+e. harmless, because OH-12 is a plain booking/time/calibration instruction and the control report gives control points and the transform without telling the analyst what to measure (it does state the 0.384 m N60-N2000 offset and rotation, which is ordinary survey handover content).
+f. harmless, because they read as plant logs: shift log totalisers at 00:00/08:00/16:00, historian 15-min UTC tag series, unloader START/STOP events with HATCH/SHIFT/WIND/END reasons, all unremarked.
+
+Realism: none that I could see. Minor tell: berth_log tonnes carried to three decimals and a uniform shift-log layout, both plausible.

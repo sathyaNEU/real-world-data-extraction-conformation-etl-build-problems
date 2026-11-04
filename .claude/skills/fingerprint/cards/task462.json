@@ -133,7 +133,7 @@
       "deliverable set": "csv+xlsx"
     }
   ],
-  "notes": "architecture 2 re-root 2026-11-04 after architecture 1 was found spent at the 2026-11-02 re-check (its golden was the field's own method applied as stated); first drawn in a steelworks' ore yard, redrawn into a CHP plant's coal yard the same day when task476 v4 and task488 v2 registered first. Designed to the survivor anatomy: the field's method (a base through the toe) is rung 0 and validates on the new pile area and on the book roll-forward; the decisive step is recognising that the long-standing piles violate its precondition (the pad under a pile continues the pad at its toe), forced by the year's own surveys with no filed method and no outside constant.",
+  "notes": "architecture 2 re-root 2026-11-04 after architecture 1 was found spent at the 2026-11-02 re-check (its golden was the field's own method applied as stated); first drawn in a steelworks' ore yard, redrawn into a CHP plant's coal yard the same day when task476 v4 and task488 v2 registered first. Designed to the survivor anatomy: the field's method (a base through the toe) is rung 0 and validates on the new pile area and on the book roll-forward; the decisive step is recognising that the long-standing piles violate its precondition (the pad under a pile continues the pad at its toe), forced by the year's own surveys with no filed method and no outside constant. Shipped 2026-11-04 (target.zip 07da6cdd): the leak reader quoted nothing for question 1 and the judge returned DETERMINISTIC, APPROVE on the first pass, the decisive step analytical; architecture 1's shipped pack (33e6d0c4) stays on the lineage, pending at the portal.",
   "shell": {
     "question form": "how-many",
     "second-sentence opener": "each",

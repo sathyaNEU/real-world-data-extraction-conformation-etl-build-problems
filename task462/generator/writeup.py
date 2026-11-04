@@ -17,7 +17,7 @@ def day(iso):
 
 def write(fig_path, out_path):
     f = json.load(open(fig_path))
-    c, r = f["call"], f["rungs"]
+    c = f["call"]
     piles = f["piles"]
     bases = ", ".join("%s %s" % (p["area"], day(p["base_survey"])) for p in piles)
     lines = []
@@ -31,12 +31,11 @@ def write(fig_path, out_path):
     w("## 1. Final Recommendation")
     w("")
     w("**Do not nominate Silesia's winter option cargo: the coal yard held %s t at the 16 December survey, %d days of "
-      "the first-quarter burn plan against the %d-day floor.** The reserve clears the floor by %s t. Not the base "
-      "through each pile's toe, which files %s t (%d days) because the pad has settled into bowls under the five "
-      "long-standing pile areas and a toe base leaves the coal in them out; not the lowest point around each pile, "
-      "%s t (%d days), short for the same reason."
-      % (n(c["reserve"]), c["cover_days"], c["floor_days"], n(c["margin_t"]), n(r["toe_plane"]["reserve"]),
-         r["toe_plane"]["cover"], n(r["toe_low"]["reserve"]), r["toe_low"]["cover"]))
+      "the first-quarter burn plan against the %d-day floor.** The reserve clears the floor by %s t. Not a base "
+      "drawn through each pile's toe, the stock surveyor's usual base: under the five long-standing pile areas the "
+      "pad has settled into a bowl up to about two metres below the toe, as the surveys that recorded each area bare "
+      "show, so a toe base leaves the coal in the bowl out of the reserve."
+      % (n(c["reserve"]), c["cover_days"], c["floor_days"], n(c["margin_t"])))
     w("")
     w("## 2. Critical Components")
     w("")
@@ -89,8 +88,9 @@ def write(fig_path, out_path):
     w("")
     w("### coalyard_stock_2026.svg")
     w("")
-    w("1. Line chart of the coal in the yard at every survey from 17 December 2025 to 16 December 2026, with the "
-      "%d-day floor (%s t) drawn across it and the December 2026 point at %s t, %d days." % (
-          c["floor_days"], n(c["floor_t"]), n(c["reserve"]), c["cover_days"]))
+    w("1. Line chart of the coal in the yard at every survey from 17 December 2025 to 16 December 2026, each "
+      "survey's coal taken above the same pads and at the laboratory's latest density before that survey (PR-07 3.2's "
+      "rule applied to every survey), with the %d-day floor (%s t) drawn across it and the December 2026 point at %s "
+      "t, %d days." % (c["floor_days"], n(c["floor_t"]), n(c["reserve"]), c["cover_days"]))
     with open(out_path, "w") as fh:
         fh.write("\n".join(lines) + "\n")

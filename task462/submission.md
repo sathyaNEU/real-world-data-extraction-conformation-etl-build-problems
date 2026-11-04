@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Do not nominate Silesia's winter option cargo: the coal yard held 150,000 t at the 16 December survey, 62 days of the first-quarter burn plan against the 60-day floor.** The reserve clears the floor by 4,000 t. Not the base through each pile's toe, which files 138,000 t (57 days) because the pad has settled into bowls under the five long-standing pile areas and a toe base leaves the coal in them out; not the lowest point around each pile, 139,000 t (57 days), short for the same reason.
+**Do not nominate Silesia's winter option cargo: the coal yard held 150,000 t at the 16 December survey, 62 days of the first-quarter burn plan against the 60-day floor.** The reserve clears the floor by 4,000 t. Not a base drawn through each pile's toe, the stock surveyor's usual base: under the five long-standing pile areas the pad has settled into a bowl up to about two metres below the toe, as the surveys that recorded each area bare show, so a toe base leaves the coal in the bowl out of the reserve.
 
 ## 2. Critical Components
 
@@ -50,4 +50,4 @@
 
 ### coalyard_stock_2026.svg
 
-1. Line chart of the coal in the yard at every survey from 17 December 2025 to 16 December 2026, with the 60-day floor (146,000 t) drawn across it and the December 2026 point at 150,000 t, 62 days.
+1. Line chart of the coal in the yard at every survey from 17 December 2025 to 16 December 2026, each survey's coal taken above the same pads and at the laboratory's latest density before that survey (PR-07 3.2's rule applied to every survey), with the 60-day floor (146,000 t) drawn across it and the December 2026 point at 150,000 t, 62 days.
