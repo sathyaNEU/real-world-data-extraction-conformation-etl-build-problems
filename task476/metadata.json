@@ -1,0 +1,119 @@
+{
+ "task": "task476",
+ "title": "2026 bypassed-reach minimum flow report",
+ "setting": "A fictional run-of-river hydroelectric project in Oregon's western Cascade foothills; every record is synthetic.",
+ "as_of": "2026-11-04",
+ "files": [
+  {
+   "path": "gauge/bp1_field_visits_2026.csv",
+   "source": "Corvid Hydrometric Services 2026 field visit log, fictional; synthetic records",
+   "date": "2026-10-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 8,
+   "role": "input"
+  },
+  {
+   "path": "gauge/bp1_rating7_report_2023.pdf",
+   "source": "Corvid Hydrometric Services Rating 7 memorandum, fictional; synthetic document",
+   "date": "2023-10-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "gauge/bp1_stage_2026.csv",
+   "source": "gauge BP-1 stage logger export (Corvid Hydrometric Services for Tallis Creek Paper Company), fictional; synthetic records",
+   "date": "2026-11-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 27366,
+   "role": "input"
+  },
+  {
+   "path": "gauge/bp1_station_register.xlsx",
+   "source": "Corvid Hydrometric Services station register for gauge BP-1, fictional; synthetic records",
+   "date": "2026-05-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "gauge/bp1_water_temperature_2026.csv",
+   "source": "gauge BP-1 water temperature logger export, fictional; synthetic records",
+   "date": "2026-11-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 9120,
+   "role": "distractor"
+  },
+  {
+   "path": "license/flow_monitoring_plan_2024.pdf",
+   "source": "Tallis Creek Mill Hydroelectric Project flow monitoring plan, fictional; synthetic document",
+   "date": "2024-03-18",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "license/license_order_excerpt_2019.pdf",
+   "source": "Tallis Creek Mill Hydroelectric Project license articles (excerpt), fictional; synthetic document",
+   "date": "2019-06-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "operations/bypass_release_log_2026.csv",
+   "source": "Tallis Creek Paper Company plant bypass release log, fictional; synthetic records",
+   "date": "2026-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 12,
+   "role": "input"
+  },
+  {
+   "path": "operations/daily_generation_2026.csv",
+   "source": "Tallis Creek Paper Company plant daily generation, fictional; synthetic records",
+   "date": "2026-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 191,
+   "role": "distractor"
+  },
+  {
+   "path": "reports/2025_annual_flow_compliance_report.pdf",
+   "source": "Tallis Creek Paper Company 2025 annual flow compliance report, fictional; synthetic document",
+   "date": "2026-01-22",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "weather/powerhouse_precipitation_2026.csv",
+   "source": "Tallis Creek Paper Company powerhouse rain gauge, fictional; synthetic records",
+   "date": "2026-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 191,
+   "role": "distractor"
+  }
+ ],
+ "distractor_files": [
+  "gauge/bp1_water_temperature_2026.csv",
+  "operations/daily_generation_2026.csv",
+  "weather/powerhouse_precipitation_2026.csv"
+ ],
+ "distractors": [
+  {
+   "file": "gauge/bp1_water_temperature_2026.csv",
+   "why": "water temperature at BP-1 for the license's temperature monitoring; it carries no flow"
+  },
+  {
+   "file": "operations/daily_generation_2026.csv",
+   "why": "the unit's daily energy and run hours: the plant's own production record, not a measure of the bypassed reach"
+  },
+  {
+   "file": "weather/powerhouse_precipitation_2026.csv",
+   "why": "daily rain at the powerhouse: weather, not flow"
+  }
+ ],
+ "deliverables": [
+  "bypass_flow_record_2026.xlsx",
+  "minimum_flow_deviation_report_2026.docx"
+ ]
+}

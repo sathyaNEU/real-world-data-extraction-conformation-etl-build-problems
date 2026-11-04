@@ -6,13 +6,13 @@
   "domain": "general-statistics-data-science",
   "subdomain": "data-integration-record-linkage-entity-resolution",
   "client_domain": "general-statistics-data-science",
-  "niche": "a run-of-river hydro licensee's 2026 minimum-flow compliance in its bypassed reach, rebuilt from its bypass gauge's stage record, where a late-July storm built a gravel bar on the gauge's riffle control so the published rating overstates every later flow while the plant's gate controller held the rated flow on its target",
+  "niche": "a paper mill's run-of-river hydro project and its 2026 minimum-flow compliance in the bypassed reach, rebuilt from its bypass gauge's stage record, where a late-July storm built a gravel bar on the gauge's riffle control so the published rating overstates every later flow while the mill's gate controller held the rated flow on its target",
   "objective": "etl",
   "shape": "17",
   "decision_type": "date_or_period",
   "answer_unit": "date_or_period",
-  "answer": "",
-  "answer_source": "",
+  "answer": "29 July to 13 September and 21 September to 31 October 2026",
+  "answer_source": "task476/generator/figures.json (deviation_periods)",
   "gap": [
     "population"
   ],
@@ -23,7 +23,7 @@
     "G4",
     "G16"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "signal_vs_noise_or_hold",
   "calibration_form": "physical_verification",
   "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
@@ -42,27 +42,27 @@
     "measurements recorded with their own staff-gauge readings at visit times that fall between logger intervals",
     "the logger's export carries a header block and covers a few days either side of the season"
   ],
-  "stakeholder_role": "the licensee's compliance manager, who files the 2026 minimum-flow deviation report",
+  "stakeholder_role": "the mill's environmental manager, who files the 2026 minimum-flow deviation report",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
     "file": "gauge/bp1_stage_2026.csv",
-    "rows": 0,
+    "rows": 27360,
     "entity": "a 10-minute stage reading at the bypass gauge",
     "grain": "10-minute interval",
     "source": "synthetic"
   },
   "forum": "regulator_or_inspector",
   "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "utility_or_infrastructure",
+  "org_family": "manufacturer",
   "world": {
     "geography": "United States (a fictional creek in the western Cascade foothills of Oregon)",
     "currency": "USD",
-    "org_type": "independent power producer with one run-of-river hydroelectric project",
+    "org_type": "pulp and paper company that runs a run-of-river hydroelectric project at its mill",
     "invented_names": [
       "Tallis Creek",
-      "Tallis Creek Hydroelectric Project",
-      "Tallis Creek Power Company",
+      "Tallis Creek Mill Hydroelectric Project",
+      "Tallis Creek Paper Company",
       "Corvid Hydrometric Services",
       "gauge BP-1"
     ],
@@ -164,7 +164,7 @@
         "G16",
         "G19"
       ],
-      "gate_g": "etl_conformance",
+      "gate_g": "signal_vs_noise_or_hold",
       "stump_strategy": "decomposition_attribution",
       "decision_type": "quantity_figure",
       "shape": "15",
@@ -200,7 +200,7 @@
         "G5",
         "G12"
       ],
-      "gate_g": "etl_conformance",
+      "gate_g": "signal_vs_noise_or_hold",
       "stump_strategy": "identity_resolution",
       "decision_type": "designation_set",
       "shape": "15",
@@ -247,5 +247,6 @@
     "rounding opener": "flows",
     "deliverable set": "docx+xlsx"
   },
-  "registered": "2026-11-04T09:00:03Z"
+  "registered": "2026-11-04T09:22:49Z",
+  "redraw_2026_11_04": "org_family utility_or_infrastructure redrawn to manufacturer (the licensee is the mill) and gate_g method_or_model_selection to signal_vs_noise_or_hold after the final pull brought task462 v2 (registered 08:40:22Z, before this card) into the window"
 }
