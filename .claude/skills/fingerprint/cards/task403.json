@@ -1,0 +1,93 @@
+{
+  "task": "task403",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Root-Cause Analysis number from seed RC09 (a university estates department's air-handler repair programme). The seed's world was measured undrawable on this objective on 2026-11-04: energy-systems-utilities x root-cause is ban.pairing-blocked by task402, its only root-cause task type (grid reliability) is ban.subdomain-blocked, efficiency-savings-verification serves experiment-causal only (three_rules.task_type), and the policy-education house domain's only root-cause task type is multilevel classroom research. The seed's own insight (a past repair priced on units whose operating regime let it pay) is spent as task162 (approved: a valve acts only in the hours its inlet runs above the setting) and task83 (a measured effect conditioned on a history-rebuilt property). The build moves to Product Analytics, a Canadian streaming service's free-trial journey, a new dataset and a new decision (which one growth programme the 2027 plan funds, or none).",
+  "domain": "product-analytics",
+  "client_domain": "product-analytics",
+  "subdomain": "funnel-journey-analysis",
+  "niche": "a Canadian subscription streaming service's free-trial journey: which cause of the 2025-26 winter fall in trial-to-paid conversion the growth budget fixes before the November 2026 sign-up peak, when each trialist decides at day 7 on whether a show they are watching still has episodes to come",
+  "objective": "root-cause",
+  "shape": "09",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly builds trial-start cohorts in Toronto time, matures each trial to its first charge, compares the November 2025 to January 2026 trials with the same months a year earlier, finds conversion down about 13 points in every plan, device, channel and province and about 10 points among the trialists who joined on library titles no slate change touched, sees the step land on the first charges from 1 November when the price for new subscribers rose and the cancellation survey's price reason climb, and books the fall to the price, funding (A) the first-month price hold on about 3,700 lost conversions.",
+  "domain_test": "The deciding quantity is the paid conversions each cause cost the winter's trials, read through each trialist's content runway at the day-7 charge (whether a show they were watching had episodes released after their trial ended), worked as streaming trial-journey analysis against the release calendar; in another field's nouns weekly drops, full-season releases and a holiday pause have no counterpart and the task stops reading.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:trial-conversion-read-at-each-trialist's-content-runway-against-the-release-calendar",
+  "layer1": [
+    "viewing heartbeats logged in UTC against trial clocks run in each subscriber's local time, across the 2 November 2025 clock change, with Saskatchewan on standard time all year",
+    "the June 2025 content management migration that gave every title and episode a new identifier, with a crosswalk",
+    "English and French records of the same series under different titles",
+    "billing exports in cents with GST, HST and QST by province, and partner trials billed through the telecom partner",
+    "duplicate heartbeat summaries written on app reconnects"
+  ],
+  "stakeholder_role": "the streaming service's head of subscriber growth, who funds one programme before the 2026-27 winter sign-up peak (the prompt names no one)",
+  "role_family": "product_manager",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "trial_viewing_2024-08_2026-02.parquet",
+    "rows": 450000,
+    "entity": "one trialist's viewing of one episode during the free trial: title, season, episode, first play and minutes watched",
+    "grain": "trial x episode",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "media_or_publishing",
+  "world": {
+    "geography": "Canada (an invented national subscription streaming service, head office Toronto)",
+    "currency": "CAD",
+    "org_type": "subscription streaming service",
+    "invented_names": [
+      "Ellesmere Media",
+      "Ellesmere"
+    ],
+    "people": [
+      "Kristen Hurst",
+      "Julie Jacobson",
+      "Tamara Delgado"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A fall in a conversion rate is booked to a price change that took effect the same week, because the fall holds in every visible group, in the units drawn in by things no other change touched, and in the stated reasons, but each unit decides at the end of a fixed window and what decides it is whether something it was following still had more to come after that point, a state no column holds that only the unit's own activity set against a second calendar shows; the share of units in that state moved with the calendar in the same week, and at equal state the price moved the rate by almost nothing.",
+  "driver_concrete": "Trial-to-paid conversion for the November 2025 to January 2026 trial starts at Ellesmere fell about 13 points against a year earlier, within every plan, device, channel, province and library acquisition title, from the first charges of 1 November when the price for new subscribers rose from CAD 9.99 to 11.99; but a trialist pays at day 7 when a show they were watching still has episodes to be released after their trial ends, a weekly season was airing every week from November 2024 until the autumn finales of 30 and 31 October 2025, and the winter's weekly original slipped to April while its other originals arrived as full-season drops, so the share of trialists with episodes still to come fell from about three in five to about one in seven; at equal runway the price cost about a point (about 300 conversions) and the slate about 3,400.",
+  "stump": "A competent solver compares the November to January trials with a year earlier, finds conversion down about 13 points in every segment and about 10 among the library-title trialists no slate change touched, sees the step arrive with the 1 November first charges at the new price, and funds (A) the first-month price hold on about 3,700 lost conversions, because they never set each trialist's viewing against the release calendar to ask whether a show they were watching still had episodes to come after day 7, which puts about 3,400 of the loss on the winter release slate (C) and leaves the price about 300.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task306": "v4 prices a strategy's trading cost at the scale it is given against the market's daily volume (an edge kept at scale); here no cost or scale: a conversion fall booked to a coincident price change is a shift in how many trialists had a show still to come at day 7, read from viewing against the release calendar",
+    "task271": "v5 reads a level's move after each event net of the same actor's following events inside sequences (market impact read on lone events); here no sequence of an actor's events: each trialist's day-7 decision is read against episodes released after their own trial ended",
+    "task121": "there each event's exposure is the rest each worker had, rebuilt from consecutive worked periods on the rota, and a change in the same window takes the blame; here no worker or rota: each trialist's day-7 charge is read against whether a show they were watching still had episodes to be released, from viewing set against the release calendar",
+    "task129": "v1 separated two causes that switched on together by two groups that each received one; here no group received one cause without the other (the price applies to every trial's first charge from 1 November), and the separation comes from each trialist's own content state, not from a group",
+    "task83": "conditions a holdout's measured effect on each unit's prior treatment history to transport it to a new pool; here nothing is transported from a measurement corpus: the fall itself is decomposed into a shift in the share of trialists with episodes still to come and the change within that state",
+    "task162": "prices a fix by the hours its operating state lets it act; here no fix acts by the hour: trialists' conversion turns on the content calendar's state at each trial's end",
+    "task134": "v2 reads a conversion hazard by time since entry after a surge filled the pool; here the state that decides is not time since entry but whether a show the trialist was watching was still mid-season at day 7, read off a second calendar",
+    "task137": "v1 round 2 reads a repricing share as a mixture of two kinds of unit rebuilt from each unit's price against its entry cohort's floor, to carry a forward round; here nothing is carried forward and no price class is rebuilt: the observed winter fall is split by whether each trialist's show still had episodes to come at day 7, from viewing against the release calendar"
+  },
+  "lineage": [],
+  "notes": "Strategy composition_mix, pattern E, G14 conditioned yield: the year-on-year conversion fall is a shift in the trial pool's content-runway mix, and conversion within each runway state barely moved. Gate G decomposition_attribution: the honest mechanism is booking a correctly measured fall to the right driver; no forecasting, binding or method-selection step carries the call (answered in the design note). Persona Thomas Mcneil replaced by Julie Jacobson from the same guard.py names draw (people.first WARN against task126). Forcing event redrawn at registration from budget_or_appropriation to season_or_peak: task401's card went architecture_spent with the merge of 2026-11-04, the live window became task399, task400 and task402, and task399 holds budget_or_appropriation; the honest forcing event is the winter sign-up peak the programme must be in place for (the review runs in early March 2026, once the January trials' first charges have matured), so the replacement is the truer label and makes the call forward-facing.",
+  "registered": "2026-11-04T01:15:34Z"
+}
