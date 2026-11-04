@@ -47,6 +47,134 @@ def doc_text(path):
     return ''
 
 
+def literal_classes_by_day():
+    """AF7's literal executor, written apart from golden.py: walk every school day of the session; on each, every
+    timetable row valid that day and meeting that weekday names a code; the code sheet of the term the day falls in
+    names a person; the establishment's holder of that name (surname or previous surname, same first initial) who was
+    in post that day taught the lesson. A class's teachers are everyone who taught one of its lessons."""
+    import datetime as dt
+    tt = G.rd('maths_timetable_2025-26.csv')
+    xl = os.path.join(T, 'timetable_staff_codes_2025-26.xlsx')
+    name = {}
+    for term, sheet in (('autumn', 'Autumn 2025'), ('spring', 'Spring 2026')):
+        for _, r in pd.read_excel(xl, sheet_name=sheet, dtype=str).iterrows():
+            name[term, r['School'], r['Code']] = G.norm_staff(r['Name'])
+    est = pd.read_excel(os.path.join(T, 'maths_staffing_establishment_2025-26.xlsx'), dtype=str).fillna('')
+    hold, post_of, on_post = {}, {}, {}
+    for _, r in est.iterrows():
+        sur, fn = r['Holder'].split(', ')
+        span = (G.dmy(r['In_Post_From']), G.dmy(r['In_Post_To']))
+        post_of[r['Holder']] = r['Post_Ref']
+        on_post.setdefault(r['Post_Ref'], []).append((span, r['Holder']))
+        for key in {sur.upper(), r['Previous_Surname'].upper()} - {''}:
+            for sch in r['School'].split(' / '):
+                hold.setdefault((sch, fn[0].upper(), key), []).append((span, r['Holder']))
+    rows = {}
+    for _, r in tt.iterrows():
+        rows.setdefault((r['School'], r['Class']), []).append(
+            (G.dmy(r['Valid_From']), G.dmy(r['Valid_To']), r['Day'], int(r['Period']), r['Staff']))
+    aut_end = min(G.dmy(x) for x in tt['Valid_To'])
+    first, last = min(G.dmy(x) for x in tt['Valid_From']), max(G.dmy(x) for x in tt['Valid_To'])
+    days = Wd.school_days(first, last, 2026)
+    dn = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
+    per, lessons, unnamed = {}, 0, {}
+    for key, rr in rows.items():
+        ppl = per.setdefault(key, set())
+        for d in days:
+            term = 'autumn' if d <= aut_end else 'spring'
+            for vf, vt, day, p, code in rr:
+                if vf <= d <= vt and day == dn[d.weekday()]:
+                    named = hold[(key[0],) + name[term, key[0], code]]
+                    assert len({h for _, h in named}) == 1, (key, d, p, code, named)
+                    who = {h for (a, b), h in named if a <= d and (b is None or b >= d)}
+                    ppl |= who
+                    lessons += 1
+                    if not who:
+                        # the sheet names someone no longer in post: the holder of that person's post that day
+                        stand = {h for (a, b), h in on_post[post_of[named[0][1]]] if a <= d and (b is None or b >= d)}
+                        assert len(stand) == 1, (key, d, code, stand)
+                        unnamed.setdefault(key, set()).update(stand)
+    return per, lessons, unnamed
+
+
+def af7(F, st, tr):
+    """the classes ask: its literal execution equals the golden and the generating posts school by school, and each
+    other reading of the records breaks a shipped fact"""
+    per, lessons, unnamed = literal_classes_by_day()
+    lit = {}
+    for (s, c), ppl in per.items():
+        lit[s] = lit.get(s, 0) + int(len(ppl) > 1)
+    ok(lit == F['ask_classes'] == tr,
+       'AF7: the classes ask executed literally, lesson by lesson (%d lessons: code, the term\'s code sheet, the holder of '
+       'that name in post that day) equals the golden and the generating posts school by school %s'
+       % (lessons, {s: (lit.get(s), F['ask_classes'].get(s)) for s in sorted(F['ask_classes'])}))
+    ok(len(unnamed) > 0 and all(v <= per[k] for k, v in unnamed.items()),
+       'AF7: the %d classes whose autumn lessons the code sheet gives to a holder who had left were taught by the holder '
+       'in post on that post, already one of the class\'s teachers, so resolving those lessons by the post moves no count'
+       % len(unnamed))
+    est = pd.read_excel(os.path.join(T, 'maths_staffing_establishment_2025-26.xlsx'), dtype=str).fillna('')
+    tt = G.rd('maths_timetable_2025-26.csv')
+    first = min(G.dmy(x) for x in tt['Valid_From'])
+    # the hand-over reading: every person a code sheet names on a class's code, in post or not
+    ho = {}
+    for (s, c), ppl in G.class_teachers(in_post=False).items():
+        ho[s] = ho.get(s, 0) + int(len(ppl) > 1)
+    left = est[est['In_Post_To'] != '']
+    early = left[left['In_Post_To'].map(G.dmy) < first]
+    ok(len(early) == 3 and set(early['In_Post_To']) == {'15/08/2025'} and
+       all(((est['Post_Ref'] == r['Post_Ref']) & (est['In_Post_From'] == first.strftime('%d/%m/%Y'))).sum() == 1
+           for _, r in early.iterrows()),
+       'AF7: three holders\' last day in post (15/08/2025) falls before the first lesson (%s), each post\'s next holder '
+       'starting that day; read as hand-overs they add classes at %s, which the establishment\'s dates rule out'
+       % (first.strftime('%d/%m/%Y'), {s: (ho[s], F['ask_classes'][s]) for s in sorted(ho) if ho[s] != F['ask_classes'][s]}))
+    diff = {s for s in ho if ho[s] != F['ask_classes'][s]}
+    ok(diff == {s for s in early['School']}, 'AF7: the hand-over reading differs from the golden only at the three '
+       'schools whose leaver left before the session %s' % sorted(diff))
+    # renames: the autumn sheet's surname on the code is the holder's Previous_Surname
+    prev = est[est['Previous_Surname'] != '']
+    ok(len(prev) == 3, 'AF7: three holders carry a Previous_Surname on the establishment %s'
+       % sorted(zip(prev['Holder'], prev['Previous_Surname'])))
+    # job-shares: each holder's own code on their own days, so every class of a job-share post shows both codes
+    xl = os.path.join(T, 'timetable_staff_codes_2025-26.xlsx')
+    aut = pd.read_excel(xl, sheet_name='Autumn 2025', dtype=str)
+    half = est[est['FTE'].astype(float) < 1.0]
+    js_ok, js_n = True, 0
+    for ref, g in half.groupby('Post_Ref'):
+        sch = g['School'].iloc[0]
+        codes = set()
+        for h in g['Holder']:
+            sur, fn = h.split(', ')
+            hit = [r['Code'] for _, r in aut[aut['School'] == sch].iterrows() if G.norm_staff(r['Name']) == (fn[0].upper(), sur.upper())]
+            js_ok &= len(hit) == 1
+            codes |= set(hit)
+        for cls, gg in tt[(tt['School'] == sch) & tt['Staff'].isin(codes)].groupby('Class'):
+            js_n += 1
+            js_ok &= set(gg['Staff']) >= codes
+    ok(js_ok and half['Post_Ref'].nunique() == 5, 'AF7: five job-share posts, each holder on the code sheets with a code '
+       'of their own and every one of the posts\' %d classes showing both holders\' codes' % js_n)
+    # every code on the timetable is on its term's sheet; one establishment person per name at a school
+    spr = pd.read_excel(xl, sheet_name='Spring 2026', dtype=str)
+    have = {('autumn', r['School'], r['Code']) for _, r in aut.iterrows()} | {('spring', r['School'], r['Code']) for _, r in spr.iterrows()}
+    aut_end = min(G.dmy(x) for x in tt['Valid_To'])
+    need = set()
+    for _, r in tt.iterrows():
+        if G.dmy(r['Valid_From']) <= aut_end:
+            need.add(('autumn', r['School'], r['Staff']))
+        if G.dmy(r['Valid_To']) > aut_end:
+            need.add(('spring', r['School'], r['Staff']))
+    ok(need <= have, 'AF7: every timetable code is on its term\'s code sheet (%d term codes)' % len(need))
+    keys = {}
+    for _, r in est.iterrows():
+        sur, fn = r['Holder'].split(', ')
+        for k in {sur.upper(), r['Previous_Surname'].upper()} - {''}:
+            for sch in r['School'].split(' / '):
+                keys.setdefault((sch, fn[0].upper(), k), set()).add(r['Holder'])
+    ok(all(len(v) == 1 for v in keys.values()), 'AF7: at each school a first initial and a surname or previous surname '
+       'name one establishment holder')
+    ok(len(st.renamed) == 3 and len(st.stale) == 3, 'AF7: the world carries three Christmas name changes and three '
+       'summer changes of holder')
+
+
 def run(F, w=None, st=None):
     w = w or Wd.World()
     st = st or St.Staffing(w)
@@ -139,9 +267,7 @@ def run(F, w=None, st=None):
     rc = dict(zip(roll['Glow_ID'], roll['School'].map({v: k for k, v in NAME.items()}) + '-' + roll['Maths_Class']))
     ok(bool((mbc['class_code'] == mbc['glow_id'].map(rc)).all()),
        'AF5: the platform\'s class_code repeats the roll\'s June class on every row (no record states the autumn class)')
-    ok(len(st.renamed) == 3 and len(st.stale) == 3,
-       'AF7: three surnames changed over Christmas and three autumn codes carrying a summer leaver\'s name, each a name '
-       'no 2025-26 holder carries, resolved to the code that took all its classes')
+    af7(F, st, tr)
     # ------------------------------------------------------------------ the ask ceiling on the cut pack
     rows = CE.sheet(F)
     p1 = CE.pair(rows, ('full_includer', 'full_includer'), ('full_includer', 'full_includer'))
@@ -153,8 +279,13 @@ def run(F, w=None, st=None):
     both = (45 + 55 * p1['Lc'] + 45 + 55 * p1['Lc']) / 2
     print('INFO ceiling: both full includers on the call %.1f; both careful crackers on the call %.1f'
           % (both, 45 + 55 * p0['Lc']))
-    mirror = rows[('lessons', 'cracker')][1] + rows[('classes', 'names_exact')][1]
-    ok(mirror / 16.0 < 0.5, 'ceiling: the mirror keeps %d of 16' % mirror)
+    # the mirror stops at the most attractive wrong rung of each ask: taken here as whichever wrong route keeps most
+    m1 = max(rows[('lessons', r)][1] for r in CE.ROUTES1)
+    m2 = max(rows[('classes', r)][1] for r in CE.ROUTES2)
+    mirror = m1 + m2
+    ok(mirror / 16.0 < 0.5, 'ceiling: the mirror (the most-keeping wrong route on each ask) keeps %d of 16 (%d and %d)'
+       % (mirror, m1, m2))
+    F['mirror'] = mirror
     F['pair_both_on_call'] = both
     F['ceiling'] = {'%s|%s' % k: v[1] for k, v in rows.items()}
     F['pair'] = dict(careful=p0, full_includer=p1)
@@ -167,7 +298,7 @@ def run(F, w=None, st=None):
     ext = {f.rsplit('.', 1)[1] for f in files}
     big = max(sum(1 for _ in open(os.path.join(T, f))) for f in files if f.endswith('.csv'))
     ok(len(files) >= 10 and len(ext) >= 3 and big >= 25000, 'inputs: %d files, %d formats, largest csv %d rows' % (len(files), len(ext), big))
-    dash = [f for f in files if ('—' in doc_text(os.path.join(T, f)) or '–' in doc_text(os.path.join(T, f)))]
+    dash = [f for f in files if ('\u2014' in doc_text(os.path.join(T, f)) or '\u2013' in doc_text(os.path.join(T, f)))]
     ok(not dash, 'no em or en dash in any shipped text %s' % dash)
     ok(F['head']['2026']['mean'] < F['head']['2025']['mean'], 'the fall is real: %.2f to %.2f' % (F['head']['2025']['mean'], F['head']['2026']['mean']))
     # ------------------------------------------------------------------ bins: edge distance of every printed headline and chart figure

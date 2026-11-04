@@ -10,10 +10,18 @@ import pandas as pd
 import world as Wd
 
 DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
+LEFT_BEFORE = dt.date(2025, 8, 15)   # last day in post of the three teachers who left over the summer of 2025
 
 
 def hh(s, n=8):
     return int(hashlib.sha1(s.encode()).hexdigest()[:n], 16)
+
+
+def js_holder(day, period):
+    """a job-share post's two holders split the week: the first holder works Monday, Tuesday and Wednesday morning
+    (periods 1 to 4), the second Wednesday afternoon, Thursday and Friday; each teaches the post's classes on their
+    own days under their own timetable code. A class meets on four different days, so both holders teach it."""
+    return 0 if day in (0, 1) or (day == 2 and period <= 4) else 1
 
 
 def bell_times():
@@ -110,8 +118,9 @@ class Staffing:
                 if sn not in set(self.people['surname']) and all(sn != e['surname'] for e in self.extra.values()):
                     break
             self.renamed[(c, pick['post'])] = sn
-        # three posts filled over the summer of 2025: the autumn code sheet, built in June 2025, still carries the
-        # leaver's name on the code; the new holder taught the classes all session
+        # three posts changed holder over the summer of 2025: the leaver's contract ran to 15 August, the new holder
+        # started on the session's first day (18 August) and taught the classes all session; the autumn code sheet,
+        # produced on 14 August, still carries the leaver's name on the code, and the establishment lists both
         self.stale = {}
         for c in ('GLW', 'MUI', 'KIL'):
             cand = self.people[(self.people['school'] == c) & ~self.people['js']].sort_values('post')
@@ -124,13 +133,25 @@ class Staffing:
                     used.add((fn, sn))
                     break
             self.stale[(c, pick['post'])] = dict(forename=fn, surname=sn, fem=fem)
-        # timetable codes before 6 January: initials-free numeric codes; job-share post one code
+        # timetable codes before 6 January: initials-free numeric codes, one a post; a job-share post's second holder
+        # carries a code of their own (js_code_b), never one another code at the school already holds
         codes = {}
         for c in Wd.SCODES:
             sub = self.people[self.people['school'] == c]
             for post, g in sub.groupby('post', sort=True):
                 codes[(c, post)] = 'T%04d' % (hh(c + post, 6) % 9000 + 1000)
         self.old_code = codes
+        self.js_code_b = {}
+        for (c, post), code in sorted(codes.items()):
+            if self.people[(self.people['school'] == c) & (self.people['post'] == post)]['js'].any():
+                taken = {v for (s, _), v in codes.items() if s == c} | set(self.js_code_b.values())
+                salt = 0
+                while True:
+                    b = 'T%04d' % (hh(c + post + 'js%d' % salt, 6) % 9000 + 1000)
+                    if b not in taken:
+                        break
+                    salt += 1
+                self.js_code_b[(c, post)] = b
         # new codes from 6 January at the three schools whose timetables were rebuilt in the new package
         self.new_code = {}
         for (c, post), code in codes.items():

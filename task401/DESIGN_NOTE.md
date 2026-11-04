@@ -209,8 +209,10 @@ and keyed by MIS reference in 2025, long and keyed by SCN in 2026, absences code
 by MIS reference with skill codes, the Mathsbridge export keyed by Glow ID with unit codes and percentages; unit codes in
 two framework vintages on the paper map; a base kiosk that logs a card's SCN or a typed name, one campus base for two
 schools, S4 to S6 sign-ins in the same export; three schools' timetables rebuilt in a new package in January with new
-staff codes and names in another style; job-share posts on one timetable code; the roll and the platform both carry
-each pupil's class as at June, after the January set changes. Each is produced by the system that holds it; nothing is placed to be caught.
+staff codes and names in another style; job-share holders each on their own days under their own codes; an autumn code
+sheet produced on 14 August that still names three holders whose contracts ran to the 15th; the roll and the platform
+both carry each pupil's class as at June, after the January set changes. Each is produced by the system that holds it;
+nothing is placed to be caught.
 Layer 2: estimand and identification, the right unit and comparison: two whole-system changes start the same day for
 every pupil, so no reach, date or segmentation separates them, and only each pupil's units compared with one another
 against the pupil's own first practice, between the sessions, isolates the review switch from the framework.
@@ -284,7 +286,7 @@ Each rung against every shipped file: can a solver read the rung's step off a co
 | SF5 | adjustment of the partial changes | P7 numeracy (missing flagged) and free school meals | unadjusted | B | same call (asserted) |
 | SF6 | the level change of pupils no partial change reached | booked to no one | booked to the framework | B | same call (asserted) |
 | SF7 | the bases' reach | Base_Referrals above 0 on the roll | pupils resolved from the sign-ins | identical set | same call (sets equal, asserted) |
-| SF8 | the shared posts' reach | the classes in register section 5 | classes with two codes on the timetable (85) | B (E 2,155) | same call (asserted) |
+| SF8 | the shared posts' reach | the classes in register section 5 | classes with two codes on the timetable (102) | B (E 2,251) | same call (asserted) |
 | SF9 | at 36 of 60 | 36 or more | more than 36 | headline only, no call | the prompt's "at 36 of 60 or more" |
 | SF10 | the mean June mark | over the pupils who sat | absent pupils at nil | headline only, no call | the remit's population; an absent pupil has no mark (asserted) |
 | SF11 | the comparison | June 2025 on the same papers | another session or outside data | none in the pack | the remit: "the same papers as June 2025" |
@@ -295,10 +297,18 @@ bell (guidance); AF4 no S1 to S3 sign-out sits on a bell, so no zero-length over
 the day: the roll (an extract dated 12 June 2026) and the platform's class_code both hold the class from January, and the
 autumn class is rebuilt from the classmates who shared each autumn week's review set, unique for every pupil (0 wrong of
 4,631, least group purity 0.78); AF6 every typed S1 to S3 name resolves, the one repeated name by the base's
-own schools; AF7 a teacher is a person: a job-share post's two holders are two teachers, a re-keyed code is the same
-teacher, a leaver on the establishment and the starter after them are two, and a name no 2025-26 holder carries (three
-surnames changed over Christmas, three autumn codes still carrying a summer leaver's name) is the holder who took all its
-classes in January.
+own schools; AF7 a class's teachers are the people who taught its lessons, and the records name every one at face
+value: each timetable row's code, term by term, carries the name that term's code sheet gives it; the name is the
+establishment holder with that first initial and surname or Previous_Surname (one holder per name at each school,
+asserted); that holder taught the row's lessons while in post. Each other reading breaks a shipped record: one code as
+one teacher misses the Christmas replacement on Ardcorrie's unchanged code and counts every class at the three re-keyed
+schools; a changed name as a new teacher contradicts the three holders' Previous_Surname; and a name change read as a
+hand-over (6, 5, 15, 11, 3, 16, 3, 5) gives lessons to three holders whose time in post ended on 15 August 2025, before
+the first lesson on the 18th, which their establishment rows rule out. Executed lesson by lesson (28,270 lessons) the
+literal reading equals the golden and the generating posts at every school (6, 5, 9, 7, 3, 12, 3, 5), and the 15
+classes whose autumn lessons the sheet gives to a leaver were taught by the holder then in that post, already one of
+their teachers, so no count moves however those lessons are resolved (all asserted). The job-share holders each teach on
+their own days under their own codes, and every class of a job-share post shows both codes (17 classes, asserted).
 
 ## Ladder
 
@@ -334,7 +344,7 @@ on the clean truth none of the nine lands the switch on the shipped seed (`check
 | 13 Order of operations | adjustment before differencing; resolution before counting | C1 (same call, SF5) |
 | 14 Row order | none of the figures depends on file order | C1 |
 | 15 Duplicate resolution | identical double scans once; a pupil and period once | filed (guidance: a lesson), C1 |
-| 16 Identity normalisation | SCN, MIS reference and Glow ID through the rolls; staff names to holders | the systems' own keys, AF6, AF7 |
+| 16 Identity normalisation | SCN, MIS reference and Glow ID through the rolls; staff names to holders by first initial and surname or Previous_Surname, in post on the lesson's day | the systems' own keys and the establishment's dates, AF6, AF7 |
 | 17 Netting against gross | costs are losses; no offsetting across changes | filed (remit) |
 | 18 Dimensional units | marks of 60, percentages, counts | units in the data |
 | 19 Code and status semantics | Attendance P and A; Status Present and Absent; task kinds | the files' own codes |
@@ -350,6 +360,9 @@ percentage, and as whole per cents they clear by 0.346 and 0.356 of 0.5. The cou
 checks.py asserts: one row per pupil on each roll and paper, every 2026 pupil wholly present or wholly absent, every
 pupil who sat on that session's roll, no pupil on both rolls changing school, and no pupil who sat carrying a leaving
 date. No defensible reading moves a pupil in or out of a school-year cell, so no reading crosses those edges.
+The sixteen ask figures are whole-number counts, each exact and so 0.5 from both edges of its bin; the nearest licensed
+rival on each is a whole reading away (the classes ask's hand-over reading by 4 to 6 classes at three schools, AF7), and
+the lessons figures hold under every reading their fork rows name (AF2 to AF6).
 
 ## Literal reader
 
@@ -365,7 +378,8 @@ specifications) names the switch. Every write-up step recomputes from the shippe
 None ranks the changes. The register's remit files the WHAT and the dates and reaches; the paper map ties questions to
 units in both vintages; the guidance files what a missed lesson is; Base_Referrals equals each pupil's sign-in events
 (SF7), a consistency both readings share. No total, control or name agreement ties only under the golden: the platform's class_code
-agrees with the roll on the wrong class for every moved pupil, and the staff code sheets agree with themselves.
+agrees with the roll on the wrong class for every moved pupil, the staff code sheets agree with themselves, and every
+name on them, the three summer leavers' included, matches an establishment holder.
 
 ## Ask sheet
 
@@ -377,22 +391,38 @@ which the sixteen ask figures carry alone.
 | Ask | Figures | Primary device | Second device | Hazards |
 |---|---|---|---|---|
 | Maths lessons S1 to S3 pupils missed in a base, by school | 8 whole numbers | D2, a reconstruction across grains: the roll and the platform's class_code both hold each pupil's class as at June; 84 base-referred pupils changed set in January, and their autumn class shows only as the classmates who were set the same review each autumn week | D7: typed names without SCN, one campus base for two schools | D8 bells per school and the four-period Friday; D4 no time out; D5 S4 to S6 rows; D1 double scans |
-| S1 to S3 maths classes with more than one teacher, by school | 8 whole numbers | D7: a different name on a timetable code is a new teacher only where the establishment holds the earlier name (the Christmas replacement), never for the three surnames changed over Christmas or the three autumn codes still carrying a summer leaver's name | D6: job-share posts on one code with two holders on the establishment; three schools re-keyed in January with names in another style | D2 the replacement on the same code at Ardcorrie |
+| S1 to S3 maths classes with more than one teacher, by school | 8 whole numbers | D7, records billed to another holder after a transfer: the autumn code sheet, produced on 14 August, still gives three codes' lessons (Glenwhinnie, Muirlees, Kilbraith) to holders whose time in post ended on 15 August; the establishment lists them as leavers beside their posts' next holders from the first lesson, so the name change reads as a hand-over, the repair the Christmas replacements teach, until each leaver's last day is set against the row's first lesson, a reconstruction across the code sheets, the timetable's validity and the establishment's dates that no sentence states | none: the full includer keeps 5 of 8, so rule 2 asks no second primary | three surnames changed over Christmas (Previous_Surname on the establishment); three schools re-keyed in January with names in another style; the Christmas replacements on Ardcorrie's unchanged code and a new Balmorran code; each job-share holder on their own days and code |
 
 | Ask | Cracker route (careful solver: the hygiene battery and every filed rule) | Figures kept | Verdict |
 |---|---|---|---|
 | Lessons | SCN and typed names council-wide, own school, bells, timetable valid that day, next bell, each pupil and period once, the class the roll and the platform give | 1 of 8 | miss |
-| Classes | codes to names on both sheets, names normalised to initial and surname, persons per class | 2 of 8 | miss |
+| Classes | codes to names on both sheets term by term, names normalised to initial and surname, persons per class, the establishment unread | 2 of 8 | miss |
 
-Full includer (every device a record or the battery surfaces, each with its natural repair, plus job-shares from the
-establishment): lessons 1 of 8, classes 2 of 8, 3 of 16 ask figures (18.8 per cent); it keeps the class the roll and
-the platform agree on, and reads a different name on a code as a different teacher, the repair the Christmas
-replacement teaches. No-repair 0 of 8 and 0 of 8; first period only 0 of 8; exact names 1 of 8.
+Full includer (every device a record or the battery surfaces, each with its natural repair): lessons 1 of 8, classes 5
+of 8, 6 of 16 ask figures (37.5 per cent, at the two-fifths line of 6.4); it keeps the class the roll and the platform
+agree on, reads every name to its establishment holder with previous surnames, and reads a name change on a code with
+a leaver and a starter on the post as a hand-over, the repair the Christmas replacements teach, never setting the
+leaver's last day against the row's first lesson (6, 5, 15, 11, 3, 16, 3, 5). No-repair 0 of 8 and 4 of 8 (one code
+as one teacher is right where no code changed holder or style, Glenwhinnie, Lochbrannie, Muirlees and St Moluag's, and
+wrong at Ardcorrie and the three re-keyed schools); first period only 0 of 8; exact names 1 of 8. A solver who also
+tests each leaver's last day against the first lesson executes the literal reading and keeps the classes ask.
 
-Pair ceiling: 38.8 with one response on the call and one off (both on the full includer's asks: C 55.3, S 22.3); 55.3
-with both on the call, each keeping 3 of 16.
-Mirror leakage: 12.5 per cent of ask weight (2 of 16 figures: the careful lesson route and exact names).
+Pair ceiling: 49.1 with one response on the call and one off (both on the full includer's asks: C 65.6, S 32.6); 65.6
+with both on the call, each keeping 6 of 16; the careful crackers 38.8 one on and one off, 55.3 both on.
+Mirror leakage: 37.5 per cent of ask weight (6 of 16 figures: the most-keeping wrong route on each ask, the careful
+lesson route and the full includer's classes).
 Measured by: generator/ceiling.py, run by checks.py on the cut pack at every build.
+
+Stage 4 round 1 repair scope: no graded figure moved (the sixteen ask figures, the headline means and shares and the
+chart's school means are the round-1 values, freeze.py rubric PASS). The files that moved: maths_timetable_2025-26.csv
+(each job-share holder's code on their own days), timetable_staff_codes_2025-26.xlsx (the second holders' codes),
+maths_staffing_establishment_2025-26.xlsx (post references, Previous_Surname, the three summer leavers' rows),
+pupil_homework_survey_2025_2026.xlsx (item nonresponse) and support_base_signins_2025-11-03_to_2026-05-29.csv (reasons).
+What the natural read keeps moved instead: the full includer's classes from 2 to 5 of 8 once the forks were closed by
+the records, the cracker's classes unchanged at 2 of 8, the codes-as-teachers read from 0 to 4 of 8. freeze.py in
+determinism mode therefore moves eight keys and only those: ceiling.classes|full_includer, ceiling.classes|no_repair,
+pair.full_includer (C, Lc, Ls, S, pair) and pair_both_on_call, the ceiling script's own measurement of the re-sited
+device and never a graded figure; allowed by name for that reason, the mode passes.
 
 ## Tried and rejected
 
@@ -712,3 +742,30 @@ Measured by: generator/ceiling.py, run by checks.py on the cut pack at every bui
   the submission give the ranking and the reasons; the report's one weak-unit figure pair carries its specification.
 - 2026-11-04, stage 4 hand-off, the two June shares graded to one decimal: 42.154 and 35.856 per cent sat 0.004 and 0.006
   from a rounding edge; graded as whole per cents instead (edges 0.346 and 0.356), no other figure moved.
+- 2026-11-04, stage 4 round 1 (judge NOT_DETERMINISTIC on the classes ask alone, Gate C; the main call forced at 2.5
+  times or more, every other figure reproduced, F strong, G decomposition_attribution analytical_non_defect, H
+  analytical; an ask-layer repair that spends no architecture): the job-share device died to its own literal reading.
+  Both holders of a half-time post stood on the establishment while the timetable carried one code for every period of
+  the post's classes, so code-as-teacher gave 3, 5, 4, 7, 0, 9, 0, 5 against the golden's 6, 5, 9, 7, 3, 12, 3, 5, and
+  no file said both holders taught each class. The renames and the summer changes of holder rode the same unstated
+  convention (a name no holder carries is the code's later holder). Each is now the records' own fact: every job-share
+  holder teaches on their own days under their own code (17 classes show both codes), the establishment carries
+  Previous_Surname for the three renamed holders, and the three summer leavers stand on it with their last day,
+  15 August 2025, beside their posts' next holders from the 18th. Asked as before; no graded figure moved.
+- 2026-11-04, same pass: with every convention closed by the records, a full includer reading every establishment field
+  kept the classes ask whole (8 of 8, 9 of 16 overall, over the two-fifths line), so the device was re-sited onto the
+  summer leavers' dates: the autumn code sheet, produced on 14 August, still gives their codes' lessons to them, the
+  name change reads as a hand-over (the repair the Christmas replacements teach), and only setting each leaver's last day
+  against the row's first lesson, across three records no sentence joins, keeps the count (full includer 5 of 8).
+  Re-site candidates set aside: known-as forenames colliding with another holder's initial (one school, contrived); a
+  timetable code keyed to an establishment post number (re-opens the round-1 reading of one code as one person); a teacher
+  timetabled before their start with no record of the cover (the count forced but the teacher unnamed, so code-as-teacher
+  stands as a reading); a class-teacher column on the homework platform (a column hands it over); co-taught periods a
+  deduplication drops (no co-teaching in this world); the new package back-filling the autumn term (it overlaps the
+  lessons ask's autumn slots).
+- 2026-11-04, same pass, realism from the leak reader: the establishment's post references shared a prefix between
+  Ardcorrie and Muirlees (MA-77) and ran -01 to -06 at every school with the job-share last; each school now carries its
+  own establishment number and post numbers with gaps, the job-share post wherever its number falls. The survey's five
+  statements carried one response count per school and stage; each statement now loses its own item nonresponse. The
+  sign-in reasons sat near equal; they now follow a base's own mix (disruption about a third, a few rare reasons). The
+  survey is the pack's last random draw and the reasons are chosen by hash with the old draw kept, so no other row moved.

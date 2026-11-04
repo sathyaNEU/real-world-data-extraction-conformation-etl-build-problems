@@ -4,10 +4,11 @@ the mirror that stops at the most attractive wrong rung), scored against the gol
 a hit is the exact figure). Prints the sheet and returns it for checks.py and the design note's ask sheet.
 The full includer notices every device a record or the hygiene battery surfaces and applies the natural repair:
 typed names matched council-wide, own school, each school's bells, the timetable valid on the day, the next bell, each
-pupil and period once, job-shares from the establishment; the platform's class_code agrees with the roll on each
-pupil's class, so it keeps that class (the autumn class is recoverable only from which classmates shared each week's
-review set, a reconstruction no record performs); it reads a different name on a timetable code as a different teacher,
-the repair the Christmas replacement teaches."""
+pupil and period once, every name to its holder on the establishment with previous surnames; the platform's class_code
+agrees with the roll on each pupil's class, so it keeps that class (the autumn class is recoverable only from which
+classmates shared each week's review set, a reconstruction no record performs); and it reads a name change on a code,
+with a leaver and a starter on the post, as a hand-over, the repair the Christmas replacements teach, never testing
+the leaver's last day in post against the first lesson of the row (three leavers' contracts ended before the session)."""
 import datetime as dt
 import os
 
@@ -79,36 +80,31 @@ def lessons(route):
 
 
 def classes(route):
-    tt = G.rd('maths_timetable_2025-26.csv')
-    xl = os.path.join(G.T, 'timetable_staff_codes_2025-26.xlsx')
-    sh = {'autumn': pd.read_excel(xl, sheet_name='Autumn 2025', dtype=str),
-          'spring': pd.read_excel(xl, sheet_name='Spring 2026', dtype=str)}
-    est = pd.read_excel(os.path.join(G.T, 'maths_staffing_establishment_2025-26.xlsx'), dtype=str)
-    est['FTE'] = est['FTE'].astype(float)
-    def ident(sch, phase, code):
-        if route == 'no_repair':
-            return {code}
-        nm = sh[phase][(sh[phase]['School'] == sch) & (sh[phase]['Code'] == code)]['Name'].iloc[0]
-        if route == 'names_exact':
-            return {nm}
-        ini, sur = G.norm_staff(nm)
-        me = {(ini, sur)}
-        if route == 'full_includer':
-            hit = est[est['School'].str.contains(sch, regex=False) & (est['Holder'].str.split(', ').str[0].str.upper() == sur)
-                      & (est['Holder'].str.split(', ').str[1].str[0].str.upper() == ini)]
-            if len(hit) == 1 and hit['FTE'].iloc[0] < 1.0:
-                mates = est[(est['Post_Ref'] == hit['Post_Ref'].iloc[0]) & (est['FTE'] < 1.0)]
-                me = {(h.split(', ')[1][0].upper(), h.split(', ')[0].upper()) for h in mates['Holder']}
-        return me
+    """no_repair: each timetable code a teacher; names_exact: each name string on the term's code sheet a teacher;
+    cracker: names normalised to initial and surname, no establishment; full_includer: every name to its holder on the
+    establishment, previous surnames included, and a name change on a code with a leaver and a starter on the post read
+    as a hand-over, the repair the Christmas replacements teach, without testing the leaver's last day against the
+    row's first lesson; literal: the same with that test (the golden's route, printed for reference)"""
+    if route in ('full_includer', 'literal'):
+        per = G.class_teachers(in_post=(route == 'literal'))
+    else:
+        tt, sh, est, terms = G.staff_tables()
+        per = {}
+        for _, r in tt.iterrows():
+            f, t = G.dmy(r['Valid_From']), G.dmy(r['Valid_To'])
+            ppl = per.setdefault((r['School'], r['Class']), set())
+            for term, (a, b) in terms.items():
+                if max(f, a) > min(t, b):
+                    continue
+                if route == 'no_repair':
+                    ppl.add(r['Staff'])
+                    continue
+                s = sh[term]
+                nm = s[(s['School'] == r['School']) & (s['Code'] == r['Staff'])]['Name'].iloc[0]
+                ppl.add(nm if route == 'names_exact' else G.norm_staff(nm))
     out = {}
-    for (sch, cls), g in tt.groupby(['School', 'Class']):
-        ppl = set()
-        for _, r in g.iterrows():
-            phases = ['autumn', 'spring'] if (r['Valid_From'], r['Valid_To']) == ('18/08/2025', '26/06/2026') else \
-                (['spring'] if r['Valid_From'] == '06/01/2026' else ['autumn'])
-            for ph in phases:
-                ppl |= ident(sch, ph, r['Staff'])
-        out[sch] = out.get(sch, 0) + (len(ppl) > 1)
+    for (sch, cls), ppl in per.items():
+        out[sch] = out.get(sch, 0) + int(len(ppl) > 1)
     return out
 
 

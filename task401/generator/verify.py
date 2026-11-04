@@ -121,12 +121,17 @@ def lessons():
 
 
 def classes():
+    """each class's teachers: for each timetable row and each term its validity runs through, the person that term's
+    code sheet names on the code, matched to the establishment by first initial and surname or previous surname at the
+    school, counted where that holder's time in post overlaps the row's days in the term"""
     codes = sheet('timetable_staff_codes_2025-26.xlsx')
     est = sheet('maths_staffing_establishment_2025-26.xlsx')['Mathematics posts']
     def key(name):
         w = name.replace('.', '').split()
         w = w[1:] if w[0] in ('Mr', 'Mrs', 'Ms', 'Miss', 'Dr') else w
         return w[0][0].upper(), w[-1].upper()
+    def day(s):
+        return dt.datetime.strptime(s, '%d/%m/%Y').date() if s else None
     name = {}
     for ph, s in (('aut', 'Autumn 2025'), ('spr', 'Spring 2026')):
         for r in codes[s]:
@@ -134,33 +139,22 @@ def classes():
     holders = defaultdict(list)
     for r in est:
         sur, fn = r['Holder'].split(', ')
-        holders[fn[0].upper(), sur.upper()].append(r)
-    by_post = defaultdict(list)
-    for r in est:
-        by_post[r['Post_Ref']].append(r)
+        for s in {sur.upper(), (r['Previous_Surname'] or '').upper()} - {''}:
+            for sch in r['School'].split(' / '):
+                holders[sch, fn[0].upper(), s].append((day(r['In_Post_From']), day(r['In_Post_To'] or ''), r['Holder']))
     tt = rows('maths_timetable_2025-26.csv')
-    aut_cls, spr_cls = defaultdict(set), defaultdict(set)
-    for r in tt:
-        if r['Valid_From'] == '18/08/2025':
-            aut_cls[r['School'], r['Staff']].add(r['Class'])
-        if r['Valid_To'] == '26/06/2026':
-            spr_cls[r['School'], r['Staff']].add(r['Class'])
-    def people(ph, sch, code):
-        k = name[ph, sch, code]
-        hs = [h for h in holders.get(k, []) if sch in h['School']]
-        if not hs:
-            nxt = [c for (s, c), v in spr_cls.items() if s == sch and aut_cls[sch, code] <= v]
-            return people('spr', sch, nxt[0])
-        h = hs[0]
-        if float(h['FTE']) < 1.0:
-            return {x['Holder'] for x in by_post[h['Post_Ref']] if float(x['FTE']) < 1.0 and not x['In_Post_To']}
-        return {h['Holder']}
+    ends = sorted({day(r['Valid_To']) for r in tt})
+    starts = sorted({day(r['Valid_From']) for r in tt})
+    terms = (('aut', starts[0], ends[0]), ('spr', starts[-1], ends[-1]))
     per = defaultdict(set)
     for r in tt:
-        phs = ['aut', 'spr'] if (r['Valid_From'], r['Valid_To']) == ('18/08/2025', '26/06/2026') else \
-            (['spr'] if r['Valid_From'] == '06/01/2026' else ['aut'])
-        for ph in phs:
-            per[r['School'], r['Class']] |= people(ph, r['School'], r['Staff'])
+        f, t = day(r['Valid_From']), day(r['Valid_To'])
+        for ph, a, b in terms:
+            lo, hi = max(f, a), min(t, b)
+            if lo > hi:
+                continue
+            hs = holders[(r['School'],) + name[ph, r['School'], r['Staff']]]
+            per[r['School'], r['Class']] |= {h for s0, s1, h in hs if s0 <= hi and (s1 is None or s1 >= lo)}
     out = defaultdict(int)
     for (s, c), v in per.items():
         out[s] += len(v) > 1
