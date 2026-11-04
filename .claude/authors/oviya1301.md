@@ -40,5 +40,6 @@ the call), determinism fix, prompt repair, re-check (the new gates), resume (a p
 | 8 | task461 (re-check) · task462 (re-check) · task487 (re-check) · task488 (re-check) |
 | 9 | task173 (resume: new draw) · task194 (resume: new draw) · task200 (resume: new draw) · task276 (resume: new draw) |
 | 10 | task313 (new) · task398 (new) · task210 (new) · task285 (new) |
+| 11 | task489 (new) · task314 (new) · task399 (new) · task211 (new) |
 
 Wave 10 onward are new numbers, cut once Batch 5's own re-roots are in flight. Forecasting's range (task132 to task179) is full, so each wave takes the next open number in each objective that has one, so no objective repeats inside a wave (`status.py wave "<objective>"`).
