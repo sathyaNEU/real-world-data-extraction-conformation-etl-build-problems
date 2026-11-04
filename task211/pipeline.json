@@ -1,21 +1,34 @@
 {
   "task": "task211",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "supply-chain-logistics / transportation-network (client: general-statistics-data-science / exploratory-data-analysis-distribution-assessment)",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-04",
   "seed": "AD34",
-  "stump": "A competent solver replays each floating vessel's shelter procedure over the buoy record, credits each site with its own vessel's downtime, the eastern site's diversions included, and names Fjernhav at about 50 days; the step that lands them there is crediting the jack-up only with the downtime of the site where it stands, when at Skarvgrund it also lifts Lillevig Banke's diversions to Kalvholm.",
+  "stump": "A competent analyst replays each floating vessel's weather procedure over the buoy record, credits the jack-up with the downtime of the vessel it releases and names Fjernhav at 38 days; the step that lands them there is treating the vessels as independent, when Skarvgrund's and Lillevig Banke's share Bramso Havn's one heavy-lift berth and the past progress reports show the later arrival going on to Kalvholm, so the jack-up at Skarvgrund also removes Lillevig Banke's diversions and avoids 42 days.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-04"
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK, on target.zip 3f239f1e650fc56bc24cc050b4f141eb; five REVIEW lines ruled harmless in the design note's Leak sweep rulings",
+    "reader": "pending: stage 4 brief written"
+  },
+  "duplicate_check": {
+    "heart": "PASS 2026-11-04, corpus at 9b820fa (parent merged) with every batch4 sibling card present",
+    "nearest": "0.06 task472 (stump); surface promotes task160 (0.101, corpus top 1 percent) and task147, task159 (card axes, differentiated on the card)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": "pending: stage 4 brief written"
+  },
   "returned": [],
-  "resume": "Stage 2: write the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet on the shared-berth design, calibrate the generator's storm peaks to the cited climatology, assert every screen in generator/checks.py at the shipped seed, write prompt.txt, then precut.py to exit 0.",
+  "resume": "Stage 4: spawn together, in the background, the leak reader (general-purpose, sonnet, medium) on /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/stage4/reader/BRIEF.md and the determinism judge (general-purpose, sonnet, medium) on /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/stage4/judge/BRIEF.md; each folder's target.zip is byte-identical to task211/target.zip (md5 3f239f1e650fc56bc24cc050b4f141eb). If the scratch copies are gone, rebuild with python3 task211/generator/build.py then python3 task211/generator/golden.py (byte-identical twice) and rewrite the folders from generator outputs. Fix every finding of both in the generator in one pass, re-judge once on FIX_NOW, then ship: every gate re-run on the final cut, ledger row, card current, git add -f task211/target.zip and task211/golden/.",
   "approved": null,
   "delivered": null,
   "portal": null,
