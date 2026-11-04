@@ -54,6 +54,42 @@ def main():
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     gold = set(fig["slate"])
 
+    # ---------------- the external solar anchor: solar.py (which builds the pack and the golden) against NOAA's solar
+    # calculator equations (solar_ref.py, a separate implementation the generator never imports), within TOL_DEG
+    import datetime as _dt
+    import solar_ref as SR
+    from solar import sun_position as _sp
+
+    def _gen(t):
+        e_, a_ = _sp(np.array([np.datetime64(t.strftime("%Y-%m-%dT%H:%M:%S"))], dtype="datetime64[s]"), W.LAT0, W.LON0)
+        return float(e_[0]), float(a_[0])
+
+    def _dang(a_, b_):
+        return abs(((a_ - b_ + 180.0) % 360.0) - 180.0)
+
+    worst = 0.0
+    for day in (_dt.date(2026, 6, 21), _dt.date(2026, 12, 21), _dt.date(2027, 1, 15)):
+        for t_ in SR.rise_set(day, W.LAT0, W.LON0):
+            e0, a0 = SR.sun(t_, W.LAT0, W.LON0)
+            e1, a1 = _gen(t_)
+            worst = max(worst, _dang(a0, a1), abs(e0 - e1))
+    rs = SR.rise_set(_dt.date(2026, 6, 21), W.LAT0, W.LON0)
+    check("solar anchor: the 21 June sunset lies north-west (azimuth 295 to 305 by the reference, %.1f by solar.py)"
+          % _gen(rs[1])[1], 295 <= SR.sun(rs[1], W.LAT0, W.LON0)[1] <= 305 and 295 <= _gen(rs[1])[1] <= 305)
+    check("solar anchor: sunrise and sunset azimuth and elevation on 21 June, 21 December and 15 January agree with NOAA's "
+          "solar calculator within %.1f degrees" % SR.TOL_DEG, worst <= SR.TOL_DEG, "largest difference %.2f" % worst)
+    worst = 0.0
+    for hh, mm in ((14, 30), (15, 30), (23, 0), (23, 45)):          # 07:30, 08:30, 16:00 and 16:45 MST on 15 January 2027
+        t_ = _dt.datetime(2027, 1, 15, hh, mm)
+        e0, a0 = SR.sun(t_, W.LAT0, W.LON0)
+        e1, a1 = _gen(t_)
+        for brg in (125.0, 231.0):                                  # J4 outbound, F5 outbound (the survey's bearings)
+            worst = max(worst, abs(_dang(a0, brg) - _dang(a1, brg)))
+        worst = max(worst, _dang(a0, a1), abs(e0 - e1))
+    check("solar anchor: the January peak hours' sun (07:30, 08:30, 16:00, 16:45 MST) and its offset from the J4 and F5 "
+          "outbound bearings agree with NOAA's solar calculator within %.1f degrees" % SR.TOL_DEG, worst <= SR.TOL_DEG,
+          "largest difference %.2f" % worst)
+
     # ---------------- the golden and the truth
     truth = key(M.slate(M.truth_rates(T)))
     clean, Gc = M.golden(P)

@@ -80,8 +80,10 @@ sun put every Mountain evening sun east of the meridian, `## Tried and rejected`
 (seeds 21001 to 21020, scratchpad `t210/a2/r3/redraws.py`); the shipped seed 21019 was selected on them, and its
 numbers are asserted in `generator/checks.py`:
 
-1. **Realistic levels and the lever.** Sun position from NOAA's General Solar Position Calculations (within 0.6 degrees
-   of the Astronomical Almanac's formulae, which `verify.py` uses); January and February sunshine 68 per cent of
+1. **Realistic levels and the lever.** Sun position from NOAA's General Solar Position Calculations, anchored at every
+   build against NOAA's solar calculator equations (`generator/solar_ref.py`, a separate implementation the generator
+   never imports): sunrise and sunset on 21 June, 21 December and 15 January and the January peak hours' sun against
+   the J4 and F5 bearings agree within 0.5 degrees in `checks.py`, and `verify.py`'s Almanac sun agrees too; January and February sunshine 68 per cent of
    possible (station normals); glare raises crash risk on approaches facing a low sun (Mitra 2014, Safety Science 70,
    246 to 254), glare situations predicted from alignment and sun position (Jurado-Pina and Pardillo Mayora 2009,
    Transportation Research Record 2120, 12 to 17); darkness raises pedestrian risk severalfold (Sullivan and Flannagan
@@ -243,7 +245,7 @@ literal execution of every filed rule (rung L) files a wrong slate.
 | SF10 | darkness (a control) | sun below the horizon | sunset at minus 0.833, minus 3, civil twilight minus 6; no darkness term | same call | same call asserted (C3) |
 | SF11 | the glare response's width | a 25-degree cosine-squared taper | 15, 20, 30, 35 degrees | same call | same call asserted; the record decides (C3 over its supported forms) |
 | SF12 | the glare response's elevation profile | full below 12 degrees, none from 25 | flat to 15 or 20; 8 to 20; 15 to 30 | same call | same call asserted (C3) |
-| SF13 | the glare response's shape | tapering with the angle off the line of travel | linear; flat (to 20 degrees same call; flat from 25 degrees another call) | same call where the record admits the form | the record's offset profile (excess 0.02 at 25 to 30 degrees) and its fit (45.5 or more worse), asserted |
+| SF13 | the glare response's form | any tapering form (cosine-squared or linear, every cone 15 to 35, every elevation profile), or a flat form to 20 degrees | a flat form at 25 degrees or more | another call (10 of 75 cells) | the record's own fit (2dlogL 45.5 or more worse) and its offset profile (excess 0.02 at 25 to 30 degrees); the call holds across every supported form (asserted) |
 | SF14 | controls | section direction, hour, weekend, darkness | none; no hour effects | same call | same call asserted |
 | SF15 | the detector outage week | passes and brakes both left out | the week dropped on every section | same call | same call asserted |
 | SF16 | clock | Mountain local time, MDT in the record and MST in the pick | UTC as stamped | same call once converted | SRM-07 3.5 ("Mountain local time") |

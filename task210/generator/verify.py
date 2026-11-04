@@ -175,6 +175,19 @@ def pick(brg, lat, lon):
 def main():
     fj = json.load(open(os.path.join(HERE, "figures.json")))
     brg, lat, lon = network()
+    # the external solar anchor: this verifier's Almanac sun against NOAA's solar calculator equations
+    import datetime as _dt
+    sys.path.insert(0, HERE)
+    import solar_ref as SR
+    worst = 0.0
+    times = [t_ for d_ in (_dt.date(2026, 6, 21), _dt.date(2026, 12, 21), _dt.date(2027, 1, 15)) for t_ in SR.rise_set(d_, lat, lon)]
+    times += [_dt.datetime(2027, 1, 15, h_, m_) for h_, m_ in ((14, 30), (15, 30), (23, 0), (23, 45))]
+    for t_ in times:
+        e0, a0 = SR.sun(t_, lat, lon)
+        e1, a1 = sun(pd.DatetimeIndex([pd.Timestamp(t_)]), lat, lon)
+        worst = max(worst, abs(((a0 - float(a1[0]) + 180) % 360) - 180), abs(e0 - float(e1[0])))
+    say("solar anchor: sunrise, sunset and the January peak hours agree with NOAA's solar calculator within %.1f degrees"
+        % SR.TOL_DEG, worst <= SR.TOL_DEG, "largest difference %.2f" % worst)
     A = record(brg, lat, lon)
     coef, G = fit(A)
     X = pick(brg, lat, lon)

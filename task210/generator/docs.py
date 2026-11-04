@@ -111,7 +111,7 @@ def pick(path):
 
 def normals(path):
     body, h, t, small = _styles()
-    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
     temp = [30.1, 32.4, 39.7, 46.3, 55.8, 66.0, 71.6, 69.4, 61.7, 49.8, 38.4, 30.6]
     prcp = [0.32, 0.38, 1.02, 1.54, 2.21, 2.32, 2.89, 3.11, 1.36, 0.83, 0.47, 0.36]
     snow = [5.1, 5.8, 7.9, 5.4, 1.2, 0.0, 0.0, 0.0, 0.2, 3.1, 5.0, 5.5]
