@@ -14,7 +14,7 @@ the judge doing the work its own estimand asked for.
 Strathcorrie Council, an invented Scottish council area, runs eight secondary schools. For session 2025-26 it made five
 changes to S1 to S3 mathematics: (A) a new BGE mathematics framework from 18 August 2025, every unit replaced and four
 units a year group rewritten from scratch; (B) a council-wide switch of homework platform from 18 August 2025, from
-Recallo, whose weekly retrieval task was drawn for each pupil from that pupil's own wrong answers, to Mathsbridge, which
+Corvella, whose weekly retrieval task was drawn for each pupil from that pupil's own wrong answers, to Mathsbridge, which
 sets each class one homework on the current unit and one mixed review of earlier units; (C) the asymmetric week from 18
 August 2025, which took S3 maths from five periods a week to four; (D) support bases from 3 November 2025, to which
 pupils are removed from a disrupted lesson; (E) two maths posts shared across schools from 6 January 2026, splitting
@@ -22,7 +22,7 @@ some classes between two teachers. Every S1 to S3 pupil sits the council's commo
 same papers in June 2025 and June 2026, and the mean mark and the share at 36 of 60 fell. The council sets its 2027-28
 budget in February 2027 and will reverse one change. The fall is real; booking it is the work.
 
-What nothing in the pack says: under Recallo each pupil's weak units, the ones they got most wrong in their first
+What nothing in the pack says: under Corvella each pupil's weak units, the ones they got most wrong in their first
 homework, came back in that pupil's retrieval tasks until they held, and under Mathsbridge every pupil in a class gets
 the same review whatever they got wrong. So the units each pupil first struggled with stayed weak to June 2026, and
 within each pupil those units fell several points further than the pupil's other units, against the same contrast in
@@ -72,7 +72,7 @@ June 2025. The framework's rewritten units genuinely fell too, and fell most on 
   the call is a pick among changes, so the form comes from the decision, and the shell's other three classes (opener
   its, rounding opener marks, deliverables csv+docx) differ from task403's and from every lineage shell. Registered
   2026-11-04T08:08:49Z; `check` on the registered card: WARN, the same five, no BLOCK. Nearest driver 0.07 (task403).
-- **Data-native sentence:** Recallo drew each pupil's weekly retrieval from that pupil's own wrong answers and
+- **Data-native sentence:** Corvella drew each pupil's weekly retrieval from that pupil's own wrong answers and
   Mathsbridge sets one mixed review per class, so whether a pupil's weak units were revisited before June was set by the
   pupil's own first-homework errors against each platform's review rule, a relation between the pupil's own rows in two
   systems that no file holds as a column.
@@ -103,7 +103,10 @@ June 2025. The framework's rewritten units genuinely fell too, and fell most on 
   a level loss in force through both years (task402 a2): the platform changed between the years; an event caused by the
   one before it (task402 a3): no pairing of events; each unit's runway against a release calendar at its decision moment
   (task403): no calendar and no decision moment, the contrast is across a learner's own components; a shortfall against a
-  reference curve (task187): no reference curve.
+  reference curve (task187): no reference curve. Two changes begun the same day, separated within components against a comparison series
+  whose component mix differs (task467): no comparison series and no mix here; both changes reach every pupil and every
+  unit, and the separation is which units each learner's own early errors marked, a selection per learner, not a
+  component share between two aggregates.
 - **Real-world levels:** Lindsey, Shroyer, Pashler and Mozer (2014, Psychological Science 25, 639-647): personalised
   review gave 10.0 per cent better retention than a one-size spaced review and 16.5 per cent better than massed study on
   a cumulative exam a month after a middle-school semester. The build's switch costs pupils' weak units about a quarter of
@@ -114,37 +117,55 @@ June 2025. The framework's rewritten units genuinely fell too, and fell most on 
   the year it ran; nothing in the call is a forecast, so no projection route exists for a careful reader to take (the
   architecture 5 death).
 
-### The five go/no-go screens, measured on the clean truth before any card
+### The five go/no-go screens, measured on the clean truth
 
-Prototype `scratchpad/t401/a6/proto/proto4.py` (world) and `proto5.py` (screens), 20 redraws: eight schools, S1 to S3,
-about 5,500 pupils a session, twelve units a year group, three items a unit, both sessions on the same papers;
-first-practice accuracy from each unit's first homework; retrieval allocated by each pupil's errors in 2024-25 and
-uniformly over earlier units in 2025-26 at equal volume; a pupil-specific struggle on each unit, demeaned within pupil.
+First run before any card on the prototype (`scratchpad/t401/a6/proto/proto4.py` and `proto5.py`, 20 redraws); rerun
+on the generator's own world (`generator/screens.py`, 20 redraws, summary in `generator/screens20.json`, every line
+asserted in `checks.py`, and the shipped seed 18 screened afresh at every build): eight schools, S1 to S3, about 4,400
+pupils sitting each session, twelve units a year group, three items a unit, both sessions on the same papers;
+first-practice accuracy from each unit's first homework; retrieval allocated by each pupil's errors in 2024-25 and by
+class in 2025-26 at equal volume; a pupil's own struggle on some units (a bimodal gap) and the framework's rewritten
+units harder for lower attainers.
 
 1. **Levels and the lever against the rivals' estimates.** The switch is the largest true cost in 20 of 20. On the
-   golden method (within-pupil contrasts for the switch and the rewritten units, KS2-adjusted difference in differences
-   by reach for the week, the bases and the shared posts) the switch beats every rival estimate in 20 of 20, by 1.54
-   times at the least and 2.59 at the median, 1.5 times or more in 20 of 20. The June mean falls about 2.5 points of 60
-   and the share at 36 of 60 from 42.2 to 35.2 per cent.
+   golden method (within-pupil contrasts for the switch and the rewritten units, P7-adjusted difference in differences
+   by reach for the week, the bases and the shared posts) the switch beats every rival in 20 of 20, by 2.06 times at the
+   least and 3.34 at the median. Shipped seed: the June mean falls from 32.3 to 30.3 of 60 and the share at 36 or more
+   from 42.2 to 35.9 per cent; the golden books B 5,221 marks against A 1,485, C 1,684, D 1,013 and E 698 (truth B 4,514,
+   A 1,596, C 1,139, D 729, E 506).
 2. **The golden's own method holds the call.** 24 specifications (weak units as each pupil's bottom quarter, third or
    half, or below 50, 60 or 70 per cent first-time accuracy; the level change of pupils no partial change reached booked
-   to the framework or to no one; with and without KS2 adjustment) all name the switch in 20 of 20.
-3. **The first look lands wrong.** The outcome tabulated pupil by item beside each change's dated record, a before and
-   after on each change's reach, and every segmentation by recorded fields (school, year group, class, P7 band, SIMD,
-   ASN, homework completion and review volume, rewritten against other units) books the framework in 20 of 20: both
-   whole-system changes take the whole fall, the rewritten units fell most and the switch's own engagement rose.
-4. **The careful reader lands wrong.** A pooled pupil-level model with prior attainment, deprivation, school and year
-   group, every partial change's reach interacted with the year, homework completion, accuracy and review volume and
-   their interactions with the year, plus the item-level check on rewritten units, books the framework in 20 of 20. Its
-   homework-accuracy-by-year interaction is the switch's pupil-level shadow (z 1.8 to 5.8 with the switch on, about 0
-   with it off), so the framework's rewritten units carry a real attainment gradient (lower prior attainers lose more),
-   and the reader's natural reading of the shadow, weaker pupils fell further, is the framework's own story. No forward
-   period exists, so no projection route.
-5. **Literal execution.** The terms of reference executed on each change's reach (before and after on the pupils it
-   reached; difference in differences against those it did not; the same adjusted for P7 attainment) tie the two
-   whole-system changes at the whole fall and never name the switch alone, in 20 of 20; every change has its own filed
-   date (18 August, 18 August, 18 August, 3 November, 6 January) and its own filed reach. The golden needs the
-   within-pupil contrast, which no filed sentence asks for.
+   to the framework or to no one; with and without P7 adjustment) all name the switch in 20 of 20.
+3. **The first look lands wrong.** The outcome beside each change's dated record, before and after on each reach, and
+   every segmentation by recorded fields books the framework in 20 of 20: both whole-system changes take the whole fall,
+   the rewritten units fell most and the switch's own engagement rose.
+4. **The careful reader lands wrong.** A pooled pupil model with prior attainment, deprivation, school and year group,
+   every partial change's reach by year, homework completion, accuracy and review volume and their year interactions,
+   plus the item check on rewritten units, books the framework in 20 of 20.
+5. **Literal execution.** The remit executed on each change's reach (before and after; difference in differences; the
+   same P7-adjusted) ties the two whole-system changes at the whole fall in 20 of 20 and never names the switch alone;
+   the golden needs the within-pupil contrast, which no filed sentence asks for.
+
+### The coordinator's four review points, measured
+
+1. **The interaction reader** (homework accuracy residualised on P7, by session: median and tercile split difference in
+   differences on June totals, and the regression-implied loss below the mean, the switch taking the low group's extra
+   fall) files the framework in 20 of 20 redraws, every variant (z on the interaction from -0.7 to 1.1). The rewritten
+   units carry an attainment gradient (lower prior attainers lose more on them), and with the gap bimodal the shadow no
+   longer separates weak pupils, so it points at the framework at least as much as at the switch.
+2. **The constructing readers.** (i) Per-unit review volume by session against each unit's June change, the rewritten
+   units beside it, files the framework in 20 of 20 (volume z 1.2 on the shipped seed); (ii) each pupil's Corvella review
+   share by unit against their June 2025 unit marks files the framework in 20 of 20 (slope -0.19 on the shipped seed:
+   Corvella's review sat on the units pupils still did worst on, which reads as review chasing weakness, not curing it).
+   Readability: no shipped file describes either platform as adaptive, personalised, tailored or built from a pupil's
+   errors (asserted in `checks.py` over every docx, pdf, xlsx, csv and parquet header); the register says only that
+   Corvella's contract ended and that Mathsbridge sets each class a homework on each unit and a weekly review, which is
+   what a council's register would say.
+3. **The cost fork.** Per pupil reached the bases cost most (20 of 20); as total marks across the pupils reached, the
+   switch (20 of 20). The remit closes it in the council's voice by naming the WHAT: "the total, over the S1 to S3 pupils
+   who sat a June 2026 paper and whom the change reached, of the marks those pupils lost because the change was made"
+   (SF1, asserted). No method is named.
+4. **The semantic screen against task467** is the last line of the spent-insights list above.
 
 ## Default path
 
@@ -160,7 +181,8 @@ uniformly over earlier units in 2025-26 at equal volume; a pupil-specific strugg
    rewritten units fell most, and on the platform completion and review volume rose, so the fall is the framework's.
 
 Ends on: the new mathematics framework costs the most marks.
-Golden: the switch from Recallo to Mathsbridge costs the most marks; the framework is second.
+Golden: the switch from Corvella to Mathsbridge costs the most marks. No runner-up is claimed: the golden family puts
+the asymmetric week second on the shipped seed and the framework second in 14 of 20 redraws.
 
 ## Stump sentence
 
@@ -182,12 +204,13 @@ weak against other, between the two sessions on the same papers.
 Swap: "which change cost the pupils the most marks in the June paper" with megawatt-hours or patients in place of marks
 and pupils loses first practice, per-learner review and a cumulative paper, so the call stops parsing; with hospital
 staff it is still a learning task, which is the domain.
-Layer 1: two homework platforms' exports with their own pupil keys (the Scottish Candidate Number against platform user
-ids through class rosters), time units and task vocabularies; June item marks exported paper by paper with absences
-coded; a skills-to-units crosswalk in two framework vintages; P7 scores from two assessment years with incomers lacking
-one; SIMD deciles from postcodes with movers carrying two; a support base log where a removal can be entered by the
-teacher and by the base; timetables in two week structures; staffing by term with job-shares. Each is produced by the
-system that holds it; nothing is placed to be caught.
+Layer 1: two pupil rolls in two report layouts (SEEMiS, the older one with names as SURNAME, Forename); June marks wide
+and keyed by MIS reference in 2025, long and keyed by SCN in 2026, absences coded differently; the Corvella export keyed
+by MIS reference with skill codes, the Mathsbridge export keyed by Glow ID with unit codes and percentages; unit codes in
+two framework vintages on the paper map; a base kiosk that logs a card's SCN or a typed name, one campus base for two
+schools, S4 to S6 sign-ins in the same export; three schools' timetables rebuilt in a new package in January with new
+staff codes and names in another style; job-share posts on one timetable code; the roll and the platform both carry
+each pupil's class as at June, after the January set changes. Each is produced by the system that holds it; nothing is placed to be caught.
 Layer 2: estimand and identification, the right unit and comparison: two whole-system changes start the same day for
 every pupil, so no reach, date or segmentation separates them, and only each pupil's units compared with one another
 against the pupil's own first practice, between the sessions, isolates the review switch from the framework.
@@ -206,10 +229,11 @@ Analyst test: a strong analyst who reads every file correctly fits pupils' June 
 school, class and each change's reach, finds the week, the bases and the shared posts each cost little, sees the
 rewritten units fall most and homework engagement rise on the new platform, and files the new mathematics framework,
 the Ends on answer, never setting each pupil's first-homework results against their June items unit by unit.
-Estimand: the remit section of the education service's change register for S1 to S3 mathematics (the review's terms of reference, section 3) files the population (S1 to S3
-pupils who sat the June papers), the outcome (marks on the council's common June papers), the comparison (June 2025 on
-the same papers), the unit (marks), each change's cost as the marks it cost the pupils it reached from its filed date,
-and the change the budget reverses as the one that cost the most.
+Estimand: the remit in section 2 of the education service's change register for S1 to S3 mathematics files the
+population (S1 to S3 pupils who sat a June 2026 paper and whom the change reached), the outcome (marks on the council's
+common June papers, the same papers as June 2025), the unit (marks, totalled over those pupils), the comparison (the
+marks they would have scored without the change) and the decision (the 2027-28 budget reverses the change that cost the
+most).
 No decoy: nothing is planted: the framework's rewritten units genuinely fell (its real, smaller cost), the platform's
 engagement figures are true, and no memo, draft, briefing or stakeholder figure argues for any change.
 No certified replay: no certified or published figure reproduces under one method; the method is not hidden and recovered
@@ -228,8 +252,9 @@ Reflex: the field's method for the deciding quantity, a multilevel model of pupi
 each change's reach, sits at rung 0 and files the framework (Ends on).
 Back-test: the textbook route validates: the model fits the 2024-25 session's June marks on prior attainment well, and
 homework completion predicts June marks in both sessions.
-Second use: the homework exports carry the homework asks, the crosswalk carries the unit-mapping ask, the item marks are
-the outcome every route reads; deleting the decisive step drops no file.
+Second use: the homework exports are the platform switch's own evidence (completion and review volume, which the
+default path reads) and the Mathsbridge export's weekly review sets carry each autumn class's membership for the base ask; the item marks are
+the outcome every route reads; the paper map serves the rewritten-unit check. Deleting the decisive step drops no file.
 Shock: the movement reads as an ordinary first-year dip spread across schools, year groups and units, with the
 framework's rewritten units lowest; sorting units or pupils on any shipped statistic does not isolate the golden's set.
 Pins: the terms of reference file the WHAT in the council's own genre and no sentence names a within-pupil comparison,
@@ -237,31 +262,128 @@ first practice, weak units, targeting or review; deleting each filed sentence le
 
 ## Readability screen
 
-Stage 2.
+Each rung against every shipped file: can a solver read the rung's step off a column, a sentence or a file name?
+
+| Rung | What it needs | Verdict |
+|---|---|---|
+| Rung 0, the multilevel model with each change's reach | the rolls, the marks, the register's reaches | readable |
+| Rung 1, the item check on rewritten units | the paper map and the register's section 4 | readable |
+| Rung 2, engagement by session (completion, review volume) | both homework exports | readable |
+| Rung 3, homework accuracy by session on June totals | both exports and the marks | readable |
+| Rung 4, review volume or share by unit | both exports by unit | readable |
+| Rung 5 (decisive), each pupil's weak units at first practice against their other units, June 2026 against June 2025 | each pupil's own unit homework rows against their own June items, unit by unit, in two systems; no column, sentence or file name states weak units, first practice, targeting or a within-pupil contrast | silent |
 
 ## Semantic fork table
 
-Stage 2.
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | a change's cost | total marks over the sitting pupils it reached | marks per pupil reached | the bases, 20 of 20 | the remit (register section 2): "the total, over the S1 to S3 pupils who sat a June 2026 paper and whom the change reached, of the marks those pupils lost" |
+| SF2 | the pupils reached | those who sat a June 2026 paper | absent or left pupils counted at nil | not computable as a loss (no paper) | the remit's "who sat a June 2026 paper" |
+| SF3 | marks | raw marks of 60 | share of the paper | B | same call (asserted) |
+| SF4 | a pupil's weak units (method, open) | bottom third by first-attempt accuracy | bottom quarter or half; below 50, 60 or 70 per cent | B, 24 of 24 specifications, 20 of 20 redraws | same call (asserted) |
+| SF5 | adjustment of the partial changes | P7 numeracy (missing flagged) and free school meals | unadjusted | B | same call (asserted) |
+| SF6 | the level change of pupils no partial change reached | booked to no one | booked to the framework | B | same call (asserted) |
+| SF7 | the bases' reach | Base_Referrals above 0 on the roll | pupils resolved from the sign-ins | identical set | same call (sets equal, asserted) |
+| SF8 | the shared posts' reach | the classes in register section 5 | classes with two codes on the timetable (85) | B (E 2,155) | same call (asserted) |
+| SF9 | at 36 of 60 | 36 or more | more than 36 | headline only, no call | the prompt's "at 36 of 60 or more" |
+| SF10 | the mean June mark | over the pupils who sat | absent pupils at nil | headline only, no call | the remit's population; an absent pupil has no mark (asserted) |
+| SF11 | the comparison | June 2025 on the same papers | another session or outside data | none in the pack | the remit: "the same papers as June 2025" |
+
+Ask forks, each asserted in `checks.py`: AF1 "its pupils" is the pupil's own school (the prompt's "its S1 to S3
+pupils"); AF2 a missed lesson is each lesson signed in for any part of (guidance); AF3 no time out is back at the next
+bell (guidance); AF4 no S1 to S3 sign-out sits on a bell, so no zero-length overlap reads two ways; AF5 the class on
+the day: the roll (an extract dated 12 June 2026) and the platform's class_code both hold the class from January, and the
+autumn class is rebuilt from the classmates who shared each autumn week's review set, unique for every pupil (0 wrong of
+4,631, least group purity 0.78); AF6 every typed S1 to S3 name resolves, the one repeated name by the base's
+own schools; AF7 a teacher is a person: a job-share post's two holders are two teachers, a re-keyed code is the same
+teacher, a leaver on the establishment and the starter after them are two, and a name no 2025-26 holder carries (three
+surnames changed over Christmas, three autumn codes still carrying a summer leaver's name) is the holder who took all its
+classes in January.
 
 ## Ladder
 
-Stage 2.
+| Rung | Route | Files | Call (20 redraws) |
+|---|---|---|---|
+| 0 | the field's multilevel model of June marks with prior attainment, deprivation, school, class and each change's reach | rolls, marks, register | framework, 20 of 20 |
+| 1 | first look: before and after on each reach, segmentations, rewritten units fell most | plus the paper map | framework, 20 of 20 |
+| 2 | careful pooled model with engagement and accuracy by session | plus both exports | framework, 20 of 20 |
+| 3 | homework accuracy by session on June totals (three variants) | the same | framework, 20 of 20 |
+| 4 | review volume by unit; Corvella review share by unit within pupil | the same | framework, 20 of 20 |
+| 5 (decisive) | within each pupil, first-practice weak units against other units, June 2026 against June 2025 | the same | switch, 20 of 20, margin 2.06 or more |
+
+Pricing sequence: the cheapest licensed member is rung 0, then the cheap routes of rungs 1 to 4 (nine readers in all);
+on the clean truth none of the nine lands the switch on the shipped seed (`checks.py`, Gate F count 0 of 9) or in any of
+20 redraws. The literal remit ties the framework and the switch, so no cheap route lands the call through the text.
 
 ## Closure table
 
-Stage 2.
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | S1 to S3 pupils who sat a June 2026 paper, reached by the change | filed (remit); C1 for the asks' S4 to S6 rows (no roll entry) |
+| 2 Unit of account | marks, totalled over pupils | filed (remit), SF1 |
+| 3 Attribution window | each change from its filed date; the June 2026 papers | filed (register dates) |
+| 4 As-of dating | the roll is an extract dated 12 June 2026, its class the class at that date; the autumn class rebuilt from shared review sets | filed (the extract's date), AF5 asserted |
+| 5 Version basis | the same papers both years; unit codes in both vintages on the map | filed (remit, map) |
+| 6 Denominator | sitting pupils | filed (remit), SF10 |
+| 7 Weighting | pupil totals, no weights | C1 (marks summed) |
+| 8 Window length | one session each side | filed (remit) |
+| 9 Boundary inclusivity | 36 or more; sign-outs never on a bell | filed (prompt), C1 (AF4) |
+| 10 Rounding path | figures rounded once at the end | filed (prompt's last sentence) |
+| 11 Tie-break | none needed: margin 2.06 or more | C4 |
+| 12 Maturity and censoring | none: a closed session | C1 |
+| 13 Order of operations | adjustment before differencing; resolution before counting | C1 (same call, SF5) |
+| 14 Row order | none of the figures depends on file order | C1 |
+| 15 Duplicate resolution | identical double scans once; a pupil and period once | filed (guidance: a lesson), C1 |
+| 16 Identity normalisation | SCN, MIS reference and Glow ID through the rolls; staff names to holders | the systems' own keys, AF6, AF7 |
+| 17 Netting against gross | costs are losses; no offsetting across changes | filed (remit) |
+| 18 Dimensional units | marks of 60, percentages, counts | units in the data |
+| 19 Code and status semantics | Attendance P and A; Status Present and Absent; task kinds | the files' own codes |
+| 20 Integerisation | lessons and classes are counts | C1 by construction |
+| 21 Clause scope | the remit covers the five changes in the register | filed (register) |
+| 22 Forward window contents | none: the call is retrospective (reason in the Draw) | not applicable, stated |
 
 ## Literal reader
 
-Stage 2.
+Executed word for word, the remit asks for each change's total marks lost across the sitting pupils it reached. On each
+change's reach (before and after, difference in differences, P7-adjusted), the week, the bases and the shared posts get
+their own figures and the framework and the switch tie at the whole fall, in 20 of 20; the text alone gives no unique
+answer and gives no wrong one. The design forces the method: two changes with the same date and the same reach can only
+be separated inside the pupils they reached, and every within-pupil construction the records support (24
+specifications) names the switch. Every write-up step recomputes from the shipped files (`verify.py`, `figures.json`).
 
 ## Oracles
 
-Stage 2.
+None ranks the changes. The register's remit files the WHAT and the dates and reaches; the paper map ties questions to
+units in both vintages; the guidance files what a missed lesson is; Base_Referrals equals each pupil's sign-in events
+(SF7), a consistency both readings share. No total, control or name agreement ties only under the golden: the platform's class_code
+agrees with the roll on the wrong class for every moved pupil, and the staff code sheets agree with themselves.
 
 ## Ask sheet
 
-Stage 2.
+Shape 18 criteria: the call 1, why each other change cost fewer 4, the headline means and shares 4, the chart's bars
+and labels 3, the files 2, the two asks 16 (eight schools each): 30. The headline means and shares and the school chart
+sit with the call in the recommendation and critical-components weight (about 38), never in the ask weight (about 55),
+which the sixteen ask figures carry alone.
+
+| Ask | Figures | Primary device | Second device | Hazards |
+|---|---|---|---|---|
+| Maths lessons S1 to S3 pupils missed in a base, by school | 8 whole numbers | D2, a reconstruction across grains: the roll and the platform's class_code both hold each pupil's class as at June; 84 base-referred pupils changed set in January, and their autumn class shows only as the classmates who were set the same review each autumn week | D7: typed names without SCN, one campus base for two schools | D8 bells per school and the four-period Friday; D4 no time out; D5 S4 to S6 rows; D1 double scans |
+| S1 to S3 maths classes with more than one teacher, by school | 8 whole numbers | D7: a different name on a timetable code is a new teacher only where the establishment holds the earlier name (the Christmas replacement), never for the three surnames changed over Christmas or the three autumn codes still carrying a summer leaver's name | D6: job-share posts on one code with two holders on the establishment; three schools re-keyed in January with names in another style | D2 the replacement on the same code at Ardcorrie |
+
+| Ask | Cracker route (careful solver: the hygiene battery and every filed rule) | Figures kept | Verdict |
+|---|---|---|---|
+| Lessons | SCN and typed names council-wide, own school, bells, timetable valid that day, next bell, each pupil and period once, the class the roll and the platform give | 1 of 8 | miss |
+| Classes | codes to names on both sheets, names normalised to initial and surname, persons per class | 2 of 8 | miss |
+
+Full includer (every device a record or the battery surfaces, each with its natural repair, plus job-shares from the
+establishment): lessons 1 of 8, classes 2 of 8, 3 of 16 ask figures (18.8 per cent); it keeps the class the roll and
+the platform agree on, and reads a different name on a code as a different teacher, the repair the Christmas
+replacement teaches. No-repair 0 of 8 and 0 of 8; first period only 0 of 8; exact names 1 of 8.
+
+Pair ceiling: 38.8 with one response on the call and one off (both on the full includer's asks: C 55.3, S 22.3); 55.3
+with both on the call, each keeping 3 of 16.
+Mirror leakage: 12.5 per cent of ask weight (2 of 16 figures: the careful lesson route and exact names).
+Measured by: generator/ceiling.py, run by checks.py on the cut pack at every build.
 
 ## Tried and rejected
 
@@ -562,3 +684,20 @@ Stage 2.
   was cut to 0.012 logit; then the pupil-level homework-accuracy-by-year interaction (z 1.3 to 5.3) proved to be the
   switch's shadow (about 0 with the switch off), so the framework's rewritten units now carry a real attainment gradient,
   which makes the shadow read as the framework's story.
+- Recallo, the old platform's name at the draw, was found as a real spaced-repetition project and renamed Corvella in
+  the world, the pack and the card before any file shipped.
+- Per-change costs graded as figures, and the runner-up: the golden family's runner-up moves between the framework and
+  the asymmetric week across redraws and the per-change figures spread with the weak-unit definition, so the call, the
+  reasons and literal figures are graded and the per-change costs stay the report's estimates, never asked for.
+- The class on the day of a base visit read from the latest Mathsbridge work: on the first days of the spring term it
+  read the autumn class for pupils whose first spring task came later (one lesson at Ardcorrie); the first spring review
+  now goes out on the term's first day, so both readings converge (AF5) at the cost of the full includer's one miss.
+- Pupils moved between schools mid-session as an ask device: whose pupil a lesson belongs to at the time reads two
+  ways, so it was not built.
+- The base kiosk's Referred_From column: it handed the full includer the first period of a moved pupil's visit (lessons
+  5 of 8, 7 of 16 overall), so the export carries no subject; the guidance no longer says the base records it.
+- The pupil's class on the day read from Mathsbridge's class codes by date: a stated record performed the reconstruction
+  and the full includer read it (lessons 8 of 8, 13 of 16 overall); the export now carries each pupil's current class
+  on every row, as platform exports do, and the autumn class lives only in which classmates shared each review set.
+- Per-change cost totals in the report and the submission: they spread with the weak-unit definition, so the report and
+  the submission give the ranking and the reasons; the report's one weak-unit figure pair carries its specification.

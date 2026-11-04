@@ -1,0 +1,144 @@
+{
+ "ask_classes": {
+  "Ardcorrie Academy": 6,
+  "Balmorran High School": 5,
+  "Glenwhinnie Academy": 9,
+  "Kilbraith Academy": 7,
+  "Lochbrannie High School": 3,
+  "Muirlees High School": 12,
+  "St Moluag's High School": 3,
+  "Torranbrae High School": 5
+ },
+ "ask_lessons": {
+  "Ardcorrie Academy": 24,
+  "Balmorran High School": 20,
+  "Glenwhinnie Academy": 22,
+  "Kilbraith Academy": 19,
+  "Lochbrannie High School": 15,
+  "Muirlees High School": 27,
+  "St Moluag's High School": 24,
+  "Torranbrae High School": 18
+ },
+ "ask_lessons_unresolved": 0,
+ "by_school": {
+  "Ardcorrie Academy": {
+   "2025": 32.145695364238414,
+   "2026": 30.252613240418118
+  },
+  "Balmorran High School": {
+   "2025": 30.426573426573427,
+   "2026": 28.273069679849343
+  },
+  "Glenwhinnie Academy": {
+   "2025": 33.26851851851852,
+   "2026": 31.605454545454545
+  },
+  "Kilbraith Academy": {
+   "2025": 29.586345381526105,
+   "2026": 28.24693520140105
+  },
+  "Lochbrannie High School": {
+   "2025": 34.86796536796537,
+   "2026": 32.231536926147704
+  },
+  "Muirlees High School": {
+   "2025": 33.704974271012006,
+   "2026": 31.185897435897434
+  },
+  "St Moluag's High School": {
+   "2025": 32.310536044362294,
+   "2026": 30.50414937759336
+  },
+  "Torranbrae High School": {
+   "2025": 32.33882783882784,
+   "2026": 30.234401349072513
+  }
+ },
+ "call": "B",
+ "ceiling": {
+  "classes|cracker": 2,
+  "classes|full_includer": 2,
+  "classes|names_exact": 1,
+  "classes|no_repair": 0,
+  "lessons|cracker": 1,
+  "lessons|cracker_base_scope": 1,
+  "lessons|first_period": 0,
+  "lessons|full_includer": 1,
+  "lessons|no_repair": 0
+ },
+ "costs": {
+  "A": 1485.0855959502996,
+  "B": 5220.504767884809,
+  "C": 1683.9068644424042,
+  "D": 1012.8926292119207,
+  "E": 698.1020846820965
+ },
+ "extra": {
+  "exA": -0.016776836827274058,
+  "exB_2025": -0.1511110559709448,
+  "exB_2026": -0.2049416869054847,
+  "n_rewritten_cells": 17704
+ },
+ "head": {
+  "2025": {
+   "mean": 32.30901978831109,
+   "sat": 4346,
+   "secure": 1832,
+   "share": 42.153704555913485
+  },
+  "2026": {
+   "mean": 30.305015815634885,
+   "sat": 4426,
+   "secure": 1587,
+   "share": 35.85630366018979
+  }
+ },
+ "pair": {
+  "careful": {
+   "C": 55.3125,
+   "Lc": 0.1875,
+   "Ls": 0.1875,
+   "S": 22.3125,
+   "pair": 38.8125
+  },
+  "full_includer": {
+   "C": 55.3125,
+   "Lc": 0.1875,
+   "Ls": 0.1875,
+   "S": 22.3125,
+   "pair": 38.8125
+  }
+ },
+ "pair_both_on_call": 55.3125,
+ "paper": {
+  "max_marks": 60,
+  "secure_mark": 36
+ },
+ "reach": {
+  "A": 17704,
+  "B": 4426,
+  "C": 1491,
+  "D": 241,
+  "E": 587
+ },
+ "runner": "C",
+ "screens20": {
+  "careful_wrong": 20,
+  "construct_i_wrong": 20,
+  "construct_ii_wrong": 20,
+  "family_B": 20,
+  "first_look_wrong": 20,
+  "golden_B": 20,
+  "interaction_wrong": 20,
+  "literal_wrong": 20,
+  "margin_15": 20.0,
+  "margin_med": 3.339094153783437,
+  "margin_min": 2.0600092905700254,
+  "per_pupil_B": 0,
+  "runner_A": 14,
+  "runs": 20,
+  "truth_B": 20,
+  "z_max": 1.0661624995701198,
+  "z_min": -0.706788484782652
+ }
+}

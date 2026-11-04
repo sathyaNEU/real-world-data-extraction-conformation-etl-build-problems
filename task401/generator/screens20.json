@@ -1,0 +1,19 @@
+{
+ "runs": 20,
+ "truth_B": 20,
+ "golden_B": 20,
+ "margin_min": 2.0600092905700254,
+ "margin_med": 3.339094153783437,
+ "margin_15": 20.0,
+ "family_B": 20,
+ "runner_A": 14,
+ "first_look_wrong": 20,
+ "careful_wrong": 20,
+ "interaction_wrong": 20,
+ "z_min": -0.706788484782652,
+ "z_max": 1.0661624995701198,
+ "construct_i_wrong": 20,
+ "construct_ii_wrong": 20,
+ "literal_wrong": 20,
+ "per_pupil_B": 0
+}

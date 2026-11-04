@@ -1,44 +1,58 @@
 {
   "task": "task401",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "education-learning-sciences/multilevel-classroom-school-research",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-11-04",
+  "stage": 4,
+  "stage_name": "check: the leak reader and the determinism judge",
+  "updated": "2026-11-04T09:35:00Z",
   "seed": "RC07 (a supplier's January imbalance bill); the seed's world could not carry an honest unbanned draw. Architectures 1 and 2 died at stage 2, 3 was spent at stage 4 round 2, 4 and 5 at stage 4 round 1. Architecture 6 re-roots in Education and Learning Sciences: Strathcorrie Council's S1 to S3 mathematics and its 2025-26 changes.",
-  "stump": "A competent analyst models each pupil's June mark on P7 attainment, deprivation, school and class, reads each change's cost off the pupils and units it reached, finds the framework's rewritten units down most and homework completion and review volume up on Mathsbridge, and files the new mathematics framework as the change that cost the most marks, because they never set each pupil's own first-homework results against that pupil's June items unit by unit, where the units each pupil got most wrong fell several points further than the rest once review stopped following their errors.",
+  "stump": "A competent analyst models each pupil's June mark on P7 attainment, deprivation, school and class, reads each change's cost off the pupils and units it reached, and files the new mathematics framework, never setting each pupil's first-homework results against that pupil's June items unit by unit, where the units each pupil got most wrong fell further once review stopped following their errors (Corvella to Mathsbridge).",
   "architecture": 6,
   "loops": 0,
   "go_no_go": {
-    "redraws": 20,
-    "harness": "scratchpad/t401/a6/proto/proto4.py (world) and proto5.py (screens)",
-    "truth": "the platform switch is the largest true cost in 20 of 20",
-    "lever_vs_rival_estimates": "golden switch over the largest rival golden-method estimate 1.54x lowest, 2.59x median, 1.5x or more in 20 of 20",
-    "golden_method_holds": "24 specifications (six weak-unit definitions x level booked to the framework or to no one x KS2 adjustment) all name the switch in 20 of 20",
-    "first_look": "books the framework in 20 of 20 (both whole-system changes take the whole fall; rewritten units fell most; the switch's engagement rose)",
-    "careful_reader": "books the framework in 20 of 20; its homework-accuracy-by-year interaction is the switch's shadow (z 1.8 to 5.8 on, about 0 off) and reads as the framework's attainment gradient",
-    "literal": "reach before-and-after, reach difference in differences and the P7-adjusted version tie the two whole-system changes and never name the switch alone, 20 of 20"
+    "runs": 20,
+    "source": "generator/screens.py on the generator world, generator/screens20.json; shipped seed 18 re-screened by checks.py",
+    "truth_B": "20/20",
+    "golden_B": "20/20",
+    "margin_min": 2.06,
+    "margin_median": 3.34,
+    "family_24_specs_B": "20/20",
+    "first_look_wrong": "20/20",
+    "careful_wrong": "20/20",
+    "interaction_wrong": "20/20 (z -0.7 to 1.1)",
+    "constructing_i_wrong": "20/20",
+    "constructing_ii_wrong": "20/20",
+    "literal_wrong": "20/20 (ties A and B)",
+    "per_pupil_reading_names_B": "0/20 (bases), closed by the remit",
+    "gate_f_cheap_routes_landing_B_shipped_seed": "0 of 9"
   },
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "checks": 61,
+    "fail": 0,
+    "warn": 0,
+    "date": "2026-11-04"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (register carries the changes own names; school names beside numbers in six data files, no ranking)",
+    "reader": "not yet run",
+    "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/briefs/task401_leak_reader_brief.md",
+    "reader_copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/leak-task401/"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task403 at 0.07 by driver (guard check on the draft card)"
+    "heart": "exit 0, WARN only (strategy_risk, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.question_form); nearest 0.06 task150 ledger row",
+    "surface": "exit 0, no promoted pair; persona in pack Aimee Williams (the card persona)",
+    "sibling_cards": "task210, task402, task403 read from their branches for the run, restored after"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "status": "not yet run",
+    "brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/briefs/task401_determinism_judge_brief.md",
+    "copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/determinism-check-task401-a6r1/",
+    "graded_blocks": "graded_blocks.md, opened only after derivation.md"
   },
   "returned": [],
-  "resume": "Stage 2 (design): write the readability screen, semantic fork table, ladder with the pricing sequence, closure table, literal reader, oracles and ask sheet; design the asks and their devices (supplemental-stumping) and finalise prompt.txt; leave stage 2 only on precut exit 0 with every screen asserted in checks.py on the shipped seed.",
+  "resume": "Stage 4 (check): rebuild with `python3 task401/generator/build.py` (byte-identical, target.zip sha256 e002e59b...), then spawn together in the background the leak reader (briefs/task401_leak_reader_brief.md, general-purpose, sonnet, medium) and the determinism judge (briefs/task401_determinism_judge_brief.md, medium), each on its own fresh copy of prompt.txt and target/ verified against target.zip; rule the stump-vocabulary sweep's line in the note (the register's words framework, platform, register, homework and rewritten are the changes' own names); fix every finding from both in one generator pass, re-judge once on FIX_NOW; then stage 5 ship: every gate re-run on the final cut, target.zip and golden/ force-added, ledger row, card answer current, commit SHIPPED (task401).",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -49,5 +63,22 @@
   "card": {
     "registered": "2026-11-04T08:08:49Z",
     "check_after_register": "WARN after register (2026-11-04): three_rules.strategy_risk, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.question_form, each answered in the design note's Draw; no BLOCK; nearest driver task403 at 0.07; shell which | its | csv+docx (provisional prompt)"
+  },
+  "asks": {
+    "measured_by": "generator/ceiling.py on the cut pack",
+    "full_includer": "3 of 16 (lessons 1 of 8, classes 2 of 8)",
+    "cracker": "lessons 1 of 8 miss, classes 2 of 8 miss",
+    "no_repair": "0 of 8 and 0 of 8",
+    "mirror": "2 of 16 (12.5 per cent)",
+    "pair_one_on_one_off": 38.8,
+    "pair_both_on_call": 55.3
+  },
+  "gates_stage3": {
+    "checks_py": "0 failed",
+    "verify": "PASS",
+    "byte_identical_builds": "two, every artifact equal",
+    "figures_check": "PASS, 38 figures",
+    "voice_check": "PASS",
+    "target_zip_sha256": "e002e59bb89ed608e6f21ac2fefc771d63f99f85bb25b71929c1598849deae9b"
   }
 }

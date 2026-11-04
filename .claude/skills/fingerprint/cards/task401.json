@@ -11,8 +11,8 @@
   "shape": "18",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "The homework platform switch of August 2025 cost the most marks in the June 2026 S1 to S3 assessment; the new maths framework is second.",
-  "answer_source": "submission.md block 1; generator/figures.json (draft at the draw, final at ship)",
+  "answer": "The homework platform switch of August 2025 (Mathsbridge in place of Corvella) cost the most marks in the June 2026 S1 to S3 common papers.",
+  "answer_source": "golden/maths_change_review.docx; submission.md section 1",
   "gap": [
     "objective",
     "population"
@@ -50,10 +50,10 @@
   "role_family": "research_desk",
   "scoring_unit": "index points",
   "spine": {
-    "file": "june_maths_item_marks_2025_2026.parquet",
-    "rows": 330000,
-    "entity": "one pupil's marks on one item of a June paper",
-    "grain": "pupil x item x year",
+    "file": "june_common_paper_marks_2026.csv",
+    "rows": 163476,
+    "entity": "one pupil's mark on one question of a June 2026 paper",
+    "grain": "pupil x question",
     "source": "synthetic"
   },
   "forum": "council_or_assembly",
@@ -74,7 +74,7 @@
   },
   "deliverables": [
     "maths_change_review.docx",
-    "school_year_marks.csv"
+    "support_and_staffing_by_school.csv"
   ],
   "opening_move": "question-first",
   "question_form": "which",
@@ -90,7 +90,8 @@
     "task482": "task482 splits one shared meter's fuel among products by each process's own fuel response (mass melted against hours fired); here nothing is metered or apportioned: the decisive quantity is each learner's contrast between the components it first got wrong and its other components, under two review rules in two years.",
     "task65": "task65 rebuilds entities from child records by each child's own location so that regrouping moves a capped sum; here no entity is reconstituted and no cap binds: the quantity is a within-learner retention contrast across components between two years.",
     "task84": "task84 groups an entity's concurrently live units on a composite key to price the copies that compete; here nothing competes for anything: the quantity is the retention lost on each learner's own weakest components once review stopped following them.",
-    "task174": "task174 forecasts gains per repetition within a session from a stopping rule; here the call is a root cause booked across five changes, and the quantity is each learner's cross-component contrast between two years under two review rules."
+    "task174": "task174 forecasts gains per repetition within a session from a stopping rule; here the call is a root cause booked across five changes, and the quantity is each learner's cross-component contrast between two years under two review rules.",
+    "task467": "task467 separates a temporary change from a permanent one begun the same day by re-weighting a comparison series to the treated series' component mix; here there is no comparison series and no mix: both changes reach every learner and every component, and the separation is which components each learner's own early errors marked, a selection per learner read across two sessions."
   },
   "notes": "Strategy grain_or_unit (F2: the grain that carries the cost is pupil by unit, not the pupil; redrawn from decomposition_attribution when task210 registered with it in the live window; the honest family for a move whose whole content is the unit of analysis), gap objective then population (the within-learner weak components are the population the cost sits on); generators G2 (the grain that carries the cost is pupil by unit) then G14 (the pooled homework-to-June relation does not hold on each pupil's weak units). Gate G decomposition_attribution. Calibration none. Shape 18: five changes against evidence lines. Context artifact register: the education service's change register for S1 to S3 mathematics, whose remit section files the estimand and names no method (redrawn from filed_standard when task210 registered with it). Forum council_or_assembly (the education committee recommends to full council), forcing event budget_or_appropriation (the 2027-28 budget, set in February 2027), org family local_government.",
   "lineage": [
