@@ -1,0 +1,90 @@
+{
+  "task": "task210",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Seed AD33 (FCR-D battery offer at a data centre) moved: its world sits only in energy-systems-utilities/grid-reliability-outage-analysis, the most crowded anomaly-detection cell on file (six cards), and its hour-boundary frequency deviations are task197's confounder; the number keeps its objective and moves to physical-environmental-sciences/environmental-monitoring-exceedance.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a water and sewerage company's wastewater compliance team deciding which sewage pumping station's storm overflow, if any, it self-reports to the Environment Agency for discharging in 2026 before the station was passing forward the flow its permit sets, at stations with no flow meter on the rising main",
+  "objective": "anomaly-detection",
+  "shape": "10",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G7"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "Reading every permit condition, register entry and telemetry field correctly, a strong analyst takes the flow each station passed forward during its 2026 spills as the rated duty of the pump the telemetry shows running, finds every station at or above its permitted pass forward flow and self-reports no overflow (or screens dry-day spills and names the groundwater-fed station), and both answers are wrong.",
+  "domain_test": "The deciding quantity is the flow each station was passing forward while its overflow spilled, set against the permit's pass forward condition the way storm overflow compliance is tested, and for an unmetered station it has to be measured from the station's own wet well between its pump control levels; swapped into another field's nouns there is no storage filling and drawing down between control levels to measure a delivered rate from.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:delivered-pump-rate-from-wet-well-fill-and-draw-against-rated-duty",
+  "layer1": [
+    "telemetry clock in UTC beside overflow monitor logs in UK local time",
+    "overflow monitor resets that split one spill into several records",
+    "station identifiers that differ between the consents register, telemetry outstations and overflow monitors",
+    "pump duties held in litres per second at some stations and cubic metres per hour at others",
+    "radar rainfall in UTC fifteen-minute steps"
+  ],
+  "stakeholder_role": "the company's wastewater environmental compliance manager",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "telemetry/sps_telemetry_2026.sqlite",
+    "rows": 0,
+    "entity": "one pump start or stop event logged by a pumping station's telemetry outstation",
+    "grain": "station x pump x event",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "England",
+    "currency": "GBP",
+    "org_type": "water and sewerage company",
+    "invented_names": [
+      "Wendle Water"
+    ],
+    "people": [
+      "Harriet Kirk",
+      "Maurice Russell"
+    ]
+  },
+  "deliverables": [
+    "overflow_self_report_2026.docx",
+    "edm_return_lines_2026.csv",
+    "pass_forward_against_permit_2026.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "The decisive quantity is whether a unit had reached a filed capacity when each release began, and that capacity is read as the unit's rated output times its running state; a unit throttled downstream of its rating keeps its running state while delivering far less, which only a volume balance on its own storage between its control levels, timed from its own starts and stops, shows, so every screen built on the external driver or on the rated output clears the unit that released before reaching the capacity.",
+  "driver_concrete": "Each 2026 storm overflow spill breaches its permit only if it began while the pumping station was passing forward less than its permitted flow, and at unmetered stations the pass forward is read as the running pump's rated duty; one station's rising main is part-blocked, so its pumps run but deliver about three fifths of their duty, which shows only in its wet well's fill and draw times between the duty start and stop levels, while the dry-day screen names the groundwater-fed station and the rated-duty check names none.",
+  "stump": "A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the pump the telemetry shows running and self-reports no overflow (or counts dry-day spills and reports the groundwater-fed station), because a pump on a part-blocked rising main keeps running while delivering only about three fifths of its duty, which shows only in its own wet well's fill and draw times between the control levels.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task464": "task464 rebuilds the flow through each part of a branching line as the net of the meters beyond it to price a loss that grows with its square; this build measures a pump's delivered rate from its own wet well's fill and draw times to test whether a permitted pass forward flow was reached when an overflow spilled.",
+    "task121": "task121's lineage follows a reference through a second party's report to an owning account; this build measures a delivered rate from a storage level's control cycles.",
+    "task310": "task310 rebuilds the output a send-out limit discarded from comparable unlimited sites under the same sky; this build measures each station's own delivered pumping rate from its wet well cycles and tests a permit condition on it.",
+    "task192": "task192's architecture 4 screen A4.5 (a storm overflow whose throttle part-blocked, read from the rain before each spill's onset) died because its golden was a member of the rainfall family the easy route belongs to; here no rainfall measure enters the decisive step, which reads the station's delivered pumping rate from its own pump cycle times."
+  },
+  "lineage": [],
+  "notes": "Probe card checked first with generators G8 (reachability) and gap objective: G8 repeated task398 and task276's lineage on the structural tests, and G8 is the wrong label anyway (the pass forward condition is attained or not, read from the record of what the pump did against what the register says it does, which is G3 record against operation). Strategy binding_constraint is the honest family: the permit's capacity condition decides which spills are lawful. The three families the honest neighbours of this mechanism would have taken (causal_design, population_selection, decomposition_attribution) are all in the current ban window and none of them describes a capacity test.",
+  "registered": "2026-11-04T11:53:28Z"
+}

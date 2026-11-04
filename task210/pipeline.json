@@ -1,0 +1,41 @@
+{
+ "task": "task210",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "environmental-monitoring-exceedance",
+ "objective": "anomaly-detection",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-04",
+ "seed": "AD33 (analytical_tasks/02_anomaly_detection/AD33_fcr-offer-boundary-ramp-conditioned-throughput.md): the objective kept, the world, decision and quantity moved (the battery's only anomaly-detection cell is the most crowded on file and its hour-boundary mechanism is task197's confounder)",
+ "stump": "A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the pump the telemetry shows running, finds every station at or above its permitted flow and self-reports no overflow (or, screening dry-day spills, reports the groundwater-fed Wold station), because Gallowfen's pumps, on a part-blocked rising main, keep running while delivering about three fifths of their duty, which shows only in Gallowfen's own wet well fill and draw times between the duty pump's control levels.",
+ "architecture": 1,
+ "loops": 0,
+ "card": ".claude/skills/fingerprint/cards/task210.json, registered 2026-11-04T11:53:28Z at WARN (overuse.objective fixed by the number; repeat.geography against task313 answered in the design note)",
+ "clean_truth": "scratchpad prototype proto2.py/proto3.py (14 stations, 2026 at one minute with event-exact pump crossings): the cycle-volume estimate of each pump's delivered rate recovers it within 0.1 l/s under three variants (previous off period, mean of the two, night cycles only); the restricted station delivers 0.58 of duty against a pass forward set at 0.88 of duty, every other station delivers 1.12 to 1.31 times its pass forward; the rated-duty check names no station, the dry-day screen names the groundwater-fed station, the 12/24 spill count names the high spiller",
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "0.07 task276 lineage"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: the design note's remaining sections (default path, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet), the prompt, precut.py",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
