@@ -226,8 +226,31 @@ def main():
     # ------------------------------------------------------------------ the fork table rows
     ok('SF1 planned admissions (11 to 13) are not readmissions; including them files the same call',
        same(V.call(methods=('11', '12', '13', '21', '22', '28', '81')), g))
-    ok('SF2 the 28-day window on the discharge instant against whole calendar days: same call',
+    ok('SF2 the 28-day window on the discharge instant against 27 or 29 days: same call',
        same(V.call(window=dt.timedelta(days=29)), g) and same(V.call(window=dt.timedelta(days=27)), g))
+    a_el, b_el = V.ask_a(), V.ask_b()
+    for mode in ('incl', 'excl'):
+        c_cal = V.call(calendar=mode)
+        ok('SF2 whole calendar days from the discharge date (day 28 %s) against 28 days from the discharge instant: the '
+           'posts, the total and every Ask A and Ask B figure are identical' % ('in' if mode == 'incl' else 'out'),
+           c_cal['posts'] == g['posts'] and abs(c_cal['total'] - g['total']) < 1e-9 and V.ask_a(calendar=mode) == a_el
+           and V.ask_b(calendar=mode) == b_el, '%.1f' % c_cal['total'])
+    raw_ = V.raw(TGT)
+    disch_of = {}
+    for b in babies:
+        if b['nhs']:
+            disch_of[b['nhs']] = [b['disch']]
+    for b in babies:
+        if b['mother']:
+            disch_of.setdefault(b['mother'], []).append(b['disch'])
+    on28 = 0
+    for r in raw_['adm']:
+        t = dt.datetime.strptime(r['admitted'], '%Y-%m-%d %H:%M')
+        on28 += any(t.date() == d.date() + dt.timedelta(days=28) for d in disch_of.get(r['nhs_number'], []))
+    for c in raw_['contacts']:
+        t = dt.datetime.strptime(c['contact_datetime'], '%Y-%m-%d %H:%M')
+        on28 += any(t.date() == d.date() + dt.timedelta(days=28) for d in disch_of.get(c['nhs_number'], []))
+    ok('SF2 no admission or contact row falls on the 28th calendar day after its baby\'s discharge date', on28 == 0, str(on28))
     ok('SF3 twins are eligible (specification 3); leaving them out files the same call', same(V.call(twins=False), g))
     ok('SF4 the planning basis on discharge date against birth date: same call', same(V.call(window_on='birth'), g))
     ok('SF5 a baby counts once (specification 5); counting admissions files the same call', same(V.call(per_admission=True), g))
@@ -320,8 +343,11 @@ def main():
         a1 = round((ro_ / no_) / (rc_ / nc_), 2)
         a2 = round(round(100 * ro_ / no_, 1) / round(100 * rc_ / nc_, 1), 2)
         agree += a1 == a2
-    ok('SF21 Ask A risk ratio as the ratio of the arms\' risks (counts), not of rates already rounded to one decimal '
-       '(that reading moves some cells; the rounding sentence rounds the reported figures)', all(F['ask_a'][r]['risk_ratio'] == round(F['exact']['ask_a'][r]['risk_ratio'], 2) for r in W.REASONS), '%d of 6 cells agree on the rounded-rate path' % agree)
+    prompt = open(os.path.join(TASK, 'prompt.txt')).read()
+    ok('SF21 Ask A risk ratio worked from the counts and rounded only at the end, as the prompt files it (a ratio of rates '
+       'already rounded to one decimal would move some cells)', 'Work every figure from the counts and round only at the end' in prompt
+       and all(F['ask_a'][r]['risk_ratio'] == round(F['exact']['ask_a'][r]['risk_ratio'], 2) for r in W.REASONS),
+       '%d of 6 cells agree on the rounded-rate path' % agree)
 
     # ------------------------------------------------------------------ every graded figure clear of its rounding line
     def clear(v, unit, share=0.01):

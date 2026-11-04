@@ -195,6 +195,7 @@ def contacts(B):
             evs.append(('TEL', dt.datetime(c.year, c.month, c.day, int(rng.integers(9, 18)), int(rng.integers(0, 60)))))
         nurse = int(rng.integers(1, 10))                # the baby's named outreach nurse
         for kind, t in sorted(evs, key=lambda e: e[1]):
+            t = W.clear_day28(t, b['disch'])          # clear of the 28th calendar day (see world.clear_day28)
             if t > stop and t <= end:
                 continue                               # the baby was back in hospital
             cid += int(rng.integers(1, 5))

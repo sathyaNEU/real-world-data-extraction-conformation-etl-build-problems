@@ -191,7 +191,7 @@ dedicated organ); the reflex row comes from the field's vocabulary for carrying 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | "readmission" | emergency admission (21, 22, 28; 81 inside a stay) | planned day cases (11 to 13) in | same call (asserted) | spec 5, emergency admission |
-| SF2 | "within 28 days" | after discharge, to discharge plus 28 days | 27 or 29 whole days | same call (asserted) | spec 5; convergence |
+| SF2 | "within 28 days", "in the 28 days after discharge" | after discharge, to discharge plus 28 days | 27 or 29 days; whole calendar days from the discharge date, day 28 in or out | same call and every ask figure (asserted; no admission or contact sits on the 28th calendar day) | spec 5; convergence |
 | SF3 | eligible babies | the flag on the discharge record, twins in | twins out, as in the trial | same call (asserted) | spec 3, twins are eligible |
 | SF4 | the planning basis | discharged home 1 Oct 2025 to 30 Sep 2026 | born in that window | same call (asserted) | spec 8 |
 | SF5 | a baby counts once | babies readmitted | admissions | same call (asserted) | spec 5 |
@@ -210,7 +210,7 @@ dedicated organ); the reflex row comes from the field's vocabulary for carrying 
 | SF18 | Ask B, visits made and calls that reached the family | completed contacts | NA and TNA rows, or the short TEL and HV rows filed before 6 January 2025, counted | Ask B moves (asserted) | the asking sentence; the code list's in_use_from; every cut in the minute gap gives the same figures (asserted) |
 | SF19 | Ask B, calls under a parent's number | counted for the baby | dropped | Ask B moves (asserted) | the asking sentence: a call to the mother reached the family |
 | SF20 | Ask B, the window | contacts in the 28 days after discharge | later calls kept | Ask B moves (asserted) | the asking sentence |
-| SF21 | Ask A, the risk ratio | the ratio of the arms' readmitted shares, from the counts | a ratio of rates already rounded to one decimal | four of six cells move | the rounding sentence rounds the figures reported, not their inputs (asserted) |
+| SF21 | Ask A, the risk ratio | the ratio of the arms' readmitted shares, from the counts | a ratio of rates already rounded to one decimal | four of six cells move | the prompt: work every figure from the counts and round only at the end (asserted) |
 
 ## Ladder
 
@@ -244,8 +244,8 @@ Every rung priced on the cut pack (`checks.py` R3a and R3b; figures printed ther
 | 6 Denominator | babies per arm in the trial; none in the allocation | the report's analysed counts; SF9 |
 | 7 Weighting | none; shares of readmissions avoided | spec 7 |
 | 8 Window length | 28 days; the planning year | spec 5 and 8 |
-| 9 Boundary inclusivity | discharge home 1 Oct 2025 to 30 Sep 2026 inclusive; readmission after discharge to day 28 | spec 8; SF2 asserted |
-| 10 Rounding path | posts by largest remainders; the total once to the nearest 25 | spec 7; SF12, SF13 |
+| 9 Boundary inclusivity | discharge home 1 Oct 2025 to 30 Sep 2026 inclusive; readmission and contacts after discharge to day 28 | spec 8; SF2 asserted under elapsed and calendar-day readings |
+| 10 Rounding path | posts by largest remainders; the total once to the nearest 25; ask figures from the counts, rounded at the end | spec 7; the prompt's rounding sentence; SF12, SF13, SF21 |
 | 11 Tie-break | none (no equal remainders) | asserted by the allocation |
 | 12 Maturity and censoring | every planning-year baby has its full 28 days before the extract | asserted (no admission after the extract time) |
 | 13 Order of operations | reachable readmissions, then the ratio, then the shares | C1: the ratio cancels in the shares |
@@ -405,6 +405,14 @@ line ruled here:
   sentence; question 6, an analytical choice); the judge returned DETERMINISTIC with FIX_NOW
   (`determinism_check_report.md`). Fixed in one pass: the Ask A tie, the Ask B WHAT, SF15, the visit start, the
   specification's dates and the documents' realism.
+- Stage 4 pass 2: the judge returned DETERMINISTIC with APPROVE (`determinism_check_report_pass2.md`) and the second
+  read found no leak. Residuals closed with nothing graded moving: the ask figures are worked from the counts and
+  rounded at the end (the prompt's closing sentence, SF21); no admission or contact sits on the 28th calendar day
+  after its baby's discharge date (one readmission moved a day earlier, six later admissions and eight late calls
+  a day later), so elapsed and calendar-day readings of the window give the same figures (SF2); the provider signs
+  the specification on 19 October, before its 20 October issue. The mother-filed admissions are left as they are.
+- Stage 4 third read, on the ship cut (target.zip 2152e65e): no leak; the new rounding sentence fixes only what is
+  asked; question 6, an analytical choice. Shipped 2026-11-04.
 
 ## Tried and rejected
 

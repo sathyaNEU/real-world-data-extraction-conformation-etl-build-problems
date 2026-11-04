@@ -1,21 +1,21 @@
 {
  "task": "task313",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-04",
  "stump": "The default path carries the Copperfield trial's 28-day risk ratio (0.43, a 57 per cent cut) to every eligible readmission at each maternity unit and files posts of 8, 8, 5, 4 and 5 and about 375 readmissions avoided; the outreach line can first reach a family only once the community midwifery office holds the unit's discharge notification, which at Ravensby Royal and St Aldric's often arrives a day or more after discharge, so on the readmissions each baby could be reached for the posts are 7, 9, 6, 3 and 5 and the readmissions avoided about 325.",
  "architecture": 1,
- "loops": 1,
+ "loops": 2,
  "precut": {
   "exit": 0,
   "date": "2026-11-04"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-11-04, --asof 2026-11-02, after the FIX_NOW pass); every REVIEW line ruled in the design note",
-  "reader": "no leak (stage 4 pass 1, 2026-11-04): question 1 quoted section 7 and the report's interaction sentence; question 6 an analytical choice"
+  "leak_py": "REVIEW 2026-11-04 (asof 2026-11-02) on the ship cut, no LEAK: sweeps 3, 4, 6 and 8 answered in DESIGN_NOTE.md, Leak review, the sweep-4 lines ruled in the main thread and never handed to a reader",
+  "reader": "clean three times, 2026-11-04: on e0d62b0d (q1 quoted section 7, q6 an analytical choice), on the FIX_NOW cut and on the ship cut 2152e65e (the new rounding sentence read as fixing only what is asked); all three reads in leak_check_report.md"
  },
  "duplicate_check": {
   "heart": "WARN only (repeat.deliverables and repeat.question_form against task462); surface exit 0",
@@ -23,15 +23,16 @@
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW (pass 1), fixed in one pass; re-judge pending",
-  "report": "task313/determinism_check_report.md"
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass2.md (pass 2): every golden figure reproduced, 7/9/6/3/5, 325 and all of both asks; Gate G matches the card and note; Gate H domain pass, layers pass, decisive step analytical; the main-call readings (every eligible readmission, per-reason effects, the first-visit start) ruled out by the files. Pass 1 (determinism_check_report.md) DETERMINISTIC with FIX_NOW: the Ask A rounding tie, the contacts WHAT, fixed in one pass; the pass-2 residuals (rounding from the counts, the 28th calendar day, the spec signature date) closed with nothing graded moving"
  },
  "returned": [],
- "resume": "Stage 4 re-judge (once): spawn the determinism judge (pass 2) on the cut pack target.zip sha256 79a5e3bbe368164d434a4300b46992295945603092ac36b5396990737f71df32 (15 files at the archive root), rebuilt byte-identically by `python3 task313/generator/build.py`, and have it test SF15 (one effect against effects per reason) and the visit-start reading against the report's filed text; then ship if it holds.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-04",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "shipped_zip_sha256": "2152e65ee1e724d7ebb8bc3cabda103266f137df70c02207ba7c0cf49996c853"
 }

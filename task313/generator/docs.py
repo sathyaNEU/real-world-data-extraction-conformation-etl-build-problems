@@ -271,5 +271,5 @@ def spec(path):
     s.append(_table([['Signed for the Integrated Care Board', 'Signed for the provider'],
                      ['Kathryn Thompson, Head of Maternity and Children\'s Commissioning',
                       'Frances Thomas, Director of Nursing, Ravensby and Weald Community Health NHS Trust'],
-                     ['Date: 20 October 2026', 'Date: 22 October 2026']], [85, 85]))
+                     ['Date: 20 October 2026', 'Date: 19 October 2026']], [85, 85]))
     doc.build(s, onFirstPage=on_page, onLaterPages=on_page)

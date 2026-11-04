@@ -281,7 +281,21 @@ def build_world(babies=None):
     rw = np.random.default_rng([OUT_SEED, 105])
     for b in babies:
         b['withdrawn'] = bool(b['trial'] and rw.random() < 0.006)
+    # keep every admission clear of the 28th calendar day after the discharge date, where 28 days counted from the
+    # discharge instant and 28 whole calendar days disagree: a readmission inside the 28 days moves a day earlier, a
+    # later admission a day later, so both readings count the same events (no draw depends on these times)
+    for b in babies:
+        if b['readm_t'] is not None:
+            b['readm_t'] = clear_day28(b['readm_t'], b['disch'])
+        if b['late_t'] is not None:
+            b['late_t'] = clear_day28(b['late_t'], b['disch'])
     return babies
+
+
+def clear_day28(t, disch):
+    if t.date() != disch.date() + dt.timedelta(days=28):
+        return t
+    return t - dt.timedelta(days=1) if t <= disch + dt.timedelta(days=28) else t + dt.timedelta(days=1)
 
 
 def analysed(b):

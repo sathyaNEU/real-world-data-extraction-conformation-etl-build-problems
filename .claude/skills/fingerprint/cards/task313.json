@@ -99,5 +99,13 @@
   },
   "lineage": [],
   "notes": "Architecture 1 of task313. Adult transitional-care readmissions measured first on the same window and dropped before registration (contrast 1.23x at the realistic edge, fixed-lag rung recovering half of it in the same direction).",
-  "registered": "2026-11-04T10:22:08Z"
+  "registered": "2026-11-04T10:22:08Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "i",
+    "rounding opener": "work",
+    "deliverable set": "svg+xlsx"
+  },
+  "shipped": "2026-11-04",
+  "status": "SHIPPED"
 }

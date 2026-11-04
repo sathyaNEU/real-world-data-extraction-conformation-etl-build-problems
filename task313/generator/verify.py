@@ -121,8 +121,19 @@ def landmark(t, rule='rule'):
     return dt.datetime(d.year, d.month, d.day, lo, 0) + lag
 
 
+def in_window(t, disch, days=28, mode='elapsed'):
+    """The 28 days after discharge: elapsed time from the discharge instant (the golden), or whole calendar days
+    counted from the discharge date, with day 28 in ('incl') or out ('excl')."""
+    if t <= disch:
+        return False
+    if mode == 'elapsed':
+        return t <= disch + dt.timedelta(days=days)
+    last = disch.date() + dt.timedelta(days=days if mode == 'incl' else days - 1)
+    return t.date() <= last
+
+
 def link(tgt, utc_local=False, hosp_fallback=True, amended=False, use_mpi=True, mother_map=True,
-         methods=UNPLANNED, window=DAY28, per_admission=False):
+         methods=UNPLANNED, window=DAY28, per_admission=False, calendar=None):
     """Each baby with its first notification receipt and its unplanned admissions in the window."""
     R = raw(tgt)
     babies = [dict(b) for b in R['babies']]
@@ -170,12 +181,15 @@ def link(tgt, utc_local=False, hosp_fallback=True, amended=False, use_mpi=True, 
             # baby discharged home in the 28 days before
             if mother_map and n in mothers:
                 for k in mothers[n]:
-                    if k['nhs'] and k['disch'] < t <= k['disch'] + DAY28:
+                    if k['nhs'] and in_window(t, k['disch'], mode=calendar or 'elapsed'):
                         adm.setdefault(k['nhs'], []).append(t)
             continue
         adm.setdefault(n, []).append(t)
     for b in babies:
-        ts = sorted(t for t in adm.get(b['nhs'], []) if b['disch'] < t and (window is None or t <= b['disch'] + window))
+        if calendar:
+            ts = sorted(t for t in adm.get(b['nhs'], []) if in_window(t, b['disch'], mode=calendar))
+        else:
+            ts = sorted(t for t in adm.get(b['nhs'], []) if b['disch'] < t and (window is None or t <= b['disch'] + window))
         b['readm'] = ts[0] if ts else None
         b['n_adm'] = len(ts) if per_admission else (1 if ts else 0)
     return babies, by_nhs
@@ -257,9 +271,10 @@ def ask_a(tgt=None, reasons_from='discharge', **link_opts):
     return out
 
 
-def ask_b(tgt=None, call_mother_map=True, split_pre_update=True, dedupe=True, window=True, reasons_from='discharge'):
+def ask_b(tgt=None, call_mother_map=True, split_pre_update=True, dedupe=True, window=True, reasons_from='discharge',
+          calendar=None):
     tgt = tgt or TGT
-    babies, by_nhs = link(tgt)
+    babies, by_nhs = link(tgt, calendar=calendar)
     R = raw(tgt)
     lc = R['label_code']
     out_b = {x['nhs']: by_nhs[x['nhs']] for x in R['final'] if x['arm'] == 'Outreach'}
@@ -275,7 +290,7 @@ def ask_b(tgt=None, call_mother_map=True, split_pre_update=True, dedupe=True, wi
             continue
         t = dt.datetime.strptime(c['contact_datetime'], '%Y-%m-%d %H:%M')
         b = out_b[n]
-        if window and not (b['disch'] < t <= b['disch'] + DAY28):
+        if window and not in_window(t, b['disch'], mode=calendar or 'elapsed'):
             continue
         # NA and TNA are failed attempts; before those codes came into use (6 January 2025) a failed attempt was
         # filed as HV or TEL with the few minutes it took, a cluster far below any completed visit or call
