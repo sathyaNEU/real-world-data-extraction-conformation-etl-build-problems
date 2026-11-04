@@ -1,0 +1,98 @@
+{
+  "task": "task314",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Seed OS16 (a workforce board's USD 2M fund for one intervention, scored on additional participants employed in the second quarter after exit) kept only for its decision shape: which one option a fixed public decision buys, sized on the extra outcome it delivers. Its pairing (policy-education x Opportunity Sizing) has no task type serving the objective; re-homed to economics-econometrics / elasticity-welfare-policy-impact-estimation, the randomised-pilot world's decisive steps are spent or barred on file (binding seats, ban.strategy binding_constraint; at-scale interference, task139, task131 and task249; transport by composition, task309's approved abstraction and task177 v2; harvesting, task122; delayed entry, task272, task183 and task133; length bias, task120, task130, task135 and task182; and the workforce-board world is carried by task477), so the number moved to a city water department's 2027 drought rates in the same client domain and task type.",
+  "domain": "economics-econometrics",
+  "subdomain": "elasticity-welfare-policy-impact-estimation",
+  "client_domain": "economics-econometrics",
+  "niche": "a small Mountain West city's water department choosing which of its drought plan's Stage 2 rate options (a tier-3 drought rate, a drought adder on every thousand gallons, a flat drought surcharge on every bill) goes to council for summer 2027, each sized as the single-family use billed June to September that it takes out against the 2025 and 2026 summers, when the price customers answer is the average price of the whole bill rather than the block price of their last thousand gallons, which the city's billing record shows only through the July 2024 capital recovery charge laid on the annexed Fenwick Mesa area",
+  "objective": "opportunity-sizing-decision",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G1",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms every bill and reads every rate correctly prices each option through each account's change in marginal block price, the block-rate demand model's own price, with a summer elasticity from the literature or estimated on the city's July 2023 tier redesign, finds the drought surcharge saves nothing because it moves no block price, and files the tier-3 drought rate (Option A).",
+  "domain_test": "The deciding quantity is each option's June to September saving, a price response under a block tariff estimated the way residential water demand is estimated, on the utility's billing panel with its own rate changes as natural experiments (a fixed charge on one area against the rest, a tier redesign across all), and with another field's nouns (pupils and reading time, say) there is no bill, block price or fixed charge for the response to answer, so the task stops reading.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:the-price-block-rate-customers-answer-read-off-a-fixed-charge-on-one-area",
+  "layer1": [
+    "a customer information system export in two eras, Fenwick Mesa accounts migrated from the old water company's system in March 2022 with their legacy layout kept on the first year's rows",
+    "Fenwick Mesa's legacy meters reading in hundred cubic feet against the city's thousand gallons, the unit carried per bill",
+    "cancelled bills and the rebills that replace them on the same service period",
+    "estimated reads followed by a catch-up actual read",
+    "meter exchanges that split one service period across two meters",
+    "base charges by meter size, three-quarter inch and one inch",
+    "accounts closed and reopened at the same premise across tenants",
+    "bill dates on read cycles that straddle calendar months"
+  ],
+  "stakeholder_role": "the water department's rates and finance manager",
+  "role_family": "finance_controller",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "cis_bills_single_family.csv",
+    "rows": 350000,
+    "entity": "one bill issued to a single-family water account",
+    "grain": "account x bill",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, a small city in an unnamed Mountain West state",
+    "currency": "USD",
+    "org_type": "a city water department",
+    "invented_names": [
+      "Ardley Springs",
+      "Fenwick Mesa",
+      "Upper Brennan Basin Water Conservancy District"
+    ],
+    "people": [
+      "Tami Weaver",
+      "Jason Morgan",
+      "Clifford Haley",
+      "Beth Sheppard"
+    ]
+  },
+  "deliverables": [
+    "stage2_drought_rates_2027.xlsx",
+    "stage2_rate_recommendation.docx",
+    "summer_2027_savings.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is how much each option lowers a quantity units choose against a stepped per-unit charge, when the units answer the whole charge divided by what they bought rather than the step their last unit sits on; that shows only where a past change moved the whole charge without moving any step, and on that response an option that leaves every step alone outranks the options that raise the steps.",
+  "driver_concrete": "Each Stage 2 option's June to September 2027 saving is read on the average price of each account's whole bill, the price Ardley Springs customers answer: the July 2024 Fenwick Mesa capital recovery charge raised every Fenwick Mesa bill by the same 14 dollars with no block price moved and cut the area's summer use about 6 per cent against the rest of the city, while the July 2023 redesign's large marginal jumps moved little, and on that price the 14-dollar drought surcharge (Option C) takes out more than the tier-3 drought rate (Option A) or the drought adder on every thousand gallons (Option B).",
+  "stump": "The default path prices each option through each account's marginal block price, the block-rate demand model's own price, with the summer elasticity the July 2023 redesign gives (or one from the literature), under which the drought surcharge saves nothing, and files Option A, the tier-3 drought rate; read on the whole bill's average price, which the Fenwick Mesa charge shows customers answer, Option C, the drought surcharge, takes out the most.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task118": "there a levy cut is valued on the welfare wedge over the quantity the market reaches inside the appraisal year (lineage v2: a gain netted of what it takes from items shown beside it); here nothing is displaced and no adjustment speed decides: the step is which price on a block-tariff bill households answer, the whole bill per thousand gallons rather than the last block, read off a fixed charge laid on one area.",
+    "task184": "there both arms of a shared resource's gain are read from a site's filed plan the site never meets; here every bill is correct and the response is read off the utility's own rate changes as natural experiments, a fixed charge on one area against the rest.",
+    "task198": "there a reported value is the lesser of ask and entitlement, so the record itself is capped; here no record is capped or wrong, and the step is which of two correct prices on each bill customers answer.",
+    "task307": "there a full small pool takes a block of the large pool out of use (lineage v2, a pool-capacity coupling); here there is no capacity at all, only the price concept a household responds to.",
+    "task472": "there a job finishes only with its slowest parallel stream (lineage v1); here there is no stream or finish time, only the price a household answers under a stepped tariff."
+  },
+  "lineage": [],
+  "notes": "Seed OS16's world set aside at the draw (slot_note). Strategy forecast_method_backtest: the natural price model (marginal block price) is wrong out of sample on an option the textbook model gives no effect, and the city's own rate history (a fixed charge on one area, a tier redesign) selects the bill's average price; no back-test is filed.",
+  "registered": "2026-11-04T15:17:49Z"
+}
