@@ -1,0 +1,91 @@
+{
+  "task": "task211",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Seed AD34 (offshore jack-up storm sequences) moved out of its world: its decision is an allocation (which site gets the vessel), not an anomaly call, and its storm-sequence mechanism is the weather-window persistence replay that task170's seventh cell measured as the metocean field's own method, which the careful reader runs. Redrawn into Physical & Environmental Sciences, environmental-monitoring-exceedance, on ground no card or slot note holds (ambient gamma dose-rate monitoring).",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a regional ambient gamma dose-rate network's quarterly notification of artificial radioactivity, when night weld radiography on a gas pipeline raises the ten-minute dose rate at two lowland stations in turn and radon-progeny washout from showers the sparse rain gauges never record raises it at the upland and coastal stations",
+  "objective": "anomaly-detection",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G12"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "With every clock, unit, station code and probe change handled, the analyst takes each station's excursions above its investigation level and clears as natural those that coincide with rain at the nearest of the network's rain gauges, which refers the upland and coastal stations whose showers no gauge records and keeps the two pipeline-side stations only through their dry nights, a wrong set.",
+  "domain_test": "The origin of each dose-rate excursion is read from environmental radiation physics: the excess that rain washes down is radon progeny, which can fall no faster than lead-214 and bismuth-214 decay, so an excess that drops away within one ten-minute interval cannot be natural; swap in another field's nouns (admissions, river flow) and there is no decay chain to bound how fast an excess may fall.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:decay-bound-excursion-origin",
+  "layer1": [
+    "gauge telemetry in local time (BST) against the network's UTC export",
+    "older outstations exporting microsieverts per hour against the platform's nanosieverts per hour",
+    "station codes renumbered at the 2025 platform migration",
+    "a probe exchange with its new calibration factor applied in the database a week after the swap",
+    "source checks at maintenance visits carried in the export with a test status",
+    "backfilled ten-minute values after communications outages arriving as second rows",
+    "a rain gauge with a blocked funnel for part of August"
+  ],
+  "stakeholder_role": "the network's duty radiation scientist preparing the quarter's notification",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "dose_rate_10min_2026Q3.csv",
+    "rows": 318000,
+    "entity": "one ten-minute ambient dose equivalent rate at one station",
+    "grain": "station x ten-minute interval (UTC)",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "period_close",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "United Kingdom (England, a three-county region)",
+    "currency": "GBP",
+    "org_type": "a university environmental radioactivity laboratory running a regional gamma dose-rate network under contract to a joint committee of three county councils",
+    "invented_names": [],
+    "people": [
+      "Cameron Brown",
+      "Julia French",
+      "Hazel Lambert",
+      "Antony Connolly"
+    ]
+  },
+  "deliverables": [
+    "artificial_detections_2026Q3.docx",
+    "network_quarter_2026Q3.xlsx",
+    "excursion_traces_2026Q3.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "Excursions are cleared as natural when they coincide with the trigger the natural cause needs, but the trigger is recorded only at a few points while it falls everywhere and an artificial source runs through it, so the clearing test fails both ways, and only the physical limit on how fast the natural cause's excess can decay, read from the shape of each excursion's fall, separates the artificial ones.",
+  "driver_concrete": "Gamma dose-rate excursions are cleared as radon washout when they coincide with rain at the nearest gauge, but showers miss the six gauges and the pipeline's weld radiography runs through rain, so only the ten-minute fall of each excess against the rate lead-214 and bismuth-214 allow separates the two radiography stations from the shower-washed uplands.",
+  "stump": "The analyst refers the upland and coastal stations whose shower washout no gauge records (and the pipeline-side stations through their dry nights), because clearing excursions on rain at the nearest gauge is the network's screening reflex, when only the excursions whose excess falls faster than radon progeny can decay are artificial.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task249": "task249 v6 carries a gain from earlier exposure through an examination sitting's time limit; task211 reads each dose-rate excursion's origin from whether its excess falls faster than radon progeny can decay, with no exposure gain, no sitting and no limit on a session.",
+    "task111": "task111 v1 traces each failure's delay back to earlier work under another system through an identifier crosswalk and a filed minimum gap; task211 reads each excursion's origin from the physical decay bound on its own ten-minute fall, with no crosswalk, no earlier period and no filed gap."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-11-04T18:43:09Z"
+}
