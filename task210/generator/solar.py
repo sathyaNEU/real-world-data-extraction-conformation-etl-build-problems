@@ -22,7 +22,9 @@ def sun_position(t_utc, lat, lon):
             + 0.000907 * np.sin(2 * g) - 0.002697 * np.cos(3 * g) + 0.00148 * np.sin(3 * g))
     time_offset = eqtime + 4.0 * lon  # minutes
     tst = hour * 60.0 + time_offset
-    ha = np.radians(tst / 4.0 - 180.0)
+    # the hour angle wrapped to [-180, 180): true solar time read off a UTC clock runs negative in the western
+    # hemisphere's evenings, and an unwrapped angle puts the afternoon sun east of the meridian in the azimuth test
+    ha = np.radians(((tst / 4.0 - 180.0 + 180.0) % 360.0) - 180.0)
     phi = np.radians(lat)
     cos_zen = np.sin(phi) * np.sin(decl) + np.cos(phi) * np.cos(decl) * np.cos(ha)
     cos_zen = np.clip(cos_zen, -1.0, 1.0)

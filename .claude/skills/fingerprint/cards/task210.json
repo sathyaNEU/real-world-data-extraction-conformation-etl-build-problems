@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "J4-O AM, J5-O AM, F5-O PM, F6-O PM",
+  "answer_source": "generator/figures.json slate (seed 21019)",
   "gap": [
     "time",
     "population"
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the recorder's UTC events to the surveyed sections and the AVL passes, removes the trailing cars' copies, nets new operators, darkness, sky cover and the school term, and reads the safety standard's normal-weather basis correctly slates the four section-direction peaks with the highest April to October (or September to October) firm-braking rates, the east- and west-running directions in the peaks, where January's sun stands ahead of the south-east and south-west-running directions that carry the golden slate.",
+  "analyst_test": "A strong analyst who conforms the recorder's UTC events to the surveyed sections and the AVL passes, nets new operators, darkness, sky cover and the school term, and reads the safety standard's normal-weather basis correctly slates F3-I AM, F4-I AM, J1-O AM and J2-O AM, the morning cells that rose this autumn, while January's sun stands ahead of the south-east-running morning and south-west-running evening directions (J4-O AM, J5-O AM, F5-O PM, F6-O PM) that carry the golden slate.",
   "domain_test": "The deciding quantity is the firm-braking excess the low sun produces when it stands ahead of the operator, a visual performance-shaping factor estimated from the event recorder against the sun's computed position relative to each direction of travel, as human-factors incident analysis attributes errors to the condition that produced them; with another field's nouns there is no operator's line of sight and no sun ahead, and the call stops reading.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:low-sun-glare-geometry-carried-to-the-forward-window",
@@ -44,7 +44,8 @@
     "two-car trains whose cars' recorders both record an emergency application, the trailing recorder on its own clock",
     "operator badge numbers renumbered in the July HR system migration, mapped through the card register",
     "hourly airport observations in METAR sky-condition strings at :53 UTC with missing hours",
-    "the January pick's timetable published as a PDF table of headways and running times"
+    "the January pick's timetable published as a PDF table of headways and running times",
+    "the maintenance system's defect cards keyed on the next business morning"
   ],
   "stakeholder_role": "chief safety officer",
   "role_family": "compliance_or_audit",
@@ -82,7 +83,7 @@
   "question_form": "what",
   "driver": "The decisive quantity is a per-pass hazard set by where an external light source stands relative to each unit's direction of travel, a position no record holds and only geometry against the clock recovers, and because the coming window puts the source ahead of different units than the observed window did, every rate read from the record, however finely it is cut, ranks the wrong units.",
   "driver_concrete": "Each streetcar pass's firm-braking risk rises when the low sun stands within a few degrees of the operator's line of travel, which no file records and only the sun's computed position against each section direction's surveyed heading shows; this autumn the low sun stood ahead of the east- and west-running section directions in the peaks, while in January and February it stands ahead of the south-east and south-west-running directions, which were quiet all season, so the four restricted-speed slots belong there.",
-  "stump": "A competent solver ranks the section-direction peaks on their April to October or September to October firm-braking rates, nets new operators, darkness, sky cover and the school term, and slates the east- and west-running directions that rose this autumn; the step that lands them there is reading a rate measured under the autumn sun as the rate January's sun will produce.",
+  "stump": "A competent solver ranks the section-direction peaks on their record rates, nets new operators, darkness, sky cover and the school term, and slates F3-I AM, F4-I AM, J1-O AM and J2-O AM, the morning cells that rose this autumn; the step that lands them there is reading a rate measured under the autumn sun as the rate January's sun will produce.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task102": "task102 counts payments a business-day rule shown only in the payment history moves into the next period when the forward period ends on a weekend (a calendar rule executed); this build estimates a per-pass hazard from the sun's computed position against each direction of travel and carries the estimated excess to a window where the sun stands ahead of other units.",
@@ -133,7 +134,7 @@
       "deliverable set": "csv+pdf"
     }
   ],
-  "notes": "Five go/no-go screens on the clean truth over 24 redraws (prototype screens_a2.py): the golden (solar geometry against each direction's heading, glare excess fitted on every pass) recovers the true slate 23 of 24; every golden variant (nine glare forms, model forms, sunshine and hour specifications) agrees in 18 of 24 and at the shipping candidate; the first look, the field-decomposing reader, two constructing readers, three per-record readers and five literal executions of the standard land a wrong slate 24 of 24, sharing at most two of the four cells. Screened and set aside before this card: seed AD33's battery world (per-record reader), low-sun glare at UK latitude (diluted below the evening darkness peak) and at peak windows with a rare outcome (golden unstable), colonisation pressure and prior-room occupants (spent in task177, task181 and task252's carryover), crew familiarity (task178's curve fork), sequence priming and screener vigilance (task399, task171, task177).",
+  "notes": "Resumed at stage 2 (2026-11-04): SRM-07's low-sun and darkness definitions removed; the generator's sun fixed (the hour angle was not wrapped, so every Mountain evening sun was mirrored east) and every screen re-measured on 20 corrected redraws: the golden equals the truth in 19, every reader and every literal execution of SRM-07 lands a wrong slate in 20 of 20 (at most three slots shared, the literal executions at most two); shipped seed 21019, the fourth slot 23.7 per cent clear from target/; the glare form closed by the record (every tapering form at cones 15 to 35 and flat to 20 degrees print the slate; flat forms from 25 degrees are refuted by the record). Ask B redrawn on the maintenance system's defect cards (D8, dated only by car and block against the yard sheets). Screened and set aside before this card: seed AD33's battery world (per-record reader), low-sun glare at UK latitude (diluted below the evening darkness peak) and at peak windows with a rare outcome (golden unstable), colonisation pressure and prior-room occupants (spent in task177, task181 and task252's carryover), crew familiarity (task178's curve fork), sequence priming and screener vigilance (task399, task171, task177).",
   "registered": "2026-11-04T14:49:22Z",
   "shell": {
     "question form": "what",

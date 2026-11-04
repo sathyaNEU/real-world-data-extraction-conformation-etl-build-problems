@@ -9,9 +9,11 @@ records(T) returns DataFrames for every shipped data file plus the truth the ask
   operators the roster with training class, qualification date and first solo revenue run
 Ask devices: a two-car train's emergency application is logged by both cars' recorders, the trailing car's under a
 free-running clock (A1); running brake tests on the day's spare Foundry cars after depot releases (A2); AVL onboard
-unit drop-outs leave revenue trips unlogged (A3); overspeed badges follow each operator's card (old format until the
-card was reissued after the July migration) (B1); new operators ride along on regular runs during route training,
-so their first run-sheet row is not their first revenue day (B2).
+unit drop-outs leave revenue trips unlogged (A3). Ask B's records (the maintenance system's defect reports, operator
+cards keyed on the next business morning) are drawn in defects.py on their own random stream, after every record here.
+Badges follow each operator's card (old format until the card was reissued after the July migration), and new operators
+ride along on regular runs during route training before their first run alone: both are the run sheets' and the
+recorder's own content, read by the main call's careful readers when they net new operators.
 """
 import math
 import numpy as np
@@ -189,19 +191,11 @@ def records(T, seed=W.SEED):
     E["t_local_true"] = E["t_local"]
     rev = E[(E["code"] == "EB") & (~E["copy"]) & (~E["test"])]
     eb_truth = rev.groupby(["line", rev["t_local"].dt.month]).size()
-    os_truth = {}
-    first_solo = hours.groupby("emp")["date"].min()
-    for cls in ("26-2", "26-3"):
-        ops = O[O["cls"] == cls]
-        n = 0
-        h = 0.0
-        for o in ops.itertuples():
-            w0 = first_solo[o.emp]
-            w1 = w0 + pd.Timedelta(days=W.ASK_B_DAYS)
-            n += int(((E["code"] == "OS") & (E["emp"] == o.emp) & (E["date"] >= w0) & (E["date"] < w1)).sum())
-            h += float(hours[(hours["emp"] == o.emp) & (hours["date"] >= w0) & (hours["date"] < w1)]["rh"].sum())
-        os_truth[cls] = (n, round(h, 2), round(100 * n / h, 2))
-    return dict(edr=E, avl=avl, releases=R, dispatch=disp, consist=C, operators=O, eb_truth=eb_truth, os_truth=os_truth,
+    import defects
+    mms, cards_truth = defects.defect_reports(T, dict(swaps=SW), seed)
+    defect_truth = defects.ask_b_truth(cards_truth)
+    return dict(edr=E, avl=avl, releases=R, dispatch=disp, consist=C, operators=O, eb_truth=eb_truth, mms=mms, cards_truth=cards_truth,
+                defect_truth=defect_truth,
                 metar=T["weather"], swaps=SW)
 
 
@@ -211,5 +205,5 @@ if __name__ == "__main__":
     E = Rr["edr"]
     print(E["code"].value_counts().to_dict(), "copies", int(E["copy"].sum()), "tests", int(E["test"].sum()))
     print("eb truth", Rr["eb_truth"].to_dict())
-    print("os truth", Rr["os_truth"])
+    print("defect truth", Rr["defect_truth"], "mms rows", len(Rr["mms"]))
     print("avl rows", len(Rr["avl"]), "of", len(T["passes"]), "releases", len(Rr["releases"]), "run rows", len(Rr["dispatch"]))

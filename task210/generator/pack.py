@@ -26,6 +26,7 @@ FILES = {
     "runs": "run_sheets_2026.csv",
     "roster": "operator_roster_2026.csv",
     "cards": "badge_card_register.csv",
+    "mms": "mms_defect_reports_2026.csv",
     "srm": "SRM-07_seasonal_restricted_speed_orders.pdf",
     "pick": "january_2027_pick_timetable.pdf",
     "normals": "ash_climate_normals_1991-2020.pdf",
@@ -149,6 +150,13 @@ def build(seed=W.SEED, T=None, Rr=None):
             cards.append((o["badge_old"], int(o["emp"]), o["qualified"].strftime("%Y-%m-%d"), o["card_reissued"].strftime("%Y-%m-%d")))
             cards.append((o["badge_new"], int(o["emp"]), o["card_reissued"].strftime("%Y-%m-%d"), ""))
     write_csv(pd.DataFrame(cards, columns=["badge", "operator_no", "issued", "withdrawn"]).sort_values(["operator_no", "issued"]), FILES["cards"])
+
+    # 10 the maintenance system's defect reports (operator cards and inspection findings)
+    Mm = Rr["mms"]
+    write_csv(pd.DataFrame({"wo_no": Mm["wo_no"], "created": Mm["created"].dt.strftime("%Y-%m-%d %H:%M"),
+                            "reported": Mm["reported"].dt.strftime("%Y-%m-%d"), "source": Mm["source"],
+                            "car": Mm["car"].astype(int), "block": Mm["block"], "defect_group": Mm["group"],
+                            "defect": Mm["defect"], "status": "Closed"}), FILES["mms"])
 
     # 14 to 17 distractors and context
     _distractors(rng)

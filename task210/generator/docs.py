@@ -68,10 +68,6 @@ def srm07(path):
             "weekday timetable, by the time the train enters the section, Mountain local time."),
           P("3.6 <b>Section-direction peak.</b> One section, in one direction of travel, in one weekday peak."),
           P("3.7 <b>Rate.</b> Firm brakes per 1,000 passes."),
-          P("3.8 <b>Low sun.</b> The sun above the horizon, within 25 degrees either side of a train's direction of travel and "
-            "less than 25 degrees above the horizon. Its effect on the operator's view ahead is greatest with the sun on the line "
-            "of travel and below 12 degrees, and fades to nothing at 25 degrees off the line or 25 degrees up."),
-          P("3.9 <b>Darkness.</b> The sun below the horizon."),
           Paragraph("4. Assessment", h),
           P("4.1 Before each pick the Chief Safety Officer assesses every section-direction peak's expected rate for that pick: the rate "
             "its passes are expected to see at the pick's scheduled times on the pick's weekdays, in the weather normal for those weeks "
