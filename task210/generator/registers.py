@@ -146,23 +146,102 @@ def borehole(tgt, S):
     pack.write_csv(os.path.join(tgt, pack.FILES["borehole"]), ["station", "date", "groundwater_level_maod"], rows)
 
 
+CLOSE = {"Wet well clean and level probe check": "COMPLETE", "Electrical inspection": "COMPLETE",
+         "Odour complaint attended": "NFF", "Generator connection point test": "COMPLETE",
+         "Pump service (6-monthly)": "COMPLETE", "Flow meter verification": "COMPLETE",
+         "High level alarm attended": "ATTENDED", "Kiosk door alarm": "SECURED"}
+# what the technician writes: routine phrases recur, a one-off (a part replaced, a fault put right) is used at most
+# twice in the year and never twice at one station
+NOTES = {
+    "Wet well clean and level probe check": (
+        ["wet well jetted, probes cleaned and checked against dip", "probes cleaned, reading ok after",
+         "tanker on site, well cleaned out, probes wiped", "ultrasonic head cleaned, floats tested ok",
+         "light grease on walls jetted down, probes cleaned", "well washed down, both probes cleaned"],
+        ["fat build-up cleared off probe, reading checked against dip", "low level float cable re-clipped"]),
+    "Electrical inspection": (
+        ["panel inspected, RCDs tested, all ok", "fixed wire test done, cert to follow", "thermal image of panel, no hot spots",
+         "IR test on pump cables within limits", "inspection done, nothing to report"],
+        ["kiosk heater replaced", "loose terminal on outstation supply tightened", "labels renewed on isolators"]),
+    "Odour complaint attended": (
+        ["no odour at time of visit, lid seals checked", "no smell at station or in street, caller not in",
+         "carbon filter and lids checked, nothing found", "no odour found, wet well lids secure"],
+        ["slight smell at kiosk vent only, lids reseated"]),
+    "Generator connection point test": (
+        ["mobile genny connected, changeover tested ok", "changeover switch tested on load, all fine",
+         "gen point tested, phase rotation correct", "generator run on load via connection point, ok"],
+        []),
+    "Pump service (6-monthly)": (
+        ["both pumps lifted, oil and seals checked, IR readings ok", "6-monthly service, oil changed both pumps",
+         "pumps lifted and hosed down, seals checked, no leaks", "both pumps serviced and returned to auto",
+         "service done, both pumps back in auto"],
+        ["lifting chain on P2 replaced", "cable glands resealed on P1", "guide rail bracket re-fixed"]),
+    "Flow meter verification": (
+        ["meter verified against clamp-on, within tolerance", "annual verification, within spec, cert filed",
+         "verified with portable meter, within tolerance"],
+        []),
+    "High level alarm attended": {
+        "high": (["level above high level float on arrival, duty pump running, standby available",
+                  "high level on arrival, duty on, standby in auto, no faults on panel",
+                  "level high, duty running, nothing showing on panel",
+                  "high level, both pumps in auto, duty running"], []),
+        "normal": (["level normal on arrival, both pumps available, alarm reset",
+                    "alarm had cleared before arrival, no faults on panel",
+                    "level back to normal, pumps in auto, nothing found",
+                    "level normal, high level float tested ok"], [])},
+    "Kiosk door alarm": (
+        ["no sign of entry, door closed and secured", "door secure on arrival, wind suspected",
+         "door switch realigned, alarm cleared", "no entry, door closed, alarm reset", "door shut on arrival, switch tested ok"],
+        ["door found ajar, latch adjusted", "door seal replaced, switch reset"]),
+}
+OPEN = ["On site {t}, ", "{t} ", "", "", "Arrived {t}. "]
+CLOSE_NOTE = ["", "", " Left {u}.", " NFA.", " All ok.", " Left site {u}."]
+AUTO = {"Wet well clean and level probe check", "Pump service (6-monthly)", "Electrical inspection",
+        "Generator connection point test"}
+
+
 def workorders(tgt, S):
     """The completed work orders, one per crew visit (the visit that opened the kiosk door), and one for each kiosk
-    door alarm a crew went out to secure."""
+    door alarm a crew went out to secure: the closure code the system keeps and the technician's own note."""
     rng = np.random.default_rng([W.SEED, 51])
+    rng_n = np.random.default_rng([W.SEED, 52])
     jobs = []
     for st in W.STATIONS:
         r = S["stations"][st["code"]]
-        jobs += [(v["arr"], st, v["task"], v["outcome"]) for v in r["visits"]]
-        jobs += [(b, st, "Kiosk door alarm", "Door secured, no sign of entry") for a, b in r["door"]]
+        jobs += [(v["arr"], v["dep"], st, v["task"], v["outcome"]) for v in r["visits"]]
+        jobs += [(b, b + rng_n.uniform(20, 60) * 60, st, "Kiosk door alarm", "") for a, b in r["door"]]
     jobs.sort(key=lambda x: x[0])
     rows = []
+    used, used_at = {}, set()
     wo = 4127310                                     # the company's work order sequence runs across every area
-    for t, st, task, outcome in jobs:
+    for t, u, st, task, outcome in jobs:
         wo += int(rng.integers(30, 420))
-        rows.append(("WO%07d" % wo, st["code"], st["name"] + " SPS", pack.local_dt(t).date().isoformat(), task, outcome))
+        pool = NOTES[task]
+        if isinstance(pool, dict):
+            pool = pool["high" if outcome.startswith("Level high") else "normal"]
+        routine, oneoff = pool
+        free = [x for x in oneoff if used.get(x, 0) < 2 and (st["code"], x) not in used_at]
+        if free and rng_n.random() < 0.25:
+            main = free[int(rng_n.integers(0, len(free)))]
+            used[main] = used.get(main, 0) + 1
+            used_at.add((st["code"], main))
+        else:
+            main = routine[int(rng_n.integers(0, len(routine)))]
+        lt, lu = pack.local_dt(t).strftime("%H:%M"), pack.local_dt(u).strftime("%H:%M")
+        ends = CLOSE_NOTE + ([" Back in auto."] if task in AUTO else [])
+        if task == "Kiosk door alarm":
+            lead = ["", "Attended {t}, ", "{t} "][int(rng_n.integers(0, 3))].format(t=lt)
+            tail = ["", "", " NFA."][int(rng_n.integers(0, 3))]
+        else:
+            lead = OPEN[int(rng_n.integers(0, len(OPEN)))].format(t=lt)
+            tail = ends[int(rng_n.integers(0, len(ends)))].format(u=lu)
+        if tail == " All ok." and main.endswith(("ok", "fine", "all ok")):
+            tail = " NFA."
+        body = main[0].upper() + main[1:] if not lead or lead.endswith(". ") else main
+        note = lead + body + ("." + tail if tail else "")
+        rows.append(("WO%07d" % wo, st["code"], st["name"] + " SPS", pack.local_dt(t).date().isoformat(), task,
+                     CLOSE[task], note))
     pack.write_csv(os.path.join(tgt, pack.FILES["workorders"]),
-                   ["work_order", "station_code", "site", "completed", "task", "outcome"], rows)
+                   ["work_order", "station_code", "site", "completed", "task", "closure_code", "technician_notes"], rows)
 
 
 def write(tgt, FILES, S, info):

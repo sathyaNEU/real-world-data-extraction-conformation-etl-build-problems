@@ -93,8 +93,9 @@ def _procedure(path):
     s.append(Paragraph(
         "Spills are counted for each storm overflow by the 12/24 method. Counting begins at the start of the first "
         "discharge. Any discharge in the first 12 hours counts as one spill. Any discharge in each following 24-hour "
-        "block counts as one further spill, block by block, for as long as each block contains discharge. When a full "
-        "24-hour block passes with no discharge, the next discharge begins a new count.", BODY))
+        "block counts as one further spill, block by block, for as long as each block contains discharge. A block "
+        "contains discharge when any part of a discharge falls within it. When a full 24-hour block passes with no "
+        "discharge, the next discharge begins a new count.", BODY))
     s.append(Paragraph("4. Duration of discharge", H2))
     s.append(Paragraph(
         "The return states the total duration of discharge from each storm overflow in the reporting year, in hours, "

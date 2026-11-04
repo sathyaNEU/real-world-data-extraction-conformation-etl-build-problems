@@ -1,6 +1,6 @@
 """The generator's assertions, run on every build against the clean truth and the cut pack.
 
-R1 to R3c are the client's three rules executed (dataset-generation 7.1); SF1 to SF21 are the semantic fork
+R1 to R3c are the client's three rules executed (dataset-generation 7.1); SF1 to SF22 are the semantic fork
 table's rows; the rest are the ladder and its reflex routes, the estimator family, the ask devices and their
 bins, the realism sweep and the input gates."""
 import csv
@@ -17,6 +17,7 @@ import numpy as np
 import golden as G
 import pack as PK
 import routes as RT
+import sim
 import world as W
 
 PASSED = []
@@ -47,6 +48,51 @@ def hours(iv):
 
 def overl(x, ys):
     return any(min(x[1], y[1]) > max(x[0], y[0]) for y in ys)
+
+
+def count_starts(iv):
+    """The 12/24 count read the other way: a 24-hour block counts only where a discharge starts in it."""
+    u = G.union(iv)
+    n, k = 0, 0
+    while k < len(u):
+        end = u[k][0] + 12 * 3600.0
+        n += 1
+        while k < len(u) and u[k][0] < end:
+            k += 1
+        while k < len(u) and u[k][0] < end + 24 * 3600.0:
+            n += 1
+            end += 24 * 3600.0
+            while k < len(u) and u[k][0] < end:
+                k += 1
+    return n
+
+
+def months_utc(iv):
+    m = [0.0] * 12
+    for a, b in G.union(iv):
+        t = a
+        while t < b:
+            d = G.T0 + dt.timedelta(seconds=t)
+            nm = dt.datetime(d.year + (d.month == 12), d.month % 12 + 1, 1)
+            e = min(b, (nm - G.T0).total_seconds())
+            m[d.month - 1] += (e - t) / 3600
+            t = e
+    return m
+
+
+def months_local(iv):
+    m = [0.0] * 12
+    for a, b in G.union(iv):
+        t = a
+        while t < b:
+            ld = G.utc_to_local(t)
+            nm = dt.datetime(ld.year + (ld.month == 12), ld.month % 12 + 1, 1)
+            nm_utc = (nm - G.T0).total_seconds()
+            nm_utc = nm_utc - 3600 if G.BST0 <= nm_utc - 3600 < G.BST1 else nm_utc
+            e = min(b, nm_utc)
+            m[ld.month - 1] += (e - t) / 3600
+            t = e
+    return m
 
 
 def clean_delivered(S, code):
@@ -120,6 +166,34 @@ def run(tgt, S, g, info, figs):
             vals = [q[k] for a, b in S["stations"][c]["spills"] for k in range(int(a // 900) + 1, int(b // 900))]
             ok("R3a.meter clears the permit while spilling %s" % c, np.median(vals) >= W.BY_CODE[c]["pff"], np.median(vals))
     ok("R3a.rated duty on the cut pack files none", L["R1"] == ["none"], L["R1"])
+    cr = {}
+    for c in st:
+        e = S["stations"][c]["events"]
+        V = S["stations"][c]["area"] * (W.BY_CODE[c]["start"] - W.BY_CODE[c]["stop"])
+        runs = [V / (e[k + 1][0] - e[k][0]) for k in range(len(e) - 1)
+                if e[k][2] == 1 and e[k + 1][2] == 0 and 0 < e[k + 1][0] - e[k][0] <= 6 * 3600]
+        cr[c] = float(np.median(runs)) / W.BY_CODE[c]["pff"]
+    ok("R3a.drawdown without the inflow on the clean truth files Hagworth Wold", min(cr, key=cr.get) == "SPS0415"
+       and sum(1 for c in cr if cr[c] < 1) <= 4, sorted((round(v, 3), c) for c, v in cr.items())[:4])
+    rain = S["rain"]
+    mins = np.arange(len(rain[0]))
+    lday = (mins + np.where((mins >= sim.BST0) & (mins < sim.BST1), 60, 0)) // 1440
+    dry = {}
+    for c in st:
+        drain = np.bincount(lday, weights=rain[W.ZONES.index(W.BY_CODE[c]["zone"])])
+        n = 0
+        for a, b in S["stations"][c]["spills"]:
+            d = int((a / 60 + (60 if sim.BST0 <= a / 60 < sim.BST1 else 0)) // 1440)
+            n += drain[d] < 0.25 and (d == 0 or drain[d - 1] < 0.25)
+        dry[c] = n
+    ok("R3a.dry-day screen on the clean truth files Hagworth Wold alone", [c for c in st if dry[c]] == ["SPS0415"], dry)
+    drain_h = np.bincount(lday, weights=rain[W.ZONES.index(W.BY_CODE["SPS0415"]["zone"])])
+    late = [a for a, b in S["stations"]["SPS0415"]["spills"]
+            if (lambda d: drain_h[d] < 0.25 and (d == 0 or drain_h[d - 1] < 0.25))(
+                int((a / 60 + (60 if sim.BST0 <= a / 60 < sim.BST1 else 0)) // 1440)) and a >= 90 * 86400]
+    ok("letter.Hagworth Wold's dry-day discharges all fall in January to March", not late, len(late))
+    sp = {c: G.count_1224([(a, b) for a, b in S["stations"][c]["spills"] if b - a >= 60]) for c in st}
+    ok("R3a.high spiller on the clean truth is Marram End", max(sp, key=sp.get) == "SPS0419", sp)
     ok("R3a.dry-day screen files Hagworth Wold", L["R0"] == "SPS0415", L["R0"])
     ok("R3a.high spiller files Marram End", L["R2"] == "SPS0419" and L["R2_hours"] == "SPS0419", (L["R2"], L["R2_hours"]))
     # ------------------------------------------------------------ R3b the decisive step alone
@@ -180,6 +254,33 @@ def run(tgt, S, g, info, figs):
        (mf, {c: g["delivered"][c] for c in mf}))
     ok("backtest.meters validate rated duty", all(abs(mf[c] / st[c]["rated"][1] - 1) < 0.035 for c in mf),
        {c: mf[c] / st[c]["rated"][1] for c in mf})
+    # rung 0b, the drawdown without the inflow: it files Hagworth Wold, whose groundwater runs into the well through
+    # every cycle, below Gallowfen by a stated margin on each way a solver takes it, and flags only a few overflows
+    G0 = "SPS0415"
+    for name in ("naive", "naive_night", "naive_p90"):
+        r = {c: L[name][c] / g["pff"][c] for c in st}
+        order = sorted(st, key=r.get)
+        ok("rung0b.%s files Hagworth Wold, Gallowfen next" % name, order[:2] == [G0, K], [(c, round(r[c], 3)) for c in order[:4]])
+        ok("rung0b.%s Hagworth Wold below Gallowfen by 0.08 of a permit" % name, r[K] - r[G0] >= 0.08, (r[G0], r[K]))
+    flagged = L["naive_flagged"]
+    ok("rung0b.flags only a few overflows", G0 in flagged and K in flagged and 2 <= len(flagged) <= 4, flagged)
+    ok("rung0b.the rest clear their permits on it", all(L["naive"][c] >= 1.02 * g["pff"][c] for c in st if c not in flagged))
+    nd = L["naive"]
+    ok("rung0b.recorded: the meters read above it at every metered station", all(mf[c] > 1.05 * nd[c] for c in mf),
+       {c: (round(nd[c], 1), mf[c]) for c in mf})
+    # the meter historian's quality codes sit clear of every spill and leave the meters' spill flows as they were
+    mrows = G.read_csv(os.path.join(tgt, F["meters"]))
+    codes = Counter(r["quality"] for r in mrows)
+    ok("realism.meter quality codes as a historian writes them", set(codes) >= {"G", "M", "C", "E", "S"}
+       and codes["G"] > 0.98 * len(mrows), codes)
+    tag_rtu = {st[c]["meter"]: st[c]["rtu"] for c in mf}
+    bad = 0
+    for r in mrows:
+        if r["quality"] != "G":
+            t = (dt.datetime.strptime(r["interval_start_utc"], "%Y-%m-%dT%H:%M:%SZ") - G.T0).total_seconds()
+            bad += any(a - 3600 < t + 900 and t < b + 3600 for a, b in g["alarms"][tag_rtu[r["meter_tag"]]])
+    ok("realism.no flagged meter interval near a spill", bad == 0, bad)
+    ok("realism.blank meter values only where flagged M", all((r["flow_ls_mean"] == "") == (r["quality"] == "M") for r in mrows))
     rated_hits = sum(1 for c in st if not st[c].get("meter") and round(min(st[c]["rated"].values())) == round(g["delivered"][c]))
     ok("asks.rated duty rarely rounds to the delivered rate", rated_hits <= 2, rated_hits)
 
@@ -204,12 +305,20 @@ def run(tgt, S, g, info, figs):
     ok("SF10.one pass forward value per permit", all(str(int(float(r["pass_forward_ls"]))) in r["condition_text"] for r in cons_rows)
        and len({r["permit_ref"] for r in cons_rows}) == len(cons_rows))
 
-    # ------------------------------------------------------------ the asks' terms (SF11 to SF13, SF18 to SF21)
+    # ------------------------------------------------------------ the asks' terms (SF11 to SF13, SF18 to SF22)
     pooled = {c: [x for s, cc in g["serial_site"].items() if cc == c for x in g["log"].get(s, [])] for c in st}
     per_serial = {c: sum(G.count_1224(g["log"].get(s, [])) for s, cc in g["serial_site"].items() if cc == c) for c in st}
     ok("SF11.12/24 on the pooled discharges", all(G.count_1224(pooled[c]) == g["lines"][c]["spills"] for c in st))
     ok("SF11.per-serial counts summed differ", sum(1 for c in W.EDM_REPLACED if per_serial[c] != g["lines"][c]["spills"]) >= 9,
        {c: (per_serial[c], g["lines"][c]["spills"]) for c in W.EDM_REPLACED})
+    # SF22 a 24-hour block contains discharge when any part of a discharge falls within it
+    ok("SF22.procedure defines block membership", "A block contains discharge when any part of a discharge falls within it" in flat)
+    starts = {c: count_starts(pooled[c]) for c in st}
+    moved = sorted(c for c in st if starts[c] != g["lines"][c]["spills"])
+    ok("SF22.starts-only reading moves Marram End and Hagworth Wold only, each down",
+       moved == ["SPS0415", "SPS0419"] and all(starts[c] < g["lines"][c]["spills"] for c in moved),
+       {c: (starts[c], g["lines"][c]["spills"]) for c in moved})
+    ok("SF22.the call does not read the count", K not in moved)
     summed = {c: sum(b - a for a, b in pooled[c]) / 3600.0 for c in st}
     ok("SF12.overlap counted once moves every replaced overflow", all(summed[c] - g["lines"][c]["hours"] >= 1.5 for c in W.EDM_REPLACED),
        {c: round(summed[c] - g["lines"][c]["hours"], 2) for c in W.EDM_REPLACED})
@@ -227,6 +336,7 @@ def run(tgt, S, g, info, figs):
     def daylen(d):
         return 23.0 if d == dt.date(2026, 3, 29) else 25.0 if d == dt.date(2026, 10, 25) else 24.0
 
+    mean_moves = {}
     for c in st:
         days = defaultdict(list)
         for s, cc in g["serial_site"].items():
@@ -241,6 +351,10 @@ def run(tgt, S, g, info, figs):
         ok("SF13.no day with two partial monitors %s" % c,
            not [d for d, v in days.items() if len(v) > 1 and max(v) < daylen(d) - 0.05])
         ok("SF13.at most 100 %s" % c, op <= 100.0 + 1e-9, op)
+        mean = sum(sum(v) / len(v) for v in days.values()) / 87.6
+        mean_moves[c] = "%.1f" % mean != "%.1f" % op
+    ok("SF13.a mean across monitors moves only replaced overflows", not [c for c in st if mean_moves[c] and c not in W.EDM_REPLACED],
+       mean_moves)
     # SF18 to SF20 the monitor mapping
     ok("SF18.mapping recovers every retired serial", all(g["serial_site"][old] == code for code, (old, a, b) in W.EDM_REPLACED.items()))
     ratios = [v["scores"][1][0] / v["scores"][0][0] for v in g["evidence"].values()]
@@ -272,18 +386,39 @@ def run(tgt, S, g, info, figs):
             L1 = g["lines"][c]
             ok("SF20.register serial whole where nothing was replaced %s" % c,
                cur_only[c] == (L1["spills"], "%.1f" % L1["hours"], "%.1f" % L1["operational"]))
-    # SF21 months in UK local time against UTC months
+    # SF21 the discharge log's clock: the data force UK local time, and reading it as UTC moves no graded figure
+    naive = defaultdict(list)
+    for r in G.read_csv(os.path.join(tgt, F["edm_log"])):
+        naive[r["monitor_serial"]].append(((dt.datetime.strptime(r["discharge_start"], "%d/%m/%Y %H:%M:%S") - G.T0).total_seconds(),
+                                           (dt.datetime.strptime(r["discharge_end"], "%d/%m/%Y %H:%M:%S") - G.T0).total_seconds()))
+    off = {"winter": [], "summer": []}
+    share = {"local": {"winter": [0, 0], "summer": [0, 0]}, "utc": {"winter": [0, 0], "summer": [0, 0]}}
+    for ser, recs in naive.items():
+        al = np.array(sorted(x for x, y in alarms[st[g["serial_site"][ser]]["rtu"]]))
+        for (a, b), (ca, cb) in zip(sorted(recs), sorted(g["log"][ser])):
+            season = "summer" if G.BST0 <= ca < G.BST1 else "winter"
+            near = al[(al > a - 2 * 3600) & (al <= a + 600)]
+            if len(near):
+                off[season].append(a - near[np.argmin(np.abs(a - near - (3600 if season == "summer" else 0)))])
+            for how, t in (("local", ca), ("utc", a)):
+                j = np.searchsorted(al, t)
+                share[how][season][0] += int(j > 0 and 0 <= t - al[j - 1] <= 300)
+                share[how][season][1] += 1
+    w, sm = float(np.median(off["winter"])), float(np.median(off["summer"]))
+    ok("SF21.winter offset to the UTC alarms about a minute", 0 <= w <= 300, w)
+    ok("SF21.summer offset to the UTC alarms about an hour", 3600 <= sm <= 3900, sm)
+    fr = {h: {k: v[0] / v[1] for k, v in d.items()} for h, d in share.items()}
+    ok("SF21.summer discharges meet the alarms only on local time", fr["local"]["summer"] >= 0.8 and fr["utc"]["summer"] <= 0.05
+       and fr["local"]["winter"] >= 0.9 and fr["utc"]["winter"] >= 0.9, fr)
+    ss_n, _ = G.map_monitors(st, naive, g["mlist"], alarms, restrict=True)
+    ok("SF21.read as UTC every retired serial still lands on its overflow", all(ss_n[o] == c for c, (o, i, r) in W.EDM_REPLACED.items()))
     for c in st:
-        mu = [0.0] * 12
-        for a, b in G.union(pooled[c]):
-            t = a
-            while t < b:
-                d = G.T0 + dt.timedelta(seconds=t)
-                nm = dt.datetime(d.year + (d.month == 12), d.month % 12 + 1, 1)
-                e = min(b, (nm - G.T0).total_seconds())
-                mu[d.month - 1] += (e - t) / 3600
-                t = e
-        ok("SF21.local and UTC months agree %s" % c, ["%.1f" % x for x in mu] == ["%.1f" % x for x in g["lines"][c]["months"]])
+        nv = [x for s_, cc in g["serial_site"].items() if cc == c for x in naive.get(s_, [])]
+        gold_m = ["%.1f" % x for x in g["lines"][c]["months"]]
+        ok("SF21.read as UTC the count, hours and every month cell are unchanged %s" % c,
+           G.count_1224(nv) == g["lines"][c]["spills"] and "%.1f" % hours(nv) == "%.1f" % g["lines"][c]["hours"]
+           and ["%.1f" % x for x in months_local(nv)] == gold_m and ["%.1f" % x for x in months_utc(nv)] == gold_m)
+        ok("SF21.UTC months on the converted log agree %s" % c, ["%.1f" % x for x in months_utc(pooled[c])] == gold_m)
     ok("asks.Gallowfen monitor never replaced", K not in W.EDM_REPLACED)
     ok("asks.monthly hours sum to the year", all(abs(sum(g["lines"][c]["months"]) - g["lines"][c]["hours"]) < 1e-6 for c in st))
     ok("asks.no discharge in the repeated October hour", not any(
@@ -319,6 +454,10 @@ def run(tgt, S, g, info, figs):
        and alarm_types["OVERFLOW OPERATING"] < 0.6 * sum(alarm_types.values()), alarm_types)
     wo_rows = G.read_csv(os.path.join(tgt, F["workorders"]))
     wo_txt = " ".join(" ".join(r.values()) for r in wo_rows).lower()
+    notes = Counter(r["technician_notes"] for r in wo_rows)
+    ok("realism.technician notes vary", notes.most_common(1)[0][1] <= 0.08 * len(wo_rows) and len(notes) >= 0.4 * len(wo_rows),
+       notes.most_common(3))
+    ok("realism.closure codes from the system's list", {r["closure_code"] for r in wo_rows} <= {"COMPLETE", "NFF", "ATTENDED", "SECURED"})
     ok("realism.work orders name no fault at Gallowfen", not re.search(r"block|restrict|rising main|ragg|impeller|drawdown|"
                                                                         r"under ?perform|low flow|duty point", wo_txt))
     ok("dates.work orders inside 2026", all("2026-01-01" <= r["completed"] <= "2026-12-31" for r in wo_rows))

@@ -68,9 +68,10 @@ and distractors. Provenance in `metadata.json`.
 
 A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the
 pump the telemetry shows running, finds every station at or above its permitted flow and self-reports no
-overflow (or, screening dry-day spills, reports the groundwater-fed Wold station), because Gallowfen's
-pumps, on a part-blocked rising main, keep running while delivering a little over half of their duty, which
-shows only in Gallowfen's own wet well fill and draw times between the duty pump's control levels.
+overflow (or, timing each station's drawdown without the inflow or screening dry-day spills, reports the
+groundwater-fed Wold station), because Gallowfen's pumps, on a part-blocked rising main, keep running while
+delivering a little over half of their duty, which shows only in Gallowfen's own wet well fill and draw times
+between the duty pump's control levels, the fill timing the inflow that the drawdown alone leaves in.
 
 ## Survivor anatomy
 
@@ -89,9 +90,9 @@ Reflex: The field's desk test for a pass forward condition at an unmetered stati
 telemetry shows running, cross-checked against a rising main meter where one is fitted; it sits at rung 0 and files
 none, every running pump rated at 1.17 to 1.24 times its permitted flow, Gallowfen's at 85.3 against 72.
 
-Back-test: The textbook route validates: at the three metered stations the meters read 117.8, 83.8 and 66.6 l/s
-while their overflows spilled, within 0.6 to 2.9 per cent of the rated duties of 118.5, 86.3 and 67.1, so a solver
-who checks the rated duty against the only measured flows in the pack finds it confirmed.
+Back-test: The textbook route validates: at the three metered stations the meters read 118, 84 and 67 l/s while
+their overflows spilled, within 0.4 to 2.7 per cent of the rated duties of 118.5, 86.3 and 67.1, so a solver who
+checks the rated duty against the only measured flows in the pack finds it confirmed.
 
 Second use: Every file the decisive step reads is in the pack for its own reason: the telemetry historian carries
 the overflow alarms, the high level alarms, the comms failures and the kiosk door alarms the operations team works
@@ -99,16 +100,17 @@ from and is read by rung 0 to see which pump ran; the asset register's Pumping s
 monitor serials, the control and alarm levels, the weir and the rising main for every station; nothing ships only
 for the decisive step.
 
-Shock: Gallowfen is at neither end of any shipped statistic a solver can sort: 12 spills (tied eleventh of fourteen),
-20.4 hours, no dry-day spill, 14 high level alarms (eleventh), run hours, starts per day and spills per 100 mm of
-rain all second from the bottom with another station below, rated duty against permitted flow fourth of fourteen
-at 1.185, its permitted flow and rated duty third largest; only the delivered rate, which no file holds, puts it
-apart.
+Shock: Gallowfen is at neither end of any shipped statistic a solver can sort: 12 spills (tenth of fourteen), 20.4
+hours, no dry-day spill, 14 high level alarms (tenth), run hours per day fourth, starts per day fifth, spills per
+100 mm of rain eleventh, rated duty against permitted flow fourth of fourteen at 1.185, its permitted flow and rated
+duty third largest; on the drawdown timed without the inflow (rung 0b) Hagworth Wold, not Gallowfen, is the
+outlier; only the delivered rate, which no file holds, puts Gallowfen apart.
 
 Pins: The WHAT is filed in the organisation's own genre: condition 2.3.1 of each permit in the consents register
 (the flow, passed forward to the rising main, before the overflow may discharge), WW-ENV-PR-014 (the reporting
-year in UK local time, the 12/24 count per overflow, duration with a period counted once, the operational hours
-of the year, one overflow per self-report); no filed sentence says how a station's pass forward flow is
+year in UK local time, the 12/24 count per overflow with a block counted when any part of a discharge falls in it,
+duration with a period counted once, the operational hours of the year, one overflow per self-report); no filed
+sentence says how a station's pass forward flow is
 established, names a pump's delivered rate, a drawdown, a wet well volume or a meter, and deleting any one of them
 leaves the call forced by the records.
 
@@ -124,9 +126,11 @@ leaves the call forced by the records.
    converting the four stations held in m3/h; at the three metered stations read the rising main meter over the
    discharge.
 5. Every running pump is rated at 1.17 to 1.24 times its station's permitted flow (Gallowfen 85.3 against 72) and
-   the meters read 117.8, 83.8 and 66.6 l/s against 101, 73 and 56 while their overflows spilled; no overflow
+   the meters read 118, 84 and 67 l/s against 101, 73 and 56 while their overflows spilled; no overflow
    breached condition 2.3.1. A solver who distrusts that and screens the discharges for an operating fault instead
-   takes the procedure's dry-day annex and finds dry-day spills at Hagworth Wold alone (71 of them).
+   times each station's drawdown from `pump_event` and the register's levels, which files Hagworth Wold lowest by
+   far (12 l/s against 31), or takes the procedure's dry-day annex and finds dry-day spills at Hagworth Wold alone
+   (110 of them).
 
 Ends on: none, no overflow self-reported (or Hagworth Wold on the dry-day screen)
 
@@ -152,7 +156,9 @@ Layer 1: The telemetry historian in UTC beside the monitoring platform in UK loc
 their last pump events after a comms loss (exact duplicates in `pump_event`); the same comms losses dropping the
 fifteen-minute level polls; duties held in l/s at ten stations and m3/h at four; control levels in mAOD in the
 register against levels above the wet well floor in the telemetry; three identifiers for one station (permit and
-site id, RTU number, station code); monitor outages splitting a discharge into several records. Each is written by
+site id, RTU number, station code); monitor outages splitting a discharge into several records; the meter
+historian's quality codes (no value through a comms loss, the historian's estimate while a transmitter was faulted,
+the verification window, the empty-pipe detector's suspect spells). Each is written by
 the system that produces the file and none moves the call (the R2 assertions).
 
 Layer 2: The family is `field_method`: the flow a pumped station passes forward is measured where it is not metered,
@@ -175,13 +181,14 @@ the flow to reach, the procedure counts spills, defines dry days and names the s
 of them gives the default path's none or Hagworth Wold. The estimator family the method leaves open (median, mean or
 trimmed mean of the cycles; the off-time before each run or the mean of the two either side; all cycles or night
 cycles; the register's control levels or the levels the outstation logs at each start and stop: 24 members) spreads
-Gallowfen's rate over 47.88 to 48.29 l/s and any station's over 0.55 l/s at most, every member on the golden's
+Gallowfen's rate over 47.88 to 48.29 l/s and any station's over 0.58 l/s at most, every member on the golden's
 whole figure.
 
 Analyst test: Yes: a strong analyst who drops the re-sent events, converts every duty and clock, reads every
 condition and clause correctly and checks each spill against the duty of the pump the telemetry shows running (the
-meter where fitted) files none, no overflow self-reported, or on the dry-day screen Hagworth Wold; both are wrong,
-and the step that lands Gallowfen is a measurement the data support and no sentence asks for.
+meter where fitted) files none, no overflow self-reported; timing the drawdown without the inflow, or on the dry-day
+screen, it files Hagworth Wold; all are wrong, and the step that lands Gallowfen is a measurement the data support
+and no sentence asks for.
 
 Estimand: Population, the fourteen pumping station storm overflows on the consents register, every one under
 event duration monitoring; outcome, whether the overflow discharged in 2026 while its station was passing forward
@@ -210,6 +217,7 @@ before onset, which this build keeps out of the decisive step.
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 0 rated duty of the running pump (meter where fitted): none | the register's duty column | `Duty flow` | the field's desk test | the three meters confirm it | none | duty against the permit, one comparison | no | readable |
+| 0b drawdown from the pump-on time alone (no inflow): Hagworth Wold lowest, three short | no sentence names it | `pump_event` and the register's levels | the drawdown test as it is done on site, read off the telemetry | the three meters refute it | none | a volume over one time | no | readable |
 | 1 dry-day screen: Hagworth Wold | section 6 of the procedure defines it | rain by radar zone | a screen for operating faults | none | none | a filter | no | readable |
 | 2 most 12/24 spills: Marram End | section 3 counts them | none | the frequent-spiller reflex | none | none | a sort | no | readable |
 | 3 (decisive) delivered rate from each station's wet well cycles: Gallowfen | no sentence names a delivered rate, a cycle or a volume | no column holds a rate; the step joins cycle timings to wet well geometry | rung 0's duty is the reflex and it files none | the meters agree with the duty and with the cycles at their own stations, so they rank nothing | dropping the re-sent events and converting units leaves the duty in place | a volume over two times per cycle, then a median over thousands of cycles per station | the telemetry and the register carry alarms, serials and levels for their own uses | silent |
@@ -219,12 +227,26 @@ before onset, which this build keeps out of the decisive step.
 | Rung | Route (in `generator/routes.py`) | Files | Refused by |
 |---|---|---|---|
 | 0 | `rated_check` (`R1` in the code): the running pump's duty, the meter at the three metered stations | none: duties 1.17 to 1.24 times the permits, meters 117.8, 83.8, 66.6 against 101, 73, 56 | the cycles: Gallowfen's pumps move 48 l/s, not 85.3 |
-| 1 | `dry_day_spills` (`R0`): the procedure's dry-day annex | Hagworth Wold, 71 dry-day spills, every other overflow none | the station was pumping 36 l/s against a permitted 31 through them: groundwater, not a pass forward failure |
+| 0b | `naive_drawdown`: the volume between the duty pump's control levels over the pump-on time alone; the median of every run, of the night runs, or the 90th percentile | Hagworth Wold, far the lowest: 12.2 l/s against 31 (0.39 of its permit; 0.44 at night, 0.48 at the 90th percentile), then Gallowfen 39.5 against 72 (0.55; 0.59 at night, 0.59 at the 90th percentile) and Marram End 15.0 against 16 (0.94; above it at night); the other eleven clear their permits at 1.02 to 1.10 | Hagworth Wold's groundwater runs into the well through every cycle (its fill-and-draw rate is 36 l/s against 31); the meters read 9 to 14 per cent above the pump-on route at their own stations; adding back the inflow timed from the fill before each run gives the golden |
+| 1 | `dry_day_spills` (`R0`): the procedure's dry-day annex | Hagworth Wold, 110 dry-day spills, every other overflow none | the station was pumping 36 l/s against a permitted 31 through them: groundwater, not a pass forward failure |
 | 2 | the high spiller (`R2`): the most 12/24 spills and hours | Marram End, 57 spills and 198.2 hours | Marram End delivers 19 l/s against 16 |
 | 3 (decisive) | `delivered` in `generator/golden.py`: each station's median cycle rate against its permit | Gallowfen, 48 l/s against 72 (0.666 of the permit); the next lowest Sallowholme 57 against 50 (1.139) | |
 
+Why rung 0b is the measurement a strong solver reaches for first: the drawdown test is how a station's pumping
+rate is checked on site, where the crew stops the inflow or reads it as negligible and times the well down between
+two levels, so a solver who distrusts the nameplate and turns to `pump_event` and the register's levels times the
+pump-on spells and divides the volume by them. On this network the route is credible: eleven stations clear their
+permits on it, and the three it flags include the station with the slowest drawdowns by far, Hagworth Wold, whose
+chalk groundwater runs into the sewer all year and into its wet well through every cycle (the observation borehole
+and its dry-day spills say why). A solver who keeps the route and names its outlier self-reports Hagworth Wold, the
+dry-day screen's answer too; one who reports every station it flags names three overflows. What refutes it is the
+fill before each run: timing it gives the inflow the drawdown leaves in, and adding it back puts Hagworth Wold at 36
+l/s against 31 and Gallowfen alone below its permit. The meters, 9 to 14 per cent above the pump-on route at their
+own stations, are the other way out (asserted in `checks.py`, `rung0b.` labels, on every build).
+
 Separation: Gallowfen sits fourth of fourteen on rung 0's headroom (rated duty over permitted flow 1.185, against
-1.173 to 1.235), has no dry-day spill on rung 1 and is eleventh on rung 2's spill count; the final margin is 1.139
+1.173 to 1.235), is second to Hagworth Wold on rung 0b by 0.16 of a permit (0.15 at night, 0.10 at the 90th
+percentile), has no dry-day spill on rung 1 and is tenth on rung 2's spill count; the final margin is 1.139
 against 0.666, a factor of 1.71. The reflex routes priced in `routes.py` (run hours, starts per day, run per start,
 hours per spill, rain before onset, spills per 100 mm, high level alarms and their hours and their rate per spill,
 call-outs, work orders) never put Gallowfen alone at either end (asserted).
@@ -245,7 +267,7 @@ call-outs, work orders) never put Gallowfen alone at either end (asserted).
 | SF10 | "the flow its permit sets" | `pass_forward_ls` | the condition's text | identical on all fourteen permits | same call |
 | SF11 | "spills counted as our reporting procedure counts them" | the 12/24 count on the overflow's discharges, every monitor pooled | 12/24 per monitor serial, summed | moves the asks at nine or more overflows, never the call | WW-ENV-PR-014 section 3: "Spills are counted for each storm overflow" |
 | SF12 | "hours of discharge" | the union of the overflow's records | the records summed; one unit kept through a handover | summed adds 1.5 hours or more at every replaced overflow | WW-ENV-PR-014 section 4: "any period of discharge counted once" |
-| SF13 | "the percentage of the year its discharges were monitored" | each local day's most hours any of its monitors reported, over 8,760 | the hours summed across monitors; each day capped at 24 | the capped sum equals the golden; a 24-hour cap rounds the same at every overflow | WW-ENV-PR-014 section 5: "the percentage of the hours in the reporting year during which its discharges were being monitored" |
+| SF13 | "the percentage of the year its discharges were monitored" | each local day's most hours any of its monitors reported, over 8,760 | the hours summed across monitors; each day capped at 24; the mean of its monitors' hours | the capped sum equals the golden; a 24-hour cap rounds the same at every overflow; the mean moves the eleven replaced overflows by 0.1 or 0.2 (an hour two monitors watched was monitored, not half monitored) | WW-ENV-PR-014 section 5: "the percentage of the hours in the reporting year during which its discharges were being monitored" |
 | SF14 | the volume between control levels | the register's duty start and stop levels | the levels the outstation logs at each start and stop | same whole l/s at every station | same call |
 | SF15 | the cycle estimator | median of each cycle's volume over on-time plus volume over the off-time before it | mean, trimmed mean; mean of the two off-times; night cycles | 24 members, Gallowfen 47.88 to 48.29 | same call |
 | SF16 | the metered stations | the cycles, as everywhere | the meter | same whole l/s at all three | same call |
@@ -253,7 +275,8 @@ call-outs, work orders) never put Gallowfen alone at either end (asserted).
 | SF18 | which overflow a retired serial watched | the station whose overflow alarms its discharges match most closely, among those whose register monitor went in the week before it retired | the handover week's discharges against the new units' | every serial placed the same way, the runner-up at 0.55 of the best or less | same call (asks only) |
 | SF19 | the candidate set for a retired serial | the batch whose register installs fall in the nine days before its retirement | every station | each retirement follows exactly one batch, its stations in distinct radar zones | same call (asks only) |
 | SF20 | "each storm overflow" in the return | every serial the platform holds for the overflow | the serial the register lists today | the register serial alone misses spills, hours and operational time at all eleven replaced overflows | WW-ENV-PR-014 sections 3 to 5 count, time and monitor "each storm overflow" |
-| SF21 | "each month" in the chart | UK local months | UTC months | every cell the same at one decimal | same call |
+| SF21 | the discharge log's clock (the chart's months, the count, the hours, the serial mapping) | UK local time, converted | the log read as UTC | no graded figure moves: every count, every hours figure and every chart cell is the same at one decimal, and every retired serial still lands on its overflow (the batch carries it); only the summer discharges stop meeting the alarms, 0 of 101 within five minutes of one against 99 of 101 on local time | the data: the log's starts sit about a minute after the UTC overflow alarms in winter and about an hour after them in summer |
+| SF22 | a 24-hour block "contains discharge" | any part of a discharge falls within it | only a discharge that starts in it | Marram End 54 spills against 57 and Hagworth Wold 29 against 30, every other overflow unchanged, the call untouched | WW-ENV-PR-014 section 3: "A block contains discharge when any part of a discharge falls within it." |
 
 ## Closure table
 
@@ -267,8 +290,8 @@ call-outs, work orders) never put Gallowfen alone at either end (asserted).
 | 6 | Denominator | operational time over the year's 8,760 hours | filed in section 5 (the hours in the reporting year) |
 | 7 | Weighting | the median over a station's cycles | C1: the 24-member estimator family gives the same whole figure |
 | 8 | Window length | every 2026 cycle | C1: night-only and all-cycle windows agree |
-| 9 | Boundary inclusivity | strictly less than the permit's flow | C1: no station within 1 l/s |
-| 10 | Rounding path | rates rounded once to whole l/s, hours and percentages once to a decimal | asserted: delivered rates 0.19 l/s or more inside their bins across the family, hours 35 seconds or more from their edges, operational time 0.016 of a point or more above one |
+| 9 | Boundary inclusivity | strictly less than the permit's flow; a 24-hour block counts when any part of a discharge falls in it | C1: no station within 1 l/s; the block filed in section 3 (SF22) |
+| 10 | Rounding path | rates rounded once to whole l/s, hours and percentages once to a decimal | asserted: delivered rates 0.17 l/s or more inside their bins across the family, hours 26 seconds or more from their edges, operational time 0.015 of a point or more above one |
 | 11 | Tie-break | none needed | C1: no tie at any step |
 | 12 | Maturity and censoring | a complete year | C1: every record closes inside 2026 |
 | 13 | Order of operations | pool the overflow's serials, merge, then count and time | filed per overflow in sections 3 and 4; the per-serial order differs (SF11, SF12) |
@@ -291,15 +314,16 @@ forward is established. Every reading of the terms (SF1 to SF10) gives the same 
 by the data: the records time every pump cycle, the register gives every wet well's volume between its control
 levels, and the 24 reasonable cycle estimators all print Gallowfen at 48 l/s against 72 and every other station
 above its permit, while the rated duty is a nameplate, not a flow passed forward. The asks' terms (SF11 to SF13,
-SF20, SF21) are each fixed by a sentence of WW-ENV-PR-014 executed literally on the overflow, and the mapping of the
-retired serials (SF18, SF19) converges on two routes.
+SF20, SF22) are each fixed by a sentence of WW-ENV-PR-014 executed literally on the overflow, the log's clock (SF21)
+by the data with no graded figure moving either way, and the mapping of the retired serials (SF18, SF19) converges
+on two routes.
 
 ## Oracles
 
 - The three rising main meters: they confirm the rated duty at their own stations and agree with the cycle rate
   there too (SF16), so they tie on both paths and rank nothing; Gallowfen has none.
 - The overflow and high level alarms: they confirm that Gallowfen spilled (as every overflow did) and carry no
-  rate; Gallowfen's 14 high level alarms sit eleventh of fourteen.
+  rate; Gallowfen's 14 high level alarms sit tenth of fourteen.
 - The work orders: routine visits, pump services, meter verifications and high level call-outs at every station,
   none at Gallowfen naming a fault, a flow or a test.
 - The dry-day annex and the observation borehole: they explain Hagworth Wold's dry-day spills as groundwater, a
@@ -324,14 +348,15 @@ flow.
   September; Northwade Bank, Reedhaven, Thornmarsh and Swathe Drove in November) and the old units' 2026 history
   stays in the platform under serials the register no longer lists, retired with no site. The remedy is a
   reconstruction across two systems: each retired serial placed by its discharges against the telemetry's overflow
-  alarms within the batch its retirement date follows (runner-up 0.55 of the best or less).
+  alarms within the batch its retirement date follows (runner-up 0.58 of the best or less).
 - Hazard, D1 (an inexact copy under two keys): through each handover week both units record the same discharges
-  with their own thresholds, debounce and clocks; summed, they add 2.07 to 8.25 hours, one to three spills and 1.65
+  with their own thresholds, debounce and clocks; summed, they add 1.74 to 8.25 hours, one to three spills and 1.65
   to 2.22 points of operational time per replaced overflow.
-- Hazard, D8: the platform writes UK local time and the telemetry UTC; the mapping matches alarms only once the
-  clock is converted.
-- Stops per replaced overflow (Cressfleet as the example): the register's serial alone 5 spills, 10.8 hours,
-  29.5 per cent; every serial pooled without merging 18, 29.0, 99.3; the golden 16, 26.0, 97.4. Every figure of
+- Texture, D8: the platform writes UK local time and the telemetry UTC. Read as UTC, the log's summer discharges
+  stop meeting the overflow alarms, but the batch still places every retired serial and no count, hours figure or
+  chart cell moves (SF21, asserted), so the clock is texture here and not a device.
+- Stops per replaced overflow (Cressfleet as the example): the register's serial alone 5 spills, 10.6 hours,
+  29.5 per cent; every serial pooled without merging 17, 27.0, 99.3; the golden 15, 24.1, 97.4. Every figure of
   A1 to A4 moves at all eleven (asserted, SF20).
 - Pin test: the asking sentence pins the unit, the rounding, "counted as our reporting procedure counts them" and
   "the percentage of the year", and the procedure files per overflow, a period counted once and the year's hours;
@@ -357,21 +382,22 @@ Pair ceiling: 55.4 (cracker 75.3 on the call, mirror 35.6 off it, on 38, 7 and 5
 
 Mirror leakage: 42.9 per cent of ask weight
 
-Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest 0792f7ff14af7293
+Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest f94819412554bc16
 
 ## Leak sweep answered
 
 `leak.py task210 --asof 2027-01-15`: REVIEW, no LEAK. Fixed in the generator on the way: sweep 13's LEAK on
-"device" in `metadata.json`'s line for the monitor list, then its REVIEW on the telemetry line's description of
-the file's contents (each provenance line now names the source only); the procedure's "Telemetry and Monitoring
-team" renamed the Instrumentation team, so the procedure no longer carries the word telemetry.
+"device" in `metadata.json`'s line for the monitor list, then its REVIEW lines on provenance lines that described a
+file's contents or shared the note's vocabulary (each provenance line now names the source system only); the
+procedure's "Telemetry and Monitoring team" renamed the Instrumentation team, so the procedure no longer carries
+the word telemetry.
 
 - Sweep 3, the procedure carries 9 of the call's 13 distinctive words: they are the procedure's own subject (self-
   report, storm overflow, permit, condition, discharged, station); it names no overflow, figure or station.
   Harmless.
-- Sweep 4, 5 of 25 stump-paragraph terms in the procedure (register, dry-day, condition, company, record):
-  institutional words and the dry-day annex the wrong rung uses; the procedure is silent on pumps, rates, wet
-  wells, cycles, volumes, meters, serials and alarms (asserted in `checks.py`). Harmless.
+- Sweep 4, 4 of 25 stump-paragraph terms in the procedure (register, dry-day, condition, company): institutional
+  words and the dry-day annex the wrong rung uses; the procedure is silent on pumps, rates, wet wells, cycles,
+  volumes, meters, serials and alarms (asserted in `checks.py`). Harmless.
 - Sweep 12, four column names in the procedure (Investigation, Permit, issued, station): ordinary words of a
   procedure that happen to be headers elsewhere; it describes no file. Harmless.
 - Sweep 6 (INFO), the consents register and the improvement plan name the overflows: the register lists permits
@@ -382,13 +408,24 @@ team" renamed the Instrumentation team, so the procedure no longer carries the w
 ## Build record
 
 - Generator: `python3 build.py` from `task210/generator` (sim, pack, documents, golden, deliverables,
-  figures.json, metadata.json, submission.md, then 480 assertions in `checks.py`, 155 in `verify.py`, the ceiling
+  figures.json, metadata.json, submission.md, then 514 assertions in `checks.py`, 155 in `verify.py`, the ceiling
   sheet, target.zip). Two rebuilds byte-identical (target.zip, goldens, submission, metadata, figures.json).
+- Stage 4, pass 1: the leak reader found no leak and the judge returned DETERMINISTIC, APPROVE. Closed after it with
+  nothing graded moving (figures.json, the goldens, submission.md and metadata.json byte-identical): the 12/24 block
+  defined in section 3 (SF22), SF13's averaging reading recorded, SF21 rewritten to what the data show, the meter
+  historian's quality codes, the work orders' closure codes and technicians' notes, the planned visit round, and
+  rung 0b written into the ladder.
+- Stage 4, rung 0b hardened: Hagworth Wold's sewer takes chalk groundwater all year (`gw_base` in `world.py`, with
+  the late-winter rise on top and its impervious area cut to 1.0 ha), and the other stations' dry weather flows are
+  set so their drawdown without the inflow clears their permits; the pump rates are untouched, so every delivered
+  rate, permitted flow and met verdict and Gallowfen's whole line are as they were, while the spills, hours and
+  monitored percentages of eleven overflows moved (25 cells) and the golden, figures.json and submission.md were
+  regenerated. The monitors' draw stays 35, which clears every margin on the new hydraulics.
 - The monitors' own draw (`MON_VARIANT` 35 in `world.py`) was chosen from 260 by a search that kept every hours
   figure 7 seconds or more from its rounding edge, every operational percentage 0.013 of a point or more above
   one (a 24-hour cap on 25 October lowers it 0.011), no month cell on an exact half, no day with two part-reporting
   units, 1.5 hours or more of handover duplication at every replaced overflow and the register serial alone off the
-  golden on every figure. The delivered fractions are set so each station's 24-member estimator family sits 0.19
+  golden on every figure. The delivered fractions are set so each station's 24-member estimator family sits 0.17
   l/s or more inside one whole litre per second.
 - `figures_check.py` PASS (73 figures), `leak.py` REVIEW answered above, `guard.py heart` WARN (nearest 0.05),
   `guard.py surface` clean on personas, container audit clean on the pack and the goldens.
@@ -440,3 +477,18 @@ team" renamed the Instrumentation team, so the procedure no longer carries the w
 - 2026-11-04, the names Wendle Water, Holmfleet WRC and Ashby Leas: the Wendle, Holm and Ashby stems repeat task127
   and task464, and the people screen read Ashby as a first name; renamed Lindmarsh Water, Fleetmouth WRC and
   Scarrow Leas.
+- 2026-11-04, the 12/24 block's membership left to the reading (stage 4, pass 1): a block counting only where a
+  discharge starts gives Marram End 54 spills against the golden's 57; section 3 now says a block contains discharge
+  when any part of a discharge falls within it (SF22), nothing graded moved.
+- 2026-11-04, SF21 as first written compared UTC months on the converted log; the judge read that the log taken as
+  UTC shifts month-boundary cells and breaks the serial matching. Measured on the pack, neither reproduces (every cell
+  the same at one decimal, every serial placed by its batch); SF21 now asserts the log read as UTC moves no graded
+  figure and that the data force local time (a minute after the UTC alarms in winter, an hour in summer).
+- 2026-11-04, a meter historian writing G on all 105,120 rows and work orders closed with a handful of verbatim
+  outcome strings, on a routine round drawn by random kind (three electrical inspections a year at one station):
+  quality codes as a historian writes them, closure codes with each technician's own note, and a planned round.
+- 2026-11-04, rung 0b as first built (stage 4): the drawdown timed without the inflow flagged 13 of 14 stations
+  with Gallowfen alone at 0.55 of its permit against 0.92 or more, so a solver either distrusted it and corrected to
+  fill-and-draw or named its one outlier, and both landed the call. Hagworth Wold's year-round groundwater now makes
+  it the route's outlier (0.39 against Gallowfen's 0.55) and the other stations' dry weather flows were set so the
+  route flags three overflows, not thirteen.

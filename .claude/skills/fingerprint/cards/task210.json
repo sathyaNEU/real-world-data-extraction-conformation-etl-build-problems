@@ -42,7 +42,8 @@
     "pump duties held in litres per second at some stations and cubic metres per hour at others",
     "control levels in mAOD in the asset register against levels above the wet well floor in telemetry",
     "station identifiers that differ between the consents register, the telemetry outstations and the monitors",
-    "monitor outages that split one discharge into several records"
+    "monitor outages that split one discharge into several records",
+    "the meter historian's quality codes (no value through a comms loss, estimates while a transmitter was faulted, the verification window, suspect spells)"
   ],
   "stakeholder_role": "the company's wastewater environmental compliance manager",
   "role_family": "compliance_or_audit",
@@ -83,8 +84,8 @@
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "The decisive quantity is whether a unit had reached a filed capacity when each release began, and that capacity is read as the unit's rated output times its running state; a unit throttled downstream of its rating keeps its running state while delivering far less, which only a volume balance on its own storage between its control levels, timed from its own starts and stops, shows, so every screen built on the external driver or on the rated output clears the unit that released before reaching the capacity.",
-  "driver_concrete": "Each 2026 storm overflow spill breaches its permit only if it began while the pumping station was passing forward less than its permitted flow, and at unmetered stations the pass forward is read as the running pump's rated duty; one station's rising main is part-blocked, so its pumps run but deliver a little over half of their duty, which shows only in its wet well's fill and draw times between the duty start and stop levels, while the dry-day screen names the groundwater-fed station and the rated-duty check names none.",
-  "stump": "A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the pump the telemetry shows running and self-reports no overflow (or counts dry-day spills and reports the groundwater-fed station), because a pump on a part-blocked rising main keeps running while delivering only a little over half of its duty, which shows only in its own wet well's fill and draw times between the control levels.",
+  "driver_concrete": "Each 2026 storm overflow spill breaches its permit only if it began while the pumping station was passing forward less than its permitted flow, and at unmetered stations the pass forward is read as the running pump's rated duty; one station's rising main is part-blocked, so its pumps run but deliver a little over half of their duty, which shows only in its wet well's fill and draw times between the duty start and stop levels, while the drawdown timed without the inflow and the dry-day screen both name the groundwater-fed station, whose sewer takes chalk groundwater all year, and the rated-duty check names none.",
+  "stump": "A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the pump the telemetry shows running and self-reports no overflow (or, timing each station's drawdown without the inflow or counting dry-day spills, reports the groundwater-fed station), because a pump on a part-blocked rising main keeps running while delivering only a little over half of its duty, which shows only in its own wet well's fill and draw times between the control levels, the fill timing the inflow the drawdown alone leaves in.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task464": "task464 rebuilds the flow through each part of a branching line as the net of the meters beyond it to price a loss that grows with its square; this build measures a pump's delivered rate from its own wet well's fill and draw times to test whether a permitted pass forward flow was reached when an overflow spilled.",

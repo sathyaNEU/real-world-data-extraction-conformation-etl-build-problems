@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Self-report the Gallowfen PS storm overflow (permit EPRWW4412BK, condition 2.3.1): it discharged in 2026 while its station passed forward 48 l/s against the 72 l/s its permit sets.** Not none: Gallowfen's running pump is rated at 85.3 l/s but delivers 48. Not Hagworth Wold, whose dry-day discharges came with the station pumping at its full rate. Not Marram End, the most frequent spiller (57 spills), whose station passes forward more than its permitted flow.
+**Self-report the Gallowfen PS storm overflow (permit EPRWW4412BK, condition 2.3.1): it discharged in 2026 while its station passed forward 48 l/s against the 72 l/s its permit sets.** Not none: Gallowfen's running pump is rated at 85.3 l/s but delivers 48. Not Hagworth Wold, whose wet well draws down slowly because groundwater runs in through every cycle, and whose pumps deliver 36 l/s against the 31 its permit sets through its dry-day discharges. Not Marram End, the most frequent spiller (57 spills), whose station passes forward more than its permitted flow.
 
 ## 2. Critical Components
 
@@ -35,20 +35,20 @@
 ### overflow_return_lines_2026.csv
 
 1. One line per storm overflow, in permit order:
-   - EPRWW4407AX, Scarrow Leas PS storm overflow: permitted 35 l/s, passes forward 41 l/s, met the permit Yes, 17 spills, 32.0 hours of discharge, monitored 99.9 per cent
+   - EPRWW4407AX, Scarrow Leas PS storm overflow: permitted 35 l/s, passes forward 41 l/s, met the permit Yes, 15 spills, 28.9 hours of discharge, monitored 100.0 per cent
    - EPRWW4412BK, Gallowfen PS storm overflow: permitted 72 l/s, passes forward 48 l/s, met the permit No, 12 spills, 20.4 hours of discharge, monitored 99.5 per cent
-   - EPRWW4415CG, Hagworth Wold PS storm overflow: permitted 31 l/s, passes forward 36 l/s, met the permit Yes, 26 spills, 81.8 hours of discharge, monitored 99.9 per cent
+   - EPRWW4415CG, Hagworth Wold PS storm overflow: permitted 31 l/s, passes forward 36 l/s, met the permit Yes, 30 spills, 97.9 hours of discharge, monitored 99.9 per cent
    - EPRWW4419AD, Marram End PS storm overflow: permitted 16 l/s, passes forward 19 l/s, met the permit Yes, 57 spills, 198.2 hours of discharge, monitored 98.0 per cent
-   - EPRWW4421BN, Cressfleet PS storm overflow: permitted 39 l/s, passes forward 45 l/s, met the permit Yes, 16 spills, 26.0 hours of discharge, monitored 97.4 per cent
-   - EPRWW4426CF, Sallowholme PS storm overflow: permitted 50 l/s, passes forward 57 l/s, met the permit Yes, 15 spills, 20.0 hours of discharge, monitored 99.6 per cent
-   - EPRWW4428AT, Northwade Bank PS storm overflow: permitted 101 l/s, passes forward 118 l/s, met the permit Yes, 14 spills, 17.8 hours of discharge, monitored 98.5 per cent
+   - EPRWW4421BN, Cressfleet PS storm overflow: permitted 39 l/s, passes forward 45 l/s, met the permit Yes, 15 spills, 24.1 hours of discharge, monitored 97.4 per cent
+   - EPRWW4426CF, Sallowholme PS storm overflow: permitted 50 l/s, passes forward 57 l/s, met the permit Yes, 13 spills, 15.9 hours of discharge, monitored 99.8 per cent
+   - EPRWW4428AT, Northwade Bank PS storm overflow: permitted 101 l/s, passes forward 118 l/s, met the permit Yes, 11 spills, 15.1 hours of discharge, monitored 98.5 per cent
    - EPRWW4433BW, Brackenings PS storm overflow: permitted 23 l/s, passes forward 29 l/s, met the permit Yes, 14 spills, 29.0 hours of discharge, monitored 99.4 per cent
-   - EPRWW4437CQ, Thornmarsh PS storm overflow: permitted 73 l/s, passes forward 84 l/s, met the permit Yes, 13 spills, 21.9 hours of discharge, monitored 99.1 per cent
-   - EPRWW4440AH, Kettlewade PS storm overflow: permitted 28 l/s, passes forward 32 l/s, met the permit Yes, 17 spills, 28.2 hours of discharge, monitored 98.9 per cent
-   - EPRWW4444BR, Saltwade PS storm overflow: permitted 44 l/s, passes forward 52 l/s, met the permit Yes, 10 spills, 20.0 hours of discharge, monitored 100.0 per cent
-   - EPRWW4449CJ, Reedhaven PS storm overflow: permitted 19 l/s, passes forward 22 l/s, met the permit Yes, 21 spills, 34.6 hours of discharge, monitored 99.4 per cent
-   - EPRWW4452AM, Sedgefleet PS storm overflow: permitted 56 l/s, passes forward 67 l/s, met the permit Yes, 12 spills, 15.7 hours of discharge, monitored 97.7 per cent
-   - EPRWW4458BE, Swathe Drove PS storm overflow: permitted 37 l/s, passes forward 43 l/s, met the permit Yes, 12 spills, 23.0 hours of discharge, monitored 99.8 per cent
+   - EPRWW4437CQ, Thornmarsh PS storm overflow: permitted 73 l/s, passes forward 84 l/s, met the permit Yes, 13 spills, 19.7 hours of discharge, monitored 98.8 per cent
+   - EPRWW4440AH, Kettlewade PS storm overflow: permitted 28 l/s, passes forward 32 l/s, met the permit Yes, 17 spills, 23.3 hours of discharge, monitored 99.9 per cent
+   - EPRWW4444BR, Saltwade PS storm overflow: permitted 44 l/s, passes forward 52 l/s, met the permit Yes, 9 spills, 17.4 hours of discharge, monitored 100.0 per cent
+   - EPRWW4449CJ, Reedhaven PS storm overflow: permitted 19 l/s, passes forward 22 l/s, met the permit Yes, 20 spills, 31.5 hours of discharge, monitored 99.4 per cent
+   - EPRWW4452AM, Sedgefleet PS storm overflow: permitted 56 l/s, passes forward 67 l/s, met the permit Yes, 9 spills, 12.3 hours of discharge, monitored 99.7 per cent
+   - EPRWW4458BE, Swathe Drove PS storm overflow: permitted 37 l/s, passes forward 43 l/s, met the permit Yes, 11 spills, 20.9 hours of discharge, monitored 99.8 per cent
 
 ### spill_hours_by_month_2026.svg
 

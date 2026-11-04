@@ -25,6 +25,8 @@ def figures(g, info):
     f["tightest_delivered_ls"] = r0(g["delivered"][t])
     f["tightest_pff_ls"] = r0(g["pff"][t])
     f["dry_day_station"] = g["stations"]["SPS0415"]["name"]
+    f["dry_day_station_delivered_ls"] = r0(g["delivered"]["SPS0415"])
+    f["dry_day_station_pff_ls"] = r0(g["pff"]["SPS0415"])
     f["high_spiller"] = g["stations"]["SPS0419"]["name"]
     f["high_spiller_spills"] = g["lines"]["SPS0419"]["spills"]
     f["dry_day_spills_hagworth"] = g["routes"]["dry_day"]["SPS0415"]

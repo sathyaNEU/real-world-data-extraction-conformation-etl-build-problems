@@ -5,18 +5,18 @@ import os
 import pack
 
 COVERS = {
-    "telemetry": "SCADA historian export for the Marsh and Wolds pumping stations, 2026",
+    "telemetry": "SCADA historian export, Marsh and Wolds wastewater network, 2026",
     "edm_log": "event duration monitoring platform, discharge records for 2026 by monitor serial",
     "edm_status": "event duration monitoring platform, daily reporting hours by monitor serial, 2026",
     "edm_list": "event duration monitoring platform, monitor list as exported on 15 January 2027",
     "rain": "radar rainfall, fifteen-minute totals by radar zone, 2026",
-    "assets": "wastewater asset register extract for the Marsh and Wolds pumping stations, pumps and flow meters",
-    "consents": "consents register, storm overflow permits and their conditions as issued",
-    "meters": "rising main flow meters, fifteen-minute mean flow, 2026",
+    "assets": "asset management system extract, Marsh and Wolds wastewater network",
+    "consents": "consents database extract, storm overflow permits as issued",
+    "meters": "flow meter historian export, fifteen-minute means, 2026",
     "procedure": "procedure WW-ENV-PR-014, storm overflow event duration monitoring, annual return and self-reporting",
     "plan": "storm overflow improvement plan, schemes 2025 to 2030",
     "borehole": "observation borehole daily groundwater level, 2026",
-    "workorders": "pumping station work orders completed in 2026",
+    "workorders": "work management system, work orders completed in 2026, Marsh and Wolds",
 }
 DISTRACTORS = ["rain", "borehole", "plan", "workorders"]
 

@@ -95,10 +95,18 @@ def site_visits(S):
             arr += float(rng.uniform(0, 59))
             visits.append(dict(arr=arr, dep=arr + rng.uniform(*stay) * 60, task=task, outcome=outcome, day=day))
 
-        for _ in range(int(rng.integers(4, 9))):
+        # the planned round: wet well cleans through the year, one electrical inspection, one generator point test;
+        # odour complaints as they come in
+        cleans = int(rng.integers(2, 5))
+        for i in range(cleans):
+            day = _weekday(dt.date(2026, 1, 12) + dt.timedelta(days=int(i * 350 / cleans + rng.integers(0, 40))))
+            visit(day, ROUTINE[0][0], ROUTINE[0][1], (40, 150))
+        for kind in (1, 3):
+            day = _weekday(dt.date(2026, 1, 12) + dt.timedelta(days=int(rng.integers(0, 330))))
+            visit(day, ROUTINE[kind][0], ROUTINE[kind][1], (25, 120))
+        for _ in range(int(rng.integers(0, 3))):
             day = _weekday(dt.date(2026, 1, 5) + dt.timedelta(days=int(rng.integers(0, 352))))
-            kind = int(rng.choice(len(ROUTINE), p=[x[2] for x in ROUTINE]))
-            visit(day, ROUTINE[kind][0], ROUTINE[kind][1], (25, 150))
+            visit(day, ROUTINE[2][0], ROUTINE[2][1], (20, 60))
         first = _weekday(dt.date(2026, 2, 2) + dt.timedelta(days=int(rng.integers(0, 110))))
         second = _weekday(first + dt.timedelta(days=int(rng.integers(176, 192))))
         for day in (first, second):
@@ -302,18 +310,71 @@ def rainfall(tgt, S, info):
 
 
 def meters(tgt, S, info):
+    """The meter historian's fifteen-minute means with the quality it writes beside each: G good, M no value (the
+    outstation could not send), C the meter under test while the verification crew was on site, E estimated by the
+    historian from the pump's run state while the transmitter was faulted, S suspect (the empty-pipe detector
+    flickering as the main drains back after a long stop). None of them falls within two hours of a spill."""
     rows = []
     for k, st in enumerate(W.STATIONS):
         if not st["meter"]:
             continue
+        r = S["stations"][st["code"]]
         rng = np.random.default_rng([W.SEED, 13, k])
-        q = S["stations"][st["code"]]["meter_15"]
-        for i, v in enumerate(q):
+        q = r["meter_15"]
+        n = len(q)
+        vals = [v * (1 + rng.normal(0, 0.006)) if v > 0 else 0.0 for v in q]
+        qual = ["G"] * n
+        near = np.zeros(n, bool)
+        for a, b in r["spills"]:
+            near[max(0, int((a - 7200) // 900)): min(n, int((b + 7200) // 900) + 1)] = True
+        rng2 = np.random.default_rng([W.SEED, 14, k])
+
+        def window(lo_h, hi_h):
+            for _ in range(200):
+                i0 = int(rng2.integers(96, n - 200))
+                i1 = i0 + int(rng2.integers(lo_h * 4, hi_h * 4 + 1))
+                if not near[i0:i1 + 1].any() and all(x == "G" for x in qual[i0:i1 + 1]):
+                    return i0, i1
+            return None
+
+        for a, b in info["comms"][st["code"]]:
+            for i in range(int(a // 900), min(n, int(b // 900) + 1)):
+                if not near[i]:
+                    qual[i], vals[i] = "M", None
+        for v in r["visits"]:
+            if v["task"] == METER[0]:
+                for i in range(int(v["arr"] // 900), min(n, int(v["dep"] // 900) + 1)):
+                    if not near[i]:
+                        qual[i] = "C"
+        ev = r["events"]
+        run = np.zeros(n)
+        on = None
+        for (ts, p, sg) in ev:
+            if sg == 1:
+                on = ts
+            elif on is not None:
+                for i in range(int(on // 900), min(n, int(ts // 900) + 1)):
+                    run[i] += max(0.0, min(ts, (i + 1) * 900.0) - max(on, i * 900.0)) / 900.0
+                on = None
+        for _ in range(int(rng2.integers(1, 3))):
+            w = window(3, 9)
+            if w:
+                good = [x for x in vals[max(0, w[0] - 96):w[0]] if x and x > 0]
+                rate = float(np.median(good)) / max(float(np.median([x for x in run[max(0, w[0] - 96):w[0]] if x > 0] or [1])), 0.05) \
+                    if good else 0.0
+                for i in range(w[0], w[1] + 1):
+                    qual[i], vals[i] = "E", rate * run[i]
+        for _ in range(int(rng2.integers(2, 6))):
+            w = window(1, 3)
+            if w:
+                for i in range(w[0], w[1] + 1):
+                    qual[i] = "S"
+        for i in range(n):
             t = (T0 + dt.timedelta(minutes=15 * i)).strftime("%Y-%m-%dT%H:%M:%SZ")
-            val = v * (1 + rng.normal(0, 0.006)) if v > 0 else 0.0
-            rows.append((st["meter"], t, "%.1f" % val, "G"))
+            rows.append((st["meter"], t, "" if vals[i] is None else "%.1f" % vals[i], qual[i]))
     write_csv(os.path.join(tgt, FILES["meters"]), ["meter_tag", "interval_start_utc", "flow_ls_mean", "quality"], rows)
     info["meter_rows"] = len(rows)
+    info["meter_quality"] = {str(a): int(b) for a, b in zip(*np.unique([x[3] for x in rows], return_counts=True))}
 
 
 def cut(tgt, S):

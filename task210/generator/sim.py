@@ -93,8 +93,11 @@ def station_inflow(st, rain, diurnal, rng):
     doy = np.arange(MIN) / 1440.0
     winter = 1.0 + 0.10 * np.clip(np.cos(2 * np.pi * (doy - 30) / 365), 0, None)
     q = st["dwf"] * diurnal * winter + runoff
+    if st.get("gw_base", 0) > 0:
+        # chalk groundwater seeping into the sewer all year, highest in late winter
+        q = q + st["gw_base"] * (0.85 + 0.15 * np.cos(2 * np.pi * (doy - 44) / 365)) * st["rated"] * st["d"]
     if st["gw"] > 0:
-        # chalk groundwater: a smooth rise from late December, peaking mid February, gone by early April
+        # the late-winter rise: from late December, peaking mid February, gone by early April
         g = np.clip(np.cos(np.pi * (doy - 44) / 96), 0, None) ** 2 * (doy < 92)
         q = q + g * st["gw"] * st["rated"] * st["d"]
     noise = np.repeat(rng.normal(0, 0.035, MIN // 5 + 1), 5)[:MIN]

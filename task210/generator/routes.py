@@ -57,6 +57,8 @@ def rated_check(g, tgt):
     rows = G.read_csv(G.os.path.join(tgt, G.FILES["meters"]))
     mf = defaultdict(dict)
     for r in rows:
+        if r["quality"] != "G" or r["flow_ls_mean"] == "":
+            continue                                   # the historian's good values only
         t = (dt.datetime.strptime(r["interval_start_utc"], "%Y-%m-%dT%H:%M:%SZ") - G.T0).total_seconds()
         mf[r["meter_tag"]][int(t // 900)] = float(r["flow_ls_mean"])
     for code, st in stations.items():
@@ -131,6 +133,25 @@ def reflexes(g, tgt):
     return out
 
 
+def naive_drawdown(g):
+    """The drawdown test read off the telemetry without the inflow: the volume between the duty pump's control levels
+    over the pump-on time alone. Three ways a solver takes it: the median over every run, the median over the runs
+    that start between midnight and five in the morning (the low-flow hours a drawdown test is done in), and the 90th
+    percentile of the runs (the fastest drawdowns)."""
+    med, night, p90 = {}, {}, {}
+    for code, st in g["stations"].items():
+        e = g["events"][st["rtu"]]
+        V = st["area"] * (st["start"] - st["stop"]) * 1000.0
+        on, on_n = [], []
+        for k in range(len(e) - 1):
+            if e[k][2] == 1 and e[k + 1][2] == 0 and e[k][1] == e[k + 1][1] and 0 < e[k + 1][0] - e[k][0] <= 6 * 3600:
+                on.append(V / (e[k + 1][0] - e[k][0]))
+                if G.utc_to_local(e[k][0]).hour < 5:
+                    on_n.append(on[-1])
+        med[code], night[code], p90[code] = float(np.median(on)), float(np.median(on_n)), float(np.percentile(on, 90))
+    return med, night, p90
+
+
 def top(d, reverse=True):
     items = sorted(((v, k) for k, v in d.items() if v == v), reverse=reverse)
     return items[0][1], items
@@ -143,7 +164,10 @@ def ladder(g, tgt):
     spills = {c: g["lines"][c]["spills"] for c in g["stations"]}
     hours = {c: g["lines"][c]["hours"] for c in g["stations"]}
     rf = reflexes(g, tgt)
+    nd, nd_night, nd_p90 = naive_drawdown(g)
     return dict(dry_day=dd, dry_day_current=dd_cur, R0=top(dd)[0], R1=r1 or ["none"], R1_meter_flow=meter_flow,
+                naive=nd, naive_night=nd_night, naive_p90=nd_p90,
+                naive_flagged=sorted(c for c in nd if nd[c] < g["pff"][c]),
                 R2=top(spills)[0], R2_hours=top(hours)[0], spills=spills, hours=hours, R3=g["breach"], reflex=rf,
                 reflex_top={k: top(v)[0] for k, v in rf.items()},
                 reflex_bottom={k: top(v, reverse=False)[0] for k, v in rf.items()})

@@ -19,11 +19,12 @@ def write(task_dir, f):
     md.append("## 1. Final Recommendation\n")
     md.append("**Self-report the %s (permit %s, condition 2.3.1): it discharged in 2026 while its station passed "
               "forward %d l/s against the %d l/s its permit sets.** Not none: Gallowfen's running pump is rated at "
-              "%s l/s but delivers %d. Not %s, whose dry-day discharges came with the station pumping at its full "
-              "rate. Not %s, the most frequent spiller (%d spills), whose station passes forward more than its "
-              "permitted flow.\n" % (f["call"], f["call_permit"], f["call_delivered_ls"], f["call_pff_ls"],
-                                     f["call_rated_ls"], f["call_delivered_ls"], f["dry_day_station"], f["high_spiller"],
-                                     f["high_spiller_spills"]))
+              "%s l/s but delivers %d. Not %s, whose wet well draws down slowly because groundwater runs in through "
+              "every cycle, and whose pumps deliver %d l/s against the %d its permit sets through its dry-day discharges. "
+              "Not %s, the most frequent spiller (%d spills), whose station passes forward more than its permitted "
+              "flow.\n" % (f["call"], f["call_permit"], f["call_delivered_ls"], f["call_pff_ls"], f["call_rated_ls"],
+                           f["call_delivered_ls"], f["dry_day_station"], f["dry_day_station_delivered_ls"],
+                           f["dry_day_station_pff_ls"], f["high_spiller"], f["high_spiller_spills"]))
     md.append("## 2. Critical Components\n")
     md.append("1. Gallowfen's permit requires a pass forward flow of **%d l/s** before its overflow may discharge." % f["call_pff_ls"])
     md.append("2. Gallowfen's pumps deliver **%d l/s**, %d per cent of that flow, against a rated duty of **%s l/s**."
