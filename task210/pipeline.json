@@ -1,15 +1,15 @@
 {
  "task": "task210",
- "status": "PAUSED",
+ "status": "DRAWING",
  "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-11-04",
  "seed": "AD33 (a data-centre battery's January FCR-D offer under a warranty throughput cap); the seed's world is undrawable on this objective while task402 holds energy-systems-utilities/grid-reliability-outage-analysis in the window (ban.subdomain), so the build moved to Physical and Environmental Sciences: a limestone quarry's January haul allocation under the village noise limit",
  "stump": "The default path files 15 ADTs because it apportions MP1's energy to the pilot's average haul movement, about nine in ten of which stayed in the pit or behind the bund; only the route state built per movement (load face and tip from each truck's GPS track against the survey) isolates the Haul road 2 movement's energy, which allows 3.",
  "call": "3 articulated dump trucks on the Phase 4 haul road in January 2027 (4 over the 44.0 dB share)",
- "architecture": 1,
+ "architecture": 2,
  "loops": 0,
  "precut": "exit 0, 2026-11-04",
  "screens_prototype": "superseded: generator/screens.py over 24 redraws, results in generator/screens.json, asserted in generator/checks.py",
@@ -22,12 +22,14 @@
   "nearest": "0.06 task228; surface promotes task122 (0.080, same-driver signature, differentiated on the card)"
  },
  "judge": {
-  "verdict": "round 1 NOT_DETERMINISTIC on the main call (Gate C, margin_or_boundary_fragility: the baseline and the Phase 4 road's exposure); every ask reproduced; G and H pass",
-  "disposition": "round 1 SEND_BACK, read under determinism-check as a main-call Gate C repair inside the world: one fix pass, then one re-judge and one re-read; round 2 pending",
-  "report": "scratchpad t210/stage4/judge/judge_report.md (round 1); round 2 brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t210/stage4_r2/judge/BRIEF.md"
+  "verdict": "round 1 NOT_DETERMINISTIC on the main call (margin_or_boundary_fragility: the baseline under the haulage and the Phase 4 road exposure); round 2 DETERMINISTIC",
+  "disposition": "round 1 labelled SEND_BACK, read against the gate table as a main-call Gate C repair in the same world (G and H passing); round 2 FIX_NOW (a tolerance on five tonnes-per-running-hour cells, solution only)",
+  "gate_f": "round 1 blind derivation 7 trucks (per-fix physical model); round 2 blind derivation filed the golden 3 trucks (NNLS on face-by-tip routes from the telematics against the survey, the Phase 4 road read off the survey as Haul road 2's twin)",
+  "ruling": "architecture 1 spent in substance at stage 4 round 2: the judge's blind derivation reached the call (as task401 architectures 4 and 5); the round-1 geometry closure made the transfer exact and visible, so Gate F paid for what Gate C gained (determinism-check, the C1 converge move)",
+  "reports": "scratchpad t210/stage4 and t210/stage4_r2 (judge_report.md, derivation.md, reader_answers.md)"
  },
  "returned": [],
- "resume": "stage 4 round 2 running: the leak reader (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t210/stage4_r2/reader/BRIEF.md) and the determinism judge (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t210/stage4_r2/judge/BRIEF.md) spawned together by the parent on target.zip 14eba3dd. Next: collect both reports; APPROVE (or a FIX_NOW confined to wording, fixed in the generator with every free gate re-run) ships; any other verdict spends architecture 1 and the slot re-roots into another world.",
+ "resume": "Re-root at architecture 2 from stage 1, in another client domain, world, dataset and shell under Anomaly Detection & Diagnostics (one architecture per world: the quarry haul-noise world is spent). Architecture 1 (Ravensby Quarry, the Phase 4 haul allocation under the village noise share) was spent at stage 4 round 2: DETERMINISTIC with a wording FIX_NOW, but the judge's blind derivation filed the golden 3 trucks by NNLS on face-by-tip routes and the Phase 4 road's survey match to Haul road 2. Move its identity into the card's lineage at the new draw, register, commit DRAWN.",
  "approved": null,
  "delivered": null,
  "portal": null,

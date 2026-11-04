@@ -453,3 +453,9 @@ Measured by: generator/ceiling.py (independent readers over target/, scored agai
   of equal weight (redraw 21053); it now turns about the ticket's runs.
 - 2026-11-04, fix pass, payload stream 606 on the new haul: a tonnes-per-load cell 0.05 of a bin from an edge;
   stream 647 (every plant figure 0.159 of a bin or more).
+- 2026-11-04, architecture 1 (Ravensby Quarry, the Phase 4 haul allocation under the village noise share) spent at stage 4
+  round 2: the judge returned DETERMINISTIC with a solution-only FIX_NOW, but its blind derivation, written before the graded
+  blocks, filed the golden 3 trucks by fitting MP1's haulage energy per face-by-tip route from the telematics against the survey
+  and reading the Phase 4 road off the survey as Haul road 2's twin. The round-1 closure of the exposure fork (re-laying the
+  site so the forward road mirrors an observed one) made the transfer exact and visible: Gate F paid for what Gate C gained.
+  Re-root in another world.
