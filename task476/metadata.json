@@ -1,0 +1,128 @@
+{
+ "task": "task476",
+ "title": "2027 salvage marking under the board's salvage policy",
+ "setting": "A fictional family-owned timber company's tree farm in California's northern Sierra Nevada; every record is synthetic.",
+ "as_of": "2026-10-01",
+ "files": [
+  {
+   "path": "gis/stand_table_2026.csv",
+   "source": "Cinder Fork Timber Company GIS stand table, fictional; synthetic records",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 22,
+   "role": "input"
+  },
+  {
+   "path": "inventory/cfi_database.sqlite",
+   "source": "Cinder Fork Timber Company inventory database (FieldCruise backend), fictional; synthetic records",
+   "date": "2026-05-28",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": {
+    "cycle": 4,
+    "plot": 281,
+    "plot_visit": 1100,
+    "tree": 7913,
+    "tree_meas": 27106
+   },
+   "role": "input"
+  },
+  {
+   "path": "inventory/cfi_field_manual_rev2026.pdf",
+   "source": "Cinder Fork Timber Company field manual, fictional; synthetic document",
+   "date": "2026-04-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "inventory/plot_register.xlsx",
+   "source": "Cinder Fork Timber Company plot register, fictional; synthetic records",
+   "date": "2026-09-29",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "inventory/species_codes.csv",
+   "source": "Cinder Fork Timber Company species list with FIA codes (codes as published by the USDA Forest Service FIA program)",
+   "date": "2026-04-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 6,
+   "role": "input"
+  },
+  {
+   "path": "inventory/trf_cfi_remeasurement_2026.csv",
+   "source": "Tolan Ridge Forestry 2026 contract remeasurement export, fictional; synthetic records",
+   "date": "2026-09-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 7994,
+   "role": "input"
+  },
+  {
+   "path": "inventory/trf_height_revisit_2026-09.csv",
+   "source": "Tolan Ridge Forestry September 2026 return-visit export, fictional; synthetic records",
+   "date": "2026-09-21",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 515,
+   "role": "input"
+  },
+  {
+   "path": "markets/delivered_log_prices_2026q3.csv",
+   "source": "delivered log price sheet in the style of a regional mill posting, fictional; synthetic",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 8,
+   "role": "distractor"
+  },
+  {
+   "path": "operations/aerial_detection_survey_2025.csv",
+   "source": "aerial detection survey polygons in the style of the USDA Forest Service Region 5 survey, fictional; synthetic",
+   "date": "2026-02-10",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 10,
+   "role": "distractor"
+  },
+  {
+   "path": "operations/juniper_saddle_fire_report_2025.pdf",
+   "source": "Cinder Fork Timber Company fire report, fictional; synthetic document",
+   "date": "2025-10-17",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "operations/prescribed_burn_reports_2024.pdf",
+   "source": "Cinder Fork Timber Company burn unit reports, fictional; synthetic document",
+   "date": "2024-12-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  },
+  {
+   "path": "policy/salvage_marking_policy_2026.pdf",
+   "source": "Cinder Fork Timber Company board policy, fictional; synthetic document",
+   "date": "2026-08-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null,
+   "role": "input"
+  }
+ ],
+ "distractor_files": [
+  "operations/aerial_detection_survey_2025.csv",
+  "markets/delivered_log_prices_2026q3.csv"
+ ],
+ "distractors": [
+  {
+   "file": "operations/aerial_detection_survey_2025.csv",
+   "why": "insect activity mapped from aircraft by polygon in July 2025: a survey of discoloured crowns, not a plot measurement, and it predates the 2026 remeasurement"
+  },
+  {
+   "file": "markets/delivered_log_prices_2026q3.csv",
+   "why": "delivered log prices for the third quarter of 2026: a market sheet the board uses for sale planning; Policy 7.4 marks stands on measured basal area, not value"
+  }
+ ],
+ "deliverables": [
+  "tree_fates_2021_2026.csv",
+  "salvage_marking_2027.pdf"
+ ]
+}
