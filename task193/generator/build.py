@@ -1,184 +1,79 @@
-"""Build task193's pack, goldens and figures, then check and verify them."""
+"""Cut the bundle, compute the golden from it, write the deliverables, figures.json, metadata.json and submission.md,
+then run the generator's assertions and the independent verifier, and zip target/."""
 import json
 import os
 import shutil
+import sys
+import zipfile
 
-import numpy as np
-
-import world as W
-import pack
-import asks
 import docs
 import golden as G
-import deliver
+import pack as PK
 import postprocess as PP
+import sim
+import world as W
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 TGT = os.path.join(TASK, "target")
 GOLD = os.path.join(TASK, "golden")
+ZIP_STAMP = (2026, 11, 3, 7, 40, 0)
+
+
+def cut():
+    if os.path.isdir(TGT):
+        shutil.rmtree(TGT)
+    os.makedirs(TGT)
+    S = sim.run()
+    info = PK.cut(TGT, S)
+    docs.build(TGT, PK.FILES)
+    PP.normalize_pdf(os.path.join(TGT, PK.FILES["sap"]), b"D:20180322101500-05'00'", b"D:20180524083000-05'00'")
+    PP.normalize_pdf(os.path.join(TGT, PK.FILES["approval"]), b"D:20170911141000-05'00'", b"D:20170911141000-05'00'")
+    PP.normalize_pdf(os.path.join(TGT, PK.FILES["fieldproc"]), b"D:20210208093000-06'00'", b"D:20210208093000-06'00'")
+    PP.normalize_ooxml(os.path.join(TGT, PK.FILES["points"]), W.PEOPLE["hydrogeologist"], W.PEOPLE["hydrogeologist"],
+                       "2014-07-21T15:02:00Z", "2024-06-11T14:47:00Z", title="Marten Creek monitoring points", excel=True,
+                       company="Fieldstone Hydrogeology, LLC")
+    PP.normalize_ooxml(os.path.join(TGT, PK.FILES["inspect"]), W.PEOPLE["manager"], W.PEOPLE["manager"],
+                       "2024-01-23T16:10:00Z", "2026-10-16T20:31:00Z", title="Site inspections", excel=True)
+    return S, info
+
+
+def zip_target():
+    path = os.path.join(TASK, "target.zip")
+    names = sorted(os.listdir(TGT))
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for n in names:
+            zi = zipfile.ZipInfo("target/" + n, date_time=ZIP_STAMP)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            z.writestr(zi, open(os.path.join(TGT, n), "rb").read())
+    return path
 
 
 def main():
-    for d in (TGT, GOLD):
-        if os.path.isdir(d):
-            shutil.rmtree(d)
-        os.makedirs(d)
-
-    first = W.draw()
-    lines, people = pack.dispensings(first)
-    kept, rejected, switch_day, keys, new_keys = pack.apply_mess(lines, people)
-
-    counts = {}
-    a, b = pack.write_extracts(TGT, kept)
-    counts["dispensings_2023_2025.csv"] = a
-    counts["dispensings_2025_2026.csv"] = b
-    counts["package_index.csv"] = pack.write_package_index(TGT)
-    counts["product_register.csv"] = pack.write_product_register(TGT)
-    counts["screen_annexes.csv"] = pack.write_annexes(TGT)
-    counts["atc_text.csv"] = pack.write_atc_text(TGT)
-    counts["register_variable_documentation.csv"] = pack.write_variable_documentation(TGT)
-    counts["person_key_crosswalk.csv"] = pack.write_crosswalk(TGT, switch_day, keys, new_keys)
-    counts["person_register.csv"] = pack.write_person_register(TGT, people, keys, new_keys,
-                                                               switch_day, kept, rejected)
-    counts["person_register_2025Q4.csv"] = counts["person_register.csv"]
-    counts["pharmacy_register.csv"] = pack.write_pharmacy_register(TGT, kept)
-    counts["holder_register.csv"] = pack.write_holder_register(TGT)
-    counts["signal_tracker_export.csv"] = pack.write_tracker(TGT, first)
-    counts["submission_exceptions.csv"] = asks.write_exceptions(TGT, rejected)
-    counts["pharmacy_submission_log.csv"] = asks.write_submission_log(TGT, kept, rejected)
-    n1, n2 = pack.write_distractors(TGT, kept)
-    counts["spontaneous_reports_summary.csv"] = n1
-    counts["literature_screening_log.csv"] = n2
-    docs.standard(TGT)
-    docs.fee_schedule(TGT, W.PULL_DAY)
-    counts["screen_standard_7_2024.pdf"] = 1
-    counts["data_fee_schedule.xlsx"] = 3
-    counts["register_release_notes.json"] = pack.write_release_notes(TGT)
-    counts["extract_manifest.csv"] = pack.write_manifest(TGT, counts)
-
-    # ---- the screen, from the shipped bundle alone
-    rp = G.load(TGT)
-    firsts = G.first_receipts(rp[0])
-    referred, rows = G.screen(TGT, rp, "perm", firsts)
-    crude, crude_rows = G.screen(TGT, rp, "half", firsts)
-    routes = {}
-    for route in ("perm", "incidence", "pairprod", "even", "half"):
-        routes[route] = G.screen(TGT, rp, route, firsts)[0]
-    r0, r0rows = G.rung0(TGT)
-
-    # Tenths of a defined daily dose per package, struck on the edition of the anatomical
-    # therapeutic chemical index in force for this window, which atc_text.csv names. The package
-    # register's own ddd_per_pack was written under the edition in force when the row was created.
-    import csv as _csv
-    from decimal import Decimal as _D
-    edition = {}
-    with open(os.path.join(TGT, "atc_text.csv"), newline="", encoding="utf-8") as fh:
-        for r in _csv.DictReader(fh):
-            edition[r["atc_code"]] = _D(r["ddd_mg"]) if r["ddd_mg"] else None
-    prod_atc = set(W.PATC[c] for c in W.PCODES)
-    ddd_of = {}
-    with open(os.path.join(TGT, "package_index.csv"), newline="", encoding="utf-8") as fh:
-        for r in _csv.DictReader(fh):
-            mg = edition.get(r["atc_code"])
-            if mg is None or r["atc_code"] not in prod_atc:
-                ddd_of[r["vnr"]] = 0      # only Annex A products carry the statutory fee
-                continue
-            per = _D(r["pack_size"]) * _D(r["strength"].split()[0]) / mg * 10
-            assert per % 1 == 0, (r["vnr"], per)
-            ddd_of[r["vnr"]] = int(per)
-    a1 = asks.a1_golden(kept, rejected)
-    a2 = asks.a2_golden(kept, ddd_of)
-    a3 = asks.a3_golden(TGT, firsts, rp[1])
-
-    by_key = {r["key"]: r for r in rows}
-    crude_by = {r["key"]: r for r in crude_rows}
-    screen_rows = []
-    for r in rows:
-        pc, mc = r["product"], r["marker"]
-        screen_rows.append({
-            "product": pc, "brand": W.PNAME[pc], "marker": mc, "marker_treatment": W.MNAME[mc],
-            "patients": r["n"], "after": r["after"], "before": r["before"],
-            # every screened pair has a share, including the three below the patient minimum,
-            # because the chart carries one bar for each of the 23
-            "share_pct": round(100.0 * r["after"] / r["n"], 1) if r["n"] else None,
-            "expected": round(r["expected"], 1) if r["candidate"] else None,
-            "multiple": round(r["ratio"], 2) if r["candidate"] else None,
-            "referred": ("yes" if r["referred"] else "no") if r["candidate"] else "below minimum",
-            "crude_multiple": round(crude_by[r["key"]]["ratio"], 2) if r["candidate"] else None,
-        })
-    cands = [r for r in screen_rows if r["multiple"] is not None]
-    misses = [r for r in cands if r["referred"] == "no"]
-    nearest = max(misses, key=lambda r: r["multiple"])
-    g = {
-        "referred_count": len(referred),
-        "crude_count": len(crude),
-        "rung0_count": len(r0),
-        "rung2_count": 0,
-        "candidate_count": len(cands),
-        "screened_count": len(screen_rows),
-        "chart_rows": [{"label": "%s + %s" % (x["brand"], x["marker_treatment"]),
-                        "share_pct": x["share_pct"], "referred": x["referred"]}
-                       for x in sorted(screen_rows, key=lambda x: -x["share_pct"])],
-        "patients_in_extract": len(set(k for k, c in firsts)),
-        "referred": [{"product": W.PNAME[k.split("/")[0]], "marker": W.MNAME[k.split("/")[1]],
-                      "patients": by_key[k]["n"], "after": by_key[k]["after"],
-                      "multiple": round(by_key[k]["ratio"], 2),
-                      "crude_multiple": round(crude_by[k]["ratio"], 2)} for k in referred],
-        "crude_only": [{"product": W.PNAME[k.split("/")[0]], "marker": W.MNAME[k.split("/")[1]],
-                        "multiple": round(by_key[k]["ratio"], 2),
-                        "crude_multiple": round(crude_by[k]["ratio"], 2)}
-                       for k in sorted(set(crude) - set(referred))],
-        "window_only": [{"product": W.PNAME[k.split("/")[0]], "marker": W.MNAME[k.split("/")[1]],
-                         "multiple": round(by_key[k]["ratio"], 2),
-                         "crude_multiple": round(crude_by[k]["ratio"], 2)}
-                        for k in sorted(set(referred) - set(crude))],
-        "nearest_miss": {"label": "%s and %s" % (nearest["brand"], nearest["marker_treatment"]),
-                         "multiple": nearest["multiple"]},
-        "routes": {k: sorted(v) for k, v in routes.items()},
-        "screen_rows": screen_rows,
-        "a1": a1, "a2": a2, "a3": a3,
-        "standard_sections": ["2.1", "2.2", "2.3", "2.4", "2.5", "3.1", "3.2", "3.3", "3.4",
-                              "4.1", "4.2"],
-    }
-    rung2 = G.screen(TGT, rp, "half", firsts, edge=60)[0]
-    g["rung2_count"] = len(rung2)
-    g["rung2"] = rung2
-
-    deliver.workbook(os.path.join(GOLD, "sequence_screen_2027Q1.xlsx"), g)
-    deliver.chart(os.path.join(GOLD, "order_shares_by_pair.png"), g)
-    PP.normalize_ooxml(os.path.join(TGT, "data_fee_schedule.xlsx"),
-                       "Arne Mogensen", "Arne Mogensen",
-                       "2026-10-20T07:55:00Z", "2026-10-20T07:55:00Z",
-                       title="Statutory data fee schedule", excel=True)
-    PP.normalize_ooxml(os.path.join(GOLD, "sequence_screen_2027Q1.xlsx"),
-                       "Sine Jakobsen", "Sine Jakobsen",
-                       "2026-10-22T09:20:00Z", "2026-10-23T16:05:00Z",
-                       title="Prescription-sequence screen, run of October 2026", excel=True)
-    PP.normalize_pdf(os.path.join(TGT, "screen_standard_7_2024.pdf"),
-                     b"D:20250617114500+02'00'", b"D:20250617114500+02'00'")
-
-    import metadata as MD
-    MD.write(TASK, counts)
-    import writeup as WU
-    WU.write(TASK, g)
+    S, info = cut()
+    g = G.compute(TGT, PK.FILES)
+    import deliver
     import figures as FG
-    FG.write(HERE, g)
-
+    import metadata as MD
+    import writeup as WU
+    os.makedirs(GOLD, exist_ok=True)
+    deliver.write(g, GOLD)
+    figs = FG.figures(g, info)
+    json.dump(figs, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
+    MD.write(TASK)
+    WU.write(TASK, figs)
     import checks as CK
     import verify as VF
-    n = CK.run(TGT, g, first, lines, kept, rejected, people, keys, new_keys, switch_day)
+    n = CK.run(TGT, S, g, info, figs)
     k = VF.run(TGT, os.path.join(HERE, "figures.json"))
+    zp = zip_target()
     print("generator assertions %d, independent checks %d" % (n, k))
-    print("answer : %d pairs referred of %d candidates (%d screened)"
-          % (g["referred_count"], g["candidate_count"], g["screened_count"]))
-    print("rungs  : rung0 %d, crude %d, answer %d" % (g["rung0_count"], g["crude_count"],
-                                                      g["referred_count"]))
-    print("rung2  : %d  %s" % (len(rung2), " ".join(rung2)))
-    print("routes : %s" % {k2: len(v) for k2, v in g["routes"].items()})
-    print("crude only: %s" % ", ".join("%s+%s" % (x["product"], x["marker"]) for x in g["crude_only"]))
-    print("window only: %s" % ", ".join("%s+%s" % (x["product"], x["marker"]) for x in g["window_only"]))
-    print("rows   : %s" % {k2: v for k2, v in sorted(counts.items()) if k2.endswith(".csv")})
+    print("resample:", g["resample"], " limits:", {kk: round(v, 2) for kk, v in g["golden"].items()},
+          " n:", g["golden_n"])
+    print("rows: edd A %d, edd B %d, gauging %d, purge %d" % (info["edd_a_rows"], info["edd_b_rows"],
+                                                             info["gauging_rows"], info["purge_rows"]))
+    print("zip", zp)
 
 
 if __name__ == "__main__":

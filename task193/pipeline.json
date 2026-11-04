@@ -1,25 +1,26 @@
 {
  "task": "task193",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-04",
- "stump": "A competent solver who conforms both laboratories' deliverables, keeps the reportable primary results, carries MW-5 onto MW-5R and computes the plan's log-normal upper prediction limit for each indicator from every routine background result sends only MW-6 to verification resampling, because in the events when the gradient at the western boundary reversed MW-1, and in the strongest MW-2, sampled water that had passed beneath the waste, which lifts all three limits above MW-7's chloride and sodium and MW-9's boron.",
+ "stump": "A competent solver who conforms both laboratories' deliverables, keeps the reportable primary results, carries MW-5 onto MW-5R and computes the plan's log-normal upper prediction limit for each indicator from every routine background result sends MW-6 alone to verification resampling, because in the events when the gradient at the western boundary had reversed MW-1, and in the strongest seasons MW-2, sampled water that had passed beneath the waste, which lifts the limits to 55.5 mg/L chloride, 34.8 mg/L sodium and 109 ug/L boron, above MW-7's sodium of 23.5 mg/L and MW-9's boron of 79.5 ug/L, where the background the plan defines gives 20.8 mg/L and 68.3 ug/L.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-04",
+  "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (--asof 2026-11-03), every REVIEW line ruled in the note's Leak sweep answered",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS (one NOTE, test.same_puzzle_older, answered on the card)",
+  "nearest": "task452 v2 at 0.06 driver distance; surface exit 0, 4 pairs promoted for adjudication only (task155, task38, task275, task468), no persona"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 3 drawn 2026-11-04 (card registered, DRAWN committed): stage 2 design next, the default path, three rules, anatomy, readability, fork table, ladder, closure, asks and prompt, gated by precut.py; prototypes in the session scratchpad t193v3 (proto4.py with cfg5.py).",
+ "resume": "Stage 4 hand-off to the orchestrator: the pack is cut at target.zip sha256 619f16b7d5f79c357793026622fd5629b59ccf538d3ea3b6a564606315e30285, rebuilt byte-identical by `python3 task193/generator/build.py`. Next: the orchestrator's isolated leak reader and determinism judge findings, each fixed in the generator in one pass, every free gate re-run on the rebuild (precut.py, voice-check.py, leak.py --asof 2026-11-03, figures_check.py, guard.py heart and surface), then SHIPPED on the orchestrator's word.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -189,5 +190,19 @@
    "surface": "not re-read to completion; no repair cut",
    "stage4": "not run: architecture spent before any repair"
   }
- }
+ },
+ "call": "Yes: resample MW-6, MW-7 and MW-9 after the October 2026 event (MW-7 sodium 23.5 against 20.8 mg/L, MW-9 boron 79.5 against 68.3 ug/L)",
+ "default_path_answer": "MW-6 alone (limits 55.5 mg/L chloride, 34.8 mg/L sodium, 109 ug/L boron)",
+ "asof": "2026-11-03",
+ "gates": {
+  "generator_checks": "256 assertions green",
+  "verify": "119 independent checks green",
+  "byte_identical": "two consecutive builds identical over 17 digests (11 target files, 2 goldens, target.zip, submission.md, metadata.json, figures.json)",
+  "figures_check": "80 of 80, 0 absent",
+  "voice_check": "PASS, 805 characters",
+  "container_audit": "target/ and golden/ clean",
+  "input_gates": "11 files, 5 formats, ridgeline_edd_MCL_2021-2026.txt 25,141 rows, 3 distractors in metadata.json",
+  "ceiling": "pair 38.5, mirror leakage 18.2 per cent, pack digest 14056ac5256b8e75"
+ },
+ "target_zip_sha256": "619f16b7d5f79c357793026622fd5629b59ccf538d3ea3b6a564606315e30285"
 }

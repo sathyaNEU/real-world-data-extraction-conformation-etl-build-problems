@@ -1,115 +1,72 @@
-# task193 submission
-
 ## Tags
 
-**Domain:** Pharmacology, pharmacoepidemiology and safety (safety signal detection).
-**Analytical objective:** Anomaly detection and diagnostics.
+**Domain:** Physical & Environmental Sciences, environmental monitoring and exceedance (groundwater detection monitoring at a closed municipal solid waste landfill).  
+**Analytical objective:** Anomaly Detection & Diagnostics.
 
 ## 1. Final Recommendation
 
-**Refer 7 of the 20 candidate pairs to formal signal assessment in the quarter beginning 1 January 2027: Dalvextin and loop diuretic; Pirenoxol and acid-suppressant; Ternivast and gout treatment; Oxelumab and antidepressant; Hestroban and antiemetic; Kirunelle and hypnotic; Sovraxil and topical corticosteroid.**
-The expected after-count comes from the window's own first-receipt dates, so the lowest referred multiple is 1.36 and the nearest pair on the wrong side of the line is Dalvextin and acid-suppressant at 1.03. Not the 10 pairs an equal-chance expectation refers: it adds Varenadol and antiemetic; Varenadol and acid-suppressant; Varenadol and hypnotic; Admirabin and loop diuretic; Admirabin and antidepressant, which the dates refuse, and those 10 miss Ternivast and gout treatment; Oxelumab and antidepressant, which are real signals it hides because both products were first marketed inside the window.
+**Yes: the October 2026 event sends MW-6, MW-7 and MW-9 to verification resampling, MW-7 on sodium at 23.5 mg/L against a 20.8 mg/L limit and MW-9 on boron at 79.5 ug/L against 68.3 ug/L.** Not MW-6 alone, which limits built on every background result give (sodium 34.8 mg/L, boron 109 ug/L), because MW-1 and MW-2 sampled water from beneath the waste in the events their heads fell below their boundary piezometers'; not MW-10 as well, which only a background taken from MW-3 alone puts over a limit.
 
 ## 2. Critical Components
 
-1. The screen's candidate pairs are **20** of the 23 pairs in Annexes A and B
-2. The pairs referred are **7**
-3. The pairs an equal-chance expectation refers are **10**
-4. The pairs it refers that this run does not are **5**, and the pairs it hides are **2**
+1. MW-1's head stood below PZ-1's on **10** of the 17 background events and MW-2's below PZ-2's on **6**; MW-3 never stood below PZ-3, so **16** background results are not background.
+2. Background results: **34** chloride, **34** sodium, **33** boron.
+3. Upper prediction limits: chloride **38.2 mg/L**, sodium **20.8 mg/L**, boron **68.3 ug/L**.
 
 ## 3. Step-by-Step Solution
 
-1. Stacked dispensings_2023_2025.csv and dispensings_2025_2026.csv on the layouts register_release_notes.json gives and counted a re-sent line once, as those notes require: 16957 person keys appear across the extract.
-2. Folded the retired person keys in person_key_crosswalk.csv onto their current keys and mapped each package code to its treatment through package_index.csv at the date of the dispensing, per section 2.4.
-3. Took each patient's earliest dispensing in each treatment as the first receipt and dropped first receipts falling in the clearance period, per sections 2.2 and 2.3.
-4. Built each pair in screen_annexes.csv from the patients whose two first receipts both fall in the screen window and not on the same day, per section 2.5: 20 of the 23 pairs have at least 25 patients.
-5. Took the number expected if the product had no bearing on when the marker treatment is first received from the pair's own first-receipt dates, which the window makes unequal because two products were first marketed inside it and two lose their authorisation inside it.
-6. Applied section 3.2: 7 pairs reach 1.25 times that expected number and none of them is under assessment in signal_tracker_export.csv.
-7. Compared with an equal-chance expectation, which refers 10 pairs: 5 of them fall below the line here and 2 pairs below its line clear this one.
-8. Refer the 7 pairs for assessment in the quarter beginning 1 January 2027.
+1. Took the primary samples' reportable chloride, dissolved sodium and dissolved boron from tamarack_edd_marten_creek_2018-2021.csv (boron in mg/L, wells coded MW-01) and ridgeline_edd_MCL_2021-2026.txt (boron in ug/L, field duplicates under the parent well's code), with MW-5R in MW-5's place.
+2. Took the background window of SAP section 4, April 2018 to April 2026: 50 chloride, 50 sodium and 49 boron results at MW-1, MW-2 and MW-3.
+3. Computed each event's heads from mcl_gauging_rounds_2018-2026.csv and the survey in force on the gauging date in mcl_monitoring_points.xlsx, and compared each background well with its boundary piezometer: MW-1 below PZ-1 on 10 events, MW-2 below PZ-2 on 6, MW-3 never below PZ-3.
+4. Left out those 16 results, water drawn from beneath the waste and so not groundwater the landfill has not affected (SAP section 4), keeping 34, 34 and 33.
+5. Computed SAP section 5's limits from the natural logarithms with t at the 99th percentile: 38.2 mg/L, 20.8 mg/L and 68.3 ug/L.
+6. Compared every compliance well's October 2026 result with the unrounded limits (SAP section 6): MW-6 over on chloride, sodium and boron; MW-7 over on sodium; MW-9 over on boron.
+7. From fieldlog_purge_entries_2026.csv, read each well's reading set marked sample collected, corrected R-4471's logged conductivity to 25 C at 1.91 per cent a degree (FS-03 section 4), and took the purge volume as the controller counter at the sample less the counter when the pump last stopped that day (a decon rinse or bottles filled entry, zero for the day's first well), in gallons of 3.785 litres.
+8. Resample MW-6, MW-7 and MW-9 within 60 days of their October samples.
 
 ## 4. Deliverable Answers
 
-### sequence_screen_2027Q1.xlsx
+### detection_eval_2026-10.xlsx
 
-1. The 23 screened pairs in the order of the screen sheet, with the pair's patients, the patients in whom the marker treatment came after the product, the patients in whom it came before, and the referral:
-   - Dalvextin and acid-suppressant: 195 patients, 99 after, 96 before, referred no
-   - Dalvextin and gout treatment: 204 patients, 110 after, 94 before, referred no
-   - Dalvextin and loop diuretic: 375 patients, 277 after, 98 before, referred yes
-   - Pirenoxol and acid-suppressant: 363 patients, 273 after, 90 before, referred yes
-   - Pirenoxol and antidepressant: 169 patients, 94 after, 75 before, referred no
-   - Pirenoxol and hypnotic: 171 patients, 91 after, 80 before, referred no
-   - Ternivast and antiemetic: 346 patients, 71 after, 275 before, referred no
-   - Ternivast and gout treatment: 546 patients, 268 after, 278 before, referred yes
-   - Ternivast and hypnotic: 322 patients, 63 after, 259 before, referred no
-   - Oxelumab and loop diuretic: 423 patients, 147 after, 276 before, referred no
-   - Oxelumab and antidepressant: 694 patients, 383 after, 311 before, referred yes
-   - Oxelumab and topical corticosteroid: 501 patients, 142 after, 359 before, referred no
-   - Varenadol and antiemetic: 278 patients, 227 after, 51 before, referred no
-   - Varenadol and acid-suppressant: 301 patients, 229 after, 72 before, referred no
-   - Varenadol and hypnotic: 269 patients, 208 after, 61 before, referred no
-   - Hestroban and antiemetic: 480 patients, 346 after, 134 before, referred yes
-   - Hestroban and antipsychotic: 7 patients, 3 after, 4 before, below the 25-patient minimum
-   - Kirunelle and hypnotic: 339 patients, 252 after, 87 before, referred yes
-   - Kirunelle and antipsychotic: 13 patients, 7 after, 6 before, below the 25-patient minimum
-   - Admirabin and loop diuretic: 210 patients, 159 after, 51 before, referred no
-   - Admirabin and antidepressant: 268 patients, 215 after, 53 before, referred no
-   - Sovraxil and topical corticosteroid: 629 patients, 494 after, 135 before, referred yes
-   - Sovraxil and antipsychotic: 17 patients, 11 after, 6 before, below the 25-patient minimum
-2. Pairs referred: 7.
-3. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
-   - APK, 2025 Q4: 5568 accepted, 54 rejected, 2.0 days
-   - APK, 2026 Q1: 5775 accepted, 88 rejected, 4.0 days
-   - APK, 2026 Q2: 5874 accepted, 53 rejected, 4.0 days
-   - APK, 2026 Q3: 4657 accepted, 44 rejected, 6.0 days
-   - DSA, 2025 Q4: 3002 accepted, 42 rejected, 4.0 days
-   - DSA, 2026 Q1: 2764 accepted, 55 rejected, 3.0 days
-   - DSA, 2026 Q2: 3220 accepted, 35 rejected, 7.0 days
-   - DSA, 2026 Q3: 2620 accepted, 30 rejected, 6.0 days
-   - NOR, 2025 Q4: 4189 accepted, 93 rejected, 6.0 days
-   - NOR, 2026 Q1: 3145 accepted, 67 rejected, 7.0 days
-   - NOR, 2026 Q2: 2888 accepted, 92 rejected, 6.0 days
-   - NOR, 2026 Q3: 4796 accepted, 78 rejected, 6.0 days
-   - VST, 2025 Q4: 3550 accepted, 39 rejected, 6.0 days
-   - VST, 2026 Q1: 2941 accepted, 46 rejected, 7.0 days
-   - VST, 2026 Q2: 2441 accepted, 26 rejected, 9.0 days
-   - VST, 2026 Q3: 3190 accepted, 34 rejected, 6.0 days
-4. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 282746.0 DDD, 346853 kroner
-   - Bregnholt Laegemidler A/S (H2): 502994.5 DDD, 619913 kroner
-   - Vindeby Therapeutics ApS (H3): 434430.0 DDD, 552260 kroner
-   - Soegaard Medica A/S (H4): 204660.0 DDD, 316874 kroner
-   - Kastholm Pharma A/S (H5): 626952.0 DDD, 746051 kroner
-   - Ellevang Biosciences A/S (H6): 1090310.0 DDD, 1109616 kroner
-   - Strandby Farma ApS (H7): 121180.5 DDD, 187345 kroner
-5. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
-   - Hovedstaden, 18-49: 1197 patients, 70.2 per cent
-   - Hovedstaden, 50-64: 531 patients, 79.1 per cent
-   - Hovedstaden, 65-74: 352 patients, 82.7 per cent
-   - Hovedstaden, 75 and over: 668 patients, 80.5 per cent
-   - Midtjylland, 18-49: 949 patients, 70.8 per cent
-   - Midtjylland, 50-64: 452 patients, 76.8 per cent
-   - Midtjylland, 65-74: 286 patients, 79.4 per cent
-   - Midtjylland, 75 and over: 514 patients, 77.2 per cent
-   - Nordjylland, 18-49: 496 patients, 70.8 per cent
-   - Nordjylland, 50-64: 219 patients, 74.0 per cent
-   - Nordjylland, 65-74: 144 patients, 83.3 per cent
-   - Nordjylland, 75 and over: 239 patients, 79.1 per cent
-   - Sjaelland, 18-49: 633 patients, 74.6 per cent
-   - Sjaelland, 50-64: 327 patients, 75.8 per cent
-   - Sjaelland, 65-74: 218 patients, 78.9 per cent
-   - Sjaelland, 75 and over: 363 patients, 79.9 per cent
-   - Syddanmark, 18-49: 894 patients, 72.4 per cent
-   - Syddanmark, 50-64: 435 patients, 76.3 per cent
-   - Syddanmark, 65-74: 281 patients, 79.7 per cent
-   - Syddanmark, 75 and over: 424 patients, 80.7 per cent
-   - not stated, 18-49: 132 patients, 75.0 per cent
-   - not stated, 50-64: 50 patients, 78.0 per cent
-   - not stated, 65-74: 32 patients, 75.0 per cent
-   - not stated, 75 and over: 56 patients, 78.6 per cent
+1. Wells to resample: MW-6, MW-7 and MW-9.
+2. Upper prediction limits, with the background results behind each:
+   - Chloride: 38.2 mg/L, 34 results
+   - Sodium, dissolved: 20.8 mg/L, 34 results
+   - Boron, dissolved: 68.3 ug/L, 33 results
+3. October 2026 results at the compliance wells against the limits:
+   - MW-4: chloride 20.7 mg/L, sodium 12.1 mg/L, boron 41.5 ug/L; under every limit
+   - MW-5R: chloride 17.7 mg/L, sodium 11.3 mg/L, boron 34.9 ug/L; under every limit
+   - MW-6: chloride 82.6 mg/L, sodium 53.6 mg/L, boron 165 ug/L; over on chloride, sodium and boron
+   - MW-7: chloride 33.2 mg/L, sodium 23.5 mg/L, boron 58.2 ug/L; over on sodium
+   - MW-8: chloride 19.7 mg/L, sodium 11.0 mg/L, boron 45.5 ug/L; under every limit
+   - MW-9: chloride 29.7 mg/L, sodium 16.5 mg/L, boron 79.5 ug/L; over on boron
+   - MW-10: chloride 33.8 mg/L, sodium 18.4 mg/L, boron 34.7 ug/L; under every limit
+   - MW-11: chloride 22.5 mg/L, sodium 11.5 mg/L, boron 60.1 ug/L; under every limit
+4. Specific conductance at sampling, microsiemens per centimetre at 25 C, whole:
+   - MW-1: 584
+   - MW-2: 670
+   - MW-3: 574
+   - MW-4: 563
+   - MW-5R: 533
+   - MW-6: 1096
+   - MW-7: 702
+   - MW-8: 591
+   - MW-9: 625
+   - MW-10: 682
+   - MW-11: 599
+5. Purge volume before the sample, gallons, one decimal:
+   - MW-1: 3.5
+   - MW-2: 3.0
+   - MW-3: 2.5
+   - MW-4: 2.1
+   - MW-5R: 1.7
+   - MW-6: 2.6
+   - MW-7: 3.1
+   - MW-8: 4.3
+   - MW-9: 3.3
+   - MW-10: 3.2
+   - MW-11: 3.6
 
-### order_shares_by_pair.png
+### october_results_vs_limits.svg
 
-1. One horizontal bar for each of the 23 screened pairs for the share of its patients who received the marker treatment after the product, with the 7 referred pairs in the darker fill and the other 16 in the lighter one.
-2. The bars run longest share first, from Varenadol + antiemetic at 81.7 per cent to Ternivast + hypnotic at 19.6 per cent.
-3. Title states that 7 of the 20 candidate pairs clear the referral line.
+1. One panel each for chloride, sodium and boron, every compliance well's October 2026 result a point and the upper prediction limit a dashed line labelled at its value, with MW-6, MW-7 and MW-9 marked as over a limit.

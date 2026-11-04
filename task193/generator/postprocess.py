@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Pencarrow Mutual Bank"
+COMPANY = "Kettle Prairie Solid Waste District"
 
 APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000"),
        ".pptx": ("Microsoft Office PowerPoint", "16.0000")}
@@ -282,7 +282,7 @@ def excel_dialect(items, key, app_version="16.0300"):
     return [(nm, parts[nm]) for nm in order]
 
 
-def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False):
+def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None):
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
     take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
     stamp Office writes, so two builds of the same content are byte-identical. excel=True also rewrites a
@@ -307,7 +307,7 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>" + app_name.encode() + b"</Application>", data)
             data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>" + app_ver.encode() + b"</AppVersion>", data)
             if b"<Company>" not in data:
-                data = data.replace(b"</Properties>", b"<Company>" + COMPANY.encode() + b"</Company></Properties>")
+                data = data.replace(b"</Properties>", b"<Company>" + (company or COMPANY).encode() + b"</Company></Properties>")
         out.append((name, data))
     if ext == ".xlsx":
         out = [(n, d if d.startswith(b"<?xml") else XML_DECL + d) for n, d in share_strings(out)]

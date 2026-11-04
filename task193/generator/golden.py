@@ -1,196 +1,182 @@
-"""task193: the screen, run from the shipped bundle alone.
-
-load() conforms the two extracts; screen() runs the referral test under a named expectation route.
-rung0() runs it the way a solver gets it with neither repair applied.
-"""
-import bisect
-import collections
+"""The golden, computed from the cut pack the way the plan and the field procedure require: both laboratories'
+deliverables conformed, the background results classified by the head relation at the waste boundary on each event's
+gauging, the plan's limits, the October 2026 comparison, and the two field figures for every well sampled that
+October."""
 import csv
 import datetime as dt
+import math
 import os
 
-D0 = dt.date(2023, 10, 1)
-WIN_A, WIN_B = dt.date(2025, 10, 1), dt.date(2026, 9, 30)
-CLEAR_A, CLEAR_B = dt.date(2023, 10, 1), dt.date(2025, 9, 30)
-MULTIPLE = 1.25
-MIN_PATIENTS = 25
+import routes as RT
+import world as W
+
+EV = [e["label"] for e in W.EVENTS]
+IND_A = {"Chloride": "chloride", "Sodium, Dissolved": "sodium", "Boron, Dissolved": "boron"}
+IND_B = {("Chloride", "N"): "chloride", ("Sodium", "D"): "sodium", ("Boron", "D"): "boron"}
 
 
-def rd(tgt, name):
-    with open(os.path.join(tgt, name), newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+def event_of(day):
+    for i, e in enumerate(W.EVENTS):
+        if day in e["days"]:
+            return i
+    raise ValueError(day)
 
 
-def iso(s):
-    return dt.date(int(s[0:4]), int(s[5:7]), int(s[8:10]))
+def norm_loc(s):
+    s = s.strip().upper()
+    if s.startswith("MW-") and s[3:].isdigit():
+        return "MW-%d" % int(s[3:])
+    if s.startswith("MW-") and s[3:-1].isdigit() and s.endswith("R"):
+        return "MW-%dR" % int(s[3:-1])
+    return s
 
 
-def dk(s):
-    return dt.date(int(s[6:10]), int(s[3:5]), int(s[0:2]))
-
-
-def load(tgt, fold_keys=True, packages="at_date", drop_resend=True):
-    """One conformed dispensing table: person key, treatment code, date."""
-    pkg = {}
-    for r in rd(tgt, "package_index.csv"):
-        pkg.setdefault(r["vnr"], []).append(
-            (r["atc_code"], iso(r["valid_from"]) if r["valid_from"] else None,
-             iso(r["valid_to"]) if r["valid_to"] else None))
-    annex = rd(tgt, "screen_annexes.csv")
-    prod_by_atc, mark_by_atc = {}, {}
-    pairs = []
-    for r in annex:
-        prod_by_atc[r["product_atc"]] = r["product_code"]
-        mark_by_atc[r["marker_atc_group"]] = r["marker_code"]
-        pairs.append((r["product_code"], r["marker_code"]))
-    xw = {}
-    if fold_keys:
-        for r in rd(tgt, "person_key_crosswalk.csv"):
-            xw[r["retired_person_key"]] = r["current_person_key"]
-
-    def treat(vnr, d):
-        cands = pkg.get(vnr)
-        if not cands:
-            return None
-        for atc, vf, vt in cands:
-            if packages == "at_date" and ((vf and d < vf) or (vt and d > vt)):
+def read_indicators(tgt, files):
+    """{(location, event, indicator): reportable primary result}, boron in ug/L"""
+    out = {}
+    with open(os.path.join(tgt, files["edd_a"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["Sample_Type"] != "N" or r["Reportable"] != "Y" or r["Parameter"] not in IND_A:
                 continue
-            if packages == "current_only" and vt is not None:
-                continue      # the naive join keeps only the package rows still open
-            if packages == "ignore_validity":
-                pass          # the index joined without its date condition
-            if atc in prod_by_atc:
-                return prod_by_atc[atc]
-            if atc in mark_by_atc:
-                return mark_by_atc[atc]
-            return None
-        return None
-
-    rows = []
-    for name, keyc, vnrc, datec, parse in (
-            ("dispensings_2023_2025.csv", "pseudonym", "vnr", "disp_date", iso),
-            ("dispensings_2025_2026.csv", "person_key", "package_code", "date_of_dispensing", dk)):
-        for r in rd(tgt, name):
-            d = parse(r[datec])
-            code = treat(r[vnrc], d)
-            if code is None:
+            loc = norm_loc(r["Location"])
+            if not loc.startswith("MW"):
                 continue
-            key = r[keyc]
-            if fold_keys:
-                key = xw.get(key, key)
-            rows.append((key, code, d, r[vnrc], r["pharmacy_id"] if "pharmacy_id" in r else r["pharmacy"]))
-    if drop_resend:
-        rows = sorted(set(rows))
-    return rows, pairs
-
-
-def first_receipts(rows):
-    first = {}
-    for key, code, d, vnr, ph in rows:
-        k = (key, code)
-        if k not in first or d < first[k]:
-            first[k] = d
-    return first
-
-
-def pair_counts(first, pairs, edge=0):
-    """Per pair: the patients, their product and marker first-receipt dates, and the after-count."""
-    by_person = collections.defaultdict(dict)
-    for (key, code), d in first.items():
-        by_person[key][code] = d
-    out = []
-    for pc, mc in pairs:
-        t, s = [], []
-        for key, got in by_person.items():
-            tp, tm = got.get(pc), got.get(mc)
-            if tp is None or tm is None:
+            k = IND_A[r["Parameter"]]
+            v = float(r["Result"])
+            if k == "boron" and r["Units"] == "mg/L":
+                v = round(v * 1000.0, 6)
+            ei = event_of(dt.datetime.strptime(r["Sample_Date"], "%m/%d/%Y").date())
+            assert (loc, ei, k) not in out, (loc, ei, k)
+            out[(loc, ei, k)] = v
+    with open(os.path.join(tgt, files["edd_b"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f, delimiter="\t"):
+            if r["sample_type_code"] != "N" or r["reportable_result"] != "Yes":
                 continue
-            if not (WIN_A <= tp <= WIN_B and WIN_A <= tm <= WIN_B):
+            key = (r["chemical_name"], r["fraction"])
+            if key not in IND_B or not r["sys_loc_code"].startswith("MW"):
                 continue
-            if tp == tm:
-                continue
-            if edge and not (WIN_A + dt.timedelta(days=edge) <= tp
-                             <= WIN_B - dt.timedelta(days=edge)):
-                continue
-            t.append(tp)
-            s.append(tm)
-        after = sum(1 for i in range(len(t)) if s[i] > t[i])
-        out.append({"product": pc, "marker": mc, "key": pc + "/" + mc, "n": len(t),
-                    "after": after, "before": len(t) - after, "t": t, "s": s})
-    return sorted(out, key=lambda r: r["key"])
-
-
-def _window_days(first, code):
-    return sorted((d - WIN_A).days for (k, c), d in first.items()
-                  if c == code and WIN_A <= d <= WIN_B)
-
-
-def expected(r, route, first=None):
-    """The number of the pair's patients expected to have the marker after the product, if
-    receiving the product had no bearing on when the marker treatment is first received."""
-    n = r["n"]
-    if n == 0:
-        return 0.0
-    if route == "half":
-        return 0.5 * n
-    t = sorted((d - WIN_A).days for d in r["t"])
-    if route == "perm":
-        s = sorted((d - WIN_A).days for d in r["s"])
-        tot = 0
-        for x in t:
-            tot += len(s) - bisect.bisect_right(s, x)
-        return float(tot) / n
-    if route == "incidence":
-        tt = _window_days(first, r["product"])
-        ss = _window_days(first, r["marker"])
-        tot = 0
-        for x in tt:
-            tot += len(ss) - bisect.bisect_right(ss, x)
-        return n * float(tot) / (len(tt) * len(ss))
-    if route == "pairprod":
-        ss = _window_days(first, r["marker"])
-        tot = 0
-        for x in t:
-            tot += len(ss) - bisect.bisect_right(ss, x)
-        return n * float(tot) / (len(t) * len(ss))
-    if route == "even":
-        span = (WIN_B - WIN_A).days + 1
-        return n * sum((span - 1 - x) / float(span) for x in t) / len(t)
-    raise ValueError(route)
-
-
-def open_pairs(tgt):
-    out = set()
-    for r in rd(tgt, "signal_tracker_export.csv"):
-        if r["status"].startswith("under assessment"):
-            out.add((r["product_code"], r["marker_code"]))
+            k = IND_B[key]
+            v = float(r["result_value"])
+            if k == "boron" and r["result_unit"] == "mg/L":
+                v *= 1000.0
+            ei = event_of(dt.date.fromisoformat(r["sample_date"][:10]))
+            loc = norm_loc(r["sys_loc_code"])
+            assert (loc, ei, k) not in out, (loc, ei, k)
+            out[(loc, ei, k)] = v
     return out
 
 
-def screen(tgt, rows_pairs, route, first=None, multiple=MULTIPLE, minimum=MIN_PATIENTS, edge=0):
-    rows, pairs = rows_pairs
-    if first is None:
-        first = first_receipts(rows)
-    counts = pair_counts(first, pairs, edge=edge)
-    opened = open_pairs(tgt)
-    out = []
-    for r in counts:
-        if r["n"] < minimum:
-            r["candidate"] = False
-            continue
-        r["candidate"] = True
-        e = expected(r, route, first)
-        r["expected"] = e
-        r["ratio"] = r["after"] / e if e > 0 else 0.0
-        r["blocked"] = (r["product"], r["marker"]) in opened
-        r["referred"] = r["ratio"] >= multiple and not r["blocked"]
-        if r["referred"]:
-            out.append(r["key"])
-    return sorted(out), counts
+def read_heads(tgt, files):
+    """{(point, event): head in the datum of the survey in force on the gauging date} with that datum"""
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(tgt, files["points"]), read_only=True)
+    surveys = {}
+    for row in list(wb["Survey"].iter_rows(values_only=True))[1:]:
+        p, d, datum, toc = row[0], dt.date.fromisoformat(str(row[1])[:10]), row[2], float(row[3])
+        surveys.setdefault(p, []).append((d, datum, toc))
+    heads = {}
+    with open(os.path.join(tgt, files["gauging"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            p = r["location"]
+            d = dt.date.fromisoformat(r["date"])
+            ei = EV.index(r["event"])
+            ss = sorted(x for x in surveys[p] if x[0] <= d)
+            sd, datum, toc = ss[-1]
+            heads[(p, ei)] = (round(toc - float(r["dtw_ft_btoc"]), 2), datum)
+    return heads
 
 
-def rung0(tgt):
-    """The run a solver gets with the keys unfolded, the package validity ignored and the
-    re-sent batch left in."""
-    rp = load(tgt, fold_keys=False, packages="current_only", drop_resend=False)
-    return screen(tgt, rp, "half")
+def reversed_events(heads):
+    """a background well is reversed on an event when its head stands below its boundary piezometer's, both read
+    against the survey in force that day (one datum)"""
+    rev = {}
+    for w in W.BACKGROUND:
+        for ei in range(len(EV)):
+            hw, dw = heads[(w, ei)]
+            hp, dp = heads[(W.BOUNDARY[w], ei)]
+            assert dw == dp
+            rev[(w, ei)] = hw < hp
+    return rev
+
+
+def read_purge(tgt, files):
+    rows = []
+    with open(os.path.join(tgt, files["purge"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            r["t"] = dt.datetime.strptime(r["entry_utc"], "%Y-%m-%dT%H:%M:%SZ")
+            rows.append(r)
+    return rows
+
+
+def field_asks(rows, event_days):
+    """for every well sampled that event: specific conductance at 25 C from the sample's reading set, compensated where
+    the meter recorded conductivity, and the purge volume from the controller's day counter"""
+    spc, purge, detail = {}, {}, {}
+    days = {d.strftime("%Y-%m-%d") for d in event_days}
+    by_day = {}
+    for r in rows:
+        if r["visit_date"] in days:
+            by_day.setdefault(r["visit_date"], []).append(r)
+    for day, rs in by_day.items():
+        rs = sorted(rs, key=lambda r: r["t"])
+        meter = ""
+        for r in rs:            # FS-03 3: the serial is recorded with the day's first set and whenever the meter changes
+            if r["meter_sn"]:
+                meter = r["meter_sn"]
+            elif r["remark"] not in ("decon rinse", "bottles filled, pump off"):
+                r["meter_sn"] = meter
+        mark = 0.0                      # the controller counter when the pump last stopped (zeroed each morning)
+        start, seen = {}, set()
+        for r in rs:
+            if r["remark"] in ("decon rinse", "bottles filled, pump off"):
+                mark = float(r["controller_l"])
+                continue
+            w = r["location"]
+            if w not in seen:
+                seen.add(w)
+                start[w] = mark
+            if r["remark"] == "sample collected":
+                end = float(r["controller_l"])
+                purge[w] = (end - start[w]) / W.L_PER_GAL
+                cond = float(r["spc_us_cm"])
+                T = float(r["temperature_c"])
+                if r["meter_sn"] == W.RENTAL_UNCOMP:
+                    cond = cond / (1 + W.TEMP_COEF * (T - 25.0))
+                spc[w] = cond
+                detail[w] = {"start_l": start[w], "end_l": end, "meter": r["meter_sn"],
+                             "recorded": float(r["spc_us_cm"]), "temp": T}
+    return spc, purge, detail
+
+
+def compute(tgt, files):
+    ind = read_indicators(tgt, files)
+    heads = read_heads(tgt, files)
+    rev = reversed_events(heads)
+    bg = {(w, ei, k): v for (w, ei, k), v in ind.items() if w in W.BACKGROUND and ei in W.BG_EVENTS}
+    hdiff = {(w, ei): heads[(w, ei)][0] - heads[(W.BOUNDARY[w], ei)][0] for w in W.BACKGROUND for ei in range(len(EV))}
+    lim, cnt = RT.background_limits(bg, rev, EV, W.DRY, hdiff)
+    G = lim[RT.GOLDEN]
+    october = {(w, k): ind[(w, W.EVAL, k)] for w in W.COMPLIANCE for k in W.INDICATORS}
+    resample = RT.designate(G, october)
+    sets = {r: RT.designate(lim[r], october) for r in lim}
+    hist = {}
+    for (w, ei, k), v in ind.items():
+        if w in W.COMPLIANCE + ["MW-5"] and ei < W.EVAL:
+            hist.setdefault(("MW-5R" if w == "MW-5" else w, k), []).append(v)
+    sets["R2f intrawell, each well against its own record"] = RT.intrawell(hist, october)
+    rows = read_purge(tgt, files)
+    spc, purge, fdetail = field_asks(rows, W.EVENTS[W.EVAL]["days"])
+    excluded = sorted(((w, EV[ei]) for (w, ei), r in rev.items() if r and ei in W.BG_EVENTS),
+                      key=lambda x: (W.BACKGROUND.index(x[0]), EV.index(x[1])))
+    exceed = {(w, k): october[(w, k)] > G[k] for w in W.COMPLIANCE for k in W.INDICATORS}
+    head_diff = {(w, ei): round(heads[(w, ei)][0] - heads[(W.BOUNDARY[w], ei)][0], 2)
+                 for w in W.BACKGROUND for ei in range(len(EV))}
+    return {"indicators": ind, "heads": heads, "rev": rev, "bg": bg, "limits": lim, "counts": cnt, "golden": G,
+            "golden_n": cnt[RT.GOLDEN], "october": october, "resample": resample, "sets": sets, "spc": spc,
+            "purge": purge, "field_detail": fdetail, "excluded": excluded, "exceed": exceed, "head_diff": head_diff,
+            "history": hist}
+
+
+def sig3(x):
+    d = 3 - int(math.floor(math.log10(abs(x)))) - 1
+    return round(x, d)

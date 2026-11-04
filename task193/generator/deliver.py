@@ -1,179 +1,215 @@
-"""task193: the two golden deliverables, the screen workbook and the order-share chart."""
+"""The two golden deliverables: the detection monitoring evaluation workbook and the October results chart."""
+import datetime as dt
+import math
 import os
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from openpyxl.utils import get_column_letter
+
+import postprocess as PP
+import world as W
+
+EV = [e["label"] for e in W.EVENTS]
+NAMES = {"chloride": "Chloride", "sodium": "Sodium, dissolved", "boron": "Boron, dissolved"}
+UNIT = {"chloride": "mg/L", "sodium": "mg/L", "boron": "ug/L"}
+
+
+def s3(x):
+    d = 3 - int(math.floor(math.log10(abs(x)))) - 1
+    v = round(x, d)
+    return float(("%%.%df" % max(d, 0)) % v)
+
+
+def nfmt(x):
+    d = max(0, 3 - int(math.floor(math.log10(abs(x)))) - 1)
+    return "0" + ("." + "0" * d if d else "")
 
 
 def workbook(path, g):
-    import openpyxl
-    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-    from openpyxl.utils import get_column_letter
-    wb = openpyxl.Workbook()
-    thin = Side(style="thin", color="BFBFBF")
-    head = Font(name="Calibri", size=11, bold=True)
-    fill = PatternFill("solid", fgColor="E8EDF3")
-    note = Font(name="Calibri", size=9, italic=True)
-
+    wb = Workbook()
     ws = wb.active
-    ws.title = "Screen 2026 Q4 run"
-    ws["A1"] = "Prescription-sequence screen, run of October 2026"
-    ws["A1"].font = Font(name="Calibri", size=13, bold=True)
-    ws["A2"] = ("Screen window 1 October 2025 to 30 September 2026. Extract pulled 20 October 2026. "
-                "Referrals are assessed in the quarter beginning 1 January 2027.")
-    ws["A2"].font = note
-    ws["A3"] = ("Expected after-count on the window's own first-receipt dates, Standard 7-2024 "
-                "section 3.2(b); referral multiple 1.25; minimum 25 patients.")
-    ws["A3"].font = note
-    cols = ["Product", "Brand", "Marker treatment", "Patients", "Marker after", "Marker before",
-            "Share after", "Expected after", "Multiple", "Referred"]
-    for c, v in enumerate(cols, start=1):
-        cell = ws.cell(row=5, column=c, value=v)
-        cell.font = head
-        cell.fill = fill
-        cell.border = Border(bottom=thin)
-    r = 6
-    for row in g["screen_rows"]:
-        vals = [row["product"], row["brand"], row["marker_treatment"], row["patients"],
-                row["after"], row["before"],
-                None if row["share_pct"] is None else row["share_pct"] / 100.0,
-                row["expected"], row["multiple"], row["referred"]]
-        for c, v in enumerate(vals, start=1):
-            cell = ws.cell(row=r, column=c, value=v)
-            if c == 7 and v is not None:
-                cell.number_format = "0.0%"
-            if c == 8 and v is not None:
-                cell.number_format = "0.0"
-            if c == 9 and v is not None:
-                cell.number_format = "0.00"
-        r += 1
-    ws.cell(row=r + 1, column=1, value="Referred for assessment in 2027 Q1").font = head
-    ws.cell(row=r + 1, column=4, value=g["referred_count"]).font = head
-    ws.cell(row=r + 2, column=1,
-            value=("Pairs below the 25-patient minimum are shown with no figures and are carried "
-                   "forward to the next run under section 3.4.")).font = note
-    ws.cell(row=r + 3, column=1,
-            value=("Nearest pair on the wrong side of the line: %s, multiple %.2f."
-                   % (g["nearest_miss"]["label"], g["nearest_miss"]["multiple"]))).font = note
+    ws.title = "Evaluation"
+    bold = Font(bold=True)
+    head_fill = PatternFill("solid", fgColor="DDE3EA")
+    thin = Side(style="thin", color="9AA3AD")
+    box = Border(top=thin, bottom=thin, left=thin, right=thin)
+    ws["A1"] = "Marten Creek Landfill, detection monitoring evaluation, October 2026 event"
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = "Statistical Analysis Plan rev. 2, sections 4 to 6. Routine samples 6 to 8 October 2026."
+    ws["A4"] = "Wells to resample within 60 days"
+    ws["A4"].font = bold
+    for i, w in enumerate(g["resample"]):
+        params = [NAMES[k] for k in W.INDICATORS if g["exceed"][(w, k)]]
+        ws.cell(row=5 + i, column=1, value=w)
+        ws.cell(row=5 + i, column=2, value=", ".join(params))
+    r0 = 6 + len(g["resample"])
+    ws.cell(row=r0 + 1, column=1, value="Upper prediction limits").font = bold
+    hdr = ["Indicator", "Units", "Background results", "UPL"]
+    for j, h in enumerate(hdr):
+        c = ws.cell(row=r0 + 2, column=1 + j, value=h)
+        c.font = bold
+        c.fill = head_fill
+        c.border = box
+    for i, k in enumerate(W.INDICATORS):
+        row = [NAMES[k], UNIT[k], g["golden_n"][k], s3(g["golden"][k])]
+        for j, v in enumerate(row):
+            c = ws.cell(row=r0 + 3 + i, column=1 + j, value=v)
+            c.border = box
+        ws.cell(row=r0 + 3 + i, column=4).number_format = nfmt(g["golden"][k])
+    r1 = r0 + 7
+    ws.cell(row=r1, column=1, value="October 2026 results at the compliance wells").font = bold
+    hdr = ["Well"] + ["%s (%s)" % (NAMES[k], UNIT[k]) for k in W.INDICATORS] + ["Over a limit"]
+    for j, h in enumerate(hdr):
+        c = ws.cell(row=r1 + 1, column=1 + j, value=h)
+        c.font = bold
+        c.fill = head_fill
+        c.border = box
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    over_fill = PatternFill("solid", fgColor="FBE3D6")
+    for i, w in enumerate(W.COMPLIANCE):
+        ws.cell(row=r1 + 2 + i, column=1, value=w).border = box
+        for j, k in enumerate(W.INDICATORS):
+            v = g["october"][(w, k)]
+            c = ws.cell(row=r1 + 2 + i, column=2 + j, value=s3(v))
+            c.number_format = nfmt(v)
+            c.border = box
+            if g["exceed"][(w, k)]:
+                c.fill = over_fill
+                c.font = bold
+        ex = [NAMES[k].split(",")[0].lower() for k in W.INDICATORS if g["exceed"][(w, k)]]
+        ws.cell(row=r1 + 2 + i, column=5, value=", ".join(ex) if ex else "none").border = box
+    r2 = r1 + 3 + len(W.COMPLIANCE)
+    notes = ["Notes",
+             "Background (SAP section 4): routine results at MW-1, MW-2 and MW-3, April 2018 to April 2026. Results from "
+             "events when the well's head stood below its boundary piezometer's (PZ-1, PZ-2) drew water from beneath the "
+             "waste and are not background; see sheet Background.",
+             "Heads: depth to water from mcl_gauging_rounds_2018-2026.csv on the casing elevation in force on the gauging "
+             "date (mcl_monitoring_points.xlsx, Survey).",
+             "Results: reportable primary samples from both laboratories; boron in ug/L. MW-5R stands in MW-5's place. "
+             "MW-3's April 2023 boron was not analysed.",
+             "Limits are compared unrounded and shown to three significant figures. Prepared 4 November 2026."]
+    for i, t in enumerate(notes):
+        c = ws.cell(row=r2 + i, column=1, value=t)
+        if i == 0:
+            c.font = bold
+    for col, wdt in zip("ABCDE", (34, 20, 20, 20, 22)):
+        ws.column_dimensions[col].width = wdt
 
-    ws2 = wb.create_sheet("Chain submissions")
-    ws2["A1"] = "Dispensing lines by chain and quarter of dispensing"
-    ws2["A1"].font = Font(name="Calibri", size=12, bold=True)
-    ws2["A2"] = ("Quarters are quarters of dispensing. Accepted lines are the distinct dispensings "
-                 "in the two register extracts, counting a re-sent line once; lines turned back at "
-                 "validation are in submission_exceptions.csv and never reach the extracts.")
-    ws2["A2"].font = note
-    for c, v in enumerate(["Chain", "Quarter", "Lines accepted", "Lines rejected",
-                           "Median days to submission"], start=1):
-        cell = ws2.cell(row=4, column=c, value=v)
-        cell.font = head
-        cell.fill = fill
-    for i, row in enumerate(g["a1"], start=5):
-        for c, v in enumerate([row["chain"], row["quarter"], row["accepted"], row["rejected"],
-                               row["median_days"]], start=1):
-            cell = ws2.cell(row=i, column=c, value=v)
-            if c == 5:
-                cell.number_format = "0.0"
+    wb2 = wb.create_sheet("Background")
+    hdr = ["Event", "Well", "Boundary point", "Head difference (ft)", "Used", "Chloride (mg/L)",
+           "Sodium, dissolved (mg/L)", "Boron, dissolved (ug/L)"]
+    for j, h in enumerate(hdr):
+        c = wb2.cell(row=1, column=1 + j, value=h)
+        c.font = bold
+        c.fill = head_fill
+    rr = 2
+    for ei in W.BG_EVENTS:
+        for w in W.BACKGROUND:
+            if not any((w, ei, k) in g["bg"] for k in W.INDICATORS):
+                continue
+            used = not g["rev"][(w, ei)]
+            row = [EV[ei], w, W.BOUNDARY[w], g["head_diff"][(w, ei)], "yes" if used else "no, gradient reversed"]
+            for k in W.INDICATORS:
+                v = g["bg"].get((w, ei, k))
+                row.append(None if v is None else s3(v))
+            for j, v in enumerate(row):
+                wb2.cell(row=rr, column=1 + j, value=v)
+            wb2.cell(row=rr, column=4).number_format = "0.00"
+            rr += 1
+    for j, wdt in enumerate((10, 7, 14, 19, 22, 15, 22, 21)):
+        wb2.column_dimensions[get_column_letter(1 + j)].width = wdt
+    wb2.freeze_panes = "A2"
 
-    ws3 = wb.create_sheet("Holder fees")
-    ws3["A1"] = "Statutory data fee, screen window 2025-26"
-    ws3["A1"].font = Font(name="Calibri", size=12, bold=True)
-    ws3["A2"] = ("Doses at the rates in schedule 3, with the amendment of 1 April 2026 applied to "
-                 "doses dispensed on or after that date, and each payer's band rate charged on all "
-                 "of its doses. Sovraxil's doses move to Ellevang with the authorisation on "
-                 "27 February 2026; Strandby's own doses before the merger of 1 April 2026 are "
-                 "charged to Strandby and its later doses to Bregnholt. Re-sent lines are counted "
-                 "once.")
-    ws3["A2"].font = note
-    for c, v in enumerate(["Holder", "Name", "DDD dispensed", "Fee due (DKK)"], start=1):
-        cell = ws3.cell(row=4, column=c, value=v)
-        cell.font = head
-        cell.fill = fill
-    for i, row in enumerate(g["a2"], start=5):
-        for c, v in enumerate([row["holder"], row["name"], row["ddd"], row["fee_dkk"]], start=1):
-            cell = ws3.cell(row=i, column=c, value=v)
-            if c == 3:
-                cell.number_format = "#,##0.0"
-            if c == 4:
-                cell.number_format = "#,##0"
-
-    ws4 = wb.create_sheet("Utilisation table")
-    ws4["A1"] = "Patients with a first receipt of a screened product in the window"
-    ws4["A1"].font = Font(name="Calibri", size=12, bold=True)
-    ws4["A2"] = ("Region and age as recorded at 1 October 2025, Standard 7-2024 section 4.2. "
-                 "Share is of the same patients who also had a first marker-treatment receipt in "
-                 "the window.")
-    ws4["A2"].font = note
-    for c, v in enumerate(["Region", "Age band", "Patients", "Share with a first marker receipt"],
-                          start=1):
-        cell = ws4.cell(row=4, column=c, value=v)
-        cell.font = head
-        cell.fill = fill
-    for i, row in enumerate(g["a3"], start=5):
-        for c, v in enumerate([row["region"], row["band"], row["patients"],
-                               row["share_pct"] / 100.0], start=1):
-            cell = ws4.cell(row=i, column=c, value=v)
-            if c == 4:
-                cell.number_format = "0.0%"
-
-    widths = {"Screen 2026 Q4 run": [10, 13, 23, 10, 13, 14, 11, 15, 10, 10],
-              "Chain submissions": [9, 11, 15, 15, 26],
-              "Holder fees": [9, 29, 16, 16],
-              "Utilisation table": [15, 13, 11, 32]}
-    for name, ws_ in (("Screen 2026 Q4 run", ws), ("Chain submissions", ws2),
-                      ("Holder fees", ws3), ("Utilisation table", ws4)):
-        for c, w in enumerate(widths[name], start=1):
-            ws_.column_dimensions[get_column_letter(c)].width = w
-        ws_.sheet_view.showGridLines = False
-        ws_.freeze_panes = "A6" if name == "Screen 2026 Q4 run" else "A5"
+    wb3 = wb.create_sheet("Field")
+    hdr = ["Well", "Meter", "Conductance as logged (uS/cm)", "Temperature (C)", "Specific conductance at 25 C (uS/cm)",
+           "Counter at purge start (L)", "Counter at sample (L)", "Purge volume (gal)"]
+    for j, h in enumerate(hdr):
+        c = wb3.cell(row=1, column=1 + j, value=h)
+        c.font = bold
+        c.fill = head_fill
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    order = [w for d in W.SAMPLING_ORDER for w in d]
+    for i, w in enumerate(order):
+        d = g["field_detail"][w]
+        row = [w, d["meter"], d["recorded"], d["temp"], int(round(g["spc"][w])), round(d["start_l"], 2),
+               round(d["end_l"], 2), round(g["purge"][w], 1)]
+        for j, v in enumerate(row):
+            wb3.cell(row=2 + i, column=1 + j, value=v)
+        wb3.cell(row=2 + i, column=8).number_format = "0.0"
+    for j, wdt in enumerate((8, 9, 16, 13, 20, 15, 14, 12)):
+        wb3.column_dimensions[get_column_letter(1 + j)].width = wdt
+    wb3.cell(row=3 + len(order), column=1,
+             value="R-4471 logged conductivity uncorrected; specific conductance corrected to 25 C at 1.91 per cent per "
+                   "degree (FS-03 section 4).")
     wb.save(path)
+    PP.normalize_ooxml(path, W.PEOPLE["hydrogeologist"], W.PEOPLE["hydrogeologist"], "2026-11-03T15:20:00Z",
+                       "2026-11-04T17:05:00Z", title="Detection monitoring evaluation, October 2026", excel=True,
+                       company="Fieldstone Hydrogeology, LLC")
 
 
 def chart(path, g):
-    rows = [r for r in g["screen_rows"] if r["share_pct"] is not None]
-    rows = sorted(rows, key=lambda r: r["share_pct"])
-    labels = ["%s + %s" % (r["brand"], r["marker_treatment"]) for r in rows]
-    vals = [r["share_pct"] for r in rows]
-    REF, NOT = "#1f4e79", "#aebfd2"
-    LINE = "#a4161a"
-    cols = [REF if r["referred"] == "yes" else NOT for r in rows]
-    fig, ax = plt.subplots(figsize=(10.4, 7.4), dpi=150)
-    y = list(range(len(rows)))
-    ax.barh(y, vals, color=cols, height=0.66, edgecolor="white", linewidth=0.9)
-    ax.set_yticks(y)
-    ax.set_yticklabels(labels, fontsize=9)
-    ax.set_xlabel("Share of the pair's patients who received the marker treatment after the product",
-                  fontsize=9.5, labelpad=8)
-    ax.set_xlim(0, 108)
-    ax.set_xticks([0, 20, 40, 60, 80, 100])
-    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, p: "%d%%" % v))
-    ax.tick_params(axis="x", labelsize=9)
-    ax.tick_params(axis="y", length=0)
-    for i, r in enumerate(rows):
-        ax.text(r["share_pct"] + 1.1, i, "%.1f%%" % r["share_pct"], va="center", fontsize=8,
-                color="#2b2b2b")
-    from matplotlib.patches import Patch
-    handles = [Patch(facecolor=REF, label="referred to assessment"),
-               Patch(facecolor=NOT, label="not referred")]
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.135), ncol=2,
-              fontsize=8.5, frameon=False, handlelength=1.4, columnspacing=1.6)
-    ax.set_title("%d of the %d candidate pairs clear the referral line once the expected share is "
-                 "taken\nfrom the window's own first-receipt dates, against %d on an equal-chance "
-                 "expectation" % (g["referred_count"], g["candidate_count"], g["crude_count"]),
-                 fontsize=11.5, loc="left", pad=34, color="#13344f")
-    ax.text(0.0, 1.018,
-            "Prescription-sequence screen, run of October 2026. Screen window 1 October 2025 to "
-            "30 September 2026.", transform=ax.transAxes, fontsize=8.5, color="#5a5a5a")
-    for side in ("top", "right", "left"):
-        ax.spines[side].set_visible(False)
-    ax.spines["bottom"].set_color("#9a9a9a")
-    ax.grid(axis="x", color="#e4e4e4", linewidth=0.7)
-    ax.set_axisbelow(True)
-    fig.text(0.012, 0.012,
-             "Source: Laegemiddelstatistikregisteret extract LSR-2026-0441, pulled 20 October 2026. "
-             "Standard 7-2024 sections 2.5, 3.1 and 3.2.", fontsize=7.6, color="#6a6a6a")
-    fig.subplots_adjust(left=0.235, right=0.985, top=0.868, bottom=0.145)
-    fig.savefig(path, metadata={"Software": None, "Creation Time": None})
+    import matplotlib
+    matplotlib.use("svg")
+    matplotlib.rcParams["svg.hashsalt"] = "task193"
+    matplotlib.rcParams["svg.fonttype"] = "none"
+    import matplotlib.pyplot as plt
+    blue, orange, ink, muted, grid = "#2a78d6", "#eb6834", "#0b0b0b", "#52514e", "#e4e3df"
+    fig, axes = plt.subplots(1, 3, figsize=(11.0, 3.9))
+    wells = W.COMPLIANCE
+    listed = set(g["resample"])
+    for ax, k in zip(axes, W.INDICATORS):
+        lim = g["golden"][k]
+        xs = list(range(len(wells)))
+        for x, w in zip(xs, wells):
+            v = g["october"][(w, k)]
+            over = g["exceed"][(w, k)]
+            if over:
+                ax.plot([x], [v], marker="D", markersize=8, color=orange, markeredgecolor="white", markeredgewidth=1.0,
+                        linestyle="none", zorder=3)
+            elif w in listed:
+                ax.plot([x], [v], marker="o", markersize=7, markerfacecolor="white", markeredgecolor=orange,
+                        markeredgewidth=1.6, linestyle="none", zorder=3)
+            else:
+                ax.plot([x], [v], marker="o", markersize=7, color=blue, markeredgecolor="white", markeredgewidth=1.0,
+                        linestyle="none", zorder=3)
+        ax.axhline(lim, color=ink, linewidth=1.2, linestyle=(0, (5, 3)), zorder=2)
+        ax.text(len(wells) - 0.55, lim * 1.025, "UPL %s %s" % ("%g" % s3(lim), UNIT[k]), va="bottom", ha="right", fontsize=8.5,
+                color=ink)
+        top = max(g["october"][(w, k)] for w in wells)
+        ax.set_ylim(0, top * 1.12)
+        ax.set_xticks(xs)
+        ax.set_xticklabels(wells, rotation=45, ha="right", fontsize=8.5, color=muted)
+        for lbl, w in zip(ax.get_xticklabels(), wells):
+            if w in listed:
+                lbl.set_fontweight("bold")
+                lbl.set_color(ink)
+        ax.tick_params(axis="y", labelsize=8.5, colors=muted)
+        ax.set_title("%s (%s)" % (NAMES[k], UNIT[k]), fontsize=10, color=ink, loc="left")
+        ax.grid(axis="y", color=grid, linewidth=0.8)
+        ax.set_axisbelow(True)
+        for sp in ("top", "right"):
+            ax.spines[sp].set_visible(False)
+        for sp in ("left", "bottom"):
+            ax.spines[sp].set_color("#b9b8b2")
+    from matplotlib.lines import Line2D
+    handles = [Line2D([0], [0], marker="D", color=orange, linestyle="none", markersize=8, label="over its limit"),
+               Line2D([0], [0], marker="o", markerfacecolor="white", markeredgecolor=orange, markeredgewidth=1.6,
+                      linestyle="none", markersize=7, label="under, well resampled on another indicator"),
+               Line2D([0], [0], marker="o", color=blue, linestyle="none", markersize=7, label="under every limit"),
+               Line2D([0], [0], color=ink, linestyle=(0, (5, 3)), linewidth=1.2, label="upper prediction limit")]
+    fig.legend(handles=handles, loc="lower center", ncol=4, frameon=False, fontsize=8.5, bbox_to_anchor=(0.5, 0.0))
+    fig.suptitle("%s go to verification resampling after the October 2026 event (wells to resample in bold)"
+                 % (", ".join(g["resample"][:-1]) + " and " + g["resample"][-1]),
+                 x=0.01, ha="left", fontsize=11.5, color=ink, y=0.985)
+    fig.tight_layout(rect=(0, 0.07, 1, 0.94))
+    fig.savefig(path, format="svg", metadata={"Date": None, "Creator": None})
     plt.close(fig)
+    svg = open(path, encoding="utf-8").read().replace('id="matplotlib.axis_', 'id="axis_')
+    assert "matplotlib" not in svg.lower()
+    open(path, "w", encoding="utf-8").write(svg)
+
+
+def write(g, gold):
+    workbook(os.path.join(gold, "detection_eval_2026-10.xlsx"), g)
+    chart(os.path.join(gold, "october_results_vs_limits.svg"), g)

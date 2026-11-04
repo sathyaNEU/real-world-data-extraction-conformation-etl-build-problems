@@ -1,772 +1,375 @@
-"""task193: the generator's own assertions, run on every build."""
-import collections
+"""The generator's assertions, run on every build: the three-rules block (R1 to R3c), the semantic forks (SF1 to SF16),
+the ladder and its margins, the bins, the separation of the asks from the call, the input gates, the realism sweep
+and the leak words. Each assertion is named for what it measures."""
+import copy
 import csv
 import datetime as dt
 import json
-from decimal import Decimal as DEC
-from fractions import Fraction as FR
+import math
 import os
 import re
+import zipfile
 
 import numpy as np
 
+import golden as GD
+import pack as PK
+import routes as RT
 import world as W
-import golden as G
-import asks as AS
-from asks import distinct as asks_distinct
 
-N = 0
-FAILED = []
+EV = [e["label"] for e in W.EVENTS]
+N = [0]
 
 
-def ok(label, cond, detail=""):
-    global N
-    N += 1
+def ok(name, cond, detail=""):
     if not cond:
-        FAILED.append("%s  %s" % (label, detail))
+        raise AssertionError("%s: %s" % (name, detail))
+    N[0] += 1
 
 
-def rd(tgt, name):
-    with open(os.path.join(tgt, name), newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+def edge(v, unit):
+    c = round(v / unit) * unit
+    return unit / 2 - abs(v - c)
 
 
-def _referred(tgt, rp, route, firsts=None, **kw):
-    return G.screen(tgt, rp, route, firsts, **kw)[0]
+def s3_unit(v):
+    return 10 ** (math.floor(math.log10(abs(v))) - 2)
 
 
-def _atc_of_vnr(tgt):
-    return {r["vnr"]: r["atc_code"] for r in rd(tgt, "package_index.csv")}
+def limits_from(bg, rev):
+    lim, cnt = RT.background_limits(bg, rev, EV, W.DRY)
+    return lim, cnt
 
 
-def _pdf_text(tgt):
-    import pypdf
-    r = pypdf.PdfReader(os.path.join(tgt, "screen_standard_7_2024.pdf"))
-    return " ".join(p.extract_text() for p in r.pages).replace("\n", " ")
+def run(tgt, S, g, info, figs):
+    N[0] = 0
+    G = g["golden"]
+    oc = g["october"]
+    lim = g["limits"]
 
+    # ------------------------------------------------ the golden reproduces the clean truth
+    for k in W.INDICATORS:
+        ok("golden.limit_equals_truth.%s" % k, abs(G[k] - S["limits"][RT.GOLDEN][k]) < 1e-9, (G[k], S["limits"][RT.GOLDEN][k]))
+    ok("golden.reversal_classification_equals_truth", all(g["rev"][(w, e)] == S["rev"][(w, e)]
+                                                           for w in W.BACKGROUND for e in range(len(EV))))
+    ok("golden.call", g["resample"] == ["MW-6", "MW-7", "MW-9"], g["resample"])
 
-def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day):
-    global N, FAILED
-    N, FAILED = 0, []
-    rp = G.load(tgt)
-    rows, pairs = rp
-    firsts = G.first_receipts(rows)
-    referred, counts = G.screen(tgt, rp, "perm", firsts)
-    by = {r["key"]: r for r in counts}
-    cands = [r for r in counts if r["candidate"]]
+    # ------------------------------------------------ R1: the field's raw material ships, the decisive quantity does not
+    gh = open(os.path.join(tgt, PK.FILES["gauging"]), encoding="utf-8").readline()
+    ok("R1.gauging_ships_depths_not_heads", "dtw_ft_btoc" in gh and "head" not in gh.lower() and "elev" not in gh.lower(), gh)
+    heads_ = [l for fn in os.listdir(tgt) if fn.endswith((".csv", ".txt"))
+              for l in [open(os.path.join(tgt, fn), encoding="utf-8").readline().lower()]]
+    ok("R1.no_column_states_the_gradient", not any(w in h for h in heads_ for w in ("gradient", "upgradient", "reversed",
+                                                                                 "flow_dir", "affected")), heads_)
+    ok("R1.background_results_are_individual_samples", g["counts"]["R0 every background result"]["chloride"] == 50)
+    ok("R1.decisive_step_reads_heads_and_survey", len(g["heads"]) == info["gauging_rows"])
 
-    # ---------------------------------------------------------------- the answer
-    ok("answer.count", len(referred) == 7, "%d referred" % len(referred))
-    ok("answer.candidates", len(cands) == 20, "%d candidates" % len(cands))
-    ok("answer.screened", len(counts) == 23, "%d screened" % len(counts))
-    ok("answer.matches_figures", g["referred_count"] == len(referred))
+    # ------------------------------------------------ R3a: the analyst test, the easy route on the clean truth
+    bg_truth = S["bgwin"]
+    lim_t, _ = limits_from(bg_truth, S["rev"])
+    oc_t = {(w, k): S["cmp"][(w, W.EVAL, k)] for w in W.COMPLIANCE for k in W.INDICATORS}
+    ok("R3a.easy_route_clean_truth_files_MW6_alone", RT.designate(lim_t["R0 every background result"], oc_t) == ["MW-6"])
+    ok("R3a.easy_route_on_pack_files_MW6_alone", g["sets"]["R0 every background result"] == ["MW-6"])
+    # R3b: the decisive step alone, and each lower correction alone
+    ok("R3b.decisive_step_alone_files_golden", RT.designate(lim_t[RT.GOLDEN], oc_t) == ["MW-6", "MW-7", "MW-9"])
+    for r in RT.CHEAP_HIGH:
+        ok("R3b.lower_correction_alone_wrong.%s" % r.split()[0], g["sets"][r] != g["resample"], (r, g["sets"][r]))
+    ok("R3b.intrawell_wrong", g["sets"]["R2f intrawell, each well against its own record"] != g["resample"])
+    for r in RT.CHEAP_LOW:
+        ok("R3b.over_cut_wrong.%s" % r.split()[0], g["sets"][r] != g["resample"] and set(g["resample"]) < set(g["sets"][r]))
+    # R3c: no plant: no copied block, no decoy text
+    for w in W.BACKGROUND + W.COMPLIANCE:
+        vals = [tuple(g["indicators"].get((w, e, k)) for k in W.INDICATORS) for e in range(len(EV))]
+        vals = [v for v in vals if None not in v]
+        ok("R3c.no_repeated_result_triplet.%s" % w, len(vals) == len(set(vals)))
 
-    # ---------------------------------------------------------------- R1: the field's raw material
-    disp = rd(tgt, "dispensings_2025_2026.csv")
-    ok("R1.rows_are_dispensings",
-       set(disp[0]) == set(["record_id", "person_key", "package_code", "date_of_dispensing",
-                            "pharmacy", "n_packages", "prescriber", "submission_date"]),
-       str(sorted(disp[0])))
-    headers = []
-    for name in sorted(os.listdir(tgt)):
-        if name.endswith(".csv"):
-            with open(os.path.join(tgt, name), encoding="utf-8") as fh:
-                headers += [h.strip().lower() for h in fh.readline().strip().split(",")]
-    banned = [h for h in headers if h in ("expected", "expected_after", "sequence_ratio",
-                                          "null_ratio", "referred", "referral", "multiple",
-                                          "order_share", "share_after", "is_signal")]
-    ok("R1.no_column_holds_the_quantity", not banned, str(banned))
-    ok("R1.golden_reads_the_rows", len(rows) > 100000, "%d conformed lines" % len(rows))
+    # ------------------------------------------------ the licensed family converges on the set
+    for r in RT.LICENSED + RT.VARIANTS:
+        ok("family.converges_on_set.%s" % r.split()[0], g["sets"][r] == g["resample"], (r, g["sets"][r]))
+    for r in [x for x in g["sets"] if x.startswith("R3t")]:
+        ok("family.tolerance_variant_converges_on_set.%s" % r[-12:].replace(" ", "_"), g["sets"][r] == g["resample"],
+           (r, g["sets"][r]))
+    for k in W.INDICATORS:
+        ok("family.rosner_after_heads_removes_nothing.%s" % k, g["counts"]["R3r heads then Rosner"][k] == g["golden_n"][k])
 
-    # ---------------------------------------------------------------- R2: every mess item neutral
-    variants = {
-        "keys_unfolded": dict(fold_keys=False),
-        "packages_ignore_validity": dict(packages="ignore_validity"),
-        "resend_kept": dict(drop_resend=False),
-    }
-    for label, kw in variants.items():
-        alt = G.load(tgt, **kw)
-        got = _referred(tgt, alt, "perm")
-        ok("R2." + label, got == referred, "%s" % sorted(set(got) ^ set(referred)))
-    # the rejected lines never carry a first receipt, so dropping them cannot move a first date
-    firsts_truth = {}
-    for r in lines:
-        k = (r["pid"], r["code"])
-        if k not in firsts_truth or r["day"] < firsts_truth[k]:
-            firsts_truth[k] = r["day"]
-    # a turned-back line is a repeat dispensing, except for the few patients whose every line was
-    # turned back; those have no receipt of anything inside the screen window, asserted below
-    ok("R2.rejected_never_first",
-       all(not r["is_first"] or r["day"] <= W.CLEAR_B for r in rejected))
-    orig = set((r["key"], r["vnr"], r["day"], r["pharmacy"]) for r in kept if not r.get("resend"))
-    ok("R2.resend_changes_no_date",
-       all((r["key"], r["vnr"], r["day"], r["pharmacy"]) in orig
-           for r in kept if r.get("resend")),
-       "every re-sent copy repeats an original line's key, package, date and pharmacy")
+    # ------------------------------------------------ margins on every check of the scorecard
+    high = {k: min(lim[r][k] for r in RT.CHEAP_HIGH) for k in W.INDICATORS}
+    var_hi = {k: max(lim[r][k] for r in RT.LICENSED + RT.VARIANTS) for k in W.INDICATORS}
+    var_lo = {k: min(lim[r][k] for r in RT.LICENSED + RT.VARIANTS) for k in W.INDICATORS}
+    for w in W.COMPLIANCE:
+        for k in W.INDICATORS:
+            v = oc[(w, k)]
+            if g["exceed"][(w, k)]:
+                ok("margin.over_golden_by_5pct.%s.%s" % (w, k), v > 1.05 * G[k], (v, G[k]))
+                ok("margin.over_every_family_member.%s.%s" % (w, k), v > 1.02 * var_hi[k], (v, var_hi[k]))
+                if w != "MW-6":
+                    ok("margin.under_every_high_route_by_5pct.%s.%s" % (w, k), v < 0.95 * high[k], (v, high[k]))
+            else:
+                ok("margin.under_golden_by_5pct.%s.%s" % (w, k), v < 0.95 * G[k], (v, G[k]))
+                ok("margin.under_every_family_member.%s.%s" % (w, k), v < 0.98 * var_lo[k], (v, var_lo[k]))
+    for w in ("MW-7", "MW-9"):
+        ok("margin.plume_well_under_high_routes_on_every_indicator.%s" % w,
+           all(oc[(w, k)] < 0.95 * high[k] for k in W.INDICATORS))
 
-    # ---------------------------------------------------------------- R3: the analyst test
-    crude = _referred(tgt, rp, "half", firsts)
-    ok("R3a.analyst_test", len(crude) == 10, "%d on the equal-chance expectation" % len(crude))
-    ok("R3a.named_wrong_answer", sorted(crude) != sorted(referred))
-    ok("R3b.decisive_step_alone", sorted(referred) == sorted(
-        _referred(tgt, rp, "perm", firsts)))
-    for route in ("incidence", "pairprod", "even"):
-        ok("R3b.route_" + route, sorted(_referred(tgt, rp, route, firsts)) == sorted(referred),
-           route)
-    r0 = G.rung0(tgt)[0]
-    ok("R3b.rung0_wrong", sorted(r0) != sorted(referred), "%d" % len(r0))
-    edge = _referred(tgt, rp, "half", firsts)
-    ok("R3c.no_answer_key", not any(
-        re.search(r"is_correct|should_exclude|answer|golden|expected_number", n, re.I)
-        for n in os.listdir(tgt)), str(os.listdir(tgt)))
-    text_blob = ""
-    for name in os.listdir(tgt):
-        if name.endswith((".csv", ".json")):
-            with open(os.path.join(tgt, name), encoding="utf-8", errors="replace") as fh:
-                text_blob += fh.read().lower()
-    phrases = ["equally likely", "equal chance", "symmetr", "sequence ratio", "null ratio",
-               "incidence distribution", "half of the pair", "expected number", "order ratio",
-               "asymmetry", "crude ratio", "null-effect", "opportunity window", "time at risk",
-               "window arithmetic", "reporting ratio", "disproportion", "masking", "comparator"]
-    present = [p for p in phrases if p in text_blob]
-    ok("R3c.no_signpost_in_data", not present, str(present))
+    # ------------------------------------------------ bins: limits at three significant figures, asks at their units
+    for k in W.INDICATORS:
+        u = s3_unit(G[k])
+        ok("bin.limit_mid_cell.%s" % k, edge(G[k], u) >= 0.20 * u, (G[k], edge(G[k], u)))
+    for w, v in g["spc"].items():
+        ok("bin.spc_mid_cell.%s" % w, edge(v, 1.0) >= 0.10, (w, v))
+    for w, v in g["purge"].items():
+        ok("bin.purge_mid_cell.%s" % w, edge(v, 0.1) >= 0.010, (w, v))
 
-    # ---------------------------------------------------------------- separation and margins
-    ratios = {}
-    for route in ("half", "perm", "incidence", "pairprod", "even"):
-        _, rws = G.screen(tgt, rp, route, firsts)
-        ratios[route] = {r["key"]: r["ratio"] for r in rws if r["candidate"]}
-    worst = min(abs(v - W.MULTIPLE) / W.MULTIPLE
-                for route in ratios for v in ratios[route].values())
-    ok("sep.margin_6pc", worst >= 0.060, "tightest %.3f" % worst)
-    ok("sep.crude_not_subset", not set(crude).issubset(set(referred)))
-    ok("sep.answer_not_subset", not set(referred).issubset(set(crude)))
-    ok("sep.crude_only_5", len(set(crude) - set(referred)) == 5,
-       str(sorted(set(crude) - set(referred))))
-    ok("sep.window_only_2", len(set(referred) - set(crude)) == 2,
-       str(sorted(set(referred) - set(crude))))
-    ok("sep.shared_5", len(set(referred) & set(crude)) == 5)
-    lowest = min(by[k]["ratio"] for k in referred)
-    ok("sep.lowest_referred", lowest >= 1.33, "%.3f" % lowest)
-    highest_miss = max(r["ratio"] for r in cands if not r["referred"])
-    ok("sep.highest_miss", highest_miss <= 1.175, "%.3f" % highest_miss)
+    # ------------------------------------------------ the step outweighs the family's spread and the limit's own error
+    # (delta-method standard error of the log-normal limit, relative: s * sqrt(1/n + k^2 / (2 (n - 1))))
+    from scipy.stats import t as student_t
+    R0 = lim[[r for r in lim if r.startswith("R0")][0]]
+    fam = RT.LICENSED + RT.VARIANTS + [x for x in g["sets"] if x.startswith("R3t")]
+    for k in W.INDICATORS:
+        vals = [v for (w, ei, kk), v in g["bg"].items() if kk == k and not g["rev"][(w, ei)]]
+        ok("estimator.golden_background_count.%s" % k, len(vals) == g["golden_n"][k], (len(vals), g["golden_n"][k]))
+        y = [math.log(v) for v in vals]
+        n = len(y)
+        kf = float(student_t.ppf(0.99, n - 1)) * math.sqrt(1 + 1.0 / n)
+        se = float(np.std(y, ddof=1)) * math.sqrt(1.0 / n + kf ** 2 / (2 * (n - 1)))
+        lift = R0[k] / G[k] - 1
+        spread = max(lim[r][k] for r in fam) / min(lim[r][k] for r in fam) - 1
+        ok("estimator.step_outweighs_twice_spread_plus_error.%s" % k, lift > 2 * (spread + se), (k, lift, spread, se))
+        for w in ("MW-7", "MW-9"):
+            if g["exceed"][(w, k)]:
+                ok("estimator.deciding_result_clears_limit_by_1.5_se.%s.%s" % (w, k), oc[(w, k)] / G[k] - 1 > 1.5 * se,
+                   (w, k, oc[(w, k)] / G[k] - 1, se))
 
-    # dominance: the loudest pair on the crude basis is refused on the answer's basis
-    loud = max(cands, key=lambda r: r["after"] / r["n"])
-    ok("dom.loudest_refused", not loud["referred"], loud["key"])
-    ok("dom.loudest_crude_refers", ratios["half"][loud["key"]] >= W.MULTIPLE)
-    # no single product carries the whole difference
-    moved = set(k.split("/")[0] for k in set(crude) ^ set(referred))
-    ok("dom.moved_products", len(moved) >= 4, str(sorted(moved)))
-    # a lifecycle rule of thumb does not work
-    ok("dom.new_product_not_a_rule",
-       any(k.split("/")[0] in ("P03", "P04") and k not in referred for k in
-           [r["key"] for r in cands]))
-    ok("dom.ending_product_not_a_rule", "P09/M7" in referred)
+    # ------------------------------------------------ Shock: the golden set is no interval of any one-indicator sort
+    for k in W.INDICATORS:
+        order = sorted(W.COMPLIANCE, key=lambda w: -oc[(w, k)])
+        top = order[:len(g["resample"])]
+        ok("shock.golden_set_not_top_of_sort.%s" % k, set(top) != set(g["resample"]), (k, top))
+    ok("shock.MW7_and_MW9_lead_on_different_indicators",
+       g["exceed"][("MW-7", "sodium")] and not g["exceed"][("MW-7", "boron")] and g["exceed"][("MW-9", "boron")]
+       and not g["exceed"][("MW-9", "sodium")])
 
-    # ---------------------------------------------------------------- SF rows
-    ok("SF1", referred == _referred(tgt, rp, "perm", firsts),
-       "the window is read on the date of dispensing")
-    f12 = {k: v for k, v in firsts.items()}
-    ok("SF2.clearance_bites",
-       sum(1 for (k, c), d in firsts.items() if d <= G.CLEAR_B) > 20000,
-       "first receipts in the clearance period")
-    win_only = {}
-    for key, code, d, vnr, ph in rows:
-        if not (G.WIN_A <= d <= G.WIN_B):
-            continue
-        k = (key, code)
-        if k not in win_only or d < win_only[k]:
-            win_only[k] = d
-    cnt_alt = G.pair_counts(win_only, pairs)
-    ok("SF2.ignoring_clearance_changes_counts",
-       any(a["n"] != b["n"] for a, b in zip(sorted(cnt_alt, key=lambda r: r["key"]),
-                                            sorted(counts, key=lambda r: r["key"]))))
-    ok("SF3.clearance_is_24_months", (G.WIN_A - G.CLEAR_A).days == 731)
-    xw = rd(tgt, "person_key_crosswalk.csv")
-    ok("SF4.crosswalk_rows", len(xw) == 420, "%d" % len(xw))
-    ok("SF5.reissued_codes_in_register",
-       any(r["valid_to"] for r in rd(tgt, "package_index.csv")))
-    marks = set(r["marker_atc_group"] for r in rd(tgt, "screen_annexes.csv"))
-    ok("SF6.marker_groups", len(marks) == 8, "%d marker groups" % len(marks))
-    same_day = 0
-    byp = collections.defaultdict(dict)
-    for (k, c), d in firsts.items():
-        byp[k][c] = d
-    for pc, mc in pairs:
-        for k, got in byp.items():
-            if got.get(pc) is not None and got.get(pc) == got.get(mc):
-                same_day += 1
-    ok("SF7.same_day_patients_exist", same_day > 0, "%d" % same_day)
-    ok("SF8.deaths_and_exits_recorded",
-       sum(1 for r in rd(tgt, "person_register.csv") if r["date_of_death"]) > 50)
-    ok("SF9.minimum_bites", len(counts) - len(cands) == 3)
-    ok("SF10.no_pair_on_the_line",
-       all(abs(v - W.MULTIPLE) > 0.004 for route in ratios for v in ratios[route].values()))
-    ok("SF11.no_share_on_a_boundary",
-       all(abs(round(100.0 * r["after"] / r["n"], 1) - 100.0 * W.MULTIPLE * r["expected"] / r["n"])
-           > 0.4 for r in cands))
-    tracker = G.open_pairs(tgt)
-    ok("SF12.tracker_ties",
-       all(("%s/%s" % p) not in [r["key"] for r in cands if r["ratio"] >= W.MULTIPLE]
-           for p in tracker), str(sorted(tracker)))
-    ok("SF13.rounding_stable",
-       all(abs(r["ratio"] - W.MULTIPLE) > 0.01 for r in cands))
-    ok("SF14.resend_neutral", _referred(tgt, G.load(tgt, drop_resend=False), "perm") == referred)
-    bad_dates = 0
-    for r in rd(tgt, "dispensings_2025_2026.csv"):
-        d = r["date_of_dispensing"]
-        if int(d[0:2]) > 12:
-            bad_dates += 1
-    ok("SF15.misread_dates_impossible", bad_dates / float(len(disp)) > 0.55,
-       "%.3f of window rows have a day above 12" % (bad_dates / float(len(disp))))
-    ok("SF16.shares_distinct",
-       len(set(round(100.0 * r["after"] / r["n"], 1) for r in cands)) == len(cands),
-       str(sorted(round(100.0 * r["after"] / r["n"], 1) for r in cands)))
-    ok("SF17.referral_quarter_filed", W.REFERRAL_QUARTER == "2027 Q1")
-    prompt = open(os.path.join(os.path.dirname(tgt), "prompt.txt"), encoding="utf-8").read()
-    ok("SF18.payer_named_in_the_asking_sentence",
-       "per holder that pays the fee for a dispensing" in prompt)
-    ok("SF18.payer_reading_differs",
-       len(g["a2"]) == 7 and any(r["holder"] == "H7" and r["ddd"] > 0 for r in g["a2"]),
-       "the payer reading keeps the pre-merger holder as its own payer")
-    ok("SF19.chart_bar_count_in_the_asking_sentence",
-       "a bar per screened pair, all 23" in prompt)
-    ok("SF20.no_threshold_drawn",
-       "referral threshold" not in open(os.path.join(os.path.dirname(tgt), "submission.md"),
-                                       encoding="utf-8").read(),
-       "no graded criterion names a threshold marker")
+    # ------------------------------------------------ the head relation: clear of zero, robust to the datum
+    for w in W.BACKGROUND:
+        for e in W.BG_EVENTS:
+            d = g["head_diff"][(w, e)]
+            ok("SF11.head_relation_clear_of_zero.%s.%s" % (w, EV[e]), abs(d) >= 0.10, (w, EV[e], d))
+    # every point resurveyed together, so a single datum throughout classifies the same events
+    alt = reclassify_one_datum(tgt)
+    ok("SF11.single_datum_same_classification", alt == {k: v for k, v in g["rev"].items()})
+    # chemistry corroborates the heads at both reversing wells: every reversed sample above every other on all three
+    for w in ("MW-1", "MW-2"):
+        for k in W.INDICATORS:
+            r_ = [v for (ww, e, kk), v in g["bg"].items() if ww == w and kk == k and g["rev"][(w, e)]]
+            n_ = [v for (ww, e, kk), v in g["bg"].items() if ww == w and kk == k and not g["rev"][(w, e)]]
+            ok("SF14.chemistry_separates_reversed_samples.%s.%s" % (w, k), min(r_) > max(n_), (w, k, min(r_), max(n_)))
+    ok("SF14.MW3_never_reversed", not any(g["rev"][("MW-3", e)] for e in range(len(EV))))
+    # the boundary point: the nearest piezometer, or the two nearest, classify the same
+    ok("SF12.boundary_point_choice_inert", boundary_alternatives(g) == 0)
 
-    # ---------------------------------------------------------------- closure axes
-    ok("ax9.boundary_inclusivity_filed", os.path.exists(
-        os.path.join(tgt, "screen_standard_7_2024.pdf")))
-    ok("ax4.pull_after_window", W.PULL_DAY > W.WIN_B)
-    ok("ax12.every_window_line_submitted",
-       all(r["submitted"] <= W.NDAY + 20 for r in kept))
-    ok("ax14.row_order_neutral", True)
-    perm_rows = list(rows)
-    rng = np.random.default_rng(5)
-    for _ in range(3):
-        rng.shuffle(perm_rows)
-        ok("ax14.permutation", G.screen(tgt, (perm_rows, pairs), "perm")[0] == referred)
-    ok("ax15.duplicates_collapse", len(set(rows)) == len(rows))
-    ok("ax16.every_package_maps",
-       all(v[0] in W.PCODES + W.MCODES for v in W.PKG_OF.values()))
+    # ------------------------------------------------ the semantic forks on the main call
+    # SF1 background population (every unaffected routine sample): the readings that drop the whole well, the whole
+    # event or the next event are other sets of samples; each is a member of the route table, its set recorded
+    ok("SF1.background_n", g["golden_n"] == {"chloride": 34, "sodium": 34, "boron": 33}, g["golden_n"])
+    ok("SF1.whole_well_reading_wrong", g["sets"]["R2a background without MW-1"] != g["resample"])
+    # SF2 field duplicates are not background: including them leaves the call
+    ok("SF2.duplicates_inert", call_with(tgt, g, include_fd=True) == g["resample"])
+    # SF3 re-analyses: the reportable result; keeping both runs leaves the call
+    ok("SF3.reanalysis_inert", call_with(tgt, g, keep_all_runs=True) == g["resample"])
+    # SF4 boron units differ by a factor of 1000 between the laboratories, so a mix is unmistakable
+    bA = [v for (w, e, k), v in g["indicators"].items() if k == "boron" and e < W.LAB_SWITCH]
+    ok("SF4.boron_units_converted", min(bA) > 10.0, min(bA))
+    # SF5 the plan's formula: the normal-scale limit leaves the call
+    ok("SF5.normal_scale_inert_on_set", normal_scale_set(g) == g["resample"])
+    # SF6 strict comparison: nothing within 1 per cent of a limit
+    ok("SF6.no_result_near_a_limit", all(abs(oc[(w, k)] / G[k] - 1) > 0.01 for w in W.COMPLIANCE for k in W.INDICATORS))
+    # SF7 rounded or unrounded limit: the same verdicts
+    ok("SF7.rounded_limit_same_verdicts", all((oc[(w, k)] > float(figs["limits"][k])) == g["exceed"][(w, k)]
+                                              for w in W.COMPLIANCE for k in W.INDICATORS))
+    # SF8 MW-5R in MW-5's place: MW-5R under every limit either way
+    ok("SF8.MW5R_under_every_limit", not any(g["exceed"][("MW-5R", k)] for k in W.INDICATORS))
+    # SF9 the October primary result, not the duplicate: same verdicts
+    ok("SF9.october_duplicate_inert", call_with(tgt, g, october_fd=True) == g["resample"])
+    # SF10 dissolved sodium and boron: the wells carry no total fraction of either
+    ok("SF10.no_total_sodium_or_boron_at_wells", not total_fraction_at_wells(tgt))
+    # SF13 the gauging day stands for the event: every event's samples follow its gauging within three days
+    ok("SF13.samples_within_event_days", samples_within_event(tgt))
+    # SF15 the window: through April 2026, the October 2026 background samples out; including them leaves the set
+    ok("SF15.october_background_inert", call_with(tgt, g, include_oct_bg=True) == g["resample"])
+    # SF16 any indicator over its limit sends the well: MW-7 and MW-9 each exceed on one indicator
+    ok("SF16.one_indicator_suffices", sum(g["exceed"][("MW-7", k)] for k in W.INDICATORS) == 1
+       and sum(g["exceed"][("MW-9", k)] for k in W.INDICATORS) == 1)
 
-    # ---------------------------------------------------------------- the three dates designed out
-    pkg = {r["vnr"]: r for r in rd(tgt, "package_index.csv")}
-    bad = 0
-    for name, datec, parse in (("dispensings_2023_2025.csv", "disp_date", G.iso),
-                               ("dispensings_2025_2026.csv", "date_of_dispensing", G.dk)):
-        for r in rd(tgt, name):
-            d = parse(r[datec])
-            p = pkg[r["vnr"] if "vnr" in r else r["package_code"]]
-            vf = G.iso(p["valid_from"]) if p["valid_from"] else None
-            vt = G.iso(p["valid_to"]) if p["valid_to"] else None
-            if (vf and d < vf) or (vt and d > vt):
-                bad += 1
-    ok("defect1.every_line_inside_one_validity", bad == 0, "%d lines outside" % bad)
-    late = 0
-    for name, datec, subc, parse in (
-            ("dispensings_2023_2025.csv", "disp_date", "submitted", G.iso),
-            ("dispensings_2025_2026.csv", "date_of_dispensing", "submission_date", G.dk)):
-        for r in rd(tgt, name):
-            if parse(r[subc]) < parse(r[datec]):
-                late += 1
-    ok("defect2.submission_never_before_dispensing", late == 0, "%d" % late)
-    mkt = {r["product_code"]: (G.iso(r["first_marketed"]),
-                               G.iso(r["authorisation_valid_to"]) if r["authorisation_valid_to"]
-                               else None) for r in rd(tgt, "product_register.csv")}
-    bad_t = []
-    for r in rd(tgt, "signal_tracker_export.csv"):
-        mf, mt = mkt[r["product_code"]]
-        if G.iso(r["opened_on"]) < mf:
-            bad_t.append(("tracker", r["tracker_ref"]))
-    QS = {"2025 Q4": (dt.date(2025, 10, 1), dt.date(2025, 12, 31)),
-          "2026 Q1": (dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
-          "2026 Q2": (dt.date(2026, 4, 1), dt.date(2026, 6, 30)),
-          "2026 Q3": (dt.date(2026, 7, 1), dt.date(2026, 9, 30))}
-    for r in rd(tgt, "spontaneous_reports_summary.csv"):
-        mf, mt = mkt[r["product_code"]]
-        if QS[r["quarter"]][1] < mf:
-            bad_t.append(("reports", r["product_code"], r["quarter"]))
-    for name, datec, parse in (("dispensings_2023_2025.csv", "disp_date", G.iso),
-                               ("dispensings_2025_2026.csv", "date_of_dispensing", G.dk)):
-        for r in rd(tgt, name):
-            code = W.PKG_OF[r["vnr"] if "vnr" in r else r["package_code"]][0]
-            if code not in mkt:
-                continue
-            d = parse(r[datec])
-            mf, mt = mkt[code]
-            if d < mf or (mt and d > mt):
-                bad_t.append(("dispensing", code, str(d)))
-                break
-    ok("defect4.no_row_outside_its_product_lifecycle", not bad_t, str(bad_t[:6]))
-    pull = W.day(W.PULL_DAY)
-    future = []
-    for name, cols, parse in (
-            ("literature_screening_log.csv", ("screened_on",), G.iso),
-            ("submission_exceptions.csv", ("date_of_dispensing", "submitted_on"), G.iso),
-            ("signal_tracker_export.csv", ("opened_on", "closed_on"), G.iso),
-            ("product_register.csv", ("first_marketed", "holder_code_from"), G.iso),
-            ("person_register.csv", ("date_of_death", "date_of_emigration",
-                                     "region_recorded_from"), G.iso),
-            ("person_key_crosswalk.csv", ("replaced_on",), G.iso),
-            ("holder_register.csv", ("merger_date",), G.iso)):
-        for r in rd(tgt, name):
-            for c in cols:
-                if r.get(c) and parse(r[c]) > pull:
-                    future.append((name, c, r[c]))
-    ok("defect4.no_date_after_the_pull", not future, str(future[:6]))
-    ok("defect4.standard_stamp_is_consistent",
-       "2026" not in _pdf_text(tgt).split("Annex A")[0].replace("7-2024", "").replace(
-           "1 April 2026", ""), "the standing standard names no run-specific year")
-    lastday = {}
-    for r in kept:
-        key = r["key"]
-        lastday[key] = max(lastday.get(key, dt.date(2000, 1, 1)), W.day(r["day"]))
-    bad = 0
-    for r in rd(tgt, "person_register.csv"):
-        for col in ("date_of_death", "date_of_emigration"):
-            if r[col] and r["person_key"] in lastday and G.iso(r[col]) < lastday[r["person_key"]]:
-                bad += 1
-    ok("defect2.exit_after_last_dispensing", bad == 0, "%d" % bad)
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(tgt, "data_fee_schedule.xlsx"))
-    sheet_text = " ".join(str(c.value) for ws in wb.worksheets for row in ws.iter_rows()
-                          for c in row if c.value is not None)
-    ok("defect3.fee_rule_states_late_lines", "submitted after the quarter closed" in sheet_text)
-    ok("defect3.fee_rule_states_the_payer", "surviving company is the fee payer" in sheet_text)
-    ok("defect3.fee_rule_states_the_amendment_scope",
-       "dispensed on or after 1 April 2026" in sheet_text)
-    ok("pin.band_rule_filed", "not applied in tiers" in sheet_text)
-    ok("pin.resend_counts_once_for_doses", "charged once" in sheet_text)
-    ok("pin.payer_before_a_merger_filed", "remains the payer for its dispensings before" in sheet_text)
-    reg = {r["product_code"]: r for r in rd(tgt, "product_register.csv")}
-    ok("pin.successor_holder_named",
-       reg["P09"]["holder_code"] == "H6" and reg["P09"]["previous_holder_code"] == "H5"
-       and reg["P09"]["holder_code_from"] == "2026-02-27", str(reg["P09"]))
-    notes = json.load(open(os.path.join(tgt, "register_release_notes.json")))
-    ok("voice.release_notes_have_no_handling_list", "known_handling" not in notes,
-       str(sorted(notes)))
-    doc = {(r["file_name"], r["variable"]): r["documentation"]
-           for r in rd(tgt, "register_variable_documentation.csv")}
-    ok("pin.resend_counts_once_for_lines",
-       "counts it once, in its lines and in its doses"
-       in doc[("dispensings_2025_2026.csv", "record_id")])
-    ok("pin.crosswalk_is_one_patient",
-       "one patient behind them" in doc[("dispensings_2025_2026.csv", "person_key")])
-    ok("pin.package_validity_is_documented",
-       "at the date of the dispensing" in doc[("dispensings_2025_2026.csv", "package_code")])
-    ok("pin.region_vintage_documented",
-       "The region recorded before the current one"
-       in doc[("person_register.csv", "previous_region, region_recorded_from")])
-    man = {r["file_name"]: r["note"] for r in rd(tgt, "extract_manifest.csv")}
-    ok("pin.extract_scope_is_adults", "aged 18 and over" in man["(extract scope)"])
-    ok("pin.extract_scope_names_the_window",
-       "1 October 2025 to 30 September 2026" in man["(extract scope)"]
-       and "1 October 2023 to 30 September 2025" in man["(extract scope)"])
-    std = _pdf_text(tgt)
-    ok("pin.quarter_of_dispensing_in_the_standard",
-       "in a quarter of it, according to its date of dispensing" in std)
-    ok("pin.no_inert_clause", "left the country" not in std)
-    ok("pin.standard_owns_the_expected_number",
-       "own epidemiological work and is recorded with each run" in std)
-    ok("pin.standard_names_no_estimator",
-       not any(x in std.lower() for x in ("sequence ratio", "null-effect", "hallas", "permutation",
-                                          "equally likely", "symmetry", "half of")))
-    # the six sentences the judge's determinism rests on, each with a shipped home
-    reg9 = reg["P09"]
-    ok("home.sovraxil_history",
-       reg9["holder_code"] == "H6" and reg9["previous_holder_code"] == "H5"
-       and reg9["holder_code_from"] == "2026-02-27")
-    hold = {r["holder_code"]: r for r in rd(tgt, "holder_register.csv")}
-    ok("home.kirunelle_merger",
-       hold["H7"]["merged_into"] == "H2" and hold["H7"]["merger_date"] == "2026-04-01")
-    ok("home.payer_rule", "the surviving company is the fee payer" in sheet_text)
-    ok("home.resend_counts_once",
-       "charged once" in sheet_text
-       and "counts it once" in doc[("dispensings_2025_2026.csv", "record_id")])
-    ok("home.flat_bands", sheet_text.count("not applied in tiers") >= 1
-       and "rate is charged on all of those" in sheet_text)
-    ok("home.quarter_of_dispensing",
-       "in a quarter of it, according to its date of dispensing" in std
-       and "charged in the quarter of its dispensing" in sheet_text)
-    ok("home.lapsed_authorisation_charged",
-       "marketing authorisation has since lapsed" in sheet_text)
-    dist = asks_distinct(kept)
-    ok("ask.a1_counts_distinct_lines",
-       [r for r in g["a1"] if r["chain"] == "APK" and r["quarter"] == "2025 Q4"][0]["accepted"]
-       == len([r for r in dist if r["chain"] == 0 and 731 <= r["day"] <= 822]),
-       "APK 2025 Q4")
-    ok("ask.a1_resend_removed",
-       len(dist) < len(kept), "%d distinct of %d rows" % (len(dist), len(kept)))
+    # ------------------------------------------------ R2: every mess item neutral on the call
+    ok("R2.lab_qc_rows_excluded_by_type", call_with(tgt, g, keep_lab_qc=True) == g["resample"])
+    ok("R2.mw5_history_inert", g["exceed"][("MW-5R", "chloride")] is False)
+    ok("R2.datum_inert", alt == g["rev"])
 
-    # ---------------------------------------------------------------- input gates
+    # ------------------------------------------------ the asks: devices outside the call's rows, cracker misses
+    import ceiling as CE
+    sheet = CE.measure(tgt, g)
+    ok("asks.cracker_misses_spc", sheet["A1"]["cracker"] < len(g["spc"]), sheet["A1"])
+    ok("asks.cracker_misses_purge", sheet["A2"]["cracker"] < len(g["purge"]), sheet["A2"])
+    ok("asks.pair_ceiling_under_60", sheet["pair"] <= 60.0, sheet["pair"])
+    ok("asks.mirror_leakage_under_50", sheet["mirror_leakage"] < 50.0, sheet["mirror_leakage"])
+    ok("asks.spc_device_moves_rental_wells", sum(1 for w in g["spc"] if abs(g["field_detail"][w]["recorded"] - g["spc"][w]) > 50) >= 6)
+    ok("asks.purge_device_moves_every_well", sheet["A2"]["cracker"] == 0, sheet["A2"])
+    ok("asks.field_file_not_read_by_call", PK.FILES["purge"] not in call_files())
+
+    # ------------------------------------------------ input gates
     files = sorted(os.listdir(tgt))
-    ok("gate.files", len(files) >= 10, "%d files" % len(files))
-    exts = set(os.path.splitext(f)[1] for f in files)
-    ok("gate.formats", len(exts) >= 3, str(sorted(exts)))
-    biggest = max(sum(1 for _ in open(os.path.join(tgt, f), encoding="utf-8",
-                                      errors="replace")) - 1
-                  for f in files if f.endswith(".csv"))
-    ok("gate.big_file", biggest >= 25000, "%d rows" % biggest)
+    ok("gate.ten_files", len(files) >= 10, files)
+    ok("gate.three_formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3)
+    ok("gate.large_file", max(info["edd_a_rows"], info["edd_b_rows"]) >= 25000, info["edd_b_rows"])
     md = json.load(open(os.path.join(os.path.dirname(tgt), "metadata.json")))
-    ok("gate.distractors", len(md["distractor_files"]) >= 2, str(md["distractor_files"]))
-    ok("gate.distractors_present", all(os.path.exists(os.path.join(tgt, d))
-                                       for d in md["distractor_files"]))
-    ok("gate.distractor_not_in_a_name",
-       not any("distract" in f.lower() for f in files))
-    for d in md["distractor_files"]:
-        cols = set(rd(tgt, d)[0])
-        ok("gate.distractor_has_no_pair_" + d,
-           "marker_code" not in cols and "person_key" not in cols, str(sorted(cols)))
+    ok("gate.two_distractors", len(md["distractor_files"]) >= 2)
+    ok("gate.no_describing_file", not any(re.search(r"readme|dictionary|manifest|notes|codebook|schema", f, re.I) for f in files))
+    for d in PK.DISTRACTORS:
+        ok("gate.distractor_unread.%s" % d, PK.FILES[d] not in call_files() + ask_files())
 
-    # ---------------------------------------------------------------- realism sweep
-    ok("real.no_round_referral_share",
-       all(round(100.0 * r["after"] / r["n"], 1) % 5 != 0 for r in cands))
-    ok("real.patient_counts_distinct", len(set(r["n"] for r in counts)) >= 20)
-    ok("real.chain_quarters_distinct",
-       len(set((r["accepted"], r["rejected"]) for r in g["a1"])) == len(g["a1"]))
-    ok("real.a3_cells_distinct", len(set(r["patients"] for r in g["a3"])) >= 18)
-    ok("real.no_repeated_block",
-       len(set(tuple(sorted(x.items())) for x in
-               [{k: v for k, v in r.items() if k != "key"} for r in g["a1"]])) == len(g["a1"]))
-    blob2 = text_blob
-    # whole words only: "latest transfer" and "company and" are prose, not placeholders
-    for nm in ("john doe", "acme", "company a", "lorem", "placeholder", "example.com", "test"):
-        ok("real.no_placeholder_" + nm.strip().replace(" ", "_").replace(".", "_"),
-           re.search(r"\b" + re.escape(nm) + r"\b", blob2) is None)
-    people_names = ["Sine Jakobsen", "Arne Mogensen"]
-    ok("real.personas_drawn", all(" " in p for p in people_names))
+    # ------------------------------------------------ leak words: nothing in the pack names the decisive step
+    text = pack_text(tgt)
+    for wd in ("reversal", "reversed", "well field", "wellfield", "pumping", "gradient revers",
+               "flow direction", "upgradient at the time", "beneath the waste"):
+        ok("leak.word_absent.%s" % wd.replace(" ", "_"), wd not in text, wd)
+    ok("leak.positive_control_sap_read", "background water quality is the quality of groundwater that the landfill has not affected" in text)
 
-    # ---------------------------------------------------------------- the ask layer
-    # a turned-back line may be a patient's only one, but never one that could reach the screen:
-    # every rejected first receipt belongs to a patient with no receipt at all inside the window
-    in_window = set()
-    for (k, code), d in firsts.items():
-        if G.WIN_A <= d <= G.WIN_B:
-            in_window.add(k)
-    keyof = dict(new_keys)
-    bad_rej = [r["line"] for r in rejected if r["is_first"]
-               and (new_keys.get(r["pid"], keys[r["pid"]]) in in_window
-                    or keys[r["pid"]] in in_window)]
-    ok("ask.zero_devices_in_main_population", not bad_rej, str(bad_rej[:5]))
-    # the ask layer's rejection device cannot touch a first receipt the screen reads
-    first_line = {}
-    for r in lines:
-        k = (r["pid"], r["code"])
-        if k not in first_line or (r["day"], r["line"]) < first_line[k]:
-            first_line[k] = (r["day"], r["line"])
-    moved_first = [r["line"] for r in rejected
-                   if first_line[(r["pid"], r["code"])] == (r["day"], r["line"])
-                   and r["day"] > W.CLEAR_B]
-    ok("ask.rejection_never_moves_a_first_receipt", not moved_first, str(moved_first[:5]))
-    ok("ask.rejected_firsts_are_outside_the_window",
-       all(r["day"] <= W.CLEAR_B for r in rejected if r["is_first"]),
-       "%d rejected first receipts, all in the clearance period"
-       % sum(1 for r in rejected if r["is_first"]))
-    pr_keys = set(r["person_key"] for r in rd(tgt, "person_register.csv"))
-    disp_keys = set(k for k, code, d, vnr, ph in rp[0])
-    ok("real.register_holds_people_with_no_dispensing",
-       len(pr_keys - disp_keys) >= 25,
-       "%d of %d register rows have no line in either extract"
-       % (len(pr_keys - disp_keys), len(pr_keys)))
-    exrefs = [r["exception_ref"] for r in rd(tgt, "submission_exceptions.csv")]
-    ok("ask.exceptions_outside_extracts",
-       len(set(exrefs)) == len(exrefs) == len(rejected), "%d refs, %d rejected"
-       % (len(set(exrefs)), len(rejected)))
-    a1_total = sum(r["rejected"] for r in g["a1"])
-    ok("ask.a1_rejected_nonzero", a1_total > 500, "%d" % a1_total)
-    ok("ask.a1_median_spread",
-       len(set(r["median_days"] for r in g["a1"])) >= 5,
-       str(sorted(set(r["median_days"] for r in g["a1"]))))
-    ok("ask.a1_median_moves_inside_the_window",
-       any(len(set(r["median_days"] for r in g["a1"] if r["chain"] == ch)) > 1
-           for ch in set(r["chain"] for r in g["a1"])))
-    mid_ok = True
-    for ci, (code, name) in enumerate(W.CHAINS):
-        for label, a, b in AS.QUARTERS:
-            d = sorted(r["submitted"] - r["day"] for r in kept
-                       if r["chain"] == ci and a <= r["day"] <= b)
-            if len(d) % 2 == 0 and d and d[len(d) // 2 - 1] != d[len(d) // 2]:
-                mid_ok = False
-    ok("ask.a1_median_convention_free", mid_ok,
-       "every even cell's two middle values are equal, so every median convention agrees")
-    ok("ask.a2_payers", len(g["a2"]) == 7, "%d" % len(g["a2"]))
-    ok("ask.a2_premerger_payer_present",
-       any(r["holder"] == "H7" and r["ddd"] > 0 for r in g["a2"]))
-    ok("ask.a2_amendment_bites",
-       all(r["rate_before"] != r["rate_after"] for r in g["a2"]))
-    ok("ask.a2_merger_folded",
-       any(r["holder"] == "H2" and r["ddd"] > 0 for r in g["a2"]))
-    ok("ask.a3_cells", len(g["a3"]) == 24, "%d" % len(g["a3"]))
-    ok("ask.a3_not_stated_present",
-       any(r["region"] == "not stated" and r["patients"] > 0 for r in g["a3"]))
-    # ------------------------------------------------- every graded figure sits mid bin
-    # The defined daily doses: a screened product's package holds a whole number of tenths of a
-    # dose, so a payer's window total is exact at one decimal and no rounding convention applies.
-    pkg = rd(tgt, "package_index.csv")
-    prods = set(r["product_atc"] for r in rd(tgt, "screen_annexes.csv"))
-    tenths_bad = [r["vnr"] for r in pkg
-                  if r["atc_code"] in prods and (DEC(r["ddd_per_pack"]) * 10) % 1 != 0]
-    ok("mid.ddd_per_pack_is_whole_tenths", not tenths_bad, str(tenths_bad[:5]))
-    ok("mid.holder_ddd_is_exact",
-       all((DEC(str(r["ddd"])) * 10) % 1 == 0 and (DEC(str(r["ddd_before"])) * 10) % 1 == 0
-           and (DEC(str(r["ddd_after"])) * 10) % 1 == 0 for r in g["a2"]),
-       "every payer's total is a whole tenth, so half-up and half-even agree")
-    # The fee: the exact krone figure is far from the half krone that would make it open.
-    worst_fee = min(r["fee_distance"] for r in g["a2"])
-    ok("mid.holder_fee_distance", worst_fee >= 0.20,
-       "tightest %.4f krone from the half krone that would make the rounding a convention; one "
-       "more half-dose package moves a fee by about %.2f krone"
-       % (worst_fee, min(r["rate_after"] for r in g["a2"]) / 2000.0))
-    # The region and age shares: no cell is near the tenth-of-a-point boundary.
-    worst_share, worst_cell = 1.0, None
-    for r in g["a3"]:
-        pct = FR(100 * r["with_marker"], r["patients"])
-        near = round(pct * 20)
-        if near % 2 == 1:
-            d = abs(float(pct - FR(near, 20)))
-            if d < worst_share:
-                worst_share, worst_cell = d, (r["region"], r["band"])
-    ok("mid.a3_share_distance", worst_share >= 0.004,
-       "tightest %.5f of a point at %s; one patient either way moves that cell by %.2f of a "
-       "point" % (worst_share, worst_cell,
-                  100.0 / min(r["patients"] for r in g["a3"])))
-    ok("mid.a3_no_share_tie",
-       all(FR(100 * r["with_marker"], r["patients"]) * 20 % 2 != 0 or
-           FR(100 * r["with_marker"], r["patients"]) * 10 % 1 == 0 for r in g["a3"]),
-       "no cell's share is an exact half of a tenth")
-    # The median submission days: every even cell's two middle values already agree, above.
-    # The chart: 23 bars, every share distinct, so "longest first" has one order.
-    ok("mid.chart_bars", len(g["chart_rows"]) == 23, "%d" % len(g["chart_rows"]))
-    cs = [r["share_pct"] for r in g["chart_rows"]]
-    ok("mid.chart_order_unique", len(set(cs)) == 23 and cs == sorted(cs, reverse=True),
-       "closest two bars %.1f of a point apart"
-       % min(a - b for a, b in zip(sorted(cs, reverse=True), sorted(cs, reverse=True)[1:])))
-    ok("mid.chart_anchors_are_the_extremes",
-       g["chart_rows"][0]["share_pct"] == max(r["share_pct"] for r in g["chart_rows"])
-       and g["chart_rows"][-1]["share_pct"] == min(r["share_pct"] for r in g["chart_rows"]),
-       "the two bars the criteria name are the true ends of the order")
-    ok("mid.chart_shares_are_not_graded_twice",
-       all(abs(round(100.0 * r["after"] / r["patients"], 1)
-               - next(c["share_pct"] for c in g["chart_rows"]
-                      if c["label"] == "%s + %s" % (r["brand"], r["marker_treatment"]))) < 1e-9
-           for r in g["screen_rows"] if r["patients"]),
-       "every bar's share is the workbook's own after over patients, so the chart grades the "
-       "order and the fill, not the shares a second time")
-    ok("mid.chart_has_no_threshold_mark", True,
-       "the referral line is not drawn, because its position depends on the construction the "
-       "standard leaves open")
+    # ------------------------------------------------ realism sweep
+    plan = info["plan"]
+    for ei in plan:
+        times = [s[2] for s in plan[ei] if s[3] == "N" and s[0].startswith("MW")]
+        ok("realism.sampling_times_ascend_within_days.%s" % EV[ei], all(
+            a <= b for a, b in zip(times, times[1:]) if a.date() == b.date()))
+    dtw = [float(r["dtw_ft_btoc"]) for r in csv.DictReader(open(os.path.join(tgt, PK.FILES["gauging"]), encoding="utf-8"))]
+    ok("realism.depths_vary", len(set(dtw)) > 200)
+    ok("realism.no_round_limits", all(abs(G[k] - round(G[k])) > 0.05 for k in W.INDICATORS))
+    return N[0]
 
-    # ------------------------------------------------- the reports corroborate nothing
-    # The four products the two constructions disagree about must sit inside the range the other
-    # five span, on every reading of the spontaneous-report file, or the file is an oracle.
-    rep = {}
-    for r in rd(tgt, "spontaneous_reports_summary.csv"):
-        c = r["product_code"]
-        for col in ("reports_received", "reports_serious", "reports_from_patients"):
-            rep.setdefault(col, collections.Counter())[c] += int(r[col])
-    vol = collections.Counter()
-    for key, code, d, vnr, ph in rp[0]:
-        if code in W.PCODES and G.WIN_A <= d <= G.WIN_B:
-            vol[code] += 1
-    rep["reports_per_1000_lines"] = {c: 1000.0 * rep["reports_received"][c] / vol[c]
-                                     for c in W.PCODES}
-    decisive = ("P03", "P04", "P05", "P08")
-    others = [c for c in W.PCODES if c not in decisive]
-    for col, d in rep.items():
-        lo, hi = min(d[c] for c in others), max(d[c] for c in others)
-        ok("oracle.reports_tie_" + col,
-           all(lo < d[c] < hi for c in decisive),
-           "%s: the other five span %.3f to %.3f, the four the screen separates are %s"
-           % (col, lo, hi, ", ".join("%s %.3f" % (c, d[c]) for c in decisive)))
-        # and no cut on this reading isolates the pairs the two constructions disagree about
-        order = sorted(W.PCODES, key=lambda c: -d[c])
-        cuts = set(frozenset(order[:k]) for k in range(1, len(order)))
-        bad = [frozenset(x) for x in (("P03", "P04"), ("P05", "P08"), decisive) if
-               frozenset(x) in cuts]
-        ok("oracle.no_cut_isolates_" + col, not bad,
-           "order %s" % " ".join(order))
 
-    # ------------------------------------------------- the three silent primaries
-    # A1: the chain that owned the pharmacy on the day of the dispensing. The register gives the
-    # chain that owns it at the extract date; nothing in the pack says a line belongs to the chain
-    # that owned it then, and the chains' own monthly log is the only thing that disagrees.
-    phreg = rd(tgt, "pharmacy_register.csv")
-    movers = [r for r in phreg if r["previous_chain_code"]]
-    inside = [r for r in movers if G.iso(r["in_chain_from"]) >= G.D0]
-    ok("dev.a1_transfers_exist", len(inside) >= 20,
-       "%d of %d pharmacies that changed chain did so inside the extract period"
-       % (len(inside), len(movers)))
-    ok("dev.a1_benign_twins", len(movers) - len(inside) >= 8,
-       "%d of the register's transfers predate the extract, so the column marks nothing"
-       % (len(movers) - len(inside)))
-    # The data forces the basis: the chains' own monthly log of what the register accepted ties to
-    # the extract line for line when a line is read against the chain that owned its pharmacy that
-    # day, and fails almost everywhere when it is read against the chain the register gives now.
-    import asks as AS2
-    phr = {r["pharmacy_id"]: (r["chain_code"], r["previous_chain_code"],
-                              G.iso(r["in_chain_from"]) if r["in_chain_from"] else None)
-           for r in rd(tgt, "pharmacy_register.csv")}
+# ---------------------------------------------------------------- helpers
+def call_files():
+    return [PK.FILES[k] for k in ("edd_a", "edd_b", "gauging", "points", "sap")]
 
-    def _owner(ph, d):
-        now, prv, since = phr[ph]
-        return prv if (prv and since and d < since) else now
 
-    log = {(r["chain_code"], r["submission_month"]): int(r["lines_accepted"])
-           for r in rd(tgt, "pharmacy_submission_log.csv")}
-    at_date, as_now = collections.Counter(), collections.Counter()
-    for r in AS2.distinct(kept):
-        m = AS2.month_key(r["submitted"])
-        at_date[(_owner(r["pharmacy"], W.day(r["day"])), m)] += 1
-        as_now[(phr[r["pharmacy"]][0], m)] += 1
-    off_at = sum(1 for k, v in log.items() if at_date.get(k, 0) != v)
-    off_now = sum(1 for k, v in log.items() if as_now.get(k, 0) != v)
-    gap_now = sum(abs(as_now.get(k, 0) - v) for k, v in log.items())
-    ok("dev.a1_log_ties_at_the_dispensing_date", off_at == 0,
-       "%d of %d chain-months differ" % (off_at, len(log)))
-    ok("dev.a1_log_breaks_on_the_current_chain", off_now >= 100 and gap_now > 20000,
-       "%d of %d chain-months differ, %d lines in all" % (off_now, len(log), gap_now))
-    ok("dev.a1_every_line_joins",
-       all(r["pharmacy"] in set(x["pharmacy_id"] for x in phreg) for r in kept),
-       "the device leaves no unmatched join for the battery to find")
-    doc_ph = " ".join(r["documentation"] for r in
-                      rd(tgt, "register_variable_documentation.csv")
-                      if r["file_name"] == "pharmacy_register.csv").lower()
-    ok("dev.a1_dictionary_states_no_handling",
-       "date of the dispensing" not in doc_ph and "belongs" not in doc_ph,
-       "the dictionary defines the columns and says nothing about which chain a line belongs to")
-    ok("dev.a1_no_rule_states_it",
-       not any(x in (_pdf_text(tgt) + " ".join(r["documentation"] for r in
-                                               rd(tgt, "register_variable_documentation.csv"))
-                     + sheet_text).lower()
-               for x in ("chain that owned", "chain at the date of the dispensing",
-                         "owned the pharmacy on")),
-       "no filed sentence adjudicates the chain a line belongs to")
-    # A2: the dose the edition in force assigns, against the figure the package row was written with
-    # Every package row in the pack, not only the screened products: the test a reader can run is
-    # whether the stored figure equals its own documented formula to the precision it is stated
-    # at. Rounding at the second decimal is not a contradiction; being out by a factor is.
-    ed = {r["atc_code"]: r["ddd_mg"] for r in rd(tgt, "atc_text.csv")}
-    prod_atcs = set(x["product_atc"] for x in rd(tgt, "screen_annexes.csv"))
-    stale, ties, not_tenths = [], 0, []
-    for r in rd(tgt, "package_index.csv"):
-        if not ed.get(r["atc_code"]) or not r["ddd_per_pack"]:
-            continue
-        per = (DEC(r["pack_size"]) * DEC(r["strength"].split()[0])
-               / DEC(ed[r["atc_code"]]))
-        if abs(per - DEC(r["ddd_per_pack"])) > DEC("0.005"):
-            stale.append(r["vnr"])
+def ask_files():
+    return [PK.FILES[k] for k in ("purge", "fieldproc")]
+
+
+def pack_text(tgt):
+    import pdfplumber
+    out = []
+    for fn in sorted(os.listdir(tgt)):
+        p = os.path.join(tgt, fn)
+        if fn.endswith(".pdf"):
+            with pdfplumber.open(p) as pdf:
+                t = " ".join((pg.extract_text() or "") for pg in pdf.pages)
+            assert len(t) > 200, fn
+            out.append(t)
+        elif fn.endswith(".xlsx"):
+            with zipfile.ZipFile(p) as z:
+                out.append(" ".join(z.read(n).decode("utf-8", "replace") for n in z.namelist() if n.endswith(".xml")))
         else:
-            ties += 1
-        if r["atc_code"] in prod_atcs and (per * 10) % 1 != 0:
-            not_tenths.append(r["vnr"])
+            out.append(open(p, encoding="utf-8").read())
+    return re.sub(r"\s+", " ", " ".join(out)).lower()
 
-    ok("dev.a2_both_editions_are_whole_tenths", not not_tenths,
-       "both figures are whole tenths, so a payer's total is exact either way")
-    # the stored figure is wrong against its own definition, not merely different from another
-    # source: the column description gives the formula, every input to it is shipped, and the whole
-    # fee period lies inside one edition of the index, so no vintage explains the three
-    atc = rd(tgt, "atc_text.csv")
-    ok("dev.a2_one_edition", len(set(r["edition"] for r in atc)) == 1
-       and len(set(r["in_force_from"] for r in atc)) == 1,
-       "one edition, in force from %s" % atc[0]["in_force_from"])
-    ok("dev.a2_edition_covers_the_fee_period",
-       G.iso(atc[0]["in_force_from"]) < G.WIN_A,
-       "in force from %s, the fee period opens %s, so no day of it is under two editions"
-       % (atc[0]["in_force_from"], G.WIN_A))
-    docp = {(r["file_name"], r["variable"]): r["documentation"]
-            for r in rd(tgt, "register_variable_documentation.csv")}
-    ok("dev.a2_formula_is_documented",
-       "pack size times the strength, divided by the defined daily dose"
-       in docp[("package_index.csv", "ddd_per_pack")]
-       and "atc_text.csv gives" in docp[("package_index.csv", "ddd_per_pack")],
-       "the column's own definition names every input a reader needs to check it")
-    ok("dev.a2_stale_rows_break_their_own_formula", 6 <= len(stale) <= 12 and ties >= 45,
-       "%d of the %d priced package rows contradict the formula their own documentation gives, "
-       "beyond the rounding they are stated at; the other %d satisfy it"
-       % (len(stale), len(stale) + ties, ties))
-    ok("dev.a2_stale_rows_are_only_the_three_codes",
-       len(set(_atc_of_vnr(tgt)[v] for v in stale)) == 3,
-       "the contradiction falls on three codes and no others: %s"
-       % sorted(set(_atc_of_vnr(tgt)[v] for v in stale)))
-    ok("dev.a2_no_rule_states_it",
-       "edition in force" not in sheet_text.lower()
-       and "edition" not in " ".join(r["documentation"] for r in
-                                     rd(tgt, "register_variable_documentation.csv")
-                                     if r["file_name"] == "package_index.csv").lower(),
-       "no filed sentence says which edition's dose to strike the fee on")
-    # A3: the person extract delivered with the October 2025 run
-    cur = {r["person_key"]: r for r in rd(tgt, "person_register.csv")}
-    pri = {r["person_key"]: r for r in rd(tgt, "person_register_2025Q4.csv")}
-    ok("dev.a3_same_key_set", set(cur) == set(pri),
-       "%d against %d keys, so the device leaves no unmatched join" % (len(cur), len(pri)))
-    diff = [k for k in cur if (cur[k]["region"] or "not stated") != (pri[k]["region"] or "not stated")]
-    explained = [k for k in diff if cur[k]["previous_region"] and cur[k]["region_recorded_from"]
-                 and G.iso(cur[k]["region_recorded_from"]) > G.WIN_A]
-    ok("dev.a3_silent_corrections", len(diff) - len(explained) >= 600,
-       "%d of the %d regions that differ between the two deliveries are explained by the current "
-       "extract's own history columns and %d are not"
-       % (len(explained), len(diff), len(diff) - len(explained)))
-    ok("dev.a3_benign_twins", len(explained) >= 80,
-       "%d explained differences, so the comparison is not a list of the device's rows"
-       % len(explained))
-    doc_prior = " ".join(r["documentation"] for r in
-                         rd(tgt, "register_variable_documentation.csv")
-                         if r["file_name"] == "person_register_2025Q4.csv").lower()
-    # the documented fact is checkable in the data: no recorded change predates the day the
-    # register began keeping a previous region, so a blank is uninformative rather than a no
-    recs = [r["region_recorded_from"] for r in rd(tgt, "person_register.csv")
-            if r["region_recorded_from"]]
-    ok("dev.a3_history_starts_where_the_documentation_says",
-       recs and min(recs) >= W.iso(W.REGION_HISTORY_DAY),
-       "earliest recorded change %s, the register began keeping one on %s"
-       % (min(recs) if recs else "-", W.iso(W.REGION_HISTORY_DAY)))
-    ok("dev.a3_blank_is_not_evidence_of_no_change",
-       len(diff) - len(explained) > 10 * max(len(explained), 1) or
-       len(diff) - len(explained) >= 600,
-       "%d patients differ between the two deliveries with nothing recorded against them, so the "
-       "current extract's silence cannot be read as no change" % (len(diff) - len(explained)))
-    ok("dev.a3_no_rule_states_it",
-       "person_register_2025q4" not in _pdf_text(tgt).lower()
-       and "screen window" not in doc_prior and "window" not in doc_prior,
-       "the standard names no file and the dictionary's entry ties the delivery to no window")
-    # every primary lives outside the files the main call reads
-    CALL_FILES = {"dispensings_2023_2025.csv", "dispensings_2025_2026.csv", "package_index.csv",
-                  "screen_annexes.csv", "person_key_crosswalk.csv", "signal_tracker_export.csv",
-                  "screen_standard_7_2024.pdf"}
-    ok("dev.primaries_outside_the_call",
-       not ({"pharmacy_register.csv", "atc_text.csv",
-             "person_register_2025Q4.csv"} & CALL_FILES),
-       "the three primaries live in files the call never opens")
 
-    # ------------------------------------------------- the measured pair arithmetic
-    import cracker as CR
-    bands = CR.age_bands_from_the_standard(tgt)
-    cr_rows = CR.score(tgt, os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                         "figures.json"), bands)
-    total, lc, ls, pair, leak = CR.ceiling(cr_rows, cr_rows)
-    for ask, n_fig, hits in cr_rows:
-        ok("cracker.misses_" + ask.split()[0], hits < n_fig,
-           "%s: keeps %d of %d" % (ask, hits, n_fig))
-    ok("cracker.pair_ceiling", pair <= 40.0, "%.1f (ceiling 40)" % pair)
-    ok("cracker.mirror_leakage", leak < 35.0, "%.1f per cent (under 35)" % leak)
-    ok("cracker.path_is_code", os.path.exists(os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "cracker.py")),
-       "generator/cracker.py, run on the cut pack by this build")
+def reclassify_one_datum(tgt):
+    """heads on the 2014 and 2017 surveys only (NGVD 29 throughout, MW-5R and the trimmed MW-8 aside)"""
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(tgt, PK.FILES["points"]), read_only=True)
+    toc = {}
+    for row in list(wb["Survey"].iter_rows(values_only=True))[1:]:
+        if row[2] == "NGVD 29":
+            toc[row[0]] = float(row[3])
+    h = {}
+    for r in csv.DictReader(open(os.path.join(tgt, PK.FILES["gauging"]), encoding="utf-8")):
+        if r["location"] in toc:
+            h[(r["location"], EV.index(r["event"]))] = toc[r["location"]] - float(r["dtw_ft_btoc"])
+    return {(w, e): h[(w, e)] < h[(W.BOUNDARY[w], e)] for w in W.BACKGROUND for e in range(len(EV))}
 
-    # deleting every ask device leaves the call where it is
-    ok("ask.devices_deletable", referred == _referred(tgt, rp, "perm", firsts))
 
-    # ---------------------------------------------------------------- figures agree
-    ok("fig.rows_match", len(g["screen_rows"]) == len(counts))
-    ok("fig.referred_names",
-       sorted("%s/%s" % (r["product"], r["marker"]) for r in counts if r.get("referred")) ==
-       sorted(referred))
-    ok("fig.a1_rows", len(g["a1"]) == 16, "%d" % len(g["a1"]))
-    if FAILED:
-        raise AssertionError("checks failed (%d of %d):\n  %s" % (len(FAILED), N,
-                                                                  "\n  ".join(FAILED)))
-    return N
+def boundary_alternatives(g):
+    """count events where reading MW-2 against PZ-1, or MW-3 against PZ-1, would classify differently"""
+    diffs = 0
+    for e in range(len(EV)):
+        h = {p: g["heads"][(p, e)][0] for p in ("MW-1", "MW-2", "MW-3", "PZ-1", "PZ-2", "PZ-3")}
+        if (h["MW-2"] < min(h["PZ-2"], h["PZ-1"] + 0.0)) != g["rev"][("MW-2", e)] and h["MW-2"] < h["PZ-2"]:
+            diffs += 1
+        if (h["MW-3"] < h["PZ-3"]) != g["rev"][("MW-3", e)]:
+            diffs += 1
+    return diffs
+
+
+def normal_scale_set(g):
+    from scipy import stats
+    bg = g["bg"]
+    lim = {}
+    for k in W.INDICATORS:
+        v = np.array([x for (w, e, kk), x in bg.items() if kk == k and not g["rev"][(w, e)]])
+        n = len(v)
+        lim[k] = v.mean() + stats.t.ppf(0.99, n - 1) * v.std(ddof=1) * math.sqrt(1 + 1 / n)
+    return RT.designate(lim, g["october"])
+
+
+def call_with(tgt, g, include_fd=False, keep_all_runs=False, october_fd=False, include_oct_bg=False, keep_lab_qc=False):
+    """the golden call with one convention or mess item handled the other way"""
+    ind = {}
+    extra = []
+    for r in csv.DictReader(open(os.path.join(tgt, PK.FILES["edd_b"]), encoding="utf-8"), delimiter="\t"):
+        key = (r["chemical_name"], r["fraction"])
+        if key not in GD.IND_B:
+            continue
+        stype = r["sample_type_code"]
+        if stype == "N" and (r["reportable_result"] == "Yes" or keep_all_runs) and r["sys_loc_code"].startswith("MW"):
+            pass
+        elif stype == "FD" and (include_fd or october_fd):
+            pass
+        elif keep_lab_qc and stype in ("MS", "SD") and r["sys_loc_code"].startswith("MW"):
+            pass
+        else:
+            continue
+        ei = GD.event_of(dt.date.fromisoformat(r["sample_date"][:10]))
+        k = GD.IND_B[key]
+        v = float(r["result_value"])
+        if stype in ("MS", "SD"):
+            continue     # percent recoveries: a reader keeping them sees a unit of %REC, not a concentration
+        extra.append((GD.norm_loc(r["sys_loc_code"]), ei, k, v, stype))
+    bg = dict(g["bg"])
+    october = dict(g["october"])
+    for loc, ei, k, v, stype in extra:
+        if stype == "FD" and include_fd and loc in W.BACKGROUND and ei in W.BG_EVENTS:
+            bg[(loc + "dup", ei, k)] = v
+        if stype == "FD" and october_fd and ei == W.EVAL and loc in W.COMPLIANCE:
+            october[(loc, k)] = v
+        if stype == "N" and keep_all_runs and loc in W.BACKGROUND and ei in W.BG_EVENTS:
+            if (loc, ei, k) in bg and abs(bg[(loc, ei, k)] - v) > 1e-9:
+                bg[(loc + "run", ei, k)] = v
+    if include_oct_bg:
+        for w in W.BACKGROUND:
+            for k in W.INDICATORS:
+                if not g["rev"][(w, W.EVAL)]:
+                    bg[(w + "oct", W.EVAL, k)] = g["indicators"][(w, W.EVAL, k)]
+    rev = dict(g["rev"])
+    for (w, e, k) in list(bg):
+        if w not in W.BACKGROUND:
+            base = w[:4]
+            rev[(w, e)] = g["rev"][(base, e)]
+    lim = {}
+    for k in W.INDICATORS:
+        v = [x for (w, e, kk), x in bg.items() if kk == k and not rev[(w, e)]]
+        lim[k] = RT.upl(v)
+    return RT.designate(lim, october)
+
+
+def total_fraction_at_wells(tgt):
+    for r in csv.DictReader(open(os.path.join(tgt, PK.FILES["edd_b"]), encoding="utf-8"), delimiter="\t"):
+        if r["sys_loc_code"].startswith("MW") and r["chemical_name"] in ("Sodium", "Boron") and r["fraction"] == "T":
+            return True
+    return False
+
+
+def samples_within_event(tgt):
+    for r in csv.DictReader(open(os.path.join(tgt, PK.FILES["edd_b"]), encoding="utf-8"), delimiter="\t"):
+        if r["sample_type_code"] == "N" and r["sys_loc_code"].startswith("MW"):
+            GD.event_of(dt.date.fromisoformat(r["sample_date"][:10]))
+    return True

@@ -60,6 +60,244 @@ candidates across six task types (survey anomaly detection, provider quality, di
 environmental monitoring, fraud and anti-money-laundering, payment claims) died on paper; the twentieth,
 this draw, was prototyped as code on the clean truth (`## Tried and rejected`, prototype lines).
 
+## Default path
+
+The pipeline a competent environmental statistician builds from the prompt, the plan and the files, every field and
+rule read correctly (figures from the built pack, `generator/figures.json`):
+
+1. Conforms both laboratories' deliverables: primary samples only, the laboratory's reportable result where a sample
+   was re-analysed, chloride, dissolved sodium and dissolved boron, Tamarack's boron converted from mg/L, Tamarack's
+   zero-padded well codes, Ridgeline's field duplicates set aside, MW-5R in MW-5's place.
+2. Takes the plan's background window (SAP section 4), April 2018 to April 2026 at the background wells MW-1, MW-2
+   and MW-3: 50 chloride, 50 sodium and 49 boron results.
+3. Runs the guidance's background checks the field's method calls for: normality of the logarithms, a Rosner screen
+   pooled and well by well (nothing flagged), a look at spatial variability; confirms on the October 2026 gauging
+   that MW-1 to MW-3 stand above the waste (every background well higher than its boundary piezometer that day).
+4. Computes the plan's upper prediction limit on the logarithms with t at the 99th percentile (SAP section 5), the
+   field's interwell prediction limit: chloride 55.5 mg/L, sodium 34.8 mg/L, boron 109 ug/L.
+5. Compares each compliance well's October 2026 result with the limits (SAP section 6): MW-6 exceeds on all three,
+   no other well exceeds; files MW-6 alone for verification resampling.
+
+Ends on: MW-6 alone
+Golden: MW-6, MW-7 and MW-9
+
+## Stump sentence
+
+A competent solver who conforms both laboratories' deliverables, keeps the reportable primary results, carries MW-5
+onto MW-5R and computes the plan's log-normal upper prediction limit for each indicator from every routine background
+result sends MW-6 alone to verification resampling, because in the events when the gradient at the western boundary
+had reversed MW-1, and in the strongest seasons MW-2, sampled water that had passed beneath the waste, which lifts the
+limits to 55.5 mg/L chloride, 34.8 mg/L sodium and 109 ug/L boron, above MW-7's sodium of 23.5 mg/L and MW-9's boron of
+79.5 ug/L, where the background the plan defines gives 20.8 mg/L and 68.3 ug/L.
+
+## Three rules
+
+Task type: `environmental-monitoring-exceedance` in `physical-environmental-sciences`, which serves anomaly detection; groundwater detection monitoring at a waste unit is that task type's own exceedance call (a real release against an artifact of the comparison).
+Domain test: the deciding quantity is each indicator's background water quality, estimated by the field's interwell upper prediction limit on the background wells' results (the Unified Guidance statistic the plan files), and it only means anything where each background result is groundwater the landfill has not affected, which hydrogeology reads from the hydraulic heads at the waste boundary on each sampling date; swap another field's nouns in and the task stops making sense.
+Swap: "send the ward to a repeat swab whose infections exceed the hospital's baseline, built from the baseline wards" keeps none of it: there is no hydraulic head, no well field whose pumping turns a gradient around, no water that passes beneath a waste body to reach a background well, and no casing survey to turn depths into heads.
+Layer 1: two laboratories' deliverables across the 2021 contract change in two layouts (Tamarack's CSV with zero-padded codes, mg/L boron and metals and a blind DUP code; Ridgeline's tab-delimited EQuIS-style export in ug/L with the fraction in its own column and duplicates under the parent well) from the laboratories' systems; re-analyses and dilutions with one reportable run (the laboratory); lab batch QC, matrix spikes, surrogates and blanks in the same files (the laboratory); MW-5 replaced by MW-5R in 2022 (the district's well program); depths to water from the casing with the 2022 NAVD 88 resurvey and the 2024 MW-8 riser trim in the survey history (the surveyors); the sampler's field entries in UTC (the field app); none placed to be caught.
+Layer 2: `estimand_identification`, contamination of the comparison: the methodological choice that flips the call is which background results represent groundwater the landfill has not affected, read sample by sample from the head relation at the boundary on each event.
+Decisive step: recognising that a background well samples unaffected groundwater only while its head stands above the waste boundary's, and reading each background result against its own event's gauging, so the results from the events when MW-1 (ten) and MW-2 (six) stood below their boundary piezometers leave the background before the limits are computed.
+Not semantics: every field, unit, code and datum read correctly (boron converted, the reportable run kept, MW-5R carried, the survey in force applied) still leaves the plan's limits on every background result at 55.5, 34.8 and 109, and MW-6 alone; no column says which results came from beneath the waste.
+Not rule application: the plan files the window, the formula, the comparison and the definition of background (groundwater the landfill has not affected) and nothing about heads, gradients or how affectedness is shown, so executing every filed rule on the designated wells files MW-6 alone; the enumerated family (every background result, a pooled or per-well Rosner screen, Tukey fences, a per-well median-plus-two-MAD cut, April results only, dry seasons dropped, the first or last eight events, MW-1 dropped, the nonparametric maximum, MW-3 alone, intrawell limits) spreads over three sets (MW-6 alone in twelve, MW-6, MW-7, MW-9 and MW-10 in one, MW-6 in intrawell), and the standing family once the head relation is read (per sample, per event, the following event dropped too, a 0.15 or 0.25 ft tolerance, a Rosner screen after) is one set, MW-6, MW-7 and MW-9, ruled in by the gauging export no clause points at.
+Analyst test: a strong analyst who conforms both laboratories, keeps the reportable primary results, carries MW-5R, applies the survey in force and computes the plan's limit on every background result sends MW-6 alone to verification resampling, the default path's answer, against the golden MW-6, MW-7 and MW-9.
+Estimand: SAP section 4: background water quality is the quality of groundwater the landfill has not affected, estimated from every routine sample of that groundwater at the background wells from April 2018 through the year's April event; section 6: a well goes to verification resampling when any indicator's October result is greater than that indicator's limit; filed in `MCL_SAP_rev2_2018.pdf`.
+No decoy: nothing is planted to be caught: no memo, prior evaluation, draft or stakeholder figure carries MW-6 alone, the reversals are the ordinary result of a well field's seasonal pumping that appears only as water levels, and no shipped file ranks or flags a well.
+No certified replay: the method is not recovered by reproducing certified or published figures; the pack holds no earlier evaluation, limit or determination.
+Lesson: a background well's result stands for unaffected groundwater only on a day its head stands above the waste, so a background built from every routine result inflates the limits wherever the gradient turns, and the real increases at MW-7 and MW-9 read as background scatter; no build on file teaches conditioning a comparison sample by sample on a physical state recorded in another file.
+
+## Survivor anatomy
+
+Actor: the deciding property (whether a background sample was groundwater from beneath the waste) has no column in any file; it is the relation between a background well's head and its boundary piezometer's on that event, built from two files (depths and the survey in force).
+Link: the signal is read through a comparison the field's method never asks for, each background result against its own event's gauging at the boundary; the gauging export and the deliverables share a well code and a date, so the key exists and invites nothing, and the guidance's own flow check passes on the October map.
+Reflex: the field's named method (the interwell upper prediction limit on the designated background wells, with the guidance's Rosner screen and its intrawell alternative) sits at rung 0 to 2 and files MW-6 alone.
+Back-test: the textbook route validates: the logarithms pass a normality check, Rosner flags nothing pooled or well by well, the October 2026 water levels put every background well above the waste, and MW-6, the one well every route flags, is the well with a fresh rise.
+Second use: the gauging export carries the event's water levels the report owes and the regulator requires every event; the survey history sets every head; the deliverables carry the call and the whole program; deleting the decisive step removes no file.
+Shock: the affected results read as ordinary background: MW-1's raised results sit inside MW-2's natural range in the pooled set, MW-2's raised ones are the top of a set no outlier test splits, and MW-7 and MW-9 have stood level since 2018 at a modest excess, under every route's limit but the golden's; no single-indicator sort of the October results puts the golden set at its head.
+Pins: the plan files the window, the indicators, the formula, the comparison and the definition of background in the regulator's own words; no filed sentence names heads, gradients, the well field, reversals or which results to leave out (`checks.py` leak words, `verify.py` pdf sweep).
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 plan's limit on every background result | yes, SAP 4 to 6 | yes | yes, the interwell limit | no | no | yes | no | readable |
+| R1 Rosner screen, pooled and per well | yes, the guidance | no | yes | no | yes | no | no | readable |
+| R2 intrawell limits, or MW-1 dropped, or a season or window cut | no | no | yes, the guidance's alternatives | no | partly | yes | no | readable |
+| R3 background read sample by sample against the boundary heads (decisive) | no: SAP 4 defines background as unaffected groundwater and names no gradient, head or exclusion | no: no column holds a head or a direction, depths must be turned into heads with the survey in force | no: the field's flow check uses the current map, which passes | no: no earlier evaluation or limit ships | no: nothing duplicated, misdated or mis-keyed | no: the head relation per event, then a filter, then the limit, over two files | no: the gauging export ships for the report's water levels and the regulator's every-event requirement | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | background results | every routine primary sample of unaffected groundwater at MW-1 to MW-3, April 2018 to April 2026 | every sample at the designated wells; MW-1 dropped whole; whole reversed events dropped | MW-6 alone; MW-6 alone; same call | SAP 4 "the quality of groundwater that the landfill has not affected ... every routine sample of that groundwater" with the heads showing which samples came from beneath the waste; whole-event dropping is same call |
+| SF2 | field duplicates | not background | pooled as extra results | same call | SAP 4 "Field duplicates ... are not background results"; same call asserted |
+| SF3 | re-analysed samples | the reportable run | both runs | same call | SAP 4 "the laboratory's reportable result"; same call asserted |
+| SF4 | boron units | ug/L throughout | mg/L mixed in | no reading survives: a factor of 1000 | each deliverable's own unit column; asserted min Tamarack boron in ug/L above 10 |
+| SF5 | the limit's scale | natural logarithms | normal scale | same call | SAP 5 formula; same call asserted |
+| SF6 | greater than | strict | at or above | same call | no October result within 1 per cent of a limit, asserted |
+| SF7 | rounded limit | unrounded | the three-figure limit | same call | SAP 5 "not rounded before a result is compared"; same verdicts asserted |
+| SF8 | MW-5R | in MW-5's place | a new well | same call | SAP 2 "A replacement well takes the place"; MW-5R under every limit |
+| SF9 | the October result | the primary sample | the field duplicate | same call | SAP 4 and 6 "the primary sample"; same call asserted |
+| SF10 | sodium and boron fraction | dissolved | total | same call | SAP 3 "dissolved sodium and dissolved boron"; no total fraction at a well, asserted |
+| SF11 | the head comparison's datum | the survey in force on the gauging date | NGVD 29 throughout | same call | every point resurveyed together in 2022, single-datum classification identical, asserted; every head relation at least 0.10 ft from zero |
+| SF12 | the boundary point for each background well | the boundary piezometer beside it (PZ-1, PZ-2, PZ-3) | the next boundary piezometer | same call | classification identical, asserted |
+| SF13 | the day the head is read | the event's gauging round | the sample's own day | same call | FS-03 1 and SAP 3: water levels are measured before purging on the event's first day; every sample falls in its event's three days |
+| SF14 | how affectedness is shown | the head relation | the chemistry of each background well's samples | same call | at MW-1 and MW-2 every reversed sample is above every other on all three indicators, asserted |
+| SF15 | the background window | through the April 2026 event | the October 2026 background samples added | same call | SAP 4 "through the April event of the year being evaluated"; same call asserted |
+| SF16 | a well to resample | any indicator over its limit | all indicators over | MW-6 alone | SAP 6 "an initial exceedance for any indicator parameter"; MW-7 and MW-9 each over on one indicator |
+
+## Ladder
+
+| Rung | Construction | Chloride / sodium / boron limit | Set filed |
+|---|---|---|---|
+| R0 (default) | the plan's limit on every background result | 55.5 / 34.8 / 109 | MW-6 |
+| R1 | pooled or per-well Rosner screen first (flags nothing) | 55.5 / 34.8 / 109 | MW-6 |
+| R2a | MW-1 dropped whole | 58.0 / 35.5 / 106 | MW-6 |
+| R2b, R2d, R2e, R2j | April only; first eight; last eight; dry seasons dropped | 52.7 to 66.0 / 30.2 to 44.7 / 92.3 to 142 | MW-6 |
+| R2c, R2k, R2g | per-well median plus two MAD; Tukey fences; nonparametric maximum | 42.0 to 55.7 / 26.3 to 34.8 / 93.6 to 109 | MW-6 |
+| R2f | intrawell, each well against its own record | per well | MW-6 |
+| R2h (over-cut) | MW-3 alone | 29.8 / 17.3 / 64.1 | MW-6, MW-7, MW-9, MW-10 |
+| R3 (decisive) | each background result read against its event's boundary heads | 38.2 / 20.8 / 68.3 | MW-6, MW-7, MW-9 |
+| R3 variants | whole events dropped; next event too; 0.15 or 0.25 ft tolerance; Rosner after | 35.1 to 38.2 / 20.3 to 22.3 / 68.2 to 74.2 | MW-6, MW-7, MW-9 |
+
+Margins (`checks.py`, every check of the scorecard): MW-7's sodium is 1.129 times the golden limit and under the
+lowest high route's (R2c, 26.3) by 10.7 per cent; MW-9's boron is 1.164 times the golden and under the lowest high
+route's (R2d, 92.3) by 13.9 per cent; the nearest unflagged checks are MW-10's chloride and sodium at 0.884 of the
+golden and MW-11's boron at 0.880, each under every family member by at least 3.7 per cent, MW-10 over R2h's chloride
+and sodium limits. The golden set is bracketed: every high route files MW-6 alone, two wells short, and the over-cut
+files one well too many.
+
+Pricing sequence. 1 Residue the filed WHAT leaves: which background results are unaffected groundwater, a method
+(physical evidence) and not a knob, since the head relation's sign decides it and a 0.15 or 0.25 ft tolerance files
+the same set. 2 Move against the ceiling: the affected results lift the limits by 1.45, 1.67 and 1.60 times against a
+window of 1.13 and 1.16 the deciding results need. 3 One group-by route: none reaches the set; the cheapest member of
+the standing family is a self-join of the gauging export on event plus the survey's as-of join, one comparison per
+event, then the filter; a one-column route (MW-3 alone, the per-well cut, the April split) files another set. 4 The
+step is worth 45, 67 and 60 per cent of the limits, more than twice the licensed family's own spread (8.9, 9.8 and 8.8
+per cent) plus the limit's delta-method standard error (8.5, 6.8 and 7.0 per cent), and the deciding results clear the
+golden by 1.9 (sodium) and 2.3 (boron) standard errors, asserted in `checks.py` (`estimator.`). 5 The lever is the
+background's composition, not a variance the ranking reads. 6 Not a variance correction on a call about a change, so
+the wells' own histories carry no rung. 7 The subset the step keeps (unaffected results) is not a filter any one
+column draws: the dry-season, April and well cuts all miss. 8 Redraw screen (`generator/redraw.py`, not run by the
+build): over 20 other seeds, 19 placed worlds (one seed found no placement window and is reported, not hidden), all
+twelve cheap routes the screen carries landed the golden set 0 times, the head route, Rosner-after and both tolerance
+variants 19, whole-event 18, next-event 15.
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | every routine primary sample of unaffected groundwater at MW-1 to MW-3 (SAP 4); C1 for duplicates, re-analyses and lab QC, asserted |
+| 2 | Unit of account | the sample's result for one indicator; the call's unit is the well (SAP 6) |
+| 3 | Attribution window | an event's samples fall inside its three field days, asserted; the event label is the season |
+| 4 | As-of dating | the survey in force on the gauging date; single datum classifies the same events (SF11) |
+| 5 | Version basis | the laboratory's reportable run (SAP 4); keeping both runs is same call |
+| 6 | Denominator | n is the number of background results per indicator, 34, 34, 33 (boron not analysed once) |
+| 7 | Weighting | none: every result one observation in the pooled limit (SAP 5) |
+| 8 | Window length | April 2018 through April 2026 (SAP 4); the October 2026 background samples added are same call |
+| 9 | Boundary inclusivity | greater than (SAP 6); no result within 1 per cent of a limit |
+| 10 | Rounding path | unrounded limits compared, reported to three figures (SAP 5); the three-figure limits give the same verdicts |
+| 11 | Tie-break | none needed: no tie in any check |
+| 12 | Maturity and censoring | no non-detect among the indicator results at the background or compliance wells |
+| 13 | Order of operations | classify, then compute the limit; Rosner after the classification removes nothing |
+| 14 | Row order | file order moves nothing: every result keyed by well, event and indicator, one reportable each |
+| 15 | Duplicate resolution | primary samples only (SAP 4); duplicates are same call |
+| 16 | Identity normalisation | Tamarack's MW-01 is MW-1; MW-5R in MW-5's place (SAP 2) |
+| 17 | Netting against gross | not applicable: no quantity offsets another |
+| 18 | Dimensional units | boron in ug/L, Tamarack's mg/L times 1000 (SF4); heads in feet on one datum per date |
+| 19 | Code and status semantics | sample type N, reportable Yes or Y, fraction D for sodium and boron, read from each file's own codes |
+| 20 | Integerisation | not applicable to the call; the asks round whole and to one decimal with every figure mid-cell |
+| 21 | Clause scope | SAP 4 to 6 govern the indicators only; FS-03 governs the field figures |
+| 22 | Forward window contents | the verification round within 60 days (SAP 6); nothing forecast |
+
+## Literal reader
+
+Executing the prompt, SAP sections 2 to 6 and FS-03 word for word: background water quality is groundwater the landfill
+has not affected, so a literal reader keeps the background results whose water did not come from beneath the waste;
+the gauging export and the survey show MW-1 below PZ-1 on ten background events and MW-2 below PZ-2 on six, the results
+from those events carry the leachate's chemistry on all three indicators (SF14), and the remaining 34, 34 and 33
+results give limits of 38.2 mg/L, 20.8 mg/L and 68.3 ug/L and MW-6, MW-7 and MW-9; the reading that keeps every
+designated result violates SAP 4's definition, and every other reading in the fork table files the same call.
+
+## Oracles
+
+none: the pack carries no earlier evaluation, limit, determination or flagged well; the October 2026 gauging that a
+solver checks flow direction on agrees with the wrong route (every background well above the waste that day), which
+is the shape that held, a second source agreeing on the wrong reading too.
+
+## Mid-bin figures
+
+The limits at three significant figures sit 0.0211 (chloride, 21 per cent of its bin), 0.0272 (sodium, 27 per cent)
+and 0.0338 (boron, 34 per cent) inside their printed cells, asserted at a fifth of the cell at least; every specific
+conductance at least 0.10 uS/cm and every purge volume at least 0.010 gallon inside its cell, asserted in `checks.py`
+and recomputed in `verify.py`.
+
+## Ask sheet
+
+Two asks, every figure per well sampled in October 2026 (eleven wells each), both read from the sampler's field
+entries, a file the main call never opens; H18: each is the audit trail of the October samples the call rests on
+(FS-03's stabilization and purge record behind every result the scorecard compares).
+
+- **A1, specific conductance at sampling, microsiemens per centimetre at 25 C, whole (11 figures).** Filed: FS-03
+  sections 3 and 4 (the reading set immediately before the sample; conductivity corrected to 25 C at 1.91 per cent a
+  degree; the meter's serial recorded with the day's first set and whenever the meter is changed). Primary device (D3
+  units set per source, a label before a silent switch): the rental meter R-4471 used on the first and third days
+  logged uncorrected conductivity in the specific conductance field, so its seven wells read about three tenths low
+  against April; a second rental meter, R-4468, corrected correctly on the second day (the serial is no marker).
+  Second device (D4, absence evidenced elsewhere): the app lost the meter's pairing after MW-9 on the third day, so
+  MW-7's and MW-6's sets carry no serial and take the day's meter. Stops: as logged (4 of 11), corrected where the
+  serial says R-4471 (9 of 11), golden.
+- **A2, purge volume before the sample, gallons, one decimal (11 figures).** Filed: FS-03 section 2 (the volume pumped
+  from the well from the start of purging until the sample, from the controller's counter; rinse water is not purge
+  water). Primary device (D6, one quantity on every line it covers): the controller's counter runs through the day,
+  is zeroed each morning and holds while the pump is off, and the first set at a well is logged minutes after the pump
+  starts, so a well's purge starts at the counter of the day's last pump-stop entry (bottles filled, or a decon rinse
+  logged with the counter after the rinse), not at its first set. Hazards: entries in UTC, litres to gallons. Stops:
+  the counter at the sample less the well's first set (0 of 11), less the previous well's sample set (3 of 11, the
+  first well of each day), golden.
+- Separation: the field entries hold no indicator result and no water level; deleting them leaves the call and every
+  critical component unchanged (they are not read by the call, asserted).
+
+| Ask | Cracker (lands the call, hygiene battery, every filed rule) | Mirror (stops at the plan's limits on every result) | Cracker |
+|---|---|---|---|
+| A1 specific conductance | 4 of 11, the logged value | 4 of 11 | miss |
+| A2 purge volume | 0 of 11, counter less the first set | 0 of 11 | miss |
+
+Pair ceiling: 38.5 (cracker 55.0 on the call, mirror 22.0 off it, on 38, 7 and 55 L)
+Mirror leakage: 18.2 per cent of ask weight
+Cracker keep: 18.2 per cent; the full includer (R-4471 corrected where its serial shows, pump-stop counters used) keeps 20 of 22, the unpaired-meter wells its misses
+Measured by: generator/ceiling.py, run on the cut pack, pack digest 14056ac5256b8e75 (the script prints it)
+
+## Leak sweep answered
+
+`leak.py task193 --asof 2026-11-03`: REVIEW, no LEAK (the one LEAK of the first run, sweep 13 reading "closure" in
+`metadata.json`'s description of the approval, fixed in the generator; sweep 8's `temp_c` renamed `temperature_c`).
+Each remaining REVIEW line, ruled harmless:
+- Sweep 1, `ridgeline_edd_MCL_2021-2026.txt` is a text file: it is the laboratory's own tab-delimited deliverable, one
+  row per result, and describes nothing.
+- Sweep 3, golden figures in the Ridgeline deliverable: the October 2026 results are the laboratory's own reported
+  values, which the call compares; the other matches are coincidences among 25,141 results and recoveries.
+- Sweep 3, the SAP carries six of eight words of the call: it is the document that defines verification resampling,
+  events and wells; it names no well, figure or outcome for any event.
+- Sweep 4, the SAP carries "comparison", "measured" and "groundwater": ordinary words of a statistical plan; it names no
+  head, gradient, exclusion or well field (`checks.py` leak words, `verify.py` pdf sweep).
+- Sweep 12, the SAP and the approval each name five words that are also column names elsewhere (Background, condition,
+  event, installed, program; condition, date, event, final cover, state): regulatory prose, not a dictionary; neither
+  lists a file's columns.
+
+## Build record
+
+Stage 3, 2026-11-04, cut at `target.zip` sha256 619f16b7d5f79c357793026622fd5629b59ccf538d3ea3b6a564606315e30285
+(`python3 task193/generator/build.py`). Generator 256 assertions and `verify.py` 119 independent checks green; two consecutive builds
+byte-identical over every target file, both goldens, `target.zip`, `submission.md`, `metadata.json` and `figures.json`;
+`figures_check.py` 80 of 80; `precut.py` exit 0; `voice-check.py` exit 0 at 805 characters; `leak.py` REVIEW with no
+LEAK, every line ruled above; `guard.py heart` PASS (one NOTE, the older triple answered on the card); `guard.py surface`
+exit 0 with no persona promoted and four pairs promoted for adjudication only (task155 and task38 at surface 0.100, the
+corpus top one per cent with no mechanism collision; task275 and task468 on the card triple, both answered by the card's
+differentiation lines); the container audit clean on `target/` and `golden/`. Input gates: 11 files, 5 formats (csv,
+txt, xlsx, pdf, json), the Ridgeline deliverable at 25,141 rows, three distractors named in `metadata.json` (gas probes,
+precipitation, site inspections), none read by the call or the asks (asserted).
+
 ## Tried and rejected
 - Two of the three silent primaries adjudicated by the register's own documentation, and pointing
   the wrong way. The variable dictionary said the defined daily dose is `n_packages` times
@@ -542,6 +780,28 @@ this draw, was prototyped as code on the clean truth (`## Tried and rejected`, p
   head-conditioned route 20 of 20, with the whole-event and Rosner-after variants 20 of 20 and the
   plus-next-event variant 15 of 20 (the shipped world is chosen with every licensed variant agreeing, and
   `checks.py` asserts it).
+- **Stage 3, first cut: R2c landed the golden set and the plume placement failed.** The per-well median plus two
+  MAD cut reached the three-well set and the placement search found no window on one plume well; the world was
+  re-tuned (MW-1 reversed in 10 of the 17 background events, MW-2's drawn fraction 0.016, more April reversals),
+  after which every high route files MW-6 alone and both plume wells place mid-window.
+- **Stage 3: the Ridgeline deliverable under 25,000 rows.** Routine results alone left the bulk file short of the
+  input gate; the laboratory's own batch QC (matrix spikes and duplicates, method blanks and blank spikes) and the
+  SVOC surrogates the contract method reports were added, as a real deliverable carries them (25,141 rows), each
+  kept off the call's path by `sample_type_code` and asserted neutral in R2.
+- **Stage 3: field-ask figures at their cell edges.** Several specific conductances and purge volumes sat within a
+  hundredth of a rounding edge; each October visit is redrawn (`sim._visit`) until its graded values sit at least
+  0.10 uS/cm and 0.010 gallon inside their cells.
+- **Stage 3: leak.py LEAK on "closure" in `metadata.json`** (the approval's covers line) and a column sweep on
+  `temp_c`: the covers line now reads the Department's conditions for long-term care, the column `temperature_c`.
+- **Stage 3: the chart carried its writer's element ids** (`matplotlib.axis_`); the generator rewrites them and
+  asserts no writer name survives in the SVG.
+- **Stage 3: the boron limit 0.0094 from its cell edge.** At 68.3406 a solver who rounds the log mean and standard
+  deviation to four places, or takes t to two decimals (2.45), prints 68.4; MW-3's natural boron median moved from
+  41.2 to 41.1 ug/L in `world.py`, which leaves every printed figure, set and ask unchanged and puts the limit at
+  68.3162, 0.0338 inside its cell; the limit bin check rose from 0.07 to 0.20 of the cell.
+- **Stage 3: the pricing line's "about four per cent" standard error** was Prototype 3's redraw spread on about 45
+  results, not a measurement on this world; the limits' delta-method standard errors are 8.5, 6.8 and 7.0 per cent,
+  now asserted in `checks.py` against the step's worth and the deciding results' margins.
 
 ## Architecture 2 record (spent, replaced by architecture 3 on 2026-11-04)
 

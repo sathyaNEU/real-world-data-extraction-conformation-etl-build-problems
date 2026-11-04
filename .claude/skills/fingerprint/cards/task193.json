@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Yes: MW-6, MW-7 and MW-9 go to verification resampling after the October 2026 event, MW-7 on sodium at 23.5 mg/L against a 20.8 mg/L limit and MW-9 on boron at 79.5 ug/L against 68.3 ug/L (MW-6 over every limit)",
+  "answer_source": "task193/submission.md block 1, emitted from task193/generator/figures.json (call, limits, october)",
   "gap": [
     "population"
   ],
@@ -49,11 +49,11 @@
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "target/ridgeline_edd_MCL_2021-2026.txt",
+    "rows": 25141,
     "entity": "one reported result of one analyte in one sample",
     "grain": "sample x analyte x analysis",
-    "source": "synthetic"
+    "source": "synthetic (constructed for a fictional district by task193/generator from a fixed seed)"
   },
   "forum": "line_manager_or_team",
   "forcing_event": "period_close",
@@ -89,7 +89,8 @@
     "task270": "Shares the structural triple (population, G3, designation_set) through its v8 lineage only. task270 v8 reads members as never short because a supplier's fixed schedule supplies them, from a weekday step in a supply record; this build has no schedule, supply or shortfall: the background population is contaminated by a reversed hydraulic gradient on particular sampling dates, read from heads in a second file.",
     "task275": "Shares the structural triple and the scorecard shape. task275 rebuilds the unmeasured operations' discards from what measured trips catch per unit of effort, because being observed changes behaviour; nothing here is observed or unobserved and no behaviour changes: every background result is measured, and the step is which of them represent unaffected groundwater, settled by the gradient on each sampling date.",
     "task450": "Shares the structural triple through its v1 lineage. task450 v1 counts scheduled sightings of recurring events against events a visit stops; this build counts nothing over time and has no visit schedule acting on the events: it builds a prediction limit from background results and has to drop the ones a reversed gradient made unrepresentative.",
-    "task468": "Shares the gap, decision type and scorecard shape. task468's outcomes exist only through a probabilistic linkage to an outside register with error rates measured on control groups; this build links nothing probabilistically and has no linkage error: the results are exact, and what decides is a physical state (the hydraulic gradient at the site boundary) recorded in the gauging export on each sampling date."
+    "task468": "Shares the gap, decision type and scorecard shape. task468's outcomes exist only through a probabilistic linkage to an outside register with error rates measured on control groups; this build links nothing probabilistically and has no linkage error: the results are exact, and what decides is a physical state (the hydraulic gradient at the site boundary) recorded in the gauging export on each sampling date.",
+    "task189": "Shares the client domain, the environmental-monitoring-exceedance cell, the objective, shape 10, the Gate G mechanism and a two-laboratory pack. task189's deciding quantity is a per-site average over results many of which are left-censored at reporting limits that differ by laboratory, so the step is how the censored results are estimated; here every background result is a measured value with no censoring on the call's path, the answer is a designation set rather than a quantity, and the step is which background results represent unaffected groundwater, read from the boundary heads on each sampling date."
   },
   "lineage": [
     {
@@ -137,7 +138,7 @@
   "shell": {
     "question form": "whether",
     "second-sentence opener": "for",
-    "rounding opener": "also",
+    "rounding opener": "limits",
     "deliverable set": "svg+xlsx"
   }
 }

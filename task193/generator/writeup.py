@@ -1,118 +1,99 @@
-"""task193: submission.md, drafted from the figures the generator emitted."""
+"""submission.md, drafted from figures.json so every number in it is one the generator computed."""
 import os
 
+import pack as PK
+import world as W
 
-def f1(x):
-    return ("%.1f" % x)
+NAME = {"chloride": "chloride", "sodium": "sodium", "boron": "boron"}
+UNIT = {"chloride": "mg/L", "sodium": "mg/L", "boron": "ug/L"}
 
 
-def write(task, g):
-    L = []
-    A = L.append
-    A("# task193 submission")
-    A("")
-    A("## Tags")
-    A("")
-    A("**Domain:** Pharmacology, pharmacoepidemiology and safety (safety signal detection).")
-    A("**Analytical objective:** Anomaly detection and diagnostics.")
-    A("")
-    A("## 1. Final Recommendation")
-    A("")
-    A("**Refer %d of the %d candidate pairs to formal signal assessment in the quarter beginning "
-      "1 January 2027: %s.**" % (g["referred_count"], g["candidate_count"],
-                                 "; ".join("%s and %s" % (r["product"], r["marker"])
-                                           for r in g["referred"])))
-    A("The expected after-count comes from the window's own first-receipt dates, so the lowest "
-      "referred multiple is %.2f and the nearest pair on the wrong side of the line is %s at %.2f. "
-      "Not the %d pairs an equal-chance expectation refers: it adds %s, which the dates refuse, "
-      "and those %d miss %s, which are real signals it hides because both products were first "
-      "marketed inside the window."
-      % (min(r["multiple"] for r in g["referred"]), g["nearest_miss"]["label"],
-         g["nearest_miss"]["multiple"], g["crude_count"],
-         "; ".join("%s and %s" % (r["product"], r["marker"]) for r in g["crude_only"]),
-         g["crude_count"],
-         "; ".join("%s and %s" % (r["product"], r["marker"]) for r in g["window_only"])))
-    A("")
-    A("## 2. Critical Components")
-    A("")
-    A("1. The screen's candidate pairs are **%d** of the %d pairs in Annexes A and B"
-      % (g["candidate_count"], g["screened_count"]))
-    A("2. The pairs referred are **%d**" % g["referred_count"])
-    A("3. The pairs an equal-chance expectation refers are **%d**" % g["crude_count"])
-    A("4. The pairs it refers that this run does not are **%d**, and the pairs it hides are **%d**"
-      % (len(g["crude_only"]), len(g["window_only"])))
-    A("")
-    A("## 3. Step-by-Step Solution")
-    A("")
-    A("1. Stacked dispensings_2023_2025.csv and dispensings_2025_2026.csv on the layouts "
-      "register_release_notes.json gives and counted a re-sent line once, as those notes require: "
-      "%d person keys appear across the extract." % g["patients_in_extract"])
-    A("2. Folded the retired person keys in person_key_crosswalk.csv onto their current keys and "
-      "mapped each package code to its treatment through package_index.csv at the date of the "
-      "dispensing, per section 2.4.")
-    A("3. Took each patient's earliest dispensing in each treatment as the first receipt and "
-      "dropped first receipts falling in the clearance period, per sections 2.2 and 2.3.")
-    A("4. Built each pair in screen_annexes.csv from the patients whose two first receipts both "
-      "fall in the screen window and not on the same day, per section 2.5: %d of the %d pairs have "
-      "at least 25 patients." % (g["candidate_count"], g["screened_count"]))
-    A("5. Took the number expected if the product had no bearing on when the marker treatment is "
-      "first received from the pair's own first-receipt dates, which the window makes unequal "
-      "because two products were first marketed inside it and two lose their authorisation inside "
-      "it.")
-    A("6. Applied section 3.2: %d pairs reach 1.25 times that expected number and none of them is "
-      "under assessment in signal_tracker_export.csv." % g["referred_count"])
-    A("7. Compared with an equal-chance expectation, which refers %d pairs: %d of them fall below "
-      "the line here and %d pairs below its line clear this one."
-      % (g["crude_count"], len(g["crude_only"]), len(g["window_only"])))
-    A("8. Refer the %d pairs for assessment in the quarter beginning 1 January 2027."
-      % g["referred_count"])
-    A("")
-    A("## 4. Deliverable Answers")
-    A("")
-    A("### sequence_screen_2027Q1.xlsx")
-    A("")
-    A("1. The %d screened pairs in the order of the screen sheet, with the pair's patients, the "
-      "patients in whom the marker treatment came after the product, the patients in whom it came "
-      "before, and the referral:" % g["screened_count"])
-    for r in g["screen_rows"]:
-        if r["multiple"] is None:
-            A("   - %s and %s: %d patients, %d after, %d before, below the 25-patient minimum"
-              % (r["brand"], r["marker_treatment"], r["patients"], r["after"], r["before"]))
-        else:
-            A("   - %s and %s: %d patients, %d after, %d before, referred %s"
-              % (r["brand"], r["marker_treatment"], r["patients"], r["after"], r["before"],
-                 r["referred"]))
-    # The nearest unreferred pair is not graded: the prompt asks for no such figure, and a graded
-    # figure with no asking sentence has nothing to fix its basis or its population.
-    A("2. Pairs referred: %d." % g["referred_count"])
-    A("3. Lines accepted, lines rejected and median days from dispensing to submission, by chain "
-      "and quarter of dispensing, whole counts and days to one decimal:")
-    for r in g["a1"]:
-        A("   - %s, %s: %d accepted, %d rejected, %s days"
-          % (r["chain"], r["quarter"], r["accepted"], r["rejected"], f1(r["median_days"])))
-    A("4. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, "
-      "doses to one decimal and fees to the nearest krone:")
-    for r in g["a2"]:
-        A("   - %s (%s): %s DDD, %d kroner" % (r["name"], r["holder"], f1(r["ddd"]), r["fee_dkk"]))
-    A("5. Patients with a first receipt of a screened product in the window and the share of them "
-      "with a first marker-treatment receipt in it, by region and age band at 1 October 2025, "
-      "shares to one decimal:")
-    for r in g["a3"]:
-        A("   - %s, %s: %d patients, %s per cent"
-          % (r["region"], r["band"], r["patients"], f1(r["share_pct"])))
-    A("")
-    A("### order_shares_by_pair.png")
-    A("")
-    first, last = g["chart_rows"][0], g["chart_rows"][-1]
-    A("1. One horizontal bar for each of the %d screened pairs for the share of its patients "
-      "who received the marker treatment after the product, with the %d referred pairs in the "
-      "darker fill and the other %d in the lighter one."
-      % (g["screened_count"], g["referred_count"],
-         g["screened_count"] - g["referred_count"]))
-    A("2. The bars run longest share first, from %s at %s per cent to %s at %s per cent."
-      % (first["label"], f1(first["share_pct"]), last["label"], f1(last["share_pct"])))
-    A("3. Title states that %d of the %d candidate pairs clear the referral line."
-      % (g["referred_count"], g["candidate_count"]))
-    A("")
-    with open(os.path.join(task, "submission.md"), "w", encoding="utf-8") as fh:
-        fh.write("\n".join(L))
+def _join(xs):
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
+def write(task, f):
+    L = f["limits"]
+    n = f["background_n"]
+    win = f["window_n"]
+    rv = f["reversed_events"]
+    d0 = f["default_limits"]
+    ex = f["exceed"]
+    call = f["call"]
+    lines = []
+    a = lines.append
+    a("## Tags")
+    a("")
+    a("**Domain:** Physical & Environmental Sciences, environmental monitoring and exceedance (groundwater detection "
+      "monitoring at a closed municipal solid waste landfill).  ")
+    a("**Analytical objective:** Anomaly Detection & Diagnostics.")
+    a("")
+    a("## 1. Final Recommendation")
+    a("")
+    a("**Yes: the October 2026 event sends %s to verification resampling, MW-7 on sodium at %s mg/L against a %s mg/L "
+      "limit and MW-9 on boron at %s ug/L against %s ug/L.** Not MW-6 alone, which limits built on every background "
+      "result give (sodium %s mg/L, boron %s ug/L), because MW-1 and MW-2 sampled water from beneath the waste in the "
+      "events their heads fell below their boundary piezometers'; not MW-10 as well, which only a background taken from "
+      "MW-3 alone puts over a limit."
+      % (_join(call), f["october"]["MW-7 sodium"], L["sodium"], f["october"]["MW-9 boron"], L["boron"],
+         d0["sodium"], d0["boron"]))
+    a("")
+    a("## 2. Critical Components")
+    a("")
+    a("1. MW-1's head stood below PZ-1's on **%d** of the %d background events and MW-2's below PZ-2's on **%d**; MW-3 "
+      "never stood below PZ-3, so **%d** background results are not background." % (rv["MW-1"], f["background_events"],
+                                                                                  rv["MW-2"], rv["total"]))
+    a("2. Background results: **%d** chloride, **%d** sodium, **%d** boron." % (n["chloride"], n["sodium"], n["boron"]))
+    a("3. Upper prediction limits: chloride **%s mg/L**, sodium **%s mg/L**, boron **%s ug/L**." %
+      (L["chloride"], L["sodium"], L["boron"]))
+    a("")
+    a("## 3. Step-by-Step Solution")
+    a("")
+    a("1. Took the primary samples' reportable chloride, dissolved sodium and dissolved boron from %s (boron in mg/L, "
+      "wells coded MW-01) and %s (boron in ug/L, field duplicates under the parent well's code), with MW-5R in MW-5's "
+      "place." % (PK.FILES["edd_a"], PK.FILES["edd_b"]))
+    a("2. Took the background window of SAP section 4, April 2018 to April 2026: %d chloride, %d sodium and %d boron "
+      "results at MW-1, MW-2 and MW-3." % (win["chloride"], win["sodium"], win["boron"]))
+    a("3. Computed each event's heads from %s and the survey in force on the gauging date in %s, and compared each "
+      "background well with its boundary piezometer: MW-1 below PZ-1 on %d events, MW-2 below PZ-2 on %d, MW-3 never "
+      "below PZ-3." % (PK.FILES["gauging"], PK.FILES["points"], rv["MW-1"], rv["MW-2"]))
+    a("4. Left out those %d results, water drawn from beneath the waste and so not groundwater the landfill has not "
+      "affected (SAP section 4), keeping %d, %d and %d." % (rv["total"], n["chloride"], n["sodium"], n["boron"]))
+    a("5. Computed SAP section 5's limits from the natural logarithms with t at the 99th percentile: %s mg/L, %s mg/L "
+      "and %s ug/L." % (L["chloride"], L["sodium"], L["boron"]))
+    a("6. Compared every compliance well's October 2026 result with the unrounded limits (SAP section 6): %s." %
+      "; ".join("%s over on %s" % (w, _join(ex[w])) for w in call))
+    a("7. From %s, read each well's reading set marked sample collected, corrected R-4471's logged conductivity to "
+      "25 C at %s per cent a degree (FS-03 section 4), and took the purge volume as the controller counter at the "
+      "sample less the counter when the pump last stopped that day (a decon rinse or bottles filled entry, zero for "
+      "the day's first well), in gallons of %s litres." % (PK.FILES["purge"], f["temp_coef_pct"], f["litres_per_gallon"]))
+    a("8. Resample %s within %d days of their October samples." % (_join(call), f["resample_days"]))
+    a("")
+    a("## 4. Deliverable Answers")
+    a("")
+    a("### detection_eval_2026-10.xlsx")
+    a("")
+    a("1. Wells to resample: %s." % _join(call))
+    a("2. Upper prediction limits, with the background results behind each:")
+    for k, label in (("chloride", "Chloride"), ("sodium", "Sodium, dissolved"), ("boron", "Boron, dissolved")):
+        a("   - %s: %s %s, %d results" % (label, L[k], UNIT[k], n[k]))
+    a("3. October 2026 results at the compliance wells against the limits:")
+    for w in W.COMPLIANCE:
+        over = ex[w]
+        a("   - %s: chloride %s mg/L, sodium %s mg/L, boron %s ug/L; %s" %
+          (w, f["october"]["%s chloride" % w], f["october"]["%s sodium" % w], f["october"]["%s boron" % w],
+           ("over on " + _join(over)) if over else "under every limit"))
+    order = [w for d in W.SAMPLING_ORDER for w in d]
+    a("4. Specific conductance at sampling, microsiemens per centimetre at 25 C, whole:")
+    for w in sorted(order, key=lambda x: (x[:2], int(x[3:].rstrip("R")))):
+        a("   - %s: %d" % (w, f["spc_25c"][w]))
+    a("5. Purge volume before the sample, gallons, one decimal:")
+    for w in sorted(order, key=lambda x: (x[:2], int(x[3:].rstrip("R")))):
+        a("   - %s: %s" % (w, f["purge_gal"][w]))
+    a("")
+    a("### october_results_vs_limits.svg")
+    a("")
+    a("1. One panel each for chloride, sodium and boron, every compliance well's October 2026 result a point and the "
+      "upper prediction limit a dashed line labelled at its value, with %s marked as over a limit." % _join(call))
+    a("")
+    open(os.path.join(task, "submission.md"), "w").write("\n".join(lines))

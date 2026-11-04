@@ -1,73 +1,50 @@
 # leak check, task193
 
-**Verdict: LEAK.** 21 files read, 121 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 51 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: asserted, expected, section, nothing, standard, sentence, decisive, referral, package, patient, comparison, shipped, counterfactual, clearance, period, re-sent, carries, detection, method, arithmetic, first-receipt, distribution, replaced, reissued, minimum
+Stump terms swept: window, register, nothing, comparison, reading, marker, sentence, decisive, extract, measured, golden, product, architecture, exactly, groundwater, carries, dropped, population, boundary, dispensing, pharmacy, graded, patient, reader, family
 
-## 1 file names (LEAK 2, REVIEW 1)
-- **LEAK** `extract_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
-- **LEAK** `register_release_notes.json`: a file whose name says it describes the data (release_notes): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
-- **REVIEW** `data_fee_schedule.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+## 1 file names (REVIEW 1)
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `screen_standard_7_2024.pdf`: carries 23 of 27 distinctive words of the committed call: 'Refer 7 of the 20 candidate pairs to formal signal assessment in the quarter beginning 1 January 2027: Dalvextin and loo'
+## 3 answer figures in the pack (REVIEW 14)
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 68.3 appears: ...21-10-06 09:59 N WG EPA 200.7 Calcium 7440-70-2 D 68.3 68.3 mg/L Y 1.00 0.300 1 INITIAL Yes 2021-10-10...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 58.2 appears: ...3 N LL SW8270E 2-Fluorobiphenyl (surr) 321-60-8 N 58.2 58.2 %REC Y 1 INITIAL Yes 2025-10-13 MCL-LS1-2...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 33.8 appears: ...-10-07 13:08 N WG EPA 300.0 Chloride 16887-00-6 N 33.8 33.8 mg/L Y 1.00 0.300 1 REANALYSIS Yes 2026-10-...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 20.8 appears: ...1-10-05 12:55 N WG EPA 300.0 Sulfate 14808-79-8 N 20.8 20.8 mg/L Y 2.00 0.600 1 INITIAL Yes 2021-10-12...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 60.1 appears: ...023-10-05 11:26 N WG EPA 200.8 Barium 7440-39-3 D 60.1 60.1 ug/L Y 5.00 1.50 1 INITIAL Yes 2023-10-11 M...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 34.7 appears: ...2022-04-14 14:12 N LL EPA 200.8 Zinc 7440-66-6 T 34.7 34.7 ug/L Y 10.0 3.00 1 INITIAL Yes 2022-04-19 M...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 20.7 appears: ...2022-10-06 15:33 N SW EPA 200.7 Boron 7440-42-8 T 20.7 20.7 ug/L Y 10.0 3.00 1 INITIAL Yes 2022-10-12 M...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 41.5 appears: ...2023-10-05 14:07 N LL EPA 200.8 Zinc 7440-66-6 T 41.5 41.5 ug/L Y 10.0 3.00 1 INITIAL Yes 2023-10-07 M...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 45.5 appears: ...6 13:02 N WG SW8270E Phenol-d5 (surr) 4165-62-2 N 45.5 45.5 %REC Y 1 INITIAL Yes 2022-10-12 MCL-MW6-2...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 33.2 appears: ...022-10-04 14:10 N WG EPA 200.7 Sodium 7440-23-5 D 33.2 33.2 mg/L Y 0.500 0.150 1 INITIAL Yes 2022-10-11...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 11.3 appears: ...022-10-04 17:05 N WG EPA 200.7 Sodium 7440-23-5 D 11.3 11.3 mg/L Y 0.500 0.150 1 INITIAL Yes 2022-10-10...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: golden figure 11.0 appears: ...023-04-12 10:00 N WG EPA 200.7 Sodium 7440-23-5 D 11.0 11.0 mg/L Y 0.500 0.150 1 INITIAL Yes 2023-04-19...
+- **REVIEW** `ridgeline_edd_MCL_2021-2026.txt`: and 19 more golden figures
+- **REVIEW** `MCL_SAP_rev2_2018.pdf`: carries 6 of 8 distinctive words of the committed call: 'Yes: the October 2026 event sends MW-6, MW-7 and MW-9 to verification resampling, MW-7 on sodium at 23.5 mg/L against a '
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `screen_standard_7_2024.pdf`: 8 of 25 stump-paragraph terms appear (expected, standard, referral, package, patient, clearance); read whether the document names the move
-
-## 6 ranking artifacts (INFO 1)
-- **INFO** `holder_register.csv`: names 7 of 7 answer-set candidates; confirm it does not rank them on the decision question
-
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+- **REVIEW** `MCL_SAP_rev2_2018.pdf`: 3 of 25 stump-paragraph terms appear (comparison, measured, groundwater); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); deliverable set 'png+xlsx' at 24% of 196 prompts (cap 20%); reword at the role level, not the verb
-
-## 12 describing content (REVIEW 1)
-- **REVIEW** `screen_standard_7_2024.pdf`: names 6 column(s) of the data files verbatim (covers, medicine, quarter, region, register, submitted): confirm it is the organisation's own record and not a note written for the analyst
-
-## 13 task metadata (REVIEW 1)
-- **REVIEW** `metadata.json`: neutral_rule_inputs.signal_tracker_export.csv shares the design note's stump vocabulary (expected, section, standard, referral): say what the task decides, not how
+## 12 describing content (REVIEW 2)
+- **REVIEW** `MCL_SAP_rev2_2018.pdf`: names 5 column(s) of the data files verbatim (Background, condition, event, installed, program): confirm it is the organisation's own record and not a note written for the analyst
+- **REVIEW** `MCL_post-closure_approval_2017.pdf`: names 5 column(s) of the data files verbatim (condition, date, event, final cover, state): confirm it is the organisation's own record and not a note written for the analyst
 
 ## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
 
+## 6 ranking artifacts (clean)
+
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
+## 9 dates after the setting (clean)
 
-## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
-
-Run because this build shipped with no scored reader evidence, and because every shipped build measured
-so far has failed. The reader held only a fresh unzip of `target.zip` and `prompt.txt`, with the figure
-names (not values) from `generator/figures.json`, and was scored key by key by
-`.claude/skills/leak-check/score_reader.py`.
-
-### Gate F has failed on this build, measured
-
-| block | hit |
-|---|---|
-| main call | **1 of 2** |
-| ask figures | **7 of 15** (46.7 per cent) |
-
-It landed the referral count (7 pairs) and named the decisive step as using a trend-adjusted expected number rather than a crude after-against-before ratio, reporting that crude refers 11 and giving the two products whose starts cluster at the front of the window as the reason. It quoted section 3.2(b), the number expected if receiving the product had no bearing on when the marker treatment is first received, and noted 3.5 leaves the construction to the division. So the fork was signposted and the reader took the right branch. It did not reach the three supplemental asks at all, which is why the ask share is the lowest of the three and is not evidence the ask layer holds.
-
-```
-call figures   1 of 2 hit
-ask figures    7 of 15 hit (46.7 per cent)
-
-FAIL  the reader landed the call. Gate F has failed and the architecture is spent:
-      a ladder is not repaired by hardening, and an ask is not repaired by re-wording.
-```
-
-The repair re-sites the ladder, not the wording: a call a blind reader lands at medium effort is a ladder
-whose decisive rung is readable, and `supplemental-stumping` 1.1c puts the reader above the author's own
-cracker sheet wherever the two disagree.
+## 11 prompt gate (clean)
