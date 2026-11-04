@@ -1,0 +1,74 @@
+{
+ "call": {
+  "exceeded": true,
+  "excess_t": 18.4,
+  "limit_t": 20.0,
+  "total_t": 38.4
+ },
+ "components": {
+  "distillate_bays_t": 37.3,
+  "distillate_ml": 143.2,
+  "switch_ml": 33.9,
+  "vru_t": 1.1
+ },
+ "loading_quarters_t": {
+  "BAY-4 Q1": 8.7,
+  "BAY-4 Q2": 7.9,
+  "BAY-4 Q3": 7.6,
+  "BAY-4 Q4": 8.4,
+  "BAY-5 Q1": 1.0,
+  "BAY-5 Q2": 1.2,
+  "BAY-5 Q3": 1.1,
+  "BAY-5 Q4": 1.2,
+  "VRU-1 Q1": 0.3,
+  "VRU-1 Q2": 0.3,
+  "VRU-1 Q3": 0.3,
+  "VRU-1 Q4": 0.3
+ },
+ "loading_year_t": {
+  "BAY-4": 32.7,
+  "BAY-5": 4.7,
+  "VRU-1": 1.1
+ },
+ "rungs_distillate_t": {
+  "G": 37.3,
+  "G_replace": 37.2,
+  "G_s06": 22.5,
+  "R0": 0.3,
+  "R1": 67.9,
+  "R2": 31.1
+ },
+ "saturation": {
+  "normal": 0.6,
+  "vapour_balanced": 1.0
+ },
+ "stock_gain_kl": {
+  "TK-1 Q1": 19,
+  "TK-1 Q2": -3,
+  "TK-1 Q3": 4,
+  "TK-1 Q4": -10,
+  "TK-2 Q1": 11,
+  "TK-2 Q2": 3,
+  "TK-2 Q3": 0,
+  "TK-2 Q4": -2,
+  "TK-3 Q1": 3,
+  "TK-3 Q2": 1,
+  "TK-3 Q3": 0,
+  "TK-3 Q4": -3,
+  "TK-4 Q1": 12,
+  "TK-4 Q2": 1,
+  "TK-4 Q3": -6,
+  "TK-4 Q4": -9,
+  "TK-5 Q1": 16,
+  "TK-5 Q2": 13,
+  "TK-5 Q3": -4,
+  "TK-5 Q4": -14
+ },
+ "tanks_kg": {
+  "TK-1": 1723,
+  "TK-2": 1615,
+  "TK-3": 1544,
+  "TK-4": 184,
+  "TK-5": 215
+ }
+}

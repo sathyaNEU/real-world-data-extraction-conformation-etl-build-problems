@@ -1,0 +1,186 @@
+{
+ "task": "task461",
+ "architecture": 2,
+ "title": "How much VOC Brennock Fuels' Warrenby terminal released from product loading in 2026, and whether it kept within its licence's loading limit, for the annual return to the Coastal Air Quality Authority, with each storage tank's release and the terminal's quarterly stock account",
+ "domain": "Physical & Environmental Sciences",
+ "subdomain": "emissions-inventory",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "other: the return file's release at each loading point in each quarter and each storage tank's release over the year, a covering note with the year's release against the limit and a monthly chart, and a stock account of each tank's gain or loss in each quarter",
+ "as_of": "2027-01-08",
+ "deliverables": [
+  "warrenby_2026_annual_return.csv",
+  "warrenby_2026_return_note.pdf",
+  "warrenby_2026_stock_account.xlsx"
+ ],
+ "distractor_files": [
+  "bom_warrenby_airport_daily_2026.csv",
+  "vru1_stack_emission_survey_2026.pdf",
+  "delivery_sites.csv"
+ ],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "dispatch_delivery_dockets_2025-12_to_2026-12.csv",
+  "largest_file_rows": 45402
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task461/generator/build.py (seeded, deterministic) in the layouts of a fuel terminal's management system exports, a dispatch system's delivery dockets, tanker and tank registers, a vapour recovery unit's monitor and controller logs, tank gauging, ship outturns, a control room shift log, maintenance work orders, airport weather and a regulator's licence and return protocol; the distributor, the terminal, the carrier, the partner terminal, the regulator, the city, every site and the people are fictional.",
+   "date": "2027-01-08",
+   "license": "CC0 (original work)"
+  }
+ ],
+ "created": "2027-01-08",
+ "generator": "task461/generator/build.py",
+ "files": [
+  {
+   "path": "CAQA_return_protocol_petroleum_premises_2026.pdf",
+   "format": "pdf",
+   "bytes": 66531,
+   "rows": null,
+   "source": "Constructed: the Authority's return protocol for petroleum products storage and loading premises (2026 edition)",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "EPL_20514_licence_conditions.pdf",
+   "format": "pdf",
+   "bytes": 63929,
+   "rows": null,
+   "source": "Constructed: the Authority's environment protection licence conditions for the terminal (variation 4, 3 March 2025)",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "bom_warrenby_airport_daily_2026.csv",
+   "format": "csv",
+   "bytes": 11655,
+   "rows": 365,
+   "source": "Constructed: daily weather observations at the nearest airport station, 2026",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "control_room_shift_log_2026.csv",
+   "format": "csv",
+   "bytes": 100677,
+   "rows": 1324,
+   "source": "Constructed: the terminal control room's shift log, 2026",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "delivery_sites.csv",
+   "format": "csv",
+   "bytes": 10940,
+   "rows": 150,
+   "source": "Constructed: the dispatch system's list of delivery sites",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "dispatch_delivery_dockets_2025-12_to_2026-12.csv",
+   "format": "csv",
+   "bytes": 6048775,
+   "rows": 45402,
+   "source": "Constructed: the dispatch system's delivery docket lines for the distributor's fleet and its contract carrier",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "maintenance_work_orders_2026.csv",
+   "format": "csv",
+   "bytes": 7383,
+   "rows": 41,
+   "source": "Constructed: the maintenance system's work orders raised or closed in 2026",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ship_receipts_outturn_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 10901,
+   "rows": 56,
+   "source": "Constructed: the terminal's register of ship receipts from the surveyors' outturn reports, 2026",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tank_gauging_daily_2025-12-31_to_2027-01-04.csv",
+   "format": "csv",
+   "bytes": 115228,
+   "rows": 1850,
+   "source": "Constructed: the tank gauging system's daily dips",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tank_register_2027-01.xlsx",
+   "format": "xlsx",
+   "bytes": 6903,
+   "rows": null,
+   "source": "Constructed: the terminal's register of storage tanks (January 2027)",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tanker_register_2027-01.xlsx",
+   "format": "xlsx",
+   "bytes": 7230,
+   "rows": null,
+   "source": "Constructed: the distributor's register of road tanker units (January 2027)",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tas_loads_2026-06-29_to_2027-01-04.xlsx",
+   "format": "xlsx",
+   "bytes": 1069906,
+   "rows": 17568,
+   "source": "Constructed: the replacement terminal management system's transaction export from its 29 June 2026 go-live",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tas_loads_legacy_2026-01-01_to_2026-06-30.csv",
+   "format": "csv",
+   "bytes": 1454444,
+   "rows": 16384,
+   "source": "Constructed: the terminal management system's export of compartment loads, January to June 2026 (legacy system)",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "vru1_outlet_cems_15min_2026.csv",
+   "format": "csv",
+   "bytes": 1740291,
+   "rows": 35040,
+   "source": "Constructed: the vapour recovery unit's continuous emission monitor export, 15-minute intervals, 2026",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "vru1_plc_events_2026-01-01_to_2027-01-04.csv",
+   "format": "csv",
+   "bytes": 486693,
+   "rows": 8436,
+   "source": "Constructed: the vapour recovery unit controller's event log",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "vru1_stack_emission_survey_2026.pdf",
+   "format": "pdf",
+   "bytes": 63507,
+   "rows": null,
+   "source": "Constructed: the vapour recovery unit's 2026 annual stack emission survey",
+   "date": "2027-01-08",
+   "license": "CC0 (original work, constructed for this task)"
+  }
+ ]
+}

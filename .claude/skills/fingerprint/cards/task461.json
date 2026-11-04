@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "38.4 t of VOC from product loading in 2026, over the licence's 20-tonne limit by 18.4 t",
+  "answer_source": "golden/warrenby_2026_return_note.pdf (the year's release and the amount over) and golden/warrenby_2026_annual_return.csv (each loading point's quarters); generator/figures.json call",
   "gap": [
     "objective",
     "population"
@@ -33,23 +33,23 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "With both terminal automation exports conformed, every docket read and the licence's vapour tables applied, a strong analyst sums each bay's litres by product, charges them by the loading-loss equation at each product's own vapour pressure (diesel's is negligible) and adds the vapour recovery unit's measured outlet for the petrol bays, filing about 1.4 tonnes for 2026, well inside the 20-tonne loading limit, because nothing asks what each compartment held when its diesel went in.",
+  "analyst_test": "With both terminal automation exports conformed, every docket read and the protocol's vapour tables applied, a strong analyst sums each bay's litres by product, charges them by the loading-loss equation at each product's own vapour pressure (diesel's is negligible) and adds the vapour recovery unit's measured outlet for the petrol bays, filing 1.4 tonnes for 2026, well inside the 20-tonne loading limit, because nothing asks what each compartment held when its diesel went in.",
   "domain_test": "A loading emissions inventory worked the way an air quality engineer works it, each load releasing the vapour its liquid displaces at the saturation that vapour already carries, so a compartment that delivered petrol through a station's vapour balance arrives full of saturated petrol vapour whatever it loads next; with another field's nouns there is no vapour space, no vapour balance and no displacement, and nothing would make one load's release depend on the delivery before it.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:loading release charged to each compartment fill by the vapour its previous delivery left, petrol vapour returned through station vapour balance displaced at uncontrolled distillate bays",
   "layer1": [
-    "two terminal automation exports across the 1 July 2026 cutover: the old one in gross observed litres with a volume correction factor column and trailer plates, the new one in net litres at 15 C with the system's own tanker ids and B-double compartments numbered through",
-    "the dispatch system's delivery dockets timestamped in UTC against the terminal's local time (AEST, AEDT from October), one docket line per compartment drop, the partner terminal's lifting numbers on exchange trips",
-    "a tanker register whose plates changed at re-registration and whose old system access cards were reissued at the cutover",
-    "the vapour recovery unit's 15-minute outlet log with an analyser swap in May (ppm as propane before, mg per cubic metre after) and flagged calibration intervals",
-    "cancelled and re-issued bills of lading, product codes renamed when E10 replaced the old ULP 91 code in March"
+    "two terminal management system exports across the 1 July 2026 cutover: the legacy one in gross observed litres with a VCF column, trailer plates and each trailer's own compartment numbers, the new one with net litres at 15 C, tanker ids, B-double compartments numbered through, cancelled transactions and a two-day shadow run overlapping the legacy export",
+    "the dispatch system's delivery dockets stamping each time with its own offset (+11:00 under daylight saving, +10:00 outside it), one line per compartment drop, a split compartment's bill quantity on each of its lines, the partner terminal's lifting numbers on exchange trips and manual bill numbers for two petrol rack controller faults",
+    "a tanker register whose plates changed at re-registration, with the dates in a previous-regos column",
+    "the vapour recovery unit's 15-minute outlet log with an analyser swap in May (kg/h before, g/min after) and daily calibration intervals",
+    "a tank gauging system on standard time all year, a control room log dated by shift, product codes that differ in each system"
   ],
   "stakeholder_role": "the terminal manager, who signs the licence's annual return",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "dispatch/delivery_dockets_2025-12_2026-12.csv",
-    "rows": 0,
+    "file": "dispatch_delivery_dockets_2025-12_to_2026-12.csv",
+    "rows": 45402,
     "entity": "one compartment's drop at one delivery site",
     "grain": "trip x compartment x drop",
     "source": "synthetic"
@@ -76,13 +76,14 @@
   },
   "deliverables": [
     "warrenby_2026_annual_return.csv",
-    "warrenby_2026_return_note.pdf"
+    "warrenby_2026_return_note.pdf",
+    "warrenby_2026_stock_account.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "Each transfer into a container pushes out whatever the container already held, so the release charged to a transfer is set by the container's previous use rather than by what the transfer puts in; the field's factor charges each transfer by its own contents, and only each container's own sequence of uses, read from the record of where it was last emptied, shows which transfers pushed out the earlier contents.",
   "driver_concrete": "Diesel loaded at the uncontrolled distillate bays pushes out the vapour its compartment held when loading began, and a retail compartment that last delivered petrol through a station's vapour balance comes back full of saturated petrol vapour; the loading-loss equation at diesel's own vapour pressure files the two bays at a fraction of a tonne, while charging each diesel fill by its compartment's previous delivery in the dispatch dockets (petrol lifted at the partner terminal included) files them at tens of tonnes and puts the terminal over its loading limit.",
-  "stump": "The default path charges every diesel load at diesel's own vapour pressure and files about 1.4 tonnes of VOC from loading for 2026, inside the 20-tonne limit; but the retail compartments that last delivered petrol through station vapour balance push saturated petrol vapour out at the uncontrolled distillate bays, so the terminal released tens of tonnes and exceeded its limit.",
+  "stump": "The default path charges every diesel load at diesel's own vapour pressure and files 1.4 tonnes of VOC from loading for 2026, inside the 20-tonne limit; but 5,126 of the retail fleet's 9,379 distillate loads went into compartments that last delivered petrol through a station's vapour balance and pushed saturated petrol vapour out at the uncontrolled distillate bays, so the terminal released 38.4 tonnes and exceeded its limit by 18.4.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task488": "task488 recovers new items' difficulties from the responses of the members each item was given to by its recorded level, a selection on the estimated quantity; here nothing is selected or estimated: each diesel fill releases the vapour its own compartment's previous delivery left, a state carried between consecutive uses of one container and read per fill from the dispatch record.",
@@ -120,6 +121,6 @@
       "deliverable set": "csv+xlsx"
     }
   ],
-  "notes": "architecture 2 re-root 2026-11-04 into physical-environmental-sciences (emissions-inventory) after architecture 1 was spent at the 11-02 re-check. stump_strategy other, because no vocabulary family is honest for the decisive move: each fill's release is a state the container carries from its previous delivery, rebuilt per load from a second system's record (not a mix shift or reweighting, not a grain or identity reading, not censoring). Gate G method_or_model_selection: the per-product loading-loss equation against the compartment-state construction, the right one fixed by the field's own saturation factors for vapour-balanced service. The draw's other screens are one line each in DESIGN_NOTE ## Tried and rejected.",
+  "notes": "architecture 2 re-root 2026-11-04 into physical-environmental-sciences (emissions-inventory) after architecture 1 was spent at the 11-02 re-check. stump_strategy other, because no vocabulary family is honest for the decisive move: each fill's release is a state the container carries from its previous delivery, rebuilt per load from a second system's record (not a mix shift or reweighting, not a grain or identity reading, not censoring). Gate G method_or_model_selection: the per-product loading-loss equation against the compartment-state construction, the right one fixed by the field's own saturation factors for vapour-balanced service. The draw's other screens are one line each in DESIGN_NOTE ## Tried and rejected. Stage 3 closed 2026-11-04 on world seed 4770: checks.py 103 of 103, verify 43 figures, two byte-identical builds, figures_check 42 of 42, precut 61 checks 0 FAIL, leak.py REVIEW (no LEAK); the asks re-sited so the careful route keeps none of the 25 ask figures (pair ceiling 31.3 by generator/ceiling.py); paused at the stage-4 hand-off for the leak reader and the determinism judge.",
   "registered": "2026-11-04T03:18:56Z"
 }
