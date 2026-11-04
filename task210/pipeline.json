@@ -7,27 +7,27 @@
  "stage_name": "check",
  "updated": "2026-11-04",
  "seed": "AD33 (a data-centre battery's January FCR-D offer under a warranty throughput cap); the seed's world is undrawable on this objective while task402 holds energy-systems-utilities/grid-reliability-outage-analysis in the window (ban.subdomain), so the build moved to Physical and Environmental Sciences: a limestone quarry's January haul allocation under the village noise limit",
- "stump": "The default path files 15 ADTs because it apportions MP1's energy to the pilot's average haul movement, five in six of which ran in the pit or behind the bund; only the route state built per movement (load face and tip from each truck's GPS track against the survey) isolates the Haul road 2 movement's energy, which allows 3.",
+ "stump": "The default path files 15 ADTs because it apportions MP1's energy to the pilot's average haul movement, about nine in ten of which stayed in the pit or behind the bund; only the route state built per movement (load face and tip from each truck's GPS track against the survey) isolates the Haul road 2 movement's energy, which allows 3.",
  "call": "3 articulated dump trucks on the Phase 4 haul road in January 2027 (4 over the 44.0 dB share)",
  "architecture": 1,
  "loops": 0,
  "precut": "exit 0, 2026-11-04",
  "screens_prototype": "superseded: generator/screens.py over 24 redraws, results in generator/screens.json, asserted in generator/checks.py",
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW on the round-2 cut 14eba3dd (the filed cycle, the decision nouns and the NMP's own words, now with the residual sentence; dates clean at --asof 2026-12-04)",
+  "reader": "round 1: clean on the main call (no decisive-step sentence, no ranking, an analytical choice); its realism list fixed in the generator; round 2 pending"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (repeat.gate_g against task402 and task403, overuse.gate_g 6 of 12, same_driver_older against task122 differentiated on the card), read 2026-11-04 on 14eba3dd",
+  "nearest": "0.06 task228; surface promotes task122 (0.080, same-driver signature, differentiated on the card)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "round 1 NOT_DETERMINISTIC on the main call (Gate C, margin_or_boundary_fragility: the baseline and the Phase 4 road's exposure); every ask reproduced; G and H pass",
+  "disposition": "round 1 SEND_BACK, read under determinism-check as a main-call Gate C repair inside the world: one fix pass, then one re-judge and one re-read; round 2 pending",
+  "report": "scratchpad t210/stage4/judge/judge_report.md (round 1); round 2 brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t210/stage4_r2/judge/BRIEF.md"
  },
  "returned": [],
- "resume": "Stage 4 round 1 running: leak reader (t210/stage4/reader) and determinism judge (t210/stage4/judge, judge_report.md) spawned together on target.zip fadbc34d.... The zip is now cut by generator/build.py (cut_zip, fixed date and mode), reproducing the same sha256; two builds byte-identical, checks 78 of 78, verify 0 failed. Next: collect both reports, fix every finding in one generator pass, re-judge once on FIX_NOW and re-read if a document or the prompt changed; on APPROVE re-run every gate on the final cut and ship.",
+ "resume": "stage 4 round 2 running: the leak reader (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t210/stage4_r2/reader/BRIEF.md) and the determinism judge (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t210/stage4_r2/judge/BRIEF.md) spawned together by the parent on target.zip 14eba3dd. Next: collect both reports; APPROVE (or a FIX_NOW confined to wording, fixed in the generator with every free gate re-run) ships; any other verdict spends architecture 1 and the slot re-roots into another world.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -35,16 +35,22 @@
  "portal_status": "",
  "portal_status_date": "",
  "gates": {
-  "precut": "exit 0 (62 PASS)",
-  "checks": "78 of 78 (screens over 24 redraws, hash in screens.json)",
+  "precut": "exit 0 (61 PASS)",
+  "checks": "107 of 107 (screens over 24 redraws, hash in screens.json)",
   "verify": "0 failed",
-  "byte_identical_builds": "yes (23 outputs)",
+  "byte_identical_builds": "yes (24 outputs, target.zip included)",
   "figures_check": "50 of 50",
   "voice_check": "PASS",
-  "leak_py": "REVIEW: answer-figure, call-word and stump-vocabulary lines on the scheme, the conditions and the NMP read as innocent (the decision nouns, the filed cycle and the limit apportionment between plant and haulage); weather headers renamed to the station export style",
-  "guard_heart": "WARN (repeat.gate_g against task402 and task403, overuse.gate_g 6 of 12; same_driver_older against task122 differentiated on the card), nearest 0.06; read 2026-11-04 after merging claude/jolly-hypatia-06c61h at 73c28fc",
+  "leak_py": "REVIEW, ruled innocent in the note (no decisive-step sentence; the residual sentence names a measured level)",
+  "guard_heart": "WARN, nearest 0.06",
   "guard_surface": "1 promoted pair, task122 (same-driver signature, differentiated on the card)",
-  "ceiling": "cracker 0 of 24 ask figures, full includer 25 per cent, mirror 0.0, pair 35.4",
-  "target_zip_sha256": "fadbc34d14a12cda12dfedb58304250fd6fef069426e79b6c33cf367609c369b"
+  "ceiling": "cracker 0 of 24 ask figures, full includer 25 per cent, mirror 0.0, no-repair 0.0, pair 35.4 (both on the call 58.8), tightest graded figure July tonnes per running hour at 0.136 of its bin",
+  "target_zip_sha256": "14eba3dd03f2845b1c8c836be4368f642b605bbbe0ec718d2c696305eb872750"
+ },
+ "fix_pass": {
+  "date": "2026-11-04",
+  "what": "NMP 5.2 files the residual measured with the site stopped (38.3 dB LAeq over 07:00 to 17:00); the site re-laid so the Phase 4 haul road is Haul road 2's counterpart about the hopper's bearing (every road-level, line-of-sight and BS 5228 measure within 0.026 dB on the survey and scheme); the belt export states interval-start stamps; SOLUTION_STEPS 6 reworded; the leak reader's realism list regenerated",
+  "freeze_determinism": "exit 1: the ladder section, the stump sentence (its share corrected to about nine in ten) and the note's Deliverable Answers (every ask figure, allowed); reasons in the note",
+  "freeze_rubric": "exit 1: the ladder section and the stump sentence; 23 ask figures moved"
  }
 }

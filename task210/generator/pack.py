@@ -35,9 +35,9 @@ FILES = {
 DISTRACTORS = ['weather', 'blasts', 'complaints', 'shifts']
 
 
-def build_world(seed=W.SEED):
+def build_world(seed=W.SEED, gps=True):
     P = W.params(seed)
-    events, fixes, loads, days = W.simulate_haul(seed, P)
+    events, fixes, loads, days = W.simulate_haul(seed, P, gps=gps)
     dset = W.pilot_days()
     run_ev, outages, belt, buckets, running = W.plant_records(seed, P, loads, dset, {r[0]: r[4] for r in days})
     ends = W.period_ends()
@@ -138,36 +138,30 @@ def _ll(x, y, z=None, nd=6):
 
 
 def write_survey(path):
-    S = W.SCALE
     feats = []
     def add(layer, name, geom_type, coords, **props):
         p = {'layer': layer, 'name': name}
         p.update(props)
         feats.append({'type': 'Feature', 'properties': p, 'geometry': {'type': geom_type, 'coordinates': coords}})
     add('MONITORING', 'MP1 Ulverthorpe Lane', 'Point', _ll(0, 0, W.MP1[2]), ground_aod=W.MP1[2], microphone_m=1.5)
-    for key in ('ramp', 'north', 'floor', 'north_down', 'west_down'):
+    for key in ('ramp', 'north', 'floor', 'north_down', 'north_up', 'west_down'):
         r = W.ROADS[key]
         add('HAUL_ROAD', r['name'], 'LineString', [_ll(x, y, z) for (x, y, z) in r['pts']], surface='crushed limestone')
     r = W.ROADS['ext']
     add('PROPOSED', 'Phase 4 haul road', 'LineString', [_ll(x, y, z) for (x, y, z) in r['pts']], surface='to be laid')
-    crest = []
-    for k in range(0, 361, 15):
-        a = math.radians(k)
-        crest.append(_ll(-300 + 160 * math.cos(a), -250 + 128 * math.sin(a), 62.0 - (1.4 if 200 < k < 300 else 0.0)))
-    add('CREST', 'Pit crest (survey 2026-04-08)', 'LineString', crest)
+    add('CREST', 'Pit crest (survey 2026-04-08)', 'LineString', [_ll(x, y, z) for (x, y, z) in W.pit_crest()])
     add('TOE', 'Pit floor toe', 'LineString', [_ll(-300 + 82 * math.cos(math.radians(k)), -262 + 64 * math.sin(math.radians(k)), 24.0)
                                                for k in range(0, 361, 30)])
-    add('BUND', 'Screening bund, plant compound south', 'LineString',
-        [_ll(-222, -124, 67.4), _ll(-196, -127, 67.8), _ll(-168, -129, 67.6), _ll(-142, -131, 67.1)], crest_aod=67.4)
-    add('PLANT', 'Processing plant compound', 'Polygon', [[_ll(-205, -60), _ll(-120, -62), _ll(-118, -128), _ll(-202, -132), _ll(-205, -60)]])
+    add('BUND', 'Screening bund, plant compound north-east', 'LineString', [_ll(x, y, z) for (x, y, z) in W.BUND],
+        crest_aod=round(min(z for _x, _y, z in W.BUND), 1))
+    add('PLANT', 'Processing plant compound', 'Polygon', [[_ll(x, y) for (x, y) in W.PLANT_COMPOUND + W.PLANT_COMPOUND[:1]]])
     add('PLANT', 'Primary crusher feed hopper', 'Point', _ll(W.HOPPER[0], W.HOPPER[1], W.HOPPER[2]))
     add('STOCKPILE', 'Run-of-mine stockpile', 'Polygon', [[_ll(-310, -275), _ll(-276, -272), _ll(-275, -250), _ll(-308, -248), _ll(-310, -275)]],
         top_aod=33.0)
     for k, nm in (('north', 'North face'), ('west', 'West face'), ('south', 'South face')):
         x, y, z = W.FACES[k]
         add('FACE', nm, 'Point', _ll(x, y, z), working_bench_aod=z)
-    add('PHASE_4', 'Phase 4 extension (consented)', 'Polygon',
-        [[_ll(-182, -430), _ll(-66, -428), _ll(-58, -300), _ll(-120, -296), _ll(-182, -430)]])
+    add('PHASE_4', 'Phase 4 extension (consented)', 'Polygon', [[_ll(x, y) for (x, y) in W.PHASE4_AREA + W.PHASE4_AREA[:1]]])
     fc = {'type': 'FeatureCollection', 'name': 'Ravensby topographic survey 2026-04',
           'crs': {'type': 'name', 'properties': {'name': 'urn:ogc:def:crs:OGC:1.3:CRS84'}},
           'features': feats}
@@ -198,7 +192,7 @@ def write_belt(path, Wd):
     for (k, t) in Wd['belt']:
         tons[k] = tons.get(k, 0.0) + t
     buf = io.StringIO()
-    buf.write('Tag,PRI-BW-01 primary feed conveyor belt scale\nUnits,tonnes per 15 minutes\nTimestamp,Tonnes\n')
+    buf.write('Tag,PRI-BW-01 primary feed conveyor belt scale\nUnits,tonnes per 15 minutes\nClock,site local time\nInterval start,Tonnes\n')
     for d in W.pilot_days():
         t = dt.datetime.combine(d, dt.time(6, 0))
         while t < dt.datetime.combine(d, dt.time(19, 0)):
@@ -245,7 +239,7 @@ def sales_tables(Wd):
     groups = {}
     for c in coll:
         if c['portable']:
-            groups.setdefault((c['t'].date(), c['reg'], c['order']), []).append(c)
+            groups.setdefault(c['key'], []).append(c)
         else:
             tickets.append(dict(c, ticket_time=c['t'], gross=round(c['tare'] + c['net'], 2)))
     for key in sorted(groups, key=lambda k: min(c['t'] for c in groups[k])):

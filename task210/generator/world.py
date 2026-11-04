@@ -10,8 +10,8 @@ import numpy as np
 
 SEED = 21038
 PLANT_OFF = 204      # the plant's own draws (stops, interruptions, loader), apart from the haul's
-SALES_OFF = 905    # January 2026 sales
-PAYLOAD_OFF = 606    # month-to-month payload, apart from the haul's own draws
+SALES_OFF = 1144    # January 2026 sales
+PAYLOAD_OFF = 647    # month-to-month payload, apart from the haul's own draws
 GMT = dt.timezone.utc
 
 # ------------------------------------------------------------------------------------------------ calendar and clock
@@ -61,51 +61,100 @@ def to_latlon(x, y):
     return lat, lon
 
 
-# road centrelines, (x, y, z) vertices; screening class per vertex-to-vertex segment as seen from MP1
-SCALE = 0.56   # the pit lies 250 to 400 m south-west of the village edge
-
-
-def _s(pts):
-    return [(round(x * SCALE, 1), round(y * SCALE, 1), z) for (x, y, z) in pts]
-
+# road centrelines, (x, y, z) vertices; screening class per vertex-to-vertex segment as seen from MP1. The pit lies 250
+# to 520 m south-west of the village edge; the primary hopper sits 192 m from MP1 on a bearing between the pit and the
+# Phase 4 extension, behind the short screening bund on the plant compound's village side.
+AXIS_DEG = 226.0
+HOPPER = (round(192.0 * math.cos(math.radians(AXIS_DEG)), 1), round(192.0 * math.sin(math.radians(AXIS_DEG)), 1), 62.0)
 
 ROADS = {
-    'floor': {'name': 'Pit floor road', 'pts': _s([(-505, -655, 31), (-530, -560, 26), (-525, -470, 24)]),
+    'floor': {'name': 'Pit floor road', 'pts': [(-282.8, -366.8, 31), (-296.8, -313.6, 26), (-294.0, -263.2, 24)],
               'seg': ['pit', 'pit']},
-    'ramp': {'name': 'Haul road 1', 'pts': _s([(-525, -470, 24), (-445, -520, 30), (-365, -455, 41), (-338, -360, 51),
-                                               (-345, -265, 59), (-322, -205, 62), (-300, -165, 62)]),
+    'ramp': {'name': 'Haul road 1', 'pts': [(-294.0, -263.2, 24), (-249.2, -291.2, 30), (-204.4, -254.8, 41),
+                                            (-186.0, -196.0, 54), (-170.2, -176.5, 60), (-152.0, -157.5, 62), HOPPER],
              'seg': ['pit', 'pit', 'pit', 'pit', 'bund', 'plant']},
-    'north': {'name': 'Haul road 2', 'pts': _s([(-585, -245, 46), (-570, -185, 55), (-525, -150, 62), (-455, -128, 62),
-                                                (-385, -118, 62), (-330, -128, 62), (-300, -165, 62)]),
-              'seg': ['crest', 'open', 'open', 'open', 'open', 'plant']},
-    'west_down': {'name': 'Bench ramp W', 'pts': _s([(-790, -420, 40), (-700, -455, 32), (-600, -470, 26),
-                                                     (-525, -470, 24)]), 'seg': ['pit', 'pit', 'pit']},
-    'north_down': {'name': 'Bench ramp N', 'pts': _s([(-585, -245, 46), (-575, -330, 37), (-545, -410, 28),
-                                                      (-525, -470, 24)]), 'seg': ['pit', 'pit', 'pit']},
+    'north_up': {'name': 'North face ramp', 'pts': [(-335.0, -145.0, 46), (-300.0, -135.0, 52), (-270.0, -131.0, 57),
+                                                    (-251.5, -127.5, 60)], 'seg': ['crest', 'crest', 'crest']},
+    'north': {'name': 'Haul road 2', 'pts': [(-251.5, -127.5, 60), (-225.0, -124.0, 62), (-195.0, -126.0, 62),
+                                             (-165.0, -131.0, 62), (-146.8, -135.1, 62), HOPPER],
+              'seg': ['open', 'open', 'open', 'open', 'plant']},
+    'west_down': {'name': 'Bench ramp W', 'pts': [(-442.4, -235.2, 40), (-392.0, -254.8, 32), (-336.0, -263.2, 26),
+                                                  (-294.0, -263.2, 24)], 'seg': ['pit', 'pit', 'pit']},
+    'north_down': {'name': 'Bench ramp N', 'pts': [(-335.0, -145.0, 46), (-322.0, -184.8, 37), (-305.2, -229.6, 28),
+                                                   (-294.0, -263.2, 24)], 'seg': ['pit', 'pit', 'pit']},
 }
-FACES = {'north': ROADS['north']['pts'][0], 'west': ROADS['west_down']['pts'][0], 'south': ROADS['floor']['pts'][0]}
-HOPPER = ROADS['ramp']['pts'][-1]
+FACES = {'north': ROADS['north_up']['pts'][0], 'west': ROADS['west_down']['pts'][0], 'south': ROADS['floor']['pts'][0]}
 STOCKPILE = ROADS['floor']['pts'][-1]
-EXT_TWEAK = 1.16
-_np = ROADS['north']['pts']
 
 
-def build_ext(f):
-    """The eastern extension's road (January 2027): it climbs out of the first bench and runs north over the original
-    ground to the plant; its alignment holds Haul road 2's distances from the village edge (f fine-tunes them)."""
-    pts = [(round((_np[0][1] + 6.0) * f, 1), round((_np[0][0] - 4.0) * f, 1), 50)]
-    pts += [(round((y + 3.0) * f, 1), round((x - 2.0) * f, 1), 63) for (x, y, z) in _np[1:-1]]
-    pts.append((round(HOPPER[0] + 22.0, 1), round(HOPPER[1] - 40.0, 1), 62))
-    pts.append(HOPPER)
-    return {'name': 'Phase 4 haul road', 'pts': pts, 'seg': ['crest', 'open', 'open', 'open', 'open', 'plant', 'plant']}
+def _mirror(p):
+    """Reflection about the bearing from MP1 through the hopper."""
+    r = math.hypot(p[0], p[1]); a = math.degrees(math.atan2(p[1], p[0]))
+    b = math.radians(2 * AXIS_DEG - a)
+    return (r * math.cos(b), r * math.sin(b)) + tuple(p[2:])
 
 
-ROADS['ext'] = build_ext(EXT_TWEAK)
+# the Phase 4 extension (January 2027): its first bench is worked east of the existing pit; trucks climb the bench's
+# access ramp and run north-west over the original ground to the primary hopper. The road was set out on the far side
+# of the plant compound from Haul road 2, at the same distances from the village edge; the surveyed alignment carries
+# the setting-out's own small departures from that line (offsets in metres, levels in m AOD).
+EXT_SETOUT = [(0.0, 0.0, 60.0), (1.3, -0.9, 62.5), (-1.1, 1.2, 62.9), (0.8, 1.0, 62.7), (0.0, 0.0, 62.4), (0.0, 0.0, 62.0)]
+
+
+def build_ext():
+    base = [_mirror(p) for p in ROADS['north']['pts']]
+    pts = []
+    for (x, y, _z), (dx, dy, z) in zip(base, EXT_SETOUT):
+        pts.append((round(x + dx, 1), round(y + dy, 1), z))
+    pts[-1] = HOPPER
+    up = []
+    for (x, y, _z), (dx, dy, z) in zip((_mirror(p) for p in ROADS['north_up']['pts']), EXT_UP_SETOUT):
+        up.append((round(x + dx, 1), round(y + dy, 1), z))
+    up[-1] = pts[0]
+    return ({'name': 'Phase 4 haul road', 'pts': pts, 'seg': list(ROADS['north']['seg'])},
+            {'name': 'Bench 1 access ramp', 'pts': up, 'seg': ['crest', 'crest', 'crest']})
+
+
+# the first bench is worked at 46 m AOD; its access ramp and its crest as set out (the crest is the existing pit's north
+# edge seen from the far side of the plant, as the bench was laid out to hold the haul's distances)
+EXT_UP_SETOUT = [(0.8, -0.6, 46.0), (-0.7, 0.9, 52.3), (0.6, 0.5, 56.8), (0.0, 0.0, 60.0)]
+BENCH_CREST_SETOUT = [(-0.5, 0.7, 61.9), (0.9, 0.3, 62.0), (-0.3, -0.8, 62.2), (0.4, 0.6, 61.9), (-0.7, -0.2, 62.0)]
+
+
+def pit_crest(step=15):
+    """The pit crest as surveyed in April 2026: (x, y, level) every 15 degrees round the pit."""
+    out = []
+    for k in range(0, 361, step):
+        a = math.radians(k)
+        out.append((-300 + 160 * math.cos(a), -250 + 128 * math.sin(a), 62.0 - (1.4 if 200 < k < 300 else 0.0)))
+    return out
+
+
+def bench_crest():
+    arc = [p for k, p in zip(range(0, 361, 15), pit_crest()) if 60 <= k <= 120]
+    return [(round(x + dx, 1), round(y + dy, 1), z) for ((x, y, _z), (dx, dy, z)) in
+            zip((_mirror(p) for p in arc), BENCH_CREST_SETOUT)]
+
+
+ROADS['ext'], ROADS['ext_up'] = build_ext()
 ROUTES = {
     ('south', 'crusher'): ['floor', 'ramp'], ('south', 'stock'): ['floor'],
     ('west', 'crusher'): ['west_down', 'ramp'], ('west', 'stock'): ['west_down'],
-    ('north', 'crusher'): ['north'], ('north', 'stock'): ['north_down'],
+    ('north', 'crusher'): ['north_up', 'north'], ('north', 'stock'): ['north_down'],
 }
+EXT_ROUTE = ['ext_up', 'ext']
+BUND = []
+BUND_HALF = 10.0
+for _off, _dr, _z in ((-BUND_HALF, 0.0, 67.3), (-BUND_HALF / 3, -1.5, 67.8), (BUND_HALF / 3, -1.5, 67.7), (BUND_HALF, 0.0, 67.4)):
+    _a = math.radians(AXIS_DEG)
+    BUND.append((round(170.0 * math.cos(_a) + _off * -math.sin(_a) + _dr * math.cos(_a), 1),
+                 round(170.0 * math.sin(_a) + _off * math.cos(_a) + _dr * math.sin(_a), 1), _z))
+# the plant compound behind the bund (corners as distance along the hopper's bearing and offset across it), and the
+# consented Phase 4 extension east of the pit
+PLANT_COMPOUND = [(round(al * math.cos(_a) - ac * math.sin(_a), 1), round(al * math.sin(_a) + ac * math.cos(_a), 1))
+                  for (al, ac) in ((171.0, -36.0), (174.0, 37.0), (238.0, 44.0), (233.0, -41.0), (206.0, -46.0))]
+PHASE4_AREA = [(-140.0, -215.0), (-95.0, -212.0), (-45.0, -260.0), (-32.0, -340.0), (-48.0, -440.0), (-150.0, -452.0),
+               (-205.0, -372.0), (-170.0, -330.0), (-146.0, -290.0), (-138.0, -250.0)]
 
 
 def road_length(key):
@@ -140,18 +189,21 @@ def passage_geometry(key, P, speed_kmh):
     return 10 * math.log10(acc)
 
 
+LWA_LOADED = 112.4   # sound power of a loaded ADT climbing out on the haul roads, dB
+
+
 def params(seed):
     rng = np.random.default_rng(seed)
     P = dict(
         lwa_declared=109.0,
-        lwa_loaded=float(rng.uniform(111.6, 112.4)),     # loaded, climbing out on the haul roads
-        lwa_empty=float(rng.uniform(105.5, 106.3)),      # empty return
-        agr=float(rng.uniform(3.2, 3.8)), aatm=1.9,
-        abar_open=float(rng.uniform(0.0, 0.6)), abar_crest=float(rng.uniform(5.5, 7.0)),
+        lwa_loaded=float(rng.uniform(LWA_LOADED - 0.1, LWA_LOADED + 0.1)),     # loaded, climbing out on the haul roads
+        lwa_empty=float(rng.uniform(105.8, 106.0)),      # empty return
+        agr=float(rng.uniform(3.45, 3.55)), aatm=1.9,
+        abar_open=float(rng.uniform(0.25, 0.35)), abar_crest=float(rng.uniform(5.5, 7.0)),
         abar_bund=float(rng.uniform(3.6, 4.8)), abar_pit=float(rng.uniform(7.2, 8.4)), abar_plant=float(rng.uniform(9.0, 10.5)),
-        v_loaded=float(rng.uniform(17.0, 19.0)), v_empty=float(rng.uniform(27.0, 30.0)),
+        v_loaded=float(rng.uniform(17.8, 18.2)), v_empty=float(rng.uniform(28.2, 28.8)),
         plant_spec=37.5, plant_jitter=float(rng.uniform(0.6, 0.9)),
-        wind_coef=float(rng.uniform(0.7, 1.0)),
+        wind_coef=float(rng.uniform(0.4, 0.6)),
         crusher_share=float(rng.uniform(0.58, 0.66)),
         payload_mean=float(rng.uniform(35.2, 36.4)),
     )
@@ -174,6 +226,7 @@ def passage_sel(P):
 
 # --------------------------------------------------------------------------------------------- the haul record
 
+DECLARED_LWA = {'Volvo A40G': 109, 'Cat 740 GC': 111, 'Bell B40E': 110}   # guaranteed LWA under 2000/14/EC, by model
 FLEET = [  # fleet number, telematics unit, model
     ('T27', 'AX4-60117', 'Volvo A40G'), ('T31', 'AX4-60348', 'Volvo A40G'), ('T33', 'AX4-61902', 'Cat 740 GC'),
     ('T38', 'AX4-61477', 'Volvo A40G'), ('T41', 'AX4-62235', 'Cat 740 GC'), ('T44', 'AX4-60869', 'Volvo A40G'),
@@ -196,6 +249,7 @@ def simulate_haul(seed, P, days=None, gps=True, outage=None):
     """Return the haul events and, when gps, the one-minute fixes. Each event is one loaded or empty passage of one
     road with its UTC midpoint, truck, face, destination and SEL at MP1."""
     rng = np.random.default_rng(seed + 1)
+    grng = np.random.default_rng(seed + 31)   # the fleet system's position scatter, apart from the haul's draws
     days = days or pilot_days()
     sel = passage_sel(P)
     events, fixes, loads, day_rows = [], [], [], []
@@ -239,13 +293,13 @@ def simulate_haul(seed, P, days=None, gps=True, outage=None):
                     t = lunch1 + dt.timedelta(minutes=float(rng.uniform(0, 3)))
                 if sd and sd[0] <= t < sd[1]:
                     t = sd[1] + dt.timedelta(minutes=float(rng.uniform(0, 6)))
-                load_min = float(rng.uniform(2.4, 3.6)) + float(rng.uniform(2.5, 5.0))  # spotting and queueing at the face
+                load_min = float(rng.uniform(2.4, 3.6)) + float(rng.uniform(4.0, 6.5))  # spotting and queueing at the face
                 hh = (t.hour - 7) * 2 + t.minute // 30
                 dest = 'crusher' if rng.random() < cs_walk[min(max(hh, 0), 21)] else 'stock'
                 roads = ROUTES[(face, dest)]
                 drive = sum(road_length(k) for k in roads)
-                t_haul = drive / (P['v_loaded'] / 3.6) / 60 + float(rng.uniform(0.3, 1.0))
-                t_tip = float(rng.uniform(0.8, 1.6)) + (float(rng.exponential(1.6)) + 1.5 if dest == 'crusher' else 0.5)
+                t_haul = drive / (P['v_loaded'] / 3.6) / 60 + float(rng.uniform(0.2, 0.5))
+                t_tip = float(rng.uniform(0.8, 1.6)) + (float(rng.exponential(0.5)) + 0.2 if dest == 'crusher' else 0.5)
                 t_ret = drive / (P['v_empty'] / 3.6) / 60 + float(rng.uniform(0.3, 0.8))
                 end = t + dt.timedelta(minutes=load_min + t_haul + t_tip + t_ret)
                 if t < lunch0 < end and stop > lunch1:
@@ -256,16 +310,25 @@ def simulate_haul(seed, P, days=None, gps=True, outage=None):
                 t_load_end = t + dt.timedelta(minutes=load_min)
                 t_tipped = t_load_end + dt.timedelta(minutes=t_haul + t_tip)
                 payload = float(rng.normal(P['payload_mean'] + P['month_payload'][d.month] + {'north': -1.3, 'west': 1.6, 'south': 0.0}[face], 1.5))
-                mid_loaded = t_load_end + dt.timedelta(minutes=t_haul / 2)
-                mid_empty = t_tipped + dt.timedelta(minutes=t_ret / 2)
+                # each road's passage is timed at the truck's arrival at the middle of that road
+                done = 0.0
                 for k in roads:
+                    f_mid = (done + road_length(k) / 2) / drive
+                    done += road_length(k)
+                    mid_loaded = t_load_end + dt.timedelta(minutes=t_haul * f_mid)
+                    mid_empty = t_tipped + dt.timedelta(minutes=t_ret * (1.0 - f_mid))
                     events.append((local_to_utc(mid_loaded), FLEET[ti][0], face, dest, k, 'loaded',
                                    sel[k][0] + float(rng.normal(0, 1.8))))
                     events.append((local_to_utc(mid_empty), FLEET[ti][0], face, dest, k, 'empty',
                                    sel[k][1] + float(rng.normal(0, 1.5))))
-                loads.append((local_to_utc(t_tipped), FLEET[ti][0], face, dest, payload))
+                # the payload sensor reads EMPTY from a quarter of a minute after arrival; the first fix after it is
+                # the tip the fleet system shows (fixes fall on whole minutes)
+                t_flip = (t_load_end + dt.timedelta(minutes=t_haul + 0.25)).replace(microsecond=0)
+                if not t_flip.second:   # no fix logged on the change: the next minute's fix is the first EMPTY one
+                    t_flip = t_flip + dt.timedelta(minutes=1)
+                loads.append((local_to_utc(t_tipped), FLEET[ti][0], face, dest, payload, local_to_utc(t_flip)))
                 if gps:
-                    fixes.extend(_fixes(t, load_min, t_haul, t_tip, t_ret, roads, ti, face, rng))
+                    fixes.extend(_fixes(t, load_min, t_haul, t_tip, t_ret, roads, ti, face, grng))
                 t = end
     return events, fixes, loads, day_rows
 
@@ -304,13 +367,19 @@ def _fixes(t0, load_min, t_haul, t_tip, t_ret, roads, ti, face, rng):
             f = (m - load_min) / t_haul
             x, y, z = _point_along(roads, f); v = float(rng.uniform(14, 22)); state = 'LOADED'
         elif m < load_min + t_haul + t_tip:
-            x, y, z, v, state = hx, hy, hz, 0.0, 'LOADED' if m < load_min + t_haul + 0.4 else 'EMPTY'
+            x, y, z, v, state = hx, hy, hz, 0.0, 'LOADED' if m < load_min + t_haul + 0.25 else 'EMPTY'
         else:
             f = (m - load_min - t_haul - t_tip) / t_ret
             x, y, z = _point_along(roads, f, reverse=True); v = float(rng.uniform(22, 34)); state = 'EMPTY'
         x += float(rng.normal(0, 2.5)); y += float(rng.normal(0, 2.5))
         out.append((local_to_utc(t), FLEET[ti][1], x, y, z + float(rng.normal(0, 3.5)), v, state))
         t += dt.timedelta(minutes=1)
+    # the unit also logs a fix when the payload sensor changes state at the hopper
+    tf = (t0 + dt.timedelta(minutes=load_min + t_haul + 0.25)).replace(microsecond=0)
+    if tf.second and first <= tf < end:
+        out.append((local_to_utc(tf), FLEET[ti][1], hx + float(rng.normal(0, 2.5)), hy + float(rng.normal(0, 2.5)),
+                    hz + float(rng.normal(0, 3.5)), 0.0, 'EMPTY'))
+        out.sort(key=lambda f: f[0])
     return out
 
 
@@ -331,6 +400,21 @@ def weather(seed, ends):
     ws = np.clip(3.8 + np.cumsum(rng.normal(0, 0.35, hours)) * 0.15 + rng.normal(0, 1.2, hours), 0.3, 14)
     wd = (225 + np.cumsum(rng.normal(0, 18, hours))) % 360
     return ws, wd
+
+
+RES_DAY = 37.9   # the village edge's daytime residual, before the morning and late-afternoon traffic
+
+
+def filed_residual(mp1, ends):
+    """The residual sound level at MP1 over weekdays 07:00 to 17:00 (energy mean of the clean residual, dB): what the
+    noise management plan's site-stopped survey measured, the same process the pilot's record carries."""
+    e = []
+    for i, t in enumerate(ends):
+        s = t - dt.timedelta(minutes=15)
+        loc = s + dt.timedelta(hours=bst_offset(s))
+        if loc.weekday() < 5 and 7 <= loc.hour < 17:
+            e.append(10 ** (mp1['res'][i] / 10.0))
+    return 10 * math.log10(float(np.mean(e)))
 
 
 def wind_toward(ws, wd):
@@ -355,8 +439,8 @@ def mp1_record(seed, P, events, ends, ws, wd, plant_running):
             Lmax_ev[k] = max(Lmax_ev[k], s + wind_db[k] - 10 * math.log10(55.0) + float(rng.normal(3.0, 1.0)))
     loc_hour = np.array([(e - dt.timedelta(minutes=15) + dt.timedelta(hours=bst_offset(e))).hour for e in ends])
     wkday = np.array([(e - dt.timedelta(minutes=15) + dt.timedelta(hours=bst_offset(e))).weekday() for e in ends])
-    base = np.where((loc_hour >= 6) & (loc_hour < 22), 37.2, 30.5) + np.where((loc_hour >= 7) & (loc_hour <= 9), 1.8, 0.0)
-    base += np.where((loc_hour >= 16) & (loc_hour <= 18), 1.5, 0.0) - np.where(wkday >= 5, 1.2, 0.0)
+    base = np.where((loc_hour >= 6) & (loc_hour < 22), RES_DAY, 30.5) + np.where((loc_hour >= 7) & (loc_hour <= 8), 0.6, 0.0)
+    base += np.where((loc_hour >= 16) & (loc_hour <= 18), 0.4, 0.0) - np.where(wkday >= 5, 0.4, 0.0)
     res = base + 0.35 * np.maximum(ws[hour_i] - 4, 0) + rng.normal(0, 1.4, n)
     E_res = 10 ** (res / 10.0) * 900
     plant = np.where(plant_running, 10 ** ((P['plant_spec'] + 0.5 * wind_db + rng.normal(0, P['plant_jitter'], n)) / 10.0) * 900, 0.0)
@@ -378,7 +462,7 @@ def plant_records(seed, P, loads, days, standdowns=None):
     run_ev, outages, belt, buckets = [], [], [], []
     running = {}  # local minute -> running flag, built per day
     loads_by_day = {}
-    for (tu, truck, face, dest, payload) in loads:
+    for (tu, truck, face, dest, payload, *_fl) in loads:
         tl = tu + dt.timedelta(hours=bst_offset(tu))
         loads_by_day.setdefault(tl.date(), []).append((tl.replace(tzinfo=None), truck, dest, payload))
     order_no = 4410
@@ -510,52 +594,120 @@ PORTABLE_DAYS = [dt.date(2026, 1, 2), dt.date(2026, 1, 6), dt.date(2026, 1, 15),
 
 def january_sales(seed):
     """Every collection weighed in January 2026: order, product, vehicle, weigh time, net tonnes; whether it was
-    weighed on the portable axle weigher; and the orders behind them."""
+    weighed on the portable axle weigher; and the orders behind them. Account customers order a quantity and collect
+    it in loads over the following days with their own lorries; cash customers buy a load at the office."""
     rng = np.random.default_rng(seed + SALES_OFF)
     accounts = [('C1043', 'Brackenridge Civils'), ('C1077', 'Holme & Pryor Ltd'), ('C1102', 'Wensdale Highways'),
                 ('C1118', 'Thornber Groundworks'), ('C1135', 'Askrigg Building Supplies'), ('C1160', 'J. Metcalfe (Haulage)'),
-                ('C1204', 'Leyburn Agricultural'), ('C1219', 'Pennine Surfacing'), ('CASH', 'Cash sales')]
+                ('C1204', 'Leyburn Agricultural'), ('C1219', 'Pennine Surfacing')]
+    acc_w = np.array([.15, .13, .18, .11, .10, .09, .08, .16]); acc_w = acc_w / acc_w.sum()
     regs = []
     for _ in range(64):
         regs.append('%s%02d %s' % (rng.choice(list('BDFGKLMNPRSVWY')) + rng.choice(list('ABCDEFGHJKLMNOPRSTVWXY')),
                                    int(rng.choice([18, 19, 20, 21, 22, 23, 24, 25, 68, 69, 70, 71, 72, 73, 74])),
                                    ''.join(rng.choice(list('ABCDEFGHJKLMNOPRSTUVWXYZ'), 3))))
     regs = sorted(set(regs))
+    pool = [regs[i] for i in rng.permutation(len(regs))]
+    fleet, i = {}, 0
+    for (code, _n), k in zip(accounts, (6, 5, 7, 4, 3, 8, 2, 6)):
+        fleet[code] = pool[i:i + k]; i += k
+    walk_in = pool[i:]
+    tare_of = {r: round(float(rng.uniform(13.1, 15.4)), 2) for r in regs}
     products = list(MIX)
     pmix = np.array([MIX[p] for p in products]); pmix = pmix / pmix.sum()
-    orders, coll = [], []
-    onum = 25811
+    QTY = [30, 50, 56, 60, 75, 80, 100, 100, 120, 140, 150, 150, 200, 250, 300, 400]
+    orders, coll, open_orders = [], [], []
+    onum = [25811]
+
+    def new_order(acc, placed):
+        onum[0] += int(rng.integers(1, 4))
+        o = dict(order=onum[0], account=acc[0], customer=acc[1], product=products[rng.choice(len(products), p=pmix)],
+                 qty=int(rng.choice(QTY)), placed=placed, delivery='Delivered' if rng.random() < 0.18 else 'Collected')
+        o['left'] = float(o['qty'])
+        orders.append(o)
+        return o
+
+    for _ in range(10):   # orders open over the New Year
+        open_orders.append(new_order(accounts[rng.choice(len(accounts), p=acc_w)],
+                                     dt.date(2025, 12, 1) + dt.timedelta(days=int(rng.integers(8, 23)))))
     d = dt.date(2026, 1, 2)
     while d <= dt.date(2026, 1, 31):
         if d.weekday() < 5 and d not in BANK_HOLIDAYS:
-            n = int(rng.integers(34, 58)) if d.weekday() < 4 else int(rng.integers(26, 44))
+            portable = d in PORTABLE_DAYS
+            n = int(rng.integers(36, 60)) if d.weekday() < 4 else int(rng.integers(28, 46))
+            if portable:   # weighing axle by axle holds the gate to about half its usual run
+                n = int(round(n * float(rng.uniform(0.40, 0.50))))
+            last = {}
             for _ in range(n):
-                prod = products[rng.choice(len(products), p=pmix)]
-                acc = accounts[rng.choice(len(accounts), p=[.14, .12, .16, .10, .09, .08, .07, .14, .10])]
-                onum += int(rng.integers(1, 4))
-                reg = regs[int(rng.integers(0, len(regs)))]
+                if rng.random() < 0.11:   # a cash sale: a load ordered and paid for at the office
+                    onum[0] += int(rng.integers(1, 3))
+                    o = dict(order=onum[0], account='CASH', customer='Cash sales',
+                             product=products[rng.choice(len(products), p=pmix)], qty=int(rng.choice([10, 20, 20, 25, 28, 30])),
+                             placed=d, delivery='Collected', left=0.0)
+                    orders.append(o)
+                    reg = walk_in[int(rng.integers(0, len(walk_in)))]
+                else:
+                    if len(open_orders) < 9 or rng.random() < 0.16:
+                        open_orders.append(new_order(accounts[rng.choice(len(accounts), p=acc_w)],
+                                                     d - dt.timedelta(days=int(rng.integers(0, 6)))))
+                    w = np.array([max(1.0, o['left'] / 28.0) for o in open_orders]); w = w / w.sum()
+                    o = open_orders[int(rng.choice(len(open_orders), p=w))]
+                    vs = fleet['C1160'] if o['delivery'] == 'Delivered' else fleet[o['account']]
+                    reg = vs[int(rng.integers(0, len(vs)))]
                 t = dt.datetime.combine(d, dt.time(7, 0)) + dt.timedelta(minutes=float(rng.uniform(0, 590)))
+                for _try in range(6):   # a lorry is back for its next load an hour or more after its last
+                    if all(abs((t - u).total_seconds()) >= 3600 for u in last.get(reg, [])):
+                        break
+                    t = dt.datetime.combine(d, dt.time(7, 0)) + dt.timedelta(minutes=float(rng.uniform(0, 590)))
+                last.setdefault(reg, []).append(t)
+                prod = o['product']
+                if rng.random() < 0.075:   # changed at the gate: the lorry loads another product against the order
+                    prod = products[int(rng.integers(0, len(products)))]
                 net = round(float(np.clip(rng.normal(27.6 if prod not in ('Scalpings',) else 25.2, 1.7), 17.0, 31.5)), 2)
-                tare = round(float(rng.uniform(13.1, 15.4)), 2)
-                portable = d in PORTABLE_DAYS
+                tare = round(tare_of[reg] + float(rng.normal(0, 0.05)), 2)
                 if portable:
                     net = round(round(net / 0.02) * 0.02, 2); tare = round(round(tare / 0.02) * 0.02, 2)
-                ordered = prod
-                if rng.random() < 0.075:   # changed at the gate: the lorry loads another product against the order
-                    ordered = products[int(rng.integers(0, len(products)))]
-                orders.append((onum, acc[0], acc[1], ordered, d - dt.timedelta(days=int(rng.integers(0, 6)))))
-                coll.append(dict(order=onum, account=acc[0], product=prod, reg=reg, t=t, net=net, tare=tare,
+                coll.append(dict(order=o['order'], account=o['account'], product=prod, reg=reg, t=t, net=net, tare=tare,
                                  portable=portable))
-                if portable and rng.random() < 0.3 and t.hour < 14:
-                    for k in range(int(rng.integers(1, 3))):
-                        t2 = t + dt.timedelta(minutes=float(rng.uniform(75, 140)) * (k + 1))
-                        n2 = round(round(float(np.clip(rng.normal(27.6, 1.7), 17.0, 31.5)) / 0.02) * 0.02, 2)
-                        coll.append(dict(order=onum, account=acc[0], product=prod, reg=reg, t=t2, net=n2, tare=tare,
-                                         portable=True))
+                if o['account'] != 'CASH':
+                    o['left'] -= net
+                    if o['left'] < 12.0:
+                        open_orders.remove(o)
         d += dt.timedelta(days=1)
+    orders = [(o['order'], o['account'], o['customer'], o['product'], o['placed'], o['qty'], o['delivery']) for o in orders]
+    import itertools
+    # the office keys a lorry's portable runs on one order as one ticket, up to three runs a ticket in weighing order
+    runs_of = {}
+    for c in coll:
+        if c['portable']:
+            runs_of.setdefault((c['t'].date(), c['reg'], c['order']), []).append(c)
+    for (day, reg, o), rs in runs_of.items():
+        for j, c in enumerate(sorted(rs, key=lambda c: c['t'])):
+            c['key'] = (day, reg, o, j // 3)
+    # a ticket keyed from several runs sums to a figure no other runs of that lorry that day reach
+    groups = {}
+    for c in coll:
+        if c['portable']:
+            groups.setdefault((c['reg'], c['t'].date()), {}).setdefault(c['key'], []).append(c)
+    for (reg, day), by_order in sorted(groups.items(), key=lambda kv: (kv[0][1], kv[0][0])):
+        runs = [c for o in sorted(by_order) for c in by_order[o]]
+        for o in sorted(by_order):
+            for it in range(400):
+                own = by_order[o]
+                target = round(sum(c['net'] for c in own), 2)
+                clash = False
+                for k in range(1, 4):
+                    for sub in itertools.combinations(runs, k):
+                        if set(map(id, sub)) != set(map(id, own)) and round(sum(c['net'] for c in sub), 2) == target:
+                            clash = True
+                if not clash:
+                    break
+                c = own[it % len(own)]   # turn about, so twin runs of equal weight are told apart
+                c['net'] = round(c['net'] + 0.02, 2)
+            else:
+                raise RuntimeError('keyed tickets for %s on %s cannot be told apart' % (reg, day))
     # a lorry weighed on the weighbridge on the Monday after a portable day never shows the net of a portable
     # record (or of a vehicle's runs that day): two hundredths of a tonne either way would make it one
-    import itertools
     port = {}
     for c in coll:
         if c['portable']:

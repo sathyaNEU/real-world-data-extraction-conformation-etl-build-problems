@@ -83,7 +83,8 @@ shipped = [r for r in seeds if r['seed'] == W.SEED][0]
 check('R2 the clean truth and the cut pack file the same call (the mess does not carry the stump)',
       shipped['calls']['golden'] == G['adts'], 'clean %d, pack %d' % (shipped['calls']['golden'], G['adts']))
 easy = ['r_pooled_all', 'r_first_look', 'r_face', 'r_crusher_tips', 'r_bs5228_declared', 'r_bs5228_declared_soft',
-        'r_bs5228_ratio', 'r_iso9613_ratio']
+        'r_bs5228_declared_110', 'r_bs5228_declared_soft_110', 'r_bs5228_declared_111', 'r_bs5228_declared_soft_111',
+        'r_bs5228_declared_fleet', 'r_bs5228_declared_soft_fleet', 'r_bs5228_ratio', 'r_iso9613_ratio']
 for k in easy:
     wrong = sum(1 for r in seeds if r['calls'][k] != r['calls']['golden'])
     check('R3 analyst test, the easy route %s files a wrong count on the shipped seed and in 19 of 20 redraws' % k,
@@ -101,7 +102,26 @@ lever = sum(1 for r in seeds if all(r['calls'][k] != r['calls']['golden'] for k 
 check('screen 1: the lever (the truck count) separates the golden from every rival in 19 of 20 redraws',
       lever >= math.ceil(0.95 * N), '%d of %d' % (lever, N))
 fam = [k for k in shipped['calls'] if k.startswith('v_')]
-core = ['v_hourFE', 'v_wind', 'v_noblast', 'v_trim']
+BASE = ['golden', 'v_fixed_baseline', 'v_hourFE', 'v_weekdayFE', 'v_fixed_hour', 'v_fixed_weekday', 'v_free_no_lunch_hour',
+        'v_fixed_no_lunch_hour']
+GEO = sorted(k for k in shipped['calls'] if k.startswith('v_geo_'))
+core = ['v_hourFE', 'v_wind', 'v_noblast', 'v_trim'] + BASE[1:]
+pos_s = lambda r, k: r['nmax'][k] / screens.CYCLE
+for k in BASE:
+    hit = sum(1 for r in seeds if r['calls'][k] == 3)
+    check('screen 2, the baseline: %s lands 3 trucks in 23 of 24 redraws and sits 0.25 of a truck or more inside the bin on '
+          'the shipped seed' % k, hit >= N - 1 and 3.25 <= pos_s(shipped, k) <= 3.75,
+          '3 in %d of %d; shipped %.3f' % (hit, N, pos_s(shipped, k)))
+gh = [sum(1 for k in GEO if r['calls'][k] == r['calls']['golden']) for r in seeds]
+check('screen 2, the physical-scaling reader: Haul road 2\'s per-movement energy carried to the Phase 4 road by each of %d '
+      'geometry measures files the golden count in every redraw, inside the bin by 0.25 on the shipped seed' % len(GEO),
+      all(g == len(GEO) for g in gh) and all(3.25 <= pos_s(shipped, k) <= 3.75 for k in GEO),
+      'shipped %.3f to %.3f' % (min(pos_s(shipped, k) for k in GEO), max(pos_s(shipped, k) for k in GEO)))
+for k in ('o_plant_only', 'o_plant_night'):
+    two = sum(1 for r in seeds if r['calls'][k] == 2)
+    check('screen 2, %s: recorded; NMP 5.2 files the residual with the site stopped, which rules this baseline out (it '
+          'lands 2 trucks in most redraws)' % k, True, '2 in %d of %d, 3 in %d; shipped %.3f' % (
+              two, N, sum(1 for r in seeds if r['calls'][k] == 3), pos_s(shipped, k)))
 fr = lambda r: r['nmax']['golden'] / screens.CYCLE - r['calls']['golden']
 clear = [r for r in seeds if 0.15 <= fr(r) <= 0.85]
 mid = [r for r in seeds if 0.3 <= fr(r) <= 0.7]
@@ -119,7 +139,9 @@ check('screen 2: the golden count is the clean truth\'s count in most redraws',
       '%d of %d' % (sum(1 for r in seeds if r['calls']['golden'] == r['calls']['truth']), N))
 fl = sum(1 for r in seeds if r['calls']['r_first_look'] != r['calls']['golden'])
 check('screen 3: the first look (busiest pilot hour inside 45 dB) lands wrong in 19 of 20', fl >= math.ceil(0.95 * N), '%d of %d' % (fl, N))
-careful = ['r_face', 'r_crusher_tips', 'r_bs5228_declared', 'r_bs5228_declared_soft', 'r_bs5228_ratio', 'r_iso9613_ratio']
+careful = ['r_face', 'r_crusher_tips', 'r_bs5228_declared', 'r_bs5228_declared_soft', 'r_bs5228_declared_110',
+           'r_bs5228_declared_soft_110', 'r_bs5228_declared_111', 'r_bs5228_declared_soft_111', 'r_bs5228_declared_fleet',
+           'r_bs5228_declared_soft_fleet', 'r_bs5228_ratio', 'r_iso9613_ratio']
 cr = sum(1 for r in seeds if all(r['calls'][k] != r['calls']['golden'] for k in careful))
 check('screen 4: the careful readers (per-face calibration, crusher tips, BS 5228 and ISO 9613-2 road by road, '
       'pooled-record calibration) all land wrong in 19 of 20', cr >= math.ceil(0.95 * N), '%d of %d' % (cr, N))
@@ -174,14 +196,53 @@ for c in routes:
     f_, t_ = c.split('|')
     Q[c] = tq[(G['trips']['face'] == f_) & (G['trips']['tip'] == t_)].value_counts().reindex(Q.index).fillna(0).to_numpy()
 fam_pack['quarter_hours'] = fit_e(Q, routes)
+# the baseline, as NMP 5.2 files it: the plant's specific level and the residual measured with the site stopped
+from pypdf import PdfReader
+nmp_txt = ' '.join(' '.join(pg.extract_text().split()) for pg in PdfReader(golden.find(TGT, 'ravensby_noise_management_plan')).pages)
+mres = re.search(r'residual sound level of (\d+\.\d) dB LAeq over 07:00 to 17:00', nmp_txt)
+check('SF15 positive control: the NMP\'s residual sentence is read from the shipped PDF', mres is not None and
+      'specific sound level of 37.5 dB' in nmp_txt, mres.group(0) if mres else 'not found')
+RES_DB = float(mres.group(1)) if mres else float('nan')
+X = H[routes].to_numpy()
+Bf = 3600.0 * (10 ** (37.5 / 10) + 10 ** (RES_DB / 10))
+kk = routes.index(K)
+def lab(ix, values):
+    lv = sorted(set(values)); Dm = (np.asarray(values)[:, None] == np.array(lv)[None, :]).astype(float)
+    return Dm, (Dm - Dm.mean(axis=0))[:, 1:]
+Dh, Hc = lab(None, H.index.hour)
+Dw, Wc = lab(None, H.index.weekday)
+fam_pack['fixed_baseline'] = np.linalg.lstsq(X, y - Bf, rcond=None)[0][kk]
+fam_pack['weekday_effects'] = np.linalg.lstsq(np.c_[Dw, X], y, rcond=None)[0][Dw.shape[1] + kk]
+fam_pack['fixed_with_hour_effects'] = np.linalg.lstsq(np.c_[Hc, X], y - Bf, rcond=None)[0][Hc.shape[1] + kk]
+fam_pack['fixed_with_weekday_effects'] = np.linalg.lstsq(np.c_[Wc, X], y - Bf, rcond=None)[0][Wc.shape[1] + kk]
+nl = H.index.hour != 12
+fam_pack['free_lunch_hour_out'] = fit_e(H[nl], routes)
+fam_pack['fixed_lunch_hour_out'] = np.linalg.lstsq(X[nl], (y - Bf)[nl], rcond=None)[0][kk]
+# the physical-scaling reader: Haul road 2's per-movement energy carried to the Phase 4 road by each geometry measure,
+# every measure taken from the shipped survey and scheme
+import geometry
+PG = geometry.pack_geometry(TGT)
+SCAL = geometry.scalings(PG)
+for nm_, ratio in SCAL.items():
+    fam_pack['geo_' + nm_] = G['e_mov'] * ratio
 calls_pack = {k: call_of(v) for k, v in fam_pack.items()}
 pos = {k: SH / v / golden.CYCLE for k, v in fam_pack.items()}
-check('the golden family on the shipped pack files one count', len(set(calls_pack.values())) == 1,
-      ', '.join('%s %.2f' % (k, v) for k, v in pos.items()))
+check('the golden family on the shipped pack files one count (%d members: baseline treatments, conventions and every '
+      'geometry scaling)' % len(pos), len(set(calls_pack.values())) == 1,
+      ', '.join('%s %.2f' % (k, v) for k, v in pos.items() if not k.startswith('geo_')) + '; geometry %.3f to %.3f' % (
+          min(v for k, v in pos.items() if k.startswith('geo_')), max(v for k, v in pos.items() if k.startswith('geo_'))))
 lo, hi = min(pos.values()), max(pos.values())
-check('the golden sits mid-bin and the whole family inside the bin with margin',
-      0.3 <= pos['golden'] - G['adts'] <= 0.7 and lo - G['adts'] >= 0.15 and G['adts'] + 1 - hi >= 0.15,
+check('the golden sits near mid-bin and every family member 0.25 of a truck or more inside the bin',
+      0.35 <= pos['golden'] - G['adts'] <= 0.65 and lo - G['adts'] >= 0.25 and G['adts'] + 1 - hi >= 0.25,
       'golden %.3f, family %.3f to %.3f, bin %d to %d' % (pos['golden'], lo, hi, G['adts'], G['adts'] + 1))
+# the readings NMP 5.2's residual rules out, recorded on the pack
+night = mp1[(mp1['start_local'].dt.hour >= 22) | (mp1['start_local'].dt.hour < 6)]
+NIGHT_DB = 10 * math.log10(float((10 ** (night['LAeq'] / 10)).mean()))
+po = {'plant only': np.linalg.lstsq(X, y - 3600.0 * 10 ** 3.75, rcond=None)[0][kk],
+      'plant plus night ambient (%.1f dB)' % NIGHT_DB: np.linalg.lstsq(X, y - 3600.0 * (10 ** 3.75 + 10 ** (NIGHT_DB / 10)), rcond=None)[0][kk]}
+check('SF15 baseline: the plant-only and plant-plus-night-ambient readings take the baseline below the residual NMP 5.2 '
+      'files for 07:00 to 17:00 (%.1f dB), so the filed sentence rules them out; recorded' % RES_DB,
+      RES_DB > NIGHT_DB + 3, ', '.join('%s %.3f' % (k_, SH / v_ / golden.CYCLE) for k_, v_ in po.items()))
 check('closure axis 9: no setting lies within 0.3 dB of the 44.0 dB share', abs(G['level_call'] - 44.0) >= 0.3 and abs(G['level_next'] - 44.0) >= 0.3,
       '%.2f and %.2f dB' % (G['level_call'], G['level_next']))
 check('the call is the integer count NMP 6.3 allows: %d trucks, %d would exceed the share' % (G['adts'], G['adts'] + 1),
@@ -230,9 +291,24 @@ check('SF7 whole trucks within the share (NMP 6.1 and 6.3): the nearest whole tr
 # SF8 the Phase 4 haul road against Haul road 2: the scheme's coordinates lie over the same ground at the same
 # distances, so a Phase 4 movement carries the Haul road 2 energy (asserted on the world's geometry)
 P = W.params(W.SEED)
-g_ext = W.passage_geometry('ext', P, P['v_loaded']); g_hr2 = W.passage_geometry('north', P, P['v_loaded'])
-check('SF8 a Phase 4 haul road movement carries the Haul road 2 energy (geometry within 0.3 dB)', abs(g_ext - g_hr2) < 0.3,
-      'Phase 4 %.2f, Haul road 2 %.2f dB' % (g_ext, g_hr2))
+def route_e(keys):
+    return sum(10 ** ((P['lwa_loaded'] + W.passage_geometry(k_, P, P['v_loaded'])) / 10) +
+               10 ** ((P['lwa_empty'] + W.passage_geometry(k_, P, P['v_empty'])) / 10) for k_ in keys)
+d_truth = 10 * math.log10(route_e(W.EXT_ROUTE) / route_e(W.ROUTES[('north', 'crusher')]))
+check('SF8 the clean truth: a Phase 4 movement (bench ramp and haul road) carries the Haul road 2 movement\'s energy within '
+      '0.1 dB', abs(d_truth) < 0.1, '%.3f dB' % d_truth)
+check('SF8 positive control: the scheme\'s tables (bench crest C, access ramp R, haul road P4) and the survey\'s roads are '
+      'read back', PG['n_scheme_points'] == len(W.bench_crest()) + len(W.ROADS['ext_up']['pts']) - 1 + len(W.ROADS['ext']['pts'])
+      and max(math.dist(a[:2], b[:2]) for a, b in zip(PG['road4'], PG['road4_survey'])) < 0.5,
+      '%d scheme points; survey and scheme Phase 4 alignments agree within 0.5 m' % PG['n_scheme_points'])
+for fam_name, label in (('level60', 'road level 60 m or higher (the stretch on the original ground)'),
+                        ('los', 'line of sight past the pit crest, the bench crest and the bund, sources 1, 2 and 3.5 m up'),
+                        ('bs5228', 'BS 5228-1 Annex F haul-road method, angle of view and barrier corrections, three distances')):
+    ds = {k_: 10 * math.log10(v_) for k_, v_ in SCAL.items() if k_.split('_', 1)[1].startswith(fam_name)}
+    worst = max(ds, key=lambda k_: abs(ds[k_]))
+    check('SF8 the Phase 4 road\'s passage exposure equals Haul road 2\'s within 0.3 dB on the survey and scheme: %s, on '
+          'the roads and on the routes with their ramps' % label, all(abs(v_) < 0.3 for v_ in ds.values()) and len(ds) >= 4,
+          '%d measures, largest %s %.3f dB' % (len(ds), worst, ds[worst]))
 # SF9 January 2027: the allocation is per haulage hour; the month's calendar (1 January, weekends) does not enter
 check('SF9 January 2027 window: the count is per haulage hour, the calendar does not move it', True, 'no calendar term')
 # SF10 to SF14, the asks' counting units, each filed in the asking sentence or the records' own headers
@@ -245,6 +321,24 @@ check('SF12 tonnes sold: net tonnes on the ticket, by the product the lorry load
       sum(v for _, v in G['sales']['weeks'])) < 0.01, 'product total equals week total')
 check('SF13 week: Monday to Sunday by the day the lorry was weighed, the first week 1 to 4 January', len(G['sales']['weeks']) == 5, '')
 check('SF14 month: calendar month of the tip (local time), May to October 2026', len(P1) == 6, '')
+# SF16 the belt scale's stamps: the export says each tonnage is for the interval starting at its stamp; the tonnes per
+# haul load sit mid-bin under it (the period-end reading, which the header rules out, is recorded beside them)
+bhdr = open(golden.find(TGT, 'primary_belt_scale')).read(300)
+belt_ = golden.read_belt(TGT); L_ = golden.read_loader(TGT)
+flow_ = belt_.set_index('t')['Tonnes']
+blank_ = L_[L_['Order'] == ''].copy()
+blank_['m'] = blank_['t'].dt.strftime('%Y-%m')
+def p1_under(stamp):
+    rc_ = blank_[stamp(blank_['t']).map(lambda b_: flow_.get(b_, 0.0) > 0)].groupby('m')['Bucket t'].sum()
+    return {mm: (P1[mm]['belt'] - rc_.get(mm, 0.0)) / P1[mm]['loads'] for mm in golden.MONTHS}
+p_start = p1_under(lambda s_: s_.dt.floor('15min')); p_end = p1_under(lambda s_: s_.dt.ceil('15min'))
+fe = {mm: frac_edge(p_start[mm], 0.1) for mm in golden.MONTHS}
+check('SF16 the belt export states its stamps are interval starts, and under it every tonnes-per-load cell sits 0.1 of its '
+      'bin or more from a rounding edge', 'Interval start,Tonnes' in bhdr and 'Clock,site local time' in bhdr and
+      all(abs(p_start[mm] - P1[mm]['t_per_load']) < 1e-9 for mm in golden.MONTHS) and min(fe.values()) >= 0.1,
+      'edges %s; the period-end reading gives %s against %s' % (
+          ', '.join('%.2f' % fe[mm] for mm in golden.MONTHS), ', '.join('%.1f' % p_end[mm] for mm in golden.MONTHS),
+          ', '.join('%.1f' % P1[mm]['t_per_load'] for mm in golden.MONTHS)))
 
 # ------------------------------------------------------------------------------------------------ graded figures, edges
 edges = []
@@ -349,6 +443,38 @@ named = set(card.get('world', {}).get('people', []))
 check('realism: every persona in the pack is on the card (from guard.py names)', people <= named, '%s against %s' % (people, named))
 check('realism: the loader log is mostly sales loading and re-handling, the reclaim a minority of its rows',
       0.02 < G['plant']['2026-07']['reclaim'] / max(1, G['plant']['2026-07']['belt']) < 0.2, '')
+# the leak reader's realism list: complaints in ordinary varied wording, orders that run to several loads, a weekday
+# ticket profile whose Monday excess is the keying batch, declared sound power by machine model
+cl = pd.read_excel(golden.find(TGT, 'complaints_log'))
+ctext = ' '.join(cl['Description'].astype(str)) + ' ' + ' '.join(cl['Action'].astype(str))
+check('realism: complaint descriptions and actions never name a road, a route, a ramp, the crest, the bund or the view',
+      not re.search(r'haul road|ramp|bench|phase 4|crest|bund|track|top road|skyline|ridge|in sight|in view|visible|line of '
+                    r'sight|lorries on|trucks along|climb|coming up|out of the pit|road', ctext, re.I), '%d complaints' % len(cl))
+check('realism: complaints are in varied wording (ten or more descriptions, eight or more actions, no action on more than '
+      'a third of rows)', cl['Description'].nunique() >= 10 and cl['Action'].nunique() >= 8 and
+      cl['Action'].value_counts().iloc[0] <= len(cl) / 3, '%d descriptions, %d actions, commonest action on %d of %d' % (
+          cl['Description'].nunique(), cl['Action'].nunique(), cl['Action'].value_counts().iloc[0], len(cl)))
+tk_ = pd.read_excel(golden.find(TGT, 'weighbridge_tickets')); od_ = pd.read_excel(golden.find(TGT, 'sales_orders'))
+per_order = tk_['Order no'].value_counts()
+acc_orders = od_.loc[od_['Account'] != 'CASH', 'Order no']
+share3 = float((per_order.reindex(acc_orders).fillna(0) >= 3).mean())
+check('realism: orders run to several loads (a third or more of account orders take three or more tickets) against eight or '
+      'more distinct ordered quantities', share3 >= 1 / 3 and od_['Quantity (t)'].nunique() >= 8,
+      '%d orders, %d on account, %.0f per cent of them with three or more tickets, %d quantities' % (
+          len(od_), len(acc_orders), 100 * share3, od_['Quantity (t)'].nunique()))
+tk_['when'] = pd.to_datetime(tk_['Date/time'], format='%d/%m/%Y %H:%M')
+wdc = tk_['when'].dt.weekday.value_counts().sort_index()
+rest = float(np.mean([wdc.get(i, 0) for i in range(1, 5)]))
+keyed = int(G['sales']['n_redated'])
+check('realism: the weekday ticket profile is an office\'s (Monday under twice the other weekdays\' mean, and level with them '
+      'once the tickets keyed from the portable weigher\'s earlier days are set aside)',
+      wdc.get(0, 0) < 2.0 * rest and abs((wdc.get(0, 0) - keyed) - rest) <= 0.3 * rest,
+      'Mon to Fri %s; %d keyed tickets' % ('/'.join(str(wdc.get(i, 0)) for i in range(5)), keyed))
+reg_txt = ' '.join(' '.join(pg.extract_text().split()) for pg in PdfReader(golden.find(TGT, 'ravensby_plant_register')).pages)
+decl = {m_: set(re.findall(re.escape(m_) + r' \S+ AX4-\d+ [\d.]+ (\d{3})', reg_txt)) for m_ in W.DECLARED_LWA}
+check('realism: the plant register declares each dump truck\'s sound power by its model, more than one level across the fleet',
+      all(len(v_) == 1 for v_ in decl.values()) and len(set().union(*decl.values())) >= 2,
+      str({k_: sorted(v_) for k_, v_ in decl.items()}))
 # portable records each match exactly one keyed ticket; no Monday weighbridge ticket matches a portable record by chance
 check('asks: every portable weigher record is keyed into exactly one Monday ticket (asserted in the golden reader)',
       G['sales']['n_redated'] > 0, '%d tickets re-dated' % G['sales']['n_redated'])
