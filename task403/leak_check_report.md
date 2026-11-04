@@ -55,3 +55,34 @@ Stump terms swept: calendar, runway, season, release, trialist, catalogue, chang
 
 The fix pass that followed changed one document the call reads (the programme sheet's Funding line), so round 2 reads
 again on target.zip 08a813d0.
+
+### Round 2 (stage 4, target.zip 08a813d0, one isolated reader at medium effort), and the main thread's rulings
+
+- Q1 none: the closest sentences are the standard's sections 4 and 5 (a plan change does not end the trial; each
+  episode counts once in a trial, in either language), which define data, and the programme sheet's sentence that the
+  valuations account for the fall once, which says the decomposition reconciles, not how. Ruling: no decisive-step
+  sentence.
+- Q2 none: the programme sheet lists the four programmes with costs and no valuation or rank.
+- Q3 none clearly: the standard and the programme sheet read as governing documents; the release log and the paid
+  media sheet as context. The paid media sheet's note that platform-reported starts are not the register names no
+  method. Ruling: harmless.
+- Q4 none: prices, costs and the slate's "Yes, if Gravel & Gold locks by July" read as context.
+- Q5 the programme sheet's valuation line fixes the population (trials started 1 November 2025 to 31 January 2026), the
+  outcome (paid conversions lost to each programme's cause) and the comparison (the same months a year earlier), not the
+  attribution; the standard's sections 2 to 6 fix trial, paid, episode played and winter. Ruling: each executes to the
+  golden's population, outcome and comparison.
+- Q6 an analytical choice: how the winter's fall is apportioned among the four causes and what none addresses. The
+  release log's heartbeat entries read as ordinary organisational notes. Ruling: rule 3 holds; the judge's Gate H reads
+  the same (analytical).
+- Q7 the Funding line ("one programme from the subscriber growth budget, the one with the highest valuation; none this
+  cycle only if no programme's cause cost the 2025-26 winter's trials paid conversions") settles that one programme is
+  funded by its valuation, rules out choosing by cost, and names no method. It leaves the valuation itself open, which is
+  the analysis. Ruling: the funding fork (SF19) is closed; the runner-up is the next valuation, the prompt's own term, and
+  the "In place for 1 Nov 2026" column stays context.
+- Generated patterns: weekly Friday 00:00 releases with 37 to 57 minute runtimes, UUID shapes and smooth paid media
+  figures, each read as plausible. Ruling: harmless.
+- REVIEW `signup_device`: harmless, an ordinary sign-up attribute.
+- REVIEW the calendar's dates after 2026-03-09: harmless, the scheduled Gravel & Gold slate a content calendar holds.
+
+Final cut: `leak.py --asof 2026-03-09` REVIEW with no LEAK (the same four lines, each answered above and in the design
+note); both reads clean on the main call.

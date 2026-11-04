@@ -553,3 +553,42 @@ winters, so the fall starts in November), on rows outside the main population (t
   growth budget, or none this cycle" filed no criterion while its Cost column invites paid conversions per dollar,
   under which (D) leads: the Funding line now files the WHAT in the sheet's own voice (the one with the highest
   valuation; none only if no programme's cause cost the winter's trials paid conversions), SF19.
+
+## Pre-ship check
+
+Stage 4 round 2 and ship, 2026-11-04, final cut target.zip 08a813d0 (rebuilt twice on the merged branch, byte-identical):
+
+- The 10/10 rules re-read against the built pack: the decisive step is still setting each trialist's played seasons
+  against the release calendar at their own day 7 (a season still to come), analytical, and no field, rule or filed
+  sentence performs it; the mess is still Layer 1 only (the 9 June migration and its Toronto-stamped mirror, the
+  crosswalks, two processors, the plan-change subscriptions, the autoplay-run rows, the player's duplicates).
+- Judge round 1 (order kept): DETERMINISTIC, FIX_NOW on the ask's June to October paid shares; its blind derivation
+  filed (A). Closed in the world (no plan-change chain mixes a logged and an unlogged change; the old platform's web and
+  phone mirror begins at 04:00 Toronto), no graded figure moved.
+- Judge round 2 (order kept): DETERMINISTIC, APPROVE, no fix. Gate F high: its blind derivation again filed (A) (a
+  14-day recent-release proxy put about 500 on the slate). Gate G decomposition_attribution, analytical_non_defect, no
+  surface-read dependency, no sole data defect. Gate H domain pass, layers pass, decisive step analytical. Every main
+  figure, the nine paid shares and the nine episode averages reproduce; both readings of the unlinked charges select one
+  set of 938. Its residual note (a gross price near 400, gap 1,700) is SF8, closed by the programme sheet's sentence that
+  the valuations account for the fall once, asserted; the call and the slate's figure do not move.
+- Leak reader rounds 1 and 2: no decisive-step sentence, no ranking or helper file, nothing reads as the answer, the
+  decisive step analytical; round 2 reads the Funding line as settling the choice by valuation and naming no method.
+- Coordinator's rulings:
+  - Stage 3's flag (one ask, a strong reader keeps 18 of 18): no second ask. Both primaries are reconstructions no
+    sentence states, the prompt sits at 913 of 1,000 characters, and no third family survived the filed-WHAT and
+    shared-evidence rules.
+  - The fix pass's flag 1: the D7 block is weaker than the Ask sheet claimed (a reader who finds the unlinked charges
+    and counts each in the month of its first attempt less seven days keeps the nine paid shares without the one-to-one
+    match). Accepted: the D6 block holds (minutes over runtime keeps 2 of 9), the pair stays under 70 unless both top
+    responses crack both devices, and any change after the one allowed re-judge would move ask figures.
+  - The fix pass's flag 2 (SF8's gross readings, price 300 and gap 1,800): closed by the once-only sentence, asserted,
+    and read the same way by both judges.
+  - The fix pass's flag 3: the frozen ladder's raw values (201, 109, 1,916) differ from the build world's (204.75,
+    105.18, 1,912.6) inside the same printed bins; the ladder stays as frozen.
+- Gates re-run on the final cut: `checks.py` 70 checks, 0 FAIL; `verify.py` 38 figures; two builds byte-identical
+  (08a813d0); `figures_check.py` 67 figures, 0 absent; `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS;
+  `ceiling.py` cracker, full includer, no-repair and mirror 0 of 18, pair ceiling 34.8; `leak.py --asof 2026-03-09`
+  REVIEW, 0 LEAK (the four answered lines); `guard.py heart` WARN, no BLOCK, nearest driver 0.08 (task500 v2);
+  `guard.py surface` 3 promoted pairs on card axes (task402 back to back on the gap and decision type, task306 on gap,
+  pattern and decision, task271 on gap, pattern and Gate G), each answered on the card's `differentiation`, no surface
+  tell.

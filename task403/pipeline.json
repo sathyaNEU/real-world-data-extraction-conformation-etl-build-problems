@@ -1,10 +1,10 @@
 {
   "task": "task403",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "product-analytics/funnel-journey-analysis",
   "objective": "root-cause",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-04",
   "seed": "RC09 (which air-handler repair programme a university estates department's budget buys this winter, or none); the seed's world was measured undrawable on root-cause (energy x root-cause ban.pairing by task402, efficiency-savings-verification serves experiment-causal only) and the build moved to Product Analytics, a Canadian streaming service's free-trial journey",
   "stump": "A competent solver compares the November to January trials with a year earlier, finds conversion down about 15 points in every segment and 11 among the trialists who signed up on finished seasons, sees the step arrive with the 1 November first charges at the new price, and funds (A) the first-month price hold on about 2,500 lost conversions, never setting each trialist's played seasons against the release calendar, which puts about 2,100 of the loss on the winter slate (C) and leaves the price about 200.",
@@ -28,34 +28,25 @@
     "ceiling": "ceiling.py on 08a813d0: cracker, full includer, no-repair and mirror 0 of 18, pair ceiling 34.8, mirror leakage 0; reference: strong reader 18 of 18, the seven-day dating of the unlinked charges 9 of 9 paid shares, minutes over runtime 2 of 9 episode averages",
     "voice_check": "PASS",
     "container": "scrub audit clean (target and golden, checks.py RS3)",
-    "freeze": "snapshot before the first edit of the round-1 fix pass; check --mode rubric PASS (ask figures moved 0, WARN nothing on the ask side moved), check --mode determinism PASS; no --allow"
+    "freeze": "snapshot before the first edit of the round-1 fix pass; check --mode rubric PASS (ask figures moved 0, WARN nothing on the ask side moved), check --mode determinism PASS; no --allow",
+    "final_cut": "checks 70/0; verify 38; figures_check 67; precut 61/0/0; voice PASS; ceiling 0 of 18 (cracker, full includer, no-repair, mirror), pair 34.8; two builds byte-identical; target.zip sha256 08a813d0c4a462e70dbff53037195f6f210624d50ad0d21c72405360dc8ab417"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-11-04 on 08a813d0, no LEAK: the same 4 lines answered in the design note (ordinary words in the standard and the price notice, signup_device a declared field term, the calendar's scheduled April 2026 episodes)",
-    "reader": "round 1 clean on the main call (no decisive-step sentence, no ranking file, Q6 an analytical choice, both sweep items harmless; appended to leak_check_report.md); round 2 running (the programme sheet's Funding line changed)"
+    "leak_py": "REVIEW 2026-11-04 on the final cut, no LEAK; the four lines answered in the design note and the report",
+    "reader": "rounds 1 (c80ea809) and 2 (08a813d0): no decisive-step sentence, no ranking or helper file, nothing reads as the answer, decisive step analytical; round 2 reads the Funding line as settling the choice by valuation"
   },
   "duplicate_check": {
-    "heart": "WARN, no BLOCK (2026-11-04, after merging claude/jolly-hypatia-06c61h at 0b1b7fa; no sibling card missing from the tree)",
-    "surface": "the same three structural pairs promoted for the author's adjudication (task402 back to back, task306, task271), each differentiated on the card; no surface tell",
-    "nearest": "task500 v2 driver 0.08; nearest text 0.06"
+    "heart": "WARN, no BLOCK (2026-11-04, final cut)",
+    "surface": "three structural pairs promoted on card axes (task402 back to back, task306, task271), each answered on the card's differentiation; no surface tell",
+    "nearest": "task500 v2 driver 0.08"
   },
   "judge": {
-    "verdict": "round 1: DETERMINISTIC, SOLUTION_WRONG on the ask's June to October paid shares (main call reproduced, Gate F high, Gate G decomposition_attribution analytical_non_defect, Gate H analytical); round 2 running",
-    "disposition": "round 1 FIX_NOW, fixed in one pass; round 2 pending",
-    "report": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4/judge/verdict.md"
-  },
-  "stage4": {
-    "round1": {
-      "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4/reader/reader_brief.md",
-      "judge_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4/judge/judge_brief.md",
-      "reader_answers": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4/reader/reader_answers.md",
-      "judge_verdict": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4/judge/verdict.md"
-    },
-    "round2": {
-      "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4_r2/reader/reader_brief.md",
-      "judge_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4_r2/judge/judge_brief.md",
-      "target_zip": "08a813d0c4a462e70dbff53037195f6f210624d50ad0d21c72405360dc8ab417"
-    }
+    "verdict": "round 1 DETERMINISTIC, SOLUTION_WRONG on the ask's June to October paid shares; round 2 DETERMINISTIC",
+    "disposition": "round 1 FIX_NOW (closed in the world, no graded figure moved); round 2 APPROVE, no fix",
+    "report": "task403/determinism_check_report.md",
+    "gate_f": "high: both blind derivations filed (A)",
+    "gate_g": "decomposition_attribution, analytical_non_defect",
+    "gate_h": "analytical"
   },
   "guard": {
     "check": "2026-11-04 on the registered card: WARN (no BLOCK): overuse.objective, repeat.gate_g, overuse.gate_g, repeat.decision, repeat.question_form answered in the design note; same_puzzle_older (task306 v4) and same_driver_older (task271 v5) differentiated; nearest driver 0.08 (task500 v2); validate clean",
@@ -63,9 +54,9 @@
     "window": "task399, task400, task402 (task401's card architecture_spent at the 2026-11-04 merge); forcing_event redrawn to season_or_peak"
   },
   "returned": [],
-  "resume": "stage 4 round 2 running: the parent runs the leak reader (stage4.round2.reader_brief) and the determinism judge thread (stage4.round2.judge_brief) together on byte-identical copies of target.zip (sha256 08a813d0c4a462e70dbff53037195f6f210624d50ad0d21c72405360dc8ab417). On DETERMINISTIC with APPROVE and a reader with nothing to fix: ship (pre-ship check in the design note, every gate re-run on the final cut, ledger row, card current, SHIPPED (task403) with target.zip and golden/ force-added). Any other judge verdict spends architecture 1 (a FIX_NOW that fails its second pass): re-root at stage 1 in another world, dataset and shell.",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-04",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
