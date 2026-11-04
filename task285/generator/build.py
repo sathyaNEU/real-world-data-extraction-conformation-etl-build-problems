@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 
 import world as W
 import asks as A
+import geom as G
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
@@ -145,29 +146,71 @@ def bng_ring(poly):
     return ring + [ring[0]]
 
 
+def drawn_ring(poly):
+    """an outline in km to a closed BNG ring to the centimetre."""
+    ring = [[round(W.E0 + 1000 * x, 2), round(W.N0 + 1000 * y, 2)] for x, y in poly]
+    return ring + [ring[0]]
+
+
+SA_OUT = {}          # the storage-area outlines as drawn, km
+GEOM_INFO = {}
+
+
+def drawn_geometry(reg):
+    """the outlines the partnership's GIS carries, kept to the model's memberships, and the road lines."""
+    survey_points()
+    pts = [(r_["x"], r_["y"]) for r_ in reg]
+    mem = [r_["t_sa"] for r_ in reg]
+    for k in sorted(SURVEY_BY_LINK):
+        for t, x, y in SURVEY_BY_LINK[k]:
+            pts.append((x, y))
+            mem.append(W.sa_at(x, y))
+    import numpy as np
+    # the roads off the floodplain stay off it: every 10 m of each link outside the model's storage areas and more
+    # than 15 m from their outlines
+    road = []
+    for a, b, rn, name, cls, sa, d in W.LINKS:
+        (x1, y1), (x2, y2) = W.NODES[a], W.NODES[b]
+        n = max(2, int(math.hypot(x2 - x1, y2 - y1) / 0.01))
+        for j in range(n + 1):
+            x, y = x1 + (x2 - x1) * j / n, y1 + (y2 - y1) * j / n
+            if W.sa_at(x, y) is None:
+                road.append((x, y))
+    road = np.array(road)
+    far = G.boundary_distance({s: list(p) for s, p in W.SA_POLY.items()}, road) > 0.015
+    pts += [tuple(v) for v in road[far]]
+    mem += [None] * int(far.sum())
+    out, info = G.storage_area_outlines(np.array(pts), mem)
+    SA_OUT.clear()
+    SA_OUT.update(out)
+    lines, shift = G.link_polylines(SURVEY_BY_LINK, out)
+    GEOM_INFO.update(info)
+    return lines
+
+
 def write_sa_geojson():
     feats = []
-    for sa, poly in W.SA_POLY.items():
+    for sa in W.SA_POLY:
         feats.append({"type": "Feature", "properties": {"SA_ID": sa, "SA_NAME": W.SA[sa][0], "MODEL": "QRN25",
                                                          "RIVER": "Quarnell" if "LD" in sa else W.SA[sa][0].rsplit(" ", 1)[0]},
-                      "geometry": {"type": "Polygon", "coordinates": [bng_ring(poly)]}})
+                      "geometry": {"type": "Polygon", "coordinates": [drawn_ring(SA_OUT[sa])]}})
     gj = {"type": "FeatureCollection", "name": "QRN25_storage_areas",
           "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:EPSG::27700"}}, "features": feats}
     with open(os.path.join(TARGET, "storage_areas_QRN25.geojson"), "w", encoding="utf-8") as f:
         json.dump(gj, f, separators=(",", ":"))
 
 
-def write_network():
+def write_network(lines):
     feats = []
     for k, l in enumerate(W.LINKS):
         a, b, rn, name, cls, sa, d = l
-        coords = [list(W.bng(*W.NODES[a])), list(W.bng(*W.NODES[b]))]
+        coords = [[round(W.E0 + 1000 * x, 2), round(W.N0 + 1000 * y, 2)] for x, y in lines[k]]
         feats.append({"type": "Feature",
                       "properties": {"LINK_ID": LINK_ID[k], "ROAD_NUMBER": rn, "ROAD_NAME": name,
                                      "ROAD_CLASS": {"A": "A Road", "B": "B Road", "C": "Classified Unnumbered",
                                                     "U": "Unclassified"}[cls],
                                      "START_NODE": NODE_ID[a], "END_NODE": NODE_ID[b],
-                                     "LENGTH_M": int(round(km(a, b) * 1000 * 1.06))},
+                                     "LENGTH_M": int(round(G.polyline_length_m(lines[k])))},
                       "geometry": {"type": "LineString", "coordinates": coords}})
     gj = {"type": "FeatureCollection", "name": "HB_highways_network_2025",
           "crs": {"type": "name", "properties": {"name": "urn:ogc:def:crs:EPSG::27700"}}, "features": feats}
@@ -175,10 +218,14 @@ def write_network():
         json.dump(gj, f, separators=(",", ":"))
 
 
+SURVEY_BY_LINK = {}      # 2025 link index -> [(t, x, y)] of its surveyed points, for the drawn road lines
+
+
 def survey_points():
     """2019 highways levels survey: points every 20 to 30 m on every link inside the model's floodplain."""
     rnd = random.Random(W.SEED + 11)
     rows = []
+    SURVEY_BY_LINK.clear()
     sp = 0
     done19 = {}
     for k, l in enumerate(W.LINKS):
@@ -212,6 +259,7 @@ def survey_points():
             j, t, x, y, lev, s = pts[jm]
             pts[jm] = (j, t, x, y, low, s)
         for j, t, x, y, lev, s in pts:
+            SURVEY_BY_LINK.setdefault(k, []).append((t, x, y))
             sp += 1
             e, nn = W.bng(x, y)
             rows.append(["SP19-%05d" % (40000 + 3 * sp + sp % 3), ref, "%.1f" % (base_ch + t * L), e, nn,
@@ -257,16 +305,30 @@ def write_council_tax():
 
 
 # --------------------------------------------------------------------------------------------- ask files
+CLASS_DESC = {
+    "RD02": "Residential, Dwelling, Detached", "RD03": "Residential, Dwelling, Semi-Detached",
+    "RD04": "Residential, Dwelling, Terraced",
+    "RD06": "Residential, Dwelling, Self Contained Flat (Includes Maisonette / Apartment)",
+    "RD08": "Residential, Dwelling, Sheltered Accommodation", "PP": "Property Shell",
+    "CR01": "Commercial, Retail, Bank / Financial Service", "CR02": "Commercial, Retail, Retail Service Agent",
+    "CR11": "Commercial, Retail, Automated Teller Machine (ATM)", "CO01": "Commercial, Office, Office / Work Studio",
+    "CC04": "Commercial, Community Services, Public / Village Hall / Other Community Facility",
+    "CI01": "Commercial, Industrial, Factory / Manufacturing",
+    "CL06": "Commercial, Leisure, Indoor / Outdoor Leisure / Sporting Activity / Centre",
+    "CZ01": "Commercial, Information, Advertising Hoarding",
+}
+
+
 def write_register(reg):
     rows = []
     for r_ in reg:
         e, n = W.bng(r_["x"], r_["y"])
-        rows.append([r_["uprn"], r_["parent"] or "", r_["cls"], r_["sao"], r_["pao"], r_["street"],
+        rows.append([r_["uprn"], r_["parent"] or "", r_["cls"], CLASS_DESC[r_["cls"]], r_["sao"], r_["pao"], r_["street"],
                      r_["parish"] if r_["code_shown"] == r_["code"] else W.OLD_PARISH[1], r_["code_shown"],
                      r_["pc"], e, n, "%.2f" % r_["ground_rec"], r_["src"], r_["built"]])
-    rows.sort(key=lambda z: (z[7], z[5], z[0]))
+    rows.sort(key=lambda z: (z[8], z[6], z[0]))
     write_csv("address_register_extract_oct2026.csv",
-              ["UPRN", "PARENT_UPRN", "CLASS", "SAO_TEXT", "PAO_TEXT", "STREET", "PARISH", "PARISH_CODE",
+              ["UPRN", "PARENT_UPRN", "CLASS", "CLASS_DESC", "SAO_TEXT", "PAO_TEXT", "STREET", "PARISH", "PARISH_CODE",
                "POSTCODE", "EASTING", "NORTHING", "GROUND_LEVEL_M", "LEVEL_SOURCE", "YEAR_BUILT"], rows)
 
 
@@ -389,16 +451,16 @@ def write_distractors():
     wb_save(wb, os.path.join(TARGET, "rest_centres_2026.xlsx"))
     feats = []
     for i, (code, name, poly) in enumerate([
-            ("122WAF901", "River Quarnell at Whinnerby and Nettlecote", W.SA_POLY["SA-LD1"]),
-            ("122WAF902", "River Quarnell at Yarrowcote and Burnishaw", W.SA_POLY["SA-LD3"]),
-            ("122WAF903", "River Quarnell at Hepplewick and Quernby", W.SA_POLY["SA-LD5"]),
-            ("122WAF904", "River Quarnell at Tolmarsh, Cottergill and Wrennick", W.SA_POLY["SA-LD7"]),
-            ("122WAF905", "Hollin Beck at Hollinside", W.SA_POLY["SA-HB1"]),
-            ("122WAF906", "Ravelsby Brook at Ravelsby Bridge", W.SA_POLY["SA-SB1"]),
-            ("122WAF907", "Lunnerby Beck at Lunnerby", W.SA_POLY["SA-MW1"])]):
+            ("122WAF901", "River Quarnell at Whinnerby and Nettlecote", SA_OUT["SA-LD1"]),
+            ("122WAF902", "River Quarnell at Yarrowcote and Burnishaw", SA_OUT["SA-LD3"]),
+            ("122WAF903", "River Quarnell at Hepplewick and Quernby", SA_OUT["SA-LD5"]),
+            ("122WAF904", "River Quarnell at Tolmarsh, Cottergill and Wrennick", SA_OUT["SA-LD7"]),
+            ("122WAF905", "Hollin Beck at Hollinside", SA_OUT["SA-HB1"]),
+            ("122WAF906", "Ravelsby Brook at Ravelsby Bridge", SA_OUT["SA-SB1"]),
+            ("122WAF907", "Lunnerby Beck at Lunnerby", SA_OUT["SA-MW1"])]):
         feats.append({"type": "Feature", "properties": {"FWS_TACODE": code, "TA_NAME": name, "QDIAL": "Quarnell",
                                                          "DESCRIP": "Properties close to the river"},
-                      "geometry": {"type": "Polygon", "coordinates": [bng_ring(poly)]}})
+                      "geometry": {"type": "Polygon", "coordinates": [drawn_ring(G.warning_area_outline(poly, W.SEED + 41 + i))]}})
     with open(os.path.join(TARGET, "flood_warning_areas_2025.geojson"), "w", encoding="utf-8") as f:
         json.dump({"type": "FeatureCollection", "name": "flood_warning_areas", "features": feats}, f,
                   separators=(",", ":"))
@@ -497,9 +559,9 @@ def write_guidance():
                        "the qualifying parishes. Households are the dwellings on the council tax valuation list for the "
                        "parish at 1 October 2026. Each grant is rounded to the nearest pound once its share is worked "
                        "out.", body),
-             Paragraph("The Fund pays an award to the parish council or, at the parish council's written request, to "
-                       "its clerk or to a village body it names. Any part of a parish's 2026 Flood Ready award still "
-                       "unpaid at 31 October 2026 is paid with the 2027 grant.", body),
+             Paragraph("The Fund pays an award to the parish council, or on its behalf to its clerk or to a village body "
+                       "for the parish's flood preparations. Any part of a parish's 2026 Flood Ready award still unpaid "
+                       "at 31 October 2026 is paid with the 2027 grant.", body),
              Paragraph("4. Property flood resilience survey vouchers", h),
              Paragraph("A voucher is offered to every home on the council's address register whose ground floor the "
                        "design flood would reach. The record of a building of flats is not a home, and a flat above the "
@@ -551,7 +613,7 @@ def write_model_report():
         return tb
 
     def ha(sa):
-        poly = W.SA_POLY[sa]
+        poly = SA_OUT[sa]
         a = 0.0
         for k in range(len(poly)):
             x1, y1 = poly[k]
@@ -619,7 +681,7 @@ def write_model_report():
         s += [Spacer(1, 6), Paragraph("5. Outputs and datum", h),
               Paragraph("For each run the model reports the stage in every storage area at hourly intervals from the "
                         "start of the storm. Stages are in metres above Ordnance Datum Newlyn. Survey levels used to "
-                        "build the model that had been taken to the Quarnell Navigation Datum, which lies 0.42 m below "
+                        "build the model that had been taken to the Quarnell Navigation Datum, which lies 0.42 m above "
                         "Ordnance Datum Newlyn, were converted before use.", body),
               Paragraph("6. Design results, run D100CC", h)]
         data = [["Storage area", "Name", "Peak stage (mAOD)"]]
@@ -870,11 +932,12 @@ def main():
             shutil.rmtree(folder)
     os.makedirs(TARGET)
     write_stages()
+    reg = A.build_register()
+    lines = drawn_geometry(reg)
     write_sa_geojson()
-    write_network()
+    write_network(lines)
     write_survey_and_crosswalk()
     write_council_tax()
-    reg = A.build_register()
     sv = A.build_survey(reg)
     write_register(reg)
     write_pfr_survey(sv)

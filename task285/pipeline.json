@@ -1,51 +1,59 @@
 {
   "task": "task285",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "urban-regional-science",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-04",
   "stump": "A competent analyst takes each storage area's peak stage against the surveyed road levels, closes every link with a point under more than 0.25 m at the peak and files the nine parishes left with no route to Hawkesbridge General Hospital (Hollinside, Ravelsby Bridge, Lunnerby, Yarrowcote, Hepplewick, Burnishaw, Wrennick, Cottergill and Highfold, 3,828 households); the step that lands it there is closing at once links that are never closed in the same hour, because the becks' storage areas drain before the Quarnell's fill, so Yarrowcote, Hepplewick and Highfold keep one of their two routes open at every hour and six parishes share the GBP 30,000.",
   "architecture": 1,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
     "date": "2026-11-04"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), --asof 2026-11-04, every REVIEW answered in the note's Gate answers",
-    "reader": "pass 1 clean (no leak; realism tells fixed in the generator)"
+    "leak_py": "REVIEW (no LEAK) on the ship cut, --asof 2026-11-04; every REVIEW answered in the note's Gate answers",
+    "reader": "three reads, all no leak: on the hand-off cut 3a9e57db, on the ask-layer repair cut f2bd06c4 and on the closure cut 79c8cbf7 (its one realism tell, the synthetic geometry, fixed); all three in leak_check_report.md"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-11-04 (ban.shape against task210 cleared by redrawing the shape to 05)",
+    "heart": "WARN 2026-11-04 on the ship cut, advisory only: three_rules.strategy_risk (time_semantics, answered in the note's ## Three rules) and people.first (Eleanor against task33, Paul against task117); the earlier ban.shape against task210 cleared by redrawing the shape to 05",
     "surface": "one promoted pair, task257, differentiated on the card",
     "nearest": "0.06 task488 v2"
   },
   "judge": {
-    "verdict": "pass 1 NOT_DETERMINISTIC on asks 3 and 4 only (Gates C and E); main call forced, Gates G and H pass",
-    "disposition": "ask-layer repair done in one pass, no figure moved; re-judge pending",
-    "report": "task285/determinism_check_report.md"
+    "verdict": "DETERMINISTIC",
+    "disposition": "pass 2 FIX_NOW (submission step 5 wording only), closed",
+    "report": "determinism_check_report.md (pass 1): NOT_DETERMINISTIC with SEND_BACK, read against the gate table as an ask-layer repair confined to the closure hours and the unpaid awards (Gates C and E), no architecture spent; the main call forced, every grant, ask 1 and ask 2 reproduced, Gates G and H pass. determinism_check_report_pass2.md (pass 2): DETERMINISTIC, every graded figure derived before the answers were read; FIX_NOW on step 5 closed",
+    "residuals_closed": [
+      "the payee rule: guidance s3 files that the Fund pays an award to the parish council, or on its behalf to its clerk or a village body for the parish's flood preparations (no unshipped request; ledger rows unannotated)",
+      "the closure hours: the unit named (each closure site in the highways July 2021 duty log), sources (highways or police) and measure (hours in all); BST in the duty log's headers; the B5131 route closure entered against each site it covered",
+      "the datum sign: the model report's s5 remark reads that the navigation datum lies 0.42 m above ODN, so its levels convert by adding 0.42 m, executed literally in checks.py (477 overlap UPRNs)",
+      "the register's class codes: CLASS_DESC beside CLASS, every RD code a residential dwelling",
+      "the drawn geometry: storage-area and warning-area outlines irregular and metre-precise, road links vertex-dense with bends off the floodplain, every membership kept (asserted)"
+    ]
   },
   "returned": [],
-  "resume": "Stage 4, pass 2: re-judge the repaired cut and run one reader pass (the prompt and both PDFs changed); fix any finding in the generator in one pass, then ship. The cut under check is target.zip sha256 f2bd06c463b2004bb7f83a5e133a0550081cdad6d81bc196be2f156f5c48591b; rebuild and re-gate from the repo root with: python3 task285/generator/build.py && python3 task285/generator/checks.py && python3 task285/generator/verify.py && python3 task285/generator/ceiling.py (build.py cuts target.zip last).",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-04",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
   "call": "Share the 2027 Flood Ready budget between the six parishes the design flood would cut off from Hawkesbridge General Hospital: Burnishaw GBP 6,400, Lunnerby GBP 5,786, Hollinside GBP 4,789, Wrennick GBP 4,611, Ravelsby Bridge GBP 4,416 and Cottergill GBP 3,998 (2,093 households).",
   "gates": {
-    "checks": "125 assertions, 0 failed",
+    "checks": "140 assertions, 0 failed",
     "verify": "PASS",
-    "rebuilds": "two byte-identical (23 files)",
+    "rebuilds": "two byte-identical",
     "figures_check": "64 of 64",
+    "precut": "exit 0",
+    "voice_check": "PASS",
     "ceiling": "pair 45.9, mirror leakage 28.9 per cent",
-    "voice_check": "PASS, every quota under its cap",
-    "h1_scrub": "target and golden clean",
     "heart": "WARN",
-    "surface": "one promoted pair, task257, differentiated on the card"
+    "surface": "one promoted pair, task257, differentiated on the card",
+    "geometry": "5,408 storage-area outline vertices, 1,872 warning-area vertices, 5,134 road vertices over 64 links, no address or surveyed point nearer than 1.73 m to an outline"
   },
-  "target_zip_sha256": "f2bd06c463b2004bb7f83a5e133a0550081cdad6d81bc196be2f156f5c48591b"
+  "target_zip_sha256": "a6ad395942f4d0cdbcdeb8b339322276cd78bb07017f407d8af082edcba7e91f"
 }

@@ -26,7 +26,7 @@ SURV08 = {"Whinnerby", "Yarrowcote", "Hepplewick", "Tolmarsh", "Cottergill", "Ha
 BLOCKS = {"Hawkesbridge South": 5, "Hepplewick": 2, "Cottergill": 1, "Yarrowcote": 1, "Hollinside": 1,
           "Ravelsby Bridge": 1, "Lunnerby": 1, "Whinnerby": 1, "Tolmarsh": 1, "Burnishaw": 1, "Hawkesbridge North": 2,
           "Highfold": 1}
-NONRES = ["CR01", "CR02", "CO01", "CC03", "CI01", "CR11", "CL06", "CZ01"]
+NONRES = ["CR01", "CR02", "CO01", "CC04", "CI01", "CR11", "CL06", "CZ01"]
 # each parish's address stream, by parish code
 PARISH_STREAM = {"E04014101": 1035, "E04014102": 1250, "E04014103": 851, "E04014104": 818, "E04014105": 1261, "E04014106": 939, "E04014107": 816, "E04014108": 1133, "E04014109": 936, "E04014110": 964, "E04014111": 607, "E04014112": 727, "E04014113": 805, "E04014114": 795, "E04014115": 684, "E04014116": 1154, "E04014117": 1787, "E04014118": 1795}
 

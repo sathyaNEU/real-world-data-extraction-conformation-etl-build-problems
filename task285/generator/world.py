@@ -9,7 +9,7 @@ SEED = 285
 HOURS = list(range(0, 121))
 DEPTH_LIMIT = 0.25          # metres of water on the carriageway an emergency ambulance will not enter
 DEFAULT_THRESHOLD = 0.15    # PFR scheme: floor level taken as ground level plus 0.15 m where unsurveyed
-DATUM_SHIFT = 0.42          # Quarnell Navigation Datum lies 0.42 m below Ordnance Datum Newlyn
+DATUM_SHIFT = 0.42          # Quarnell Navigation Datum lies 0.42 m above Ordnance Datum Newlyn: its levels read 0.42 m low
 E0, N0 = 412000, 456000     # local km grid origin on the national grid
 
 

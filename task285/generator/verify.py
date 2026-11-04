@@ -118,15 +118,18 @@ def households():
 def datum_shift():
     """the Quarnell Navigation Datum offset the model report gives, and the register sources it applies to: the
     sources whose levels sit that far below the 2022 surveyors' own ground levels at the same UPRNs."""
-    m = re.search(r"Quarnell Navigation Datum, which lies (\d\.\d+) m below", pdf_text("quarnell_flood_model_report_2025.pdf"))
-    shift = float(m.group(1))
+    txt = " ".join(pdf_text("quarnell_flood_model_report_2025.pdf").split())
+    m = re.search(r"Quarnell Navigation Datum, which lies (\d\.\d+) m (above|below) Ordnance Datum Newlyn", txt)
+    # a level on a datum that lies above ODN converts to ODN by adding the gap, on one below by taking it off
+    shift = float(m.group(1)) if m.group(2) == "above" else -float(m.group(1))
     sv = {int(s["UPRN"]): float(s["Ground level (mAOD)"]) for s in xlsx_rows("pfr_property_survey_2022.xlsx")}
     diff = defaultdict(list)
     for r in rows("address_register_extract_oct2026.csv"):
         u = int(r["UPRN"])
         if u in sv:
             diff[r["LEVEL_SOURCE"]].append(float(r["GROUND_LEVEL_M"]) - sv[u])
-    low = {src for src, d in diff.items() if sum(d) / len(d) < -shift / 2}
+    # the sources on that datum are those whose levels, converted, meet the surveyors' own at the same UPRNs
+    low = {src for src, d in diff.items() if abs(sum(d) / len(d) + shift) < abs(shift) / 2}
     return shift, low, {src: (len(d), round(sum(d) / len(d), 3), round(min(d), 2), round(max(d), 2)) for src, d in diff.items()}
 
 

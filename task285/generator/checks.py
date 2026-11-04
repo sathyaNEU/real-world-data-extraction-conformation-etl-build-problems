@@ -193,6 +193,29 @@ ok("ask 1 the shipped records separate the navigation-datum source: SURV08 alone
    and all(-0.08 <= v[2] and v[3] <= 0.08 for k, v in spread.items() if k != "SURV08"), spread)
 ok("ask 1 no shipped document names the source that is on the navigation datum (found only from the records)",
    not re.search(r"SURV08|2008|riverside survey", docs))
+dsent = re.search(r"Quarnell Navigation Datum, which lies (\d\.\d+) m (above|below) Ordnance Datum Newlyn",
+                  " ".join(V.pdf_text("quarnell_flood_model_report_2025.pdf").split()))
+ok("ask 1 the model report's datum sentence, executed literally (a level on a datum lying above ODN converts by adding "
+   "the gap), gives the golden's +0.42 m, which brings SURV08 to within 0.07 m of the surveyors' ground levels",
+   dsent is not None and dsent.group(2) == "above" and float(dsent.group(1)) == W.DATUM_SHIFT == shift
+   and abs(spread["SURV08"][1] + shift) <= 0.02 and -0.07 <= spread["SURV08"][2] + shift
+   and spread["SURV08"][3] + shift <= 0.07, (dsent.groups() if dsent else None, spread["SURV08"]))
+ok("ask 1 the SURV08 records the 2022 survey also levelled number 477 UPRNs (the overlap the design note quotes)",
+   spread["SURV08"][0] == 477, spread["SURV08"][0])
+reg_rows = list(csv.DictReader(open(os.path.join(T, "address_register_extract_oct2026.csv"), encoding="utf-8")))
+descs = {}
+for r in reg_rows:
+    descs.setdefault(r["CLASS"], set()).add(r["CLASS_DESC"])
+ok("ask 1 the register carries one description per class code, every RD code reading as a residential dwelling, PP "
+   "as a property shell and every other code as commercial",
+   all(len(v) == 1 for v in descs.values())
+   and all(next(iter(v)).startswith("Residential, Dwelling, ") == k.startswith("RD") for k, v in descs.items())
+   and next(iter(descs["PP"])) == "Property Shell"
+   and all(next(iter(v)).startswith("Commercial, ") for k, v in descs.items() if not (k.startswith("RD") or k == "PP")),
+   descs)
+ok("ask 1 the golden counts the records the register describes as residential dwellings, and only those",
+   {(r_["cls"] in [k for k in descs if next(iter(descs[k])).startswith("Residential, Dwelling")]) == bool(r_["t_dwelling"])
+    for r_ in REG} == {True})
 blocks_in_sa = [r_ for r_ in REG if r_["cls"] == "PP" and r_["t_sa"]]
 ok("ask 1 every building of flats in the floodplain was surveyed in 2022, so its ground floor is on record",
    all(any(s["uprn"] == b["uprn"] and s["units"] for s in SV) for b in blocks_in_sa), len(blocks_in_sa))
@@ -272,8 +295,8 @@ ok("ask 3 every re-keyed or re-addressed instalment fits inside its 2026 award's
 ok("ask 3 the payment posted after 31 October moves Wrennick when counted",
    a3["Wrennick"] == 460 and any(p[0] > "2026-10-31" for p in dict((x[0], x[4]) for x in A.AWARDS_2026)["Wrennick"]))
 ok("ask 3 blind response: no parish's unpaid figure is nil", all(v != 0 for v in a3.values()), a3)
-rule = ("The Fund pays an award to the parish council or, at the parish council's written request, to its clerk or to "
-        "a village body it names.")
+rule = ("The Fund pays an award to the parish council, or on its behalf to its clerk or to a village body for the "
+        "parish's flood preparations.")
 ok("ask 3 the guidance files the Fund's general payment rule once", " ".join(gtxt2.split()).count(rule) == 1)
 ok("ask 3 the golden is the rule's literal reading: every instalment to another payee goes to a clerk or a village body "
    "and carries its parish's 2026 award reference, and the golden counts it as paid",
@@ -316,7 +339,7 @@ ok("realism: UPRNs do not step by one constant", len(steps) > 5, steps.most_comm
 ok("realism: council tax totals are not round", sum(1 for p in W.PARISHES if p[3] % 10 == 0) <= 2)
 ok("realism: the PDFs open and carry their filed sentences (positive control)",
    "cut off when it has no road route to the hospital" in V.pdf_text("flood_ready_fund_guidance_2027.pdf").replace("\n", " ")
-   and "0.42 m below Ordnance Datum Newlyn" in V.pdf_text("quarnell_flood_model_report_2025.pdf").replace("\n", " "))
+   and "0.42 m above Ordnance Datum Newlyn" in V.pdf_text("quarnell_flood_model_report_2025.pdf").replace("\n", " "))
 ok("figures.json carries the call", FIG["call"]["count"] == 6)
 
 # ------------------------------------------------------------------------------- house fixes
@@ -365,6 +388,106 @@ ok("leak: the guidance names no hour, time step or moment of the flood", not re.
                                                                                      gtxt3, re.I))
 ok("realism: the guidance carries the trustees' approval block with names from the card",
    all(n in gtxt3 for n in ("Kirsty Grant", "Mitchell Metcalfe", "Approved for the trustees")))
+# ------------------------------------------------------------------------------- the drawn geometry
+import hashlib
+import numpy as np
+import geom as G
+import build as BLD
+sa_fc = json.load(open(os.path.join(T, "storage_areas_QRN25.geojson")))["features"]
+sa_rings = {f["properties"]["SA_ID"]: [tuple(c) for c in f["geometry"]["coordinates"][0][:-1]] for f in sa_fc}
+reg_xy = np.array([[float(r["EASTING"]), float(r["NORTHING"])] for r in reg_rows])
+reg_truth = [r_["t_sa"] for r_ in REG]
+uprn_truth = {r_["uprn"]: r_["t_sa"] for r_ in REG}
+reg_member = G.contains(sa_rings, reg_xy)
+ok("geometry: every address on the register stands in the storage area the model puts it in, on the drawn outlines",
+   all(m == uprn_truth[int(r["UPRN"])] for m, r in zip(reg_member, reg_rows)), sum(1 for m, r in zip(reg_member, reg_rows)
+                                                                                    if m != uprn_truth[int(r["UPRN"])]))
+sv_rows = list(csv.DictReader(open(os.path.join(T, "highways_levels_survey_2019.csv"), encoding="utf-8")))
+sv_xy = np.array([[float(r["easting"]), float(r["northing"])] for r in sv_rows])
+sv_truth = [W.sa_at((x - W.E0) / 1000, (y - W.N0) / 1000) for x, y in sv_xy]
+sv_member = G.contains(sa_rings, sv_xy)
+ok("geometry: every surveyed carriageway point stands in the storage area the model puts it in, on the drawn outlines",
+   list(sv_member) == sv_truth)
+dmin = float(min(G.boundary_distance(sa_rings, reg_xy).min(), G.boundary_distance(sa_rings, sv_xy).min()))
+ok("geometry: no address or surveyed point within 1.5 m of a storage-area outline (nearest %.1f m)" % dmin, dmin >= 1.5, dmin)
+ok("geometry: every storage-area outline is a simple polygon with many vertices",
+   all(G.simple(r) and len(r) >= 150 for r in sa_rings.values()), {k: len(v) for k, v in sa_rings.items()})
+cross = []
+names_sa = list(sa_rings)
+for ia, za in enumerate(names_sa):
+    A_ = np.array(sa_rings[za])
+    for zb in names_sa[ia + 1:]:
+        B_ = np.array(sa_rings[zb])
+        if (np.maximum(A_.min(0), B_.min(0)) > np.minimum(A_.max(0), B_.max(0))).any():
+            continue
+        for i in range(len(A_)):
+            a1, a2 = A_[i], A_[(i + 1) % len(A_)]
+            lo, hi = np.minimum(a1, a2), np.maximum(a1, a2)
+            Bn = np.roll(B_, -1, axis=0)
+            cand = np.where((np.minimum(B_[:, 0], Bn[:, 0]) <= hi[0]) & (np.maximum(B_[:, 0], Bn[:, 0]) >= lo[0])
+                            & (np.minimum(B_[:, 1], Bn[:, 1]) <= hi[1]) & (np.maximum(B_[:, 1], Bn[:, 1]) >= lo[1]))[0]
+            if any(G._seg_cross(a1, a2, B_[j], Bn[j]) for j in cand):
+                cross.append((za, zb))
+                break
+        inside_b = G.contains({zb: sa_rings[zb]}, A_)
+        on_b = G.boundary_distance({zb: sa_rings[zb]}, A_) < 0.01
+        if any(x is not None and not o for x, o in zip(inside_b, on_b)):
+            cross.append((za, zb, "vertex"))
+ok("geometry: no two storage-area outlines overlap (no crossing edges, no vertex inside another outline)", not cross, cross)
+coords = []
+for fn in ("storage_areas_QRN25.geojson", "flood_warning_areas_2025.geojson"):
+    for f in json.load(open(os.path.join(T, fn)))["features"]:
+        coords += [c for ring in f["geometry"]["coordinates"] for c in ring]
+net_fc = json.load(open(os.path.join(T, "highways_network_2025.geojson")))["features"]
+for f in net_fc:
+    coords += f["geometry"]["coordinates"]
+on_grid = sum(1 for c in coords for v in c if abs(v / 100 - round(v / 100)) < 1e-4)
+ok("geometry: the outlines and road lines sit off the 100 m grid (within 1 cm of it no more often than chance, under "
+   "0.1 per cent of %d coordinates; %d found)" % (2 * len(coords), on_grid), on_grid <= 0.001 * 2 * len(coords), on_grid)
+ok("geometry: the warning areas are simple polygons", all(G.simple([tuple(c) for c in f["geometry"]["coordinates"][0][:-1]])
+                                                       for f in json.load(open(os.path.join(T, "flood_warning_areas_2025.geojson")))["features"]))
+node_xy = {}
+links_ok = len(net_fc) == len(W.LINKS)
+for k, f in enumerate(net_fc):
+    a_, b_ = W.LINKS[k][0], W.LINKS[k][1]
+    pr = f["properties"]
+    links_ok &= pr["LINK_ID"] == BLD.LINK_ID[k] and pr["START_NODE"] == BLD.NODE_ID[a_] and pr["END_NODE"] == BLD.NODE_ID[b_]
+    cs = f["geometry"]["coordinates"]
+    for nid, c in ((pr["START_NODE"], cs[0]), (pr["END_NODE"], cs[-1])):
+        links_ok &= node_xy.setdefault(nid, tuple(c)) == tuple(c)
+    links_ok &= len(cs) >= 2 and abs(pr["LENGTH_M"] - G.polyline_length_m([((x - W.E0) / 1000, (y - W.N0) / 1000) for x, y in cs])) < 1
+ok("geometry: every road link keeps its identifier and its two nodes, starts and ends on its nodes' one position, and "
+   "states the length of the line drawn", links_ok)
+ok("geometry: the road lines are vertex-dense (more than 30 vertices a link on average)",
+   sum(len(f["geometry"]["coordinates"]) for f in net_fc) > 30 * len(net_fc), sum(len(f["geometry"]["coordinates"]) for f in net_fc))
+sv_by_link = {}
+for r in sv_rows:
+    sv_by_link.setdefault(r["link_ref_2019"], []).append((float(r["easting"]), float(r["northing"])))
+cw_rows = list(csv.DictReader(open(os.path.join(T, "link_reference_crosswalk_2019_2025.csv"), encoding="utf-8")))
+pts_of_2025 = {}
+for c_ in cw_rows:          # a 2025 link is covered by the survey of the 2019 link it was renumbered or split from
+    pts_of_2025.setdefault(c_["link_id_2025"], []).extend(sv_by_link.get(c_["link_ref_2019"], []))
+unsurveyed = []
+for f in net_fc:
+    cs = np.array(f["geometry"]["coordinates"], float)
+    dense = []
+    for i in range(len(cs) - 1):
+        m = max(1, int(np.hypot(*(cs[i + 1] - cs[i])) / 5))
+        dense += [cs[i] + (cs[i + 1] - cs[i]) * j / m for j in range(m)]
+    D = np.array(dense)
+    inn = G.contains(sa_rings, D)
+    S = np.array(pts_of_2025.get(f["properties"]["LINK_ID"], [(1e9, 1e9)]))
+    for p, x in zip(D, inn):
+        if x is not None and np.min(np.hypot(*(S - p).T)) > 40:
+            unsurveyed.append(f["properties"]["LINK_ID"])
+            break
+ok("geometry: every stretch of road the drawn outlines put on the floodplain lies within 40 m of its link's surveyed "
+   "points, so the 2019 survey still covers every road inside the floodplain", not unsurveyed, unsurveyed)
+frozen = {"generator/figures.json": "7d59462c0cea2b08d522863467288f43d5889774c1df711ef91085810e85c150",
+          "golden/flood_ready_parishes_2027.xlsx": "ccb63be50c6c9c9a91f46b78832e2749fc9e43c073c050e0284ba93878e8ae1f",
+          "golden/flood_ready_parishes_2027.pdf": "8a1aed862141d2e514374e53936fc602ec0bbf0bca49c8e0cda1c10e84266b57"}
+ok("frozen: figures.json and both goldens are byte-identical to the judged cut",
+   all(hashlib.sha256(open(os.path.join(TASK, p), "rb").read()).hexdigest() == h for p, h in frozen.items()))
 zpath = os.path.join(TASK, "target.zip")
 zfresh = os.path.exists(zpath) and sorted(zipfile.ZipFile(zpath).namelist()) == sorted("target/" + f for f in files) and all(
     zipfile.ZipFile(zpath).read("target/" + f) == open(os.path.join(T, f), "rb").read() for f in files)
