@@ -91,6 +91,31 @@ def set_of(t):
     return sorted(c for c, v in t.items() if v > W.LINE_T)
 
 
+def spread_set(wd, tr):
+    """SF16's ruled-out reading: each cycle's liquid reaching the separator over the afterflow instead of with the
+    plunger, drained by a mid-range 1 in valve (4 m3/h)."""
+    import physics as PH
+    ev = PH.events(wd)
+    gkg = {row["sep"]["lc_tag"]: row["kg"]["golden"] for row in tr["lc"]}
+    pads = {}
+    c = 4.0 / 3600.0
+    for sp in wd["seps"]:
+        kg = gkg[sp["lc_tag"]]
+        if sp["group"] != "F":
+            lvl, is_open, n, top, t = 0.0, False, 0, 0.0, None
+            for ta, q, v, af in ev[sp["uwi"]]:
+                af = max(af, 60.0)
+                if t is not None and ta > t:
+                    lvl, is_open, m, top = PH._phase(lvl, is_open, 0.0, ta - t, sp["band"], c, top)
+                    n += m
+                lvl, is_open, m, top = PH._phase(lvl, is_open, q / af, af, sp["band"], c, top)
+                n += m
+                t = ta + af
+            kg = n * sp["kpc"]
+        pads[sp["site"]] = pads.get(sp["site"], 0.0) + kg / 1000.0
+    return set_of(pads)
+
+
 # ------------------------------------------------------------------------------------------------ the run
 def run(target, golden, wd=None, n=None, g=None, meta_path=None, fig_path=None):
     RESULTS.clear()
@@ -181,6 +206,66 @@ def run(target, golden, wd=None, n=None, g=None, meta_path=None, fig_path=None):
                 dup = True
             blocks.add(b)
     ok("R3c no plant: no 14-day block of liquid repeats across wells or weeks", not dup, "")
+    # physics: the makers' control logic run on the shipped inflow, over the plausible box, files the golden
+    import physics as PH
+    sw = PH.sweep(wd, tr)
+    grp = {sp["lc_tag"]: sp["group"] for sp in wd["seps"]}
+    kpc = {sp["lc_tag"]: sp["kpc"] for sp in wd["seps"]}
+    gkg = {row["sep"]["lc_tag"]: row["kg"]["golden"] for row in tr["lc"]}
+    ok("physics: the sheets' logic on the shipped inflow files the 8 pads in every corner (SF17 drain 1.5 to 7 m3/h "
+       "for a 1 in valve and 3 to 25 for 2 in, slug speed 0.6 to 1.6 of the trip's average; SF18 afterflow liquid 0 "
+       "to 15 per cent; SF19 effective band 0.9 to 1.1)", all(r["set"] == gold for r in sw) and len(sw) == 24,
+       str([(r["band"], r["drain"], r["speed"], r["af_share"]) for r in sw if r["set"] != gold][:3]))
+    ok("physics: every big-slug controller opens once per arrival in every corner",
+       all(v["n"] == round(gkg[t] / kpc[t]) for r in sw for t, v in r["lc"].items() if grp[t] == "PB"), "")
+    worst = max(abs(v["kg"] - gkg[t]) for r in sw if r["band"] == 1.0 for t, v in r["lc"].items())
+    ok("physics: every plunger controller's kilograms keep their bin in every corner at the register's band",
+       all(round(v["kg"]) == round(gkg[t]) for r in sw if r["band"] == 1.0 for t, v in r["lc"].items()),
+       "worst shift %.3f kg" % worst)
+    marg = PH.slug_rate_margin(wd)
+    ok("physics: every big-slug separator's slug comes off the tubing faster than its dump valve can drain, at the "
+       "slowest arrival and the fastest valve (1.25 times or more)", min(a / b for a, b in marg.values()) >= 1.25,
+       "%.2f" % min(a / b for a, b in marg.values()))
+    tops = {}
+    for r in sw:
+        for t, v in r["lc"].items():
+            tops[t] = max(tops.get(t, 0.0), v["top"])
+    rooms = {sp["lc_tag"]: PH.vessel_room(sp) for sp in wd["seps"]}
+    ok("physics: every vessel holds its highest level below the high level shutdown in every corner",
+       all(tops[t] < rooms[t] for t in tops), "%.3f m3" % min(rooms[t] - tops[t] for t in tops))
+    overlaps = 0
+    by_w = {}
+    for c in wd["cycles"]:
+        if not c["resent"]:
+            by_w.setdefault(c["uwi"], []).append(c)
+    for cs in by_w.values():
+        cs.sort(key=lambda c: c["open_utc"])
+        for a, b in zip(cs, cs[1:]):
+            if (b["open_utc"] - a["open_utc"]).total_seconds() < (a["travel_s"] or 0) + a["afterflow_min"] * 60:
+                overlaps += 1
+    ok("physics: each plunger cycle's travel and afterflow end before the next opening", overlaps == 0, str(overlaps))
+    flowing = {sp["lc_tag"] for sp in wd["seps"] if sp["group"] == "F"}
+    for scale in (0.98, 1.02):
+        t_sc = {}
+        for row in tr["lc"]:
+            sp = row["sep"]
+            t_sc[sp["site"]] = t_sc.get(sp["site"], 0.0) + row["kg"]["golden"] * (scale if sp["lc_tag"] in flowing else 1.0) / 1000.0
+        ok("physics: the call holds with every flowing controller at %.2f of liquid over band (the five counters bound "
+           "the drain-time effect)" % scale, set_of(t_sc) == gold, str(set_of(t_sc)))
+    for b in PH.BAND_SCALE:
+        r1b, lab = {}, {}
+        for row in tr["lc"]:
+            sp = row["sep"]
+            dr = row["dumps"]
+            vol = dr.get("counter", dr["volume"] / b)
+            r1b[sp["site"]] = r1b.get(sp["site"], 0.0) + vol * sp["kpc"] / 1000.0
+            arr = dr["arrivals"] if dr["arrivals"] is not None else vol
+            lab[sp["site"]] = lab.get(sp["site"], 0.0) + arr * sp["kpc"] / 1000.0
+        ok("physics: at %.1f of the band neither liquid over band nor one dump per arrival files the golden" % b,
+           set_of(r1b) != gold and set_of(lab) != gold, "%d / %d" % (len(set_of(r1b)), len(set_of(lab))))
+    ok("SF16 the liquid comes to surface with the plunger (PCX-300 specification); spread over the afterflow it would "
+       "file another set, a reading the specification's operation paragraph rules out",
+       spread_set(wd, tr) != gold, "")
     # ladder: who each wrong route adds, and the margins
     big = set(tr["sets"]["r1"]) - set(gold)
     dry = set(tr["sets"]["label"]) - set(gold)
@@ -193,8 +278,8 @@ def run(target, golden, wd=None, n=None, g=None, meta_path=None, fig_path=None):
        and all(any(sp["group"] == "PS" for sp in next(s for s in wd["sites"] if s["code"] == c)["seps"]) for c in dry), "")
     lo_in = min(st[c]["golden"] for c in gold)
     hi_out = max(v["golden"] for c, v in st.items() if c not in gold)
-    ok("margin: every pad in the conversion vents 0.60 t or more", lo_in >= 0.60, "%.3f" % lo_in)
-    ok("margin: every pad out vents 0.43 t or less", hi_out <= 0.43, "%.3f" % hi_out)
+    ok("margin: every pad in the conversion vents 0.62 t or more (kept from the first cut)", lo_in >= 0.62, "%.3f" % lo_in)
+    ok("margin: every pad out vents 0.412 t or less (kept from the first cut)", hi_out <= 0.4125, "%.4f" % hi_out)
     ok("margin: each big-slug pad sits 0.55 t or more under the volume route", min(st[c]["r1"] for c in big) >= 0.55,
        "%.3f" % min(st[c]["r1"] for c in big))
     ok("margin: each dry pad sits 0.60 t or more under the arrival route", min(st[c]["label"] for c in dry) >= 0.60,
@@ -221,7 +306,8 @@ def run(target, golden, wd=None, n=None, g=None, meta_path=None, fig_path=None):
     ok("regime: every small-slug well's slug is under 0.07 of a band on every producing day", worst_ps < 0.07, "%.4f" % worst_ps)
     # no column partitions the decisive property: plunger type, vessel bore and controller model all mix big and small slugs
     for attr, f in (("plunger type", lambda sp, w: w["plunger"]), ("bore", lambda sp, w: sp["bore"]),
-                    ("controller span", lambda sp, w: sp["span"]), ("controller model", lambda sp, w: sp["model"])):
+                    ("controller span", lambda sp, w: sp["span"]), ("controller model", lambda sp, w: sp["model"]),
+                    ("dump valve", lambda sp, w: sp["valve"]), ("tubing", lambda sp, w: w["tubing"])):
         pb = {f(sp, w) for sp, w in zip(wd["seps"], wd["wells"]) if sp["group"] == "PB"}
         ps = {f(sp, w) for sp, w in zip(wd["seps"], wd["wells"]) if sp["group"] == "PS"}
         ok("no partition: %s takes values shared by big-slug and small-slug wells" % attr, bool(pb & ps),
@@ -263,18 +349,18 @@ def run(target, golden, wd=None, n=None, g=None, meta_path=None, fig_path=None):
         if len({round(v) for v in vals}) > 1:
             worst = -1.0
         worst = min(worst, edge(row["kg"]["golden"], 1.0))
-    ok("bins: every controller's kg keeps its whole-kg bin under every execution, 0.05 kg or more from an edge",
-       worst >= 0.05, "%.3f" % worst)
+    ok("bins: every controller's kg keeps its whole-kg bin under every execution, 0.1 kg or more from an edge",
+       worst >= 0.1, "%.3f" % worst)
     worst = 9.0
     for c, v in st.items():
         vals = [v[k] for k in ("golden", "min_rule", "ceil_rule", "ps_volume")]
         if len({round(x, 2) for x in vals}) > 1:
             worst = -1.0
         worst = min(worst, edge(v["golden"], 0.01))
-    ok("bins: every pad's tonnes keeps its two-decimal bin, 0.0005 t or more from an edge", worst >= 0.0005, "%.5f" % worst)
+    ok("bins: every pad's tonnes keeps its two-decimal bin, 0.001 t or more from an edge", worst >= 0.001, "%.5f" % worst)
     bt = S.bleed_truth(wd)
     bma = S.bleed_by_maker_area(bt, wd)
-    ok("bins: every maker-area bleed total 0.05 kg or more from a whole-kg edge", min(edge(v, 1.0) for v in bma.values()) >= 0.05,
+    ok("bins: every maker-area bleed total 0.1 kg or more from a whole-kg edge", min(edge(v, 1.0) for v in bma.values()) >= 0.1,
        "%.3f" % min(edge(v, 1.0) for v in bma.values()))
     # the asks: the careful route misses every figure
     na = S.nonarrival_truth(wd)
@@ -354,7 +440,16 @@ def run(target, golden, wd=None, n=None, g=None, meta_path=None, fig_path=None):
     ok("absence: the standard names no slug, band or arrival", not re.search(r"slug|\bband\b|arrival", flat), "")
     sheets = " ".join(re.sub(r"\s+", " ", V.pdf_text(os.path.join(target, W.FILES[k]))).lower()
                       for k in ("sheet_corrigan", "sheet_aldous", "sheet_brannick"))
-    ok("control: the makers' sheets extract and carry the per-cycle gas", "per dump cycle" in sheets, "")
+    VB = V.load(target)
+    ok("control: each maker's sheet extracts to its rated gas per cycle and its bleed",
+       VB["per_cycle"] == {m: v["scf_per_cycle"] for m, v in W.LC_MODELS.items()} and
+       VB["bleed_rate"] == {m: v["scf_per_h"] for m, v in W.BLEED_MODELS.items()}, str(VB["per_cycle"]))
+    pcx = re.sub(r"\s+", " ", V.pdf_text(os.path.join(target, W.FILES["sheet_trellick"]))).lower()
+    ok("control: the PCX-300 specification says the plunger brings the liquid above it to surface as it arrives",
+       "brings that liquid to surface ahead of it as it arrives" in pcx, "")
+    ok("absence: the PCX-300 specification names no separator, level, dump, band or slug",
+       not re.search(r"separator|\blevel|dump|\bband|slug", pcx), "")
+    ok("absence: no maker's sheet states a dump valve's flow capacity", not re.search(r"m3/h|gpm|capacity", sheets), "")
     ok("absence: no sheet turns liquid volume into dump cycles", not re.search(r"cycles per (?:day|hour)|liquid (?:rate|volume) (?:divided|over)|"
                                                                          r"bbl/d|m3/d per cycle", sheets), "")
     good = all(r[1] for r in RESULTS)

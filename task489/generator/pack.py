@@ -91,9 +91,14 @@ def run_rows(wd):
 # --------------------------------------------------------------------------------------------- gas analyses
 def analysis_rows(wd):
     r = S.rng(13)
+    r2 = S.rng(19)
     rows = []
     no = 26018
+    points = ["Separator gas outlet", "Sales meter run", "Separator gas outlet", "Wellhead, upstream of choke"]
     for s in wd["sites"]:
+        point = points[int(r2.integers(0, len(points)))]
+        labs = {2025: "Peace Country Analytical" if r2.random() < 0.8 else "Bezanson Analytical",
+                2026: "Bezanson Analytical" if r2.random() < 0.55 else "Peace Country Analytical"}
         for year, x, month in ((2025, s["x2025"], int(r.integers(8, 12))), (2026, s["x2026"], int(r.integers(5, 10)))):
             no += int(r.integers(3, 40))
             c1 = round(x * 100.0, 2)
@@ -107,7 +112,8 @@ def analysis_rows(wd):
             nc4 = round(hyd * float(r.uniform(0.05, 0.08)), 2)
             c5 = round(100.0 - c1 - n2 - co2 - c2 - c3 - ic4 - nc4, 2)
             date = dt.date(year, month, int(r.integers(2, 28)))
-            rows.append(("GA-%d" % no, s["lsd"], date.isoformat(), "Separator gas outlet", "Peace Country Analytical",
+            lab_no = ("GA-%d" % no) if labs[year] == "Peace Country Analytical" else ("B%02d-%05d" % (year % 100, no * 3 % 99991))
+            rows.append((lab_no, s["lsd"], date.isoformat(), point, labs[year],
                          "%.2f" % c1, "%.2f" % c2, "%.2f" % c3, "%.2f" % ic4, "%.2f" % nc4, "%.2f" % c5, "%.2f" % n2,
                          "%.2f" % co2))
     rows.sort(key=lambda x: (x[2], x[0]))
@@ -134,6 +140,10 @@ def counter_rows(wd):
             g0 = int(r.integers(60, len(series) - 80))
             for k in range(g0, g0 + int(r.integers(2, 19))):
                 gaps.add(k)
+        if sep["site"] in ("K1122", "E0617"):
+            g0 = int(r.integers(2000, 7000))
+            for k in range(g0, g0 + int(r.integers(30, 70))):
+                gaps.add(k)
         for k, (t, v) in enumerate(series):
             if k in gaps and t not in (W.WINDOW_START_UTC, W.WINDOW_END_UTC):
                 continue
@@ -144,12 +154,10 @@ def counter_rows(wd):
 
 # --------------------------------------------------------------------------------------------- work orders
 def order_rows(wd):
-    r = S.rng(15)
     pad = {s["code"]: s["name"] for s in wd["sites"]}
     rows = []
     for o in wd["orders"]:
-        rows.append((o["wo"], ts(o["created"]), pad[o["site"]], o["tag"], o["type"], o["text"], o["tech"],
-                     "Closed" if r.random() < 0.96 else "Completed"))
+        rows.append((o["wo"], ts(o["created"]), pad[o["site"]], o["tag"], o["type"], o["text"], o["tech"], o["status"]))
     return rows
 
 
@@ -210,8 +218,10 @@ def write_register(path, wd):
     rows = []
     for s in wd["sites"]:
         for sep, w in [(x, next(y for y in wd["wells"] if y["uwi"] == x["uwi"])) for x in s["seps"]]:
-            rows.append((w["uwi"], w["name"], s["name"], w["lift"], w["plunger"] or "", "Producing"))
-    _sheet(ws, ["UWI", "Well name", "Pad", "Artificial lift", "Plunger", "Status"], rows, [24, 26, 16, 15, 18, 11])
+            rows.append((w["uwi"], w["name"], s["name"], w["lift"], w["plunger"] or "", "Producing", w["tubing"],
+                         w["depth_m"] if w["depth_m"] else ""))
+    _sheet(ws, ["UWI", "Well name", "Pad", "Artificial lift", "Plunger", "Status", "Tubing", "Bumper spring (mKB)"], rows,
+           [24, 26, 16, 15, 18, 11, 10, 20])
     ws = wb.create_sheet("Vessels")
     rows = []
     for s in wd["sites"]:
@@ -220,10 +230,12 @@ def write_register(path, wd):
             sts = {20: 7.5, 24: 7.5, 30: 10.0, 36: 10.0, 42: 10.0, 48: 12.5}[sep["bore"]]
             rows.append((sep["tag"], s["name"], "Wellsite separator, two-phase", "Vertical", sep["bore"], sts,
                          sep["lc_tag"], "%s %s" % (W.MAKERS[W.LC_MODELS[sep["model"]]["maker"]], sep["model"]),
-                         sep["span"], sep["valve"], w["name"], "Yes" if sep["auto"] else ""))
+                         sep["span"], sep["valve"], w["name"], "Yes" if sep["auto"] else "", sep["low_in"],
+                         sep["lshh_in"]))
     _sheet(ws, ["Vessel", "Pad", "Service", "Orientation", "Bore (in)", "Seam to seam (ft)", "Level controller",
-                "Controller make and model", "Controller span (in)", "Dump valve", "Inlet from well", "SCADA dump count"],
-           rows, [10, 16, 28, 12, 10, 17, 16, 32, 19, 11, 26, 17])
+                "Controller make and model", "Controller span (in)", "Dump valve", "Inlet from well", "SCADA dump count",
+                "Lower setting (in above bottom seam)", "LSHH (in above bottom seam)"],
+           rows, [10, 16, 28, 12, 10, 17, 16, 32, 19, 11, 26, 17, 20, 18])
     ws = wb.create_sheet("Pneumatic devices")
     pad = {s["code"]: s["name"] for s in wd["sites"]}
     devs = register_state(wd)
@@ -273,18 +285,21 @@ def ogi_rows(wd):
     comps = ["Wellhead flange", "Separator PSV", "Thief hatch, tank 1", "Thief hatch, tank 2", "Meter run fitting",
              "Line heater fuel train", "Compressor packing vent", "Dump valve stem packing", "Threaded connector",
              "Pressure gauge fitting"]
+    r2 = S.rng(20)
     for rnd, (m0, m1) in enumerate(((4, 5), (9, 10))):
+        crew = (["J. Davis", "S. Stevens"], ["C. Petty", "J. Davis"])[rnd]
         for s in wd["sites"]:
+            op = crew[0] if r2.random() < 0.6 else crew[1]
             date = dt.date(2026, m0, int(r.integers(3, 28)))
             n = int(r.poisson(1.3))
             if n == 0:
-                rows.append((date.isoformat(), s["name"], "", "", "No leaks found", "", "", "J. Davis"))
+                rows.append((date.isoformat(), s["name"], "", "", "No leaks found", "", "", op))
             for _ in range(n):
                 comp = comps[int(r.integers(0, len(comps)))]
                 rate = round(float(r.lognormal(-1.6, 0.9)), 3)
                 rep = date + D(days=int(r.integers(1, 30)))
                 rows.append((date.isoformat(), s["name"], comp, "C-%04d" % int(r.integers(100, 9999)), "Leak",
-                             "%.3f" % rate, rep.isoformat(), "J. Davis"))
+                             "%.3f" % rate, rep.isoformat(), op))
     rows.sort(key=lambda x: (x[0], x[1]))
     return rows
 

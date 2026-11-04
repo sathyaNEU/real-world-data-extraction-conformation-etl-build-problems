@@ -26,7 +26,7 @@
    "xlsx"
   ],
   "largest_file": "plunger_cycles_2026.csv",
-  "largest_file_rows": 240855
+  "largest_file_rows": 240864
  },
  "sources": [
   {
@@ -60,7 +60,7 @@
   {
    "path": "aldous_SV-40_PC-60_data_sheet.pdf",
    "format": "pdf",
-   "bytes": 41794,
+   "bytes": 41882,
    "rows": null,
    "source": "Constructed: a controller maker's product data sheet",
    "date": "2027-01-25",
@@ -78,7 +78,7 @@
   {
    "path": "brannick_DLC-3_TC-5_data_sheet.pdf",
    "format": "pdf",
-   "bytes": 41801,
+   "bytes": 41587,
    "rows": null,
    "source": "Constructed: a controller maker's product data sheet",
    "date": "2027-01-25",
@@ -87,7 +87,7 @@
   {
    "path": "corrigan_CL-200_CP-10_data_sheet.pdf",
    "format": "pdf",
-   "bytes": 41790,
+   "bytes": 42211,
    "rows": null,
    "source": "Constructed: a controller maker's product data sheet",
    "date": "2027-01-25",
@@ -96,7 +96,7 @@
   {
    "path": "daily_well_volumes_2026.csv",
    "format": "csv",
-   "bytes": 1354803,
+   "bytes": 1354802,
    "rows": 18615,
    "source": "Constructed: production accounting's daily allocated volumes by well for the 2026 production days",
    "date": "2027-01-25",
@@ -105,7 +105,7 @@
   {
    "path": "deep_basin_equipment_register.xlsx",
    "format": "xlsx",
-   "bytes": 19194,
+   "bytes": 20170,
    "rows": null,
    "source": "Constructed: the Deep Basin equipment register (pads, wells, vessels, pneumatic devices) as exported in January 2027",
    "date": "2027-01-25",
@@ -114,7 +114,7 @@
   {
    "path": "deep_basin_work_orders_2026.csv",
    "format": "csv",
-   "bytes": 19209,
+   "bytes": 19123,
    "rows": 136,
    "source": "Constructed: the maintenance system's 2026 work orders for the Deep Basin pads",
    "date": "2027-01-25",
@@ -123,7 +123,7 @@
   {
    "path": "gas_analyses_2025_2026.csv",
    "format": "csv",
-   "bytes": 6592,
+   "bytes": 6596,
    "rows": 52,
    "source": "Constructed: the contract laboratory's separator gas analyses, 2025 and 2026",
    "date": "2027-01-25",
@@ -132,7 +132,7 @@
   {
    "path": "methane_reduction_plan_2027.docx",
    "format": "docx",
-   "bytes": 37670,
+   "bytes": 37391,
    "rows": null,
    "source": "Constructed: the operator's 2027 methane reduction plan",
    "date": "2027-01-25",
@@ -141,7 +141,7 @@
   {
    "path": "ogi_leak_survey_2026.csv",
    "format": "csv",
-   "bytes": 7612,
+   "bytes": 7646,
    "rows": 94,
    "source": "Constructed: the operator's 2026 optical gas imaging leak survey results",
    "date": "2027-01-25",
@@ -150,8 +150,8 @@
   {
    "path": "plunger_cycles_2026.csv",
    "format": "csv",
-   "bytes": 25830143,
-   "rows": 240855,
+   "bytes": 25638242,
+   "rows": 240864,
    "source": "Constructed: the SCADA host's plunger lift cycle history for the operator's plunger wells, valve opens in 2026",
    "date": "2027-01-25",
    "license": "CC0 (original work, constructed for this task)"
@@ -159,8 +159,8 @@
   {
    "path": "scada_dump_counters_2026.csv",
    "format": "csv",
-   "bytes": 2145188,
-   "rows": 43921,
+   "bytes": 2139712,
+   "rows": 43808,
    "source": "Constructed: the SCADA historian's hourly samples of the automated separators' dump counters",
    "date": "2027-01-25",
    "license": "CC0 (original work, constructed for this task)"
@@ -168,7 +168,7 @@
   {
    "path": "sheldrake_pneumatic_survey_2026.pdf",
    "format": "pdf",
-   "bytes": 45314,
+   "bytes": 45320,
    "rows": null,
    "source": "Constructed: the measurement contractor's 2026 pneumatic device survey report",
    "date": "2027-01-25",
@@ -186,7 +186,7 @@
   {
    "path": "trellick_PCX-300_plunger_controller_spec.pdf",
    "format": "pdf",
-   "bytes": 41746,
+   "bytes": 42135,
    "rows": null,
    "source": "Constructed: the plunger lift controller maker's specification sheet",
    "date": "2027-01-25",

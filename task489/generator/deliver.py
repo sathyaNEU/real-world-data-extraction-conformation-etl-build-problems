@@ -363,7 +363,7 @@ def main(target, gdir, fig_path):
     PP.normalize_ooxml(os.path.join(gdir, W.DELIVERABLES[0]), W.PEOPLE["lead"], W.PEOPLE["lead"], "2027-01-19T16:02:00Z",
                        "2027-01-24T22:37:00Z", excel=True, company=W.ORG)
     PP.normalize_ooxml(os.path.join(gdir, W.DELIVERABLES[1]), W.PEOPLE["lead"], W.PEOPLE["lead"], "2027-01-22T17:41:00Z",
-                       "2027-01-24T23:05:00Z", company=W.ORG)
+                       "2027-01-24T23:05:00Z", company=W.ORG, revision=6, total_time=148)
     import time
     ts = time.mktime(W.STAMP + (0, 0, -1))
     for f in W.DELIVERABLES:

@@ -197,71 +197,119 @@ def write_survey(path, wd):
 SHEETS = {
     "Corrigan": {"addr": "Corrigan Controls, 4410 72 Avenue SE, Calgary AB T2C 2G9", "doc": "DS-CL200-CP10 Rev. F",
                  "date": "2023-03-14", "lc": "CL-200", "bl": "CP-10", "accent": "#7a2f1c", "author": "Stephanie Clements",
-                 "producer": "Adobe PDF Library 17.0",
-                 "lc_text": "The CL-200 is a float-operated snap controller for vertical separators. Rising liquid lifts the float "
-                            "until the pilot snaps the dump valve fully open at the upper setting; the valve stays open "
-                            "while the level falls and snaps shut at the lower setting. Each opening is one dump cycle. "
-                            "The span is set by moving the float rod clamp, 2 to 16 inches.",
-                 "bl_text": "The CP-10 holds separator or sales back pressure with a throttling relay that bleeds to atmosphere "
-                            "all the time it is supplied, at a rate fixed by supply pressure.",
-                 "valve": [["1 in, 1/4 in trim", "2.1 m3/h water at 700 kPa differential"],
-                           ["2 in, 1/2 in trim", "6.4 m3/h water at 700 kPa differential"]]},
+                 "producer": "Adobe PDF Library 17.0"},
     "Aldous": {"addr": "Aldous Valve and Instrument Inc., 2209 Kingsway Industrial Park, Nisku AB T9E 8P3",
                "doc": "AVI-PDS-114 Issue 7", "date": "2022-09-30", "lc": "SV-40", "bl": "PC-60", "accent": "#1f4f63",
-               "author": "Todd Harrison", "producer": "Microsoft® Word for Microsoft 365",
-               "lc_text": "SV-40 packages combine a displacer level pilot with a 1 or 2 inch snap-action dump valve. The pilot "
-                          "trips the valve open when liquid reaches the high set point and closes it when the liquid has "
-                          "drained to the low set point. Pilot and actuator exhaust at every trip; nothing bleeds "
-                          "while the valve is at rest.",
-               "bl_text": "The PC-60 low-bleed pressure controller throttles a control valve against a set point. Its relay "
-                          "bleed is continuous and depends only on supply pressure.",
-               "valve": [["1 in body", "2.6 m3/h water at 700 kPa differential"],
-                         ["2 in body", "7.9 m3/h water at 700 kPa differential"]]},
+               "author": "Todd Harrison", "producer": "Microsoft® Word for Microsoft 365"},
     "Brannick": {"addr": "Brannick Instrument Company, 81 Tower Road, Red Deer AB T4P 3K2", "doc": "BI-DS-0310 Rev. 4",
                  "date": "2021-06-02", "lc": "DLC-3", "bl": "TC-5", "accent": "#4d3a6b", "author": "Donna Simpson",
-                 "producer": "Microsoft® Word 2016",
-                 "lc_text": "DLC-3 displacer controllers mount on the vessel's side connections. Operation is on and off: at "
-                            "the high level setting the output goes to full supply and opens the dump valve, and it vents to "
-                            "zero at the low level setting, closing the valve. Supply gas is consumed only on these changes "
-                            "of state. Level span is adjustable from 2 to 16 inches on the linkage.",
-                 "bl_text": "TC-5 bath temperature controllers for line heaters use a capillary bulb in the bath and a "
-                            "throttling relay with a constant bleed while supply is on.",
-                 "valve": [["1 in angle valve", "1.8 m3/h water at 700 kPa differential"],
-                           ["2 in angle valve", "5.7 m3/h water at 700 kPa differential"]]},
+                 "producer": "Microsoft® Word 2016"},
 }
 
 
 def write_sheet(path, maker):
-    m = SHEETS[maker]
+    {"Corrigan": _sheet_corrigan, "Aldous": _sheet_aldous, "Brannick": _sheet_brannick}[maker](path)
+
+
+def _sheet_corrigan(path):
+    m = SHEETS["Corrigan"]
     st = styles(m["accent"])
-    lc, bl = W.LC_MODELS[m["lc"]], W.BLEED_MODELS[m["bl"]]
-    d, frame = _doc(path, "%s %s and %s product data" % (W.MAKERS[maker], m["lc"], m["bl"]), m["author"],
-                    "%s  |  %s" % (W.MAKERS[maker], m["doc"]),
+    lc, bl = W.LC_MODELS["CL-200"], W.BLEED_MODELS["CP-10"]
+    d, frame = _doc(path, "Corrigan Controls CL-200 and CP-10 product data", m["author"],
+                    "CORRIGAN CONTROLS  |  PRODUCT DATA  |  %s" % m["doc"],
                     "%s.  Specifications subject to change without notice." % m["addr"], producer=m["producer"])
     b, P = [], Paragraph
-    b.append(P(W.MAKERS[maker], st["h1"]))
-    b.append(P("%s and %s. %s, %s." % (lc["name"], bl["name"], m["doc"], m["date"]), st["sub"]))
-    b.append(P(lc["name"], st["h2"]))
-    b.append(P(m["lc_text"], st["body"]))
-    rows = [["Specification", "Value"],
-            ["Supply pressure", "140 to 350 kPa (20 to 50 psig); rated at 241 kPa (35 psig)"],
-            ["Supply gas per dump cycle", "%.2f scf (60 F, 14.696 psia) at 35 psig supply" % lc["scf_per_cycle"]],
-            ["Steady-state bleed", "None"],
-            ["Ambient temperature", "-40 C to 70 C"]]
-    for v in m["valve"]:
-        rows.append(["Dump valve capacity, " + v[0], v[1]])
-    b.append(_table(rows, [62 * mm, 112 * mm], st))
-    b.append(P(bl["name"], st["h2"]))
-    b.append(P(m["bl_text"], st["body"]))
-    b.append(_table([["Specification", "Value"],
-                     ["Supply pressure", "140 to 350 kPa (20 to 50 psig); rated at 241 kPa (35 psig)"],
-                     ["Steady-state bleed", "%.2f scf/h (60 F, 14.696 psia) at 35 psig supply" % bl["scf_per_h"]],
-                     ["Ambient temperature", "-40 C to 70 C"]], [62 * mm, 112 * mm], st))
-    b.append(Spacer(1, 8))
-    notes = {"Corrigan": "Consumption figures are bench values with a new pilot at rated supply.",
-             "Aldous": "Published gas use is measured at the factory on new pilots and relays at 35 psig.",
-             "Brannick": "Figures apply to new relays at rated supply; worn seats raise consumption."}
-    b.append(P(notes[maker], st["small"]))
+    b.append(P("CL-200 Snap Level Controller and CP-10 Pressure Controller", st["h1"]))
+    b.append(P("Product data %s, issued %s. Supersedes Rev. E." % (m["doc"], m["date"]), st["sub"]))
+    b.append(P("CL-200", st["h2"]))
+    b.append(P("The CL-200 is a float-operated snap controller for vertical separators and scrubbers. Rising liquid lifts "
+               "the float until the pilot snaps the dump valve fully open at the upper setting; the valve stays open "
+               "while the level falls and snaps shut at the lower setting. Each opening is one dump cycle. Span is set "
+               "by moving the float rod clamp.", st["body"]))
+    b.append(_table([["CL-200", ""],
+                     ["Mounting", "2 in NPT side connection, external cage optional"],
+                     ["Float", "4 x 9 in, 316 stainless steel, 1,000 psig"],
+                     ["Span", "2 to 16 in, field adjustable"],
+                     ["Supply", "20 to 50 psig (140 to 350 kPa) natural gas or air; rated at 35 psig"],
+                     ["Gas used per dump cycle", "%.2f scf (60 F, 14.696 psia) at 35 psig supply" % lc["scf_per_cycle"]],
+                     ["Output", "Snap, full supply or zero"],
+                     ["Ambient", "-40 to 160 F (-40 to 70 C)"]], [52 * mm, 122 * mm], st))
+    b.append(P("CP-10", st["h2"]))
+    b.append(P("The CP-10 holds separator or sales back pressure with a throttling relay that bleeds to atmosphere all the "
+               "time it is supplied, at a rate fixed by supply pressure.", st["body"]))
+    b.append(_table([["CP-10", ""],
+                     ["Set point range", "50 to 1,500 psig with range spring"],
+                     ["Supply", "20 to 50 psig (140 to 350 kPa); rated at 35 psig"],
+                     ["Bleed to atmosphere, steady state", "%.2f scf/h (60 F, 14.696 psia) at 35 psig supply" % bl["scf_per_h"]],
+                     ["Proportional band", "2 to 100 per cent, adjustable"]], [52 * mm, 122 * mm], st))
+    b.append(P("Ordering", st["h2"]))
+    b.append(_table([["Code", "Description"],
+                     ["CL-200-S2", "CL-200, 2 in side mount, standard float"],
+                     ["CL-200-C2", "CL-200 in external cage, 2 in connections"],
+                     ["CP-10-15", "CP-10 with 50 to 1,500 psig spring"]], [40 * mm, 134 * mm], st))
+    b.append(Spacer(1, 6))
+    b.append(P("Consumption figures are bench values with a new pilot at rated supply.", st["small"]))
+    d.build(b, onFirstPage=frame, onLaterPages=frame)
+
+
+def _sheet_aldous(path):
+    m = SHEETS["Aldous"]
+    st = styles(m["accent"])
+    lc, bl = W.LC_MODELS["SV-40"], W.BLEED_MODELS["PC-60"]
+    d, frame = _doc(path, "Aldous Valve and Instrument SV-40 and PC-60 product data", m["author"],
+                    "Aldous Valve and Instrument  -  Product Information Sheet %s" % m["doc"],
+                    m["addr"] + ".  This sheet is uncontrolled when printed.", producer=m["producer"])
+    b, P = [], Paragraph
+    b.append(P("Aldous Valve and Instrument", st["h1"]))
+    b.append(P("Product Information Sheet %s, %s: SV-40 level package and PC-60 low-bleed pressure controller"
+               % (m["doc"], m["date"]), st["sub"]))
+    b.append(P("1. Application", st["h2"]))
+    b.append(P("The SV-40 package is built for two-phase and three-phase wellsite vessels in sour and sweet service. The "
+               "PC-60 is a low-bleed controller for back pressure and sales gas control.", st["body"]))
+    b.append(P("2. Operation", st["h2"]))
+    b.append(P("SV-40 packages combine a displacer level pilot with a 1 or 2 inch snap-action dump valve. The pilot trips "
+               "the valve open when liquid reaches the high set point and closes it when the liquid has drained to the "
+               "low set point. Pilot and actuator exhaust at every trip; nothing bleeds while the valve is at rest. The "
+               "PC-60 throttles a control valve against its set point; its relay bleed is continuous and depends only on "
+               "supply pressure.", st["body"]))
+    b.append(P("3. Performance", st["h2"]))
+    b.append(_table([["Item", "Value", "Unit", "Condition"],
+                     ["SV-40 supply gas per valve trip", "%.2f" % lc["scf_per_cycle"], "scf",
+                      "60 F, 14.696 psia; 35 psig supply"],
+                     ["SV-40 displacer length", "14 or 32", "in", "level span up to the displacer length"],
+                     ["PC-60 relay bleed", "%.2f" % bl["scf_per_h"], "scf/h", "steady state; 35 psig supply"],
+                     ["Supply pressure", "140 to 350", "kPa", "rated 241 kPa (35 psig)"],
+                     ["Operating temperature", "-40 to 70", "C", ""]], [66 * mm, 24 * mm, 16 * mm, 68 * mm], st))
+    b.append(P("4. Notes", st["h2"]))
+    b.append(P("Published gas use is measured at the factory on new pilots and relays at 35 psig.", st["body"]))
+    d.build(b, onFirstPage=frame, onLaterPages=frame)
+
+
+def _sheet_brannick(path):
+    m = SHEETS["Brannick"]
+    st = styles(m["accent"])
+    lc, bl = W.LC_MODELS["DLC-3"], W.BLEED_MODELS["TC-5"]
+    d, frame = _doc(path, "Brannick Instrument DLC-3 and TC-5 product data", m["author"],
+                    "Brannick Instrument Company      %s" % m["doc"],
+                    "Brannick Instrument Company, Red Deer, Alberta.  Tel 403 555 0164.", producer=m["producer"])
+    b, P = [], Paragraph
+    b.append(P("DLC-3 Displacer Level Controller", st["h1"]))
+    b.append(P("with TC-5 Bath Temperature Controller.  Data sheet %s, %s." % (m["doc"], m["date"]), st["sub"]))
+    b.append(P("DLC-3 displacer controllers mount on the vessel's side connections. Operation is on and off: at the high "
+               "level setting the output goes to full supply and opens the dump valve, and it vents to zero at the low "
+               "level setting, closing the valve. Supply gas is consumed only on these changes of state. Level span is "
+               "adjustable from 2 to 16 inches on the linkage.", st["body"]))
+    b.append(P("TC-5 bath temperature controllers for line heaters use a capillary bulb in the bath and a throttling relay "
+               "with a constant bleed while supply is on.", st["body"]))
+    b.append(P("Performance data", st["h2"]))
+    b.append(_table([["", "DLC-3", "TC-5"],
+                     ["Consumption per dump cycle", "%.2f scf" % lc["scf_per_cycle"], "n/a"],
+                     ["Steady bleed", "nil at rest", "%.2f scf/h" % bl["scf_per_h"]],
+                     ["Supply", "20 to 50 psig", "20 to 50 psig"],
+                     ["Sensing element", "14 in displacer, 316 SS", "capillary bulb, 6 ft"]], [70 * mm, 52 * mm, 52 * mm], st))
+    b.append(Spacer(1, 6))
+    b.append(P("Figures apply to new relays at 35 psig supply, base conditions 60 F and 14.696 psia; worn seats raise "
+               "consumption.", st["small"]))
     d.build(b, onFirstPage=frame, onLaterPages=frame)
 
 
@@ -277,6 +325,15 @@ def write_controller_sheet(path):
     b.append(P("The PCX-300 runs a plunger lift well on timers, pressures or plunger travel time. It opens and closes the "
                "well's motor valve, detects the plunger at the lubricator with a magnetic arrival sensor and reports each "
                "cycle to a SCADA host over Modbus.", st["body"]))
+    b.append(P("Operation", st["h2"]))
+    b.append(P("The controller runs the well in cycles. With the motor valve closed, casing pressure builds while the plunger "
+               "rests on the bumper spring. The controller opens the motor valve when the off timer has run or, in casing "
+               "pressure mode, when the casing reaches its open set point. The plunger rises with the liquid that has "
+               "gathered above it and brings that liquid to surface ahead of it as it arrives at the lubricator. The well "
+               "then flows gas for the afterflow time, set on a timer or, in casing pressure mode, ended when the casing "
+               "falls to its close set point, and the controller closes the motor valve and lets the plunger fall. A "
+               "plunger that has not arrived when the travel timer runs out is logged as a non-arrival and the motor valve "
+               "is closed.", st["body"]))
     b.append(P("Counters", st["h2"]))
     b.append(_table([["Register", "Meaning"],
                      ["Cycle count (40011)", "Number of times the controller has opened the motor valve. Not reset by power loss."],
@@ -303,9 +360,44 @@ def write_plan(path):
     s = doc.styles["Normal"]
     s.font.name = "Calibri"
     s.font.size = Pt(10.5)
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+
+    def field(par, instr, shown):
+        fld = OxmlElement("w:fldSimple")
+        fld.set(qn("w:instr"), instr)
+        run = OxmlElement("w:r")
+        txt = OxmlElement("w:t")
+        txt.text = shown
+        run.append(txt)
+        fld.append(run)
+        par._p.append(fld)
+    sec = doc.sections[0]
+    hp = sec.header.paragraphs[0]
+    hp.text = "Larchmere Resources Ltd.\t2027 Methane Reduction Plan\tDocument EHS-PLN-027, Rev. 0"
+    for run in hp.runs:
+        run.font.size = Pt(8.5)
+    fp = sec.footer.paragraphs[0]
+    fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    fp.add_run("Uncontrolled when printed.  Page ").font.size = Pt(8.5)
+    field(fp, "PAGE", "1")
+    fp.add_run(" of ").font.size = Pt(8.5)
+    field(fp, "NUMPAGES", "2")
     doc.add_heading("Larchmere Resources Ltd. 2027 Methane Reduction Plan", level=1)
     doc.add_paragraph("Issued 12 January 2027. Owner: %s, %s. Endorsed by the executive team, 8 January 2027."
                       % (W.PEOPLE["lead"], W.TITLES["lead"]))
+    t = doc.add_table(rows=1, cols=4)
+    t.style = "Table Grid"
+    for c, h in zip(t.rows[0].cells, ("", "Name", "Title", "Date")):
+        c.text = h
+    for row in (("Prepared", W.PEOPLE["lead"], W.TITLES["lead"], "2027-01-11"),
+                ("Reviewed", "Jennifer Castro", "Manager, Regulatory and Environment", "2027-01-11"),
+                ("Approved", W.PEOPLE["vp"], W.TITLES["vp"], "2027-01-12")):
+        cells = t.add_row().cells
+        for c, v in zip(cells, row):
+            c.text = v
+    doc.add_paragraph("Revision 0, issued for use 12 January 2027.")
     doc.add_heading("1. Where we start", level=2)
     doc.add_paragraph("The 2026 inventory is the first one built at source level for pneumatic controllers under MRS-03 "
                       "Revision 4. It sets the baseline for this plan and for the instrument air programme that follows "

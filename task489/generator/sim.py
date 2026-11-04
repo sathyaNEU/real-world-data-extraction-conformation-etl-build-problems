@@ -59,7 +59,34 @@ def entities():
             bleeds.append(b)
             site["bleeds"].append(b)
         sites.append(site)
+    physical(wells, seps)
     return sites, wells, seps, bleeds
+
+
+TUBING_ID_M = {"60.3 mm": 0.0507, "73.0 mm": 0.0620}     # internal diameter of the production tubing
+SEAM_IN = {20: 90, 24: 90, 30: 120, 36: 120, 42: 120, 48: 150}
+
+
+def physical(wells, seps):
+    """The facts the register keeps about each vessel and well: the level controller's lower setting and the high
+    level shutdown above the bottom seam, the dump valve body, each well's tubing and, on a plunger well, the plunger's
+    depth and the controller's own settings (median arrival speed, afterflow mode)."""
+    r = rng(21)
+    for sep, w in zip(seps, wells):
+        sep["low_in"] = int(r.integers(8, 17))
+        sep["lshh_in"] = int(round(SEAM_IN[sep["bore"]] * float(r.uniform(0.74, 0.82))))
+        if sep["group"] != "F":
+            sep["valve"] = "1 in"
+        elif sep["target_kg"] / sep["kpc"] * sep["band"] / 8760.0 > 0.3:
+            sep["valve"] = "2 in"
+        w["tubing"] = "60.3 mm" if r.random() < (0.7 if sep["group"] != "F" else 0.4) else "73.0 mm"
+        if sep["group"] == "F":
+            w["depth_m"] = None
+            continue
+        w["depth_m"] = int(r.integers(2450, 3351))
+        w["mode"] = "timer" if r.random() < 0.55 else "pressure"
+        w["v_med"] = float(r.uniform(2.6, 4.2) if sep["group"] == "PB" else r.uniform(3.4, 5.4))
+        w["v_sd"] = float(r.uniform(0.10, 0.20))
 
 
 # ----------------------------------------------------------------------------------------------- daily volumes
@@ -198,7 +225,10 @@ def unit_plan(seps, wells):
 def make_cycles(seps, wells, prod, plan, spans):
     """One row per cycle a plunger controller ran: the unit's serial, the host's well label for that unit, the
     unit's own cycle number, open time, travel seconds (blank when the plunger did not arrive), result,
-    afterflow, casing and tubing pressure at open, and the time the host received the row."""
+    afterflow, casing and tubing pressure at open, and the time the host received the row. Each well's cycles run
+    in turn: travel, then afterflow, then the off time to the next opening; travel is the plunger's depth over its
+    speed, which varies about the well's median and rises with casing pressure; afterflow is the well's timer or,
+    in casing pressure mode, ends when the casing falls to its close set point."""
     out = []
     aborted = []
     counters = {}
@@ -207,10 +237,20 @@ def make_cycles(seps, wells, prod, plan, spans):
         if sep["group"] == "F":
             continue
         rr = rng(500 + j)
+        ra = rng(1500 + j)
         abort_p = float(rng(700 + j).uniform(*W.ABORT_SHARE))
         p = plan[sep["uwi"]]
         hours = prod[sep["uwi"]]["hours"]
         casing0 = float(rr.uniform(1900, 3600))
+        n_max = max(int(p["arrivals"][d]) + int(p["nonarr"][d]) for d in range(365))
+        spacing_min = 0.7 * 86400.0 / max(n_max, 1)
+        # a well that cycles often runs a light, fast plunger: its median trip takes under half the shortest spacing
+        w["v_med"] = max(w["v_med"], w["depth_m"] / (0.5 * spacing_min))
+        v_floor = 2.1 if sep["group"] == "PB" else 1.9
+        w["travel_timer_s"] = int(math.ceil(w["depth_m"] / v_floor / 60.0) * 60)
+        af_room = (spacing_min - w["depth_m"] / w["v_med"] - 150.0) / 60.0
+        w["af_set"] = int(max(2, min(45, round(af_room * float(ra.uniform(0.35, 0.65))))))
+        rows_w = []
         for d in range(-1, 365):
             # production day 2025-12-31 runs to 08:00 on 1 January and sits in the controllers' 2026 log too
             day = W.DAYS[0] - D(days=1) if d < 0 else W.DAYS[d]
@@ -229,11 +269,13 @@ def make_cycles(seps, wells, prod, plan, spans):
             rr.shuffle(kinds)
             gap = span_s / n
             for i in range(n):
-                t = start + D(seconds=gap * i + float(rr.uniform(0.05, 0.85)) * gap)
+                u = float(rr.uniform(0.05, 0.85))
+                t = start + D(seconds=gap * (i + 0.35 + 0.3 * (u - 0.05) / 0.8))
                 t = t.replace(microsecond=0)
                 arrived = bool(kinds[i])
-                travel = int(rr.integers(240, 1500)) if arrived else None
-                afterflow = int(rr.integers(4, 45)) if arrived else 0
+                if arrived:                    # the plan's own draws, kept so every cycle stays where it was planned
+                    rr.integers(240, 1500)
+                    rr.integers(4, 45)
                 casing = round(casing0 * (1 + float(rr.normal(0, 0.035))), 0)
                 tubing = round(casing * float(rr.uniform(0.55, 0.85)), 0)
                 serial, label = next((s3, l3) for a, b, s3, l3 in spans[sep["uwi"]] if a <= t < b)
@@ -250,13 +292,34 @@ def make_cycles(seps, wells, prod, plan, spans):
                     arr_ctr[serial] = int(rng(900 + int(serial[-5:])).integers(10000, 60000))
                 if arrived:
                     arr_ctr[serial] += 1
-                close = t + D(seconds=(travel or 3600) + afterflow * 60 + int(rr.integers(20, 75)))
-                recv = close + D(seconds=int(rr.integers(4, 95)))
-                out.append({"serial": serial, "label": label, "cycle_no": counters[serial], "arrival_no": arr_ctr[serial],
-                            "open_utc": t,
-                            "travel_s": travel, "result": "ARRIVE" if arrived else "NO ARRIVAL",
-                            "afterflow_min": afterflow, "casing_kpa": int(casing), "tubing_kpa": int(tubing),
-                            "uwi": sep["uwi"], "recv_utc": recv, "resent": False})
+                extra = int(rr.integers(20, 75))
+                lag = int(rr.integers(4, 95))
+                v = w["v_med"] * math.exp(w["v_sd"] * float(ra.normal(0, 1))) * (casing / casing0) ** 0.6
+                v = max(v, v_floor * 1.03)
+                travel = int(round(w["depth_m"] / v)) if arrived else None
+                if w["mode"] == "timer":
+                    af = w["af_set"]
+                else:
+                    af = max(1, int(round(w["af_set"] * math.exp(0.35 * float(ra.normal(0, 1))))))
+                rows_w.append({"serial": serial, "label": label, "cycle_no": counters[serial],
+                               "arrival_no": arr_ctr[serial], "open_utc": t, "travel_s": travel,
+                               "result": "ARRIVE" if arrived else "NO ARRIVAL", "afterflow_min": af if arrived else 0,
+                               "casing_kpa": int(casing), "tubing_kpa": int(tubing), "uwi": sep["uwi"], "recv_utc": None,
+                               "resent": False, "_extra": extra, "_lag": lag})
+        # the cycles run in turn: afterflow ends, and a missed plunger's travel timer runs out, before the next opening
+        rows_w.sort(key=lambda c: c["open_utc"])
+        for k, c in enumerate(rows_w):
+            nxt = rows_w[k + 1]["open_utc"] if k + 1 < len(rows_w) else c["open_utc"] + D(hours=6)
+            room = (nxt - c["open_utc"]).total_seconds() - 90.0 - c["_extra"]
+            if c["result"] == "ARRIVE":
+                c["travel_s"] = int(max(min(c["travel_s"], room - 60.0), w["depth_m"] / 9.0))
+                c["afterflow_min"] = int(max(0, min(c["afterflow_min"], (room - c["travel_s"]) // 60)))
+                busy = c["travel_s"] + c["afterflow_min"] * 60
+            else:
+                busy = min(w["travel_timer_s"], max(room, 60.0))
+            close = c["open_utc"] + D(seconds=busy + c.pop("_extra"))
+            c["recv_utc"] = close + D(seconds=c.pop("_lag"))
+        out.extend(rows_w)
     # radio outages: rows queued in the controller reach the host at reconnection, and the overnight backfill
     # loads the same rows again
     by = {(s["site"], int(s["tag"][-2:]) - 1): s for s in seps}
@@ -342,7 +405,7 @@ def make_bleed_history(wd):
         nonlocal wo
         wo += int(r.integers(7, 60))
         orders.append({"wo": "WO-%d" % wo, "created": created, "site": site, "tag": tag, "type": wtype, "text": text,
-                       "tech": tech})
+                       "tech": tech, "status": "Closed"})
     techs = ["G. Ward", "L. Rollins", "J. Castillo", "B. Phillips", "D. Thompson"]
     # a pressure controller replaced with another maker's model (the register keeps only the new one)
     swaps = [("K0702", "PC-1", "PC-60", dt.datetime(2026, 8, 14, 13, 20)),
@@ -404,18 +467,47 @@ def make_bleed_history(wd):
         when = dt.datetime(*done, 16, 30)
         add(when - D(days=int(r.integers(10, 25))), site, "", "Project",
             "Re-pipe of sales and fuel gas headers per P&ID rev D, sales PCs relocated to the new header", "Northline Fab crew")
-    # routine noise: work orders on other equipment
-    routine = ["Changed out dump valve trim, LLC re-zeroed", "Replaced float on high level shutdown, tested OK",
-               "Methanol pump rebuilt, set to 4 L/d", "Thawed sample line, added heat trace", "Replaced battery in plunger controller",
-               "Plunger inspected, pad worn, installed new pad plunger", "Lubricator spring replaced", "Calibrated sales meter, no change",
-               "Painted separator skid", "Annual PSV test, all set points OK", "Swapped plunger controller cycle mode to fixed timers",
-               "Cleaned sand from separator, LLC checked through span", "Replaced instrument supply regulator, set 241 kPa"]
+    # routine work on the pads' other equipment, each job on the kind of tag it belongs to; planned work on day
+    # shift, corrective work mostly on day shift with call-outs at night and at weekends
+    r2 = rng(33)
+    jobs = {
+        "V": [("Preventive", "Annual PSV test, all set points OK"), ("Corrective", "Cleaned sand from separator"),
+              ("Preventive", "Tested high level shutdown, tripped and reset OK"), ("Corrective", "Painted separator skid"),
+              ("Corrective", "Replaced sight glass gaskets, weeping at bottom cock")],
+        "LC": [("Corrective", "Changed out dump valve trim, LLC re-zeroed"),
+               ("Preventive", "LLC pilot cleaned, stroked through span"),
+               ("Corrective", "Dump valve stem packing weeping, repacked")],
+        "PLC": [("Corrective", "Replaced battery in plunger controller"), ("Preventive", "Cleaned solar panel, charging OK"),
+                ("Preventive", "Plunger inspected, within wear limits, returned to service"),
+                ("Corrective", "Lubricator spring replaced"), ("Corrective", "Arrival sensor cable chafed, re-routed and tested")],
+        "FE": [("Preventive", "Calibrated sales meter, no change"), ("Preventive", "Orifice plate inspected, no change")],
+        "H": [("Preventive", "Line heater fire tube inspected"), ("Corrective", "Line heater pilot out, relit")],
+        "PCV": [("Corrective", "Replaced instrument supply regulator, set 241 kPa")],
+    }
+    wo2 = [wo + 900]
+
+    def shift_time(day, wtype):
+        if wtype == "Preventive" or r2.random() < 0.78:
+            while day.weekday() >= 5:
+                day = day + D(days=1)
+            return dt.datetime.combine(day, dt.time(7, 0)) + D(minutes=int(r2.integers(0, 10 * 60)))
+        return dt.datetime.combine(day, dt.time(0, 0)) + D(minutes=int(r2.choice([int(r2.integers(0, 6 * 60)),
+                                                                                   int(r2.integers(18 * 60, 24 * 60))])))
+    heater_sites = {b["site"] for b in wd["bleeds"] if b["kind"] == "TC"}
     for _ in range(118):
-        s = wd["sites"][int(r.integers(0, len(wd["sites"])))]
-        when = dt.datetime(2026, 1, 1, 7) + D(minutes=int(r.integers(0, 365 * 24 * 60 - 2000)))
-        sep = s["seps"][int(r.integers(0, len(s["seps"])))]
-        add(when, s["code"], sep["lc_tag"] if r.random() < 0.5 else sep["tag"], str(r.choice(["Preventive", "Corrective", "Corrective"])),
-            routine[int(r.integers(0, len(routine)))], techs[int(r.integers(0, 5))])
+        s = wd["sites"][int(r2.integers(0, len(wd["sites"])))]
+        sep = s["seps"][int(r2.integers(0, len(s["seps"])))]
+        kinds = ["V", "V", "LC", "LC", "FE", "PCV"] + (["PLC", "PLC", "PLC"] if sep["group"] != "F" else []) + \
+                (["H"] if s["code"] in heater_sites else [])
+        kind = kinds[int(r2.integers(0, len(kinds)))]
+        wtype, text = jobs[kind][int(r2.integers(0, len(jobs[kind])))]
+        tag = {"V": sep["tag"], "LC": sep["lc_tag"], "PLC": sep["lc_tag"].replace("LC", "PLC"),
+               "FE": "FE-%s1" % s["code"][1:], "H": "H-%s1" % s["code"][1:], "PCV": "PCV-%s1" % s["code"][1:]}[kind]
+        day = dt.date(2026, 1, 2) + D(days=int(r2.integers(0, 360)))
+        wo2[0] += int(r2.integers(3, 41))
+        status = "Closed" if r2.random() < 0.88 else ("Completed" if r2.random() < 0.75 else "Cancelled")
+        orders.append({"wo": "WO-%d" % wo2[0], "created": shift_time(day, wtype), "site": s["code"], "tag": tag,
+                       "type": wtype, "text": text, "tech": techs[int(r2.integers(0, 5))], "status": status})
     orders.sort(key=lambda o: o["created"])
     return orders, hist
 
@@ -447,12 +539,13 @@ def make_survey(wd):
     tested = [("K0309", "PC-1"), ("K1122", "PC-1"), ("K1623", "PC-1"), ("E0503", "PC-1"), ("E0617", "TC-1"),
               ("K0702", "PC-1"), ("E1032", "PC-1"), ("E0718", "TC-1"), ("E1424", "PC-1"), ("K1416", "TC-1"),
               ("E0934", "TC-1"), ("E1322", "PC-1")]
-    mult = [0.92, 1.4, 1.9, 2.6, 1.1, 3.1, 1.65, 2.2, 1.25, 2.85, 1.05, 1.78]
+    mult = [0.92, 1.4, 1.9, 2.62, 1.1, 3.1, 1.65, 2.2, 1.25, 2.85, 1.05, 1.78]
+    rb = rng(41)
     for j, (code, tag) in enumerate(tested):
         when = dt.datetime.combine(day0 + D(days=j // 3), dt.time(11, 0))
         b = next(h for h in wd["bleed_hist"].values() if h["site"] == code and h["tag"] == tag and h["from"] <= when < h["to"])
         rated = W.BLEED_MODELS[b["model"]]["scf_per_h"]
-        meas = round(rated * mult[j] * float(r.uniform(0.96, 1.04)), 2)
+        meas = round(rated * mult[j] * float(rb.uniform(0.96, 1.04)), 2)
         bl.append({"date": when.date(), "site": code, "tag": tag, "serial": b["serial"], "model": b["model"],
                    "scf_h": meas})
     return {"lcs": lcs, "bleeds": bl}

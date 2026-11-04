@@ -1,9 +1,9 @@
 {
  "bleed_by_maker_area": {
   "Aldous Valve and Instrument, Elmworth": 518,
-  "Aldous Valve and Instrument, Kakwa": 256,
-  "Corrigan Controls, Elmworth": 380,
-  "Corrigan Controls, Kakwa": 427
+  "Aldous Valve and Instrument, Kakwa": 259,
+  "Corrigan Controls, Elmworth": 379,
+  "Corrigan Controls, Kakwa": 434
  },
  "call": [
   "Elmworth 10-11",
@@ -151,7 +151,7 @@
   ]
  },
  "lc_kg": {
-  "Elmworth 10-11 LC-101101": 662,
+  "Elmworth 10-11 LC-101101": 661,
   "Elmworth 10-11 LC-101102": 52,
   "Elmworth 10-32 LC-103201": 56,
   "Elmworth 10-32 LC-103202": 44,
@@ -185,7 +185,7 @@
   "Kakwa 13-12 LC-131201": 101,
   "Kakwa 13-12 LC-131202": 75,
   "Kakwa 13-12 LC-131203": 122,
-  "Kakwa 13-22 LC-132201": 303,
+  "Kakwa 13-22 LC-132201": 302,
   "Kakwa 13-22 LC-132202": 5,
   "Kakwa 13-22 LC-132203": 6,
   "Kakwa 14-16 LC-141601": 404,
@@ -238,7 +238,7 @@
    "int_t": 0.71
   },
   "Elmworth 10-32": {
-   "cont_t": 0.14,
+   "cont_t": 0.13,
    "in": false,
    "int_t": 0.1
   },
@@ -283,7 +283,7 @@
    "int_t": 0.4
   },
   "Elmworth 6-17": {
-   "cont_t": 0.13,
+   "cont_t": 0.12,
    "in": false,
    "int_t": 0.32
   },
@@ -293,7 +293,7 @@
    "int_t": 0.21
   },
   "Elmworth 7-2": {
-   "cont_t": 0.16,
+   "cont_t": 0.17,
    "in": true,
    "int_t": 0.64
   },
@@ -308,7 +308,7 @@
    "int_t": 0.62
   },
   "Kakwa 11-22": {
-   "cont_t": 0.14,
+   "cont_t": 0.15,
    "in": true,
    "int_t": 0.86
   },
@@ -333,7 +333,7 @@
    "int_t": 0.75
   },
   "Kakwa 16-23": {
-   "cont_t": 0.21,
+   "cont_t": 0.22,
    "in": true,
    "int_t": 0.7
   },

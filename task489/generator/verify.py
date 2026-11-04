@@ -65,8 +65,8 @@ def load(target):
         lc = re.search(r"\b([A-Z]{2,3}-\d+) [^.]*?(?:level controller|dump valve package|level controller)\b", t)
         m_lc = re.findall(r"(CL-200|SV-40|DLC-3)", t)[0]
         m_bl = re.findall(r"(CP-10|PC-60|TC-5)", t)[0]
-        per_cycle[m_lc] = float(re.search(r"Supply gas per dump cycle ([0-9.]+) scf", t).group(1))
-        bleed_rate[m_bl] = float(re.search(r"Steady-state bleed ([0-9.]+) scf/h", t).group(1))
+        per_cycle[m_lc] = float(re.search(r"(?:per dump cycle|per valve trip) ([0-9.]+) scf\b", t).group(1))
+        bleed_rate[m_bl] = float(re.search(r"(?:steady state|relay bleed|Steady bleed nil at rest) ([0-9.]+) scf/h", t).group(1))
         assert lc is not None or m_lc
     wb = openpyxl.load_workbook(p("reg"), read_only=True)
     pads = {r[0]: {"lsd": r[1], "area": r[2]} for r in list(wb["Pads"].iter_rows(values_only=True))[1:]}

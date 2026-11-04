@@ -53,8 +53,10 @@ def write(fig_path, out_path):
     L.append("3. Divided each flowing well's 2026 condensate and water in daily_well_volumes_2026.csv by its separator's band.")
     L.append("4. For each plunger well, shared each production day's liquid over that day's arrivals in "
              "plunger_cycles_2026.csv (each cycle once by controller serial and cycle count, the moved controllers placed "
-             "on their wells by deep_basin_work_orders_2026.csv) and replayed the level arrival by arrival: a slug at or "
-             "above the band is one dump, smaller slugs accumulate until the band fills.")
+             "on their wells by deep_basin_work_orders_2026.csv), each arrival bringing its share to surface with the "
+             "plunger (trellick_PCX-300_plunger_controller_spec.pdf), and ran the controllers' logic from the makers' data "
+             "sheets (open at the upper setting, shut at the lower) arrival by arrival: a slug at or above the band is one "
+             "dump, smaller slugs accumulate until the band fills.")
     L.append("5. Summed each pad's intermittent-vent methane and took the pads above %s t (methane_reduction_plan_2027.docx, "
              "section 3)." % f["line_t"])
     L.append("6. Counted each plunger well's cycles without an arrival as the rise in its controller's cycle count less the "

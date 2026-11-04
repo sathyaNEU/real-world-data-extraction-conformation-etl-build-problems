@@ -13,6 +13,69 @@ def _x(s):
 APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000"),
        ".pptx": ("Microsoft Office PowerPoint", "16.0000")}
 XML_DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+
+
+EXT_NS = ('xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+          'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"')
+
+
+def _texts(xml, tag):
+    """The text of each paragraph-level element in an OOXML part, paragraphs with no text left out."""
+    out = []
+    for p in re.findall(r"<%s:p[ >].*?</%s:p>" % (tag, tag), xml, re.S):
+        t = "".join(re.findall(r"<%s:t(?: [^>]*)?>([^<]*)</%s:t>" % (tag, tag), p))
+        if t.strip():
+            out.append(t)
+    return out
+
+
+def _app_props(ext, items, company, total_time):
+    """docProps/app.xml as Word or PowerPoint writes it on save: the document's own counts, no template thumbnail."""
+    parts = dict(items)
+    if ext == ".docx":
+        texts = _texts(parts["word/document.xml"].decode("utf-8", "ignore"), "w")
+        words = sum(len(t.split()) for t in texts)
+        chars = sum(len(t.replace(" ", "")) for t in texts)
+        chars_sp = sum(len(t) for t in texts)
+        lines = sum(max(1, -(-len(t) // 92)) for t in texts)
+        pages = max(1, -(-lines // 46))
+        body = ("<Template>Larchmere Report.dotx</Template><TotalTime>%d</TotalTime><Pages>%d</Pages><Words>%d</Words>"
+                "<Characters>%d</Characters><Application>Microsoft Office Word</Application><DocSecurity>0</DocSecurity>"
+                "<Lines>%d</Lines><Paragraphs>%d</Paragraphs><ScaleCrop>false</ScaleCrop><Company>%s</Company>"
+                "<LinksUpToDate>false</LinksUpToDate><CharactersWithSpaces>%d</CharactersWithSpaces>"
+                "<SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0000</AppVersion>"
+                % (total_time, pages, words, chars, lines, len(texts), _x(company), chars_sp))
+    else:
+        slides = sorted(n for n in parts if re.fullmatch(r"ppt/slides/slide\d+\.xml", n))
+        texts = [t for n in slides for t in _texts(parts[n].decode("utf-8", "ignore"), "a")]
+        words = sum(len(t.split()) for t in texts)
+        titles = "".join("<vt:lpstr>Slide %d</vt:lpstr>" % (k + 1) for k in range(len(slides)))
+        body = ("<TotalTime>%d</TotalTime><Words>%d</Words><Application>Microsoft Office PowerPoint</Application>"
+                "<PresentationFormat>Widescreen</PresentationFormat><Paragraphs>%d</Paragraphs><Slides>%d</Slides>"
+                "<Notes>0</Notes><HiddenSlides>0</HiddenSlides><MMClips>0</MMClips><ScaleCrop>false</ScaleCrop>"
+                "<HeadingPairs><vt:vector size=\"4\" baseType=\"variant\"><vt:variant><vt:lpstr>Theme</vt:lpstr></vt:variant>"
+                "<vt:variant><vt:i4>1</vt:i4></vt:variant><vt:variant><vt:lpstr>Slide Titles</vt:lpstr></vt:variant>"
+                "<vt:variant><vt:i4>%d</vt:i4></vt:variant></vt:vector></HeadingPairs><TitlesOfParts>"
+                "<vt:vector size=\"%d\" baseType=\"lpstr\"><vt:lpstr>Office Theme</vt:lpstr>%s</vt:vector></TitlesOfParts>"
+                "<Company>%s</Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc>"
+                "<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0000</AppVersion>"
+                % (total_time, words, len(texts), len(slides), len(slides), len(slides) + 1, titles, _x(company)))
+    return XML_DECL + ("<Properties %s>%s</Properties>" % (EXT_NS, body)).encode()
+
+
+def _drop_thumbnail(items):
+    """The writing library's template thumbnail goes, with its relationship and content type."""
+    out = []
+    for name, data in items:
+        if name == "docProps/thumbnail.jpeg":
+            continue
+        if name == "_rels/.rels":
+            data = re.sub(rb'<Relationship [^>]*Target="docProps/thumbnail.jpeg"/>', b"", data)
+        if name == "[Content_Types].xml" and not any(n.endswith((".jpeg", ".jpg")) and n != "docProps/thumbnail.jpeg"
+                                                     for n, _ in items):
+            data = data.replace(b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
+        out.append((name, data))
+    return out
 INLINE = re.compile(rb'<c((?: [a-zA-Z:]+="[^"]*")*?) t="inlineStr"((?: [a-zA-Z:]+="[^"]*")*)><is><t>(.*?)</t></is></c>')
 # the part order Excel writes when it saves a workbook
 EXCEL_ORDER = ("[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/_rels/workbook.xml.rels", "xl/worksheets/",
@@ -307,7 +370,8 @@ def excel_dialect(items, key, app_version="16.0300", company=None):
     return [(nm, parts[nm]) for nm in order]
 
 
-def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None):
+def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None, revision=None,
+                    total_time=None):
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
     take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
     stamp Office writes, so two builds of the same content are byte-identical. excel=True also rewrites a
@@ -316,10 +380,14 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
     app_name, app_ver = APP[ext]
+    if ext in (".docx", ".pptx"):
+        items = _drop_thumbnail(items)
     out = []
     for name, data in items:
         if name == "docProps/core.xml":
             t = ("<dc:title>%s</dc:title>" % title) if title else ""
+            if revision:
+                t += "<cp:revision>%d</cp:revision>" % revision
             data = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
                     '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
                     'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
@@ -328,6 +396,8 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
                     '<dcterms:created xsi:type="dcterms:W3CDTF">%s</dcterms:created>'
                     '<dcterms:modified xsi:type="dcterms:W3CDTF">%s</dcterms:modified></cp:coreProperties>'
                     % (t, _x(creator), _x(last_by), created, modified)).encode()
+        elif name == "docProps/app.xml" and ext in (".docx", ".pptx"):
+            data = _app_props(ext, items, company or COMPANY, total_time or 60)
         elif name == "docProps/app.xml":
             data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>" + app_name.encode() + b"</Application>", data)
             data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>" + app_ver.encode() + b"</AppVersion>", data)

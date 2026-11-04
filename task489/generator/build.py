@@ -66,7 +66,8 @@ def build(out, wd=None):
             ("template", W.PEOPLE["lead"], W.PEOPLE["lead"], "2025-11-21T18:05:00Z", "2025-12-04T20:12:00Z", W.ORG),
             ("tanks", "Anthony Keller", "Anthony Keller", "2026-05-11T15:30:00Z", "2026-10-02T21:48:00Z", W.ORG),
             ("plan", W.PEOPLE["lead"], W.PEOPLE["lead"], "2026-11-30T17:10:00Z", "2027-01-12T16:55:00Z", W.ORG)):
-        PP.normalize_ooxml(f(k), who, last, c, m, excel=f(k).endswith(".xlsx"), company=co)
+        PP.normalize_ooxml(f(k), who, last, c, m, excel=f(k).endswith(".xlsx"), company=co,
+                           revision=9 if k == "plan" else None, total_time=212 if k == "plan" else None)
     for k, c in (("standard", b"D:20251204142917-07'00'"), ("survey", b"D:20260708101342-06'00'"),
                  ("sheet_corrigan", b"D:20230314091158-06'00'"), ("sheet_aldous", b"D:20220930153321-06'00'"),
                  ("sheet_brannick", b"D:20210602112644-06'00'"), ("sheet_trellick", b"D:20240219083507-07'00'")):

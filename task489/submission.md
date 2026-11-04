@@ -19,7 +19,7 @@ Each pad's intermittent-vent controllers vented more than the plan's 0.5 t of me
 1. Took each separator's level band from its bore and controller span in deep_basin_equipment_register.xlsx (Vessels) and each level controller's supply gas per dump cycle from its maker's data sheet (MRS-03 4.2), at 0.02826 m3 per scf, the pad's 2026 methane fraction in gas_analyses_2025_2026.csv and 0.678 kg per m3 (MRS-03 3.3, 4.4).
 2. Counted the five automated separators' dump cycles from scada_dump_counters_2026.csv over the production days (MRS-03 3.2, 4.2), each counter wrapping at 65,536.
 3. Divided each flowing well's 2026 condensate and water in daily_well_volumes_2026.csv by its separator's band.
-4. For each plunger well, shared each production day's liquid over that day's arrivals in plunger_cycles_2026.csv (each cycle once by controller serial and cycle count, the moved controllers placed on their wells by deep_basin_work_orders_2026.csv) and replayed the level arrival by arrival: a slug at or above the band is one dump, smaller slugs accumulate until the band fills.
+4. For each plunger well, shared each production day's liquid over that day's arrivals in plunger_cycles_2026.csv (each cycle once by controller serial and cycle count, the moved controllers placed on their wells by deep_basin_work_orders_2026.csv), each arrival bringing its share to surface with the plunger (trellick_PCX-300_plunger_controller_spec.pdf), and ran the controllers' logic from the makers' data sheets (open at the upper setting, shut at the lower) arrival by arrival: a slug at or above the band is one dump, smaller slugs accumulate until the band fills.
 5. Summed each pad's intermittent-vent methane and took the pads above 0.5 t (methane_reduction_plan_2027.docx, section 3).
 6. Counted each plunger well's cycles without an arrival as the rise in its controller's cycle count less the rise in its arrival count over the production days (the PCX-300 counters), on the well each unit was on.
 7. Gave each sales gas pressure controller the survey's reading where sheldrake_pneumatic_survey_2026.pdf measured that device (found by pad, model and survey date, since the re-piped pads' tags were renumbered after the survey), its maker's rating otherwise, over its own stint as the work orders and the register date it and for the hours its supply was on (MRS-03 4.3), and summed by maker and area.
@@ -30,7 +30,7 @@ Each pad's intermittent-vent controllers vented more than the plan's 0.5 t of me
 ### larchmere_source_inventory_2026.xlsx
 
 1. Methane each intermittent-vent controller vented in 2026, kilograms:
-   - Elmworth 10-11 LC-101101: 662 kg
+   - Elmworth 10-11 LC-101101: 661 kg
    - Elmworth 10-11 LC-101102: 52 kg
    - Elmworth 10-32 LC-103201: 56 kg
    - Elmworth 10-32 LC-103202: 44 kg
@@ -64,7 +64,7 @@ Each pad's intermittent-vent controllers vented more than the plan's 0.5 t of me
    - Kakwa 13-12 LC-131201: 101 kg
    - Kakwa 13-12 LC-131202: 75 kg
    - Kakwa 13-12 LC-131203: 122 kg
-   - Kakwa 13-22 LC-132201: 303 kg
+   - Kakwa 13-22 LC-132201: 302 kg
    - Kakwa 13-22 LC-132202: 5 kg
    - Kakwa 13-22 LC-132203: 6 kg
    - Kakwa 14-16 LC-141601: 404 kg
@@ -136,9 +136,9 @@ Each pad's intermittent-vent controllers vented more than the plan's 0.5 t of me
    - LRL KAKWA 8-35 #1: 331 cycles
 4. The sales gas pressure controllers' 2026 methane for each maker in each area, kilograms:
    - Aldous Valve and Instrument, Elmworth: 518 kg
-   - Aldous Valve and Instrument, Kakwa: 256 kg
-   - Corrigan Controls, Elmworth: 380 kg
-   - Corrigan Controls, Kakwa: 427 kg
+   - Aldous Valve and Instrument, Kakwa: 259 kg
+   - Corrigan Controls, Elmworth: 379 kg
+   - Corrigan Controls, Kakwa: 434 kg
 
 ### controller_conversion_2027.pptx
 
