@@ -55,6 +55,7 @@ def run(tgt, figpath):
     gauge = [n for n in names if "gauging" in n][0]
     points = [n for n in names if "monitoring_points" in n][0]
     purge = [n for n in names if n.startswith("fieldlog_purge")][0]
+    calib = [n for n in names if n.startswith("fieldlog_calibration")][0]
     sap = [n for n in names if "SAP" in n][0]
     fsp = [n for n in names if "FS-03" in n][0]
 
@@ -135,26 +136,59 @@ def run(tgt, figpath):
                                             for k in lim)]
     ok("default_path_answer", default_call == F["default_path_answer"], default_call)
 
-    # ---- the field asks, from the sampler's entries
+    # ---- the field asks, from the sampler's entries and the day's calibration of the meter that took them
+    cal = list(csv.DictReader(open(os.path.join(tgt, calib), encoding="utf-8")))
+    reports_at_25 = {}
+    for r in cal:
+        if r["sensor"] != "Conductivity":
+            continue
+        T, exp = float(r["std_temperature_c"]), float(r["expected_value"])
+        at_25 = r["reading_units"] == "uS/cm at 25 C"
+        # positive control on every conductivity entry: the value it should read is the standard's 1413 at 25 C, or,
+        # reported at the standard's own temperature, 1413 times 1 + 0.0191 (T - 25)
+        ok("calib.expected_value_matches_units.%s.%s.%s" % (r["cal_date"], r["meter_sn"], r["check_type"][:3]),
+           abs(exp - (1413 if at_25 else 1413 * (1 + 0.0191 * (T - 25)))) <= 0.6, (r, exp))
+        key = (r["cal_date"], r["meter_sn"])
+        if key in reports_at_25:
+            ok("calib.end_of_day_agrees.%s.%s" % key, reports_at_25[key] == at_25)
+        reports_at_25[key] = at_25
+    # the chain of custody's collection minute for each October primary, local time in Wisconsin, to UTC: daylight
+    # time runs from the second Sunday of March to the first Sunday of November
+    def central_to_utc(s):
+        t = dt.datetime.strptime(s, "%Y-%m-%d %H:%M")
+        y = t.year
+        mar = dt.datetime(y, 3, 8) + dt.timedelta(days=(6 - dt.date(y, 3, 8).weekday()) % 7, hours=2)
+        nov = dt.datetime(y, 11, 1) + dt.timedelta(days=(6 - dt.date(y, 11, 1).weekday()) % 7, hours=2)
+        return t + dt.timedelta(hours=5 if mar <= t < nov else 6)
     rows = list(csv.DictReader(open(os.path.join(tgt, purge), encoding="utf-8")))
     oct_days = sorted({r["visit_date"] for r in rows if r["visit_date"].startswith("2026-10")})
     ok("purge.three_october_days", len(oct_days) == 3)
+    ok("purge.no_sample_marker", not any(r["remark"] not in ("", "decon rinse", "bottles filled, pump off") for r in rows))
+    coc = {}
+    for r in csv.DictReader(open(os.path.join(tgt, edd_b), encoding="utf-8"), delimiter="\t"):
+        if r["sample_type_code"] == "N" and r["sys_loc_code"].startswith("MW") and r["sample_date"][:10] in oct_days:
+            coc.setdefault(loc(r["sys_loc_code"]), set()).add(central_to_utc(r["sample_date"]))
+    ok("coc.one_time_per_well", all(len(v) == 1 for v in coc.values()) and len(coc) == 11, coc)
+    coc = {w: min(v) for w, v in coc.items()}
     spc, vol = {}, {}
     for d in oct_days:
         rs = sorted((r for r in rows if r["visit_date"] == d), key=lambda r: r["entry_utc"])
-        meter, stop, start = "", 0.0, {}
+        meter, stop, start, at = "", 0.0, {}, {}
         for r in rs:
             if r["remark"].startswith("decon") or r["remark"].startswith("bottles"):
                 stop = float(r["controller_l"])
                 continue
             meter = r["meter_sn"] or meter
             start.setdefault(r["location"], stop)
-            if r["remark"] == "sample collected":
-                c = float(r["spc_us_cm"])
-                if meter == "R-4471":
-                    c /= 1 + 0.0191 * (float(r["temperature_c"]) - 25)
-                spc[r["location"]] = c
-                vol[r["location"]] = (float(r["controller_l"]) - start[r["location"]]) / 3.785411784
+            if dt.datetime.strptime(r["entry_utc"], "%Y-%m-%dT%H:%M:%SZ") <= coc[r["location"]]:
+                at[r["location"]] = (r, meter)
+        for w, (r, m) in at.items():
+            c = float(r["spc_us_cm"])
+            ok("calib.meter_calibrated_that_day.%s.%s" % (d, m), (d, m) in reports_at_25)
+            if not reports_at_25[(d, m)]:
+                c /= 1 + 0.0191 * (float(r["temperature_c"]) - 25)
+            spc[w] = c
+            vol[w] = (float(r["controller_l"]) - start[w]) / 3.785411784
     ok("asks.eleven_wells", len(spc) == 11 and len(vol) == 11)
     for w in spc:
         ok("ask.spc.%s" % w, int(round(spc[w])) == F["spc_25c"][w], (w, spc[w], F["spc_25c"][w]))

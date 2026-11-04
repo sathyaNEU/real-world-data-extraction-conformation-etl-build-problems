@@ -7,6 +7,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
+import pack as PK
 import postprocess as PP
 import world as W
 
@@ -122,8 +123,9 @@ def workbook(path, g):
     wb2.freeze_panes = "A2"
 
     wb3 = wb.create_sheet("Field")
-    hdr = ["Well", "Meter", "Conductance as logged (uS/cm)", "Temperature (C)", "Specific conductance at 25 C (uS/cm)",
-           "Counter at purge start (L)", "Counter at sample (L)", "Purge volume (gal)"]
+    hdr = ["Well", "Collected (local)", "Set at sampling (UTC)", "Meter", "Meter reports",
+           "Conductance as logged (uS/cm)", "Temperature (C)", "Specific conductance at 25 C (uS/cm)",
+           "Counter at purge start (L)", "Counter at sample (L)", "Purge volume (US gal)"]
     for j, h in enumerate(hdr):
         c = wb3.cell(row=1, column=1 + j, value=h)
         c.font = bold
@@ -132,16 +134,22 @@ def workbook(path, g):
     order = [w for d in W.SAMPLING_ORDER for w in d]
     for i, w in enumerate(order):
         d = g["field_detail"][w]
-        row = [w, d["meter"], d["recorded"], d["temp"], int(round(g["spc"][w])), round(d["start_l"], 2),
-               round(d["end_l"], 2), round(g["purge"][w], 1)]
+        local = d["coc_utc"] - dt.timedelta(hours=5)
+        row = [w, local.strftime("%m/%d %H:%M"), d["set_utc"].strftime("%m/%d %H:%M:%S"), d["meter"],
+               "at 25 C" if d["compensated"] else "at sample temperature", d["recorded"], d["temp"],
+               int(round(g["spc"][w])), round(d["start_l"], 2), round(d["end_l"], 2), round(g["purge"][w], 1)]
         for j, v in enumerate(row):
             wb3.cell(row=2 + i, column=1 + j, value=v)
-        wb3.cell(row=2 + i, column=8).number_format = "0.0"
-    for j, wdt in enumerate((8, 9, 16, 13, 20, 15, 14, 12)):
+        wb3.cell(row=2 + i, column=11).number_format = "0.0"
+    for j, wdt in enumerate((8, 12, 15, 9, 19, 16, 13, 20, 15, 14, 12)):
         wb3.column_dimensions[get_column_letter(1 + j)].width = wdt
     wb3.cell(row=3 + len(order), column=1,
-             value="R-4471 logged conductivity uncorrected; specific conductance corrected to 25 C at 1.91 per cent per "
-                   "degree (FS-03 section 4).")
+             value="Set at sampling: the field app's last set before the collection minute on the chain of custody "
+                   "(laboratory deliverable, local daylight time, five hours behind the app's UTC); the app logs on "
+                   "while the bottles fill (FS-03 section 3). Meter reports: the day's conductivity calibration in %s; "
+                   "readings at sample temperature corrected to 25 C at 1.91 per cent per degree (FS-03 section 4); %s "
+                   "carry the day's serial, recorded only on change (FS-03 section 3)." % (PK.FILES["calib"], " and ".join(
+                       w for w in order if not g["field_detail"][w]["meter_logged"])))
     wb.save(path)
     PP.normalize_ooxml(path, W.PEOPLE["hydrogeologist"], W.PEOPLE["hydrogeologist"], "2026-11-03T15:20:00Z",
                        "2026-11-04T17:05:00Z", title="Detection monitoring evaluation, October 2026", excel=True,

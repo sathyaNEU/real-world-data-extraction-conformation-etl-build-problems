@@ -10,7 +10,8 @@ from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.pdfgen import canvas as rl_canvas
+from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import world as W
 
@@ -20,6 +21,8 @@ BODY = ParagraphStyle("b", parent=SS["BodyText"], fontName="Times-Roman", fontSi
 H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Times-Bold", fontSize=14, spaceAfter=6, leading=17)
 H2 = ParagraphStyle("h2", parent=SS["Heading2"], fontName="Times-Bold", fontSize=11, spaceAfter=3, spaceBefore=8)
 SMALL = ParagraphStyle("s", parent=BODY, fontSize=9, leading=11.5)
+LH = ParagraphStyle("lh", parent=BODY, fontName="Times-Bold", fontSize=10, leading=12, alignment=0, spaceAfter=4,
+                    textColor=colors.Color(0.28, 0.28, 0.28))
 CELL = ParagraphStyle("c", fontName="Times-Roman", fontSize=9, leading=11)
 CELLB = ParagraphStyle("cb", fontName="Times-Bold", fontSize=9, leading=11)
 TBL = TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.Color(0.4, 0.4, 0.4)),
@@ -40,13 +43,82 @@ def _doc(path, title):
                              leftMargin=1.0 * inch, rightMargin=1.0 * inch, topMargin=0.9 * inch, bottomMargin=0.9 * inch)
 
 
+class _Furnished(rl_canvas.Canvas):
+    """a running header and a footer with 'Page n of N' on every page, drawn once the page count is known"""
+    HEAD = ("", "")
+    FOOT = ""
+
+    def __init__(self, *a, **k):
+        rl_canvas.Canvas.__init__(self, *a, **k)
+        self._pages = []
+
+    def showPage(self):
+        self._pages.append(dict(self.__dict__))
+        self._startPage()
+
+    def save(self):
+        n = len(self._pages)
+        for state in self._pages:
+            self.__dict__.update(state)
+            self.saveState()
+            self.setFont("Times-Roman", 8)
+            self.setFillColor(colors.Color(0.3, 0.3, 0.3))
+            w, h = letter
+            self.drawString(1.0 * inch, h - 0.55 * inch, self.HEAD[0])
+            self.drawRightString(w - 1.0 * inch, h - 0.55 * inch, self.HEAD[1])
+            self.setStrokeColor(colors.Color(0.55, 0.55, 0.55))
+            self.setLineWidth(0.4)
+            self.line(1.0 * inch, h - 0.6 * inch, w - 1.0 * inch, h - 0.6 * inch)
+            self.line(1.0 * inch, 0.68 * inch, w - 1.0 * inch, 0.68 * inch)
+            self.drawString(1.0 * inch, 0.52 * inch, self.FOOT)
+            self.drawRightString(w - 1.0 * inch, 0.52 * inch, "Page %d of %d" % (self._pageNumber, n))
+            self.restoreState()
+            rl_canvas.Canvas.showPage(self)
+        rl_canvas.Canvas.save(self)
+
+
+def _furnished(head, foot):
+    return type("Furnished", (_Furnished,), {"HEAD": head, "FOOT": foot})
+
+
+def _sig(name):
+    """an electronic signature as the firm's document system prints it: /s/ and the signer's initial and surname"""
+    first, last = name.split(" ", 1)
+    return "/s/ %s. %s" % (first[0], last)
+
+
+def _signatures(rows):
+    """the approval block: role, name and title, signature, date"""
+    data = [[Paragraph(h, CELLB) for h in ("", "Name and title", "Signature", "Date")]]
+    data += [[Paragraph(c, CELL) for c in r] for r in rows]
+    t = Table(data, colWidths=[w * inch for w in (1.35, 3.0, 1.05, 1.1)])
+    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.Color(0.4, 0.4, 0.4)),
+                           ("LINEBELOW", (2, 1), (2, -1), 0.4, colors.Color(0.55, 0.55, 0.55)),
+                           ("VALIGN", (0, 0), (-1, -1), "BOTTOM"),
+                           ("TOPPADDING", (0, 0), (-1, -1), 5), ("BOTTOMPADDING", (0, 0), (-1, -1), 3)]))
+    return t
+
+
+def _control(rows):
+    """the document control block: label and value pairs in a ruled two-column table"""
+    t = Table([[Paragraph(a, CELLB), Paragraph(b, CELL)] for a, b in rows], colWidths=[1.6 * inch, 4.9 * inch])
+    t.setStyle(TBL)
+    return t
+
+
 def sap(path):
     doc = _doc(path, "Statistical Analysis Plan, Marten Creek Landfill")
-    f = [Paragraph("Statistical Analysis Plan for Groundwater Detection Monitoring", H1),
+    P = W.PEOPLE
+    f = [Paragraph("Kettle Prairie Solid Waste District", LH),
+         Paragraph("Statistical Analysis Plan for Groundwater Detection Monitoring", H1),
          Paragraph("Marten Creek Landfill (closed), Kettle Prairie Solid Waste District", H2),
-         Paragraph("Revision 2, March 2018. Prepared for the District by Fieldstone Hydrogeology, LLC. Submitted under "
-                   "condition 9 of the post-closure plan approval and approved by the Department on 24 May 2018. "
-                   "Supersedes Revision 1 (December 2016).", SMALL),
+         _control([("Document", "MCL-GW-SAP, Revision 2"),
+                   ("Issued", "16 March 2018"),
+                   ("Prepared by", "Fieldstone Hydrogeology, LLC, for the District"),
+                   ("Submitted under", "Condition 9 of the post-closure plan approval of 11 September 2017"),
+                   ("Approved", "By the Department, 24 May 2018"),
+                   ("Supersedes", "Revision 1, December 2016")]),
+         Spacer(1, 4),
          Paragraph("1. Purpose", H2),
          Paragraph("This plan sets out how the District evaluates the results of each groundwater detection monitoring "
                    "event at the Marten Creek Landfill to decide whether any compliance well shows an increase over "
@@ -88,8 +160,28 @@ def sap(path):
          Paragraph("7. Reporting", H2),
          Paragraph("Each event's evaluation is reported with the event's results: the background results used for each "
                    "indicator parameter, the upper prediction limits, each compliance well's results against them and the "
-                   "wells to be resampled. Results are compared at the precision the laboratory reports.", BODY)]
-    doc.build(f)
+                   "wells to be resampled. Results are compared at the precision the laboratory reports.", BODY),
+         KeepTogether([
+             Paragraph("Revision history", H2),
+             _table(["Rev.", "Date", "Description"], [
+                 ["0", "July 2014", "Issued with the detection monitoring network"],
+                 ["1", "December 2016", "Reissued with the post-closure plan application"],
+                 ["2", "March 2018", "Revised for the post-closure care period; submitted under condition 9 of the "
+                                     "plan approval"]], [0.5, 1.2, 4.8])]),
+         KeepTogether([
+             Paragraph("Approval", H2),
+             _signatures([
+                 ["Prepared", "%s, P.G., Hydrogeologist, Fieldstone Hydrogeology, LLC" % P["hydrogeologist"],
+                  _sig(P["hydrogeologist"]), "16 March 2018"],
+                 ["Reviewed", "%s, P.G., Principal Hydrogeologist, Fieldstone Hydrogeology, LLC" % P["principal"],
+                  _sig(P["principal"]), "19 March 2018"],
+                 ["Accepted", "%s, Environmental Programs Manager, for the District" % P["manager"],
+                  _sig(P["manager"]), "21 March 2018"]]),
+             Spacer(1, 6),
+             Paragraph("Distribution: the Department, Waste and Materials Management Program; District file MCL-GW.",
+                       SMALL)])]
+    doc.build(f, canvasmaker=_furnished(("Kettle Prairie Solid Waste District  ·  Marten Creek Landfill",
+                                         "Statistical Analysis Plan, Revision 2"), "MCL-GW-SAP Rev. 2, March 2018"))
 
 
 def approval(path):
@@ -123,9 +215,15 @@ def approval(path):
 
 def field_procedure(path):
     doc = _doc(path, "FS-03 Groundwater sampling, low-flow")
-    f = [Paragraph("FS-03 Groundwater Sampling by Low-Flow Purging", H1),
-         Paragraph("Fieldstone Hydrogeology, LLC, field standard operating procedure. Revision 4, February 2021. Applies "
-                   "to the firm's monitoring programs, including the Marten Creek Landfill.", SMALL),
+    P = W.PEOPLE
+    f = [Paragraph("Fieldstone Hydrogeology, LLC", LH),
+         Paragraph("FS-03 Groundwater Sampling by Low-Flow Purging", H1),
+         _control([("Procedure", "FS-03, field standard operating procedure"),
+                   ("Revision", "4, effective 15 February 2021"),
+                   ("Supersedes", "Revision 3, June 2018"),
+                   ("Applies to", "The firm's monitoring programs, including the Marten Creek Landfill"),
+                   ("Owner", "Quality Assurance")]),
+         Spacer(1, 4),
          Paragraph("1. Water levels", H2),
          Paragraph("Measure the depth to water at every well and piezometer in the program from the surveyed reference "
                    "point on the top of the casing, to the nearest 0.01 foot, before any well is purged on the first "
@@ -151,8 +249,22 @@ def field_procedure(path):
          Paragraph("5. Sample handling", H2),
          Paragraph("Fill the containers in the order volatile organics, semivolatile organics, metals (field filtered at "
                    "0.45 micrometres for dissolved metals), then the remaining parameters; keep samples at 4 degrees "
-                   "Celsius and ship them to the laboratory under chain of custody the day they are collected.", BODY)]
-    doc.build(f)
+                   "Celsius and ship them to the laboratory under chain of custody the day they are collected.", BODY),
+         KeepTogether([
+             Paragraph("Revision history", H2),
+             _table(["Rev.", "Date", "Description"], [
+                 ["3", "June 2018", "Periodic review"],
+                 ["4", "February 2021", "Periodic review; reissued on the firm's procedure template"]], [0.5, 1.2, 4.8]),
+             Paragraph("Approval", H2),
+             _signatures([
+                 ["Prepared", "%s, P.G., Hydrogeologist" % P["hydrogeologist"], _sig(P["hydrogeologist"]),
+                  "2 February 2021"],
+                 ["Approved", "%s, Quality Assurance Manager" % P["qa_manager"], _sig(P["qa_manager"]),
+                  "5 February 2021"],
+                 ["Approved", "%s, P.G., Principal Hydrogeologist" % P["principal"], _sig(P["principal"]),
+                  "8 February 2021"]])])]
+    doc.build(f, canvasmaker=_furnished(("Fieldstone Hydrogeology, LLC", "Field Standard Operating Procedure FS-03"),
+                                        "FS-03 Rev. 4, effective 15 February 2021. Uncontrolled when printed."))
 
 
 def build(tgt, files):

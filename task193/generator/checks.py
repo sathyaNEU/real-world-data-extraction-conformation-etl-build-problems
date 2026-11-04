@@ -168,6 +168,7 @@ def run(tgt, S, g, info, figs):
     ok("SF12.boundary_point_choice_inert", boundary_alternatives(g) == 0)
 
     # ------------------------------------------------ the semantic forks on the main call
+    text_all = pack_text(tgt)
     # SF1 background population (every unaffected routine sample): the readings that drop the whole well, the whole
     # event or the next event are other sets of samples; each is a member of the route table, its set recorded
     ok("SF1.background_n", g["golden_n"] == {"chloride": 34, "sodium": 34, "boron": 33}, g["golden_n"])
@@ -199,22 +200,133 @@ def run(tgt, S, g, info, figs):
     # SF16 any indicator over its limit sends the well: MW-7 and MW-9 each exceed on one indicator
     ok("SF16.one_indicator_suffices", sum(g["exceed"][("MW-7", k)] for k in W.INDICATORS) == 1
        and sum(g["exceed"][("MW-9", k)] for k in W.INDICATORS) == 1)
+    # SF17 to SF20, the head-conditioned family on the graded limits and counts. Every member files the set; the ones
+    # that drop more than the reversed samples print other limits and counts, and each extra sample they drop is one
+    # of groundwater the landfill had not affected, which SAP 4 keeps ("every routine sample of that groundwater"):
+    # the well's head stood above its boundary piezometer's by at least 0.10 ft on water levels read to 0.01 ft
+    # (FS-03 1), and at MW-1 and MW-2 the sample sits below every reversed sample of its well on all three indicators
+    ok("SF17.sap_files_every_sample_of_unaffected_groundwater",
+       "every routine sample of that groundwater collected at the background wells" in text_all)
+    lowest_reversed = {(w, k): min(v for (ww, e, kk), v in g["bg"].items() if ww == w and kk == k and g["rev"][(w, e)])
+                       for w in ("MW-1", "MW-2") for k in W.INDICATORS}
+    for sf, name, dropped in variant_drops(g):
+        for k in W.INDICATORS:
+            ok("%s.drop_set_reproduces_the_route.%s.%s" % (sf, name.split()[0], k),
+               g["golden_n"][k] - sum(1 for (w, e) in dropped if (w, e, k) in g["bg"]) == g["counts"][name][k],
+               (name, k, len(dropped), g["counts"][name][k]))
+        ok("%s.prints_other_graded_figures.%s" % (sf, name), any(s3(lim[name][k]) != s3(G[k]) for k in W.INDICATORS)
+           or g["counts"][name] != g["golden_n"], name)
+        ok("%s.drops_only_unaffected_samples_by_head.%s" % (sf, name),
+           all(g["head_diff"][s] >= 0.10 for s in dropped), [(s, g["head_diff"][s]) for s in dropped])
+        ok("%s.drops_only_unaffected_samples_by_chemistry.%s" % (sf, name),
+           all(g["bg"][(w, e, k)] < lowest_reversed[(w, k)] for (w, e) in dropped if w != "MW-3"
+               for k in W.INDICATORS if (w, e, k) in g["bg"]), name)
+    ok("SF19.no_head_relation_within_a_tolerance_of_zero",
+       min(g["head_diff"][(w, e)] for w in W.BACKGROUND for e in W.BG_EVENTS if not g["rev"][(w, e)]) >= 0.10
+       and max(g["head_diff"][(w, e)] for w in W.BACKGROUND for e in W.BG_EVENTS if g["rev"][(w, e)]) <= -0.15)
+    ok("SF20.rosner_after_heads_prints_the_golden_figures",
+       all(abs(lim["R3r heads then Rosner"][k] - G[k]) < 1e-12 for k in W.INDICATORS)
+       and g["counts"]["R3r heads then Rosner"] == g["golden_n"])
 
     # ------------------------------------------------ R2: every mess item neutral on the call
     ok("R2.lab_qc_rows_excluded_by_type", call_with(tgt, g, keep_lab_qc=True) == g["resample"])
     ok("R2.mw5_history_inert", g["exceed"][("MW-5R", "chloride")] is False)
     ok("R2.datum_inert", alt == g["rev"])
 
-    # ------------------------------------------------ the asks: devices outside the call's rows, cracker misses
+    # ------------------------------------------------ the asks: devices outside the call's rows, the ladder's stops
     import ceiling as CE
     sheet = CE.measure(tgt, g)
-    ok("asks.cracker_misses_spc", sheet["A1"]["cracker"] < len(g["spc"]), sheet["A1"])
+    n_spc = len(g["spc"])
+    st = sheet["A1"]["stops"]
+    # A1 is a reconstruction across two systems: the set the sample was collected immediately after, found from the
+    # chain of custody's local minute in the laboratory's deliverable against the field app's UTC; the meter carried
+    # across the unpaired sets; the meter's reporting on that day's calibration; the conversion where it reports at
+    # the sample's temperature
+    handtyped = [w for w in g["spc"] if g["field_detail"][w]["sets_after_sample"] == 0]
+    ok("asks.spc_sample_set_carried_and_calibrated_is_golden", st["sample_set_carried"] == n_spc, st)
+    ok("asks.spc_sample_set_as_logged_misses_the_uncompensated_meter_wells", st["sample_set_as_logged"] <= n_spc - 6, st)
+    ok("asks.spc_sample_set_own_serial_misses_the_unpaired_sets",
+       st["sample_set_own_serial"] == n_spc - len(W.METER_UNPAIRED), st)
+    ok("asks.spc_last_set_misses_every_logged_visit", st["last_set_carried"] == len(handtyped), (st, handtyped))
+    ok("asks.handtyped_visits_are_the_unpaired_ones", sorted(handtyped) == sorted(W.METER_UNPAIRED), handtyped)
+    ok("asks.cracker_misses_spc", sheet["A1"]["cracker"] < n_spc, sheet["A1"])
     ok("asks.cracker_misses_purge", sheet["A2"]["cracker"] < len(g["purge"]), sheet["A2"])
-    ok("asks.pair_ceiling_under_60", sheet["pair"] <= 60.0, sheet["pair"])
-    ok("asks.mirror_leakage_under_50", sheet["mirror_leakage"] < 50.0, sheet["mirror_leakage"])
-    ok("asks.spc_device_moves_rental_wells", sum(1 for w in g["spc"] if abs(g["field_detail"][w]["recorded"] - g["spc"][w]) > 50) >= 6)
     ok("asks.purge_device_moves_every_well", sheet["A2"]["cracker"] == 0, sheet["A2"])
-    ok("asks.field_file_not_read_by_call", PK.FILES["purge"] not in call_files())
+    ok("asks.purge_end_is_the_sample_set", sheet["A2"]["stops"]["sample_set_pump_stop"] == len(g["purge"]), sheet["A2"])
+    ok("asks.pair_ceiling_under_60", sheet["pair"] <= 60.0, sheet["pair"])
+    ok("asks.mirror_leakage_under_two_fifths", sheet["mirror_leakage"] < 40.0, sheet["mirror_leakage"])
+    ok("asks.spc_device_moves_rental_wells", sum(1 for w in g["spc"] if abs(g["field_detail"][w]["recorded"] - g["spc"][w]) > 50) >= 6)
+    ok("asks.field_files_not_read_by_call", PK.FILES["purge"] not in call_files() and PK.FILES["calib"] not in call_files())
+    # the sample set is fixed by the collection minute with room on both sides under any minute convention: the set
+    # sits at least 30 s before the chain of custody's minute begins, the next set at least 120 s after it
+    rows_p = [dict(r, t=dt.datetime.strptime(r["entry_utc"], "%Y-%m-%dT%H:%M:%SZ"))
+              for r in csv.DictReader(open(os.path.join(tgt, PK.FILES["purge"]), encoding="utf-8"))]
+    ok("asks.purge_export_marks_no_sample", not any(r["remark"] not in ("", "decon rinse", "bottles filled, pump off")
+                                                   for r in rows_p))
+    for w, d in g["field_detail"].items():
+        mine = [r for r in rows_p if r["location"] == w and r["visit_date"].startswith("2026-10")]
+        nxt = [r["t"] for r in mine if r["remark"] == "" and r["t"] > d["set_utc"]]
+        ok("asks.coc_after_sample_set.%s" % w, (d["coc_utc"] - d["set_utc"]).total_seconds() >= 30, (w, d))
+        ok("asks.next_set_after_coc.%s" % w, not nxt or (min(nxt) - d["coc_utc"]).total_seconds() >= 120, (w, nxt))
+        bottles = [r["t"] for r in mine if r["remark"] == "bottles filled, pump off"]
+        first = min(r["t"] for r in mine)
+        # only daylight time joins the two systems: an hour later every sample would follow its pump's stop, and the
+        # chain of custody read as UTC would put every sample before its visit began
+        ok("asks.only_daylight_time_fits.%s" % w, d["coc_utc"] + dt.timedelta(hours=1) > max(bottles)
+           and d["coc_utc"] - dt.timedelta(hours=5) < first, w)
+        # SF21: the counter carried from the sample's set to the custody minute (at the set's logged flow, at the rate
+        # of the last interval, or on the line to the next counter) prints the same tenth of a gallon as the set's own
+        sets = sorted([r for r in mine if r["remark"] == ""], key=lambda r: r["t"])
+        k = [i for i, r in enumerate(sets) if r["t"] == d["set_utc"]][0]
+        s_, p_ = sets[k], sets[k - 1]
+        after = sorted([r for r in mine if r["t"] > s_["t"]], key=lambda r: r["t"])[0]
+        lag = (d["coc_utc"] - s_["t"]).total_seconds() / 60.0
+        rates = {"logged_flow": float(s_["flow_ml_min"]) / 1000.0,
+                 "last_interval": (float(s_["controller_l"]) - float(p_["controller_l"])) / ((s_["t"] - p_["t"]).total_seconds() / 60.0),
+                 "line_to_next": (float(after["controller_l"]) - float(s_["controller_l"])) / ((after["t"] - s_["t"]).total_seconds() / 60.0)}
+        fig = round(g["purge"][w], 1)
+        for name, rate in rates.items():
+            carried = g["purge"][w] + rate * lag / W.L_PER_GAL
+            ok("SF21.carried_to_custody_minute_same_figure.%s.%s" % (w, name),
+               round(carried, 1) == fig and fig + 0.05 - carried >= 0.004, (w, name, g["purge"][w], carried))
+    # SF22: the gallon is the US gallon, named in the asking sentence; the counter logs litres
+    prompt_text = open(os.path.join(os.path.dirname(tgt), "prompt.txt"), encoding="utf-8").read()
+    ok("SF22.prompt_names_the_us_gallon", "US gallons purged before its sample" in prompt_text)
+    ok("SF22.golden_uses_the_us_gallon", abs(W.L_PER_GAL - 3.785411784) < 1e-12)
+    ok("SF22.counter_logs_litres", "controller_l" in rows_p[0])
+    # FS-03 3's stabilization criteria are met at no point of any 2026 visit, so the criteria name no competing set:
+    # the set a sample's readings are reported from is the one it was collected immediately after
+    ok("asks.no_visit_meets_the_stabilization_criteria", not stable_triples(rows_p), stable_triples(rows_p)[:5])
+    # the calibration entries: every sonde-day of both events calibrated in the morning and checked at the end of the
+    # day by the day's sampler, every standard of every sensor entered, the conductivity reporting in the units the
+    # app prints and in the value the standard should read, agreeing morning and evening; no free text
+    cal = list(csv.DictReader(open(os.path.join(tgt, PK.FILES["calib"]), encoding="utf-8")))
+    ok("calib.no_free_text_column", not any(c in ("remark", "notes", "comment", "comments") for c in cal[0]))
+    ok("calib.header", list(cal[0].keys()) == PK.CAL_HEAD)
+    ok("calib.no_compensation_column", not any("compens" in c for c in cal[0]))
+    used = {(r["visit_date"], r["meter_sn"]) for r in rows_p if r["meter_sn"]}
+    for d, m in sorted(used):
+        mine = [r for r in cal if r["cal_date"] == d and r["meter_sn"] == m]
+        ok("calib.sonde_day_calibrated.%s.%s" % (d, m),
+           sum(1 for r in mine if r["check_type"] == "calibration") == 8
+           and sum(1 for r in mine if r["check_type"] == "end-of-day check") == 2, (d, m, len(mine)))
+        cond = [r for r in mine if r["sensor"] == "Conductivity"]
+        at25 = {r["reading_units"] == "uS/cm at 25 C" for r in cond}
+        ok("calib.conductivity_reporting_agrees_through_the_day.%s.%s" % (d, m), len(at25) == 1)
+        ok("calib.conductivity_reporting_is_the_meter's.%s.%s" % (d, m), at25 == {W.COND_COMPENSATED[m]}, (d, m, at25))
+        for r in cond:
+            at_25 = r["reading_units"] == "uS/cm at 25 C"
+            want = W.KCL_STD_US_CM if at_25 else W.KCL_STD_US_CM * (1 + W.TEMP_COEF * (float(r["std_temperature_c"]) - 25))
+            ok("calib.conductivity_expected_value.%s.%s.%s" % (d, m, r["check_type"][:3]),
+               abs(float(r["expected_value"]) - want) <= 0.5, r)
+    ok("calib.both_reportings_present", {r["reading_units"] for r in cal if r["sensor"] == "Conductivity"}
+       == {"uS/cm", "uS/cm at 25 C"})
+    ok("calib.rental_tags_share_one_form", re.fullmatch(r"R-\d{4}", W.RENTAL_UNCOMP) and re.fullmatch(r"R-\d{4}", W.RENTAL_OK))
+    ok("calib.serial_carried_on_the_unpaired_sets", all(
+        g["field_detail"][w]["meter"] == W.RENTAL_UNCOMP for w in W.METER_UNPAIRED))
+    days_used = {r["cal_date"] for r in cal}
+    ok("calib.only_sampling_days", days_used == {d.strftime("%Y-%m-%d") for ei in (W.EVAL - 1, W.EVAL)
+                                                 for d in W.EVENTS[ei]["days"]}, days_used)
 
     # ------------------------------------------------ input gates
     files = sorted(os.listdir(tgt))
@@ -228,11 +340,20 @@ def run(tgt, S, g, info, figs):
         ok("gate.distractor_unread.%s" % d, PK.FILES[d] not in call_files() + ask_files())
 
     # ------------------------------------------------ leak words: nothing in the pack names the decisive step
-    text = pack_text(tgt)
+    text = text_all
     for wd in ("reversal", "reversed", "well field", "wellfield", "pumping", "gradient revers",
                "flow direction", "upgradient at the time", "beneath the waste"):
         ok("leak.word_absent.%s" % wd.replace(" ", "_"), wd not in text, wd)
     ok("leak.positive_control_sap_read", "background water quality is the quality of groundwater that the landfill has not affected" in text)
+    # the governing documents carry their genre's furniture (title block, document control, revision history, approval
+    # signatures, running header and page numbers) and the furniture names no well, indicator, meter or data file
+    for key, marks in (("sap", ("mcl-gw-sap", "revision history", "environmental programs manager", "page 1 of")),
+                       ("fieldproc", ("fs-03 rev. 4", "revision history", "quality assurance manager", "page 1 of"))):
+        body = pdf_text(os.path.join(tgt, PK.FILES[key]))
+        ok("docs.furnished.%s" % key, all(m in body for m in marks), (key, [m for m in marks if m not in body]))
+        tail = body[body.index("revision history"):]
+        ok("docs.furniture_names_no_data.%s" % key, not re.search(
+            r"mw-\d|pz-\d|chloride|sodium|boron|r-44\d\d|21c0847|\.csv|\.txt|\.xlsx|conductiv|meter", tail), (key, tail))
 
     # ------------------------------------------------ realism sweep
     plan = info["plan"]
@@ -252,7 +373,50 @@ def call_files():
 
 
 def ask_files():
-    return [PK.FILES[k] for k in ("purge", "fieldproc")]
+    return [PK.FILES[k] for k in ("purge", "calib", "fieldproc")]
+
+
+def stable_triples(rows):
+    """every run of three consecutive reading sets in a visit that agree within FS-03 3's criteria (3 per cent
+    specific conductance, 0.1 pH, 10 per cent dissolved oxygen above 0.5 mg/L, 10 per cent or 1 NTU turbidity)"""
+    def agree(a, b):
+        s1, s2 = float(a["spc_us_cm"]), float(b["spc_us_cm"])
+        d1, d2 = float(a["do_mg_l"]), float(b["do_mg_l"])
+        t1, t2 = float(a["turb_ntu"]), float(b["turb_ntu"])
+        return (abs(s1 - s2) <= 0.03 * max(s1, s2) and abs(float(a["ph_su"]) - float(b["ph_su"])) <= 0.1
+                and (max(d1, d2) <= 0.5 or abs(d1 - d2) <= 0.10 * max(d1, d2))
+                and abs(t1 - t2) <= max(1.0, 0.10 * max(t1, t2)))
+    visits = {}
+    for r in rows:
+        if r["remark"] == "":
+            visits.setdefault((r["visit_date"], r["location"]), []).append(r)
+    out = []
+    for key, rs in visits.items():
+        rs = sorted(rs, key=lambda r: r["t"])
+        for i in range(2, len(rs)):
+            if agree(rs[i - 2], rs[i - 1]) and agree(rs[i - 1], rs[i]):
+                out.append((key, i))
+    return out
+
+
+def s3(x):
+    d = 3 - int(math.floor(math.log10(abs(x)))) - 1
+    return ("%%.%df" % max(d, 0)) % round(x, d)
+
+
+def variant_drops(g):
+    """the samples each head-conditioned family member drops beyond the golden's reversed ones (routes.py's own
+    predicates, restated so the checks do not share the route code's state)"""
+    rev = g["rev"]
+    hd = {(w, e): g["heads"][(w, e)][0] - g["heads"][(W.BOUNDARY[w], e)][0] for (w, e) in rev}
+    kept = sorted({(w, e) for (w, e, k) in g["bg"] if not rev[(w, e)]})
+    revents = {e for (w, e), r in rev.items() if r}
+    nxt = {e + 1 for e in revents}
+    out = [("SF17", "R3e whole reversed events dropped", [s for s in kept if s[1] in revents]),
+           ("SF18", "R3n reversed and following events dropped", [s for s in kept if s[0] != "MW-3" and s[1] in nxt])]
+    for tol in (0.15, 0.25):
+        out.append(("SF19", "R3t heads with a %.2f ft tolerance" % tol, [s for s in kept if hd[s] < tol]))
+    return out
 
 
 def pack_text(tgt):
@@ -271,6 +435,13 @@ def pack_text(tgt):
         else:
             out.append(open(p, encoding="utf-8").read())
     return re.sub(r"\s+", " ", " ".join(out)).lower()
+
+
+def pdf_text(path):
+    import pdfplumber
+    with pdfplumber.open(path) as pdf:
+        t = " ".join((pg.extract_text() or "") for pg in pdf.pages)
+    return re.sub(r"\s+", " ", t).lower()
 
 
 def reclassify_one_datum(tgt):

@@ -21,7 +21,7 @@
 4. Left out those 16 results, water drawn from beneath the waste and so not groundwater the landfill has not affected (SAP section 4), keeping 34, 34 and 33.
 5. Computed SAP section 5's limits from the natural logarithms with t at the 99th percentile: 38.2 mg/L, 20.8 mg/L and 68.3 ug/L.
 6. Compared every compliance well's October 2026 result with the unrounded limits (SAP section 6): MW-6 over on chloride, sodium and boron; MW-7 over on sodium; MW-9 over on boron.
-7. From fieldlog_purge_entries_2026.csv, read each well's reading set marked sample collected, corrected R-4471's logged conductivity to 25 C at 1.91 per cent a degree (FS-03 section 4), and took the purge volume as the controller counter at the sample less the counter when the pump last stopped that day (a decon rinse or bottles filled entry, zero for the day's first well), in gallons of 3.785 litres.
+7. From fieldlog_purge_entries_2026.csv, took for each well the last reading set logged before its collection minute on the chain of custody in ridgeline_edd_MCL_2021-2026.txt (local daylight time, five hours behind the field app's UTC; the app logs on while the bottles fill), with its meter (the day's last recorded serial where the set has none, FS-03 section 3); corrected to 25 C at 1.91 per cent a degree (FS-03 section 4) the sets of a meter that fieldlog_calibration_entries_2026.csv shows reporting in uS/cm rather than uS/cm at 25 C (R-4471); and took the purge volume as the controller counter at that set less the counter when the pump last stopped that day (a decon rinse or bottles filled entry, zero for the day's first well), in US gallons of 3.785 litres.
 8. Resample MW-6, MW-7 and MW-9 within 60 days of their October samples.
 
 ## 4. Deliverable Answers
@@ -54,7 +54,7 @@
    - MW-9: 625
    - MW-10: 682
    - MW-11: 599
-5. Purge volume before the sample, gallons, one decimal:
+5. Purge volume before the sample, US gallons, one decimal:
    - MW-1: 3.5
    - MW-2: 3.0
    - MW-3: 2.5

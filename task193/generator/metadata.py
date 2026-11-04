@@ -14,6 +14,7 @@ COVERS = {
     "approval": "the Department's conditions for the landfill's long-term care, groundwater part",
     "fieldproc": "consultant's low-flow groundwater sampling procedure",
     "purge": "sampler's field entries, April and October 2026 events",
+    "calib": "field instrument calibration and end-of-day check entries, April and October 2026 events",
     "gas": "landfill gas probe monitoring, 2025 and 2026",
     "precip": "daily precipitation at the nearest cooperative weather station",
     "inspect": "quarterly site inspection log, 2024 to 2026",

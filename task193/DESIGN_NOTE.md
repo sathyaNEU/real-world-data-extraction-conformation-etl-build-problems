@@ -17,7 +17,7 @@ pharmacology / safety-signal-detection) are recorded at the foot of this note an
 | Gap / pattern / generators | `population` (which background results belong to the filed population, groundwater the landfill has not affected); pattern `none`; `G3` record against operation decisive (the record says a background well, the water sampled had passed beneath the waste), `G7` (when a background well can physically sample upgradient water), `G12` |
 | Gate G | `signal_vs_noise_or_hold`: the background's spread, inflated by the affected results, makes two real increases read as noise |
 | Strategy | `population_selection`; Layer 2 family `estimand_identification` (contamination of the comparison); pattern `own:background-results-conditioned-on-the-hydraulic-gradient-at-each-sampling-date` |
-| Forum, forcing event, org family | `line_manager_or_team` (the district's environmental programs manager orders the resampling on the plan's evaluation; the state receives the notice but does not decide it), `period_close` (the semiannual detection monitoring period closes with the October event's evaluation), `utility_or_infrastructure` (a three-county solid waste management district). Redrawn from `regulator_or_inspector` and `statutory_or_regulatory_filing` after task461 v2 registered minutes before this card with both: the decider is the district's manager rather than the state, and what closes the call is the monitoring period's evaluation rather than the filing it feeds, so the redrawn labels are the truer ones |
+| Forum, forcing event, org family | `regulator_or_inspector` (the evaluation is written "for the notice to the state": the Department receives it under the approval's conditions 9 and 10), `period_close` (the semiannual detection monitoring period closes with the October event's evaluation), `utility_or_infrastructure` (a three-county solid waste management district). At the draw the forum and forcing event were redrawn from `regulator_or_inspector` and `statutory_or_regulatory_filing` after task461 v2 registered minutes before this card with both, the forum to `line_manager_or_team`; at ship the forum went back to `regulator_or_inspector` (see Tried and rejected) |
 | Role | the district's environmental programs manager, who signs the report and orders the resampling (`field_unit_lead`) |
 | Context artifact | `monitoring_export`: the laboratories' deliverables and the gauging export |
 | Calibration | none |
@@ -50,10 +50,10 @@ sample, and task193's own architectures 1 and 2 drew their comparison from the r
 driver on file 0.06.
 
 **Sources.** Fully constructed for a fictional district in Wisconsin: the two laboratories' electronic data
-deliverables, the gauging export with the casing survey, the well construction table, the statistical
-analysis plan, the post-closure approval, the leachate pump station telemetry and hauling tickets, the
-landfill gas probe readings, the surface water results and a regional precipitation record. Provenance in
-`metadata.json`.
+deliverables, the gauging export, the monitoring point register with its survey history, the statistical analysis
+plan, the post-closure approval, the consultant's low-flow sampling procedure, the sampler's 2026 purge entries and
+instrument calibration entries, the landfill gas probe readings, the site inspection log and a regional precipitation
+record. Provenance in `metadata.json`.
 
 **Screened before this card (each in `## Tried and rejected` with the gate it died on).** Nineteen
 candidates across six task types (survey anomaly detection, provider quality, disease surveillance,
@@ -129,7 +129,7 @@ Pins: the plan files the window, the indicators, the formula, the comparison and
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | background results | every routine primary sample of unaffected groundwater at MW-1 to MW-3, April 2018 to April 2026 | every sample at the designated wells; MW-1 dropped whole; whole reversed events dropped | MW-6 alone; MW-6 alone; same call | SAP 4 "the quality of groundwater that the landfill has not affected ... every routine sample of that groundwater" with the heads showing which samples came from beneath the waste; whole-event dropping is same call |
+| SF1 | background results | every routine primary sample of unaffected groundwater at MW-1 to MW-3, April 2018 to April 2026 | every sample at the designated wells; MW-1 dropped whole; whole reversed events dropped | MW-6 alone; MW-6 alone; same call | SAP 4 "the quality of groundwater that the landfill has not affected ... every routine sample of that groundwater" with the heads showing which samples came from beneath the waste; whole-event dropping files the set on other limits and counts, closed at SF17 |
 | SF2 | field duplicates | not background | pooled as extra results | same call | SAP 4 "Field duplicates ... are not background results"; same call asserted |
 | SF3 | re-analysed samples | the reportable run | both runs | same call | SAP 4 "the laboratory's reportable result"; same call asserted |
 | SF4 | boron units | ug/L throughout | mg/L mixed in | no reading survives: a factor of 1000 | each deliverable's own unit column; asserted min Tamarack boron in ug/L above 10 |
@@ -145,6 +145,12 @@ Pins: the plan files the window, the indicators, the formula, the comparison and
 | SF14 | how affectedness is shown | the head relation | the chemistry of each background well's samples | same call | at MW-1 and MW-2 every reversed sample is above every other on all three indicators, asserted |
 | SF15 | the background window | through the April 2026 event | the October 2026 background samples added | same call | SAP 4 "through the April event of the year being evaluated"; same call asserted |
 | SF16 | a well to resample | any indicator over its limit | all indicators over | MW-6 alone | SAP 6 "an initial exceedance for any indicator parameter"; MW-7 and MW-9 each over on one indicator |
+| SF17 | the samples a reversal removes (limits and counts) | the reversed samples only: 34, 34 and 33 results, 38.2 mg/L, 20.8 mg/L, 68.3 ug/L | every sample of an event at which any background well reversed: 21, 21 and 21, 37.6, 22.3, 74.2 | same call, other graded figures | SAP 4 "every routine sample of that groundwater": at those events the other wells' heads stood above their boundary piezometers' by 0.11 ft or more, MW-2's samples there sit below every reversed MW-2 result on all three indicators and MW-3 never reversed; asserted (`SF17.`) |
+| SF18 | the event after a reversal | kept: its heads are not reversed | dropped at MW-1 and MW-2: 24, 24 and 23, 35.4, 20.3, 70.5 | same call, other graded figures | the same sentence: each such sample's head stood above its piezometer's by 0.11 ft or more and sits below every reversed result at its well on all three indicators, so no lag shows; asserted (`SF18.`) |
+| SF19 | a margin on the head relation | its sign | 0.15 ft or 0.25 ft required: 26, 26 and 26, 35.1, 21.1, 69.4; 22, 22 and 22, 36.9, 22.0, 68.2 | same call, other graded figures | every background head difference is at least 0.11 ft above zero or 0.18 ft below it, on water levels read to 0.01 ft (FS-03 1) against the survey in force, so a margin has no measurement to rest on, and the samples it drops sit below every reversed result at their wells; asserted (`SF19.`) |
+| SF20 | an outlier screen after the head step | none | Rosner on the kept results | same call, same figures | Rosner flags nothing among the kept results; asserted (`SF20.`) |
+| SF21 | where the purge ends (ask 5) | the counter at the set the sample was collected immediately after | the counter carried to the chain of custody's minute, at the set's logged flow, at the last interval's rate or on the line to the next counter | same figures at every well | the custody minute begins 31 to 35 s after the sample's set and every carried reading prints the same tenth of a gallon as the set's counter, at least 0.004 gal inside the cell, for all eleven wells; asserted (`SF21.`) |
+| SF22 | the gallon (ask 5) | the US gallon, 3.785 litres | the imperial gallon, 4.546 litres | every purge figure moves | the asking sentence names US gallons; the counter logs litres (`controller_l`); asserted (`SF22.`) |
 
 ## Ladder
 
@@ -234,39 +240,59 @@ and recomputed in `verify.py`.
 
 ## Ask sheet
 
-Two asks, every figure per well sampled in October 2026 (eleven wells each), both read from the sampler's field
-entries, a file the main call never opens; H18: each is the audit trail of the October samples the call rests on
-(FS-03's stabilization and purge record behind every result the scorecard compares).
+Two asks, every figure per well sampled in October 2026 (eleven wells each), read from the field app's purge and
+calibration entries, files the main call never opens, joined to the collection minute each sample carries on the
+laboratory's deliverable; H18: each is the audit trail of the October samples the call rests on (FS-03's
+stabilization, calibration and purge record behind every result the scorecard compares).
 
 - **A1, specific conductance at sampling, microsiemens per centimetre at 25 C, whole (11 figures).** Filed: FS-03
-  sections 3 and 4 (the reading set immediately before the sample; conductivity corrected to 25 C at 1.91 per cent a
-  degree; the meter's serial recorded with the day's first set and whenever the meter is changed). Primary device (D3
-  units set per source, a label before a silent switch): the rental meter R-4471 used on the first and third days
-  logged uncorrected conductivity in the specific conductance field, so its seven wells read about three tenths low
-  against April; a second rental meter, R-4468, corrected correctly on the second day (the serial is no marker).
-  Second device (D4, absence evidenced elsewhere): the app lost the meter's pairing after MW-9 on the third day, so
-  MW-7's and MW-6's sets carry no serial and take the day's meter. Stops: as logged (4 of 11), corrected where the
-  serial says R-4471 (9 of 11), golden.
+  section 3 (the field readings reported with a sample are those of the set it was collected immediately after; the
+  meter's serial recorded with the day's first set and whenever the meter is changed), section 4 (conductivity
+  corrected to 25 C at 1.91 per cent a degree; the meter calibrated each morning) and the field app's calibration
+  entries, which carry each sonde's reporting in the form the app writes it: the units of its conductivity readings
+  (uS/cm against uS/cm at 25 C) and the value the 1413 uS/cm standard should read at its temperature, morning and end-
+  of-day check agreeing; no compensation column, no remark. Primary device (D8 clocks, which records are one event):
+  the field app marks no sample and goes on logging the flow cell every few minutes while the bottles fill, until the
+  pump stops; the collection minute exists only on the chain of custody in the laboratory's deliverable, local
+  daylight time against the app's UTC. The set at sampling is the last one logged before that minute, and the sets
+  after it read a cell the sample no longer came from (warmer, aerated, stirred), so the visit's last set lands
+  another figure at every well the app logged on. No sentence joins the two systems. Second device (D3, units set per
+  source): the rental R-4471 of the first and third days reports conductivity at the sample's temperature into the
+  app's specific conductance field (its calibration entries show it), R-4468 of the second day reports at 25 C; the
+  serial is no marker. Third (D4): the app lost the meter's pairing after MW-9 on the third day, so MW-7's and MW-6's
+  sets carry no serial and take the day's meter; those two visits were typed by hand and log nothing after the sample.
+  Stops: the visit's last set with every other step right (2 of 11, the hand-typed visits), the sample's set as logged
+  (4 of 11), corrected where its own serial shows R-4471 (9 of 11), golden (11).
 - **A2, purge volume before the sample, gallons, one decimal (11 figures).** Filed: FS-03 section 2 (the volume pumped
-  from the well from the start of purging until the sample, from the controller's counter; rinse water is not purge
-  water). Primary device (D6, one quantity on every line it covers): the controller's counter runs through the day,
-  is zeroed each morning and holds while the pump is off, and the first set at a well is logged minutes after the pump
-  starts, so a well's purge starts at the counter of the day's last pump-stop entry (bottles filled, or a decon rinse
-  logged with the counter after the rinse), not at its first set. Hazards: entries in UTC, litres to gallons. Stops:
-  the counter at the sample less the well's first set (0 of 11), less the previous well's sample set (3 of 11, the
-  first well of each day), golden.
-- Separation: the field entries hold no indicator result and no water level; deleting them leaves the call and every
-  critical component unchanged (they are not read by the call, asserted).
+  from the well from the start of purging until the sample is collected, from the controller's counter; rinse water is
+  not purge water). Primary device (D6, one quantity on every line it covers): the counter runs through the day, is
+  zeroed each morning and holds while the pump is off, and the first set at a well is logged minutes after the pump
+  starts, so the purge starts at the counter of the day's last pump-stop entry (bottles filled, or a decon rinse
+  logged with the counter after the rinse). Its end is the counter at the set the sample was collected immediately
+  after, the same join as A1's, a shared hazard and not A2's primary; carried on to the custody minute it prints the same
+  figure (SF21), and the gallon is the US gallon the asking sentence names (SF22). Stops: the last set less the first set (0 of
+  11), the last set less the pump stop (2 of 11), the sample's set less the first set (0 of 11), golden.
+- Determinacy, asserted in `checks.py`: the chain of custody's minute begins 31 to 35 s after the sample's set and at
+  least 120 s before the next, so any minute convention picks the same set; only daylight time fits (an hour later
+  every sample would follow its pump's stop, read as UTC every sample would precede its visit); FS-03's stabilization
+  criteria are met at no point of any 2026 visit, so they name no competing set; the counter carried from the set to
+  the custody minute, by the set's logged flow, the last interval's rate or the line to the next counter, prints the
+  set's own tenth of a gallon at every well (SF21); the gallon is the US gallon, named in the asking sentence (SF22).
+- Separation: the purge and calibration entries hold no indicator result and no water level; the laboratory
+  deliverable is read only for the October primaries' collection minutes, a column the call never uses; deleting the
+  field entries leaves the call and every critical component unchanged (asserted), and the repair moved no figure the
+  call reports (`figures.json` unchanged but the purge row count).
 
 | Ask | Cracker (lands the call, hygiene battery, every filed rule) | Mirror (stops at the plan's limits on every result) | Cracker |
 |---|---|---|---|
-| A1 specific conductance | 4 of 11, the logged value | 4 of 11 | miss |
-| A2 purge volume | 0 of 11, counter less the first set | 0 of 11 | miss |
+| A1 specific conductance | 2 of 11: calibration read, serial carried, the visit's last set taken as the sample's | 2 of 11 | miss |
+| A2 purge volume | 0 of 11: counter at the last set less the first set | 0 of 11 | miss |
 
-Pair ceiling: 38.5 (cracker 55.0 on the call, mirror 22.0 off it, on 38, 7 and 55 L)
-Mirror leakage: 18.2 per cent of ask weight
-Cracker keep: 18.2 per cent; the full includer (R-4471 corrected where its serial shows, pump-stop counters used) keeps 20 of 22, the unpaired-meter wells its misses
-Measured by: generator/ceiling.py, run on the cut pack, pack digest 14056ac5256b8e75 (the script prints it)
+Pair ceiling: 33.5 (cracker 50.0 on the call, mirror 17.0 off it, on 38, 7 and 55 L)
+Mirror leakage: 9.1 per cent of ask weight
+Cracker keep: 9.1 per cent; the full includer (the chain of custody joined in daylight time, the calibration read, the
+serial carried, pump-stop counters) keeps 22 of 22.
+Measured by: generator/ceiling.py, run on the cut pack, pack digest faafc9972867a0dc (the script prints it)
 
 ## Leak sweep answered
 
@@ -284,19 +310,69 @@ Each remaining REVIEW line, ruled harmless:
 - Sweep 12, the SAP and the approval each name five words that are also column names elsewhere (Background, condition,
   event, installed, program; condition, date, event, final cover, state): regulatory prose, not a dictionary; neither
   lists a file's columns.
+- Stage-4 re-runs after both repairs: no LEAK and no new line on the pack's own account; sweep 8 questioned two
+  calibration columns (`std_temp_c`, `temp_comp`), renamed and then the compensation column dropped; no golden figure
+  appears in the calibration entries, the added sets or the furnished documents. Sweep 4 now also lists FS-03 with
+  "reading", "groundwater" and "screen": the term list moved with this note's own new paragraphs, and FS-03's body is
+  unchanged (its title, the field readings and the well screen); it names no head, gradient, pumping or exclusion.
+  Harmless.
+- Isolated reader, 2026-11-04 (in `leak_check_report.md`): questions 1 to 4 none; its flagged items a to e harmless.
+  Sweep 4 (comparison, measured, groundwater in the SAP), harmless: generic vocabulary of a statistical plan, and the
+  SAP names no head, gradient or pumping.
+- Question 5: the reader's paraphrase of SAP section 4 dropped "of that groundwater"; the literal sentence carries the
+  qualifier, so its literal result is the golden's population. No main-call fork, no change.
+- Question 6: "following the stated procedure plus data semantics" is a surface read consistent with question 1 (the
+  reader never found the step); the judge's Gate H classes the decisive step analytical. No stage-2 return.
+- Realism: the SAP and FS-03 read as unusually compact; both now carry their genre's furniture (title block, document
+  control, revision history, approval and signature lines, running header, page numbers), generated in `docs.py`, with
+  no sentence about the data, the wells' chemistry or the method (asserted, `docs.`).
+- Second read, after the FIX_NOW repair (in `leak_check_report.md`): questions 1 to 4 none. Question 5: the reader's
+  paraphrase of SAP section 4 again dropped "of that groundwater"; the literal sentence carries it and both judge
+  passes executed it to the golden. No fork.
+- Question 6: "rule application plus semantics" is a surface read, as in the first read; the reader never found the
+  step, and both judge passes recomputed the call and classed the decisive step analytical. No stage-2 return.
+- Item e, the calibration rows that show R-4471 reporting without compensation: harmless. They are the determinacy
+  fact the judge required and what an uncompensated rental logs; the ask's device rides on the custody-minute join
+  (careful route 2 of 11).
+- Realism notes, the calibration log's fixed daily sequence and the purge log's even cadence: harmless, what an app's
+  fixed calibration routine and fixed auto-log interval produce. Not churned.
+- Final read, on the shipped cut (12edad42): questions 1 to 4 none, and the prompt has no word that points at a step;
+  question 6 again "rule application plus data conformation", the surface read ruled above, both judge passes classing
+  the decisive step analytical. Its faint realism tells, the inspection workbook's repeated erosion and rip-rap rows
+  on a distractor and the short SOP, are harmless: what a copy-forward inspection form and a terse field SOP look
+  like. No rebuild.
 
 ## Build record
 
-Stage 3, 2026-11-04, cut at `target.zip` sha256 619f16b7d5f79c357793026622fd5629b59ccf538d3ea3b6a564606315e30285
-(`python3 task193/generator/build.py`). Generator 256 assertions and `verify.py` 119 independent checks green; two consecutive builds
-byte-identical over every target file, both goldens, `target.zip`, `submission.md`, `metadata.json` and `figures.json`;
-`figures_check.py` 80 of 80; `precut.py` exit 0; `voice-check.py` exit 0 at 805 characters; `leak.py` REVIEW with no
-LEAK, every line ruled above; `guard.py heart` PASS (one NOTE, the older triple answered on the card); `guard.py surface`
-exit 0 with no persona promoted and four pairs promoted for adjudication only (task155 and task38 at surface 0.100, the
-corpus top one per cent with no mechanism collision; task275 and task468 on the card triple, both answered by the card's
-differentiation lines); the container audit clean on `target/` and `golden/`. Input gates: 11 files, 5 formats (csv,
-txt, xlsx, pdf, json), the Ridgeline deliverable at 25,141 rows, three distractors named in `metadata.json` (gas probes,
-precipitation, site inspections), none read by the call or the asks (asserted).
+Stage 3, 2026-11-04, cut at `target.zip` 619f16b7; handed to the orchestrator at stage 4. Stage 4, 2026-11-04: the
+leak reader found nothing that announces the step; the determinism judge returned NOT_DETERMINISTIC, FIX_NOW, on ask 4
+only (answer_contradicts_files: R-4471's reporting of conductivity at the sample's temperature was filed nowhere), the
+main call and asks 1, 2, 3 and 5 reproducing, Gate H analytical. Repaired in one generator pass: the field app's
+calibration entries ship (`fieldlog_calibration_entries_2026.csv`, 63 entries, every sonde-day of both 2026 events
+calibrated and checked); ask 2's family closed on the graded figures (SF17 to SF20); the SAP and FS-03 furnished. No
+graded figure moved: `figures.json` and the chart are byte-identical to the stage-4 cut, and the files that changed
+are the two furnished PDFs, the new calibration entries, the golden workbook's Field sheet, `metadata.json`,
+`submission.md` (step 7) and `target.zip`.
+
+Second stage-4 pass, 2026-11-04 (no waiver: `precut.py` had refused the ask sheet once A1 became a work order): A1's
+device re-sited onto the set at sampling. The field app marks no sample and logs on while the bottles fill, the
+collection minute lives only on the chain of custody in the Ridgeline deliverable, and the calibration entries carry
+the meter's reporting in units and expected value only. Re-judged on bb9d200b: DETERMINISTIC, APPROVE, with two
+residuals on ask 5 closed in the third pass (SF21, the counter carried to the custody minute converging at every well;
+SF22, the US gallon in the asking sentence). Against the stage-4 cut (619f16b7) no graded figure moved: `figures.json`
+differs only in the purge export's row count (257 to 289) and the chart is byte-identical; the Ridgeline deliverable
+differs only in the 2026 samples' `sample_date` (3,277 rows, one minute later), no result moved.
+
+Final cut at `target.zip` sha256 12edad42d4e000acc956cc9c280cd387cf664b94bce745326a113035a8e8308d (`python3
+task193/generator/build.py`). Generator 401 assertions and `verify.py` 150 independent checks green; two consecutive
+builds byte-identical over 18 digests (12 target files, both goldens, `target.zip`, `submission.md`, `metadata.json`,
+`figures.json`); `figures_check.py` 80 of 80; `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` exit 0 at 808
+characters; `leak.py` REVIEW with no LEAK, every line ruled above; `guard.py check` and `heart` PASS, `surface` exit 0
+with the one persona it finds on the card; the container audit clean on `target/` and `golden/`; `ceiling.py` pair
+33.5, mirror leakage 9.1. Input gates: 12 files, 5 formats (csv, txt, xlsx, pdf, json), the Ridgeline deliverable at
+25,141 rows, three distractors named in `metadata.json` (gas probes, precipitation, site inspections), none read by
+the call or the asks (asserted). The judge's soft note (no file calls PZ-1 to PZ-3 boundary piezometers) needs
+nothing: the monitoring point register carries every point's coordinates, and no sentence names them.
 
 ## Tried and rejected
 - Two of the three silent primaries adjudicated by the register's own documentation, and pointing
@@ -802,6 +878,51 @@ precipitation, site inspections), none read by the call or the asks (asserted).
 - **Stage 3: the pricing line's "about four per cent" standard error** was Prototype 3's redraw spread on about 45
   results, not a measurement on this world; the limits' delta-method standard errors are 8.5, 6.8 and 7.0 per cent,
   now asserted in `checks.py` against the step's worth and the deciding results' margins.
+- **Stage 4: ask 4 rested on a fact filed nowhere.** The golden converted R-4471's seven wells as conductivity at the
+  sample's temperature, but the purge export's column says `spc_us_cm` and no shipped record said R-4471 reported
+  otherwise; the judge read the logged values as specific conductance (FIX_NOW, answer_contradicts_files). The fact
+  now ships in the record the organisation keeps for its own purposes, the field app's calibration entries, with every
+  sonde's every standard on every 2026 sampling day; no remark names the meter and the serial marks nothing.
+- **Stage 4, rejected form: a conductivity column beside the specific conductance column in the purge export.** Each
+  row's own column would have told the solver which sets need converting, so the carried serial on the unpaired sets
+  would no longer matter and the ask would be a column read; the calibration entries keep the join.
+- **Stage 4: ask 2's family printed other limits and counts.** Whole-event, next-event and margin variants file the
+  set on other graded figures (21, 24, 26 and 22 results); closed without a new sentence by SAP 4's "every routine
+  sample of that groundwater" and the identities asserted at SF17 to SF19.
+- **Stage 4, second pass: A1 a work order once R-4471's reporting was filed.** With the meter fact in the calibration
+  entries, the careful route (calibration read, serial carried by FS-03 section 3, conversion by section 4) kept all
+  eleven figures: `ceiling.py` pair 56.0, mirror leakage 50.0, and `precut.py` refused the ask sheet. No waiver; the
+  device was re-sited.
+- **Rejected: a quieter filing of the meter fact alone.** Any calibration record of a sonde that reports at the
+  sample's temperature shows it, in its units or in the value the standard should read (about 1080 against 1413); the
+  careful route reads the record FS-03 section 4 points to and keeps A1 whatever the form. Kept as realism (the
+  compensation column dropped, units and expected value as the app writes them), not as the device.
+- **Rejected: the set at sampling with FS-03's stabilization criteria met in the data.** If the criteria are first met
+  at the sample's set, executing them locates it and the careful route keeps A1; if they are met earlier, the criteria
+  and the collection minute file different sets (a fork). The pack's sets meet the criteria nowhere (asserted), so the
+  collection minute alone fixes the set.
+- **Rejected: a new ask dimension.** Not needed once the chain-of-custody join held; it would have changed the prompt
+  and the rubric for no gain.
+- **Stage 4, third pass: the purge carried to the custody minute.** The re-judge (DETERMINISTIC, APPROVE) left two
+  residuals on ask 5: a reader carrying the counter from the sample's set to the custody minute at the logged flow
+  moved MW-1 from 3.5 to 3.6, and no file named the gallon. Closed in the data, not with a pin (the judge's suggested
+  pin named the device and invited the interpolation): each sample's set now sits a few seconds before the half
+  minute, so the custody minute begins 31 to 35 s after it, and where a carried reading would still cross a printed
+  tenth the pump-stop counter before the visit was raised (MW-2's decon rinse, MW-9's bottle fill ahead of MW-7) or
+  the day's first well's last interval trimmed (MW-9), every figure inside its printed cell. The prompt names US
+  gallons.
+- **Rejected for ask 5: converging the carry at every minute convention.** A reader placing the collection at the end
+  of the custody minute carries up to 95 s of pumping, more than a tenth of a gallon at the visit's rates, so no
+  construction inside the 0.1-gallon cell holds for it; the minute as written, its first second, is the reading
+  converged.
+- **Ship, 2026-11-04: the forum redrawn to `regulator_or_inspector`.** After the pull before the push, `guard.py
+  check` and `heart` blocked `line_manager_or_team` on `ban.forum` against task194 v17 (delivered): the re-roots of
+  task461, task192 and task476 moved their cards after this one, so the window before it now ends on task194. The axis
+  is redrawn, not argued. `regulator_or_inspector` is the honester label for the prompt as written, which delivers the
+  evaluation "for the notice to the state" (the vocabulary's "a regulator ... receives it"); `line_manager_or_team`
+  ("the requester's own manager or team acts on it, no formal forum") fit the draw before the prompt named its
+  audience, and the ban that pushed the draw off `regulator_or_inspector` went with task461 v2. Nothing in the pack or
+  the prompt changed.
 
 ## Architecture 2 record (spent, replaced by architecture 3 on 2026-11-04)
 

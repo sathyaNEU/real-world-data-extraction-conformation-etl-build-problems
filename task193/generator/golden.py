@@ -6,6 +6,7 @@ import csv
 import datetime as dt
 import math
 import os
+from zoneinfo import ZoneInfo
 
 import routes as RT
 import world as W
@@ -108,9 +109,41 @@ def read_purge(tgt, files):
     return rows
 
 
-def field_asks(rows, event_days):
-    """for every well sampled that event: specific conductance at 25 C from the sample's reading set, compensated where
-    the meter recorded conductivity, and the purge volume from the controller's day counter"""
+def read_calib(tgt, files):
+    """the field app's calibration entries: for each sonde and day, whether its conductivity reports at 25 C (the units
+    of the morning calibration; the end-of-day check is read back by the checks)"""
+    mode = {}
+    with open(os.path.join(tgt, files["calib"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["sensor"] == "Conductivity" and r["check_type"] == "calibration":
+                mode[(r["cal_date"], r["meter_sn"])] = r["reading_units"] == "uS/cm at 25 C"
+    return mode
+
+
+CENTRAL = ZoneInfo("America/Chicago")
+
+
+def read_coc(tgt, files, event_days):
+    """each well's sample collection time on the laboratory's deliverable (the chain of custody's local minute), as UTC"""
+    days = {d.isoformat() for d in event_days}
+    coc = {}
+    with open(os.path.join(tgt, files["edd_b"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f, delimiter="\t"):
+            if r["sample_type_code"] != "N" or not r["sys_loc_code"].startswith("MW") or r["sample_date"][:10] not in days:
+                continue
+            local = dt.datetime.strptime(r["sample_date"], "%Y-%m-%d %H:%M").replace(tzinfo=CENTRAL)
+            utc = local.astimezone(dt.timezone.utc).replace(tzinfo=None)
+            w = norm_loc(r["sys_loc_code"])
+            assert coc.get(w, utc) == utc, (w, coc.get(w), utc)
+            coc[w] = utc
+    return coc
+
+
+def field_asks(rows, event_days, cal_mode, coc):
+    """for every well sampled that event: specific conductance at 25 C from the set the sample was collected
+    immediately after (FS-03 3: the last set the field app logged before the chain of custody's collection time),
+    corrected to 25 C where the day's calibration shows the meter reporting conductivity at the sample's temperature,
+    and the purge volume from the controller's day counter to that set"""
     spc, purge, detail = {}, {}, {}
     days = {d.strftime("%Y-%m-%d") for d in event_days}
     by_day = {}
@@ -121,30 +154,35 @@ def field_asks(rows, event_days):
         rs = sorted(rs, key=lambda r: r["t"])
         meter = ""
         for r in rs:            # FS-03 3: the serial is recorded with the day's first set and whenever the meter changes
+            r["meter_logged"] = bool(r["meter_sn"])
             if r["meter_sn"]:
                 meter = r["meter_sn"]
             elif r["remark"] not in ("decon rinse", "bottles filled, pump off"):
                 r["meter_sn"] = meter
         mark = 0.0                      # the controller counter when the pump last stopped (zeroed each morning)
-        start, seen = {}, set()
+        start, at = {}, {}
         for r in rs:
             if r["remark"] in ("decon rinse", "bottles filled, pump off"):
                 mark = float(r["controller_l"])
                 continue
             w = r["location"]
-            if w not in seen:
-                seen.add(w)
-                start[w] = mark
-            if r["remark"] == "sample collected":
-                end = float(r["controller_l"])
-                purge[w] = (end - start[w]) / W.L_PER_GAL
-                cond = float(r["spc_us_cm"])
-                T = float(r["temperature_c"])
-                if r["meter_sn"] == W.RENTAL_UNCOMP:
-                    cond = cond / (1 + W.TEMP_COEF * (T - 25.0))
-                spc[w] = cond
-                detail[w] = {"start_l": start[w], "end_l": end, "meter": r["meter_sn"],
-                             "recorded": float(r["spc_us_cm"]), "temp": T}
+            start.setdefault(w, mark)
+            if r["t"] <= coc[w]:
+                at[w] = r                # the last set logged before the sample was collected
+        for w, r in at.items():
+            end = float(r["controller_l"])
+            purge[w] = (end - start[w]) / W.L_PER_GAL
+            cond = float(r["spc_us_cm"])
+            T = float(r["temperature_c"])
+            compensated = cal_mode[(r["visit_date"], r["meter_sn"])]
+            if not compensated:          # FS-03 4: conductivity corrected to 25 C at 1.91 per cent per degree
+                cond = cond / (1 + W.TEMP_COEF * (T - 25.0))
+            spc[w] = cond
+            later = [x for x in rs if x["location"] == w and x["remark"] == "" and x["t"] > r["t"]]
+            detail[w] = {"start_l": start[w], "end_l": end, "meter": r["meter_sn"],
+                         "recorded": float(r["spc_us_cm"]), "temp": T, "compensated": compensated,
+                         "meter_logged": r["meter_logged"], "set_utc": r["t"], "coc_utc": coc[w],
+                         "sets_after_sample": len(later)}
     return spc, purge, detail
 
 
@@ -165,7 +203,8 @@ def compute(tgt, files):
             hist.setdefault(("MW-5R" if w == "MW-5" else w, k), []).append(v)
     sets["R2f intrawell, each well against its own record"] = RT.intrawell(hist, october)
     rows = read_purge(tgt, files)
-    spc, purge, fdetail = field_asks(rows, W.EVENTS[W.EVAL]["days"])
+    spc, purge, fdetail = field_asks(rows, W.EVENTS[W.EVAL]["days"], read_calib(tgt, files),
+                                     read_coc(tgt, files, W.EVENTS[W.EVAL]["days"]))
     excluded = sorted(((w, EV[ei]) for (w, ei), r in rev.items() if r and ei in W.BG_EVENTS),
                       key=lambda x: (W.BACKGROUND.index(x[0]), EV.index(x[1])))
     exceed = {(w, k): october[(w, k)] > G[k] for w in W.COMPLIANCE for k in W.INDICATORS}

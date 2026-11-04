@@ -1,6 +1,7 @@
 """Write the exports the district's systems hold, from the clean truth, each in its producing system's own layout:
 Tamarack's and Ridgeline's electronic data deliverables, the gauging export, the monitoring point register with its
-survey history, the sampler's October and April 2026 purge entries, and the program's neighbouring records."""
+survey history, the sampler's October and April 2026 purge entries and instrument calibration entries, and the
+program's neighbouring records."""
 import csv
 import datetime as dt
 import json
@@ -25,6 +26,7 @@ FILES = {
     "approval": "MCL_post-closure_approval_2017.pdf",
     "fieldproc": "Fieldstone_FS-03_groundwater_sampling.pdf",
     "purge": "fieldlog_purge_entries_2026.csv",
+    "calib": "fieldlog_calibration_entries_2026.csv",
     "gas": "mcl_gas_probe_readings_2025-2026.csv",
     "precip": "hollis_coop_precip_daily_2018-2026.json",
     "inspect": "mcl_site_inspections_2024-2026.xlsx",
@@ -59,8 +61,8 @@ def sigstr(v):
 
 # ---------------------------------------------------------------- the samples each event takes
 def sample_plan():
-    """{event: [(location, day_index, local datetime, sample_type, parent)]}; the October and April 2026 times come
-    from the sampler's own entries so the two systems agree to the minute."""
+    """{event: [(location, day_index, local datetime, sample_type, parent)]}; the October and April 2026 times are
+    the chain of custody's: the minute each sample was collected, local time, as the sampler wrote it."""
     r = rng(1)
     plan = {}
     ftruth = SIM["field_truth"]
@@ -75,7 +77,7 @@ def sample_plan():
                 if (EV[ei], w) in W.MISSED:
                     continue
                 if (ei, w) in ftruth:
-                    ts = ftruth[(ei, w)]["sample_time"].replace(second=0, microsecond=0)
+                    ts = ftruth[(ei, w)]["collect_time"].replace(second=0, microsecond=0)
                 else:
                     t += dt.timedelta(minutes=float(r.uniform(62, 95)))
                     ts = t.replace(second=0, microsecond=0)
@@ -513,11 +515,91 @@ def write_purge(tgt):
             meter = ""      # the app lost the meter's pairing after MW-9 on the third day; the meter was not changed
         rows.append([x["day"].strftime("%Y-%m-%d"), x["location"], utc, str(x["flow_ml_min"]), fmt(x["counter_l"], 2),
                      fmt(x["temp_c"], 1), str(x["spc"]), fmt(x["ph"], 2), fmt(x["do"], 2), str(x["orp"]),
-                     fmt(x["turb"], 1), meter, "WC" if x["day"].weekday() != 2 else "JM",
-                     "sample collected" if x["last"] else ""])
+                     fmt(x["turb"], 1), meter, "WC" if x["day"].weekday() != 2 else "JM", ""])
     write_csv(os.path.join(tgt, FILES["purge"]), ["visit_date", "location", "entry_utc", "flow_ml_min", "controller_l",
                                                   "temperature_c", "spc_us_cm", "ph_su", "do_mg_l", "orp_mv", "turb_ntu",
                                                   "meter_sn", "entered_by", "remark"], rows)
+    return len(rows)
+
+
+# ---------------------------------------------------------------- the field app's instrument calibration entries (asks)
+CAL_HEAD = ["cal_date", "entry_utc", "meter_sn", "meter_model", "meter_owner", "sensor", "std_name", "std_lot",
+            "std_temperature_c", "expected_value", "as_found", "as_left", "reading_units", "check_type", "cal_result",
+            "cal_by"]
+
+
+def write_calibration(tgt):
+    """the sondes' morning calibrations and end-of-day checks for the April and October 2026 events, one entry per
+    standard as the field app exports them: the standard's temperature, the value the sonde should read in the units
+    it reports, and the reading as found and as left"""
+    r = rng(12)
+    days = {}
+    for x in SIM["field_rows"]:
+        d = days.setdefault((x["event"], x["day"]), {"first": x["time"], "last": x["time"], "meter": None})
+        d["first"], d["last"] = min(d["first"], x["time"]), max(d["last"], x["time"])
+        if x["kind"] == "reading":
+            d["meter"] = x["meter"]
+    lots = {}
+
+    def lot(ei, std):
+        if (ei, std) not in lots:
+            yy = 25 if W.EVENTS[ei]["month"] == 4 else 26
+            lots[(ei, std)] = "%02d%s%04d" % (yy, "ABCDEFGHJKLM"[int(r.integers(0, 12))], int(r.integers(1000, 9999)))
+        return lots[(ei, std)]
+
+    rows, seen = [], set()
+    for (ei, day), d in sorted(days.items()):
+        meter, by = d["meter"], ("WC" if day.weekday() != 2 else "JM")
+        comp = W.COND_COMPENSATED[meter]
+        third = day == W.EVENTS[ei]["days"][2]
+        sessions = [("calibration", dt.datetime.combine(day, dt.time(7, 12)) + dt.timedelta(minutes=float(r.uniform(0, 28))),
+                     r.uniform(11.5, 15.5) if W.EVENTS[ei]["month"] == 10 else r.uniform(10.0, 14.0))]
+        eod = (dt.datetime.combine(day, dt.time(16, 4)) + dt.timedelta(minutes=float(r.uniform(0, 24))) if third
+               else d["last"] + dt.timedelta(minutes=float(r.uniform(18, 44))))
+        sessions.append(("end-of-day check", eod, r.uniform(16.0, 20.5)))
+        for kind, t0, tstd in sessions:
+            entries = []
+            if kind == "calibration" and (ei, meter) not in seen:
+                seen.add((ei, meter))
+                ref = round(tstd + r.normal(0, 0.1), 1)
+                entries.append(["Temperature", "reference thermometer TH-0213", "", fmt(ref, 1), fmt(ref, 1),
+                                fmt(ref + r.normal(0, 0.1), 1), "", "C", "", "temperature check"])
+            stds = [("pH", "pH 7.00 buffer", 7.0, 0.04), ("pH", "pH 4.00 buffer", 4.0, 0.05),
+                    ("pH", "pH 10.00 buffer", 10.0, 0.07)] if kind == "calibration" else [("pH", "pH 7.00 buffer", 7.0, 0.05)]
+            for sensor, name, val, sd in stds:
+                T = round(tstd + r.normal(0, 0.15), 1)
+                entries.append([sensor, name, lot(ei, name), fmt(T, 1), fmt(val, 2), fmt(val + r.normal(0, sd), 2),
+                                fmt(val, 2) if kind == "calibration" else "", "SU", "Y", kind])
+            T = round(tstd + r.normal(0, 0.15), 1)
+            exp = W.KCL_STD_US_CM if comp else int(round(W.KCL_STD_US_CM * (1 + W.TEMP_COEF * (T - 25))))
+            entries.append(["Conductivity", "KCl %d uS/cm at 25 C" % W.KCL_STD_US_CM, lot(ei, "KCl"), fmt(T, 1), str(exp),
+                            str(int(round(exp * (1 + r.normal(0, 0.012 if kind == "calibration" else 0.006))))),
+                            str(exp) if kind == "calibration" else "", "uS/cm at 25 C" if comp else "uS/cm",
+                            "Y" if comp else "N", kind])
+            if kind == "calibration":
+                T = round(tstd + r.normal(0, 0.15), 1)
+                sat = round(100.0 * r.uniform(733.0, 746.0) / 760.0, 1)
+                entries.append(["Dissolved oxygen", "water-saturated air", "", fmt(T, 1), fmt(sat, 1),
+                                fmt(sat * (1 + r.normal(0, 0.02)), 1), fmt(sat, 1), "% sat", "Y", kind])
+                T = round(tstd + r.normal(0, 0.15), 1)
+                orp = int(round(231 + 1.4 * (25 - T)))
+                entries.append(["ORP", "Zobell solution", lot(ei, "Zobell"), fmt(T, 1), str(orp),
+                                str(orp + int(round(r.normal(0, 6)))), str(orp), "mV", "N", kind])
+                for val, sd in ((0.0, None), (124.0, 0.025)):
+                    T = round(tstd + r.normal(0, 0.15), 1)
+                    found = abs(r.normal(0.3, 0.15)) if sd is None else val * (1 + r.normal(0, sd))
+                    name = "turbidity %d NTU" % val
+                    entries.append(["Turbidity", name, lot(ei, name), fmt(T, 1), fmt(val, 1), fmt(found, 1), fmt(val, 1),
+                                    "NTU", "", kind])
+            t = t0
+            for e in entries:
+                utc = (t + dt.timedelta(hours=5)).strftime("%Y-%m-%dT%H:%M:%SZ")      # CDT to UTC in April and October
+                # the export carries the reading units the sonde reports; the app keeps no separate compensation field
+                rows.append([day.strftime("%Y-%m-%d"), utc, meter, W.SONDE_MODEL, W.SONDE_OWNER[meter]] + e[:8]
+                            + [e[9], "pass", by])
+                t += dt.timedelta(seconds=float(r.uniform(50, 160)))
+    rows.sort(key=lambda x: x[1])
+    write_csv(os.path.join(tgt, FILES["calib"]), CAL_HEAD, rows)
     return len(rows)
 
 
@@ -593,4 +675,5 @@ def cut(tgt, S):
     write_points(tgt)
     npg = write_purge(tgt)
     write_distractors(tgt)
-    return {"edd_a_rows": na, "edd_b_rows": nb, "gauging_rows": ng, "purge_rows": npg, "plan": plan}
+    ncal = write_calibration(tgt)
+    return {"edd_a_rows": na, "edd_b_rows": nb, "gauging_rows": ng, "purge_rows": npg, "calib_rows": ncal, "plan": plan}

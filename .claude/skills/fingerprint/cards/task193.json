@@ -42,7 +42,7 @@
     "a compliance well damaged and replaced in 2022 under a new identifier",
     "depths to water below the top of casing, with the casing elevations resurveyed onto a new vertical datum in 2022",
     "sampling events spread over several field days with event labels that do not match the dates",
-    "leachate pump station telemetry with totaliser rollovers and a pump replacement",
+    "the field app's purge entries in UTC on a pump-controller counter that runs all day, logging on while the bottles fill with the collection minute only on the chain of custody in local time, two rental sondes with their calibration entries (one reporting conductivity at the sample's temperature), and sets with no serial after a lost pairing",
     "the statistical analysis plan and the permit as PDFs"
   ],
   "stakeholder_role": "the district's environmental programs manager, who signs the detection monitoring report to the state and orders the verification resampling",
@@ -55,7 +55,7 @@
     "grain": "sample x analyte x analysis",
     "source": "synthetic (constructed for a fictional district by task193/generator from a fixed seed)"
   },
-  "forum": "line_manager_or_team",
+  "forum": "regulator_or_inspector",
   "forcing_event": "period_close",
   "org_family": "utility_or_infrastructure",
   "world": {
@@ -71,7 +71,9 @@
     ],
     "people": [
       "Kathryn Bonilla",
-      "Wendy Cantu"
+      "Wendy Cantu",
+      "Jeremy Collins",
+      "Anna Mercado"
     ]
   },
   "deliverables": [
@@ -83,6 +85,7 @@
   "driver": "The comparison an increase is tested against is built from fixed reference units that represent the unaffected state only while a physical gradient runs from them toward the source, and a third party's operation reverses that gradient in some periods so that the reference units then sample the source's own effect; a comparison built from every reference observation is inflated and masks the increase, and only conditioning each reference observation on the gradient recorded at its own date recovers it.",
   "driver_concrete": "Each indicator's upper prediction limit is built from the three background wells' routine results, but in the events when the village well field west of the site pumped hard the gradient at the western boundary reversed and MW-1, and in the strongest events MW-2, drew water that had passed beneath the waste, so a limit on every background result sits above MW-7's chloride and sodium and MW-9's boron and sends only MW-6 to verification resampling, while the limit built from the background results taken while each well's head stood above its boundary piezometer's sends MW-6, MW-7 and MW-9.",
   "stump": "A competent solver who conforms both laboratories' deliverables, keeps the reportable primary results, carries MW-5 onto MW-5R and computes the plan's log-normal upper prediction limit for each indicator from every routine background result sends only MW-6 to verification resampling, because in the events when the gradient at the western boundary reversed MW-1, and in the strongest MW-2, sampled water that had passed beneath the waste, which lifts all three limits above MW-7's chloride and sodium and MW-9's boron.",
+  "mechanism": "statistical_rigor (the comparison group): each indicator's upper prediction limit is built only from the background results whose well stood above its boundary piezometer on that event; pooling every background result, the easy route, lifts the limits above MW-7's sodium and MW-9's boron and files MW-6 alone",
   "mechanism_source": "design_note",
   "differentiation": {
     "task193": "Architectures 1 and 2 measured product and reaction or marker pairs against a comparison drawn from the register itself (the other products pooled, then the null expectation of an ordering); architecture 3 is a different world and mechanism: the comparison is background water quality, filed in the field's own words, and the decisive step is a hydraulic judgment, from heads on each sampling date, of which background results sampled water from beneath the waste.",
@@ -111,7 +114,7 @@
     },
     {
       "architecture": "v2",
-      "fate": "spent on measurement 2026-10-21 and confirmed on the clean truth at the 2026-11-01 re-check (commit 43a9822): every window-aware route (the field's null-effect sequence ratio, the permutation, the pair group-by and the one-line uniform-window formula) refers the golden seven pairs, so the easy routes land the golden; the survivor anatomy fails on Actor, Link and Reflex. Shipped 2026-10-17 (target.zip aa084e2f), replaced by architecture 3.",
+      "fate": "spent on measurement 2026-10-21 and confirmed on the clean truth at the 2026-11-01 re-check (commit 43a9822): every window-aware route (the field's null-effect sequence ratio, the permutation, the pair group-by and the one-line uniform-window formula) refers the golden seven pairs, so the easy routes land the golden; the survivor anatomy fails on Actor, Link and Reflex. Shipped 2026-10-17 (target.zip aa084e2f), replaced by architecture 3, shipped 2026-11-04 (target.zip 12edad42).",
       "domain": "pharmacology-pharmacoepidemiology-safety",
       "subdomain": "safety-signal-detection",
       "objective": "anomaly-detection",

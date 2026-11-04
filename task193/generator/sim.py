@@ -273,6 +273,150 @@ def field_records(octvals):
     return rows, truth
 
 
+def _handtyped(ei, day, w):
+    return ei == W.EVAL and day == W.EVENTS[W.EVAL]["days"][2] and w in W.METER_UNPAIRED
+
+
+def sample_minutes(rows, truth):
+    """Where each sample sits against the chain of custody. The sample's set is logged a few seconds before a half
+    minute and the sample collected in the next minute, so the custody minute begins 31 to 35 s after the set. On the
+    October visits the counter carried from the set to the start of that minute, at the set's flow, at the rate of the
+    last interval or on the line to the next counter, prints the same tenth of a gallon as the set's own counter: where
+    it would not, the pump-stop counter before the visit is raised (a longer decon rinse or bottle fill) or, for a
+    day's first well, the last interval's volume trimmed, always inside the printed figure. Its own stream; no graded
+    figure moves."""
+    rng = stream(7)
+    L = W.L_PER_GAL
+    index = {}
+    for i, x in enumerate(rows):
+        if x["kind"] == "reading":
+            index.setdefault((x["event"], x["location"]), []).append(i)
+    for i, x in enumerate(rows):
+        if x["kind"] != "reading" or not x["last"]:
+            continue
+        ei, w, day = x["event"], x["location"], x["day"]
+        sets = index[(ei, w)]
+        p = rows[sets[-2]]
+        b = rows[i + 1]
+        sec = x["time"].second + x["time"].microsecond / 1e6
+        target = 25 + float(rng.uniform(0, 4))                   # a few seconds before the half minute
+        x["time"] = x["time"] + dt.timedelta(seconds=target - sec)
+        assert (x["time"] - p["time"]).total_seconds() > 150, (w, target - sec)
+        minute = x["time"].replace(second=0, microsecond=0) + dt.timedelta(minutes=1)
+        assert 30 <= (minute - x["time"]).total_seconds() <= 36, (w, minute, x["time"])
+        info = truth[(ei, w)]
+        info["collect_minute"] = minute
+        info["collect_time"] = minute + dt.timedelta(seconds=float(rng.uniform(5, 50)))
+        if ei != W.EVAL:
+            x["flow_ml_min"] = int(round(1000.0 * (x["counter_l"] - p["counter_l"]) /
+                                         ((x["time"] - p["time"]).total_seconds() / 60.0) + rng.normal(0, 2.5)))
+            continue
+        # the pump-stop entry before the visit: a decon rinse, the previous well's bottles entry, or the morning zero
+        j = sets[0] - 1
+        start_row = rows[j] if j >= 0 and rows[j]["day"] == day and rows[j]["kind"] in ("decon", "bottles") else None
+        for attempt in range(40):
+            start = start_row["counter_l"] if start_row else 0.0
+            minutes_last = (x["time"] - p["time"]).total_seconds() / 60.0
+            f_imp = (x["counter_l"] - p["counter_l"]) / minutes_last
+            f_next = f_imp if not _handtyped(ei, day, w) else (b["counter_l"] - x["counter_l"]) / (
+                (b["time"] - x["time"]).total_seconds() / 60.0)
+            carry = max(f_imp + 0.008, f_next) * (minute - x["time"]).total_seconds() / 60.0
+            raw = (x["counter_l"] - start) / L
+            fig = round(raw, 1)
+            over = raw + carry / L - (fig + 0.05 - 0.004)
+            if over <= 0:
+                break
+            need = round((over + 0.002) * L + 0.005, 2)
+            if start_row is not None:
+                start_row["counter_l"] = round(start_row["counter_l"] + need, 2)
+            else:
+                x["counter_l"] = round(x["counter_l"] - need, 2)
+            assert round((x["counter_l"] - (start_row["counter_l"] if start_row else 0.0)) / L, 1) == fig, (w, need)
+        else:
+            raise AssertionError(("no convergence", w))
+        raw = (x["counter_l"] - (start_row["counter_l"] if start_row else 0.0)) / L
+        assert raw - (round(raw, 1) - 0.05) >= 0.012, (w, raw)
+        if start_row is not None:
+            nxt = rows[sets[0]]["counter_l"]
+            assert start_row["counter_l"] < nxt - 0.2, (w, start_row["counter_l"], nxt)
+        x["flow_ml_min"] = int(round(1000.0 * (x["counter_l"] - p["counter_l"]) /
+                                     ((x["time"] - p["time"]).total_seconds() / 60.0) + rng.normal(0, 2.5)))
+        info["purge_gal"] = raw
+    return rows
+
+
+def bottle_sets(rows, truth):
+    """The sample itself: collected in the chain of custody's minute, while the field app goes on logging the flow
+    cell every few minutes until the pump stops. Those later sets read water the sample was not taken from: the cell
+    warms, takes up air and stirs fines, so they agree with nothing before them. The first of them runs on at the
+    sample set's rate. Visits typed by hand (the unpaired meter) log nothing after the sample. Drawn on a stream of
+    their own, so every set before the sample, every counter and every graded figure stays as it was."""
+    rng = stream(6)
+    out = []
+    first_counter, start_counter, last_stop = {}, {}, {}
+    for x in rows:
+        key = (x["event"], x["location"])
+        if x["kind"] in ("decon", "bottles"):
+            last_stop[x["day"]] = x["counter_l"]
+        elif x["kind"] == "reading" and key not in first_counter:
+            first_counter[key] = x["counter_l"]
+            start_counter[key] = last_stop.get(x["day"], 0.0)
+    for i, x in enumerate(rows):
+        out.append(x)
+        if x["kind"] != "reading" or not x["last"]:
+            continue
+        ei, w, day = x["event"], x["location"], x["day"]
+        b = rows[i + 1]
+        assert b["kind"] == "bottles" and b["location"] == w, (w, b["kind"])
+        info = truth[(ei, w)]
+        t_m = x["time"]
+        if _handtyped(ei, day, w):
+            continue
+        t_c = info["collect_time"]
+        p = [r for r in rows[:i] if r["kind"] == "reading" and r["location"] == w and r["event"] == ei][-1]
+        f_imp = (x["counter_l"] - p["counter_l"]) / ((t_m - p["time"]).total_seconds() / 60.0)
+        golden_gal = round((x["counter_l"] - start_counter[(ei, w)]) / W.L_PER_GAL, 1)
+        for attempt in range(200):
+            # the last set's counter less the visit's first set must not land the purge volume by coincidence
+            times = [t_c + dt.timedelta(seconds=float(rng.uniform(120, 200)))]
+            c1 = min(round(x["counter_l"] + f_imp * (times[0] - t_m).total_seconds() / 60.0, 2), b["counter_l"] - 0.15)
+            counters = [c1]
+            t2 = times[0] + dt.timedelta(seconds=float(rng.uniform(180, 240)))
+            if (b["time"] - t2).total_seconds() >= 30:
+                c2 = round(c1 + (b["counter_l"] - c1) * (t2 - times[0]).total_seconds() /
+                           (b["time"] - times[0]).total_seconds(), 2)
+                if (c2 - c1) / ((t2 - times[0]).total_seconds() / 60.0) <= 0.48:
+                    times.append(t2)
+                    counters.append(c2)
+            if ei != W.EVAL or abs(round((counters[-1] - first_counter[(ei, w)]) / W.L_PER_GAL, 1) - golden_gal) >= 0.05:
+                break
+        else:
+            raise AssertionError(("no bottle-set timing", w))
+        assert (b["time"] - times[0]).total_seconds() >= 30, w
+        comp, prev, unc = info["spc"], x, x["meter"] == W.RENTAL_UNCOMP
+        for t, counter in zip(times, counters):
+            for attempt in range(80):
+                T = round(prev["temp_c"] + rng.uniform(0.15, 0.5), 1)
+                spc_k = comp * (1 + rng.uniform(0.006, 0.016) * (1 if rng.random() < 0.5 else -1))
+                logged = int(round(spc_k * (1 + W.TEMP_COEF * (T - 25)))) if unc else int(round(spc_k))
+                read = logged / (1 + W.TEMP_COEF * (T - 25)) if unc else float(logged)
+                if abs(round(read) - round(comp)) >= 2 and abs(read - round(read)) <= 0.38:
+                    break
+            else:
+                raise AssertionError(("no bottle set", w))
+            minutes = (t - prev["time"]).total_seconds() / 60.0
+            flow = int(round(1000.0 * (counter - prev["counter_l"]) / minutes + rng.normal(0, 4)))
+            row = {"event": ei, "day": day, "time": t, "location": w, "kind": "reading", "flow_ml_min": flow,
+                   "counter_l": counter, "temp_c": T, "spc": logged, "ph": round(prev["ph"] + rng.normal(0, 0.02), 2),
+                   "do": round(max(prev["do"] * rng.uniform(1.25, 1.6), prev["do"] + 0.3), 2),
+                   "orp": int(round(prev["orp"] + rng.uniform(10, 30))),
+                   "turb": round(prev["turb"] + max(1.2, 0.15 * prev["turb"]) + rng.uniform(0.0, 1.3), 1),
+                   "meter": x["meter"], "last": False, "after_sample": True}
+            out.append(row)
+            prev = row
+    return out
+
+
 def run():
     hd = heads()
     bgv, bgf, _ = background(hd)
@@ -285,6 +429,7 @@ def run():
     for w in W.BACKGROUND:
         octvals[w] = (bgv[(w, W.EVAL, "chloride")], bgv[(w, W.EVAL, "sodium")])
     frows, ftruth = field_records(octvals)
+    frows = bottle_sets(sample_minutes(frows, ftruth), ftruth)
     return {"heads": hd, "bg": bgv, "bg_frac": bgf, "rev": rev, "bgwin": win, "cmp": cmp_vals, "cmp_frac": cmp_frac,
             "limits": lim, "plume_oct": plume_oct, "lead": lead, "high": high, "low": low,
             "field_rows": frows, "field_truth": ftruth}

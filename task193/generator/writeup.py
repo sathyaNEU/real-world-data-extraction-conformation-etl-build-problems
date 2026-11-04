@@ -63,10 +63,14 @@ def write(task, f):
       "and %s ug/L." % (L["chloride"], L["sodium"], L["boron"]))
     a("6. Compared every compliance well's October 2026 result with the unrounded limits (SAP section 6): %s." %
       "; ".join("%s over on %s" % (w, _join(ex[w])) for w in call))
-    a("7. From %s, read each well's reading set marked sample collected, corrected R-4471's logged conductivity to "
-      "25 C at %s per cent a degree (FS-03 section 4), and took the purge volume as the controller counter at the "
-      "sample less the counter when the pump last stopped that day (a decon rinse or bottles filled entry, zero for "
-      "the day's first well), in gallons of %s litres." % (PK.FILES["purge"], f["temp_coef_pct"], f["litres_per_gallon"]))
+    a("7. From %s, took for each well the last reading set logged before its collection minute on the chain of custody "
+      "in %s (local daylight time, five hours behind the field app's UTC; the app logs on while the bottles fill), "
+      "with its meter (the day's last recorded serial where the set has none, FS-03 section 3); corrected to 25 C at "
+      "%s per cent a degree (FS-03 section 4) the sets of a meter that %s shows reporting in uS/cm rather than uS/cm "
+      "at 25 C (R-4471); and took the purge volume as the controller counter at that set less the counter when the "
+      "pump last stopped that day (a decon rinse or bottles filled entry, zero for the day's first well), in US gallons of "
+      "%s litres." % (PK.FILES["purge"], PK.FILES["edd_b"], f["temp_coef_pct"], PK.FILES["calib"],
+                      f["litres_per_gallon"]))
     a("8. Resample %s within %d days of their October samples." % (_join(call), f["resample_days"]))
     a("")
     a("## 4. Deliverable Answers")
@@ -87,7 +91,7 @@ def write(task, f):
     a("4. Specific conductance at sampling, microsiemens per centimetre at 25 C, whole:")
     for w in sorted(order, key=lambda x: (x[:2], int(x[3:].rstrip("R")))):
         a("   - %s: %d" % (w, f["spc_25c"][w]))
-    a("5. Purge volume before the sample, gallons, one decimal:")
+    a("5. Purge volume before the sample, US gallons, one decimal:")
     for w in sorted(order, key=lambda x: (x[:2], int(x[3:].rstrip("R")))):
         a("   - %s: %s" % (w, f["purge_gal"][w]))
     a("")

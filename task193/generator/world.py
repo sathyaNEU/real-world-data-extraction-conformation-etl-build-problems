@@ -12,7 +12,8 @@ SITE = "Marten Creek Landfill"
 CONSULTANT = "Fieldstone Hydrogeology"
 LAB_A = "Tamarack Analytical Services"
 LAB_B = "Ridgeline Environmental Laboratories"
-PEOPLE = {"manager": "Kathryn Bonilla", "hydrogeologist": "Wendy Cantu"}
+PEOPLE = {"manager": "Kathryn Bonilla", "hydrogeologist": "Wendy Cantu", "principal": "Jeremy Collins",
+          "qa_manager": "Anna Mercado"}
 EXPORT_DATE = dt.date(2026, 11, 3)
 
 # ---------------------------------------------------------------- monitoring points
@@ -121,3 +122,10 @@ L_PER_GAL = 3.785411784
 SAMPLING_ORDER = [["MW-1", "MW-2", "MW-3", "MW-4"], ["MW-5R", "MW-8", "MW-11", "MW-10"], ["MW-9", "MW-7", "MW-6"]]
 OCT_METERS = {0: RENTAL_UNCOMP, 1: RENTAL_OK, 2: RENTAL_UNCOMP}
 METER_UNPAIRED = ("MW-7", "MW-6")
+# the field app's calibration entries (FS-03 section 4): each sonde calibrated by the day's sampler before the first
+# well and checked at the end of the day; the rental R-4471 arrived set to report conductivity at the sample's
+# temperature, the other two report it compensated to 25 C
+SONDE_MODEL = "ProDSS"
+SONDE_OWNER = {OWN_METER: "Fieldstone", RENTAL_UNCOMP: "rental", RENTAL_OK: "rental"}
+COND_COMPENSATED = {OWN_METER: True, RENTAL_UNCOMP: False, RENTAL_OK: True}
+KCL_STD_US_CM = 1413
