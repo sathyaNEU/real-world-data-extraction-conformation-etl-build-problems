@@ -1,34 +1,37 @@
 {
   "task": "task211",
-  "status": "PAUSED",
+  "status": "DRAWING",
   "domain": "supply-chain-logistics / transportation-network (client: general-statistics-data-science / exploratory-data-analysis-distribution-assessment)",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-11-04",
   "seed": "AD34",
   "stump": "A competent analyst replays each floating vessel's weather procedure over the buoy record, credits the jack-up with the downtime of the vessel it releases and names Fjernhav at 38 days; the step that lands them there is treating the vessels as independent, when Skarvgrund's and Lillevig Banke's share Bramso Havn's one heavy-lift berth and the past progress reports show the later arrival going on to Kalvholm, so the jack-up at Skarvgrund also removes Lillevig Banke's diversions and avoids 42 days.",
-  "architecture": 1,
+  "architecture": 2,
   "loops": 0,
   "precut": {
     "exit": 0,
     "date": "2026-11-04"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK, on target.zip 3f239f1e650fc56bc24cc050b4f141eb; five REVIEW lines ruled harmless in the design note's Leak sweep rulings",
-    "reader": "pending: stage 4 brief written"
+    "leak_py": "REVIEW, no LEAK",
+    "reader": "round 1: no leak, but question 6 leaned to rule application (the plan states the measure and the procedure)"
   },
   "duplicate_check": {
     "heart": "PASS 2026-11-04, corpus at 9b820fa (parent merged) with every batch4 sibling card present",
     "nearest": "0.06 task472 (stump); surface promotes task160 (0.101, corpus top 1 percent) and task147, task159 (card axes, differentiated on the card)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "pending: stage 4 brief written"
+    "verdict": "round 1 NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK on Gate H (decisive_step: planted)",
+    "why": "the decisive berth-contention practice (a vessel finding Bramso Havn's one heavy-lift berth taken goes on to Kalvholm) is filed in no governing document and was recovered from 26 settled cases in the progress reports: a withheld rule; executing the campaign plan literally names Fjernhav (38 days), runner-up Skarvgrund (35). Asks 4 to 6 carried further unforced readings, and ask 5's golden read a code against its filed definition.",
+    "gate_g": "other (withheld operational rule recovered from settled cases)",
+    "gate_h": "domain pass, layers pass, decisive step planted",
+    "reports": "scratchpad t211/stage4/judge and reader"
   },
   "returned": [],
-  "resume": "Stage 4: spawn together, in the background, the leak reader (general-purpose, sonnet, medium) on /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/stage4/reader/BRIEF.md and the determinism judge (general-purpose, sonnet, medium) on /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t211/stage4/judge/BRIEF.md; each folder's target.zip is byte-identical to task211/target.zip (md5 3f239f1e650fc56bc24cc050b4f141eb). If the scratch copies are gone, rebuild with python3 task211/generator/build.py then python3 task211/generator/golden.py (byte-identical twice) and rewrite the folders from generator outputs. Fix every finding of both in the generator in one pass, re-judge once on FIX_NOW, then ship: every gate re-run on the final cut, ledger row, card current, git add -f task211/target.zip and task211/golden/.",
+  "resume": "Re-root at architecture 2 from stage 1 in another client domain, world, dataset and shell under Anomaly Detection & Diagnostics (one architecture per world: the offshore jack-up world is spent). Architecture 1 (Nordvig Marine's jack-up for five North Sea sites, the shared heavy-lift berth at Bramso Havn) died at stage 4 round 1 on Gate H: its decisive practice was recovered from settled cases and filed in no governing document (a withheld rule), and filed it would have been executable. Move its identity into the card's lineage at the new draw, register, commit DRAWN.",
   "approved": null,
   "delivered": null,
   "portal": null,

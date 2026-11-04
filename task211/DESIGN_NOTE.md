@@ -381,3 +381,8 @@ Measured by: generator/ceiling.py on the cut pack (shares no code with the gener
   left in an hour are freed before that hour's arrivals.
 - 2026-11-04, a Tranevig dues device resting on the tariff alone (weekly lines without berth times): 6 equal-charge
   pairs and 8 runs of three split two ways, so the golden was not recoverable; berth start times added to the lines.
+- 2026-11-04, architecture 1 (Nordvig Marine's one jack-up for five North Sea sites, the shared heavy-lift berth at Bramso Havn)
+  spent at stage 4 round 1: the judge sent it back on Gate H (decisive step planted). The practice the golden needs, the later
+  arrival at a taken berth going on to Kalvholm, was moved out of the governing documents at stage 2 so that a per-placement
+  joint replay of stated facts would land wrong, and so became a withheld rule recovered from settled cases; filed, the same
+  practice makes the literal replay of the plan reach the golden. The mechanism had no legal form. Re-root in another world.
