@@ -1,0 +1,106 @@
+"""Ask B's records: the maintenance management system's defect reports (MMS export), from the clean truth.
+
+Operators write a defect card when they pull a car in; the card names the car and the block. The yard clerk keys the
+cards into the MMS on the next business morning (now and then a day later), so each card's record carries the time
+it was keyed, and its reported date is the MMS default, the day of keying. Mechanics' inspection findings are keyed
+the day they are found and name no block. Ask B counts the operator cards by the service day they were written on,
+which only the card's car and block against the yard's block sheets recover (a recorded date for the event date).
+
+defect_reports(T, Rr, seed) -> (mms, truth): the export rows, and one truth row per operator card (service day, line,
+group, weekday service). Its own random stream, drawn after every other record, so the main call's records and ask A's
+are unchanged by it.
+"""
+import numpy as np
+import pandas as pd
+import world as W
+import simulate as S
+
+GROUPS = {
+    "Brakes": (0.052, ["Brakes grabbing", "Friction brake slow to release", "Sander inoperative", "Track brake fault light",
+                       "Brake cylinder pressure low", "Parking brake not releasing"]),
+    "Doors": (0.070, ["Door slow to close", "Door obstruction alarm", "Door chime inoperative", "Sensitive edge fault",
+                      "Door will not lock out", "Bridge plate fault"]),
+    "Propulsion": (0.030, ["Traction cut-out", "Jerky acceleration", "Propulsion fault light"]),
+    "HVAC": (0.038, ["AC not cooling", "Heater inoperative", "Cab fan inoperative"]),
+    "Lights and horn": (0.036, ["Headlight out", "Gong weak", "Marker light out", "Interior lights flickering"]),
+    "Body and interior": (0.030, ["Seat damaged", "Window cracked", "Stanchion loose", "Graffiti"]),
+    "Communications": (0.042, ["PA inaudible", "Radio static", "Destination sign blank", "Stop announcement wrong"]),
+}
+INSPECT_P = 0.035          # inspection findings per car per business day
+LATE_P = 0.07              # cards keyed a business day late
+EXPORTED = "2026-11-02 11:00"   # the MMS extract was run on the morning of 2 November
+UNIQUE_DAYS = 7            # a card's car ran its block on exactly one service day in the week before keying
+
+
+def _business_days(start, end):
+    hol = {pd.Timestamp(h) for h in W.OBS_HOLIDAYS}
+    return [d for d in pd.date_range(start, end) if d.weekday() < 5 and d not in hol]
+
+
+def defect_reports(T, Rr, seed=W.SEED):
+    rng = np.random.default_rng(seed + 29)
+    C = T["consists"].copy()
+    C["date"] = pd.to_datetime(C["date"])
+    rows = []
+    for r in C.itertuples():
+        rows.append((r.date, r.block, int(r.lead_car)))
+        if not pd.isna(r.trail_car):
+            rows.append((r.date, r.block, int(r.trail_car)))
+    Y = pd.DataFrame(rows, columns=["sday", "block", "car"])
+    seen = {k: set(g["sday"]) for k, g in Y.groupby(["car", "block"])}    # the block sheets as shipped
+    # a car bad-ordered in service and the spare that took its block over write no card that day (the depot has the car)
+    SW = Rr["swaps"]
+    bad = set(zip(pd.to_datetime(SW["date"]), SW["block"]))
+    Y = Y[~pd.Series(list(zip(Y["sday"], Y["block"]))).isin(bad).values].reset_index(drop=True)
+    spare_days = set(zip(pd.to_datetime(SW["date"]), SW["spare"].astype(int)))
+    Y = Y[~pd.Series(list(zip(Y["sday"], Y["car"]))).isin(spare_days).values].reset_index(drop=True)
+
+    bdays = _business_days(W.OBS_START, "2026-11-30")
+    bidx = pd.DatetimeIndex(bdays)
+    dtype = {d: S.day_type(d, W.OBS_HOLIDAYS) for d in pd.date_range(W.OBS_START, W.OBS_END)}
+
+    cards = []
+    for r in Y.itertuples():
+        summer = 1.8 if r.sday.month in (6, 7, 8) else 1.0
+        for grp, (lam, texts) in GROUPS.items():
+            n = rng.poisson(lam * (summer if grp == "HVAC" else 1.0))
+            for _ in range(n):
+                k = int(np.searchsorted(bidx, r.sday, side="right"))
+                if rng.random() < LATE_P:
+                    k += 1
+                keyed_day = bidx[k]
+                t = keyed_day + pd.Timedelta(minutes=int(rng.integers(6 * 60 + 35, 9 * 60 + 40)))
+                text = str(rng.choice(texts))
+                lo = keyed_day - pd.Timedelta(days=UNIQUE_DAYS)
+                hits = [d for d in seen[(r.car, r.block)] if lo <= d < keyed_day]
+                if len(hits) != 1:
+                    continue      # only a card its car and block date uniquely is kept (C1 on the dating)
+                cards.append(dict(created=t, source="Operator card", car=r.car, block=r.block, group=grp, defect=text,
+                                  sday=r.sday, weekday=dtype[r.sday] == "weekday"))
+    K = pd.DataFrame(cards)
+    K = K[K["created"] < pd.Timestamp(EXPORTED)].reset_index(drop=True)     # cards keyed after the export are not in it
+
+    # mechanics' inspection findings, keyed the day they are found
+    ins = []
+    cars = W.CARS["J"] + W.CARS["F"]
+    for d in _business_days(W.OBS_START, W.OBS_END):
+        for c in cars:
+            if rng.random() < INSPECT_P:
+                grp = str(rng.choice(list(GROUPS)))
+                ins.append(dict(created=d + pd.Timedelta(minutes=int(rng.integers(10 * 60, 15 * 60 + 30))), source="Inspection",
+                                car=c, block="", group=grp, defect=str(rng.choice(GROUPS[grp][1]))))
+    I = pd.DataFrame(ins)
+    M = pd.concat([K.drop(columns=["sday", "weekday"]), I], ignore_index=True)
+    M = M.sort_values(["created", "car"], kind="mergesort").reset_index(drop=True)
+    M["wo_no"] = ["WO-%06d" % (712040 + i) for i in range(len(M))]
+    M["reported"] = M["created"].dt.normalize()
+    truth = K.copy()
+    truth["line"] = np.where(truth["car"] < 120, "Juniper", "Foundry")
+    truth["bucket"] = np.where(truth["group"].isin(["Brakes", "Doors"]), truth["group"], "All other")
+    return M, truth
+
+
+def ask_b_truth(truth):
+    t = truth[truth["weekday"] & (truth["sday"] >= pd.Timestamp(W.OBS_START)) & (truth["sday"] <= pd.Timestamp(W.OBS_END))]
+    c = t.groupby(["line", "bucket"]).size()
+    return {ln: {b: int(c.get((ln, b), 0)) for b in ("Brakes", "Doors", "All other")} for ln in ("Juniper", "Foundry")}

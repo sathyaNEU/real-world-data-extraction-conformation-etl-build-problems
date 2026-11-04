@@ -3,30 +3,28 @@
  "status": "PAUSED",
  "domain": "human-factors-ergonomics/safety-incident-error-analysis",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-04",
  "seed": "AD33 (a data-centre battery's January FCR-D offer); its world became legal on the subdomain axis once task211 registered, and was set aside on screen 4 (every driver it could carry is one pairwise join and a per-cell rate); the build moved to Human Factors & Ergonomics: Ashcombe Regional Transit's streetcar, the four restricted-speed slots of the January and February 2027 weekday peaks",
- "stump": "The default path ends on the east-running morning and west-running evening cells that rose this autumn because it reads each cell's measured rate, adjusted for operators, darkness, sky cover and the school term, as the rate January's peaks will see; the excess was the low sun standing ahead of those directions in September and October, and in January and February it stands ahead of the south-east and south-west-running directions, which take the four slots.",
- "call": "",
+ "stump": "The default path ends on F3-I AM, F4-I AM, J1-O AM and J2-O AM, the morning cells that rose this autumn, because it reads each cell's measured rate, adjusted for operators, darkness, sky cover and the school term, as the rate January's peaks will see; the excess was the low sun standing ahead of those directions in September and October, and in January and February it stands ahead of the south-east-running morning and south-west-running evening directions (J4-O AM, J5-O AM, F5-O PM, F6-O PM), which take the four slots.",
+ "call": "J4-O AM, J5-O AM, F5-O PM, F6-O PM",
  "architecture": 2,
  "loops": 0,
  "drawn": "2026-11-04, card registered 2026-11-04T14:49:22Z, guard WARN (overuse.org_family answered; same_driver_older differentiated)",
  "precut": {
-  "exit": 1,
+  "exit": 0,
   "date": "2026-11-04",
-  "fails": [
-   "cracker misses every ask: cracker keeps B (6 figures)"
-  ],
-  "passes": "60 of 61"
+  "passes": "61 of 61"
  },
  "leak": {
   "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "0.07 task478 v4 lineage (check on the registered card)"
+  "heart": "WARN (overuse.org_family answered on the card; same_driver_older NOTE differentiated)",
+  "surface": "clean (the normals month headers printed in capitals: the name screen had read Jan Feb as a persona)",
+  "nearest": "0.07 task478 v4 lineage"
  },
  "judge": {
   "verdict": "",
@@ -34,14 +32,14 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 2, ask B only. The coordinator's lesson 2 filed every convention (SRM-07 3.4 codes, the run sheet's duty column, the release log's check, the yard's pull-out cars) and ask B (the May and August 2026 classes' overspeeds in the 30 days from each operator's first day in revenue service, revenue hours, per 100 revenue hours) became rule application: the cracker keeps 6 of 6 and precut fails one check (cracker keeps B). Redraw ask B on another system and device family (not D1, D4 or D5, which ask A holds) with every meaning filed and a reconstruction left after noticing (supplemental-stumping 1.0); rewrite golden.ask_b, ceiling.ask_b, records' truth, the prompt's last sentence (voice-check) and the note's ask sheet; rerun build.py twice (byte-identical), checks.py (scratch checks_run2.txt has the last full run), ceiling.py and precut.py to exit 0; message main with the ladder, the five screens, the literal-execution rows and the cracker table; then stage 3 (verify.py independent of the generator, figures_check.py, submission.md, golden-realism, reduce-house-fixes, leak.py, guard.py surface and heart after the sibling procedure) and the stage-4 briefs in scratchpad t210/a2/stage4/{reader,judge}.",
+ "resume": "Stage 3, after guard.py heart (WARN, answered) and surface (clean) on target.zip 8a81612a9bf571d6 (rebuild with python3 task210/generator/build.py; claude/jolly-hypatia-06c61h merged at 5d85b84, every sibling card present). Next, in order: the realism sweep on target/ (mms_defect_reports_2026.csv included); invoke golden-realism on golden/slot_plan_jan_feb_2027.csv and golden/braking_shift.png; write submission.md with submission-writeup (blocks from generator/figures.json: the call J4-O AM, J5-O AM, F5-O PM, F6-O PM; ask A 14 figures; ask B 6 figures) and execute its SOLUTION_STEPS literally in checks.py; figures_check.py; invoke reduce-house-fixes; leak.py; re-run precut.py, voice-check and checks.py; then write the stage-4 briefs (scratchpad t210/a2/stage4/reader/BRIEF.md and judge/BRIEF.md, each with its own prompt.txt and target.zip copy, the judge brief inlining guidelines/determinism_judge_system_prompt.md verbatim and holding graded_blocks.md and graded/ apart until derivation.md is written, the reader brief with no stump vocabulary or golden figures and banning /home/user/ and every other scratch folder) and commit PAUSED at the stage-4 hand-off.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "screens": "real generator (scratchpad t210/a2/proto/screens_gen.py, seeds 21001 to 21020): every rival reader wrong 20/20 (first look, (a), (b) two forms, (c) three pools, (d) three forms, five literal executions; trend readers (f) four forms wrong 20/20, at most three shared); golden equals truth 17/20; fifteen generator specifications agree 11/20 (every redraw with separation 10 per cent or more); shipped seed 21009: separation 21.0 per cent clean, 15.0 per cent from target/, twenty target/ readings agree; stated facts alone (SRM-07 3.8 on the pick) three of four",
- "ceiling": "generator/ceiling.py: pair 47.8, both on the call 64.2, mirror leakage 35.0, full includer 35.0 (routes 30 to 35)",
- "build": "generator/build.py byte-identical twice after the lesson-2 filings (target.zip caa01b3a611b0f6b); checks.py 73 PASS then FAIL on the cracker keeping ask B (the tail: separation line, input gates, Gate G, H1, zip, not yet reached)"
+ "screens": "corrected sun (solar.py hour angle wrapped), 20 redraws 21001 to 21020 (scratchpad t210/a2/r3/redraws.py): golden equals truth 19/20; every reader wrong 20/20 (first look max 1; a 1; b 1, 1; c 2, 3, 2; d 2, 1, 1; f 2, 2, 2, 3); literal execution of SRM-07 without 3.8 wrong 20/20, at most 2 shared, 1 at the shipped seed, 0 from target/; shipped seed 21019: fourth clears fifth by 27.3 clean, 23.7 from target/, 22.7 in verify.py; corridor 60 cells (every taper at cones 15 to 35 and every profile, flat to 20) all golden, at least 10.4 per cent clear; flat from 25 degrees off the slate (10 cells) and refuted by the record (45.5 or more in 2dlogL)",
+ "ceiling": "generator/ceiling.py: pair 31.2, both on the call 47.8, mirror leakage 5.0, full includer 10.0 (2 of 20); cracker A 0 of 14 B 0 of 6, second cracker A 1 of 14 B 0 of 6",
+ "build": "generator/build.py byte-identical twice (target.zip 8a81612a9bf571d6, seed 21019); checks.py 96 of 96 (solar anchor: solar.py against NOAA solar calculator equations in generator/solar_ref.py within 0.5 degrees, largest 0.23); verify.py PASS (its Almanac sun within 0.01 of the anchor)"
 }

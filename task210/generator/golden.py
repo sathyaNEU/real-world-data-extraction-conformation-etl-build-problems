@@ -5,8 +5,8 @@ at its midpoint against its section direction's bearing, and the airport's sky c
 model of firm brakes per pass (section-direction, hour, weekend and holiday, darkness, and the glare term
 1 + G * glare * sun) is fitted to the whole record and projected onto the January 2027 pick's weekday peak passes at
 the station's normal sunshine. The four section-direction peaks with the highest expected rates take the slots.
-Asks: emergency applications in revenue service per line and local month (A); overspeeds of the May and August 2026
-classes in each operator's first 60 days of revenue service, their revenue hours and the rate per 100 hours (B).
+Asks: emergency applications in revenue service per line and local month (A); the defect cards operators wrote in
+weekday service, April to October, per line for brakes, doors and all other defects (B).
 
     python3 task210/generator/golden.py      # writes generator/figures.json and golden/
 """
@@ -34,7 +34,7 @@ F = {"edr": "edr_event_export_2026-04-01_2026-10-31.csv", "avl": "avl_section_pa
      "survey": "streetcar_track_survey_2025.geojson", "metar": "ash_awos_hourly_obs_2026.csv",
      "yard": "yard_block_sheets_2026.csv", "runs": "run_sheets_2026.csv", "roster": "operator_roster_2026.csv",
      "cards": "badge_card_register.csv", "pick": "january_2027_pick_timetable.pdf", "srm": "SRM-07_seasonal_restricted_speed_orders.pdf",
-     "normals": "ash_climate_normals_1991-2020.pdf"}
+     "normals": "ash_climate_normals_1991-2020.pdf", "mms": "mms_defect_reports_2026.csv"}
 
 
 def path(k, target=TARGET):
@@ -150,9 +150,9 @@ def passes(target=TARGET, at="mid", sky="hour", assign="position"):
     A["section"] = A["section"].astype(str)
     A["service_date"] = pd.to_datetime(A["service_date"])
     A = _sun(A, sec, lat, lon, at)
-    # day type from the service actually run: the weekday timetable runs the most trips
-    trips = A.groupby("service_date")["trip_id"].nunique()
-    A["wkend"] = (A["service_date"].map(trips) < 0.9 * trips.max()).astype(float)
+    # day type from the service actually run (Saturdays, Sundays and holidays against the weekday timetable)
+    wk = weekday_service(target)
+    A["wkend"] = (~A["service_date"].isin(wk)).astype(float)
     A["pid"] = np.arange(len(A))
     # firm brakes onto the passes of the car that logged them
     E = pd.read_csv(path("edr", target))
@@ -360,42 +360,44 @@ def ask_a(target=TARGET, revenue="operating", dedupe="pair", window_s=360, month
     return {f"{ln} {m:02d}": int(out.get((ln, m), 0)) for ln in ("Juniper", "Foundry") for m in range(4, 11)}
 
 
-# ---------------------------------------------------------------- ask B: the 2026 classes' first 30 days
-def ask_b(target=TARGET, start="solo", badges="register", date="service", days=30):
-    R = pd.read_csv(path("runs", target))
-    R["service_date"] = pd.to_datetime(R["service_date"])
-    ro = pd.read_csv(path("roster", target))
-    ro["qualified"] = pd.to_datetime(ro["qualified"])
-    solo = R[R["duty"] == "operator"]
-    cards = pd.read_csv(path("cards", target), dtype={"badge": str})
-    E = pd.read_csv(path("edr", target), dtype={"operator_badge": str})
-    E = E[E["event_code"] == "OS"].copy()
-    E["t"] = to_local(E["event_time_utc"])
-    if badges == "register":
-        bm = cards.drop_duplicates("badge").set_index("badge")["operator_no"]
-    else:   # the register's current cards only
-        bm = cards[cards["withdrawn"].isna()].drop_duplicates("badge").set_index("badge")["operator_no"]
-    E["op"] = E["operator_badge"].map(bm)
-    out = {}
-    for cls, name in (("26-2", "May"), ("26-3", "August")):
-        ops = ro[ro["training_class"] == cls]["operator_no"].astype(int)
-        n, h = 0, 0.0
-        for o in ops:
-            if start == "solo":
-                w0 = solo[solo["operator_no"] == o]["service_date"].min()
-            elif start == "first_row":
-                w0 = R[R["operator_no"] == o]["service_date"].min()
-            else:
-                w0 = ro.set_index("operator_no").loc[o, "qualified"]
-            w1 = w0 + pd.Timedelta(days=days)
-            ev = E[E["op"] == o]
-            dd = ev["t"].dt.normalize() if date == "calendar" else (ev["t"] - pd.Timedelta(hours=3)).dt.normalize()
-            n += int(((dd >= w0) & (dd < w1)).sum())
-            rr = solo if start == "solo" else R
-            h += float(rr[(rr["operator_no"] == o) & (rr["service_date"] >= w0) & (rr["service_date"] < w1)]["revenue_hours"].sum())
-        out[name] = dict(overspeeds=n, revenue_hours=round(h, 1), per_100h=round(100 * n / h, 1), hours_exact=round(h, 2),
-                         rate_exact=round(100 * n / h, 4))
-    return out
+# ---------------------------------------------------------------- ask B: operators' defect cards in weekday service
+def weekday_service(target=TARGET):
+    """Service days the weekday timetable ran: a Monday to Friday whose service started before 07:00 in the AVL log
+    (the weekday timetable starts at 06:00; a holiday runs the Sunday timetable, which starts at 07:00)."""
+    A = pd.read_parquet(path("avl", target), columns=["service_date", "enter_local"])
+    first = A.groupby("service_date")["enter_local"].min()
+    return {pd.Timestamp(d) for d, t in first.items()
+            if pd.Timestamp(d).weekday() < 5 and t.hour * 60 + t.minute < 7 * 60}
+
+
+def ask_b(target=TARGET, dating="block", weekday="service", days=7):
+    """Operator defect cards by line and defect group, counted on the service day each card was written: a card is
+    keyed into the MMS after the car comes in, so it is dated to the day its car pulled out on the card's block (the
+    yard's block sheets), the one such day in the week before it was keyed. Routes for the checks: dating "car" (the
+    car's last day out, any block), "previous" (the day before keying), "reported" (the MMS reported date)."""
+    M = pd.read_csv(path("mms", target), dtype={"block": str})
+    K = M[M["source"] == "Operator card"].copy().reset_index(drop=True)
+    K["kd"] = pd.to_datetime(K["created"]).dt.normalize()
+    Y = pd.read_csv(path("yard", target))
+    Y["sday"] = pd.to_datetime(Y["sheet_date"], format="%m/%d/%Y")
+    Y = pd.DataFrame([(d, b, int(c)) for d, b, cs in zip(Y["sday"], Y["block"], Y["pullout_cars"].astype(str))
+                      for c in cs.split("+")], columns=["sday", "block", "car"])
+    if dating in ("block", "car"):
+        on = ["car", "block"] if dating == "block" else ["car"]
+        m = K.reset_index().merge(Y[["sday"] + on], on=on)
+        m = m[(m["sday"] < m["kd"]) & (m["sday"] >= m["kd"] - pd.Timedelta(days=days))]
+        day = m.groupby("index")["sday"].max().reindex(K.index)
+    elif dating == "previous":
+        day = K["kd"] - pd.Timedelta(days=1)
+    else:
+        day = pd.to_datetime(K["reported"])
+    wk = weekday_service(target) if weekday == "service" else None
+    isw = day.map(lambda d: (d in wk) if wk is not None else (not pd.isna(d) and d.weekday() < 5)).astype(bool)
+    ok = (isw & (day >= pd.Timestamp("2026-04-01")) & (day <= pd.Timestamp("2026-10-31"))).values
+    line = np.where(K["car"] < 120, "Juniper", "Foundry")
+    grp = np.where(K["defect_group"].isin(["Brakes", "Doors"]), K["defect_group"], "All other")
+    c = pd.Series(1, index=K.index)[ok].groupby([line[ok], grp[ok]]).sum()
+    return {ln: {g: int(c.get((ln, g), 0)) for g in ("Brakes", "Doors", "All other")} for ln in ("Juniper", "Foundry")}
 
 
 # ---------------------------------------------------------------- deliverables

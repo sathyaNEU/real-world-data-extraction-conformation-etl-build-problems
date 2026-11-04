@@ -6,14 +6,15 @@ with the generator: every figure here is recomputed from target/ by its own rout
     python3 task210/generator/ceiling.py
 
 Rows. The cracker lands the call, runs the battery (UTC to Mountain time, exact repeats dropped, every badge through
-the card register) and takes "in revenue service" to the AVL log, the agency's record of revenue trips, and each
-operator's first run-sheet row as the start of revenue service. The second cracker takes revenue service from the yard
-sheets, drops each depot running test by the release log and pairs a two-car train's records within a minute, and
-starts each window at the class's qualification date. The mirror stops at the observed-rate rung on the call and
-handles the asks as the crackers do. The full includer notices every device: the trailing car's copies (paired within
-a minute on the same block), the depot tests (dropped by their walking-pace signature in Foundry Loop, or by the
-release log), the AVL drop-outs (revenue taken from the yard sheets) and the route-training rows (each window opened
-at the first run the operator holds alone).
+the card register) and takes "in revenue service" to the AVL log, the agency's record of revenue trips; it sees that the
+MMS keys operators' cards on business mornings and dates each card to the service day before it was keyed. The second
+cracker takes revenue service from the yard sheets, drops each depot running test by the release log and pairs a
+two-car train's records within a minute, and dates each card to the last day its car pulled out before the card was
+keyed. The mirror stops at the observed-rate rung on the call and handles the asks as the crackers do. The full
+includer notices every device: the trailing car's copies (paired within a minute on the same block), the depot tests
+(dropped by their walking-pace signature in Foundry Loop, or by the release log), the AVL drop-outs (revenue taken from
+the yard sheets), and the cards' keying lag (each card dated to its car's last day out, or to the day its car ran the
+card's block, with weekdays read off the calendar).
 """
 import json
 import os
@@ -123,31 +124,41 @@ def ask_a(target, route, tests=None, window=60, metres=None, utc_month=False):
     return [int(out.get((ln, m), 0)) for ln in ("Juniper", "Foundry") for m in range(4, 11)]
 
 
-def ask_b(target, start, badges="register"):
-    r = _csv("run_sheets_2026.csv", target)
-    r["service_date"] = pd.to_datetime(r["service_date"])
-    ro = _csv("operator_roster_2026.csv", target)
-    ro["qualified"] = pd.to_datetime(ro["qualified"])
-    alone = r[r["duty"] == "operator"]
-    cards = _csv("badge_card_register.csv", target, dtype={"badge": str})
-    if badges != "register":
-        cards = cards[cards["withdrawn"].isna()]
-    b2o = dict(zip(cards["badge"], cards["operator_no"]))
-    e = _csv("edr_event_export_2026-04-01_2026-10-31.csv", target, dtype={"operator_badge": str})
-    e = e[e["event_code"] == "OS"].copy()
-    e["op"] = e["operator_badge"].map(b2o)
-    e["sday"] = (_local(e["event_time_utc"]) - pd.Timedelta(hours=3)).dt.normalize()
+def ask_b(target, dating, weekdays="timetable"):
+    """Operator cards per line for brakes, doors and the rest, April to October, in weekday service: each card dated
+    by the route's own rule (the card's car on its block, the car's last day out, the day before keying, or the
+    MMS reported date); weekday service from the AVL log (a Monday to Friday with trips before 07:00, the weekday
+    timetable's start), or the calendar's Monday to Friday."""
+    m = _csv("mms_defect_reports_2026.csv", target, dtype={"block": str})
+    m = m[m["source"] == "Operator card"].reset_index(drop=True)
+    keyed = pd.to_datetime(m["created"]).dt.normalize()
+    y = yard(target)
+    day = pd.Series(pd.NaT, index=m.index)
+    if dating in ("block", "car"):
+        for k in m.index:
+            c = y[(y["car"] == m.at[k, "car"]) & (y["sday"] < keyed[k]) & (y["sday"] >= keyed[k] - pd.Timedelta(days=7))]
+            if dating == "block":
+                c = c[c["block"] == m.at[k, "block"]]
+            if len(c):
+                day[k] = c["sday"].max()
+    elif dating == "previous":
+        day = keyed - pd.Timedelta(days=1)
+    else:
+        day = pd.to_datetime(m["reported"])
+    if weekdays == "timetable":
+        a = pd.read_parquet(os.path.join(target, "avl_section_passes_2026.parquet"), columns=["service_date", "enter_local"])
+        a["service_date"] = pd.to_datetime(a["service_date"])
+        early = a[a["enter_local"].dt.hour < 7].groupby("service_date").size()
+        wk = {d for d in early.index if d.weekday() < 5}
+        isw = day.map(lambda d: d in wk)
+    else:
+        isw = day.map(lambda d: (not pd.isna(d)) and d.weekday() < 5)
+    ok = isw.astype(bool) & (day >= pd.Timestamp("2026-04-01")) & (day <= pd.Timestamp("2026-10-31"))
     figs = []
-    for cls in ("26-2", "26-3"):
-        n, h = 0, 0.0
-        for o in ro.loc[ro["training_class"] == cls, "operator_no"]:
-            src = alone if start == "solo" else r
-            w0 = (alone if start == "solo" else r).loc[lambda d: d["operator_no"] == o, "service_date"].min() \
-                if start in ("solo", "first_row") else ro.loc[ro["operator_no"] == o, "qualified"].iloc[0]
-            w1 = w0 + pd.Timedelta(days=30)
-            n += int(((e["op"] == o) & (e["sday"] >= w0) & (e["sday"] < w1)).sum())
-            h += float(src.loc[(src["operator_no"] == o) & (src["service_date"] >= w0) & (src["service_date"] < w1), "revenue_hours"].sum())
-        figs += [n, round(h, 1), round(100 * n / h, 1)]
+    for ln, lo, hi in (("Juniper", 100, 120), ("Foundry", 120, 140)):
+        on = ok & (m["car"] >= lo) & (m["car"] < hi)
+        figs += [int((on & (m["defect_group"] == "Brakes")).sum()), int((on & (m["defect_group"] == "Doors")).sum()),
+                 int((on & ~m["defect_group"].isin(["Brakes", "Doors"])).sum())]
     return figs
 
 
@@ -156,24 +167,25 @@ def kept(resp, gold):
 
 
 def main(target=TARGET):
-    gold = ask_a(target, "operating", window=360, metres=80) + ask_b(target, "solo")
+    gold = ask_a(target, "operating", window=360, metres=80) + ask_b(target, "block")
     fj = json.load(open(os.path.join(HERE, "figures.json")))
     want = [fj["ask_a"][k] for k in sorted(fj["ask_a"], key=lambda k: (k.split()[0] != "Juniper", k))]
-    want += [v for c in ("May", "August") for v in (fj["ask_b"][c]["overspeeds"], fj["ask_b"][c]["revenue_hours"],
-                                                    fj["ask_b"][c]["per_100h"])]
+    want += [fj["ask_b"][ln][g] for ln in ("Juniper", "Foundry") for g in ("Brakes", "Doors", "All other")]
     assert gold == want, ("ceiling's own golden handling disagrees with figures.json", gold, want)
     n = len(gold)
     rows = {
-        "cracker (AVL revenue log; first operator duty on the run sheets)": ask_a(target, "avl", window=0) + ask_b(target, "solo"),
-        "second cracker (yard sheets, release log, pairs in a minute; class date)":
-            ask_a(target, "yard", tests="release", window=60) + ask_b(target, "qualified"),
-        "naive (every EB record, UTC month; class date, current cards)": ask_a(target, "all", window=0, utc_month=True)
-            + ask_b(target, "qualified", badges="current"),
-        "full includer, signature (yard, Loop signature, pairs in a minute; first solo run)":
-            ask_a(target, "yard", tests="signature", window=60) + ask_b(target, "solo"),
-        "full includer, release log (yard, release log, pairs in a minute; first solo run)":
-            ask_a(target, "yard", tests="release", window=60) + ask_b(target, "solo"),
-        "full includer, AVL (AVL revenue log; first solo run)": ask_a(target, "avl", window=0) + ask_b(target, "solo"),
+        "cracker (AVL revenue log; each card on the day before it was keyed)": ask_a(target, "avl", window=0)
+            + ask_b(target, "previous"),
+        "second cracker (yard sheets, release log, pairs in a minute; each card on its car's last day out)":
+            ask_a(target, "yard", tests="release", window=60) + ask_b(target, "car"),
+        "naive (every EB record, UTC month; cards on the MMS reported date, calendar weekdays)":
+            ask_a(target, "all", window=0, utc_month=True) + ask_b(target, "reported", weekdays="calendar"),
+        "full includer, signature (yard, Loop signature, pairs in a minute; each card on its car's last day out)":
+            ask_a(target, "yard", tests="signature", window=60) + ask_b(target, "car"),
+        "full includer, release log (yard, release log, pairs in a minute; card on its block's day, calendar weekdays)":
+            ask_a(target, "yard", tests="release", window=60) + ask_b(target, "block", weekdays="calendar"),
+        "full includer, AVL (AVL revenue log; card on its block's day, calendar weekdays)": ask_a(target, "avl", window=0)
+            + ask_b(target, "block", weekdays="calendar"),
         "omniscient (the golden's handling; stress row, not the gate)": gold,
     }
     keep = {k: kept(v, gold) for k, v in rows.items()}
@@ -184,9 +196,15 @@ def main(target=TARGET):
     s = 5 + 7 + 55 * lc
     for k, v in keep.items():
         print("%-88s keeps %2d of %d ask figures (%4.1f per cent)" % (k, v, n, 100 * v / n))
+    na = 14
+    ka = {k: kept(v[:na], gold[:na]) for k, v in rows.items()}
+    kb = {k: kept(v[na:], gold[na:]) for k, v in rows.items()}
+    lf = full / n
     print("pair ceiling %.1f (one on the call, one off); both on the call %.1f; mirror leakage %.1f per cent of the ask "
-          "weight; full includer keeps %.1f per cent" % ((c + s) / 2, c, 100 * lc, 100 * full / n))
-    return dict(pair=(c + s) / 2, both_on=c, leak=100 * lc, full=100 * full / n, keep=keep, n=n)
+          "weight; full includer keeps %.1f per cent" % ((c + s) / 2, c, 100 * lc, 100 * lf))
+    print("at the full includer's keep: pair %.1f, both on the call %.1f" % ((45 + 55 * lf + 12 + 55 * lf) / 2, 45 + 55 * lf))
+    return dict(pair=(c + s) / 2, both_on=c, leak=100 * lc, full=100 * lf, keep=keep, n=n, keep_a=ka, keep_b=kb,
+                pair_full=(57 + 110 * lf) / 2, both_full=45 + 55 * lf)
 
 
 if __name__ == "__main__":

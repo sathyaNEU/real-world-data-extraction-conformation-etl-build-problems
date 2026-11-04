@@ -68,6 +68,13 @@
    "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
   },
   {
+   "file": "mms_defect_reports_2026.csv",
+   "source": "Ashcombe Regional Transit, maintenance management system",
+   "coverage": "defect reports created 1 April to 2 November 2026",
+   "date": "2026-11-02",
+   "license": "CC BY 4.0 (synthetic records generated for this task; no real agency's data)"
+  },
+  {
    "file": "SRM-07_seasonal_restricted_speed_orders.pdf",
    "source": "Ashcombe Regional Transit, Safety Risk Management Procedure SRM-07",
    "coverage": "revision 3, effective 1 September 2025",
@@ -131,5 +138,5 @@
  ],
  "distractor_note": "relevant enough to weigh (pedestrian volumes, arena crowds, track work, the school calendar), unused by the golden solution",
  "generated": "2026-11-02",
- "seed": 21009
+ "seed": 21019
 }

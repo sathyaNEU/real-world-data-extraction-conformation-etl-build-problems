@@ -5,7 +5,7 @@ firm-brake record, the operators, the fleet, the windows and the seed. Nothing h
 """
 import math
 
-SEED = 21009            # shipped seed (selected on the screens, asserted in checks.py)
+SEED = 21019            # shipped seed (selected on the corrected-sun screens, asserted in checks.py)
 LAT0, LON0 = 38.700, -104.905   # Civic Center, Ashcombe (fictional city on the Front Range, America/Denver)
 TZ = "America/Denver"
 
