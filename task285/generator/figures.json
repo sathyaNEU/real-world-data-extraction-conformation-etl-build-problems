@@ -1,0 +1,201 @@
+{
+ "ask1_dwellings_reached": {
+  "Burnishaw": 8,
+  "Cottergill": 60,
+  "Hawkesbridge North": 10,
+  "Hawkesbridge South": 315,
+  "Hepplewick": 124,
+  "Highfold": 11,
+  "Hollinside": 101,
+  "Kestlebeck": 0,
+  "Lunnerby": 127,
+  "Nettlecote": 11,
+  "Owlthwaite": 0,
+  "Quernby Moor": 7,
+  "Ravelsby Bridge": 61,
+  "Tolmarsh": 137,
+  "Upper Quarnell": 27,
+  "Whinnerby": 126,
+  "Wrennick": 6,
+  "Yarrowcote": 123
+ },
+ "ask1_total": 1254,
+ "ask2_closure_hours": {
+  "HW21-07-01": 17,
+  "HW21-07-02": 15,
+  "HW21-07-03": 16,
+  "HW21-07-04": 5,
+  "HW21-07-05": 6,
+  "HW21-07-06": 8,
+  "HW21-07-07": 13,
+  "HW21-07-08": 3,
+  "HW21-07-09": 7
+ },
+ "ask2_closure_hours_exact": {
+  "HW21-07-01": 16.817,
+  "HW21-07-02": 15.017,
+  "HW21-07-03": 15.75,
+  "HW21-07-04": 5.017,
+  "HW21-07-05": 6.017,
+  "HW21-07-06": 8.117,
+  "HW21-07-07": 12.8,
+  "HW21-07-08": 3.15,
+  "HW21-07-09": 7.1
+ },
+ "ask3_unpaid": {
+  "Burnishaw": 238,
+  "Cottergill": 59,
+  "Hepplewick": 620,
+  "Hollinside": 420,
+  "Lunnerby": 5600,
+  "Ravelsby Bridge": 770,
+  "Tolmarsh": 400,
+  "Upper Quarnell": 132,
+  "Whinnerby": 295,
+  "Wrennick": 460,
+  "Yarrowcote": 1580
+ },
+ "base_grant": 3000,
+ "budget": 30000,
+ "call": {
+  "count": 6,
+  "households_total": 2093,
+  "parishes": [
+   "Hollinside",
+   "Ravelsby Bridge",
+   "Lunnerby",
+   "Burnishaw",
+   "Wrennick",
+   "Cottergill"
+  ]
+ },
+ "closure_windows": {
+  "becks": [
+   12,
+   24
+  ],
+  "river": [
+   30,
+   57
+  ]
+ },
+ "constants": {
+  "datum_shift_m": 0.42,
+  "default_threshold_m": 0.15,
+  "depth_limit_m": 0.25,
+  "hours": [
+   0,
+   120
+  ]
+ },
+ "cut_off_hours": {
+  "Burnishaw": [
+   39,
+   46
+  ],
+  "Cottergill": [
+   45,
+   55
+  ],
+  "Hollinside": [
+   12,
+   19
+  ],
+  "Lunnerby": [
+   16,
+   24
+  ],
+  "Ravelsby Bridge": [
+   15,
+   22
+  ],
+  "Wrennick": [
+   45,
+   55
+  ]
+ },
+ "default_path": {
+  "count": 9,
+  "households_total": 3828,
+  "parishes": [
+   "Hollinside",
+   "Ravelsby Bridge",
+   "Lunnerby",
+   "Yarrowcote",
+   "Hepplewick",
+   "Burnishaw",
+   "Wrennick",
+   "Cottergill",
+   "Highfold"
+  ]
+ },
+ "default_path_grants": {
+  "Burnishaw": 3465,
+  "Cottergill": 3136,
+  "Hepplewick": 3511,
+  "Highfold": 3172,
+  "Hollinside": 3245,
+  "Lunnerby": 3381,
+  "Ravelsby Bridge": 3194,
+  "Wrennick": 3220,
+  "Yarrowcote": 3677
+ },
+ "grant_amounts": {
+  "Burnishaw": 6400,
+  "Cottergill": 3998,
+  "Hollinside": 4789,
+  "Lunnerby": 5786,
+  "Ravelsby Bridge": 4416,
+  "Wrennick": 4611
+ },
+ "grant_per_household": 5.73,
+ "grant_rest": 12000,
+ "households": {
+  "Burnishaw": 593,
+  "Cottergill": 174,
+  "Hollinside": 312,
+  "Lunnerby": 486,
+  "Ravelsby Bridge": 247,
+  "Wrennick": 281
+ },
+ "rungs": {
+  "R0_any_water": [
+   "Hollinside",
+   "Ravelsby Bridge",
+   "Lunnerby",
+   "Whinnerby",
+   "Yarrowcote",
+   "Hepplewick",
+   "Burnishaw",
+   "Wrennick",
+   "Cottergill",
+   "Highfold",
+   "Upper Quarnell"
+  ],
+  "R1_envelope": [
+   "Hollinside",
+   "Ravelsby Bridge",
+   "Lunnerby",
+   "Yarrowcote",
+   "Hepplewick",
+   "Burnishaw",
+   "Wrennick",
+   "Cottergill",
+   "Highfold"
+  ],
+  "R2_worst_hour": [
+   43,
+   [
+    "Burnishaw"
+   ]
+  ],
+  "R3_every_hour": [
+   "Hollinside",
+   "Ravelsby Bridge",
+   "Lunnerby",
+   "Burnishaw",
+   "Wrennick",
+   "Cottergill"
+  ]
+ }
+}

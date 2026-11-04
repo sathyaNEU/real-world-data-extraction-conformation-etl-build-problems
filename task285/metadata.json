@@ -1,0 +1,123 @@
+{
+ "decision": "which parishes receive the 2027 Flood Ready grants, and the households in each",
+ "deliverables": [
+  "flood_ready_parishes_2027.xlsx",
+  "flood_ready_parishes_2027.png"
+ ],
+ "distractor_files": [
+  "target/rest_centres_2026.xlsx",
+  "target/flood_warning_areas_2025.geojson",
+  "target/storage_area_stages_QRN25_JUL21_hindcast.csv"
+ ],
+ "files": {
+  "address_register_extract_oct2026.csv": {
+   "covers": "council address register extract, October 2026",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "bank_cancelled_cheques_2026.csv": {
+   "covers": "bank's cancelled cheque advice, 2026",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "council_tax_dwellings_by_parish_oct2026.csv": {
+   "covers": "council tax valuation list dwellings by parish, 1 October 2026",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "flood_ready_fund_guidance_2027.pdf": {
+   "covers": "the Foundation's 2027 grant guidance",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "flood_ready_ledger_2026.xlsx": {
+   "covers": "Foundation finance system, Flood Ready 2026 transactions",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "flood_warning_areas_2025.geojson": {
+   "covers": "flood warning areas in the valley",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "highways_levels_survey_2019.csv": {
+   "covers": "highways authority carriageway levels survey, 2019",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "highways_network_2025.geojson": {
+   "covers": "council highways network, 2025 asset upload",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "highways_road_closures_jul2021.csv": {
+   "covers": "highways duty officers' log of roads shut in July 2021",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "link_reference_crosswalk_2019_2025.csv": {
+   "covers": "highways asset upload crosswalk, 2019 references to 2025 links",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "pfr_property_survey_2022.xlsx": {
+   "covers": "2022 property flood resilience survey",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "police_road_closures_jul2021.csv": {
+   "covers": "police control room log of roads shut in July 2021",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "quarnell_flood_model_report_2025.pdf": {
+   "covers": "QRN25 summary report",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "rest_centres_2026.xlsx": {
+   "covers": "council emergency planning rest centre list",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "storage_area_stages_QRN23_D100CC.csv": {
+   "covers": "QRN23 model output (superseded March 2026), run D100CC",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "storage_area_stages_QRN25_D100CC.csv": {
+   "covers": "QRN25 model output, run D100CC, hourly storage-area stages",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "storage_area_stages_QRN25_JUL21_hindcast.csv": {
+   "covers": "QRN25 hindcast of the July 2021 event",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  },
+  "storage_areas_QRN25.geojson": {
+   "covers": "QRN25 storage area polygons",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed operating record (synthetic, task285 generator)"
+  }
+ },
+ "task": "task285"
+}
