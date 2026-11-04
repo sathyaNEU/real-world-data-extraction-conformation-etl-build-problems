@@ -1,34 +1,35 @@
 {
   "task": "task402",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "energy-systems-utilities/grid-reliability-outage-analysis",
   "objective": "root-cause",
-  "stage": 4,
-  "stage_name": "check",
-  "updated": "2026-11-03",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-11-04",
   "seed": "RC08 (which of five faults on an underperforming wind turbine gets the one spring crew visit, and the winter energy it cost); architecture 1 moved to an NHS Talking Therapies service and died at stage 4 (judge SEND_BACK); architecture 2 moved to a regional bowel screening programme's equity fund and died at stage 2 on honest levels; architecture 3 moves domain, world, dataset and shell to a cold-climate electric membership cooperative's 2027 reliability work plan, keeping the decision kind (one of five changes gets the single fix) and the quantity's kind (what that change cost over the review year, in its natural unit).",
   "stump": "A solver who books fiscal 2026's sustained interruptions by cause files the heat pump connection policy, at about 10,900 customer interruptions, because the overload category rose most once heat pumps were connected without a load study, and costs the switching revision at nothing because it only shortens restorations; the step that lands them there is never pairing each overload trip with the same section's restoration minutes earlier, which shows most of the winter's rise as cold-load re-trips after one-step re-energisation began and puts the fix on the switching revision.",
   "architecture": 3,
   "loops": 0,
   "precut": {
     "exit": 0,
-    "date": "2026-11-03",
-    "detail": "61 checks, 0 FAIL, 0 WARN on the stage 4 fix pass cut (voice-check PASS, 815 characters)"
+    "date": "2026-11-04",
+    "detail": "61 checks, 0 FAIL, 0 WARN on the final cut (voice-check PASS, 815 characters)"
   },
   "leak": {
     "leak_py": "REVIEW with --asof 2026-11-03 (0 LEAK; REVIEW lines: generic stump-paragraph words in the policy and the review, generic device_id and device_type columns, each answered in the design note's Pre-ship check)",
-    "reader": "round 1: no decisive-step sentence, no ranking or helper file, deciding step analytical; realism tells and ask readings fixed in the generator this pass. Round 2 brief: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4_r2/reader/brief_leak_reader.md"
+    "reader": "round 1 and round 2: no decisive-step sentence, no ranking or helper file, deciding step analytical; round 1 realism and ask readings fixed in the generator; round 2 realism tells measured wrong and ask readings settled by the round 2 judge (task402/leak_check_report.md)"
   },
   "duplicate_check": {
-    "heart": "WARN (nearest driver 0.06, task129; repeat.decision and repeat.question_form answered in the Pre-ship check)",
+    "heart": "WARN, no BLOCK (nearest driver 0.06, task129; repeat.decision and repeat.question_form answered in the Pre-ship check)",
     "surface": "2 promoted pairs (task400, task252), answered on the card's differentiation",
     "nearest": "task400 by surface; task252 by structural driver"
   },
   "judge": {
-    "verdict": "round 1: DETERMINISTIC, SOLUTION_WRONG (minor: step 2's frost clause did not reproduce 8,700)",
-    "disposition": "round 1: FIX_NOW, fixed in one generator pass; round 2 pending (the one re-judge)",
-    "report": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4/judge/judge_report.md",
-    "round2_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4_r2/judge/brief_determinism_judge.md"
+    "verdict": "DETERMINISTIC (round 2; round 1 DETERMINISTIC with a minor SOLUTION_WRONG on step 2 frost clause)",
+    "disposition": "APPROVE (round 2; round 1 FIX_NOW closed in one generator pass)",
+    "report": "task402/determinism_check_report.md",
+    "gate_g": "decomposition_attribution, analytical_non_defect",
+    "gate_h": "domain pass, layers pass, decisive step analytical"
   },
   "returned": [],
   "architectures": [
@@ -45,9 +46,9 @@
       "fate": "drawn 2026-11-03: cold load pickup re-trips after the SO-7 switching template revision went to one-step re-energisation, at an electric membership cooperative; stage 4 round 1 FIX_NOW fixed; round 2 running"
     }
   ],
-  "resume": "stage 4 round 2 running: the parent runs the determinism judge (medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4_r2/judge/brief_determinism_judge.md and the leak reader (general-purpose, sonnet, medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t402/a3/stage4_r2/reader/brief_leak_reader.md together, each on its own copy under stage4_r2/judge/ and stage4_r2/reader/ (byte-identical to target.zip af10a74f...). Rebuild first with python3 task402/generator/build.py if target/ is absent (byte-identical). On APPROVE with a clean read: write the ledger row and ship (every gate re-run on the final cut). A round-2 verdict other than DETERMINISTIC with APPROVE spends architecture 3 (a FIX_NOW that failed its second pass): re-root at stage 1 in another world, dataset and shell.",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-04",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

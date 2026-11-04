@@ -226,5 +226,11 @@
     "Brekke Power Products",
     "Halvorsen Electric",
     "Dunmore Transformer"
-  ]
+  ],
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "cost",
+    "rounding opener": "customer",
+    "deliverable set": "docx+png+xlsx"
+  }
 }

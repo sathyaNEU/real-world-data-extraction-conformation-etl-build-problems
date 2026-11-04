@@ -3,36 +3,7 @@
 Architecture 3, drawn 2026-11-03 (wave 7, Root-Cause lane), numbered from seed RC08 (a wind turbine's five faults and
 its one spring crew visit). Architecture 1 (an NHS Talking Therapies service) died at stage 4 on the determinism judge's
 SEND_BACK and architecture 2 (a bowel screening hub's equity fund) died at stage 2 on honest levels, before any
-generator (`## Pre-ship check
-
-Stage 4 fix pass, final cut target.zip af10a74f (round 2 pending; the call, the stump and the five printed costs as
-before):
-
-- The 10/10 rules re-read against the built pack: the decisive step is still the pairing of each overload trip with the
-  same section's restoration minutes before (analytical, no field or rule performs it); the mess is still Layer 1 only
-  (the legacy daily sheet now also carries the retired system's monthly member count, the step table is the switching
-  log joined by device and time).
-- Gates: `checks.py` 0 failures over 84 assertions (the 3,960 pairing operationalisations, the SOLUTION_STEPS executor on
-  all seven steps, 20 redraws; tightest graded figure May 2026's hours at 15 per cent of a unit from an edge);
-  `verify.py` 48 figures, 0 mismatches; two builds byte-identical over 22 files; `figures_check.py` 71 of 71;
-  `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS at 815 characters; `ceiling.py` pair ceiling 31.2.
-- `leak.py --asof 2026-11-03` REVIEW, no LEAK. Harmless, each: the policy and the review share generic words with the
-  stump paragraph (minutes, outage, section, switching, changes, system, record) and neither names the move;
-  `device_id` and `device_type` are what an outage system and a SCADA historian call those columns, and `device_id` is
-  the switching log's join key to the outage extract.
-- `guard.py heart` WARN, nearest driver 0.06 (task129). New beside the Draw's answered WARNs: `repeat.decision` against
-  task400 (a work plan funds one fix, so the call picks one of the changes) and `repeat.question_form` against task399
-  v4 (a pick asks which). `guard.py surface` promotes task400 and task252, both answered on the card's
-  `differentiation`.
-- `freeze.py check --mode rubric` with the 34 moved keys allowed: FAIL on one item, the ladder section's hash (its rung
-  figures re-measured on the new world: 10,924, 1,510, 1,068 and 8,714; every rung's winner and the order unchanged).
-  `--mode determinism`: the same and the workbook's Deliverable Answers (the ask figures moved, reasons in `## Ask
-  sheet`). The Final Recommendation and Critical Components numbers, the main-call keys, the stump in `pipeline.json`
-  and on the card, the card's driver, the default path and the call sentence are unchanged in both. Neither mode's
-  contract covers a world change that moves the ask side and re-measures the rungs; both outputs are recorded for the
-  author to choose.
-
-## Tried and rejected`, their lines, and the card's `lineage`). Architecture 3 moves domain, world, dataset
+generator (`## Tried and rejected`, their lines, and the card's `lineage`). Architecture 3 moves domain, world, dataset
 and shell. Kept from the seed: the decision kind (one of five changes gets the single fix) and the quantity's kind (what
 the change cost over the review year, in the period's natural unit). The kernel is new.
 
@@ -707,3 +678,60 @@ convergent and asserted.
   step table); the table is now the control centre's switching log with its own order numbers, joined by device and
   restoration time. Reduce-house-fixes H13 added four id patterns: legacy outage ids advancing by exactly one, rebate ids
   by one, meter numbers three times the account number, fuse numbers all multiples of 7; each now has its own numbering.
+
+## Pre-ship check
+
+Stage 4 fix pass, final cut target.zip af10a74f (round 2 pending; the call, the stump and the five printed costs as
+before):
+
+- The 10/10 rules re-read against the built pack: the decisive step is still the pairing of each overload trip with the
+  same section's restoration minutes before (analytical, no field or rule performs it); the mess is still Layer 1 only
+  (the legacy daily sheet now also carries the retired system's monthly member count, the step table is the switching
+  log joined by device and time).
+- Gates: `checks.py` 0 failures over 84 assertions (the 3,960 pairing operationalisations, the SOLUTION_STEPS executor on
+  all seven steps, 20 redraws; tightest graded figure May 2026's hours at 15 per cent of a unit from an edge);
+  `verify.py` 48 figures, 0 mismatches; two builds byte-identical over 22 files; `figures_check.py` 71 of 71;
+  `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS at 815 characters; `ceiling.py` pair ceiling 31.2.
+- `leak.py --asof 2026-11-03` REVIEW, no LEAK. Harmless, each: the policy and the review share generic words with the
+  stump paragraph (minutes, outage, section, switching, changes, system, record) and neither names the move;
+  `device_id` and `device_type` are what an outage system and a SCADA historian call those columns, and `device_id` is
+  the switching log's join key to the outage extract.
+- `guard.py heart` WARN, nearest driver 0.06 (task129). New beside the Draw's answered WARNs: `repeat.decision` against
+  task400 (a work plan funds one fix, so the call picks one of the changes) and `repeat.question_form` against task399
+  v4 (a pick asks which). `guard.py surface` promotes task400 and task252, both answered on the card's
+  `differentiation`.
+- `freeze.py check --mode rubric` with the 34 moved keys allowed: FAIL on one item, the ladder section's hash (its rung
+  figures re-measured on the new world: 10,924, 1,510, 1,068 and 8,714; every rung's winner and the order unchanged).
+  `--mode determinism`: the same and the workbook's Deliverable Answers (the ask figures moved, reasons in `## Ask
+  sheet`). The Final Recommendation and Critical Components numbers, the main-call keys, the stump in `pipeline.json`
+  and on the card, the card's driver, the default path and the call sentence are unchanged in both. Neither mode's
+  contract covers a world change that moves the ask side and re-measures the rungs; both outputs are recorded for the
+  author to choose.
+
+Stage 4 round 2 and ship, 2026-11-04, final cut target.zip af10a74f (rebuilt twice on the merged branch, byte-identical):
+
+- Judge round 2 (order kept): DETERMINISTIC, APPROVE, no fix. Gate F strong: its blind derivation filed the heat pump
+  waiver and missed the re-trips. Gate G decomposition_attribution, analytical_non_defect, no surface-read dependency, no
+  sole data defect. Gate H domain pass, layers pass, decisive step analytical. Every SOLUTION_STEPS step reproduces its
+  figure; all 16 Ask A and 24 Ask B figures match. Its optional note (guards 702 and risers 671 both print 700, so
+  their order in the chart is a tie at the printed precision) moves nothing graded.
+- Leak reader round 2: no decisive-step sentence, no ranking or helper file, decisive step analytical. Its realism tells
+  measured wrong on the cut (members per transformer 1 to 23 with the mode at 8 and 9; the electric-heat share 0.02 to
+  0.85 inside every district; outage event ids stepping by 0 to 5). Its ask readings are settled by the judge's
+  recompute: restoration work is the OUTAGE orders at face value (no SERVICE or CAPITAL order carries an outage record),
+  MAIFIe events are reclosing sequences, the register's district members are the only district-grain count, and fiscal
+  and calendar quarters are the same four blocks.
+- Coordinator's rulings on the fix pass's flags. freeze.py is the returned-task control and no portal version exists:
+  rubric mode with the 34 moved keys allowed fails only on the ladder hash, whose rung figures were re-measured on the
+  new world with every rung's winner and order unchanged; accepted as recorded. The SF10 redraw floor at 16 of 20
+  stands: the fork is closed twice on the shipped pack (the rebate terms' eligibility sentence; the re-trip rate per
+  qualifying restoration equal with and without a connection, 7.8 against 7.8 per cent) and the shipped draw holds it
+  two to one.
+- This section had been written into the note's opening paragraph at a backticked heading mention; it is moved here
+  and the paragraph restored, nothing else changed.
+- Gates re-run on the final cut: `checks.py` 0 failures; `verify.py` 48 of 48; two builds byte-identical (af10a74f);
+  `figures_check.py` 71 of 71; `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS; `leak.py --asof
+  2026-11-03` REVIEW, 0 LEAK; `guard.py heart` WARN, no BLOCK; `guard.py surface` 2 promoted pairs (task400 on the shared
+  gap and decision type, task252 on the structural driver), both answered on the card's `differentiation`.
+- The 10/10 rules re-read against the built pack: the decisive step is still the pairing of each overload trip with the
+  same section's restoration minutes before, analytical; the mess is still Layer 1 only.
