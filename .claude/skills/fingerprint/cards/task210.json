@@ -1,97 +1,144 @@
 {
   "task": "task210",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-11-04",
-  "slot_note": "Seed AD33's world (a data-centre battery's FCR-D offer) sits only in energy-systems-utilities/grid-reliability-outage-analysis, held by task402 inside the live window (ban.subdomain), so the draw moved to another client domain, world and dataset under the same objective and number (CLAUDE.md, A stuck build is unblocked).",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "environmental-monitoring-exceedance",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a limestone quarry's January haul allocation on a new extension road, held to the noise management plan's haulage share of the village noise limit and sized on the sound exposure each haul movement in view of the village monitor delivers",
+  "slot_note": "Re-root at architecture 2 (architecture 1, Ravensby Quarry's haul-noise world, spent at stage 4 round 2). Seed AD33's own world (a data-centre battery's January FCR-D offer) became legal on the subdomain axis once task211 registered and task402 left the window, but every driver of the battery's night activation energy a pack could carry (each boundary's schedule ramp, the disturbance log, the system's reserve volume) is one pairwise join from the pilot log plus a per-cell rate, which the per-record reader makes, so the draw moved to Human Factors & Ergonomics under the same objective and number (CLAUDE.md, A stuck build is unblocked).",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a streetcar's four restricted-speed slots for the January and February 2027 weekday peaks, placed on each section direction's expected firm-braking rate after an autumn rise that the record's own fields do not explain",
   "objective": "anomaly-detection",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "count",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "objective",
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G3",
-    "G13"
+    "G13",
+    "G16"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "pilot_log",
+  "gate_g": "forecasting",
+  "calibration_form": "none",
   "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who converts the logger's UTC period-end stamps, counts the haul movements from the telematics and reads every condition and the noise plan's share, plant level and residual correctly fits each working hour's energy at the village monitor against its movements and divides the share by the average movement's energy: fifteen trucks, where only the movements that climbed out of the pit onto the original ground carry the extension road's per-movement energy and allow three; the careful variants file six (per face), nine (crusher tips), two or seven (BS 5228 from declared sound power) and one (BS 5228 calibrated on the pooled record).",
-  "domain_test": "The deciding quantity is the sound exposure one haul movement in line of sight delivers at the receptor, estimated by apportioning the monitor's measured sound energy among the movements by the route each one ran, which is the source-attribution work of environmental noise monitoring; with another field's nouns there is no energy summation, no screening by the pit face and no receptor, and the call stops reading.",
+  "analyst_test": "A strong analyst who conforms the recorder's UTC events to the surveyed sections and the AVL passes, removes the trailing cars' copies, nets new operators, darkness, sky cover and the school term, and reads the safety standard's normal-weather basis correctly slates the four section-direction peaks with the highest April to October (or September to October) firm-braking rates, the east- and west-running directions in the peaks, where January's sun stands ahead of the south-east and south-west-running directions that carry the golden slate.",
+  "domain_test": "The deciding quantity is the firm-braking excess the low sun produces when it stands ahead of the operator, a visual performance-shaping factor estimated from the event recorder against the sun's computed position relative to each direction of travel, as human-factors incident analysis attributes errors to the condition that produced them; with another field's nouns there is no operator's line of sight and no sun ahead, and the call stops reading.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:in-view-exposure-apportioned-by-route-state",
+  "layer2_pattern": "own:low-sun-glare-geometry-carried-to-the-forward-window",
   "layer1": [
-    "the monitor's 15-minute records stamped at the period end on a UTC logger clock",
-    "telematics fixes in UTC against the site's local clock across the 26 October change",
-    "telematics positions in WGS84 latitude and longitude with GPS scatter against the survey's CRS84 export",
-    "two Saturday battery gaps in the monitor record",
-    "the belt scale's interval-start stamps on the site clock beside the monitor's period-end stamps",
-    "the June 2026 product code renumbering against January tickets",
-    "portable axle weigher records keyed into the weighbridge system with the next Monday's batch",
-    "the crusher controller's stop logged at boot after a supply interruption",
-    "the wheel loader's unordered buckets (reclaim feed and re-handling) in one payload log"
+    "the event data recorder's UTC stamps against the AVL log and timetable on Mountain local time, across the 1 November clock change",
+    "recorder positions in WGS84 latitude and longitude with GPS scatter against the track survey in State Plane coordinates in US survey feet",
+    "two-car consists whose trailing car's recorder logs the same brake application",
+    "AVL section passes with short-turned and cancelled trips and a timepoint outage week",
+    "operator badge numbers renumbered in the July HR system migration",
+    "the recorder firmware update that renamed the event codes in August",
+    "hourly airport observations in METAR sky-condition codes with missing hours",
+    "the January pick's timetable published as a PDF table of headways by period"
   ],
-  "stakeholder_role": "quarry manager",
-  "role_family": "operations_director",
+  "stakeholder_role": "chief safety officer",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "adt_telematics_2026.parquet",
-    "rows": 500000,
-    "entity": "one truck position fix",
-    "grain": "truck x minute",
+    "file": "avl_section_passes_2026.parquet",
+    "rows": 860000,
+    "entity": "one streetcar pass over one track section in one direction",
+    "grain": "section direction x pass",
     "source": "synthetic"
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "manufacturer",
+  "forum": "operations_desk",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "government_agency",
   "world": {
-    "geography": "England, a fictional limestone quarry and village in the north of England",
-    "currency": "GBP",
-    "org_type": "an aggregates company operating one limestone quarry",
+    "geography": "United States, a fictional mid-sized city in the Mountain West on Mountain Time",
+    "currency": "USD",
+    "org_type": "a regional transit authority running a two-line streetcar",
     "invented_names": [
-      "Ravensby Quarry",
-      "Calderwick Stone",
-      "Ulverthorpe"
+      "Ashcombe Regional Transit",
+      "Juniper Line",
+      "Foundry Line"
     ],
     "people": [
-      "Garry Fry",
-      "Maurice Russell",
-      "Leanne Smith"
+      "Brandi Lutz",
+      "Deanna Wagner",
+      "Maureen Phillips"
     ]
   },
   "deliverables": [
-    "extension_haul_dial.csv",
-    "extension_scheme_note.pdf"
+    "slot_plan_jan_feb_2027.csv",
+    "braking_shift.png"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is the exposure one unit of an activity delivers at a receptor in the configuration the forward plan runs, and because the record mixes units that ran in that configuration with units screened from the receptor and nothing in the record says which ran where, an exposure calibrated on the whole record, or taken from the units' declared ratings, misstates it; only each unit's own position track read against a survey of the ground separates the two.",
-  "driver_concrete": "Each haul movement's sound exposure at the village monitor depends on whether it climbed out of the pit onto Haul road 2 over the original ground or stayed in the pit or behind the plant compound's bund, which no ticket records and only the trucks' GPS tracks against the site survey show; the January extension road is set out over the same ground at Haul road 2's distances from the monitor, so its per-movement exposure is the Haul road 2 movements' own, which allows three trucks where the average movement allows fifteen and the declared-sound-power prediction two or seven.",
-  "stump": "A competent solver calibrates the haul movements' exposure at the village monitor on the whole monitoring record, or predicts it from the plant register's declared sound power, and allocates eight or more trucks to the January extension road; the step that lands them there is pooling movements screened in the pit with the movements that ran in view of the village.",
+  "question_form": "what",
+  "driver": "The decisive quantity is a per-pass hazard set by where an external light source stands relative to each unit's direction of travel, a position no record holds and only geometry against the clock recovers, and because the coming window puts the source ahead of different units than the observed window did, every rate read from the record, however finely it is cut, ranks the wrong units.",
+  "driver_concrete": "Each streetcar pass's firm-braking risk rises when the low sun stands within a few degrees of the operator's line of travel, which no file records and only the sun's computed position against each section direction's surveyed heading shows; this autumn the low sun stood ahead of the east- and west-running section directions in the peaks, while in January and February it stands ahead of the south-east and south-west-running directions, which were quiet all season, so the four restricted-speed slots belong there.",
+  "stump": "A competent solver ranks the section-direction peaks on their April to October or September to October firm-braking rates, nets new operators, darkness, sky cover and the school term, and slates the east- and west-running directions that rose this autumn; the step that lands them there is reading a rate measured under the autumn sun as the rate January's sun will produce.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task488": "task488 equates new test items to an established scale through the members each was given to (an ETL conformance of levels); this build apportions a monitor's sound energy among haul movements by the route each ran, a physical source attribution with no scale or calibration sample.",
-    "task122": "task122 v4 reads a discretionary aid's effect against working periods that hold more of one kind of unit (a composition confound on a causal comparison); this build has no intervention or comparison of arms, and its decisive state is each movement's line of sight to a receptor, read from position tracks against a survey."
+    "task102": "task102 counts payments a business-day rule shown only in the payment history moves into the next period when the forward period ends on a weekend (a calendar rule executed); this build estimates a per-pass hazard from the sun's computed position against each direction of travel and carries the estimated excess to a window where the sun stands ahead of other units.",
+    "task130": "task130's lineages price covers whose short reporting windows inherit a quick-report process that began unit by unit, or read judges' marks scaled by how often each judge visited; this build has no reporting process, cover or judge: an external light source's computed position reassigns which units carry an excess hazard in the coming window.",
+    "task134": "task134 v2 carries a duration hazard through an announced threshold step scaled from the one smaller step the history holds; here nothing is announced and no threshold moves: the hazard follows the sun's position relative to each direction of travel, recomputed for the coming window from geometry and the clock.",
+    "task162": "task162 v1 times version uptake to a monthly restart burst on a fixed day; this build's exposure is the sun standing ahead of each direction of travel at each pass, which moves continuously with the season and the clock and reassigns the exposed units rather than shifting a burst.",
+    "task171": "task171's lineages read take-up on pre-offer savings and collection on payer renewals after enforcement; this build has no renewal, offer or collection clock: the per-pass hazard follows the sun's computed position against the direction of travel.",
+    "task178": "task178's redraw 1 built a forward count of threshold crossings from the period's known tidal level departing from its long-run average on cycles longer than a season, a level added to a series; this build has no series level or threshold count: the sun's computed position against each direction of travel decides which units carry the excess, so the coming window re-sorts the units rather than raising or lowering a level.",
+    "task501": "task501's lineages size a buffer from the furthest a cumulative path ran ahead of forecast, or read a draw against a hard deadline; this build ranks units on a per-pass hazard whose excess follows the sun's geometry, with no cumulative path, buffer or deadline."
   },
-  "lineage": [],
-  "notes": "Moved from seed AD33's battery world (energy grid reliability, banned by task402's subdomain in the window). Screened and rejected before this card: rain-induced radon-progeny washout at a fence-line gamma network (the golden needs a fitted dynamic model; event routes land 6 to 12 nSv/h off), occupational blood lead (task181 shared-resource and task182 lagged-response abstractions), UPS battery thermal age and uptime counters (task139's wear clock), hydropeaking under a rating curve (task156's level from a separate record). Stage 4 round 1 fix pass (2026-11-04): the noise plan files the residual measured with the site stopped; the hopper moved onto a bearing between the pit and the Phase 4 extension so the Phase 4 road is set out over the same ground at Haul road 2's distances (every road-level, line-of-sight and BS 5228 measure within 0.022 dB); the realism list from the leak reader regenerated (complaints, multi-load orders, weekday profile, declarations by model).",
-  "registered": "2026-11-04T07:48:47Z",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "architecture": "v1 (Physical & Environmental Sciences: Ravensby Quarry's Phase 4 haul allocation under the village noise share)",
+      "drawn": "2026-11-04",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "environmental-monitoring-exceedance",
+      "objective": "anomaly-detection",
+      "shape": "04",
+      "decision_type": "dial_setting",
+      "answer_unit": "count",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G3",
+        "G13"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "context_artifact": "filed_standard",
+      "forum": "regulator_or_inspector",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "manufacturer",
+      "driver": "The decisive quantity is the exposure one unit of an activity delivers at a receptor in the configuration the forward plan runs, and because the record mixes units that ran in that configuration with units screened from the receptor and nothing in the record says which ran where, an exposure calibrated on the whole record, or taken from the units' declared ratings, misstates it; only each unit's own position track read against a survey of the ground separates the two.",
+      "fate": "spent at stage 4 round 2: the judge's blind derivation filed the golden. The judge returned DETERMINISTIC with a solution-only FIX_NOW, but its derivation, written before the graded blocks, filed the golden 3 trucks by fitting MP1's haulage energy per face-by-tip route from the telematics against the survey (NNLS) and reading the Phase 4 road off the survey as Haul road 2's twin; the round-1 geometry closure made the transfer exact and visible, so Gate F paid for what Gate C gained."
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "by",
+      "rounding opener": "tonnes",
+      "deliverable set": "csv+pdf"
+    }
+  ],
+  "notes": "Five go/no-go screens on the clean truth over 24 redraws (prototype screens_a2.py): the golden (solar geometry against each direction's heading, glare excess fitted on every pass) recovers the true slate 23 of 24; every golden variant (nine glare forms, model forms, sunshine and hour specifications) agrees in 18 of 24 and at the shipping candidate; the first look, the field-decomposing reader, two constructing readers, three per-record readers and five literal executions of the standard land a wrong slate 24 of 24, sharing at most two of the four cells. Screened and set aside before this card: seed AD33's battery world (per-record reader), low-sun glare at UK latitude (diluted below the evening darkness peak) and at peak windows with a rare outcome (golden unstable), colonisation pressure and prior-room occupants (spent in task177, task181 and task252's carryover), crew familiarity (task178's curve fork), sequence priming and screener vigilance (task399, task171, task177).",
+  "registered": "2026-11-04T14:49:22Z",
+  "shell": {
+    "question form": "what",
+    "second-sentence opener": "send",
+    "rounding opener": "rates",
+    "deliverable set": "csv+png"
+  }
 }

@@ -1,58 +1,28 @@
 {
  "task": "task210",
- "status": "DRAWING",
- "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
+ "status": "DESIGN",
+ "domain": "human-factors-ergonomics/safety-incident-error-analysis",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-04",
- "seed": "AD33 (a data-centre battery's January FCR-D offer under a warranty throughput cap); the seed's world is undrawable on this objective while task402 holds energy-systems-utilities/grid-reliability-outage-analysis in the window (ban.subdomain), so the build moved to Physical and Environmental Sciences: a limestone quarry's January haul allocation under the village noise limit",
- "stump": "The default path files 15 ADTs because it apportions MP1's energy to the pilot's average haul movement, about nine in ten of which stayed in the pit or behind the bund; only the route state built per movement (load face and tip from each truck's GPS track against the survey) isolates the Haul road 2 movement's energy, which allows 3.",
- "call": "3 articulated dump trucks on the Phase 4 haul road in January 2027 (4 over the 44.0 dB share)",
+ "seed": "AD33 (a data-centre battery's January FCR-D offer); its world became legal on the subdomain axis once task211 registered, and was set aside on screen 4 (every driver it could carry is one pairwise join and a per-cell rate); the build moved to Human Factors & Ergonomics: Ashcombe Regional Transit's streetcar, the four restricted-speed slots of the January and February 2027 weekday peaks",
+ "stump": "The default path ends on the east-running morning and west-running evening cells that rose this autumn because it reads each cell's measured rate, adjusted for operators, darkness, sky cover and the school term, as the rate January's peaks will see; the excess was the low sun standing ahead of those directions in September and October, and in January and February it stands ahead of the south-east and south-west-running directions, which take the four slots.",
+ "call": "",
  "architecture": 2,
  "loops": 0,
- "precut": "exit 0, 2026-11-04",
- "screens_prototype": "superseded: generator/screens.py over 24 redraws, results in generator/screens.json, asserted in generator/checks.py",
- "leak": {
-  "leak_py": "REVIEW on the round-2 cut 14eba3dd (the filed cycle, the decision nouns and the NMP's own words, now with the residual sentence; dates clean at --asof 2026-12-04)",
-  "reader": "round 1: clean on the main call (no decisive-step sentence, no ranking, an analytical choice); its realism list fixed in the generator; round 2 pending"
- },
- "duplicate_check": {
-  "heart": "WARN (repeat.gate_g against task402 and task403, overuse.gate_g 6 of 12, same_driver_older against task122 differentiated on the card), read 2026-11-04 on 14eba3dd",
-  "nearest": "0.06 task228; surface promotes task122 (0.080, same-driver signature, differentiated on the card)"
- },
- "judge": {
-  "verdict": "round 1 NOT_DETERMINISTIC on the main call (margin_or_boundary_fragility: the baseline under the haulage and the Phase 4 road exposure); round 2 DETERMINISTIC",
-  "disposition": "round 1 labelled SEND_BACK, read against the gate table as a main-call Gate C repair in the same world (G and H passing); round 2 FIX_NOW (a tolerance on five tonnes-per-running-hour cells, solution only)",
-  "gate_f": "round 1 blind derivation 7 trucks (per-fix physical model); round 2 blind derivation filed the golden 3 trucks (NNLS on face-by-tip routes from the telematics against the survey, the Phase 4 road read off the survey as Haul road 2's twin)",
-  "ruling": "architecture 1 spent in substance at stage 4 round 2: the judge's blind derivation reached the call (as task401 architectures 4 and 5); the round-1 geometry closure made the transfer exact and visible, so Gate F paid for what Gate C gained (determinism-check, the C1 converge move)",
-  "reports": "scratchpad t210/stage4 and t210/stage4_r2 (judge_report.md, derivation.md, reader_answers.md)"
- },
+ "drawn": "2026-11-04, card registered 2026-11-04T14:49:22Z, guard WARN (overuse.org_family answered; same_driver_older differentiated)",
+ "screens_prototype": "scratchpad t210/a2/proto/screens_a2.py over 24 redraws: golden recovers the true slate 23/24; all nine golden specifications agree 18/24 and at the shipping candidate (seed 21009, fourth to fifth gap 27.6 per cent); first look, readers (a), (b) two forms, (c) three pools and five literal executions wrong 24/24, sharing at most two of four cells",
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": "0.07 task478 v4 lineage (check on the registered card)"},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
  "returned": [],
- "resume": "Re-root at architecture 2 from stage 1, in another client domain, world, dataset and shell under Anomaly Detection & Diagnostics (one architecture per world: the quarry haul-noise world is spent). Architecture 1 (Ravensby Quarry, the Phase 4 haul allocation under the village noise share) was spent at stage 4 round 2: DETERMINISTIC with a wording FIX_NOW, but the judge's blind derivation filed the golden 3 trucks by NNLS on face-by-tip routes and the Phase 4 road's survey match to Haul road 2. Move its identity into the card's lineage at the new draw, register, commit DRAWN.",
+ "resume": "Stage 2 (design) of architecture 2: write the ladder, readability screen, semantic fork table, closure table, literal reader, oracles and ask sheet; draft SRM-07's WHAT and the asks; write generator/checks.py with the five screens asserted on the shipped seed; final prompt.txt through voice-check; leave stage 2 only on precut.py exit 0.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": "",
- "gates": {
-  "precut": "exit 0 (61 PASS)",
-  "checks": "107 of 107 (screens over 24 redraws, hash in screens.json)",
-  "verify": "0 failed",
-  "byte_identical_builds": "yes (24 outputs, target.zip included)",
-  "figures_check": "50 of 50",
-  "voice_check": "PASS",
-  "leak_py": "REVIEW, ruled innocent in the note (no decisive-step sentence; the residual sentence names a measured level)",
-  "guard_heart": "WARN, nearest 0.06",
-  "guard_surface": "1 promoted pair, task122 (same-driver signature, differentiated on the card)",
-  "ceiling": "cracker 0 of 24 ask figures, full includer 25 per cent, mirror 0.0, no-repair 0.0, pair 35.4 (both on the call 58.8), tightest graded figure July tonnes per running hour at 0.136 of its bin",
-  "target_zip_sha256": "14eba3dd03f2845b1c8c836be4368f642b605bbbe0ec718d2c696305eb872750"
- },
- "fix_pass": {
-  "date": "2026-11-04",
-  "what": "NMP 5.2 files the residual measured with the site stopped (38.3 dB LAeq over 07:00 to 17:00); the site re-laid so the Phase 4 haul road is Haul road 2's counterpart about the hopper's bearing (every road-level, line-of-sight and BS 5228 measure within 0.026 dB on the survey and scheme); the belt export states interval-start stamps; SOLUTION_STEPS 6 reworded; the leak reader's realism list regenerated",
-  "freeze_determinism": "exit 1: the ladder section, the stump sentence (its share corrected to about nine in ten) and the note's Deliverable Answers (every ask figure, allowed); reasons in the note",
-  "freeze_rubric": "exit 1: the ladder section and the stump sentence; 23 ask figures moved"
- }
+ "portal_status_date": ""
 }
