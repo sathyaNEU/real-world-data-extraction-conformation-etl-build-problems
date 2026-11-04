@@ -6,12 +6,12 @@
 ## 1. Final Recommendation
 
 **Place the four restricted-speed slots for the weekday peaks of 4 January to 26 February 2027 on J4 outbound in the AM peak (Market Square to Harlan Avenue), J5 outbound AM (Harlan Avenue to Sandoval Street), F5 outbound in the PM peak (Tallow Street to Kiln Avenue) and F6 outbound PM (Kiln Avenue to Smelter Row).**
-This autumn's rise was the low sun standing ahead of the operator: firm braking climbed on sunny passes with the sun low and close to the line of travel, which in the September and October peaks meant the east- and west-running directions. In the January and February peaks the low sun stands ahead of the south-east-running morning and south-west-running evening directions instead, and J4 and J5 outbound head 125 and 131 degrees, F5 and F6 outbound 231 and 237. Not the rows that rose this autumn, whose excess moved with the sun and has left their line; not a low-sun allowance that ignores direction, which spreads the excess over every row the low sun reaches.
+The part of this autumn's rise that moves between rows was the low sun standing ahead of the operator: on the record's logged passes, firm braking climbed on sunny passes with the sun low and close to the line of travel, which in the September and October peaks meant the east- and west-running directions. The class that qualified on 31 August added a smaller lift in its first weeks on every direction alike, and it has faded by January. In the January and February peaks the low sun stands ahead of the south-east-running morning and south-west-running evening directions instead, and J4 and J5 outbound head 125 and 131 degrees, F5 and F6 outbound 231 and 237. Not the rows that rose this autumn, whose excess moved with the sun and has left their line; not a low-sun allowance that ignores direction, which spreads the excess over every row the low sun reaches.
 
 ## 2. Critical Components
 
 1. Bearings of travel from the survey's coordinates, outbound in coordinate order and inbound reversed: **J4 125, J5 131, F5 231 and F6 237 degrees outbound**.
-2. **The autumn's extra firm braking follows the sun**: on sunny passes it rises as the low sun comes onto the bearing of travel.
+2. **The autumn's extra firm braking that moves between rows follows the sun**: on sunny logged passes it rises as the low sun comes onto the bearing of travel; the newly qualified class's smaller first-weeks lift is direction-neutral and gone by January.
 3. **Expected rates are taken at the pick's scheduled weekday-peak passes on its 38 weekdays, in the 68 per cent possible sunshine the station normals give January and February.**
 4. **In those peaks the low sun stands ahead of the south-east-running morning and south-west-running evening directions**, so J4-O AM, J5-O AM, F5-O PM and F6-O PM carry the four highest expected rates.
 
