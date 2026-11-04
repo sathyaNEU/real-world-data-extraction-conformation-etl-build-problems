@@ -209,8 +209,7 @@ def report(path, st):
     s.append(Paragraph(
         '<b>Limitations.</b> The trial ran at one unit with one outreach team, and parents and staff knew the allocation. The '
         'outcome comes from the board\'s admissions extract, so a baby admitted outside the area is not counted. Subgroup '
-        'analyses were not powered and are reported as tests for interaction only. Units whose case mix or community staffing '
-        'differ from Copperfield\'s may see a different effect.', BASE))
+        'analyses were not powered and are reported as tests for interaction only.', BASE))
     s.append(Paragraph('5. Conclusion and recommendation', H2))
     s.append(Paragraph('The steering committee recommends that the integrated care board considers the service for the other '
                        'maternity units in the area.', BASE))

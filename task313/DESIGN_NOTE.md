@@ -456,3 +456,7 @@ line ruled here:
 - A filed sentence that avoidable readmissions are those after the service can first reach the family (offered by
   the stage 4 judge as optional): not added, because executing it word for word files 325 and turns the decisive
   step into rule application.
+- A limitation in the trial report that units whose case mix or community staffing differ from Copperfield's may
+  see a different effect (2026-11-04, stage 4, before the pass-2 judge): removed, because it licensed carrying the
+  effect unit by unit, the per-reason route SF15 closes (taking the total out of the 325 bin), and it pointed at the
+  establishment file, a declared distractor.

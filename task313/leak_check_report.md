@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: report, effect, receipt, eligible, office, window, hospital, allocation, notification, community, sentence, contact, nothing, planning, extract, health, reachable, notifications, outcomes, carries, ravensby, decision, transitional-care, reading, population
+Stump terms swept: report, effect, receipt, eligible, office, window, hospital, allocation, community, notification, sentence, contact, nothing, planning, extract, health, reachable, notifications, outcomes, carries, ravensby, decision, transitional-care, reading, population
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `Neonatal outreach service specification 2027-28.pdf`: carries 18 of 19 distinctive words of the committed call: 'Give Kellingworth University Hospital 9 of the 30 outreach posts, Ravensby Royal Infirmary 7, Sedgefold Hospital 6, Wenn'
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `Copperfield neonatal outreach trial final report.pdf`: 12 of 25 stump-paragraph terms appear (report, effect, eligible, office, hospital, allocation); read whether the document names the move
-- **REVIEW** `Neonatal outreach service specification 2027-28.pdf`: 12 of 25 stump-paragraph terms appear (report, eligible, office, hospital, allocation, notification); read whether the document names the move
+- **REVIEW** `Neonatal outreach service specification 2027-28.pdf`: 12 of 25 stump-paragraph terms appear (report, eligible, office, hospital, allocation, community); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 2)
 - **REVIEW** `Neonatal outreach service specification 2027-28.pdf`: names 5 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question

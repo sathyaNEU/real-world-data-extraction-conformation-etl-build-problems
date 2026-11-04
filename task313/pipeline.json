@@ -27,7 +27,7 @@
   "report": "task313/determinism_check_report.md"
  },
  "returned": [],
- "resume": "Stage 4 re-judge (once): spawn the determinism judge (pass 2) on the cut pack target.zip sha256 ecea07b47d9ed679c081348919807b0b45a12b0774e8fd8d42546fa6c4e4288d (15 files at the archive root), rebuilt byte-identically by `python3 task313/generator/build.py`, and have it test SF15 (one effect against effects per reason) and the visit-start reading against the report's filed text; then ship if it holds.",
+ "resume": "Stage 4 re-judge (once): spawn the determinism judge (pass 2) on the cut pack target.zip sha256 79a5e3bbe368164d434a4300b46992295945603092ac36b5396990737f71df32 (15 files at the archive root), rebuilt byte-identically by `python3 task313/generator/build.py`, and have it test SF15 (one effect against effects per reason) and the visit-start reading against the report's filed text; then ship if it holds.",
  "approved": null,
  "delivered": null,
  "portal": null,
