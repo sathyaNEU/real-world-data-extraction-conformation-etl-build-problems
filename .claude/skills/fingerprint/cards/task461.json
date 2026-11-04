@@ -1,90 +1,125 @@
 {
   "task": "task461",
-  "architecture": "v1",
-  "drawn": "2026-10-15",
-  "slot_note": "seed ET18 (battery cycling threshold from day-ahead prices): the world, the decision and the quantity kept (a storage owner sets next year's minimum daily day-ahead spread for cycling a 4-hour battery under a 300-cycle warranty); the seed's clock trap is Layer 1 only, and the pitfall is re-found in the data: the node's own record is one short, atypical year",
-  "domain": "general-statistics-data-science",
-  "subdomain": "data-integration-record-linkage-entity-resolution",
-  "niche": "an independent storage owner's 2027 cycling threshold for a 100 MW / 400 MWh battery at a congested node: the node's daily day-ahead spread distribution, seen directly for only eleven months since the node was created, integrated with the trading hub's eight-year record through their overlap",
+  "architecture": "v2",
+  "drawn": "2026-11-04",
+  "slot_note": "re-root of the number: architecture 1 (the battery cycling threshold carried from a hub's long price record, general-statistics-data-science) spent at the 2026-11-02 re-check; architecture 2 drawn in physical-environmental-sciences (emissions-inventory), a fuel terminal's 2026 loading VOC, in a new world, dataset and prompt shell",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a regional fuel distributor's licence return for 2026 at its bulk fuel terminal: the VOC its loading bays released, conformed from two terminal automation exports across a July cutover, the dispatch system's delivery dockets, the vapour recovery unit's outlet log and the tanker register, where the multi-product retail fleet loads diesel at the two uncontrolled distillate bays into compartments that last delivered petrol through service stations' vapour balance",
   "objective": "etl",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "currency",
-  "answer": "Load a 2027 cycling threshold of $20 per MWh (275 expected cycling days in 2027; $15 would give 323, over the warranty's 300).",
-  "answer_source": "submission.md block 1; redrock_draw_2027_cycling_threshold.xlsx, sheet 2027 threshold",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
+    "objective",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G13",
     "G14",
-    "G16"
+    "G3",
+    "G2"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "operations_log",
-  "stakeholder_role": "the owner's asset manager for storage",
-  "role_family": "portfolio_manager",
+  "stump_class": "analytical",
+  "analyst_test": "With both terminal automation exports conformed, every docket read and the licence's vapour tables applied, a strong analyst sums each bay's litres by product, charges them by the loading-loss equation at each product's own vapour pressure (diesel's is negligible) and adds the vapour recovery unit's measured outlet for the petrol bays, filing about 1.4 tonnes for 2026, well inside the 20-tonne loading limit, because nothing asks what each compartment held when its diesel went in.",
+  "domain_test": "A loading emissions inventory worked the way an air quality engineer works it, each load releasing the vapour its liquid displaces at the saturation that vapour already carries, so a compartment that delivered petrol through a station's vapour balance arrives full of saturated petrol vapour whatever it loads next; with another field's nouns there is no vapour space, no vapour balance and no displacement, and nothing would make one load's release depend on the delivery before it.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:loading release charged to each compartment fill by the vapour its previous delivery left, petrol vapour returned through station vapour balance displaced at uncontrolled distillate bays",
+  "layer1": [
+    "two terminal automation exports across the 1 July 2026 cutover: the old one in gross observed litres with a volume correction factor column and trailer plates, the new one in net litres at 15 C with the system's own tanker ids and B-double compartments numbered through",
+    "the dispatch system's delivery dockets timestamped in UTC against the terminal's local time (AEST, AEDT from October), one docket line per compartment drop, the partner terminal's lifting numbers on exchange trips",
+    "a tanker register whose plates changed at re-registration and whose old system access cards were reissued at the cutover",
+    "the vapour recovery unit's 15-minute outlet log with an analyser swap in May (ppm as propane before, mg per cubic metre after) and flagged calibration intervals",
+    "cancelled and re-issued bills of lading, product codes renamed when E10 replaced the old ULP 91 code in March"
+  ],
+  "stakeholder_role": "the terminal manager, who signs the licence's annual return",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "mpi_dam_settlement_point_prices_north_hub_2019_2026.csv",
-    "rows": 68712,
-    "entity": "one settlement point's day-ahead price for one delivery hour",
-    "grain": "settlement point x operating day x hour ending (prevailing time)",
-    "source": "synthetic (constructed in the layout of a wholesale market operator's day-ahead settlement point price archive, two formats appended)"
+    "file": "dispatch/delivery_dockets_2025-12_2026-12.csv",
+    "rows": 0,
+    "entity": "one compartment's drop at one delivery site",
+    "grain": "trip x compartment x drop",
+    "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "utility_or_infrastructure",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "logistics_or_3pl",
   "world": {
-    "geography": "an unnamed country's wholesale power market (invented), one trading hub and the battery's own node",
-    "currency": "USD",
-    "org_type": "independent energy storage owner",
+    "geography": "Australia (a fictional regional port city, Warrenby)",
+    "currency": "AUD",
+    "org_type": "regional fuel distributor with its own bulk terminal, retail tanker fleet and a contract carrier",
     "invented_names": [
-      "Tallgrove Storage Partners",
-      "Redrock Draw Energy Storage",
-      "Midplains Power Market",
-      "Midplains North Hub"
+      "Brennock Fuels",
+      "Warrenby",
+      "Oakhurst Haulage",
+      "Tarrant Energy",
+      "Selwyn Point",
+      "Coastal Air Quality Authority"
     ],
     "people": [
-      "Stacey Garrett",
-      "Hailey Cooper"
+      "Anna Gardner",
+      "Jeffrey Pruitt"
     ]
   },
   "deliverables": [
-    "redrock_draw_2027_cycling_threshold.xlsx",
-    "redrock_draw_daily_spreads_conformed.csv"
+    "warrenby_2026_annual_return.csv",
+    "warrenby_2026_return_note.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is a low quantile of a distribution seen directly only over one short and unrepresentative period; the long record of a correlated auxiliary series, carried to the target through the proportional relationship their overlap shows, gives the distribution over the full range of conditions, while the short record alone, the auxiliary record alone or the auxiliary shifted by an additive offset each set the dial at a different value.",
-  "driver_concrete": "The battery cycles on days whose day-ahead spread at its own node clears the threshold, and the warranty allows 300 cycles a year: the threshold is the node's spread exceeded on 300 days of an ordinary year, which the node's eleven months (one windy stretch whose average looks ordinary) cannot show; the hub's eight weather years, carried to the node through the proportional relationship the overlap shows between the node's and the hub's daily spreads, give it; not the node's 2026 alone, not the hub's record alone, not the hub plus the node's average spread premium.",
-  "stump": "The default path sets the threshold from the node's own day-ahead spreads since MPI first priced it (eleven windy months whose average looks ordinary but a third of whose days were flat) and picks $15; the hub's eight years alone pick $10 and the hub plus the node's average spread premium $30; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks $20.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly and applies every filed rule counts the node's own days since December 2025 and sets $15 (266 expected cycling days); one who wants more weather takes the hub's record for the node's ($10) or adds the node's average spread premium to it ($30). None picks $20.",
-  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, the node's daily-spread distribution over the full weather record built by combining its short direct record with the hub's long one through their overlap; replacing it with a summary of either source alone (the node's one year, the hub's eight) or an additive basis changes the setting picked.",
+  "question_form": "how-much",
+  "driver": "Each transfer into a container pushes out whatever the container already held, so the release charged to a transfer is set by the container's previous use rather than by what the transfer puts in; the field's factor charges each transfer by its own contents, and only each container's own sequence of uses, read from the record of where it was last emptied, shows which transfers pushed out the earlier contents.",
+  "driver_concrete": "Diesel loaded at the uncontrolled distillate bays pushes out the vapour its compartment held when loading began, and a retail compartment that last delivered petrol through a station's vapour balance comes back full of saturated petrol vapour; the loading-loss equation at diesel's own vapour pressure files the two bays at a fraction of a tonne, while charging each diesel fill by its compartment's previous delivery in the dispatch dockets (petrol lifted at the partner terminal included) files them at tens of tonnes and puts the terminal over its loading limit.",
+  "stump": "The default path charges every diesel load at diesel's own vapour pressure and files about 1.4 tonnes of VOC from loading for 2026, inside the 20-tonne limit; but the retail compartments that last delivered petrol through station vapour balance push saturated petrol vapour out at the uncontrolled distillate bays, so the terminal released tens of tonnes and exceeded its limit.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task229": "task229 v2 fitted one source's own error rate against the days since its last count (a measurement-error model inside one record); task461 carries a long auxiliary record to a short target record through their overlap to read a low quantile over the full range of weather: no shared quantity, evidence or move.",
-    "task501": "task501 v4 weighted a pooled contact matrix's two regimes to the season it will run in (an eigenvalue of a mixture); task461 carries a long auxiliary record to a short target record through the proportional relationship their overlap shows: no shared quantity, evidence or move."
+    "task488": "task488 recovers new items' difficulties from the responses of the members each item was given to by its recorded level, a selection on the estimated quantity; here nothing is selected or estimated: each diesel fill releases the vapour its own compartment's previous delivery left, a state carried between consecutive uses of one container and read per fill from the dispatch record.",
+    "task308": "task308 v3 credits an added generating unit with its availability in the hours that matter, when units of its kind fail together from a shared cause; here nothing fails or moves together: each diesel fill displaces the vapour its own compartment's previous delivery left, a state carried between consecutive uses of one container and read per fill from the dispatch record."
   },
-  "lineage": [],
-  "notes": "",
-  "client_domain": "general-statistics-data-science",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:short-record-extension-through-overlap",
-  "layer1": [
-    "several sources for one picture: the market operator's day-ahead price archive in yearly files whose layout changed in 2022, the node's own price file since its creation, the settlement point list with the node's rename, the battery's operating log and the warranty terms",
-    "clocks: hour ending 01 to 24 on prevailing time with a repeated-hour flag, 23- and 25-hour days, the battery's log in UTC",
-    "genuine gaps: the node's first weeks of test-period prices, a repriced day in the archive"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-15",
+      "fate": "spent 2026-11-02 at the re-check under the new gates: the node's-own-year reading is either refuted by the data, and then every pooled extension is unanimous on the golden and the golden is the field's textbook long-record correction (Reflex fails, standing spread zero), or it stays open on the current windy stretch's persistence and is a fork whose only closing sentence names the record the step recognises (the fork is the stump); the shipped cut also failed leak.py (dictionary and manifest) and precut, and guard heart BLOCKed",
+      "driver": "The decisive quantity is a low quantile of a distribution seen directly only over one short and unrepresentative period; the long record of a correlated auxiliary series, carried to the target through the proportional relationship their overlap shows, gives the distribution over the full range of conditions, while the short record alone, the auxiliary record alone or the auxiliary shifted by an additive offset each set the dial at a different value.",
+      "stump": "The default path sets the threshold from the node's own day-ahead spreads since MPI first priced it (eleven windy months whose average looks ordinary but a third of whose days were flat) and picks $15; the hub's eight years alone pick $10 and the hub plus the node's average spread premium $30; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks $20.",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G14",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "dial_setting",
+      "niche": "an independent storage owner's 2027 cycling threshold for a 100 MW / 400 MWh battery at a congested node: the node's daily day-ahead spread distribution, seen directly for only eleven months since the node was created, integrated with the trading hub's eight-year record through their overlap"
+    }
   ],
-  "registered": "2026-10-15T13:20:45Z"
+  "lineage_shells": [
+    {
+      "architecture": "v1",
+      "question form": "whether",
+      "second-sentence opener": "put",
+      "deliverable set": "csv+xlsx"
+    }
+  ],
+  "notes": "architecture 2 re-root 2026-11-04 into physical-environmental-sciences (emissions-inventory) after architecture 1 was spent at the 11-02 re-check. stump_strategy other, because no vocabulary family is honest for the decisive move: each fill's release is a state the container carries from its previous delivery, rebuilt per load from a second system's record (not a mix shift or reweighting, not a grain or identity reading, not censoring). Gate G method_or_model_selection: the per-product loading-loss equation against the compartment-state construction, the right one fixed by the field's own saturation factors for vapour-balanced service. The draw's other screens are one line each in DESIGN_NOTE ## Tried and rejected.",
+  "registered": "2026-11-04T03:18:56Z"
 }

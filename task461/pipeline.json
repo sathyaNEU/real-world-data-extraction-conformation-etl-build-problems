@@ -1,54 +1,56 @@
 {
  "task": "task461",
- "status": "SHIPPED",
- "domain": "general-statistics-data-science",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-11-02",
- "stump": "The default path sets the threshold from the node's own day-ahead spreads since MPI first priced it (eleven windy months whose average looks ordinary but a third of whose days were flat) and picks $15; the hub's eight years alone pick $10 and the hub plus the node's average spread premium $30; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks $20.",
- "architecture": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-04",
+ "stump": "The default path charges every diesel load at diesel's own vapour pressure and files about 1.4 tonnes of VOC from loading for 2026, inside the 20-tonne limit; about half of the retail fleet's diesel went into compartments whose last delivery was petrol through a station's vapour balance, so each of those loads pushed saturated petrol vapour out at an uncontrolled distillate bay, and the terminal released about 48 tonnes and exceeded its limit.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-15"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-15, --asof 2026-11-06)",
-  "reader": "two passes CLEAN, Q6 analytical; the record question left to the hub's years (leak section of the design note)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS",
-  "nearest": "0.05 task229 lineage",
-  "surface": "promotes task460 (back to back, shared vocabulary; the identical register column sets fixed) and task501 (same gap, pattern and Gate G, differentiated on the card): the author's call on /clone-check"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report_pass2.md (pass 1 DETERMINISTIC FIX_NOW, determinism_check_report.md)",
-  "gate_h": "domain pass, layers pass, decisive_step analytical"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-15",
+ "delivered": null,
  "portal": null,
- "source_note": "seed ET18 (analytical_tasks/07_data_extraction_conformation): the storage owner's yearly cycling threshold kept; the seed's clock trap (UTC grouping, hour ending 24:00, 25-hour days) is Layer 1 only; the pitfall re-found in the data: the node's direct record is one short, unrepresentative year",
- "call": "Load a 2027 cycling threshold of $20 per MWh into Redrock Draw's trading system (275 expected cycling days; $15 gives 323)",
- "target_zip_sha256_16": "6f9be07297f8fc22",
- "recheck": {
-  "date": "2026-11-02",
-  "result": "architecture spent, no repair, re-root left to the orchestrating session",
-  "rebuild": "reproduces shipped target.zip 6f9be07297f8fc22 byte for byte; 89 checks 0 failed; verify agrees",
-  "analyst_test": "R3a node's own record $15, R3b extension $20, hub alone $10, hub plus premium $30: easy routes all wrong",
-  "own_year_reading": "no shipped sentence rules it out; data refute it only through a persistence model ($15 at 316 to 320 days), while the stretch at the record's end outlasts its one precedent; refuted it leaves the textbook long-term correction unanimous (Reflex fails), open it is a fork closed only by naming the record the step recognises",
-  "gates": {
-   "precut": "exit 1 (no Measured by line; anatomy written, Reflex, Link, Back-test, Shock fail)",
-   "voice_check": "PASS (shell quota WARN)",
-   "leak_py": "LEAK (data dictionary and manifest by name; metadata.json title and stated_inputs carry 300)",
-   "guard_heart": "BLOCK (same_puzzle_older task174, task178; same_driver_older task174, task242, task476; predates the re-check)",
-   "figures_check": "exit 0, 100 figures",
-   "guard_surface": "exit 0, 8 pairs promoted for adjudication (same-driver signature)"
-  }
+ "source_note": "no seed: architecture 2 keeps nothing of architecture 1's world (a battery at a congested power-market node); a regional fuel distributor's bulk terminal, its retail tanker fleet, contract carrier, dispatch dockets and vapour recovery unit, invented",
+ "replaces_architecture": {
+  "architecture": 1,
+  "delivered": "2026-10-15",
+  "target_zip_sha256_16": "6f9be07297f8fc22",
+  "fate": "spent at the 2026-11-02 re-check (the node's-own-year reading refuted leaves the textbook long-record correction unanimous, Reflex fails; left open it is a fork closed only by naming the decisive step); build files cleared from the folder, kept in history; this build replaces it at ship"
+ },
+ "draw_screen": {
+  "date": "2026-11-04",
+  "screened": 13,
+  "task_types": [
+   "emissions-inventory",
+   "payment-claims-health-plan-analytics",
+   "item-response-theory-test-equating",
+   "seasonal-adjustment-official-time-series-production",
+   "data-integration-record-linkage-entity-resolution"
+  ],
+  "cleared": 1,
+  "carded": "screen 13, emissions-inventory: diesel loaded at uncontrolled distillate bays into compartments whose last delivery was petrol through station vapour balance",
+  "prototype": "proto_switch2.py, seeds 461, 4611 and 4612: rung 0 at 0.33 t on the distillate bays, the exports-only compartment history at 0.84 of the golden, every retail diesel load at petrol vapour at 1.89, the dockets' construction about 47 t, temperature convention inert",
+  "guard_check": "WARN (repeat.gate_g against task200, answered in the design note); same-puzzle and same-driver against older task488 and task308 v3 differentiated on the card"
  }
 }
