@@ -238,3 +238,16 @@ release calendar to ask whether a show they were watching still had episodes to 
   airs, each a refutation of the price on the easy route's own chart. Replaced by season-based runway (a watched
   season still has an episode to come) and a calendar that keeps a weekly season airing from November 2024 to October
   2025.
+- 2026-11-04, stage 2, full-season drops in the 2025-26 winter only (the draw's calendar): the coordinator's first-look
+  reader (outcome by week, every candidate's dated record beside it, a before-and-after on each date, the reflex
+  segmentations including the release type of the most-watched show and of any show watched) would read "full-season
+  drop trialists convert less and their share rose in November" and land the slate without the runway. Replaced by an
+  originals-only service whose every season is released weekly in both winters (harness h7, h8).
+- 2026-11-04, stage 2, a catalogue with licensed boxsets and library titles beside weekly originals (harness h5, h6):
+  the trialists who watched no weekly-released show had no runway in either winter, so their fall was the price alone
+  (1.4 to 5.3 points against 17 to 22 for weekly watchers), a contrast a first-look reader reads even at 2 per cent of
+  the winter's trials. Any group whose runway never moves reveals the price's true size, so the world has no such group:
+  every title is an Ellesmere original released weekly.
+- 2026-11-04, stage 2, the first-look reader's composition arithmetic counted titles present in one winter only (a 165
+  per cent "mix" share for acquisition title); corrected to common support, the title mix explains 3 per cent and the
+  new-release-against-catalogue mix about 30 per cent, both inside the price story.
