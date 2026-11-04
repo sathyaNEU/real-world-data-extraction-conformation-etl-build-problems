@@ -208,10 +208,10 @@ def main():
     say("slot_plan_jan_feb_2027.csv marks exactly the slate (52 rows)", on == set(sl) and len(csv) == 52)
     sys.path.insert(0, HERE)
     import ceiling
-    a = ceiling.ask_a(T, "operating", window=360, metres=80)
-    want_a = [fj["ask_a"][k] for k in sorted(fj["ask_a"], key=lambda k: (k.split()[0] != "Juniper", k))]
-    say("ask A recomputes (14 figures)", a == want_a, str(a))
-    b = ceiling.ask_b(T, "block")
+    a = ceiling.ask_a(T, "operating", tests="release", copies="pair", window=360, metres=80)
+    want_a = [fj["ask_a"]["%02d" % m] for m in range(4, 11)]
+    say("ask A recomputes (7 figures)", a == want_a, str(a))
+    b = ceiling.ask_b(T, "operating")
     want_b = [fj["ask_b"][ln][g] for ln in ("Juniper", "Foundry") for g in ("Brakes", "Doors", "All other")]
     say("ask B recomputes (6 figures)", b == want_b, str(b))
     files = sorted(os.listdir(T))

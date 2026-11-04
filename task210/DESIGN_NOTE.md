@@ -59,8 +59,10 @@ units that will. The driver with the nouns stripped is on the card.
 **Sources.** Every file synthetic, generated from one seed, invented world, no real organisation, licence CC BY 4.0,
 recorded in `metadata.json`: the recorder export (UTC, WGS84), the AVL section-pass log (local time, lead vehicle), the
 track survey (GeoJSON, RFC 7946 longitude and latitude), hourly airport observations (METAR sky strings at :53 UTC),
-the yard's block sheets, the Foundry depot's release log, the run sheets (duty and revenue hours), the operator
-roster, the badge card register, the maintenance system's defect reports (operator cards and inspection findings),
+the yard's block sheets (pull-out cars, out and in times), the Foundry depot's release log, the run sheets (the
+day's schedule, duty and revenue hours), the operator
+roster, the badge card register, the maintenance system's defect reports (operator cards and inspection findings,
+each with the time it was entered),
 SRM-07 (PDF), the January pick timetable (PDF), the station normals (PDF), the rail operations dashboard (workbook), and
 three distractors named only in `metadata.json` (pedestrian counters, the arena's events, track maintenance) beside
 the school calendar the careful readers use. Eighteen files, five formats, the AVL log 623,550 rows at the actual
@@ -257,10 +259,14 @@ literal execution of every filed rule (rung L) files a wrong slate.
 | SF16 | clock | Mountain local time, MDT in the record and MST in the pick | UTC as stamped | same call once converted | SRM-07 3.5 ("Mountain local time") |
 | SF17 | the candidate | one section, one direction, one weekday peak | a section pooled over directions | another call | SRM-07 3.6, quoted |
 | SF18 | the basis | the pick's scheduled passes | the record's own passes | another call | SRM-07 4.1 ("at the pick's scheduled times on the pick's weekdays") |
-| SF19 | ask A's month | the Mountain-time month | the UTC month (moves 4 of 14 figures) | another figure | the asking sentence ("each Mountain-time month") |
-| SF20 | ask B's day | the service day the card was written (its car on its block) | the MMS reported date; the day before keying; the car's last day out | another figure (each moves 6 of 6) | the asking sentence ("cards that operators wrote on weekday service days"); C1: every card's car ran its block on one day in the week before keying |
+| SF19 | ask A's month | the Mountain-time month | the UTC month (moves 4 of 7 figures) | another figure | the asking sentence ("each Mountain-time month") |
+| SF20 | ask B's day | the day the card was written: the one day in the week before it was entered on which its car ran its block (the cars the yard sheets name and the car the AVL log shows taking a block over) | the MMS entered date; the day before entry; the car's last day out; the entry day | another figure (the first three each move 6 of 6) | the asking sentence ("each counted on the day it was written"); C1: every card's car ran its block on exactly one day in the week before entry and never on the entry day, so the latest such day in a 7, 14 or 30-day window, with or without the entry day, is one day (asserted) |
 | SF21 | a record on a month's edge | none within 15 seconds of a month boundary | a recorder clock moving one across | same figures | asserted on the shipped rows |
-| SF22 | ask B's weekday service | days the weekday timetable ran | calendar weekdays (the three holidays, moves 2 of 6) | another figure | the asking sentence ("weekday service days"); the AVL log shows the Sunday timetable from 07:00 on 25 May, 3 July and 7 September |
+| SF22 | ask B's weekday service | days the weekday timetable ran (the run sheets' Weekday schedule) | calendar weekdays (the three holidays, moves 2 of 6) | another figure | the asking sentence ("only if the weekday timetable ran that day"); the run sheets' schedule and the AVL log's start before 07:00 agree on every day (asserted) |
+| SF23 | ask A's in service | SRM-07 6.2: from the car's pull-out onto a block until it pulls in (the yard sheet's car from the block's out time until the AVL log shows another vehicle on the block, that vehicle from then to the in time) | a logged AVL pass (moves 7 of 7); the yard sheet's pull-out car alone (moves 6 of 7); the block's trips | another figure, or same figures | SRM-07 6.2, quoted; the trip reading and 6.2 read on the clean truth count the golden's 707 applications (asserted); the AVL reading differs only by the 42 on passes the AVL log lost |
+| SF24 | ask A's one application | the depot loop's running brake test after a release is not one; a two-car train's two records are one | the tests kept; the two records twice; another pairing window or the second car dropped | another figure, or same figures | SRM-07 6.2 and 3.4; one set under pairing within 60, 120 or 360 seconds, by dropping the second car, with or without the release log (asserted) |
+| SF25 | ask B's period | April to October as a whole | per month | another figure set | the asking sentence ("over those months as a whole") |
+| SF26 | ask B's line | the card's car's line | the card's block's line | same figures | every card's car and block name one line (asserted) |
 ## Ladder
 
 | Rung | Route | Slate on the shipped seed | Shares with the golden |
@@ -292,11 +298,11 @@ three slots and the default path at most two.
 | 9 Boundary inclusivity | the peak by entry time, 06:30 to 08:59 and 16:00 to 18:29 | filed, SRM-07 3.5; SF3 |
 | 10 Rounding path | no graded rate; the slate is graded; the asks are whole numbers | C3 corridor: membership fixed across the supported glare forms; the asks' counts are integers |
 | 11 Tie-break | none needed, the fourth clears the fifth by 37.0 per cent (13.2 or more in every corridor cell) | C4, asserted |
-| 12 Maturity and censoring | none in the main call; ask B's cards keyed after the 2 November export are not in it, and every card in it dates to a service day in the window or before 1 April | C1, asserted |
+| 12 Maturity and censoring | none in the main call; ask B's cards entered after the 2 November export are not in it, and every card in it dates to one day in the week before its entry, never the entry day | C1, asserted (SF20) |
 | 13 Order of operations | attach, fit, project | C1, the variants agree |
 | 14 Row order | file order irrelevant | C1 |
-| 15 Duplicate resolution | no FB copies (active cab only) | filed, SRM-07 3.4; separation asserted |
-| 16 Identity normalisation | car to AVL vehicle; badge to operator through the register | the systems' own keys |
+| 15 Duplicate resolution | no FB copies (active cab only); a two-car train's two EB records one application | filed, SRM-07 3.4 and 6.2; one set under every pairing (SF24) |
+| 16 Identity normalisation | car to AVL vehicle; badge to operator through the register; the car on a block from the yard sheets and the AVL log's change-offs | the systems' own keys; C1 (SF20, SF23) |
 | 17 Netting against gross | none | not applicable, stated |
 | 18 Dimensional units | firm brakes per 1,000 passes | filed, SRM-07 3.7 |
 | 19 Code and status semantics | FB is the firm brake, EB the emergency loop, OS overspeed | filed, SRM-07 3.4 |
@@ -307,64 +313,88 @@ three slots and the default path at most two.
 ## Literal reader
 
 Executed word for word, SRM-07 gives the population, outcome, window, basis and comparison and leaves the expected rate
-to be formed, and it defines no low sun; every reading of a term or convention (SF1 to SF22) prints the golden slate
-or the golden figures, or is ruled out by a quoted sentence or by the records (SF13, SF20, SF22), and the literal
+to be formed, and it defines no low sun; every reading of a term or convention (SF1 to SF26) prints the golden slate
+or the golden figures, or is ruled out by a quoted sentence or by the records (SF13, SF20, SF22, SF23), and the literal
 executions that carry the record's own rates (rung L) file wrong slates, so the easy answer comes from an easy method
 on the same literal estimand, never from another reading.
 ## Oracles
 
 None that ties only under the golden. The dashboard's line-level monthly FB rates tie to the per-cell totals under
-every reading and rank nothing; its EB column is the raw record count (copies and depot tests included), which agrees
-with the naive ask A route and is a seen-wrong control, never an arbiter. The maintenance system's reported date
-agrees with its own created time on every row (both the keying), so it confirms the keying lag rather than the card's
+every reading and rank nothing; its EB column is the raw record count (copies, depot tests and brake checks included), which agrees
+with the naive ask A route and is a seen-wrong control, never an arbiter. The maintenance system's entered date
+is the date of its entered time on every row (both the keying), so it confirms the keying lag rather than the card's
 day. The normals and the pick are drivers, not checks.
 ## Ask sheet
 
-- Ask A: each line's emergency brake applications in revenue service in each Mountain-time month, April to October
-  2026 (14 figures). H18 home: the braking record beside the firm brakes the call reads, on rows the call never reads
-  (EB, not FB). Primary devices: A1 (D1 duplication under two clocks: a two-car train's application logged by the
-  trailing car's free-running recorder up to 3.5 minutes off, paired only by block, position and time); A2 (D5 scope:
-  a car bad-ordered in service runs on to Foundry Loop, pulls in and is repaired and brake-tested on the depot loop the
-  same day, so the yard sheet puts it on a block while it sits in the depot, and the spare that pulled out onto the
-  block's next inbound trip is on no sheet); hazard A3 (D4: AVL
-  onboard-unit drop-outs leave revenue trips unlogged, so revenue read off the AVL log loses applications); the UTC
-  month (pinned by the asking sentence).
-- Ask B: each line's defect cards that operators wrote on weekday service days, April to October 2026, for brakes,
-  for doors and for all other defects (6 figures: Juniper 55, 56, 153; Foundry 37, 46, 139). H18 home: the
-  equipment side of the diagnosis (did brakes or doors on the cars drive the autumn rise), on the maintenance system's
-  rows, which the call never reads. Counting units filed as WHAT in the asking sentence: a card an operator wrote (the
-  MMS source "Operator card"), the service day it was written on, weekday service (the weekday timetable ran: the three
-  holidays ran the Sunday timetable from 07:00), the car's line, the MMS defect group. Primary device B1 (D8, a recorded
-  date for the event date): the yard clerk keys the cards on the next business morning, so the MMS created time and its
-  reported date (the MMS default, the day of keying) fall after the service day; after noticing, the card has to be
-  dated, and only its car and block against the yard's block sheets date it (the one service day in the week before
-  keying on which that car pulled out on that block). The natural remedies after noticing are wrong: the day before
-  keying puts every Friday card on Sunday; the car's last day out puts it on whichever later day the car ran. Hazard B2
-  (D3 meaning): weekday service against calendar weekdays (Memorial Day, 3 July, Labor Day). Realism: a clerk keying
+- Ask A: the streetcar's emergency brake applications in service in each Mountain-time month, April to October 2026
+  (7 figures: 99, 99, 99, 113, 105, 97, 95). H18 home: the braking record beside the firm brakes the call reads, on
+  rows the call never reads (EB, not FB). The WHAT is SRM-07 6.2 in the procedure's own voice: a car is in service on a
+  block from the time it pulls out onto the block until it pulls in; a running brake test on the depot loop after a
+  release is not an application in service; a two-car train's application, which both cars' recorders record (3.4), is
+  one. No sentence says which register shows which car was on a block when. Primary devices: A2 (D7, the true key
+  elsewhere: a Foundry car bad-ordered in service runs on to Foundry Loop and pulls in, and the spare that pulls out
+  onto the block's next inbound trip is on no sheet, because the yard sheet keeps the pull-out car; only the AVL log
+  shows the spare on the block, so the yard sheets' register misses its 14 applications, moving six of seven months);
+  A3 (D4 absence: AVL onboard-unit drop-outs leave revenue trips unlogged, 42 applications on passes the AVL log lost,
+  so the AVL log's register misses every month). Hazards: A4 (D5 scope: the yards' monthly brake check, an emergency
+  application on a car that ran no block that day, 147 records, which every reading of in service excludes and a count
+  of every record less the named exceptions keeps, moving every month); A1 (D1, a two-car train's two records, the
+  trailing recorder up to 45 seconds off: dead as a device once 6.2 files the rule and the yard sheet names the second
+  car, kept as texture); the release log's tests (named by 6.2); the UTC month (pinned by the asking sentence). The
+  golden is the in-service map across both registers: the yard sheet's car or cars from the block's out time until the
+  AVL log first shows another vehicle on the block, that vehicle from then to the in time.
+- Ask B: each line's defect cards that operators wrote, each counted on the day it was written and only if the
+  weekday timetable ran that day, over April to October 2026 as a whole, for brakes, for doors and for all other
+  defects (6 figures: Juniper 46, 55, 171; Foundry 44, 34, 122). H18 home: the equipment side of the diagnosis (did
+  brakes or doors on the cars drive the autumn rise), on the maintenance system's rows, which the call never reads.
+  Counting units filed as WHAT in the asking sentence: the day written, the weekday timetable, the months as a whole;
+  the MMS source "Operator card", the car's line, the MMS defect group. Primary device B1 (D8, a recorded date for the
+  event date): the MMS export carries only the time each card was entered (entered_at, entered_date), the yard clerk
+  keying cards the next business morning and now and then a day later; after noticing, a card is dated only by its car
+  and block against the cars that ran each block, the one day in the week before entry (never the entry day) on which
+  its car ran its block. The natural remedies are wrong: the entered date, the day before entry (Friday cards on
+  Sunday), the car's last day out (a weekend block between). Second device B2 (D7, the same real cause as A2): every car
+  that ran a block writes cards, and the spare that took a swapped Foundry block over is named on the block only by the
+  AVL log, so the yard sheets' register orphans its cards and the Foundry figures move; the AVL log's register orphans a
+  two-car train's trailing car's cards and the Juniper figures move. Hazard B3 (D3): the weekday timetable against
+  calendar weekdays (pinned by the asking sentence; the run sheets carry each day's schedule). Realism: a clerk keying
   paper cards each morning is how a depot's maintenance system fills; the card's block box is on the form.
-- Pin test: ask A's month is pinned (Mountain time) and its devices sit in which records are one application and
-  which car was in revenue service; ask B's sentence pins the counting units and leaves the dating to the records.
+- Pin test: SRM-07 6.2 pins in service, the depot test and the two-car rule, and ask A's devices sit in which car was in
+  service on a block when (the spare on no sheet, the passes the AVL log lost) and in the records out of service (the
+  brake checks); ask B's sentence pins the day written, the weekday timetable and the months as a whole, and its devices
+  sit in how a card's day is recovered and which register names the car that ran the block.
 - Separation line: zero device rows in the main call's population (the call reads FB rows, the AVL passes, the survey,
-  the airport file and the pick; ask A reads EB rows, ask B the MMS export), asserted in `checks.py`.
-- Pair ceiling: 31.2 (one response on the call keeping the cracker's ask figures, the other off it with the same ask
-  handling); both on the call 47.8; at the full includer's keep the pair is 42.2 and both on 58.8.
-- Mirror leakage: 5.0 per cent of the ask weight.
-- Full includer: keeps 25.0 per cent of all ask figures at its best route (under two fifths):
+  the airport file and the pick; ask A reads EB rows, the yard sheets and the release log, ask B the MMS export, the
+  yard sheets and the run sheets), asserted in `checks.py`; SRM-07 carries ask A's definition (6.2), the WHAT, and none
+  of its devices' organs. The brake checks join the export after every draw on the shared stream, so the main call's
+  records are byte-identical (asserted by G, the slate and the chart's bytes).
+- Pair ceiling: 32.7 (one response on the call keeping the crackers' ask figures, the other off it with the same ask
+  handling); both on the call 49.2; at the full includer's keep the pair is 45.4 and both on 61.9.
+- Mirror leakage: 0.0 per cent of the ask weight.
+- Full includer: keeps 30.8 per cent of all ask figures at its best route (under two fifths). It reads every file and
+  acts on every stated fact against one register per question; a car no register names is an orphan and is set aside:
 
 | Full includer route | Ask A | Ask B |
 |---|---|---|
-| full includer, signature | 0 of 14 | 0 of 6 |
-| full includer, release log | 1 of 14 | 4 of 6 |
-| full includer, AVL | 0 of 14 | 4 of 6 |
+| full includer, yard (the yard sheet's car from pull-out to pull-in, release log, second car dropped; cards by the yard sheets) | 1 of 7 | 3 of 6 |
+| full includer, AVL (AVL passes; cards by the AVL log) | 0 of 7 | 3 of 6 |
+| full includer, yard paired (pairs within a minute; cards by the yard sheets) | 1 of 7 | 3 of 6 |
+| full includer, signature (the Loop's walking-pace signature, pairs within a minute; each card on its car's last day out) | 0 of 7 | 0 of 6 |
 
+- Stress rows (not the gate, the reconstructions the golden makes): the in-service map across the yard sheets and the
+  AVL log for A with the yard sheets for B, 10 of 13 (76.9 per cent); the yard sheets for A with B's undated cards put
+  on the business day before entry, 7 of 13 (53.8 per cent); the golden's handling, 13 of 13.
 - Every ask figure is a whole number, 0.5 of a unit from its rounding edges; the tightest is any of them (all at 0.5).
 - Measured by: generator/ceiling.py on the cut pack (shares no code with the generator; its own golden handling is
   asserted equal to figures.json).
 
 | Ask row (cracker sheet) | Ask A kept | Ask B kept | Verdict |
 |---|---|---|---|
-| cracker | 0 of 14 | 0 of 6 | miss |
-| second cracker | 1 of 14 | 0 of 6 | miss |
+| cracker (AVL passes; each card on the day before it was entered) | 0 of 7 | 0 of 6 | miss |
+| second cracker (yard sheets, release log, pairs in a minute; each card on its car's last day out) | 1 of 7 | 0 of 6 | miss |
+| no-repair (every EB record, UTC month; each card on its entered date, calendar weekdays) | 0 of 7 | 0 of 6 | miss |
+| blind (every record but the named exceptions; each card on the business day before entry) | 0 of 7 | 0 of 6 | miss |
+| mirror (the observed-rate rung; the cracker's ask handling) | 0 of 7 | 0 of 6 | miss |
 ## Realism pass (stage 3)
 
 Texture only, each change on its own random stream or on the same draws, so the realization is unchanged: the slate,
@@ -464,6 +494,56 @@ figure; this repair moves the realization). `--mode rubric` with the same keys: 
 card's stump, the ladder and the default path; 132 ask-side figures moved (the 130 non-main keys and the two new ones).
 Neither mode's contract matches a world repair that reselects the seed, so both outputs stand as recorded
 (scratchpad `t210/a2/blocks/freeze_determinism.txt`, `freeze_rubric.txt`), and nothing frozen on the main call moved.
+## Ask repair (stage 4 round 1)
+
+The round-1 judge read the main call as forced and correct (Gates F high, G forecasting and analytical_non_defect, H
+analytical) and failed Gates C and E on the asks alone: no file defined revenue service (read against the AVL log's
+passes ask A was 666, against the yard sheets' block assignment the golden's 707, all 14 cells different), and ask B
+rested on an unstated re-dating (the MMS `reported` column read as the writing day gave other figures; 68 cards had the
+keyed day as a second candidate; the three weekday holidays and per month against the period were open). The leak
+reader was clean on the main call and flagged the same ask terms. An ask-layer repair, no architecture spent; the call,
+the stump sentence, the ladder, the default path, the chart and the slot plan are frozen (`freeze.py --mode rubric`,
+below).
+
+Fixed in the world and filed as WHAT, never the handling:
+- SRM-07 6.2, in the procedure's voice: the Rail Safety Office reports the streetcar's emergency brake applications in
+  service by month; a car is in service on a block from the time it pulls out onto the block until it pulls in; a
+  running brake test on the depot loop after a release is not one; a two-car train's application is one. The yard
+  sheets carry each block's out and in times (`simulate` untouched; the times from the realised first and last trips on
+  their own stream). Every application lies on one of its block's trips; the trip reading, the literal reading of 6.2 on
+  the clean truth (each car from its own pull-out to its own pull-in) and the golden's in-service map from `target/`
+  count the same 707 applications, and the AVL-passes-only reading differs only by the 42 on passes the AVL log lost
+  (asserted, SF23 and SF24).
+- Ask A asked of the streetcar by Mountain-time month (7 figures) rather than of each line (14): `## Tried and
+  rejected`. The yards' monthly brake check (147 records on cars that ran no block that day) joins the export after
+  every draw on the shared stream; the trailing recorder's clock is the same draws scaled to 45 seconds.
+- Ask B: the keying day is never a candidate (a card is written only where its car ran its block on exactly one day in
+  the week before entry and not on the entry day, under the cars that ran each block, the spare that took a swapped
+  block over included), one card per defect per car per day, and every car that ran a block writes cards (the
+  bad-ordered car and the spare now included). The MMS export's `created` and `reported` are `entered_at` and
+  `entered_date`, so no column claims the writing day. The run sheets carry each day's schedule (Weekday, Saturday,
+  Sunday; the three holidays Sunday). The asking sentence files the day written, the weekday timetable and the months
+  as a whole; the narrow and broad readings of each card's day (7, 14 or 30 days, with or without the entry day) are
+  one set (asserted, SF20, SF22, SF25, SF26).
+
+Moved, each re-derived from the corrected world on seed 21030 (`figures.json`):
+- Ask A, 14 per-line figures to 7 monthly figures (99, 99, 99, 113, 105, 97, 95; the three 99s are the record's own
+  counts, equal to the flag truth): `ask_a.Juniper 04` to `ask_a.Juniper 10` and `ask_a.Foundry 04` to `ask_a.Foundry
+  10` leave, `ask_a.04` to `ask_a.10` arrive. The re-site and the filed WHAT move them.
+- Ask B, 6 figures (Juniper 55, 56, 153 to 46, 55, 171; Foundry 37, 46, 139 to 44, 34, 122): the world fix (the entry
+  day ruled out, one card per defect per car per day, the swapped blocks' cars writing cards) redraws the cards on
+  their own stream.
+- Unchanged: the slate, G 2.498, the separation 37.0 per cent (33.8 in `verify.py`), every Final Recommendation and
+  Critical Components number, the 52 expected and observed rates, `slot_plan_jan_feb_2027.csv` and `braking_shift.png`
+  byte for byte, the stump sentence, the card's stump and driver, the ladder and the default path.
+
+`freeze.py check task210 --mode rubric --allow <the 20 moved ask keys>`: exit 0, PASS (the main call, the stump and every
+frozen figure unchanged; 27 ask figures moved). `--mode determinism` with the same keys: exit 1, 4 items, the Deliverable
+Answers blocks of both asks (a determinism repair moves no graded figure; this repair re-derives the asks from a
+corrected world and re-sites ask A), so its contract does not match the repair and both outputs stand as recorded
+(scratchpad `t210/a2/fix/freeze_determinism.txt`, `freeze_rubric.txt`). The 20 keys: `ask_a.Juniper 04` to
+`ask_a.Juniper 10`, `ask_a.Foundry 04` to `ask_a.Foundry 10`, `ask_b.Juniper.Brakes`, `ask_b.Juniper.Doors`,
+`ask_b.Juniper.All other`, `ask_b.Foundry.Brakes`, `ask_b.Foundry.Doors`, `ask_b.Foundry.All other`.
 ## Leak sweep rulings
 
 `leak.py --asof 2026-11-02`: REVIEW, no LEAK, sweeps 1, 2, 5, 7, 8, 10 and 11 clean. Each REVIEW line, harmless:
@@ -471,15 +551,42 @@ Neither mode's contract matches a world repair that reselects the seed, so both 
 - Sweep 3, the pick names the Juniper Line beside numbers: its running-time table lists every section of both lines.
 - Sweep 3, the pick carries 22 of the call's 30 words: the call names four sections by their stops and the pick's dates,
   and the pick names every section, every stop and its own dates alike.
-- Sweep 4, SRM-07 holds six stump terms (record, passes, normals, survey, weekdays, highest): the procedure's filed WHAT
-  (the record since 1 April, passes as the denominator, the normals' weather, the survey's sections, the pick's
-  weekdays, the four highest expected rates); it names no sun, glare, bearing or excess (asserted).
+- Sweep 4, SRM-07 holds seven stump terms (record, passes, highest, weekdays, recorder, expected and the normals):
+  the procedure's filed WHAT (the recorder's codes and the record since 1 April, passes as the denominator, the pick's
+  weekdays, the expected rate in the normals' weather, the four highest expected rates, and 6.2's applications in
+  service, which each car's recorder records); it names no sun, glare, bearing or excess (asserted). The term list is
+  re-read from the design note at every run; the stage-4 ask repair added 6.2 and no stump term.
 - Sweep 6, the pick names every candidate beside numbers: scheduled running times in network order, ranking nothing.
 - Sweep 6, the survey names every candidate beside numbers: coordinates and lengths in network order (the raw material
   R1 asserts), ranking nothing.
 - Sweep 9, the school calendar's 154 dates after 2 November: a district publishes its school year ahead of it.
 ## Tried and rejected
 
+- 2026-11-04 (a2 stage 4 fix), ask A's WHAT filed as the brief's example, an application made while the car was running
+  one of its block's trips: a trip reading makes the AVL log, its gaps filled from the yard sheets, the careful route,
+  and that route counts the golden in every cell (the spare is a logged vehicle and the Foundry carries no other
+  device), so the WHAT is filed as SRM-07 6.2's pull-out onto a block to pull-in, whose natural register is the yard
+  sheets, which keep the pull-out car.
+- 2026-11-04 (a2 stage 4 fix), ask A by line once 6.2 filed the two-car rule: the Juniper half's only device was the
+  trailing car's copy, and with the yard sheet naming the second car, dropping its records is exact, so the yard full
+  includer kept 8 of 14 and the layer 11 of 20 (55 per cent); re-sited onto the streetcar's monthly totals, where the
+  Foundry's in-service swap (the spare on no sheet) moves six of seven months.
+- 2026-11-04 (a2 stage 4 fix), the monthly totals with the trailing recorder up to 3.5 minutes off: the copies a
+  one-minute pairing leaves unpaired offset the spare's applications in April, June and September (a subset of
+  mishandlings composing back in the bin), so the second cracker kept 3 of 7 and the yard paired full includer 46 per
+  cent; the trailing clock is the same draws scaled to 45 seconds, and every pairing window from one to six minutes
+  counts one set.
+- 2026-11-04 (a2 stage 4 fix), every EB record less the named exceptions (the release log's tests, the second car's
+  records) counted the golden in all seven months, nothing out of service being left in the export: the yards' monthly
+  brake check on cars out of service that day is added (147 records), which every reading of in service excludes.
+- 2026-11-04 (a2 stage 4 fix), the brake checks first joined the export before the per-record draws on the shared
+  stream, which shifted the AVL drop-outs drawn after them and moved G from 2.498 to 2.385: they now join after every
+  shared draw, each field from their own stream, and the main call is byte-identical.
+- 2026-11-04 (a2 stage 4 fix), ask B with the holidays filed and nothing else: the yard-sheet dater kept 6 of 6 once the
+  calendar-weekday reading was ruled out, so every car that ran a block writes cards, the swapped block's spare
+  included, which the yard sheets never name on its block; a dater that falls back on the business day before entry for
+  the cards it cannot date recovers them (swaps fall on weekdays), recorded as a stress row (53.8 per cent), not a full
+  includer under the house standard (a car no register names is set aside).
 - 2026-11-04 (a2 stage 3), the Foundry blocks alternated to fix their one-way working (each Foundry block runs one
   direction all day, the trip index modulo eight, which no car or operator could work): the change moves every
   operator's passes and so the whole realization, and at seed 21019 the slate holds on the clean truth but the

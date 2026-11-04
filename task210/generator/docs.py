@@ -94,7 +94,12 @@ def srm07(path):
           P("5.2 An RSO limits trains to 10 mph through the section in that direction of travel during that peak, on every weekday of "
             "the pick."),
           Paragraph("6. Records", h),
-          P("The assessment, the slot plan and the record extracts it used are kept for three years by the Rail Safety Office."),
+          P("6.1 The assessment, the slot plan and the record extracts it used are kept for three years by the Rail Safety Office."),
+          P("6.2 With each assessment the Rail Safety Office reports the streetcar's emergency brake applications in service by "
+            "month. A car is in service on a block from the time it pulls out onto the block until it pulls in. An emergency "
+            "brake application in service is an EB the car's recorder records in that time; a running brake test on the depot "
+            "loop after a release is not one, and a two-car train's application, which both cars' recorders record (3.4), is "
+            "one application."),
           Paragraph("Appendix C. Station normals: Ashcombe Municipal Airport (ASH), 1991 to 2020, published separately with this procedure.", small)]
     _pdf(path, st, "SRM-07 Seasonal Restricted Speed Orders", "D:20260916101204-06'00'", "D:20260924163548-06'00'")
 

@@ -21,8 +21,8 @@ This autumn's rise was the low sun standing ahead of the operator: firm braking 
 2. Gave each pass the sun's elevation and azimuth at its midpoint (NOAA's solar position at the survey's mean coordinates), its section direction's bearing from streetcar_track_survey_2025.geojson (outbound in coordinate order, inbound reversed) and the sky reported in ash_awos_hourly_obs_2026.csv for its clock hour (sun out under CLR, FEW or SCT): J4 and J5 outbound head 125 and 131 degrees, F5 and F6 outbound 231 and 237.
 3. Fitted firm brakes per pass on every logged pass by Poisson regression with a base for each section direction, clock-hour terms, a term for days off the weekday timetable, darkness (sun below the horizon) and a glare factor 1 + G x a x h on sunny passes, a the squared cosine of the sun's offset from the bearing scaled so that 25 degrees off gives none and h one with the sun under 12 degrees up, falling to none at 25: G is 2.5.
 4. Built the pick's passes from january_2027_pick_timetable.pdf (its weekday headways and running times on its 38 weekdays, 4 January to 26 February 2027 less the two Monday holidays), kept those entering a section in SRM-07's weekday peaks, set each against the sun and its bearing as in step 2, and averaged each section-direction peak's fitted rate at the 68 per cent possible sunshine of ash_climate_normals_1991-2020.pdf: the four highest are J4-O AM, J5-O AM, F5-O PM and F6-O PM.
-5. Ask A: kept EB records of the recorder export, dated to the service day (a record before 03:00 counts to the day before), on the car running a block at that moment by yard_block_sheets_2026.csv (the pull-out car or cars until the AVL log first shows another vehicle on that block that day, which runs it from then on), counted a two-car train's two records on one block within 6 minutes and 80 metres once, and grouped by line and Mountain-time month: the figures in block 4.
-6. Ask B: took the Operator card rows of mms_defect_reports_2026.csv, dated each to the day in the week before it was keyed (its created date) on which its car pulled out on its block in yard_block_sheets_2026.csv, kept weekday service days from April to October (a Monday to Friday whose AVL log starts before 07:00, the holidays having run the Sunday timetable from 07:00) and counted by the car's line and defect group (Brakes, Doors, every other group): the figures in block 4.
+5. Ask A: kept the EB records of the recorder export made by a car in service on a block as SRM-07 defines it, the pull-out car or cars on yard_block_sheets_2026.csv from the block's out time until the AVL log first shows another vehicle on that block that day, which is in service from then to the block's in time (a record before 03:00 counts to the day before), dropped the running brake test in the hour after each release in foundry_depot_releases_2026.csv, counted a two-car train's two records on one block within 6 minutes and 80 metres once, and grouped by Mountain-time month: the figures in block 4.
+6. Ask B: took the Operator card rows of mms_defect_reports_2026.csv, dated each to the day in the week before it was entered (its entered_at) on which its car ran its block, a car yard_block_sheets_2026.csv names on the block or the car the AVL log shows taking the block over, kept the days run_sheets_2026.csv gives the Weekday schedule from April to October and counted by the car's line and defect group (Brakes, Doors, every other group): the figures in block 4.
 7. Placed the four slots on J4-O AM, J5-O AM, F5-O PM and F6-O PM, marked yes in slot_plan_jan_feb_2027.csv among its 52 rows.
 
 ## 4. Deliverable Answers
@@ -61,14 +61,12 @@ This autumn's rise was the low sun standing ahead of the operator: firm braking 
 
 2. Paired horizontal bars for every section direction in network order, an AM panel and a PM panel: each row's September to October 2026 observed firm-braking rate beside its January to February 2027 expected rate, the four slot rows shaded and labelled.
 
-### Emergency brake applications in revenue service (in the response)
+### Emergency brake applications in service (in the response)
 
-3. Each line's applications by Mountain-time month, April to October 2026, whole numbers:
-   - Juniper Line: April 43, May 34, June 46, July 60, August 51, September 42, October 45
-   - Foundry Line: April 56, May 65, June 53, July 53, August 54, September 55, October 50
+3. The streetcar's applications by Mountain-time month, April to October 2026, whole numbers: April 99, May 99, June 99, July 113, August 105, September 97, October 95
 
-### Defect cards operators wrote on weekday service days (in the response)
+### Defect cards operators wrote (in the response)
 
-4. Each line's cards, April to October 2026, whole numbers:
-   - Juniper Line: brakes 55, doors 56, all other defects 153
-   - Foundry Line: brakes 37, doors 46, all other defects 139
+4. Each line's cards written on days the weekday timetable ran, April to October 2026 as a whole, whole numbers:
+   - Juniper Line: brakes 46, doors 55, all other defects 171
+   - Foundry Line: brakes 44, doors 34, all other defects 122
