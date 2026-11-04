@@ -19,7 +19,10 @@ from scipy.optimize import minimize
 from scipy.stats import norm
 
 STANDARD = 0.05
+TRIGGER = 37.5
+NO3 = 4.426802
 Y0, Y1 = dt.date(2025, 4, 1), dt.date(2026, 3, 31)
+CUTOFF = dt.date(2026, 1, 20)
 K = [0]
 
 
@@ -71,7 +74,8 @@ def run(target, figures):
                      keep_default_na=False)
     ab = pd.read_csv(os.path.join(target, "abstraction_point_register.csv"), dtype=str,
                      keep_default_na=False)
-
+    mf = pd.read_csv(os.path.join(target, "export_manifest.csv"), dtype=str, keep_default_na=False)
+    ok(int(mf["row_count"].iloc[0]) == len(ex), "the manifest's row count disagrees")
 
     pr = pd.read_excel(os.path.join(target, "monitoring_programme_2025_26.xlsx"),
                        sheet_name="Programme 2025-26", header=None, dtype=object)
@@ -146,93 +150,42 @@ def run(target, figures):
     ok(sum(v["below_limit"] for v in fig["a1_sampling"].values()) == fig["below_limit_total"],
        "A1 below-limit total")
 
-    # ---- the ortho-phosphate figures, rebuilt bottle by bottle ----------------------------------
-    nut = ex[(ex["sample_type"] == "FIELD") & (ex["programme"] == "NUT")].sort_values(
-        ["lab_sample_id", "determinand_code", "v"])
-    nut = nut.groupby(["lab_sample_id", "determinand_code"], as_index=False).tail(1)
-    bks = []
-    for key, grp in nut.groupby(["lab_code", "client_point_code", "sample_date", "sample_time"]):
-        o = grp[grp["determinand_code"] == "OPO4"]
-        bks.append(dict(lab=key[0], code=key[1], d=dt.date.fromisoformat(key[2]), t=key[3],
-                        pt=grp["point"].iloc[0], wb=grp["wb"].iloc[0], rec=grp["date_received"].iloc[0],
-                        sig=frozenset(zip(grp["determinand_code"], grp["result"], grp["qualifier"])),
-                        new=max(int(x.split("/")[2]) for x in grp["lab_sample_id"]),
-                        st=o["result_status"].iloc[0] if len(o) else "", q=o["qualifier"].iloc[0] if len(o) else ""))
-    out = set()
-    # the same analysis on two bookings at one point, a few days apart
-    grp1 = {}
-    for i, b in enumerate(bks):
-        grp1.setdefault((b["lab"], b["pt"], b["rec"], b["sig"]), []).append(i)
-    for idx in grp1.values():
-        idx.sort(key=lambda i: bks[i]["d"])
-        out.update(a for a, c in zip(idx, idx[1:]) if 1 <= (bks[c]["d"] - bks[a]["d"]).days <= 3)
-    # one bottle on two points: kept at the point of its newer booking
-    grp2 = {}
-    for i, b in enumerate(bks):
-        grp2.setdefault((b["lab"], b["d"], b["t"], b["rec"], b["sig"]), []).append(i)
-    for idx in grp2.values():
-        if len({bks[i]["pt"] for i in idx}) > 1:
-            top = max(idx, key=lambda i: bks[i]["new"])
-            out.update(i for i in idx if i != top)
-    # a Tirneevin code ARWA-<catchment>-<last two digits> that an operational point with no crosswalk row
-    # of its own also carries
-    op = pd.read_excel(os.path.join(target, "monitoring_programme_2025_26.xlsx"), sheet_name="Operational network",
-                       header=None, dtype=object)
-    catch = {r.water_body_code: r.catchment for r in rg.itertuples()}
-    ab2 = {catch[r.water_body_code]: r.client_point_code.split("-")[1] for r in xw.itertuples()
-           if r.lab_code == "TAS" and r.water_body_code}
-    owner = {r.client_point_code: r.sample_point_code for r in xw.itertuples()
-             if r.lab_code == "TAS" and r.water_body_code}
-    listed = set(xw["sample_point_code"])
-    labs = {}
-    for b in bks:
-        labs.setdefault(b["pt"], set()).add(b["lab"])
-    for i in range(len(op)):
-        c = op.iloc[i, 0]
-        if not (isinstance(c, str) and c.startswith("ARW-")) or c in listed or str(op.iloc[i, 2]) not in ab2:
-            continue
-        code = "ARWA-%s-%s" % (ab2[str(op.iloc[i, 2])], c[-2:])
-        if code not in owner:
-            continue
-        mine = [j for j, b in enumerate(bks) if b["lab"] == "TAS" and b["code"] == code and j not in out]
-        if labs[owner[code]] - {"TAS"}:
-            out.update(mine)
-        else:
-            per = {}
-            for j in mine:
-                per.setdefault((bks[j]["d"].year, bks[j]["d"].month), []).append(j)
-            for js in per.values():
-                out.update(sorted(js)[1:])
-    frm = {}
-    for i in range(len(pr)):
-        v = pr.iloc[i, 0]
-        if isinstance(v, str) and v.startswith("ARW-"):
-            frm[v] = (dt.date.fromisoformat(str(pr.iloc[i, 7])[:10]), dt.date.fromisoformat(str(pr.iloc[i, 8])[:10]))
-    opo = {}
-    for j, b in enumerate(bks):
-        if j in out or b["pt"] not in prog_points or b["st"] != "A":
-            continue
-        if not (Y0 <= b["d"] <= Y1 and frm[b["pt"]][0] <= b["d"] <= frm[b["pt"]][1]):
-            continue
-        n, nd = opo.get(names[b["wb"]], (0, 0))
-        opo[names[b["wb"]]] = (n + 1, nd + (b["q"] == "<"))
-    for name, (n, nd) in opo.items():
-        want = fig["orthophosphate"][name]
-        ok(n == want["samples"] and nd == want["below_limit"],
-           "ortho-phosphate %s: %d/%d against %s" % (name, n, nd, want))
-    ok(len(opo) == len(fig["orthophosphate"]), "ortho-phosphate covers %d water bodies" % len(opo))
-    # the same figures a second way: a compliance point's nutrient bottle is the one filled on the visit
-    # that took its pesticide sample, so it carries that sample's collection date and time
-    pest = ex[(ex["sample_type"] == "FIELD") & (ex["programme"] == "PEST")]
-    vset = set(zip(pest["point"], pest["sample_date"], pest["sample_time"]))
-    opo_v = {}
-    for b in bks:
-        if (b["pt"], b["d"].isoformat(), b["t"]) not in vset or b["pt"] not in prog_points or b["st"] != "A":
-            continue
-        n, nd = opo_v.get(names[b["wb"]], (0, 0))
-        opo_v[names[b["wb"]]] = (n + 1, nd + (b["q"] == "<"))
-    ok(opo_v == opo, "the visit reading and the bottle rules disagree: %s against %s" % (opo_v, opo))
-    ok(not (ex["result_status"].isin(["A", "P"]) == False).any(), "a result status other than A or P")
+    # ---- A2 ------------------------------------------------------------------------------------
+    pts = set(ab["sample_point_code"])
+    nn = gov[gov["point"].isin(pts) & gov["determinand_code"].isin(["NO3", "NO3N"])
+             & (gov["d"] >= Y0) & (gov["d"] <= Y1)].copy()
+    nn["no3"] = [x * (NO3 if c == "NO3N" else 1.0) for x, c in zip(nn["num"],
+                                                                   nn["determinand_code"])]
+    nn = nn.sort_values(["point", "sample_date", "sample_time", "client_point_code"])
+    nn = nn.groupby(["point", "sample_date", "sample_time"], as_index=False).head(1)
+    anames = {r.sample_point_code: r.sample_point_name for r in ab.itertuples()}
+    for code, grp in nn.groupby("point"):
+        want = fig["a2_nitrate"][anames[code]]
+        ok(abs(round(float(grp["no3"].max()), 1) - want["max_no3_mgl"]) < 1e-9,
+           "A2 max at %s" % anames[code])
+        ok(int((grp["no3"] >= TRIGGER).sum()) == want["at_or_above_trigger"],
+           "A2 count at %s" % anames[code])
+
+    # ---- A3 ------------------------------------------------------------------------------------
+    q = ex[(ex["determinand_code"] == "OPO4") & (ex["sample_type"] == "FIELD")
+           & (ex["sample_date"].str[:7].isin(["2025-10", "2025-11", "2025-12"]))]
+    issued = {r.lab_sample_id for r in q.itertuples()
+              if r.date_approved and dt.date.fromisoformat(r.date_approved) <= CUTOFF}
+    held = set(gov.loc[(gov["determinand_code"] == "OPO4")
+                       & (gov["sample_date"].str[:7].isin(["2025-10", "2025-11", "2025-12"])),
+                       "lab_sample_id"])
+    ok(len(issued) == fig["a3_quarter"]["reports"], "A3 reports %d" % len(issued))
+    ok(len(held) == fig["a3_quarter"]["export"], "A3 export %d" % len(held))
+    ok(len(issued ^ held) == fig["a3_quarter"]["one_only"], "A3 one only %d" % len(issued ^ held))
+    # the two report PDFs list exactly the issued results
+    listed = 0
+    for pdfn in ("tirneevin_quarterly_report_2025q3.pdf", "kilgarron_quarterly_report_2025q3.pdf"):
+        with pdfplumber.open(os.path.join(target, pdfn)) as pdf:
+            txt = " ".join(p.extract_text() or "" for p in pdf.pages)
+        listed += len(re.findall(r"\b(?:TAS|KGL)/25/\d{7}\b", txt))
+        mm = re.search(r"Results listed: (\d+)", txt)
+        ok(mm is not None, "%s does not state how many results it lists" % pdfn)
+    ok(listed == len(issued), "the reports list %d sample ids, %d were issued" % (listed, len(issued)))
 
     # ---- the governing documents say nothing about the decisive step ---------------------------
     blob = ""
@@ -256,16 +209,14 @@ def run(target, figures):
     if os.path.exists(xl):
         rows = pd.read_excel(xl, sheet_name="Return 2025-26", header=5, dtype=object)
         rows = rows[rows["Water body"].notna()]
-        nc = [r for r in rows.itertuples() if str(r._3) == "non-compliant"]
+        nc = [r for r in rows.itertuples() if str(r.Assessment) == "non-compliant"]
         ok(len(nc) == fig["call"], "the return workbook states %d non-compliant" % len(nc))
         for r in rows.itertuples():
             nm = str(r._2)
-            want = fig["orthophosphate"].get(nm)
+            want = fig["a1_sampling"].get(nm)
             if want:
-                ok(int(r._4) == want["samples"] and int(r._5) == want["below_limit"],
+                ok(int(r._3) == want["samples"] and int(r._4) == want["below_limit"],
                    "the return workbook disagrees at %s" % nm)
-                ok((str(r._3) == "non-compliant") == (nm in fig["non_compliant"]),
-                   "the return workbook's MCPA assessment disagrees at %s" % nm)
     return K[0]
 
 

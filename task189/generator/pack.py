@@ -65,12 +65,11 @@ def build_rows():
     batch_n = {"TAS": 0, "KGL": 0}
 
     def add(lab, point, place, wb, d, time, det, value, rl, detected, method, units, programme,
-            sample_type="FIELD", status="A", version=1, section="catchment", approved=None,
-            received=None):
+            sample_type="FIELD", status="A", version=1, section="catchment", approved=None):
         sid[lab] += 1
         yy = d.strftime("%y")
         bid = "%s-%s-%03d" % (lab, d.strftime("%Y%m"), 1 + (sid[lab] % 9))
-        recv = received or (d + dt.timedelta(days=1 + (sid[lab] % 2)))
+        recv = d + dt.timedelta(days=1 + (sid[lab] % 2))
         appr = approved or (recv + dt.timedelta(days=9 + (sid[lab] % 11)))
         q = "<" if not detected else ""
         res = None if not detected else value
@@ -89,7 +88,6 @@ def build_rows():
         })
 
     # --- the pesticide suite at the compliance points -------------------------------------------
-    visit = {}                           # (point, year, month): the visit's collection date and time
     for wb in W.WATER_BODIES:
         name = wb[0]
         mrows = sim.mcpa_rows(wb)
@@ -98,7 +96,6 @@ def build_rows():
             lab = r["lab"]
             d = sim.sample_day(prng, r["year"], r["month"], r["point"])
             tm = "%02d:%02d" % (9 + (sum(ord(c) for c in r["point"]) % 5), 5 * (prng.randrange(0, 11)))
-            visit[(r["point"], r["year"], r["month"])] = (d, tm)
             method = "TAS-LC-PHX-04" if lab == "TAS" else "KGL-GC-PHX-07"
             units = W.METHODS[method]["units"]
             scale = 1000.0 if units == "ng/l" else 1.0
@@ -111,38 +108,11 @@ def build_rows():
                     r["rl"] * scale, (v >= r["rl"]), method, units, "PEST")
 
     # --- the nutrient and physico-chemical suites ------------------------------------------------
-    # one bottle per point and month: its determinands share the collection date, time and receipt
     nrng = random.Random(W.SEED + 501)
-    bottle = {}
-    nut = R.nutrient_rows()
-    # Tirneevin's numbering can give an operational point a compliance point's code; the two are on
-    # different rounds, so the operational point is never sampled on the compliance point's visit day
-    tas_owner = {client_code("TAS", c, wbn): c for (c, pl, wbn, code, lab, pf) in R.compliance_points()}
-    partner = {c: tas_owner[client_code("TAS", c, catch)] for (c, pl, catch) in R.op_points()
-               if client_code("TAS", c, catch) in tas_owner}
-    for r in nut:
-        k = (r["point"], r["year"], r["month"])
-        if k not in bottle:
-            d = sim.sample_day(nrng, r["year"], r["month"], r["point"])
-            tm = "%02d:%02d" % (8 + (int(r["point"][-4:]) % 7), 5 * nrng.randrange(0, 12))
-            if k in visit:               # at a compliance point the bottle is filled on the month's visit
-                d, tm = visit[k]
-            elif r["lab"] == "TAS" and r["point"] in partner:
-                pv = visit.get((partner[r["point"]], r["year"], r["month"]))
-                if pv and pv[0] == d:
-                    d = d - dt.timedelta(days=2)
-            recv = d + dt.timedelta(days=1 + (sum(ord(c) for c in r["point"]) + r["month"]) % 2)
-            bottle[k] = (d, tm, recv)
-    # each laboratory numbers the nutrient bottles in the order they reach its reception
-    for i in sorted(range(len(nut)), key=lambda j: (bottle[(nut[j]["point"], nut[j]["year"], nut[j]["month"])][2],
-                                                    bottle[(nut[j]["point"], nut[j]["year"], nut[j]["month"])][1],
-                                                    nut[j]["point"], j)):
-        r = nut[i]
-        d, tm, recv = bottle[(r["point"], r["year"], r["month"])]
-        add(r["lab"], r["point"], r["place"], r["wb"], d, tm,
-            r["det"], r["value"], r["rl"], r["det_flag"], r["method"], r["units"], "NUT",
-            received=recv)
-        rows[-1]["_gen"] = i
+    for r in R.nutrient_rows():
+        d = sim.sample_day(nrng, r["year"], r["month"], r["point"])
+        add(r["lab"], r["point"], r["place"], r["wb"], d, "10:%02d" % (5 * nrng.randrange(0, 11)),
+            r["det"], r["value"], r["rl"], r["det_flag"], r["method"], r["units"], "NUT")
     prng2 = random.Random(W.SEED + 613)
     for r in R.physico_rows():
         d = sim.sample_day(prng2, r["year"], r["month"], r["point"])
@@ -152,7 +122,6 @@ def build_rows():
                 d = dt.date(r["year"], r["month"], 28)
         add(r["lab"], r["point"], r["place"], r["wb"], d, "11:%02d" % (5 * prng2.randrange(0, 11)),
             r["det"], r["value"], 0.0, True, r["method"], r["units"], "PHY")
-        rows[-1]["_half"] = r["half"]
 
     # --- the abstraction programme ---------------------------------------------------------------
     arng = random.Random(W.SEED + 727)
@@ -187,7 +156,7 @@ def build_rows():
     q3 = [r for r in rows if r["determinand_code"] == "OPO4" and r["sample_type"] == "FIELD"
           and r["sample_date"][:7] in ("2025-10", "2025-11", "2025-12")]
     vrng = random.Random(W.SEED + 941)
-    for i, r in enumerate(sorted(q3, key=lambda z: (z["lab_code"], z["_gen"]))):
+    for i, r in enumerate(sorted(q3, key=lambda z: z["lab_sample_id"])):
         if i % 11 == 3:
             prov = dict(r)
             prov["result_status"], prov["version"] = "P", "1"
@@ -198,98 +167,9 @@ def build_rows():
         elif i % 17 == 5:
             r["date_approved"] = (dt.date.fromisoformat(r["date_received"])
                                   + dt.timedelta(days=70)).isoformat()   # approved after the cut-off
-
-    # --- the field calendar: no bottle where the visit was not made or the point was not in use ----
-    rows[:] = [r for r in rows if not off_calendar(r)]
-
-    # --- what the receptions did to the nutrient bottles -----------------------------------------
-    late_booked = []                     # bookings made after the first pass, numbered last
-
-    def clone(r, sample_date=None, **kw):
-        n = dict(r)
-        n["sample_date"] = sample_date or r["sample_date"]
-        n["lab_sample_id"] = None
-        n.update(kw)
-        return n
-
-    def bottle_rows(point, y, m):
-        return [r for r in rows if r["_point"] == point and r["programme"] == "NUT"
-                and r["_month"] == (y, m)]
-
-    # a bottle lost on the way to the laboratory: the round has no nutrient result at the point
-    lost = set()
-    for (point, y, m) in W.LOST_BOTTLES:
-        lost.update(id(r) for r in bottle_rows(point, y, m))
-    rows[:] = [r for r in rows if id(r) not in lost]
-
-    # a bottle the reception booked to another point's open slot, later re-booked to its own point;
-    # the withdrawal of the first booking never reached the authority's system
-    xw_wb = {c: wb for (c, pl, wb, code, lab, pf) in R.compliance_points()}
-    xw_wb.update({c: catch for (c, pl, catch) in R.op_points()})
-    late = random.Random(W.SEED + 1031)
-    for (wrong, own, y, m) in W.MISBOOKED:
-        field = [r for r in bottle_rows(own, y, m) if r["sample_type"] == "FIELD"]
-        delay = dt.timedelta(days=12 + late.randrange(0, 15))
-        rebooked = [clone(r, client_point_code=client_code(r["lab_code"], own, xw_wb[own]),
-                          date_approved=(dt.date.fromisoformat(r["date_approved"]) + delay).isoformat(),
-                          _rebooked=True)
-                    for r in field]
-        for r in field:
-            r["client_point_code"] = client_code(r["lab_code"], wrong, xw_wb[wrong])
-            r["_misbooked_to"] = wrong
-        rows.extend(rebooked)
-        late_booked.append(rebooked)
-
-    # a bottle booked twice by one reception, from the round's pre-registration (the scheduled date)
-    # and from the chain of custody form (the date it was taken); one analysis issued to both
-    slot = random.Random(W.SEED + 1049)
-    for (point, y, m, k) in W.DOUBLE_BOOKED:
-        field = [r for r in bottle_rows(point, y, m) if r["sample_type"] == "FIELD"]
-        sched = (dt.date.fromisoformat(field[0]["sample_date"]) - dt.timedelta(days=k)).isoformat()
-        tm = "%02d:%02d" % (9 + slot.randrange(0, 6), 5 * slot.randrange(0, 12))
-        copies = [clone(r, sample_date=sched, sample_time=tm, _copy_of=r["lab_sample_id"]) for r in field]
-        rows.extend(copies)
-        late_booked.append(copies)
-
-    # the laboratory numbers every booking made after the round's first pass from its running series:
-    # the re-bookings and the second bookings, and the bottles whose paperwork reached reception late
-    held = {(r["_point"], r["_month"]) for b in late_booked for r in b}
-    held |= {(p, (y, m)) for (p, y, m) in W.LOST_BOTTLES}
-    held |= {(o, (y, m)) for (w, o, y, m) in W.MISBOOKED} | {(w, (y, m)) for (w, o, y, m) in W.MISBOOKED}
-    cand = {}
-    for r in rows:
-        k = (r["_point"], r["_month"])
-        if (r["programme"] == "NUT" and r["sample_type"] == "FIELD" and r["lab_code"] == "TAS"
-                and r["result_status"] == "A" and r["version"] == "1" and k not in held
-                and r["_month"] not in ((2025, 10), (2025, 11), (2025, 12))):
-            cand.setdefault(k, []).append(r)
-    pick = random.Random(W.SEED + 1063)
-    keys = sorted(cand)
-    late = [sorted(cand[k], key=lambda z: z["lab_sample_id"])
-            for k in pick.sample(keys, W.LATE_PAPERWORK)]
-    order = late_booked + late
-    pick.shuffle(order)
-    for b in order:
-        for r in b:                                    # the bottle's determinands in booking order
-            sid[r["lab_code"]] += 1
-            r["lab_sample_id"] = "%s/%s/%07d" % (r["lab_code"], r["sample_date"][2:4], sid[r["lab_code"]])
+        elif i % 19 == 7:
+            r["result_status"] = "V"                                      # withdrawn on review
     return rows
-
-
-def off_calendar(r):
-    """a row the field calendar cannot hold: before a point joined the programme, after its access
-    was withdrawn, or on a monthly visit the field team did not make"""
-    d = dt.date.fromisoformat(r["sample_date"])
-    p = r["_point"]
-    if r["programme"] not in ("NUT", "PHY"):
-        return False
-    if p in W.POINT_FROM and d < W.POINT_FROM[p]:
-        return True
-    if p in W.POINT_TO and d > W.POINT_TO[p]:
-        return True
-    if (p, d.year, d.month) in set(W.MISSED):
-        return r["programme"] == "NUT" or d.day < 17
-    return False
 
 
 def write_export(target, rows):
@@ -331,16 +211,11 @@ def write_register(target):
 
 
 def write_crosswalk(target, rows):
-    """one row per laboratory and client code; where a laboratory's numbering gives one code to two
-    points, the authority's register holds it against the compliance point"""
-    comp = {c for (c, pl, wb, code, lab, pf) in R.compliance_points()}
     seen = {}
     for r in rows:
         if not r["client_point_code"]:
             continue
-        k = (r["lab_code"], r["client_point_code"])
-        if k not in seen or (r["_point"] in comp and seen[k]["_point"] not in comp):
-            seen[k] = r
+        seen.setdefault((r["lab_code"], r["client_point_code"]), r)
     out = []
     pts = {}
     for (code, place, wb, wbcode, lab, pf) in R.compliance_points():
@@ -485,8 +360,8 @@ def write_programme(target, rows):
         ws.cell(row=row, column=3, value=wbname)
         ws.cell(row=row, column=4, value=W.LABS[lab]["name"])
         ws.cell(row=row, column=5, value=12 if not (frm or to) else 6)
-        ws.cell(row=row, column=6, value=12 if not (frm or to) else 6)
-        ws.cell(row=row, column=7, value=24 if not (frm or to) else 12)
+        ws.cell(row=row, column=6, value=12)
+        ws.cell(row=row, column=7, value=24)
         ws.cell(row=row, column=8, value=(frm or W.YEAR_FROM).isoformat())
         ws.cell(row=row, column=9, value=(to or W.YEAR_TO).isoformat())
         ws.cell(row=row, column=10, value=note or None)

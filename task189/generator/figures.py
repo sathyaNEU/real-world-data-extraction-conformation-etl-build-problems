@@ -7,7 +7,7 @@ import world as W
 
 def write(gen_dir, g):
     a1 = {k: {"samples": v[0], "below_limit": v[1]} for k, v in g["a1"].items()}
-    w = {k: {"samples": v[0], "below_limit": v[1]} for k, v in g["w"].items()}
+    a2 = {k: {"max_no3_mgl": v[0], "at_or_above_trigger": v[1]} for k, v in g["a2"].items()}
     S = W.STANDARD
     reads = ("mle", "km", "cond", "fitted_dist")
     nc = [min(o[k] for k in reads) for o in g["assess"].values() if o["mle"] > S]
@@ -17,6 +17,7 @@ def write(gen_dir, g):
            "reporting_limit_legacy_ugl": W.METHODS["KGL-GC-PHX-07"]["rl"],
            "legacy_limit_over_standard": round(W.METHODS["KGL-GC-PHX-07"]["rl"] / S, 1),
            "programme_points": 37,
+           "nitrate_trigger_mgl_no3": W.NITRATE_TRIGGER,
            # both are stated in the write-up as lower bounds ("at least N per cent clear"), so
            # they floor toward the bound: rounding to nearest prints a bound the pack does not hold
            "nearest_compliant_pct_below": int(100 * (S - max(co)) / S),
@@ -30,7 +31,8 @@ def write(gen_dir, g):
            "rungs": g["rungs"],
            "censored_readings_agreeing": len(reads),
            "a1_sampling": a1,
-           "orthophosphate": w}
+           "a2_nitrate": a2,
+           "a3_quarter": g["a3"]}
     path = os.path.join(gen_dir, "figures.json")
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(fig, fh, indent=1, sort_keys=True)

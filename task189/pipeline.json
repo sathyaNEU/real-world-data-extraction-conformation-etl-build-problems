@@ -1,11 +1,11 @@
 {
  "task": "task189",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-03",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-04",
  "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
  "architecture": 1,
  "loops": 1,
@@ -38,7 +38,7 @@
   }
  },
  "returned": [],
- "resume": "RUBRIC RESHIP PAUSED 2026-11-03 at the ask design: no honest ask layer survives while the call is frozen (DESIGN_NOTE.md, Tried and rejected, the 11-03 lines, measured on target.zip f2c0b70568a20c9a). The return's nutrient verdicts and averages are the call's own estimator on another substance (non-compliant water bodies for ortho-phosphate 0, 13, 13, 13 and for ammonium 0, 0, 13, 0 with the below-limit results at zero, half the limit, the limit and dropped; every water body holds Tirneevin results censored at 0.10 mg/l, above both standards). The nutrient counts admit only identity and counting devices, spent by judge passes 2 and 3. A date-basis device has no mass (every compliance nutrient bottle taken on days 4 to 13, one approval date leaves the year). A code reissue has no code space the frozen pesticide rows do not share and no count mass (16 of Kilgarron's 19 nutrient points at 12 bookings). The one exact basis referee in the suite is total oxidised nitrogen against nitrate, and nitrate is not a Schedule 2 substance (H18). The shipped 10-16 version stays the portal's live version; the working tree still holds the visit-tied cut, which is not shippable. Next, the author's call: (1) keep the 10-16 version live and rework only on a portal rubric return; (2) waive H18 for a nitrate ask refereed by TON (Tirneevin's nitrate as the ion against Kilgarron's as N); (3) accept a change to a file the call reads (a sensitive Tirneevin nutrient method in the method schedule) to decouple the nutrient verdicts, knowing no value device survived the screen; or (4) retire the reship. Any resumed reship owes ceiling.py rewritten to share no code with the generator (the current one imports golden.py).",
+ "resume": "SHIPPED, delivered 10-16, pending review. The proactive rubric reship of 10-31 to 11-03 is withdrawn (reship block); the folder holds the live 10-16 cut. Rework only on a portal return: a rubric return reopens the 11-03 options (waive H18 for a nitrate ask refereed by TON, a change to a file the call reads, or retirement), each the author's call.",
  "approved": null,
  "delivered": "2026-10-16",
  "portal": null,
@@ -48,5 +48,17 @@
  "architecture_spent": true,
  "gates": {
   "bound_repair": "Critical Component 3 claimed every water body sat at least 12 per cent clear of the standard under all four licensed estimates; the pack holds 11.54 (Derryvore under the fitted lognormal's own mean, 0.044228, and Tirneevin Stream at 11.72). int(round()) printed the bound outward. figures.py now floors both bounds, checks.py asserts each printed bound is at or inside the recomputed extremum of the family (318 assertions, was 316), submission.md states 11, figures_check 42 of 42, two rebuilds byte-identical and target/ byte-identical to the shipped pack, so the repair moved one write-up integer and nothing else. Filed as house fix H29."
+ },
+ "reship": {
+  "kind": "proactive rubric reship under the 10-30 gates (no portal result on the 10-16 version)",
+  "began": "2026-10-31",
+  "withdrawn": "2026-11-04",
+  "why": "no honest ask layer survives while the call is frozen (DESIGN_NOTE.md, Tried and rejected, the 11-01 and 11-03 lines); its cuts failed the determinism judge on the asks (passes 2 and 3)",
+  "commits": [
+   "239b587",
+   "d01d23d",
+   "6af904c"
+  ],
+  "restored": "the build folder restored to the live 10-16 cut from 0127c63 (target.zip 05cf1f25, rebuilt from its generator to the same pack); the card's people and deliverables restored to the live pack's"
  }
 }

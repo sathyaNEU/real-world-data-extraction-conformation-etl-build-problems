@@ -167,6 +167,65 @@ def method_schedule(target):
                        "Tirneevin under registration T-0184 and Kilgarron under T-0266, and both "
                        "took part in the 2025 round of the international proficiency scheme for "
                        "acid herbicides in water.", BODY))
+    f.append(Paragraph("TAS-IC-ANI-02 determines nitrate as the nitrate ion. KGL-CF-NUT-03 "
+                       "determines nitrate as nitrogen. The determinand code on each result says "
+                       "which, and the field dictionary gives both.", BODY))
+    d.build(f)
+    return path
+
+
+def dictionary(target):
+    path = os.path.join(target, "lims_field_dictionary.pdf")
+    d = _doc(path, "LIMS field dictionary")
+    f = []
+    f.append(Paragraph("%s: laboratory information system field dictionary" % W.AUTHORITY, H1))
+    f.append(Paragraph("The fields of lims_results_export_2025_2026.csv, as the authority's data "
+                       "management office maintains them.", SMALL))
+    rows = [["Field", "Meaning"],
+            ["lab_sample_id", "the laboratory's own identifier for the sample, unique within the "
+                              "laboratory"],
+            ["lab_code", "the laboratory that determined the result, TAS or KGL"],
+            ["client_point_code", "the sample point as the submitting section coded it for that "
+                                  "laboratory; monitoring_point_crosswalk.csv carries the authority's "
+                                  "own code for it"],
+            ["sample_date, sample_time", "the date and local time the sample was collected"],
+            ["date_received", "the date the laboratory received the sample"],
+            ["date_approved", "the date the laboratory approved the result; empty while a result is "
+                              "provisional"],
+            ["sample_type", "FIELD for a sample of the water; FIELD_BLANK, EQUIP_BLANK, FIELD_DUP, "
+                            "LAB_DUP and MATRIX_SPIKE for the quality control samples the "
+                            "laboratories run alongside it"],
+            ["programme", "PEST pesticide suite, NUT nutrient suite, PHY physico-chemical suite, "
+                          "ABS the raw water abstraction programme"],
+            ["determinand_code", "the substance determined; NO3 is nitrate expressed as the nitrate "
+                                 "ion and NO3N is nitrate expressed as nitrogen, so a result under "
+                                 "NO3N is 4.4268 times smaller than the same water under NO3"],
+            ["method_code", "the accredited method used; laboratory_method_schedule.pdf gives each"],
+            ["result", "the value the laboratory reported, in the units of the units field"],
+            ["units", "the units of the result and of the reporting limit on the same row"],
+            ["qualifier", "a less-than sign where the determinand was not detected; the result field "
+                          "is then empty and reporting_limit holds the limit the method achieved for "
+                          "that sample"],
+            ["reporting_limit", "the reporting limit the method achieved for the sample, in the "
+                                "units of the units field"],
+            ["result_status", "A approved, P provisional, V withdrawn"],
+            ["version", "the version of the result for the sample and determinand; a later version "
+                        "supersedes an earlier one"],
+            ["batch_id", "the laboratory batch the result was reported in"]]
+    t = Table(wrap(rows), colWidths=[32 * mm, 142 * mm])
+    t.setStyle(TBL)
+    f.append(t)
+    f.append(Spacer(1, 4 * mm))
+    f.append(Paragraph("Notes", H2))
+    f.append(Paragraph("A row is one determinand on one sample at one version. A sample with several "
+                       "determinands has one row for each.", BODY))
+    f.append(Paragraph("The export holds every version the laboratories have issued up to the "
+                       "extract date, including the provisional versions later approved and the "
+                       "results later withdrawn.", BODY))
+    f.append(Paragraph("The water services section and the catchment monitoring section submit "
+                       "samples to the laboratories under their own client point codes. Both codes "
+                       "appear in the crosswalk against the authority's sample point code, with the "
+                       "section that submits under each.", BODY))
     d.build(f)
     return path
 
@@ -183,12 +242,10 @@ def quarterly_report(target, lab, rows):
                        "approved after that date appear in the following quarter's report."
                        % (W.AUTHORITY, CUTOFF.strftime("%d %B %Y")), SMALL))
     f.append(Paragraph("Ortho-phosphate as P, results issued in the quarter", H2))
-    sel = sorted([r for r in rows if r["lab_code"] == lab],
-                 key=lambda z: (z["client_point_code"], z["sample_date"], z["lab_sample_id"]))
+    sel = sorted([r for r in rows if r["lab_code"] == lab], key=lambda z: z["lab_sample_id"])
     head = ["Sample", "Client point", "Sampled", "Result mg/l", "Status"]
-    body = [[r["lab_sample_id"], r["client_point_code"], r["sample_date"],
-             r["result"] if r["qualifier"] != "<" else "<%.2f" % float(r["reporting_limit"]),
-             {"A": "approved", "P": "provisional"}[r["result_status"]]] for r in sel]
+    body = [[r["lab_sample_id"], r["client_point_code"], r["sample_date"], r["result"],
+             {"A": "approved", "P": "provisional", "V": "approved"}[r["result_status"]]] for r in sel]
     per = 34
     for i in range(0, len(body), per):
         t = Table(wrap([head] + body[i:i + per]),
