@@ -394,7 +394,7 @@ def drought_plan(path, total_pages=None):
       'the water billed to each class in the stage\'s months against the same months of the two preceding years.')
     h('6. Monitoring and reporting during a stage')
     p('While a stage is in force the Water Resources Division reports each month to the Utilities Director the '
-      'water taken from the district at each turnout, the water produced at each well, the water sold at the bulk '
+      'water taken from the district at each turnout, the water produced at each well, the water drawn at the bulk '
       'fill station and the water used by City facilities, against the same month of the two preceding years, and '
       'the progress of the stage toward its demand reduction.')
     h('7. Communication')

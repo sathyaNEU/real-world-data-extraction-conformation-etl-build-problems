@@ -35,7 +35,7 @@
    "xlsx"
   ],
   "largest_file": "cis_water_bills_2022-06_to_2026-10.csv",
-  "largest_file_rows": 276883
+  "largest_file_rows": 276914
  },
  "sources": [
   {
@@ -51,7 +51,7 @@
   {
    "path": "Agenda Report Stage 2 Drought Rate Options DRAFT 2026-10-27.docx",
    "format": "docx",
-   "bytes": 39065,
+   "bytes": 39066,
    "rows": null,
    "source": "the department's draft council agenda report on the Stage 2 rate options",
    "date": "2026-11-03",
@@ -60,7 +60,7 @@
   {
    "path": "Drought Contingency Plan Rev 2 (2025).pdf",
    "format": "pdf",
-   "bytes": 12062,
+   "bytes": 12058,
    "rows": null,
    "source": "the Water Department's drought contingency plan, revision 2",
    "date": "2026-11-03",
@@ -123,8 +123,8 @@
   {
    "path": "cis_water_bills_2022-06_to_2026-10.csv",
    "format": "csv",
-   "bytes": 42402056,
-   "rows": 276883,
+   "bytes": 42432475,
+   "rows": 276914,
    "source": "the billing system's bill export, every water bill issued June 2022 to October 2026",
    "date": "2026-11-03",
    "license": "CC0 (original work, constructed for this task)"

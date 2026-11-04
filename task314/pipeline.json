@@ -8,21 +8,22 @@
   "stage_name": "check",
   "updated": "2026-11-04",
   "seed": "OS16 (analytical_tasks/04_opportunity_sizing/OS16_workforce-fund-seat-capacity-binding.md): the decision shape kept (which one option a fixed public decision buys, sized on the extra outcome it delivers); the world moved to a city water department's 2027 drought rates because the seed's pairing has no Opportunity Sizing task type and its pilots' decisive steps are spent or barred on file",
-  "call": "Adopt Option C, the drought surcharge, as the Stage 2 rate measure for summer 2027: about 30 acre-feet off the June to September 2027 single-family bills, about 10 ahead of Option B (about 20), Option A about 10",
-  "stump": "The default path files Option A, the conservation blocks, at about 16 acre-feet, because it prices every option through each account's marginal block price with the elasticity the July 2023 restructuring gives (-0.12), under which the drought surcharge saves nothing; the July 2024 Fenwick Mesa capital recovery charge, which added 14 dollars to every Fenwick Mesa bill and moved no block price, cut that area's summer use 4.6 per cent against the rest of the city, so customers answer what the whole bill comes to per thousand gallons, and on that price Option C takes out the most, about 29 acre-feet against Option B's 19.",
+  "call": "Adopt Option C, the drought surcharge (USD 7.90 a bill), as the Stage 2 rate measure for summer 2027: about 20 acre-feet off the June to September 2027 single-family bills (19.44), about 10 ahead of Option B (10.86); Option A takes no measurable water off (0.70)",
+  "stump": "The default path files Option A, the conservation blocks, at about 7 acre-feet (about 16 on first differences), because it prices every option through each account's marginal block price with the elasticity the July 2023 restructuring gives on that price (-0.05 to -0.12), under which the drought surcharge saves nothing; a test of the price specification on either rate change in the record (both prices in one fit on the restructuring, or the Fenwick Mesa charge that moved no block price) shows customers answer the whole bill per thousand gallons (-0.31) and the block price not at all, and on that price Option C takes out the most, about 19 acre-feet against Option B's 11.",
   "architecture": 1,
-  "loops": 0,
-  "card": ".claude/skills/fingerprint/cards/task314.json, registered 2026-11-04T15:17:49Z at WARN (repeat.gate_g against task285, repeat.question_form against task285 and task489, answered in the design note); brought up to date at the build (niche, answer, analyst test, layer1, spine, stump, people)",
-  "clean_truth": "checks.py R3a and R3b on the simulation's true use before any mess: the block-price route on the city's own restructuring files Option A (16.1, 8.0, 0 acre-feet; margin 2.01), the literature block-price elasticity files A (1.95), the per-gallon price files B (3.88), the whole-bill price read off the Fenwick Mesa charge files C (7.9, 19.0, 29.0; margin 1.52)",
+  "loops": 1,
+  "card": ".claude/skills/fingerprint/cards/task314.json, registered 2026-11-04T15:17:49Z at WARN (repeat.gate_g against task285, repeat.question_form against task285 and task489, answered in the design note); brought up to date at the build and again at the FIX_NOW pass (niche, answer, analyst test, layer1, spine, stump, people)",
+  "clean_truth": "checks.py R3a and R3b on the simulation's true use before any mess: the block-price route on the city's own restructuring files Option A (panel -0.05 and first differences -0.12, margin 3.8 or more), the literature block-price elasticity files A, the per-gallon price files B, both prices in one fit on every bill and on the restructuring alone give the whole bill about -0.3 and the block price about zero, and the whole-bill price files C (margin 1.79)",
   "gates": {
-    "generator_assertions": 100,
-    "independent_checks": 33,
+    "generator_assertions": 109,
+    "independent_checks": 42,
     "rebuilds_byte_identical": true,
-    "figures_check": "PASS, 42 figures",
+    "figures_check": "PASS, 56 figures",
     "realism_sweep": "in checks.py, PASS",
     "container_audit": "clean (pack and goldens)",
     "input_gates": "16 files, 4 formats (csv, pdf, docx, xlsx), 276,883-row bill export, 3 distractors",
-    "ceiling": "pair 28.5, mirror leakage 0.0, cracker keep 0.0 (ceiling.py, pack digest e9e0ba523c455560)"
+    "convergence": "every estimate from -0.26 to -0.325 in constant-elasticity, linear and midpoint form, the Fenwick Mesa charge in or out of the base bill: C 16.28 to 22.80, B 9.08 to 12.22, A 0.14 to 2.72, gap 7.20 to 10.58, every edge 1.28 acre-feet or more away; every measured estimate (-0.27 to -0.33) as well: C to 23.36, B to 12.52, A to 2.79, gap to 10.84, every edge 1.28 or more away",
+    "ceiling": "pair 28.5 with one of the top two on the call, 45.0 with both; mirror leakage 0.0; cracker keeps 0 of 12 (ceiling.py, pack digest ab3b1d3b059fe381)"
   },
   "precut": {
     "exit": 0,
@@ -30,20 +31,20 @@
   },
   "leak": {
     "leak_py": "REVIEW 2026-11-04 --asof 2026-11-03 (sweeps 3, 4 and 12 on the agenda report, the plan and the resolutions, answered in the design note); no LEAK",
-    "reader": ""
+    "reader": "pass 1 on e9e0ba52: no leak, question 6 an analytical choice; a reader pass follows the FIX_NOW prompt change"
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g, repeat.question_form), nearest 0.09 task134 v3",
-    "surface": "clean on personas; three pairs promoted for adjudication (task307 at 0.102 and task261 at 0.100 on surface similarity, task118 on the gap, pattern and decision family, differentiated on the card)",
+    "heart": "WARN (repeat.gate_g), nearest 0.09 task134 v3",
+    "surface": "clean on personas; pairs promoted for adjudication: task307 (0.102), task240, task261 and task454 (0.100) on surface similarity, task118 on the gap, pattern and decision family (differentiated on the card)",
     "nearest": "0.09 task134 v3 (driver), 0.07 task154 (driver)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (narrow, pass 1 on e9e0ba52)",
+    "disposition": "FIX_NOW: the ask's tank-fill unit pinned in the prompt; the functional-form risk on the surcharge closed in the world by resizing the options; the note's restructuring claim corrected; the re-judge is due",
+    "report": "task314/determinism_check_report.md (pass 1)"
   },
   "returned": [],
-  "resume": "stage 4: the leak reader and the determinism judge on target.zip sha256 e9e0ba523c45556054f6af4ff5950762c7ad46defa8f28616ef51a191e4841fd (rebuild: cd task314/generator && python3 build.py, byte-identical; then python3 verify.py (0 FAIL), python3 checks.py (100 assertions, 0 FAIL) and python3 ceiling.py (pair 28.5)); every finding fixed in the generator in one pass, then ship",
+  "resume": "stage 4: the re-judge and a reader pass on target.zip sha256 ab3b1d3b059fe38111057b50b38b44ab39743d35a6f4d7b32572ab68e8d1ebe1 (rebuild: cd task314/generator && python3 build.py, byte-identical; then python3 verify.py (0 FAIL), python3 checks.py (109 assertions, 0 FAIL) and python3 ceiling.py (pair 28.5)); every finding fixed in the generator in one pass, then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

@@ -54,6 +54,18 @@ def mc_summary(export):
     return mc, t, w, bins(t), G.nearest(t[w] - t[run], 10)
 
 
+def light_call(export):
+    """The golden route alone (the whole-bill panel estimate and the savings it gives), for the mess variants."""
+    pan = Rt.panel(G.sfr_rows(export))
+    pop = Rt.population(pan)
+    base = Rt.baseline(pan, pop)
+    e = Rt.panel_fe(pan, ('AP',))[0]
+    t = {o: Rt.af(sum(Rt.forecast(pan, base, 'AP', e, o).values())) for o in 'ABC'}
+    w = call_of(t)
+    run = sorted(t, key=lambda o: -t[o])[1]
+    return e, t, w, bins(t), G.nearest(t[w] - t[run], 10)
+
+
 def main():
     w = B.world()
     fig = json.load(open(os.path.join(HERE, 'figures.json')))
@@ -79,43 +91,59 @@ def main():
             if re.search(r'elastic|avg_price|average_price|saving|response|marginal', h):
                 bad_cols.append(n)
     check('R1b no shipped column holds an elasticity, an average or marginal price, or a saving', not bad_cols, ', '.join(bad_cols))
-    check('R1c the deciding elasticity is computed from the bill rows', abs(mc['eta'] - fig['elasticity_4dp']) < 0.00006,
-          '%.4f from %d and %d accounts' % (mc['eta'], mc['n_fm'], mc['n_city']))
+    check('R1c the deciding elasticity is computed from the bill rows (a panel of every single-family bill)',
+          abs(mc['eta'] - fig['elasticity_4dp']) < 0.00006, '%.4f' % mc['eta'])
 
     # ------------------------------------------------------------ the clean truth (no mess, true use)
     rows = [(b['acc'].acct, b['prem'].area, b['prem'].meter, b['y'], b['m'], b['q']) for b in w['bills'] if b['prem'].cls == 'SFR']
     pan = Rt.panel(rows)
     pop = Rt.population(pan)
     base = Rt.baseline(pan, pop)
-    e_fm = Rt.eta_fm(pan)[0]
-    e_mp = Rt.eta_redesign_mp(pan, price='MP')[0]
+    e_ap = Rt.panel_fe(pan, ('AP',))[0]
+    two = Rt.panel_fe(pan, ('AP', 'MP'))
+    two_city = Rt.panel_fe(pan, ('AP', 'MP'), area='CITY')
+    e_mp_panel = Rt.panel_fe(pan, ('MP',), area='CITY')[0]
+    e_mp_fd = Rt.eta_redesign_mp(pan, price='MP')[0]
     e_vap = Rt.eta_redesign_mp(pan, price='VAP')[0]
-    e_ap_redesign = Rt.eta_redesign_mp(pan, price='AP')[0]
+    e_ap_fd = Rt.eta_redesign_mp(pan, price='AP')[0]
+    e_fm = Rt.eta_fm(pan)[0]
 
     def route(model, e):
         return {o: Rt.af(sum(Rt.forecast(pan, base, model, e, o).values())) for o in 'ABC'}
 
     def margin(r):
-        s = sorted(r.values(), reverse=True)
-        return s[0] / max(s[1], 1e-9)
+        s_ = sorted(r.values(), reverse=True)
+        return s_[0] / max(s_[1], 1e-9)
+
+    def show(r):
+        return {k: round(v, 1) for k, v in r.items()}
 
     r_lit = route('MP', Rt.LIT_ETA)
-    r_own = route('MP', e_mp)
+    r_panel = route('MP', e_mp_panel)
+    r_fd = route('MP', e_mp_fd)
     r_vap = route('VAP', e_vap)
-    r_ap = route('AP', e_fm)
-    check('R3a analyst test: the block-price route on the city\'s own redesign files Option A', call_of(r_own) == 'A'
-          and margin(r_own) >= 1.15, 'elasticity %.3f, %s, margin %.2f' % (e_mp, {k: round(v, 1) for k, v in r_own.items()}, margin(r_own)))
+    r_ap = route('AP', e_ap)
+    r_fm = route('AP', e_fm)
+    check('R3a analyst test: the block price estimated on the city\'s own restructuring (panel) files Option A',
+          call_of(r_panel) == 'A' and margin(r_panel) >= 1.15, 'elasticity %.3f, %s, margin %.2f' % (e_mp_panel, show(r_panel), margin(r_panel)))
+    check('R3a the same on first differences of the summer means files Option A', call_of(r_fd) == 'A' and margin(r_fd) >= 1.15,
+          'elasticity %.3f, %s, margin %.2f' % (e_mp_fd, show(r_fd), margin(r_fd)))
     check('R3a the literature block-price elasticity also files Option A', call_of(r_lit) == 'A' and margin(r_lit) >= 1.15,
-          '%s, margin %.2f' % ({k: round(v, 1) for k, v in r_lit.items()}, margin(r_lit)))
+          '%s, margin %.2f' % (show(r_lit), margin(r_lit)))
     check('R3b the default path with only the price changed to the whole bill files Option C',
-          call_of(r_ap) == 'C' and margin(r_ap) >= 1.2, 'elasticity %.3f, %s, margin %.2f' % (e_fm, {k: round(v, 1) for k, v in r_ap.items()}, margin(r_ap)))
-    check('R3b the lower rung\'s single correction (the per-gallon price) files Option B', call_of(r_vap) == 'B' and margin(r_vap) >= 1.15,
-          'elasticity %.3f, %s' % (e_vap, {k: round(v, 1) for k, v in r_vap.items()}))
+          call_of(r_ap) == 'C' and margin(r_ap) >= 1.2, 'elasticity %.3f, %s, margin %.2f' % (e_ap, show(r_ap), margin(r_ap)))
+    check('R3b the lower rung\'s single correction (the per-gallon price) files Option B', call_of(r_vap) == 'B',
+          'elasticity %.3f, %s' % (e_vap, show(r_vap)))
+    check('R3b the price test lands on either change: both prices on every bill and on the restructuring alone',
+          two[0] < -0.25 and abs(two[1]) < 0.03 and two_city[0] < -0.25 and abs(two_city[1]) < 0.03,
+          'every bill %.3f / %+.3f; restructuring %.3f / %+.3f' % (two[0], two[1], two_city[0], two_city[1]))
+    check('R3b the Fenwick Mesa charge alone also gives the whole-bill price and Option C', e_fm < -0.25 and call_of(r_fm) == 'C',
+          'elasticity %.3f, %s' % (e_fm, show(r_fm)))
     # the routes a hurried analyst might take, counted on the clean truth
-    cheap = {'block price, literature': call_of(r_lit), 'block price, own redesign': call_of(r_own),
-             'per-gallon price, own redesign': call_of(r_vap),
+    cheap = {'block price, literature': call_of(r_lit), 'block price, own restructuring (panel)': call_of(r_panel),
+             'block price, own restructuring (differences)': call_of(r_fd), 'per-gallon price, own restructuring': call_of(r_vap),
              'whole-bill price assumed, literature elasticity': call_of(route('AP', Rt.LIT_ETA)),
-             'whole-bill price assumed, redesign elasticity': call_of(route('AP', e_ap_redesign))}
+             'whole-bill price assumed, restructuring differences': call_of(route('AP', e_ap_fd))}
     rev = {}
     for o in 'ABC':
         d = 0.0
@@ -125,25 +153,29 @@ def main():
         rev[o] = d
     cheap['largest bill increase'] = call_of(rev)
     landing = [k for k, v in cheap.items() if v == 'C']
-    print('     cheap routes on the clean truth: %s' % cheap)
-    check('Gate F count: routes that land the call without the Fenwick Mesa test are the whole-bill-price assumptions',
-          set(landing) <= {'whole-bill price assumed, literature elasticity', 'whole-bill price assumed, redesign elasticity',
-                           'largest bill increase'}, 'landing: %s' % ', '.join(landing))
+    print('     routes on the clean truth: %s' % cheap)
+    check('Gate F count: every route that lands the call without testing the price takes the whole-bill price on faith',
+          set(landing) <= {'whole-bill price assumed, literature elasticity', 'whole-bill price assumed, restructuring differences',
+                           'largest bill increase'}, 'landing untested: %s' % ', '.join(landing))
     with open(os.path.join(TGT, B.F_STAFF), 'rb') as fh:
         z = zipfile.ZipFile(fh)
         staff_xml = z.read('word/document.xml').decode('utf-8')
     staff_txt = re.sub(r'<[^>]+>', ' ', staff_xml)
     check('R3c no plant: the staff report states no saving, revenue or ranking of the options',
-          not re.search(r'acre-feet (saved|saving)|expected saving of|revenue of USD|would save|saves about', staff_txt)
+          not re.search(r'acre-feet (saved|saving)|expected saving of|revenue of USD|would save|saves about|recommend Option', staff_txt)
           and 'Option C, drought surcharge' in staff_txt, 'positive control found')
+    check('R3c the staff report carries the option levels the figures use',
+          'USD %.2f for each 1,000 gallons in place of' % W.OPT_A_TIER1 in staff_txt and 'at USD %.2f in place of' % W.OPT_A_TIER3 in staff_txt
+          and 'USD %.2f is added to the charge for each 1,000 gallons' % W.OPT_B_ADDER in staff_txt
+          and 'drought surcharge of USD %.2f is added to each monthly bill' % W.OPT_C_SURCHARGE in staff_txt)
     blocks = 0
     by_acct = collections.defaultdict(list)
     for r in export:
         if r['customer_class'] == 'RES-SF' and r['bill_status'] != 'CANCELLED':
             by_acct[r['account_no']].append((r['bill_date'], r['consumption']))
-    for a, s in list(by_acct.items())[:3000]:
-        s.sort()
-        v = [x[1] for x in s]
+    for a, s_ in list(by_acct.items())[:3000]:
+        s_.sort()
+        v = [x[1] for x in s_]
         for i in range(len(v) - 23):
             if v[i:i + 12] == v[i + 12:i + 24] and sum(v[i:i + 12]) > 0:
                 blocks += 1
@@ -151,28 +183,67 @@ def main():
 
     # ------------------------------------------------------------ the ladder on the bundle
     rg = mc['rungs']
-    want = {'rung0_mp_literature': 'A', 'rung1_mp_own': 'A', 'rung2_vap_own': 'B', 'rung3_ap_fenwick': 'C'}
+    want = {'rung0_block_price_literature': 'A', 'rung1_block_price_panel': 'A', 'rung1_block_price_differences': 'A',
+            'rung2_per_gallon_price': 'B', 'decisive_whole_bill_price': 'C'}
     for k, v in want.items():
-        s = rg[k]['savings']
-        check('ladder %s files Option %s' % (k, v), rg[k]['winner'] == v and margin(s) >= (1.2 if v == 'C' else 1.15),
-              '%s, margin %.2f' % ({o: round(x, 1) for o, x in s.items()}, margin(s)))
-    check('ladder: Option C is last on every rung below the decisive one',
-          all(min(rg[k]['savings'], key=rg[k]['savings'].get) == 'C' for k in ('rung0_mp_literature', 'rung1_mp_own', 'rung2_vap_own')))
-    fam = mc['fam_tot']
+        s_ = rg[k]['savings']
+        check('ladder %s files Option %s' % (k, v), rg[k]['winner'] == v and margin(s_) >= (1.2 if v == 'C' else 1.15),
+              'elasticity %.3f, %s, margin %.2f' % (rg[k]['eta'], show(s_), margin(s_)))
+    check('ladder: Option C leads no rung below the decisive one and trails each leader by 1.2 times or more',
+          all(rg[k]['winner'] != 'C' and max(rg[k]['savings'].values()) >= 1.2 * max(rg[k]['savings']['C'], 1e-9)
+              for k in want if k != 'decisive_whole_bill_price'))
+    check('ladder: the price test on the bundle gives the whole bill and no block-price response',
+          mc['two'][0] < -0.25 and abs(mc['two'][1]) < 0.03 and mc['two_city'][0] < -0.25 and abs(mc['two_city'][1]) < 0.03,
+          'every bill %.4f / %+.4f; restructuring %.4f / %+.4f' % (mc['two'][0], mc['two'][1], mc['two_city'][0], mc['two_city'][1]))
+
+    # ------------------------------------------------------------ SF22 and SF23: the form and the charge, over the grid
+    want_bin = dict(bn)
+    want_bin['gap'] = gapb
+    def ranges(cells):
+        out = {}
+        for g_ in cells:
+            vals = dict(g_)
+            vals['gap'] = g_['C'] - g_['B']
+            for k, v in vals.items():
+                lo, hi = out.get(k, (v, v))
+                out[k] = (min(lo, v), max(hi, v))
+        return out
+    grid_set = set(G.GRID)
+    rng = ranges([g_ for key, g_ in mc['grid'].items() if key[0] in grid_set])
+    rng_all = ranges(mc['grid'].values())
+    for label, rr_ in (('estimates %s to %s' % (G.GRID[0], G.GRID[-1]), rng), ('every measured estimate as well', rng_all)):
+        print('     margins over %s, three forms, the charge in or out:' % label)
+        for k in ('C', 'B', 'A', 'gap'):
+            lo, hi = rr_[k]
+            print('       %-4s %6.2f to %6.2f   bin %d   clear of %d by %.2f and of %d by %.2f' % (
+                k, lo, hi, want_bin[k], want_bin[k] - 5, lo - (want_bin[k] - 5), want_bin[k] + 5, (want_bin[k] + 5) - hi))
+    forms_ok = all(G.nearest(g_[o], 10) == bn[o] for g_ in mc['grid'].values() for o in 'ABC') and \
+        all(G.nearest(g_['C'] - g_['B'], 10) == gapb for g_ in mc['grid'].values())
+    check('SF22 constant-elasticity, linear or midpoint form: every saving and the gap keep their bins over the grid',
+          forms_ok and all(k[1] in G.FORMS for k in mc['grid']), '%d cells' % len(mc['grid']))
+    check('SF23 the Fenwick Mesa charge in or out of the base bill: every saving and the gap keep their bins',
+          {k[2] for k in mc['grid']} == {True, False} and forms_ok)
+    check('margins: every saving and the gap clear their bin edges by 1.25 acre-feet or more over the grid',
+          all(rng[k][0] - (want_bin[k] - 5) >= 1.25 and (want_bin[k] + 5) - rng[k][1] >= 1.25 for k in rng),
+          ', '.join('%s %.2f/%.2f' % (k, rng[k][0] - (want_bin[k] - 5), (want_bin[k] + 5) - rng[k][1]) for k in ('C', 'B', 'A', 'gap')))
+    check('margins: every measured estimate too, in every form and charge reading, keeps every bin by 0.5 acre-feet or more',
+          all(rng_all[k][0] - (want_bin[k] - 5) >= 0.5 and (want_bin[k] + 5) - rng_all[k][1] >= 0.5 for k in rng_all),
+          ', '.join('%s %.2f/%.2f' % (k, rng_all[k][0] - (want_bin[k] - 5), (want_bin[k] + 5) - rng_all[k][1]) for k in ('C', 'B', 'A', 'gap')))
+    fam = mc['fam']
+    check('family: every measured estimate lies inside the grid', all(G.GRID[-1] - 0.04 <= v <= G.GRID[0] + 1e-9 for v in fam.values()),
+          '%d estimates, %.3f to %.3f' % (len(fam), min(fam.values()), max(fam.values())))
+    outside = {k: v for k, v in fam.items() if not (G.GRID[-1] <= v <= G.GRID[0])}
+    print('     measured estimates: %s' % {k: round(v, 4) for k, v in sorted(fam.items())})
+    if outside:
+        print('     outside the grid but carried in it: %s' % {k: round(v, 4) for k, v in outside.items()})
+    check('family: the world\'s own elasticity keeps every bin',
+          all(G.nearest(Rt.af(sum(Rt.forecast(mc['pan'], mc['base'], 'AP', W.ETA, o).values())), 10) == bn[o] for o in 'ABC'))
     for o in 'ABC':
-        check('family: Option %s in its bin under every elasticity estimate (%d)' % (o, len(mc['fam'])),
-              all(G.nearest(x, 10) == bn[o] for x in fam[o]), '%.1f to %.1f, bin %d' % (min(fam[o]), max(fam[o]), bn[o]))
-    gaps = [fam['C'][i] - fam['B'][i] for i in range(len(mc['fam']))]
-    check('family: the gap in its bin under every estimate', all(G.nearest(g, 10) == gapb for g in gaps),
-          '%.1f to %.1f' % (min(gaps), max(gaps)))
-    tr = {o: Rt.af(sum(Rt.forecast(mc['pan'], mc['base'], 'AP', W.ETA, o).values())) for o in 'ABC'}
-    check('family: the world\'s own elasticity also keeps every bin', bins(tr) == bn and G.nearest(tr['C'] - tr['B'], 10) == gapb,
-          '%s' % {o: round(x, 1) for o, x in tr.items()})
-    for o in 'ABC':
-        check('edge: Option %s saving clear of its rounding edge' % o, edge(t[o], 10) >= 2.5, '%.2f from the edge' % edge(t[o], 10))
-    check('edge: the gap clear of its rounding edge', edge(t['C'] - t['B'], 10) >= 2.5, '%.2f' % edge(t['C'] - t['B'], 10))
+        check('edge: Option %s saving clear of its rounding edge at the golden estimate' % o, edge(t[o], 10) >= 2.5,
+              '%.2f from the edge' % edge(t[o], 10))
+    check('edge: the gap clear of its rounding edge at the golden estimate', edge(t['C'] - t['B'], 10) >= 2.5, '%.2f' % edge(t['C'] - t['B'], 10))
     check('figures: bins as filed', fig['saving_af_nearest_10'] == bn and fig['gap_af_nearest_10'] == gapb
-          and fig['call'].startswith('Option C'))
+          and fig['call'].startswith('Option C') and fig['runner_up'].startswith('Option B'))
 
     # ------------------------------------------------------------ R2: every mess item, mishandled, leaves the call
     def variant(fn):
@@ -212,7 +283,7 @@ def main():
     for label, fn in (('hundred cubic feet read as thousand gallons', ccf_as_kgal), ('cancelled bills kept', keep_cancelled),
                       ('estimated bills dropped', drop_estimates), ('premise in place of account', by_premise),
                       ('every meter priced as 3/4 inch', one_meter), ('bill month from the read date', read_month)):
-        m2, t2, w2, b2, g2 = mc_summary(variant(fn))
+        e2, t2, w2, b2, g2 = light_call(variant(fn))
         check('R2 %s: call and every bin unchanged' % label, w2 == win and b2 == bn and g2 == gapb,
               '%s, gap %d' % ({o: round(x, 1) for o, x in t2.items()}, g2))
 
@@ -231,7 +302,7 @@ def main():
           'rebilled pairs %d; elasticity family %.3f to %.3f; revenue per bill at baseline use %s; rest-of-city summer '
           'use change %.1f per cent' % (
               sum(1 for r in sfr_rows if r['uom'] == 'CCF') / len(sfr_rows), sum(1 for r in export if r['read_type'] == 'E'),
-              sum(1 for r in export if r['bill_status'] == 'CANCELLED'), max(mc['fam']), min(mc['fam']), rev_bill,
+              sum(1 for r in export if r['bill_status'] == 'CANCELLED'), max(mc['fam'].values()), min(mc['fam'].values()), rev_bill,
               100 * (math.exp(mc['means']['CITY']['lq1'] - mc['means']['CITY']['lq0']) - 1)))
 
     # ------------------------------------------------------------ the semantic forks
@@ -355,6 +426,26 @@ def main():
     mon = R.fill_monthly(w['fill'])
     check('device fill: the vendor report agrees with the row sums (the wrong path reconciles)',
           all(mon[(2026, m, 1)][1] + mon[(2026, m, 2)][1] == sum(r['gal'] for r in w['fill'] if r['start'].month == m) for m in Rt.SUMMER))
+    prompt = open(os.path.join(TASK, 'prompt.txt')).read()
+    visits = collections.Counter()
+    for bay, rr in by_bay.items():
+        prev = None
+        for r in rr:
+            if prev is not None and r['m0'] == prev['m0']:
+                continue                      # the resumed half of a session: the same tank
+            if not (prev is not None and r['card'] == prev['card'] and r['m0'] == prev['m1']
+                    and (r['start'] - prev['end']).total_seconds() < 400):
+                visits[r['start'].month] += 1
+            prev = r
+    check('SF24 a tank is the unit: the prompt counts a truck\'s tank and its trailer\'s each, and a visit count would differ',
+          "a truck's tank and its trailer's each counting as one" in prompt
+          and all(visits[m] < fig['ask']['fills'][G.MONTH[m]] for m in Rt.SUMMER),
+          'visits %s against tanks %s' % ({m: visits[m] for m in Rt.SUMMER}, [fig['ask']['fills'][G.MONTH[m]] for m in Rt.SUMMER]))
+    city_gal = {m: sum(r['gal'] for r in w['fill'] if r['hauler'] == 'Ardley Springs Public Works' and r['start'].month == m)
+                for m in Rt.SUMMER}
+    check('SF25 water drawn counts the City\'s own trucks: the asking sentence and plan Section 6 both say drawn',
+          'the water drawn at the bulk fill station' in prompt and 'the water drawn at the bulk fill station' in p53
+          and all(city_gal[m] > 0 for m in Rt.SUMMER), 'City trucks %s gallons' % city_gal)
     pool = {m: ask['per_fac'][R.SUBMETER].get((2026, m), 0.0) / W.AF_KGAL / 1000.0 for m in Rt.SUMMER}
     check('device pool: counting the pool fill meter again moves every month by four or more tenths',
           all(round(ask['fac_af'][m] + pool[m], 1) - round(ask['fac_af'][m], 1) >= 0.35 for m in Rt.SUMMER), {m: round(pool[m], 2) for m in pool})

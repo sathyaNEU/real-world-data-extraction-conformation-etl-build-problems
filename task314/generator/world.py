@@ -116,10 +116,10 @@ COM_VOL = (4.40, 4.60)
 IRR_VOL = (5.10, 5.40)
 
 # the drought plan's Stage 2 rate options for 2027 (bills issued 1 May to 31 October 2027)
-OPT_A_TIER1 = 2.70               # Option A, conservation blocks: a cheaper first block and a dearer third
+OPT_A_TIER1 = 2.20               # Option A, conservation blocks: a cheaper first block and a dearer third
 OPT_A_TIER3 = 14.80
-OPT_B_ADDER = 0.60               # Option B, a drought adder on every thousand gallons
-OPT_C_SURCHARGE = 13.60          # Option C, a drought surcharge on every bill
+OPT_B_ADDER = 0.30               # Option B, a drought adder on every thousand gallons
+OPT_C_SURCHARGE = 7.90          # Option C, a drought surcharge on every bill
 
 
 def sfr_schedule(bdate):
@@ -217,11 +217,11 @@ def make_premises():
             # outdoor use per unit of irrigation demand, kgal a month: lot size, a garden habit, a lawn share
             p.outdoor = float(11.5 * (p.lot / 8400) ** 0.85 * np.exp(0.40 * rng.standard_normal()))
             p.units = 1
-            # Fenwick Mesa's legacy hundred-cubic-foot meters: two thirds replaced in the 2022 to 2023 change-out
+            # Fenwick Mesa's legacy hundred-cubic-foot meters: two thirds replaced in the change-out after the 2021 transfer
             p.legacy_until = None
             if area == 'FMSA':
                 if rng.random() < 0.66:
-                    p.legacy_until = dt.date(2022, 3, 7) + dt.timedelta(days=int(rng.integers(0, 470)))
+                    p.legacy_until = dt.date(2021, 11, 1) + dt.timedelta(days=int(rng.integers(0, 190)))
                 else:
                     p.legacy_until = dt.date(2099, 1, 1)
             p.accounts = []

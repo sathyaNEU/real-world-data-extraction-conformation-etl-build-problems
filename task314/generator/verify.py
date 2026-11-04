@@ -147,7 +147,7 @@ def main():
         out = np.where(q <= tiers[0][0], tiers[0][1] + adder, out)
         return out
 
-    # ------------------------------------------------------------ the elasticity from the Fenwick Mesa charge
+    # ------------------------------------------------------------ the cross-check: Fenwick Mesa against the rest
     k0 = [(2023, m) for m in (7, 8, 9)]
     k1 = [(2025, m) for m in (7, 8, 9)]
     ok = (pv[k0 + k1] > 0.3).all(axis=1)
@@ -160,40 +160,106 @@ def main():
     lp1 = np.mean([np.log(bill(sub[k].values, mt, new, np.where(fm, fm_charge, 0.0)) / sub[k].values) for k in k0], axis=0)
     did_q = (lq1 - lq0)[fm].mean() - (lq1 - lq0)[~fm].mean()
     did_p = (lp1 - lp0)[fm].mean() - (lp1 - lp0)[~fm].mean()
-    eta = did_q / did_p
-    check('elasticity on the whole-bill price', abs(eta - fig['elasticity_4dp']) < 0.00006, '%.4f (%d FM, %d city)' % (eta, fm.sum(), (~fm).sum()))
+    eta_fm = did_q / did_p
+    check('Fenwick Mesa comparison', abs(eta_fm - fig['fenwick_comparison_4dp']) < 0.00006, '%.4f (%d FM, %d city)' % (eta_fm, fm.sum(), (~fm).sum()))
+
+    # ------------------------------------------------------------ the price test on every bill (both prices in one fit)
+    pp = g[g.kgal > 0.3].copy()
+    pp['ref'] = pp.groupby(['account_no', 'm']).kgal.transform('mean')
+    newer = ((pp.y > 2023) | ((pp.y == 2023) & (pp.m >= 7))).values
+    capped = (pp.fm & ((pp.y > 2024) | ((pp.y == 2024) & (pp.m >= 7)))).values
+    ref = pp.ref.values
+    mtr = pp.meter.values
+    capv = np.where(capped, fm_charge, 0.0)
+    pp['lap'] = np.log(np.where(newer, bill(ref, mtr, new, capv), bill(ref, mtr, old, capv)) / ref)
+    pp['lmp'] = np.log(np.where(newer, mprice(ref, new), mprice(ref, old)))
+    pp['lq'] = np.log(pp.kgal.values)
+
+    def fe_fit(frame, cols):
+        a = frame.groupby(['account_no', 'm']).ngroup().values
+        t = frame.groupby(['y', 'm']).ngroup().values
+        na, nt = a.max() + 1, t.max() + 1
+        ca, ct = np.bincount(a, minlength=na), np.bincount(t, minlength=nt)
+
+        def dm(v):
+            v = v.astype(float).copy()
+            for _ in range(60):
+                v -= (np.bincount(a, weights=v, minlength=na) / ca)[a]
+                v -= (np.bincount(t, weights=v, minlength=nt) / ct)[t]
+            return v
+        yv = dm(frame.lq.values)
+        xv = np.column_stack([dm(frame[c].values) for c in cols])
+        return np.linalg.lstsq(xv, yv, rcond=None)[0]
+
+    eta = float(fe_fit(pp, ['lap'])[0])
+    both = fe_fit(pp, ['lap', 'lmp'])
+    city = pp[~pp.fm]
+    both_city = fe_fit(city, ['lap', 'lmp'])
+    mp_city = float(fe_fit(city, ['lmp'])[0])
+    check('panel, whole-bill price alone (the golden elasticity)', abs(eta - fig['elasticity_4dp']) < 0.0002, '%.4f' % eta)
+    check('panel, both prices: the block price carries no response', abs(both[1]) < 0.03 and both[0] < -0.25
+          and abs(both[0] - fig['two_price_every_bill']['whole_bill_4dp']) < 0.0002,
+          'whole bill %.4f, block %.4f' % (both[0], both[1]))
+    check('the 2023 restructuring alone gives the same reading', abs(both_city[1]) < 0.03 and both_city[0] < -0.25,
+          'whole bill %.4f, block %.4f; block alone %.4f' % (both_city[0], both_city[1], mp_city))
 
     # ------------------------------------------------------------ each option on each account's baseline bill
     pm = info.loc[pop, 'meter'].values
-    pf = np.where(info.loc[pop, 'fm'].values, fm_charge, 0.0)
+    pf_fm = info.loc[pop, 'fm'].values
     opts = {'A': dict(t1=a_t1, t3=a_t3), 'B': dict(adder=b_add), 'C': dict(sur=c_sur)}
 
-    def saving(model, e, o):
+    def apply(q, r, e, form):
+        if form == 'log':
+            return q * (1 - r ** e)
+        if form == 'lin':
+            return q * (-e * (r - 1))
+        x = (r - 1) / ((r + 1) / 2)
+        dd = e * x
+        return q * (-2 * dd / (2 + dd))
+
+    def saving(model, e, o, form='log', cap=True):
         tot = 0.0
         for m in (6, 7, 8, 9):
             q = base[m].values
             keep = q > 0
-            q, mm, ff = q[keep], pm[keep], pf[keep]
+            q, mm = q[keep], pm[keep]
+            ff = np.where(pf_fm[keep], fm_charge, 0.0) if cap else np.zeros(len(q))
             if model == 'AP':
-                p0 = bill(q, mm, new, ff) / q
-                p1 = bill(q, mm, new, ff, **opts[o]) / q
+                r = bill(q, mm, new, ff, **opts[o]) / bill(q, mm, new, ff)
             elif model == 'VAP':
-                p0 = vol_only(q, new) / q
                 kw = {k: v for k, v in opts[o].items() if k != 'sur'}
-                p1 = vol_only(q, new, **kw) / q
+                r = vol_only(q, new, **kw) / vol_only(q, new)
             else:
-                p0 = mprice(q, new)
                 kw = {k: v for k, v in opts[o].items() if k != 'sur'}
-                p1 = mprice(q, new, **kw)
-            tot += float((q * (1 - (p1 / p0) ** e)).sum())
+                r = mprice(q, new, **kw) / mprice(q, new)
+            tot += float(apply(q, r, e, form).sum())
         return tot * 1000.0 / AF_GAL
 
     sav = {o: saving('AP', eta, o) for o in 'ABC'}
     for o in 'ABC':
-        check('option %s saving' % o, abs(sav[o] - fig['saving_af'][o]) < 0.06, '%.2f acre-feet' % sav[o])
+        check('option %s saving' % o, abs(sav[o] - fig['saving_af_2dp'][o]) < 0.03
+              and int(math.floor(sav[o] / 10 + 0.5)) * 10 == fig['saving_af_nearest_10'][o], '%.2f acre-feet' % sav[o])
     win = max(sav, key=sav.get)
-    check('the call', fig['call'].startswith('Option %s' % win), win)
-    # the redesign read on the block price, and the per-gallon price (the rungs below)
+    run = sorted(sav, key=lambda o: -sav[o])[1]
+    check('the call and the gap', fig['call'].startswith('Option %s' % win) and fig['runner_up'].startswith('Option %s' % run)
+          and int(math.floor((sav[win] - sav[run]) / 10 + 0.5)) * 10 == fig['gap_af_nearest_10'],
+          '%s over %s by %.2f' % (win, run, sav[win] - sav[run]))
+    # every estimate from -0.26 to -0.325, three ways of applying it, the Fenwick Mesa charge in or out of the bill
+    worst = {}
+    for e in np.round(np.arange(-0.26, -0.3251, -0.005), 3):
+        for form in ('log', 'lin', 'arc'):
+            for cap in (True, False):
+                t = {o: saving('AP', e, o, form, cap) for o in 'ABC'}
+                t['gap'] = t['C'] - t['B']
+                for k, v in t.items():
+                    lo, hi = worst.get(k, (v, v))
+                    worst[k] = (min(lo, v), max(hi, v))
+    want = dict(fig['saving_af_nearest_10'])
+    want['gap'] = fig['gap_af_nearest_10']
+    for k, (lo, hi) in worst.items():
+        check('%s holds its bin over the estimates, forms and charge readings' % k,
+              want[k] - 5 < lo and hi < want[k] + 5, '%.2f to %.2f against %d' % (lo, hi, want[k]))
+    # the rungs below: the block price and the per-gallon price
     j0 = [(2022, m) for m in (7, 8, 9)]
     j1 = [(2023, m) for m in (7, 8, 9)]
     okr = (pv[j0 + j1] > 0.3).all(axis=1) & (~info.loc[pv.index, 'fm'].values)
@@ -204,14 +270,18 @@ def main():
                   np.log(vol_only(sr[j0[i]].values, old) / sr[j0[i]].values) for i in range(3)], axis=0)
     e_mp = float(np.polyfit(xm, y, 1)[0])
     e_vap = float(np.polyfit(xv, y, 1)[0])
-    check('redesign on the block price', abs(e_mp - fig['redesign_marginal_price_elasticity_4dp']) < 0.00006, '%.4f' % e_mp)
-    r0 = {o: saving('MP', -0.40, o) for o in 'ABC'}
-    r1 = {o: saving('MP', e_mp, o) for o in 'ABC'}
-    r2 = {o: saving('VAP', e_vap, o) for o in 'ABC'}
-    for nm, r, want in (('rung 0, literature block-price elasticity', r0, 'A'), ('rung 1, own block-price elasticity', r1, 'A'),
-                        ('rung 2, per-gallon price', r2, 'B'), ('rung 3, whole-bill price', sav, 'C')):
+    check('restructuring on the block price, first differences', abs(e_mp - fig['block_price_differences_4dp']) < 0.00006, '%.4f' % e_mp)
+    check('restructuring on the block price, panel', abs(mp_city - fig['block_price_alone_panel_4dp']) < 0.0002, '%.4f' % mp_city)
+    rr0 = {o: saving('MP', -0.40, o) for o in 'ABC'}
+    rr1 = {o: saving('MP', mp_city, o) for o in 'ABC'}
+    rr1b = {o: saving('MP', e_mp, o) for o in 'ABC'}
+    rr2 = {o: saving('VAP', e_vap, o) for o in 'ABC'}
+    for nm, r, want_o in (('rung 0, literature block-price elasticity', rr0, 'A'),
+                          ('rung 1, own block-price elasticity (panel)', rr1, 'A'),
+                          ('rung 1, own block-price elasticity (differences)', rr1b, 'A'),
+                          ('rung 2, per-gallon price', rr2, 'B'), ('decisive, whole-bill price', sav, 'C')):
         srt = sorted(r.values(), reverse=True)
-        check(nm, max(r, key=r.get) == want and srt[0] >= 1.15 * srt[1],
+        check(nm, max(r, key=r.get) == want_o and srt[0] >= 1.15 * srt[1],
               '%s, margin %.2f, %s' % (max(r, key=r.get), srt[0] / max(srt[1], 1e-9), {k: round(v, 1) for k, v in r.items()}))
 
     # ------------------------------------------------------------ the 2026 base for the City's own measures
@@ -223,7 +293,7 @@ def main():
     for m, nm in ((6, 'June'), (7, 'July'), (8, 'August'), (9, 'September')):
         sel = one[(one['first'].dt.month == m)]
         check('fill station %s' % nm, int(math.floor(sel.gal.sum() / 1000.0 + 0.5)) == fig['ask']['fill_kgal'][nm]
-              and len(sel) == fig['ask']['fills'][nm], '%.3f kgal, %d fills' % (sel.gal.sum() / 1000.0, len(sel)))
+              and len(sel) == fig['ask']['fills'][nm], '%.3f kgal, %d tanks filled' % (sel.gal.sum() / 1000.0, len(sel)))
     xl = pd.read_excel(os.path.join(TGT, 'corvane_bws_monthly_activity_2026.xlsx'), header=5)
     check('vendor report read', len(xl) == 30, '%d rows' % len(xl))
     rd = pd.read_csv(os.path.join(TGT, 'city_facility_meter_reads_2025-09_2026-10.csv'), dtype={'register': float})

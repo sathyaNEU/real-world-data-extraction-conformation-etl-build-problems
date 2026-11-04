@@ -34,95 +34,178 @@
    "September": 682.17
   }
  },
- "baseline_af": 772.1,
+ "baseline_af": 772.3,
  "baseline_af_nearest_10": 770,
+ "block_price_alone_panel_2dp": -0.05,
+ "block_price_alone_panel_4dp": -0.0497,
+ "block_price_differences_2dp": -0.12,
+ "block_price_differences_4dp": -0.1196,
  "call": "Option C, drought surcharge",
  "ccf_gallons": 748.052,
- "elasticity": -0.28,
- "elasticity_4dp": -0.2798,
+ "cited_plan_section": 5.3,
+ "elasticity": -0.31,
+ "elasticity_4dp": -0.3112,
  "elasticity_accounts": {
   "fenwick_mesa": 1247,
   "rest_of_city": 2739
  },
- "elasticity_band": [
-  -0.27,
-  -0.32
+ "estimate_grid": [
+  -0.26,
+  -0.325
  ],
+ "fenwick_comparison_2dp": -0.28,
+ "fenwick_comparison_4dp": -0.2783,
  "fenwick_mesa_price_change_pct": 18.5,
  "fenwick_mesa_use_change_pct": -4.6,
  "fenwick_mesa_use_fall_pct": 4.6,
  "fm_charge_usd": 14.0,
- "gap_af": 9.9,
+ "gap_af": 8.6,
+ "gap_af_2dp": 8.58,
  "gap_af_nearest_10": 10,
- "redesign_marginal_price_elasticity": -0.12,
- "redesign_marginal_price_elasticity_4dp": -0.1202,
+ "measured_estimates_4dp": {
+  "Fenwick Mesa comparison July to September 2023 and 2025": -0.2783,
+  "Fenwick Mesa comparison at_mean=True": -0.2814,
+  "Fenwick Mesa comparison at_mean=True, extra_post=(2026, (7, 8, 9))": -0.2847,
+  "Fenwick Mesa comparison extra_post=(2026, (7, 8, 9))": -0.2815,
+  "Fenwick Mesa comparison extra_post=(2026, (7, 8, 9)), price=AP_billed": -0.2832,
+  "Fenwick Mesa comparison post=(2024, (7, 8, 9))": -0.3116,
+  "Fenwick Mesa comparison post=(2024, (7, 8, 9)), pre=(2023, (7, 8, 9)), price=AP_billed": -0.2933,
+  "Fenwick Mesa comparison post=(2025, (6, 7, 8, 9))": -0.3135,
+  "Fenwick Mesa comparison post=(2025, (8, 9)), pre=(2023, (8, 9))": -0.2727,
+  "Fenwick Mesa comparison post=(2026, (6, 7, 8, 9))": -0.3239,
+  "Fenwick Mesa comparison post=(2026, (7, 8, 9))": -0.291,
+  "Fenwick Mesa comparison price=AP_billed": -0.2897,
+  "Fenwick Mesa comparison screen=True": -0.2953,
+  "Fenwick Mesa comparison, a year each side, as billed": -0.2756,
+  "Fenwick Mesa comparison, a year each side, own use": -0.3165,
+  "panel, bills from July 2023 (the Fenwick Mesa charge), whole-bill price alone": -0.3129,
+  "panel, every bill, both prices": -0.3126,
+  "panel, every bill, whole-bill price alone": -0.3112,
+  "panel, rest of city (2023 restructuring), both prices": -0.333,
+  "panel, rest of city (2023 restructuring), whole-bill price alone": -0.3096
+ },
+ "measured_range_2dp": [
+  -0.27,
+  -0.33
+ ],
+ "options": {
+  "A_first_block": 2.2,
+  "A_third_block": 14.8,
+  "B_adder": 0.3,
+  "C_surcharge": 7.9
+ },
+ "per_gallon_price_differences_2dp": -0.4,
+ "ranges_over_grid_forms_and_charge": {
+  "A": {
+   "max": 2.79,
+   "min": 0.13
+  },
+  "B": {
+   "max": 12.52,
+   "min": 9.08
+  },
+  "C": {
+   "max": 23.36,
+   "min": 16.28
+  },
+  "gap": {
+   "max": 10.84,
+   "min": 7.2
+  }
+ },
  "rungs": {
-  "rung0_mp_literature": {
+  "decisive_whole_bill_price": {
+   "elasticity": -0.31,
+   "savings": {
+    "A": 0.7,
+    "B": 10.9,
+    "C": 19.4
+   },
+   "winner": "C"
+  },
+  "rung0_block_price_literature": {
    "elasticity": -0.4,
    "savings": {
-    "A": 50.6,
-    "B": 26.0,
+    "A": 50.0,
+    "B": 13.5,
     "C": 0.0
    },
    "winner": "A"
   },
-  "rung1_mp_own": {
+  "rung1_block_price_differences": {
    "elasticity": -0.12,
    "savings": {
-    "A": 15.9,
-    "B": 7.9,
+    "A": 15.6,
+    "B": 4.1,
     "C": 0.0
    },
    "winner": "A"
   },
-  "rung2_vap_own": {
+  "rung1_block_price_panel": {
+   "elasticity": -0.05,
+   "savings": {
+    "A": 6.6,
+    "B": 1.7,
+    "C": 0.0
+   },
+   "winner": "A"
+  },
+  "rung2_per_gallon_price": {
    "elasticity": -0.4,
    "savings": {
-    "A": 9.5,
-    "B": 37.0,
+    "A": -7.1,
+    "B": 19.1,
     "C": 0.0
    },
    "winner": "B"
-  },
-  "rung3_ap_fenwick": {
-   "elasticity": -0.28,
-   "savings": {
-    "A": 7.9,
-    "B": 19.0,
-    "C": 28.9
-   },
-   "winner": "C"
   }
  },
  "runner_up": "Option B, drought volume charge",
  "saving_af": {
-  "A": 7.9,
-  "B": 19.0,
-  "C": 28.9
+  "A": 0.7,
+  "B": 10.9,
+  "C": 19.4
+ },
+ "saving_af_2dp": {
+  "A": 0.7,
+  "B": 10.86,
+  "C": 19.44
  },
  "saving_af_by_month": {
   "A": {
-   "August": 3.1,
-   "July": 4.1,
-   "June": 0.5,
-   "September": 0.2
+   "August": 1.47,
+   "July": 2.68,
+   "June": -1.56,
+   "September": -1.89
   },
   "B": {
-   "August": 5.1,
-   "July": 5.3,
-   "June": 4.3,
-   "September": 4.2
+   "August": 2.93,
+   "July": 3.04,
+   "June": 2.48,
+   "September": 2.41
   },
   "C": {
-   "August": 7.3,
-   "July": 7.2,
-   "June": 7.2,
-   "September": 7.2
+   "August": 4.87,
+   "July": 4.83,
+   "June": 4.87,
+   "September": 4.86
   }
  },
  "saving_af_nearest_10": {
-  "A": 10,
-  "B": 20,
-  "C": 30
+  "A": 0,
+  "B": 10,
+  "C": 20
+ },
+ "two_price_every_bill": {
+  "block_3dp": 0.004,
+  "block_4dp": 0.0041,
+  "whole_bill_2dp": -0.31,
+  "whole_bill_4dp": -0.3126
+ },
+ "two_price_rest_of_city": {
+  "block_3dp": 0.014,
+  "block_4dp": 0.0142,
+  "whole_bill_2dp": -0.33,
+  "whole_bill_4dp": -0.333
  }
 }

@@ -6,12 +6,12 @@
   "domain": "economics-econometrics",
   "subdomain": "elasticity-welfare-policy-impact-estimation",
   "client_domain": "economics-econometrics",
-  "niche": "a small Mountain West city's water department choosing which of its drought plan's Stage 2 rate options (conservation blocks with a cheaper first block and a dearer third, a drought volume charge on every thousand gallons, a flat drought surcharge on every bill) goes to council for summer 2027, each sized as the single-family use billed June to September that it takes out against the plan's two-summer baseline",
+  "niche": "a small Mountain West city's water department choosing which of its drought plan's Stage 2 rate options (conservation blocks with a cheaper first block and a dearer third, a drought volume charge of USD 0.30 on every thousand gallons, a flat drought surcharge of USD 7.90 on every bill) goes to council for summer 2027, each sized as the single-family use billed June to September that it takes out against the plan's two-summer baseline",
   "objective": "opportunity-sizing-decision",
   "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Option C, the drought surcharge: about 30 acre-feet off the June to September 2027 bills, about 10 ahead of Option B",
+  "answer": "Option C, the drought surcharge: about 20 acre-feet off the June to September 2027 bills (19.44), about 10 ahead of Option B (10.86); Option A takes no measurable water off (0.70)",
   "answer_source": "submission.md, Final Recommendation; generator/figures.json",
   "gap": [
     "objective"
@@ -31,12 +31,12 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every bill and reads every rate correctly prices each option through each account's change in marginal block price, the block-rate demand model's own price, with the summer elasticity the city's July 2023 restructuring gives (-0.12), finds the drought surcharge saves nothing and files Option A, the conservation blocks, at about 16 acre-feet; a literature block-price elasticity files Option A too, and the per-gallon volumetric price files Option B.",
+  "analyst_test": "A strong analyst who conforms every bill and reads every rate correctly prices each option through each account's change in marginal block price, the block-rate demand model's own price, with the summer elasticity the city's July 2023 restructuring gives on that price (-0.05 on a panel, -0.12 on first differences), finds the drought surcharge saves nothing and files Option A, the conservation blocks, at about 7 to 16 acre-feet; a literature block-price elasticity files Option A too, and the per-gallon volumetric price files Option B.",
   "domain_test": "The deciding quantity is each option's June to September saving, a price response under a block tariff estimated the way residential water demand is estimated, on the utility's billing panel with its own rate changes as natural experiments (a fixed charge on one area against the rest, a tier redesign across all), and with another field's nouns (pupils and reading time, say) there is no bill, block price or fixed charge for the response to answer, so the task stops reading.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:the-price-block-rate-customers-answer-read-off-a-fixed-charge-on-one-area",
   "layer1": [
-    "Fenwick Mesa's unreplaced legacy meters billed in hundred cubic feet beside thousand gallons on the city's meters (the uom column, 12.6 per cent of single-family bills)",
+    "Fenwick Mesa's unreplaced legacy meters billed in hundred cubic feet beside thousand gallons on the city's meters (the uom column, 10.6 per cent of single-family bills)",
     "misreads cancelled and rebilled in the same month (bill_status, replaces_bill_no)",
     "estimated reads caught up on the next actual read (read_type E)",
     "new account numbers when a premise changes hands, final bills prorated",
@@ -93,7 +93,7 @@
   "question_form": "which",
   "driver": "The decisive quantity is how much each option lowers a quantity units choose against a stepped per-unit charge, when the units answer the whole charge divided by what they bought rather than the step their last unit sits on; that shows only where a past change moved the whole charge without moving any step, and on that response an option that leaves every step alone outranks the options that raise the steps.",
   "driver_concrete": "Each Stage 2 option's June to September 2027 saving is read on the average price of each account's whole bill, the price Ardley Springs customers answer: the July 2024 Fenwick Mesa capital recovery charge raised every Fenwick Mesa bill by the same 14 dollars with no block price moved and cut the area's summer use about 6 per cent against the rest of the city, while the July 2023 redesign's large marginal jumps moved little, and on that price the 14-dollar drought surcharge (Option C) takes out more than the tier-3 drought rate (Option A) or the drought adder on every thousand gallons (Option B).",
-  "stump": "The default path prices each option through each account's marginal block price, the block-rate demand model's own price, with the summer elasticity the July 2023 restructuring gives (-0.12), under which the drought surcharge saves nothing, and files Option A, the conservation blocks, at about 16 acre-feet; the July 2024 Fenwick Mesa capital recovery charge, a fixed 14 dollars on every Fenwick Mesa bill that moved no block price, cut that area's summer use 4.6 per cent against the rest of the city, so customers answer the whole bill per thousand gallons and the surcharge takes out the most, about 30 acre-feet.",
+  "stump": "The default path prices each option through each account's marginal block price, the block-rate demand model's own price, with the summer elasticity the July 2023 restructuring gives on that price (-0.05 to -0.12), under which the drought surcharge saves nothing, and files Option A, the conservation blocks, at about 7 to 16 acre-feet; a test of the price specification on either rate change in the record (both prices in one fit on the restructuring, or the 2024 Fenwick Mesa charge that moved no block price) shows customers answer the whole bill per thousand gallons (-0.31) and the block price not at all, and on that price the surcharge takes out the most, about 20 acre-feet.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task118": "there a levy cut is valued on the welfare wedge over the quantity the market reaches inside the appraisal year (lineage v2: a gain netted of what it takes from items shown beside it); here nothing is displaced and no adjustment speed decides: the step is which price on a block-tariff bill households answer, the whole bill per thousand gallons rather than the last block, read off a fixed charge laid on one area.",
@@ -103,6 +103,6 @@
     "task472": "there a job finishes only with its slowest parallel stream (lineage v1); here there is no stream or finish time, only the price a household answers under a stepped tariff."
   },
   "lineage": [],
-  "notes": "Seed OS16's world set aside at the draw (slot_note). Strategy forecast_method_backtest: the natural price model (marginal block price) is wrong out of sample on an option the textbook model gives no effect, and the city's own rate history (a fixed charge on one area, a tier redesign) selects the bill's average price; no back-test is filed. As built (stage 4 hand-off, 2026-11-04): elasticity on the whole bill -0.28 (-0.27 to -0.32 across thirteen licensed estimates); savings A 7.9, B 19.0, C 28.9 acre-feet, graded to the nearest 10; asks on the fill station's resumed sessions and a pool fill meter inside the pavilion's service.",
+  "notes": "Seed OS16's world set aside at the draw (slot_note). Strategy forecast_method_backtest: the natural price model (marginal block price) is wrong out of sample on an option the textbook model gives no effect, and the city's own rate history (a fixed charge on one area, a tier redesign) selects the bill's average price; no back-test is filed. As built after the stage-4 FIX_NOW pass (2026-11-04): options resized (surcharge 7.90, adder 0.30, first block 2.20) so every estimate from -0.26 to -0.325 and the log, linear and midpoint forms keep one bin; golden elasticity -0.3112 from a panel of every bill (both prices: whole bill -0.3126, block +0.0041); savings C 19.44, B 10.86, A 0.70, graded 20, 10, 0, gap 10; the ask counts tanks filled; asks on the fill station's resumed sessions and a pool fill meter inside the pavilion's service.",
   "registered": "2026-11-04T15:17:49Z"
 }
