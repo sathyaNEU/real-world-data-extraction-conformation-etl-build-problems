@@ -1,0 +1,92 @@
+{
+  "task": "task399",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "task399/DESIGN_NOTE.md",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a rail operating centre's signaller errors on its VDU workstations, where the local investigations book every wrong route to the signaller and the route's 2027 improvement plan funds one programme against the cause that accounted for the most operating-centre delay minutes",
+  "objective": "root-cause",
+  "shape": "12",
+  "decision_type": "root_cause_named",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "classification_error",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly sums the operating centre's delay minutes by each local investigation's underlying cause and funds signaller competence training (programme A), or rates wrong routes per manual route request by signaller experience and by peak hour and funds the workload split (programme E), where the golden is the screen redraw (programme B), because the wrong routes at the routes whose two exit buttons sit eight to twelve pixels apart are slips onto the neighbouring exit that every signaller makes at the same rate.",
+  "domain_test": "The deciding quantity is each manual route-setting action's error probability taken apart by error mode, slips against mistakes, which human reliability analysis attributes to a design-induced performance shaping factor when the same slip recurs across operators at the same pair of controls; with another field's nouns there is no entrance-exit selection on a drawn schematic, so the pair geometry and the operators' own corrected slips that decide have no counterpart.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:slips-onto-the-neighbouring-exit-read-from-the-screen-geometry-and-the-corrected-cancellations",
+  "layer1": [
+    "control system event log written by two servers, with duplicated rows across each failover",
+    "event log in UTC against rosters and registers in UK local time across the BST change",
+    "workstation renumbering and signal renaming at the March 2026 re-control",
+    "incident register taxonomy changed in April 2026, with the old categories crosswalked",
+    "delay attribution records by railway period, with minutes re-attributed between incidents after review",
+    "roster swaps and overtime held in a separate log",
+    "local investigation reports mixing coded fields and narrative"
+  ],
+  "stakeholder_role": "the operating centre's safety and assurance manager, preparing the improvement plan the route's safety review panel commits for 2027",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "control_system_events_2025-26.csv",
+    "rows": 0,
+    "entity": "one signaller or ARS action the control system logged (route request, route set, route cancel, signal replaced)",
+    "grain": "event",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "England",
+    "currency": "GBP",
+    "org_type": "rail infrastructure manager's regional operating centre",
+    "invented_names": [
+      "Fenmoor Rail Operating Centre",
+      "Wyvern route"
+    ],
+    "people": [
+      "Helen Douglas",
+      "Alan Pope",
+      "Zoe Hayward"
+    ]
+  },
+  "deliverables": [
+    "improvement_plan_case_2027.pptx",
+    "operating_centre_errors_2025-26.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is which of the operators' wrong selections were slips onto the control drawn next to the intended one, read from the controls' drawn positions against each wrong selection's set and required target and from the operators' own quick reversals of the same slip, because the record books every wrong selection to the operator who made it and the error rates by operator experience, workload and hour each point to another cause.",
+  "driver_concrete": "The wrong routes the local investigations book to signaller competence are, at the routes whose two exit buttons sit eight to twelve pixels apart on the workstation screens, slips onto the neighbouring exit that every signaller makes at the same rate in quiet and busy hours, read from the display data's button positions against each wrong route's set and required exit and from the control system's routes cancelled within seconds and reset from the same entrance; the screen redraw accounts for the most delay minutes, against competence training by the investigations' categories and the workload split by the peak-hour error rates.",
+  "stump": "A competent solver sums the operating centre's delay minutes by each local investigation's underlying cause and funds signaller competence training (A), or rates wrong routes per manual request by experience and peak hour and funds the workload split (E), because no column marks a slip, the investigations book every wrong route to the signaller, and the drawn-close routes carry the peak hours' extra requests.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task107": "task107 v2 scales a lottery pilot's assignment effect for a comparison arm contaminated by staff reassigned from treated units, reached through a timetable, a staff directory and a certification register; task399 has no comparison arm or assignment: it separates each wrong route's error mode, a slip onto the exit drawn beside the one wanted against a decision error, by the screen positions of the two exits and the signallers' own routes cancelled and reset within seconds.",
+    "task121": "task121 v4 links each satisfaction response to the conditions of the passenger's journey because ratings carry a halo, and v6 builds each call-taker's rest from consecutive shifts; task399 reads no rating and no exposure built from a worker's own history: the decisive property is a fixed geometry of two controls on a screen, shared by every operator who uses them, read through the operators' corrected slips."
+  },
+  "lineage": [],
+  "notes": "Seed RC05's world (an electricity distributor's one reliability programme) is closed for this number: grid-reliability-outage-analysis holds seven cards and its slot notes spend auto-reclose completion (task198 H4), protection coordination (task129), shared substation supply (task303) and same-phase repeats (task192). The build keeps the seed's decision (one programme from a catalogue of five) and quantity (the outcome units the funded programme's cause accounted for over the last twelve months) and moves to Human Factors & Ergonomics under Root-Cause.",
+  "registered": "2026-11-04T16:20:21Z"
+}
