@@ -1,6 +1,6 @@
 {
   "task": "task403",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "product-analytics/funnel-journey-analysis",
   "objective": "root-cause",
   "stage": 2,
@@ -10,13 +10,31 @@
   "stump": "A competent solver compares the November to January trials with a year earlier, finds conversion down about 13 points in every segment and in the library-title control, sees the step arrive with the 1 November first charges at the new price, and funds (A) the first-month price hold on about 3,700 lost conversions, never setting each trialist's viewing against the release calendar, which puts about 3,400 of the loss on the winter release slate (C) and leaves the price about 300.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "surface": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
-  "guard": {"check": "2026-11-04 on the registered card: WARN (no BLOCK): overuse.objective, repeat.gate_g, overuse.gate_g, repeat.decision, repeat.question_form answered in the design note; same_puzzle_older (task306 v4) and same_driver_older (task271 v5) differentiated; nearest driver 0.08 (task500 v2); validate clean", "registered": "2026-11-04T01:15:34Z", "window": "task399, task400, task402 (task401's card architecture_spent at the 2026-11-04 merge); forcing_event redrawn to season_or_peak"},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "surface": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "guard": {
+    "check": "2026-11-04 on the registered card: WARN (no BLOCK): overuse.objective, repeat.gate_g, overuse.gate_g, repeat.decision, repeat.question_form answered in the design note; same_puzzle_older (task306 v4) and same_driver_older (task271 v5) differentiated; nearest driver 0.08 (task500 v2); validate clean",
+    "registered": "2026-11-04T01:15:34Z",
+    "window": "task399, task400, task402 (task401's card architecture_spent at the 2026-11-04 merge); forcing_event redrawn to season_or_peak"
+  },
   "returned": [],
-  "resume": "stage 2: pricing sequence on the clean truth with the season-based runway calendar (harness at scratchpad t403/harness/h3.py), readability screen, fork table, ladder, closure, literal reader, oracles, asks and ceiling.py, prompt.txt; gate precut.py exit 0",
+  "resume": "stage 2 design, stopped by a container restart (2026-11-04 about 01:55Z). Done: the parent review applied (first-look reader coded in generator/screens.py; the world redrawn to an originals-only service whose every season is released weekly in both winters, after the full-season-drop and licensed-boxset worlds let the first-look reader land the slate; the composition arithmetic corrected to common support). Generator prototypes world.py, pack.py and screens.py are committed. Next: re-run python3 screens.py 20 on the current world and record the first-look reader result, finish the ladder, fork table, closure, asks and prompt, precut exit 0 (send main the ladder, the first-look result and the cracker table), then stage 3.",
   "approved": null,
   "delivered": null,
   "portal": null,
