@@ -53,7 +53,7 @@ def run(target, golden_dir, x=None, n=None, meta_path=None, fig_path=None):
     # ------------------------------------------------------------------ R3a, R3b: the analyst test on the clean truth
     loc = x["loc"]
     in_year = np.array([l.year == 2026 for l in loc])
-    supplies = [m[0] for m in W.METERS if m[3] == "supply" and m[0] != "EM-118"]
+    supplies = list(W.SUPPLIES)
     rooms = list(W.NESTED)
     imp_t = float((x["imp"] * 0.5)[in_year].sum())
     sup_t = sum(float((x["kw"][t] * 0.5)[in_year].sum()) for t in supplies)
@@ -68,8 +68,19 @@ def run(target, golden_dir, x=None, n=None, meta_path=None, fig_path=None):
        "%.1f against %.1f MWh" % (k["mwh"], (imp_t - sup_t) / 1000))
     ok("R3b the decisive step alone (the nested rooms counted once) turns the easy route into the golden",
        c["rungs"]["all"]["kpi"] < W.TARGET_KG_M2 < k["kpi"] and c["nested"] == W.NESTED, str(c["nested"]))
-    ok("R3b the over-correction (every comms-named meter left out) leaves a different figure over the target",
-       c["rungs"]["names"]["kpi"] - k["kpi"] >= 0.5, "%.2f" % c["rungs"]["names"]["kpi"])
+    off = {m: r["kpi"] for m, r in c["rungs"].items()}
+    ok("R3b every enumerated reading that does not read the hierarchy from the counters files a KPI other than the "
+       "golden's, at least 0.2 away", all(abs(v - k["kpi"]) >= 0.2 for v in off.values()),
+       " ".join("%s %.2f" % kv for kv in sorted(off.items())))
+    reg_rows = [m for m in reg if m["Recharged to occupier"] == "Yes"]
+    occ_of = {m["Meter"]: m["Occupier"] for m in reg_rows}
+    loc_of = {m["Meter"]: m["Location"] for m in reg_rows}
+    indep_pairs = [(a, b) for a in supplies for b in supplies if a < b and occ_of.get(a) == occ_of.get(b)]
+    ok("R3b no register field sorts the meters: one description on every tenancy meter, occupiers with two independent "
+       "supplies (%d pairs), an independent pair sharing a location and a nested meter located away from its parent"
+       % len(indep_pairs), len({m["Description"] for m in reg_rows}) == 1 and indep_pairs
+       and any(loc_of[a] == loc_of[b] for a, b in indep_pairs)
+       and any(loc_of[r] != loc_of[p] for r, p in W.NESTED.items()))
     ok("R3b the call's margins: the golden %.2f kg over, the easy route %.2f under" % (k["margin"],
        -c["rungs"]["all"]["margin"]), k["margin"] >= 0.5 and -c["rungs"]["all"]["margin"] >= 0.5)
     ok("R3c no memo, draft, prior report or stakeholder figure ships",
@@ -88,10 +99,13 @@ def run(target, golden_dir, x=None, n=None, meta_path=None, fig_path=None):
         ok("hierarchy: %s inside %s in every common half-hour (smallest headroom %.2f kWh) and at zero in each of the "
            "%d half-hours %s was" % (room, parent, gap, len(dark), parent),
            gap >= 0.5 and dark and all(a[t] < 0.01 for t in dark))
-    car = inc("EM-114")
-    live = all(car[t] > 1.0 for tag in supplies if tag != "EM-114" for t, v in inc(tag).items()
-               if v < 0.01 and t in car)
-    ok("hierarchy: EM-114 (the roof licensee's room) stayed live through every tenancy isolation", live)
+    incs = {t: inc(t) for t in supplies if t != "EM-110"}
+    for t in supplies:
+        if t == "EM-110":
+            continue
+        others = [u for u in supplies if u not in (t, "EM-110")]
+        live = all(incs[t][k] > 0.05 for u in others for k, v in incs[u].items() if v < 0.01 and k in incs[t])
+        ok("hierarchy: %s stayed live through every other tenancy meter's isolation (a supply of its own)" % t, live)
 
     # ------------------------------------------------------------------ the semantic fork table, each row computed
     hh = list(csv.DictReader(open(os.path.join(target, W.FILES["hh"]), encoding="utf-8")))
@@ -126,7 +140,7 @@ def run(target, golden_dir, x=None, n=None, meta_path=None, fig_path=None):
     ok("SF8 the KPI is strictly over the target, not at it (schedule 3.1: exceeds)", k["kpi"] - W.TARGET_KG_M2 > 0.3)
     prompt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
     ok("SF9 the rounding is the prompt's own closing sentence", prompt.rstrip().endswith(
-        "intensity in kilograms per square metre to one decimal."))
+        "intensity in kilograms per square metre, each to one decimal."))
     recs = G.diesel_records(target)
     dips, dlv, runs = recs
     one_side = True
@@ -158,6 +172,17 @@ def run(target, golden_dir, x=None, n=None, meta_path=None, fig_path=None):
            for ch in W.CHILLERS))
     ok("SF16 the monthly figures add to the year (each MWh from unrounded kWh)",
        abs(sum(c["monthly"].values()) / 1000 - k["mwh"]) < 1e-6)
+    rounded_months = sum(round(v / 1000) for v in c["monthly"].values())
+    s_ro = round(k["mwh"]) * W.FACTOR_KG_PER_KWH
+    ok("SF17 the twelve rounded months sum to the rounded year (%d against %d)" % (rounded_months, round(k["mwh"])),
+       rounded_months == round(k["mwh"]))
+    ok("SF18 Scope 2 prints one tenth from the unrounded or the rounded year (%.3f and %.3f t), both clear of the edge"
+       % (k["scope2_t"], s_ro), round(k["scope2_t"], 1) == round(s_ro, 1) and edge(k["scope2_t"], 0.1) >= 0.01
+       and edge(s_ro, 0.1) >= 0.01)
+    ev = list(csv.DictReader(open(os.path.join(target, W.FILES["runs"]), encoding="utf-8")))
+    first = dt.datetime.strptime(ev[0]["event_time"], "%d/%m/%Y %H:%M:%S")
+    ok("SF19 the controller export opens before the first dip week (%s), so a dip week with no run is on record"
+       % first.date(), first < G.diesel_records(target)[0][0][0] - D(days=7))
 
     # ------------------------------------------------------------------ R2: Layer 1 mishandled keeps the call
     ok("R2 EM-118 left out keeps the call (a supply dropped only raises the base building)", drop118["missed"],

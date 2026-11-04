@@ -63,12 +63,9 @@ def simulate(seed=None):
     season = np.array([math.cos(2 * math.pi * (l.timetuple().tm_yday - 15) / 365.0) for l in loc])
     kw = {}
     # tenancies: an office load, and the comms rooms fitted inside three of them
-    for tag, desc, occ_name, kind, parent in W.METERS:
-        if kind != "supply" or tag in ("EM-114", "EM-118"):
-            continue
-        t = W.TENANTS[occ_name]
+    for tag, (night, peak) in W.OFFICE.items():
         dayf = np.repeat(rng.normal(1.0, 0.06, size=n // 48 + 2), 48)[:n]
-        kw[tag] = (t["night"] + (t["peak"] - t["night"]) * occ * dayf * (1 + 0.05 * season)
+        kw[tag] = (night + (peak - night) * occ * dayf * (1 + 0.05 * season)
                    + rng.normal(0, 0.35, n)).clip(0.4)
     steps = {"EM-102": [(dt.datetime(2026, 10, 6, 1, 30), 0.9)], "EM-105": [(dt.datetime(2026, 3, 3, 1, 30), 2.1)],
              "EM-108": [(dt.datetime(2026, 8, 19, 2, 0), -1.3)]}
@@ -78,6 +75,16 @@ def simulate(seed=None):
             x = x + np.array([dk if l >= when else 0.0 for l in loc])
         kw[tag] = x.clip(0.5)
         kw[W.NESTED[tag]] = kw[W.NESTED[tag]] + kw[tag]           # the room is wired inside its tenancy's supply
+    dr = W.FLAT_KW["EM-113"] * (1 + 0.02 * season) + rng.normal(0, 0.12, n)
+    dr = dr + np.array([1.6 if l >= dt.datetime(2026, 5, 12, 1, 0) else 0.0 for l in loc])
+    kw["EM-113"] = dr.clip(0.5)                                    # a data room on its own tap-off
+    cr = W.FLAT_KW["EM-119"] * (1 + 0.06 * (1 - season)) + rng.normal(0, 0.1, n)
+    kw["EM-119"] = cr.clip(0.5)                                    # a clinic's cold room on its own tap-off
+    tag, base, peak = W.KITCHEN
+    lunch = np.array([1.0 if (occupancy(l) > 0.9 and (11.5 <= l.hour + l.minute / 60 < 14)) else 0.0 for l in loc])
+    kw[tag] = (base + (peak - base) * lunch * rng.uniform(0.7, 1.0, n) + 2.5 * (occ > 0) + rng.normal(0, 0.2, n)
+               ).clip(0.3)
+    kw[W.NESTED[tag]] = kw[W.NESTED[tag]] + kw[tag]                # the kitchen is wired inside its tenancy
     car = W.CARRIER_KW - 1.2 * season + rng.normal(0, 0.2, n)
     for when, dk in ((dt.datetime(2026, 6, 2, 2, 0), 3.2), (dt.datetime(2026, 11, 10, 1, 0), 1.1)):
         car = car + np.array([dk if l >= when else 0.0 for l in loc])
@@ -91,7 +98,7 @@ def simulate(seed=None):
     kw["EM-203"] = (29.5 + 18.5 * occ + rng.normal(0, 0.8, n)).clip(5.0)
     dark = np.array([1.0 if (l.hour >= 17 or l.hour < 7) else 0.0 for l in loc])
     kw["EM-204"] = (8.8 + 6.1 * occ + 2.6 * dark + rng.normal(0, 0.4, n)).clip(1.0)
-    unmetered = (44.75 + 5.2 * dark + rng.normal(0, 0.8, n)).clip(8.0)
+    unmetered = (44.398 + 5.2 * dark + rng.normal(0, 0.8, n)).clip(8.0)
     # the June maintenance: each tenant section isolated in turn (a room fed inside a supply goes dark with it)
     iso = {}
     for tag, a, b in W.ISOLATIONS:
@@ -103,11 +110,11 @@ def simulate(seed=None):
         for room, parent in W.NESTED.items():
             if parent == tag:
                 kw[room][mask] = 0.0
-                after = np.array([tb <= l < tb + D(hours=1) for l in loc])
-                kw[room][after] *= 1.15                          # the room's UPS recharging
-                kw[tag][after] += kw[room][after] * 0.15 / 1.15
-    supplies = [m[0] for m in W.METERS if m[3] == "supply" and m[0] != "EM-118"]
-    total = sum(kw[t] for t in supplies) + sum(kw[t] for t in ("EM-201", "EM-202", "EM-203", "EM-204")) + unmetered
+                if room in W.ROOM_KW:
+                    after = np.array([tb <= l < tb + D(hours=1) for l in loc])
+                    kw[room][after] *= 1.15                      # the room's UPS recharging
+                    kw[tag][after] += kw[room][after] * 0.15 / 1.15
+    total = sum(kw[t] for t in W.SUPPLIES) + sum(kw[t] for t in ("EM-201", "EM-202", "EM-203", "EM-204")) + unmetered
     imp = total * (1 + 0.011 + rng.normal(0, 0.0015, n))       # transformer and cable losses, upstream of every meter
     return dict(ts=ts, loc=loc, kw=kw, imp=imp, unmetered=unmetered, wx=wx, iso=iso, temp=temp,
                 gen=generator(rng), fgas=refrigerant(rng))

@@ -45,7 +45,8 @@ def write_report(path, c, fig, target):
     thin = Border(top=Side(style="thin", color="7F8C8D"))
     ws["A1"] = "Pellow House: base building electricity and Scope 2 KPI, 2026"
     ws["A1"].font = Font(name="Calibri", bold=True, size=13)
-    ws["A2"] = "Facility agreement Schedule 9. Months on the building's local clock; MWh from unrounded kWh."
+    ws["A2"] = ("Facility agreement Schedule 9. Months on the building's local clock. Each month and the year are "
+                "rounded from unrounded kWh, so the months may not add exactly to the year.")
     cols = ["Month", "Import (MWh)", "Tenancy supplies (MWh)", "Base building (MWh)"]
     for j, h in enumerate(cols, start=1):
         cell = ws.cell(row=4, column=j, value=h)
@@ -170,10 +171,11 @@ def write_letter(path, c, fig, png):
                    "2027." % ("{:,}".format(f["components"]["base_building_mwh"]), k["scope2_t"], f["call"]["kpi_kg_m2"],
                               f["call"]["margin_kg_m2"], W.TARGET_KG_M2), body),
          Paragraph("The base building figure is the import through the revenue meter less the electricity supplied to "
-                   "the tenancies, each tenancy's supply counted once. Three occupiers' comms rooms are metered by the "
-                   "building management system for recharge, inside those occupiers' own supply meters, so they are "
-                   "already within the tenancy supplies and are not taken off a second time. The roof licensee's "
-                   "equipment room is a supply of its own and is taken off.", body),
+                   "the tenancies, each supply counted once. Four of the building management system's tenant meters "
+                   "(two comms rooms, a server room and a staff kitchen) sit inside their occupiers' own supply "
+                   "meters, so they are already within the tenancy supplies and are not taken off a second time. The "
+                   "second supplies three occupiers take on their own tap-offs, and the roof licensee's room, are "
+                   "supplies of their own and are taken off.", body),
          Image(png, width=166 * mm, height=166 * mm * 3.0 / 6.6), Spacer(1, 4)]
     rows = [["Line", "2026"], ["Base building electricity", "%s MWh" % "{:,}".format(f["components"]["base_building_mwh"])],
             ["Base building Scope 2 emissions", "%.1f t CO2e" % k["scope2_t"]],
@@ -187,8 +189,9 @@ def write_letter(path, c, fig, png):
                            ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
     s += [t, Spacer(1, 4),
           Paragraph("Source: the supplier's half-hourly data for MPAN %s and the building management system's meter "
-                    "registers; quarters and months on the building's local clock. The Scope 1 detail is in the "
-                    "enclosed workbook." % W.MPAN, small), Spacer(1, 10),
+                    "registers; quarters and months on the building's local clock. The months and the year are each "
+                    "rounded from unrounded kWh, so the monthly bars may not add exactly to the year. The Scope 1 detail "
+                    "is in the enclosed workbook." % W.MPAN, small), Spacer(1, 10),
           Paragraph("%s<br/>%s, %s" % (W.PEOPLE["sustainability"], W.TITLES["sustainability"], W.ORG_SHORT), body)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 

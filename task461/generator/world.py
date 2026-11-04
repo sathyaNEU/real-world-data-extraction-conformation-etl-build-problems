@@ -53,38 +53,60 @@ GWP_R134A = 1430                  # Schedule 9, part 4: R-134a
 
 # ------------------------------------------------------------------------------------------------ tenancies, meters
 # (meter tag, description in the register, occupier, floors, kind, parent supply tag or None)
-TENANTS = {
-    "Ostrand Legal LLP": dict(floors="1 and 2", nla=3150, night=6.5, peak=58.0),
-    "Fenmore Studio Architects Ltd": dict(floors="3", nla=1540, night=2.4, peak=27.0),
-    "Varnhold Insurance Services Ltd": dict(floors="4 to 6", nla=4710, night=8.0, peak=82.0),
-    "Orrin Health Clinics Ltd": dict(floors="7", nla=1570, night=3.1, peak=33.0),
-    "Tamsett Analytics Ltd": dict(floors="8 and 9", nla=3140, night=5.2, peak=55.0),
-    "Selcourt Capital LLP": dict(floors="10", nla=1560, night=2.2, peak=24.0),
-    "Mordaunt Partners LLP": dict(floors="11 and 12", nla=3160, night=4.6, peak=49.0),
-    "Brindle & Moss Ltd": dict(floors="13", nla=1530, night=2.0, peak=23.0),
-}
-VACANT_M2 = NLA_M2 - sum(t["nla"] for t in TENANTS.values())   # the ground floor suite, unlet all year
-METERS = [
-    ("EM-101", "L1-L2 tenancy supply", "Ostrand Legal LLP", "supply", None),
-    ("EM-102", "L2 comms room", "Ostrand Legal LLP", "room", "EM-101"),
-    ("EM-103", "L3 tenancy supply", "Fenmore Studio Architects Ltd", "supply", None),
-    ("EM-104", "L4-L6 tenancy supply", "Varnhold Insurance Services Ltd", "supply", None),
-    ("EM-105", "L5 comms room", "Varnhold Insurance Services Ltd", "room", "EM-104"),
-    ("EM-106", "L7 tenancy supply", "Orrin Health Clinics Ltd", "supply", None),
-    ("EM-107", "L8-L9 tenancy supply", "Tamsett Analytics Ltd", "supply", None),
-    ("EM-108", "L9 server room", "Tamsett Analytics Ltd", "room", "EM-107"),
-    ("EM-109", "L10 tenancy supply", "Selcourt Capital LLP", "supply", None),
-    ("EM-110", "L11-L12 tenancy supply", "Mordaunt Partners LLP", "supply", None),
-    ("EM-112", "L13 tenancy supply", "Brindle & Moss Ltd", "supply", None),
-    ("EM-114", "Roof comms equipment room", CARRIER, "supply", None),
-    ("EM-118", "L11-L12 tenancy supply", "Mordaunt Partners LLP", "supply", None),
-    ("EM-201", "Mechanical services board MSB-M", "Base building", "base", None),
-    ("EM-202", "Lifts", "Base building", "base", None),
-    ("EM-203", "Common area lighting and power", "Base building", "base", None),
-    ("EM-204", "Car park lighting and ventilation", "Base building", "base", None),
+# The tenancy schedule's premises lines: (premises, occupier, floors, NLA m2, term start, term end, basis)
+PREMISES = [
+    ("Levels 1 and 2", "Ostrand Legal LLP", "1 and 2", 3150, "2019-09-01", "2029-08-31", "Lease"),
+    ("Level 3", "Fenmore Studio Architects Ltd", "3", 1540, "2021-04-01", "2026-12-31", "Lease"),
+    ("Levels 4 to 6", "Varnhold Insurance Services Ltd", "4 to 6", 4710, "2020-11-01", "2030-10-31", "Lease"),
+    ("Ground floor suite G.04", "Varnhold Insurance Services Ltd", "G", 145, "2023-06-01", "2030-10-31",
+     "Lease (data room)"),
+    ("Level 7", "Orrin Health Clinics Ltd", "7", 1570, "2022-06-01", "2027-05-31", "Lease"),
+    ("Level 8", "Tamsett Analytics Ltd", "8", 1575, "2018-05-14", "2028-05-13", "Lease"),
+    ("Level 9", "Tamsett Analytics Ltd", "9", 1565, "2022-02-01", "2028-05-13", "Lease"),
+    ("Level 10", "Selcourt Capital LLP", "10", 1560, "2023-01-09", "2028-01-08", "Lease"),
+    ("Levels 11 and 12", "Mordaunt Partners LLP", "11 and 12", 3160, "2014-03-25", "2027-03-24", "Lease"),
+    ("Level 13", "Brindle & Moss Ltd", "13", 1530, "2024-07-01", "2029-06-30", "Lease"),
 ]
+VACANT_M2 = NLA_M2 - sum(x[3] for x in PREMISES)   # the rest of the ground floor, unlet all year
+# (meter tag, occupier, location, kind, parent supply tag or None). Every tenancy meter carries one description in
+# the register; which are supplies and which sit inside one is in the wiring, not in the register.
+METERS = [
+    ("EM-101", "Ostrand Legal LLP", "L2 east riser", "supply", None),
+    ("EM-102", "Ostrand Legal LLP", "L2 east riser", "room", "EM-101"),
+    ("EM-103", "Fenmore Studio Architects Ltd", "L3 east riser", "supply", None),
+    ("EM-104", "Varnhold Insurance Services Ltd", "L4 east riser", "supply", None),
+    ("EM-105", "Varnhold Insurance Services Ltd", "L5 east riser", "room", "EM-104"),
+    ("EM-106", "Orrin Health Clinics Ltd", "L7 east riser", "supply", None),
+    ("EM-119", "Orrin Health Clinics Ltd", "L7 east riser", "flat", None),
+    ("EM-107", "Tamsett Analytics Ltd", "L8 east riser", "supply", None),
+    ("EM-108", "Tamsett Analytics Ltd", "L9 east riser", "room", "EM-115"),
+    ("EM-109", "Selcourt Capital LLP", "L10 east riser", "supply", None),
+    ("EM-110", "Mordaunt Partners LLP", "L11 east riser", "supply", None),
+    ("EM-116", "Mordaunt Partners LLP", "L12 east riser", "supply", None),
+    ("EM-112", "Brindle & Moss Ltd", "L13 east riser", "supply", None),
+    ("EM-117", "Brindle & Moss Ltd", "L13 east riser", "kitchen", "EM-112"),
+    ("EM-113", "Varnhold Insurance Services Ltd", "Ground floor east riser", "flat", None),
+    ("EM-114", CARRIER, "Roof plant room", "flat", None),
+    ("EM-115", "Tamsett Analytics Ltd", "L9 east riser", "supply", None),
+    ("EM-118", "Mordaunt Partners LLP", "L11 east riser", "supply", None),
+    ("EM-201", "Base building", "Basement switch room", "base", None),
+    ("EM-202", "Base building", "Lift motor room", "base", None),
+    ("EM-203", "Base building", "Basement switch room", "base", None),
+    ("EM-204", "Base building", "Car park plant room", "base", None),
+]
+BASE_DESC = {"EM-201": "Landlord energy meter, mechanical services board MSB-M", "EM-202": "Landlord energy meter, lifts",
+             "EM-203": "Landlord energy meter, common area lighting and power",
+             "EM-204": "Landlord energy meter, car park lighting and ventilation"}
+TENANT_DESC = "Tenant energy meter"
+# office-pattern supplies: (night kW, daytime peak kW)
+OFFICE = {"EM-101": (6.5, 58.0), "EM-103": (2.4, 27.0), "EM-104": (8.0, 82.0), "EM-106": (3.1, 33.0),
+          "EM-107": (2.7, 28.0), "EM-115": (2.5, 27.0), "EM-109": (2.2, 24.0), "EM-110": (2.4, 25.0),
+          "EM-116": (2.2, 24.0), "EM-112": (2.9, 23.0)}
 NESTED = {m[0]: m[4] for m in METERS if m[4]}                    # the golden's hierarchy (never shipped)
+SUPPLIES = [m[0] for m in METERS if m[3] in ("supply", "flat") and m[0] != "EM-118"]
 ROOM_KW = {"EM-102": 7.4, "EM-105": 12.6, "EM-108": 9.1}
+FLAT_KW = {"EM-113": 8.2, "EM-119": 5.3}
+KITCHEN = ("EM-117", 1.2, 13.5)          # a staff kitchen's base and lunchtime peak (kW), inside its tenancy
 CARRIER_KW = 13.8
 WH_METERS = {"EM-103", "EM-204"}                                  # older meters registering in watt-hours
 REPLACED = ("EM-110", "EM-118", dt.datetime(2026, 8, 18, 10, 30))   # local time of the swap
@@ -92,8 +114,10 @@ BMS_GAP = (dt.datetime(2026, 2, 10, 1, 0), dt.datetime(2026, 2, 10, 10, 0))    #
 # The June switchboard maintenance (Saturday 13 June, local): each tenant section isolated in turn
 SHUTDOWN_DAY = dt.date(2026, 6, 13)
 ISOLATIONS = [("EM-101", "06:00", "06:45"), ("EM-103", "06:50", "07:30"), ("EM-104", "07:35", "08:30"),
-              ("EM-106", "08:35", "09:15"), ("EM-107", "09:20", "10:10"), ("EM-109", "10:15", "10:50"),
-              ("EM-110", "10:55", "11:40"), ("EM-112", "11:45", "12:20"), ("EM-114", "13:30", "14:00")]
+              ("EM-106", "08:35", "09:15"), ("EM-107", "09:20", "09:55"), ("EM-115", "10:00", "10:40"),
+              ("EM-109", "10:45", "11:20"), ("EM-110", "11:25", "12:05"), ("EM-116", "12:10", "12:45"),
+              ("EM-112", "12:50", "13:25"), ("EM-113", "13:30", "14:00"), ("EM-119", "14:05", "14:35"),
+              ("EM-114", "14:40", "15:10")]
 
 # ------------------------------------------------------------------------------------------------ the generator
 TANK_DIAMETER_MM = 1250

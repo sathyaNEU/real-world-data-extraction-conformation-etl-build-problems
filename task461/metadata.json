@@ -33,7 +33,7 @@
    "xlsx"
   ],
   "largest_file": "bms_energy_meter_registers_2026.csv",
-  "largest_file_rows": 281585
+  "largest_file_rows": 369580
  },
  "sources": [
   {
@@ -49,8 +49,8 @@
   {
    "path": "bms_energy_meter_registers_2026.csv",
    "format": "csv",
-   "bytes": 10715310,
-   "rows": 281585,
+   "bytes": 14051994,
+   "rows": 369580,
    "source": "Constructed: the building management system's export of its energy meters' cumulative registers, half-hourly",
    "date": "2027-01-15",
    "license": "CC0 (original work, constructed for this task)"
@@ -58,7 +58,7 @@
   {
    "path": "calbrook_recovery_record_2026.xlsx",
    "format": "xlsx",
-   "bytes": 6917,
+   "bytes": 6907,
    "rows": null,
    "source": "Constructed: the refrigeration contractor's refrigerant recovery record for the site, 2026",
    "date": "2027-01-15",
@@ -94,8 +94,8 @@
   {
    "path": "generator_controller_events_2026.csv",
    "format": "csv",
-   "bytes": 9261,
-   "rows": 174,
+   "bytes": 9479,
+   "rows": 178,
    "source": "Constructed: the standby generator controller's event log, 2026",
    "date": "2027-01-15",
    "license": "CC0 (original work, constructed for this task)"
@@ -103,7 +103,7 @@
   {
    "path": "generator_day_tank_calibration.xlsx",
    "format": "xlsx",
-   "bytes": 24298,
+   "bytes": 24286,
    "rows": null,
    "source": "Constructed: the generator day tank's calibration chart",
    "date": "2027-01-15",
@@ -139,7 +139,7 @@
   {
    "path": "pellow_house_meter_register.xlsx",
    "format": "xlsx",
-   "bytes": 7581,
+   "bytes": 7734,
    "rows": null,
    "source": "Constructed: the building's register of BMS energy meters (January 2027)",
    "date": "2027-01-15",
@@ -148,7 +148,7 @@
   {
    "path": "pellow_house_tenancy_schedule_2026.xlsx",
    "format": "xlsx",
-   "bytes": 7101,
+   "bytes": 7219,
    "rows": null,
    "source": "Constructed: the building's tenancy schedule at 31 December 2026",
    "date": "2027-01-15",
@@ -157,7 +157,7 @@
   {
    "path": "supplier_hh_import_1600004417286_2026.csv",
    "format": "csv",
-   "bytes": 645015,
+   "bytes": 645016,
    "rows": 17520,
    "source": "Constructed: the electricity supplier's half-hourly import data for the building's revenue meter, 2026",
    "date": "2027-01-15",

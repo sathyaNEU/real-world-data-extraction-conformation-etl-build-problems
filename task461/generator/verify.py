@@ -60,7 +60,8 @@ def main(target, golden):
             dark = j[j["p"] < 0.01]
             if (j["c"] <= j["p"] + 0.05).all() and len(dark) and (dark["c"] < 0.01).all():
                 nested[c_] = p_
-    check("hierarchy", nested == {"EM-102": "EM-101", "EM-105": "EM-104", "EM-108": "EM-107"}, str(nested))
+    check("hierarchy", nested == {"EM-102": "EM-101", "EM-105": "EM-104", "EM-108": "EM-115", "EM-117": "EM-112"},
+          str(nested))
     sup = [m for m in ten if m not in nested]
     bounds = pd.to_datetime(["2026-%02d-01" % m for m in range(1, 13)] + ["2027-01-01"])
 

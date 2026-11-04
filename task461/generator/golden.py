@@ -76,9 +76,10 @@ def tenancy_meters(target):
     return [m for m in register(target) if m["Recharged to occupier"] == "Yes" and m["Meter"] != "EM-118"]
 
 
-def nested_rooms(target, regs=None):
+def nested_rooms(target, regs=None, isolation=True, skip_day=None):
     """The tenancy meters whose half-hours sit inside another tenancy meter's: never above it, and at zero whenever
-    that meter was (the June isolations). The golden's hierarchy, read from the registers alone."""
+    that meter was (the June isolations). The golden's hierarchy, read from the registers alone; isolation=False is
+    the containment test alone, a rung."""
     regs = regs or bms(target)
     tags = [m["Meter"] for m in tenancy_meters(target)]
 
@@ -87,6 +88,8 @@ def nested_rooms(target, regs=None):
                                                                  for t, v in regs["EM-118"][1:]]
         return {s[i][0]: s[i + 1][1] - s[i][1] for i in range(len(s) - 1) if s[i + 1][0] - s[i][0] == D(minutes=30)}
     inc = {t: increments(t) for t in tags}
+    if skip_day:
+        inc = {t: {k: v for k, v in d.items() if k.date() != skip_day} for t, d in inc.items()}
     out = {}
     for c in tags:
         for p in tags:
@@ -96,23 +99,113 @@ def nested_rooms(target, regs=None):
             inside = all(inc[c][k] <= inc[p][k] + 0.05 for k in common)
             dark = [k for k in common if inc[p][k] < 0.01]
             with_parent = bool(dark) and all(inc[c][k] < 0.01 for k in dark)
-            if inside and with_parent:
-                out[c] = p
+            if inside and (with_parent or not isolation):
+                out.setdefault(c, p)
     return out
 
 
 # ------------------------------------------------------------------------------------------------ the main call
-def base_building(target, mode="golden"):
-    """Monthly base building kWh. mode: golden (each tenancy supply once), all (every tenancy meter in the register,
-    rooms included), names (every meter named a comms, server or equipment room left out)."""
-    imp = hh_monthly(target)
-    regs = bms(target)
+def year_energy(regs, tag):
+    return supply_energy(regs, tag, MONTHS[0], MONTHS[-1])
+
+
+def flatness(regs, tag):
+    """Coefficient of variation of a meter's half-hourly increments over the year (EM-110 and EM-118 as one)."""
+    s = regs[tag] if tag != "EM-110" else regs["EM-110"] + [(t, v + regs["EM-110"][-1][1]) for t, v in regs["EM-118"][1:]]
+    inc = [s[i + 1][1] - s[i][1] for i in range(len(s) - 1) if s[i + 1][0] - s[i][0] == D(minutes=30)]
+    mean = sum(inc) / len(inc)
+    return (sum((x - mean) ** 2 for x in inc) / len(inc)) ** 0.5 / mean
+
+
+MODES = ("golden", "all", "one_per_occupier", "one_per_premises", "first_per_occupier", "drop_smallest",
+         "drop_flat", "flat_within_premises", "location", "contain_no_shutdown")
+
+
+def premises_of(target):
+    """Each tenancy meter's premises line in the tenancy schedule: its occupier's line whose floors hold the meter's
+    location (a reading of the location column, priced as a rung)."""
+    import re
+    wb = openpyxl.load_workbook(os.path.join(target, W.FILES["tenancy"]), read_only=True)
+    lines = [r for r in wb["Tenancy schedule"].iter_rows(min_row=2, values_only=True) if r and r[1] and r[2]]
+
+    def floors(txt):
+        txt = str(txt)
+        if txt in ("G", "Roof"):
+            return {txt}
+        m = re.match(r"(\d+) to (\d+)", txt)
+        if m:
+            return {str(i) for i in range(int(m.group(1)), int(m.group(2)) + 1)}
+        return set(re.findall(r"\d+", txt))
+    out = {}
+    for m in tenancy_meters(target):
+        loc = m["Location"]
+        fl = "G" if loc.startswith("Ground") else ("Roof" if loc.startswith("Roof") else re.match(r"L(\d+)", loc).group(1))
+        for r in lines:
+            if r[1] == m["Occupier"] and fl in floors(r[2]):
+                out[m["Meter"]] = r[0]
+    return out
+
+
+def subtracted(target, mode, regs=None):
+    """The tenancy meters each reading subtracts. golden: every meter not inside another (containment and the June
+    isolations); all: every meter the register marks as recharged; one_per_occupier: each occupier's largest meter;
+    first_per_occupier: each occupier's first-listed meter; drop_smallest: each multi-meter occupier's smallest meter
+    left out; drop_flat: each multi-meter occupier's flat-profile meters left out; contain_only: the containment test
+    without the isolations; location: a meter sharing its location with a larger meter of its occupier left out."""
+    regs = regs or bms(target)
     meters = tenancy_meters(target)
+    tags = [m["Meter"] for m in meters]
+    occ = {m["Meter"]: m["Occupier"] for m in meters}
+    where = {m["Meter"]: m["Location"] for m in meters}
+    by_occ = defaultdict(list)
+    for t in tags:
+        by_occ[occ[t]].append(t)
+    energy = {t: year_energy(regs, t) for t in tags}
     if mode == "golden":
         nested = nested_rooms(target, regs)
-        meters = [m for m in meters if m["Meter"] not in nested]
-    elif mode == "names":
-        meters = [m for m in meters if not any(w in m["Description"].lower() for w in ("comms", "server", "equipment"))]
+        return [t for t in tags if t not in nested]
+    if mode == "all":
+        return tags
+    if mode == "contain_no_shutdown":
+        nested = nested_rooms(target, regs, isolation=False, skip_day=W.SHUTDOWN_DAY)
+        return [t for t in tags if t not in nested]
+    if mode in ("one_per_premises", "flat_within_premises"):
+        prem = premises_of(target)
+        by_prem = defaultdict(list)
+        for t in tags:
+            by_prem[prem.get(t, t)].append(t)
+        if mode == "one_per_premises":
+            return [max(v, key=lambda t: energy[t]) for v in by_prem.values()]
+        drop = set()
+        for v in by_prem.values():
+            if any(flatness(regs, t) >= 0.2 for t in v):
+                drop |= {t for t in v if flatness(regs, t) < 0.2}
+        return [t for t in tags if t not in drop]
+    if mode == "one_per_occupier":
+        return [max(v, key=lambda t: energy[t]) for v in by_occ.values()]
+    if mode == "first_per_occupier":
+        return [v[0] for v in by_occ.values()]
+    if mode == "drop_smallest":
+        drop = {min(v, key=lambda t: energy[t]) for v in by_occ.values() if len(v) > 1}
+        return [t for t in tags if t not in drop]
+    if mode == "drop_flat":
+        drop = {t for v in by_occ.values() if len(v) > 1 for t in v if flatness(regs, t) < 0.2}
+        return [t for t in tags if t not in drop]
+    if mode == "location":
+        drop = set()
+        for t in tags:
+            for u in tags:
+                if u != t and occ[u] == occ[t] and where[u] == where[t] and energy[u] > energy[t]:
+                    drop.add(t)
+        return [t for t in tags if t not in drop]
+    raise ValueError(mode)
+
+
+def base_building(target, mode="golden"):
+    """Monthly base building kWh: the import less the meters the reading subtracts (subtracted())."""
+    imp = hh_monthly(target)
+    regs = bms(target)
+    meters = [{"Meter": t} for t in subtracted(target, mode, regs)]
     out = {}
     for i in range(12):
         a, b = MONTHS[i], MONTHS[i + 1]
@@ -222,4 +315,4 @@ def compute(target):
     dq = diesel_quarters(target)
     rf = refrigerant(target)
     return dict(monthly=monthly, kpi=k, diesel=dq, refrigerant=rf, nested=nested_rooms(target),
-                rungs={m: kpi(base_building(target, m)) for m in ("all", "names")})
+                rungs={m: kpi(base_building(target, m)) for m in MODES if m != "golden"})

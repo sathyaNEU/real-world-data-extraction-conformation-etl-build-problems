@@ -25,18 +25,20 @@ at the portal, pending. This build replaces it at ship. No seed: the world, the 
   Personas from `guard.py names --geo "United Kingdom" --seed 461`: Alice Evans (head of sustainability, signs the
   report), Kate Harding (facilities manager).
 - **World:** Wexmoor Office Trust owns Pellow House, a fourteen-storey office tower in Wexmoor (a fictional northern
-  English city), let floor by floor to eight occupiers with the roof licensed to Mastlink Networks for a mobile
-  network equipment room. The trust's revolving credit facility with Corvane Bank is sustainability-linked: the
-  margin steps up if the base building's Scope 2 emissions intensity for 2026 exceeds the schedule's target.
+  English city), let floor by floor to eight occupiers, two of them on a second premises line of their own (a ground
+  floor data room, a second floor taken under a later lease), with the roof licensed to Mastlink Networks for a mobile
+  network equipment room. The trust's revolving credit facility with Corvane Bank is sustainability-linked: the margin
+  steps up if the base building's Scope 2 emissions intensity for 2026 exceeds the schedule's target.
 - **Forcing fact:** the KPI report for calendar 2026, verified in January 2027. The call is retrospective by nature: a
   covenant test reports the closed year. As of 15 January 2027 (the folder's assembly date, the `--asof` for
   `leak.py`).
-- **Data-native sentence:** three occupiers fitted comms rooms on their own floors and each room's supply was metered
-  by the landlord's building management system for the occupier's recharge, downstream of the occupier's own supply
-  meter, so the register lists every tenancy meter at one level and the base building residual subtracts each room
-  twice; the half-hourly registers show the hierarchy (each room's half-hours inside its tenancy's, both at zero when
-  the June switchboard maintenance isolated that supply), while the roof licensee's equipment room, also a comms room
-  by name, is a supply of its own.
+- **Data-native sentence:** the building management system meters seventeen tenant circuits for recharge, all
+  listed alike in the register; four of them (two comms rooms, a server room, a staff kitchen) are wired inside their
+  occupiers' own supply meters, while four occupiers take a second supply on a tap-off of its own (a data room, a later
+  floor, a clinic's cold room, a second floor of one lease), so neither the register, the occupier nor the location
+  says which meters nest; the half-hourly registers do (each nested meter inside its parent all year and at zero
+  exactly when the June switchboard maintenance isolated that parent, each independent one live through every other
+  isolation).
 - **Abstraction sentence:** "a remainder taken by subtracting metered parts double-counts the parts that sit inside
   other parts; the parts' own time series show which do." Nearest drivers on file at 0.06 (task471 v3 lineage,
   task270 v4 lineage), neither a hierarchy.
@@ -53,20 +55,20 @@ at the portal, pending. This build replaces it at ship. No seed: the world, the 
    on the local clock).
 2. Read each tenancy meter in the meter register from the building management system's cumulative registers at each
    month's local midnight boundaries (the replaced meter's two tags joined, the watt-hour registers converted).
-3. Subtract every meter the register lists as recharged to an occupier (the eight occupiers' meters, three comms rooms
-   and the roof licensee's room) from the import, month by month, and sum the year.
+3. Subtract every meter the register lists as recharged to an occupier (seventeen circuits, the replaced meter's two
+   tags as one) from the import, month by month, and sum the year.
 4. Multiply by the schedule's conversion factor and divide by the schedule's net lettable area; set the intensity
    against the 2026 target.
 
-- **Ends on:** 15.9 kg CO2e per square metre for 2026, inside the 17.6 kg target.
+- **Ends on:** 15.6 kg CO2e per square metre for 2026, inside the 17.6 kg target.
 - **Golden:** 18.5 kg CO2e per square metre, over the target by 0.9.
 
 ## Stump sentence
 
-The default path subtracts every tenancy meter in the register from the building's import and files 15.9 kg CO2e per
-square metre for 2026, inside the loan's 17.6 kg target; three of those meters measure comms rooms that sit inside their
-occupiers' own supply meters, so the default takes them out twice, and the base building's intensity is 18.5 kg, over
-the target by 0.9.
+The default path subtracts every tenancy meter in the register from the building's import and files 15.6 kg CO2e per
+square metre for 2026, inside the loan's 17.6 kg target; four of those meters measure circuits wired inside other
+tenancy meters, so the default takes them out twice, and the base building's intensity is 18.5 kg, over the target by
+0.9.
 
 ## Three rules
 
@@ -87,25 +89,29 @@ the target by 0.9.
   writes and none carries the call (asserted in checks.py's R2 block).
 - **Layer 2:** estimand identification: the base building residual is defined on each tenancy's supply, and which
   meters are supplies is a structure of the metering the register does not record and the data show.
-- **Decisive step:** take out of the subtracted set every tenancy meter whose half-hours sit inside another tenancy
-  meter's (contained all year, and at zero exactly when that supply was isolated in the June maintenance), keeping the
-  roof licensee's room, a supply of its own though named like a comms room.
-- **Not semantics:** no field, code, unit or label records the hierarchy; every field read correctly (the register's
-  descriptions, both clocks, the watt-hour registers, the replaced tag) still leaves the default at 15.9 kg, and
-  the names mislead both ways (a comms room that nests, a comms room that does not).
+- **Decisive step:** read the metering hierarchy from the half-hourly registers: a tenancy meter that never exceeds
+  another and reads zero exactly when that one was isolated in the June maintenance sits inside it and is not
+  subtracted again; every meter that stayed live through the others' isolations is a supply of its own and is.
+- **Not semantics:** no label, occupier or location field resolves which meters are nested: every tenancy meter has
+  one description, three occupiers have two independent supplies each (so a shared occupier does not mean a nest),
+  an independent pair shares a riser location while a nested meter sits on another floor from its parent; only the
+  interval counters and the isolations do. Every field read correctly still leaves the default at 15.6 kg.
 - **Not rule application:** the KPI schedule files the WHAT (the import less the electricity supplied to the tenancies,
   metered at each tenancy's supply, over the net lettable area, at the filed factor); executing it with the register's
   list files the default, and no rule says which meters are supplies.
-- **Analyst test:** with the settlement data and the registers conformed and the KPI schedule applied, a strong analyst
-  subtracts every meter the register lists as recharged to an occupier from the import and files 15.9 kg CO2e per
-  square metre, inside the 17.6 kg target, because nothing asks whether one tenancy meter sits inside another.
+- **Analyst test:** with the settlement data and the registers conformed and the KPI schedule applied, a strong
+  analyst subtracts every meter the register marks as recharged to an occupier and files 15.6 kg CO2e per square
+  metre, inside the 17.6 kg target, because no field says that four of those meters sit inside others; the readings
+  that try to sort them by occupier, premises, size, profile or location each file another figure (the Ladder).
 - **Estimand:** the KPI schedule: Base Building Electricity for calendar 2026 (the building's local time) is the
   electricity imported through the revenue meter less the electricity supplied to the tenancies (every part let or
   licensed, the roof licence included) as metered at each tenancy's supply; its Scope 2 emissions at the schedule's
   factor; the intensity over the schedule's net lettable area; the target.
-- **No decoy:** nothing is planted: comms rooms metered for recharge downstream of an occupier's supply are how fitted
-  offices are wired, and the June maintenance isolates supplies because it tests the switchboard; no memo, prior
-  report, draft or stakeholder figure ships.
+- **No decoy:** nothing is planted: sub-meters on comms rooms, server rooms and kitchens downstream of an occupier's
+  supply are how fitted offices are wired and recharged; the independent second supplies are the occupiers' own
+  premises and circuits (the tenancy schedule's data room and later floor, a clinic's cold room, a two-floor lease fed
+  floor by floor), and the June maintenance isolates supplies because it tests the switchboard; no memo, prior report,
+  draft or stakeholder figure ships.
 - **No certified replay:** no certified figure carries a base building total; the energy performance certificate (a
   declared distractor) is an asset rating, not an operational figure.
 - **Lesson:** a remainder after subtracting metered parts is only right when the parts are disjoint, and a flat meter
@@ -116,7 +122,7 @@ the target by 0.9.
 - **Actor:** pass. The deciding property, whether a tenancy meter sits inside another, has no column in any file: it
   is a relation between two meters' half-hourly series.
 - **Link:** pass. The relation is between rows of one export under different tags, and no key, column or sentence
-  pairs a comms room with its parent supply.
+  pairs a nested meter with its parent; the register, the occupier and the location columns point both ways.
 - **Reflex:** pass. The field's reflex (import less every listed tenancy meter) is rung 0 and files the `Ends on:`
   figure.
 - **Back-test:** pass. The reflex passes the auditor's usual control: the tenancy meters sum to well under the import
@@ -124,8 +130,8 @@ the target by 0.9.
 - **Second use:** pass. Every file the decisive step reads has its own use: the registers and the settlement data are
   the KPI's inputs on every path, the meter register is the recharge list, the tenancy schedule carries the lettable
   areas.
-- **Shock:** pass. The nested rooms are three of twelve tenancy meters, ordinary loads running all year; nothing in
-  the pack singles them out.
+- **Shock:** pass. The nested meters are four of seventeen tenancy circuits, ordinary loads running all year; nothing
+  in the pack singles them out.
 - **Pins:** pass. The schedule files the WHAT (import, tenancy supplies, area, factor, period) and no sentence names
   a comms room, a hierarchy or the maintenance.
 
@@ -137,16 +143,16 @@ meter list).
 
 | Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| R0 every tenancy meter in the register subtracted (15.9 kg) | schedule 1.4 read against the register's flat list | the register's Recharged to occupier column | yes | the meters sum under the import in every half-hour | no | yes | no | readable |
-| R1 every meter named a comms, server or equipment room left out (19.8 kg) | no | the register's descriptions | no | no | no | yes | no | readable |
-| G (decisive) the tenancy meters whose half-hours sit inside another tenancy meter's, at zero with it in the June isolations, counted once (18.5 kg) | no sentence names a hierarchy, a comms room or the maintenance | no column holds a parent, a feed or a board | no: the reflex subtracts the list | no control ties only under it: the import exceeds the subtracted meters on every rung | no | no: a pairwise test across twelve meters' series | the registers are the KPI's inputs on every path | silent |
+| R0 every tenancy meter in the register subtracted (15.6 kg) | schedule 1.4 read against the register's list | the register's Recharged to occupier column | yes | the meters sum under the import in every half-hour | no | yes | no | readable |
+| R1 one meter per occupier, per premises line, the smallest or the flat ones dropped, or by location (17.7 to 22.1 kg) | no | the occupier, location and tenancy schedule columns | no | no | no | yes | no | readable |
+| G (decisive) the tenancy meters whose half-hours sit inside another tenancy meter's, at zero with it in the June isolations, counted once (18.5 kg) | no sentence names a hierarchy, a circuit or the maintenance | no column holds a parent, a feed or a board | no: the reflex subtracts the list | no control ties only under it | no | no: a pairwise test across seventeen meters' series | the registers are the KPI's inputs on every path | silent |
 
 ## Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | the Measurement Period | the local calendar year | a UTC year | same call, same figures | schedule 1.2; both year ends fall in GMT, so the two years coincide |
-| SF2 | the roof licensee's room | a Tenancy, its supply subtracted | not a Tenancy | missed, 19.8 kg | schedule 1.3: "including any licence of the roof" |
+| SF2 | the roof licensee's room | a Tenancy, its supply subtracted | not a Tenancy | missed, a higher figure | schedule 1.3: "including any licence of the roof" |
 | SF3 | the area divided by | 21,460 m2 | the let area alone | missed, a higher figure | schedule 1.5 files the figure; the tenancy schedule's areas sum to it |
 | SF4 | the conversion factor and the target | 0.20705 kg per kWh; 17.6 kg per m2 | another year's factor or target | not open | schedule 2.1 and part 3 |
 | SF5 | the replaced meter | EM-110 to its last reading, EM-118 from zero | either tag alone | missed | asserted: EM-110's last register sits at the swap and EM-118 starts there at zero |
@@ -161,18 +167,30 @@ meter list).
 | SF14 | a recovery's chiller | the job reference both records carry | the contractor's plant code read as the chiller number | asks only | asserted: every recovery job is a recharge job in the F-gas log, one per chiller |
 | SF15 | refrigerant released | the charge added less the charge recovered to cylinders | every kilogram added; the top-ups alone | asks only | asserted: each golden figure is positive and below the chiller's top-ups plus a tenth of its charge |
 | SF16 | the year | the sum of the unrounded months | the sum of rounded months | same call | asserted |
+| SF17 | the rounded months against the rounded year | the twelve rounded months sum to the rounded year | months rounded and summed | same figure, 1,914 MWh | C1 in the data, asserted |
+| SF18 | the Scope 2 rounding path | the unrounded year times the factor | the rounded year times the factor | same figure, 396.3 t | C1 in the data, asserted: both paths print one tenth, clear of its edge |
+| SF19 | the first dip week's runs | none before 1 January (the controller export opens on 15 December 2025) | an unrecorded run | asks only, same quarter | the export's own window, asserted |
 
 ## Ladder
 
-- **Rung 0, the field's reflex (15.9 kg, target met by 1.7):** the import less every meter the register marks as
-  recharged to an occupier, the three comms rooms included.
-- **Rung 1, the over-correction (19.8 kg, missed by 2.2):** every meter named a comms, server or equipment room left
-  out, the roof licensee's own supply with them.
-- **Rung 2, decisive (18.5 kg, missed by 0.9):** the import less the nine tenancy supplies; EM-102, EM-105 and EM-108
-  sit inside EM-101, EM-104 and EM-107 (never above them, smallest headroom 1.9 to 3.3 kWh in a half-hour, and at zero
-  exactly when those supplies were isolated on 13 June), and EM-114 stayed live through every tenancy isolation.
-- **Separation:** the call flips between rung 0 and the golden; rung 1 and the golden file different margins (2.2 and
-  0.9); the golden reproduces the clean truth within the meters' accuracy (1,914.9 against 1,915.3 MWh).
+Every reading priced on the cut pack (golden.py's subtracted(), asserted in checks.py R3b: none files the golden's
+18.5):
+- **Rung 0, the field's reflex (15.6 kg, met by 2.0):** every meter the register marks as recharged subtracted, the
+  four nested meters taken out twice.
+- **Readings that sort without the counters, each over the target at another figure:** one meter per occupier (21.4,
+  drops the second supplies), first-listed meter per occupier (22.1), one meter per premises line (19.7, drops the cold
+  room and one of a two-floor lease's supplies), each multi-meter occupier's smallest left out (19.3), flat-profile
+  meters of multi-meter occupiers left out (19.5, drops the data room and the cold room, keeps the kitchen), flat
+  meters sharing premises with an office meter left out (18.7, drops the cold room, keeps the kitchen), a meter
+  sharing its location with a larger one of its occupier left out (17.7, keeps the comms room on another floor from its
+  parent, drops the cold room).
+- **The counters with the maintenance day cleaned out (31.3 kg):** containment alone, the shutdown zeros dropped as a
+  data gap, nests independent supplies inside larger ones.
+- **Rung 1, decisive (18.5 kg, missed by 0.9):** EM-102, EM-105, EM-108 and EM-117 sit inside EM-101, EM-104, EM-115
+  and EM-112 (never above them all year, at zero exactly when those supplies were isolated on 13 June); the thirteen
+  other circuits stayed live through every other isolation and are supplies of their own.
+- **Separation:** the call flips between rung 0 and the golden; every other reading files another figure at least 0.2
+  away; the golden reproduces the clean truth within the meters' accuracy.
 - **Mess neutrality:** every Layer 1 item mishandled keeps the golden over the target and rung 0 under it (checks.py's
   R2 block); the watt-hour misreading gives an absurd negative base building.
 
@@ -208,10 +226,10 @@ meter list).
 Executed word for word, the schedule fixes the population (the import through the revenue meter less the electricity
 supplied to the Tenancies, the roof licence a Tenancy), the period (the local calendar year), the factor, the area
 and the target. "As metered at each Tenancy's supply" names where each Tenancy's electricity is counted and says
-nothing about which meters those are; read with the building's own half-hourly registers, a comms room that never
-draws more than its occupier's supply and goes dark exactly when that supply is isolated is inside it, so the literal
-reading files the golden (18.5 kg, missed). No filed sentence lists the meters to subtract, so no sentence executes to
-rung 0; the register's flat list is data, and its descriptions point both ways.
+nothing about which meters those are; read with the building's own half-hourly registers, a meter that never draws
+more than another and goes dark exactly when that one is isolated is inside it, so the literal reading files the golden
+(18.5 kg, missed). No filed sentence lists the meters to subtract, so no sentence executes to rung 0; the register's
+list is data, and its fields sort nothing.
 
 ## Oracles
 
@@ -233,6 +251,38 @@ half-hourly series.
 - Fixed on this cut: the weather columns (temp read as a generator's word) and the registers' dates (written in the
   UK form the trust's spreadsheets use, so the lease expiries are no longer ISO dates after the as-of).
 
+Rulings on the stage-4 reader and sweeps (the reader's answers sit under `## Solver's-eye read` in
+leak_check_report.md; the judge returned DETERMINISTIC, APPROVE on the first pass):
+- Reader question 6 ("leans toward data semantics and rule application"): a surface read, the reader never found the
+  nesting; the judge recomputed it (0 exceedances in 17,596 intervals, zeros at the 13 June isolations) and classed
+  the decisive step analytical. No return to stage 2.
+- Sweep 2 ("generator" in the schedule): harmless, the field's own noun (the standby generator), declared under
+  field_terms in metadata.json.
+- Sweep 4 (tenancy, supply, import, metered, occupier in Schedule 9): harmless, the KPI definition's own words, the
+  WHAT; the schedule names no meter, hierarchy, comms room or nesting.
+- Sweeps 3 and 12 on Schedule 9: harmless, per the reader: the parties' executed agreement, standing terms and no 2026
+  result.
+- Fixed after stage 4, results unchanged: the prompt pins both one-decimal roundings ("each to one decimal"); the
+  goldens say the months and the year are rounded independently (after the data closure below the twelve months
+  add to the year's 1,914); each workbook carries its own organisation as author (the trust's asset manager, the BMS integrator with no
+  author, the tank maker, the contractor); the split gas oil delivery reads as two consecutive dockets, each as its
+  compartment's discharge ends.
+- Re-sited after the re-judge's Gate H note (the register's descriptions had sorted the meters on the
+  decisive property): one description on every tenancy meter, four occupiers' independent second supplies (two on
+  their own premises lines, a clinic's cold room, a two-floor lease fed floor by floor) and a nested kitchen with an
+  office-like profile, so neither the labels, the occupier, the location nor the profile resolves the hierarchy;
+  the call holds (18.5 kg, missed by 0.9), rung 0 moves to 15.6 and the gas oil quarters move with the world's
+  draws.
+
+- Closed by C1 in the data before ship (asserted in checks.py SF17 to SF19): the unmetered base load moved by 0.352
+  kW so the twelve rounded months sum to the rounded year (1,914 MWh) and Scope 2 prints 396.3 t from the unrounded or
+  the rounded year; the call holds (18.5 kg, missed by 0.9). The generator controller export now opens on 15 December
+  2025, so the first dip week's days without a run are on record.
+- Second reader, CT ratios and shared risers: a circumstantial hint, harmless; EM-119 (independent, whole current) and
+  EM-102 (nested, whole current) look alike, so neither sorts the hierarchy.
+- Second reader, Calbrook's PH plant references and dates against the F-gas log's CH tags: harmless; they read as two
+  separate systems, joined by the job reference.
+
 ## Ask sheet
 
 Planning weights 38 / 7 / 55. The monthly base building figures, the year, the Scope 2 tonnes, the KPI, the result and
@@ -244,7 +294,7 @@ emissions (8 figures); B, the refrigerant each chiller released with its emissio
   dips (5 columns), the calibration chart (2), the dockets (7), the controller events (4). Primary: the tank is dipped
   on Monday mornings and each quarter's local midnight falls mid-week; the burn between two dips belongs to that week's
   runs (controller events), all on one side of the midnight, so the quarter's stock is the dip on that side; a straight
-  line between dips moves every quarter (564, 259, 380, 491 litres against 570, 317, 318, 448) and so does the nearer
+  line between dips moves every quarter (569, 253, 391, 484 litres against 575, 312, 325, 446) and so does the nearer
   dip. Hazards: the non-linear chart, a delivery split across two dockets. Pin test: the asking sentence pins the
   quarter and the unit; no pin names the dip day, the runs or the placement. Realism: weekly dips and weekly off-load
   tests are how standby plant is kept; the tests move for holidays.
@@ -263,14 +313,14 @@ emissions (8 figures); B, the refrigerant each chiller released with its emissio
 
 | Ask figure | Cracker (a straight line between dips, the re-tube recharges left out) | Golden | Cracker |
 |---|---|---|---|
-| A: Q1 gas oil (litres) | 564 | 570 | miss |
-| A: Q1 gas oil (kg CO2e) | 1501 | 1516 | miss |
-| A: Q2 gas oil (litres) | 259 | 317 | miss |
-| A: Q2 gas oil (kg CO2e) | 690 | 843 | miss |
-| A: Q3 gas oil (litres) | 380 | 318 | miss |
-| A: Q3 gas oil (kg CO2e) | 1011 | 846 | miss |
-| A: Q4 gas oil (litres) | 491 | 448 | miss |
-| A: Q4 gas oil (kg CO2e) | 1306 | 1191 | miss |
+| A: Q1 gas oil (litres) | 569 | 575 | miss |
+| A: Q1 gas oil (kg CO2e) | 1514 | 1529 | miss |
+| A: Q2 gas oil (litres) | 253 | 312 | miss |
+| A: Q2 gas oil (kg CO2e) | 672 | 830 | miss |
+| A: Q3 gas oil (litres) | 391 | 325 | miss |
+| A: Q3 gas oil (kg CO2e) | 1039 | 864 | miss |
+| A: Q4 gas oil (litres) | 484 | 446 | miss |
+| A: Q4 gas oil (kg CO2e) | 1288 | 1186 | miss |
 | B: CH-1 refrigerant (kg) | 7.7 | 10.8 | miss |
 | B: CH-1 refrigerant (kg CO2e) | 11011 | 15444 | miss |
 | B: CH-2 refrigerant (kg) | 14.3 | 20.7 | miss |
@@ -280,7 +330,7 @@ emissions (8 figures); B, the refrigerant each chiller released with its emissio
 | B: CH-4 refrigerant (kg) | 11.6 | 20.5 | miss |
 | B: CH-4 refrigerant (kg CO2e) | 16588 | 29315 | miss |
 
-Pair ceiling: 26.0 (the cracker 45.0 on the call keeping no ask figure, the mirror 7.0 off it at 15.9 kg, keeping no
+Pair ceiling: 26.0 (the cracker 45.0 on the call keeping no ask figure, the mirror 7.0 off it at 15.6 kg, keeping no
 monthly figure, r 0.0).
 Mirror leakage: 0.0 per cent of ask weight (the mirror, stopping at rung 0, takes the same route on the asks).
 Measured by: generator/ceiling.py, on the cut pack.

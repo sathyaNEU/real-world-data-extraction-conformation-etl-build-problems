@@ -53,12 +53,12 @@ def build(out, x=None):
     n["weather"] = P.write_csv(f("weather"), ["date", "max_temperature_c", "min_temperature_c", "rainfall_mm"], P.weather_rows(x))
     DC.write_schedule(f("schedule"))
     DC.write_epc(f("epc"))
-    for k, who, c, m in (("register", W.PEOPLE["facilities"], "2016-02-03T09:12:00Z", "2027-01-05T10:21:00Z"),
-                         ("tenancy", W.PEOPLE["facilities"], "2019-08-12T13:40:00Z", "2027-01-06T15:02:00Z"),
-                         ("calib", W.PEOPLE["facilities"], "2011-10-04T08:15:00Z", "2026-03-02T11:47:00Z"),
-                         ("recovery", "Calbrook Cooling Services", "2026-03-12T16:20:00Z", "2026-11-06T09:55:00Z")):
-        PP.normalize_ooxml(f(k), who, who, c, m, excel=True,
-                           company=W.ORG if k != "recovery" else W.CONTRACTOR)
+    for k, who, c, m, co in (
+            ("register", "", "2016-02-03T09:12:00Z", "2027-01-05T10:21:00Z", "Vantrell Controls Ltd"),
+            ("tenancy", "Kieran Warner", "2019-08-12T13:40:00Z", "2027-01-06T15:02:00Z", W.ORG),
+            ("calib", "Brenlow Tanks Ltd", "2011-10-04T08:15:00Z", "2011-10-04T08:15:00Z", "Brenlow Tanks Ltd"),
+            ("recovery", "Calbrook Cooling Services", "2026-03-12T16:20:00Z", "2026-11-06T09:55:00Z", W.CONTRACTOR)):
+        PP.normalize_ooxml(f(k), who, who, c, m, excel=True, company=co)
     PP.normalize_pdf(f("schedule"), b"D:20250314110000+00'00'", b"D:20250314110000+00'00'")
     PP.normalize_pdf(f("epc"), b"D:20241018143000+01'00'", b"D:20241018143000+01'00'")
     import time

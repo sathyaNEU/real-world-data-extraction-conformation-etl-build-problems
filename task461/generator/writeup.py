@@ -21,16 +21,17 @@ def write(fig_path, out):
          "## 1. Final Recommendation\n",
          "**Report to %s that Pellow House's base building missed its 2026 target: %.1f kg CO2e per square metre "
          "against %.1f, %.1f kg over.**" % (W.BANK, c["kpi_kg_m2"], c["target_kg_m2"], c["margin_kg_m2"]),
-         "The base building used %s MWh in 2026: the import less the nine tenancy supplies, with the three comms rooms "
-         "metered inside their occupiers' supplies counted once. Not every tenancy meter in the register subtracted, "
-         "which takes those rooms out twice and files %.1f, inside the target; not every meter named a comms, server or "
-         "equipment room left out, which leaves the roof licensee's own supply in the base building and files %.1f.\n"
-         % (n0(comp["base_building_mwh"]), F["rungs_kpi_kg_m2"]["all"], F["rungs_kpi_kg_m2"]["names"]),
+         "The base building used %s MWh in 2026: the import less the thirteen tenancy supplies, with the four meters "
+         "that sit inside other tenancy meters counted once. Not every tenancy meter in the register subtracted, which "
+         "takes those four out twice and files %.1f, inside the target; not one meter per occupier or per premises "
+         "line, which leaves independent second supplies in the base building and files %.1f or %.1f.\n"
+         % (n0(comp["base_building_mwh"]), F["rungs_kpi_kg_m2"]["all"], F["rungs_kpi_kg_m2"]["one_per_occupier"],
+            F["rungs_kpi_kg_m2"]["one_per_premises"]),
          "## 2. Critical Components\n",
          "1. The base building used **%s MWh** of electricity in 2026 (import %s MWh less tenancy supplies %s MWh)."
          % (n0(comp["base_building_mwh"]), n0(comp["import_mwh"]), n0(comp["tenancy_supplies_mwh"])),
-         "2. EM-102, EM-105 and EM-108 sit inside EM-101, EM-104 and EM-107: **%s MWh** that subtracting every listed "
-         "meter takes out a second time." % n0(comp["nested_rooms_mwh"]),
+         "2. EM-102, EM-105, EM-108 and EM-117 sit inside EM-101, EM-104, EM-115 and EM-112: **%s MWh** that "
+         "subtracting every listed meter takes out a second time." % n0(comp["nested_rooms_mwh"]),
          "3. Base building Scope 2 emissions are **%.1f t CO2e**, a KPI of **%.1f kg CO2e per m2**."
          % (comp["scope2_t"], c["kpi_kg_m2"]),
          "",
@@ -39,11 +40,13 @@ def write(fig_path, out):
          % (W.FILES["hh"], n0(comp["import_mwh"])),
          "2. Read every tenancy meter in %s from %s at each month's local midnight (watt-hour registers divided by "
          "1,000, EM-110 to its removal and EM-118 after it)." % (W.FILES["register"], W.FILES["bms"]),
-         "3. Compared the meters' half-hourly increments: EM-102, EM-105 and EM-108 never exceed EM-101, EM-104 and "
-         "EM-107 and fell to zero exactly when those supplies were isolated in the June switchboard maintenance, so "
-         "they sit inside them; EM-114 stayed live through every tenancy isolation and is a supply of its own.",
-         "4. Took the nine supplies (EM-101, EM-103, EM-104, EM-106, EM-107, EM-109, EM-110 with EM-118, EM-112, EM-114) "
-         "from the import month by month, as %s defines Base Building Electricity: %s MWh for the year." % (W.FILES["schedule"],
+         "3. Compared every pair of tenancy meters' half-hourly increments: EM-102, EM-105, EM-108 and EM-117 never "
+         "exceed EM-101, EM-104, EM-115 and EM-112 and fell to zero exactly when those supplies were isolated in the "
+         "June switchboard maintenance, so they sit inside them; every other tenancy meter stayed live through the "
+         "others' isolations and is a supply of its own.",
+         "4. Took the thirteen supplies (EM-101, EM-103, EM-104, EM-106, EM-107, EM-109, EM-110 with EM-118, EM-112, "
+         "EM-113, EM-114, EM-115, EM-116, EM-119) from the import month by month, as %s defines Base Building "
+         "Electricity: %s MWh for the year." % (W.FILES["schedule"],
                                                                          n0(comp["base_building_mwh"])),
          "5. Applied parts 2 and 3 of the schedule: %s kg CO2e per kWh gives %.1f t, over %s square metres %.1f kg "
          "CO2e per m2, %.1f over the %.1f target." % (k["factor_kg_per_kwh"], comp["scope2_t"], n0(k["nla_m2"]),

@@ -66,7 +66,7 @@ def bms_rows(x, rng):
     swap_utc = W.local_to_utc(W.REPLACED[2])
     rows = []
     regs = {}
-    for tag, desc, occ, kind, parent in W.METERS:
+    for tag, occ, where, kind, parent in W.METERS:
         if tag == "EM-118":
             continue
         series = x["kw"][tag] * 0.5 * (1 + float(rng.normal(0, 0.0018)))
@@ -77,7 +77,7 @@ def bms_rows(x, rng):
         if W.BMS_GAP[0] <= l < W.BMS_GAP[1]:
             continue
         stamp = l.strftime("%d/%m/%Y %H:%M")
-        for tag, desc, occ, kind, parent in W.METERS:
+        for tag, occ, where, kind, parent in W.METERS:
             if tag == "EM-118":
                 if t < swap_utc:
                     continue
@@ -98,24 +98,22 @@ def write_register(path):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Meters"
-    loc = {"EM-101": "L2 east riser", "EM-102": "L2 east riser", "EM-103": "L3 east riser", "EM-104": "L5 east riser",
-           "EM-105": "L5 east riser", "EM-106": "L7 east riser", "EM-107": "L9 east riser", "EM-108": "L9 east riser",
-           "EM-109": "L10 east riser", "EM-110": "L12 east riser", "EM-112": "L13 east riser",
-           "EM-114": "Roof plant room", "EM-118": "L12 east riser", "EM-201": "Basement switch room",
-           "EM-202": "Lift motor room", "EM-203": "Basement switch room", "EM-204": "Car park plant room"}
     ct = {"EM-101": "300/5", "EM-104": "400/5", "EM-107": "300/5", "EM-110": "300/5", "EM-118": "300/5",
           "EM-201": "600/5", "EM-106": "200/5"}
     inst = {"EM-110": "2014-03-11", "EM-118": "2026-08-18", "EM-103": "2009-06-02", "EM-204": "2009-06-02",
-            "EM-102": "2019-11-26", "EM-105": "2021-02-15", "EM-108": "2018-07-09", "EM-114": "2017-04-24"}
+            "EM-102": "2019-11-26", "EM-105": "2021-02-15", "EM-108": "2022-03-07", "EM-114": "2017-04-24",
+            "EM-113": "2023-06-12", "EM-115": "2022-01-24", "EM-107": "2018-05-02", "EM-116": "2014-03-11",
+            "EM-117": "2024-08-19", "EM-119": "2022-06-14"}
     rows = []
-    for tag, desc, occ, kind, parent in W.METERS:
-        recharge = "Yes" if kind in ("supply", "room") else "No"
+    for tag, occ, where, kind, parent in W.METERS:
+        recharge = "No" if kind == "base" else "Yes"
+        desc = W.BASE_DESC.get(tag, W.TENANT_DESC)
         note = ""
         if tag == "EM-110":
             note = "Removed 18/08/2026, replaced by EM-118"
         elif tag == "EM-118":
             note = "Replaces EM-110"
-        rows.append([tag, desc, occ, loc[tag], ct.get(tag, "Whole current"), "Wh" if tag in W.WH_METERS else "kWh",
+        rows.append([tag, desc, occ, where, ct.get(tag, "Whole current"), "Wh" if tag in W.WH_METERS else "kWh",
                      dmy(inst.get(tag, "2012-05-14")), recharge, note])
     _sheet(ws, ["Meter", "Description", "Occupier", "Location", "CT ratio", "Register units", "Installed",
                 "Recharged to occupier", "Notes"], rows, [9, 34, 31, 21, 13, 10, 11, 12, 36])
@@ -127,14 +125,9 @@ def write_tenancy(path):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Tenancy schedule"
-    leases = {"Ostrand Legal LLP": ("2019-09-01", "2029-08-31"), "Fenmore Studio Architects Ltd": ("2021-04-01", "2026-12-31"),
-              "Varnhold Insurance Services Ltd": ("2020-11-01", "2030-10-31"), "Orrin Health Clinics Ltd": ("2022-06-01", "2027-05-31"),
-              "Tamsett Analytics Ltd": ("2018-05-14", "2028-05-13"), "Selcourt Capital LLP": ("2023-01-09", "2028-01-08"),
-              "Mordaunt Partners LLP": ("2014-03-25", "2027-03-24"), "Brindle & Moss Ltd": ("2024-07-01", "2029-06-30")}
-    rows = [["Ground floor suite", "Vacant", "G", W.VACANT_M2, "", "", "Marketed"]]
-    for name, t in W.TENANTS.items():
-        a, b = leases[name]
-        rows.append(["Level %s" % t["floors"], name, t["floors"], t["nla"], dmy(a), dmy(b), "Lease"])
+    rows = [["Ground floor suites G.01 to G.03", "Vacant", "G", W.VACANT_M2, "", "", "Marketed"]]
+    for prem, name, floors, nla, a, b, basis in W.PREMISES:
+        rows.append([prem, name, floors, nla, dmy(a), dmy(b), basis])
     rows.append(["Roof", W.CARRIER, "Roof", 0, "24/04/2017", "23/04/2032", "Licence (equipment room and masts)"])
     _sheet(ws, ["Premises", "Occupier", "Floors", "NLA (m2)", "Term start", "Term end", "Basis"], rows,
            [20, 32, 9, 10, 11, 11, 32], fmt={4: "#,##0"})
@@ -173,16 +166,27 @@ def docket_rows(x, rng):
         if dlv["litres"] >= 900 and rng.random() < 0.6:
             a = float(int(dlv["litres"] * float(rng.uniform(0.45, 0.6)) / 50) * 50)
             parts = [a, dlv["litres"] - a]
-        for p in parts:
-            n += int(rng.integers(7, 40))
-            out.append(["NLF%06d" % n, dlv["at"].strftime("%d/%m/%Y"), dlv["at"].strftime("%H:%M"), "Gas oil",
+        n += int(rng.integers(7, 40))
+        at = dlv["at"]
+        for i, p in enumerate(parts):
+            if i:
+                at = at + D(minutes=13)
+            out.append(["NLF%06d" % (n + i), at.strftime("%d/%m/%Y"), at.strftime("%H:%M"), "Gas oil",
                         "%d" % p, "DT-1", "Northline Fuels"])
+        n += len(parts) - 1
     return out
 
 
+EXPORT_FROM = dt.datetime(2025, 12, 15)                    # the controller export's window opens here
+DECEMBER_RUNS = [dict(start=dt.datetime(2025, 12, 9, 9, 30), minutes=60, kind="On-load test"),
+                 dict(start=dt.datetime(2025, 12, 15, 10, 0), minutes=20, kind="Off-load test"),
+                 dict(start=dt.datetime(2025, 12, 22, 10, 0), minutes=20, kind="Off-load test")]
+
+
 def event_rows(x, rng):
-    rows, hours = [], 1873.4
-    for r in x["gen"]["runs"]:
+    rows, hours = [], 1871.7
+    early = [dict(r, end=r["start"] + D(minutes=r["minutes"])) for r in DECEMBER_RUNS]
+    for r in early + x["gen"]["runs"]:
         hours += 0.0
         mode = r["kind"]
         start = [r["start"], "ENGINE START", mode, "%.1f" % hours]
@@ -201,7 +205,7 @@ def event_rows(x, rng):
         rows.append((d, [d, "BATTERY CHARGER FAULT", "", ""]))
         rows.append((d + D(minutes=26), [d + D(minutes=26), "BATTERY CHARGER FAULT CLEARED", "", ""]))
     rows.sort(key=lambda r: r[0])
-    return [[r[1][0].strftime("%d/%m/%Y %H:%M:%S")] + r[1][1:] for r in rows]
+    return [[r[1][0].strftime("%d/%m/%Y %H:%M:%S")] + r[1][1:] for r in rows if r[0] >= EXPORT_FROM]
 
 
 # ---------------------------------------------------------------------------------- refrigerant
