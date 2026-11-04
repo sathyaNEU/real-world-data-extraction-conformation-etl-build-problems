@@ -76,26 +76,25 @@ def weekly(first, n, skip=()):
 
 # (series, season, French title, first Friday, episodes, runtime minutes, audience weight)
 SEASONS = [
-    ('North Shore', 1, 'Rive nord', '2023-03-03', 10, 47, 1.0),
+    ('Ashby Shore', 1, "Rive d'Ashby", '2023-03-03', 10, 47, 1.0),
     ('Harbourlight', 1, 'Phare du havre', '2023-09-08', 10, 52, 1.0),
     ('Ironwood', 1, 'Bois de fer', '2023-11-03', 12, 44, 1.0),
     ('Bellweather', 1, 'Bellweather', '2024-03-01', 8, 41, 1.0),
-    ('Quarry', 1, 'La Carrière', '2024-06-07', 8, 38, 1.0),
-    ('Harbourlight', 2, 'Phare du havre', '2024-09-06', 10, 52, 1.0),
-    ('Marrow Creek', 1, 'Ruisseau Marrow', '2024-10-25', 16, 49, 1.0),
-    ('Quillon', 1, 'Quillon', '2025-01-24', 14, 46, 1.0),
-    ('Quarry', 2, 'La Carrière', '2025-04-11', 10, 39, 1.0),
+    ('Cutstone', 1, 'Pierre taillée', '2024-06-07', 8, 38, 1.0),
+    ('Harbourlight', 2, 'Phare du havre', '2024-08-30', 10, 52, 1.0),
+    ('Marrow Creek', 1, 'Ruisseau Marrow', '2024-10-25', 17, 49, 1.0),
+    ('Quillon', 1, 'Quillon', '2025-02-14', 14, 46, 1.0),
+    ('Cutstone', 2, 'Pierre taillée', '2025-04-11', 10, 39, 1.0),
     ('Tidewater Inn', 1, "L'Auberge des marées", '2025-06-13', 10, 43, 1.0),
     ('Ironwood', 2, 'Bois de fer', '2025-06-20', 10, 45, 1.0),
     ('Bellweather', 2, 'Bellweather', '2025-08-08', 12, 42, 1.0),
     ('Hollow Point Road', 1, 'Chemin Hollow Point', '2025-08-15', 12, 50, 1.0),
     ('Harbourlight', 3, 'Phare du havre', '2025-08-29', 10, 53, 1.0),
-    ('Northern Lines', 1, 'Lignes du Nord', '2025-11-07', 14, 28, 0.09),
     ('Gravel & Gold', 1, "Gravier et or", '2026-04-03', 10, 47, 1.0),
 ]
-SKIPS = {('Northern Lines', 1): ('2025-12-26', '2026-01-02')}
-SERIES_CODE = {'North Shore': 'NSHR', 'Harbourlight': 'HARB', 'Ironwood': 'IRON', 'Bellweather': 'BELL',
-               'Quarry': 'QUAR', 'Marrow Creek': 'MARR', 'Quillon': 'QUIL', 'Tidewater Inn': 'TIDE'}
+SKIPS = {}
+SERIES_CODE = {'Ashby Shore': 'ASHB', 'Harbourlight': 'HARB', 'Ironwood': 'IRON', 'Bellweather': 'BELL',
+               'Cutstone': 'CUTS', 'Marrow Creek': 'MARR', 'Quillon': 'QUIL', 'Tidewater Inn': 'TIDE'}
 
 
 def calendar(rng):
@@ -171,7 +170,7 @@ def trial_times(rng, cal):
     return starts, np.array(prov_keys)[prov]
 
 
-def simulate(seed=SEED, gain=0.17, price_eff=0.012, base=0.405):
+def simulate(seed=SEED, gain=0.177, price_eff=0.012, base=0.405):
     rng = np.random.default_rng(seed)
     cal = calendar(rng)
     S = season_table(cal)
@@ -197,6 +196,12 @@ def simulate(seed=SEED, gain=0.17, price_eff=0.012, base=0.405):
     starts, prov, forced = starts[order], prov[order], forced[order]
     keep = (starts >= ts('2024-11-01 00:00').value) & (starts < ts('2026-02-01 00:00').value)
     starts, prov, forced = starts[keep], prov[keep], forced[keep]
+    # sign-ups pause for the cut-over's maintenance window (22:00 to 02:00 Toronto, 8 to 9 June 2025): a sign-up
+    # attempted then went through when the new platform opened
+    maint = (starts >= MIGRATION.value - 4 * HOUR) & (starts < MIGRATION.value)
+    starts = np.where(maint, starts + 4 * HOUR, starts)
+    o2 = np.argsort(starts, kind='stable')
+    starts, prov, forced = starts[o2], prov[o2], forced[o2]
     N = len(starts)
     end = starts + 7 * DAY
     first = S['first'].map(lambda t: t.value).values
@@ -265,6 +270,10 @@ def simulate(seed=SEED, gain=0.17, price_eff=0.012, base=0.405):
     # nothing is played from a season before its first episode
     for j in range(len(S)):
         watched[:, j] &= first[j] < end
+    # about one trialist in sixteen never plays anything during the trial; they decide at day 7 as a trialist with
+    # nothing to come does
+    noplay = rng.random(N) < 0.06
+    watched[noplay] = False
     W0 = {'cal': cal, 'S': S, 'starts': starts, 'end': end, 'watched': watched, 'acq': acq}
     P = _plays(rng, W0)
     # runway: a season played during the trial with an episode released after the trial's end
@@ -305,12 +314,143 @@ def simulate(seed=SEED, gain=0.17, price_eff=0.012, base=0.405):
         'recovered': declined & rec & keep_sub, 'paid': paid, 'chg': chg, 'chg2': chg2,
     })
     # play devices follow the sign-up device most of the time
-    sd = T.device.values[P.trial.values]
-    alt = rng.choice(['smart_tv', 'ios', 'android', 'web', 'tablet'], len(P))
-    P['device'] = np.where(rng.random(len(P)) < 0.78, sd, alt)
+    # every play of an autoplay session is on one device; a session is on the sign-up device most of the time
+    sid = P.groupby(['trial', 'season_key', 'sess'], sort=False).ngroup().values
+    ns = int(sid.max()) + 1
+    first_trial = np.zeros(ns, dtype='int64')
+    first_trial[sid] = P.trial.values
+    sd = T.device.values[first_trial]
+    alt = rng.choice(['smart_tv', 'ios', 'android', 'web', 'tablet'], ns)
+    sdev = np.where(rng.random(ns) < 0.78, sd, alt)
+    # a run of two or more episodes is often watched on the living-room set
+    slen = np.bincount(sid, minlength=ns)
+    sdev = np.where((slen >= 2) & (sdev != 'android_tv') & (rng.random(ns) < 0.35), 'smart_tv', sdev)
+    P['session'] = sid
+    P['device'] = sdev[sid]
     P['lang'] = T.lang.values[P.trial.values]
     T['n_seasons'] = P.groupby('trial').season_key.nunique().reindex(range(N)).fillna(0).astype(int).values
+    T, P = bin_guard(T, P, cal, np.random.default_rng(seed + 101))
+    T['n_seasons'] = P.groupby('trial').season_key.nunique().reindex(range(N)).fillna(0).astype(int).values
     return {'cal': cal, 'S': S, 'T': T, 'P': P, 'rng': rng, 'seed': seed}
+
+
+ASK_MONTHS = ['2025-%02d' % m for m in range(2, 11)]
+
+
+def _edge(v, u=0.1):
+    return (u / 2 - abs(v - round(v / u) * u)) / u
+
+
+def bin_guard(T, P, cal, rng, floor=0.22):
+    """Keep every monthly figure of the trials started February to October 2025 clear of its one-decimal edge, and no
+    two months on one trial count, by the smallest change to the records of those months: a declined first charge
+    that a retry did or did not recover, one catalogue play more or less, a sign-up in a month's last minutes landing
+    in the next ask month. Winter trials are never touched; every figure is then computed forward from the records."""
+    month = pd.DatetimeIndex(pd.to_datetime(T.start.values)).tz_localize('UTC').tz_convert(TOR).strftime('%Y-%m')
+    T = T.copy()
+    T['month_'] = month
+    ep = cal[cal.kind == 'episode']
+    rel = {k: g.sort_values('episode').release_utc.map(lambda t: t.value).values for k, g in ep.groupby('season_key')}
+    rts = {k: g.sort_values('episode').runtime.values for k, g in ep.groupby('season_key')}
+    # monthly counts: no two months of the register on one count (move a last-minute sign-up between ask months)
+    counts = T.groupby('month_').size()
+    for _ in range(6):
+        dup = counts[counts.duplicated(keep=False)]
+        movable = [m for m in dup.index if m in ASK_MONTHS[:-1]]
+        if not movable:
+            break
+        m = movable[0]
+        last = T[(T.month_ == m)].start.max()
+        i = T.index[(T.month_ == m) & (T.start == last)][0]
+        shift = int(pd.Timestamp(month_end(m), tz=TOR).tz_convert('UTC').value - T.at[i, 'start']) + 7 * 60 * NS
+        T.at[i, 'start'] += shift
+        T.at[i, 'end'] += shift
+        if T.at[i, 'cancel_at'] > 0:
+            T.at[i, 'cancel_at'] += shift
+        P.loc[P.trial == i, 'play_utc'] += shift
+        T.at[i, 'month_'] = pd.Timestamp(T.at[i, 'start'], tz='UTC').tz_convert(TOR).strftime('%Y-%m')
+        counts = T.groupby('month_').size()
+    for m in ASK_MONTHS:
+        sel = (T.month_ == m).values
+        n = sel.sum()
+        # the paid share: move toward the centre of its bin, one recovery at a time
+        v0 = 100 * T.paid.values[sel].mean()
+        up = (v0 - round(v0, 1)) <= 0
+        for _ in range(40):
+            v = 100 * T.paid.values[sel].mean()
+            if _edge(v) >= floor:
+                break
+            if up:
+                c = np.where(sel & T.keep.values & T.declined.values & ~T.recovered.values)[0]
+                j = c[rng.integers(len(c))]
+                T.at[j, 'recovered'] = True
+                T.at[j, 'paid'] = True
+            else:
+                c = np.where(sel & T.keep.values & T.declined.values & T.recovered.values)[0]
+                j = c[rng.integers(len(c))]
+                T.at[j, 'recovered'] = False
+                T.at[j, 'paid'] = False
+        # the average number of episodes played
+        ids = np.where(sel)[0]
+        pm = P[P.trial.isin(ids)]
+        seen = set(zip(pm.trial, pm.season_key, pm.episode))
+        cnt = len(seen)
+        add_rows, drop_idx = [], []
+        last = pm.sort_values('play_utc').groupby(['trial', 'season_key']).tail(1)
+        last = last.iloc[rng.permutation(len(last))]
+        sz = pm.groupby('session').size()
+        many = pm.groupby('trial').size()
+        singles = pm[pm.session.isin(sz.index[sz == 1]) & (pm.trial.map(many) > 1).values]
+        singles = singles.iloc[rng.permutation(len(singles))]
+        li, si = 0, 0
+        next_session = int(P.session.max()) + 1
+        up_e = (cnt / n - round(cnt / n, 1)) <= 0
+        for _ in range(400):
+            v = cnt / n
+            if _edge(v) >= floor:
+                break
+            if up_e:
+                done = False
+                while li < len(last):
+                    r = last.iloc[li]
+                    li += 1
+                    e = int(r.episode)
+                    if e < len(rel[r.season_key]) and (r.trial, r.season_key, e + 1) not in seen and \
+                            rel[r.season_key][e] < T.at[r.trial, 'end'] - 3 * HOUR:
+                        t = max(int(r.play_utc) + int(r.minutes) * 60 * NS + HOUR, int(rel[r.season_key][e]) + HOUR)
+                        if t < T.at[r.trial, 'end'] - 2 * HOUR:
+                            add_rows.append((r.trial, r.season_key, e + 1, t, int(round(rts[r.season_key][e] * 0.985)),
+                                             int(r.sess) + 1000, next_session, r.device, r.lang))
+                            next_session += 1
+                            seen.add((r.trial, r.season_key, e + 1))
+                            cnt += 1
+                            done = True
+                            break
+                if not done:
+                    break
+            else:
+                if si >= len(singles):
+                    break
+                r = singles.iloc[si]
+                k = singles.index[si]
+                si += 1
+                key = (r.trial, r.season_key, r.episode)
+                if ((pm.trial == r.trial) & (pm.season_key == r.season_key) & (pm.episode == r.episode)).sum() == 1:
+                    drop_idx.append(k)
+                    seen.discard(key)
+                    cnt -= 1
+        if drop_idx:
+            P = P.drop(index=drop_idx)
+        if add_rows:
+            P = pd.concat([P, pd.DataFrame(add_rows, columns=['trial', 'season_key', 'episode', 'play_utc', 'minutes',
+                                                                'sess', 'session', 'device', 'lang'])], ignore_index=True)
+    P = P.sort_values(['play_utc', 'trial'], kind='stable').reset_index(drop=True)
+    return T.drop(columns='month_'), P
+
+
+def month_end(m):
+    y, mo = int(m[:4]), int(m[5:])
+    return '%04d-%02d-01 00:00' % (y + (mo == 12), mo % 12 + 1)
 
 
 def _plays(rng, W0):
@@ -339,20 +479,45 @@ def _plays(rng, W0):
         base_t = np.minimum(base_t, en - HOUR)
         base_t = np.where(base_t <= st, st + rng.integers(10, 300, len(tr)) * 60 * NS, base_t)
         nmax = int(n.max())
+        prev_t = base_t.copy()
+        prev_min = np.zeros(len(tr), dtype="int64")
+        prev_done = np.zeros(len(tr), bool)
+        sess = np.zeros(len(tr), dtype='int64')
+        alive = np.ones(len(tr), bool)
         for q in range(nmax):
-            m = n > q
-            epi = lo[m] + q
-            if q:
-                t = base_t[m] + (rng.random(m.sum()) * np.maximum(en[m] - base_t[m], HOUR)).astype('int64')
+            idx = np.nonzero((n > q) & alive)[0]
+            if not len(idx):
+                break
+            epi = lo[idx] + q
+            # an episode of a season airing when the trial began is watched to the end far more often than a
+            # catalogue episode sampled on the way in
+            pc = np.where(airing[idx], 0.985, 0.72)
+            done = rng.random(len(idx)) < pc
+            frac = np.where(done, rng.uniform(0.97, 1.0, len(idx)), np.clip(rng.beta(5.0, 2.0, len(idx)), 0.3, 0.92))
+            mins = np.maximum(1, np.round(rt[epi] * frac)).astype('int64')
+            if q == 0:
+                t = base_t[idx]
+                auto = np.zeros(len(idx), bool)
             else:
-                t = base_t[m]
-            t = np.maximum(t, e[epi] + rng.integers(5, 240, m.sum()) * 60 * NS)
-            t = np.minimum(t, en[m] - 60 * NS)
-            good = t > st[m]
-            frac = np.clip(rng.beta(4, 1.6, m.sum()), 0.04, 1.0)
-            mins = np.maximum(1, np.round(rt[epi] * frac)).astype(int)
-            out.append(pd.DataFrame({'trial': tr[m][good], 'season_key': k, 'episode': epi[good] + 1,
-                                     'play_utc': t[good], 'minutes': mins[good]}))
+                # the next episode starts on its own when the last one ends (autoplay), or the trialist comes back later
+                auto = (rng.random(len(idx)) < 0.45) & prev_done[idx]
+                after = prev_t[idx] + prev_min[idx] * 60 * NS
+                t = np.where(auto, after + rng.integers(5, 150, len(idx)) * NS,
+                             after + HOUR + (rng.exponential(1.1, len(idx)) * DAY).astype('int64'))
+            rel = e[epi] + rng.integers(5, 240, len(idx)) * 60 * NS
+            late = t < rel
+            auto = auto & ~late
+            t = np.maximum(t, rel)
+            sess[idx] += (~auto).astype('int64') * (q > 0)
+            ok = t < en[idx] - 60 * NS
+            alive[idx[~ok]] = False
+            idx, t, epi, mins = idx[ok], t[ok], epi[ok], mins[ok]
+            good = t > st[idx]
+            prev_t[idx] = t
+            prev_min[idx] = mins
+            prev_done[idx] = done[ok]
+            out.append(pd.DataFrame({'trial': tr[idx][good], 'season_key': k, 'episode': epi[good] + 1,
+                                     'play_utc': t[good], 'minutes': mins[good], 'sess': sess[idx][good]}))
     P = pd.concat(out, ignore_index=True)
     # the first play of a trial is its sign-up season: any play of another season that would come first moves to a
     # few minutes after the sign-up season's first play
@@ -362,9 +527,16 @@ def _plays(rng, W0):
     f_acq = np.full(len(starts), np.iinfo(np.int64).max, dtype='int64')
     f_acq[fa.index.values] = fa.values
     t_acq = f_acq[P.trial.values]
-    early = (~P.is_acq.values) & (P.play_utc.values <= t_acq)
-    bump = t_acq[early] + rng.integers(4, 90, early.sum()) * 60 * NS
-    P.loc[early, 'play_utc'] = np.minimum(bump, end[P.trial.values[early]] - 60 * NS)
+    # (a season's plays move together, so an autoplay run stays one run; plays pushed past the trial's end drop out)
+    P['first_s'] = P.groupby(['trial', 'season_key']).play_utc.transform('min')
+    early_s = (~P.is_acq.values) & (P.first_s.values <= t_acq)
+    keys = P.loc[early_s, ['trial', 'season_key']].drop_duplicates()
+    delay = pd.Series(rng.integers(4, 90, len(keys)) * 60 * NS, index=pd.MultiIndex.from_frame(keys))
+    if len(keys):
+        d = delay.reindex(pd.MultiIndex.from_frame(P.loc[early_s, ['trial', 'season_key']])).values
+        P.loc[early_s, 'play_utc'] = (P.loc[early_s, 'play_utc'].values - P.loc[early_s, 'first_s'].values
+                                      + t_acq[early_s] + d)
+    P = P[P.play_utc.values < end[P.trial.values] - 60 * NS].drop(columns='first_s')
     # a trial whose sign-up season has no play has no plays at all
     P = P[f_acq[P.trial.values] < np.iinfo(np.int64).max].drop(columns='is_acq')
     return P.sort_values(['play_utc', 'trial'], kind='stable').reset_index(drop=True)

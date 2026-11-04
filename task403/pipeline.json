@@ -3,30 +3,49 @@
   "status": "PAUSED",
   "domain": "product-analytics/funnel-journey-analysis",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-04",
   "seed": "RC09 (which air-handler repair programme a university estates department's budget buys this winter, or none); the seed's world was measured undrawable on root-cause (energy x root-cause ban.pairing by task402, efficiency-savings-verification serves experiment-causal only) and the build moved to Product Analytics, a Canadian streaming service's free-trial journey",
-  "stump": "A competent solver compares the November to January trials with a year earlier, finds conversion down about 13 points in every segment and in the library-title control, sees the step arrive with the 1 November first charges at the new price, and funds (A) the first-month price hold on about 3,700 lost conversions, never setting each trialist's viewing against the release calendar, which puts about 3,400 of the loss on the winter release slate (C) and leaves the price about 300.",
+  "stump": "A competent solver compares the November to January trials with a year earlier, finds conversion down about 15 points in every segment and 11 among the trialists who signed up on finished seasons, sees the step arrive with the 1 November first charges at the new price, and funds (A) the first-month price hold on about 2,500 lost conversions, never setting each trialist's played seasons against the release calendar, which puts about 2,100 of the loss on the winter slate (C) and leaves the price about 200.",
+  "call": "(C) the winter release slate, about 2,100 paid conversions; runner-up (A) the first-month price hold, about 200; gap 1,900",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-04",
+    "note": "final cut: 61 checks, 0 FAIL, 0 WARN"
+  },
+  "first_look_reader": {
+    "redraws": "20 of 20 on (A) on the final world, its slate figure 184 to 307 and its price figure 1,998 to 2,148",
+    "build_world": "(A), slate 294 by the most-watched title, price 2,030"
+  },
+  "gates": {
+    "checks_py": "58 checks, 0 FAIL",
+    "verify_py": "PASS, 38 figures recomputed from target/",
+    "figures_check": "PASS, 64 figures",
+    "byte_identical": "two consecutive builds identical; target.zip sha256 c80ea809ad7adb62c8a93916abc08914246af30f9c28b078bdea1f51373ead7a",
+    "ceiling": "medium full includer 0 of 18 ask figures, pair ceiling 34.8, mirror leakage 0; strong reader 18 of 18 (reported exposure)",
+    "voice_check": "PASS",
+    "container": "scrub audit clean (target and golden)"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW 2026-11-04, no LEAK; 4 lines answered in the design note (ordinary words in the standard and the price notice, signup_device a declared field term, the calendar's scheduled April 2026 episodes)",
+    "reader": "pending (stage 4)"
   },
   "duplicate_check": {
-    "heart": "",
-    "surface": "",
-    "nearest": ""
+    "heart": "WARN, no BLOCK (2026-11-04, after merging claude/jolly-hypatia-06c61h at 0570620)",
+    "surface": "three structural pairs promoted for the author's adjudication (task402 back to back, task306, task271), each differentiated on the card; no surface tell",
+    "nearest": "task500 v2 driver 0.08; nearest text 0.06"
   },
   "judge": {
     "verdict": "",
     "disposition": "",
     "report": ""
+  },
+  "stage4": {
+    "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4/reader/reader_brief.md",
+    "judge_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t403/stage4/judge/judge_brief.md"
   },
   "guard": {
     "check": "2026-11-04 on the registered card: WARN (no BLOCK): overuse.objective, repeat.gate_g, overuse.gate_g, repeat.decision, repeat.question_form answered in the design note; same_puzzle_older (task306 v4) and same_driver_older (task271 v5) differentiated; nearest driver 0.08 (task500 v2); validate clean",
@@ -34,7 +53,7 @@
     "window": "task399, task400, task402 (task401's card architecture_spent at the 2026-11-04 merge); forcing_event redrawn to season_or_peak"
   },
   "returned": [],
-  "resume": "stage 2 design, stopped by a container restart (2026-11-04 about 01:55Z). Done: the parent review applied (first-look reader coded in generator/screens.py; the world redrawn to an originals-only service whose every season is released weekly in both winters, after the full-season-drop and licensed-boxset worlds let the first-look reader land the slate; the composition arithmetic corrected to common support). Generator prototypes world.py, pack.py and screens.py are committed. Next: re-run python3 screens.py 20 on the current world and record the first-look reader result, finish the ladder, fork table, closure, asks and prompt, precut exit 0 (send main the ladder, the first-look result and the cracker table), then stage 3.",
+  "resume": "stage 4 check: the parent runs the leak reader (stage4.reader_brief) and the determinism judge thread (stage4.judge_brief) together on byte-identical copies of target.zip (sha256 c80ea809). On their outputs: fix every finding in the generator in one pass (python3 build.py; checks.py, verify.py, ceiling.py, figures_check, leak.py, precut, voice-check, guard heart and surface; two byte-identical builds), re-judge once on FIX_NOW, re-read only if a document or the prompt changed; then ship: ledger row, card current, SHIPPED (task403) with target.zip and golden/ force-added.",
   "approved": null,
   "delivered": null,
   "portal": null,
