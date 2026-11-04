@@ -1,0 +1,122 @@
+{
+ "task": "task399",
+ "decision": "Which programme in the Fenmoor Rail Operating Centre improvement catalogue the route's 2027 operating improvement plan funds, and the operating centre's delay minutes its cause produced in the twelve months to 30 September 2026.",
+ "deliverables": [
+  "improvement_plan_case_2027.pptx",
+  "staffing_and_ars_2025-26.xlsx"
+ ],
+ "objective": "Root-Cause Analysis",
+ "domain": "Human Factors & Ergonomics",
+ "as_of": "2026-10-09",
+ "distractor_files": [
+  "reference/fenmoor_roc_workload_assessment_2025.pdf",
+  "reference/railhead_adhesion_reports_autumn_2025.csv"
+ ],
+ "files": [
+  {
+   "path": "control_system/roc_signaller_actions_20251001_20260930.csv",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-10-02",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Route-setting action log of both servers, 1 October 2025 to 30 September 2026."
+  },
+  {
+   "path": "incidents/operating_incident_register_2025-26.xlsx",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-04-08",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Incident register, 2025-26 financial year."
+  },
+  {
+   "path": "incidents/operating_incident_register_2026-27.xlsx",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-10-07",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Incident register, 2026-27 financial year to date, from the new incident tool."
+  },
+  {
+   "path": "delay_attribution/ocf_delay_records_2025-04_2026-09.csv",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-10-06",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Delay records attributed to the operating centre, April 2025 to September 2026."
+  },
+  {
+   "path": "delay_attribution/attribution_reviews_2025-26_2026-27.csv",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-10-06",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Delay attribution review decisions moving minutes between incidents."
+  },
+  {
+   "path": "control_system/workstation_layout_export_r8.2.1.json",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-10-02",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Workstation display configuration export, release 8.2.1."
+  },
+  {
+   "path": "staffing/signalling_roster_2025-26_P07-P13.xlsx",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-02-27",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Published signalling rosters, periods 7 to 13 of 2025-26."
+  },
+  {
+   "path": "staffing/signalling_roster_2026-27_P01-P07.xlsx",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-09-09",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Published signalling rosters, periods 1 to 7 of 2026-27, new rostering tool."
+  },
+  {
+   "path": "staffing/roster_changes_2025-26_2026-27.csv",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-10-05",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Roster changes agreed on the day (swaps, sickness cover, rest day working)."
+  },
+  {
+   "path": "staffing/signaller_competence_register.xlsx",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-08-28",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Competence records of the signalling staff."
+  },
+  {
+   "path": "control_system/ars_status_log_20251001_20260930.csv",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-10-02",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "ARS sub-area status log export, both control servers."
+  },
+  {
+   "path": "reference/railhead_adhesion_reports_autumn_2025.csv",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2025-12-22",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Railhead adhesion reports, autumn 2025."
+  },
+  {
+   "path": "governance/2027_improvement_plan_terms_of_reference.pdf",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-09-03",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Safety Review Panel terms of reference for the 2027 operating improvement plan."
+  },
+  {
+   "path": "governance/improvement_catalogue_2027.docx",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2026-07-30",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Operating centre improvement catalogue 2027."
+  },
+  {
+   "path": "reference/fenmoor_roc_workload_assessment_2025.pdf",
+   "source": "Synthetic, Wyvern Route operating records as exported",
+   "dated": "2025-03-28",
+   "licence": "CC0 1.0 (synthetic, generated for this task)",
+   "covers": "Consultant's signaller workload assessment, March 2025."
+  }
+ ]
+}

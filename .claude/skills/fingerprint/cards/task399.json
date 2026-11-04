@@ -11,8 +11,8 @@
   "shape": "12",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "B, the workstation display renewal, 8,985 delay minutes, delivery beginning on W03 Hatherby",
+  "answer_source": "task399/submission.md block 1, from generator/figures.json",
   "gap": [
     "objective",
     "population"
@@ -37,21 +37,22 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:slips-onto-the-neighbouring-exit-read-from-the-screen-geometry-and-the-corrected-cancellations",
   "layer1": [
-    "control system event log written by two servers, with duplicated rows across each failover",
-    "event log in UTC against rosters and registers in UK local time across the BST change",
-    "workstation renumbering and signal renaming at the March 2026 re-control",
-    "incident register taxonomy changed in April 2026, with the old categories crosswalked",
-    "delay attribution records by railway period, with minutes re-attributed between incidents after review",
-    "roster swaps and overtime held in a separate log",
-    "local investigation reports mixing coded fields and narrative"
+    "control system action log written by two servers, with both servers' copies around each server change",
+    "action log and ARS log in UTC against registers and rosters in UK local time across both clock changes",
+    "desk names renamed to W numbers and ARS sub-area codes renamed at release 8.2, on each server's own date",
+    "incident register moved to a new tool in April 2026, the old categories crosswalked by the tool's own sheet",
+    "delay attribution records with a review log moving minutes between incidents under three statuses",
+    "rosters in two layouts (a periodic grid with a code key, a long tool export) and a changes list missing changes made on the day",
+    "server B's ARS process stamping Central European time into the UTC column",
+    "the 2025-26 register's route text in three forms"
   ],
   "stakeholder_role": "the operating centre's safety and assurance manager, preparing the improvement plan the route's safety review panel commits for 2027",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "control_system_events_2025-26.csv",
-    "rows": 0,
-    "entity": "one signaller or ARS action the control system logged (route request, route set, route cancel, signal replaced)",
+    "file": "control_system/roc_signaller_actions_20251001_20260930.csv",
+    "rows": 357103,
+    "entity": "one signaller action the control system logged (route request, set, cancel, rejection)",
     "grain": "event",
     "source": "synthetic"
   },
@@ -64,17 +65,21 @@
     "org_type": "rail infrastructure manager's regional operating centre",
     "invented_names": [
       "Fenmoor Rail Operating Centre",
-      "Wyvern route"
+      "Wyvern route",
+      "Linwell Ergonomics Ltd",
+      "Corvane"
     ],
     "people": [
       "Helen Douglas",
       "Alan Pope",
-      "Zoe Hayward"
+      "Zoe Hayward",
+      "Joanna Bryan",
+      "Julian Thomson"
     ]
   },
   "deliverables": [
     "improvement_plan_case_2027.pptx",
-    "operating_centre_errors_2025-26.xlsx"
+    "staffing_and_ars_2025-26.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
@@ -84,7 +89,8 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task107": "task107 v2 scales a lottery pilot's assignment effect for a comparison arm contaminated by staff reassigned from treated units, reached through a timetable, a staff directory and a certification register; task399 has no comparison arm or assignment: it separates each wrong route's error mode, a slip onto the exit drawn beside the one wanted against a decision error, by the screen positions of the two exits and the signallers' own routes cancelled and reset within seconds.",
-    "task121": "task121 v4 links each satisfaction response to the conditions of the passenger's journey because ratings carry a halo, and v6 builds each call-taker's rest from consecutive shifts; task399 reads no rating and no exposure built from a worker's own history: the decisive property is a fixed geometry of two controls on a screen, shared by every operator who uses them, read through the operators' corrected slips."
+    "task121": "task121 v4 links each satisfaction response to the conditions of the passenger's journey because ratings carry a halo, and v6 builds each call-taker's rest from consecutive shifts; task399 reads no rating and no exposure built from a worker's own history: the decisive property is a fixed geometry of two controls on a screen, shared by every operator who uses them, read through the operators' corrected slips.",
+    "task398": "task398 routes a pollutant through a stratified lake to the one intake depth that draws a single tributary's layer, a physical attribution read from temperature profiles; task399 re-classifies operators' recorded errors as slips by the drawn geometry of two controls on a screen and the operators' own quick cancel-resets. They share the Root-Cause objective's ordinary labels (gap objective, decision root_cause_named) and no decisive rung, file role or data structure."
   },
   "lineage": [],
   "notes": "Seed RC05's world (an electricity distributor's one reliability programme) is closed for this number: grid-reliability-outage-analysis holds seven cards and its slot notes spend auto-reclose completion (task198 H4), protection coordination (task129), shared substation supply (task303) and same-phase repeats (task192). The build keeps the seed's decision (one programme from a catalogue of five) and quantity (the outcome units the funded programme's cause accounted for over the last twelve months) and moves to Human Factors & Ergonomics under Root-Cause.",
