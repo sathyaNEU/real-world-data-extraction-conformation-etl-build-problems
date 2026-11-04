@@ -1,0 +1,93 @@
+{
+  "task": "task212",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "task212/DESIGN_NOTE.md",
+  "domain": "general-statistics-data-science",
+  "subdomain": "exploratory-data-analysis-distribution-assessment",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a Spanish parcel carrier's outbound cage audits read for the sortation hub whose own equipment damages parcels, against the crush each audited parcel took from the weight loaded on top of it in its cage",
+  "objective": "anomaly-detection",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G3"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the audits and reads every rule correctly compares each hub's damaged parcels against what the parcels' own weight, size, packaging, service and sender predict, allows for the heavy cartons sharing each cage, finds Zaragoza furthest above and books the survey there, while at equal weight loaded on top of each parcel the excess the survey can remove is Ribarroja's.",
+  "domain_test": "The deciding quantity is each hub's damage excess read within the structure that generates the damage, each audited parcel's crush load from the weight scanned into its cage after it, which is this task type's own object (stratify within the generating structure before reading a comparison); with the pooled or attribute-adjusted rate in its place the call moves to Zaragoza.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:crush-load-from-each-parcels-place-in-its-cage-load-order",
+  "layer1": [
+    "sortation load scans stamped in UTC against audits and DWS records in Spanish summer time (UTC+2), a sorting night running across local midnight",
+    "DWS weights in grams against the audit sheet's declared kilograms",
+    "re-scans of a parcel into the same cage after a no-read",
+    "a damage code list replaced on 1 August with old codes still keyed by two depots",
+    "hub numbers in the sortation export against hub names in the audit system",
+    "re-audited cages and audit lines for parcels not found in the cage"
+  ],
+  "stakeholder_role": "head of hub engineering",
+  "role_family": "operations_director",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "audit_findings_q3_2026.parquet",
+    "rows": 155000,
+    "entity": "one audited parcel",
+    "grain": "parcel x cage audit",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "logistics_or_3pl",
+  "world": {
+    "geography": "Spain (a fictional parcel carrier's six sortation hubs at Zaragoza, Ribarroja del Turia, Dos Hermanas, San Fernando de Henares, El Prat de Llobregat and Basauri)",
+    "currency": "EUR",
+    "org_type": "parcel carrier",
+    "invented_names": [
+      "Brújula Paquetería"
+    ],
+    "people": [
+      "Julieta Barranco",
+      "Marcelo Castrillo",
+      "María Vélez"
+    ]
+  },
+  "deliverables": [
+    "survey_case_note.pdf",
+    "hub_damage_q3_2026.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the load each case carries from the cases placed on top of it in its container, an order relation between the container's load scans and a separate weighing record, so comparing units on their cases' own attributes, on what shared their container or on where they sat in it books that load to the unit that loads its heaviest cases last and hides the excess of the unit that loads them first.",
+  "driver_concrete": "An audited parcel is crushed by the weight of the parcels scanned into its cage after it, which only the sortation load scans set against the DWS weights show; Zaragoza's auto-parts cartons arrive on the last trunk and go on top of every cage while Ribarroja's tile cartons arrive first and sit at the bottom, so Zaragoza's light parcels carry the cartons and Ribarroja's sorter damage is hidden by its favourable loading.",
+  "stump": "A competent analyst nets the re-audits and re-scans, joins the audits to the DWS, risk-adjusts each hub's damaged parcels on weight, size, packaging, service and sender, allows for the cartons sharing each cage and sends the survey to Zaragoza; the step that lands them there is never reading each parcel's crush load from the weight scanned into its cage after it, which accounts for Zaragoza and leaves Ribarroja with the excess the survey can remove.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v0 (seed AD35, screened only, never registered)",
+      "fate": "spent at stage 1 on 2026-11-04 before any card: a prepayment review's deniable payment is a hidden share only the medical record decides; every golden was as noisy as its signal and the records-fixed alternatives were rule application (task212 DESIGN_NOTE.md, Tried and rejected)",
+      "driver": "screened candidates only: repeated diagnoses on same-hospital readmissions against readmissions elsewhere; admission-day occupancy setting the admission threshold; the coming severity regroup"
+    }
+  ],
+  "notes": "Re-root of task212 into general-statistics-data-science after the seed's payment-claims world was screened dead at stage 1. composition_mix chosen because the decisive step is a Simpson's reversal across a constructed stratum (each parcel's crush load), not a grouping of shipped columns.",
+  "registered": "2026-11-04T23:27:00Z"
+}
