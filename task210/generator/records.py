@@ -23,6 +23,7 @@ import simulate as S
 
 FT = 3.28084
 DROP_P = 0.2             # share of block-days whose AVL unit drops out for a stretch
+TRAIL_SCALE = 45.0 / 210.0   # a trailing recorder's clock is off by up to 45 seconds
 
 
 def _point_on(geo_row, frac, outbound):
@@ -90,10 +91,11 @@ def records(T, seed=W.SEED):
     days = sorted(P["date"].unique())
 
     # recorder clocks: the active cab's recorder is GPS-disciplined to a few seconds; a trailing car's recorder
-    # free-runs while it trails, so its clock is off by up to a few minutes on those days
+    # free-runs while it trails, so its clock is off by up to about three quarters of a minute on those days (the same
+    # draws, scaled)
     cars = W.CARS["J"] + W.CARS["F"]
     lead_off = {(c, d): float(np.clip(rng.normal(0, 3), -8, 8)) for c in cars for d in days}
-    trail_off = {(int(r.trail_car), r.date): float(rng.uniform(-210, 210)) for r in C[C["trail_car"].notna()].itertuples()}
+    trail_off = {(int(r.trail_car), r.date): float(rng.uniform(-210, 210)) * TRAIL_SCALE for r in C[C["trail_car"].notna()].itertuples()}
 
     # in-service swaps: on some Foundry weekdays a car is bad-ordered in service; it runs on to Foundry Loop and pulls
     # in to the depot there, and the day's spare pulls out onto the block's next inbound trip and runs it for the rest
@@ -115,6 +117,33 @@ def records(T, seed=W.SEED):
         P.loc[m, "lead_car"] = spare
         swaps.append((pd.Timestamp(d), r["block"], int(r["lead_car"]), spare, P.loc[m, "entry_local"].min()))
     SW = pd.DataFrame(swaps, columns=["date", "block", "bad_car", "spare", "t_first"])
+
+    # the yard's pull-out and pull-in times for each block-day, on their own random stream (nothing above or below
+    # moves): a block whose first trip leaves the outer end pulls out a few minutes before it, one whose first trip
+    # leaves the inner end deadheads there first; a block whose last trip ends at the inner end deadheads back to the
+    # yard before it pulls in. The sheet records the block's pull-out car and its pull-out and pull-in times, so on a
+    # swapped Foundry block the pull-in is the spare's
+    C = C.copy()
+    ry = np.random.default_rng(seed + 67)
+    runs0 = S.section_runs(T["geo"])
+    dead = {(ln, d): sum(x for _, x in runs0[(ln, d)]) - W.DWELL_S * len(runs0[(ln, d)]) for ln in ("J", "F") for d in ("O", "I")}
+    tb = P.groupby(["date", "block", "trip"], sort=False).agg(dep=("entry_local", "min"), arr=("exit_local", "max"),
+                                                              d=("dir", "first"), line=("line", "first")).reset_index()
+    tb = tb.sort_values(["date", "block", "dep"], kind="mergesort")
+    first = tb.groupby(["date", "block"]).first()
+    last = tb.groupby(["date", "block"]).last()
+    span = pd.DataFrame({"first_dep": first["dep"], "first_dir": first["d"], "last_arr": last["arr"],
+                         "last_dir": last["d"], "line": first["line"]}).reset_index()
+    span = C[["date", "block"]].merge(span, on=["date", "block"], how="left")
+    n = len(span)
+    yard_out, yard_in = ry.uniform(2.0, 6.0, n), ry.uniform(2.0, 6.0, n)
+    dh_out, dh_in = ry.uniform(0.95, 1.10, n), ry.uniform(0.95, 1.10, n)
+    dh = np.array([dead[(ln, "O")] for ln in span["line"]])          # a deadhead runs the line without its stops
+    lead = np.where(span["first_dir"] == "O", dh * dh_out, 0.0) + yard_out * 60.0
+    lag = np.where(span["last_dir"] == "I", dh * dh_in, 0.0) + yard_in * 60.0
+    span["pull_out"] = (span["first_dep"] - pd.to_timedelta(np.round(lead), unit="s")).dt.floor("min")
+    span["pull_in"] = (span["last_arr"] + pd.to_timedelta(np.round(lag), unit="s")).dt.ceil("min")
+    C = C.merge(span[["date", "block", "pull_out", "pull_in"]], on=["date", "block"], how="left")
 
     ev = []
     for code, ncol in (("FB", "n_fb"), ("EB", "n_eb"), ("OS", "n_os")):
@@ -165,6 +194,27 @@ def records(T, seed=W.SEED):
         tests.append(dict(code="EB", car=sw.bad_car, t_local=t_test, x=x, y=y, section="F7", dir="O", line="F",
                           date=sw.date, emp=int(rng.choice(hostlers)), track="reserved", block="", cars=1,
                           trail_car=np.nan, copy=False, test=True, slow=True))
+    # the yards' monthly brake check: once each calendar month every car gets an emergency application on the yard lead
+    # at Union Yard or on the Foundry depot's loop, by a hostler, on a day it ran no block (out of service all day). Its
+    # own random stream; its rows join the export only after every draw on the shared stream (below), so no other
+    # record moves
+    rc = np.random.default_rng(seed + 71)
+    ran = {(pd.Timestamp(r.date), int(r.lead_car)) for r in C.itertuples()}
+    ran |= {(pd.Timestamp(r.date), int(r.trail_car)) for r in C[C["trail_car"].notna()].itertuples()}
+    ran |= {(pd.Timestamp(s.date), int(s.spare)) for s in SW.itertuples()}
+    checks = []
+    for car in cars:
+        ln = "J" if car in W.CARS["J"] else "F"
+        sec = "J6" if ln == "J" else "F7"
+        for mth in range(4, 11):
+            free = [pd.Timestamp(d) for d in days if pd.Timestamp(d).month == mth and (pd.Timestamp(d), car) not in ran]
+            if not free:
+                continue
+            d = free[int(rc.integers(0, len(free)))]
+            x, y = _point_on(geo.loc[sec], 1.0 - rc.random() * 0.10, True)
+            checks.append(dict(code="EB", car=car, t_local=d + pd.Timedelta(minutes=int(rc.integers(9 * 60, 15 * 60 + 30))),
+                               x=x, y=y, section=sec, dir="O", line=ln, date=d, emp=int(rc.choice(hostlers)), track="reserved",
+                               block="", cars=1, trail_car=np.nan, copy=False, test=False, check=True, slow=True))
     E = pd.concat([E, pd.DataFrame(tests)], ignore_index=True)
     R = pd.DataFrame(rel, columns=["released_local", "car", "work_order", "work_type"])
 
@@ -172,7 +222,8 @@ def records(T, seed=W.SEED):
     off = [trail_off[(int(c), pd.Timestamp(d))] if cp else lead_off[(int(c), pd.Timestamp(d))]
            for c, d, cp in zip(E["car"], E["date"], E["copy"])]
     E["t_utc"] = utc(E["t_local"]) + pd.to_timedelta(np.round(off).astype(int), unit="s")
-    lat, lon = _latlon_noisy(E["x"].values, E["y"].values, rng)
+    gx, gy = rng.normal(0, 6.0), rng.normal(0, 6.0)          # the same two draws _latlon_noisy makes, kept for the checks
+    lat, lon = S.to_latlon(E["x"].values + gx, E["y"].values + gy)
     E["lat"], E["lon"] = np.round(lat, 6), np.round(lon, 6)
     street = E["track"].values == "street"
     E["speed_mph"] = np.where(E["code"] == "OS", np.where(street, 25 + rng.uniform(3.2, 9, len(E)), 45 + rng.uniform(3.2, 9, len(E))),
@@ -200,15 +251,6 @@ def records(T, seed=W.SEED):
     born_new = bmap.loc[eo, "qualified"].values >= np.datetime64(W.BADGE_MIGRATION)
     E["badge"] = np.where(born_new | (E["date"].values >= bmap.loc[eo, "card_reissued"].values),
                           bmap.loc[eo, "badge_new"].values, bmap.loc[eo, "badge_old"].values)
-
-    # each recorder numbers every event it logs (door interlocks, track brake, gong and the rest, the March
-    # commissioning runs included); the export carries the FB, EB and OS rows only, so its numbers run with gaps
-    E = E.sort_values(["t_utc", "car"]).reset_index(drop=True)
-    rq = np.random.default_rng(seed + 43)
-    start = {c: int(rq.integers(140, 960)) for c in cars}
-    stepn = 1 + rq.poisson(2.6, len(E))
-    E["seq"] = E["car"].astype(int).map(start).values + pd.Series(stepn).groupby(E["car"].astype(int).values).cumsum().values
-    E["event_id"] = [f"{c}-{s:06d}" for c, s in zip(E["car"].astype(int), E["seq"])]
 
     # AVL section-pass log (lead vehicle, local time). Onboard units drop out for a stretch on some block-days (A3), and
     # a detector outage at Arsenal Road 8 to 14 June left F3 and F4 passes unlogged
@@ -244,15 +286,41 @@ def records(T, seed=W.SEED):
                      ignore_index=True)
     disp = disp.sort_values(["date", "run", "emp"]).reset_index(drop=True)
 
+    # the brake checks join the export now, every field from their own stream: the recorder's clock, the same GPS
+    # offset as every record, walking pace, an emergency application's deceleration, the hostler's badge that day
+    K = pd.DataFrame(checks)
+    K["t_utc"] = utc(K["t_local"]) + pd.to_timedelta(np.round([lead_off[(int(c), pd.Timestamp(d))] for c, d in
+                                                                zip(K["car"], K["date"])]).astype(int), unit="s")
+    klat, klon = S.to_latlon(K["x"].values + gx, K["y"].values + gy)
+    K["lat"], K["lon"] = np.round(klat, 6), np.round(klon, 6)
+    K["speed_mph"] = np.round(rc.uniform(3, 7, len(K)), 1)
+    K["decel_mps2"] = np.round(np.clip(2.75 + 0.15 * norm.ppf(np.clip(rc.uniform(0, 1, len(K)), 1e-6, 1 - 1e-6)), 2.3, 3.2), 2)
+    ko = K["emp"].astype(int).values
+    knew = bmap.loc[ko, "qualified"].values >= np.datetime64(W.BADGE_MIGRATION)
+    K["badge"] = np.where(knew | (K["date"].values >= bmap.loc[ko, "card_reissued"].values),
+                          bmap.loc[ko, "badge_new"].values, bmap.loc[ko, "badge_old"].values)
+    E = pd.concat([E, K], ignore_index=True)
+    E["check"] = E["check"].fillna(False).astype(bool)
+
+    # each recorder numbers every event it logs (door interlocks, track brake, gong and the rest, the March
+    # commissioning runs included); the export carries the FB, EB and OS rows only, so its numbers run with gaps
+    E = E.sort_values(["t_utc", "car"]).reset_index(drop=True)
+    rq = np.random.default_rng(seed + 43)
+    start = {c: int(rq.integers(140, 960)) for c in cars}
+    stepn = 1 + rq.poisson(2.6, len(E))
+    E["seq"] = E["car"].astype(int).map(start).values + pd.Series(stepn).groupby(E["car"].astype(int).values).cumsum().values
+    E["event_id"] = [f"{c}-{s:06d}" for c, s in zip(E["car"].astype(int), E["seq"])]
+
     # truth for the asks
     E["t_local_true"] = E["t_local"]
-    rev = E[(E["code"] == "EB") & (~E["copy"]) & (~E["test"])]
-    eb_truth = rev.groupby(["line", rev["t_local"].dt.month]).size()
+    rev = E[(E["code"] == "EB") & (~E["copy"]) & (~E["test"]) & (~E["check"])]
+    eb_truth = rev.groupby(rev["t_local"].dt.month).size()
     import defects
     mms, cards_truth, rel_wo = defects.defect_reports(T, dict(swaps=SW), seed)
     R["work_order"] = rel_wo          # the repairs' numbers in the agency's work-order series (the draw above is spent)
     defect_truth = defects.ask_b_truth(cards_truth)
     return dict(edr=E, avl=avl, releases=R, dispatch=disp, consist=C, operators=O, eb_truth=eb_truth, mms=mms, cards_truth=cards_truth,
+                passes=P,
                 defect_truth=defect_truth,
                 metar=T["weather"], swaps=SW)
 

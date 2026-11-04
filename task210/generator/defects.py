@@ -1,10 +1,17 @@
 """Ask B's records: the maintenance management system's defect reports (MMS export), from the clean truth.
 
 Operators write a defect card when they pull a car in; the card names the car and the block. The yard clerk keys the
-cards into the MMS on the next business morning (now and then a day later), so each card's record carries the time
-it was keyed, and its reported date is the MMS default, the day of keying. Mechanics' inspection findings are keyed
-the day they are found and name no block. Ask B counts the operator cards by the service day they were written on,
-which only the card's car and block against the yard's block sheets recover (a recorded date for the event date).
+cards into the MMS on the next business morning (now and then a day later), so each card's record carries only the
+time it was entered. Mechanics' inspection findings are entered the day they are found and name no block. Ask B counts
+the operator cards on the service day they were written, which only the card's car and block against the cars that ran
+each block that day recover (a recorded date for the event date): the yard's block sheets name each block's pull-out
+car or cars, and on a Foundry block whose car was bad-ordered in service the spare that took the block over is on no
+sheet, only in the AVL log (the true key elsewhere).
+
+Every car that ran a block writes cards at the same rates: the pull-out car, a two-car block's trailing car, and on a
+swapped block both the bad-ordered car (until it pulled in) and the spare (after it pulled out). A card is written only
+where its car and block date it uniquely: its car ran its block on no other day in the week before the card was keyed
+and not on the keying day itself, and its car carries no other card for the same defect that day.
 
 defect_reports(T, Rr, seed) -> (mms, truth, release_wos): the export rows, one truth row per operator card (service
 day, line, group, weekday service), and the work-order numbers of the depot's bad-order repairs (in the swaps' order).
@@ -37,29 +44,33 @@ def _business_days(start, end):
     return [d for d in pd.date_range(start, end) if d.weekday() < 5 and d not in hol]
 
 
-def defect_reports(T, Rr, seed=W.SEED):
-    rng = np.random.default_rng(seed + 29)
+def operating(T, Rr):
+    """Every (service day, block, car) the cars actually ran: each block's pull-out car or cars from the yard's sheets,
+    and on a swapped Foundry block the spare that took it over (the bad-ordered car is the sheet's pull-out car)."""
     C = T["consists"].copy()
     C["date"] = pd.to_datetime(C["date"])
     rows = []
     for r in C.itertuples():
-        rows.append((r.date, r.block, int(r.lead_car)))
+        rows.append((r.date, r.block, int(r.lead_car), "pull-out"))
         if not pd.isna(r.trail_car):
-            rows.append((r.date, r.block, int(r.trail_car)))
-    Y = pd.DataFrame(rows, columns=["sday", "block", "car"])
-    seen = {k: set(g["sday"]) for k, g in Y.groupby(["car", "block"])}    # the block sheets as shipped
-    # a car bad-ordered in service and the spare that took its block over write no card that day (the depot has the car)
+            rows.append((r.date, r.block, int(r.trail_car), "trailing"))
+    for s in Rr["swaps"].itertuples():
+        rows.append((pd.Timestamp(s.date), s.block, int(s.spare), "spare"))
+    return pd.DataFrame(rows, columns=["sday", "block", "car", "role"])
+
+
+def defect_reports(T, Rr, seed=W.SEED):
+    rng = np.random.default_rng(seed + 29)
     SW = Rr["swaps"]
-    bad = set(zip(pd.to_datetime(SW["date"]), SW["block"]))
-    Y = Y[~pd.Series(list(zip(Y["sday"], Y["block"]))).isin(bad).values].reset_index(drop=True)
-    spare_days = set(zip(pd.to_datetime(SW["date"]), SW["spare"].astype(int)))
-    Y = Y[~pd.Series(list(zip(Y["sday"], Y["car"]))).isin(spare_days).values].reset_index(drop=True)
+    Y = operating(T, Rr)
+    seen = {k: set(g["sday"]) for k, g in Y.groupby(["car", "block"])}    # the cars that ran each block, by day
 
     bdays = _business_days(W.OBS_START, "2026-11-30")
     bidx = pd.DatetimeIndex(bdays)
     dtype = {d: S.day_type(d, W.OBS_HOLIDAYS) for d in pd.date_range(W.OBS_START, W.OBS_END)}
 
     cards = []
+    written = set()
     for r in Y.itertuples():
         summer = 1.8 if r.sday.month in (6, 7, 8) else 1.0
         for grp, (lam, texts) in GROUPS.items():
@@ -72,11 +83,15 @@ def defect_reports(T, Rr, seed=W.SEED):
                 t = keyed_day + pd.Timedelta(minutes=int(rng.integers(6 * 60 + 35, 9 * 60 + 40)))
                 text = str(rng.choice(texts))
                 lo = keyed_day - pd.Timedelta(days=UNIQUE_DAYS)
-                hits = [d for d in seen[(r.car, r.block)] if lo <= d < keyed_day]
-                if len(hits) != 1:
-                    continue      # only a card its car and block date uniquely is kept (C1 on the dating)
+                days = seen[(r.car, r.block)]
+                hits = [d for d in days if lo <= d < keyed_day]
+                if len(hits) != 1 or keyed_day in days:
+                    continue      # only a card its car and block date uniquely is kept, never on its keying day (C1)
+                if (r.car, r.sday, text) in written:
+                    continue      # one card per defect per car per day (the day's later report of it is not keyed)
+                written.add((r.car, r.sday, text))
                 cards.append(dict(created=t, source="Operator card", car=r.car, block=r.block, group=grp, defect=text,
-                                  sday=r.sday, weekday=dtype[r.sday] == "weekday"))
+                                  sday=r.sday, weekday=dtype[r.sday] == "weekday", role=r.role))
     K = pd.DataFrame(cards)
     K = K[K["created"] < pd.Timestamp(EXPORTED)].reset_index(drop=True)     # cards keyed after the export are not in it
 
@@ -90,7 +105,7 @@ def defect_reports(T, Rr, seed=W.SEED):
                 ins.append(dict(created=d + pd.Timedelta(minutes=int(rng.integers(10 * 60, 15 * 60 + 30))), source="Inspection",
                                 car=c, block="", group=grp, defect=str(rng.choice(GROUPS[grp][1]))))
     I = pd.DataFrame(ins)
-    M = pd.concat([K.drop(columns=["sday", "weekday"]), I], ignore_index=True)
+    M = pd.concat([K.drop(columns=["sday", "weekday", "role"]), I], ignore_index=True)
     M = M.sort_values(["created", "car"], kind="mergesort").reset_index(drop=True)
     # one work-order series for the whole agency (the buses, the facilities and the streetcar's other work take the
     # numbers between), the Foundry depot's bad-order repairs included, numbered in the order each was opened; its own

@@ -2,20 +2,13 @@
  "G_hat": 2.498,
  "G_one_decimal": 2.5,
  "ask_a": {
-  "Foundry 04": 56,
-  "Foundry 05": 65,
-  "Foundry 06": 53,
-  "Foundry 07": 53,
-  "Foundry 08": 54,
-  "Foundry 09": 55,
-  "Foundry 10": 50,
-  "Juniper 04": 43,
-  "Juniper 05": 34,
-  "Juniper 06": 46,
-  "Juniper 07": 60,
-  "Juniper 08": 51,
-  "Juniper 09": 42,
-  "Juniper 10": 45
+  "04": 99,
+  "05": 99,
+  "06": 99,
+  "07": 113,
+  "08": 105,
+  "09": 97,
+  "10": 95
  },
  "ask_a_pair": {
   "metres": 80,
@@ -23,14 +16,14 @@
  },
  "ask_b": {
   "Foundry": {
-   "All other": 139,
-   "Brakes": 37,
-   "Doors": 46
+   "All other": 122,
+   "Brakes": 44,
+   "Doors": 34
   },
   "Juniper": {
-   "All other": 153,
-   "Brakes": 55,
-   "Doors": 56
+   "All other": 171,
+   "Brakes": 46,
+   "Doors": 55
   }
  },
  "bearings_out_deg": {

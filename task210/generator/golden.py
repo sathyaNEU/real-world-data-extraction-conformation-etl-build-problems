@@ -5,8 +5,9 @@ at its midpoint against its section direction's bearing, and the airport's sky c
 model of firm brakes per pass (section-direction, hour, weekend and holiday, darkness, and the glare term
 1 + G * glare * sun) is fitted to the whole record and projected onto the January 2027 pick's weekday peak passes at
 the station's normal sunshine. The four section-direction peaks with the highest expected rates take the slots.
-Asks: emergency applications in revenue service per line and local month (A); the defect cards operators wrote in
-weekday service, April to October, per line for brakes, doors and all other defects (B).
+Asks: the streetcar's emergency brake applications in service by Mountain-time month (A, SRM-07 6.2); the defect
+cards operators wrote, each on the day it was written if the weekday timetable ran, April to October as a whole, per
+line for brakes, doors and all other defects (B).
 
     python3 task210/generator/golden.py      # writes generator/figures.json and golden/
 """
@@ -279,13 +280,24 @@ def observed_sepoct(A):
     return t["sum"] / t["size"] * 1000
 
 
-# ---------------------------------------------------------------- ask A: emergency applications in revenue service
-def operating(target=TARGET):
-    """Which car was running each block when: the yard sheet's pull-out car until the AVL log first shows another
-    vehicle on the block that day, then that vehicle to the end of the day; a two-car block's trailing car rides with
-    its lead. Returns rows (day, block, car, start, end)."""
+# ---------------------------------------------------------------- ask A: emergency applications in service
+def yard_sheets(target=TARGET):
+    """The yard's block sheets with each block's pull-out and pull-in as times (a pull-in clock time before the pull-out
+    is after midnight, on the next calendar day)."""
     Y = pd.read_csv(path("yard", target))
     Y["day"] = pd.to_datetime(Y["sheet_date"], format="%m/%d/%Y")
+    hm = lambda s: pd.to_timedelta(s.str[:2].astype(int) * 60 + s.str[3:].astype(int), unit="m")
+    Y["out"] = Y["day"] + hm(Y["out_time"].astype(str))
+    Y["pin"] = Y["day"] + hm(Y["in_time"].astype(str))
+    Y.loc[Y["pin"] <= Y["out"], "pin"] += pd.Timedelta(days=1)
+    return Y
+
+
+def operating(target=TARGET):
+    """Which car was in service on each block when (SRM-07 6.2): the yard sheet's pull-out car or cars from the block's
+    pull-out, until the AVL log first shows another vehicle on the block that day, which is then in service on it until
+    the block's pull-in; a two-car block's trailing car rides with its lead. Returns rows (day, block, car, start, end)."""
+    Y = yard_sheets(target)
     A = pd.read_parquet(path("avl", target), columns=["service_date", "block", "vehicle", "enter_local"])
     A["day"] = pd.to_datetime(A["service_date"])
     A["block"] = A["block"].astype(str)
@@ -293,40 +305,56 @@ def operating(target=TARGET):
     A = A.sort_values("enter_local")
     first = A.groupby(["day", "block", "vehicle"], as_index=False)["enter_local"].min()
     out = []
-    lo, hi = pd.Timedelta(hours=0), pd.Timedelta(hours=27)
     fmap = {k: g for k, g in first.groupby(["day", "block"])}
     for r in Y.itertuples():
         cars = [int(c) for c in str(r.pullout_cars).split("+")]
         g = fmap.get((r.day, r.block))
-        start, end = r.day + lo, r.day + hi
+        start, end = r.out, r.pin
         if g is not None:
             other = g[g["vehicle"] != cars[0]].sort_values("enter_local")
             if len(other):
                 sw = other.iloc[0]
                 end = pd.Timestamp(sw["enter_local"])
-                out.append((r.day, r.block, int(sw["vehicle"]), end, r.day + hi))
+                out.append((r.day, r.block, int(sw["vehicle"]), end, r.pin))
         for c in cars:
             out.append((r.day, r.block, c, start, end))
     return pd.DataFrame(out, columns=["day", "block", "car", "start", "end"])
 
 
-def ask_a(target=TARGET, revenue="operating", dedupe="pair", window_s=None, month="local"):
+def release_tests(E, target=TARGET):
+    """The running brake test on the depot loop after each release in the depot's release log: the released car's EB
+    record in the hour after its release."""
+    R = pd.read_csv(os.path.join(target, "foundry_depot_releases_2026.csv"))
+    R["released"] = pd.to_datetime(R["released"])
+    x = E.reset_index().merge(R[["car", "released"]], on="car")
+    hit = (x["t"] >= x["released"]) & (x["t"] <= x["released"] + pd.Timedelta(minutes=60))
+    return set(x.loc[hit, "index"])
+
+
+def ask_a(target=TARGET, revenue="operating", dedupe="pair", window_s=None, month="local", tests="release", as_set=False):
+    """The streetcar's emergency brake applications in service by Mountain-time month (SRM-07 6.2). Routes for the
+    checks: revenue "yard" (the yard sheet's cars between the block's pull-out and pull-in, no change-off), "avl" (a
+    logged pass), "all"; dedupe "pair" (a two-car train's records on one block within PAIR_S and PAIR_M), "window"
+    (within PAIR_S only), "drop" (the yard sheet's second car's records dropped), "none"."""
     window_s = PAIR_S if window_s is None else window_s
     E = pd.read_csv(path("edr", target))
     E = E[E["event_code"] == "EB"].copy()
     E["t"] = to_local(E["event_time_utc"])
     E["day"] = (E["t"] - pd.Timedelta(hours=DAY_HOURS)).dt.normalize()     # service day: the last trips run past midnight
+    if tests == "release":
+        E = E.drop(index=list(release_tests(E, target)))
     if revenue == "operating":
         O = operating(target)
         x = E.reset_index().merge(O, on=["day", "car"], how="inner")
         x = x[(x["t"] >= x["start"]) & (x["t"] < x["end"])].drop_duplicates("index")
         E = x.set_index("index")
     elif revenue == "yard":
-        Y = pd.read_csv(path("yard", target))
-        Y["day"] = pd.to_datetime(Y["sheet_date"], format="%m/%d/%Y")
-        on = pd.DataFrame([(d, int(c), b) for d, cs, b in zip(Y["day"], Y["pullout_cars"].astype(str).str.split("+"), Y["block"]) for c in cs],
-                          columns=["day", "car", "block"])
-        E = E.merge(on, on=["day", "car"], how="inner")
+        Y = yard_sheets(target)
+        on = pd.DataFrame([(d, int(c), b, o, p) for d, cs, b, o, p in zip(Y["day"], Y["pullout_cars"].astype(str).str.split("+"),
+                                                                           Y["block"], Y["out"], Y["pin"]) for c in cs],
+                          columns=["day", "car", "block", "start", "end"])
+        x = E.reset_index().merge(on, on=["day", "car"], how="inner")
+        E = x[(x["t"] >= x["start"]) & (x["t"] < x["end"])].drop_duplicates("index").set_index("index")
     elif revenue == "avl":
         A = pd.read_parquet(path("avl", target))
         P = A[["vehicle", "block", "enter_local", "exit_local"]].astype({"vehicle": "int64", "enter_local": "datetime64[ns]",
@@ -335,6 +363,10 @@ def ask_a(target=TARGET, revenue="operating", dedupe="pair", window_s=None, mont
                           right_by="vehicle", direction="backward")
         E = x[(x["exit_local"] + pd.Timedelta(seconds=20) >= x["t"]).fillna(False)]
         E["block"] = E["block"].astype(str)
+    if dedupe == "drop":
+        Y = yard_sheets(target)
+        second = {(d, int(cs.split("+")[1])) for d, cs in zip(Y["day"], Y["pullout_cars"].astype(str)) if "+" in cs}
+        E = E[[(d, int(c)) not in second for d, c in zip(E["day"], E["car"])]]
     if dedupe in ("pair", "window"):
         E = E.sort_values("t").reset_index(drop=True)
         keep = np.ones(len(E), dtype=bool)
@@ -355,10 +387,16 @@ def ask_a(target=TARGET, revenue="operating", dedupe="pair", window_s=None, mont
                         used.update((i, j))
                         break
         E = E[keep]
-    E = E.assign(line=np.where(E["car"] < 120, "Juniper", "Foundry"))
+    if as_set:
+        return set(E["event_id"])
     mon = E["t"].dt.month if month == "local" else pd.to_datetime(E["event_time_utc"]).dt.month
-    out = E.groupby(["line", mon.values]).size()
-    return {f"{ln} {m:02d}": int(out.get((ln, m), 0)) for ln in ("Juniper", "Foundry") for m in range(4, 11)}
+    out = E.groupby(mon.values).size()
+    return {"%02d" % m: int(out.get(m, 0)) for m in range(4, 11)}
+
+
+def ask_a_set(target=TARGET, **kw):
+    """The applications ask_a counts, as each one's lead record (car, local time), for the checks' set comparisons."""
+    return ask_a(target, as_set=True, **kw)
 
 
 # ---------------------------------------------------------------- ask B: operators' defect cards in weekday service
@@ -371,28 +409,60 @@ def weekday_service(target=TARGET):
             if pd.Timestamp(d).weekday() < 5 and t.hour * 60 + t.minute < 7 * 60}
 
 
-def ask_b(target=TARGET, dating="block", weekday="service", days=7):
-    """Operator defect cards by line and defect group, counted on the service day each card was written: a card is
-    keyed into the MMS after the car comes in, so it is dated to the day its car pulled out on the card's block (the
-    yard's block sheets), the one such day in the week before it was keyed. Routes for the checks: dating "car" (the
-    car's last day out, any block), "previous" (the day before keying), "reported" (the MMS reported date)."""
+def schedule_weekdays(target=TARGET):
+    """Service days the weekday timetable ran, from the run sheets' schedule column."""
+    R = pd.read_csv(os.path.join(target, "run_sheets_2026.csv"), usecols=["service_date", "schedule"])
+    return {pd.Timestamp(d) for d in R.loc[R["schedule"] == "Weekday", "service_date"].unique()}
+
+
+def ran_blocks(target=TARGET, source="operating"):
+    """(service day, block, car) for every car that ran a block: the yard sheet's pull-out car or cars ("yard"), the
+    vehicles the AVL log shows on each block ("avl"), or both ("operating": the yard's cars and the car that took a block
+    over, which only the AVL log shows)."""
+    out = []
+    if source in ("yard", "operating"):
+        Y = yard_sheets(target)
+        out.append(pd.DataFrame([(d, b, int(c)) for d, b, cs in zip(Y["day"], Y["block"], Y["pullout_cars"].astype(str))
+                                 for c in cs.split("+")], columns=["sday", "block", "car"]))
+    if source in ("avl", "operating"):
+        A = pd.read_parquet(path("avl", target), columns=["service_date", "block", "vehicle"])
+        A = A.drop_duplicates()
+        out.append(pd.DataFrame({"sday": pd.to_datetime(A["service_date"]).values, "block": A["block"].astype(str).values,
+                                 "car": A["vehicle"].astype(int).values}))
+    return pd.concat(out, ignore_index=True).drop_duplicates().reset_index(drop=True)
+
+
+def card_days(target=TARGET, dating="operating", days=7, include_entry=False):
+    """Each operator card's service day by the route's rule. "operating", "yard", "avl": the latest day before the card
+    was entered (on or before it with include_entry) within the window on which its car ran its block, by that source;
+    "car": its car's last day out on the yard sheets before entry, any block; "previous": the day before entry;
+    "entered": the MMS entered date."""
     M = pd.read_csv(path("mms", target), dtype={"block": str})
     K = M[M["source"] == "Operator card"].copy().reset_index(drop=True)
-    K["kd"] = pd.to_datetime(K["created"]).dt.normalize()
-    Y = pd.read_csv(path("yard", target))
-    Y["sday"] = pd.to_datetime(Y["sheet_date"], format="%m/%d/%Y")
-    Y = pd.DataFrame([(d, b, int(c)) for d, b, cs in zip(Y["sday"], Y["block"], Y["pullout_cars"].astype(str))
-                      for c in cs.split("+")], columns=["sday", "block", "car"])
-    if dating in ("block", "car"):
-        on = ["car", "block"] if dating == "block" else ["car"]
+    K["kd"] = pd.to_datetime(K["entered_at"]).dt.normalize()
+    if dating in ("operating", "yard", "avl", "car"):
+        Y = ran_blocks(target, "yard" if dating == "car" else dating)
+        on = ["car"] if dating == "car" else ["car", "block"]
         m = K.reset_index().merge(Y[["sday"] + on], on=on)
-        m = m[(m["sday"] < m["kd"]) & (m["sday"] >= m["kd"] - pd.Timedelta(days=days))]
+        hi = (m["sday"] <= m["kd"]) if include_entry else (m["sday"] < m["kd"])
+        m = m[hi & (m["sday"] >= m["kd"] - pd.Timedelta(days=days))]
         day = m.groupby("index")["sday"].max().reindex(K.index)
     elif dating == "previous":
         day = K["kd"] - pd.Timedelta(days=1)
     else:
-        day = pd.to_datetime(K["reported"])
-    wk = weekday_service(target) if weekday == "service" else None
+        day = pd.to_datetime(K["entered_date"])
+    return K, day
+
+
+def ask_b(target=TARGET, dating="operating", weekday="schedule", days=7, include_entry=False):
+    """The defect cards operators wrote, by line and defect group, each counted on the day it was written if the
+    weekday timetable ran that day, April to October 2026 as a whole. A card is entered into the MMS after its car comes
+    in, so it is dated to the day its car ran the card's block (the cars the yard sheets name, and the car the AVL log
+    shows taking a block over), the one such day in the week before it was entered. Weekday service from the run
+    sheets' schedule ("schedule"), the AVL log's first trip before 07:00 ("service") or the calendar ("calendar")."""
+    K, day = card_days(target, dating, days, include_entry)
+    wk = {"schedule": schedule_weekdays, "service": weekday_service}.get(weekday)
+    wk = wk(target) if wk else None
     isw = day.map(lambda d: (d in wk) if wk is not None else (not pd.isna(d) and d.weekday() < 5)).astype(bool)
     ok = (isw & (day >= pd.Timestamp("2026-04-01")) & (day <= pd.Timestamp("2026-10-31"))).values
     line = np.where(K["car"] < 120, "Juniper", "Foundry")

@@ -5,11 +5,12 @@
 What it asserts: the golden computed from target/ matches the clean truth's slate; every rival reader of the main call
 (the first look, the careful and constructing readers, reader (d), reader (f) and the literal execution of SRM-07, which
 files no definition of low sun) files a wrong slate sharing at most two slots with the golden; no shipped document names
-the sun as a hazard; every semantic fork (SF1 to SF22) prints the same call or is ruled out by a quoted sentence; the
+the sun as a hazard; every semantic fork (SF1 to SF26) prints the same call or is ruled out by a quoted sentence; the
 C3 corridor (the slate under every cone from 15 to 35 degrees, every elevation profile and every shape of the glare
 term, with the fourth slot's separation from the fifth under each); the separation; removing each competing cause
 leaves the slate; the slate holds across the published range of the glare multiplier and the base rate; the asks'
-figures equal the flag truth and are missed by the cracker; the separation line; the input gates; Gate G; the
+figures equal the flag truth, every reading their filed words admit counts one set and the ceiling holds on the cut
+pack (asks()); the separation line; the input gates; Gate G; the
 metadata scrub; the realism sweep on target/ (realism 1 to 8: ids, timestamps, counts, orderings, constant columns,
 document stamps, readers and margins, no describing file); the client's three rules (R1 to R3c); and submission.md's
 SOLUTION_STEPS executed as written, each step's stated figure asserted.
@@ -296,61 +297,7 @@ def main():
         check("base rate %.0f per 1,000 keeps the slate" % b, key(M.slate(M.golden(Q)[0])) == gold)
 
     # ---------------- the asks
-    a_truth = {("Juniper" if l == "J" else "Foundry") + " %02d" % m: int(v) for (l, m), v in Rr["eb_truth"].items()}
-    check("ask A golden equals the flag truth", fig["ask_a"] == a_truth)
-    prompt = open(os.path.join(TASK, "prompt.txt")).read()
-    check("SF19 the asking sentence files the Mountain-time month (the UTC month moves %d figures)"
-          % sum(GD.ask_a(month="utc")[k] != v for k, v in fig["ask_a"].items()), "Mountain" in prompt)
-    check("ask B golden equals the flag truth", fig["ask_b"] == Rr["defect_truth"], str(fig["ask_b"]))
-    flat = [fig["ask_b"][ln][g] for ln in ("Juniper", "Foundry") for g in ("Brakes", "Doors", "All other")]
-    check("ask B figures are whole cards, each 0.5 of a card from its rounding edges", all(isinstance(v, int) for v in flat),
-          str(flat))
-    # SF20, C1 on the dating: each operator card's car pulled out on the card's block on exactly one service day in
-    # the week before the card was keyed (the yard's block sheets as shipped), so every dating window agrees
-    mm = pd.read_csv(GD.path("mms"), dtype={"block": str})
-    oc = mm[mm["source"] == "Operator card"].copy()
-    oc["kd"] = pd.to_datetime(oc["created"]).dt.normalize()
-    Yd = pd.read_csv(GD.path("yard"))
-    Yd["sday"] = pd.to_datetime(Yd["sheet_date"], format="%m/%d/%Y")
-    Yl = pd.DataFrame([(d, b, int(c)) for d, b, cs in zip(Yd["sday"], Yd["block"], Yd["pullout_cars"].astype(str))
-                       for c in cs.split("+")], columns=["sday", "block", "car"])
-    mj = oc.reset_index().merge(Yl, on=["car", "block"])
-    nwin = mj[(mj["sday"] < mj["kd"]) & (mj["sday"] >= mj["kd"] - pd.Timedelta(days=7))].groupby("index").size()
-    check("SF20 C1 every operator card's car ran its block on exactly one service day in the week before keying",
-          len(nwin) == len(oc) and bool((nwin == 1).all()), "%d cards" % len(oc))
-    for d_ in (14, 30):
-        check("SF20 a %d-day dating window gives the same figures" % d_, GD.ask_b(days=d_) == fig["ask_b"])
-    for route, label in (("reported", "the MMS reported date"), ("previous", "the day before keying"),
-                         ("car", "the car's last day out on any block")):
-        alt = GD.ask_b(dating=route)
-        mv = sum(alt[ln][g] != fig["ask_b"][ln][g] for ln in alt for g in alt[ln])
-        check("SF20 dating each card by %s is another figure (moves %d of 6)" % (label, mv), mv >= 5)
-    # SF22: weekday service days are the days the weekday timetable ran; the three holidays ran the Sunday timetable
-    alt = GD.ask_b(weekday="calendar")
-    mv = sum(alt[ln][g] != fig["ask_b"][ln][g] for ln in alt for g in alt[ln])
-    Av = pd.read_parquet(GD.path("avl"), columns=["service_date", "enter_local"])
-    first = Av.groupby("service_date")["enter_local"].min()
-    hol = [pd.Timestamp(h) for h in W.OBS_HOLIDAYS]
-    check("SF22 the holidays (Mon or Fri) ran the Sunday timetable, service from 07:00 (calendar weekdays move %d of 6)" % mv,
-          all(first[h.date()].hour == 7 for h in hol) and all(h.weekday() < 5 for h in hol))
-    check("SF22 the asking sentence names weekday service days", "weekday service days" in prompt)
-    check("separation line: the MMS export carries no section, position or time of day of a card's service",
-          not set(mm.columns) & {"section_id", "lat", "lon", "direction", "trip_id"} and "Operator card" in set(mm["source"]))
-    t = GD.to_local(E["event_time_utc"])
-    edge = (((t - t.dt.normalize()).dt.total_seconds() < 15) & (t.dt.day == 1)) | \
-           (((t.dt.normalize() + pd.Timedelta(days=1) - t).dt.total_seconds() < 15) & ((t + pd.Timedelta(days=1)).dt.day == 1))
-    check("SF21 no EB or OS record within 15 s of a month boundary", int((edge & E["event_code"].isin(["EB", "OS"])).sum()) == 0)
-    import ceiling
-    cm = ceiling.main(TARGET)
-    check("pair ceiling at or under 60", cm["pair"] <= 60.0, "%.1f" % cm["pair"])
-    print("REPORT pair with both on the call %.1f" % cm["both_on"])
-    check("full includer keeps at most two fifths", cm["full"] <= 40.0, "%.1f per cent" % cm["full"])
-    check("the cracker misses ask A and ask B", cm["leak"] <= 20.0, "%.1f per cent kept" % cm["leak"])
-    for k_, v_ in cm["keep_a"].items():
-        if "cracker" in k_:
-            check("%s keeps at most one of ask A's 14" % k_.split(" (")[0], v_ <= 1, "%d" % v_)
-            check("%s keeps none of ask B's 6" % k_.split(" (")[0], cm["keep_b"][k_] == 0, "%d" % cm["keep_b"][k_])
-    check("mirror leakage under one half", cm["leak"] < 50.0, "%.1f per cent" % cm["leak"])
+    asks(fig, Rr, E)
 
     # ---------------- the separation line, counted on the shipped rows
     Y = pd.read_csv(GD.path("yard"))
@@ -493,6 +440,190 @@ def realism_blocks(P, Rr):
           "events)" % int((x.groupby(["service_date", "trip_id"]).size() > 1).sum()), int((two_ops > 1).sum()) == 0)
 
 
+def asks(fig, Rr, E):
+    """Ask A (the streetcar's emergency brake applications in service by Mountain-time month, SRM-07 6.2) and ask B
+    (each line's operator cards for brakes, doors and the rest, each on the day it was written if the weekday timetable
+    ran, April to October as a whole): the goldens equal the flag truth; every reading the filed words admit counts one
+    set; the readings the words rule out are each another figure; the ceiling on the cut pack."""
+    import re
+    import ceiling
+    prompt = open(os.path.join(TASK, "prompt.txt")).read()
+    srm = re.sub(r"\s+", " ", " ".join((pg.extract_text() or "") for pg in GD.pdfplumber.open(GD.path("srm")).pages))
+    # ask A: the golden and the truth
+    a_truth = {"%02d" % m: int(v) for m, v in Rr["eb_truth"].items()}
+    check("ask A golden equals the flag truth (each application made on a pass, the trailing car's copies, the depot "
+          "release tests and the yards' brake checks apart)", fig["ask_a"] == a_truth, str(fig["ask_a"]))
+    check("ask A: SRM-07 6.2 files in service from the pull-out onto a block until the pull-in, the depot loop's running "
+          "brake test after a release excepted and a two-car train's application one; the prompt asks for applications "
+          "in service by Mountain-time month",
+          all(x in srm for x in ("in service on a block from the time it pulls out onto the block until it pulls in",
+                                 "a running brake test on the depot loop after a release is not one",
+                                 "a two-car train's application, which both cars' recorders record (3.4), is one application"))
+          and "emergency brake applications in service in each Mountain-time month" in prompt)
+    # each record's application: a trailing car's copy belongs to its lead's record
+    eb0 = Rr["edr"][Rr["edr"]["code"] == "EB"]
+    lead = eb0[~eb0["copy"]].set_index(["date", "block", "t_local"])["event_id"]
+    app = dict(zip(eb0["event_id"], eb0["event_id"]))
+    for r in eb0[eb0["copy"]].itertuples():
+        app[r.event_id] = lead[(r.date, r.block, r.t_local)]
+    truth = set(eb0.loc[~eb0["copy"] & ~eb0["test"] & ~eb0["check"], "event_id"])
+    # the trip reading on the clean truth: each such record lies on one of its block's trips (a realised pass of its car,
+    # the passes the AVL log lost included)
+    P = Rr["passes"].sort_values("entry_local")
+    PP = P[["lead_car", "entry_local", "exit_local"]].astype({"lead_car": "int64"})
+
+    def on_pass(recs, passes):
+        x_ = pd.merge_asof(recs.sort_values("t_local")[["event_id", "car", "t_local"]].astype({"car": "int64"}), passes,
+                           left_on="t_local", right_on="entry_local", left_by="car", right_by="lead_car", direction="backward")
+        return set(x_.loc[(x_["t_local"] <= x_["exit_local"]).fillna(False), "event_id"])
+
+    rec = eb0[eb0["event_id"].isin(truth)]
+    on_trip = on_pass(rec, PP)
+    check("SF23 ask A trip reading: every application lies on one of its block's trips (a pass of its car, logged or lost)",
+          on_trip == truth, "%d of %d" % (len(on_trip), len(truth)))
+    check("ask A: no depot release test and no brake check lies on a trip",
+          not on_pass(eb0[eb0["test"] | eb0["check"]], PP))
+    # the literal reading of SRM-07 6.2 on the clean truth: each car from its own pull-out onto a block to its own pull-in
+    C = Rr["consist"]
+    SW = Rr["swaps"]
+    bad_in, spare_out = {}, {}
+    for s_ in SW.itertuples():
+        d = pd.Timestamp(s_.date)
+        on = (P["date"] == d) & (P["block"] == s_.block)
+        bad_in[(d, int(s_.bad_car))] = P.loc[on & (P["lead_car"] == s_.bad_car), "exit_local"].max() + pd.Timedelta(minutes=10)
+        spare_out[(d, int(s_.spare), s_.block)] = P.loc[on & (P["lead_car"] == s_.spare), "entry_local"].min() - pd.Timedelta(minutes=5)
+    spans = []
+    for r in C.itertuples():
+        d = pd.Timestamp(r.date)
+        spans.append((d, int(r.lead_car), r.pull_out, bad_in.get((d, int(r.lead_car)), r.pull_in)))
+        if not pd.isna(r.trail_car):
+            spans.append((d, int(r.trail_car), r.pull_out, r.pull_in))
+    pin = {(pd.Timestamp(r.date), r.block): r.pull_in for r in C.itertuples()}
+    for (d, c, blk), t0 in spare_out.items():
+        spans.append((d, c, t0, pin[(d, blk)]))
+    sp = pd.DataFrame(spans, columns=["date", "car", "t0", "t1"])
+    y = eb0[~eb0["test"]].merge(sp, on=["date", "car"])
+    lit = {app[i] for i in y.loc[(y["t_local"] >= y["t0"]) & (y["t_local"] <= y["t1"]), "event_id"]}
+    check("SF23 ask A literal reading of SRM-07 6.2 on the clean truth (each car from its own pull-out onto a block to its own "
+          "pull-in, the release tests out, a two-car train's records one) counts the same applications", lit == truth,
+          "%d against %d" % (len(lit), len(truth)))
+    # the block-assignment reading from target/: the golden's in-service map (the yard sheets' cars from the block's
+    # out time to the AVL's change-off, the car that took the block over from then to the in time)
+    gold_a = {app[i] for i in GD.ask_a(as_set=True)}
+    check("SF23 ask A block-assignment reading from target/ (the golden's in-service map) counts the same applications",
+          gold_a == truth, "%d against %d" % (len(gold_a), len(truth)))
+    for w_ in (60, 120, 360):
+        check("SF24 ask A: a two-car train's records paired within %d s count the same applications" % w_,
+              {app[i] for i in GD.ask_a(as_set=True, window_s=w_)} == truth)
+    check("SF24 ask A: the yard sheet's second car's records dropped instead of paired count the same applications",
+          {app[i] for i in GD.ask_a(as_set=True, dedupe="drop")} == truth)
+    check("SF24 ask A: with or without the release log, the in-service map counts the same applications (each test follows "
+          "its car's pull-in)", {app[i] for i in GD.ask_a(as_set=True, tests=None)} == truth)
+    # the AVL-passes-only reading differs only by the applications on passes the AVL log lost, which 6.2 includes
+    avl_only = {app[i] for i in GD.ask_a(as_set=True, revenue="avl", dedupe="none")}
+    logged = on_pass(rec, Rr["avl"][["lead_car", "entry_local", "exit_local"]].astype({"lead_car": "int64"}).sort_values("entry_local"))
+    check("SF23 ask A: the AVL-passes-only reading differs only by the %d applications on passes the AVL log lost, which "
+          "SRM-07 6.2 includes" % len(truth - logged), avl_only == logged and logged <= truth)
+    # the readings the words rule out, each another figure
+    for sf_, kw, label, why in (("SF19", dict(month="utc"), "the UTC month", "the asking sentence's Mountain-time month"),
+                                ("SF23", dict(revenue="avl", dedupe="none"), "the AVL passes alone", "SRM-07 6.2's pull-out to pull-in"),
+                                ("SF23", dict(revenue="yard"), "the yard sheets' pull-out cars alone",
+                                 "SRM-07 6.2: the car that took a block over is in service on it")):
+        alt = GD.ask_a(**kw)
+        mv = sum(alt[k_] != v_ for k_, v_ in fig["ask_a"].items())
+        check("%s ask A: %s moves %d of 7 (ruled out by %s)" % (sf_, label, mv, why), mv >= 1, str(alt))
+    t = GD.to_local(E["event_time_utc"])
+    edge = (((t - t.dt.normalize()).dt.total_seconds() < 15) & (t.dt.day == 1)) | \
+           (((t.dt.normalize() + pd.Timedelta(days=1) - t).dt.total_seconds() < 15) & ((t + pd.Timedelta(days=1)).dt.day == 1))
+    check("SF21 no EB or OS record within 15 s of a month boundary", int((edge & E["event_code"].isin(["EB", "OS"])).sum()) == 0)
+    # the yard sheets' times: each block's out time precedes its first logged pass, its in time follows its last
+    Y = GD.yard_sheets()
+    av = pd.read_parquet(GD.path("avl"), columns=["service_date", "block", "enter_local", "exit_local"])
+    av["day"] = pd.to_datetime(av["service_date"])
+    av["block"] = av["block"].astype(str)
+    bd = av.groupby(["day", "block"]).agg(f=("enter_local", "min"), l=("exit_local", "max")).reset_index()
+    yb = Y.merge(bd, on=["day", "block"])
+    check("ask A: every yard sheet line's out time precedes its block's first logged pass and its in time follows its last",
+          bool((yb["out"] <= yb["f"]).all() and (yb["pin"] >= yb["l"]).all()), "%d lines" % len(yb))
+    ck = eb0[eb0["check"]]
+    rb = GD.ran_blocks()
+    ranb = set(zip(rb["sday"], rb["car"].astype(int)))
+    check("ask A: every brake check is on a car that ran no block that day, at walking pace (%d checks)" % len(ck),
+          len(ck) > 100 and not any((pd.Timestamp(d), int(c)) in ranb for d, c in zip(ck["date"], ck["car"]))
+          and bool((ck["speed_mph"] < 8).all()))
+
+    # ask B: the golden and the truth
+    check("ask B golden equals the flag truth", fig["ask_b"] == Rr["defect_truth"], str(fig["ask_b"]))
+    flat = [fig["ask_b"][ln][g] for ln in ("Juniper", "Foundry") for g in ("Brakes", "Doors", "All other")]
+    check("ask B figures are whole cards", all(isinstance(v, int) for v in flat), str(flat))
+    check("SF20 SF22 SF25 ask B: the asking sentence files the day written, the weekday timetable and the months as a whole",
+          all(x in prompt for x in ("each counted on the day it was written", "only if the weekday timetable ran that day",
+                                    "over those months as a whole")))
+    mm = pd.read_csv(GD.path("mms"), dtype={"block": str})
+    check("ask B: the MMS export names its entry and no writing day (entered_at, entered_date the date of entered_at on "
+          "every row)", list(mm.columns) == ["wo_no", "entered_at", "entered_date", "source", "car", "block", "defect_group", "defect"]
+          and bool((pd.to_datetime(mm["entered_at"]).dt.strftime("%Y-%m-%d") == mm["entered_date"]).all()))
+    K, day = GD.card_days()
+    kt = Rr["cards_truth"].assign(t=lambda d_: d_["created"].dt.strftime("%Y-%m-%d %H:%M"))
+    kt = kt.sort_values(["t", "car", "defect"], kind="mergesort").reset_index(drop=True)
+    Ks = K.assign(t=K["entered_at"], d=day.values).sort_values(["t", "car", "defect"], kind="mergesort").reset_index(drop=True)
+    check("SF20 ask B: each card dated by its car and block against the cars that ran each block falls on the day it was written",
+          len(Ks) == len(kt) and bool((Ks["d"].values == kt["sday"].values).all()), "%d cards" % len(kt))
+    # C1 on the dating, under the cars that ran each block (the yard sheets and the AVL's takeover cars): exactly one day
+    # in the week before entry, never the entry day, so the narrow and broad readings of the day are one set
+    mj = K.reset_index().merge(rb, on=["car", "block"])
+    w7 = mj[(mj["sday"] < mj["kd"]) & (mj["sday"] >= mj["kd"] - pd.Timedelta(days=7))].groupby("index").size()
+    on_entry = mj[mj["sday"] == mj["kd"]]
+    check("SF20 ask B C1: every operator card's car ran its block on exactly one day in the week before entry and not on the "
+          "entry day", len(w7) == len(K) and bool((w7 == 1).all()) and len(on_entry) == 0, "%d cards" % len(K))
+    for kw in (dict(days=14), dict(days=30), dict(include_entry=True), dict(days=30, include_entry=True)):
+        check("SF20 ask B: the day read as %s gives the same figures" % kw, GD.ask_b(**kw) == fig["ask_b"])
+    for route, label in (("entered", "the MMS entered date"), ("previous", "the day before entry"),
+                         ("car", "the car's last day out on any block")):
+        alt = GD.ask_b(dating=route)
+        mv = sum(alt[ln][g] != fig["ask_b"][ln][g] for ln in alt for g in alt[ln])
+        check("SF20 ask B: dating each card by %s is another figure (moves %d of 6)" % (label, mv), mv >= 4)
+    for route, label in (("yard", "the yard sheets alone (the car that took a block over unnamed)"),
+                         ("avl", "the AVL log alone (a two-car train's trailing car unlogged)")):
+        alt = GD.ask_b(dating=route)
+        mv = sum(alt[ln][g] != fig["ask_b"][ln][g] for ln in alt for g in alt[ln])
+        check("ask B: dating by %s moves %d of 6" % (label, mv), mv >= 3)
+    # weekday service: the run sheets' schedule and the AVL log's start before 07:00 agree
+    sw_ = GD.schedule_weekdays()
+    check("ask B: the run sheets' Weekday schedule days are the AVL log's weekday-timetable days, the three holidays on "
+          "the Sunday schedule", sw_ == GD.weekday_service() and not any(pd.Timestamp(h) in sw_ for h in W.OBS_HOLIDAYS))
+    alt = GD.ask_b(weekday="calendar")
+    mv = sum(alt[ln][g] != fig["ask_b"][ln][g] for ln in alt for g in alt[ln])
+    check("SF22 calendar weekdays (the holidays kept) move %d of 6, ruled out by the asking sentence's weekday timetable"
+          % mv, mv >= 1)
+    K2, d2 = GD.card_days()
+    wk2 = GD.schedule_weekdays()
+    per_month = d2[d2.map(lambda d_: d_ in wk2)].dt.month.nunique()
+    check("SF25 ask B per month instead of the months as a whole is another figure set (%d months, ruled out by the "
+          "asking sentence's as a whole)" % per_month, per_month == 7)
+    check("SF26 ask B: a card's line by its car is its line by its block on every card",
+          bool(((K["car"] < 120) == K["block"].str.startswith("J")).all()))
+    check("ask B: no two operator cards share car, writing day and defect",
+          not Rr["cards_truth"].duplicated(["car", "sday", "defect"]).any())
+    check("separation line: the MMS export carries no section, position or time of day of a card's service",
+          not set(mm.columns) & {"section_id", "lat", "lon", "direction", "trip_id"} and "Operator card" in set(mm["source"]))
+
+    # the ceiling, on the cut pack
+    cm = ceiling.main(TARGET)
+    check("pair ceiling at or under 60 (one response on the call, one off)", cm["pair"] <= 60.0, "%.1f" % cm["pair"])
+    check("two crackers both on the call at or under 60", cm["both_on"] <= 60.0, "%.1f" % cm["both_on"])
+    check("full includer keeps at most two fifths of the ask figures", cm["full"] <= 40.0, "%.1f per cent" % cm["full"])
+    check("cracker keeps at most two fifths of the ask figures", cm["leak"] <= 40.0, "%.1f per cent" % cm["leak"])
+    for k_, v_ in cm["keep_a"].items():
+        if "cracker" in k_:
+            check("%s keeps at most one of ask A's 7" % k_.split(" (")[0], v_ <= 1, "%d" % v_)
+            check("%s keeps none of ask B's 6" % k_.split(" (")[0], cm["keep_b"][k_] == 0, "%d" % cm["keep_b"][k_])
+    check("mirror leakage under one half", cm["mirror"] < 50.0, "%.1f per cent" % cm["mirror"])
+    check("the blind route (every record but the named exceptions) keeps none of ask A",
+          cm["keep_a"][[k_ for k_ in cm["keep_a"] if k_.startswith("blind")][0]] == 0)
+    check("every ask figure is a whole number", all(isinstance(v, int) for v in cm["gold"]))
+
+
 def steps_text():
     import re
     sub = open(os.path.join(TASK, "submission.md")).read()
@@ -537,18 +668,20 @@ def literal_steps(gold):
     check("literal step 4: the weekdays, the sunshine and the four slots it states", len(days) == int(m.group(1)) and
           ps[1] == ps[2] == int(m.group(2)) / 100 and key(GD.slate(r)) == stated == gold, str(sorted(stated)))
     # step 5: ask A as written, against block 4
-    m = re.search(r"before (\d\d):00 counts to the day before.*?within (\d+) minutes and (\d+) metres", steps[5])
-    a_lit = ceiling.ask_a(TARGET, "operating", window=int(m.group(2)) * 60, metres=int(m.group(3)))
+    m = re.search(r"before (\d\d):00 counts to the day before.*?in the hour after each release.*?within (\d+) minutes and "
+                  r"(\d+) metres", steps[5])
+    a_lit = ceiling.ask_a(TARGET, "operating", tests="release", copies="pair", window=int(m.group(2)) * 60, metres=int(m.group(3)))
     sec3 = b4.split("### Emergency brake applications")[1].split("###")[0]
-    a_b4 = [int(x) for ln in ("Juniper", "Foundry") for x in re.findall(r"\b(?:April|May|June|July|August|September|October) (\d+)",
-                                                                        re.search(r"%s Line: (.+)" % ln, sec3).group(1))]
-    check("literal step 5: ask A as written gives block 4's fourteen figures", int(m.group(1)) == 3 and a_lit == a_b4, str(a_lit))
+    a_b4 = [int(x) for x in re.findall(r"\b(?:April|May|June|July|August|September|October) (\d{1,3})(?!\d)", sec3)]
+    check("literal step 5: ask A as written gives block 4's seven figures", int(m.group(1)) == 3 and a_lit == a_b4 and
+          "out time" in steps[5] and "in time" in steps[5], str(a_lit))
     # step 6: ask B as written, against block 4
-    b_lit = ceiling.ask_b(TARGET, "block")
+    b_lit = ceiling.ask_b(TARGET, "operating")
     sec4 = b4.split("### Defect cards")[1]
     b_b4 = [int(x) for ln in ("Juniper", "Foundry") for x in
             re.search(r"%s Line: brakes (\d+), doors (\d+), all other defects (\d+)" % ln, sec4).groups()]
-    check("literal step 6: ask B as written gives block 4's six figures", "before 07:00" in steps[6] and b_lit == b_b4, str(b_lit))
+    check("literal step 6: ask B as written gives block 4's six figures", "Weekday schedule" in steps[6] and
+          "taking the block over" in steps[6] and b_lit == b_b4, str(b_lit))
     # step 7 and block 4's slot plan lines: the golden CSV as stated
     csv = pd.read_csv(os.path.join(TASK, "golden", "slot_plan_jan_feb_2027.csv"))
     yes = {"%s-%s %s" % (s, d[0].upper(), p) for s, d, p, v in
@@ -606,7 +739,7 @@ def realism_sweep(files):
           av["enter_local"].dt.second.nunique() == 60 and first["enter_local"].dt.second.nunique() == 60)
     rh = runs[runs["duty"] == "operator"].groupby("run")["revenue_hours"].nunique()
     check("realism 2: each run's revenue hours vary day to day", rh.min() > 10, "fewest distinct %d" % rh.min())
-    gaps = pd.to_datetime(mms["created"]).sort_values().diff().dt.total_seconds().dropna()
+    gaps = pd.to_datetime(mms["entered_at"]).sort_values().diff().dt.total_seconds().dropna()
     check("realism 2: the MMS keying times do not step by a constant", gaps.nunique() > 50)
     # 3 no identical counts across periods, sites or entities
     pc = av.groupby([av["line"].astype(str), pd.to_datetime(av["service_date"]).dt.month]).size()
@@ -650,7 +783,7 @@ def realism_sweep(files):
     check("realism 5: the airport temperature moves in spells, not hour by hour", big.quantile(0.95) <= 6, "95th %.0f" % big.quantile(0.95))
     # 6 timestamps coherent: every record precedes the bundle's export, documents' own stamps in order and in the fiction
     zt = pd.Timestamp(dtm.datetime(*pack.FIXED_ZIP_TIME))
-    last = max(pd.to_datetime(mms["created"]).max(), GD.to_local(edr["event_time_utc"]).max(), av["exit_local"].max(),
+    last = max(pd.to_datetime(mms["entered_at"]).max(), GD.to_local(edr["event_time_utc"]).max(), av["exit_local"].max(),
                pd.to_datetime(rel["released"]).max(), GD.to_local(awos["valid_utc"] + "Z").max())
     check("realism 6: every record precedes the bundle's export stamp", last < zt, "%s before %s" % (last, zt))
     zi = zipfile.ZipFile(os.path.join(TASK, "target.zip")).infolist()

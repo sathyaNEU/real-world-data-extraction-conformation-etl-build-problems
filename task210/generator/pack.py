@@ -129,10 +129,12 @@ def build(seed=W.SEED, T=None, Rr=None):
     met = met[~drop]
     write_csv(met, FILES["metar"])
 
-    # 5 yard block sheets (cars per block per day)
+    # 5 yard block sheets (cars per block per day, with the block's pull-out and pull-in times, local, as the yard
+    # clerk writes them: a pull-in after midnight carries the next day's clock time on the service day's sheet)
     C = Rr["consist"]
     yard = pd.DataFrame({"sheet_date": C["date"].dt.strftime("%m/%d/%Y"), "block": C["block"],
-                         "pullout_cars": [f"{int(a)}" if pd.isna(b) else f"{int(a)}+{int(b)}" for a, b in zip(C["lead_car"], C["trail_car"])]})
+                         "pullout_cars": [f"{int(a)}" if pd.isna(b) else f"{int(a)}+{int(b)}" for a, b in zip(C["lead_car"], C["trail_car"])],
+                         "out_time": C["pull_out"].dt.strftime("%H:%M"), "in_time": C["pull_in"].dt.strftime("%H:%M")})
     write_csv(yard, FILES["yard"])
 
     # 6 Foundry depot releases
@@ -144,7 +146,10 @@ def build(seed=W.SEED, T=None, Rr=None):
     # 7 run sheets, 8 roster, 9 badge card register
     D = Rr["dispatch"]
     O = Rr["operators"]
-    write_csv(pd.DataFrame({"service_date": D["date"].dt.strftime("%Y-%m-%d"), "run": D["run"], "block": D["block"],
+    sched = {"weekday": "Weekday", "saturday": "Saturday", "sunday": "Sunday"}      # the timetable the day ran
+    write_csv(pd.DataFrame({"service_date": D["date"].dt.strftime("%Y-%m-%d"),
+                            "schedule": [sched[S.day_type(d, W.OBS_HOLIDAYS)] for d in D["date"]],
+                            "run": D["run"], "block": D["block"],
                             "operator_no": D["emp"].astype(int), "duty": D["duty"],
                             "revenue_hours": D["revenue_hours"].map(lambda v: f"{v:.2f}")}),
               FILES["runs"])
@@ -162,8 +167,8 @@ def build(seed=W.SEED, T=None, Rr=None):
 
     # 10 the maintenance system's defect reports (operator cards and inspection findings)
     Mm = Rr["mms"]
-    write_csv(pd.DataFrame({"wo_no": Mm["wo_no"], "created": Mm["created"].dt.strftime("%Y-%m-%d %H:%M"),
-                            "reported": Mm["reported"].dt.strftime("%Y-%m-%d"), "source": Mm["source"],
+    write_csv(pd.DataFrame({"wo_no": Mm["wo_no"], "entered_at": Mm["created"].dt.strftime("%Y-%m-%d %H:%M"),
+                            "entered_date": Mm["reported"].dt.strftime("%Y-%m-%d"), "source": Mm["source"],
                             "car": Mm["car"].astype(int), "block": Mm["block"], "defect_group": Mm["group"],
                             "defect": Mm["defect"]}), FILES["mms"])
 
