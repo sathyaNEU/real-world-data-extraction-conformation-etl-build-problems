@@ -436,8 +436,27 @@ the word telemetry.
   units, 1.5 hours or more of handover duplication at every replaced overflow and the register serial alone off the
   golden on every figure. The delivered fractions are set so each station's 24-member estimator family sits 0.17
   l/s or more inside one whole litre per second.
-- `figures_check.py` PASS (73 figures), `leak.py` REVIEW answered above, `guard.py heart` WARN (nearest 0.05),
+- `figures_check.py` PASS (74 figures), `leak.py` REVIEW answered above, `guard.py heart` WARN (nearest 0.05),
   `guard.py surface` clean on personas, container audit clean on the pack and the goldens.
+- Stage 4, pass 3 on ce1842d6: the re-judge returned DETERMINISTIC, APPROVE, the order kept. Its derivation, written
+  before it read the graded blocks, matched the call, all fourteen return lines and all 120 labelled chart cells;
+  rated duty flags none, the drawdown without the inflow two or three overflows and never one alone, fill-and-draw
+  Gallowfen alone, and no hours figure sits within a minute of a rounding line. No reader pass was due (no document
+  or prompt changed after the second read, which found no leak). Shipped 2026-11-04, target.zip sha256
+  ce1842d66373e7efafe941e03367d49fb310e43f45b7b5a962c92170f723a0da.
+
+## Pre-ship check
+
+- The 10/10 rules re-read against the built pack: the call turns on a pumping station's delivered rate, measured the
+  field's way from its own wet well (domain); the mess is the systems' own (UTC against local time, re-sent events,
+  duty units, the meter historian's codes, replaced monitors) and none moves the call (Layer 1, R2 asserted); the
+  decisive step is the measurement, which no filed sentence performs and no column holds (Layer 2), and three judge
+  passes read it analytical (Gate H).
+- Every gate re-run on the final cut: 527 generator assertions, 155 independent checks, two builds byte-identical,
+  `figures_check.py` PASS (74 figures), `precut.py` 61 PASS with `voice-check.py`, `ceiling.py` pair 55.4,
+  `leak.py --asof 2027-01-15` REVIEW answered above, `guard.py heart` WARN and `surface` clean, the container audit
+  clean; target.zip from the final rebuild.
+- The card current (answer, deliverables, layer 1, spine, shell, shipped), the ledger row written at ship.
 
 ## Tried and rejected
 

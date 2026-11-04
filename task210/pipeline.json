@@ -1,11 +1,11 @@
 {
  "task": "task210",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences",
  "subdomain": "environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-04",
  "seed": "AD33 (analytical_tasks/02_anomaly_detection/AD33_fcr-offer-boundary-ramp-conditioned-throughput.md): the objective kept, the world, decision and quantity moved (the battery's only anomaly-detection cell is the most crowded on file and its hour-boundary mechanism is task197's confounder)",
  "call": "Self-report the Gallowfen PS storm overflow (permit EPRWW4412BK, condition 2.3.1): its station passed forward 48 l/s against the 72 l/s its permit sets while it spilled in 2026",
@@ -29,8 +29,8 @@
   "date": "2026-11-04"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-04 --asof 2027-01-15 (sweeps 3, 4 and 12 on the procedure PDF, answered in the design note); no LEAK",
-  "reader": "pass 1 on 7cec1223 and pass 2 on bab3e321: no leak; pass 2's realism note (closing remarks restating their notes) fixed in the generator"
+  "leak_py": "REVIEW 2026-11-04 --asof 2027-01-15 on the shipped cut (sweeps 3, 4 and 12 on the procedure PDF, answered in the design note); no LEAK",
+  "reader": "two isolated reads, both no leak: pass 1 on 7cec1223 (question 6 an analytical reconstruction) and pass 2 on bab3e321 (question 6 an analytical choice); no document or prompt changed after the second read"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective, repeat.geography), nearest 0.05",
@@ -39,16 +39,26 @@
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW (pass 2, on bab3e321); closed, the one re-judge due",
-  "report": "task210/determinism_check_report.md (pass 1), task210/determinism_check_report_pass2.md (pass 2): step 5's span aligned with SF18 and SF19, every hours figure settled a minute clear of its rounding line, Marram End's night claim dropped"
+  "disposition": "APPROVE",
+  "passes": [
+   "pass 1 on 7cec1223 (the first pack): DETERMINISTIC, APPROVE; its forks closed after it (the 12/24 block filed, SF13 and SF21 recorded), then rung 0b hardened at the coordinator's call",
+   "pass 2 on bab3e321 (the hardened pack): DETERMINISTIC, FIX_NOW (step 5's span; near-tie hours figures); its brief inlined the graded blocks, so it spent no re-judge; closed in the generator with nothing graded moving",
+   "pass 3 on ce1842d6 (the shipped cut): DETERMINISTIC, APPROVE, the order kept; derivation written before the graded blocks were read, every return line and all 120 labelled chart cells matched"
+  ],
+  "report": "task210/determinism_check_report.md, task210/determinism_check_report_pass2.md, task210/determinism_check_report_pass3.md"
  },
  "returned": [],
- "resume": "stage 4: the one re-judge on target.zip sha256 ce1842d66373e7efafe941e03367d49fb310e43f45b7b5a962c92170f723a0da (rebuild: cd task210/generator && python3 build.py, byte-identical, prints 527 generator assertions, 155 independent checks and pair 55.4); then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-04",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "rung0b": "hardened 2026-11-04: Hagworth Wold's year-round groundwater makes it the outlier of the drawdown timed without the inflow (0.39 of its permit against Gallowfen's 0.55; night 0.44 against 0.59; 90th percentile 0.48 against 0.59); the route flags Hagworth Wold, Gallowfen and Marram End, the other eleven at 1.02 to 1.10; 25 return cells moved (spills, hours, monitored percentage at eleven overflows), Gallowfen's line and every flow and verdict unchanged"
+ "rung0b": "hardened 2026-11-04: Hagworth Wold's year-round groundwater makes it the outlier of the drawdown timed without the inflow (0.39 of its permit against Gallowfen's 0.55; night 0.44 against 0.59; 90th percentile 0.48 against 0.59); the route flags Hagworth Wold, Gallowfen and Marram End, the other eleven at 1.02 to 1.10; 25 return cells moved (spills, hours, monitored percentage at eleven overflows), Gallowfen's line and every flow and verdict unchanged",
+ "build": {
+  "target_zip_sha256": "ce1842d66373e7efafe941e03367d49fb310e43f45b7b5a962c92170f723a0da",
+  "rebuild": "cd task210/generator && python3 build.py",
+  "zip": "12 files under target/, byte-identical across rebuilds"
+ }
 }

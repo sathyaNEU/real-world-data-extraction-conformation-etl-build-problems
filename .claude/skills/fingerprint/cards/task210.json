@@ -96,5 +96,13 @@
   "lineage": [],
   "notes": "Probe card checked first with generators G8 (reachability) and gap objective: G8 repeated task398 and task276's lineage on the structural tests, and G8 is the wrong label anyway (the pass forward condition is attained or not, read from the record of what the pump did against what the register says it does, which is G3 record against operation). Strategy binding_constraint is the honest family: the permit's capacity condition decides which spills are lawful. The three families the honest neighbours of this mechanism would have taken (causal_design, population_selection, decomposition_attribution) are all in the current ban window and none of them describes a capacity test.",
   "registered": "2026-11-04T11:53:28Z",
-  "asks": "the 2026 return's line for every overflow (permit, pass forward against the permit, 12/24 spills, hours of discharge, monitor operational percentage) and the hours of discharge by overflow and month; device: eleven of fourteen monitors replaced in three crew batches, the old units' history under serials the register no longer lists (key elsewhere, mapped by the telemetry's overflow alarms), and the two units of a handover week recording the same discharges"
+  "asks": "the 2026 return's line for every overflow (permit, pass forward against the permit, 12/24 spills, hours of discharge, monitor operational percentage) and the hours of discharge by overflow and month; device: eleven of fourteen monitors replaced in three crew batches, the old units' history under serials the register no longer lists (key elsewhere, mapped by the telemetry's overflow alarms), and the two units of a handover week recording the same discharges",
+  "status": "SHIPPED",
+  "shipped": "2026-11-04",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "the",
+    "rounding opener": "flows",
+    "deliverable set": "csv+docx+svg"
+  }
 }
