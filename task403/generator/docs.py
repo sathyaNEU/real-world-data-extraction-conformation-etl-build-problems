@@ -220,7 +220,8 @@ def programme_sheet(path, people):
         for c in row:
             c.alignment = Alignment(wrap_text=True, vertical='top')
         row[5].number_format = '#,##0'
-    ws['A11'] = 'Funding: one programme from the subscriber growth budget, or none this cycle.'
+    ws['A11'] = ('Funding: one programme from the subscriber growth budget, the one with the highest valuation; none this '
+                 'cycle only if no programme\'s cause cost the 2025-26 winter\'s trials paid conversions.')
     wb.properties.creator = people[0]
     wb.save(path)
     xlsx_scrub(path, people[0], '2026-03-06T10:12:00Z', 'Programmes 2026-27')

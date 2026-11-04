@@ -129,7 +129,8 @@ def workbook(path, F):
     ws = wb.create_sheet('Programmes')
     ws.append(['The winter release slate cost about %s of this winter\'s paid conversions' % '{:,}'.format(F['conv_slate'])])
     ws['A1'].font = Font(bold=True, size=12)
-    ws.append(['Against the same months a year earlier, at this winter\'s trials; to the nearest hundred.'])
+    ws.append(['Against the same months a year earlier, at this winter\'s trials; to the nearest hundred. The price is the '
+               'fall among trialists with no season still to come, net of first-charge recovery and the channel mix.'])
     ws.append([])
     ws.append(['Programme', 'Paid conversions lost to its cause', 'Rank'])
     for c in ws[4]:
@@ -180,7 +181,10 @@ def workbook(path, F):
         ('Trials', 'Counted by start date in Toronto time (conversion standard v3, section 2). The old platform\'s copies '
                    'of web and phone sign-ups of 9 to 19 June 2025 are not trials and are left out.'),
         ('Paid', 'First monthly charge collected by the first attempt or a scheduled retry, on the subscription the trial '
-                 'ended on (section 4).'),
+                 'ended on (section 4). Plan changes on the old platform before 9 June 2025 and in the apps before 14 '
+                 'October never reached the plan-change log: a first charge on a subscription no export links to a trial '
+                 'is matched to the trial without a charge whose end most closely precedes its first attempt, in the '
+                 'provinces its tax rate names.'),
         ('Episodes', 'Counted once a trial, whoever or whatever started them (section 5); smart TV rows of 8 February to '
                      '27 October 2025 cover the whole autoplay run.'),
         ('Rounding', 'Conversions to the nearest hundred; shares and averages to one decimal, from unrounded figures.'),
@@ -266,8 +270,8 @@ def note(path, F):
                        'releasing when their trial ended, and they paid at %.1f per cent against %.1f per cent for the rest. '
                        'This winter nothing new aired after the autumn finales of 24 and 31 October, so no trialist had a '
                        'season still to come. Among trialists with nothing to come, conversion fell only from %.1f to %.1f '
-                       'per cent between the winters, and that small fall is where the price, recovery and the channel mix '
-                       'sit. The drop on 1 November looks like the price because the finales and the price change landed '
+                       'per cent between the winters, and that small fall, net of first-charge recovery and the channel '
+                       'mix, is what the price cost. The drop on 1 November looks like the price because the finales and the price change landed '
                        'the same week, and sign-ups on finished seasons fell too because last winter those trialists went '
                        'on to watch Marrow Creek while it aired.'
                        % (F['runway_share_w24'], F['paid_rate_w24_runway'], F['paid_rate_w24_norunway'],

@@ -96,6 +96,19 @@ the same night. At equal runway the price cost about a point.
   paragraph (charge, standard, change, viewing) and name no runway, calendar or split; `signup_device` is the
   streaming field's own noun, declared under `field_terms`; the calendar's April to June 2026 dates are Gravel &
   Gold's scheduled episodes, a forward schedule.
+- Stage 4 round 1 fix pass (2026-11-04, after merging claude/jolly-hypatia-06c61h at 0b1b7fa; no sibling card missing
+  from the tree): this pass moved no graded figure (freeze.py PASS in rubric and in determinism mode against the
+  snapshot taken before the first edit; figures.json byte-identical). The files that moved are six of fourteen:
+  plan_changes.csv (2,348 rows, none starting from a subscription nothing else names), both processor exports (the
+  charges on their own random stream), trial_register.csv and account_crosswalk.csv (the 8 copies of web and phone
+  sign-ups of 02:00 to 04:00 on 9 June and their copy accounts gone, 73,379 register rows), and
+  growth_programmes_2026-27.xlsx (the Funding line); the other eight are byte-identical. The effect, measured: the
+  narrow reading of the unlinked charges prints the golden in all nine months (D7i; 24 variants, no trial
+  differing), the judge's Toronto-midnight clock prints June at 52.2 (H1), and every free gate is green on the final
+  cut (checks.py 70 of 70, verify.py 38 figures, two byte-identical builds, figures_check 67 figures, precut 61
+  checks, voice-check PASS, leak.py REVIEW with no LEAK on the same four lines answered above, guard.py heart WARN
+  with no BLOCK at a nearest driver of 0.08, surface the same three structural pairs and no tell, ceiling.py pair
+  34.8 with the cracker, the full includer, the no-repair reader and the mirror at 0 of 18).
 
 ### Mechanisms on the objective, one line each (`guard.py mechanisms --objective root-cause`), and whether the decisive step is any of them in other nouns
 
@@ -191,7 +204,9 @@ puts about 2,100 of the loss on the winter slate (C) and leaves the price about 
   (the catalogue); one processor in tax-included cents with four attempts to 7 September 2025 and another in pre-tax
   dollars with tax beside it, Toronto time with an offset and three attempts from 8 September (billing); a row written
   twice when an app reconnects (the player); the cut-over's sign-up pause on the night of 8 June and the old platform's
-  rows of 9 to 19 June in Toronto time stamped as UTC (the subscription platform). Each ordinary cause is dated in the
+  rows of 9 to 19 June in Toronto time stamped as UTC, its mirror of web and phone sign-ups switched on at 04:00 on 9
+  June (the subscription platform); while a plan change opened a new subscription, the subscription managed where it
+  was opened, so a trial's changes all reached the plan-change log or none did (the account service). Each ordinary cause is dated in the
   product release log. Nothing is placed to be caught; none of it decides the call.
 - Layer 2: estimand_identification, Simpson's reversal across a constructed stratum; conditioning the year-on-year fall
   on each trialist's runway state separates the within-state change (about a point and a half, the price with the
@@ -269,10 +284,10 @@ puts about 2,100 of the loss on the winter slate (C) and leaves the price about 
 | SF5 | the trial's end | start plus seven days to the second | the end of the trial's last local day | same call, same figure (asserted) | same call |
 | SF6 | the instant the state is read | the trial's end | at sign-up, or at any point of the trial | same call, same figure (asserted) | same call |
 | SF7 | the gap the runway shift is priced at | last winter's paid-rate gap between the states | this winter's gap | this winter has no trialist with runway, so only one gap exists (asserted) | the data (C1) |
-| SF8 | the price's figure | net of the recovery and channel effects | gross of the channel mix (306) | same call; the gross figure double counts (D) and the four then exceed the fall | the programme sheet's sentence that the four and what none addresses account for the fall once |
-| SF9 | the price's figure, residual or direct | the within-state fall less recovery and the channel mix (201) | within each state and channel, at this winter's mix (204) | same call, same bin (asserted) | same call |
-| SF10 | recovery's figure | the change in the share of declined first charges recovered, on this winter's declines (92) | the change in the collected share of first charges (92 to 95) | same call, same bin (asserted) | same call |
-| SF11 | the channel mix's figure | last winter's channel shares at this winter's paid rate by channel (109) | at within-state keep rates (105) | same call, same bin (asserted) | same call |
+| SF8 | the price's figure | net of the recovery and channel effects (205) | gross of the channel mix (310), or the keep-rate change within the runway state alone (306): the 300 bin and a gap of 1,800 | same call; each gross reading counts (D) twice and the four then exceed the fall by about 100 (asserted) | the programme sheet's sentence that the four and what none addresses account for the fall once |
+| SF9 | the price's figure, residual or direct | the within-state fall less recovery and the channel mix (205) | within each state and channel, at this winter's mix (204) | same call; every once-accounting reading (SF9 to SF11 combined, five readings) keeps the price at 204 to 205 and the gap at 1,912 to 1,914, the tightest 36 per cent of a bin from its edge (asserted) | same call |
+| SF10 | recovery's figure | the change in the share of declined first charges recovered, on this winter's declines (92) | the change in the collected share of first charges (92) | same call, same bin (asserted) | same call |
+| SF11 | the channel mix's figure | last winter's channel shares at this winter's paid rate by channel (105) | at within-state keep rates (105) | same call, same bin (asserted) | same call |
 | SF12 | trialists who played nothing | in the no-runway state | left out of the split | same call, slate within its bin (asserted) | same call |
 | SF13 | the volume each figure is priced at | this winter's trials | last winter's | same call | the programme sheet's "this winter's trials" |
 | SF14 | the waterfall's start | last winter's rate at this winter's trials | last winter's paid conversions | same call | the prompt's chart sentence |
@@ -280,6 +295,7 @@ puts about 2,100 of the loss on the winter slate (C) and leaves the price about 
 | SF16 | an episode's English and French versions | one episode, one season | two | same call (asserted) | the release calendar lists both identifiers on one row |
 | SF17 | trials started 25 to 31 October 2025 (first charge in November at the new price) | in neither window | in this winter | same call | the standard's start-date windows |
 | SF18 | the ask's average number of episodes | over every trial started in the month, those that played nothing included (4.93 in February) | over the trials that played (5.21) | no effect on the call; the ask figure moves several bins, closed by the ask's own subject (asserted) | the prompt's "for the trials started in each month ... the average number of episodes played during the trial" |
+| SF19 | the funding criterion | the one programme with the highest valuation: (C) | paid conversions per dollar of the sheet's Cost column, (D) at 1.24 per CAD 1,000 against (C)'s 0.80; net value on a lifetime value the pack does not hold, none | (D) or none: the call moves, so the reading is ruled out by a filed line | the programme sheet's Funding line, "the one with the highest valuation; none this cycle only if no programme's cause cost the 2025-26 winter's trials paid conversions" (asserted: the line in the shipped sheet, (C) under it, the per-dollar (D) recorded) |
 
 ## Ladder
 
@@ -310,7 +326,7 @@ puts about 2,100 of the loss on the winter slate (C) and leaves the price about 
 | Axis | Reading here | Closure |
 |---|---|---|
 | 1 Population | a winter's trials by start date | filed in the conversion standard (Toronto time, 1 November to 31 January); SF1, SF17 |
-| 2 Unit of account | a trial | filed (one account's free week); the register's twin rows of 9 to 19 June lie outside both windows |
+| 2 Unit of account | a trial | filed (one account's free week); the register's twin rows of 9 to 19 June lie outside both windows, and wherever a reader starts the old platform's Toronto clock on 9 June one set of 790 copies drops (C1, asserted H1) |
 | 3 Attribution window | start date decides the winter | filed; records clear of both boundaries asserted (no trial within a minute of a window edge) |
 | 4 As-of dating | the extract of 27 February 2026, every January trial matured | filed in the standard (retries end within seven days of the first attempt); asserted |
 | 5 Version basis | the release calendar as released | one version shipped; no preliminary file |
@@ -324,7 +340,7 @@ puts about 2,100 of the loss on the winter slate (C) and leaves the price about 
 | 13 Order of operations | the split before the within-state changes | SF8, SF9; the four and the remainder sum to the fall (asserted) |
 | 14 Row order | none | C1, every figure computed by group |
 | 15 Duplicate resolution | the player's twice-written rows | exact duplicates; same call either way (asserted) |
-| 16 Identity normalisation | legacy content and account numbers before the cut-over | the shipped crosswalks map every one (asserted) |
+| 16 Identity normalisation | legacy content and account numbers before the cut-over; the subscription a plan change opened | the shipped crosswalks map every one (asserted); the first charges no file links to a trial are exactly those on subscriptions no file names, 938, matched alike under every window, order and reuse rule (C1, asserted D7f to D7j) |
 | 17 Netting against gross | the price net of the channel mix | SF8 |
 | 18 Dimensional units | cents with tax against dollars before tax | the conversion outcome is a count; units move no graded main figure (asserted) |
 | 19 Code and status semantics | approved, declined, CAPTURED, REFUSED | each processor's own codes; asserted one reading |
@@ -340,7 +356,9 @@ the four and what none addresses accounting for the fall once; nothing filed say
 must choose a construction, and every construction that conditions on whether a played season still had an episode to
 come at the trialist's day 7 (any instant, any play floor, SF4 to SF7) files (C) at 2,062 to 2,117 with (A) at 201 to
 205, while every construction that skips it books the shift to the price and is refuted by the within-state change the
-data show; no filed sentence reads to another answer.
+data show; no filed sentence reads to another answer. The programme sheet's Funding line files the selection, the one
+programme with the highest valuation and none only if no programme's cause cost the winter's trials paid conversions,
+so the sheet's Cost column ranks nothing (per dollar it would name (D), SF19).
 
 ## Oracles
 
@@ -375,8 +393,12 @@ winters, so the fall starts in November), on rows outside the main population (t
   (8.4, 14 October 2025); the old platform's changes before the 9 June cut-over never reached the plan-change log, and
   the apps' changes until 14 October did not either. Remedy: match each first charge no file links to a trial to the
   trial without a charge whose end most closely precedes its first attempt, in the provinces its tax rate names (a
-  reconstruction across two systems with no shared key). Measured on the cut pack: all 965 unlinked charges matched,
-  each to its own trial, the same match within 10 minutes, one hour and six hours. Wrong paths: the register's
+  reconstruction across two systems with no shared key). Measured on the cut pack: all 938 unlinked charges matched,
+  each to its own trial, the same match within 10 minutes, one hour and six hours, consumed earliest or latest first,
+  with or without a trial taken twice. While a change opened a subscription, a trialist's second change went through
+  the kind of surface the first did (a subscription opened in an app was managed in the apps), so a trial's changes are
+  all logged or none is: every unlinked charge sits on a subscription no file names, and "a first charge no file links
+  to a trial" and "a first charge on a subscription no file names" are one set of 938 (checks.py D7f to D7j). Wrong paths: the register's
   subscription only (every month 15 bins low or more); the logged chains followed (7.4 bins low at the least, October).
   Evidence: the processor exports with the register's trial clocks.
 - Primary 2, D6 (a row at another grain than its name), block = the nine episode averages: the smart TV app's new
@@ -388,33 +410,39 @@ winters, so the fall starts in November), on rows outside the main population (t
   (February). Evidence: the viewing log.
 - Hazards (seen, repaired right by a careful reader): the old platform's twice-written web and phone sign-ups of 9 to
   19 June in Toronto time stamped as UTC, beside TV and tablet sign-ups written only there (June's share and average);
+  its mirror of web and phone sign-ups was switched on at 04:00 on 9 June, two hours after the new platform opened, so
+  a reader who starts the Toronto clock at the rows' written date, at Toronto midnight or at the first new-platform
+  row less four hours drops the same 790 copies and prints every ask figure the golden's (checks.py H1);
   the legacy account and content numbers (the crosswalks); the player's exact duplicate rows; the second processor's
   local time with an offset.
 - Pin test: the asking sentence fixes the months (start date), the outcome (paid, the standard's) and the unit (per
   trial started); the standard files the WHAT of paid and of an episode played; the devices sit in which subscription a
   charge belongs to and how many episodes a row covers, which no sentence names.
 - Main population zero-counts, asserted by count from the shipped rows (checks.py S1 to S5): unlinked plan-change
-  charges on winter trials 0 (944 matched trials, none in a winter); session rows of winter trials 0 (none of the
+  charges on winter trials 0 (938 matched trials, none in a winter); session rows of winter trials 0 (none of the
   20,009); twin rows in either window 0; never-played winter trials hold no viewing row, so the played share is the
   same with the session rows expanded or not; session rows only from the smart TV app between its two releases.
 - Referee: none; every route completes and reconciles to its own totals.
 
-| Cracker row (full includer: a blind medium-effort reader who reads every file and every filed sentence and runs the battery) | Figures | Handling | Kept | Verdict |
+| Cracker sheet, on the cut pack (the pack digest heads ceiling.py's output) | Paid shares (D7) | Episode averages (D6) | Kept of 18 | Verdict |
 |---|---|---|---|---|
-| M paid shares (D7) | 9 | follows the logged chains, leaves the charges no file links unmatched | 0 | miss |
-| M episode averages (D6) | 9 | counts one episode a row after dropping exact duplicates | 0 | miss |
-| Full includer, both blocks | 18 | as above, with every hazard repaired | 0 | miss |
+| Cracker: lands the call, runs the battery, follows the logged chains, one episode a row | 0 of 9 | 0 of 9 | 0 | miss |
+| Full includer: every file and every stated fact (each retry schedule to the letter, the release log's dates); notices the charges no file links and the smart TV rows longer than their episode, and with no file naming their trials or episodes counts neither | 0 of 9 | 0 of 9 | 0 | miss |
+| No-repair: every row as it stands | 0 of 9 | 0 of 9 | 0 | miss |
+| Mirror: stops at rung 2 on (A), the cracker's ask route; keeps the six stage shares of the thirteen main criteria | 0 of 9 | 0 of 9 | 0 | miss |
 
-- Measured exposure: a strong reader who also matches the unlinked charges by trial end and tax and expands the smart
-  TV rows by runtimes keeps 18 of 18. The layer rests on two reconstructions a medium reader does not attempt; on the
-  coordinator's model the keep is 0 and no second ask is triggered, and the strong reader's 18 of 18 is the honest
-  exposure, reported with the hand-off.
-- Mirror (stops at rung 2, (A)): the cracker's ask route, 0 of 18; it keeps the six stage shares of the thirteen main
-  criteria.
+- Measured exposure (ceiling.py's reference rows, never the gate): the strong reader, who also matches every unlinked
+  charge to the nearest earlier trial end in its tax group and walks the smart TV rows through the following
+  episodes' runtimes, keeps 18 of 18. Two partial handlings reach from stated facts alone: counting each unlinked
+  collected charge in the month of its first attempt less the seven-day trial (standard, section 2) keeps 9 of 9 paid
+  shares; reading a long smart TV row as its minutes over the named episode's runtime, rounded up, keeps 2 of 9
+  averages. The paid block holds only while the unlinked charges go unnoticed (noticing them is most of the remedy);
+  the episode block holds against its shortcut. Reported with the hand-off.
 - Mirror leakage: 0 per cent of ask weight (measured).
-- Pair ceiling: 34.8 (measured: landed call 45.0, best miss 24.5).
-- Measured by: generator/ceiling.py (shares no code with the generator; scores the full includer and the mirror on the
-  cut pack against figures.json, and prints the strong reader for reference).
+- Pair ceiling: 34.8 (measured: landed call 45.0, best miss 24.5; the full includer keeps 0 per cent).
+- Measured by: generator/ceiling.py (shares no code with the generator; scores the cracker, the full includer, the
+  no-repair reader and the mirror on the cut pack against figures.json, and prints the strong reader and the two
+  partial handlings for reference).
 
 ## Tried and rejected
 
@@ -502,3 +530,26 @@ winters, so the fall starts in November), on rows outside the main population (t
   renamed Ashby Shore and Cutstone; figures.json byte-identical after the rename.
 - 2026-11-04, stage 3, the prompt's "stage by stage" list read two denominators for the share still subscribed (the
   winter's trials or those that played, 52.7 against 53.4 per cent): the prompt now names the winter's trials (SF15).
+- 2026-11-04, stage 4 round 1 (the judge's FIX_NOW on the ask's June to October paid shares), plan-change chains that
+  mixed an app change the log never received with a logged web change: 46 log rows started from a subscription
+  nothing else names (21 of them charged), so "a first charge no file links to a trial" read two ways, every charge no
+  register subscription reaches through the log (965) or only those on subscriptions no file names (944), and the
+  narrow reading left 21 trials of July to October unpaid. Replaced in the world: while a change opened a
+  subscription, the subscription was managed where it was opened, so a trial's changes all reached the log or none
+  did; both readings are one set of 938 and print the golden in every month (D7f to D7j). The charges now draw on
+  their own random stream, so the log's length moves no attempt.
+- 2026-11-04, stage 4 round 1, the same finding's June cell had a cause the chains do not reach: the judge started the
+  old platform's Toronto-stamped rows at Toronto midnight (04:00Z as written), kept as trials the 8 web and phone
+  copies written between 02:00 and 04:00Z, and printed June at 52.1 (52.087) against 52.2. Closed at the pack: the old
+  platform's mirror of web and phone sign-ups starts at 04:00 on 9 June, so the written date, Toronto midnight and the
+  first new-platform row less four hours drop the same 790 copies and print every ask figure the golden's (H1); the
+  written-date reading still re-times the 26 true-UTC rows of 20:00 to 22:00 on 8 June and prints June at 52.164.
+- 2026-11-04, stage 4 round 1, the June closure first tried in the world, an eight-hour cut-over pause (20:00 to 04:00
+  Toronto) so that no old-platform row is written between 00:00 and 04:00Z: moving the paused sign-ups re-ordered the
+  trials and desynchronised the plays' random stream, and six ask figures moved, four of them in months the fork never
+  touched (the February, March, August and September episode averages). Reverted; the mirror's start is a pack-level
+  change that moves no draw.
+- 2026-11-04, stage 4 round 1 (the judge's Gate E note), the programme sheet's "one programme from the subscriber
+  growth budget, or none this cycle" filed no criterion while its Cost column invites paid conversions per dollar,
+  under which (D) leads: the Funding line now files the WHAT in the sheet's own voice (the one with the highest
+  valuation; none only if no programme's cause cost the winter's trials paid conversions), SF19.
