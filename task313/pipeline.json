@@ -8,26 +8,26 @@
  "updated": "2026-11-04",
  "stump": "The default path carries the Copperfield trial's 28-day risk ratio (0.43, a 57 per cent cut) to every eligible readmission at each maternity unit and files posts of 8, 8, 5, 4 and 5 and about 375 readmissions avoided; the outreach line can first reach a family only once the community midwifery office holds the unit's discharge notification, which at Ravensby Royal and St Aldric's often arrives a day or more after discharge, so on the readmissions each baby could be reached for the posts are 7, 9, 6, 3 and 5 and the readmissions avoided about 325.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-04"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-11-04, --asof 2026-11-02); every REVIEW line ruled in the design note",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (2026-11-04, --asof 2026-11-02, after the FIX_NOW pass); every REVIEW line ruled in the design note",
+  "reader": "no leak (stage 4 pass 1, 2026-11-04): question 1 quoted section 7 and the report's interaction sentence; question 6 an analytical choice"
  },
  "duplicate_check": {
-  "heart": "WARN only (repeat.deliverables: the svg+xlsx pair repeats task462); surface exit 0",
+  "heart": "WARN only (repeat.deliverables and repeat.question_form against task462); surface exit 0",
   "nearest": "guard.py check PASS 2026-11-04 (NOTE same_puzzle_older vs task127 lineage, same_driver_older vs task259, both differentiated), nearest driver 0.06"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW (pass 1), fixed in one pass; re-judge pending",
+  "report": "task313/determinism_check_report.md"
  },
  "returned": [],
- "resume": "Stage 4: spawn the leak reader and the determinism judge together (medium) on the cut pack target.zip sha256 e0d62b0dae0b29b19c5a399bde7e8b5090bc07c8fd59a404980685223a600493 (15 files at the archive root), rebuilt byte-identically by `python3 task313/generator/build.py`; fix every finding in the generator, re-run every gate on the final cut (checks.py, verify.py, ceiling.py, two byte-identical builds, figures_check.py, precut.py, voice-check.py, leak.py --asof 2026-11-02, guard.py heart and surface), then ship.",
+ "resume": "Stage 4 re-judge (once): spawn the determinism judge (pass 2) on the cut pack target.zip sha256 ecea07b47d9ed679c081348919807b0b45a12b0774e8fd8d42546fa6c4e4288d (15 files at the archive root), rebuilt byte-identically by `python3 task313/generator/build.py`, and have it test SF15 (one effect against effects per reason) and the visit-start reading against the report's filed text; then ship if it holds.",
  "approved": null,
  "delivered": null,
  "portal": null,

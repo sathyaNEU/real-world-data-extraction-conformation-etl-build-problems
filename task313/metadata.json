@@ -48,7 +48,7 @@
   {
    "path": "Copperfield neonatal outreach trial final report.pdf",
    "format": "pdf",
-   "bytes": 5793,
+   "bytes": 11626,
    "rows": null,
    "source": "Constructed: Copperfield neonatal outreach trial final report, version 1.0",
    "date": "2026-06-26",
@@ -57,10 +57,10 @@
   {
    "path": "Neonatal outreach service specification 2027-28.pdf",
    "format": "pdf",
-   "bytes": 3928,
+   "bytes": 5127,
    "rows": null,
    "source": "Constructed: Ravensby and Weald Integrated Care Board service specification SS-MAT-027 version 1.2",
-   "date": "2026-09-21",
+   "date": "2026-10-20",
    "license": "CC0 (original work, constructed for this task)"
   },
   {
@@ -156,7 +156,7 @@
   {
    "path": "rk_maternity_postnatal_discharges_2024-04_2026-10.csv",
    "format": "csv",
-   "bytes": 2831064,
+   "bytes": 2832260,
    "rows": 28323,
    "source": "Constructed: Ravensby and Kellingworth Hospitals NHS Foundation Trust maternity system, postnatal discharges home extract",
    "date": "2026-11-02",
@@ -174,7 +174,7 @@
   {
    "path": "sw_maternity_postnatal_discharges.xlsx",
    "format": "xlsx",
-   "bytes": 2822049,
+   "bytes": 2821789,
    "rows": 31142,
    "source": "Constructed: Sedgefold and Wennby NHS Trust maternity information system, postnatal discharges by financial year",
    "date": "2026-11-02",

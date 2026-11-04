@@ -169,8 +169,9 @@ and 5 and the readmissions avoided about 325.
   and Sedgefold gain one; Ravensby Royal still has the most eligible babies and readmissions, so the golden is not
   an interval of eligible babies, readmissions or readmission rate.
 - **Pins:** SS-MAT-027 files the WHAT in the commissioner's own genre (eligible babies, the referral route, the
-  outcome, the posts, the allocation rule, the planning basis); no filed sentence names a receipt time, a delay,
-  calling hours or a window after contact (R3c greps both PDFs).
+  outcome, the posts, the allocation rule, the planning basis), and the trial report files its own (one treatment
+  effect for all babies, the first call as the start of the intervention, the process measures); no filed sentence
+  names a receipt time, a delay, calling hours or a window after contact (R3c and REPORT grep both PDFs).
 
 ## Readability screen
 
@@ -203,12 +204,13 @@ dedicated organ); the reflex row comes from the field's vocabulary for carrying 
 | SF12 | rounding the total | once, on the sum | each unit rounded, then summed | same bin (asserted) | the prompt's rounding sentence |
 | SF13 | whole posts | largest remainders | each share to the nearest post | same posts (asserted) | spec 7 |
 | SF14 | the ratio's source | the rows, every readmission keyed | the report's 0.43 on its own linkage | same bin, 316.7 and 321.3 (asserted) | convergence |
-| SF15 | one effect or one per reason | the pooled ratio | reason-specific ratios carried to each unit's mix | same posts; the total moves (asserted) | the report: no interaction by gestation, feeding or primary risk reason |
+| SF15 | one effect or one per reason | the pooled ratio | reason-specific ratios carried to each unit's mix | same posts; the total moves (asserted) | the report's statistical analysis: one treatment effect for all babies, subgroups only as tests for interaction (p = 0.12, 0.53, 0.26) |
 | SF16 | a transfer inside one stay | one admission | a second admission | same call (asserted) | spec 5 |
 | SF17 | Ask A, risk reason | every reason on the discharge record | the trial list's primary reason | Ask A moves (asserted) | the asking sentence |
 | SF18 | Ask B, visits made and calls that reached the family | completed contacts | NA and TNA rows, or the short TEL and HV rows filed before 6 January 2025, counted | Ask B moves (asserted) | the asking sentence; the code list's in_use_from; every cut in the minute gap gives the same figures (asserted) |
 | SF19 | Ask B, calls under a parent's number | counted for the baby | dropped | Ask B moves (asserted) | the asking sentence: a call to the mother reached the family |
 | SF20 | Ask B, the window | contacts in the 28 days after discharge | later calls kept | Ask B moves (asserted) | the asking sentence |
+| SF21 | Ask A, the risk ratio | the ratio of the arms' readmitted shares, from the counts | a ratio of rates already rounded to one decimal | four of six cells move | the rounding sentence rounds the figures reported, not their inputs (asserted) |
 
 ## Ladder
 
@@ -223,8 +225,10 @@ Every rung priced on the cut pack (`checks.py` R3a and R3b; figures printed ther
   median hides the paper half of the two slow units.
 - **Decisive (7, 9, 6, 3, 5; 325):** each baby's readmission against its own receipt; reachable shares 73, 99, 98,
   72 and 90 per cent; the total 321.3, inside its bin with 8.8 and 16.2 to spare.
-- **The visit-start reading (7, 10, 6, 2, 5; 200)** is refuted by the trial itself: readmissions in the first day
-  after the earliest contact already differ by arm (8 of 2,092 against 31 of 2,134, ratio 0.26, upper bound 0.57).
+- **The visit-start reading (7, 10, 6, 2, 5; 200)** is refuted by the trial's filed intervention (the nurse's first
+  telephone call assesses feeding, weight and jaundice and arranges review, so the service has begun) and by the
+  trial's rows: readmissions in the first day after the earliest contact already differ by arm (8 of 2,092 against 31
+  of 2,134, ratio 0.26, upper bound 0.57). The rows cannot carry more without re-drawing the outcome streams.
 - **Separation:** each rung files other posts; the default total sits two bins from the golden; the convention
   family (SF8, SF9) spans 318.4 to 331.3 and never leaves the 325 bin.
 
@@ -262,8 +266,9 @@ and the planning basis; the prompt files the units of the answer and the roundin
 readmissions the service is expected to avoid, so the literal reader must decide it, and the easy answer (the
 ratio on every readmission) is an easy method on the same literal estimand, not another reading of a term. Every
 convention the computation needs (SF1 to SF16) is ruled out by a quoted sentence or converges on the same posts
-and bin (asserted in `checks.py`); SF15 is the one reading that moves the total, and the report's interaction
-tests rule it out.
+and bin (asserted in `checks.py`); SF15 is the one reading that moves the total, and the report's statistical
+analysis section rules it out in words (one treatment effect for all babies analysed as randomised, subgroups read
+only as tests for interaction, none of which reaches 0.05).
 
 ## Oracles
 
@@ -292,6 +297,9 @@ the bin (R2 in `checks.py`):
   left unmapped (moves only Ask A).
 - Re-sent tablet contacts, calls under a parent's number, the 6 January 2025 code change: the contact log; Ask B
   only.
+- Discharge records amended after the baby went home (each with the office's Amended notification), adding a risk
+  reason to a record already flagged: both maternity extracts; the flag never moves, so the asks' groupings only
+  (asserted: 694 amended records, every one a flagged baby gaining a reason).
 
 ## Ask sheet
 
@@ -307,7 +315,8 @@ in 28 days (12).
   hospital_number, admitted, admission_method), the index. Primary: Copperfield's PAS files a baby who returns to
   its postnatal ward under the mother's NHS and hospital numbers (D7, an infant under its mother's key), 88 rows,
   all at Copperfield; the report's counts were linked the same way, so reconciling to the report confirms the
-  wrong path. Hazards: blank NHS numbers, cross-trust numbers, planned day cases, the trial list's primary reason.
+  wrong path. Hazards: blank NHS numbers, cross-trust numbers, planned day cases, the trial list's primary reason,
+  and records amended after discharge (the grouping is the record as extracted, so a reason added later counts).
   Pin test: the asking sentence pins the population (the babies the trial analysed), the grouping (every reason on
   the discharge record) and the rounding; no pin names a key or a ward.
 - **Ask B, the contacts by reason:** H18 home: the audit trail of the service the posts deliver, per reason. Path:
@@ -334,29 +343,29 @@ Measured by: generator/ceiling.py on the cut pack (digest printed by the script)
 | Ask figure | Cracker (keys by NHS number and index, mother rows and the code switch unseen) | Golden | Cracker |
 |---|---|---|---|
 | A BFP usual-care rate | 4.9 | 6.1 | miss |
-| A BFP risk ratio | 0.67 | 0.64 | miss |
+| A BFP risk ratio | 0.67 | 0.63 | miss |
 | A EDC usual-care rate | 5.1 | 6.6 | miss |
 | A EDC risk ratio | 0.41 | 0.40 | miss |
 | A LPT usual-care rate | 6.6 | 8.5 | miss |
 | A LPT risk ratio | 0.30 | 0.35 | miss |
-| A SPH usual-care rate | 4.3 | 5.7 | miss |
-| A SPH risk ratio | 0.86 | 0.65 | miss |
-| A VJD usual-care rate | 6.4 | 7.9 | miss |
-| A VJD risk ratio | 0.60 | 0.49 | miss |
-| A WTL usual-care rate | 5.7 | 6.2 | miss |
-| A WTL risk ratio | 0.31 | 0.29 | miss |
+| A SPH usual-care rate | 4.1 | 6.2 | miss |
+| A SPH risk ratio | 0.82 | 0.54 | miss |
+| A VJD usual-care rate | 6.5 | 7.9 | miss |
+| A VJD risk ratio | 0.54 | 0.51 | miss |
+| A WTL usual-care rate | 6.4 | 6.9 | miss |
+| A WTL risk ratio | 0.26 | 0.24 | miss |
 | B BFP home visits | 1.27 | 1.24 | miss |
 | B BFP calls | 1.58 | 2.81 | miss |
 | B EDC home visits | 1.23 | 1.20 | miss |
 | B EDC calls | 1.47 | 2.60 | miss |
 | B LPT home visits | 1.83 | 1.80 | miss |
 | B LPT calls | 1.74 | 2.93 | miss |
-| B SPH home visits | 1.38 | 1.33 | miss |
-| B SPH calls | 1.55 | 2.59 | miss |
-| B VJD home visits | 1.51 | 1.48 | miss |
-| B VJD calls | 1.51 | 2.54 | miss |
-| B WTL home visits | 1.55 | 1.53 | miss |
-| B WTL calls | 1.83 | 3.02 | miss |
+| B SPH home visits | 1.37 | 1.33 | miss |
+| B SPH calls | 1.60 | 2.61 | miss |
+| B VJD home visits | 1.50 | 1.46 | miss |
+| B VJD calls | 1.49 | 2.52 | miss |
+| B WTL home visits | 1.53 | 1.51 | miss |
+| B WTL calls | 1.81 | 2.99 | miss |
 
 ## Leak review
 
@@ -365,9 +374,10 @@ line ruled here:
 - Sweep 3, the specification carries the committed call's words: it names the five units and the 30 funded posts,
   the candidates and the stated decision parameter; it holds no post, share or readmission figure per unit.
   Harmless.
-- Sweep 4, the final report (effect, report, hospital, allocation, community, contact): ordinary trial-report
-  vocabulary for its arms, outcome and subgroups; it names no receipt time, delay or window after contact (R3c
-  greps it). Harmless.
+- Sweep 4, the final report (report, effect, eligible, hospital, office, allocation and others, 12 of 25 after the
+  rewrite into a full trial report): ordinary trial-report vocabulary (the trial office, the sponsor's research
+  office, allocation as randomisation, the eligible babies); it names no notification, receipt, delay or window
+  after contact (R3c and REPORT grep it). Harmless.
 - Sweep 4, the specification (report, eligible, hospital, office, allocation, notification): section 4 says babies
   are referred through the community midwifery office, which receives each unit's discharge notifications. It is
   the service's referral route in the commissioner's genre and states no timing and no relation between the
@@ -375,15 +385,26 @@ line ruled here:
   reader as open rather than ruled away.
 - Sweep 6, the LMNS dashboard names the units beside births and monthly rates: a declared distractor, ranking
   nothing on posts or readmissions avoided and read by no rung. Harmless.
+- Sweep 6, the specification names five of the eight answer-set names beside numbers since its revision history
+  (versions and dates) and section 6 (the 30 funded posts): it lists the five units once, in section 3, and ranks
+  nothing. Harmless.
+- The report cites two documents the pack does not ship: appendix B (process measures, published separately by the
+  provider) and supplementary table S2 (estimates by main risk reason). Both are withheld by design: S2 would set
+  primary-reason figures beside Ask A, and appendix B would arbitrate Ask B's devices.
 - Sweep 8, NB_RISK_FLAG: the RK maternity system's own field for the newborn feeding or jaundice risk indicator
   (the SW system's "Newborn risk flag"), the flag spec 3 names; not a generator's truth column. Harmless.
 - Sweep 12 first returned LEAK on the report (nine names shared with the data files' headers and first rows,
   among them nurse, team, discharged and the arm labels); fixed in the generator by renaming the contact log's
   staff column, the admissions extract's trust and discharge columns and the establishment's team column, and by
   the report's own labels (Intervention, Comparator, Neonatal outreach, Usual community care).
-- Guard: `surface` lists the personas Hugh Brown, Kathryn Thompson and Lucy Coates, all from `guard.py names`;
-  `heart` WARN only for the svg+xlsx deliverable pair repeating task462's (an ETL build in another domain), with
-  the two older NOTEs answered at the draw; nearest driver 0.06.
+- Guard: `surface` lists the personas from `guard.py names` (Lucy Coates, Kathryn Thompson, Hugh Brown, and for
+  the stage 4 documents Frances Thomas, Eric Lee and Bernard Lord, Hayley Rees redrawn for a first name an older
+  build holds); `heart` WARN only (the svg+xlsx deliverable pair and the how-many question form repeat task462's,
+  an ETL build in another domain), with the two older NOTEs answered at the draw; nearest driver 0.06.
+- Stage 4 pass 1: the isolated reader found no leak (question 1 quoted section 7 and the report's interaction
+  sentence; question 6, an analytical choice); the judge returned DETERMINISTIC with FIX_NOW
+  (`determinism_check_report.md`). Fixed in one pass: the Ask A tie, the Ask B WHAT, SF15, the visit start, the
+  specification's dates and the documents' realism.
 
 ## Tried and rejected
 
@@ -425,3 +446,13 @@ line ruled here:
   1.5 per cent (0.5 at RK) keeps the item neutral.
 - The mother-keyed readmissions removed to keep the trial clean of devices (2026-11-04, earlier the same day):
   restored once the trial's ratio was shown to file the same bin with them unmapped (316.7 against 321.3).
+- The Ask A Weight loss tie (12 of 192 usual-care babies, exactly 6.25 per cent) moved by the withdrawal rate
+  (2026-11-04, stage 4): every rate from 0.0060 to 0.0080 left the cell at 12 of 192, since the extra withdrawals
+  were never in it; dropped for records amended after discharge, which give the office's Amended notifications a
+  content (a reason added to a flagged record) and leave the flag and the call where they were.
+- Primary-reason rows in the report's subgroup table (2026-11-04, stage 4): they would set reason figures beside
+  Ask A on another grouping and on the trial team's linkage; the report keeps the interaction test and cites a
+  supplementary table instead.
+- A filed sentence that avoidable readmissions are those after the service can first reach the family (offered by
+  the stage 4 judge as optional): not added, because executing it word for word files 325 and turns the decisive
+  step into rule application.

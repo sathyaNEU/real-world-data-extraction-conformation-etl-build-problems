@@ -295,6 +295,8 @@ def main():
        '%d under a mother, %d stray' % (len(under_mother), len(stray)))
     # separation line: zero device rows in the main call's population
     adm = V.raw(TGT)['adm']
+    plain_babies, _ = V.link(TGT, mother_map=False)
+    plain_readm = {b['nhs'] for b in plain_babies if b['readm'] is not None}
     mothers = {b['mother'] for b in babies}
     kids = {b['nhs'] for b in babies}
     mk = [r for r in adm if r['nhs_number'] in mothers and r['nhs_number'] not in kids]
@@ -318,7 +320,108 @@ def main():
         a1 = round((ro_ / no_) / (rc_ / nc_), 2)
         a2 = round(round(100 * ro_ / no_, 1) / round(100 * rc_ / nc_, 1), 2)
         agree += a1 == a2
-    ok('ASK A risk ratios from counts and from one-decimal rates agree on at least four of six', agree >= 4, '%d of 6' % agree)
+    ok('SF21 Ask A risk ratio as the ratio of the arms\' risks (counts), not of rates already rounded to one decimal '
+       '(that reading moves some cells; the rounding sentence rounds the reported figures)', all(F['ask_a'][r]['risk_ratio'] == round(F['exact']['ask_a'][r]['risk_ratio'], 2) for r in W.REASONS), '%d of 6 cells agree on the rounded-rate path' % agree)
+
+    # ------------------------------------------------------------------ every graded figure clear of its rounding line
+    def clear(v, unit, share=0.01):
+        x = v / unit
+        return abs((x - math.floor(x)) - 0.5) * unit >= share * unit
+    ex = F['exact']
+    margins = []
+    for r in W.REASONS:
+        margins.append(('Ask A %s usual-care rate' % r, ex['ask_a'][r]['usual_care_rate_pct'], 0.1))
+        margins.append(('Ask A %s risk ratio' % r, ex['ask_a'][r]['risk_ratio'], 0.01))
+        margins.append(('Ask B %s visits per baby' % r, ex['ask_b'][r]['home_visits'], 0.01))
+        margins.append(('Ask B %s calls per baby' % r, ex['ask_b'][r]['calls'], 0.01))
+    for name, v, unit in margins:
+        x = v / unit
+        ok('ROUND %s sits clear of its rounding line (at least 1 per cent of the unit)' % name, clear(v, unit),
+           '%.6f, %.4f of the unit from the line' % (v, abs((x - math.floor(x)) - 0.5)))
+    ok('ROUND the total sits 4 or more inside its 25 bin', 312.5 + 4 <= ex['total'] <= 337.5 - 4,
+       '%.1f: %.1f above 312.5, %.1f below 337.5' % (ex['total'], ex['total'] - 312.5, 337.5 - ex['total']))
+    q = ex['quotas']
+    rem = sorted(((q[u] - math.floor(q[u]), u) for u in W.FIVE), reverse=True)
+    extra = 30 - sum(int(math.floor(q[u])) for u in W.FIVE)
+    gap = rem[extra - 1][0] - rem[extra][0]
+    ok('ROUND the posts: the last remainder awarded clears the first refused by 0.05 of a post or more', gap >= 0.05,
+       'awarded %s, refused %s, gap %.3f' % (rem[extra - 1][1], rem[extra][1], gap))
+    need = {}
+    for i, s_ in enumerate(V.FIVE):
+        for dd in range(1, 40):
+            moved = False
+            for sg in (1, -1):
+                v = list(g['counted'])
+                v[i] += sg * dd
+                if V.largest_remainder(v) != gp:
+                    moved = True
+            if moved:
+                need[V.CODE[s_]] = dd
+                break
+        else:
+            need[V.CODE[s_]] = 40
+    ok('ROUND the posts hold until 5 or more reachable readmissions move at any one unit', min(need.values()) >= 5, str(need))
+
+    # ------------------------------------------------------------------ the trial's filed WHAT (fixes the two forks pass 1 left)
+    rep_t = pdf_text(os.path.join(TGT, 'Copperfield neonatal outreach trial final report.pdf'))
+    ok('SF15 the report files one treatment effect for all babies and reads subgroups only as tests for interaction',
+       'estimated one treatment effect for all babies analysed as randomised' in rep_t and
+       'examined only as tests for interaction' in rep_t)
+    ok('R3b the report makes the first telephone call part of the intervention (it assesses and arranges review), and says '
+       'nothing about when it happens', 'first telephones the family, assesses feeding' in rep_t and
+       not re.search(r'within \d+ hours|same day|next morning|working hours|calling hours', rep_t, re.I))
+    ok('SF18 the report files the process measures as visits in which the nurse saw the baby and calls that reached a parent',
+       'home visits in which the nurse saw the baby' in rep_t and 'calls that reached a parent' in rep_t)
+    ok('SF18 no file states how failed attempts were recorded before the code change, nor a minute threshold',
+       not re.search(r'(before|until) (the )?(6 January 2025|code|update)|minutes? (or more|or less|threshold)', rep_t + pdf_text(os.path.join(TGT, 'Neonatal outreach service specification 2027-28.pdf')), re.I))
+
+    # ------------------------------------------------------------------ the report recomputes from the trial files
+    rawp = V.raw(TGT)
+    sw = {b['nhs']: b for b in rawp['babies'] if b['site'] == 'Copperfield Hospital'}
+    rep = F['report']
+    lc = rawp['label_code']
+    by_arm = {'outreach': [], 'usual care': []}
+    for x in rawp['final']:
+        b = sw[x['nhs']]
+        by_arm['outreach' if x['arm'] == 'Outreach' else 'usual care'].append((b, lc[x['primary']]))
+    good = True
+    for a, rows in by_arm.items():
+        d = rep['baseline'][a]
+        n = len(rows)
+        kg = [int(round(b['kg'] * 1000)) for b, _ in rows]
+        bands = [sum(1 for b, _ in rows if b['gest'] <= 36), sum(1 for b, _ in rows if b['gest'] == 37),
+                 sum(1 for b, _ in rows if 38 <= b['gest'] <= 39), sum(1 for b, _ in rows if b['gest'] >= 40)]
+        feeds = [sum(1 for b, _ in rows if b['feed'] == lab) for lab in ('Exclusive breast milk', 'Breast and formula', 'Formula')]
+        prim = [sum(1 for _, pr in rows if pr == r) for r in W.REASONS]
+        hours = sorted((b['disch'] - b['birth']).total_seconds() / 3600.0 for b, _ in rows)
+        import numpy as np
+        stay = (float(np.percentile(hours, 50)), float(np.percentile(hours, 25)), float(np.percentile(hours, 75)))
+        good = good and n == d['n'] and bands == [x[1] for x in d['gest']] and feeds == [x[1] for x in d['feed']] \
+            and prim == [x[1] for x in d['primary']] and '%.0f' % np.mean(kg) == '%.0f' % d['bw_mean'] \
+            and '%.0f' % np.std(kg, ddof=1) == '%.0f' % d['bw_sd'] and all('%.1f' % u == '%.1f' % v for u, v in zip(stay, d['stay']))
+    ok('REPORT the baseline table recomputes from the final list and the SW discharge record', good)
+    win = [b for b in rawp['babies'] if b['site'] == 'Copperfield Hospital' and b['flag']
+           and dt.datetime(2024, 4, 1) <= b['disch'] < dt.datetime(2026, 4, 1)]
+    ok('REPORT the flow recomputes (flagged Copperfield discharges and the twins left out)',
+       len(win) == rep['flagged_cfh'] and sum(1 for b in win if b['multiple']) == rep['multiples_out'],
+       '%d and %d' % (len(win), sum(1 for b in win if b['multiple'])))
+    ro = sum(1 for b, _ in by_arm['outreach'] if b['nhs'] in plain_readm)
+    rc = sum(1 for b, _ in by_arm['usual care'] if b['nhs'] in plain_readm)
+    ok('REPORT the primary outcome recomputes on the trial team\'s own linkage (NHS number, then the index)',
+       ro == rep['outreach']['r'] and rc == rep['usual_care']['r'], '%d and %d' % (ro, rc))
+    ok('REPORT nothing in it touches notification timing, receipt or reach',
+       not re.search(r'notif|receipt|received|reachab|window|community midwifery office', rep_t, re.I))
+
+    # ------------------------------------------------------------------ the contact codes and the amended records
+    na_rows = [c for c in con if c['contact_type'] == 'NA']
+    ok('ASK B the code list\'s NA has rows in the log after it came into use and none before',
+       len(na_rows) > 50 and min(c['contact_datetime'] for c in na_rows) >= '2025-01-06', '%d NA rows' % len(na_rows))
+    Bw = W.build_world()
+    R.apply_record_reasons(Bw)
+    amended = [b for b in Bw if b['reasons_rec'] != b['reasons']]
+    ok('R2 records amended after discharge only add a reason to a flagged baby (the flag and the main call never move)',
+       amended and all(b['eligible'] and set(b['reasons']) < set(b['reasons_rec']) for b in Bw if b['reasons_rec'] != b['reasons']),
+       '%d amended records' % len(amended))
 
     # ------------------------------------------------------------------ input gates
     files = sorted(os.listdir(TGT))

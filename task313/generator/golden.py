@@ -41,6 +41,11 @@ def reached(b):
     return b['readm_t'] is not None and b['readm_t'] > b['landmark']
 
 
+def rec(b):
+    """The reasons on the baby's discharge record as the maternity system holds them at extract."""
+    return b.get('reasons_rec', b['reasons'])
+
+
 def report_missed(B):
     """Babies whose readmission the trial team's linkage (NHS number, then the index) did not find: Copperfield's
     PAS holds a baby back on its postnatal ward under the mother's record."""
@@ -96,7 +101,46 @@ def trial_stats(B, missed=frozenset()):
     mean = sum(x / v for x, v in xs) / wsum
     q = sum((x - mean) ** 2 / v for x, v in xs)
     out['p_interaction']['primary reason'] = float(chi2.sf(q, len(xs) - 1))
+    # participant flow, baseline characteristics by arm (the final list joined to the discharge record), sample size
+    out['flagged_cfh'] = sum(1 for b in B if b['unit'] == 'CFH' and b['eligible'] and W.TRIAL_START <= b['disch'] < W.TRIAL_END)
+    out['multiples_out'] = sum(1 for b in B if b['unit'] == 'CFH' and b['eligible'] and b['multiple']
+                               and W.TRIAL_START <= b['disch'] < W.TRIAL_END)
+    out['baseline'] = baseline(arms)
+    out['sample_size'] = sample_size()
     return out
+
+
+GEST_BANDS = (('35 or 36', lambda g: g <= 36), ('37', lambda g: g == 37), ('38 or 39', lambda g: 38 <= g <= 39),
+              ('40 or 41', lambda g: g >= 40))
+FEED_ROWS = (('breast', 'Exclusive breast milk'), ('mixed', 'Breast and formula'), ('formula', 'Formula'))
+
+
+def baseline(arms):
+    """Table 2 of the report: each arm's babies by gestation, birth weight, feeding at discharge, primary risk reason
+    at randomisation and postnatal stay, in the forms the discharge record and the randomisation list carry."""
+    out = {}
+    for a, A in arms.items():
+        n = len(A)
+        d = {'n': n}
+        d['gest'] = [(lab, sum(1 for b in A if f(b['gest']))) for lab, f in GEST_BANDS]
+        grams = [int(round(b['bw'])) for b in A]
+        d['bw_mean'] = float(np.mean(grams))
+        d['bw_sd'] = float(np.std(grams, ddof=1))
+        d['feed'] = [(lab, sum(1 for b in A if b['feed'] == k)) for k, lab in FEED_ROWS]
+        d['primary'] = [(r, sum(1 for b in A if b['reasons'][0] == r)) for r in W.REASONS]
+        hours = sorted((b['disch'] - b['birth'].replace(second=0, microsecond=0)).total_seconds() / 3600.0 for b in A)
+        d['stay'] = (float(np.percentile(hours, 50)), float(np.percentile(hours, 25)), float(np.percentile(hours, 75)))
+        out[a] = d
+    return out
+
+
+def sample_size(p1=0.06, cut=0.35, alpha=0.05, power=0.9):
+    """The protocol's sample size: two proportions, two-sided test (assumptions from the protocol, not the data)."""
+    from scipy.stats import norm
+    p2 = p1 * (1 - cut)
+    z = norm.ppf(1 - alpha / 2) + norm.ppf(power)
+    n = z * z * (p1 * (1 - p1) + p2 * (1 - p2)) / (p1 - p2) ** 2
+    return dict(p1=p1, cut=cut, alpha=alpha, power=power, per_arm=int(math.ceil(n)))
 
 
 def theta_post(B):
@@ -113,10 +157,10 @@ def ask_a(B):
     T = [b for b in B if W.analysed(b)]
     out = {}
     for r in W.REASONS:
-        o = [b for b in T if b['arm'] == 'outreach' and r in b['reasons']]
-        c = [b for b in T if b['arm'] == 'usual care' and r in b['reasons']]
+        o = [b for b in T if b['arm'] == 'outreach' and r in rec(b)]
+        c = [b for b in T if b['arm'] == 'usual care' and r in rec(b)]
         ro, rc = sum(readmitted(b) for b in o), sum(readmitted(b) for b in c)
-        out[r] = dict(no=len(o), ro=ro, nc=len(c), rc=rc, rate_c=round(100.0 * rc / len(c), 1),
+        out[r] = dict(no=len(o), ro=ro, nc=len(c), rc=rc, rate_c=round(100.0 * rc / len(c), 1), rate_c_exact=100.0 * rc / len(c),
                       rr=round((ro / len(o)) / (rc / len(c)), 2), rr_exact=(ro / len(o)) / (rc / len(c)))
     return out
 
@@ -146,8 +190,9 @@ def ask_b(B, contact_rows):
             tel[baby] = tel.get(baby, 0) + 1
     out = {}
     for r in W.REASONS:
-        babies = [n for n, b in T.items() if r in b['reasons']]
-        out[r] = (round(sum(hv.get(n, 0) for n in babies) / len(babies), 2), round(sum(tel.get(n, 0) for n in babies) / len(babies), 2), len(babies))
+        babies = [n for n, b in T.items() if r in rec(b)]
+        out[r] = (round(sum(hv.get(n, 0) for n in babies) / len(babies), 2), round(sum(tel.get(n, 0) for n in babies) / len(babies), 2), len(babies),
+                  sum(hv.get(n, 0) for n in babies) / len(babies), sum(tel.get(n, 0) for n in babies) / len(babies))
     return out
 
 
@@ -172,6 +217,8 @@ def call(B):
 def main(B, counts):
     import deliver
     os.makedirs(GOLD, exist_ok=True)
+    if 'reasons_rec' not in B[0]:
+        R.apply_record_reasons(B)
     C = call(B)
     A = ask_a(B)
     contact_rows = R.contacts(B)
@@ -190,6 +237,12 @@ def main(B, counts):
                       'outreach_readmitted': A[r]['ro'], 'usual_care_babies': A[r]['nc'], 'usual_care_readmitted': A[r]['rc']}
                   for r in W.REASONS},
         'ask_b': {r: {'home_visits': Bk[r][0], 'calls': Bk[r][1]} for r in W.REASONS},
+        'exact': {'ask_a': {r: {'usual_care_rate_pct': A[r]['rate_c_exact'], 'risk_ratio': A[r]['rr_exact']} for r in W.REASONS},
+                  'ask_b': {r: {'home_visits': Bk[r][3], 'calls': Bk[r][4]} for r in W.REASONS},
+                  'total': C['total'], 'quotas': dict(zip(W.FIVE, C['quotas']))},
+        'report': {'flagged_cfh': st['flagged_cfh'], 'multiples_out': st['multiples_out'], 'sample_size': st['sample_size'],
+                   'baseline': st['baseline'], 'p_interaction': st['p_interaction'],
+                   'outreach': st['outreach'], 'usual_care': st['usual care']},
         'reason_labels': R.REASON_LABEL,
         'counts': counts,
         'constants': {'posts': POSTS, 'total_step': TOTAL_STEP, 'window_days': 28, 'planning_basis': '1 October 2025 to 30 September 2026'},

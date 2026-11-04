@@ -78,10 +78,12 @@ def raw(tgt):
                 rs = row[ix['Risk reasons']] or ''
             bd, bt = row[ix['Date of birth']], row[ix['Time of birth']]
             h, m = map(int, bt.split(':'))
+            gest = int(row[ix['Gestation (weeks)']]) if 'Gestation (weeks)' in ix else int(str(row[ix['Gestation']]).split('+')[0])
             babies.append(dict(site=b_name[row[ix['Hospital']]], hosp=row[ix['Hospital No']],
                                nhs=(row[ix['NHS No']] or '').replace(' ', ''), mother=(row[ix['Mother NHS No']] or '').replace(' ', ''),
                                disch=d, birth=dt.datetime(bd.year, bd.month, bd.day, h, m), flag=flag,
-                               multiple=bool(row[ix['Multiple birth']]),
+                               multiple=bool(row[ix['Multiple birth']]), gest=gest, kg=float(row[ix['Birth weight (kg)']]),
+                               feed=row[ix['Feeding on discharge']],
                                reasons=[label_code[x.strip()] for x in rs.split(';') if x.strip()]))
     mpi = {(r['trust'], r['hospital_number']): r['nhs_number'] for r in rd('mpi_baby_hospital_numbers.csv', tgt)}
     notes = rd('community_midwifery_notifications_2024-04_2026-10.csv', tgt)

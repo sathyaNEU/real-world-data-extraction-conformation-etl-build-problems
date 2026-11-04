@@ -232,6 +232,35 @@ def contacts(B):
     return [r for r in rows if r['t'] <= EXTRACT]
 
 
+ADDED_LATER = ('WTL', 'VJD', 'BFP', 'SPH')   # reasons a midwife can add once the baby has gone home (weights, jaundice
+                                            # noted at the check, feeding history, a sibling's history)
+
+
+def record_reasons(B):
+    """The reasons on each baby's discharge record as the maternity systems hold them at extract: a record amended
+    after discharge (the office's Amended notification) carries one reason the midwife added. The risk flag was
+    already set on those records, so eligibility never changes."""
+    amended = {r['baby'] for r in notifications(B) if r['kind'] == 'Amended'}
+    rng = np.random.default_rng([W.SEED, 406])
+    out = {}
+    for b in B:
+        rs = list(b['reasons'])
+        if b['nhs'] in amended and rs:
+            missing = [r for r in ADDED_LATER if r not in rs]
+            if missing:
+                add = missing[int(rng.integers(0, len(missing)))]
+                rs = [r for r in W.REASONS if r in rs or r == add]
+        out[b['nhs']] = rs
+    return out
+
+
+def apply_record_reasons(B):
+    rec = record_reasons(B)
+    for b in B:
+        b['reasons_rec'] = rec[b['nhs']]
+    return B
+
+
 def trial_lists(B):
     """The final randomisation list (analysed babies) and the interim list as at 31 December 2025."""
     rng = np.random.default_rng([W.SEED, 404])

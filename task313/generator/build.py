@@ -112,7 +112,7 @@ def maternity_a(B):
         nhs = b['nhs'] if rng.random() > 0.004 else ''
         rows.append([R.SITE_A[b['unit']], b['hosp'], nhs, b['mother'], b['birth'].strftime('%d/%m/%Y %H:%M'),
                      '%d+%d' % (b['gest'], b['gest_d']), b['bw'], 'Y' if b['multiple'] else 'N', R.FEED_A[b['feed']],
-                     b['disch'].strftime('%d/%m/%Y %H:%M'), 'Home', 'Y' if b['eligible'] else 'N', ';'.join(b['reasons'])])
+                     b['disch'].strftime('%d/%m/%Y %H:%M'), 'Home', 'Y' if b['eligible'] else 'N', ';'.join(b['reasons_rec'])])
     write_csv(F_A, ['SITE', 'MRN', 'NHS_NUMBER', 'MOTHER_NHS_NUMBER', 'BABY_DOB_DTTM', 'GEST_AT_BIRTH', 'BIRTH_WEIGHT_G',
                     'MULTIPLE_BIRTH', 'FEEDING_AT_DISCHARGE', 'DISCHARGE_DTTM', 'DISCHARGE_DEST', 'NB_RISK_FLAG',
                     'NB_RISK_CODES'], rows)
@@ -147,7 +147,7 @@ def maternity_b(B):
                 k = twin_no.get(b['mother'], 0) + 1
                 twin_no[b['mother']] = k
                 mb = 'Twin %d' % k
-            reasons = '; '.join(R.REASON_LABEL[r] for r in b['reasons'])
+            reasons = '; '.join(R.REASON_LABEL[r] for r in b['reasons_rec'])
             if not new:
                 rows.append([R.SITE_B[b['unit']], b['hosp'], R.fmt_nhs_spaced(b['nhs']), R.fmt_nhs_spaced(b['mother']),
                              b['birth'].date(), b['birth'].strftime('%H:%M'), b['gest'], b['gest_d'], round(b['bw'] / 1000.0, 3),
@@ -294,7 +294,7 @@ SOURCES = {
     F_DASH: 'Constructed: local maternity and neonatal system monthly dashboard 2025/26',
     F_EST: 'Constructed: community midwifery establishment by team, October 2026',
 }
-DATES = {F_REP: '2026-06-26', F_SPEC: '2026-09-21', F_DASH: '2026-10-14', F_EST: '2026-10-31', F_TF: '2026-04-30'}
+DATES = {F_REP: '2026-06-26', F_SPEC: '2026-10-20', F_DASH: '2026-10-14', F_EST: '2026-10-31', F_TF: '2026-04-30'}
 ROWS = {}
 
 
@@ -371,6 +371,7 @@ def main():
     import docs
     import golden
     B = W.build_world()
+    R.apply_record_reasons(B)            # the discharge records as amended after discharge
     if os.path.isdir(TGT):
         shutil.rmtree(TGT)
     os.makedirs(TGT)
@@ -386,8 +387,8 @@ def main():
     stats = golden.trial_stats(B, golden.report_missed(B))      # the report as the trial team ran it
     docs.report(os.path.join(TGT, F_REP), stats)
     docs.spec(os.path.join(TGT, F_SPEC))
-    pdf_stamp(os.path.join(TGT, F_REP), b"D:20260626093000+01'00'")
-    pdf_stamp(os.path.join(TGT, F_SPEC), b"D:20260921101500+01'00'")
+    pdf_stamp(os.path.join(TGT, F_REP), b"D:20260626093742+01'00'")
+    pdf_stamp(os.path.join(TGT, F_SPEC), b"D:20261020141907+01'00'")
     set_mtimes()
     golden.main(B, counts)
     for n in os.listdir(TGT):

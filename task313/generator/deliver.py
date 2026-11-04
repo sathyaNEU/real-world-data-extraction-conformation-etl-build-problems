@@ -100,7 +100,7 @@ def workbook(path, C, A, Bk):
     _hdr(ws3, 3, ['Risk reason', 'Babies randomised to outreach (analysed)', 'Home visits per baby', 'Telephone calls per baby'])
     for i, rcode in enumerate(W.REASONS):
         r = 4 + i
-        hv, tel, n = Bk[rcode]
+        hv, tel, n = Bk[rcode][:3]
         for j, v in enumerate([R.REASON_LABEL[rcode], n, hv, tel], start=1):
             c = ws3.cell(row=r, column=j, value=v)
             if j in (3, 4):

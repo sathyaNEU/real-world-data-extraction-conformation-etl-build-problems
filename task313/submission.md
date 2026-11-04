@@ -22,8 +22,8 @@ The posts follow the readmissions a nurse can still reach: about a quarter of Ra
 4. Kept each unit's eligible readmissions that came after that point; the others happened before any nurse could call and the service cannot avoid them.
 5. From copperfield_trial_randomisation_final.xlsx and the same linkage, with Copperfield's postnatal-ward readmissions filed under the mother's NHS number mapped to her baby, the trial's risk ratio after the first call is 0.43, a 57 per cent cut, the same as over the whole 28 days; the final report finds no interaction by gestation, feeding or primary risk reason, so one pooled effect carries.
 6. Applied 57 per cent to each unit's reachable readmissions and split the 30 posts by section 7, whole posts then largest remainders: 7, 9, 6, 3 and 5, with about 325 readmissions avoided.
-7. For the trial's reason table, counted each analysed baby under every reason on its SW discharge record (newborn_risk_reasons.csv) and its readmissions as in step 5, including the rows filed under the mother at Copperfield.
-8. For the contact table, read copperfield_outreach_contacts.csv once per contact_id, mapped calls under a mother's NHS number to her baby, left out NA and TNA rows and the short HV and TEL attempts filed before those codes came into use on 6 January 2025 (outreach_contact_types.csv), and kept contacts in the 28 days after discharge.
+7. For the trial's reason table, counted each analysed baby under every reason on its SW discharge record as extracted (newborn_risk_reasons.csv), and its readmissions as in step 5, including the rows filed under the mother at Copperfield; the risk ratio is the ratio of the two arms' readmitted shares.
+8. For the contact table, read copperfield_outreach_contacts.csv once per contact_id, mapped calls under a mother's NHS number to her baby, kept the home visits in which the nurse saw the baby and the calls that reached a parent (the trial report's process measures), leaving out NA and TNA rows and the short HV and TEL attempts filed before those codes came into use on 6 January 2025 (outreach_contact_types.csv), and kept contacts in the 28 days after discharge.
 
 ## 4. Deliverable Answers
 
@@ -38,18 +38,18 @@ The posts follow the readmissions a nurse can still reach: about a quarter of Ra
 2. Readmissions avoided in 2027/28, to the nearest 25: 325
 3. Copperfield trial, babies analysed, by risk reason: usual-care 28-day readmission rate and risk ratio for outreach:
    - Late preterm (35 to 36 weeks): 8.5 per cent, 0.35
-   - Breastfed first baby: 6.1 per cent, 0.64
+   - Breastfed first baby: 6.1 per cent, 0.63
    - Discharged under 18 hours: 6.6 per cent, 0.40
-   - Weight loss 8% or more: 6.2 per cent, 0.29
-   - Visible jaundice at discharge: 7.9 per cent, 0.49
-   - Sibling needed phototherapy: 5.7 per cent, 0.65
+   - Weight loss 8% or more: 6.9 per cent, 0.24
+   - Visible jaundice at discharge: 7.9 per cent, 0.51
+   - Sibling needed phototherapy: 6.2 per cent, 0.54
 4. Copperfield trial, outreach arm, by risk reason: home visits made and telephone calls that reached the family per baby in the 28 days after discharge:
    - Late preterm (35 to 36 weeks): 1.80 visits, 2.93 calls
    - Breastfed first baby: 1.24 visits, 2.81 calls
    - Discharged under 18 hours: 1.20 visits, 2.60 calls
-   - Weight loss 8% or more: 1.53 visits, 3.02 calls
-   - Visible jaundice at discharge: 1.48 visits, 2.54 calls
-   - Sibling needed phototherapy: 1.33 visits, 2.59 calls
+   - Weight loss 8% or more: 1.51 visits, 2.99 calls
+   - Visible jaundice at discharge: 1.46 visits, 2.52 calls
+   - Sibling needed phototherapy: 1.33 visits, 2.61 calls
 
 ### outreach_posts_by_unit.svg
 

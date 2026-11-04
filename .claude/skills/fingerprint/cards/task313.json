@@ -43,7 +43,8 @@
     "notifications re-sent by the interface and amended after the first receipt, the first receipt the one the office acts on",
     "NHS numbers missing on some PAS rows and transposed on some paper notifications, a hospital number and the master patient index carrying the link",
     "cross-trust hospital numbers for babies admitted at the other trust",
-    "a baby back on Copperfield's postnatal ward filed under the mother's record"
+    "a baby back on Copperfield's postnatal ward filed under the mother's record",
+    "a discharge record amended after the baby went home, adding a risk reason"
   ],
   "stakeholder_role": "the integrated care board's neonatal outreach programme lead",
   "role_family": "programme_officer",
@@ -74,7 +75,10 @@
     "people": [
       "Lucy Coates",
       "Kathryn Thompson",
-      "Hugh Brown"
+      "Hugh Brown",
+      "Frances Thomas",
+      "Eric Lee",
+      "Bernard Lord"
     ]
   },
   "deliverables": [

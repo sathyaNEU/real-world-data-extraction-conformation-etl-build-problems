@@ -1,10 +1,10 @@
 {
  "ask_a": {
   "BFP": {
-   "outreach_babies": 643,
+   "outreach_babies": 650,
    "outreach_readmitted": 25,
-   "risk_ratio": 0.64,
-   "usual_care_babies": 656,
+   "risk_ratio": 0.63,
+   "usual_care_babies": 659,
    "usual_care_rate_pct": 6.1,
    "usual_care_readmitted": 40
   },
@@ -25,28 +25,28 @@
    "usual_care_readmitted": 18
   },
   "SPH": {
-   "outreach_babies": 135,
+   "outreach_babies": 149,
    "outreach_readmitted": 5,
-   "risk_ratio": 0.65,
-   "usual_care_babies": 140,
-   "usual_care_rate_pct": 5.7,
-   "usual_care_readmitted": 8
+   "risk_ratio": 0.54,
+   "usual_care_babies": 146,
+   "usual_care_rate_pct": 6.2,
+   "usual_care_readmitted": 9
   },
   "VJD": {
-   "outreach_babies": 183,
-   "outreach_readmitted": 7,
-   "risk_ratio": 0.49,
-   "usual_care_babies": 203,
+   "outreach_babies": 199,
+   "outreach_readmitted": 8,
+   "risk_ratio": 0.51,
+   "usual_care_babies": 216,
    "usual_care_rate_pct": 7.9,
-   "usual_care_readmitted": 16
+   "usual_care_readmitted": 17
   },
   "WTL": {
-   "outreach_babies": 168,
+   "outreach_babies": 182,
    "outreach_readmitted": 3,
-   "risk_ratio": 0.29,
-   "usual_care_babies": 192,
-   "usual_care_rate_pct": 6.2,
-   "usual_care_readmitted": 12
+   "risk_ratio": 0.24,
+   "usual_care_babies": 204,
+   "usual_care_rate_pct": 6.9,
+   "usual_care_readmitted": 14
   }
  },
  "ask_b": {
@@ -63,16 +63,16 @@
    "home_visits": 1.8
   },
   "SPH": {
-   "calls": 2.59,
+   "calls": 2.61,
    "home_visits": 1.33
   },
   "VJD": {
-   "calls": 2.54,
-   "home_visits": 1.48
+   "calls": 2.52,
+   "home_visits": 1.46
   },
   "WTL": {
-   "calls": 3.02,
-   "home_visits": 1.53
+   "calls": 2.99,
+   "home_visits": 1.51
   }
  },
  "call": {
@@ -129,6 +129,68 @@
   "WCH": 1639
  },
  "eligible_total": 10283,
+ "exact": {
+  "ask_a": {
+   "BFP": {
+    "risk_ratio": 0.6336538461538461,
+    "usual_care_rate_pct": 6.0698027314112295
+   },
+   "EDC": {
+    "risk_ratio": 0.39681616832779626,
+    "usual_care_rate_pct": 6.600153491941673
+   },
+   "LPT": {
+    "risk_ratio": 0.351575456053068,
+    "usual_care_rate_pct": 8.49056603773585
+   },
+   "SPH": {
+    "risk_ratio": 0.5443698732289337,
+    "usual_care_rate_pct": 6.164383561643835
+   },
+   "VJD": {
+    "risk_ratio": 0.5107892403192432,
+    "usual_care_rate_pct": 7.87037037037037
+   },
+   "WTL": {
+    "risk_ratio": 0.2401883830455259,
+    "usual_care_rate_pct": 6.862745098039215
+   }
+  },
+  "ask_b": {
+   "BFP": {
+    "calls": 2.810769230769231,
+    "home_visits": 1.24
+   },
+   "EDC": {
+    "calls": 2.6015873015873017,
+    "home_visits": 1.1968253968253968
+   },
+   "LPT": {
+    "calls": 2.9303482587064678,
+    "home_visits": 1.7960199004975124
+   },
+   "SPH": {
+    "calls": 2.610738255033557,
+    "home_visits": 1.3288590604026846
+   },
+   "VJD": {
+    "calls": 2.522613065326633,
+    "home_visits": 1.4623115577889447
+   },
+   "WTL": {
+    "calls": 2.9945054945054945,
+    "home_visits": 1.5054945054945055
+   }
+  },
+  "quotas": {
+   "KUH": 8.892857142857142,
+   "RRI": 7.071428571428571,
+   "SAH": 3.3214285714285716,
+   "SDH": 5.839285714285714,
+   "WCH": 4.875
+  },
+  "total": 321.27165320624414
+ },
  "reason_labels": {
   "BFP": "Breastfed first baby",
   "EDC": "Discharged under 18 hours",
@@ -136,6 +198,168 @@
   "SPH": "Sibling needed phototherapy",
   "VJD": "Visible jaundice at discharge",
   "WTL": "Weight loss 8% or more"
+ },
+ "report": {
+  "baseline": {
+   "outreach": {
+    "bw_mean": 3159.217017208413,
+    "bw_sd": 511.5371577286029,
+    "feed": [
+     [
+      "Exclusive breast milk",
+      1170
+     ],
+     [
+      "Breast and formula",
+      359
+     ],
+     [
+      "Formula",
+      563
+     ]
+    ],
+    "gest": [
+     [
+      "35 or 36",
+      201
+     ],
+     [
+      "37",
+      238
+     ],
+     [
+      "38 or 39",
+      924
+     ],
+     [
+      "40 or 41",
+      729
+     ]
+    ],
+    "n": 2092,
+    "primary": [
+     [
+      "LPT",
+      201
+     ],
+     [
+      "BFP",
+      603
+     ],
+     [
+      "EDC",
+      1029
+     ],
+     [
+      "WTL",
+      107
+     ],
+     [
+      "VJD",
+      87
+     ],
+     [
+      "SPH",
+      65
+     ]
+    ],
+    "stay": [
+     16.21666666666667,
+     11.9125,
+     26.53333333333333
+    ]
+   },
+   "usual care": {
+    "bw_mean": 3156.726804123711,
+    "bw_sd": 518.2683307845806,
+    "feed": [
+     [
+      "Exclusive breast milk",
+      1201
+     ],
+     [
+      "Breast and formula",
+      359
+     ],
+     [
+      "Formula",
+      574
+     ]
+    ],
+    "gest": [
+     [
+      "35 or 36",
+      212
+     ],
+     [
+      "37",
+      198
+     ],
+     [
+      "38 or 39",
+      994
+     ],
+     [
+      "40 or 41",
+      730
+     ]
+    ],
+    "n": 2134,
+    "primary": [
+     [
+      "LPT",
+      212
+     ],
+     [
+      "BFP",
+      605
+     ],
+     [
+      "EDC",
+      1065
+     ],
+     [
+      "WTL",
+      123
+     ],
+     [
+      "VJD",
+      79
+     ],
+     [
+      "SPH",
+      50
+     ]
+    ],
+    "stay": [
+     16.358333333333334,
+     12.316666666666666,
+     28.387500000000003
+    ]
+   }
+  },
+  "flagged_cfh": 4354,
+  "multiples_out": 92,
+  "outreach": {
+   "n": 2092,
+   "r": 46
+  },
+  "p_interaction": {
+   "feeding": 0.5250572827623099,
+   "gestation": 0.12288621328128689,
+   "primary reason": 0.2649922619912773
+  },
+  "sample_size": {
+   "alpha": 0.05,
+   "cut": 0.35,
+   "p1": 0.06,
+   "per_arm": 2237,
+   "power": 0.9
+  },
+  "usual_care": {
+   "n": 2134,
+   "r": 108
+  }
  },
  "trial": {
   "analysed_outreach": 2092,
