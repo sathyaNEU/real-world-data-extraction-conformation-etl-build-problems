@@ -1,10 +1,11 @@
-"""task210 build: python3 build.py writes target/, golden/, generator/figures.json and metadata.json."""
+"""task210 build: python3 build.py writes target/, golden/, generator/figures.json, metadata.json and target.zip."""
 import datetime as dt
 import json
 import os
 import shutil
 import sys
 import time
+import zipfile
 import numpy as np
 import world as W
 import pack
@@ -17,6 +18,17 @@ TGT = os.path.join(TASK, 'target')
 GLD = os.path.join(TASK, 'golden')
 PACK_MTIME = time.mktime((2026, 11, 30, 9, 15, 0, 0, 0, -1))
 GOLD_MTIME = time.mktime((2026, 12, 4, 15, 40, 0, 0, 0, -1))
+ZIP_DATE = (2026, 11, 30, 9, 15, 0)
+
+
+def cut_zip(src_dir, path):
+    """target.zip: the pack's files at the root, sorted, deflated, one fixed date and mode, so two builds match."""
+    with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(os.listdir(src_dir)):
+            zi = zipfile.ZipInfo(f, ZIP_DATE)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            z.writestr(zi, open(os.path.join(src_dir, f), 'rb').read())
 
 
 def p(key):
@@ -157,6 +169,7 @@ def main(seed=W.SEED):
                                   'date': '2026-11-30'} for k in pack.FILES},
     }
     json.dump(meta, open(os.path.join(TASK, 'metadata.json'), 'w'), indent=1, sort_keys=True)
+    cut_zip(TGT, os.path.join(TASK, 'target.zip'))
     return Wd, G
 
 

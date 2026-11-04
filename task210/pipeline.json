@@ -4,7 +4,7 @@
  "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
  "stage": 4,
- "stage_name": "CHECK (leak reader and determinism judge pending)",
+ "stage_name": "check",
  "updated": "2026-11-04",
  "seed": "AD33 (a data-centre battery's January FCR-D offer under a warranty throughput cap); the seed's world is undrawable on this objective while task402 holds energy-systems-utilities/grid-reliability-outage-analysis in the window (ban.subdomain), so the build moved to Physical and Environmental Sciences: a limestone quarry's January haul allocation under the village noise limit",
  "stump": "The default path files 15 ADTs because it apportions MP1's energy to the pilot's average haul movement, five in six of which ran in the pit or behind the bund; only the route state built per movement (load face and tip from each truck's GPS track against the survey) isolates the Haul road 2 movement's energy, which allows 3.",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 4: re-cut the isolated copies from task210/target.zip (sha256 fadbc34d...) and spawn together in the background the leak reader (general-purpose, sonnet, medium; brief stage4/reader/BRIEF.md in the build scratch) and the determinism judge (system prompt inlined, derivation.md before graded_blocks.md; brief stage4/judge/BRIEF.md); fix every finding in the generator in one pass, re-judge once on FIX_NOW, re-run every gate on the final cut (precut, voice-check, checks, verify, two byte-identical builds, figures_check, leak.py, guard heart and surface after the sibling-card procedure), cut target.zip last, then commit SHIPPED with target.zip and golden/ force-added.",
+ "resume": "Stage 4 round 1 running: leak reader (t210/stage4/reader) and determinism judge (t210/stage4/judge, judge_report.md) spawned together on target.zip fadbc34d.... The zip is now cut by generator/build.py (cut_zip, fixed date and mode), reproducing the same sha256; two builds byte-identical, checks 78 of 78, verify 0 failed. Next: collect both reports, fix every finding in one generator pass, re-judge once on FIX_NOW and re-read if a document or the prompt changed; on APPROVE re-run every gate on the final cut and ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
