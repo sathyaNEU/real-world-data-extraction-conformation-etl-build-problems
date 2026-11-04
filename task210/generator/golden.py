@@ -448,6 +448,9 @@ def compute(target=TARGET):
            "bearings_out_deg": {s: int(round(v)) for s, v in zip(sec["section"], sec["bearing_out"])},
            "fb_records": nfb, "fb_on_logged_pass_pct": int(round(100 * int(A["n_fb"].sum()) / nfb)),
            "glare_form_deg": {"cone": 25, "full_below": 12, "none_from": 25}, "G_one_decimal": round(G, 1),
+           "glare_factor": "1 + G x a x h",            # the multiplier project() applies on a sunny pass
+           "pick_dates": "%d %s to %d %s %d" % (pk["start"].day, pk["start"].strftime("%B"), pk["end"].day,
+                                                pk["end"].strftime("%B"), pk["end"].year),      # read from the pick PDF
            "pick_weekdays": len(days), "normals_sunshine_jan_feb_pct": int(round(100 * ps[1])) if ps[1] == ps[2] else None,
            "rate_per_passes": 1000, "slot_plan_rows": int(len(r)), "rows_without_slot": int(len(r)) - CAP,
            "ask_a_pair": {"minutes": PAIR_S // 60, "metres": PAIR_M}, "service_day_from_hour": DAY_HOURS}

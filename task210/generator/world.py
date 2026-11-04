@@ -5,7 +5,7 @@ firm-brake record, the operators, the fleet, the windows and the seed. Nothing h
 """
 import math
 
-SEED = 21019            # shipped seed (selected on the corrected-sun screens, asserted in checks.py)
+SEED = 21030            # shipped seed (selected on the corrected-blocks screens, asserted in checks.py)
 LAT0, LON0 = 38.700, -104.905   # Civic Center, Ashcombe (fictional city on the Front Range, America/Denver)
 TZ = "America/Denver"
 
@@ -52,6 +52,11 @@ HEADWAY = {"weekday": [(6 * 60, 6 * 60 + 30, 10.0), (6 * 60 + 30, 19 * 60, 7.5),
            "sunday": [(7 * 60, 23 * 60, 15.0)]}
 TWO_CAR = {"J": [(6 * 60 + 30, 9 * 60 + 30), (15 * 60 + 30, 18 * 60 + 45)]}  # Juniper peak strengthening, weekdays
 TWO_CAR_BLOCKS = ["J01", "J02"]                       # 11 Juniper cars: 9 leads and the 2 trailing cars
+# Blocking (the scheduling department's): each block pulls out of its line's yard at the outer end (Union Yard on the
+# Juniper, the Foundry depot at Foundry Loop), runs out and back with a scheduled layover at each terminal and pulls in
+# there (from the inner end after a deadhead); its operators relieve each other at the outer end (simulate.blocking)
+LAYOVER = {"J": (12.0, 19.0), "F": (9.0, 9.0)}       # minimum scheduled layover in minutes: inner end, outer end
+TURN_S = 120                                          # a car running late turns in no less than two minutes
 
 # Effects behind the firm-brake (FB) record, per pass
 BASE = {"street": 20.0, "reserved": 8.0}             # per 1,000 passes

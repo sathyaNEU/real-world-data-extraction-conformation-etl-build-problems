@@ -389,9 +389,108 @@ def main():
     z = zipfile.ZipFile(os.path.join(TASK, "target.zip"))
     check("target.zip holds exactly target/", sorted(n.split("/", 1)[1] for n in z.namelist()) == files)
     realism_sweep(files)
+    realism_blocks(P, Rr)
     three_rules(T, Rr, P, gold, A, sec, lat, lon, X, ps, coef, G)
     literal_steps(gold)
     print("ALL %d CHECKS PASS" % len(OK))
+
+
+def realism_blocks(P, Rr):
+    """realism 9: every block works its day the way a streetcar block does, on the clean truth and in target/ as shipped.
+    Out and back from its pull-out, with a layover at each terminal; pull-outs and pull-ins at the outer end (Union Yard,
+    the Foundry depot at Foundry Loop); a bad-ordered car pulls in at Foundry Loop and the spare takes the block's next
+    inbound trip; operators relieve each other at the outer end between trips; J01 and J02 couple and uncouple in Union
+    Yard; as many blocks as each day type's timetable needs."""
+    # the clean truth: the schedule's own blocks
+    tr = P.drop_duplicates("trip")[["date", "daytype", "line", "dir", "dep_min", "block", "run", "cars"]]
+    tr = tr.sort_values(["date", "block", "dep_min"]).reset_index(drop=True)
+    g = tr.groupby(["date", "block"])
+    check("realism 9: on the schedule every block runs out and back (no block-day repeats a direction)",
+          int((g["dir"].shift() == tr["dir"]).sum()) == 0)
+    rr = S.section_runs(S.geometry())
+    R = {(ln, d): sum(x for _, x in rr[(ln, d)]) / 60.0 for ln in ("J", "F") for d in ("O", "I")}
+    nxt = g["dep_min"].shift(-1)
+    lay = (nxt - tr["dep_min"] - [R[(ln, d)] for ln, d in zip(tr["line"], tr["dir"])]).dropna()
+    check("realism 9: scheduled layovers at the terminals run 9.9 to 27.6 minutes (Foundry 9.9 at each end, Juniper 12.6 or "
+          "more at Mesa Park and 20.1 or more at Union Yard)", 9.8 <= lay.min() and lay.max() <= 27.7,
+          "%.1f to %.1f" % (lay.min(), lay.max()))
+    nb = tr.groupby(["daytype", "date"])["block"].nunique().groupby(level=0).agg(["min", "max"])
+    check("realism 9: blocks per day follow the timetable (17 on weekdays, 13 on Saturdays, 9 on Sundays and holidays)",
+          nb.loc["weekday"].tolist() == [17, 17] and nb.loc["saturday"].tolist() == [13, 13] and nb.loc["sunday"].tolist() == [9, 9],
+          str(nb.to_dict()))
+    runs = g["run"].nunique()
+    last_e = tr[tr["run"].str.endswith("E")].groupby(["date", "block"])["dir"].last()
+    first_l = tr[tr["run"].str.endswith("L")].groupby(["date", "block"])["dir"].first()
+    check("realism 9: every block-day has an early and a late run, the early run ending on an outbound trip into the outer "
+          "end and the late run starting on the inbound trip out of it (the relief at Union Yard or Foundry Loop)",
+          (runs == 2).all() and (last_e == "O").all() and (first_l == "I").all())
+    two = tr[tr["cars"] == 2]
+    ok2 = True
+    for (d, b), x in two.groupby(["date", "block"]):
+        for a, z in W.TWO_CAR["J"]:
+            w = x[(x["dep_min"] >= a) & (x["dep_min"] < z)]
+            ok2 &= len(w) > 0 and w["dir"].iloc[0] == "I" and w["dir"].iloc[-1] == "O"
+    wk = tr[(tr["line"] == "J") & (tr["daytype"] == "weekday") & tr["block"].isin(W.TWO_CAR_BLOCKS)]
+    inwin = np.zeros(len(wk), dtype=bool)
+    for a, z in W.TWO_CAR["J"]:
+        inwin |= ((wk["dep_min"] >= a) & (wk["dep_min"] < z)).values
+    check("realism 9: J01 and J02 run coupled on exactly their weekday trips leaving 06:30 to 09:29 and 15:30 to 18:44, each "
+          "window opening inbound out of Union Yard and closing outbound into it (the trailing car couples in the yard)",
+          ok2 and bool(((wk["cars"] == 2).values == inwin).all()) and set(two["block"]) == set(W.TWO_CAR_BLOCKS))
+    # target/ as shipped
+    av = pd.read_parquet(os.path.join(TARGET, pack.FILES["avl"]))
+    av["block"] = av["block"].astype(str)
+    av["direction"] = av["direction"].astype(str)
+    t2 = av.groupby(["service_date", "trip_id"], as_index=False).agg(block=("block", "first"), dirn=("direction", "first"),
+                                                                      veh=("vehicle", "first"), nveh=("vehicle", "nunique"),
+                                                                      t0=("enter_local", "min"), t1=("exit_local", "max"))
+    t2 = t2.sort_values(["service_date", "block", "t0"]).reset_index(drop=True)
+    g2 = t2.groupby(["service_date", "block"])
+    gap = (t2["t0"] - g2["t1"].shift()).dt.total_seconds() / 60
+    rep = g2["dirn"].shift() == t2["dirn"]
+    check("realism 9: in the AVL log no block-day repeats a direction except across an onboard unit's drop-out (a gap of "
+          "more than a round trip: %d repeats)" % int(rep.sum()), bool((gap[rep] > 45).all()), "shortest %.0f min" % gap[rep].min())
+    turn = gap[~rep & gap.notna()]
+    check("realism 9: every turn at a terminal in the AVL log leaves the car two minutes or more", turn.min() >= 2.0 - 1 / 60,
+          "shortest %.2f min" % turn.min())
+    Y = pd.read_csv(os.path.join(TARGET, pack.FILES["yard"]))
+    Y["service_date"] = pd.to_datetime(Y["sheet_date"], format="%m/%d/%Y").dt.date
+    Y["lead"] = Y["pullout_cars"].astype(str).str.split("+").str[0].astype(int)
+    f1 = g2.first().reset_index()[["service_date", "block", "veh"]]
+    f1["service_date"] = pd.to_datetime(f1["service_date"]).dt.date
+    mj = f1.merge(Y[["service_date", "block", "lead"]], on=["service_date", "block"], how="outer", indicator=True)
+    check("realism 9: the yard sheet lists exactly the blocks the AVL log shows each day, each block's first trip on its "
+          "pull-out car", bool((mj["_merge"] == "both").all()) and bool((mj["veh"] == mj["lead"]).all()), "%d block-days" % len(mj))
+    wkd = GD.weekday_service()
+    plus = Y[Y["pullout_cars"].astype(str).str.contains(r"\+")]
+    check("realism 9: trailing cars are on the yard sheet only on weekday-timetable days, for J01 and J02",
+          all(pd.Timestamp(d) in wkd for d in plus["service_date"]) and set(plus["block"]) == set(W.TWO_CAR_BLOCKS))
+    ch = t2[(g2["veh"].shift().notna()) & (t2["veh"] != g2["veh"].shift())]
+    prevdir = g2["dirn"].shift()[ch.index]
+    check("realism 9: a car changes on a block only at Foundry Loop, between an outbound trip and the next inbound one, "
+          "never inside a trip (%d changes)" % len(ch), (ch["dirn"] == "IB").all() and (prevdir == "OB").all()
+          and ch["block"].str.startswith("F").all() and int((t2["nveh"] > 1).sum()) == 0)
+    rel = pd.read_csv(os.path.join(TARGET, pack.FILES["releases"]))
+    rel["released"] = pd.to_datetime(rel["released"])
+    lastp = av.groupby([pd.to_datetime(av["service_date"]), av["vehicle"].astype(int)])["exit_local"].max()
+    after = [r.released > lastp.get((r.released.normalize(), int(r.car)), pd.Timestamp("2000-01-01")) for r in rel.itertuples()]
+    check("realism 9: each released car was released after its last pass that day (it had pulled in)", all(after), "%d releases" % len(rel))
+    # reliefs: no trip's recorder events carry two operators
+    E = pd.read_csv(os.path.join(TARGET, pack.FILES["edr"]), dtype={"operator_badge": str})
+    cards = pd.read_csv(os.path.join(TARGET, pack.FILES["cards"]), dtype={"badge": str}).drop_duplicates("badge")
+    E = E.merge(cards[["badge", "operator_no"]], left_on="operator_badge", right_on="badge", how="left")
+    E["t"] = GD.to_local(E["event_time_utc"]).astype("datetime64[ns]")
+    E["car"] = E["car"].astype("int64")
+    pp = av[["vehicle", "trip_id", "service_date", "enter_local", "exit_local"]].copy()
+    pp["vehicle"] = pp["vehicle"].astype("int64")
+    pp["enter_local"] = pp["enter_local"].astype("datetime64[ns]")
+    pp["exit_local"] = pp["exit_local"].astype("datetime64[ns]")
+    x = pd.merge_asof(E.sort_values("t"), pp.sort_values("enter_local"), left_on="t", right_on="enter_local", left_by="car",
+                      right_by="vehicle", direction="backward")
+    x = x[(x["t"] <= x["exit_local"] + pd.Timedelta(seconds=20)).fillna(False)]
+    two_ops = x.groupby(["service_date", "trip_id"])["operator_no"].nunique()
+    check("realism 9: no trip's recorder events carry two operators (reliefs fall between trips; %d trips with two or more "
+          "events)" % int((x.groupby(["service_date", "trip_id"]).size() > 1).sum()), int((two_ops > 1).sum()) == 0)
 
 
 def steps_text():
@@ -649,7 +748,7 @@ def three_rules(T, Rr, P, gold, A, sec, lat, lon, X, ps, coef, G):
     # R3a: the analyst test, the default path on the clean truth files the named wrong slate
     rung1 = key(M.slate(M.reader_a(P)))
     check("R3a the default path (rates netted for operators, darkness, sky and school, October carried) files "
-          "F3-I AM, F4-I AM, J1-O AM and J2-O AM on the clean truth", rung1 == {"F3-I AM", "F4-I AM", "J1-O AM", "J2-O AM"},
+          "F3-I AM, F4-O PM, J2-O AM and J3-O AM on the clean truth", rung1 == {"F3-I AM", "F4-O PM", "J2-O AM", "J3-O AM"},
           str(sorted(rung1)))
     # R3b: the decisive step alone moves the default path's model onto the golden; each lower rung's correction does not
     g_only, _ = M.golden(P)

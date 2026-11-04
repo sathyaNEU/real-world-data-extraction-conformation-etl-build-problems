@@ -44,8 +44,9 @@ def realised(P, seed):
     """The actual running against the schedule, on its own random stream: each trip leaves its outer stop late (never
     early; a gamma lateness with a mean near 45 seconds and now and then a disruption of several minutes) and each
     section's run varies around its scheduled time (street sections more, with a stop at a signal on some passes;
-    reserved track less). The AVL log, the recorder's event times and the run sheets follow the actual running; the
-    hazard truth stays on the schedule, a minute or two from it."""
+    reserved track less). A car that comes in late leaves on its block's next trip no sooner than it can turn
+    (W.TURN_S), so a disruption carries into the block's next trip. The AVL log, the recorder's event times and the run
+    sheets follow the actual running; the hazard truth stays on the schedule, a minute or two from it."""
     r = np.random.default_rng(seed + 41)
     Q = P[["trip", "entry_local", "exit_local", "track"]].sort_values(["trip", "entry_local"], kind="mergesort")
     tr = np.sort(Q["trip"].unique())
@@ -56,6 +57,21 @@ def realised(P, seed):
     fac = np.exp(r.normal(0.0, 1.0, len(Q)) * np.where(street, 0.07, 0.035))
     sig = np.where(street & (r.random(len(Q)) < 0.16), r.uniform(12.0, 50.0, len(Q)), 0.0)
     rt = np.round(sched * fac + sig)
+    # the knock-on along each block: same draws, a departure held until the car has come in and turned
+    trun = pd.Series(rt).groupby(Q["trip"].values).sum().reindex(tr).values
+    t0s = Q.groupby("trip")["entry_local"].min().reindex(tr).values.astype("datetime64[s]").astype(np.int64)
+    bk = P.drop_duplicates("trip").set_index("trip").reindex(tr)
+    key = (bk["date"].values.astype("datetime64[D]").astype(np.int64) * 1000
+           + pd.factorize(bk["block"].values, sort=True)[0])
+    dep, arr = t0s + late, t0s + late + trun
+    prev = -1
+    for i in np.lexsort((t0s, key)):
+        if prev >= 0 and key[i] == key[prev] and dep[i] < arr[prev] + W.TURN_S:
+            push = arr[prev] + W.TURN_S - dep[i]
+            late[i] += push
+            dep[i] += push
+            arr[i] += push
+        prev = i
     cs = pd.Series(rt, index=Q.index).groupby(Q["trip"].values).cumsum().values - rt
     t0 = Q.groupby("trip")["entry_local"].transform("min")
     enter = t0 + pd.to_timedelta(late[np.searchsorted(tr, Q["trip"].values)] + cs, unit="s")
@@ -79,10 +95,12 @@ def records(T, seed=W.SEED):
     lead_off = {(c, d): float(np.clip(rng.normal(0, 3), -8, 8)) for c in cars for d in days}
     trail_off = {(int(r.trail_car), r.date): float(rng.uniform(-210, 210)) for r in C[C["trail_car"].notna()].itertuples()}
 
-    # in-service swaps: on some Foundry weekdays a car is bad-ordered in service, runs in to the depot and the day's
-    # spare takes over its block for the rest of the day; the yard sheet keeps the pull-out car (A2)
+    # in-service swaps: on some Foundry weekdays a car is bad-ordered in service; it runs on to Foundry Loop and pulls
+    # in to the depot there, and the day's spare pulls out onto the block's next inbound trip and runs it for the rest
+    # of the day; the yard sheet keeps the pull-out car (A2)
     P = P.copy()
     swaps = []
+    sdep = P["date"] + pd.to_timedelta(P["dep_min"], unit="m")          # each trip's scheduled departure
     for d in days:
         if pd.Timestamp(d).weekday() >= 5 or rng.random() >= W.SWAP_P:
             continue
@@ -91,7 +109,9 @@ def records(T, seed=W.SEED):
         r = fb.iloc[int(rng.integers(0, len(fb)))]
         t_sw = pd.Timestamp(d) + pd.Timedelta(minutes=int(rng.integers(9 * 60, 13 * 60 + 30)))
         spare = int(rng.choice(spares))
-        m = (P["date"] == d) & (P["block"] == r["block"]) & (P["entry_local"] >= t_sw)
+        on = (P["date"] == d) & (P["block"] == r["block"])
+        t_in = sdep[on & (P["dir"] == "I") & (sdep > t_sw)].min()
+        m = on & (sdep >= t_in)
         P.loc[m, "lead_car"] = spare
         swaps.append((pd.Timestamp(d), r["block"], int(r["lead_car"]), spare, P.loc[m, "entry_local"].min()))
     SW = pd.DataFrame(swaps, columns=["date", "block", "bad_car", "spare", "t_first"])
