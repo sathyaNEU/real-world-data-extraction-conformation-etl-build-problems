@@ -37,7 +37,7 @@ Fuel in each hydrant segment moved only when a pit downstream of it drew, so the
    - International apron, 13: CB418322, NG2690192, CB418330, NG2690196, CB418340, CB418351, CB418363, CB418366, CB418373, CB418375, CB418384, NG2690224, NG2690241
    - Cargo apron, 4: NG2690213, NG2690216, NG2690238, NG2690240
    - Remote stands, 3: CB418378, CB418400, CB418417
-4. Refueller uplifts (ticket, operator, refueller, litres delivered, batch litres):
+4. Refueller uplifts (ticket, operator, refueller, litres delivered, batch litres, each graded within 10 L):
    - NG2690190, Northcove Air, T-31 (tractor N-7), 11,209 L, 9,910 L
    - CB418327, Brightwing Airlines, RF-23, 6,313 L, 3,220 L
    - NG2690197, Sablewood Air, T-31 (tractor N-7), 7,724 L, 6,830 L
@@ -51,6 +51,29 @@ Fuel in each hydrant segment moved only when a pit downstream of it drew, so the
    - NG2690234, Vireo Airlines, T-35 (tractor N-7), 2,694 L, 330 L
    - CB418422, Tallowmere Air, RF-24, 2,817 L, 110 L
    - CB418424, Tallowmere Air, RF-24, 3,279 L, 120 L
+5. Batch litres on the hydrant rows: a row the batch filled whole carries its litres delivered at 15 C, graded within 10 L; the rows the batch's head or tail crossed during the uplift carry these batch litres (of the litres delivered), each graded within the band shown, which holds every reading of the litres basis, the flushes and the line-up minute:
+   - CB418318: 3,150 L of 12,880 L, within 400 L
+   - CB418319: 10,150 L of 20,438 L, within 400 L
+   - CB418321: 6,210 L of 11,573 L, within 400 L
+   - CB418322: 17,140 L of 67,462 L, within 400 L
+   - CB418328: 1,270 L of 7,608 L, within 300 L
+   - CB418329: 5,280 L of 8,165 L, within 300 L
+   - CB418366: 63,730 L of 70,309 L, within 400 L
+   - CB418378: 6,700 L of 8,175 L, within 400 L
+   - CB418384: 24,120 L of 62,402 L, within 300 L
+   - CB418385: 6,670 L of 10,426 L, within 900 L
+   - CB418386: 5,140 L of 8,870 L, within 900 L
+   - CB418391: 3,140 L of 12,371 L, within 300 L
+   - CB418393: 2,890 L of 12,497 L, within 300 L
+   - CB418400: 7,660 L of 11,251 L, within 300 L
+   - CB418417: 2,660 L of 9,840 L, within 300 L
+   - NG2690201: 15,270 L of 19,280 L, within 300 L
+   - NG2690213: 6,630 L of 64,051 L, within 300 L
+   - NG2690216: 24,220 L of 31,535 L, within 300 L
+   - NG2690219: 19,740 L of 22,855 L, within 2,500 L
+   - NG2690224: 26,230 L of 94,012 L, within 300 L
+   - NG2690240: 15,090 L of 47,515 L, within 2,700 L
+   - NG2690241: 6,540 L of 106,595 L, within 300 L
 
 ### hydrant_resumption_plan.pdf
 

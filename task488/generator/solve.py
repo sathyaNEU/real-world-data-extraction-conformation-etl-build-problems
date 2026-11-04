@@ -95,9 +95,27 @@ class Net:
 
 
 # ------------------------------------------------------------------------------------------------ the records
-def hydrant_draws(target, net, litres="15c"):
-    """Every draw on the hydrant from the export's opening to the suspension: (key, point, start, end, litres)."""
+def correction_slope(target):
+    """The volume correction per degree, read off Corbel's hydrant tickets (gross and 15 C litres at the printed fuel
+    temperature): the least-squares slope through the origin of (15 C over gross, less one) on (15 less the
+    temperature), in exact rationals."""
+    sxy = sxx = Fraction(0)
+    for r in rows_csv(os.path.join(target, F["corbel_tickets"])):
+        if r["tkt_status"] == "VOID" or not r["loc_code"].startswith("P-"):
+            continue
+        x = 15 - Fraction(r["fuel_degc"])
+        y = Fraction(int(r["litres_15c"]), int(r["litres_gross"])) - 1
+        sxy += x * y
+        sxx += x * x
+    return sxy / sxx
+
+
+def hydrant_draws(target, net, litres="15c", drains=True):
+    """Every draw on the hydrant from the export's opening to the suspension: (key, point, start, end, litres).
+    litres '15c' moves the 15 C litres both exports print; 'gross' moves Corbel's litres at fuel temperature and
+    Northgarth's at 15 C; 'gross_all' also takes Northgarth's back to fuel temperature by Corbel's own correction."""
     out = []
+    slope = correction_slope(target) if litres == "gross_all" else None
     for r in rows_csv(os.path.join(target, F["corbel_tickets"])):
         if r["tkt_status"] == "VOID" or not r["loc_code"].startswith("P-"):
             continue
@@ -109,8 +127,13 @@ def hydrant_draws(target, net, litres="15c"):
     for r in sheet(os.path.join(target, F["ng_tickets"]), "Tickets"):
         if not str(r["Unit ID"]).startswith("ND-"):
             continue
+        v = int(r["Vol @15C (L)"])
+        if slope is not None:
+            v = rnd(Fraction(v) / (1 + slope * (15 - Fraction(str(r["Temp (C)"])))), 1)
         out.append((r["Ticket No"], net.pit_of_stand[str(r["Stand No"])], r["Start (UTC)"] - UTC_OFF,
-                    r["Stop (UTC)"] - UTC_OFF, int(r["Vol @15C (L)"])))
+                    r["Stop (UTC)"] - UTC_OFF, v))
+    if not drains:
+        return out
     for r in rows_csv(os.path.join(target, F["corbel_checks"])):
         if r["chk_type"] == "IDLE PIT FLUSH":
             t = when(r["chk_date"], r["chk_time"])
@@ -220,10 +243,14 @@ def trace(net, draws, on, off, upto=SUSPENSION):
     return took, stand, seg_batch
 
 
-def hydrant(target, litres="15c"):
+def hydrant(target, litres="15c", drains=True, shift=(0, 0)):
+    """litres: '15c' moves every ticket's litres at 15 C (the one basis both exports print); 'gross' moves Corbel's
+    litres at fuel temperature where its export prints them. drains=False leaves the flushes and the low point drains
+    out. shift moves the two line-up instants by so many seconds (the readings of the historian's minute)."""
     net = Net(target)
-    draws = hydrant_draws(target, net, litres)
+    draws = hydrant_draws(target, net, litres, drains)
     on, off = hydrant_lineups(target)
+    on, off = on + dt.timedelta(seconds=shift[0]), off + dt.timedelta(seconds=shift[1])
     took, stand, seg_batch = trace(net, draws, on, off)
     tickets = {d[0] for d in draws if not d[0].startswith(("flush", "drain"))}
     return {"net": net, "draws": draws, "on": on, "off": off, "segments": seg_batch,
@@ -284,11 +311,27 @@ def reckoning(target, hy=None):
 
 
 # ------------------------------------------------------------------------------------------------ the refuellers
-def refuellers(target, pairing="log", transfer=True, header=True):
+def _take(queue, v):
+    """v litres off the front of a first-in first-out tank: the runs taken, oldest first."""
+    out, need = [], Fraction(v)
+    while need > 0 and queue:
+        lab, w = queue[0]
+        take = min(w, need)
+        out.append([lab, take])
+        if take == w:
+            queue.pop(0)
+        else:
+            queue[0][1] = w - take
+        need -= take
+    return out
+
+
+def refuellers(target, pairing="log", transfer=True, header=True, tank_model="mixed"):
     """Each refueller tank's batch litres at the suspension and the batch litres each refueller uplift delivered.
     pairing='log' maps a tractor's tickets to the trailer the vehicle log coupled; 'register' to the equipment
     register's usual trailer. transfer=False leaves the recorded transfer out; header=False reads every load as the
-    tank the rack was lined up to at its start."""
+    tank the rack was lined up to at its start. tank_model='mixed' takes each tank as one mixed body of fuel (QM-09
+    2.3); 'fifo' draws every delivery from the oldest fuel in the tank, the reading QM-09 rules out."""
     eq = sheet(os.path.join(target, F["equipment"]), "Equipment")
     rigid = {r["Fleet no"] for r in eq if str(r["Equipment type"]).startswith("Refueller, rigid")}
     usual = {r["Fleet no"]: r["Usual trailer"] for r in eq if r["Usual trailer"] and r["Usual trailer"] != "Spare"}
@@ -337,6 +380,7 @@ def refuellers(target, pairing="log", transfer=True, header=True):
     events.sort(key=lambda e: (e[0], e[1]))
     on, off = rack_lineups(target)
     hdr = [["other", Fraction(net_rack_fill(target))]] if header else []
+    fifo = {k: [["other", v[1]]] for k, v in tanks.items()}
     delivered = {}
     for t, _, kind, x in events:
         if kind == "load":
@@ -344,26 +388,23 @@ def refuellers(target, pairing="log", transfer=True, header=True):
             lab = "batch" if on <= t < off else "other"
             if header:
                 hdr.append([lab, Fraction(v)])
-                need, got = Fraction(v), Fraction(0)
-                while need > 0:
-                    l, w = hdr[0]
-                    take = min(w, need)
-                    if l == "batch":
-                        got += take
-                    if take == w:
-                        hdr.pop(0)
-                    else:
-                        hdr[0][1] = w - take
-                    need -= take
+                parts = _take(hdr, v)
             else:
-                got = Fraction(v) if lab == "batch" else Fraction(0)
+                parts = [[lab, Fraction(v)]]
+            got = sum(w for l, w in parts if l == "batch")
             tk = tanks[tank]
             tk[0] += got
             tk[1] += v - got
+            fifo[tank] += [list(p) for p in parts]
         elif kind == "xfer":
             src, dst, v = x
             s_, d_ = tanks[src], tanks[dst]
-            b = Fraction(v) * s_[0] / (s_[0] + s_[1])
+            if tank_model == "fifo":
+                parts = _take(fifo[src], v)
+                fifo[dst] += parts
+                b = sum(w for l, w in parts if l == "batch")
+            else:
+                b = Fraction(v) * s_[0] / (s_[0] + s_[1])
             s_[0] -= b
             s_[1] -= v - b
             d_[0] += b
@@ -372,7 +413,10 @@ def refuellers(target, pairing="log", transfer=True, header=True):
             key, agent, airline, unit, ut, v = x
             tank = tank_of(unit, ut)
             tk = tanks[tank]
-            b = Fraction(v) * tk[0] / (tk[0] + tk[1])
+            if tank_model == "fifo":
+                b = sum(w for l, w in _take(fifo[tank], v) if l == "batch")
+            else:
+                b = Fraction(v) * tk[0] / (tk[0] + tk[1])
             tk[0] -= b
             tk[1] -= v - b
             if b > 0:
@@ -383,6 +427,28 @@ def refuellers(target, pairing="log", transfer=True, header=True):
 
 def net_rack_fill(target):
     return sheet(os.path.join(target, F["register"]), "Rack")[0]["Line fill (L)"]
+
+
+def row_bands(target, hy=None):
+    """For each hydrant row the batch's head or tail crossed during the uplift, the golden batch litres and the band
+    that holds every reading of the records' conventions: litres at fuel temperature where printed or recovered by the
+    exports' own correction, the flushes and drains left out, each line-up instant a minute and a half either side. The
+    band is the widest departure plus 250 L, rounded up to a whole 100 L."""
+    hy = hy or hydrant(target)
+    tk = tickets(target)
+    variants = [hydrant(target, litres="gross"), hydrant(target, litres="gross_all"), hydrant(target, drains=False)]
+    for a in (-90, 90):
+        for b in (-90, 90):
+            variants.append(hydrant(target, shift=(a, b)))
+    out = {}
+    for key, gold in hy["took"].items():
+        full = tk[key]["litres_15c"]
+        if gold >= full - 5:
+            continue
+        dev = max(abs(v["took"].get(key, 0) - gold) for v in variants)
+        out[key] = {"batch_10": rnd(gold, 10), "litres_15c": full,
+                    "band": -(-(int(dev) + 251) // 100) * 100, "departure": dev}
+    return out
 
 
 # ------------------------------------------------------------------------------------------------ the answer
@@ -420,3 +486,4 @@ def main(target):
 
 if __name__ == "__main__":
     main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target"))
+

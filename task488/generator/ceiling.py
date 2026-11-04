@@ -3,7 +3,8 @@ target/ alone. The cracker lands the call (the per-segment front) and takes the 
 tank mixed, the rack line carried, but Northgarth's tractor tickets keyed to the equipment register's usual trailer
 and the RF-23 transfer, which only Corbel's equipment log records, not booked. The mirror stops at rung 0 (one line
 fill through the pump station's meter) and reads the refuellers the cracker's way with the rack by its line-up times.
-Each figure is a hit when it equals the golden at the prompt's rounding; planning weights 38 / 7 / 55.
+Each figure is a hit when it equals the golden at the prompt's rounding; planning weights 38 / 7 / 55, the refuellers
+to drain counted in the call (each named and the rest clear) and their litres, uplifts and airline litres in the asks.
 
     python3 task488/generator/ceiling.py [target_dir]
 """
@@ -30,7 +31,7 @@ def ask_figures(rf):
 def rows(gold, other):
     gh, gn, ga = gold
     oh, on, oa = other
-    out = [("A: refuellers holding the batch", ", ".join(sorted(oh)), ", ".join(sorted(gh)))]
+    out = []
     for k in sorted(gh):
         out.append(("A: %s batch litres" % k, oh.get(k, 0), gh[k]))
     out.append(("B: refueller uplifts that delivered batch fuel", on, gn))
@@ -60,23 +61,32 @@ def main(target):
     gold_sections = sorted(s for s, v in hy["standing"].items() if v > 0)
     gold_litres = {s: S.rnd(hy["standing"][s], 100) for s in gold_sections}
     # the main call's criteria: each holding section named, the other sections clear, each holding section's litres,
-    # the hydrant uplifts that took the batch
-    main_n = len(gold_sections) * 2 + 2
+    # the hydrant uplifts that took the batch; each refueller to drain named and the other refuellers clear (the
+    # refuellers are part of the call: the prompt asks where the batch stands refueller by refueller)
+    gold_tanks = sorted(g[0])
+
+    def tank_hits(view):
+        held = set(view[0])
+        return sum(1 for k in gold_tanks if k in held) + (1 if held <= set(gold_tanks) else 0)
+    main_n = len(gold_sections) * 2 + 2 + len(gold_tanks) + 1
     mirror_sections = []                       # the reckoning clears the whole hydrant by the suspension
     m_main = sum(1 for s in gold_sections if s in mirror_sections) * 2 + (1 if not mirror_sections else 0) \
-        + (1 if r0["uplifts"] == len(hy["took"]) else 0)
+        + (1 if r0["uplifts"] == len(hy["took"]) else 0) + tank_hits(mi)
+    c_main = len(gold_sections) * 2 + 2 + tank_hits(cr)
     r = 38.0 * m_main / main_n
+    rc = 38.0 * c_main / main_n
     lc, lm = kept_c / float(n), kept_m / float(n)
-    crk = 38 + 7 + 55 * lc
+    crk = rc + 7 + 55 * lc
     mir = r + 7 + 55 * lm
     print()
     print("asks: the cracker keeps %d of %d ask figures, the mirror %d of %d" % (kept_c, n, kept_m, n))
-    print("main call: golden %s (%s) and %d hydrant uplifts; the mirror clears the hydrant at %s and notifies %d, "
-          "keeping %d of %d call criteria" % (", ".join(gold_sections), ", ".join("%s %s L" % (s, "{:,}".format(v))
-                                                                               for s, v in gold_litres.items()),
-                                               len(hy["took"]), r0["edges"][1].strftime("%H:%M"), r0["uplifts"],
-                                               m_main, main_n))
-    print("Pair ceiling: %.1f (cracker %.1f on the call, mirror %.1f off it; r %.2f)" % ((crk + mir) / 2, crk, mir, r))
+    print("main call: golden %s (%s), %d hydrant uplifts and refuellers %s; the cracker keeps %d of %d call criteria "
+          "(it misses RF-24); the mirror clears the hydrant at %s, notifies %d and names %s, keeping %d of %d"
+          % (", ".join(gold_sections), ", ".join("%s %s L" % (s, "{:,}".format(v)) for s, v in gold_litres.items()),
+             len(hy["took"]), ", ".join(gold_tanks), c_main, main_n, r0["edges"][1].strftime("%H:%M"), r0["uplifts"],
+             ", ".join(sorted(mi[0])), m_main, main_n))
+    print("Pair ceiling: %.1f (cracker %.1f on the hydrant call, mirror %.1f off it; call shares %.2f and %.2f)"
+          % ((crk + mir) / 2, crk, mir, rc, r))
     print("Mirror leakage: %.1f per cent of ask weight" % (100 * lm))
     return {"pair": (crk + mir) / 2, "cracker": crk, "mirror": mir, "leak": 100 * lm, "kept_c": kept_c, "n": n,
             "rows": crows}

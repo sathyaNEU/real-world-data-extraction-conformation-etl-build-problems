@@ -190,8 +190,10 @@ Pier B's closed tail still hold 11,000, 3,600 and 6,600 L of the batch at 05:30 
   statistic (sorted by draws after 06:00 or after 15:40, or by draws per line fill after 15:40, it is the 2nd, 3rd
   and 5th of six branches; by line fill the 2nd, 4th and 6th; asserted in `checks.py`).
 - **Pins:** QM-09 (the corporation's quality manual) and the supplier's recall notice file the WHAT (what is drained,
-  who is told, in any quantity, litres at 15 C, the window from release to suspension); no filed sentence names a line
-  fill, a turnover, a front or a window for the batch's position.
+  who is told, in any quantity, litres at 15 C, the window from release to suspension, and in 2.3 that a refueller
+  holds product from every batch it has received since it was last drained to empty, its contents mixed, which is the
+  refuellers' population and says nothing of the hydrant); no filed sentence names a line fill, a turnover, a front or
+  a window for the batch's position.
 
 ## Readability screen
 
@@ -217,7 +219,7 @@ turnover, product change check, flushing).
 | SF3 | the as-of instant | 05:30, the suspension | 05:12, the recall notice | same call: no draw between them reaches B's tail, E or F (asserted) | QM-09 3.2: when fuelling is suspended |
 | SF4 | "section" | the register's sections (farm header, main, six branches) | segments or pits | same call at the section grain; the plan lists the segments too | the register's Sections sheet |
 | SF5 | the dead legs past each branch's last pit | part of their section, holding the August batch | holding whatever the branch holds | same call (no dead leg holds the batch, asserted) | the low point drain record's densities |
-| SF6 | an uplift's draw between its start and end | a steady rate, as the SCADA minute flows show | all at its start, middle or end minute | same sections and litres; the 73 moves by 1, 1 and 1 (asserted) | the SCADA flow steps by each uplift's rate for its minutes |
+| SF6 | an uplift's draw between its start and end | a steady rate, as the SCADA minute flows show | all at its start, middle or end minute | same sections and litres; the 73 moves by 1, 1 and 1 (asserted) | the SCADA flow steps by each uplift's rate for its minutes (fit within 0.3 per cent, asserted); the judge's pass 1 read this closure as the data's own |
 | SF7 | the litres a pipe moves | litres at fuel temperature | litres at 15 C as Northgarth prints them | same call, same 100 L cells (asserted) | convergence |
 | SF8 | the idle-pit flushes and the low point drains | draws on the hydrant | ignored | same call (asserted) | convergence |
 | SF9 | the line-up instants | the shift log's 06:00, 12:20 and 15:40 | the SCADA valve minute, 90 s either side | same call (asserted) | convergence |
@@ -227,7 +229,8 @@ turnover, product change check, flushing).
 | SF13 | litres at 15 C in the return | each ticket's 15 C litres, the batch's share of them | gross litres | other litres per row | QM-09 3.3 and the recall return's columns |
 | SF14 | the hydrant's standing litres | litres of pipe at line temperature | the same at 15 C | same 100 L cells (asserted) | convergence |
 | SF15 | "refueller" | the tank vehicle holding the fuel: a rigid refueller or an articulated refueller's trailer | the tractor a ticket names | other refueller names | the equipment register's type and compartment columns |
-| SF16 | a refueller tank's contents | one mixed body of fuel (single compartment) | each delivery from the latest load | other litres | the equipment register's compartments column |
+| SF16 | a refueller tank's contents | one mixed body of fuel: a refueller holds product from every batch it has received since it was last drained to empty | first in, first out (each delivery drawn from the oldest fuel aboard), or each delivery from the latest load | FIFO drops RF-24 and T-35 from the drain list (RF-23 and T-31 only, 6 refueller uplifts against 13) and moves every refueller litre; the latest-load reading moves every litre | QM-09 2.3: "A refueller holds product from every batch it has received since it was last drained to empty, its contents mixed"; both readings computed and the sentence's literal population asserted in `checks.py` |
+| SF17 | the batch litres on a hydrant row the batch's head or tail crossed during the uplift | the steady-rate trace on 15 C litres | litres at fuel temperature (Corbel's printed or Northgarth's recovered by Corbel's own correction), the flushes left out, the line-up minute 90 s either side | the 22 partial rows move: the two rows the batch's tail crossed (NG2690219, NG2690240) by up to 2,185 and 2,423 L, CB418385 and CB418386 by 645 and 617 L, the rest by 144 L or less; the sections, their 100 L cells and the 73 do not move | the deliverable answers grade each partial row within its own band (the widest departure plus 250 L, rounded up to 100 L: 300 or 400 L, 900 L for CB418385 and CB418386, 2,500 and 2,700 L for the tail rows) and every whole row within 10 L; the clean truth's readings asserted inside every band, the least room 146 L |
 
 ## Ladder
 
@@ -302,11 +305,11 @@ every other reading (SF1 to SF16) is either refuted by a quoted sentence or conv
 
 ## Ask sheet
 
-Planning weights 38 / 7 / 55. The call's own construction (the sections, their litres and the 73 hydrant uplifts) is
-scored with it. The asks are the refueller half of the call's case, which QM-09 3.2 and 4.1 require beside the
-hydrant: A, the batch litres each refueller holds at 05:30 (the set and four litres); B, the refueller uplifts that
-delivered batch fuel (the return's refueller rows, 13); C, the batch litres the refuellers delivered to each airline
-(6 figures).
+Planning weights 38 / 7 / 55. The call's own construction (the sections, their litres, the 73 hydrant uplifts, and
+the refuellers to drain, each named with the rest clear) is scored with it: the prompt asks where the batch stands
+refueller by refueller. The asks are the refueller figures QM-09 3.2 and 4.1 require beside the drain list: A, the
+batch litres each refueller holds at 05:30 (four litres); B, the refueller uplifts that delivered batch fuel (the
+return's refueller rows, 13); C, the batch litres the refuellers delivered to each airline (6 figures).
 
 - **Ask A, the refuellers holding the batch:** H18 home: what is drained before reuse (QM-09 3.2). Path, the columns
   the golden reads: the rack loading log (tank_unit, load_date, start_local, loaded_l_15c), the equipment register
@@ -339,7 +342,6 @@ delivered batch fuel (the return's refueller rows, 13); C, the batch litres the 
 
 | Ask figure | Cracker (the equipment register's pairing, the transfer unbooked, the rack line carried) | Golden | Cracker |
 |---|---|---|---|
-| A: refuellers holding the batch | RF-23, T-31, T-35 | RF-23, RF-24, T-31, T-35 | miss |
 | A: RF-23 batch litres | 5,030 | 3,070 | miss |
 | A: RF-24 batch litres | 0 | 310 | miss |
 | A: T-31 batch litres | 1,140 | 14,680 | miss |
@@ -352,8 +354,9 @@ delivered batch fuel (the return's refueller rows, 13); C, the batch litres the 
 | C: Tallowmere Air | 2,510 | 3,020 | miss |
 | C: Vireo Airlines | 2,380 | 330 | miss |
 
-Pair ceiling: 28.4 (the cracker 45.0 on the call keeping no ask figure; the mirror 11.8 at rung 0, which clears the
-hydrant at 18:19 and notifies 64 uplifts, keeping one of eight call criteria and no ask figure; r 4.75).
+Pair ceiling: 30.4 (the cracker 42.1: the hydrant call landed, the refuellers to drain named but for RF-24, 12 of
+13 call criteria and no ask figure; the mirror 18.7 at rung 0, which clears the hydrant at 18:19, notifies 64 uplifts
+and drains RF-23 and T-31 only, 4 of 13 call criteria and no ask figure).
 Mirror leakage: 0.0 per cent of ask weight (the mirror reads the refuellers the cracker's way and the rack by its
 line-up times, and keeps nothing).
 Measured by: generator/ceiling.py, on the cut pack (target.zip of this build).
@@ -372,6 +375,16 @@ Measured by: generator/ceiling.py, on the cut pack (target.zip of this build).
 - Cleared at stage 3: sweep 12 (QM-09 and the notice repeated generic column names: the data files now carry their
   systems' coded field names), sweep 13 (the batch number read as a graded figure in metadata: blocks 1 and 4 of the
   write-up say "the recalled batch"), sweep 8 (temperature columns renamed from `temp` to `degc`).
+- The stage-4 reader (on target.zip c7c2288a): nothing quoted for question 1, no ranking file, no helper file, no
+  answer-reading figure; question 5 names QM-09 3.2 and 4.1 and the prompt as fixing the population, the instant, the
+  unit and the rounding, executing to the golden's population; question 6 an analytical choice, nothing planted.
+- Ruling: the shift log's product change checks ("one hydrant line fill on the meter") are the Operator's own check at
+  P-A01, true where they were taken, and never a declaration that the hydrant is clear.
+- Ruling: the stands 27 and 28 closure entry is ordinary airport operations traffic in a farm shift log.
+- Ruling: the reader's realism notes (drain and filter values in narrow bands, Northgarth's log in UTC against
+  Corbel's local time) are plausible differences between two agents' systems and an operator's routine readings.
+- After the reader: QM-09 2.3 gained one sentence (the commingling sentence of SF16), the only document that changed;
+  `leak.py` re-run on the new cut.
 
 ## Tried and rejected
 
@@ -446,4 +459,13 @@ Measured by: generator/ceiling.py, on the cut pack (target.zip of this build).
   - Generic column names (agent, batch, equipment, litres, operator, registration, tank): QM-09 and the recall notice
     used them as ordinary words and `leak.py` read both documents as describing the data; the systems' coded field
     names replaced them.
-
+- 2026-11-04, stage 4 residuals on architecture 2 (after the reader and the judge, both clean):
+  - Converging the 73 across atomic draw orderings by moving the marginal uplifts: the SCADA minute flows already fix
+    the steady-rate reading (checks.py asserts the fit and the count's shift), and moving uplifts would move graded
+    figures and the samples; not pursued, on the coordinator's word.
+  - Grading the partial hydrant rows' batch litres at 10 L: on the records' own readings (the litres basis, the
+    flushes, the line-up minute) the two tail rows move by up to 2,423 L, two Pier A rows by about 630 L and the rest
+    by up to 144 L, so each partial row now carries its own band in the deliverable answers.
+  - The refueller tank closed only by the compartment count: one compartment rules out a per-compartment reading and
+    not a first-in first-out tank, which drops RF-24 and T-35 from the drain list; QM-09 2.3 now files the
+    commingling sentence.

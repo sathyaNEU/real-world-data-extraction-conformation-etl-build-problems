@@ -44,6 +44,28 @@ def headers(target):
     return out
 
 
+def full_received(target):
+    """Batch litres each refueller tank took in from the rack or a transfer since its weekly dip (FIFO or mixed alike:
+    what came in, not what stayed)."""
+    rf = S.refuellers(target, tank_model="fifo")
+    got = {k: 0 for k in rf["held"]}
+    import datetime as dt
+    with open(os.path.join(target, N.FILES["rack"]), encoding="utf-8") as fh:
+        loads = list(csv.DictReader(fh))
+    on, off = S.rack_lineups(target)
+    hdr = [["other", Fraction(S.net_rack_fill(target))]]
+    for r in sorted(loads, key=lambda r: (r["load_date"], r["start_local"])):
+        t = dt.datetime.strptime(r["load_date"] + " " + r["start_local"], "%Y-%m-%d %H:%M:%S")
+        v = int(r["loaded_l_15c"])
+        hdr.append(["batch" if on <= t < off else "other", Fraction(v)])
+        got[r["tank_unit"]] += sum(w for l, w in S._take(hdr, v) if l == "batch")
+    with open(os.path.join(target, N.FILES["corbel_equipment"]), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if r["event_code"] == "TRANSFER" and got.get(r["unit_no"], 0) > 0:
+                got[re.search(r"to (RF-\d\d)", r["remarks"]).group(1)] += int(r["qty_l"])
+    return got
+
+
 def run(target, golden_dir, W=None, n=None, meta_path=None, fig_path=None):
     RESULTS.clear()
     fig = json.load(open(fig_path))
@@ -178,6 +200,39 @@ def run(target, golden_dir, W=None, n=None, meta_path=None, fig_path=None):
     ok("SF15 the equipment register types tractors and trailers apart",
        any("tractor" in str(r[2]) for r in eq) and any("trailer (tank)" in str(r[2]) for r in eq))
     ok("SF16 every refueller tank is one compartment", all(r[5] == 1 for r in eq[1:] if r[4]))
+    fifo = S.refuellers(target, tank_model="fifo")
+    fifo_set = sorted(k for k, v in fifo["held"].items() if v > 0)
+    ok("SF16 QM-09 2.3 files the commingling sentence (a refueller holds product from every batch it has received "
+       "since it was last drained to empty, its contents mixed)",
+       "holds product from every batch it has received since it was last drained to empty, its contents mixed" in qm)
+    ok("SF16 the FIFO tank reading the sentence rules out drops RF-24 and T-35 from the drain list (its real call "
+       "effect), and the mixed reading the golden takes keeps them",
+       fifo_set == ["RF-23", "T-31"] and A["refuellers"] == ["RF-23", "RF-24", "T-31", "T-35"],
+       "FIFO %s and %d refueller uplifts; mixed %s and %d" % (fifo_set, len(fifo["delivered"]), A["refuellers"],
+                                                             A["refueller_uplifts"]))
+    ok("SF16 every refueller in the golden set received batch fuel since its weekly dip and was never drained to empty "
+       "(the sentence's population, executed literally)",
+       all(v > 0 for k, v in full_received(target).items() if k in A["refuellers"]) and
+       all(v == 0 for k, v in full_received(target).items() if k not in A["refuellers"]))
+    bands = {k: (b10, lit, band) for k, b10, lit, band in fig["partial_rows"]}
+    tk_uid = {u.ticket: u for u in W["ups"]}
+    worst = []
+    for k, (b10, lit, band) in bands.items():
+        u = tk_uid[k] if k in tk_uid else tk_uid[k[:-1]]
+        vals = []
+        for name, g in V.items():
+            if name.startswith("at_"):
+                continue
+            b = g["took"].get(u.uid, 0)
+            vals.append(Fraction(b) if name == "net" else Fraction(b) * u.net / u.gross)
+        worst.append((band - max(abs(v - A["hy"]["took"][k]) for v in vals), k))
+    ok("SF17 every partial hydrant row's band holds the clean truth's steady-rate readings (gross and 15 C litres, "
+       "flushes out, line-ups 90 s either side), with the least room %.0f L at %s" % (min(worst)[0], min(worst)[1]),
+       min(worst)[0] >= 40)
+    whole = [k for k, b in A["hy"]["took"].items() if k not in bands]
+    tk_all = S.tickets(target)
+    ok("SF17 every other hydrant row carries its full litres delivered at 15 C", all(
+        abs(A["hy"]["took"][k] - tk_all[k]["litres_15c"]) <= 5 for k in whole), "%d whole rows" % len(whole))
 
     # ------------------------------------------------------------------ margins and bins
     ok("standing cells hold with margins %s" % W["screen"]["standing_margins"],
@@ -227,7 +282,7 @@ def run(target, golden_dir, W=None, n=None, meta_path=None, fig_path=None):
     for f in files:
         if f.endswith(".pdf"):
             t = pdf_text(os.path.join(target, f))
-            ok("no em or en dash in %s" % f, "—" not in t and "–" not in t)
+            ok("no em or en dash in %s" % f, "\u2014" not in t and "\u2013" not in t)
     ok("QM-09 and the recall notice name no line fill, turnover, front or window for the batch's position",
        not re.search(r"line fill|turnover|turn over|front|displace", qm + pdf_text(os.path.join(target, N.FILES["recall"])), re.I))
     sl = pdf_text(os.path.join(target, N.FILES["shiftlog"]))

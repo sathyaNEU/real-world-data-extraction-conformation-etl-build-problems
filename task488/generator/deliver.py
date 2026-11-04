@@ -344,6 +344,9 @@ def main(target, gdir, fig_path):
                     "rack_on": ron.strftime("%H:%M"), "rack_off": roff.strftime("%H:%M"),
                     "coupling_t35": couple.strftime("%H:%M")}
     fig["hydrant_counts_by_section"] = {k: len(v) for k, v in fig["hydrant_tickets_by_section"].items()}
+    bands = S.row_bands(target, a["hy"])
+    fig["partial_rows"] = [[k, bands[k]["batch_10"], bands[k]["litres_15c"], bands[k]["band"]] for k in sorted(bands)]
+    fig["row_band_whole_l"] = 10
     fig["rounding_litres"] = {"hydrant_standing": 100, "refuellers_and_rows": 10}
     with open(fig_path, "w", encoding="utf-8") as f:
         json.dump(fig, f, indent=1, sort_keys=True)

@@ -219,7 +219,8 @@ def write_qm09(path):
     p("2.2", "<b>Hydrant section</b>: a part of the hydrant network isolated by its section valve, as listed in the "
              "hydrant network register.")
     p("2.3", "<b>Refueller</b>: a vehicle tank that carries product from the truck rack to aircraft, as listed in the "
-             "into-plane equipment register.")
+             "into-plane equipment register. A refueller holds product from every batch it has received since it was "
+             "last drained to empty, its contents mixed.")
     p("2.4", "<b>Uplift</b>: one delivery of fuel into one aircraft, recorded on the into-plane agent's ticket.")
     s.append(Paragraph("3. Quarantine on recall", H2))
     p("3.1", "On notice that a released batch is recalled, the Operator's duty supervisor suspends hydrant and "

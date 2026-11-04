@@ -81,9 +81,16 @@ def write(fig_path, out):
         t = F["hydrant_tickets_by_section"][sec]
         if t:
             L.append("   - %s, %d: %s" % (SECTION_NAMES[sec][0].upper() + SECTION_NAMES[sec][1:], len(t), ", ".join(t)))
-    L.append("4. Refueller uplifts (ticket, operator, refueller, litres delivered, batch litres):")
+    L.append("4. Refueller uplifts (ticket, operator, refueller, litres delivered, batch litres, each graded within "
+             "%d L):" % F["row_band_whole_l"])
     for tkt, op, loc, lit, b in F["refueller_rows"]:
         L.append("   - %s, %s, %s, %s L, %s L" % (tkt, op, loc, c(lit), c(b)))
+    L.append("5. Batch litres on the hydrant rows: a row the batch filled whole carries its litres delivered at 15 C, "
+             "graded within %d L; the rows the batch's head or tail crossed during the uplift carry these batch litres "
+             "(of the litres delivered), each graded within the band shown, which holds every reading of the litres "
+             "basis, the flushes and the line-up minute:" % F["row_band_whole_l"])
+    for tkt, b, lit, band in F["partial_rows"]:
+        L.append("   - %s: %s L of %s L, within %s L" % (tkt, c(b), c(lit), c(band)))
     L += ["",
           "### hydrant_resumption_plan.pdf\n",
           "1. Hydrant sections to drain, batch litres standing to the nearest 100 L:",
