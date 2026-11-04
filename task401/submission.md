@@ -1,70 +1,44 @@
 ## Tags
 
-**Domain:** Marketing & Consumer Research, customer satisfaction driver analysis (a GB domestic energy supplier's six-month new-customer satisfaction tracker).  
-**Analytical objective:** Root-Cause Analysis (what pulled six-month satisfaction down between the first halves of 2025 and 2026, and whether any of the fall belongs to the new billing platform before phase 2 cuts over).
+**Domain:** Physical & Environmental Sciences, pollution source attribution (a river's ammonia failures below a sewage works, and the nitrification upgrade in a water company's environment programme submission).  
+**Analytical objective:** Root-Cause Analysis (what drove the River Allery's exceedance days below Coldmere this winter, and whether the upgrade would stop them).
 
 ## 1. Final Recommendation
 
-**The fall in six-month satisfaction from 76.2 to 67.1 per cent belongs to the quote journey relaunched in May 2025, which stopped pre-filling each meter point's industry annual quantity, not to the billing platform, so phase 2 can cut over on 1 February 2027.**
-
-More than half of the 9.1-point fall sits with customers whose meter points' annual quantities cost more than their quote, while customers whose quote covered that cost held their H1 2025 level on the new platform. Not the billing platform, which the billing ratings point at only because those bills ran above the quote. Not the October 2025 tariff rise or the November 2025 contact centre move, each a point or two at most. Not the survey vendor change, across which the covered customers held their level.
+**Thornlea Dairy's evening acid whey discharges drive the Allery's ammonia failures, and the GBP 14.2 million nitrification upgrade would not stop them, so it does not belong in the submission as the answer.** All 35 exceedance days from November 2025 to March 2026 fell on the first or second day after an evening on which the dairy ran whey to its drain, and none fell on load and cold alone. Not the aeration control, which went live a week before the dairy's new line and reaches 0 of the 35 days. Not the works' capacity in the cold, which met the river standard on every day without a whey evening before it.
 
 ## 2. Critical Components
 
-1. Share satisfied (4 or 5 on the overall question, first answered response per account): **76.2 per cent** in H1 2025 and **67.1 per cent** in H1 2026, a fall of **9.1 points**.
-2. The quote journey's quotes, costed against the annual quantities each customer's meter points then carried, carry **more than half** of the fall.
-3. Customers whose quote covered that cost were as satisfied in H1 2026 on the new platform as in H1 2025 on the legacy one.
+1. Exceedance days at the downstream monitor, November 2025 to March 2026: **35**, against **4** in the same months a year earlier.
+2. Exceedance days on the first or second day after a Thornlea whey evening in its chamber record: **35 of 35**.
+3. Exceedance days with no whey evening on the two evenings before, all the aeration control or the upgrade could reach: **0**.
 
 ## 3. Step-by-Step Solution
 
-1. Read six_month_survey_2025H1.csv and survey_export_6m_2026-01-01_2026-06-30.csv per the measurement framework (labels by its scale table, 2026 times in UK time, the first answered response per account): 76.2 and 67.1 per cent satisfied, a fall of 9.1 points.
-2. Linked each respondent to the accepted quote its registration names in supply_registrations_2024-05_2025-12.csv (2026 platform numbers back to legacy numbers through phase1_migration_loads.jsonl) and costed, at that quote's rates in tariff_rates_2024-04_2026-06.xlsx, the annual quantities in force on the response date in meter_point_annual_quantities.parquet.
-3. Fitted satisfaction on the metered cost against the quote (kinked at zero) with the tariff rise, the contact centre and the 2026 term, and split the fall over the four causes in every order: the quote's part is more than half, and customers whose quote covered the cost held their level.
-4. Phase 2 scope: replayed switching_flows_2026-05-01_2026-11-05.csv to 1 November 2026 per the cutover plan (a meter point returned after an erroneous transfer is ours), gave each meter point to the account in legacy_accounts_extract_2026-10-31.csv that took it on last (a leaving occupier's account waiting for its final bill no longer counts), and summed each meter point's registers on its latest revision on or before that day: the regional counts, and 102.6 GWh of electricity and 233.8 GWh of gas for phase 2 as a whole.
-5. Phase 1 moves: walked each load in phase1_migration_loads.jsonl back through the platform number it was sourced from, took each account's last load in UK time with that load's fuels, and per the cutover plan left out the accounts legacy_accounts_extract_2026-10-31.csv shows live on the legacy platform again by the end of 2 November 2025 (an account it shows taken back on a later date was moved): the weekly counts below.
-6. Switches: one per accepted quote in the registrations, no withdrawn registration counted, in the month its first supply started, credited to the channel of the prospect's quote in quote_log_2024-05_2025-12.csv dated on or before the registration (a later phone re-quote does not move it): the monthly counts below.
-7. The platform is not the cause of the fall; phase 2 can cut over on 1 February 2027 and the fix is the quote journey.
+1. Formed UK days from the downstream monitor's valid fifteen-minute readings and counted the days above 0.6 mg/l as the investigation terms define them: 35 from November 2025 to March 2026, 4 a year earlier.
+2. Joined the historian's final-effluent ammonia across the October 2025 tag rename: the works' effluent fails on each exceedance day and runs normally between them.
+3. Picked out of thornlea_dairy_discharge_monitor_15min.csv the evenings with low pH at production flow after 20:00 (the whey), apart from the dairy's night-time acid rinses.
+4. Marked the first and second day after each whey evening: all 35 exceedance days fall on them and none off them, and every recovery window from one to five days gives the same 35.
+5. Checked the other options against the same days: no exceedance day lacks a whey evening before it, so the aeration control and the upgrade reach 0 of 35.
+6. Took each discharger's chargeable volume from the 00:00 1 April reads at its consent's meter point, split at the exchange reads for the brewery and the meat plant, times the consent's multiplier and allowance.
+7. Took each composite collected in 2025-26 as the bottles one round collected at the consented point (the round sheet's bottle number against te_sampler_downloads_2025-01_2026-04.csv), at the volume-weighted strength of the effluent the bottles hold, and averaged the composites' settled COD and suspended solids.
+8. Recommendation: the upgrade reaches 0 of the 35 days; review Thornlea's consent so whey no longer reaches the drain.
 
 ## 4. Deliverable Answers
 
-### six_month_satisfaction_review.pdf
+### coldmere_ammonia_briefing.pptx
 
-1. The fall belongs to the quote journey's quotes since the May 2025 relaunch, not to the billing platform; phase 2 can cut over.
-2. Share satisfied 76.2 per cent in H1 2025 and 67.1 per cent in H1 2026, a fall of 9.1 points, more than half of it the quote journey's.
-3. Bridge chart on page 1 from 76.2 to 67.1 per cent, the quote journey's quotes the largest step.
+1. The call: Thornlea Dairy's evening whey discharges drive the failures; the aeration control and the upgrade reach 0 of the 35 exceedance days and stopping the discharges reaches all 35.
+2. Slide 3 carries the drill-down chart on one daily axis, November 2025 to March 2026: the river's day means with the 0.6 mg/l standard and the exceedance days marked, the works' final effluent ammonia with the same days marked, and the dairy's whey evenings.
+3. Slides 4 and 5 carry the case against the upgrade (no exceedance day without a whey evening before it, the standard met on every other day) and the recommendation.
 
-### phase2_readiness.xlsx
+### coldmere_evidence.xlsx
 
-1. Accounts phase 2 will move, by region, whole numbers:
-   - East Midlands: 2,553
-   - Eastern: 3,253
-   - London: 2,952
-   - North East: 1,581
-   - North Scotland: 920
-   - North Wales and Mersey: 1,672
-   - North West: 2,924
-   - South East: 2,580
-   - South Scotland: 2,029
-   - South Wales: 1,215
-   - South West: 2,019
-   - Southern: 3,326
-   - West Midlands: 2,582
-   - Yorkshire: 2,965
-2. Total annual quantity of all the meter points phase 2 will move, GWh to one decimal: electricity 102.6, gas 233.8.
-3. Accounts phase 1 moved each week, whole numbers:
-   - Week commencing 1 September 2025: electricity-only 1,757, dual fuel 4,478
-   - Week commencing 8 September 2025: electricity-only 2,897, dual fuel 7,401
-   - Week commencing 15 September 2025: electricity-only 3,827, dual fuel 9,848
-   - Week commencing 22 September 2025: electricity-only 4,309, dual fuel 10,874
-   - Week commencing 29 September 2025: electricity-only 4,018, dual fuel 10,481
-   - Week commencing 6 October 2025: electricity-only 4,213, dual fuel 11,155
-   - Week commencing 13 October 2025: electricity-only 3,885, dual fuel 10,412
-   - Week commencing 20 October 2025: electricity-only 3,914, dual fuel 10,341
-   - Week commencing 27 October 2025: electricity-only 3,668, dual fuel 9,668
-4. Switches each sales channel brought in, by the month first supply started, whole numbers:
-   - July 2025: Direct web 1,800, Comparison site 1,712, Phone 600, Broker 729
-   - August 2025: Direct web 1,749, Comparison site 1,715, Phone 598, Broker 707
-   - September 2025: Direct web 1,751, Comparison site 1,664, Phone 548, Broker 689
-   - October 2025: Direct web 1,743, Comparison site 1,721, Phone 590, Broker 689
-   - November 2025: Direct web 1,606, Comparison site 1,701, Phone 595, Broker 692
-   - December 2025: Direct web 1,806, Comparison site 1,710, Phone 545, Broker 660
+1. Exceedance days by month, November 2025 to March 2026: November 10, December 6, January 6, February 3, March 10.
+2. Exceedance days by month a year earlier, November 2024 to March 2025: November 1, December 1, January 1, February 1, March 0.
+3. Trade dischargers, 2025-26: chargeable volume in m3, settled COD strength and suspended solids strength in mg/l:
+   - Allery Springs Bottling: 19,821 m3, settled COD 1,753 mg/l, suspended solids 118 mg/l
+   - Kestry Linen Services: 28,887 m3, settled COD 921 mg/l, suspended solids 159 mg/l
+   - Pellow Meats: 16,472 m3, settled COD 2,601 mg/l, suspended solids 819 mg/l
+   - Thornlea Dairy: 83,949 m3, settled COD 2,297 mg/l, suspended solids 632 mg/l
+   - Wyecote Brewery: 25,010 m3, settled COD 3,042 mg/l, suspended solids 461 mg/l

@@ -1,35 +1,143 @@
 {
  "task": "task401",
- "decision": "What pulled a GB domestic energy supplier's six-month new-customer satisfaction down between the first halves of 2025 and 2026, and whether any of the fall belongs to the new billing platform before its second phase cuts over, with phase 2's scope, phase 1's weekly moves and the second half of 2025's switches by sales channel.",
+ "decision": "Whether the new ammonia-based aeration control, or something else, is behind the River Allery's ammonia exceedance days below Coldmere WRC in the winter of 2025-26, and whether the planned nitrification upgrade would stop them; with the exceedance days by month for two winters and each trade discharger's 2025-26 chargeable volume and settled COD and suspended solids strengths.",
  "deliverables": [
-  "six_month_satisfaction_review.pdf",
-  "phase2_readiness.xlsx"
+  "coldmere_ammonia_briefing.pptx",
+  "coldmere_evidence.xlsx"
  ],
  "distractor_files": [
-  "target/direct_debit_changes_2024-07_2026-06.csv",
-  "target/smart_meter_installs_2025.csv"
+  "target/edm_coldmere_storm_tank_events.csv",
+  "target/customer_contacts_river_and_works.csv",
+  "target/allery_invertebrate_surveys_2025.xlsx",
+  "target/developer_services_phases.csv",
+  "target/allery_at_hollins_bridge_daily_flow.csv",
+  "target/coldmere_site_meters_halfhourly.parquet",
+  "target/coldmere_energy_metering_register.xlsx",
+  "target/coldmere_shutdown_works_record_oct2025.docx"
  ],
- "licence": "CC BY 4.0 (synthetic records generated for this task; the supplier, its vendors and every person are fictional)",
+ "licence": "CC BY 4.0 (synthetic records generated for this task; Wendmoor Water, its works, the River Allery, the trade dischargers and every person are fictional)",
  "files": {
-  "six_month_survey_2025H1.csv": "Previous survey vendor's six-month wave export, January to June 2025. Synthetic.",
-  "survey_export_6m_2026-01-01_2026-06-30.csv": "Current survey vendor's six-month export, January to June 2026. Synthetic.",
-  "quote_log_2024-05_2025-12.csv": "Sales system quote log for the July to December switch cohorts of 2024 and 2025, May 2024 to December 2025. Synthetic.",
-  "supply_registrations_2024-05_2025-12.csv": "Sales system supply registration events for the same cohorts, May 2024 to December 2025. Synthetic.",
-  "meter_point_annual_quantities.parquet": "Industry annual quantity history held by the supplier, by meter point and register, exported 6 November 2026. Synthetic.",
-  "tariff_rates_2024-04_2026-06.xlsx": "Pricing team's regional rates for the Standard Variable and fixed products. Synthetic.",
-  "phase1_migration_loads.jsonl": "Billing platform load log for phase 1, September to November 2025. Synthetic.",
-  "legacy_accounts_extract_2026-10-31.csv": "Legacy billing platform prepayment account extract, 31 October 2026. Synthetic.",
-  "switching_flows_2026-05-01_2026-11-05.csv": "Industry switching flows for the prepayment book's meter points, 1 May to 5 November 2026, pulled 6 November 2026. Synthetic.",
-  "direct_debit_changes_2024-07_2026-06.csv": "Direct Debit amount change history for the two switch cohorts, July 2024 to June 2026. Synthetic.",
-  "smart_meter_installs_2025.csv": "Smart meter installation appointments, 2025. Synthetic.",
-  "six_month_survey_measurement_framework_v2.1.pdf": "Customer Insight's measurement framework for the six-month survey, version 2.1. Constructed.",
-  "billing_platform_phase1_closeout_report.pdf": "Billing programme's phase 1 close-out report, issued 9 January 2026. Constructed.",
-  "phase2_cutover_plan_v1.3.docx": "Billing programme's phase 2 cutover plan, version 1.3, 20 October 2026. Constructed."
+  "allery_d_s_coldmere_wq_monitor_2024-10_2026-03.csv": {
+   "description": "Continuous water quality monitor on the River Allery below Coldmere WRC: fifteen-minute ammonium (mg/l as N), water temperature and pH, UTC timestamps, data status and maintenance-visit flags, October 2024 to March 2026. Structured as a section 82 continuous monitoring export. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "allery_at_hollins_bridge_daily_flow.csv": {
+   "description": "Daily mean flow of the Allery at the Hollins Bridge gauge above the works, with quality codes. Structured as a gauging station daily flow export. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "coldmere_wrc_historian_hourly_2024-10_2026-03.csv": {
+   "description": "Coldmere WRC SCADA historian, hourly, UK local time: inlet flow, final effluent ammonium, lane dissolved oxygen, blower air, mixed liquor solids and wastewater temperature, tags renamed at the October 2025 works. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "thornlea_dairy_discharge_monitor_15min.csv": {
+   "description": "Thornlea Dairy discharge logger: flow, pH and temperature every fifteen minutes, clock time. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "te_meter_reads_2025-26.csv": {
+   "description": "Automatic reads of the trade effluent meters by meter point at 00:00 at each quarter end, with the reads taken at meter exchanges. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "te_sampling_rounds_2025-01_2026-04.csv": {
+   "description": "Trade effluent sampling round sheets: bottle label, discharger, sampling point, collection time, sampler, on-site pH and temperature. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "te_sampler_downloads_2025-01_2026-04.csv": {
+   "description": "Downloads from the trade effluent samplers: each programme run's start and end, bottle, aliquots and volume. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "lims_trade_effluent_results_2025-01_2026-04.csv": {
+   "description": "Laboratory results for trade effluent composites (settled and total COD, suspended solids), by report date. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "coldmere_site_meters_halfhourly.parquet": {
+   "description": "Half-hourly advances of the Coldmere electricity sub-meters in meter units, UTC. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "coldmere_energy_metering_register.xlsx": {
+   "description": "Coldmere electricity sub-meter register: meters, register reads (monthly snapshots and site reads) and notes. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "coldmere_shutdown_works_record_oct2025.docx": {
+   "description": "Record of the October 2025 planned shutdown works at Coldmere WRC. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "coldmere_ammonia_investigation_terms.docx": {
+   "description": "The environment programme's terms for the Coldmere ammonia investigation: definitions, window, comparison, options and supporting figures. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "coldmere_wrc_permit_summary.pdf": {
+   "description": "Summary of the works' environmental permit. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "wendmoor_trade_effluent_charges_scheme_2025-26.pdf": {
+   "description": "Trade effluent charges scheme 2025-26 (Mogden formula). Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "trade_effluent_consents_register.xlsx": {
+   "description": "Trade effluent consents register: consents, sampling points, meter points, register multipliers, allowances and limits; standard conditions. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "edm_coldmere_storm_tank_events.csv": {
+   "description": "Event duration monitoring of the Coldmere storm tank overflow: spill start and end, UTC. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "customer_contacts_river_and_works.csv": {
+   "description": "Customer contacts about the river and the works by date, category and locality. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "allery_invertebrate_surveys_2025.xlsx": {
+   "description": "Spring and autumn 2025 invertebrate surveys at three Allery sites (WHPT and LIFE scores). Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  },
+  "developer_services_phases.csv": {
+   "description": "Developer services record of housing development phases in the Coldmere area: plots approved and the date each phase's sewer was connected. Synthetic, generated for this task.",
+   "source": "synthetic (task401 generator)",
+   "date": "2026-10-19",
+   "licence": "CC BY 4.0"
+  }
  },
- "sources": "Levels set from public statistics: Ofgem typical domestic consumption values; DESNZ sub-national and NEED domestic consumption statistics; Ofgem Direct Debit guidance; Ofgem consumer perceptions research. No real supplier, vendor or comparison site is named.",
+ "sources": "Structured after public records and published levels: the Environment Agency water quality archive and section 82 continuous river monitoring; event duration monitoring returns; English undertakers' published trade effluent charges schemes (the Mogden formula); the Water Environment (Water Framework Directive) (England and Wales) Directions 2015 for the ammonia standard; Metcalf and Eddy, Wastewater Engineering, fifth edition, for nitrification and oxygen levels; Carvalho, Prazeres and Rivas (2013) and Rocha-Mendoza and others (2021) for whey strength. No real company, works, river, discharger or person is named.",
  "dates": {
-  "pack_export": "2026-11-06",
-  "legacy_extract": "2026-10-31",
-  "switching_flows_pull": "2026-11-06"
+  "pack_export": "2026-10-19",
+  "monitor_extract_to": "2026-03-31",
+  "lims_reported_to": "2026-04-30",
+  "energy_register_as_at": "2026-09-30",
+  "investigation_terms": "2026-10-09"
  }
 }
