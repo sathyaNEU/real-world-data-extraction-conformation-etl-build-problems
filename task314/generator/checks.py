@@ -401,6 +401,17 @@ def main():
               '%.3f' % edge(ask['fill'][m]['kgal'], 1))
         check('edge: facilities %s clear of its tenth-of-an-acre-foot edge' % k, edge(ask['fac_af'][m], 0.1) >= 0.008,
               '%.4f' % edge(ask['fac_af'][m], 0.1))
+    # every graded figure, as a share of its rounding unit, from the nearest rounding edge
+    graded = [('saving %s' % o, t[o], 10) for o in 'ABC'] + [('gap', t['C'] - t['B'], 10)]
+    graded += [('fill water %s' % G.MONTH[m], ask['fill'][m]['kgal'], 1) for m in Rt.SUMMER]
+    graded += [('facilities %s' % G.MONTH[m], ask['fac_af'][m], 0.1) for m in Rt.SUMMER]
+    shares = {lab: edge(v, u) / u for lab, v, u in graded}
+    low = min(shares, key=shares.get)
+    check('edge: every graded figure sits 0.25 of its rounding unit or more from its nearest edge (0.03 asked)',
+          all(v >= 0.25 for v in shares.values()), 'closest %s at %.3f of its unit' % (low, shares[low]))
+    check('edge: June City facility use is 0.05 acre-feet or more above the 22.55 edge it rounds away from',
+          ask['fac_af'][6] - 22.55 >= 0.05 and round(ask['fac_af'][6] + 1e-9, 1) == fig['ask']['facilities_af']['June'],
+          '%.4f' % ask['fac_af'][6])
     resumed = collections.Counter()
     twins = collections.Counter()
     by_bay = collections.defaultdict(list)
@@ -536,6 +547,21 @@ def main():
           ', '.join(v[3] for v in prods.values()))
     check('realism: the district notice and the city documents carry different producers and authors',
           prods[B.F_UBB][0] != prods[B.F_R2312][0] and prods[B.F_UBB][2] != prods[B.F_R2312][2])
+    # each Word document as Word saves a revised draft: no template thumbnail, saved after it was first created
+    word_docs = [os.path.join(TGT, n) for n in sorted(os.listdir(TGT)) if n.endswith('.docx')]
+    word_docs += [os.path.join(TASK, 'golden', n) for n in sorted(os.listdir(os.path.join(TASK, 'golden'))) if n.endswith('.docx')]
+    word_bad = []
+    for p_ in word_docs:
+        with zipfile.ZipFile(p_) as z_:
+            names_ = z_.namelist()
+            core_ = z_.read('docProps/core.xml').decode('utf-8')
+            rels_ = z_.read('_rels/.rels').decode('utf-8')
+        c_ = re.search(r'<dcterms:created[^>]*>([^<]*)<', core_).group(1)
+        m_ = re.search(r'<dcterms:modified[^>]*>([^<]*)<', core_).group(1)
+        if 'docProps/thumbnail.jpeg' in names_ or 'thumbnail' in rels_ or not m_ > c_:
+            word_bad.append(os.path.basename(p_))
+    check('realism: no Word document carries the template\'s blank thumbnail, and each was saved after it was created',
+          len(word_docs) == 2 and not word_bad, '%d documents%s' % (len(word_docs), (', ' + ', '.join(word_bad)) if word_bad else ''))
     check('realism: no extract carries a date after its pull',
           max(r['bill_date'] for r in export) <= dt.date(2026, 11, 2) and max(r['start'].date() for r in w['fill']) <= dt.date(2026, 10, 31)
           and max(r['read_date'] for r in w['reads']) <= dt.date(2026, 10, 31) and max(r['completed'] for r in w['wos']) <= dt.date(2026, 10, 30))

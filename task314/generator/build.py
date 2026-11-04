@@ -53,7 +53,7 @@ def write_csv(name, header, rows):
         w.writerows(rows)
 
 
-def normalise_zip(path, producer_app=None):
+def normalise_zip(path, producer_app=None, keep_modified=False, total_time=None):
     """Re-pack an OOXML file with fixed member timestamps and the issuing organisation's application properties."""
     with zipfile.ZipFile(path) as z:
         items = [(i, z.read(i.filename)) for i in z.infolist()]
@@ -67,7 +67,14 @@ def normalise_zip(path, producer_app=None):
         chars_sp = sum(len(t) for t in texts)
         npara = sum(1 for t in texts if t.strip())
         stats = dict(Pages=max(1, words // 430 + 1), Words=words, Characters=chars, CharactersWithSpaces=chars_sp,
-                     Paragraphs=npara, Lines=npara + words // 14, TotalTime=37 + (words % 23))
+                     Paragraphs=npara, Lines=npara + words // 14, TotalTime=total_time or 37 + (words % 23))
+        # the template's thumbnail is a blank page, and Word saves none unless asked to
+        items = [(i, d) for i, d in items if i.filename != 'docProps/thumbnail.jpeg']
+        items = [(i, re.sub(rb'<Relationship [^>]*metadata/thumbnail[^>]*/>', b'', d) if i.filename == '_rels/.rels' else d)
+                 for i, d in items]
+        if not any(i.filename.lower().endswith(('.jpeg', '.jpg')) for i, _ in items):
+            items = [(i, re.sub(rb'<Default Extension="jpeg"[^>]*/>', b'', d) if i.filename == '[Content_Types].xml' else d)
+                     for i, d in items]
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, 'w', zipfile.ZIP_DEFLATED) as z:
         for info, data in items:
@@ -88,7 +95,7 @@ def normalise_zip(path, producer_app=None):
                         data = re.sub(rb'<%s>[^<]*</%s>' % (k.encode(), k.encode()), b'<%s>%d</%s>' % (k.encode(), v, k.encode()), data)
             if info.filename == 'docProps/core.xml':
                 m = re.search(rb'<dcterms:created[^>]*>([^<]*)</dcterms:created>', data)
-                if m:
+                if m and not keep_modified:
                     data = re.sub(rb'(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)', lambda x: x.group(1) + m.group(1) + x.group(2), data)
             z.writestr(ni, data)
     with open(path, 'wb') as f:
@@ -464,8 +471,8 @@ def main():
     pdf_stamp(os.path.join(TGT, F_R2417), b"D:20240612091547-06'00'")
     pdf_stamp(os.path.join(TGT, F_DCP), b"D:20250327155214-06'00'")
     pdf_stamp(os.path.join(TGT, F_UBB), b"D:20261015112736-06'00'")
-    docs.staff_report(os.path.join(TGT, F_STAFF), dt.datetime(2026, 10, 27, 14, 52, 19))
-    normalise_zip(os.path.join(TGT, F_STAFF), 'Microsoft Office Word')
+    docs.staff_report(os.path.join(TGT, F_STAFF), dt.datetime(2026, 10, 21, 9, 14, 37), dt.datetime(2026, 10, 27, 14, 52, 19))
+    normalise_zip(os.path.join(TGT, F_STAFF), 'Microsoft Office Word', keep_modified=True, total_time=186)
     set_mtimes()
     golden.main(w['export'], w['fill'], w['reads'], w['wos'], w['facs'], normalise_zip)
     for n in os.listdir(TGT):

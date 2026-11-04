@@ -494,7 +494,7 @@ def district_notice(path, total_pages=None):
 
 
 # ---------------------------------------------------------------- the department's agenda report (docx)
-def staff_report(path, created):
+def staff_report(path, created, modified):
     from docx import Document
     from docx.shared import Pt, Inches
     from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -580,7 +580,7 @@ def staff_report(path, created):
     cp.author = 'Tami Weaver'
     cp.last_modified_by = 'Tami Weaver'
     cp.created = created
-    cp.modified = created
+    cp.modified = modified
     cp.revision = 4
     cp.title = 'Agenda Report, Stage 2 drought rate options'
     cp.comments = ''

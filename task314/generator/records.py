@@ -172,6 +172,7 @@ POOL_OPEN, POOL_CLOSE = dt.date(2026, 5, 22), dt.date(2026, 9, 7)
 POOL_FILL = [(dt.date(2026, 5, 15), 118.4), (dt.date(2026, 5, 16), 131.7), (dt.date(2026, 5, 17), 112.6)]
 POOL_REFILL = (dt.date(2026, 7, 28), 127.9)
 GOLF_SWAP = dt.date(2026, 6, 2)
+TRAINING_REFILL = ('FS-1', dt.date(2026, 5, 20), 12.5)     # engine and tender refilled after a wildland training day
 CEM_SWAP = dt.date(2026, 8, 4)
 
 
@@ -206,6 +207,8 @@ def facility_daily():
                 if kind == 'irr' and day.month == 4 and day.day < 12:
                     dem *= 0.4               # systems charged and tested in early April
                 v = (base + irr * dem) * scale * float(np.exp(0.12 * rng.standard_normal()))
+                if fid == TRAINING_REFILL[0] and day == TRAINING_REFILL[1]:
+                    v += TRAINING_REFILL[2]
             s[day] = v
         out[fid] = s
     return out

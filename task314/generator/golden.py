@@ -499,14 +499,13 @@ def memo(path, mc, ask, f, normalise):
     cp = d.core_properties
     cp.author = 'Tami Weaver'
     cp.last_modified_by = 'Tami Weaver'
-    created = dt.datetime(2026, 11, 3, 17, 26, 41)
-    cp.created = created
-    cp.modified = created
+    cp.created = dt.datetime(2026, 11, 3, 9, 42, 16)
+    cp.modified = dt.datetime(2026, 11, 3, 17, 26, 41)
     cp.revision = 3
     cp.title = 'Stage 2 drought rate recommendation'
     cp.comments = ''
     d.save(path)
-    normalise(path, 'Microsoft Office Word')
+    normalise(path, 'Microsoft Office Word', keep_modified=True, total_time=118)
 
 
 def chart(path, mc, f):

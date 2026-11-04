@@ -189,7 +189,7 @@ perceived price, the volumetric average price, and a fixed charge read as sendin
 | SF19 | Ask, a fill across midnight | counted where it starts | split | same (asserted: none spans a month end) | convergence |
 | SF20 | Ask, a facility's use on a month's reads | the register advance to the read dated in that month | a calendar month interpolated | the asking sentence's reading; one read date per facility a month (asserted) | the asking sentence |
 | SF21 | Ask, the turbine meter's hundred cubic feet | 748.052 gallons | 748 | same one-decimal figures (asserted) | convergence |
-| SF22 | how an elasticity is applied to a price change | constant elasticity at each account's baseline bill | linear (the elasticity times the proportional change) or midpoint | same call, every saving and the gap in the same bins over -0.26 to -0.325 (asserted, 1.28 acre-feet or more from every edge) | convergence |
+| SF22 | how an elasticity is applied to a price change | constant elasticity at each account's baseline bill | linear (the elasticity times the proportional change) or midpoint | same call, every saving and the gap in the same bins over -0.26 to -0.325 (asserted, every edge 1.27 acre-feet or more away) | convergence |
 | SF23 | the Fenwick Mesa charge in the price customers answer | in the whole bill, both years | left out of the base bill | same call and bins over the same range (asserted) | Resolution 2024-17 (a charge on every Fenwick Mesa bill); convergence |
 | SF24 | Ask, a tank filled | each tank, a truck's and its trailer's each counting as one; a session resumed after the bay 2 fault is the same tank | one per record, or one per truck-and-trailer visit | the figures move under either (asserted) | the asking sentence names the unit; the records' own registers carry the resume |
 | SF25 | Ask, water drawn | every gallon drawn, the City's own trucks included | hauler sales only | the figures move (asserted) | the asking sentence and plan Section 6 both say drawn |
@@ -209,7 +209,8 @@ Every rung priced on the cut pack (`verify.py`, `golden.py`) and on the clean tr
 - **Convergence:** every estimate from -0.26 to -0.325 and every measured one (-0.27 to -0.33), applied in
   constant-elasticity, linear or midpoint form, with the Fenwick Mesa charge in or out of the base bill, keeps C in
   15 to 25 (16.28 to 23.36), B in 5 to 15 (9.08 to 12.52), A under 5 (0.13 to 2.79) and the gap in 5 to 15 (7.20 to
-  10.84); on the -0.26 to -0.325 grid alone every edge is 1.28 acre-feet or more away.
+  10.84); on the grid and with every measured estimate every edge is 1.27 acre-feet or more away (the closest, C's
+  lower edge at 15, by 1.2795).
 - **Positions:** C leads no rung below the decisive one and trails every leader there by far (it saves nothing on
   the block price or the per-gallon price).
 - **Gate F, honestly:** the default path is the textbook marginal-block route and files A. A solver who tests both
@@ -364,6 +365,71 @@ amount now sits only in the step that reads it. Each REVIEW line ruled here:
   the organisation's own records; none lists or glosses a file's columns. Harmless.
 - Sweep 13 read REVIEW on the capital recovery charge resolution's file name, which carried its title; the three
   resolutions now ship under the clerk's record numbers (`RES 2021-44.pdf` and its siblings), and the sweep is clean.
+- On the ship cut (target.zip 2097647f) the same lines and nothing else: sweeps 3, 4 and 12 REVIEW as ruled above,
+  sweep 10 INFO (no writer signature), every other sweep clean.
+
+## Stage 4
+
+- Pass 1, determinism judge on the hand-off cut (target.zip e9e0ba52): NOT_DETERMINISTIC (narrow), FIX_NOW, order
+  kept. The one surviving fork was the ask's fills, read three ways (records, tanks, visits); the risks were the
+  linear form at the full-panel estimate putting the surcharge over the old 35 edge (36.7), the write-up's Fenwick
+  Mesa estimate (-0.28) against the panel's (about -0.32), and the note's claim that the restructuring validates the
+  block price. Gate G reconciled; Gate H domain pass, layers pass, decisive step analytical; no architecture spent.
+- Leak reader pass 1 on the same cut: no leak, question 6 an analytical choice.
+- The FIX_NOW pass, in the generator: the asking sentence counts tanks (a truck's tank and its trailer's each
+  counting as one) and names no register, record or session; the options resized (surcharge USD 7.90, adder 0.30,
+  first block 2.20) so every estimate from -0.26 to -0.325 keeps one bin in all three forms; the golden elasticity
+  taken from the panel of every bill once both prices are tested (-0.3112); the change-out of Fenwick Mesa's legacy
+  meters moved before the first exported bill; the ladder and Gate F rewritten to the data (`## Tried and rejected`,
+  its last five lines).
+- Pass 2, the one re-judge on the repaired cut (target.zip ab3b1d3b): DETERMINISTIC, APPROVE, order kept (its
+  derivation written before the graded blocks were opened); every graded figure reproduced (4,341 accounts, 772.25
+  acre-feet of baseline, C 19.44, B 10.86, A 0.70, the gap 8.58, the twelve ask figures); Gate G pass; Gate H domain
+  pass, layers pass, decisive step analytical; stump power good. Every fork it raised closes in the files (the block
+  price, the form and the charge, a fixed-point price solve, the restart rows, a row count of tanks, the pool meter,
+  the same-day re-reads); the one corner leaving a bin (an elasticity of -0.36, linear, the charge out) lies outside
+  the range the data support. Its one thin margin: June's facility use, 22.564 acre-feet, 0.014 above the 22.55 edge.
+- Leak reader pass 2 on the same cut: no leak; the tank phrase read as a counting convention, not an analysis
+  instruction; question 6 places the analysis in the unstated step between a rate change and the fall it brings
+  about. Realism notes: the Word documents' template parts and thumbnail; the plan's blank signature lines, plausible
+  for a posted copy.
+- Closed at ship, with no graded figure moving (figures.json's graded keys, the workbook's graded cells, the memo's
+  text, the chart and submission.md unchanged against the pass-2 cut):
+  1. June's facility margin, in the readings: Fire Station 1 refilled its engine and tender after a wildland training
+     day on May 20, inside the June read (12,500 gallons on FS-1's day). June's facility use is now 22.6028
+     acre-feet, 0.0528 above the 22.55 edge and 0.0472 below 22.65; July to September are unchanged. `checks.py`
+     asserts every graded figure 0.25 of its rounding unit or more from its nearest edge (the closest, August's fill
+     water, at 0.273) and June 0.05 acre-feet or more above 22.55. The workbook's by-facility table moves FS-1's June
+     from 48,143 to 60,643 gallons, a supporting cell; `ask_unrounded` June is the one key of figures.json to move.
+  2. The agenda report carries a revised draft's history: created October 21, 2026 at 09:14, saved October 27 at
+     14:52, revision 4, 186 minutes of editing; the golden memo was drafted at 09:42 and saved at 17:26 on November 3.
+     The template's blank thumbnail is dropped from both Word documents (asserted). Neither document's text moved
+     (`word/document.xml` byte-identical to the pass-2 cut).
+- No third read: no document's text and no prompt changed after pass 2.
+
+**House fixes at ship.** H1 the pack and the goldens audit clean for writer names and stamps (2021-01-01 to
+2026-11-04); H2 every bound in this note re-measured, the convergence edges floored to 1.27 acre-feet (the closest,
+C's lower edge, 1.2795), the note's per-cent and count figures reprinted by `checks.py` (10.6 per cent, 837 pairs,
+5.7 per cent, revenue a bill USD 7.90, 4.35 and 2.21); H4 target.zip holds exactly the 16 shipped files at its root,
+each member byte-equal to the tree; H7 two final builds byte-identical (24 outputs) and the zip cut from the last;
+H8 the write-up's citations resolve (Plan Section 5.3, Resolution 2023-12 Section 2, Resolutions 2021-44 and
+2024-17, and the five files it names, each in the archive); H11 one submission.md and one prompt.txt; H16 no date after the extracts (`leak.py`
+sweep 9); H19 target.zip 7,114,774 bytes, 16 members, sha256 2097647f; H23 every ask reads with none as an answer
+(the conservation blocks' saving is filed as 0, no measurable saving).
+
+**Pre-ship check, the 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each option's
+June to September saving, a price response under a block tariff estimated on the utility's own billing panel with its
+rate changes as natural experiments (both prices in one fit on every bill, a fixed charge on one area against the
+rest), which is how residential water demand is estimated; with another field's nouns there is no bill, block price
+or fixed charge for the response to answer (both judge passes: domain pass). Two layers: the Layer 1 mess (hundred
+cubic feet beside thousand gallons, misreads cancelled and rebilled, estimated reads, accounts changing hands, base
+charges by meter size, read cycles across each month, month-first facility reads, the fill station's DST offset) is
+neutral on the call by assertion (R2: each mishandled leaves every saving and the gap in its bin), and Layer 2,
+which price the customers answer, decides it (R3a files Option A on the clean truth with every rule read and
+applied; R3b the price test alone files C). Decisive step analytical: the block-price route files A with every field
+read and every rule executed, and no field, code or definition separates the two prices (both judge passes:
+decisive step analytical, analytical_non_defect, no surface-read dependency, no sole defect); nothing planted, no
+decoy, no withheld rule.
 
 ## Tried and rejected
 
@@ -380,7 +446,7 @@ amount now sits only in the step that reads it. Each REVIEW line ruled here:
 - 2026-11-04, a water balance ask on the district's turnout report and the wells' totalizers (a check meter left on the report beside its replacement, a well meter reset): both devices are found by the hygiene battery (a second series repeating the first, a change log walked) and the district's statements arbitrate, so the cracker kept them; replaced by the fill station's resumed sessions and the pool fill meter inside the pavilion's.
 - 2026-11-04, Fenwick Mesa's legacy meters replaced through 2026: the change-out switched units inside the comparison's own window, so reading hundred cubic feet as thousand gallons moved the call; the change-out now ends in June 2023, before the comparison's first summer, and the mishandling leaves every bin (R2).
 - 2026-11-04, the plan's population as accounts billed in every month of both baseline years: on a November 2026 export the second year is not complete; filed as the eight June to September bill months.
-- 2026-11-04, the savings at C about 30, B 20, A 10 (surcharge USD 13.60, adder 0.60, first block 2.70): the judge's FIX_NOW pass found the linear form at the full-panel estimate (-0.32) put the surcharge at 36.7, over the 35 edge; across the estimates (-0.26 to -0.325) and the three forms the 25 to 35 window could not hold C (26.9 to 39.3 with the Fenwick Mesa charge out of the base), so the options were resized (surcharge 7.90, adder 0.30, first block 2.20) and C, B, A and the gap now sit at 20, 10, 0 and 10 with every edge 1.28 acre-feet or more away on the grid.
+- 2026-11-04, the savings at C about 30, B 20, A 10 (surcharge USD 13.60, adder 0.60, first block 2.70): the judge's FIX_NOW pass found the linear form at the full-panel estimate (-0.32) put the surcharge at 36.7, over the 35 edge; across the estimates (-0.26 to -0.325) and the three forms the 25 to 35 window could not hold C (26.9 to 39.3 with the Fenwick Mesa charge out of the base), so the options were resized (surcharge 7.90, adder 0.30, first block 2.20) and C, B, A and the gap now sit at 20, 10, 0 and 10 with every edge 1.27 acre-feet or more away on the grid.
 - 2026-11-04, the claim that the 2023 restructuring validates the block price: a fit with both prices on the restructuring alone gives the whole bill -0.33 and the block price about zero, so the restructuring discriminates the prices as well as the Fenwick Mesa charge once the test is run; the note now says the block-price route's own fit flags nothing, and the decisive step is running the test at all.
 - 2026-11-04, the Fenwick Mesa comparison as the golden elasticity (-0.28): the panel of every bill with both prices is the test itself and recovers the response the judge recomputed (-0.31); the comparison stays as the cross-check.
 - 2026-11-04, Fenwick Mesa's legacy meters changed out between March 2022 and June 2023: inside the panel's window the change-out switched units, so reading hundred cubic feet as thousand gallons moved the panel estimate and the surcharge to 25.4; the change-out now ends in May 2022, before the first exported bill, and the mishandling leaves every bin (R2).
