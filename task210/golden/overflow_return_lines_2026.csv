@@ -1,0 +1,15 @@
+permit_ref,overflow,station_code,pass_forward_permitted_ls,pass_forward_delivered_ls,met_permit,spills_12_24,discharge_hours,monitoring_operational_pct
+EPRWW4407AX,Scarrow Leas PS storm overflow,SPS0407,35,41,Yes,17,32.0,99.9
+EPRWW4412BK,Gallowfen PS storm overflow,SPS0412,72,48,No,12,20.4,99.5
+EPRWW4415CG,Hagworth Wold PS storm overflow,SPS0415,31,36,Yes,26,81.8,99.9
+EPRWW4419AD,Marram End PS storm overflow,SPS0419,16,19,Yes,57,198.2,98.0
+EPRWW4421BN,Cressfleet PS storm overflow,SPS0421,39,45,Yes,16,26.0,97.4
+EPRWW4426CF,Sallowholme PS storm overflow,SPS0426,50,57,Yes,15,20.0,99.6
+EPRWW4428AT,Northwade Bank PS storm overflow,SPS0428,101,118,Yes,14,17.8,98.5
+EPRWW4433BW,Brackenings PS storm overflow,SPS0433,23,29,Yes,14,29.0,99.4
+EPRWW4437CQ,Thornmarsh PS storm overflow,SPS0437,73,84,Yes,13,21.9,99.1
+EPRWW4440AH,Kettlewade PS storm overflow,SPS0440,28,32,Yes,17,28.2,98.9
+EPRWW4444BR,Saltwade PS storm overflow,SPS0444,44,52,Yes,10,20.0,100.0
+EPRWW4449CJ,Reedhaven PS storm overflow,SPS0449,19,22,Yes,21,34.6,99.4
+EPRWW4452AM,Sedgefleet PS storm overflow,SPS0452,56,67,Yes,12,15.7,97.7
+EPRWW4458BE,Swathe Drove PS storm overflow,SPS0458,37,43,Yes,12,23.0,99.8

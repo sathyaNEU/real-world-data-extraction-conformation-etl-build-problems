@@ -1,29 +1,41 @@
 {
  "task": "task210",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "subdomain": "environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-04",
  "seed": "AD33 (analytical_tasks/02_anomaly_detection/AD33_fcr-offer-boundary-ramp-conditioned-throughput.md): the objective kept, the world, decision and quantity moved (the battery's only anomaly-detection cell is the most crowded on file and its hour-boundary mechanism is task197's confounder)",
- "stump": "A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the pump the telemetry shows running, finds every station at or above its permitted flow and self-reports no overflow (or, screening dry-day spills, reports the groundwater-fed Wold station), because Gallowfen's pumps, on a part-blocked rising main, keep running while delivering about three fifths of their duty, which shows only in Gallowfen's own wet well fill and draw times between the duty pump's control levels.",
+ "call": "Self-report the Gallowfen PS storm overflow (permit EPRWW4412BK, condition 2.3.1): its station passed forward 48 l/s against the 72 l/s its permit sets while it spilled in 2026",
+ "stump": "A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the pump the telemetry shows running, finds every station at or above its permitted flow and self-reports no overflow (or, screening dry-day spills, reports the groundwater-fed Wold station), because Gallowfen's pumps, on a part-blocked rising main, keep running while delivering a little over half of their duty, which shows only in Gallowfen's own wet well fill and draw times between the duty pump's control levels.",
  "architecture": 1,
  "loops": 0,
- "card": ".claude/skills/fingerprint/cards/task210.json, registered 2026-11-04T11:53:28Z at WARN (overuse.objective fixed by the number; repeat.geography against task313 answered in the design note)",
- "clean_truth": "scratchpad prototype proto2.py/proto3.py (14 stations, 2026 at one minute with event-exact pump crossings): the cycle-volume estimate of each pump's delivered rate recovers it within 0.1 l/s under three variants (previous off period, mean of the two, night cycles only); the restricted station delivers 0.58 of duty against a pass forward set at 0.88 of duty, every other station delivers 1.12 to 1.31 times its pass forward; the rated-duty check names no station, the dry-day screen names the groundwater-fed station, the 12/24 spill count names the high spiller",
+ "card": ".claude/skills/fingerprint/cards/task210.json, registered 2026-11-04T11:53:28Z at WARN (overuse.objective fixed by the number; repeat.geography against task313 answered in the design note); brought up to date at the build (answer, deliverables, layer1, spine, invented names)",
+ "clean_truth": "checks.py R3a and R3b on the simulation's own records before any mess: the rated-duty route files none (every station's rated duty clears its permit, the three meters clear theirs while spilling), the cycle-measured delivered rate files Gallowfen alone (48 l/s against 72; every other station 1.14 to 1.26 times its permit)",
+ "gates": {
+  "generator_assertions": 480,
+  "independent_checks": 155,
+  "rebuilds_byte_identical": true,
+  "figures_check": "PASS, 73 figures",
+  "realism_sweep": "in checks.py, PASS",
+  "container_audit": "clean (pack and goldens)",
+  "input_gates": "12 files, 4 formats (sqlite, csv, xlsx, pdf), 460,344-row pump event table, 4 distractors",
+  "ceiling": "pair 55.4, mirror leakage 42.9, cracker keep 55.1 (ceiling.py, pack digest 0792f7ff14af7293)"
+ },
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-04"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-04 --asof 2027-01-15 (sweeps 3, 4 and 12 on the procedure PDF, answered in the design note); no LEAK",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "0.07 task276 lineage"
+  "heart": "WARN (overuse.objective, repeat.geography), nearest 0.05",
+  "surface": "clean on personas",
+  "nearest": "0.07 task276 lineage (driver), 0.05 task488 ledger row"
  },
  "judge": {
   "verdict": "",
@@ -31,7 +43,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: the design note's remaining sections (default path, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet), the prompt, precut.py",
+ "resume": "stage 4: the leak reader and the determinism judge on target.zip sha256 7cec12239723a24eec754e009cbd2802bbb19d6fcfbcb9f7980e8be34050b0f9 (rebuild: cd task210/generator && python3 build.py, byte-identical, prints 480 generator assertions, 155 independent checks and pair 55.4); fix every finding in the generator in one pass, re-run every gate (checks, verify, two rebuilds, figures_check.py, leak.py --asof 2027-01-15, guard.py heart and surface, precut.py), then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

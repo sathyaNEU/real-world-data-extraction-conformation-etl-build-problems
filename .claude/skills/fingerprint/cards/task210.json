@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Gallowfen PS storm overflow, permit EPRWW4412BK (passes forward 48 l/s against the 72 l/s condition 2.3.1 sets)",
+  "answer_source": "task210/generator/figures.json: call, call_permit, call_delivered_ls, call_pff_ls",
   "gap": [
     "population"
   ],
@@ -36,18 +36,20 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:delivered-pump-rate-from-wet-well-fill-and-draw-against-rated-duty",
   "layer1": [
-    "telemetry clock in UTC beside overflow monitor logs in UK local time",
-    "overflow monitor resets that split one spill into several records",
-    "station identifiers that differ between the consents register, telemetry outstations and overflow monitors",
+    "telemetry historian in UTC beside the monitoring platform's discharge log in UK local time",
+    "outstations re-sending their last pump events after a comms loss (exact duplicates in the event log)",
+    "comms losses dropping the historian's fifteen-minute level polls",
     "pump duties held in litres per second at some stations and cubic metres per hour at others",
-    "radar rainfall in UTC fifteen-minute steps"
+    "control levels in mAOD in the asset register against levels above the wet well floor in telemetry",
+    "station identifiers that differ between the consents register, the telemetry outstations and the monitors",
+    "monitor outages that split one discharge into several records"
   ],
   "stakeholder_role": "the company's wastewater environmental compliance manager",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "telemetry/sps_telemetry_2026.sqlite",
-    "rows": 0,
+    "file": "telemetry/marsh_wolds_sps_telemetry_2026.sqlite",
+    "rows": 460344,
     "entity": "one pump start or stop event logged by a pumping station's telemetry outstation",
     "grain": "station x pump x event",
     "source": "synthetic"
@@ -60,7 +62,13 @@
     "currency": "GBP",
     "org_type": "water and sewerage company",
     "invented_names": [
-      "Wendle Water"
+      "Lindmarsh Water",
+      "Marsh and Wolds",
+      "Fleetmouth WRC",
+      "Gallowfen",
+      "Hagworth Wold",
+      "Marram End",
+      "Scarrow Leas"
     ],
     "people": [
       "Harriet Kirk",
@@ -69,14 +77,14 @@
   },
   "deliverables": [
     "overflow_self_report_2026.docx",
-    "edm_return_lines_2026.csv",
-    "pass_forward_against_permit_2026.svg"
+    "overflow_return_lines_2026.csv",
+    "spill_hours_by_month_2026.svg"
   ],
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "The decisive quantity is whether a unit had reached a filed capacity when each release began, and that capacity is read as the unit's rated output times its running state; a unit throttled downstream of its rating keeps its running state while delivering far less, which only a volume balance on its own storage between its control levels, timed from its own starts and stops, shows, so every screen built on the external driver or on the rated output clears the unit that released before reaching the capacity.",
-  "driver_concrete": "Each 2026 storm overflow spill breaches its permit only if it began while the pumping station was passing forward less than its permitted flow, and at unmetered stations the pass forward is read as the running pump's rated duty; one station's rising main is part-blocked, so its pumps run but deliver about three fifths of their duty, which shows only in its wet well's fill and draw times between the duty start and stop levels, while the dry-day screen names the groundwater-fed station and the rated-duty check names none.",
-  "stump": "A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the pump the telemetry shows running and self-reports no overflow (or counts dry-day spills and reports the groundwater-fed station), because a pump on a part-blocked rising main keeps running while delivering only about three fifths of its duty, which shows only in its own wet well's fill and draw times between the control levels.",
+  "driver_concrete": "Each 2026 storm overflow spill breaches its permit only if it began while the pumping station was passing forward less than its permitted flow, and at unmetered stations the pass forward is read as the running pump's rated duty; one station's rising main is part-blocked, so its pumps run but deliver a little over half of their duty, which shows only in its wet well's fill and draw times between the duty start and stop levels, while the dry-day screen names the groundwater-fed station and the rated-duty check names none.",
+  "stump": "A competent analyst checks each 2026 spill against its permit's pass forward flow using the rated duty of the pump the telemetry shows running and self-reports no overflow (or counts dry-day spills and reports the groundwater-fed station), because a pump on a part-blocked rising main keeps running while delivering only a little over half of its duty, which shows only in its own wet well's fill and draw times between the control levels.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task464": "task464 rebuilds the flow through each part of a branching line as the net of the meters beyond it to price a loss that grows with its square; this build measures a pump's delivered rate from its own wet well's fill and draw times to test whether a permitted pass forward flow was reached when an overflow spilled.",
@@ -86,5 +94,6 @@
   },
   "lineage": [],
   "notes": "Probe card checked first with generators G8 (reachability) and gap objective: G8 repeated task398 and task276's lineage on the structural tests, and G8 is the wrong label anyway (the pass forward condition is attained or not, read from the record of what the pump did against what the register says it does, which is G3 record against operation). Strategy binding_constraint is the honest family: the permit's capacity condition decides which spills are lawful. The three families the honest neighbours of this mechanism would have taken (causal_design, population_selection, decomposition_attribution) are all in the current ban window and none of them describes a capacity test.",
-  "registered": "2026-11-04T11:53:28Z"
+  "registered": "2026-11-04T11:53:28Z",
+  "asks": "the 2026 return's line for every overflow (permit, pass forward against the permit, 12/24 spills, hours of discharge, monitor operational percentage) and the hours of discharge by overflow and month; device: eleven of fourteen monitors replaced in three crew batches, the old units' history under serials the register no longer lists (key elsewhere, mapped by the telemetry's overflow alarms), and the two units of a handover week recording the same discharges"
 }

@@ -1,0 +1,157 @@
+{
+ "call": "Gallowfen PS storm overflow",
+ "call_delivered_ls": 48,
+ "call_hours": "20.4",
+ "call_permit": "EPRWW4412BK",
+ "call_pff_ls": 72,
+ "call_rated_ls": 85.3,
+ "call_share_of_pff_pct": 67,
+ "call_spills_12_24": 12,
+ "chart_top_hours": "198.2",
+ "chart_top_overflow": "Marram End PS storm overflow",
+ "condition_ref": "condition 2.3.1",
+ "counts": {
+  "edm_log_rows": 426,
+  "meter_rows": 105120,
+  "rain_rows": 175200,
+  "telemetry_events": 460344,
+  "telemetry_levels": 489818
+ },
+ "dry_day_spills_hagworth": 71,
+ "dry_day_station": "Hagworth Wold",
+ "high_spiller": "Marram End",
+ "high_spiller_spills": 57,
+ "hours_in_year": 8760,
+ "lines": {
+  "EPRWW4407AX": {
+   "delivered": 41,
+   "hours": "32.0",
+   "met": "Yes",
+   "operational": "99.9",
+   "overflow": "Scarrow Leas PS storm overflow",
+   "pff": 35,
+   "spills": 17
+  },
+  "EPRWW4412BK": {
+   "delivered": 48,
+   "hours": "20.4",
+   "met": "No",
+   "operational": "99.5",
+   "overflow": "Gallowfen PS storm overflow",
+   "pff": 72,
+   "spills": 12
+  },
+  "EPRWW4415CG": {
+   "delivered": 36,
+   "hours": "81.8",
+   "met": "Yes",
+   "operational": "99.9",
+   "overflow": "Hagworth Wold PS storm overflow",
+   "pff": 31,
+   "spills": 26
+  },
+  "EPRWW4419AD": {
+   "delivered": 19,
+   "hours": "198.2",
+   "met": "Yes",
+   "operational": "98.0",
+   "overflow": "Marram End PS storm overflow",
+   "pff": 16,
+   "spills": 57
+  },
+  "EPRWW4421BN": {
+   "delivered": 45,
+   "hours": "26.0",
+   "met": "Yes",
+   "operational": "97.4",
+   "overflow": "Cressfleet PS storm overflow",
+   "pff": 39,
+   "spills": 16
+  },
+  "EPRWW4426CF": {
+   "delivered": 57,
+   "hours": "20.0",
+   "met": "Yes",
+   "operational": "99.6",
+   "overflow": "Sallowholme PS storm overflow",
+   "pff": 50,
+   "spills": 15
+  },
+  "EPRWW4428AT": {
+   "delivered": 118,
+   "hours": "17.8",
+   "met": "Yes",
+   "operational": "98.5",
+   "overflow": "Northwade Bank PS storm overflow",
+   "pff": 101,
+   "spills": 14
+  },
+  "EPRWW4433BW": {
+   "delivered": 29,
+   "hours": "29.0",
+   "met": "Yes",
+   "operational": "99.4",
+   "overflow": "Brackenings PS storm overflow",
+   "pff": 23,
+   "spills": 14
+  },
+  "EPRWW4437CQ": {
+   "delivered": 84,
+   "hours": "21.9",
+   "met": "Yes",
+   "operational": "99.1",
+   "overflow": "Thornmarsh PS storm overflow",
+   "pff": 73,
+   "spills": 13
+  },
+  "EPRWW4440AH": {
+   "delivered": 32,
+   "hours": "28.2",
+   "met": "Yes",
+   "operational": "98.9",
+   "overflow": "Kettlewade PS storm overflow",
+   "pff": 28,
+   "spills": 17
+  },
+  "EPRWW4444BR": {
+   "delivered": 52,
+   "hours": "20.0",
+   "met": "Yes",
+   "operational": "100.0",
+   "overflow": "Saltwade PS storm overflow",
+   "pff": 44,
+   "spills": 10
+  },
+  "EPRWW4449CJ": {
+   "delivered": 22,
+   "hours": "34.6",
+   "met": "Yes",
+   "operational": "99.4",
+   "overflow": "Reedhaven PS storm overflow",
+   "pff": 19,
+   "spills": 21
+  },
+  "EPRWW4452AM": {
+   "delivered": 67,
+   "hours": "15.7",
+   "met": "Yes",
+   "operational": "97.7",
+   "overflow": "Sedgefleet PS storm overflow",
+   "pff": 56,
+   "spills": 12
+  },
+  "EPRWW4458BE": {
+   "delivered": 43,
+   "hours": "23.0",
+   "met": "Yes",
+   "operational": "99.8",
+   "overflow": "Swathe Drove PS storm overflow",
+   "pff": 37,
+   "spills": 12
+  }
+ },
+ "retired_serials": 11,
+ "tightest_delivered_ls": 57,
+ "tightest_pff_ls": 50,
+ "tightest_station": "Sallowholme"
+}
