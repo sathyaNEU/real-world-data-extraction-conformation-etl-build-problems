@@ -1,73 +1,53 @@
 {
  "task": "task461",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-04",
- "stump": "The default path charges every diesel load at diesel's own vapour pressure and files 1.4 tonnes of VOC from loading for 2026, inside the 20-tonne limit; 5,126 of the retail fleet's 9,379 distillate loads went into compartments whose last delivery was petrol through a station's vapour balance, so each pushed saturated petrol vapour out at an uncontrolled distillate bay, and the terminal released 38.4 tonnes and exceeded its limit by 18.4.",
- "architecture": 2,
+ "architecture": 3,
+ "stump": "The default path subtracts every tenancy meter in the register from the building's import and files about 15.8 kg CO2e per square metre for 2026, inside the loan's 17.6 kg target; three of those meters measure comms rooms inside their occupiers' own supply meters, so the base building's intensity is about 18.3 kg, over the target.",
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-04",
-  "result": "61 checks, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-04, no LEAK (each REVIEW answered in the design note's Leak review)",
-  "reader": "pending: the orchestrating session runs it at stage 4"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-11-04 against the batch branch at 2bb13eb (repeat.gate_g against task200 answered in the note; same-puzzle and same-driver against the older task488 and task308 v3 differentiated on the card)",
-  "nearest": "task184 v8 at 0.08 (driver), task474 v6 at 0.05 (stump)",
-  "surface": "exit 0 (no BLOCK); 6 pairs promoted for the author's adjudication: task459, task460, task462 and task478 on the shared physical-environmental-sciences x etl pairing, task308 and task488 on the card axes already differentiated"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
   "verdict": "",
-  "disposition": "pending: the orchestrating session runs it at stage 4",
+  "disposition": "",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: the orchestrating session runs the leak reader and the determinism judge on prompt.txt and target.zip (sha256 ccb06130f80e87ba7423fed9056948c44ea7457e6ea8ebd8d4f800ac7d1f9f58); every finding is fixed in task461/generator in one pass, the pack rebuilt with `python3 task461/generator/build.py` (generator checks, verify, a second byte-identical build, target.zip cut last), and the free gates re-run (precut.py, voice-check.py, figures_check.py, leak.py --asof 2027-01-08, guard.py heart and surface after a pull) before the ship the orchestrator calls",
+ "resume": "stage 2: design sections, then the generator (stage 3)",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "no seed: architecture 2 keeps nothing of architecture 1's world (a battery at a congested power-market node); a regional fuel distributor's bulk terminal, its retail tanker fleet, contract carrier, dispatch dockets and vapour recovery unit, invented",
+ "source_note": "no seed: a listed office trust's tower, its tenancies, its building management system and its sustainability-linked loan, invented",
  "replaces_architecture": {
   "architecture": 1,
   "delivered": "2026-10-15",
   "target_zip_sha256_16": "6f9be07297f8fc22",
   "fate": "spent at the 2026-11-02 re-check (the node's-own-year reading refuted leaves the textbook long-record correction unanimous, Reflex fails; left open it is a fork closed only by naming the decisive step); build files cleared from the folder, kept in history; this build replaces it at ship"
  },
+ "spent_architectures": [
+  {
+   "architecture": 2,
+   "spent": "2026-11-04",
+   "fate": "stage-4 determinism judge NOT_DETERMINISTIC, SEND_BACK: gates B, C, E external_dependency, nothing in the pack separated the readings, Gate H rule application bordering a withheld rule; pack ccb06130 never left the session"
+  }
+ ],
  "draw_screen": {
   "date": "2026-11-04",
-  "screened": 13,
-  "task_types": [
-   "emissions-inventory",
-   "payment-claims-health-plan-analytics",
-   "item-response-theory-test-equating",
-   "seasonal-adjustment-official-time-series-production",
-   "data-integration-record-linkage-entity-resolution"
-  ],
-  "cleared": 1,
-  "carded": "screen 13, emissions-inventory: diesel loaded at uncontrolled distillate bays into compartments whose last delivery was petrol through station vapour balance",
-  "prototype": "proto_switch2.py, seeds 461, 4611 and 4612: rung 0 at 0.33 t on the distillate bays, the exports-only compartment history at 0.84 of the golden, every retail diesel load at petrol vapour at 1.89, the dockets' construction about 47 t, temperature convention inert",
-  "guard_check": "WARN (repeat.gate_g against task200, answered in the design note); same-puzzle and same-driver against older task488 and task308 v3 differentiated on the card"
- },
- "call": "report 38.4 t of VOC from product loading in 2026: over the licence's 20 t limit by 18.4 t",
- "default_path_answer": "1.4 t, within the limit (VRU-1 stack 1.1, bay 4 0.1, bay 5 0.2)",
- "as_of": "2027-01-08",
- "world_seed": 4770,
- "gates": {
-  "generator_checks": "103 of 103 (python3 task461/generator/build.py)",
-  "verify": "43 graded figures recomputed on the verifier's own path, every format read back",
-  "byte_identical": "two full builds byte-identical (16 target files, 3 goldens, metadata.json, submission.md, figures.json)",
-  "figures_check": "42 figures in blocks 1 to 4, 0 absent",
-  "voice_check": "PASS (905 characters)",
-  "input_gates": "16 files, 3 formats (csv, pdf, xlsx), dockets 45,402 rows, 3 distractors in metadata.json",
-  "realism": "checks.py realism sweep green; scrub audit clean in the fiction's band (2019-01-01 to 2027-01-08); every PDF read by pdfplumber and strict pypdf",
-  "ceiling": "generator/ceiling.py: the careful route keeps 0 of 25 ask figures, pair ceiling 31.3, mirror leakage 0.0"
- },
- "target_zip_sha256": "ccb06130f80e87ba7423fed9056948c44ea7457e6ea8ebd8d4f800ac7d1f9f58"
+  "carded": "office tower base building residual with nested tenancy sub-meters, the hierarchy forced by the half-hourly data",
+  "guard_check": "WARN (repeat.gate_g and repeat.decision against task476 v3), no BLOCK"
+ }
 }
