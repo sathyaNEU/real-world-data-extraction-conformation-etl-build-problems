@@ -1,0 +1,111 @@
+{
+ "decision": "how many articulated dump trucks haul from the Phase 4 extension in January 2027 within the noise management plan's haulage share at MP1",
+ "deliverables": [
+  "extension_haul_dial.csv",
+  "extension_scheme_note.pdf"
+ ],
+ "distractor_files": [
+  "target/ravensby_weather_station_10min_2026.csv",
+  "target/blast_register_2026.xlsx",
+  "target/complaints_log_2026.xlsx",
+  "target/daily_shift_report_2026.xlsx"
+ ],
+ "files": {
+  "adt_telematics_2026-05_2026-10.parquet": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "axle_weigher_RWP2_export_2026-01.csv": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "blast_register_2026.xlsx": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "complaints_log_2026.xlsx": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "daily_shift_report_2026.xlsx": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "decision_notice_R-2019-0447_conditions.pdf": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "mp1_ulverthorpe_lane_15min_2026.csv": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "northfell_networks_interruption_notices_2026.pdf": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "phase4_working_scheme_2027-01_draft.docx": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "primary_belt_scale_15min_2026.csv": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "primary_crusher_plc_events_2026.csv": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "product_list_2026-06.csv": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "ravensby_noise_management_plan_rev3.pdf": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "ravensby_plant_register_2026.pdf": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "ravensby_topographic_survey_2026-04.geojson": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "ravensby_weather_station_10min_2026.csv": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "sales_orders_2025-12_2026-01.xlsx": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "weighbridge_tickets_2026-01.xlsx": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  },
+  "wheel_loader_L150_payload_2026.csv": {
+   "date": "2026-11-30",
+   "licence": "CC BY 4.0",
+   "source": "constructed operating record of a fictional quarry"
+  }
+ },
+ "task": "task210"
+}
