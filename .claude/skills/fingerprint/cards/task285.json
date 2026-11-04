@@ -1,0 +1,93 @@
+{
+  "task": "task285",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Wave 10 Descriptive lane (oviya1301). Seed DA35 (citation normalisation across version families) set aside at the draw: its decisive moves were Layer 1 deduplication or filed counting rules, and no client task type serving Descriptive carries bibliometrics; the number moves to Urban and Regional Science, network analysis, in a fresh world.",
+  "domain": "urban-regional-science",
+  "subdomain": "network-analysis",
+  "niche": "a community foundation's 2027 Flood Ready grants to every parish whose village the 1 in 100 design flood would cut off from the county hospital by road, read from a river model whose floodplain storage areas fill and drain hours apart",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "time_semantics",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_model",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the model's storage-area stages to the surveyed road levels, closes every link that would stand under more than 0.25 m of water at its peak and lists the villages left with no route to the hospital files every parish on that envelope, because the tributary storage areas fill and drain about a day before the main river's, so the villages with a road up each side of the valley always keep one route open and are never cut off.",
+  "domain_test": "The deciding quantity is each village's road reachability to the hospital under the links a flood closes, network analysis's unreachable demand under link failures, read at each hour of the event because the closures come and go as the flood passes through the floodplain; swapped onto another network the words survive but the route alternatives and the storage areas' timing that decide the set do not.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:reachability-read-hour-by-hour-while-floodplain-storage-areas-fill-apart",
+  "layer1": [
+    "2023 and 2025 model runs overlapping, the 2025 run superseding",
+    "model hours against the 2020 hindcast's UTC clock and the closure log's local clock",
+    "road links renumbered in the 2025 highways asset upload",
+    "address register parent shells and child records for flats",
+    "survey points on the dual carriageway split by carriageway",
+    "two parishes merged in 2025"
+  ],
+  "stakeholder_role": "the foundation's research and evaluation lead, preparing the Flood Ready list for the trustees",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "address_register_extract.csv",
+    "rows": 28000,
+    "entity": "one addressable property",
+    "grain": "UPRN",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "uk",
+    "currency": "GBP",
+    "org_type": "community foundation",
+    "invented_names": [
+      "Leddon Valley Community Foundation",
+      "Hawkesbridge General Hospital",
+      "River Leddon"
+    ],
+    "people": [
+      "Gareth Johnston",
+      "Lindsey Mistry",
+      "Julian Woodward"
+    ]
+  },
+  "deliverables": [
+    "flood_ready_parishes_2027.xlsx",
+    "flood_ready_parishes_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is whether a unit can still reach a fixed point through a network whose links fail and recover over time, each in its own window set by one wave passing through the places the links sit; closing every link that fails at any time strands units that always keep one route open because their routes fail at different times, and reading the network only at the moment most links are down misses units stranded when a different set fails earlier, so the stranded units have to be found by reading the whole network at every moment.",
+  "driver_concrete": "Each parish's village is cut off when no road route to Hawkesbridge General Hospital is passable to an emergency ambulance at that hour, water no deeper than 0.25 m on the carriageway, read at every hour of the 1 in 100 design event from the storage areas' stage hydrographs against each road point's surveyed level; the tributary storage areas fill and drain about a day before the main river's, so villages with a road up each side of the valley are never cut off although every link that floods at some hour would close both.",
+  "stump": "A competent analyst takes each storage area's peak stage against the surveyed road levels, closes every link with a point under more than 0.25 m at the peak and files every parish left with no route to the hospital; the step that lands it there is closing at once links that are only ever closed a day apart, when the villages with a road up each side of the valley always keep one open, while reading the network at the hour most links are down files only the lower valley's parishes.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task254": "task254 composes one path's travel time through segments whose delays change while the vehicle is on them (a time-dependent path cost read at the moment the vehicle reaches each segment); here the question is whether any path exists at each moment while links close and reopen in different windows, and the wrong route is the union of every closure over the event, not a departure-time snapshot.",
+    "task114": "task114 counts demand created when two parties share a site on the same day once two offices merge; here closures that never share an hour create no isolation, and taking their union over the event creates isolation that never happens.",
+    "task84": "task84 groups concurrently live advertising campaigns on a composite key to price their competition in a cost rise; nothing here is grouped or priced: a road network is read at each hour of a flood.",
+    "task257": "task257 counts the dimensions of a scale from polychoric correlations of lopsided items; this build reads a network's reachability through time.",
+    "task269": "task269 architecture 2 set an OSCE's station count from variance components under a fixed blueprint; this build reads a network's reachability through time."
+  },
+  "lineage": [],
+  "notes": "time_semantics WARN answered in the design note: every field read correctly (the stage hydrographs, the surveyed levels, the 0.25 m standard, the plan's definition of cut off) still leaves the envelope route on the wrong parishes, because the decisive step is reading the network at each hour, which no field or rule performs.",
+  "registered": "2026-11-04T14:19:15Z"
+}
