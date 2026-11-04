@@ -228,5 +228,6 @@
     "second-sentence opener": "answer",
     "rounding opener": "days",
     "deliverable set": "pptx+xlsx"
-  }
+  },
+  "architecture_spent": true
 }
