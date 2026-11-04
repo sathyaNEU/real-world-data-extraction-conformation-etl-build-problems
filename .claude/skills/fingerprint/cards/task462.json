@@ -2,11 +2,11 @@
   "task": "task462",
   "architecture": "v2",
   "drawn": "2026-11-04",
-  "slot_note": "re-root of the ETL number after architecture 1 was found spent at the 2026-11-02 re-check",
-  "domain": "supply-chain-logistics",
-  "subdomain": "inventory-demand-planning",
+  "slot_note": "re-root of the ETL number after architecture 1 was found spent at the 2026-11-02 re-check; redrawn the same day from a steelworks' ore yard after task476 v4 and task488 v2, registered in parallel, took its pairing, pattern, forum, forcing event, organisation family and context artifact",
+  "domain": "business-operations-analytics",
+  "subdomain": "other",
   "client_domain": "general-statistics-data-science",
-  "niche": "a coastal steelworks' winter reserve of iron-bearing material in its ore yard, measured from a year of monthly drone surveys flown by two survey contractors in different grids and height systems",
+  "niche": "a coastal combined heat and power plant's winter coal reserve, measured from a year of monthly drone surveys of its coal yard flown by two survey contractors in different grids and height systems",
   "objective": "etl",
   "shape": "other",
   "decision_type": "go_hold_or_stop",
@@ -20,8 +20,8 @@
     "none"
   ],
   "generators": [
-    "G5",
-    "G16"
+    "G16",
+    "G5"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
@@ -29,65 +29,73 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "With both contractors' surveys aligned and the reserve procedure applied as written, a strong analyst takes each bed's December volume above a plane fitted through its toe, the stock surveyor's standard base, which the new bed's own bare survey and the year's book roll-forward both confirm, and files about 671,000 t, 50.1 days against the 52-day floor, nominating the winter option cargo.",
-  "domain_test": "The deciding quantity is a stockpile inventory worked the way a stock-survey team integrates its surveys, each bed's volume between the December surface and the pad beneath it with the base surface conformed from the year's surveys across two contractors' grids and height systems; in another field's nouns the task is gone, because what decides is a pad consolidating under ore beds on reclaimed land, seen only where a bed was reclaimed to the pad.",
+  "analyst_test": "With both contractors' surveys aligned and the fuel security procedure applied as written, a strong analyst takes each coal pile's December volume above a plane fitted through its toe, the stock surveyor's standard base, which the new pile area's own bare surveys and the year's book roll-forward both confirm, and files about 140,000 t, 57.5 days against the 60-day floor, nominating the winter option cargo.",
+  "domain_test": "The deciding quantity is a stockpile inventory worked the way a stock-survey team integrates its surveys, each pile's volume between the December surface and the pad beneath it with the base surface conformed from the year's surveys across two contractors' grids and height systems; in another field's nouns the task is gone, because what decides is a yard pad consolidating under coal piles on reclaimed harbour land, seen only where a pile was reclaimed to the pad.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:stockpile base surface where the pad has settled under long-standing beds",
+  "layer2_pattern": "own:stockpile base surface where the pad has settled under long-standing piles",
   "layer1": [
-    "two survey contractors on different grids (works grid, ETRS-TM35FIN) and height systems (N60, N2000)",
+    "two survey contractors on different grids (the plant grid, ETRS-TM35FIN) and height systems (N60, N2000)",
     "ESRI ASCII grids against semicolon XYZ exports with decimal commas",
-    "NODATA cells where a machine stood on a bed",
-    "the laboratory's density unit changed mid-year (kg/m3 to t/m3)",
-    "the port's berth log in UTC against the works' Finnish time",
+    "NODATA cells where a machine stood on a pile",
+    "the fuel laboratory's density unit changed mid-year (kg/m3 to t/m3)",
+    "the port's berth log in UTC against the plant's Finnish time",
     "a plant historian computing interval tonnage from totalisers, with catch-up after communication losses",
     "a belt-scale integrator replaced mid-year, its totaliser restarting",
-    "a trading house shipping a producer's cargoes under its own name"
+    "a trading house shipping a producer's coal under its own name"
   ],
-  "stakeholder_role": "the works' raw materials manager, who decides whether to nominate the supplier's winter option cargo",
+  "stakeholder_role": "the energy company's fuel manager, who decides whether to nominate the coal supplier's winter option cargo",
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "surveys/yard_2026-12-16.xyz",
-    "rows": 30000,
-    "entity": "one surveyed point of the ore yard surface",
+    "file": "surveys/coalyard_2026-12-16.xyz",
+    "rows": 23000,
+    "entity": "one surveyed point of the coal yard surface",
     "grain": "survey x 2 m point",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
-  "org_family": "manufacturer",
+  "forum": "executive_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Finland (a fictional steelworks on the Gulf of Bothnia coast)",
+    "geography": "Finland (a fictional coastal city's energy company on the Gulf of Bothnia)",
     "currency": "EUR",
-    "org_type": "integrated steelworks",
+    "org_type": "municipal combined heat and power company",
     "invented_names": [
-      "Perämeren Teräs Oy",
-      "Tornedal Mineral AB",
-      "Ofoten Ore AS",
-      "Kattegat Ore Trading ApS",
-      "Kuvamitta Oy",
-      "Geodrone Pohjoinen Oy"
+      "Rannikon Lämpö Oy",
+      "Altamar Coal S.A.S.",
+      "Ridgeline Energy Sales LLC",
+      "Silesia Fuels Sp. z o.o.",
+      "Kattegat Bulk Trading ApS",
+      "Mittaus-Saarinen Oy",
+      "Pohjoisen Dronekartoitus Oy"
     ],
     "people": [
       "Kirsi Salo",
       "Aaro Miettinen",
       "Maarit Vainio",
-      "Pekka Jalonen"
+      "Pekka Jalonen",
+      "Marianne Kosonen",
+      "Karoliina Huttunen"
     ]
   },
   "deliverables": [
-    "winter_reserve_2026.xlsx",
-    "yard_stock_2026.svg"
+    "coal_reserve_2026.xlsx",
+    "coalyard_stock_2026.svg"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is the amount held above a surface that has sunk beneath the loads it carries, so under each load it lies below the level at the load's edge; the record shows that surface only on the occasions each load was taken away, and an amount taken against a surface through the load's edge leaves out the part filling the hollow.",
-  "driver_concrete": "Each ore bed's tonnage at the December 2026 survey is its volume above the yard pad as the year's surveys expose it in the month the bed was reclaimed to the pad, aligned across the two contractors' grids and height systems, times its product's bulk density, not its volume above a plane through its toe, which leaves out the ore lying in the bowl the pad has settled into under years of stockpiling.",
-  "stump": "The default path takes each bed's December volume above a plane fitted through its toe and files a reserve of about 671,000 t, 50.1 days against the 52-day floor, so it nominates the winter option cargo; the pad under the five long-standing beds has settled into bowls up to about two metres deep, and measured against the pad the year's clearances exposed the reserve is about 728,000 t, 54.2 days, and no cargo is needed.",
+  "driver_concrete": "Each coal pile's tonnage at the December 2026 survey is its volume above the yard pad as the year's surveys expose it in the month the pile was reclaimed to the pad, aligned across the two contractors' grids and height systems, times its coal's bulk density, not its volume above a plane through its toe, which leaves out the coal lying in the bowl the pad has settled into under decades of stockpiling.",
+  "stump": "The default path takes each pile's December volume above a plane fitted through its toe and files a reserve of about 140,000 t, 57.5 days against the 60-day floor, so it nominates the winter option cargo; the pad under the five long-standing piles has settled into bowls up to about one and a half metres deep, and measured against the pad the year's rotations exposed the reserve is about 151,000 t, 62.1 days, and no cargo is needed.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task190": "task190 v6 reads a ratio's precision from its design variance; here the decisive step is the surface a stockpile volume is taken against, measured from the survey archive, with no variance or interval in the call",
+    "task195": "task195 judges a paired difference's uncertainty; here nothing is inferential: the decisive step is the base under each coal pile, read from the surveys that expose the pad",
+    "task228": "task228's lineage separates comparators' correlated errors; here the decisive step is a base surface conformed from a year of surveys across two contractors' frames, with no comparator or error model",
+    "task478": "task478 v7 corrects a period total for an input property a supplier records; here the decisive step is the pad under each pile, seen in the year's own surveys where the pile was reclaimed to the pad"
+  },
   "lineage": [
     {
       "architecture": "v1",
@@ -123,12 +131,12 @@
       "deliverable set": "csv+xlsx"
     }
   ],
-  "notes": "architecture 2 re-root 2026-11-04 after architecture 1 was found spent at the 2026-11-02 re-check (its golden was the field's own method applied as stated). Designed to the survivor anatomy: the field's method (a base through the toe) is rung 0 and validates on the new bed and on the book roll-forward; the decisive step is recognising that the long-standing beds violate its precondition (the pad under a bed continues the pad at its toe), forced by the year's own surveys with no filed method and no outside constant.",
-  "registered": "2026-11-04T08:31:13Z",
+  "notes": "architecture 2 re-root 2026-11-04 after architecture 1 was found spent at the 2026-11-02 re-check (its golden was the field's own method applied as stated); first drawn in a steelworks' ore yard, redrawn into a CHP plant's coal yard the same day when task476 v4 and task488 v2 registered first. Designed to the survivor anatomy: the field's method (a base through the toe) is rung 0 and validates on the new pile area and on the book roll-forward; the decisive step is recognising that the long-standing piles violate its precondition (the pad under a pile continues the pad at its toe), forced by the year's own surveys with no filed method and no outside constant.",
   "shell": {
     "question form": "how-many",
     "second-sentence opener": "each",
     "rounding opener": "cubic",
     "deliverable set": "svg+xlsx"
-  }
+  },
+  "registered": "2026-11-04T08:40:22Z"
 }

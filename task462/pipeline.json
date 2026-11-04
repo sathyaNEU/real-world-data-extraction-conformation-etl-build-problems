@@ -1,13 +1,13 @@
 {
  "task": "task462",
  "status": "DESIGN",
- "domain": "supply-chain-logistics",
+ "domain": "business-operations-analytics",
  "objective": "etl",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-11-04",
  "architecture": 2,
- "stump": "The default path takes each ore bed's December volume above a plane fitted through its toe and files a reserve of about 671,000 t, 50.1 days against the 52-day floor, so it nominates the winter option cargo; the pad under the five long-standing beds has settled into bowls up to about two metres deep, and measured against the pad the year's clearances exposed the reserve is about 728,000 t, 54.2 days, and no cargo is needed.",
+ "stump": "The default path takes each pile's December volume above a plane fitted through its toe and files a reserve of about 140,000 t, 57.5 days against the 60-day floor, so it nominates the winter option cargo; the pad under the five long-standing piles has settled into bowls up to about one and a half metres deep, and measured against the pad the year's rotations exposed the reserve is about 151,000 t, 62.1 days, and no cargo is needed.",
  "loops": 0,
  "precut": {
   "exit": null,
@@ -31,7 +31,7 @@
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "no seed: a fictional Finnish steelworks' ore yard, its survey contractors, its yard systems and its supplier's winter option, invented; house domain supply-chain-logistics mapped to the client domain general-statistics-data-science (data integration)",
+ "source_note": "no seed: a fictional Finnish city-owned energy company, its harbour power plant, its coal yard, its survey contractors, its yard systems and its supplier's winter option, invented; house domain business-operations-analytics mapped to the client domain general-statistics-data-science (data integration)",
  "replaces_architecture": {
   "architecture": 1,
   "delivered": "2026-10-15",
@@ -40,7 +40,8 @@
  },
  "draw_screen": {
   "date": "2026-11-04",
-  "carded": "an ore yard's winter reserve measured from a year of drone surveys by two contractors, the pad settled into bowls under the long-standing beds and seen only in the surveys where each bed was reclaimed to the pad",
-  "guard_check": "WARN (repeat.deliverables svg+xlsx against task192 v4), no BLOCK; registered 2026-11-04T08:31:13Z"
+  "carded": "a power plant coal yard's winter reserve measured from a year of drone surveys by two contractors, the pad settled into bowls under the long-standing piles and seen only in the surveys where each pile was reclaimed to the pad",
+  "redrawn_from": "a steelworks ore yard (registered 08:31), which collided with task476 v4 and task488 v2 registered first (pairing, pattern, artifact, forum, forcing event, organisation family)",
+  "guard_check": "WARN (overuse.objective) and NOTE (same_driver_older, differentiated), no BLOCK; registered 2026-11-04T08:40:22Z"
  }
 }

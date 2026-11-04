@@ -8,40 +8,43 @@ the quantity are new.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task462.json`, architecture v2, registered 2026-11-04T08:31:13Z, v1 in its
-  lineage with its fate. `guard.py check`: WARN only (repeat.deliverables, svg and xlsx against task192 v4; answered:
-  the chart is a vector file for the works' intranet page beside a workbook, and the rest of the shell differs, a
-  how-many question, a second sentence led by the beds, a rounding sentence led by the unit).
-- **Pairing:** house domain Supply Chain & Logistics (inventory-demand-planning), mapped to the client domain General
-  Statistics & Data Science, task type data-integration-record-linkage-entity-resolution, objective ETL. The call is read
-  from a conformed set: a year of monthly drone surveys of the ore yard by two survey contractors (two grids, two height
-  systems, two export formats) conformed into one surface record, each bed's December volume taken against the pad
-  beneath it, times the laboratory's bulk density for its product. The client task type is the one task476 v3 holds;
-  its driver there is an identity resolution across two registers, here a base surface conformed from a survey archive.
-- **Why this cell:** the last three draws hold record linkage (task476 v3), emissions inventory (task461 v3) and grid
-  reliability (task192 v4); architecture 1's card is spent and holds no axis. The draw screened every ETL task type
-  (the screens below, each with its death); the survivor is a stock measurement on a physical record, where the
-  forcing file pins a surface rather than an identity, a grain or a clock.
-- **Forum and forcing event:** committee_or_panel (the works' raw materials steering group signs the winter reserve
-  statement) and season_or_peak (the Bothnian Bay ice season: the supplier's winter option cargo must be nominated by 8
-  January for an ice-class loading in late January, and nothing else reaches the yard in volume until the spring
-  opening). Organisation manufacturer; role capacity_planner (the raw materials manager plans the yard's stock against
-  the blast furnaces' plan). Personas from `guard.py names --geo Finland --seed 462`: Kirsi Salo (raw materials manager,
-  signs the statement), Aaro Miettinen (works survey engineer), Maarit Vainio (laboratory), Pekka Jalonen (yard
-  operations).
-- **World:** Perämeren Teräs Oy's integrated works on the Gulf of Bothnia coast: two blast furnaces fed from an ore yard
-  of six beds on a pad built on reclaimed land, a ship unloader at the works harbour, a stacker and reclaimers on rails.
-  Iron-bearing burden: pellets from Tornedal Mineral AB, pellets and lump ore from Ofoten Ore AS, and spot cargoes of
-  both bought through Kattegat Ore Trading ApS. The yard is surveyed each month by drone, by one contractor to June 2026
-  (the works grid, N60 heights, ESRI ASCII grids) and another from July (ETRS-TM35FIN, N2000 heights, XYZ text).
-- **Forcing fact:** the winter reserve procedure's floor (days of the first-quarter plan's planned reclaim at the
-  December survey) and the supply agreement's winter option, nominated by 8 January 2027. The call faces forward (the
-  first quarter of 2027 is not yet run). As of 4 January 2027 (the folder's assembly date, the `--asof` for `leak.py`).
-- **Data-native sentence:** the beds stand on reclaimed land and have been stacked on the same footprints for years, so
-  the pad has consolidated into a bowl under each long-standing bed, which the December survey cannot see because the
-  bed covers it; the year's monthly surveys show each such bed reclaimed to the pad once, in one or the other
-  contractor's grid and height system, while the bed on the pad section added in 2025 has no bowl and so confirms the
-  base through the toe wherever anyone checks it.
+- **Card:** `.claude/skills/fingerprint/cards/task462.json`, architecture v2, registered 2026-11-04T08:40:22Z, v1 in its
+  lineage with its fate. First drawn in a steelworks' ore yard (registered 08:31) and redrawn the same morning into a
+  power plant's coal yard when task476 v4 and task488 v2, registered earlier in parallel, took six of its axes (line in
+  `## Tried and rejected`). `guard.py check`: WARN (overuse.objective, the lane's own objective) and a NOTE
+  (test.same_driver_older against task190 v6, task195, task228's lineage and task478 v7, each differentiated on the
+  card: none takes a volume against a surface).
+- **Pairing:** house domain Business & Operations Analytics (subdomain other: a utility's fuel stock measurement), mapped
+  to the client domain General Statistics & Data Science, task type data-integration-record-linkage-entity-resolution,
+  objective ETL. The call is read from a conformed set: a year of monthly drone surveys of the coal yard by two survey
+  contractors (two grids, two height systems, two export formats) conformed into one surface record, each pile's
+  December volume taken against the pad beneath it, times the fuel laboratory's bulk density for its coal.
+- **Why this cell:** the last three draws hold emissions inventory (task461 v3), record linkage (task476 v4) and a
+  hydrant's recalled fuel in supply chain (task488 v2), so the pairing leaves those three domains; the draw screened
+  every ETL task type (the screens below, each with its death), and the survivor is a stock measurement on a physical
+  record, where the forcing file pins a surface rather than an identity, a grain or a clock.
+- **Forum and forcing event:** executive_team (the energy company's management team signs the winter fuel statement and
+  any purchase it triggers) and purchase_order_or_contract (the coal supply agreement's winter option, nominated by 8
+  January for an ice-class loading in late January; after it nothing reaches the harbour in volume until the spring
+  opening). Organisation utility_or_infrastructure (a city-owned combined heat and power company); role capacity_planner
+  (the fuel manager plans the yard's stock against the plants' burn plan). Personas from `guard.py names --geo Finland
+  --seed 462`: Kirsi Salo (fuel manager, signs the statement), Aaro Miettinen (survey engineer), Maarit Vainio (fuel
+  laboratory), Pekka Jalonen (yard supervisor), Marianne Kosonen and Karoliina Huttunen (the two contractors' surveyors).
+- **World:** Rannikon Lämpö Oy, a city-owned energy company on the Gulf of Bothnia coast, runs a combined heat and power
+  plant at the harbour whose coal unit and peak boilers burn coal from a yard of six piles on reclaimed harbour land, fed
+  by a grab unloader at the plant quay, a stacker and reclaimers on rails. Coal comes from Altamar Coal S.A.S.
+  (Colombia), Ridgeline Energy Sales LLC (United States) and Silesia Fuels Sp. z o.o. (Poland), with spot cargoes bought
+  through Kattegat Bulk Trading ApS. The yard is surveyed each month by drone, by Mittaus-Saarinen Oy to June 2026 (the
+  plant grid, N60 heights, ESRI ASCII grids) and by Pohjoisen Dronekartoitus Oy from July (ETRS-TM35FIN, N2000 heights,
+  XYZ text).
+- **Forcing fact:** the fuel security procedure's floor (60 days of the first-quarter burn plan at the December survey)
+  and the Silesia agreement's winter option, nominated by 8 January 2027. The call faces forward (the first quarter of
+  2027 is not yet run). As of 4 January 2027 (the folder's assembly date, the `--asof` for `leak.py`).
+- **Data-native sentence:** the piles stand on reclaimed harbour land and have been stacked on the same footprints for
+  decades, so the pad has consolidated into a bowl under each long-standing pile, which the December survey cannot see
+  because the pile covers it; the year's monthly surveys show each such pile reclaimed to the pad once (the yard rotates
+  its coal against weathering and self-heating), in one or the other contractor's grid and height system, while the
+  pile area added in 2025 has no bowl and so confirms the base through the toe wherever anyone checks it.
 - **Abstraction sentence:** "an amount held above a surface that has sunk under its loads is understated by a surface
   through the loads' edges; the record shows the true surface only where a load was taken away." Nearest drivers on
   file at 0.07 (task251 v4 lineage) and 0.05, none a base surface.
@@ -50,8 +53,8 @@ the quantity are new.
     violated precondition (a base through the toe assumes the pad under a pile continues the pad at its edge).
   - `dataset-generation/references/layer1-messiness.md`: two contractors on two grids and height systems, ESRI ASCII
     grids against semicolon XYZ with decimal commas, NODATA where a machine stood, a laboratory unit change, a port
-    system in UTC against the works' Finnish time, a plant historian's catch-up after communication losses, a
-    belt-scale integrator replaced mid-year, a trading house shipping a producer's cargo under its own name.
+    system in UTC against the plant's Finnish time, a plant historian's catch-up after communication losses, a
+    belt-scale integrator replaced mid-year, a trading house shipping a producer's coal under its own name.
 
 ## Tried and rejected
 
@@ -131,3 +134,12 @@ the quantity are new.
   flew them lands at 0.956. The December piles are full length in the build for that reason.
 - 2026-11-04, prototype: one survey window per bed reaching into its neighbour's footprint double-counted the
   neighbour's pile against the lowest surface of every survey; each cell belongs to one bed, the beds 20 m apart.
+- 2026-11-04, redraw: the carded steelworks draw (an integrated works' ore yard of six beds, pellets and lump ore,
+  supply-chain-logistics inventory planning, registered 08:31) collided after the rebase with task476 v4 and task488 v2,
+  drawn in parallel and registered first: the pairing (supply chain with ETL), the decisive pattern G5, the context
+  artifact (a monitoring export), the forum (a committee), the forcing event (the season) and the organisation family
+  (a manufacturer, which a steelworks honestly is) all BLOCKed. The mechanism, the survey archive and the asks moved to a
+  city-owned power plant's coal yard (business and operations analytics mapped to GSDS data integration, a utility, the
+  management team, the supply agreement's option deadline, the burn plan as the capacity report, method selection as
+  the decisive pattern), priced again before carding (proto_coal.py: the base through the toe 0.927, the ring's lowest
+  point 0.935, every pile's own bare survey 1.001, the lowest of all aligned surveys 1.003).
