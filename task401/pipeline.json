@@ -4,8 +4,8 @@
   "domain": "education-learning-sciences/multilevel-classroom-school-research",
   "objective": "root-cause",
   "stage": 4,
-  "stage_name": "check: the leak reader and the determinism judge",
-  "updated": "2026-11-04T09:35:00Z",
+  "stage_name": "check",
+  "updated": "2026-11-04",
   "seed": "RC07 (a supplier's January imbalance bill); the seed's world could not carry an honest unbanned draw. Architectures 1 and 2 died at stage 2, 3 was spent at stage 4 round 2, 4 and 5 at stage 4 round 1. Architecture 6 re-roots in Education and Learning Sciences: Strathcorrie Council's S1 to S3 mathematics and its 2025-26 changes.",
   "stump": "A competent analyst models each pupil's June mark on P7 attainment, deprivation, school and class, reads each change's cost off the pupils and units it reached, and files the new mathematics framework, never setting each pupil's first-homework results against that pupil's June items unit by unit, where the units each pupil got most wrong fell further once review stopped following their errors (Corvella to Mathsbridge).",
   "architecture": 6,
@@ -36,7 +36,7 @@
   },
   "leak": {
     "leak_py": "REVIEW, no LEAK (register carries the changes own names; school names beside numbers in six data files, no ranking)",
-    "reader": "not yet run",
+    "reader": "round 1 clean on the main call (no decisive-step sentence, no ranking file, analytical choice); realism tells for the fix pass",
     "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/briefs/task401_leak_reader_brief.md",
     "reader_copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/leak-task401/"
   },
@@ -52,7 +52,7 @@
     "graded_blocks": "graded_blocks.md, opened only after derivation.md"
   },
   "returned": [],
-  "resume": "Stage 4 (check): rebuild with `python3 task401/generator/build.py` (byte-identical, target.zip sha256 e002e59b...), then spawn together in the background the leak reader (briefs/task401_leak_reader_brief.md, general-purpose, sonnet, medium) and the determinism judge (briefs/task401_determinism_judge_brief.md, medium), each on its own fresh copy of prompt.txt and target/ verified against target.zip; rule the stump-vocabulary sweep's line in the note (the register's words framework, platform, register, homework and rewritten are the changes' own names); fix every finding from both in one generator pass, re-judge once on FIX_NOW; then stage 5 ship: every gate re-run on the final cut, target.zip and golden/ force-added, ledger row, card answer current, commit SHIPPED (task401).",
+  "resume": "Stage 4 round 1 running. Before the judge: the two June shares were moved from one decimal to whole per cents (42 and 36; at one decimal they sat 0.0037 and 0.0063 from a rounding edge), with bins asserts in checks.py and the note's Closure Bins line; target.zip unchanged (e002e59b...). Leak reader round 1 done, clean on the main call (answers in the build scratch leak-task401/reader_answers.md; realism tells: survey response counts equal across statements, regular post refs). Determinism judge round 1 running on determinism-check-task401-a6r1/ (verdict.md). Next: collect the verdict, fix every finding from both in one generator pass (the realism tells included), re-judge once on FIX_NOW and re-read if a document or the prompt changed; on APPROVE re-run every gate on the final cut and ship.",
   "approved": null,
   "delivered": null,
   "portal": null,

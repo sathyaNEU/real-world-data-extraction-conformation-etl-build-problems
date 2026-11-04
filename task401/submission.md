@@ -9,7 +9,7 @@
 
 ## 2. Critical Components
 
-1. The fall: the mean mark went from **32.3** to **30.3** out of 60 (4,346 and 4,426 pupils sat), and the share at 36 or more from **42.2%** to **35.9%**.
+1. The fall: the mean mark went from **32.3** to **30.3** out of 60 (4,346 and 4,426 pupils sat), and the share at 36 or more from **42%** to **36%**.
 2. The framework and the platform switch began the same day for every pupil, so no comparison between groups of pupils separates them; within each pupil, the units first got most wrong widened their shortfall against the pupil's other units by more than the rewritten units widened theirs, across every school and year group.
 3. The partial changes reached far fewer pupils: the asymmetric week **1,491** S3 pupils, the support bases **241** pupils referred to a base, the shared posts **587** pupils in split classes (pupils who sat in June 2026).
 
@@ -29,7 +29,7 @@
 
 1. Change to reverse: the homework platform switch, Mathsbridge in place of Corvella (18 August 2025).
 2. Why each other change cost fewer: the framework's rewritten units fell less than each pupil's weak units and are four of twelve; the asymmetric week reached S3 only; the bases cost the most a pupil but reached 241 pupils; the shared posts reached 587 pupils, from January.
-3. Mean June mark: 32.3 (June 2025) and 30.3 (June 2026); share at 36 of 60 or more: 42.2% and 35.9%.
+3. Mean June mark: 32.3 (June 2025) and 30.3 (June 2026); share at 36 of 60 or more: 42% and 36%.
 4. Chart: each school's mean mark in both years:
    - Ardcorrie Academy: 32.1 and 30.3
    - Balmorran High School: 30.4 and 28.3

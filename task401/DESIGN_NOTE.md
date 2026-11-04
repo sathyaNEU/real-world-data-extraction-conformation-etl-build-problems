@@ -342,6 +342,15 @@ on the clean truth none of the nine lands the switch on the shipped seed (`check
 | 21 Clause scope | the remit covers the five changes in the register | filed (register) |
 | 22 Forward window contents | none: the call is retrospective (reason in the Draw) | not applicable, stated |
 
+Bins (stage 4 hand-off): the two shares are graded in whole per cents (the prompt: "shares are whole per cents"); at one
+decimal they sat 0.004 (2025, 42.154) and 0.006 (2026, 35.856) from their edges, which determinism-check bars for a
+percentage, and as whole per cents they clear by 0.346 and 0.356 of 0.5. The council means clear their 0.1 edges by
+0.041 or more. The chart means stay at one decimal; the tightest are Ardcorrie 2026 (30.2526, 0.0026), Kilbraith 2026
+(28.2469, 0.0031) and Ardcorrie 2025 (32.1457, 0.0043). They are exact means on a population with one reading, which
+checks.py asserts: one row per pupil on each roll and paper, every 2026 pupil wholly present or wholly absent, every
+pupil who sat on that session's roll, no pupil on both rolls changing school, and no pupil who sat carrying a leaving
+date. No defensible reading moves a pupil in or out of a school-year cell, so no reading crosses those edges.
+
 ## Literal reader
 
 Executed word for word, the remit asks for each change's total marks lost across the sitting pupils it reached. On each
@@ -701,3 +710,5 @@ Measured by: generator/ceiling.py, run by checks.py on the cut pack at every bui
   on every row, as platform exports do, and the autumn class lives only in which classmates shared each review set.
 - Per-change cost totals in the report and the submission: they spread with the weak-unit definition, so the report and
   the submission give the ranking and the reasons; the report's one weak-unit figure pair carries its specification.
+- 2026-11-04, stage 4 hand-off, the two June shares graded to one decimal: 42.154 and 35.856 per cent sat 0.004 and 0.006
+  from a rounding edge; graded as whole per cents instead (edges 0.346 and 0.356), no other figure moved.

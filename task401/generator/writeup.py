@@ -27,7 +27,7 @@ def run():
           'fewer pupils.', '']
     L += ['## 2. Critical Components', '',
           '1. The fall: the mean mark went from **%.1f** to **%.1f** out of 60 (%s and %s pupils sat), and the share at 36 or '
-          'more from **%.1f%%** to **%.1f%%**.' % (h['2025']['mean'], h['2026']['mean'], n(h['2025']['sat']),
+          'more from **%.0f%%** to **%.0f%%**.' % (h['2025']['mean'], h['2026']['mean'], n(h['2025']['sat']),
                                                  n(h['2026']['sat']), h['2025']['share'], h['2026']['share']),
           '2. The framework and the platform switch began the same day for every pupil, so no comparison between groups of '
           'pupils separates them; within each pupil, the units first got most wrong widened their shortfall against the '
@@ -62,7 +62,7 @@ def run():
           '2. Why each other change cost fewer: the framework\'s rewritten units fell less than each pupil\'s weak units and are '
           'four of twelve; the asymmetric week reached S3 only; the bases cost the most a pupil but reached %s pupils; the shared '
           'posts reached %s pupils, from January.' % (n(rc['D']), n(rc['E'])),
-          '3. Mean June mark: %.1f (June 2025) and %.1f (June 2026); share at 36 of 60 or more: %.1f%% and %.1f%%.'
+          '3. Mean June mark: %.1f (June 2025) and %.1f (June 2026); share at 36 of 60 or more: %.0f%% and %.0f%%.'
           % (h['2025']['mean'], h['2026']['mean'], h['2025']['share'], h['2026']['share']),
           '4. Chart: each school\'s mean mark in both years:']
     for s in sorted(F['by_school']):

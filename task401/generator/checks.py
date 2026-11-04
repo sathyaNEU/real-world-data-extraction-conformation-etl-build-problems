@@ -170,6 +170,34 @@ def run(F, w=None, st=None):
     dash = [f for f in files if ('—' in doc_text(os.path.join(T, f)) or '–' in doc_text(os.path.join(T, f)))]
     ok(not dash, 'no em or en dash in any shipped text %s' % dash)
     ok(F['head']['2026']['mean'] < F['head']['2025']['mean'], 'the fall is real: %.2f to %.2f' % (F['head']['2025']['mean'], F['head']['2026']['mean']))
+    # ------------------------------------------------------------------ bins: edge distance of every printed headline and chart figure
+    def edge(v, u):
+        return u / 2 - abs(v - round(v / u) * u)
+    ok('shares are whole per cents' in prompt, 'bins: the prompt grades the two shares in whole per cents')
+    sh_edges = {yr: edge(F['head'][yr]['share'], 1.0) for yr in F['head']}
+    ok(min(sh_edges.values()) >= 0.25, 'bins: shares at whole per cents clear their edges by %.3f or more (of 0.5) %s'
+       % (min(sh_edges.values()), {k: round(v, 3) for k, v in sh_edges.items()}))
+    mn_edges = {yr: edge(F['head'][yr]['mean'], 0.1) for yr in F['head']}
+    ok(min(mn_edges.values()) >= 0.03, 'bins: council means clear their 0.1 edges by %.4f or more' % min(mn_edges.values()))
+    ch = sorted((edge(m, 0.1), s, yr) for s, v in F['by_school'].items() for yr, m in v.items())
+    print('INFO bins: tightest chart means %s' % [(round(e, 4), s, yr) for e, s, yr in ch[:3]])
+    # the chart means are exact arithmetic on a population with one reading, so a tight edge cannot be crossed by a
+    # defensible reading: every pupil who sat is on the session's roll once, sat whole papers, and keeps one school
+    r5 = pd.read_csv(os.path.join(T, 'pupil_roll_2024-25.csv'), dtype=str)
+    r6 = pd.read_csv([os.path.join(T, f) for f in sorted(os.listdir(T)) if f.startswith('pupil_roll_extract_')][0], dtype=str)
+    m25 = pd.read_csv(os.path.join(T, 'june_common_paper_marks_2025.csv'), dtype=str)
+    m26 = pd.read_csv(os.path.join(T, 'june_common_paper_marks_2026.csv'), dtype=str)
+    st26 = m26.groupby('SCN')['Status'].nunique()
+    both = r5.merge(r6, left_on='Pupil Ref', right_on='MIS_Ref')
+    sat5 = set(m25.loc[m25['Attendance'] == 'P', 'Pupil Ref'])
+    sat6 = set(m26.loc[m26['Status'] == 'Present', 'SCN'])
+    ok(not r5['Pupil Ref'].duplicated().any() and not r6['SCN'].duplicated().any() and not m25['Pupil Ref'].duplicated().any()
+       and not m26.duplicated(['SCN', 'Question']).any(), 'bins: one row per pupil on each roll and each paper')
+    ok(int(st26.max()) == 1, 'bins: every 2026 pupil is wholly present or wholly absent')
+    ok(sat5 <= set(r5['Pupil Ref']) and sat6 <= set(r6['SCN']), 'bins: every pupil who sat is on that session\'s roll')
+    ok(int((both['Establishment'] != both['School']).sum()) == 0, 'bins: no pupil on both rolls changes school')
+    ok(r5.loc[r5['Pupil Ref'].isin(sat5), 'Leaving Date'].isna().all() and r6.loc[r6['SCN'].isin(sat6), 'Date_Left'].isna().all(),
+       'bins: no pupil who sat carries a leaving date')
     return FAILS
 
 

@@ -77,7 +77,7 @@ def report(F):
          'reverses it.')
     para('What happened in June', bold=True, size=12)
     para('%s pupils sat the June 2025 papers and %s sat the same papers in June 2026. The mean mark fell from %.1f to %.1f '
-         'out of 60, and the share of pupils at 36 or more fell from %.1f%% (%s pupils) to %.1f%% (%s pupils). Every school '
+         'out of 60, and the share of pupils at 36 or more fell from %.0f%% (%s pupils) to %.0f%% (%s pupils). Every school '
          'fell (chart).' % ('{:,}'.format(h['2025']['sat']), '{:,}'.format(h['2026']['sat']), h['2025']['mean'],
                              h['2026']['mean'], h['2025']['share'], '{:,}'.format(h['2025']['secure']), h['2026']['share'],
                              '{:,}'.format(h['2026']['secure'])))
