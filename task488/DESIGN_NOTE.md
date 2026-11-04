@@ -231,6 +231,7 @@ turnover, product change check, flushing).
 | SF15 | "refueller" | the tank vehicle holding the fuel: a rigid refueller or an articulated refueller's trailer | the tractor a ticket names | other refueller names | the equipment register's type and compartment columns |
 | SF16 | a refueller tank's contents | one mixed body of fuel: a refueller holds product from every batch it has received since it was last drained to empty | first in, first out (each delivery drawn from the oldest fuel aboard), or each delivery from the latest load | FIFO drops RF-24 and T-35 from the drain list (RF-23 and T-31 only, 6 refueller uplifts against 13) and moves every refueller litre; the latest-load reading moves every litre | QM-09 2.3: "A refueller holds product from every batch it has received since it was last drained to empty, its contents mixed"; both readings computed and the sentence's literal population asserted in `checks.py` |
 | SF17 | the batch litres on a hydrant row the batch's head or tail crossed during the uplift | the steady-rate trace on 15 C litres | litres at fuel temperature (Corbel's printed or Northgarth's recovered by Corbel's own correction), the flushes left out, the line-up minute 90 s either side | the 22 partial rows move: the two rows the batch's tail crossed (NG2690219, NG2690240) by up to 2,185 and 2,423 L, CB418385 and CB418386 by 645 and 617 L, the rest by 144 L or less; the sections, their 100 L cells and the 73 do not move | the deliverable answers grade each partial row within its own band (the widest departure plus 250 L, rounded up to 100 L: 300 or 400 L, 900 L for CB418385 and CB418386, 2,500 and 2,700 L for the tail rows) and every whole row within 10 L; the clean truth's readings asserted inside every band, the least room 146 L |
+| SF18 | the rack line between the farm valves and the loading arms | it holds 4,222 L (RK-01, the register's rack sheet) of the tank before, which leaves first in the first load after each rack change | every load read as the tank the rack was lined up to at its start | T-35 drops from the drain list, RF-23 and RF-24 move (4,270 and 426 L against 3,070 and 310) and 10 refueller uplifts against 13 | the register's line-fill volume and the shift log's rack change times, no load in progress at either change (both asserted in `checks.py`); the same displacement the hydrant needs |
 
 ## Ladder
 
@@ -384,7 +385,16 @@ Measured by: generator/ceiling.py, on the cut pack (target.zip of this build).
 - Ruling: the reader's realism notes (drain and filter values in narrow bands, Northgarth's log in UTC against
   Corbel's local time) are plausible differences between two agents' systems and an operator's routine readings.
 - After the reader: QM-09 2.3 gained one sentence (the commingling sentence of SF16), the only document that changed;
-  `leak.py` re-run on the new cut.
+  `leak.py` re-run on the new cut. The second reader read 2.3 as the manual's own definition, saying nothing of the
+  hydrant (its answers under "Second read" in `leak_check_report.md`).
+- The judge's second pass (dde9588d, DETERMINISTIC, APPROVE, `determinism_check_report_pass2.md`), ruled one line each:
+- Ruling: the rack line's carry-over (RK-01's 4,222 L) is the refuellers' softest point and is forced: the register
+  files the line fill and the shift log the rack changes, it is the hydrant's own displacement physics, and SF18
+  asserts both readings.
+- Ruling: the golden CSV's into-plane agent column is not in the prompt's field list and is ungraded; it stays as the
+  recall notice's own field, ordinary context that moves nothing.
+- Ruling: the 10 L tolerance in the deliverable answers covers every refueller figure 1 to 2 L from a boundary, the
+  plan's holdings and airline totals as well as the return's rows (RF-24 306, CB418424 124, CB418399 274, CB418369 276).
 
 ## Tried and rejected
 

@@ -1,10 +1,10 @@
 {
  "task": "task488",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "supply-chain-logistics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-04",
  "architecture": 2,
  "loops": 0,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-11-04 (asof 2026-10-14) on the residual cut, no LEAK: sweep 4 (QM-09, the farm shift log and the recall notice share ordinary operational words with the stump paragraphs; ruled in the note, never handed to the reader) and sweep 6 (both agents' ticket exports name airlines beside each uplift's litres: raw records, no ranking); each answered in DESIGN_NOTE.md, Leak review",
-  "reader": "clean 2026-11-04 on target.zip c7c2288a: nothing quoted for q1, no ranking or helper file, q5 executes to the golden's population, q6 an analytical choice, nothing planted; answers under Solver's-eye read in leak_check_report.md. QM-09 2.3 changed after the read (one sentence, SF16)"
+  "reader": "clean twice: 2026-11-04 on c7c2288a (q1 nothing quoted, q6 an analytical choice) and on dde9588d after QM-09 2.3 gained its commingling sentence (read as the manual's own definition, nothing on the hydrant); both reads in leak_check_report.md"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-11-04 at the card update (repeat.gate_g against task461 v3 and task476 v4, repeat.decision and repeat.deliverables against task476 v4; NOTE same_puzzle_older against task270 v9, differentiated), no BLOCK",
@@ -27,12 +27,12 @@
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md (pass 1 on c7c2288a): every graded figure reproduced; Gate H domain, layers and decisive step pass; sole_data_defect no; stump power not too easy. Residuals closed on the new cut: SF16 rewritten around the FIFO tank and closed by QM-09 2.3's commingling sentence (asserted), the 22 partial hydrant rows given per-row bands in the deliverable answers (SF17, asserted against the clean truth)"
+  "report": "determinism_check_report_pass2.md (pass 2 on dde9588d, the shipped cut): every graded figure reproduced, the 22 partial rows within 21 L of the golden and inside their bands, the draws within 52 L a minute of the SCADA flow, stump power strong, Gate H analytical; pass 1 (determinism_check_report.md, c7c2288a) APPROVE with the SF16 and row-band residuals, both closed"
  },
  "returned": [],
- "resume": "PAUSED at stage 4 after the residual pass: the orchestrator re-reads the changed document (QM-09) and re-judges once on the final cut (target.zip sha256 dde9588d06276d40733dbca49a6148846424ec29678cc6024dea486d3e568532, 17 files at the archive root, rebuilt byte for byte by `python3 task488/generator/build.py`, which cuts target/, writes golden/, generator/figures.json, metadata.json and submission.md, runs checks.py (71 checks), builds a second time and compares, and cuts target.zip; `python3 task488/generator/solve.py` re-derives every graded figure from target/ alone); then ship on the orchestrator's word.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-04",
  "portal": null,
  "call": "before fuelling resumes, drain Pier B's far end (HB-06 and HB-07, 6,600 L), the cargo apron beyond its first pit (HE-01 to HE-03, 11,000 L) and the remote stands (HF-01 and HF-02, 3,600 L) and refuellers RF-23, RF-24, T-31 and T-35, and notify the operators of the 86 uplifts that took J-26-1187 (73 hydrant, 13 refueller)",
  "default_path": "the hydrant clear at the suspension and 64 hydrant uplifts to notify (one line fill of the whole network through the pump station's meter after each change, 09:27 and 18:19, confirmed by the Operator's product change checks at P-A01)",
@@ -40,7 +40,7 @@
   "target_zip_sha256": "dde9588d06276d40733dbca49a6148846424ec29678cc6024dea486d3e568532",
   "zip": "17 files at the archive root, no enclosing folder",
   "design_point": "seed 4882 with refueller fork 53 (names.SEED and names.RK), chosen by model.search with every acceptance test in code",
-  "checks": "71 of 71",
+  "checks": "73 of 73",
   "solve": "the independent solver reproduces the sections, the 100 L cells, the 73, the refueller holdings, the 13 and the airline litres from target/ alone",
   "byte_identical": true,
   "figures_check": "131 figures in blocks 1 to 4, 0 absent",
@@ -50,7 +50,8 @@
   "voice_check": "PASS, no WARN (shell: where, nothing, round, csv+pdf)",
   "containers": "scrub_producer_metadata audit clean on target/ and golden/",
   "rebuild": "python3 task488/generator/build.py",
-  "residual_pass": "2026-11-04: QM-09 2.3 files that a refueller holds product from every batch it has received since it was last drained to empty, its contents mixed (SF16: the FIFO reading drops RF-24 and T-35, asserted); the partial hydrant rows carry per-row bands in the deliverable answers (SF17); the refuellers to drain counted in the call in ceiling.py; no graded figure moved; the goldens are byte-identical to the hand-off's"
+  "residual_pass": "2026-11-04: QM-09 2.3 files that a refueller holds product from every batch it has received since it was last drained to empty, its contents mixed (SF16: the FIFO reading drops RF-24 and T-35, asserted); the partial hydrant rows carry per-row bands in the deliverable answers (SF17); the refuellers to drain counted in the call in ceiling.py; no graded figure moved; the goldens are byte-identical to the hand-off's",
+  "shipped": "2026-11-04: target.zip dde9588d06276d40733dbca49a6148846424ec29678cc6024dea486d3e568532 (17 files), two builds byte-identical, every free gate re-run on the final cut; the judge's pass-2 notes ruled in the note (SF18 the rack line's fill, the CSV's agent column, the 10 L tolerance on every refueller figure)"
  },
  "source_note": "no seed: an airline-owned airport fuel facility corporation's hydrant, fuel farm, truck rack and two into-plane agents, invented",
  "card_registered": true,

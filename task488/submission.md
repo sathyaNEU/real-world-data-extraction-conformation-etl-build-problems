@@ -82,13 +82,13 @@ Fuel in each hydrant segment moved only when a pit downstream of it drew, so the
    - Cargo apron (HE-01 to HE-03): 11,000 L
    - Remote stands (HF-01 and HF-02): 3,600 L
    - Farm header, hydrant main, Pier A, international apron and maintenance base: none
-2. Refuellers to drain, batch litres held to the nearest 10 L:
+2. Refuellers to drain, batch litres held to the nearest 10 L, each graded within 10 L:
    - RF-23: 3,070 L
    - RF-24: 310 L
    - T-31: 14,680 L
    - T-35: 2,340 L
    - RF-21, RF-22, T-32 and N-12: none
-3. Batch litres the refuellers delivered, by airline, to the nearest 10 L:
+3. Batch litres the refuellers delivered, by airline, to the nearest 10 L, each graded within 10 L:
    - Brightwing Airlines: 4,130 L
    - Northcove Air: 10,740 L
    - Orvelle Airways: 240 L

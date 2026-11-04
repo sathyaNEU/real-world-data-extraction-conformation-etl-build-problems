@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "drain Pier B's far end (HB-06 and HB-07, 6,600 L), the cargo apron beyond its first pit (HE-01 to HE-03, 11,000 L), the remote stands (HF-01 and HF-02, 3,600 L) and refuellers RF-23 (3,070 L), RF-24 (310 L), T-31 (14,680 L) and T-35 (2,340 L) before fuelling resumes, and notify the operators of the 86 uplifts that took J-26-1187 (73 hydrant, 13 refueller)",
+  "answer_source": "golden/hydrant_resumption_plan.pdf and golden/j26-1187_recall_uplifts.csv; generator/figures.json call and refuellers",
   "gap": [
     "objective",
     "population"
@@ -75,8 +75,8 @@
   "opening_move": "question-first",
   "question_form": "where",
   "driver": "A substance entering a branched network of always-full conduits reaches each outlet only after the volume drawn through every conduit on its path since it entered has displaced what that conduit held, so each branch's exposure is set by its own draws: timing it by when the substance entered, or by total throughput against the whole network's or the path's volume, misplaces which outlets received it and leaves it standing in the branches that drew little.",
-  "driver_concrete": "Batch J-26-1187 entered the hydrant at the pump station while Tank 3 was on line, but each section's fuel moves only when its own pits draw, so the batch reached the cargo branch and the hangar spur hours late, left them only as their own stands fuelled, and at the recall still stood in them, while the time window and every turnover check file the hydrant as clear.",
-  "stump": "The default path takes the batch as reaching the pits while Tank 3 was on line, finds the hydrant has turned over several line fills since, drains nothing and lists the aircraft fuelled in that window; each section's fuel moves only when its own pits draw, so the batch is still standing in the low-use branches and reached aircraft there after Tank 3 came off line.",
+  "driver_concrete": "Batch J-26-1187 entered the hydrant at the pump station while Tank 3 was on line, but each segment's fuel moves only while a pit downstream of it draws, so the cargo apron and the remote stands took the batch hours after it reached their junctions and still held it past their first pits at the recall, and it stood under Pier B's two stands closed for resurfacing, while one line fill through the meter and the line-up window file the hydrant as clear.",
+  "stump": "The default path reckons the product change in line fills of the whole hydrant through the pump station's meter, which the Operator's own product change checks confirm, and files the hydrant clear by 18:19 with 64 uplifts to notify; each segment's fuel moves only while a pit downstream of it draws, so the cargo apron past its first pit, the remote stands and Pier B's closed tail still hold the batch at the 05:30 suspension and 73 hydrant uplifts took it.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task270": "task270's ninth architecture reads a variability standard fixed at one interval from readings taken at other intervals (mean square change against time between readings); here no interval or variability is read: a recalled fuel batch's plug-flow front is tracked through a branched hydrant by the volume drawn downstream of each segment, and the decision is which sections still hold it and which uplifts took it."
@@ -134,11 +134,13 @@
       "deliverable set": "csv+docx+xlsx"
     }
   ],
-  "registered": "2026-11-04T09:48:18Z",
+  "registered": "2026-11-04T10:46:34Z",
   "shell": {
     "question form": "where",
     "second-sentence opener": "nothing",
     "rounding opener": "round",
     "deliverable set": "csv+pdf"
-  }
+  },
+  "status": "SHIPPED",
+  "shipped": "2026-11-04"
 }

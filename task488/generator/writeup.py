@@ -98,11 +98,12 @@ def write(fig_path, out):
           "   - Cargo apron (%s): %s L" % (segs(sg["E"]), c(st["E"])),
           "   - Remote stands (%s): %s L" % (segs(sg["F"]), c(st["F"])),
           "   - Farm header, hydrant main, Pier A, international apron and maintenance base: none",
-          "2. Refuellers to drain, batch litres held to the nearest 10 L:"]
+          "2. Refuellers to drain, batch litres held to the nearest 10 L, each graded within %d L:" % F["row_band_whole_l"]]
     for k in tanks:
         L.append("   - %s: %s L" % (k, c(held[k])))
     L.append("   - RF-21, RF-22, T-32 and N-12: none")
-    L.append("3. Batch litres the refuellers delivered, by airline, to the nearest 10 L:")
+    L.append("3. Batch litres the refuellers delivered, by airline, to the nearest 10 L, each graded within %d L:"
+             % F["row_band_whole_l"])
     for k in sorted(air):
         L.append("   - %s: %s L" % (k, c(air[k])))
     L.append("4. Schematic of the hydrant on page 2 marking %s, %s and %s as holding the batch, each with its section's "

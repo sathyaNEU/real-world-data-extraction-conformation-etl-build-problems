@@ -231,6 +231,28 @@ def run(target, golden_dir, W=None, n=None, meta_path=None, fig_path=None):
        min(worst)[0] >= 40)
     whole = [k for k, b in A["hy"]["took"].items() if k not in bands]
     tk_all = S.tickets(target)
+    no_line = S.refuellers(target, header=False)
+    nl_set = sorted(k for k, v in no_line["held"].items() if v > 0)
+    import openpyxl as _ox
+    rk = list(_ox.load_workbook(os.path.join(target, N.FILES["register"]), read_only=True)["Rack"].iter_rows(values_only=True))
+    ron, roff = S.rack_lineups(target)
+    with open(os.path.join(target, N.FILES["rack"]), encoding="utf-8") as fh:
+        rack_rows = list(csv.DictReader(fh))
+    import datetime as _dt
+    spans = sorted((_dt.datetime.strptime(r["load_date"] + " " + r["start_local"], "%Y-%m-%d %H:%M:%S"),
+                    _dt.datetime.strptime(r["load_date"] + " " + r["end_local"], "%Y-%m-%d %H:%M:%S")) for r in rack_rows)
+    first_after = [min(a for a, b in spans if a >= edge) for edge in (ron, roff)]
+    straddle = [(a, b) for a, b in spans for edge in (ron, roff) if a < edge < b]
+    ok("SF18 the rack line's fill (RK-01, %s L in the register) ahead of each load: left out, T-35 drops from the "
+       "drain list, RF-23 and RF-24 move and 10 refueller uplifts deliver the batch against 13"
+       % "{:,}".format(rk[1][5]),
+       nl_set == ["RF-23", "RF-24", "T-31"] and len(no_line["delivered"]) == 10 and rk[1][5] == world.RACK_HEADER,
+       "without the line %s and %d uplifts" % (nl_set, len(no_line["delivered"])))
+    ok("SF18 no load is in progress at either rack change, so the first load after each change takes the line's fill "
+       "of the tank before (the register's volume and the shift log's change times close the reading)",
+       not straddle and all(t > edge for t, edge in zip(first_after, (ron, roff))),
+       "first loads %s after the changes at %s" % ([t.strftime("%H:%M") for t in first_after],
+                                                   [e.strftime("%H:%M") for e in (ron, roff)]))
     ok("SF17 every other hydrant row carries its full litres delivered at 15 C", all(
         abs(A["hy"]["took"][k] - tk_all[k]["litres_15c"]) <= 5 for k in whole), "%d whole rows" % len(whole))
 
