@@ -1,10 +1,10 @@
 {
   "task": "task401",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "psychology-behavioral-science/mediation-moderation-process-modeling",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-04",
   "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw. Architectures 1 and 2 died at stage 2, architecture 3 was spent at stage 4 round 2 and architecture 4 at stage 4 round 1. Architecture 5 re-roots in Psychology and Behavioural Science: Wrenford Leisure Trust's membership base and its February 2026 changes.",
   "stump": "A competent analyst compares each change's cancellations since 2 February with the same weeks of 2025 among the members it reached, finds the legacy terms letters behind the February spike and nothing yet from the Rewards closure, and recommends reversing the terms change, because they never count the 2023-tariff members who have stopped coming since the closure but have not yet cancelled, whom last year's lapsed members show will mostly cancel within the year.",
@@ -20,16 +20,20 @@
     "literal": "the filed WHAT executed on cancellations to the extract names the letters 20 of 20 (difference-in-differences and year-on-year)"
   },
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-04",
+    "checks": 61,
+    "fail": 0,
+    "warn": 0
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK; the contract schedule and the savings paper carry the review's and the changes' own words, ruled harmless in the note)",
+    "reader": "brief written, not yet run"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (overuse.objective, repeat.gate_g, overuse.gate_g; NOTE same_driver_older vs task122, differentiated)",
+    "nearest": "task402 v3 at 0.06 by driver",
+    "surface": "three pairs promoted for the author (task402 and task400 back to back, task230), each differentiated on the card; personas none in the pack"
   },
   "judge": {
     "verdict": "",
@@ -37,12 +41,26 @@
     "report": ""
   },
   "returned": [],
-  "resume": "architecture 5, stage 2 (design): the card is registered and committed DRAWN; next write the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet in DESIGN_NOTE.md, prompt.txt, then the generator skeleton so precut.py can exit 0.",
+  "resume": "stage 4 check: the parent runs the leak reader (stage4.reader_brief, general-purpose, sonnet, medium) and the determinism judge thread (stage4.judge_brief, sonnet, medium) together on byte-identical copies of target.zip (sha256 41b0cd38...4688) in scratchpad t401/a5/stage4/. On their outputs: fix every finding in the generator in one pass (python3 task401/generator/build.py twice, byte-identical), re-run every free gate (checks, verify, figures_check, precut, leak.py, guard heart and surface, ceiling), re-judge once on FIX_NOW, re-read only if a document or the prompt changed; then the pre-ship check, the ledger row and SHIPPED.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "previous_architectures": "v1 and v2 died at stage 2; v3 spent 2026-11-03 at stage 4, round 2 (judge SEND_BACK on an ask's unfiled re-attribution); v4 spent 2026-11-04 at stage 4, round 1 (the judge's blind derivation reached the call and every ask figure). Their records are in the design note's Tried and rejected and the card's lineage."
+  "previous_architectures": "v1 and v2 died at stage 2; v3 spent 2026-11-03 at stage 4, round 2 (judge SEND_BACK on an ask's unfiled re-attribution); v4 spent 2026-11-04 at stage 4, round 1 (the judge's blind derivation reached the call and every ask figure). Their records are in the design note's Tried and rejected and the card's lineage.",
+  "gates": {
+    "checks": "65 of 65 (every first look, literal execution and remaining setting asserted on seed 18)",
+    "verify": "23 of 23",
+    "figures_check": "63 figures, 0 absent",
+    "rebuilds": "two byte-identical builds",
+    "target_zip_sha256": "41b0cd38b7f72b76df2f7c4a59bb9a1a35db8c78f7dee1850f8b689a6e6f4688",
+    "voice_check": "PASS (851 characters)",
+    "ceiling": "pair 49.9 (two full includers), cracker 0 of 18, full includer 7 of 18, no repair 0 of 18, mirror 0 of 18, mirror leakage 0"
+  },
+  "stage4": {
+    "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/a5/stage4/reader/leak_reader_brief.md",
+    "judge_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/a5/stage4/judge/judge_brief.md",
+    "graded_blocks": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/a5/stage4/judge/graded_blocks.md"
+  }
 }
