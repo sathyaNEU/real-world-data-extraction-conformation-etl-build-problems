@@ -1,158 +1,196 @@
 {
- "task": "task476",
- "architecture": "v3",
- "drawn": "2026-11-04",
- "slot_note": "architecture 3, a re-root after architecture 2 (gas leak methane by district) was spent at the 11-01 re-check; it replaces shipped architecture 2 at ship",
- "domain": "general-statistics-data-science",
- "subdomain": "data-integration-record-linkage-entity-resolution",
- "client_domain": "general-statistics-data-science",
- "niche": "a San Joaquin Valley farming company's water year 2026 groundwater extraction return to its subbasin's groundwater sustainability agency, integrated from the electric utility's interval data, the wells' pump efficiency tests, their water level transducers and the upper-aquifer wells' totalizer meters, and the transfer water it must buy before the agency's true-up",
- "objective": "etl",
- "shape": "15",
- "decision_type": "quantity_figure",
- "answer_unit": "count",
- "answer": "Buy 250 acre-feet of transfer water before the Sallow Plains GSA's December 15 true-up: the wells pumped 15,583 acre-feet in water year 2026 against 15,358.9 available, 224 over, transfers recorded in whole blocks of 50",
- "answer_source": "task476/generator/figures.json (purchase_af, ranch_af, available_af)",
- "gap": [
-  "objective"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G1",
-  "G16",
-  "G19"
- ],
- "gate_g": "etl_conformance",
- "calibration_form": "physical_verification",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms both utility exports, links every service agreement to its well through the register, reads the meters with their rollovers and the June exchange and converts each unmetered well's water year 2026 kilowatt-hours at its pump test's kilowatt-hours per acre-foot (which the metered upper-aquifer wells confirm within 1.5 per cent) files the ranch at 15,020 acre-feet, 339 inside its allocation and carryover, with no transfer to buy, while each interval's energy converted at the head the pump lifted against puts the deep wells 4 to 6 per cent higher and the ranch 224 over, buying 250.",
- "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, each unmetered well's volume integrated from the utility's hourly energy and the well's own level record through its pump test, each hour's energy converted at the total head of that hour (the test's head moved by the gap between the hour's pumping level and the test's) at the test's overall efficiency; replacing it with a single-source summary (the test's kilowatt-hours per acre-foot, run hours times the tested flow, an average over tests) files the ranch inside its allocation.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:energy-based-extraction-converted-at-each-hour's-own-pumping-head",
- "layer1": [
-  "the electric utility's interval data in two export layouts across its April 2026 portal change: hourly kWh in local prevailing time with the fall-back hour twice and the spring-forward hour absent, against 15-minute Wh in UTC, service agreements renumbered, estimated intervals flagged",
-  "pump efficiency test reports from two contractors as PDFs, one giving total head and plant efficiency with its own definitions, the other PWL, discharge psi and TDH with flow in gpm and acre-feet a day, and three superseded 2023 reports on pumps replaced in 2024",
-  "water level loggers every 15 minutes on Pacific standard time all year, vented loggers in depth to water below the top of the sounding tube and absolute-pressure loggers on the metered wells needing the shop barologger, whose clock runs on UTC",
-  "totalizer meter reads in acre-feet, thousands of gallons and hundreds of gallons with six-digit rollovers and one meter exchanged in June 2026",
-  "a well register naming wells by ranch name, state well number and the agency's well ID, with the prior and current service agreements and the current rate schedule"
- ],
- "stakeholder_role": "the ranch's water manager, who files its water year extraction return with the agency and arranges any transfer water before the true-up",
- "role_family": "compliance_or_audit",
- "scoring_unit": "other",
- "spine": {
-  "file": "power/vrp_interval_data_2026-04-01_2026-10-31.csv",
-  "rows": 308220,
-  "entity": "one 15-minute interval's energy on one well's electric service agreement",
-  "grain": "service agreement x 15-minute interval",
-  "source": "synthetic"
- },
- "forum": "executive_team",
- "forcing_event": "statutory_or_regulatory_filing",
- "org_family": "agriculture_or_food_producer",
- "world": {
-  "geography": "United States (a fictional subbasin in California's San Joaquin Valley)",
-  "currency": "USD",
-  "org_type": "family-owned farming company growing pistachios and almonds on its own wells and district water",
-  "invented_names": [
-   "Ochre Flats Farming Company",
-   "Sallow Plains Subbasin",
-   "Sallow Plains Groundwater Sustainability Agency",
-   "Alkali Slough Water District"
-  ],
-  "people": [
-   "Melinda Walter",
-   "Nicholas Wolf",
-   "Tamara Larson"
-  ]
- },
- "deliverables": [
-  "wy2026_extraction_return.csv",
-  "transfer_purchase_memo.docx"
- ],
- "opening_move": "question-first",
- "question_form": "how-much",
- "driver": "The decisive quantity is a volume read through a metered input whose yield per unit of input is set by a physical state the meter does not see, measured once at one setting of that state; the state moves through the period and another system records it interval by interval, so the period's volume is each interval's input converted at its own state, and the single test's yield files the volume as if the state had stayed where the test found it.",
- "driver_concrete": "Each unmetered lower-aquifer well's water year 2026 extraction is each hour's kilowatt-hours times its pump test's overall efficiency over 1.0241 times the head the pump lifted against that hour, the test's total head moved by the gap between the hour's pumping level in the well's transducer log and the test's; the late-summer 2025 tests found the confined aquifer at its seasonal low, so their kilowatt-hours per acre-foot charge the spring and early-summer pumping, lifted 60 to 110 feet less, at the deep-season rate and file the ranch short of what it pumped.",
- "stump": "The default path converts each unmetered well's 2026 kilowatt-hours at its pump test's kilowatt-hours per acre-foot, which the metered upper-aquifer wells confirm within 1.5 per cent, and files no transfer to buy, because it never asks what head each interval's power lifted water against: the deep wells were tested near the confined aquifer's late-summer low and pumped their March to May water 40 to 110 feet higher.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task140": "task140 solves a reserved capacity tier together with a dependent service whose load rises with it; this build converts a metered energy record to water at each hour's own pumping head, a physical conversion with no reservation, tier or dependency"
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "fate": "spent at stage 4, 2026-10-20: judge SEND_BACK (Gate H rule_application) and both scored readers landed the call; the block-group rebuild was exact arithmetic once the area was filed",
-   "driver": "A rate for an earlier period is needed for units drawn only later, and the units they were split from published it only as a whole, while finer units that tile the later units published it too; spreading the parent's rate to its parts makes the part holding the parent's high-rate pieces look like it rose and hides a rise in the other, so the earlier rate is rebuilt from the finer units and its error combined from theirs before the change is tested.",
-   "stump": "The default path conforms the 2014 to 2018 tract estimates to 2020 tracts through the relationship file, gives each split tract's children their parent's poverty rate and margin of error, and designates Dunmore Heights and Linden Row, because the child holding a parent's poor block groups shows a significant rise that is only the split; rebuilding each child's earlier rate from its own 2010 block groups designates Dunmore Heights and Kestrel Park.",
-   "subdomain": "census-register-administrative-data-quality",
-   "gap": [
+  "task": "task476",
+  "architecture": "v4",
+  "drawn": "2026-11-04",
+  "slot_note": "architecture 4, a re-root after architecture 3 (energy-based groundwater extraction) was spent at the 11-04 re-judge; it replaces shipped architecture 2 at ship",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a family-owned timber company's 2027 salvage marking decided on each stand's 2021 to 2026 mortality in its permanent inventory plots, where the 2024 underburns loosened tags and the 2026 contract crew tallied the untagged survivors again as new trees",
+  "objective": "etl",
+  "shape": "15",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "population"
-   ],
-   "generators": [
-    "G4",
-    "G17"
-   ],
-   "domain": "survey-research-official-statistics",
-   "objective": "etl"
-  },
-  {
-   "architecture": "v2",
-   "drawn": "2026-10-20",
-   "fate": "spent 2026-11-01 at the re-check's stage 4: judge pass 4 NOT_DETERMINISTIC, SEND_BACK (Gate C/E underspecified_objective): guidelines 2.2 file a start only for called leaks, so a surveyed leak's start (find, previous survey, midpoint, seasonal expectation) designates 0, 12, 3 or 5 districts and nothing filed rules out the midpoint; the sentence that would close the fork names the decisive step, so the fork is the stump; the shipped pack stays at the portal, pending, untouched (target.zip 5a46ee5a)",
-   "driver": "Each item is found only at a periodic inspection made at a fixed point in the year for each unit, after having begun at an unrecorded time since the previous inspection, and items begin mostly in one season, so the time each was active before it was found depends on when in the year its unit is inspected; the even-spread assumption misprices units inspected long after the season, and the seasonal profile comes from a second record whose items are reported as soon as they begin.",
-   "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
-   "gap": [
-    "time"
-   ],
-   "pattern": [
+  ],
+  "pattern": [
     "none"
-   ],
-   "gate_g": "method_or_model_selection",
-   "niche": "a city-owned gas utility's leak-based methane inventory by district for its accelerated cast-iron and bare-steel main replacement program, leaks found at once-a-year district surveys in each district's own month",
-   "domain": "physical-environmental-sciences",
-   "subdomain": "emissions-inventory",
-   "objective": "etl",
-   "generators": [
-    "G13",
-    "G17"
-   ],
-   "stump_strategy": "time_semantics",
-   "decision_type": "designation_set",
-   "shape": "07",
-   "forum": "council_or_assembly",
-   "forcing_event": "budget_or_appropriation",
-   "org_family": "local_government",
-   "role_family": "compliance_or_audit",
-   "context_artifact": "filed_standard",
-   "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "in",
-    "rounding opener": "give",
-    "deliverable set": "pdf+xlsx"
-   }
+  ],
+  "generators": [
+    "G5",
+    "G12"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "identity_resolution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the 2021 and 2026 plot exports (species codes, magnetic against true azimuths, units), joins them by plot and tag, counts every 2021 live tree without a live 2026 record under its tag as lost and applies the salvage policy's 15 per cent of 2021 live basal area marks the five underburned stands with the two beetle stands and the wildfire stand, while linking each new 2026 tree too large to be ingrowth to the missing tree at its position marks only the beetle and wildfire stands.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is an entity-resolution estimate, each 2021 tree's fate resolved across two inventories whose identifier failed for part of the population, linked by plot position, species and a size no newcomer could reach; replacing it with the identifier join or with dropping the unmatched trees files a different set of stands.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:remeasured-plot-trees-relinked-by-position-and-size-where-tags-were-lost",
+  "layer1": [
+    "two data-collector exports across the 2026 software change: alpha against FIA numeric species codes, magnetic against true azimuths, slope against horizontal distances on steep plots, tag numbers with and without leading zeros",
+    "a plot register with plots split across stand boundaries by condition and their area shares",
+    "status codes from two field manuals, live, dead, cut, missing and new"
+  ],
+  "stakeholder_role": "the company's forestry manager, who sets the 2027 salvage marking program for the board",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "lidar/itd_tree_list_2025.csv",
+    "rows": 0,
+    "entity": "one tree crown detected in the 2025 lidar flight",
+    "grain": "detected crown",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "season_or_peak",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "United States (a fictional tree farm in California's northern Sierra Nevada)",
+    "currency": "USD",
+    "org_type": "family-owned timber company with a sawmill and its own timberland",
+    "invented_names": [
+      "Cinder Fork Timber Company",
+      "Cinder Fork Tree Farm"
+    ],
+    "people": [
+      "Tamara Larson",
+      "Brandon Freeman",
+      "Nicholas Wolf"
+    ]
+  },
+  "deliverables": [
+    "tree_fates_2021_2026.csv",
+    "salvage_marking_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is the share of a cohort lost between two inventories, where some members' identifiers were destroyed between them and the second inventory recorded those members again as newcomers under new identifiers; an identifier join counts each such member both lost and new, and only its position, kind and a size no newcomer could reach link it back.",
+  "driver_concrete": "Each stand's 2021 to 2026 mortality is the basal area of trees tallied live in 2021 that are not tallied live in 2026; on the plots underburned in 2024 the fire loosened about a fifth of the tags, and the 2026 contract crew marked those trees missing and tallied them again with new tags, so a tag join counts them dead and the five burned stands cross the 15 per cent line, while each new tree too large to be ingrowth stands at a missing tree's azimuth and distance with its species and five years' growth.",
+  "stump": "The default path joins the 2021 and 2026 tallies by plot and tag, counts every 2021 live tree without a live 2026 record under its tag as lost, and marks the five underburned stands with the two beetle stands and the wildfire stand, because it never asks whether the large new trees on the burned plots are the missing trees tagged again.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task482": "task482's twelfth architecture recovers people present from the load a shared physical system carries where no stay record exists; this build re-links each tree whose identifier failed to its earlier record by its position, species and a size no newcomer could reach, so the same members are not counted lost and new"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent at stage 4, 2026-10-20: judge SEND_BACK (Gate H rule_application) and both scored readers landed the call; the block-group rebuild was exact arithmetic once the area was filed",
+      "driver": "A rate for an earlier period is needed for units drawn only later, and the units they were split from published it only as a whole, while finer units that tile the later units published it too; spreading the parent's rate to its parts makes the part holding the parent's high-rate pieces look like it rose and hides a rise in the other, so the earlier rate is rebuilt from the finer units and its error combined from theirs before the change is tested.",
+      "stump": "The default path conforms the 2014 to 2018 tract estimates to 2020 tracts through the relationship file, gives each split tract's children their parent's poverty rate and margin of error, and designates Dunmore Heights and Linden Row, because the child holding a parent's poor block groups shows a significant rise that is only the split; rebuilding each child's earlier rate from its own 2010 block groups designates Dunmore Heights and Kestrel Park.",
+      "subdomain": "census-register-administrative-data-quality",
+      "gap": [
+        "population"
+      ],
+      "generators": [
+        "G4",
+        "G17"
+      ],
+      "domain": "survey-research-official-statistics",
+      "objective": "etl"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-20",
+      "fate": "spent 2026-11-01 at the re-check's stage 4: judge pass 4 NOT_DETERMINISTIC, SEND_BACK (Gate C/E underspecified_objective): guidelines 2.2 file a start only for called leaks, so a surveyed leak's start (find, previous survey, midpoint, seasonal expectation) designates 0, 12, 3 or 5 districts and nothing filed rules out the midpoint; the sentence that would close the fork names the decisive step, so the fork is the stump; the shipped pack stays at the portal, pending, untouched (target.zip 5a46ee5a)",
+      "driver": "Each item is found only at a periodic inspection made at a fixed point in the year for each unit, after having begun at an unrecorded time since the previous inspection, and items begin mostly in one season, so the time each was active before it was found depends on when in the year its unit is inspected; the even-spread assumption misprices units inspected long after the season, and the seasonal profile comes from a second record whose items are reported as soon as they begin.",
+      "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "niche": "a city-owned gas utility's leak-based methane inventory by district for its accelerated cast-iron and bare-steel main replacement program, leaks found at once-a-year district surveys in each district's own month",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "objective": "etl",
+      "generators": [
+        "G13",
+        "G17"
+      ],
+      "stump_strategy": "time_semantics",
+      "decision_type": "designation_set",
+      "shape": "07",
+      "forum": "council_or_assembly",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "local_government",
+      "role_family": "compliance_or_audit",
+      "context_artifact": "filed_standard",
+      "shell": {
+        "question form": "how-many",
+        "second-sentence opener": "in",
+        "rounding opener": "give",
+        "deliverable set": "pdf+xlsx"
+      }
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-11-04",
+      "fate": "spent at the 2026-11-04 stage-4 re-judge (pass 2 NOT_DETERMINISTIC, competing_defensible_answer, SEND_BACK): nothing shipped forced the head-adjusted energy-to-volume conversion over each pump test's constant kWh per acre-foot, and the only metered wells were those where the candidates coincide",
+      "domain": "general-statistics-data-science",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "objective": "etl",
+      "niche": "a San Joaquin Valley farming company's water year 2026 groundwater extraction return to its subbasin's groundwater sustainability agency, integrated from the electric utility's interval data, the wells' pump efficiency tests, their water level transducers and the upper-aquifer wells' totalizer meters, and the transfer water it must buy before the agency's true-up",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G16",
+        "G19"
+      ],
+      "gate_g": "etl_conformance",
+      "stump_strategy": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "shape": "15",
+      "forum": "executive_team",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "agriculture_or_food_producer",
+      "role_family": "compliance_or_audit",
+      "context_artifact": "register",
+      "driver": "The decisive quantity is a volume read through a metered input whose yield per unit of input is set by a physical state the meter does not see, measured once at one setting of that state; the state moves through the period and another system records it interval by interval, so the period's volume is each interval's input converted at its own state, and the single test's yield files the volume as if the state had stayed where the test found it.",
+      "stump": "The default path converts each unmetered well's 2026 kilowatt-hours at its pump test's kilowatt-hours per acre-foot, which the metered upper-aquifer wells confirm within 1.5 per cent, and files no transfer to buy, because it never asks what head each interval's power lifted water against: the deep wells were tested near the confined aquifer's late-summer low and pumped their March to May water 40 to 110 feet higher.",
+      "shell": {
+        "question form": "how-much",
+        "second-sentence opener": "conform",
+        "rounding opener": "report",
+        "deliverable set": "csv+docx"
+      }
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "in",
+      "rounding opener": "give",
+      "deliverable set": "pdf+xlsx"
+    },
+    {
+      "question form": "how-much",
+      "second-sentence opener": "conform",
+      "rounding opener": "report",
+      "deliverable set": "csv+docx"
+    }
+  ],
+  "notes": "stump_strategy identity_resolution: the decisive step resolves each 2021 tree's identity in the 2026 tally where its tag failed, by position, species and growth, which no column flags.",
+  "registered": "2026-11-04T07:13:28Z",
+  "shell": {
+    "question form": "what",
+    "second-sentence opener": "reconcile",
+    "rounding opener": "basal",
+    "deliverable set": "csv+pdf"
   }
- ],
- "notes": "stump_strategy decomposition_attribution: each hour's metered energy is the product of the water lifted and the head it was lifted against, and the step splits it between them by the hour's own head; the field's energy-based method attributes the whole of it to water at the test's head. Stage 3 on 2026-11-04: target.zip 7e8bf4aa (80bcc4b9 after the stage-4 FIX_NOW filing pass, no golden figure moved), checks 45 of 45 (54 of 54 after the pass), two builds byte-identical, precut 61 checks 0 FAIL, leak.py REVIEW (no LEAK), pair ceiling 49.8; the wells are graded as 1 per cent bands and the ranch as a 0.5 per cent band because licensed pairings of interval and logger reading move a deep well by up to 0.11 per cent, while the purchase (whole blocks of 50) is the same under every pairing. Redrawn 2026-11-04 after task461 v3 registered at 05:38:59Z and moved task276 into the three builds before this card: the forcing event (purchase_order_or_contract to statutory_or_regulatory_filing, the agency's extraction return and true-up) and the role family (procurement_lead to compliance_or_audit, the water manager who files the return), neither one task461 v3's.",
- "registered": "2026-11-04T05:06:12Z",
- "shell": {
-  "question form": "how-much",
-  "second-sentence opener": "conform",
-  "rounding opener": "report",
-  "deliverable set": "csv+docx"
- },
- "lineage_shells": [
-  {
-   "question form": "how-many",
-   "second-sentence opener": "in",
-   "rounding opener": "give",
-   "deliverable set": "pdf+xlsx"
-  }
- ]
 }

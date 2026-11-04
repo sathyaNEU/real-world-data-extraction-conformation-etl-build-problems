@@ -1,43 +1,41 @@
 {
  "task": "task476",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-04",
- "stump": "The default path converts each unmetered well's water year 2026 energy at its pump test's kilowatt-hours per acre-foot, which the metered upper-aquifer wells confirm within 1.5 per cent, and files no transfer to buy (the ranch at 15,020 acre-feet, 339 inside), because it never asks what head each interval's power lifted water against; converted at each interval's recorded head the ranch pumped 15,583, 224 over its 15,358.9 available, and buys 250 acre-feet in whole blocks of 50.",
- "architecture": 3,
+ "stump": "The default path joins the 2021 and 2026 tallies by plot and tag, counts every 2021 live tree without a live 2026 record under its tag as lost, and marks eight stands, because it never asks whether the large new trees on the burned plots are the missing trees tagged again; linked back by position and size, three stands are marked.",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-04",
-  "detail": "61 checks, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-04 (asof 2026-11-02) on the 80bcc4b9 cut, no LEAK",
-  "reader": "arch 3 reader on the 7e8bf4aa cut: no leak, q6 names the procedural conformation and the analytical step; to be rerun on the two changed documents"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "PASS 2026-11-04 on the current card after the FIX_NOW pass",
-  "heart": "PASS 2026-11-04 after the FIX_NOW pass and a pull",
-  "surface": "1 promoted pair (task140, differentiated on the card), no shared persona",
-  "nearest": "task244 at 0.09"
+  "guard_check": "WARN 2026-11-04 on the registered v4 card (identity_resolution strategy risk; Gate G and question form after task461 v3 and task192 v4)",
+  "heart": "",
+  "nearest": "task455 at 0.08"
  },
  "judge": {
-  "verdict": "DETERMINISTIC on the main call (arch 3 pass 1), FIX_NOW limited to filing pins",
-  "disposition": "FIX_NOW, repaired 2026-11-04 in one pass, awaiting the single re-judge",
-  "report": "task476/determinism_check_report_arch3.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "PAUSED at stage 4 after the FIX_NOW pass: the orchestrating session runs the single re-judge (and the leak reader on the two changed documents) on target.zip sha256 80bcc4b90d89a30ac623be605d548423d0410d71d7aa309d4a4e02eab9699545, rebuilt byte for byte by `python3 task476/generator/build.py`; then ship on the orchestrator's word.",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "source_note": "re-root of seed ET33's number: architecture 1 (ACS tract poverty change) spent at stage 4 on 10-20; architecture 2 (a city gas utility's leak methane by district) spent at the 11-01 re-check; architecture 3 keeps nothing of either world",
+ "source_note": "re-root of seed ET33's number: architecture 1 (ACS tract poverty change) spent 10-20; architecture 2 (a city gas utility's leak methane by district) spent at the 11-01 re-check; architecture 3 (energy-based groundwater extraction) spent at the 11-04 re-judge; architecture 4 keeps nothing of any earlier world",
  "replaces_architecture": {
   "architecture": 2,
   "delivered": "2026-10-20",
@@ -58,44 +56,16 @@
    "report": "task476/determinism_check_report_pass4.md"
   }
  },
- "draw_2026_11_04": {
-  "screens": 62,
-  "task_types": 6,
-  "window": "task276, task461 v2, task193 (emissions-inventory BLOCKs ban.pairing and ban.subdomain against task461 v2; strategies binding_constraint, other and population_selection banned)",
-  "probe_cards": "the other five ETL cells clear every axis (only the empty people list, a probe artifact, blocks)",
-  "strongest": [
-   "S3.1 switch loading at uncontrolled distillate bays (emissions-inventory): all seven anatomy lines on paper, priced in proto_switch.py; taken by task461 v2 (same driver) and barred by the window",
-   "S3.44 seasonal closures imputed as open non-respondents (official time-series production): the ETL pincer, a confirming record makes it an inner join and an inference from past closures is a fork only the step's own sentence closes",
-   "S3.35 a claims case definition's predictive value by setting from treatment fills (payment-claims): the abstraction test against task241 v2"
-  ],
-  "card_registered": "2026-11-04T05:06:12Z",
-  "s344_retest": "dead on C2 confirm and C1 converge (proto_s344.py, four seeds, six rival corrections)",
-  "window_at_card": "task461 v2, task193 v3, task192 v4",
-  "drawn": "S3.60 energy-based groundwater extraction converted at each hour's pumping head (GSDS data-integration), priced in proto_lift.py on six seeds"
- },
- "call": "buy 250 acre-feet of transfer water before the Sallow Plains GSA's December 15 true-up",
- "build": {
-  "target_zip_sha256": "80bcc4b90d89a30ac623be605d548423d0410d71d7aa309d4a4e02eab9699545",
-  "checks": "54 of 54",
-  "verify": "clean (energy charges recomputed independently to the dollar)",
-  "byte_identical": true,
-  "figures_check": "96 of 96",
-  "pair_ceiling": 49.8,
-  "mirror_leakage_pct": 35.2,
-  "rebuild": "python3 task476/generator/build.py"
- },
- "fixnow_2026_11_04": {
-  "changed_pack_files": [
-   "agency/sallow_plains_gsa_wy2026_allocation_notice.pdf",
-   "levels/logger_download_log.csv"
-  ],
-  "golden_figures_moved": "none (figures.json, the return and the memo byte-identical to the 7e8bf4aa cut)",
-  "fixes": [
-   "Levelogger 5 clock recorded in the download log at every relaunch; SF11 corrected and asserted",
-   "notice section 5 counts the 24 hours from the end of the last interval the utility data record with energy; SF17 added and asserted",
-   "SF16 added: the pumping level as the head reference, closed by both reports' printed total head definitions",
-   "notice allocation table: each row the sum of its printed parts, the total row the rows' sum (14,878.9); SF6 same call at whole acre-feet; the ladder label fixed",
-   "energy charges unchanged; no admitted reading reproduces the thread's shortfall, the ruling sentences quoted and asserted"
+ "architecture_3": {
+  "target_zip_sha256_8": "80bcc4b9",
+  "fate": "spent 2026-11-04 at the stage-4 re-judge (pass 2 NOT_DETERMINISTIC, competing_defensible_answer, SEND_BACK): nothing shipped forced the head-adjusted conversion over each test's constant kWh per acre-foot; the only metered wells were those where the candidates coincide",
+  "reports": [
+   "task476/determinism_check_report_arch3.md",
+   "task476/determinism_check_report_arch3_pass2.md"
   ]
+ },
+ "draw_2026_11_04b": {
+  "drawn": "remeasured permanent plots re-linked by position and size where the 2024 underburns loosened tags (GSDS data integration, identity resolution), priced in proto_tags.py on six seeds",
+  "card_registered": "2026-11-04T07:13:28Z"
  }
 }
