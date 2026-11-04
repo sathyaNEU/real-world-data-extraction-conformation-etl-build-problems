@@ -1,110 +1,95 @@
 {
   "task": "task193",
-  "architecture": "v2",
-  "drawn": "2026-10-17",
-  "slot_note": "Architecture 1 put the decisive step in the measure's comparison population and died at the judge. Architecture 2 keeps the world (a Danish national medicines agency's quarterly signal run) and moves the decisive step into the estimation of a counterfactual the standard files in full: the number of a pair's patients expected to receive the marker treatment after the product if the product had no bearing on when the marker is first received.",
-  "domain": "pharmacology-pharmacoepidemiology-safety",
-  "subdomain": "safety-signal-detection",
-  "niche": "the quarterly prescription-sequence screen that sets which product and marker-treatment pairs go to formal signal assessment",
+  "architecture": "v3",
+  "drawn": "2026-11-04",
+  "slot_note": "Architectures 1 and 2 sat in a national medicines agency's prescription register (pharmacology, safety-signal-detection) and both died on the comparison a signal is measured against. Architecture 3 moves client domain, world, dataset and shell: a closed landfill's groundwater detection monitoring, where the comparison (background water quality) is filed in the field's own words and the decisive step is a physical judgment about which background results represent it, made from the hydraulic heads on each sampling date.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a regional solid waste district's closed landfill in post-closure care deciding which compliance wells the October 2026 groundwater detection monitoring event sends to verification resampling, judged against background whose western wells draw water from beneath the waste whenever a village well field's pumping reverses the gradient at the site boundary",
   "objective": "anomaly-detection",
-  "shape": "07",
+  "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Refer seven of the screen's twenty candidate product and marker-treatment pairs for formal signal assessment in the quarter beginning 1 January 2027: Dalvextin and loop diuretic, Pirenoxol and acid-suppressant, Ternivast and gout treatment, Oxelumab and antidepressant, Hestroban and antiemetic, Kirunelle and hypnotic, Sovraxil and topical corticosteroid.",
-  "answer_source": "submission.md block 1; generator/figures.json referred",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
+    "G3",
     "G7",
-    "G16"
+    "G12"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "signal_vs_noise_or_hold",
   "calibration_form": "none",
-  "context_artifact": "operations_log",
-  "stump_strategy": "other",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
+  "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reconciles the replaced patient pseudonyms through the crosswalk, carries the reissued package codes onto one product code, reads both extract layouts, establishes every first-ever receipt against the 24-month clearance period and applies the standard's three referral criteria exactly compares each pair's after-count with half of the pair's patients and refers 10 pairs, where 7 are referred once the expected number is computed from the window's own first-receipt dates: five pairs on two products whose use is ending are referred that should not be, and two real signals on products launched inside the window are passed over.",
-  "domain_test": "The deciding quantity is the number of a pair's patients expected to receive the marker treatment after the product if the product had no bearing on when the marker treatment is first received, which is what prescription sequence symmetry analysis estimates and what pharmacoepidemiology computes from each medicine's own incident-use distribution across the window rather than from an assumption that the two orders are equally likely. Swap the patients for warehouses and the marker treatment for a repair order and there is no within-person ordering of two first-ever exposures and no incident-use distribution to take the expectation from, so nothing is left to estimate.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:null-expectation-of-a-within-person-ordering-set-by-the-windows-own-arithmetic",
+  "analyst_test": "A strong analyst who converts both laboratories' units, keeps each sample's reportable primary result, carries the replacement well's record, reads the 2022 datum resurvey and computes the plan's log-normal upper prediction limit for chloride, sodium and boron from every routine background result, as the plan's method states, sends only MW-6 to verification resampling, where the golden sends MW-6, MW-7 and MW-9, because the western background wells' results from the events when the gradient at the boundary had reversed carry water from beneath the waste and lift every limit above MW-7's chloride and sodium and MW-9's boron.",
+  "domain_test": "The deciding quantity is each indicator's background water quality, the quality of groundwater the landfill has not affected, which detection monitoring estimates with an upper prediction limit on the background wells' results and which hydrogeology knows to hold only while a background well stands hydraulically upgradient of the waste on the day it is sampled; swap the wells for wards and the leachate for infections and there is no hydraulic head, no gradient a pumping well field reverses and no water that passes beneath a waste body to reach a background well, so nothing is left to decide which background results are background.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:background-results-conditioned-on-the-hydraulic-gradient-at-each-sampling-date",
   "layer1": [
-    "two register extracts in different layouts across a release boundary, with renamed columns and ISO against day-month-year dates",
-    "one pharmacy chain's October batch re-sent under fresh record identifiers after a transmission failure",
-    "420 patients whose person key was replaced after a civil-registration correction, linked by a dated crosswalk",
-    "a product's package codes reissued when its marketing authorisation transferred, carried in the index with valid-from and valid-to dates",
-    "lines the register turned back at validation, held only in the exceptions file and never in either extract",
-    "a statutory fee schedule amended inside the window, quoted in thousands of defined daily doses, with a holder merger inside the window too",
-    "the governing standard and its two annexes as tables inside a PDF"
+    "two laboratories' electronic data deliverables across a 2021 contract change, boron in milligrams a litre against micrograms a litre, analyte names and well identifiers spelled differently",
+    "re-analyses, dilutions, field duplicates, equipment and trip blanks and qualifier flags in one results file, the reportable result marked by the laboratory",
+    "a compliance well damaged and replaced in 2022 under a new identifier",
+    "depths to water below the top of casing, with the casing elevations resurveyed onto a new vertical datum in 2022",
+    "sampling events spread over several field days with event labels that do not match the dates",
+    "leachate pump station telemetry with totaliser rollovers and a pump replacement",
+    "the statistical analysis plan and the permit as PDFs"
   ],
-  "stakeholder_role": "the agency's prescription-screen analyst, who sets the signal desk's referrals for the coming quarter",
-  "role_family": "other",
-  "scoring_unit": "per resolved case",
+  "stakeholder_role": "the district's environmental programs manager, who signs the detection monitoring report to the state and orders the verification resampling",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
   "spine": {
-    "file": "dispensings_2023_2025.csv",
-    "rows": 73639,
-    "entity": "one dispensing of one package of one medicine to one patient at one pharmacy",
-    "grain": "patient x package x dispensing date",
+    "file": "",
+    "rows": 0,
+    "entity": "one reported result of one analyte in one sample",
+    "grain": "sample x analyte x analysis",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "period_close",
-  "org_family": "government_agency",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Denmark",
-    "currency": "DKK",
-    "org_type": "national medicines agency",
+    "geography": "United States (Wisconsin, a fictional three-county solid waste district)",
+    "currency": "USD",
+    "org_type": "regional solid waste management district running a closed landfill in post-closure care",
     "invented_names": [
-      "Dalvextin",
-      "Pirenoxol",
-      "Ternivast",
-      "Oxelumab",
-      "Varenadol",
-      "Hestroban",
-      "Kirunelle",
-      "Admirabin",
-      "Sovraxil",
-      "Nordlys Pharma",
-      "Bregnholt Laegemidler",
-      "Vindeby Therapeutics",
-      "Soegaard Medica",
-      "Kastholm Pharma",
-      "Ellevang Biosciences",
-      "Strandby Farma",
-      "Apotekerkaeden",
-      "Danmarks Sundhedsapotek",
-      "Nordapotek",
-      "Vestjysk Apotek"
+      "Kettle Prairie Solid Waste District",
+      "Marten Creek Landfill",
+      "Tamarack Analytical Services",
+      "Ridgeline Environmental Laboratories",
+      "Fieldstone Hydrogeology"
     ],
     "people": [
-      "Sine Jakobsen",
-      "Arne Mogensen"
+      "Kathryn Bonilla",
+      "Wendy Cantu"
     ]
   },
   "deliverables": [
-    "sequence_screen_2027Q1.xlsx",
-    "order_shares_by_pair.png"
+    "detection_eval_2026-10.xlsx",
+    "october_results_vs_limits.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is how many units would show one of two orderings if the treatment had no bearing on it, and because each unit's room for each ordering depends on where in the observation window its own first exposure falls, taking the two orderings as equally likely designates the candidates whose exposure is ending and passes over the candidates whose exposure has only just begun.",
-  "driver_concrete": "Each product and marker-treatment pair's referral turns on the number of its patients expected to receive the marker after the product if the product had no bearing on it, and because a patient who first receives a product late in the screen window has almost no window left for the marker to follow, a half-and-half expectation refers five pairs on two products whose use is ending inside the window and passes over two real signals on two products launched inside it.",
-  "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window: five pairs on the two products leaving the market are referred that should not be and two real signals on the two products entering it are passed over.",
+  "question_form": "whether",
+  "driver": "The comparison an increase is tested against is built from fixed reference units that represent the unaffected state only while a physical gradient runs from them toward the source, and a third party's operation reverses that gradient in some periods so that the reference units then sample the source's own effect; a comparison built from every reference observation is inflated and masks the increase, and only conditioning each reference observation on the gradient recorded at its own date recovers it.",
+  "driver_concrete": "Each indicator's upper prediction limit is built from the three background wells' routine results, but in the events when the village well field west of the site pumped hard the gradient at the western boundary reversed and MW-1, and in the strongest events MW-2, drew water that had passed beneath the waste, so a limit on every background result sits above MW-7's chloride and sodium and MW-9's boron and sends only MW-6 to verification resampling, while the limit built from the background results taken while each well's head stood above its boundary piezometer's sends MW-6, MW-7 and MW-9.",
+  "stump": "A competent solver who conforms both laboratories' deliverables, keeps the reportable primary results, carries MW-5 onto MW-5R and computes the plan's log-normal upper prediction limit for each indicator from every routine background result sends only MW-6 to verification resampling, because in the events when the gradient at the western boundary reversed MW-1, and in the strongest MW-2, sampled water that had passed beneath the waste, which lifts all three limits above MW-7's chloride and sodium and MW-9's boron.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task193": "Architecture 1's decisive step was which rows the disproportionality measure was taken against, which is the comparison population and part of the estimand; the judge sent it back as underspecified. Architecture 2 files population, outcome, window, unit and comparison in full (the pair's patients, the order of their two first receipts, the 12-month window, the patient, the stated counterfactual) and leaves open only the estimation of that counterfactual's value, which every window-aware route agrees on and the half-and-half assumption gets wrong. No row count, no comparison set and no disproportionality measure appears in architecture 2.",
-    "task182": "Shares the decisive gap (objective) and nothing else. task182's decisive quantity is the gap between an observed level and each unit's own lagged response to a shared external driver; this build's is the value of a filed counterfactual expectation for a within-person ordering. One is a driver-response decomposition, the other the arithmetic of opportunity inside an observation window, and neither route reaches the other's answer.",
-    "task194": "Shares the gap tokens and the Gate G mechanism key. task194's decisive quantity is the fall a scarce intervention causes where units were picked for standing worst, so most of the fall is their own return to the long run: a selection-on-an-extreme problem. This build's decisive quantity is the expected count of an ordering under a filed null, set by where in the window each patient's first exposure falls, with no selection on an extreme and no regression to any mean.",
-    "task184": "Shares the prompt shape (07) and carries G7 as a non-decisive generator. task184's decisive move is a change of the unit of analysis to the event-hour an event could have fallen in, because a large share of events carry a window rather than a time. This build never changes the unit (the patient is filed) and never reads an interval-censored time; what it computes is the expectation of an order under a stated counterfactual.",
-    "task189": "Shares the house surface of a regulator's own standard reducing a period's records to a filed criterion. task189's decisive quantity is a per-unit average over measurements known only to lie below an instrument-specific limit, which is left-censored measurement. This build's measurements are exact dates with nothing censored; the open question is the value of a counterfactual expectation.",
-    "task254": "Shares the structural triple (objective gap, G7, method_or_model_selection) and nothing else. task254's live architecture reads each stage of a fixed passage at the period the unit enters it, because the later stages' delay builds while the unit is still travelling; its v2 lineage estimated a percentile of a time-to-event distribution observed only through events completed before a lock date. Both turn on observations that are missing or mis-timed. In this build nothing is missing, censored or mis-timed: every one of a pair's patients has two exact, fully observed first-receipt dates inside the filed window, and what is wrong is the value of the counterfactual expectation the standard compares the observed count against, computed from the two date distributions rather than assumed to be half.",
-    "task50": "Flagged at driver similarity 0.12 for sharing the words window and exposure. task50's decisive quantity is how much of each candidate's exposure falls inside a funded window, projected forward from a corpus-validated issue order, and it demotes the largest-exposure candidate. This build projects nothing, validates nothing against a corpus and ranks nobody by exposure: the window is closed, every date is observed, and the decisive quantity is the expected count of one of two orderings under a counterfactual the standard states."
+    "task193": "Architectures 1 and 2 measured product and reaction or marker pairs against a comparison drawn from the register itself (the other products pooled, then the null expectation of an ordering); architecture 3 is a different world and mechanism: the comparison is background water quality, filed in the field's own words, and the decisive step is a hydraulic judgment, from heads on each sampling date, of which background results sampled water from beneath the waste.",
+    "task270": "Shares the structural triple (population, G3, designation_set) through its v8 lineage only. task270 v8 reads members as never short because a supplier's fixed schedule supplies them, from a weekday step in a supply record; this build has no schedule, supply or shortfall: the background population is contaminated by a reversed hydraulic gradient on particular sampling dates, read from heads in a second file.",
+    "task275": "Shares the structural triple and the scorecard shape. task275 rebuilds the unmeasured operations' discards from what measured trips catch per unit of effort, because being observed changes behaviour; nothing here is observed or unobserved and no behaviour changes: every background result is measured, and the step is which of them represent unaffected groundwater, settled by the gradient on each sampling date.",
+    "task450": "Shares the structural triple through its v1 lineage. task450 v1 counts scheduled sightings of recurring events against events a visit stops; this build counts nothing over time and has no visit schedule acting on the events: it builds a prediction limit from background results and has to drop the ones a reversed gradient made unrepresentative.",
+    "task468": "Shares the gap, decision type and scorecard shape. task468's outcomes exist only through a probabilistic linkage to an outside register with error rates measured on control groups; this build links nothing probabilistically and has no linkage error: the results are exact, and what decides is a physical state (the hydraulic gradient at the site boundary) recorded in the gauging export on each sampling date."
   },
   "lineage": [
     {
@@ -122,9 +107,37 @@
       "decision_type": "designation_set",
       "driver": "The decisive measure of each candidate is its share of an outcome against every other candidate pooled, so one dominant candidate holds every other candidate's measure down, and only re-measuring with the dominant one out of the comparison set recovers which candidates truly stand out.",
       "stump": "A competent solver cleans the extract, builds every product and reaction pair's table against the whole database, applies the standard's three criteria and files 11 signals, five slots inside the desk's capacity, leaving the autumn booster inside the comparison set every other product is measured against when that one product is 40 per cent of the quarter's reports and its own reactogenicity sets the background rate for the four reactions on which the four signals it hides sit."
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent on measurement 2026-10-21 and confirmed on the clean truth at the 2026-11-01 re-check (commit 43a9822): every window-aware route (the field's null-effect sequence ratio, the permutation, the pair group-by and the one-line uniform-window formula) refers the golden seven pairs, so the easy routes land the golden; the survivor anatomy fails on Actor, Link and Reflex. Shipped 2026-10-17 (target.zip aa084e2f), replaced by architecture 3.",
+      "domain": "pharmacology-pharmacoepidemiology-safety",
+      "subdomain": "safety-signal-detection",
+      "objective": "anomaly-detection",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "driver": "The decisive quantity is how many units would show one of two orderings if the treatment had no bearing on it, and because each unit's room for each ordering depends on where in the observation window its own first exposure falls, taking the two orderings as equally likely designates the candidates whose exposure is ending and passes over the candidates whose exposure has only just begun.",
+      "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window: five pairs on the two products leaving the market are referred that should not be and two real signals on the two products entering it are passed over.",
+      "shell": {
+        "question form": "which",
+        "second-sentence opener": "the",
+        "rounding opener": "counts",
+        "deliverable set": "png+xlsx"
+      }
     }
   ],
-  "notes": "stump_strategy 'other': none of the fourteen keys fits. The decisive move is the value of a counterfactual expectation for a within-person ordering, set by each unit's own position in the observation window; it is not who is in a denominator (population_selection), not a mix shift (composition_mix), not an incomplete period (maturity_censoring) and not a calendar reading (time_semantics). context_artifact 'operations_log': the signal management tracker export, which records which pairs the desk opened and closed and when.\narchitecture_spent set 2026-10-21 on measurement. Architecture 2 died on the value of a comparison the estimand files, as architecture 1 died on the comparison's population: the same structure twice. The field has one null for this comparison, so all four licensed constructions refer the committed set in 20 of 20 redraws at 1.00 distinct designated sets, and the cheapest licensed form is an identity, n times the window's end less the pair's own mean first-receipt date over the window's length, equal to 8.5e-14 patients across all 23 pairs, so one group-by and one divide refers the committed seven 20 of 20 at corr +0.9954. The shipped readability screen scored that rung's test 6 as not linear and was wrong by arithmetic. Rewording 3.2(b) reaches neither fact, and the trichotomy has no fourth position: state the null and the construction follows, name its inputs and the signpost is louder, file neither and the comparison is unfiled and the call forks on Gates C and D. Architecture 3 is the slot's last before retirement; draw away from the estimand's five parts and from the value of a comparison, and run the algebra clause on the cheapest construction before any world. 2026-11-01 re-check: on the clean truth all four window-aware arithmetics, the field's null-effect sequence ratio and the one-line uniform-window formula included, refer the golden 7 against the equal-chance 10; architecture 2 confirmed spent, not re-rooted.",
-  "registered": "2026-10-17T14:57:47Z",
-  "architecture_spent": true
+  "notes": "stump_strategy population_selection: the decisive move is which background results belong to the filed population (groundwater the landfill has not affected), read sample by sample from the hydraulic state on each sampling date; it is not a mix shift and not a completion. context_artifact monitoring_export: the laboratory deliverables and the gauging export are the district's own monitoring exports.",
+  "registered": "2026-11-04T03:19:59Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "for",
+    "rounding opener": "also",
+    "deliverable set": "svg+xlsx"
+  }
 }
