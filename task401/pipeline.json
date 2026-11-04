@@ -1,66 +1,53 @@
 {
   "task": "task401",
-  "status": "DRAWING",
-  "domain": "psychology-behavioral-science/mediation-moderation-process-modeling",
+  "status": "DESIGN",
+  "domain": "education-learning-sciences/multilevel-classroom-school-research",
   "objective": "root-cause",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-04",
-  "seed": "RC07 (a supplier's January imbalance bill against plant trips and low wind); the seed's world could not carry an honest unbanned draw. Architectures 1 and 2 died at stage 2, architecture 3 was spent at stage 4 round 2 and architecture 4 at stage 4 round 1. Architecture 5 re-roots in Psychology and Behavioural Science: Wrenford Leisure Trust's membership base and its February 2026 changes.",
-  "stump": "A competent analyst compares each change's cancellations since 2 February with the same weeks of 2025 among the members it reached, finds the legacy terms letters behind the February spike and nothing yet from the Rewards closure, and recommends reversing the terms change, because they never count the 2023-tariff members who have stopped coming since the closure but have not yet cancelled, whom last year's lapsed members show will mostly cancel within the year.",
-  "architecture": 5,
+  "seed": "RC07 (a supplier's January imbalance bill); the seed's world could not carry an honest unbanned draw. Architectures 1 and 2 died at stage 2, 3 was spent at stage 4 round 2, 4 and 5 at stage 4 round 1. Architecture 6 re-roots in Education and Learning Sciences: Strathcorrie Council's S1 to S3 mathematics and its 2025-26 changes.",
+  "stump": "A competent analyst models each pupil's June mark on P7 attainment, deprivation, school and class, reads each change's cost off the pupils and units it reached, finds the framework's rewritten units down most and homework completion and review volume up on Mathsbridge, and files the new mathematics framework as the change that cost the most marks, because they never set each pupil's own first-homework results against that pupil's June items unit by unit, where the units each pupil got most wrong fell several points further than the rest once review stopped following their errors.",
+  "architecture": 6,
   "loops": 0,
   "go_no_go": {
     "redraws": 20,
-    "setting": "extract 16 March 2026, drift lag mean 13 weeks at gamma shape 6 (screens2.py on proto5.py)",
-    "truth": "closure first in 20 of 20 (712 to 844 against the letters' 91 to 158)",
-    "lever_vs_rival_estimates": "golden over the largest rival estimate 1.34x lowest, 2.77x median, 1.5x or more in 19 of 20",
-    "golden_method_holds": "all 24 specifications name the closure in 19 of 20 (seed 3 excepted, not shippable)",
-    "first_look": "outcome first look names the letters 20 of 20 (and net of 2025, 20 of 20); visits first look names the closure 4 of 20; flexible crackers wrong 20 of 20 each",
-    "literal": "the filed WHAT executed on cancellations to the extract names the letters 20 of 20 (difference-in-differences and year-on-year)"
+    "harness": "scratchpad/t401/a6/proto/proto4.py (world) and proto5.py (screens)",
+    "truth": "the platform switch is the largest true cost in 20 of 20",
+    "lever_vs_rival_estimates": "golden switch over the largest rival golden-method estimate 1.54x lowest, 2.59x median, 1.5x or more in 20 of 20",
+    "golden_method_holds": "24 specifications (six weak-unit definitions x level booked to the framework or to no one x KS2 adjustment) all name the switch in 20 of 20",
+    "first_look": "books the framework in 20 of 20 (both whole-system changes take the whole fall; rewritten units fell most; the switch's engagement rose)",
+    "careful_reader": "books the framework in 20 of 20; its homework-accuracy-by-year interaction is the switch's shadow (z 1.8 to 5.8 on, about 0 off) and reads as the framework's attainment gradient",
+    "literal": "reach before-and-after, reach difference in differences and the P7-adjusted version tie the two whole-system changes and never name the switch alone, 20 of 20"
   },
   "precut": {
-    "exit": 0,
-    "date": "2026-11-04",
-    "checks": 61,
-    "fail": 0,
-    "warn": 0
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (the contract schedule and the savings paper use the review's and the changes' own words; one metadata word fixed)",
-    "reader": "clean on the main call (Schedule 4.3 files the estimand, not a procedure; decisive step analytical); findings on the asks: admissions EPOS family lines, vouchers and refunds unfiled; fees month paid for, two-month collections and returns unfiled; minor realism tells (bacs_returns reason_code constant, care-call ids unpadded). Report: scratchpad t401/a5/stage4/reader/reader_answers.md"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.objective, repeat.gate_g, overuse.gate_g; NOTE same_driver_older vs task122, differentiated)",
-    "nearest": "task402 v3 at 0.06 by driver",
-    "surface": "three pairs promoted for the author (task402 and task400 back to back, task230), each differentiated on the card; personas none in the pack"
+    "heart": "",
+    "nearest": "task403 at 0.07 by driver (guard check on the draft card)"
   },
   "judge": {
-    "verdict": "DETERMINISTIC on the main call; SOLUTION_WRONG candidate on the November to January fee figures",
-    "disposition": "FIX_NOW (fees reconciliation, the 13 against 12 week class window, two admissions conventions unfiled: Gate C fails on admissions); architecture spent on the blind derivation",
-    "report": "scratchpad t401/a5/stage4/judge/verdict.md and derivation.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "architecture 5 spent at stage 4, round 1 (2026-11-04): the determinism judge returned DETERMINISTIC on the main call with a FIX_NOW on the asks, but its blind derivation (written before the graded blocks were opened) reached the call: it found the legacy letters' February spike almost entirely members with no gate entry in the previous three weeks, the legacy hazard below last year's once the spike passed (a pull-forward), and the Rewards holders' dormancy up (z 5.9), and projected each change's dormant members through last year's conversion, putting the Rewards closure first under every projection it tried. The readability screen's recorded residual (activity read by change) fired: a reader who projects the year, which the forward-facing estimand requires, lands the call. Re-root at architecture 6 from stage 1 in another domain, world, dataset and shell (evidence in the scratchpad t401/a5/stage4/).",
+  "resume": "Stage 2 (design): write the readability screen, semantic fork table, ladder with the pricing sequence, closure table, literal reader, oracles and ask sheet; design the asks and their devices (supplemental-stumping) and finalise prompt.txt; leave stage 2 only on precut exit 0 with every screen asserted in checks.py on the shipped seed.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "previous_architectures": "v1 and v2 died at stage 2; v3 spent 2026-11-03 at stage 4, round 2 (judge SEND_BACK on an ask's unfiled re-attribution); v4 spent 2026-11-04 at stage 4, round 1 (the judge's blind derivation reached the call and every ask figure). Their records are in the design note's Tried and rejected and the card's lineage.",
-  "gates": {
-    "checks": "65 of 65 (every first look, literal execution and remaining setting asserted on seed 18)",
-    "verify": "23 of 23",
-    "figures_check": "63 figures, 0 absent",
-    "rebuilds": "two byte-identical builds",
-    "target_zip_sha256": "41b0cd38b7f72b76df2f7c4a59bb9a1a35db8c78f7dee1850f8b689a6e6f4688",
-    "voice_check": "PASS (851 characters)",
-    "ceiling": "pair 49.9 (two full includers), cracker 0 of 18, full includer 7 of 18, no repair 0 of 18, mirror 0 of 18, mirror leakage 0"
-  },
-  "stage4": {
-    "reader_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/a5/stage4/reader/leak_reader_brief.md",
-    "judge_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/a5/stage4/judge/judge_brief.md",
-    "graded_blocks": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t401/a5/stage4/judge/graded_blocks.md"
+  "previous_architectures": "v1 and v2 died at stage 2; v3 spent 2026-11-03 at stage 4, round 2 (judge SEND_BACK on an ask's unfiled re-attribution); v4 spent 2026-11-04 at stage 4, round 1 (the judge's blind derivation reached the call and every ask figure); v5 spent 2026-11-04 at stage 4, round 1 (the judge's blind derivation projected the year and named the closure). Records in the design note's Tried and rejected and the card's lineage.",
+  "card": {
+    "registered": "2026-11-04T08:08:49Z",
+    "check_after_register": "WARN after register (2026-11-04): three_rules.strategy_risk, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.question_form, each answered in the design note's Draw; no BLOCK; nearest driver task403 at 0.07; shell which | its | csv+docx (provisional prompt)"
   }
 }
