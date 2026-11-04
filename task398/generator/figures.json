@@ -1,0 +1,194 @@
+{
+ "call": "Fennick Creek",
+ "call_days": 47,
+ "call_key": "FEN",
+ "cited": {
+  "buoy_sensor_depths_m": [
+   0.5,
+   15.5,
+   1.0,
+   16.0
+  ],
+  "intake_centreline_navd88_ft": 829.24,
+  "layer_half_width_m": 2.0,
+  "lb_per_mg_per_mgl": 8.34,
+  "look_back_days": 30,
+  "navd88_minus_ngvd29_ft": 0.24,
+  "plan_sections": [
+   "5.1",
+   "5.2",
+   "3.2"
+  ],
+  "sop_day_result": "2.3",
+  "sop_pounds_formula": "3.2"
+ },
+ "days_by_month": {
+  "April": 0,
+  "August": 0,
+  "July": 23,
+  "June": 22,
+  "May": 2,
+  "October": 0,
+  "September": 0
+ },
+ "days_total": 47,
+ "dun_offsets_ft": [
+  1.36,
+  1.11
+ ],
+ "dun_step_at": "2026-07-03T14:15:00",
+ "dun_step_ft": 0.25,
+ "entry_m": {
+  "Dunmore Creek": {
+   "bottom_days": 0,
+   "hi": 5.9,
+   "lo": 2.6
+  },
+  "Fennick Creek": {
+   "bottom_days": 0,
+   "hi": 10.9,
+   "lo": 10.0
+  },
+  "Ladd Branch": {
+   "bottom_days": 61,
+   "hi": null,
+   "lo": null
+  },
+  "Oxley Creek": {
+   "bottom_days": 0,
+   "hi": 3.8,
+   "lo": 0.0
+  },
+  "Tessel River": {
+   "bottom_days": 0,
+   "hi": 4.1,
+   "lo": 0.0
+  }
+ },
+ "first_day": "2026-05-29",
+ "first_feed": "2026-05-29",
+ "intake_depth_m": [
+  10.4,
+  11.0
+ ],
+ "last_day": "2026-07-27",
+ "last_feed": "2026-08-06",
+ "load_total_kg": 849,
+ "loads_kg": {
+  "Dunmore Creek": 153,
+  "Fennick Creek": 88,
+  "Oxley Creek": 235,
+  "Tessel River": 373
+ },
+ "loads_month_kg": {
+  "Dunmore Creek": {
+   "April": 4,
+   "July": 14,
+   "June": 71,
+   "May": 64
+  },
+  "Fennick Creek": {
+   "April": 3,
+   "July": 9,
+   "June": 41,
+   "May": 35
+  },
+  "Oxley Creek": {
+   "April": 6,
+   "July": 17,
+   "June": 106,
+   "May": 107
+  },
+  "Tessel River": {
+   "April": 7,
+   "July": 32,
+   "June": 179,
+   "May": 155
+  }
+ },
+ "pac_lb": {
+  "August": 3693,
+  "July": 23776,
+  "June": 25024,
+  "May": 3243
+ },
+ "pac_no_downtime_lb": {
+  "August": 3857,
+  "July": 24314,
+  "June": 25570,
+  "May": 3457
+ },
+ "pack": {
+  "alarms": 59148,
+  "buoy": 5097,
+  "dc04": 29180,
+  "fc02": 29180,
+  "isco": 281,
+  "lb05": 29180,
+  "lims_old": 146,
+  "oc03": 29180,
+  "pac_sp": 11,
+  "shl": 740,
+  "tr01": 29180
+ },
+ "per_sub": {
+  "Dunmore Creek": 0,
+  "Fennick Creek": 47,
+  "Ladd Branch": 0,
+  "Oxley Creek": 0,
+  "Tessel River": 0
+ },
+ "rungs": {
+  "r0_load_kg": {
+   "Dunmore Creek": 153.3,
+   "Fennick Creek": 87.6,
+   "Oxley Creek": 235.0,
+   "Tessel River": 373.3
+  },
+  "r1_mixed14_days": {
+   "Dunmore Creek": 17,
+   "Fennick Creek": 10,
+   "Ladd Branch": 0,
+   "Oxley Creek": 22,
+   "Tessel River": 40
+  },
+  "r1_mixed30_days": {
+   "Dunmore Creek": 16,
+   "Fennick Creek": 10,
+   "Ladd Branch": 0,
+   "Oxley Creek": 22,
+   "Tessel River": 39
+  },
+  "r1_mixed45_days": {
+   "Dunmore Creek": 16,
+   "Fennick Creek": 9,
+   "Ladd Branch": 0,
+   "Oxley Creek": 22,
+   "Tessel River": 38
+  }
+ },
+ "strat_first": "2026-04-27",
+ "strat_last": "2026-10-06",
+ "temps_jun_jul_c": {
+  "Dunmore Creek": [
+   18.1,
+   22.8
+  ],
+  "Fennick Creek": [
+   10.4,
+   14.1
+  ],
+  "Ladd Branch": [
+   9.0,
+   10.1
+  ],
+  "Oxley Creek": [
+   21.0,
+   26.8
+  ],
+  "Tessel River": [
+   19.1,
+   25.7
+  ]
+ }
+}
