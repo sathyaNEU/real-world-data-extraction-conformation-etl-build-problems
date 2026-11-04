@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, golden, passes, excess, window, driver, family, position, system, survey, sentence, morning, carried, decisive, normals, shipped, reader, resume, degrees, energy, architecture, register, redraw, correctly, forward
+Stump terms swept: record, passes, excess, sentence, golden, driver, default, weekdays, window, nothing, normals, highest, position, morning, survey, shipped, operator, system, corridor, cracker, resume, degrees, family, correctly, computed
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `SRM-07_seasonal_restricted_speed_orders.pdf`: candidate 'Juniper Line' sits beside decision vocabulary: ...hazard control under the Agency Safety Plan. 2. Scope Every revenue track section of the Juniper Line and the Foundry Line, in each direction of travel, as listed in the current streetcar tra...
@@ -12,7 +12,7 @@ Stump terms swept: record, golden, passes, excess, window, driver, family, posit
 - **REVIEW** `january_2027_pick_timetable.pdf`: carries 22 of 30 distinctive words of the committed call: 'Place the four restricted-speed slots for the weekday peaks of 4 January to 26 February 2027 on J4 outbound in the AM pe'
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `SRM-07_seasonal_restricted_speed_orders.pdf`: 4 of 25 stump-paragraph terms appear (record, passes, survey, normals); read whether the document names the move
+- **REVIEW** `SRM-07_seasonal_restricted_speed_orders.pdf`: 6 of 25 stump-paragraph terms appear (record, passes, weekdays, normals, highest, survey); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 1)
 - **REVIEW** `january_2027_pick_timetable.pdf`: names 16 of 16 answer-set candidates beside numbers; confirm it does not rank them on the decision question

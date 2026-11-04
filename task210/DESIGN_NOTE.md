@@ -63,7 +63,7 @@ the yard's block sheets, the Foundry depot's release log, the run sheets (duty a
 roster, the badge card register, the maintenance system's defect reports (operator cards and inspection findings),
 SRM-07 (PDF), the January pick timetable (PDF), the station normals (PDF), the rail operations dashboard (workbook), and
 three distractors named only in `metadata.json` (pedestrian counters, the arena's events, track maintenance) beside
-the school calendar the careful readers use. Eighteen files, five formats, the AVL log 623,214 rows at the actual
+the school calendar the careful readers use. Eighteen files, five formats, the AVL log 623,550 rows at the actual
 running (trips leave late and run times vary; the pick gives scheduled times, revised by direction). SRM-07
 files no definition of low sun or darkness: the survey's coordinates, the pick's clock and the normals are plain
 operating facts, and the glare response is the analyst's to estimate.
@@ -76,10 +76,13 @@ of travel carry the excess in the forward window.
 **Gate G.** No shipped artifact ranks or sorts section-direction cells or flags a top set: the dashboard is monthly
 and line-level, unsorted, with FB, EB and OS counts and the line's FB rate as data; no file lists cells with a rate.
 
-**The five go/no-go screens, on the corrected sun** (`generator/solar.py` now wraps the hour angle; the first draw's
-sun put every Mountain evening sun east of the meridian, `## Tried and rejected`). Twenty redraws on the real generator
-(seeds 21001 to 21020, scratchpad `t210/a2/r3/redraws.py`); the shipped seed 21019 was selected on them, and its
-numbers are asserted in `generator/checks.py`:
+**The five go/no-go screens, on the corrected sun and the corrected blocks** (`generator/solar.py` wraps the hour angle;
+the first draw's sun put every Mountain evening sun east of the meridian; every block now runs out and back,
+`## Block repair`). Forty redraws on the real generator (seeds 21001 to 21040, scratchpad `t210/a2/blocks/redraws.py`),
+then a cut pack for each of the 22 seeds that passed the main-call screens and for 21019 (`seedpack.py`: the
+separation from `target/` and every ask route) and the corridor for the four that passed the asks (`corridor.py`); the
+shipped seed
+21030 is the one that holds every proof, and its numbers are asserted in `generator/checks.py`:
 
 1. **Realistic levels and the lever.** Sun position from NOAA's General Solar Position Calculations, anchored at every
    build against NOAA's solar calculator equations (`generator/solar_ref.py`, a separate implementation the generator
@@ -89,29 +92,30 @@ numbers are asserted in `generator/checks.py`:
    246 to 254), glare situations predicted from alignment and sun position (Jurado-Pina and Pardillo Mayora 2009,
    Transportation Research Record 2120, 12 to 17); darkness raises pedestrian risk severalfold (Sullivan and Flannagan
    2002, Accident Analysis and Prevention 34, 487 to 498). World-set: firm braking 20 per 1,000 street passes and 8 on
-   reserved track; the full-alignment multiplier 3.2 under full sun. The golden recovers the true slate in 19 of 20
-   redraws; at the shipped seed the fourth slot clears the fifth by 27.3 per cent on the clean truth, 24.1 per cent
-   from `target/` (F3-O PM fifth) and 23.0 per cent in the independent verifier.
+   reserved track; the full-alignment multiplier 3.2 under full sun. The golden recovers the true slate in 34 of 40
+   redraws; at the shipped seed the fourth slot clears the fifth by 36.9 per cent on the clean truth, 37.0 per cent
+   from `target/` (J5-O AM over J3-O AM) and 33.8 per cent in the independent verifier (the truth's own margin 28.3).
 2. **The golden's own method holds the call, and the record decides the glare form.** No sentence defines low sun, so
    the response's cone, elevation profile and shape are the analyst's. On `target/` all 75 forms were fitted (cones 15
    to 35, five elevation profiles, cosine-squared, linear and flat shapes): every tapering form at every cone and
-   profile, and every flat form to 20 degrees, prints the golden slate (60 cells, the fourth slot at least 10.6 per
-   cent clear); the 21 forms the record supports (twice the log-likelihood within 10 of the best) print it too. The 10
-   forms that print another slate are all flat from 25 degrees out, and the record refutes them by 45.4 or more: its
-   own excess is 1.97 with the sun 0 to 5 degrees off the line of travel, 1.03 at 10 to 15, about 0.2 at 15 to 25 and
-   0.00 at 25 to 30 (standard errors 0.13 to 0.24).
-3. **The first look lands wrong**: 20 of 20, at most one slot shared.
-4. **The careful readers land wrong**, 20 of 20 each: (a) field-decomposing (the default path), at most one shared;
-   (b) constructing (a non-directional low-sun term; sun-time by elevation bins), at most one and one; (c) per-record
-   in three month pools, at most two (September to October), three (October) and two (every month); (d) the
-   glare-naming reader that carries the record forward (the observed September to October alignment, or the fitted
-   model with each cell's April to October or September to October alignment held), at most two, one and one; (f) each
-   cell's monthly trend carried to January (four forms), at most two, two, two and three. At the shipped seed every
-   reader shares no slot except two trend forms (two each) and one literal form (one).
+   profile, and every flat form to 20 degrees, prints the golden slate (60 cells, the fourth slot at least 13.2 per
+   cent clear); the 36 forms the record supports (twice the log-likelihood within 10 of the best) print it too. The 5
+   forms that print another slate are all flat at 35 degrees, and the record refutes them by 42.4 or more: its own
+   excess is 1.73 with the sun 0 to 5 degrees off the line of travel, 1.11 at 10 to 15, 0.74 at 15 to 20 and 0.00 at
+   20 to 25 (standard errors 0.13 to 0.25).
+3. **The first look lands wrong**: 40 of 40, at most two slots shared.
+4. **The careful readers land wrong**, 40 of 40 each: (a) field-decomposing (the default path), at most two shared;
+   (b) constructing (a non-directional low-sun term; sun-time by elevation bins), at most two and one; (c) per-record
+   in three month pools, at most two (every month), two (September to October) and two (October); (d) the glare-naming
+   reader that carries the record forward (the observed September to October alignment, or the fitted model with each
+   cell's April to October or September to October alignment held), at most two, one and two; (f) each cell's monthly
+   trend carried to January (four forms), at most two, two, two and three. At the shipped seed the first look, the
+   default path and readers (d) share no slot; the non-directional low-sun term shares one, the October pool two and
+   the trend forms one, one, two and two.
 5. **Literal execution of SRM-07, with no definition of low sun filed**: the record's rate since 1 April (4.2), that
-   rate at the normals' sunshine (4.1), at the pick's clock hours and sunshine, and with January's dark share: 20 of 20
-   wrong, at most two slots shared across the redraws and at most one at the shipped seed (none from `target/`). The
-   recency readings (October alone, September to October) share at most three and two.
+   rate at the normals' sunshine (4.1), at the pick's clock hours and sunshine, and with January's dark share: 40 of 40
+   wrong, at most two slots shared across the redraws and at most one at the shipped seed (one each from `target/`).
+   The recency readings (October alone, September to October) share at most two and two.
 
 Competing causes (new operators, school mornings, darkness) are real, documented and modest; removing each from the
 shipped realization (thinned, not redrawn) leaves the golden slate (asserted).
@@ -146,16 +150,16 @@ shipped realization (thinned, not redrawn) leaves the golden slate (asserted).
   no filed sentence names the sun, low sun or glare, so nothing read correctly points at the step.
 - Not rule application: SRM-07 files the population, outcome, window, basis and comparison and nothing about how the
   expected rate is formed, and no sentence defines low sun, so executing every filed rule (the record's rate, at the
-  normals' sunshine, at the pick's hours) files a wrong slate in 20 of 20 redraws, sharing at most two slots; the
+  normals' sunshine, at the pick's hours) files a wrong slate in 40 of 40 redraws, sharing at most two slots; the
   enumerated family (rate tables, the field-decomposing and per-record models, two sun-elevation constructions, four
-  trend forms, the literal executions) files 0 golden slates in 20 redraws, while the standing family (every glare
+  trend forms, the literal executions) files 0 golden slates in 40 redraws, while the standing family (every glare
   form the record supports) agrees on the slate, and what rules the enumerated family out is loud on the record: the
   excess sits only on sunny passes, only in one direction of a section, and only while the sun is low ahead.
 - Analyst test: a strong analyst who conforms the recorder's UTC events to the surveyed sections and the AVL passes,
   nets new operators, darkness, sky cover and the school term, and reads SRM-07's normal-weather basis correctly slates
-  F3-I AM, F4-I AM, J1-O AM and J2-O AM (the default path's `Ends on:`), the morning cells that rose this autumn,
-  while January's sun stands ahead of the south-east-running morning and south-west-running evening directions that
-  carry the golden slate.
+  F3-I AM, F4-O PM, J2-O AM and J3-O AM (the default path's `Ends on:`), the east-running morning and west-running
+  evening cells with the record's highest rates, while January's sun stands ahead of the south-east-running morning and
+  south-west-running evening directions that carry the golden slate.
 - Estimand: SRM-07 section 4 (the procedure PDF) files the population (every section of track in each direction of
   travel in each weekday peak), the outcome (firm-brake events per 1,000 passes), the window (the January pick's
   weekdays, 4 January to 26 February 2027), the basis (the pick timetable's scheduled passes under the airport station's
@@ -179,15 +183,16 @@ shipped realization (thinned, not redrawn) leaves the golden slate (asserted).
    normals' sky cover.
 6. Slate the four highest cells.
 
-Ends on: F3-I AM, F4-I AM, J1-O AM and J2-O AM, the morning cells that rose this autumn (no cell of the golden).
+Ends on: F3-I AM, F4-O PM, J2-O AM and J3-O AM, the east-running morning and west-running evening cells with the
+record's highest rates (no cell of the golden).
 Golden: J4-O AM, J5-O AM, F5-O PM and F6-O PM, the south-east-running morning and south-west-running evening cells.
 ## Stump sentence
 
-The default path ends on F3-I AM, F4-I AM, J1-O AM and J2-O AM, the morning cells that rose this autumn, because it
-reads each cell's measured rate, adjusted for operators, darkness, sky cover and the school term, as the rate January's
-peaks will see; the excess was the low sun standing ahead of those directions in September and October, and in January
-and February it stands ahead of the south-east-running morning and south-west-running evening directions (J4-O AM,
-J5-O AM, F5-O PM, F6-O PM), which take the four slots.
+The default path ends on F3-I AM, F4-O PM, J2-O AM and J3-O AM, the east-running morning and west-running evening cells
+with the record's highest rates, because it reads each cell's measured rate, adjusted for operators, darkness, sky cover
+and the school term, as the rate January's peaks will see; their excess was the low sun standing ahead of those
+directions from April to October, and in January and February it stands ahead of the south-east-running morning and
+south-west-running evening directions (J4-O AM, J5-O AM, F5-O PM, F6-O PM), which take the four slots.
 ## Survivor anatomy
 
 - Actor: the deciding property is how much firm braking the low sun adds on each section direction and where January's
@@ -199,19 +204,19 @@ J5-O AM, F5-O PM, F6-O PM), which take the four slots.
   never asks for and no key, code or clause offers; SRM-07 names neither the sun nor a heading.
 - Reflex: the field's own estimator for the deciding quantity, the near-miss exposure rate per section direction
   (firm brakes per 1,000 passes), adjusted for the visible confounders by a Poisson model by cell and month, sits at
-  rung 1 and files the cells that rose this autumn (`## Default path`).
+  rung 1 and files the cells with the record's highest rates (`## Default path`).
 - Back-test: the default path's month-by-cell model fits the record it is fitted on and the dashboard's line rates tie
-  to the cell totals; month-over-month carry-forward is weak on the shipped seed (Spearman 0.34 between September and
-  October cell rates, no cell shared between the two months' top fours; April to August against September to October
-  0.54), which a careful solver reads as noisy cells, not as a moving cause: no validation record refutes the rate.
+  to the cell totals; month-over-month carry-forward is weak on the shipped seed (Spearman 0.33 between September and
+  October cell rates, one cell shared between the two months' top fours; April to August against September to October
+  0.66), which a careful solver reads as noisy cells, not as a moving cause: no validation record refutes the rate.
 - Second use: every file the decisive step reads is in the pack for its own reason: the survey for the section ids
   and the asks' positions, the AVL log as the exposure every reader needs, the airport observations for sky cover
   (every careful reader nets it), the pick timetable for the pick's passes and SRM-07 for the WHAT; delete the glare
   step and the pack loses nothing.
 - Shock: the autumn excess reads as ordinary explained movement (new operator classes, the school term from 17
   August, darker October mornings), and the golden slate is not an interval of any shipped statistic: the four golden
-  cells rank 8, 21, 30 and 39 of 52 on April to October rates, 10, 13, 13 and 24 on September to October and 6, 8, 8
-  and 17 on October alone.
+  cells rank 5, 22, 22 and 31 of 52 on April to October rates, 7, 7, 23 and 37 on September to October and 2, 3, 8
+  and 25 on October alone.
 - Pins: SRM-07 files the WHAT in the agency's own procedure (every section-direction peak, firm brakes per 1,000
   passes, the pick's weekdays at the pick's scheduled times in the normal weather, the four highest expected rates);
   no filed sentence names the sun, low sun, glare, a heading, the model, the excess, a clock rule or which cells
@@ -246,32 +251,32 @@ literal execution of every filed rule (rung L) files a wrong slate.
 | SF10 | darkness (a control) | sun below the horizon | sunset at minus 0.833, minus 3, civil twilight minus 6; no darkness term | same call | same call asserted (C3) |
 | SF11 | the glare response's width | a 25-degree cosine-squared taper | 15, 20, 30, 35 degrees | same call | same call asserted; the record decides (C3 over its supported forms) |
 | SF12 | the glare response's elevation profile | full below 12 degrees, none from 25 | flat to 15 or 20; 8 to 20; 15 to 30 | same call | same call asserted (C3) |
-| SF13 | the glare response's form | any tapering form (cosine-squared or linear, every cone 15 to 35, every elevation profile), or a flat form to 20 degrees | a flat form at 25 degrees or more | another call (10 of 75 cells) | the record's own fit (2dlogL 45.4 or more worse) and its offset profile (excess 0.00 at 25 to 30 degrees); the call holds across every supported form (asserted) |
+| SF13 | the glare response's form | any tapering form (cosine-squared or linear, every cone 15 to 35, every elevation profile), or a flat form to 20 degrees | a flat form at 35 degrees | another call (5 of 75 cells) | the record's own fit (2dlogL 42.4 or more worse) and its offset profile (excess 0.00 at 20 to 25 degrees); the call holds across every supported form (asserted) |
 | SF14 | controls | section direction, hour, weekend, darkness | none; no hour effects | same call | same call asserted |
 | SF15 | the detector outage week | passes and brakes both left out | the week dropped on every section | same call | same call asserted |
 | SF16 | clock | Mountain local time, MDT in the record and MST in the pick | UTC as stamped | same call once converted | SRM-07 3.5 ("Mountain local time") |
 | SF17 | the candidate | one section, one direction, one weekday peak | a section pooled over directions | another call | SRM-07 3.6, quoted |
 | SF18 | the basis | the pick's scheduled passes | the record's own passes | another call | SRM-07 4.1 ("at the pick's scheduled times on the pick's weekdays") |
-| SF19 | ask A's month | the Mountain-time month | the UTC month (moves 11 of 14 figures) | another figure | the asking sentence ("each Mountain-time month") |
+| SF19 | ask A's month | the Mountain-time month | the UTC month (moves 4 of 14 figures) | another figure | the asking sentence ("each Mountain-time month") |
 | SF20 | ask B's day | the service day the card was written (its car on its block) | the MMS reported date; the day before keying; the car's last day out | another figure (each moves 6 of 6) | the asking sentence ("cards that operators wrote on weekday service days"); C1: every card's car ran its block on one day in the week before keying |
 | SF21 | a record on a month's edge | none within 15 seconds of a month boundary | a recorder clock moving one across | same figures | asserted on the shipped rows |
-| SF22 | ask B's weekday service | days the weekday timetable ran | calendar weekdays (the three holidays, moves 5 of 6) | another figure | the asking sentence ("weekday service days"); the AVL log shows the Sunday timetable from 07:00 on 25 May, 3 July and 7 September |
+| SF22 | ask B's weekday service | days the weekday timetable ran | calendar weekdays (the three holidays, moves 2 of 6) | another figure | the asking sentence ("weekday service days"); the AVL log shows the Sunday timetable from 07:00 on 25 May, 3 July and 7 September |
 ## Ladder
 
 | Rung | Route | Slate on the shipped seed | Shares with the golden |
 |---|---|---|---|
-| 0 | first look, each cell's April to October rate | F3-I AM, F4-I AM, J2-I PM, J2-O AM | 0 of 4 |
-| 1 | default path: the field's rate netted by a Poisson model by cell and month, October's level carried | F3-I AM, F4-I AM, J1-O AM, J2-O AM | 0 of 4 |
-| 2 | non-directional low sun, or sun-time by elevation bins | the low-sun-exposed autumn cells | 0 of 4 |
-| 3 | per-record models in three month pools | the autumn cells | 0 of 4 |
+| 0 | first look, each cell's April to October rate | F3-I AM, F4-O PM, J2-O AM, J3-O AM | 0 of 4 |
+| 1 | default path: the field's rate netted by a Poisson model by cell and month, October's level carried | F3-I AM, F4-O PM, J2-O AM, J3-O AM | 0 of 4 |
+| 2 | non-directional low sun, or sun-time by elevation bins | the low-sun-exposed cells, or the record's highest | 0 to 1 of 4 |
+| 3 | per-record models in three month pools | the record's highest cells, or October's | 0 to 2 of 4 |
 | 3d | glare named, each cell's observed alignment carried to January | the autumn-aligned cells | 0 of 4 |
-| 3f | each cell's monthly trend carried to January (four forms) | the cells rising into October | 0 to 2 of 4 |
-| L | literal executions of SRM-07 (the record's rate, at the normals, at the pick's hours, with January's dark share) | the autumn cells | 0 to 1 of 4 |
+| 3f | each cell's monthly trend carried to January (four forms) | the cells rising into October | 1 to 2 of 4 |
+| L | literal executions of SRM-07 (the record's rate, at the normals, at the pick's hours, with January's dark share) | the record's highest cells | 0 to 1 of 4 |
 | 4 | the golden: the sun against each direction at every pass, the response estimated, carried to the pick's passes | J4-O AM, J5-O AM, F5-O PM, F6-O PM | 4 of 4 |
 
 Every rung below 4 is a complete pipeline that files a definite wrong slate; asserted in `generator/checks.py`. The
-fourth slot (F5-O PM) clears the fifth (F3-O PM) by 24.1 per cent; across the 20 redraws the readers share at most
-three slots and the default path at most one.
+fourth slot (J5-O AM) clears the fifth (J3-O AM) by 37.0 per cent; across the 40 redraws the readers share at most
+three slots and the default path at most two.
 ## Closure table
 
 | Axis | Reading | Move |
@@ -286,7 +291,7 @@ three slots and the default path at most one.
 | 8 Window length | the whole record fits the model | C3, the slate identical across every glare form the record supports (SF11 to SF14) |
 | 9 Boundary inclusivity | the peak by entry time, 06:30 to 08:59 and 16:00 to 18:29 | filed, SRM-07 3.5; SF3 |
 | 10 Rounding path | no graded rate; the slate is graded; the asks are whole numbers | C3 corridor: membership fixed across the supported glare forms; the asks' counts are integers |
-| 11 Tie-break | none needed, the fourth clears the fifth by 24.1 per cent (10.6 or more in every corridor cell) | C4, asserted |
+| 11 Tie-break | none needed, the fourth clears the fifth by 37.0 per cent (13.2 or more in every corridor cell) | C4, asserted |
 | 12 Maturity and censoring | none in the main call; ask B's cards keyed after the 2 November export are not in it, and every card in it dates to a service day in the window or before 1 April | C1, asserted |
 | 13 Order of operations | attach, fit, project | C1, the variants agree |
 | 14 Row order | file order irrelevant | C1 |
@@ -319,12 +324,13 @@ day. The normals and the pick are drivers, not checks.
   2026 (14 figures). H18 home: the braking record beside the firm brakes the call reads, on rows the call never reads
   (EB, not FB). Primary devices: A1 (D1 duplication under two clocks: a two-car train's application logged by the
   trailing car's free-running recorder up to 3.5 minutes off, paired only by block, position and time); A2 (D5 scope:
-  a car bad-ordered in service is repaired and brake-tested on the depot loop the same day, so the yard sheet puts it on
-  a block while it sits in the depot, and the spare that took the block over is on no sheet); hazard A3 (D4: AVL
+  a car bad-ordered in service runs on to Foundry Loop, pulls in and is repaired and brake-tested on the depot loop the
+  same day, so the yard sheet puts it on a block while it sits in the depot, and the spare that pulled out onto the
+  block's next inbound trip is on no sheet); hazard A3 (D4: AVL
   onboard-unit drop-outs leave revenue trips unlogged, so revenue read off the AVL log loses applications); the UTC
   month (pinned by the asking sentence).
 - Ask B: each line's defect cards that operators wrote on weekday service days, April to October 2026, for brakes,
-  for doors and for all other defects (6 figures: Juniper 50, 51, 169; Foundry 33, 38, 103). H18 home: the
+  for doors and for all other defects (6 figures: Juniper 55, 56, 153; Foundry 37, 46, 139). H18 home: the
   equipment side of the diagnosis (did brakes or doors on the cars drive the autumn rise), on the maintenance system's
   rows, which the call never reads. Counting units filed as WHAT in the asking sentence: a card an operator wrote (the
   MMS source "Operator card"), the service day it was written on, weekday service (the weekday timetable ran: the three
@@ -341,15 +347,15 @@ day. The normals and the pick are drivers, not checks.
 - Separation line: zero device rows in the main call's population (the call reads FB rows, the AVL passes, the survey,
   the airport file and the pick; ask A reads EB rows, ask B the MMS export), asserted in `checks.py`.
 - Pair ceiling: 31.2 (one response on the call keeping the cracker's ask figures, the other off it with the same ask
-  handling); both on the call 47.8; at the full includer's keep the pair is 34.0 and both on 50.5.
+  handling); both on the call 47.8; at the full includer's keep the pair is 42.2 and both on 58.8.
 - Mirror leakage: 5.0 per cent of the ask weight.
-- Full includer: keeps 10.0 per cent of all ask figures at its best route (under two fifths):
+- Full includer: keeps 25.0 per cent of all ask figures at its best route (under two fifths):
 
 | Full includer route | Ask A | Ask B |
 |---|---|---|
-| full includer, signature | 1 of 14 | 0 of 6 |
-| full includer, release log | 1 of 14 | 1 of 6 |
-| full includer, AVL | 0 of 14 | 1 of 6 |
+| full includer, signature | 0 of 14 | 0 of 6 |
+| full includer, release log | 1 of 14 | 4 of 6 |
+| full includer, AVL | 0 of 14 | 4 of 6 |
 
 - Every ask figure is a whole number, 0.5 of a unit from its rounding edges; the tightest is any of them (all at 0.5).
 - Measured by: generator/ceiling.py on the cut pack (shares no code with the generator; its own golden handling is
@@ -364,7 +370,8 @@ day. The normals and the pick are drivers, not checks.
 Texture only, each change on its own random stream or on the same draws, so the realization is unchanged: the slate,
 ask A's 14 figures, ask B's 6 and the slot plan's marks are the same; the fitted G moved from 2.292 to 2.296 and the
 chart's rates by hundredths, from the AVL log's actual running. Asserted in `checks.py` (`realism 1` to `realism 8`,
-the three-rules block R1 to R3c and the write-up's steps executed as written): 155 of 155.
+the three-rules block R1 to R3c and the write-up's steps executed as written): 155 of 155 at stage 3, 167 of 167 with
+the block assertions (`## Block repair`).
 - The AVL log carried the timetable (one run time per section direction, trips on the exact headway, entry seconds on 32
   values). It carries the actual running now: trips leave late, never early (a gamma lateness, mean near 45 seconds,
   now and then a disruption of minutes), street run times vary with signal stops; the recorder's event times and the
@@ -392,6 +399,71 @@ the three-rules block R1 to R3c and the write-up's steps executed as written): 1
   from the same draws.
 - Goldens: the slot plan carries the line, the peak window and the order's 10 mph limit (SRM-07 3.5 and 5.2); the chart
   takes the finding as its title, states its basis and sources, and fits its frame.
+## Block repair
+
+The defect (`## Tried and rejected`, a2 stage 3), measured on the stage-3 pack with scratchpad
+`t210/a2/blocks/audit_blocks.py`: every Foundry block ran one direction all day (46,625 of 46,625 trip-to-trip
+transitions repeated a direction). The Juniper's blocks alternated only because nine is odd, and both lines shared the
+other faults: the early run handed over at 14:00 in the middle of a trip (11 trips' recorder events carried two
+operators), J01 uncoupled and J02 coupled its trailing car at Mesa Park, 34 in-service swaps changed car inside a trip,
+and all seventeen blocks ran on Saturdays and Sundays with layovers near an hour.
+
+Fixed in the world (`simulate.blocking`, `records.realised` and the swaps in `records.records`):
+- The scheduling department's blocks for each line and day type. Each departure takes the car that has laid over
+  longest once its scheduled layover has run (the Juniper 12 minutes at Mesa Park and 19 at Union Yard, the Foundry 9
+  at each end); a pull-out from the yard at the outer end (Union Yard; the Foundry depot at Foundry Loop) covers a
+  departure no car is ready for, by deadhead where the trip leaves the inner end; a car not needed (the cars ahead of
+  it already cover the first departure it could take) pulls in, from the inner end after a deadhead, as do the last
+  arrivals. Weekdays run 9 Juniper and 8 Foundry
+  blocks (two of each pull in after the 19:00 change to 10 minutes), Saturdays 7 and 6, Sundays and holidays 5 and 4;
+  scheduled layovers run 9.9 to 27.6 minutes.
+- J01 and J02 are the two Juniper blocks that come into Union Yard just before each strengthening window and leave it
+  again after, so each window opens inbound out of Union Yard and closes outbound into it, and the pick's sentence on
+  trips leaving 06:30 to 09:29 and 15:30 to 18:44 holds as written; trailing cars stand on the yard sheet only on
+  weekday-timetable days.
+- Each block's early run hands over to the late run at the outer end, in the layover nearest the middle of the block's
+  day: each run sheet row's revenue hours cover whole trips, and no trip's recorder events carry two operators.
+- A bad-ordered Foundry car runs on to Foundry Loop and pulls in, and the spare pulls out onto the block's next inbound
+  trip: every car change on a block falls between an outbound trip and the next inbound one, and every release follows
+  the car's last pass that day.
+- A car coming in late leaves on its block's next trip no sooner than two minutes after (the same draws, the knock-on
+  carried).
+
+Asserted in `checks.py` as `realism 9` (12 assertions on the clean truth and on `target/`): 167 of 167.
+
+The truth is untouched: the blocking draws nothing, so the section noise is byte-identical under both generators for
+every seed and each seed's truth slate stands. The realization moved with every operator's passes and every car's
+trips: at 21019 the separation fell to 9.5 per cent clean and 15.5 from `target/`, the second cracker kept 4 of 14 and
+the full includer 45 per cent. Reselected on the corrected redraws (`## Draw`): 34 of 40 golden equal to the truth, 33
+of those with no reader over two slots, 23 cut and measured (20 at 15 per cent or more from `target/`), four holding
+every ask proof (21015, 21030, 21033 and 21040), and only 21030's corridor clears 10 per cent in every cell (13.2,
+against 9.0, 4.1 and 4.7). The call holds.
+
+Moved figures, each re-measured on 21030; every moved `figures.json` key is named by `--allow` (131 keys, the list in
+scratchpad `t210/a2/blocks/allow_keys.txt`):
+- Unchanged: the slate, every Final Recommendation and Critical Components number (the four bearings, the pick's 38
+  weekdays and 68 per cent sunshine), the slot plan's marks, the prompt, the card's driver.
+- `ask_b.Foundry.Doors`, 38 to 46: an ask figure equal to the pick's 38 weekdays by coincidence, so freeze.py keys it as
+  a main-call figure; the realization moved it.
+- The other 13 ask A figures that moved (Juniper June stays 46) and 5 ask B figures (block 4): the realization moved.
+- Step 1's 11,778 FB records and 94 per cent to 11,955 and 95; step 3's G 2.3 to 2.5 (`G_hat` 2.296 to 2.498); the
+  fourth and fifth rates and the separation 24.1 to 37.0 per cent, the fifth F3-O PM to J3-O AM; the 52 expected and 52
+  observed rates (the chart's bars).
+- The stump sentence, the card's stump and analyst test, the default path's `Ends on:` and the ladder's slates: the
+  default path now files F3-I AM, F4-O PM, J2-O AM and J3-O AM (the record's four highest cells, east-running mornings
+  and a west-running evening, two of which fell from April to August into September and October), where 21019 filed
+  F3-I AM, F4-I AM, J1-O AM and J2-O AM, so the stump sentence no longer calls them the morning cells that rose this
+  autumn. The card's concrete driver sentence drops "which were quiet all season": one golden cell ranks fifth of 52
+  on April to October rates at 21030.
+- `figures.json` gains `glare_factor` and `pick_dates`, the write-up's glare formula and the pick's dates (read from
+  the pick PDF), which `figures_check.py` had matched only by coincidence against two observed rates.
+
+`freeze.py check task210 --mode determinism --allow <the 131 keys>`: exit 1, 6 items, the stump sentence, the card's
+stump, the ladder, the default path and both ask blocks of Deliverable Answers (a determinism repair moves no graded
+figure; this repair moves the realization). `--mode rubric` with the same keys: exit 1, 4 items, the stump sentence, the
+card's stump, the ladder and the default path; 132 ask-side figures moved (the 130 non-main keys and the two new ones).
+Neither mode's contract matches a world repair that reselects the seed, so both outputs stand as recorded
+(scratchpad `t210/a2/blocks/freeze_determinism.txt`, `freeze_rubric.txt`), and nothing frozen on the main call moved.
 ## Leak sweep rulings
 
 `leak.py --asof 2026-11-02`: REVIEW, no LEAK, sweeps 1, 2, 5, 7, 8, 10 and 11 clean. Each REVIEW line, harmless:
@@ -399,9 +471,9 @@ the three-rules block R1 to R3c and the write-up's steps executed as written): 1
 - Sweep 3, the pick names the Juniper Line beside numbers: its running-time table lists every section of both lines.
 - Sweep 3, the pick carries 22 of the call's 30 words: the call names four sections by their stops and the pick's dates,
   and the pick names every section, every stop and its own dates alike.
-- Sweep 4, SRM-07 holds four stump terms (record, passes, survey, normals): the procedure's filed WHAT (the record since
-  1 April, passes as the denominator, the survey's sections, the normals' weather); it names no sun, glare, bearing or
-  excess (asserted).
+- Sweep 4, SRM-07 holds six stump terms (record, passes, normals, survey, weekdays, highest): the procedure's filed WHAT
+  (the record since 1 April, passes as the denominator, the normals' weather, the survey's sections, the pick's
+  weekdays, the four highest expected rates); it names no sun, glare, bearing or excess (asserted).
 - Sweep 6, the pick names every candidate beside numbers: scheduled running times in network order, ranking nothing.
 - Sweep 6, the survey names every candidate beside numbers: coordinates and lengths in network order (the raw material
   R1 asserts), ranking nothing.
@@ -411,8 +483,12 @@ the three-rules block R1 to R3c and the write-up's steps executed as written): 1
 - 2026-11-04 (a2 stage 3), the Foundry blocks alternated to fix their one-way working (each Foundry block runs one
   direction all day, the trip index modulo eight, which no car or operator could work): the change moves every
   operator's passes and so the whole realization, and at seed 21019 the slate holds on the clean truth but the
-  separation falls from 27.3 to 17.2 per cent, short of what the corridor's 10 per cent floor needs from `target/`; not
-  taken at stage 3 (a seed reselection would carry it), flagged to the author.
+  separation falls from 27.3 to 17.2 per cent, short of what the corridor's 10 per cent floor needs from `target/`;
+  repaired at the stage-4 hand-off as a whole blocking, not an alternation alone (`## Block repair`): every block on
+  both lines out and back from its pull-out at the outer end, layovers at the termini, pull-ins there, reliefs there
+  between trips, J01 and J02 coupling in Union Yard, bad-ordered cars swapped at Foundry Loop and fewer blocks at
+  weekends; on the full blocking 21019's separation fell to 9.5 per cent clean and its second cracker kept 4 of 14, so
+  the shipped seed was reselected over 40 corrected redraws to 21030, the one that holds every proof.
 - 2026-11-04 (a2 resume), the generator's sun: `solar.py` never wrapped the hour angle, so for UTC hours 00 to 06
   (Mountain evenings after 18:00 MDT and 17:00 MST) the sun's azimuth was mirrored into the east (20 June at 20:00 MDT
   it gave 62.7 degrees against 297.2); the truth put summer-evening glare on east-heading passes and the golden only

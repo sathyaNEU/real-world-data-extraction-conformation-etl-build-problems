@@ -8,6 +8,7 @@ simulate(seed, **overrides) returns a dict of DataFrames at full truth (hidden c
   operators, consists, releases, cards  the roster, the yard's consist log, depot releases, badge card reissues
 Overrides switch world drivers off for the competing-cause checks (new_op, school, dark) or move G and the bases.
 """
+import heapq
 import math
 import numpy as np
 import pandas as pd
@@ -93,6 +94,96 @@ def section_runs(geo, adj=None):
     return out
 
 
+def departures(dtype):
+    """Departure minutes from each line's outer stops for a day type (the same clock at both ends, as trips_for)."""
+    out = []
+    for a, b, h in W.HEADWAY[dtype]:
+        t = a
+        while t < b - 1e-9:
+            out.append(t)
+            t += h
+    return out
+
+
+def _fifo_slot(waiting, fut, ready):
+    """For a car arriving at a terminal: the index into the coming departures fut of the one it takes behind the cars
+    already waiting there (each takes the first departure its layover allows, in arrival order), and the index of the
+    first departure its own layover allows."""
+    i = 0
+    for r in sorted(w[2] for w in waiting):
+        while i < len(fut) and fut[i] < r - 1e-9:
+            i += 1
+        i += 1
+    j = 0
+    while j < len(fut) and fut[j] < ready - 1e-9:
+        j += 1
+    while i < len(fut) and fut[i] < ready - 1e-9:
+        i += 1
+    return i, j
+
+
+def blocking(geo, line, dtype):
+    """The scheduling department's blocks for one line on one day type: {(direction, departure minute): (block, run)}.
+
+    Trips leave both outer stops on the same clock. A block pulls out of the line's yard at the outer end (Union Yard on
+    the Juniper, the Foundry depot at Foundry Loop), straight onto an inbound trip or by deadhead to the inner end for an
+    outbound one, and runs out and back: each departure takes the car that has laid over longest among those whose
+    scheduled layover (W.LAYOVER) has run, and a pull-out covers a departure no car is ready for. A car arriving where the
+    cars ahead of it already cover the first departure it could take is not needed and pulls in (from the inner end after
+    a deadhead), as do the last arrivals. On weekdays the Juniper's J01 and J02 are the two blocks that come into Union
+    Yard just before each strengthening window and leave it again after (each window's first trip inbound out of Union
+    Yard, its last outbound into it), so the trailing car couples and uncouples in the yard; the other blocks are
+    numbered in pull-out order. The early run hands the block to the late run at the outer end, in the layover nearest
+    the middle of the block's day."""
+    runs = section_runs(geo)
+    R = {d: sum(rt for _, rt in runs[(line, d)]) / 60.0 for d in ("O", "I")}
+    lay = dict(zip(("A", "B"), W.LAYOVER[line]))          # A the inner end (outbound leaves), B the outer end (inbound)
+    deps = departures(dtype)
+    ev = []
+    for t in deps:
+        heapq.heappush(ev, (t, 1, "B", -1))
+        heapq.heappush(ev, (t, 2, "A", -1))
+    q = {"A": [], "B": []}
+    trips, nb = [], 0
+    while ev:
+        t, k, term, blk = heapq.heappop(ev)
+        if k == 0:                                            # blk arrives at term
+            fut = [d for d in deps if d > t - 1e-9]
+            i, j = _fifo_slot(q[term], fut, t + lay[term])
+            if i < len(fut) and i == j:
+                q[term].append((blk, t, t + lay[term]))
+            continue                                          # otherwise not needed: pulls in
+        ready = [x for x in q[term] if x[2] <= t + 1e-9]
+        if ready:
+            x = min(ready, key=lambda x: x[1])
+            q[term].remove(x)
+            b = x[0]
+        else:
+            b, nb = nb, nb + 1                                # a pull-out
+        d = "I" if term == "B" else "O"
+        trips.append((b, d, t))
+        heapq.heappush(ev, (t + R[d], 0, "A" if term == "B" else "B", b))
+    by = {}
+    for b, d, t in trips:
+        by.setdefault(b, []).append((t, d))
+    order = sorted(by, key=lambda b: (by[b][0][0], by[b][0][1] == "O"))
+    if line in W.TWO_CAR and dtype == "weekday":
+        two = [b for b in order if all(w and w[0][1] == "I" and w[-1][1] == "O" for w in
+                                       ([(t, d) for t, d in by[b] if a <= t < z] for a, z in W.TWO_CAR[line]))]
+        assert len(two) == len(W.TWO_CAR_BLOCKS), two
+        order = two + [b for b in order if b not in two]
+    out = {}
+    for n, b in enumerate(order):
+        tl = by[b]
+        mid = (tl[0][0] + tl[-1][0] + R[tl[-1][1]]) / 2
+        cand = [i for i in range(len(tl) - 1) if tl[i][1] == "O" and tl[i + 1][1] == "I"]
+        rel = min(cand, key=lambda i: abs(tl[i][0] + R["O"] - mid))
+        name = "%s%02d" % (line, n + 1)
+        for i, (t, d) in enumerate(tl):
+            out[(d, round(t, 4))] = (name, name + ("E" if i <= rel else "L"))
+    return out
+
+
 def simulate(seed=W.SEED, start=W.OBS_START, end=W.OBS_END, holidays=None, G=None, base=None, new_op=None, school=None,
              dark=None, forward=False, runs_adj=None):
     rng = np.random.default_rng(seed)
@@ -106,9 +197,12 @@ def simulate(seed=W.SEED, start=W.OBS_START, end=W.OBS_END, holidays=None, G=Non
     days = pd.date_range(start, end, freq="D")
     trips = trips_for(days, holidays)
     trips["trip"] = np.arange(len(trips))
-    # blocks: trips of a line rotate over its blocks; Juniper blocks 1 to 3 run coupled in the peak windows
-    nblocks = {"J": 9, "F": 8}
-    trips["block"] = [f"{l}{(i % nblocks[l]) + 1:02d}" for i, l in zip(trips.groupby(["date", "line"]).cumcount(), trips["line"])]
+    # blocks and runs from the scheduling department's blocking for each day type (out and back, layovers at the
+    # terminals, pull-outs and pull-ins at the outer end, reliefs there); J01 and J02 run coupled in the peak windows
+    sched = {(dt, l): blocking(geo, l, dt) for dt in sorted(trips["daytype"].unique()) for l in ("J", "F")}
+    lab = [sched[(dt, l)][(d, round(m, 4))] for dt, l, d, m in zip(trips["daytype"], trips["line"], trips["dir"], trips["dep_min"])]
+    trips["block"] = [x[0] for x in lab]
+    trips["run"] = [x[1] for x in lab]
     runs = section_runs(geo, runs_adj)
     rows = []
     for (line, dirn), seq in runs.items():
@@ -190,8 +284,8 @@ def simulate(seed=W.SEED, start=W.OBS_START, end=W.OBS_END, holidays=None, G=Non
     O["first_revenue"] = O["qualified"]
     newc = (O["cls"] != "").values
     O.loc[newc, "first_revenue"] = O.loc[newc, "qualified"] + pd.to_timedelta(rng.integers(5, 21, int(newc.sum())), unit="D")
-    # run assignment: operators in revenue service by the date rotate over the day's runs
-    P["run"] = P["block"] + np.where(P["entry_local"].dt.hour < 14, "E", "L")
+    # run assignment: operators in revenue service by the date rotate over the day's runs (each block's early and late
+    # run from the blocking, the relief at the outer end)
     runkeys = P[["date", "run"]].drop_duplicates().sort_values(["date", "run"]).reset_index(drop=True)
     assign = []
     for d, grp in runkeys.groupby("date"):
@@ -209,12 +303,14 @@ def simulate(seed=W.SEED, start=W.OBS_START, end=W.OBS_END, holidays=None, G=Non
 
     # fleet: daily car assignment per block from the line's cars (one or two cars)
     cons = []
+    twoday = set(zip(P.loc[P["cars"] == 2, "date"], P.loc[P["cars"] == 2, "block"]))
     for (d, line), grp in P[["date", "line", "block"]].drop_duplicates().groupby(["date", "line"]):
         cars = list(rng.permutation(W.CARS[line]))
         for k, b in enumerate(sorted(grp["block"].unique())):
             lead = cars[k % len(cars)]
-            # the two strengthened blocks take the line's two cars left after every block has its lead car
-            trail = cars[len(grp["block"].unique()) + k] if (line == "J" and b in W.TWO_CAR_BLOCKS) else None
+            # on a day they run coupled, the two strengthened blocks take the line's two cars left after every block
+            # has its lead car
+            trail = cars[len(grp["block"].unique()) + k] if (d, b) in twoday else None
             cons.append((d, b, lead, trail))
     C = pd.DataFrame(cons, columns=["date", "block", "lead_car", "trail_car"])
     P = P.merge(C, on=["date", "block"], how="left")
