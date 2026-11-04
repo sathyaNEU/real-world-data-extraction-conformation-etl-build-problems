@@ -1,6 +1,6 @@
 {
  "task": "task210",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "human-factors-ergonomics/safety-incident-error-analysis",
  "objective": "anomaly-detection",
  "stage": 2,
@@ -12,17 +12,36 @@
  "architecture": 2,
  "loops": 0,
  "drawn": "2026-11-04, card registered 2026-11-04T14:49:22Z, guard WARN (overuse.org_family answered; same_driver_older differentiated)",
- "screens_prototype": "scratchpad t210/a2/proto/screens_a2.py over 24 redraws: golden recovers the true slate 23/24; all nine golden specifications agree 18/24 and at the shipping candidate (seed 21009, fourth to fifth gap 27.6 per cent); first look, readers (a), (b) two forms, (c) three pools and five literal executions wrong 24/24, sharing at most two of four cells",
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "0.07 task478 v4 lineage (check on the registered card)"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 1,
+  "date": "2026-11-04",
+  "fails": [
+   "cracker misses every ask: cracker keeps B (6 figures)"
+  ],
+  "passes": "60 of 61"
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "0.07 task478 v4 lineage (check on the registered card)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "Stage 2 (design) of architecture 2: write the ladder, readability screen, semantic fork table, closure table, literal reader, oracles and ask sheet; draft SRM-07's WHAT and the asks; write generator/checks.py with the five screens asserted on the shipped seed; final prompt.txt through voice-check; leave stage 2 only on precut.py exit 0.",
+ "resume": "Stage 2, ask B only. The coordinator's lesson 2 filed every convention (SRM-07 3.4 codes, the run sheet's duty column, the release log's check, the yard's pull-out cars) and ask B (the May and August 2026 classes' overspeeds in the 30 days from each operator's first day in revenue service, revenue hours, per 100 revenue hours) became rule application: the cracker keeps 6 of 6 and precut fails one check (cracker keeps B). Redraw ask B on another system and device family (not D1, D4 or D5, which ask A holds) with every meaning filed and a reconstruction left after noticing (supplemental-stumping 1.0); rewrite golden.ask_b, ceiling.ask_b, records' truth, the prompt's last sentence (voice-check) and the note's ask sheet; rerun build.py twice (byte-identical), checks.py (scratch checks_run2.txt has the last full run), ceiling.py and precut.py to exit 0; message main with the ladder, the five screens, the literal-execution rows and the cracker table; then stage 3 (verify.py independent of the generator, figures_check.py, submission.md, golden-realism, reduce-house-fixes, leak.py, guard.py surface and heart after the sibling procedure) and the stage-4 briefs in scratchpad t210/a2/stage4/{reader,judge}.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "screens": "real generator (scratchpad t210/a2/proto/screens_gen.py, seeds 21001 to 21020): every rival reader wrong 20/20 (first look, (a), (b) two forms, (c) three pools, (d) three forms, five literal executions; trend readers (f) four forms wrong 20/20, at most three shared); golden equals truth 17/20; fifteen generator specifications agree 11/20 (every redraw with separation 10 per cent or more); shipped seed 21009: separation 21.0 per cent clean, 15.0 per cent from target/, twenty target/ readings agree; stated facts alone (SRM-07 3.8 on the pick) three of four",
+ "ceiling": "generator/ceiling.py: pair 47.8, both on the call 64.2, mirror leakage 35.0, full includer 35.0 (routes 30 to 35)",
+ "build": "generator/build.py byte-identical twice after the lesson-2 filings (target.zip caa01b3a611b0f6b); checks.py 73 PASS then FAIL on the cracker keeping ask B (the tail: separation line, input gates, Gate G, H1, zip, not yet reached)"
 }

@@ -37,14 +37,14 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:low-sun-glare-geometry-carried-to-the-forward-window",
   "layer1": [
-    "the event data recorder's UTC stamps against the AVL log and timetable on Mountain local time, across the 1 November clock change",
-    "recorder positions in WGS84 latitude and longitude with GPS scatter against the track survey in State Plane coordinates in US survey feet",
-    "two-car consists whose trailing car's recorder logs the same brake application",
-    "AVL section passes with short-turned and cancelled trips and a timepoint outage week",
-    "operator badge numbers renumbered in the July HR system migration",
-    "the recorder firmware update that renamed the event codes in August",
-    "hourly airport observations in METAR sky-condition codes with missing hours",
-    "the January pick's timetable published as a PDF table of headways by period"
+    "the event data recorder's UTC stamps against the AVL log on Mountain daylight time and the January pick on standard time",
+    "recorder positions in WGS84 latitude and longitude with GPS scatter against a GeoJSON track survey",
+    "AVL onboard-unit drop-outs and a detector outage week at one timing point",
+    "cars swapped in service, the yard sheet keeping the pull-out car",
+    "two-car trains whose cars' recorders both record an emergency application, the trailing recorder on its own clock",
+    "operator badge numbers renumbered in the July HR system migration, mapped through the card register",
+    "hourly airport observations in METAR sky-condition strings at :53 UTC with missing hours",
+    "the January pick's timetable published as a PDF table of headways and running times"
   ],
   "stakeholder_role": "chief safety officer",
   "role_family": "compliance_or_audit",
