@@ -1,0 +1,95 @@
+{
+  "task": "task398",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Architecture 1, drawn 2026-11-04 from seed RC04 (which of five delay causes on a commuter line gets this winter's one fix). The seed's world has no root-cause task type in the client taxonomy (supply-chain-logistics inherits only general-statistics interpretability for RC, which would make rail a backdrop), and its mechanism, delay absorbed by timetable slack before a deadline, is on file twice as dead (task134 arch 3: a generic scheduling tail that fails the swap; task281: a timetable replay whose hold reflex lands the golden and whose honest home is municipal service planning). The build moves to Physical & Environmental Sciences, pollution-source-attribution, keeping the seed's decision (which of several causes gets the one fix before the next season) and its quantity (the outcome days the fix would have avoided, and the runner-up's); the world, dataset, mechanism and shell are new.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "pollution-source-attribution",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a city water department placing its one 2027 atrazine cost-share program in one of the tributary sub-watersheds of its supply reservoir, judged by the 2026 days its raw water ran above the 3.0 ug/L carbon-feed trigger, when the summer lake takes each tributary's storm water in at the depth where the lake is as cold as the tributary and the intake draws one deep layer",
+  "objective": "root-cause",
+  "shape": "12",
+  "decision_type": "root_cause_named",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G8",
+    "G7"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who estimates each sub-watershed's 2026 atrazine load from the tributary samples and the gauged flows, sees the reservoir's atrazine balance close against its withdrawals, releases and storage, and books each day the intake ran above 3.0 ug/L to the sub-watersheds by their share of the recent inflow load names the Tessel River, when the Tessel's warm storm water spread through the surface layer the deep intake never drew and only Fennick Creek's cooler water entered the lake at the intake's depth on those days.",
+  "domain_test": "The deciding quantity is which tributaries' water the city's deep intake actually drew on each day above the trigger, which limnology settles from each inflow's temperature against the stratified lake's temperature profile and the intake's depth below the falling water surface, because an inflow enters a stratified reservoir at the depth where the lake is as cold as it is; with another field's nouns there is no density stratification, no inflow entering at its own temperature and no intake drawing one layer of a lake.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:inflow-entry-depth-against-the-intake-layer",
+  "layer1": [
+    "USGS-style gauge records in RDB format with a time-zone code per row, provisional values overlapping approved revisions",
+    "two ungauged tributaries recorded as stage by the city's own transducers, converted to flow through rating tables",
+    "tributary atrazine results from two laboratories in ug/L and ng/L, with non-detects reported against different reporting limits",
+    "the plant's raw-water log across a LIMS replacement, two layouts, temperature in Fahrenheit in one and Celsius in the other, ELISA screens confirmed by GC/MS on some days",
+    "the dam-site buoy's thermistor string on standard time all year, its depth labels changed when the chain was re-hung after a June service visit",
+    "reservoir elevations in NGVD29 in the dam log against the intake's record drawings in NAVD88, withdrawals in MGD against releases in cfs"
+  ],
+  "stakeholder_role": "the water department's water production superintendent, whose treatment budget pays for the plant's powdered carbon and funds the source-water cost-share program",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "lake/merrin_dam_buoy_thermistor_2026.csv",
+    "rows": 82000,
+    "entity": "one temperature reading at one depth of the dam-site buoy's thermistor string",
+    "grain": "hour x depth",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "season_or_peak",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States (a fictional city in northeast Iowa)",
+    "currency": "USD",
+    "org_type": "municipal water utility (a city department) with its supply reservoir",
+    "invented_names": [
+      "Brennick Water",
+      "Lake Merrin",
+      "Merrin Dam",
+      "Tessel River",
+      "Fennick Creek",
+      "Oxley Creek",
+      "Dunmore Creek",
+      "Ladd Branch",
+      "Allamore County"
+    ],
+    "people": [
+      "Brandi Dougherty",
+      "Carl Newman",
+      "Rhonda Dixon"
+    ]
+  },
+  "deliverables": [
+    "cost_share_placement_2027.docx",
+    "atrazine_sources_2026.xlsx",
+    "raw_water_atrazine_2026.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is which sources a receptor actually drew from in each period, when the receiving body is layered and each source's inflow enters it at the layer whose temperature matches its own, so a receptor drawing one layer takes in only the sources entering at that layer, while every budget that treats the body as mixed books the receptor's excess to the largest source.",
+  "driver_concrete": "Each tributary's storm water enters the stratified Lake Merrin at the depth where the lake is as cold as the tributary, so Brennick's intake at its fixed elevation draws Fennick Creek's cooler water and none of the warm Tessel River's, whose larger atrazine load spreads in the surface layer until the autumn overturn dilutes it through the whole lake, while every load budget books the intake's days above 3.0 ug/L to the Tessel.",
+  "stump": "A competent solver who estimates each sub-watershed's atrazine load from the samples and the gauged flows, sees the season's balance close and books the intake's days above 3.0 ug/L by load share names the Tessel River, when its warm water spread over the surface layer the intake never drew and Fennick Creek's cooler water entered at the intake's depth on most of those days.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Role redrawn at registration on 2026-11-04: programme_officer (the source water protection coordinator) is barred by task313 inside the three-build window; the superintendent is the honester owner of the call because the carbon feed the program is meant to cut is the plant's cost and the program is funded from the treatment budget. WARN repeat.gate_g against task313 answered in the design note: decomposition_attribution is the FINE-numbers shape here (the plant's raw-water record is correct and the step attributes its days above the trigger among the sources), on a different objective, domain and mechanism from task313's.",
+  "registered": "2026-11-04T10:46:47Z"
+}
