@@ -1,0 +1,133 @@
+{
+ "task": "task401",
+ "organisation": "Strathcorrie Council Education Service (invented)",
+ "files": [
+  {
+   "file": "attendance_by_month_2024-25_2025-26.csv",
+   "description": "Monthly attendance by school and stage, both sessions",
+   "date": "2026-06-12",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "bell_times_2025-26.xlsx",
+   "description": "Bell times for the asymmetric week, by school",
+   "date": "2025-06-12",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "common_paper_and_unit_map.xlsx",
+   "description": "Common paper questions to topics and units under both course plans; Corvella skill codes",
+   "date": "2025-08-11",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "corvella_homework_export_2024-25.csv",
+   "description": "Corvella homework platform export for session 2024-25",
+   "date": "2025-07-31",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "june_common_paper_marks_2025.csv",
+   "description": "June 2025 common paper item marks, one row per pupil",
+   "date": "2025-06-27",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "june_common_paper_marks_2026.csv",
+   "description": "June 2026 common paper item marks, one row per pupil and question",
+   "date": "2026-06-12",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "maths_staffing_establishment_2025-26.xlsx",
+   "description": "HR establishment: mathematics posts and their holders",
+   "date": "2026-01-12",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "maths_timetable_2025-26.csv",
+   "description": "Mathematics timetable export, S1 to S3 classes, autumn and spring",
+   "date": "2026-01-08",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "mathsbridge_homework_export_2025-26.parquet",
+   "description": "Mathsbridge homework platform export for session 2025-26",
+   "date": "2026-06-12",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "pupil_homework_survey_2025_2026.xlsx",
+   "description": "Pupil homework survey results, 2025 and 2026",
+   "date": "2026-04-20",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "pupil_roll_2024-25.csv",
+   "description": "SEEMiS extract: S1 to S3 pupils on the roll in session 2024-25 (older report layout)",
+   "date": "2025-06-20",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "pupil_roll_extract_2026-06-12.csv",
+   "description": "SEEMiS extract: S1 to S3 pupils on the roll in session 2025-26",
+   "date": "2026-06-12",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "s1-s3_maths_change_register_2025-26.docx",
+   "description": "Education Service change register for S1 to S3 mathematics, with the review remit",
+   "date": "2026-06-15",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "support_base_guidance_2025-10.pdf",
+   "description": "Support bases: guidance for school staff",
+   "date": "2025-10-20",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "support_base_signins_2025-11-03_to_2026-05-29.csv",
+   "description": "Support base kiosk sign-in export, all bases",
+   "date": "2026-06-01",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  },
+  {
+   "file": "timetable_staff_codes_2025-26.xlsx",
+   "description": "Timetable staff codes, autumn 2025 and spring 2026",
+   "date": "2026-01-08",
+   "source": "Synthetic records generated for this task by its generator (no real council's, school's or pupil's data); CC0 1.0.",
+   "license": "CC0-1.0"
+  }
+ ],
+ "distractors": [
+  {
+   "file": "attendance_by_month_2024-25_2025-26.csv",
+   "why": "attendance reads as a cause of a fall in marks; it is level across the two sessions, belongs to no change in the register, and the review books the fall to the changes the register lists"
+  },
+  {
+   "file": "pupil_homework_survey_2025_2026.xlsx",
+   "why": "pupils rate Mathsbridge easier and say they complete more homework, which reads as the platform switch helping; the review counts June marks, and the survey measures neither marks nor what the homework revisited"
+  }
+ ],
+ "wrong_basis_distractors": [],
+ "deliverables": [
+  "maths_change_review.docx",
+  "support_and_staffing_by_school.csv"
+ ]
+}
