@@ -1,0 +1,205 @@
+{
+ "task": "task489",
+ "architecture": 1,
+ "title": "Which of Larchmere Resources' Deep Basin pads go into its 2027 zero-emission controller conversion, from the 2026 source-level inventory of the pads' pneumatic controllers",
+ "domain": "Physical & Environmental Sciences",
+ "subdomain": "emissions-inventory",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "other: each pad in or out of the conversion, with each controller's and each pad's 2026 methane in the reporting standard's inventory template, the plunger wells' cycles without an arrival and the sales gas pressure controllers by maker and area, and a two-slide note for the order",
+ "as_of": "2027-01-25",
+ "deliverables": [
+  "larchmere_source_inventory_2026.xlsx",
+  "controller_conversion_2027.pptx"
+ ],
+ "distractor_files": [
+  "ogi_leak_survey_2026.csv",
+  "tank_vent_measurements_2026.xlsx",
+  "volumetric_adjustments_2026.csv",
+  "allocation_runs_2026.csv"
+ ],
+ "input_gates": {
+  "files": 18,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "plunger_cycles_2026.csv",
+  "largest_file_rows": 240855
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task489/generator/build.py (seeded, deterministic) in the layouts of a SCADA host's plunger cycle history and historian export, production accounting's daily allocations, adjustment journal and run log, an equipment register, a laboratory's gas analyses, a maintenance system's work orders, an operator's reporting standard, plan and template, a measurement contractor's survey report, controller makers' data sheets, a leak survey and tank vent tests; the operator, the contractors, the makers, the laboratory and the people are fictional, and the pads' legal locations are used only as names.",
+   "date": "2027-01-25",
+   "license": "CC0 (original work)"
+  }
+ ],
+ "created": "2027-01-25",
+ "generator": "task489/generator/build.py",
+ "files": [
+  {
+   "path": "MRS-03_annex_B_source_inventory_template.xlsx",
+   "format": "xlsx",
+   "bytes": 7198,
+   "rows": null,
+   "source": "Constructed: the reporting standard's Annex B inventory template",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "MRS-03_methane_measurement_and_reporting_standard_rev4.pdf",
+   "format": "pdf",
+   "bytes": 44513,
+   "rows": null,
+   "source": "Constructed: the operator's methane measurement and reporting standard, revision 4",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "aldous_SV-40_PC-60_data_sheet.pdf",
+   "format": "pdf",
+   "bytes": 41794,
+   "rows": null,
+   "source": "Constructed: a controller maker's product data sheet",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "allocation_runs_2026.csv",
+   "format": "csv",
+   "bytes": 949,
+   "rows": 19,
+   "source": "Constructed: production accounting's allocation run log",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "brannick_DLC-3_TC-5_data_sheet.pdf",
+   "format": "pdf",
+   "bytes": 41801,
+   "rows": null,
+   "source": "Constructed: a controller maker's product data sheet",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "corrigan_CL-200_CP-10_data_sheet.pdf",
+   "format": "pdf",
+   "bytes": 41790,
+   "rows": null,
+   "source": "Constructed: a controller maker's product data sheet",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "daily_well_volumes_2026.csv",
+   "format": "csv",
+   "bytes": 1354803,
+   "rows": 18615,
+   "source": "Constructed: production accounting's daily allocated volumes by well for the 2026 production days",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "deep_basin_equipment_register.xlsx",
+   "format": "xlsx",
+   "bytes": 19194,
+   "rows": null,
+   "source": "Constructed: the Deep Basin equipment register (pads, wells, vessels, pneumatic devices) as exported in January 2027",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "deep_basin_work_orders_2026.csv",
+   "format": "csv",
+   "bytes": 19209,
+   "rows": 136,
+   "source": "Constructed: the maintenance system's 2026 work orders for the Deep Basin pads",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "gas_analyses_2025_2026.csv",
+   "format": "csv",
+   "bytes": 6592,
+   "rows": 52,
+   "source": "Constructed: the contract laboratory's separator gas analyses, 2025 and 2026",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "methane_reduction_plan_2027.docx",
+   "format": "docx",
+   "bytes": 37670,
+   "rows": null,
+   "source": "Constructed: the operator's 2027 methane reduction plan",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ogi_leak_survey_2026.csv",
+   "format": "csv",
+   "bytes": 7612,
+   "rows": 94,
+   "source": "Constructed: the operator's 2026 optical gas imaging leak survey results",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "plunger_cycles_2026.csv",
+   "format": "csv",
+   "bytes": 25830143,
+   "rows": 240855,
+   "source": "Constructed: the SCADA host's plunger lift cycle history for the operator's plunger wells, valve opens in 2026",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "scada_dump_counters_2026.csv",
+   "format": "csv",
+   "bytes": 2145188,
+   "rows": 43921,
+   "source": "Constructed: the SCADA historian's hourly samples of the automated separators' dump counters",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "sheldrake_pneumatic_survey_2026.pdf",
+   "format": "pdf",
+   "bytes": 45314,
+   "rows": null,
+   "source": "Constructed: the measurement contractor's 2026 pneumatic device survey report",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tank_vent_measurements_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 7735,
+   "rows": null,
+   "source": "Constructed: the operator's 2026 storage tank vent tests",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "trellick_PCX-300_plunger_controller_spec.pdf",
+   "format": "pdf",
+   "bytes": 41746,
+   "rows": null,
+   "source": "Constructed: the plunger lift controller maker's specification sheet",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  },
+  {
+   "path": "volumetric_adjustments_2026.csv",
+   "format": "csv",
+   "bytes": 3350,
+   "rows": 27,
+   "source": "Constructed: production accounting's volumetric adjustment journal, postings to January 2027",
+   "date": "2027-01-25",
+   "license": "CC0 (original work, constructed for this task)"
+  }
+ ]
+}

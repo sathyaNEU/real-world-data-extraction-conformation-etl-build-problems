@@ -1,0 +1,385 @@
+{
+ "bleed_by_maker_area": {
+  "Aldous Valve and Instrument, Elmworth": 518,
+  "Aldous Valve and Instrument, Kakwa": 256,
+  "Corrigan Controls, Elmworth": 380,
+  "Corrigan Controls, Kakwa": 427
+ },
+ "call": [
+  "Elmworth 10-11",
+  "Elmworth 7-2",
+  "Kakwa 1-14",
+  "Kakwa 11-22",
+  "Kakwa 14-16",
+  "Kakwa 16-23",
+  "Kakwa 3-9",
+  "Kakwa 6-27"
+ ],
+ "call_count": 8,
+ "campaign_rate_scf_h": 3.03,
+ "constants": {
+  "ch4_kg_m3": 0.678,
+  "scf_to_m3": 0.02826,
+  "wrap": 65536
+ },
+ "int_total_t": 10.08,
+ "ladder": {
+  "ceil_rule": [
+   "Elmworth 10-11",
+   "Elmworth 7-2",
+   "Kakwa 1-14",
+   "Kakwa 11-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 3-9",
+   "Kakwa 6-27"
+  ],
+  "cond_only": [
+   "Kakwa 11-22"
+  ],
+  "ef": [
+   "Elmworth 10-11",
+   "Elmworth 10-32",
+   "Elmworth 12-15",
+   "Elmworth 15-8",
+   "Elmworth 4-27",
+   "Elmworth 5-3",
+   "Elmworth 7-18",
+   "Elmworth 7-2",
+   "Elmworth 9-34",
+   "Kakwa 1-14",
+   "Kakwa 12-36",
+   "Kakwa 13-12",
+   "Kakwa 13-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 5-1",
+   "Kakwa 6-27",
+   "Kakwa 8-10"
+  ],
+  "ef_hours": [
+   "Elmworth 10-11",
+   "Elmworth 10-32",
+   "Elmworth 12-15",
+   "Elmworth 15-8",
+   "Elmworth 4-27",
+   "Elmworth 5-3",
+   "Elmworth 7-18",
+   "Elmworth 7-2",
+   "Elmworth 9-34",
+   "Kakwa 1-14",
+   "Kakwa 12-36",
+   "Kakwa 13-12",
+   "Kakwa 13-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 5-1",
+   "Kakwa 6-27",
+   "Kakwa 8-10"
+  ],
+  "golden": [
+   "Elmworth 10-11",
+   "Elmworth 7-2",
+   "Kakwa 1-14",
+   "Kakwa 11-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 3-9",
+   "Kakwa 6-27"
+  ],
+  "label": [
+   "Elmworth 10-11",
+   "Elmworth 4-27",
+   "Elmworth 7-2",
+   "Elmworth 9-34",
+   "Kakwa 1-14",
+   "Kakwa 11-22",
+   "Kakwa 13-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 3-9",
+   "Kakwa 6-27"
+  ],
+  "max_route": [
+   "Elmworth 10-11",
+   "Elmworth 12-15",
+   "Elmworth 4-27",
+   "Elmworth 5-3",
+   "Elmworth 7-2",
+   "Elmworth 9-34",
+   "Kakwa 1-14",
+   "Kakwa 11-22",
+   "Kakwa 13-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 3-9",
+   "Kakwa 6-27",
+   "Kakwa 8-10"
+  ],
+  "min_rule": [
+   "Elmworth 10-11",
+   "Elmworth 7-2",
+   "Kakwa 1-14",
+   "Kakwa 11-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 3-9",
+   "Kakwa 6-27"
+  ],
+  "ps_volume": [
+   "Elmworth 10-11",
+   "Elmworth 7-2",
+   "Kakwa 1-14",
+   "Kakwa 11-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 3-9",
+   "Kakwa 6-27"
+  ],
+  "r1": [
+   "Elmworth 10-11",
+   "Elmworth 12-15",
+   "Elmworth 5-3",
+   "Elmworth 7-2",
+   "Kakwa 1-14",
+   "Kakwa 11-22",
+   "Kakwa 14-16",
+   "Kakwa 16-23",
+   "Kakwa 3-9",
+   "Kakwa 6-27",
+   "Kakwa 8-10"
+  ]
+ },
+ "lc_kg": {
+  "Elmworth 10-11 LC-101101": 662,
+  "Elmworth 10-11 LC-101102": 52,
+  "Elmworth 10-32 LC-103201": 56,
+  "Elmworth 10-32 LC-103202": 44,
+  "Elmworth 11-20 LC-112001": 223,
+  "Elmworth 12-15 LC-121501": 291,
+  "Elmworth 12-15 LC-121502": 79,
+  "Elmworth 14-24 LC-142401": 412,
+  "Elmworth 15-8 LC-150801": 185,
+  "Elmworth 15-8 LC-150802": 92,
+  "Elmworth 2-5 LC-020501": 121,
+  "Elmworth 3-29 LC-032901": 59,
+  "Elmworth 4-27 LC-042701": 5,
+  "Elmworth 4-27 LC-042702": 6,
+  "Elmworth 4-27 LC-042703": 7,
+  "Elmworth 5-3 LC-050301": 265,
+  "Elmworth 5-3 LC-050302": 71,
+  "Elmworth 5-3 LC-050303": 62,
+  "Elmworth 6-17 LC-061701": 322,
+  "Elmworth 7-18 LC-071801": 155,
+  "Elmworth 7-18 LC-071802": 49,
+  "Elmworth 7-18 LC-071803": 4,
+  "Elmworth 7-2 LC-070201": 583,
+  "Elmworth 7-2 LC-070202": 61,
+  "Elmworth 9-34 LC-093401": 352,
+  "Elmworth 9-34 LC-093402": 8,
+  "Kakwa 1-14 LC-011401": 618,
+  "Kakwa 1-14 LC-011402": 4,
+  "Kakwa 11-22 LC-112201": 863,
+  "Kakwa 12-36 LC-123601": 5,
+  "Kakwa 12-36 LC-123602": 5,
+  "Kakwa 13-12 LC-131201": 101,
+  "Kakwa 13-12 LC-131202": 75,
+  "Kakwa 13-12 LC-131203": 122,
+  "Kakwa 13-22 LC-132201": 303,
+  "Kakwa 13-22 LC-132202": 5,
+  "Kakwa 13-22 LC-132203": 6,
+  "Kakwa 14-16 LC-141601": 404,
+  "Kakwa 14-16 LC-141602": 349,
+  "Kakwa 16-23 LC-162301": 699,
+  "Kakwa 16-23 LC-162302": 2,
+  "Kakwa 16-23 LC-162303": 2,
+  "Kakwa 3-9 LC-030901": 952,
+  "Kakwa 5-1 LC-050101": 202,
+  "Kakwa 5-1 LC-050102": 149,
+  "Kakwa 6-27 LC-062701": 527,
+  "Kakwa 6-27 LC-062702": 211,
+  "Kakwa 8-10 LC-081001": 81,
+  "Kakwa 8-10 LC-081002": 72,
+  "Kakwa 8-10 LC-081003": 88,
+  "Kakwa 8-35 LC-083501": 4
+ },
+ "line_t": 0.5,
+ "nonarrivals": {
+  "LRL ELMWORTH 10-11 #2": 261,
+  "LRL ELMWORTH 10-32 #1": 520,
+  "LRL ELMWORTH 10-32 #2": 295,
+  "LRL ELMWORTH 12-15 #2": 305,
+  "LRL ELMWORTH 3-29 #1": 326,
+  "LRL ELMWORTH 4-27 #1": 920,
+  "LRL ELMWORTH 4-27 #2": 1236,
+  "LRL ELMWORTH 4-27 #3": 1856,
+  "LRL ELMWORTH 5-3 #2": 571,
+  "LRL ELMWORTH 5-3 #3": 267,
+  "LRL ELMWORTH 7-18 #2": 643,
+  "LRL ELMWORTH 7-18 #3": 834,
+  "LRL ELMWORTH 7-2 #2": 813,
+  "LRL ELMWORTH 9-34 #2": 923,
+  "LRL KAKWA 1-14 #2": 407,
+  "LRL KAKWA 12-36 #1": 713,
+  "LRL KAKWA 12-36 #2": 982,
+  "LRL KAKWA 13-22 #2": 1310,
+  "LRL KAKWA 13-22 #3": 581,
+  "LRL KAKWA 16-23 #2": 696,
+  "LRL KAKWA 16-23 #3": 583,
+  "LRL KAKWA 8-10 #1": 744,
+  "LRL KAKWA 8-10 #2": 214,
+  "LRL KAKWA 8-10 #3": 880,
+  "LRL KAKWA 8-35 #1": 331
+ },
+ "pads": {
+  "Elmworth 10-11": {
+   "cont_t": 0.08,
+   "in": true,
+   "int_t": 0.71
+  },
+  "Elmworth 10-32": {
+   "cont_t": 0.14,
+   "in": false,
+   "int_t": 0.1
+  },
+  "Elmworth 11-20": {
+   "cont_t": 0.05,
+   "in": false,
+   "int_t": 0.22
+  },
+  "Elmworth 12-15": {
+   "cont_t": 0.06,
+   "in": false,
+   "int_t": 0.37
+  },
+  "Elmworth 14-24": {
+   "cont_t": 0.11,
+   "in": false,
+   "int_t": 0.41
+  },
+  "Elmworth 15-8": {
+   "cont_t": 0.04,
+   "in": false,
+   "int_t": 0.28
+  },
+  "Elmworth 2-5": {
+   "cont_t": 0.05,
+   "in": false,
+   "int_t": 0.12
+  },
+  "Elmworth 3-29": {
+   "cont_t": 0.04,
+   "in": false,
+   "int_t": 0.06
+  },
+  "Elmworth 4-27": {
+   "cont_t": 0.07,
+   "in": false,
+   "int_t": 0.02
+  },
+  "Elmworth 5-3": {
+   "cont_t": 0.27,
+   "in": false,
+   "int_t": 0.4
+  },
+  "Elmworth 6-17": {
+   "cont_t": 0.13,
+   "in": false,
+   "int_t": 0.32
+  },
+  "Elmworth 7-18": {
+   "cont_t": 0.04,
+   "in": false,
+   "int_t": 0.21
+  },
+  "Elmworth 7-2": {
+   "cont_t": 0.16,
+   "in": true,
+   "int_t": 0.64
+  },
+  "Elmworth 9-34": {
+   "cont_t": 0.09,
+   "in": false,
+   "int_t": 0.36
+  },
+  "Kakwa 1-14": {
+   "cont_t": 0.04,
+   "in": true,
+   "int_t": 0.62
+  },
+  "Kakwa 11-22": {
+   "cont_t": 0.14,
+   "in": true,
+   "int_t": 0.86
+  },
+  "Kakwa 12-36": {
+   "cont_t": 0.08,
+   "in": false,
+   "int_t": 0.01
+  },
+  "Kakwa 13-12": {
+   "cont_t": 0.05,
+   "in": false,
+   "int_t": 0.3
+  },
+  "Kakwa 13-22": {
+   "cont_t": 0.13,
+   "in": false,
+   "int_t": 0.31
+  },
+  "Kakwa 14-16": {
+   "cont_t": 0.08,
+   "in": true,
+   "int_t": 0.75
+  },
+  "Kakwa 16-23": {
+   "cont_t": 0.21,
+   "in": true,
+   "int_t": 0.7
+  },
+  "Kakwa 3-9": {
+   "cont_t": 0.09,
+   "in": true,
+   "int_t": 0.95
+  },
+  "Kakwa 5-1": {
+   "cont_t": 0.12,
+   "in": false,
+   "int_t": 0.35
+  },
+  "Kakwa 6-27": {
+   "cont_t": 0.05,
+   "in": true,
+   "int_t": 0.74
+  },
+  "Kakwa 8-10": {
+   "cont_t": 0.05,
+   "in": false,
+   "int_t": 0.24
+  },
+  "Kakwa 8-35": {
+   "cont_t": 0.05,
+   "in": false,
+   "int_t": 0.0
+  }
+ },
+ "rivals": {
+  "big_slug": [
+   "Elmworth 12-15",
+   "Elmworth 5-3",
+   "Kakwa 8-10"
+  ],
+  "dry": [
+   "Elmworth 4-27",
+   "Elmworth 9-34",
+   "Kakwa 13-22"
+  ]
+ },
+ "standard_clauses": [
+  3.2,
+  3.3,
+  4.2,
+  4.3,
+  4.4
+ ]
+}
