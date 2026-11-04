@@ -6,21 +6,21 @@
 ## 1. Final Recommendation
 
 **The bypassed reach fell below its Article 403 minimum from 29 July to 13 September and from 21 September to 31 October 2026, 88 days with a shortfall of 600 acre-feet, and Tallis Creek Paper Company must report both periods.**
-The 27 July storm moved gauge BP-1's control: the four measurements after it sit 11.7 to 17.4 per cent below Rating 7 while the four before agree within 0.4 per cent, so on the measured relation the reach carried 46.1 cfs in August and 27.0 cfs in October. Not the record on Rating 7, which keeps every day at or above its minimum (lowest July to September day 53.8 cfs) only because the plant's controller held the rated flow on its targets.
+The 27 July storm moved gauge BP-1's control: the four measurements after it sit 13.8 to 18.0 per cent below Rating 7 while the four before sit within 2.2 per cent either side, so on the measured relation the reach carried 46.1 cfs in August and 27.0 cfs in October. Not the record on Rating 7, which keeps every day at or above its minimum (lowest July to September day 53.8 cfs) only because the plant's controller held the rated flow on its targets.
 
 ## 2. Critical Components
 
-1. The four 2026 measurements after the 27 July storm sit **11.7 to 17.4 per cent** below Rating 7 at their gage heights; the four before sit within **0.4 per cent**.
-2. The measured stage correction after the storm is **0.10 ft**; on it the reach carried **46.1 cfs** in August and **27.0 cfs** in October.
+1. The four 2026 measurements after the 27 July storm sit **13.8 to 18.0 per cent** below Rating 7 at their gage heights; the four before sit within **2.2 per cent** either side.
+2. The measured correction after the storm is a stage shift of **about 0.10 ft (fitted -0.0990 ft, the mean of the four post-storm measurements' shifts)**, applied from the storm's peak at 23:40 PDT on 27 July; on it the reach carried **46.1 cfs** in August and **27.0 cfs** in October.
 3. **88** deviation days: 3 in July, 31 in August, 23 in September and 31 in October.
-4. The shortfall below the minimum is **600 acre-feet**.
+4. The shortfall below the minimum is **600 acre-feet** (graded within 100 acre-feet).
 
 ## 3. Step-by-Step Solution
 
 1. Read `gauge/bp1_stage_2026.csv` (gage height every ten minutes on Pacific Standard Time) and moved each reading one hour later to local daylight time.
 2. Built Rating 7 from `gauge/bp1_station_register.xlsx` (the expanded table from 1.00 to 4.00 ft, interpolated) and, above 4.00 ft, the high-water segment in `gauge/bp1_rating7_report_2023.pdf` (Q = 319.4 + 260 (GH - 4.00)^1.60).
-3. Set each measurement in `gauge/bp1_field_visits_2026.csv` against Rating 7 at its mean gage height: the four after the storm sit 11.7 to 17.4 per cent below, a mean stage correction of 0.10 ft, and the four before within 0.4 per cent.
-4. Converted every reading on Rating 7 up to the storm's peak in the stage record late on 27 July and on Rating 7 with the 0.10 ft correction after it, and averaged the flows by local calendar day.
+3. Set each measurement in `gauge/bp1_field_visits_2026.csv` against Rating 7 at its mean gage height: the four after the storm sit 13.8 to 18.0 per cent below, stage shifts of -0.0971 to -0.1006 ft with a mean of -0.0990 ft (about 0.10 ft); the four before sit within 2.2 per cent either side, inside the rating's own scatter, and take no correction.
+4. Converted every reading on Rating 7 up to the storm's peak in the stage record (22:40 PST, 23:40 PDT on 27 July) and on Rating 7 at the gage height plus the -0.0990 ft shift after it, and averaged the flows by local calendar day.
 5. Compared each day with Article 403's minimum (`license/license_order_excerpt_2019.pdf`, 50 cfs July to September and 30 cfs otherwise): 88 days below, in two runs, 29 July to 13 September and 21 September to 31 October, the fall pulse holding the reach above 50 cfs between them.
 6. Summed each deviation day's deficit below its minimum at 1.98347 acre-feet per cfs-day: 600 acre-feet.
 7. Summed the May and June daily means for Article 404: 18,800 and 9,000 acre-feet; the spring peak 10-minute flow was 575 cfs at 27 May 2026 20:30 PDT.
@@ -29,7 +29,7 @@ The 27 July storm moved gauge BP-1's control: the four measurements after it sit
 
 ### bypass_flow_record_2026.xlsx
 
-1. 123 rows, 1 July to 31 October 2026, each local day's mean flow in whole cfs and whether it met the minimum:
+1. 123 rows, 1 July to 31 October 2026, each local day's mean flow in whole cfs and whether it met the minimum; each daily mean is graded within 2 cfs of the value below, and 27 and 28 July (the storm's two days, whose flows turn on the hour the correction starts) on met only:
    - 1 July: 54 cfs, met
    - 2 July: 54 cfs, met
    - 3 July: 54 cfs, met
@@ -56,8 +56,8 @@ The 27 July storm moved gauge BP-1's control: the four measurements after it sit
    - 24 July: 54 cfs, met
    - 25 July: 54 cfs, met
    - 26 July: 54 cfs, met
-   - 27 July: 142 cfs, met
-   - 28 July: 277 cfs, met
+   - 27 July: met (142 cfs)
+   - 28 July: met (277 cfs)
    - 29 July: 46 cfs, below
    - 30 July: 46 cfs, below
    - 31 July: 46 cfs, below
@@ -105,13 +105,13 @@ The 27 July storm moved gauge BP-1's control: the four measurements after it sit
    - 11 September: 46 cfs, below
    - 12 September: 46 cfs, below
    - 13 September: 46 cfs, below
-   - 14 September: 84 cfs, met
-   - 15 September: 84 cfs, met
-   - 16 September: 83 cfs, met
-   - 17 September: 84 cfs, met
-   - 18 September: 83 cfs, met
-   - 19 September: 83 cfs, met
-   - 20 September: 84 cfs, met
+   - 14 September: 55 cfs, met
+   - 15 September: 55 cfs, met
+   - 16 September: 55 cfs, met
+   - 17 September: 55 cfs, met
+   - 18 September: 55 cfs, met
+   - 19 September: 55 cfs, met
+   - 20 September: 55 cfs, met
    - 21 September: 46 cfs, below
    - 22 September: 46 cfs, below
    - 23 September: 46 cfs, below
@@ -158,5 +158,5 @@ The 27 July storm moved gauge BP-1's control: the four measurements after it sit
 
 1. Deviation periods: 29 July to 13 September 2026 and 21 September to 31 October 2026, 88 days.
 2. Cause: the 27 July storm left gravel on gauge BP-1's riffle control, so Rating 7 overstated every later flow while the plant's controller held the rated flow on its targets.
-3. Total shortfall below the minimum: 600 acre-feet.
+3. Total shortfall below the minimum: 600 acre-feet (graded within 100 acre-feet).
 4. Article 404: 18,800 acre-feet in May and 9,000 acre-feet in June 2026; spring peak flow 575 cfs at 27 May 2026 20:30 PDT.

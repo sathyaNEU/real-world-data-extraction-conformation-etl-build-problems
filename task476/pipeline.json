@@ -15,22 +15,26 @@
   "detail": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-04 --asof 2026-11-04 (no LEAK; sweep 3 article numbers, a 2022 memo value and the 2025 report's shared words, sweep 4 the memo's and plan's genre nouns, each answered in the design note)",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-04 --asof 2026-11-04 on a8e37491 (no LEAK; sweep 3 article numbers, a memo table value and the 2025 report's shared words, sweep 4 the memo's and plan's genre nouns, each answered in the design note)",
+  "reader": "isolated reader 2026-11-04 on 7e78020a (leak_check_report.md, Solver's-eye read): no file announces the decisive step; a mild leak in the 29 July remark (the riffle reworked by the flood) and tidiness tells in the visit log and the memo's table, all fixed in the FIX_NOW pass; the reader runs once more on the new pack"
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-11-04 after the final pull (overuse.objective only), the card redrawn on org_family (manufacturer) and gate_g (signal_vs_noise_or_hold) once task462 v2 entered the window",
-  "heart": "WARN 2026-11-04 after the final pull, no BLOCK",
-  "surface": "0 promoted of 303 pairs, 2026-11-04",
+  "guard_check": "WARN 2026-11-04 after the pull to b87fe69 (repeat.gate_g against task462 v2 only); gate_g corrected to method_or_model_selection, the build's mechanism, the 11-04 relabel withdrawn",
+  "heart": "WARN 2026-11-04, no BLOCK",
+  "surface": "1 promoted of 303 pairs, 2026-11-04: task274 on the same-driver signature (gap population, G4, method_or_model_selection), differentiated on the card; for the author's adjudicated read",
   "nearest": "task178 lineage at 0.08"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC, SOLUTION_WRONG (minor)",
+  "disposition": "FIX_NOW",
+  "date": "2026-11-04",
+  "report": "task476/determinism_check_report_arch5.md",
+  "pack": "7e78020a",
+  "failed_gate": "A (solution_incorrect, minor: the stated 0.10 ft gave 276 for 28 July against the golden's 277), with Gate C/E exposure on the per-day asks only; H, G, B, D and F pass",
+  "rejudge": "pending: the single FIX_NOW re-judge on a8e37491"
  },
  "returned": [],
- "resume": "Stage 4: spawn the leak reader and the determinism judge together (medium) on a fresh unzip of task476/target.zip (sha256 7e78020ac42e5e8e56a6054ec9b669778f853799c6f7d111687bf4ca24b85bf1) with prompt.txt and submission.md's graded blocks; fix every finding in the generator in one pass, rebuild with `python3 task476/generator/build.py` (two byte-identical builds, target.zip from the final rebuild), re-run precut.py, figures_check.py, leak.py --asof 2026-11-04 and guard.py heart and surface, then ship.",
+ "resume": "Stage 4: the leak reader once more and the single FIX_NOW re-judge (both medium, run by the orchestrating session) on a fresh unzip of task476/target.zip (sha256 a8e374913341245ee85b43b5fff8051c88150b9961a1afec36f0623123e3c532) with prompt.txt and submission.md's graded blocks; fix any finding in the generator in one pass, rebuild with `python3 task476/generator/build.py` (two byte-identical builds, target.zip from the final rebuild), re-run precut.py, figures_check.py, leak.py --asof 2026-11-04 and guard.py check, heart and surface; ship only on the coordinator's word",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -80,12 +84,41 @@
  },
  "call": "report Tallis Creek's bypass below its minimum from 29 July to 13 September and from 21 September to 31 October 2026 (88 days, 600 acre-feet short)",
  "gates_2026_11_04": {
-  "generator": "checks.py 0 failures (I, R, L, G, SF1 to SF12, A, X); verify.py 0 failures",
+  "generator": "checks.py 0 failures (I, R incl. R3d, L, G, B1 to B7, SF1 to SF13, A, X incl. X7 and X8); verify.py 0 failures",
   "rebuild": "two builds byte-identical; target.zip cut from the final rebuild",
-  "figures_check": "142 figures in blocks 1 to 4, 0 absent",
+  "figures_check": "151 figures in blocks 1 to 4, 0 absent",
   "voice_check": "PASS",
-  "ceiling": "generator/ceiling.py: cracker 44.8, mirror 9.1, pair ceiling 27.0, mirror leakage 0.0; with the full includer on the call 54.6",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "ceiling": "generator/ceiling.py: cracker 45.0, mirror 9.3, pair ceiling 27.1, mirror leakage 0.0; with the full includer on the call 54.6",
   "scrub": "target and golden clean"
  },
- "target_zip_sha256": "7e78020ac42e5e8e56a6054ec9b669778f853799c6f7d111687bf4ca24b85bf1"
+ "target_zip_sha256": "a8e374913341245ee85b43b5fff8051c88150b9961a1afec36f0623123e3c532",
+ "fix_now_2026_11_04": {
+  "from": "7e78020a",
+  "to": "a8e37491",
+  "findings": [
+   "solution states the fitted shift (about 0.10 ft, fitted -0.0990 ft) and its onset at the storm's peak",
+   "per-day cells closed by grading bands (daily means within 2 cfs, 27 and 28 July on met only, the shortfall within 100 acre-feet), never by a filed method; checks.py B1 to B7 run 126 licensed forms",
+   "the visit log carries a control entry on every visit and no causal remark",
+   "the visit log and the memo's 17 measurements scatter as gaugings do",
+   "the note's stump sentence carries the measured range",
+   "the card's gate_g corrected to method_or_model_selection; the note's Three rules answer sole_data_defect (checks.py R3a, R3d)"
+  ],
+  "pack_moved": [
+   "gauge/bp1_field_visits_2026.csv",
+   "gauge/bp1_rating7_report_2023.pdf",
+   "gauge/bp1_stage_2026.csv (14 to 20 September only: the pulse at 64 cfs rated, unit on line)",
+   "operations/bypass_release_log_2026.csv",
+   "gauge/bp1_water_temperature_2026.csv (distractor)",
+   "operations/daily_generation_2026.csv (distractor)"
+  ],
+  "graded_moved": [
+   "daily means 14 to 20 September 83 to 84 -> 55 cfs (met)",
+   "post-storm measurements 11.7 to 17.4 -> 13.8 to 18.0 per cent below Rating 7",
+   "pre-storm measurements within 0.4 -> within 2.2 per cent either side",
+   "the stated shift 0.10 ft -> about 0.10 ft, fitted -0.0990 ft"
+  ],
+  "graded_unmoved": "the periods, 88 days (3, 31, 23, 31), 600 acre-feet, May 18,800, June 9,000, the spring peak 575 cfs at 27 May 2026 20:30 PDT, 46.1 and 27.0 cfs held, 53.8 cfs on Rating 7, every other daily mean",
+  "remarks_move_no_figure": true
+ }
 }

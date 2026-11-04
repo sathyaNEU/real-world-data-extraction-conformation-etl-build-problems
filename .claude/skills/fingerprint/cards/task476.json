@@ -23,7 +23,7 @@
     "G4",
     "G16"
   ],
-  "gate_g": "signal_vs_noise_or_hold",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "physical_verification",
   "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
@@ -84,7 +84,7 @@
   "opening_move": "question-first",
   "question_form": "when",
   "driver": "The decisive quantity is a daily total read off a recorded proxy through a published relation, where an event moved the relation and a controller held the proxy, not the quantity, on its target, so the converted record sits flat on target and validates against every check made before the event; only the checks taken after it, at the held level, show the relation moved and by how much.",
-  "driver_concrete": "Tallis Creek's bypass flow is computed from gauge BP-1's stage through Rating 7, and the plant's gate controller holds the rated flow at 54 cfs; the 27 July storm left gravel on the gauge's riffle control, so the held stage passes about 46 cfs from 29 July and about 27 cfs once the October target of 33 cfs takes over; the hydrographer's measurements after the storm sit 14 to 18 per cent below the rating at the held stages while every earlier one agrees with it.",
+  "driver_concrete": "Tallis Creek's bypass flow is computed from gauge BP-1's stage through Rating 7, and the plant's gate controller holds the rated flow at 54 cfs; the 27 July storm left gravel on the gauge's riffle control, so the held stage passes about 46 cfs from 29 July and about 27 cfs once the October target of 33 cfs takes over; the hydrographer's measurements after the storm sit 13.8 to 18.0 per cent below the rating at the held stages while every earlier one sits within 2.2 per cent of it.",
   "stump": "The default path converts the stage record through Rating 7, the rating in force, takes local daily means and files no 2026 deviation, because the controller held the rated flow on its targets; the discharge measurements after the 27 July storm show the control moved, and on the relation they establish the reach fell below its minimum from 29 July through 13 September and from 21 September through 31 October.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -248,5 +248,6 @@
     "deliverable set": "docx+xlsx"
   },
   "registered": "2026-11-04T09:22:49Z",
-  "redraw_2026_11_04": "org_family utility_or_infrastructure redrawn to manufacturer (the licensee is the mill) and gate_g method_or_model_selection to signal_vs_noise_or_hold after the final pull brought task462 v2 (registered 08:40:22Z, before this card) into the window"
+  "redraw_2026_11_04": "org_family utility_or_infrastructure redrawn to manufacturer (the licensee is the mill) after the final pull brought task462 v2 (registered 08:40:22Z, before this card) into the window; gate_g was relabelled to signal_vs_noise_or_hold in the same pass with no change to the build, and that relabel is withdrawn (see gate_g_correction_2026_11_04)",
+  "gate_g_correction_2026_11_04": "gate_g corrected from signal_vs_noise_or_hold back to method_or_model_selection at the stage-4 FIX_NOW pass, on the judge's Gate G reconciliation: the build has two defensible relations for the record (the published Rating 7 and the relation the post-storm discharge measurements establish) and validation against the gaugings pins the right one; signal_vs_noise_or_hold means every candidate fails or the data cannot support a call, which this build is not. guard.py check on the corrected card: WARN repeat.gate_g (task462 v2) and overuse.objective, no BLOCK"
 }

@@ -37,27 +37,26 @@ def stage(path, x):
     return _csv(path, ["Date Time (PST)", "Gage Height (ft)"], rows, pre=pre, crlf=True)
 
 
-NOTES = ["Spring check. Desiccant replaced. Staff and logger agree.",
-         "High water. Measured from cableway.",
-         "Summer setpoint in effect since midnight. Trimmed willows at staff plate.",
-         "Routine. Staff and logger agree.",
-         "Post-storm visit. Debris line at 6.7 ft on staff. Control riffle reworked by the 27 July flood. Orifice line clear.",
-         "Routine. Staff and logger agree.",
-         "Fall pulse in progress. Unit offline on low inflow.",
-         "Routine. Logger battery replaced."]
+NOTES = ["Desiccant replaced. Logger downloaded.",
+         "Measured from cableway. Staff read in surge.",
+         "Trimmed willows at staff plate.",
+         "Logger downloaded. Battery 12.9 V.",
+         "Orifice line purged. Silt cleaned off staff plate.",
+         "Logger downloaded.",
+         "Pulse release under way.",
+         "Logger battery replaced."]
 
 
 def visits(path, x):
     rows = []
-    for v, note in zip(x["visits"], NOTES):
+    for v, ctl, note in zip(x["visits"], W.CONTROL, NOTES):
         lt = v["t"]
         method = "cableway, current meter" if v["gh"] > 3.0 else "wading, acoustic Doppler velocimeter"
         rows.append((lt.strftime("%Y-%m-%d"), lt.strftime("%H:%M"), "%.2f" % v["staff"], "%.2f" % round(v["h"], 2),
-                     (lt + dt.timedelta(minutes=10)).strftime("%H:%M"), (lt + dt.timedelta(minutes=50)).strftime("%H:%M"),
-                     "%.2f" % v["gh"], "%.1f" % v["q_meas"],
-                     method, W.HYDROGRAPHER, note))
+                     v["start"].strftime("%H:%M"), v["end"].strftime("%H:%M"), "%.2f" % v["gh"], "%.1f" % v["q_meas"],
+                     method, ctl, W.HYDROGRAPHER, note))
     return _csv(path, ["visit_date", "arrival_pdt", "staff_gh_ft", "logger_gh_ft", "meas_start_pdt", "meas_end_pdt",
-                       "meas_mean_gh_ft", "meas_discharge_cfs", "meas_method", "hydrographer", "remarks"], rows)
+                       "meas_mean_gh_ft", "meas_discharge_cfs", "meas_method", "control", "hydrographer", "remarks"], rows)
 
 
 def release(path, x):

@@ -41,10 +41,13 @@ def recompute(target):
     fine = np.linspace(1.0, 7.5, 65001)
     qf = q(fine)
     vis["shift"] = [fine[np.searchsorted(qf, qm)] - g for qm, g in zip(vis.meas_discharge_cfs, vis.meas_mean_gh_ft)]
-    vis["when"] = pd.to_datetime(vis.visit_date + " " + vis.meas_start_pdt) + pd.Timedelta(minutes=20)
-    pre = vis[vis["shift"].abs() < 0.03]
-    t0 = pre["when"].max()
-    t1 = vis[vis["when"] > t0]["when"].min()
+    t_s = pd.to_datetime(vis.visit_date + " " + vis.meas_start_pdt)
+    t_e = pd.to_datetime(vis.visit_date + " " + vis.meas_end_pdt)
+    vis["when"] = t_s + (t_e - t_s) / 2
+    vis["pct"] = vis.meas_discharge_cfs / q(vis.meas_mean_gh_ft.to_numpy()) - 1
+    off = vis[vis["pct"].abs() >= 0.05]
+    t1 = off["when"].min()
+    t0 = vis[vis["when"] < t1]["when"].max()
     win = st[(st.t >= t0) & (st.t <= t1)]
     peak = win.loc[win.h.idxmax(), "t"]
     s_mean = vis[vis["when"] > peak]["shift"].mean()

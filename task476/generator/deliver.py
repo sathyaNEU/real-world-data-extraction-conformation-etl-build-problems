@@ -18,8 +18,10 @@ def write_record(path, d, g, fig):
     ws.title = "Daily record"
     ws.append(["%s, gauge BP-1: 2026 daily mean flow in the bypassed reach" % W.PROJECT])
     ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Local calendar days (Pacific Daylight Time). Flows on Rating 7, with the post-storm shift of %s ft applied "
-               "from the 27 July storm peak; above 4.00 ft, Rating 7's high-water segment." % fig["post_storm_shift_ft"]])
+    ws.append(["Local calendar days (Pacific Daylight Time). Flows on Rating 7 to the 27 July storm's peak (%s PDT) and "
+               "on Rating 7 with a stage shift of %s ft after it (about %s ft, the mean of the four post-storm "
+               "measurements' shifts); above 4.00 ft, Rating 7's high-water segment."
+               % (fig["storm_peak_local"].split(" ")[-1], fig["post_storm_shift_fitted_ft"], fig["post_storm_shift_ft"])])
     ws.append([])
     head = ["Date", "Article 403 minimum (cfs)", "Daily mean flow (cfs)", "Met minimum", "Shortfall (acre-feet)"]
     ws.append(head)
@@ -57,8 +59,15 @@ def write_record(path, d, g, fig):
     for c in m[3]:
         c.font = Font(bold=True)
     for v in sorted(g["shifts"], key=lambda v: v["mid"]):
-        m.append([v["date"], v["gh"], v["q"], round(v["rated"], 1), round(v["pct"], 1), round(v["shift"], 3)])
+        m.append([v["date"], v["gh"], v["q"], round(v["rated"], 1), round(v["pct"], 1), round(v["shift"], 4)])
         m.cell(m.max_row, 1).number_format = "yyyy-mm-dd"
+        for col in (4, 5):
+            m.cell(m.max_row, col).number_format = "0.0"
+        m.cell(m.max_row, 6).number_format = "0.0000"
+    m.append([])
+    m.append(["Mean stage shift of the four measurements after the 27 July storm (ft)", None, None, None, None,
+              float(fig["post_storm_shift_fitted_ft"])])
+    m.cell(m.max_row, 6).number_format = "0.0000"
     for col, wd in zip("ABCDEF", (12, 12, 12, 12, 12, 12)):
         m.column_dimensions[col].width = wd
     vol = wb.create_sheet("Article 404")
@@ -105,10 +114,12 @@ def write_report(path, d, g, fig):
             "the flow. The plant's gate controller holds the bypass at the flow BP-1 reads on Rating 7, 54 cfs in July "
             "through September and 33 cfs in October, and it held that reading throughout. The four discharge "
             "measurements made after the storm were %s to %s per cent below Rating 7 at the gauge heights the controller "
-            "held, against no more than %s per cent before it; on the relation they establish (a stage shift of %s feet "
-            "from the storm), the reach carried about %s cfs through August and %s cfs in October."
+            "held, against no more than %s per cent either side before it; on the relation they establish (Rating 7 "
+            "with a stage shift of %s feet, about %s foot, from the storm's peak), the reach carried about %s cfs "
+            "through August and %s cfs in October."
          % (fig["post_storm_pct_range"][1].lstrip("-"), fig["post_storm_pct_range"][0].lstrip("-"),
-            fig["pre_storm_pct_max"], fig["post_storm_shift_ft"], fig["held_aug_cfs"], fig["held_oct_cfs"]))
+            fig["pre_storm_pct_max"], fig["post_storm_shift_fitted_ft"], fig["post_storm_shift_ft"], fig["held_aug_cfs"],
+            fig["held_oct_cfs"]))
     _p(doc, "Corrective action. The gate controller will run on the shifted rating from November 5, and Corvid "
             "Hydrometric Services will develop Rating 8 from the 2026 measurements before the 2027 season.")
     _p(doc, "Article 404. The bypassed reach passed %s acre-feet in May and %s acre-feet in June 2026, %s acre-feet in "

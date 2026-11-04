@@ -58,8 +58,10 @@ def visits(target):
         d = dt.date.fromisoformat(r["visit_date"])
         s = dt.datetime.combine(d, dt.time.fromisoformat(r["meas_start_pdt"])).replace(tzinfo=PDT)
         e = dt.datetime.combine(d, dt.time.fromisoformat(r["meas_end_pdt"])).replace(tzinfo=PDT)
-        out.append(dict(date=d, start=s, end=e, mid=s + (e - s) / 2, gh=float(r["meas_mean_gh_ft"]),
-                        q=float(r["meas_discharge_cfs"]), staff=float(r["staff_gh_ft"]), remarks=r["remarks"]))
+        a = dt.datetime.combine(d, dt.time.fromisoformat(r["arrival_pdt"])).replace(tzinfo=PDT)
+        out.append(dict(date=d, arrival=a, start=s, end=e, mid=s + (e - s) / 2, gh=float(r["meas_mean_gh_ft"]),
+                        q=float(r["meas_discharge_cfs"]), staff=float(r["staff_gh_ft"]), logger=float(r["logger_gh_ft"]),
+                        control=r["control"], remarks=r["remarks"]))
     return out
 
 

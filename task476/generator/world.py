@@ -39,19 +39,25 @@ def requirement(day):
 SETPOINTS = [  # (local time, rated cfs, log text)
     (dt.datetime(2026, 4, 1, 0, 0, tzinfo=PDT), 34.0, "Bypass target 34 cfs (Article 403 minimum 30 cfs, Oct to Jun)"),
     (dt.datetime(2026, 7, 1, 0, 0, tzinfo=PDT), 54.0, "Bypass target 54 cfs (Article 403 minimum 50 cfs, Jul to Sep)"),
-    (dt.datetime(2026, 9, 14, 0, 0, tzinfo=PDT), 70.0, "Bypass target 70 cfs, fall pulse under the fisheries agreement"),
+    (dt.datetime(2026, 9, 14, 0, 0, tzinfo=PDT), 64.0, "Bypass target 64 cfs, fall pulse under the fisheries agreement"),
     (dt.datetime(2026, 9, 21, 0, 0, tzinfo=PDT), 54.0, "Bypass target 54 cfs, pulse ended"),
     (dt.datetime(2026, 10, 1, 0, 0, tzinfo=PDT), 33.0, "Bypass target 33 cfs (Article 403 minimum 30 cfs, Oct to Jun)"),
 ]
 UNIT_TRIP = dt.datetime(2026, 7, 27, 21, 10, tzinfo=PDT)
 UNIT_BACK = dt.datetime(2026, 7, 28, 9, 30, tzinfo=PDT)
 
-VISITS = [  # local date and time of the hydrographer's visits
-    dt.datetime(2026, 5, 6, 10, 40, tzinfo=PDT), dt.datetime(2026, 6, 9, 11, 20, tzinfo=PDT),
-    dt.datetime(2026, 7, 1, 13, 5, tzinfo=PDT), dt.datetime(2026, 7, 26, 10, 15, tzinfo=PDT),
-    dt.datetime(2026, 7, 29, 9, 40, tzinfo=PDT), dt.datetime(2026, 8, 25, 14, 30, tzinfo=PDT),
-    dt.datetime(2026, 9, 16, 10, 50, tzinfo=PDT), dt.datetime(2026, 10, 6, 12, 20, tzinfo=PDT),
+VISITS = [  # the hydrographer's visits: local arrival, minutes to set up, minutes measuring, the staff plate's reading
+    # less the logger's at arrival (ft), and the measurement's error against the flow the reach carried while it ran
+    (dt.datetime(2026, 5, 6, 10, 40, tzinfo=PDT), 14, 36, 0.00, -0.0024),
+    (dt.datetime(2026, 6, 9, 11, 20, tzinfo=PDT), 23, 64, 0.00, 0.0021),
+    (dt.datetime(2026, 7, 1, 13, 5, tzinfo=PDT), 9, 31, 0.00, 0.0208),
+    (dt.datetime(2026, 7, 26, 10, 15, tzinfo=PDT), 12, 27, -0.01, -0.0219),
+    (dt.datetime(2026, 7, 29, 9, 40, tzinfo=PDT), 18, 42, -0.01, -0.0021),
+    (dt.datetime(2026, 8, 25, 14, 30, tzinfo=PDT), 11, 33, 0.01, 0.0069),
+    (dt.datetime(2026, 9, 16, 10, 50, tzinfo=PDT), 16, 38, 0.00, 0.0003),
+    (dt.datetime(2026, 10, 6, 12, 20, tzinfo=PDT), 8, 26, -0.01, -0.0058),
 ]
+CONTROL = ["clear", "clear", "clear", "light algae", "clear", "light algae", "clear", "leaves"]
 
 FILES = {
     "stage": "gauge/bp1_stage_2026.csv",

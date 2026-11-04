@@ -7,8 +7,9 @@ stays at the portal, pending, until this build replaces it at ship.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task476.json` (architecture v5), registered 2026-11-04T09:00:03Z;
-  `guard.py check` PASS (one NOTE: the same-driver signature against task274, differentiated on the card). The window
+- **Card:** `.claude/skills/fingerprint/cards/task476.json` (architecture v5), registered 2026-11-04T09:22:49Z;
+  `guard.py check` WARN only (repeat.gate_g against task462 v2; one NOTE: the same-driver signature against task274,
+  differentiated on the card). The window
   before the card: task192 v4, task461 v3 and task488 v2, so their forums (operations_desk, customer_or_counterparty,
   committee_or_panel), forcing events (shift_or_daily_cycle, audit_or_inspection, incident_or_complaint), organisation
   families (local_government, other, cooperative_or_member_body), decision types and strategies were off the table.
@@ -22,7 +23,10 @@ stays at the portal, pending, until this build replaces it at ship.
 - **Strategy:** forecast_method_backtest. The record is computed on a stage-discharge relation, and the hydrographer's
   discharge measurements test the published relation the way a back-test tests a method: they pass Rating 7 before the
   storm and fail it after. Decisive generator G4 (attribution at the transition: which relation each interval is
-  converted on), with G16 (method selection). Gate G signal_vs_noise_or_hold (whether the post-storm departures from the rating are measurement noise or a moved control).
+  converted on), with G16 (method selection). Gate G method_or_model_selection: two defensible relations for the record,
+  the published Rating 7 and the one the post-storm discharge measurements establish, with validation against the
+  gaugings pinning the right one (the card's relabel to signal_vs_noise_or_hold at the 11-04 hand-off is withdrawn: that
+  mechanism is every candidate failing or the data unable to support a call, and this build supports one).
 - **World:** United States, a fictional creek in Oregon's western Cascade foothills. Tallis Creek Paper Company runs one
   run-of-river hydro project at its mill: a diversion dam, a 150 cfs unit and a bypassed reach whose License Article 403 minimum is 50 cfs
   from July through September and 30 cfs otherwise. The plant's gate controller holds the bypass flow gauge BP-1 reads
@@ -67,7 +71,8 @@ there, a cross-file check across the register, the rating report and the visit l
 Reflex: the field's method for a gauged record, the station's current rating applied to the stage, sits at rung 0 and
 files no deviation, because the controller held the rated flow on its targets.
 
-Back-test: the textbook route validates: every measurement before the storm agrees with Rating 7 within 3.3 per cent,
+Back-test: the textbook route validates: every measurement before the storm sits within the memo's 5 per cent of Rating 7
+(the memo's 17 within 4.6, the season's four within 2.2 either side),
 the 2025 compliance report computed on Rating 7 passed, and the converted record never dips below its setpoint.
 
 Second use: every file the step reads is read for its own reason: the stage record and the register for every flow,
@@ -95,7 +100,7 @@ Golden: deviations from 29 July through 13 September and from 21 September throu
 
 The default path converts the stage record through Rating 7, the station's rating in force, takes local daily means and
 files no deviation in 2026, because the plant's controller held the rated flow on its targets; it never sets the
-hydrographer's post-storm measurements against the rating, which sit 13 to 18 per cent below it at the held stages, and
+hydrographer's post-storm measurements against the rating, which sit 13.8 to 18.0 per cent below it at the held stages, and
 on the relation they establish the reach fell below its minimum from 29 July through 13 September and from 21 September
 through 31 October.
 
@@ -112,24 +117,34 @@ through 31 October.
   method changes the call, and no sort or filter of shipped columns files it.
 - Layer 1: the logger keeps Pacific Standard Time all year while the license counts local days; the expanded table stops
   at 4.00 ft and the high-water segment is an equation in the 2023 memo; the plant logs setpoints in local time and in
-  the controller's rated cfs; visits fall between logger intervals; the export carries a header block and runs a few
+  the controller's rated cfs; visits fall between logger intervals, run 26 to 64 minutes and read the staff plate 0.00
+  to 0.01 ft from the logger; the export carries a header block and runs a few
   days either side of the season. Each is how its system writes, and none is placed to be caught.
 - Layer 2: the field's own method done right: the stage-discharge relation is an estimate the discharge measurements
   test, and the choice that flips the call is whether the record is computed on the published table or on the relation
   the 2026 measurements establish after the event that moved the control.
 - Decisive step: setting each 2026 measurement against Rating 7 at its own gauge height, seeing the four after the 27
-  July storm sit 11.7 to 17.4 per cent below while the four before agree within 0.4 per cent, and carrying the measured
-  stage correction (0.10 ft) from the storm's peak through the season.
+  July storm sit 13.8 to 18.0 per cent below while the four before scatter within 2.2 per cent either side, and carrying
+  the measured stage correction (about 0.10 ft: the four post-storm measurements' mean stage shift, fitted -0.0990 ft)
+  from the storm's peak through the season.
 - Not semantics: reading every field and document right (the stage in feet on standard time, Rating 7's table, the memo's
   segments, the setpoints in rated cfs, Article 403's local days and minimums) still leaves the published table on no
   deviation, because no field or definition says the table no longer holds; only the measurements set against it do.
 - Not rule application: no filed rule or procedure says which relation converts which interval; executing Article 403,
   the monitoring plan and the register's table files no deviation. Enumerated family on the call: Rating 7 throughout
   (no deviation), the days a measurement fell below the minimum (3 days), the measured shift from the storm's peak (88
-  days), prorated between measurements (88), a flow ratio from the post-storm measurements (88); standing family once
-  the measurements are read: the three measured-relation members, spread zero on the periods, the day count and the
-  shortfall to the nearest 100 acre-feet. Rating 7 stands outside it because every post-storm measurement refutes it by
+  days), and the measured relation in every form the standard methods leave open: a stage shift or a flow ratio; its
+  mean, median, least-squares fit, each measurement's own prorated, or a shift varying with stage; from the peak, a
+  nearby local midnight or ramped; with or without the earlier measurements' small departures and the staff readings'
+  differences as corrections (126 members, 88 days each); standing family once the measurements are read: those 126,
+  spread zero on the periods, the day count, the shortfall to the nearest 100 acre-feet and every met flag, and 1.24
+  cfs at most on any day's mean but the storm's two (`checks.py` B1 to B5). Rating 7 stands outside it because every post-storm measurement refutes it by
   more than twice the 5 per cent the memo accepts, and nothing but that cross-file comparison says so.
+- Sole data defect: none: the shift is a real change in the channel (gravel on the riffle control), recorded only in
+  honest gaugings (each within 2.5 per cent of the flow the reach carried while it ran); every key and code in the pack
+  is correct (each stage reading the logger's, the register's table Rating 7 to the hundredth, the setpoints the
+  controller's, the clock the one the header names); and the clean-truth run of the analyst test, with no defect
+  anywhere, still files no deviation on Rating 7 while the truth files the golden's 88 days (`checks.py` R3a and R3d).
 - Analyst test: a strong analyst who reads every field and rule correctly converts the stage record through Rating 7,
   the rating in force, takes local daily means, compares them with Article 403's minimums and files no deviation in 2026
   (every day's mean at or above its minimum).
@@ -159,10 +174,11 @@ through 31 October.
 | SF1 | "calendar day, local time" | Pacific Daylight Time days | the logger's standard-time days | same call | same call |
 | SF2 | the minimum's change days (1 July, 1 October) | each day's own minimum | the next day's | same call | same call (those days sit 6 per cent or more clear) |
 | SF3 | "below the minimum" | strictly below | at or below | same call | same call |
-| SF5 | the shift's timing | from the storm's peak | prorated from measurement to measurement | same call | same call |
-| SF6 | the shift's form | a stage correction | a flow ratio | same call | same call |
-| SF7 | the shift's level | the post-storm measurements' mean | each measurement's own | same call | same call |
-| SF8 | the measurements before the storm | no shift (within 0.4 per cent) | their own small shifts prorated | same call | same call |
+| SF5 | the correction's onset | from the storm's peak | local midnight on 27, 28 or 29 July; ramped from the last measurement on the rating | same call | same call; 27 and 28 July graded on met only (B3), every other day inside the 2 cfs band (B2) |
+| SF6 | the correction's form | a stage shift | a flow ratio (mean, median, least squares or prorated) | same call | same call; every daily mean inside the 2 cfs band, the shortfall to the same 100 acre-feet (B2, B4) |
+| SF7 | the correction's level | the post-storm measurements' mean shift (-0.0990 ft) | their median, a least-squares fit, each measurement's own prorated, a shift varying with stage | same call | same call (B2, B4) |
+| SF8 | the measurements before the storm | no correction (within 2.2 per cent either side, inside the memo's 5) | their own small departures prorated as corrections | same call | same call; spring volumes and peak unchanged (B5) |
+| SF13 | the staff plate against the logger | the logger's record as recorded (0.00 to 0.01 ft from the staff) | the differences applied as gauge-height corrections | same call | same call (B1, B2, B5) |
 | SF9 | flows above the table (4.00 ft) | the memo's high-water segment | the table's law, slope or top extended | same call | same call (the call never reaches 4 ft) |
 | SF10 | "daily mean flow" | mean of the 10-minute flows | flow at the day's mean stage | same call | same call |
 | SF11 | "flow in the bypassed reach" | gauge BP-1 | a point further down | same call | monitoring plan section 1: BP-1 is "upstream of any tributary inflow" |
@@ -172,7 +188,7 @@ through 31 October.
 
 | Rung | Route | Answer | Dies to | Carrying files |
 |---|---|---|---|---|
-| 0 | Rating 7 on the stage record | no deviation | four post-storm measurements 11.7 to 17.4 per cent below the rating at their gauge heights | register, visit log |
+| 0 | Rating 7 on the stage record | no deviation | four post-storm measurements 13.8 to 18.0 per cent below the rating at their gauge heights | register, visit log |
 | 1 | the days a measurement fell below the minimum | 29 July, 25 August, 6 October | Article 403 counts every day's mean, and the held stage is the same on every day between visits | license, stage record |
 | 2 | the measured relation from the storm's peak | 29 July to 13 September, 21 September to 31 October | (golden) | stage, register, visit log, memo |
 
@@ -198,12 +214,12 @@ through 31 October.
 | 2 Unit of account | the day's mean flow at BP-1 | Article 403 |
 | 3 Attribution window | local calendar days | Article 403; SF1 same call |
 | 4 As-of dating | the season as recorded to 4 November | one export, nothing later |
-| 5 Version basis | Rating 7, the measurements of 2026 | C1: every measured-relation member files the same call |
+| 5 Version basis | Rating 7, the measurements of 2026 | C1: every measured-relation member files the same call (B1) |
 | 6 Denominator | none (a daily mean against a minimum) | Article 403 |
 | 7 Weighting | equal 10-minute intervals | SF10 same call |
 | 8 Window length | one calendar day | Article 403 |
 | 9 Boundary inclusivity | below the minimum | SF3 same call |
-| 10 Rounding path | flows to whole cfs, volumes to the nearest 100 acre-feet, at the close | the prompt; A2 to A4, A8 assert the bins |
+| 10 Rounding path | flows to whole cfs, volumes to the nearest 100 acre-feet, at the close | the prompt; daily means graded within 2 cfs (27 and 28 July on met only) and the shortfall within 100 acre-feet (B2 to B4); A3, A8 and B5 assert the spring bins under every form |
 | 11 Tie-break | none | no day within 6 per cent of its line |
 | 12 Maturity and censoring | the season closed on 31 October | the record runs to 3 November |
 | 13 Order of operations | relation first, then daily means | SF10 same call |
@@ -212,7 +228,7 @@ through 31 October.
 | 16 Identity normalisation | one gauge, one station id | the register |
 | 17 Netting against gross | a day's deficit is not netted against another day's surplus | Article 403 counts each day |
 | 18 Dimensional units | feet, cfs, acre-feet (1.98347 per cfs-day) | the register and the license |
-| 19 Code and status semantics | none decisive | the visit log's remarks state facts only |
+| 19 Code and status semantics | none decisive | the visit log's control entries and remarks record conditions and work done, never a cause |
 | 20 Integerisation | whole cfs at the close | the prompt |
 | 21 Clause scope | Article 403 per day, Article 404 May and June | the license |
 | 22 Forward window contents | none | retrospective: the season the license measures is closed |
@@ -221,7 +237,8 @@ through 31 October.
 
 Executed word for word, Article 403 marks a day whose mean flow in the bypassed reach is below its minimum, the plan
 computes that flow from BP-1's stage record by standard USGS methods, and on the measured relation (Rating 7 to the
-storm's peak, a 0.10 ft stage correction after it) every reasonable member files 29 July to 13 September and 21
+storm's peak, its post-storm measurements' mean stage shift, about 0.10 ft (fitted -0.0990 ft), after it) every reasonable
+member files 29 July to 13 September and 21
 September to 31 October; every other reading of a term is SF1 to SF12, each the same call or ruled out by a quoted
 sentence.
 
@@ -254,7 +271,10 @@ sentence.
 | Ask B, spring peak flow | 1 | 0 of 1 | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the mirror, on Rating 7 throughout, extends the table as the cracker does)
-- Pair ceiling: 27.0 (cracker 44.8 on the call with the daily record, mirror 9.1); the full includer that also takes the
+- Grading bands: each daily mean within 2 cfs, 27 and 28 July on met only, the shortfall within 100 acre-feet; every
+  licensed correction form lands inside them (`checks.py` B1 to B5) and Rating 7 lands outside on every day from 29
+  July (B6); the solution's stated shift (-0.0990 ft) recomputes every cell (B7)
+- Pair ceiling: 27.1 (cracker 45.0 on the call with the daily record, mirror 9.3); the full includer that also takes the
   memo's high-water segment scores 100.0 and the pair with it on the call is 54.6
 - Measured by: generator/ceiling.py
 
@@ -263,8 +283,12 @@ sentence.
 - [ ] precut.py exit 0; checks.py and verify.py green; two byte-identical builds; figures_check.py exit 0
 - [ ] leak.py on the cut pack; scrub audit; guard.py surface and heart; the card current
 - [ ] golden-realism on both deliverables; submission.md from figures.json
+- Stage-4 FIX_NOW pass (2026-11-04): the solution states the fitted shift and its onset; the per-day cells close by
+  the grading bands, never by a filed method; the visit log carries a control entry on every visit and no cause; the
+  visits and the memo's 17 measurements scatter as gaugings do; the remarks and control entries move no figure.
 - leak.py REVIEW, sweep 3: 403 and 404 are the license's article numbers in the license, the plan and the 2025
-  report; 142 is a 2022 measurement in the 2023 memo's table; harmless.
+  report; 142 is Rating 7's flow at a 2022 measurement's gauge height in the 2023 memo's table (142.1 cfs at
+  3.05 ft), the golden's 27 July mean matching it only by coincidence; harmless.
 - leak.py REVIEW, sweep 3: the 2025 report shares the call's words because it is last year's filing of the same
   article, true of 2025 and carrying no 2026 figure; harmless.
 - leak.py REVIEW, sweep 4: the memo's and the plan's shared words (rating, measurements, station, control, method) are
@@ -481,3 +505,18 @@ sentence.
 - 2026-11-04, architecture 4 spent at stage 4 (judge SEND_BACK on Gate H, determinism_check_report_arch4.md; the reader's answers in leak_check_report_arch4.md): the decisive step was classed a planted identity defect with Layer 2 missing. On the clean truth, with no tag lost, the tag join is exactly right, so the easy route failed only because the identifiers were destroyed (imperfect keys are Layer 1), and once the stem-map match is thought of there is nothing left to estimate or choose (48 of 48 settings, zero spread); the card's analyst test described the corrupted data, not the clean truth. Secondary: the per-acre estimator on the asks was unpinned. The rule it paid for: run the analyst test on the generator's clean truth before carding, and put the decisive step on an estimate or a method choice the field makes on correctly keyed data, the data separating the candidates with margin.
 - 2026-11-04, the draw that followed (architecture 5, a hydro bypass minimum flow on a gauge whose control a storm moved while the plant's controller held the rated flow on target) was priced on the clean truth before carding (screen5.py, session scratchpad): Rating 7 on the stage record files no deviation; the truth files 88 days in two periods, 29 July to 13 September and 21 September to 31 October; every day sits 7.6 per cent or more from its minimum; the measurements before the storm agree with Rating 7 within 3.3 per cent and those after it sit 13.3 to 17.9 per cent below.
 - 2026-11-04, at the hand-off: the final pull brought task462 v2 (registered 08:40:22Z, before this card) into the window, and `guard.py heart` BLOCKed on ban.org_family (utility_or_infrastructure); the organisation axis was redrawn (the licensee is the paper mill that owns the project, manufacturer) and the Gate G mechanism moved to signal_vs_noise_or_hold, which also cleared the surface screen's same-driver promotion against task274.
+- 2026-11-04, stage-4 FIX_NOW pass: the card's gate_g relabel to signal_vs_noise_or_hold withdrawn; it changed nothing
+  in the build, and that mechanism (every candidate fails or the data cannot support a call) is not this build's.
+  The card carries method_or_model_selection again: `guard.py check` and `heart` WARN (repeat.gate_g against task462
+  v2), and the surface screen's same-driver promotion against task274 is back for the author's adjudicated read,
+  answered by the card's differentiation.
+- 2026-11-04, stage-4 FIX_NOW pass: the fall pulse at 70 cfs rated with the unit off line, rejected: the reach then
+  carried the whole inflow (about 84 cfs) on the pulse days, where a flow ratio fitted to the post-storm measurements
+  sat 3 cfs off the stage shift (40 of 123 whole-cfs cells apart in the judge's read). The pulse is 64 cfs rated with
+  the unit on line (55 cfs in the reach), and every licensed correction form now sits within 1.24 cfs of the golden on
+  every record day but the storm's two.
+- 2026-11-04, stage-4 FIX_NOW pass: a 0.02 ft staff-against-logger difference at the June high-water visit, rejected:
+  carried as a gauge-height correction it moved the May and June volumes by about 100 acre-feet and the spring peak by
+  5 cfs. The spring visits read staff and logger alike, the differences run 0.00 to 0.01 ft, and their pattern is the
+  one (search_staff.py, session scratchpad) that keeps every corrected variant's shortfall inside its 100 acre-foot
+  bin.

@@ -66,16 +66,16 @@ def simulate():
                          spill=(bypass > release + 0.5) and not tripped and turbine > 0))
         t += dt.timedelta(minutes=W.STEP_MIN)
     visits = []
-    for v in W.VISITS:
-        vt = v.astimezone(W.PST)
-        i = min(range(len(rows)), key=lambda i: abs((rows[i]["t"] - vt).total_seconds()))
-        r = rows[i]
-        post = vt > W.STORM_PEAK
-        err = float(rng.normal(0, 0.001 if post else 0.0003))
-        gh = sum(rows[j]["h"] for j in range(i, min(i + 4, len(rows)))) / min(4, len(rows) - i)
-        q = sum(rows[j]["bypass"] for j in range(i, min(i + 4, len(rows)))) / min(4, len(rows) - i)
-        visits.append(dict(t=v, h=r["h"], gh=gh, q_true=q, q_meas=q * (1 + err), err=err,
-                           staff=round(r["h"] + float(rng.normal(0, 0.003)), 2)))
+    for arr, setup, dur, staff_d, err in W.VISITS:
+        start = arr + dt.timedelta(minutes=setup)
+        end = start + dt.timedelta(minutes=dur)
+        s_pst, e_pst, a_pst = start.astimezone(W.PST), end.astimezone(W.PST), arr.astimezone(W.PST)
+        win = [r for r in rows if s_pst <= r["t"] <= e_pst]       # the logger's readings while the measurement ran
+        gh = sum(r["h"] for r in win) / len(win)
+        q = sum(r["bypass"] for r in win) / len(win)
+        a = min(rows, key=lambda r: abs((r["t"] - a_pst).total_seconds()))
+        visits.append(dict(t=arr, start=start, end=end, h=a["h"], gh=gh, q_true=q, q_meas=q * (1 + err), err=err,
+                           staff=round(round(a["h"], 2) + staff_d, 2)))
     # water temperature (UTC logger), daily generation and powerhouse rain, the files the solution never reads
     temp = []
     for r in rows[::3]:
