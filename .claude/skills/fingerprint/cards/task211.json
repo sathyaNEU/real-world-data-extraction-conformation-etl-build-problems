@@ -1,0 +1,100 @@
+{
+  "task": "task211",
+  "architecture": "v1",
+  "drawn": "2026-11-04",
+  "slot_note": "Seed AD34 (which of five offshore sites gets the contractor's one jack-up for the winter campaign, and the floating-vessel weather downtime it avoids): the world, the decision and the quantity kept. The seed's own mechanism (storm sequences against the shelter round trip) was screened and set aside as the decisive step: the per-site replay it implies names the same site as storms times the round trip in 20 of 20 redraws, so it stays as a lower rung. The decisive step was re-found in the data: two sites share one marshalling port with a single heavy-lift berth.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "transportation-network",
+  "client_domain": "general-statistics-data-science",
+  "niche": "an offshore wind foundation contractor's winter installation campaign: which of five sites gets its one jack-up, when two of the sites shelter their floating heavy-lift vessels at one marshalling port whose single heavy-lift berth the western site's vessel reaches first in nearly every passing front",
+  "objective": "anomaly-detection",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G8",
+    "G5",
+    "G3"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "counterparty_acknowledgement",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who converts the progress reports' local times, joins the buoy record and reads the vessel and port registers correctly replays each floating vessel's shelter procedure over the eighteen winters, credits every site with its own vessel's downtime (the eastern site's passages on to the alternate shelter included) and names the far site at about 50 days, when the jack-up at the western site also removes the eastern vessel's diversions and avoids about 56.",
+  "domain_test": "The deciding quantity is the campaign's floating-vessel weather downtime under each jack-up placement, estimated the way installation logistics planning estimates it, by running every floating vessel's shelter procedure over the storm record with the marshalling ports' heavy-lift berths shared between vessels; in another field's nouns there is no front passing west to east, no shelter passage and no berth two vessels reach in the order the weather sets.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:shared-shelter-berth-taken-by-the-first-vessel-the-front-reaches",
+  "layer1": [
+    "buoy records in two layouts, three-hourly to March 2017 and hourly after the buoy upgrade, in UTC, with gaps for servicing",
+    "daily progress reports kept in the vessels' local time as 24-hour activity blocks, with the October clock change inside past campaigns",
+    "the port register in nautical miles against the vessel register's service speeds in knots",
+    "port dues invoices issued as PDFs per call with berth hours and the berth's number, not the vessel's site",
+    "the developer's acknowledgement file as a preliminary and a revised release that overlap",
+    "vessel names that changed with a sale in 2021, so one hull appears under two names"
+  ],
+  "stakeholder_role": "marine operations manager",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "buoy_hourly_2008_2026.csv",
+    "rows": 259200,
+    "entity": "one hourly sea-state reading at one site's buoy",
+    "grain": "site x hour",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "other",
+  "world": {
+    "geography": "Denmark, a fictional Danish marine contractor working five fictional North Sea wind farm sites",
+    "currency": "EUR",
+    "org_type": "a marine contractor installing offshore wind foundations",
+    "invented_names": [
+      "Nordvig Marine",
+      "Skarvgrund",
+      "Lillevig Banke",
+      "Osterrev",
+      "Molleflak",
+      "Fjernhav",
+      "Bramso Havn",
+      "Kalvholm",
+      "Tranevig",
+      "Hjortby Havn"
+    ],
+    "people": [
+      "Andreas Jespersen",
+      "Simone Schou",
+      "Gert Skov"
+    ]
+  },
+  "deliverables": [
+    "jackup_placement_winter_2026_27.pptx",
+    "jackup_placement_winter_2026_27.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is the system total that each placement of one immune unit leaves, because two exposed units share a resource that admits one at a time and every shock reaches one of them first, so the second's delays at the resource disappear when the scarce unit stands at the first; a per-unit measure books those delays where they appear and never credits the unit that causes them.",
+  "driver_concrete": "Fronts reach the western site hours before the eastern one, so the western site's floating vessel takes the one heavy-lift berth at the shared marshalling port first and the eastern vessel steams on to the alternate shelter; the jack-up at the western site avoids that site's own downtime and the eastern vessel's extra passages, which per-site downtime books at the eastern site.",
+  "stump": "A competent solver replays each floating vessel's shelter procedure over the buoy record, credits each site with its own vessel's downtime, the eastern site's diversions included, and names the far site at about 50 days; the step that lands them there is crediting the jack-up only with the downtime of the site where it stands.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task147": "task147 loses a request when any unit of its run of consecutive nights is already full at the forecast date, a run-length capacity inside one unit's own intake; this build credits one scarce vessel's placement with the shelter diversions its absence lifts from a second site whose vessel reaches a shared single-berth port after it in every passing front.",
+    "task159": "task159 separates a backlog that builds while services arrive with less room than an interval's arrivals from the one-interval stock at each stop; this build has no backlog and no stock, it counts the extra passages one site's vessel makes because another site's vessel already holds the one berth, and books them to the placement that removes the first vessel."
+  },
+  "lineage": [],
+  "notes": "Strategy binding_constraint and family allocation_constraints: the single heavy-lift berth binds and moves the pick; both unspent on anomaly detection. The seed mechanism (round trip against storm sequences) is a lower rung. Keyed gap objective with G8 decisive (which vessel reaches the shared berth first, against each site's downtime magnitude); forum redrawn from executive_team (ban.forum against task403) to committee_or_panel, the campaign planning panel that signs vessel allocations; deliverable set moved off pdf+xlsx (task403) to a planning-panel deck and a workbook.",
+  "registered": "2026-11-04T13:58:39Z"
+}
