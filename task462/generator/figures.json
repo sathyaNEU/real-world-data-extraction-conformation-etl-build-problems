@@ -1,0 +1,183 @@
+{
+ "call": {
+  "decision": "do not nominate the winter option cargo",
+  "nominate": false,
+  "reserve": 150000,
+  "reserve_exact": 149846.4,
+  "cover_days": 62,
+  "cover_exact": 61.654,
+  "floor_days": 60,
+  "floor_t": 146000,
+  "margin_t": 4000,
+  "margin_days": 2,
+  "planned_burn": 2430,
+  "plan_total": 218740,
+  "plan_days": 90
+ },
+ "piles": [
+  {
+   "area": "P1",
+   "coal": "KH-COL",
+   "base_survey": "2026-03-18",
+   "volume_m3": 32000,
+   "density": 0.891,
+   "density_test": "2026-11-03",
+   "tonnes": 29000,
+   "volume_exact": 32325.9,
+   "tonnes_exact": 28802.4
+  },
+  {
+   "area": "P2",
+   "coal": "KH-COL",
+   "base_survey": "2026-04-15",
+   "volume_m3": 32000,
+   "density": 0.891,
+   "density_test": "2026-11-03",
+   "tonnes": 28000,
+   "volume_exact": 31777.7,
+   "tonnes_exact": 28313.9
+  },
+  {
+   "area": "P3",
+   "coal": "KH-POL",
+   "base_survey": "2026-06-17",
+   "volume_m3": 29000,
+   "density": 0.883,
+   "density_test": "2026-12-01",
+   "tonnes": 26000,
+   "volume_exact": 29236.5,
+   "tonnes_exact": 25815.8
+  },
+  {
+   "area": "P4",
+   "coal": "KH-USA",
+   "base_survey": "2026-10-14",
+   "volume_m3": 28000,
+   "density": 0.929,
+   "density_test": "2026-11-24",
+   "tonnes": 26000,
+   "volume_exact": 28175.4,
+   "tonnes_exact": 26175.0
+  },
+  {
+   "area": "P5",
+   "coal": "KH-POL",
+   "base_survey": "2026-05-13",
+   "volume_m3": 24000,
+   "density": 0.883,
+   "density_test": "2026-12-01",
+   "tonnes": 21000,
+   "volume_exact": 23721.6,
+   "tonnes_exact": 20946.1
+  },
+  {
+   "area": "P6",
+   "coal": "KH-USA",
+   "base_survey": "2026-05-13",
+   "volume_m3": 21000,
+   "density": 0.929,
+   "density_test": "2026-11-24",
+   "tonnes": 20000,
+   "volume_exact": 21305.8,
+   "tonnes_exact": 19793.1
+  }
+ ],
+ "rungs": {
+  "toe_plane": {
+   "reserve": 138000,
+   "cover": 57,
+   "nominate": true
+  },
+  "toe_low": {
+   "reserve": 139000,
+   "cover": 57,
+   "nominate": true
+  },
+  "toe_mean": {
+   "reserve": 138000,
+   "cover": 57,
+   "nominate": true
+  },
+  "min_all": {
+   "reserve": 150000,
+   "cover": 62,
+   "nominate": false
+  }
+ },
+ "ask_a": {
+  "KH-COL": 144000,
+  "KH-POL": 286000,
+  "KH-USA": 176000
+ },
+ "ask_b": {
+  "Q1": 218000,
+  "Q2": 112000,
+  "Q3": 43000,
+  "Q4": 217000
+ },
+ "monthly": [
+  {
+   "survey": "2025-12-17",
+   "tonnes": 131300
+  },
+  {
+   "survey": "2026-01-14",
+   "tonnes": 118900
+  },
+  {
+   "survey": "2026-02-11",
+   "tonnes": 103200
+  },
+  {
+   "survey": "2026-03-18",
+   "tonnes": 81500
+  },
+  {
+   "survey": "2026-04-15",
+   "tonnes": 60500
+  },
+  {
+   "survey": "2026-05-13",
+   "tonnes": 61400
+  },
+  {
+   "survey": "2026-06-17",
+   "tonnes": 90300
+  },
+  {
+   "survey": "2026-07-15",
+   "tonnes": 127700
+  },
+  {
+   "survey": "2026-08-12",
+   "tonnes": 143000
+  },
+  {
+   "survey": "2026-09-16",
+   "tonnes": 145900
+  },
+  {
+   "survey": "2026-10-14",
+   "tonnes": 121300
+  },
+  {
+   "survey": "2026-11-18",
+   "tonnes": 134900
+  },
+  {
+   "survey": "2026-12-16",
+   "tonnes": 149800
+  }
+ ],
+ "cited": {
+  "datum_m": 0.384,
+  "rounding": 1000,
+  "clauses": [
+   "3.2",
+   "3.3",
+   "1.1",
+   "1.2",
+   "2.1"
+  ]
+ }
+}

@@ -1,25 +1,27 @@
 {
  "task": "task462",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "business-operations-analytics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-04",
  "architecture": 2,
- "stump": "The default path takes each pile's December volume above a plane fitted through its toe and files a reserve of about 140,000 t, 57.5 days against the 60-day floor, so it nominates the winter option cargo; the pad under the five long-standing piles has settled into bowls up to about one and a half metres deep, and measured against the pad the year's rotations exposed the reserve is about 151,000 t, 62.1 days, and no cargo is needed.",
+ "stump": "The default path takes each pile's December volume above a plane fitted through its toe and files 138,000 t, 57 days against the 60-day floor, so it nominates the winter option cargo; the pad under the five long-standing pile areas has settled into bowls up to about two metres deep, and measured against the pad the year's rotations exposed the reserve is 150,000 t, 62 days, and no cargo is needed.",
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-04",
+  "detail": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK; --asof 2027-01-04; sweeps 3, 4, 9, 12 answered in the note's Leak review)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (overuse.objective; same_driver_older NOTE, differentiated)",
+  "nearest": "0.07 task251 v4 lineage",
+  "surface": "exit 0; no persona in the cut pack"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design sections to precut.py exit 0, then the generator (stage 3)",
+ "resume": "stage 4 hand-off: the leak reader and the determinism judge run in the orchestrating session on target.zip sha256 07da6cdd4d1288e828c3f52219dab9a76e11d9d712ba9fb0364539cde71169e3, rebuilt byte for byte by python3 task462/generator/build.py (pack, goldens, metadata.json, submission.md, figures.json, checks, verify, a second build compared, target.zip cut last); fix every finding in the generator in one pass, then SHIP (ledger row, card current, target.zip and golden/ added with git add -f)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -43,5 +45,15 @@
   "carded": "a power plant coal yard's winter reserve measured from a year of drone surveys by two contractors, the pad settled into bowls under the long-standing piles and seen only in the surveys where each pile was reclaimed to the pad",
   "redrawn_from": "a steelworks ore yard (registered 08:31), which collided with task476 v4 and task488 v2 registered first (pairing, pattern, artifact, forum, forcing event, organisation family)",
   "guard_check": "WARN (overuse.objective) and NOTE (same_driver_older, differentiated), no BLOCK; registered 2026-11-04T08:40:22Z"
- }
+ },
+ "gates": {
+  "generator_checks": "74 of 74",
+  "verify": "green (plant-grid route)",
+  "byte_identical_rebuilds": "two builds identical (target, golden, metadata.json, submission.md, figures.json)",
+  "figures_check": "PASS 65 of 65",
+  "voice_check": "PASS",
+  "pair_ceiling": "28.5 (generator/ceiling.py)",
+  "container_scrub": "target and golden clean"
+ },
+ "target_zip_sha256": "07da6cdd4d1288e828c3f52219dab9a76e11d9d712ba9fb0364539cde71169e3"
 }

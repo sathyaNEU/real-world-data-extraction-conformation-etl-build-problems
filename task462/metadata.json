@@ -1,0 +1,295 @@
+{
+ "task": "task462",
+ "architecture": 2,
+ "title": "Whether Rannikon Lämpö Oy's harbour power plant went into the 2027 ice season with enough coal in its yard to let its coal supplier's winter option cargo lapse, with the yard's receipts by coal and its deliveries to the boiler house by quarter",
+ "domain": "General Statistics & Data Science (house domain Business & Operations Analytics)",
+ "subdomain": "data-integration-record-linkage-entity-resolution",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "other: each pile area's volume and tonnes at the December survey, the reserve, its days of cover and the call in a workbook, with the yard's receipts by coal and deliveries by quarter, and a chart of the yard's stock at every survey against the floor",
+ "as_of": "2027-01-04",
+ "deliverables": [
+  "coal_reserve_2026.xlsx",
+  "coalyard_stock_2026.svg"
+ ],
+ "distractor_files": [
+  "boiler_bunker_levels_2026-12-16.csv",
+  "coal_cargo_analyses.csv"
+ ],
+ "distractor_reasons": {
+  "boiler_bunker_levels_2026-12-16.csv": "coal outside the yard; PR-07 section 2 keeps the bunkers out of the reserve",
+  "coal_cargo_analyses.csv": "coal quality for invoicing and combustion; no figure asked turns on it"
+ },
+ "stated_inputs": [
+  60,
+  218740,
+  90
+ ],
+ "field_terms": [],
+ "input_gates": {
+  "files": 27,
+  "formats": [
+   "asc",
+   "csv",
+   "pdf",
+   "xlsx",
+   "xyz"
+  ],
+  "largest_file": "historian_cv01_cv21_15min.csv",
+  "largest_file_rows": 76608
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task462/generator/build.py (seeded, deterministic) in the layouts of drone survey deliveries (an ESRI ASCII grid and a semicolon XYZ text export), a survey control report, a pile area register, laboratory density tests, a burn plan workbook, a port berth log, a contract register, an unloader event log, a plant historian export, a control room shift log and a fuel procedure and work instruction; the energy company, the plant, the contractors, the suppliers, the vessels and the people are fictional.",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  }
+ ],
+ "created": "2027-01-04",
+ "generator": "task462/generator/build.py",
+ "files": [
+  {
+   "path": "berth_log_2025-12_2026-12.csv",
+   "format": "csv",
+   "bytes": 6402,
+   "rows": 28,
+   "source": "Constructed: the port's berth log for the plant quay, December 2025 to December 2026",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "boiler_bunker_levels_2026-12-16.csv",
+   "format": "csv",
+   "bytes": 270,
+   "rows": 6,
+   "source": "Constructed: the boiler house bunker levels at the December survey",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coal_burn_plan_2027Q1.xlsx",
+   "format": "xlsx",
+   "bytes": 8474,
+   "rows": null,
+   "source": "Constructed: the approved first-quarter 2027 coal burn plan",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coal_cargo_analyses.csv",
+   "format": "csv",
+   "bytes": 1965,
+   "rows": 28,
+   "source": "Constructed: the cargo analyses of the coal received, December 2025 to December 2026",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coal_contracts.csv",
+   "format": "csv",
+   "bytes": 851,
+   "rows": 6,
+   "source": "Constructed: the coal purchase contract register",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coal_yard_accounting_instruction.pdf",
+   "format": "pdf",
+   "bytes": 63878,
+   "rows": null,
+   "source": "Constructed: the coal yard accounting work instruction OH-12, revision 2",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_pile_areas.csv",
+   "format": "csv",
+   "bytes": 485,
+   "rows": 6,
+   "source": "Constructed: the coal yard's pile area register (plant grid corners)",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2025-12-17.asc",
+   "format": "asc",
+   "bytes": 140405,
+   "rows": 115,
+   "source": "Constructed: the 2025-12-17 coal yard survey delivered by Mittaus-Saarinen Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-01-14.asc",
+   "format": "asc",
+   "bytes": 140175,
+   "rows": 115,
+   "source": "Constructed: the 2026-01-14 coal yard survey delivered by Mittaus-Saarinen Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-02-11.asc",
+   "format": "asc",
+   "bytes": 139903,
+   "rows": 115,
+   "source": "Constructed: the 2026-02-11 coal yard survey delivered by Mittaus-Saarinen Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-03-18.asc",
+   "format": "asc",
+   "bytes": 139543,
+   "rows": 115,
+   "source": "Constructed: the 2026-03-18 coal yard survey delivered by Mittaus-Saarinen Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-04-15.asc",
+   "format": "asc",
+   "bytes": 139177,
+   "rows": 115,
+   "source": "Constructed: the 2026-04-15 coal yard survey delivered by Mittaus-Saarinen Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-05-13.asc",
+   "format": "asc",
+   "bytes": 139187,
+   "rows": 115,
+   "source": "Constructed: the 2026-05-13 coal yard survey delivered by Mittaus-Saarinen Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-06-17.asc",
+   "format": "asc",
+   "bytes": 139665,
+   "rows": 115,
+   "source": "Constructed: the 2026-06-17 coal yard survey delivered by Mittaus-Saarinen Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-07-15.xyz",
+   "format": "xyz",
+   "bytes": 1138710,
+   "rows": 40531,
+   "source": "Constructed: the 2026-07-15 coal yard survey delivered by Pohjoisen Dronekartoitus Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-08-12.xyz",
+   "format": "xyz",
+   "bytes": 1139203,
+   "rows": 40531,
+   "source": "Constructed: the 2026-08-12 coal yard survey delivered by Pohjoisen Dronekartoitus Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-09-16.xyz",
+   "format": "xyz",
+   "bytes": 1139244,
+   "rows": 40529,
+   "source": "Constructed: the 2026-09-16 coal yard survey delivered by Pohjoisen Dronekartoitus Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-10-14.xyz",
+   "format": "xyz",
+   "bytes": 1138628,
+   "rows": 40533,
+   "source": "Constructed: the 2026-10-14 coal yard survey delivered by Pohjoisen Dronekartoitus Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-11-18.xyz",
+   "format": "xyz",
+   "bytes": 1139001,
+   "rows": 40532,
+   "source": "Constructed: the 2026-11-18 coal yard survey delivered by Pohjoisen Dronekartoitus Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "coalyard_survey_2026-12-16.xyz",
+   "format": "xyz",
+   "bytes": 1139394,
+   "rows": 40529,
+   "source": "Constructed: the 2026-12-16 coal yard survey delivered by Pohjoisen Dronekartoitus Oy",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "control_room_shift_log.csv",
+   "format": "csv",
+   "bytes": 46862,
+   "rows": 1197,
+   "source": "Constructed: the control room's shift log of the belt scale totalisers",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "fuel_lab_density_tests.csv",
+   "format": "csv",
+   "bytes": 1051,
+   "rows": 12,
+   "source": "Constructed: the fuel laboratory's in-pile bulk density tests, 2025 and 2026",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "fuel_security_procedure_PR-07.pdf",
+   "format": "pdf",
+   "bytes": 65978,
+   "rows": null,
+   "source": "Constructed: the energy company's fuel security procedure PR-07 (the winter coal reserve), revision 4",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "gu1_unloader_events.csv",
+   "format": "csv",
+   "bytes": 16695,
+   "rows": 408,
+   "source": "Constructed: the grab unloader GU-1's start and stop log",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "historian_cv01_cv21_15min.csv",
+   "format": "csv",
+   "bytes": 3077194,
+   "rows": 76608,
+   "source": "Constructed: the plant historian's 15-minute export of the CV-01 and CV-21 belt scales",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "survey_control_report_2026-07.pdf",
+   "format": "pdf",
+   "bytes": 64577,
+   "rows": null,
+   "source": "Constructed: the survey contractor's control report for the July 2026 handover of the yard surveys",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  },
+  {
+   "path": "survey_deliveries.csv",
+   "format": "csv",
+   "bytes": 1689,
+   "rows": 13,
+   "source": "Constructed: the register of the coal yard survey deliveries, December 2025 to December 2026",
+   "date": "2027-01-04",
+   "license": "CC0 (original work)"
+  }
+ ]
+}
