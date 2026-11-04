@@ -249,18 +249,24 @@ On paper and on the finished pack: executing the prompt and the guidance word fo
 leaves open (the SF rows) files the same six parishes or violates a quoted sentence; the easy answer (nine) comes from
 an easy method on the same literal estimand, the event's deepest water laid on the network at once, which describes
 no hour of the event (asserted), never from another reading of "cut off". The asks: section 4 fixes the voucher
-population (residential classes, parent shells out, flats above the ground floor out), the threshold (the survey's
-level for the dwelling or its building, else ground plus 0.15 m) and the datum of the comparison (metres above
-Ordnance Datum Newlyn); the model report gives the navigation datum's offset (0.42 m below), and the register source
-on it is the one whose levels sit 0.42 m below the 2022 surveyors' ground levels at the same UPRNs (SURV08, mean
-minus 0.421 m over 433 UPRNs, every other source within 0.07 m), so the literal comparison in ODN is the golden. Each
-road section is a road at a place; the B5131 route closure (road closed, diversion signed at both ends, from
-Hollinside to Lunnerby) closes the three B5131 sections between its ends; the police closure handed to highways ran
-until the first highways barrier at that section went up; hours are the union of the closures in force, the police
-clock converted from UTC. "Any part of a parish's 2026 award still unpaid at 31 October 2026" counts payments posted
-by that date, a cancelled cheque leaving its amount unpaid; a payment under a 2026 award's reference pays that award
-whoever received it, and a payment under a closed 2025 reference (paid in full and closed at 31 March 2026) pays its
-payee's 2026 award.
+population (homes on the register, the record of a building of flats out, flats above the ground floor out), the
+threshold (the survey's level for the home or its building, else ground plus 0.15 m) and the datum of the comparison
+(metres above Ordnance Datum Newlyn); the model report gives the navigation datum's offset (0.42 m below), and the
+register source on it is the one whose levels sit 0.42 m below the 2022 surveyors' ground levels at the same UPRNs
+(SURV08, mean minus 0.421 m over 433 UPRNs, every other source within 0.07 m), so the literal comparison in ODN is the
+golden. The closure ask names its unit, each closure site in the highways authority's July 2021 duty log (the log's
+road and location: nine sites, every highways row and every police incident at one of them, asserted row by row), its
+sources (closed by highways or police) and its measure (hours in all, so overlapping closures count once and a gap
+between closures is not counted: first closing to last reopening moves three sites, asserted). The duty log writes
+its clock in its own headers (closed_bst, reopened_bst) and the police log in its own (closed_utc, opened_utc). The
+duty log enters the B5131 route closure against each site it covered, the three B5131 sites, so no extent is read
+from a sentence. The police closure handed to highways with no opening time runs until the first highways barrier
+at its site (dropping it moves that one site by an hour; extending it to the highways reopening gives the same
+figure). "Any part of a parish's 2026 award still unpaid at 31 October 2026" counts payments posted by that date, a
+cancelled cheque leaving its amount unpaid. Section 3 files the Fund's payment rule (an award is paid to the parish
+council or, at its written request, to its clerk or a village body it names), so the instalments to a clerk and two
+village bodies under the parish's 2026 reference are payments of that award (asserted); a payment under a closed 2025
+reference (paid in full and closed at 31 March 2026) pays its payee's 2026 award.
 
 The allocation: section 3 files the budget, the base grant, the share of the rest and the rounding path, so the
 grants are the literal execution of the clause on whichever set a reader files; the call's difficulty stays in the set.
@@ -281,31 +287,33 @@ grants are the literal execution of the clause on whichever set a reader files; 
 | Ask | Figures | H18 home | Use | Primary device | Second device and hazards | Path (files, columns) | Stops | Realism |
 |---|---|---|---|---|---|---|---|---|
 | A1, the dwellings in each parish the design flood would reach at ground floor, whole numbers | 18 | the round's second offer, made in every parish (section 4), a measure every parish carries that the call does not turn on | the trustees' voucher budget | D3: register ground levels from one survey are on the Quarnell Navigation Datum; the model report gives the datum's 0.42 m offset for the model's own survey inputs, and only the 2022 surveyors' ground levels at the same UPRNs show which register source sits 0.42 m low; no document names it | D6 hazard: flats are children of a parent shell and the survey records each building once with its ground-floor flats (section 4 files the WHAT); the merged parish's old code on 31 per cent of Hawkesbridge North's records; non-residential classes; the survey's level over the 0.15 m default | address register (UPRN, PARENT_UPRN, CLASS, SAO_TEXT, PARISH_CODE, EASTING, NORTHING, GROUND_LEVEL_M, LEVEL_SOURCE), survey (UPRN, Ground level, Threshold level, Ground floor units), storage area polygons, stages, council tax codes, guidance section 4, model report section 3 | levels as recorded: 13 parishes high by 1 to 28; each block's level for every flat: 7 parishes high by 4 to 17; both: 13 parishes off | a council address register carrying ground levels from several surveys, one levelled to a local datum |
-| A2, the hours each road section the July 2021 flood closed stayed closed, nearest hour | 9 | the record of how long each road was shut in the last flood, which the kits exist to bridge; the call reads the design flood, never 2021 | the parishes' kit plans | D7: three re-closures keyed in the duty log to another section's open closure reference, the road and place the true key | D6, second primary: the B5131 route closure (road closed, diversion signed at both ends) is one row covering three sections; hazards: the police log in UTC (moves all six police sections by 1 hour), the two barriers at each end of a section overlapping, a police closure handed to highways with no opening time | highways closures (closure_ref, road, location, barrier_position, closed_local, reopened_local, reason), police closures (location_text, closed_utc, opened_utc, remarks) | keyed by reference: six sections off by 2 to 5 hours; the route kept apart: the three B5131 sections off by 1 to 4; barrier rows added: six sections off by 1 to 27 | a duty log entered under whichever closure was open on screen, and a route closure logged beside its sections |
-| A3, how much of each parish's 2026 Flood Ready award was still unpaid at 31 October 2026, nearest pound | 11 | section 3 pays any unpaid 2026 award with the 2027 grant; eleven 2026 awards, five of them to parishes the call does not qualify | the 2027 payment run | D4: two cheques the bank cancelled (one stale, one returned) stand in the ledger as payments; only the bank's advice records the cancellation | D7, second primary: three second instalments posted under the parish's closed 2025 reference, and three paid on the parish's instruction to another payee (a clerk, two village halls) under the 2026 reference, so keying by reference loses the first three and keying by payee the second; hazards: variations under their own suffix, a payment posted on 2 November, the 2025 brought-forward sheet | ledger Transactions (Posted, Type, Reference, Payee, Cheque no, Amount GBP) and 2025 awards b-f (Reference, Balance GBP, Status), bank cancelled cheques (cheque_no, cancelled), guidance section 3 | no cancellations: Lunnerby and Yarrowcote low by 4,480 and 900; by reference: three parishes high by 295 to 520; by payee: three high by 418 to 840 | a grant ledger keyed by hand from remittance requests |
+| A2, the hours in all each closure site in the highways authority's July 2021 duty log was closed by highways or police, nearest hour | 9 | the record of how long each road was shut in the last flood, which the kits exist to bridge; the call reads the design flood, never 2021 | the parishes' kit plans | D7: the closure reference is not the site: three re-closures were entered under another site's open reference, and the B5131 route closure under its own at each of its three sites, so keying by reference moves every site; the site (road and location) is the true key | hazards: the police log in UTC against the duty log's BST (moves six sites by an hour), the two barriers at each end of a site overlapping (counted once), a police closure handed to highways with no opening time, a gap between closures at three sites (hours in all, not first to last) | highways closures (closure_ref, road_number, location, barrier_position, closed_bst, reopened_bst), police closures (location_text, closed_utc, opened_utc, remarks) | keyed by reference: all nine sites off by 1 to 5 hours; barrier rows added: six sites off by 1 to 27; first closing to last reopening: three sites off by 1 to 2 | a duty log entered under whichever closure was open on screen, and a route closure order entered against each site it covered |
+| A3, how much of each parish's 2026 Flood Ready award was still unpaid at 31 October 2026, nearest pound | 11 | section 3 pays any unpaid 2026 award with the 2027 grant; eleven 2026 awards, five of them to parishes the call does not qualify | the 2027 payment run | D4: two cheques the bank cancelled (one stale, one returned) stand in the ledger as payments; only the bank's advice records the cancellation | D7, second primary: three second instalments posted under the parish's closed 2025 reference, and three paid to another payee (a clerk, two village bodies) under the 2026 reference, which section 3's payment rule makes payments of the award, so keying by reference loses the first three and keying by payee the second; hazards: variations under their own suffix, a payment posted on 2 November, the 2025 brought-forward sheet | ledger Transactions (Posted, Type, Reference, Payee, Cheque no, Amount GBP) and 2025 awards b-f (Reference, Balance GBP, Status), bank cancelled cheques (cheque_no, cancelled), guidance section 3 | no cancellations: Lunnerby and Yarrowcote low by 4,480 and 900; by reference: three parishes high by 295 to 520; by payee: three high by 418 to 840 | a grant ledger keyed by hand from remittance requests |
 
 - **Main population zero-counts:** no ask device or hazard sits in the main call's files (stages, polygons, survey,
   crosswalk, network, council tax list, guidance sections 2 and 3's grant clause); the call never reads the register,
   the 2022 survey, the 2021 logs, the ledger or the bank advice (asserted as file separation).
-- **Hazard table:** the UTC clock moves six of nine A2 figures by an hour; the overlapping barriers moves six A2
-  figures by 1 to 27 hours when added; the handed-over police closure moves one A2 figure by an hour when dropped;
-  the flats move seven A1 figures by 4 to 17; the November posting moves Wrennick by 437 when counted.
-- **Referee:** none for the primaries: the records' own forms carry the WHAT (the guidance's datum of comparison, the
-  route row's road and ends, the 2025 sheet's closed balances); no sentence says which register source is on the
-  navigation datum, which log rows are keyed to the wrong closure or which payments belong to which award.
+- **Hazard table:** the UTC clock moves six of nine A2 figures by an hour; the overlapping barriers move six A2
+  figures by 1 to 27 hours when added; the handed-over police closure moves one A2 figure by an hour when dropped; the
+  first-to-last reading moves three A2 figures; the flats move seven A1 figures by 4 to 17; the November posting moves
+  Wrennick by 437 when counted.
+- **Referee:** none for the primaries: the records' own forms carry the WHAT (the guidance's datum of comparison and
+  payment rule, the duty log's site on every row and its BST headers, the 2025 sheet's closed balances); no sentence
+  says which register source is on the navigation datum, which log rows carry another site's reference or which
+  payments belong to which award.
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
 | A1 dwellings, the 13 parishes with navigation-datum levels (18 figures in all) | section 4 executed (classes, shells, ground-floor flats from the survey's building record, survey level over the default), every register level read as recorded | high by 1 to 28 in each of the 13 (Hawkesbridge South 343 against 315) | miss |
 | A1 dwellings, Lunnerby, Ravelsby Bridge, Highfold, Owlthwaite and Kestlebeck | as above | right; kept and priced in the ceiling | outside |
-| A2 hours, all nine sections | every barrier row keyed by its closure reference, police rows placed by road and place, UTC converted, overlapping windows unioned, the handed-over closure run to the first barrier | the six re-keyed sections off by 2 to 5 hours, the three B5131 sections off by 1 to 4 (the route closure kept as a closure of its own) | miss |
+| A2 hours, all nine sites | every row keyed by its closure reference, police rows placed by road and place, UTC converted to BST, overlapping windows counted once, the handed-over closure run to the first barrier | the six sites with re-keyed rows off by 2 to 5 hours, the three B5131 sites off by 1 to 4 (the route closure's entries kept under their own reference) | miss |
 | A3 unpaid, Whinnerby, Tolmarsh and Cottergill | payments keyed by reference, cancellations and the 31 October cut applied | high by 295, 520 and 311 | miss |
 | A3 unpaid, the other eight awards | as above | right; kept and priced in the ceiling | outside |
 
 The cracker lands the call, runs the hygiene battery and executes every filed rule; it keeps 5 of 18, 0 of 9 and 8
-of 11 ask figures (34.2 per cent of ask weight). The full includer (the datum found, closures keyed by road and place,
-payments keyed by payee) keeps 18, 6 and 8 (84.2 per cent): the route closure and the payee instalments still hold 6
-of 38. The mirror files the envelope and takes each ask's most attractive wrong rung (each block's level for every
+of 11 ask figures (34.2 per cent of ask weight). The full includer (the datum found, closures keyed by site, payments
+keyed by payee) keeps 18, 9 and 8 (92.1 per cent): only the payee instalments still hold, 3 of 38, since the route
+closure became a site entry in the stage 4 repair. The mirror files the envelope and takes each ask's most attractive wrong rung (each block's level for every
 flat, levels as recorded, barrier rows added up by reference with the handed-over closure left out, every ledger
 payment counted by reference); it keeps 5, 0 and 6.
 
@@ -338,15 +346,35 @@ Measured by: `generator/ceiling.py` on the cut pack, rerun after every rebuild.
   - Sweep 3, the guidance carries the call's words: Annex A lists every parish of the valley with its code and access
     node, and section 3 names the grant; no parish is named as qualifying, no figure is a grant.
   - Sweep 4, the guidance and the model report: their ordinary vocabulary (network, village, storage, survey,
-    council, levels, stages); neither relates a closure to an hour, a sequence or the deepest water
-    (`checks.py` R3c asserts no sentence names a parish as cut off).
+    council, levels, stages, report); neither relates a closure to an hour, a sequence or the deepest water
+    (`checks.py` R3c asserts no sentence names a parish as cut off, and two leak assertions keep the model report off
+    timing, routes and isolation and the guidance off any hour or moment).
   - Sweep 6, the council tax list, the guidance, the network, the 2021 closure log, the 2022 survey and the model
     report name parishes beside numbers: dwellings by band, parish codes and nodes, link identifiers, July 2021
     times, survey levels and storage-area peak stages; none ranks a parish on whether the design flood cuts it off.
-  - Sweep 11, the prompt's deliverable set (png and xlsx) over its corpus quota: a workbook and one chart are what a
-    funder's analyst sends trustees.
+  - Sweep 11 is clean since stage 4 pass 1 moved the chart to pdf (every voice-check quota under its cap).
   - Sweep 12, the guidance names four "columns" (Hollinside, Highfold, Whinnerby, Parish): parish names from the
     first rows of two workbooks and Annex A's own header, not field definitions.
+
+- Stage 4 pass 1 (leak reader clean; the judge found the main call forced, every grant, ask 1 and ask 2 reproduced,
+  and Gates C and E open on the closure hours and the unpaid awards), closed in one pass with no figure moved
+  (figures.json identical to the judged cut):
+  - The unpaid awards' payee: section 3 now files the Fund's payment rule (an award is paid to the parish council
+    or, at its written request, to its clerk or a village body it names); no ledger row is annotated, so the
+    instalments still have to be matched to their awards; the golden is the rule's literal reading (asserted).
+  - The closure hours: the prompt names the unit (each closure site in the highways authority's July 2021 duty log),
+    the sources (highways or police) and the measure (hours in all); the duty log writes BST in its own headers; the
+    B5131 route closure is entered against each site it covered, with no sentence about it; checks.py asserts every
+    highways row and police incident at one of the nine sites, the route entries at exactly the three B5131 sites,
+    and the first-to-last reading moving three sites.
+  - The prompt shell: the chart moved from png to pdf, every voice-check quota now under its cap.
+  - Realism: both PDFs name a person as author, carry no creator or producer and real seconds in their dates; the
+    model report gained a document control table, model build, hydrology, calibration against the July 2021
+    hindcast, design results, limitations and an appendix schedule, with nothing on timing, routes or isolation
+    (asserted); the guidance gained the trustees' approval block (Kirsty Grant, Mitchell Metcalfe, from
+    `guard.py names`); section 4 lost the register's class codes, and the register's one bedsit class became RD, so
+    every home is an RD record (no figure moved).
+  - Not done, by instruction: nothing like "at any hour" in the prompt or the guidance.
 
 ## Tried and rejected
 
@@ -389,3 +417,6 @@ Measured by: `generator/ceiling.py` on the cut pack, rerun after every rebuild.
   keeping three quarters, so the datum source was left to the records, the flats sentence became the WHAT
   (upper-floor flats not offered), and the route closure, two more re-keyed closures, the payee instalments and
   two more 2025 references were added.
+- The B5131 route closure as one log row whose extent the solver mapped onto the sites (ask 2's second device, stage
+  3): the judge read the extent literally as nine B5131 sections, a Gate C fork; the duty log now enters it against
+  each site it covered, which keeps it a keying hazard and spends it as a second device.

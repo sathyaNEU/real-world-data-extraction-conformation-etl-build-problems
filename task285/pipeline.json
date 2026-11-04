@@ -8,14 +8,14 @@
   "updated": "2026-11-04",
   "stump": "A competent analyst takes each storage area's peak stage against the surveyed road levels, closes every link with a point under more than 0.25 m at the peak and files the nine parishes left with no route to Hawkesbridge General Hospital (Hollinside, Ravelsby Bridge, Lunnerby, Yarrowcote, Hepplewick, Burnishaw, Wrennick, Cottergill and Highfold, 3,828 households); the step that lands it there is closing at once links that are never closed in the same hour, because the becks' storage areas drain before the Quarnell's fill, so Yarrowcote, Hepplewick and Highfold keep one of their two routes open at every hour and six parishes share the GBP 30,000.",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-11-04"
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK), --asof 2026-11-04, every REVIEW answered in the note's Gate answers",
-    "reader": "not run in this session; stage 4 spawns it beside the determinism judge"
+    "reader": "pass 1 clean (no leak; realism tells fixed in the generator)"
   },
   "duplicate_check": {
     "heart": "WARN 2026-11-04 (ban.shape against task210 cleared by redrawing the shape to 05)",
@@ -23,12 +23,12 @@
     "nearest": "0.06 task488 v2"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "pass 1 NOT_DETERMINISTIC on asks 3 and 4 only (Gates C and E); main call forced, Gates G and H pass",
+    "disposition": "ask-layer repair done in one pass, no figure moved; re-judge pending",
+    "report": "task285/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "Stage 4: spawn the leak reader (prompt.txt and target.zip only) and the determinism judge together, fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship. The cut under check is target.zip sha256 3a9e57dbdb11885fe8249fd346fafbaff8c8144adc03be5b1290a26eebe48a5a; rebuild and re-gate from the repo root with: python3 task285/generator/build.py && python3 task285/generator/checks.py && python3 task285/generator/verify.py && python3 task285/generator/ceiling.py (build.py cuts target.zip last).",
+  "resume": "Stage 4, pass 2: re-judge the repaired cut and run one reader pass (the prompt and both PDFs changed); fix any finding in the generator in one pass, then ship. The cut under check is target.zip sha256 f2bd06c463b2004bb7f83a5e133a0550081cdad6d81bc196be2f156f5c48591b; rebuild and re-gate from the repo root with: python3 task285/generator/build.py && python3 task285/generator/checks.py && python3 task285/generator/verify.py && python3 task285/generator/ceiling.py (build.py cuts target.zip last).",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -37,13 +37,15 @@
   "portal_status_date": "",
   "call": "Share the 2027 Flood Ready budget between the six parishes the design flood would cut off from Hawkesbridge General Hospital: Burnishaw GBP 6,400, Lunnerby GBP 5,786, Hollinside GBP 4,789, Wrennick GBP 4,611, Ravelsby Bridge GBP 4,416 and Cottergill GBP 3,998 (2,093 households).",
   "gates": {
-    "checks": "90 assertions, 0 failed",
+    "checks": "125 assertions, 0 failed",
     "verify": "PASS",
     "rebuilds": "two byte-identical (23 files)",
     "figures_check": "64 of 64",
     "ceiling": "pair 45.9, mirror leakage 28.9 per cent",
-    "voice_check": "PASS (WARN deliverable-set quota)",
-    "h1_scrub": "target and golden clean"
+    "voice_check": "PASS, every quota under its cap",
+    "h1_scrub": "target and golden clean",
+    "heart": "WARN",
+    "surface": "one promoted pair, task257, differentiated on the card"
   },
-  "target_zip_sha256": "3a9e57dbdb11885fe8249fd346fafbaff8c8144adc03be5b1290a26eebe48a5a"
+  "target_zip_sha256": "f2bd06c463b2004bb7f83a5e133a0550081cdad6d81bc196be2f156f5c48591b"
 }

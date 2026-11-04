@@ -298,12 +298,17 @@ def write_closures():
             ref = A.REKEYED.get((sid, j), sid)
             rows.append([ref, road, loc, pos, a[8:10] + "/07/2021 " + a[11:], b[8:10] + "/07/2021 " + b[11:],
                          rnd.choice(["MG", "PL", "DK", "SW"]), "flood water on carriageway"])
-    sid, road, loc, (a, b), _ = A.ROUTE
-    rows.append([sid, road, loc, "diversion signed at both ends", a[8:10] + "/07/2021 " + a[11:],
-                 b[8:10] + "/07/2021 " + b[11:], rnd.choice(["MG", "PL", "DK", "SW"]), "road closed, diversion in place"])
-    rows.sort(key=lambda r: (r[4][6:10], r[4][3:5], r[4][0:2], r[4][11:]))
+    # the B5131 route closure, logged against each closure site it covered, as the duty log enters an order
+    sid, road, extent, (a, b), covers = A.ROUTE
+    officer = rnd.choice(["MG", "PL", "DK", "SW"])
+    site_loc = {s[0]: s[2] for s in A.SECTIONS}
+    for c in covers:
+        rows.append([sid, road, site_loc[c], "route closure %s, diversion signed" % extent,
+                     a[8:10] + "/07/2021 " + a[11:], b[8:10] + "/07/2021 " + b[11:], officer,
+                     "road closed, diversion in place"])
+    rows.sort(key=lambda r: (r[4][6:10], r[4][3:5], r[4][0:2], r[4][11:], r[0], r[2]))
     write_csv("highways_road_closures_jul2021.csv",
-              ["closure_ref", "road_number", "location", "barrier_position", "closed_local", "reopened_local",
+              ["closure_ref", "road_number", "location", "barrier_position", "closed_bst", "reopened_bst",
                "duty_officer", "reason"], rows)
     pol = []
     used = set()
@@ -400,7 +405,7 @@ def write_distractors():
 
 
 # ------------------------------------------------------------------------------------------- documents
-def _pdf(path, title, author, story_fn, stamp):
+def _pdf(path, title, author, story_fn, stamp, page_label):
     from reportlab.lib.pagesizes import A4
     from reportlab.platypus import SimpleDocTemplate
     from reportlab.lib.units import mm
@@ -408,20 +413,20 @@ def _pdf(path, title, author, story_fn, stamp):
     def on_page(c, d):
         c.saveState()
         c.setFont("Helvetica", 7.5)
-        c.drawString(18 * mm, 10 * mm, title)
+        c.drawString(18 * mm, 10 * mm, page_label)
         c.drawRightString(192 * mm, 10 * mm, "Page %d" % d.page)
         c.restoreState()
 
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=18 * mm,
-                            bottomMargin=18 * mm, title=title, author=author, subject="", creator=author,
-                            producer=author, invariant=1)
+                            bottomMargin=18 * mm, title=title, author=author, subject="", creator="",
+                            producer="", invariant=1)
     doc.build(story_fn(), onFirstPage=on_page, onLaterPages=on_page)
-    _scrub_pdf(path, author, stamp)
+    _scrub_pdf(path, stamp)
 
 
-def _scrub_pdf(path, org, stamp):
-    """the writer's comment lines and its fixed invariant date replaced at equal byte length (xref offsets
-    unchanged), then the file re-read with pypdf: same text, no parser complaint."""
+def _scrub_pdf(path, stamp):
+    """the writer's comment lines blanked and its fixed invariant date set to the document's own, at equal byte
+    length (xref offsets unchanged), then the file re-read with pypdf: same text, no parser complaint."""
     import re
     import logging
     from pypdf import PdfReader
@@ -431,8 +436,10 @@ def _scrub_pdf(path, org, stamp):
     for pat in (rb"ReportLab Generated PDF document \(opensource\)",
                 rb"ReportLab generated PDF document -- digest \(opensource\)"):
         for m in re.findall(pat, raw):
-            raw = raw.replace(m, org.encode()[:len(m)].ljust(len(m)))
-    raw = raw.replace(b"D:20000101000000", ("D:" + stamp).encode())
+            raw = raw.replace(m, b" " * len(m))
+    old = b"D:20000101000000+00'00'"
+    assert len(("D:" + stamp).encode()) == len(old), stamp
+    raw = raw.replace(old, ("D:" + stamp).encode())
     assert len(raw) == n0 and b"eportLab" not in raw and b"reportlab" not in raw.lower()
     open(path, "wb").write(raw)
     cap = []
@@ -489,17 +496,17 @@ def write_guidance():
                        "households: the rest multiplied by the parish's households and divided by the households of all "
                        "the qualifying parishes. Households are the dwellings on the council tax valuation list for the "
                        "parish at 1 October 2026. Each grant is rounded to the nearest pound once its share is worked "
-                       "out. Any part of a parish's 2026 Flood Ready award still unpaid at 31 October 2026 is paid with "
-                       "the 2027 grant.", body),
+                       "out.", body),
+             Paragraph("The Fund pays an award to the parish council or, at the parish council's written request, to "
+                       "its clerk or to a village body it names. Any part of a parish's 2026 Flood Ready award still "
+                       "unpaid at 31 October 2026 is paid with the 2027 grant.", body),
              Paragraph("4. Property flood resilience survey vouchers", h),
-             Paragraph("A voucher is offered to every dwelling at ground floor that the design flood would reach. A "
-                       "dwelling is a self-contained home: an address register record in a residential class (codes "
-                       "beginning RD or RH); a parent record for a building of flats is not a dwelling, and a flat "
-                       "above the ground floor of its building is not offered a voucher. The design flood reaches a "
-                       "dwelling when the peak stage of the model storage area it stands in is above the dwelling's "
-                       "threshold level, both in metres above Ordnance Datum Newlyn. The threshold level is the level "
-                       "the 2022 property survey recorded for the dwelling or for "
-                       "the building it is in, or its ground level plus 0.15 m where the survey recorded neither.", body),
+             Paragraph("A voucher is offered to every home on the council's address register whose ground floor the "
+                       "design flood would reach. The record of a building of flats is not a home, and a flat above the "
+                       "ground floor of its building is not offered a voucher. The design flood reaches a home when the "
+                       "peak stage of the model storage area it stands in is above the home's threshold level, both in "
+                       "metres above Ordnance Datum Newlyn: the level the 2022 property survey recorded for the home or "
+                       "for the building it is in, or its ground level plus 0.15 m where the survey recorded neither.", body),
              Paragraph("5. Timetable", h),
              Paragraph("Lists to the trustees by 18 November 2026; offers sent by 4 December 2026; kits delivered "
                        "before 31 March 2027.", body),
@@ -513,69 +520,131 @@ def write_guidance():
         s.append(tb)
         s.append(Spacer(1, 6))
         s.append(Paragraph("Hawkesbridge West parish was merged into Hawkesbridge North on 1 April 2025.", small))
+        s.append(Spacer(1, 14))
+        sign = [["Approved for the trustees", "", ""],
+                ["Kirsty Grant", "Chair of Trustees", "24 September 2026"],
+                ["Mitchell Metcalfe", "Treasurer", "24 September 2026"],
+                ["Next review", "September 2027", ""]]
+        tb = Table(sign, colWidths=[52 * 2.83, 52 * 2.83, 52 * 2.83])
+        tb.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.5), ("FONT", (0, 0), (0, 0), "Helvetica-Bold", 8.5),
+                                ("LINEABOVE", (0, 1), (-1, 1), 0.4, colors.grey), ("TOPPADDING", (0, 1), (-1, -1), 5)]))
+        s.append(tb)
         return s
 
     _pdf(os.path.join(TARGET, "flood_ready_fund_guidance_2027.pdf"), "Flood Ready Fund 2027 guidance",
-         "Quarnell Valley Community Foundation", story, "20260924111500")
+         "Gareth Johnston", story, "20260924111537+01'00'", "Flood Ready Fund 2027 guidance, version 3")
 
 
 def write_model_report():
-    from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
+    from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, KeepTogether
     from reportlab.lib import colors
     body, h, t, small = styles()
+    from reportlab.lib.styles import ParagraphStyle
+    h3 = ParagraphStyle("h3", parent=body, fontName="Helvetica-Bold", fontSize=9.5, spaceBefore=4, spaceAfter=2)
+
+    def table(data, widths, style_extra=(), font=8.5):
+        tb = Table(data, colWidths=[w * 2.83 for w in widths], repeatRows=1)
+        st = [("FONT", (0, 0), (-1, -1), "Helvetica", font), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", font),
+              ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.black), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+              ("TOPPADDING", (0, 0), (-1, -1), 2)]
+        tb.setStyle(TableStyle(st + list(style_extra)))
+        return tb
+
+    def ha(sa):
+        poly = W.SA_POLY[sa]
+        a = 0.0
+        for k in range(len(poly)):
+            x1, y1 = poly[k]
+            x2, y2 = poly[(k + 1) % len(poly)]
+            a += x1 * y2 - x2 * y1
+        return abs(a) / 2 * 100
 
     def story():
         s = [Paragraph("Hawkesbridge Council and the Quarnell Catchment Partnership", small),
              Paragraph("River Quarnell flood model 2025 (QRN25): summary report", t),
              Paragraph("Report QCP-FM-25-04, issue 2, February 2026. Prepared by Eleanor Rose, hydraulic modeller, "
-                       "for the Quarnell Catchment Partnership; checked by Abdul Ahmed. Issue 1 (November 2025) was "
-                       "issued for consultation.", small), Spacer(1, 6),
-             Paragraph("1. Scope", h),
-             Paragraph("QRN25 replaces the 2023 model (QRN23). It represents the River Quarnell from Quarnell Head to "
-                       "the Hawkesbridge weir and the lower reaches of Hollin Beck, Ravelsby Brook and Lunnerby Beck. The "
-                       "channels are a one-dimensional model; the floodplain is represented as fourteen storage areas "
-                       "linked to the channels and to each other by spill units over banks, walls and road embankments. "
-                       "Storage area boundaries are supplied as polygons (storage_areas_QRN25.geojson).", body),
-             Paragraph("2. Hydrology and design events", h),
-             Paragraph("Design inflows use the revitalised rainfall-runoff method with a 2025 review of the Hollin "
-                       "Beck and Ravelsby Brook gauges. Run D100CC is the 1 in 100 annual chance event with the 2080s "
-                       "central climate change allowance applied to peak rainfall intensity, the storm starting at hour "
-                       "0 and the run lasting 120 hours. Run D100CC is the planning event used by the council and its "
-                       "partners.", body),
-             Paragraph("3. Outputs", h),
-             Paragraph("For each run the model reports the stage in every storage area at hourly intervals from the "
-                       "start of the storm. Stages are in metres above Ordnance Datum Newlyn. Survey levels used to "
-                       "build the model that had been taken to the Quarnell Navigation Datum, which lies 0.42 m below "
-                       "Ordnance Datum Newlyn, were converted before use.", body),
-             Paragraph("4. Calibration", h),
-             Paragraph("The model was calibrated to the July 2021 and February 2020 events. Peak levels at the four "
-                       "gauges are reproduced within 0.12 m.", body)]
-        data = [["Gauge", "Event", "Recorded peak (mAOD)", "Modelled peak (mAOD)"],
-                ["Hollin Beck at Hollinside", "July 2021", "43.07", "43.15"],
-                ["Ravelsby Brook at Ravelsby Bridge", "July 2021", "38.92", "38.86"],
-                ["Quarnell at Yarrowcote", "February 2020", "29.94", "30.03"],
-                ["Quarnell at Hawkesbridge weir", "February 2020", "23.61", "23.49"]]
-        tb = Table(data, colWidths=[64 * 2.83, 30 * 2.83, 36 * 2.83, 36 * 2.83])
-        tb.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.5), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.5),
-                                ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.black)]))
-        s.append(tb)
-        s.append(Spacer(1, 8))
-        s.append(Paragraph("5. Peak stages, run D100CC", h))
+                       "for the Quarnell Catchment Partnership; checked by Abdul Ahmed.", small), Spacer(1, 4)]
+        s.append(table([["Issue", "Date", "Purpose", "Prepared", "Checked"],
+                        ["1", "November 2025", "Draft for consultation with the partners", "ER", "AA"],
+                        ["2", "February 2026", "Final; model adopted for planning from March 2026", "ER", "AA"]],
+                       [12, 26, 82, 20, 20], [("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e6e9ee"))], font=8))
+        s += [Spacer(1, 6), Paragraph("1. Introduction", h),
+              Paragraph("QRN25 replaces the 2023 model (QRN23) as the partnership's model of the River Quarnell for "
+                        "planning, emergency planning and scheme appraisal. It represents the River Quarnell from "
+                        "Quarnell Head to the Hawkesbridge weir and the lower reaches of Hollin Beck, Ravelsby Brook and "
+                        "Lunnerby Beck. This summary records how the model was built, the hydrology, the calibration and "
+                        "the design results; the supporting records are listed in the appendix schedule at the end.", body),
+              Paragraph("2. Model build", h),
+              Paragraph("2.1 Channels", h3),
+              Paragraph("The channels are a one-dimensional model built from 412 surveyed cross-sections of the 2019 "
+                        "channel survey, with 23 bridges, 9 culverts and 2 weirs represented as structures. Bank and wall "
+                        "crests come from the same survey.", body),
+              Paragraph("2.2 Floodplain", h3),
+              Paragraph("The floodplain is represented as fourteen storage areas linked to the channels and to each "
+                        "other by spill units over banks, walls and road embankments. Each storage area's stage-volume "
+                        "relationship comes from the 2019 LiDAR survey. Storage area boundaries are supplied as polygons "
+                        "(storage_areas_QRN25.geojson).", body)]
+        data = [["Storage area", "Name", "Area (ha)", "Spills to"]]
+        reach = {"HB": "Hollin Beck", "SB": "Ravelsby Brook", "MW": "Lunnerby Beck", "LD": "River Quarnell"}
+        for sa in W.SA:
+            data.append([sa, W.SA[sa][0], "{:,.0f}".format(ha(sa)), reach[sa[3:5]]])
+        s.append(table(data, [26, 58, 20, 36], [("ALIGN", (2, 1), (2, -1), "RIGHT")], font=8))
+        s += [Spacer(1, 4),
+              Paragraph("Areas are measured on the storage area polygons; the stage-volume tables are in Appendix B.",
+                        small),
+              Paragraph("3. Hydrology", h),
+              Paragraph("Design inflows use the revitalised rainfall-runoff method with a 2025 review of the Hollin Beck "
+                        "and Ravelsby Brook gauges. Run D100CC is the 1 in 100 annual chance event with the 2080s central "
+                        "climate change allowance (40 per cent) applied to peak rainfall intensity, the storm starting at "
+                        "hour 0 and the run lasting 120 hours. Run D100CC is the planning event used by the council and "
+                        "its partners.", body)]
+        s.append(table([["Inflow boundary", "Catchment (km2)", "D100CC peak inflow (m3/s)"],
+                        ["River Quarnell at Quarnell Head", "142.6", "118.4"],
+                        ["Hollin Beck", "18.3", "31.2"],
+                        ["Ravelsby Brook", "12.7", "24.6"],
+                        ["Lunnerby Beck", "15.1", "27.9"],
+                        ["Lateral inflows, Whinnerby to Hawkesbridge", "64.0", "41.5"]],
+                       [70, 30, 44], [("ALIGN", (1, 1), (-1, -1), "RIGHT")]))
+        s += [Spacer(1, 6), Paragraph("4. Calibration and verification", h),
+              Paragraph("The model was calibrated to the July 2021 and February 2020 events. Peak levels at the four "
+                        "gauges are reproduced within 0.12 m, and 34 of the 41 wrack marks surveyed after the July 2021 "
+                        "event within 0.15 m. The July 2021 hindcast (run JUL21) is supplied with the design outputs.", body)]
+        s.append(table([["Gauge", "Event", "Recorded (mAOD)", "Modelled (mAOD)", "Difference (m)"],
+                        ["Hollin Beck at Hollinside", "July 2021", "43.07", "43.15", "+0.08"],
+                        ["Ravelsby Brook at Ravelsby Bridge", "July 2021", "38.92", "38.86", "-0.06"],
+                        ["Quarnell at Yarrowcote", "February 2020", "29.94", "30.03", "+0.09"],
+                        ["Quarnell at Hawkesbridge weir", "February 2020", "23.61", "23.49", "-0.12"]],
+                       [56, 26, 28, 28, 24], [("ALIGN", (2, 1), (-1, -1), "RIGHT"),
+                                              ("GRID", (0, 0), (-1, -1), 0.25, colors.grey)]))
+        s += [Spacer(1, 6), Paragraph("5. Outputs and datum", h),
+              Paragraph("For each run the model reports the stage in every storage area at hourly intervals from the "
+                        "start of the storm. Stages are in metres above Ordnance Datum Newlyn. Survey levels used to "
+                        "build the model that had been taken to the Quarnell Navigation Datum, which lies 0.42 m below "
+                        "Ordnance Datum Newlyn, were converted before use.", body),
+              Paragraph("6. Design results, run D100CC", h)]
         data = [["Storage area", "Name", "Peak stage (mAOD)"]]
         for sa in W.SA:
             data.append([sa, W.SA[sa][0], "%.2f" % W.peak_stage(sa)])
-        tb = Table(data, colWidths=[30 * 2.83, 70 * 2.83, 36 * 2.83])
-        tb.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.5), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.5),
-                                ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.black)]))
-        s.append(tb)
-        s.append(Spacer(1, 8))
-        s.append(Paragraph("6. Limitations", h))
-        s.append(Paragraph("Storage areas represent water levels, not velocities. Levels inside a storage area are "
-                           "taken as level across it. The model does not represent blockage of culverts or bridges.", body))
+        s.append(table(data, [30, 70, 36], [("ALIGN", (2, 1), (2, -1), "RIGHT")]))
+        s += [Spacer(1, 4),
+              Paragraph("Peak stage is the highest hourly stage of the run in each storage area.", small),
+              Paragraph("7. Limitations", h),
+              Paragraph("Storage areas represent water levels, not velocities, and levels inside a storage area are "
+                        "taken as level across it. The model does not represent blockage of culverts or bridges, "
+                        "groundwater emergence or surface water from the hillsides. The 2080s allowance is the central "
+                        "estimate; the upper end allowance has not been run.", body),
+              Paragraph("Appendices (issued separately as QCP-FM-25-04 A to E)", h)]
+        s.append(table([["Appendix", "Content"],
+                        ["A", "Model schematic and node schedule"],
+                        ["B", "Structure schedule and storage area stage-volume tables"],
+                        ["C", "Hydrology calculation record"],
+                        ["D", "Calibration and verification plots"],
+                        ["E", "Run log and mass balance checks"]],
+                       [24, 120], font=8))
         return s
 
     _pdf(os.path.join(TARGET, "quarnell_flood_model_report_2025.pdf"), "QRN25 summary report QCP-FM-25-04",
-         "Quarnell Catchment Partnership", story, "20260216093000")
+         "Eleanor Rose", story, "20260216093842+00'00'", "QRN25 summary report QCP-FM-25-04, issue 2")
 
 
 # ---------------------------------------------------------------------------------------------- golden
@@ -676,9 +745,9 @@ def write_golden(figs):
     ws2.cell(ws2.max_row, 2).number_format = "#,##0"
 
     ws3 = wb.create_sheet("July 2021 closures")
-    header(ws3, ["Closure ref", "Road", "Location", "Hours closed"], [13, 8, 30, 10])
+    header(ws3, ["Closure site (duty log)", "Road", "First closure ref", "Hours closed in all"], [32, 8, 14, 12])
     for sid, road, loc, bars, p in A.SECTIONS:
-        ws3.append([sid, road, loc, figs["ask2_closure_hours"][sid]])
+        ws3.append([loc, road, sid, figs["ask2_closure_hours"][sid]])
 
     ws4 = wb.create_sheet("2026 awards unpaid")
     header(ws4, ["Parish", "2026 award ref", "Unpaid at 31 Oct 2026 (GBP)"], [22, 14, 16])
@@ -701,11 +770,12 @@ def write_golden(figs):
         "households, rounded to the nearest pound.",
         "PFR vouchers. Section 4 of the guidance. Register levels from source SURV08 are on the Quarnell Navigation "
         "Datum and were raised 0.42 m to Ordnance Datum Newlyn before comparison.",
-        "July 2021 closures. Highways duty log and police control room log (UTC, shown here in BST). A section's hours "
-        "are the time any closure was in force on it; the B5131 route closure (Hollinside to Lunnerby) is counted on "
-        "each of its three sections.",
-        "2026 awards. Award and variations less payments posted to 31 October 2026; cheques the bank cancelled are "
-        "treated as unpaid.",
+        "July 2021 closures. Highways duty log (BST) and police control room log (UTC, shown here in BST). A site's hours "
+        "are the time any closure was in force on it, counted once where closures overlap; the B5131 route closure is "
+        "counted at each site the duty log entered it against.",
+        "2026 awards. Award and variations less payments posted to 31 October 2026, including those made at a parish "
+        "council's request to its clerk or a village body (guidance section 3); cheques the bank cancelled are treated "
+        "as unpaid.",
     ]
     for line in notes:
         ws5.append([line])
@@ -755,8 +825,9 @@ def write_golden(figs):
     fig.text(0.02, 0.012, "Households: council tax valuation list, 1 October 2026. Grants: Flood Ready Fund guidance 2027, "
              "section 3.", fontsize=7, color=ink2)
     fig.tight_layout(rect=(0, 0.08, 1, 0.86))
-    fig.savefig(os.path.join(GOLDEN, "flood_ready_parishes_2027.png"), facecolor=surface,
-                metadata={"Software": None})
+    fig.savefig(os.path.join(GOLDEN, "flood_ready_parishes_2027.pdf"), facecolor=surface, format="pdf",
+                metadata={"Creator": None, "Producer": None, "CreationDate": None, "Author": "Lindsey Mistry",
+                          "Title": "Flood Ready budget 2027 by parish"})
     plt.close(fig)
 
 
@@ -782,7 +853,7 @@ def write_metadata():
         "flood_warning_areas_2025.geojson": "flood warning areas in the valley",
     }
     meta = {"task": "task285", "decision": "which parishes receive the 2027 Flood Ready grants, and the households in each",
-            "deliverables": ["flood_ready_parishes_2027.xlsx", "flood_ready_parishes_2027.png"],
+            "deliverables": ["flood_ready_parishes_2027.xlsx", "flood_ready_parishes_2027.pdf"],
             "distractor_files": ["target/rest_centres_2026.xlsx", "target/flood_warning_areas_2025.geojson",
                                  "target/storage_area_stages_QRN25_JUL21_hindcast.csv"],
             "files": {k: {"source": "constructed operating record (synthetic, task285 generator)", "date": "2026-11-02",
@@ -794,8 +865,9 @@ def write_metadata():
 
 
 def main():
-    if os.path.isdir(TARGET):
-        shutil.rmtree(TARGET)
+    for folder in (TARGET, GOLDEN):
+        if os.path.isdir(folder):
+            shutil.rmtree(folder)
     os.makedirs(TARGET)
     write_stages()
     write_sa_geojson()

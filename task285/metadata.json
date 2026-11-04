@@ -2,7 +2,7 @@
  "decision": "which parishes receive the 2027 Flood Ready grants, and the households in each",
  "deliverables": [
   "flood_ready_parishes_2027.xlsx",
-  "flood_ready_parishes_2027.png"
+  "flood_ready_parishes_2027.pdf"
  ],
  "distractor_files": [
   "target/rest_centres_2026.xlsx",

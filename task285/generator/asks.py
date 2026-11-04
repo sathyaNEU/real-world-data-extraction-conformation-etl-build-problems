@@ -155,7 +155,7 @@ def build_register():
                 cls = rnd.choice(NONRES)
                 dwelling = False
             else:
-                cls = rnd.choices(["RD02", "RD03", "RD04", "RD08", "RH02"], [30, 28, 34, 4, 2])[0]
+                cls = rnd.choices(["RD02", "RD03", "RD04", "RD08", "RD03"], [30, 28, 34, 4, 2])[0]
                 dwelling = True
             thr = round(rnd.uniform(0.08, 0.40), 2)
             if sa and abs(ground + thr - peak) < 0.012:

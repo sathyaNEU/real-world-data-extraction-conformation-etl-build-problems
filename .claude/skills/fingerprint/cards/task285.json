@@ -70,12 +70,14 @@
       "Lindsey Mistry",
       "Eleanor Rose",
       "Abdul Ahmed",
-      "Paul Lees"
+      "Paul Lees",
+      "Kirsty Grant",
+      "Mitchell Metcalfe"
     ]
   },
   "deliverables": [
     "flood_ready_parishes_2027.xlsx",
-    "flood_ready_parishes_2027.png"
+    "flood_ready_parishes_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
@@ -91,6 +93,6 @@
     "task269": "task269 architecture 2 set an OSCE's station count from variance components under a fixed blueprint; this build reads a network's reachability through time."
   },
   "lineage": [],
-  "notes": "time_semantics WARN answered in the design note: every field read correctly (the stage hydrographs, the surveyed levels, the 0.25 m standard, the plan's definition of cut off) still leaves the envelope route on the wrong parishes, because the decisive step is reading the network at each hour, which no field or rule performs. Stage 3 (2026-11-04): shape redrawn from 10 to 05 (allocation of the trustees' GBP 30,000 budget between the parishes cut off) after guard.py heart BLOCKed ban.shape against task210, drawn earlier the same day with shape 10; the prompt, the guidance's grant clause and the workbook changed with it.",
+  "notes": "time_semantics WARN answered in the design note: every field read correctly (the stage hydrographs, the surveyed levels, the 0.25 m standard, the plan's definition of cut off) still leaves the envelope route on the wrong parishes, because the decisive step is reading the network at each hour, which no field or rule performs. Stage 3 (2026-11-04): shape redrawn from 10 to 05 (allocation of the trustees' GBP 30,000 budget between the parishes cut off) after guard.py heart BLOCKed ban.shape against task210, drawn earlier the same day with shape 10; the prompt, the guidance's grant clause and the workbook changed with it. Stage 4 pass 1 (2026-11-04): ask-layer repair after the judge's Gates C and E on the closure hours and the unpaid awards; the chart moved from png to pdf under the deliverable-set quota.",
   "registered": "2026-11-04T14:19:15Z"
 }

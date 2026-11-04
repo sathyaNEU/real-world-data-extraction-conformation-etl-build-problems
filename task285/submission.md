@@ -23,8 +23,8 @@ Each loses every road route at some hour of the event, the three beckside villag
 3. Searched the open network from the hospital's node HBN-3224 at each hour and listed every Annex A access point it could not reach at some hour: Hollinside, Ravelsby Bridge, Lunnerby, Burnishaw, Wrennick and Cottergill.
 4. Took the households of council_tax_dwellings_by_parish_oct2026.csv and shared the GBP 30,000 as guidance section 3 sets out, GBP 3,000 to each parish and the rest in proportion to households, each grant rounded once: 2,093 households, grants from GBP 3,998 to GBP 6,400.
 5. Vouchers (guidance section 4): counted the RD and RH records of address_register_extract_oct2026.csv inside a storage area polygon, parent shells out and flats not among their building's ground floor units in pfr_property_survey_2022.xlsx out, whose storage area's peak stage is above the survey's threshold for the dwelling or its building, else above the register ground level plus 0.15 m, the SURV08 levels raised 0.42 m to Ordnance Datum Newlyn (they sit 0.42 m below the survey's own ground levels at the same UPRNs; model report section 3), old code E04014119 read as Hawkesbridge North.
-6. Closures: grouped the rows of highways_road_closures_jul2021.csv by road and place (three re-closures carry another section's reference), applied the B5131 route closure to the three B5131 sections between its ends, converted police_road_closures_jul2021.csv from UTC to local time, ran the closure handed to highways to the first barrier at its section, and took the union of the closures in force.
-7. Unpaid awards: each 2026 award with its variation in flood_ready_ledger_2026.xlsx less the payments posted to 31 October 2026, the cancelled cheques in bank_cancelled_cheques_2026.csv left unpaid, an instalment under a closed 2025 reference applied to its payee's 2026 award and one paid to a clerk or village hall under a 2026 reference applied to that award.
+6. Closures: grouped every row of highways_road_closures_jul2021.csv by its closure site (road and place, not the closure reference, which three re-closures and the B5131 route closure carry from another entry), added the police_road_closures_jul2021.csv closures at the same sites converted from UTC to BST, ran the closure handed to highways to the first barrier at its site, and counted the hours in all, overlapping closures once.
+7. Unpaid awards: each 2026 award with its variation in flood_ready_ledger_2026.xlsx less the payments posted to 31 October 2026, the cancelled cheques in bank_cancelled_cheques_2026.csv left unpaid, an instalment under a closed 2025 reference applied to its payee's 2026 award, and one paid under a 2026 reference to the parish's clerk or a village body counted as paid (guidance section 3).
 8. Shared the 2027 budget between the six parishes cut off, GBP 30,000 in all.
 
 ## 4. Deliverable Answers
@@ -71,16 +71,16 @@ Each loses every road route at some hour of the event, the three beckside villag
    - Hawkesbridge North: 10
    - Hawkesbridge South: 315
    - All parishes: 1,254
-3. Hours each road section the July 2021 flood closed stayed closed, to the nearest hour:
-   - HW21-07-01, B5131 Hollin Beck, Hollinside: 17 hours
-   - HW21-07-02, B5131 Ravelsby Brook, Ravelsby Bridge: 15 hours
-   - HW21-07-03, B5131 Lunnerby Beck, Lunnerby: 16 hours
-   - HW21-07-04, C2041 Whinnerby Lane ford: 5 hours
-   - HW21-07-05, U4108 Highfold Road, Cote Bridge: 6 hours
-   - HW21-07-06, C2045 Hepplewick Road, Mill Bridge: 8 hours
-   - HW21-07-07, C2043 Yarrowcote Road, Ings Bend: 13 hours
-   - HW21-07-08, C2047 Tolmarsh Lane, Ford Bridge: 3 hours
-   - HW21-07-09, U4105 Nettlecote Lane, Nettle Gill: 7 hours
+3. Hours in all each closure site in the highways authority's July 2021 duty log was closed by highways or police, to the nearest hour:
+   - Hollin Beck, Hollinside, B5131 (first entered as HW21-07-01): 17 hours
+   - Ravelsby Brook, Ravelsby Bridge, B5131 (first entered as HW21-07-02): 15 hours
+   - Lunnerby Beck, Lunnerby, B5131 (first entered as HW21-07-03): 16 hours
+   - Whinnerby Lane ford, C2041 (first entered as HW21-07-04): 5 hours
+   - Highfold Road, Cote Bridge, U4108 (first entered as HW21-07-05): 6 hours
+   - Hepplewick Road, Mill Bridge, C2045 (first entered as HW21-07-06): 8 hours
+   - Yarrowcote Road, Ings Bend, C2043 (first entered as HW21-07-07): 13 hours
+   - Tolmarsh Lane, Ford Bridge, C2047 (first entered as HW21-07-08): 3 hours
+   - Nettlecote Lane, Nettle Gill, U4105 (first entered as HW21-07-09): 7 hours
 4. Each parish's 2026 Flood Ready award still unpaid at 31 October 2026, to the nearest pound:
    - Hollinside (FR26-003): GBP 420
    - Ravelsby Bridge (FR26-005): GBP 770
@@ -94,6 +94,6 @@ Each loses every road route at some hour of the event, the three beckside villag
    - Wrennick (FR26-018): GBP 460
    - Upper Quarnell (FR26-019): GBP 132
 
-### flood_ready_parishes_2027.png
+### flood_ready_parishes_2027.pdf
 
 1. One horizontal bar per cut-off parish of its 2027 grant, split into the base grant and its household share, each labelled with the grant and the parish's households, the largest at the top.

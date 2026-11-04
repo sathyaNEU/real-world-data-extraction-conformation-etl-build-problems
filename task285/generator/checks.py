@@ -211,27 +211,42 @@ edge2 = {k: 0.5 - abs(v - round(v)) for k, v in a2.items()}
 ok("ask 2 every figure at least 0.2 h from its rounding edge", min(edge2.values()) >= 0.2, edge2)
 import ceiling as CL
 g2 = FIG["ask2_closure_hours"]
-r_ref = CL.ask2(True, True, True, True)
-r_route = CL.ask2(False, True, True, False)
-r_blank = CL.ask2(False, True, False, True)
+r_ref = CL.ask2(True, True, True)
+r_blank = CL.ask2(False, True, False)
+r_span = CL.ask2_span()
 moved_ref = [k for k in g2 if r_ref.get(k) != g2[k]]
-moved_route = [k for k in g2 if r_route.get(k) != g2[k]]
-ok("ask 2 device P1 (closures keyed by the reference a row carries) moves six sections", len(moved_ref) >= 6, moved_ref)
-ok("ask 2 device P2 (the B5131 route closure kept apart from its sections) moves the three B5131 sections",
-   sorted(moved_route) == ["HW21-07-01", "HW21-07-02", "HW21-07-03"], moved_route)
-ok("ask 2 the police closure handed to highways moves its section when left out",
+ok("ask 2 device P1 (closures keyed by the reference a row carries, the route closure under its own) moves every site",
+   len(moved_ref) == len(g2), moved_ref)
+ok("ask 2 the police closure handed to highways moves its site when left out",
    [k for k in g2 if r_blank.get(k) != g2[k]] == ["HW21-07-08"])
 police_secs = sorted(sid for sid, road, loc, bars, pol in A.SECTIONS if pol)
-r_local = CL.ask2(False, True, True, True, utc_convert=False)
-ok("ask 2 hazard: the police clock read as local time moves every section the police closed",
+r_local = CL.ask2(False, True, True, utc_convert=False)
+ok("ask 2 hazard: the police clock read as BST moves every site the police closed",
    len(police_secs) >= 5 and all(r_local[s] != g2[s] for s in police_secs), (police_secs, r_local))
-ok("ask 2 blind response: no single value holds more than a quarter of the sections",
+moved_span = sorted(k for k in g2 if r_span.get(k) != g2[k])
+ok("ask 2 'hours in all' is the union in force: first closing to last reopening moves the sites with a gap "
+   "(Nettlecote, Highfold, Yarrowcote)", moved_span == ["HW21-07-05", "HW21-07-07", "HW21-07-09"], (moved_span, r_span))
+ok("ask 2 blind response: no single value holds more than a quarter of the sites",
    max(Counter(g2.values()).values()) <= len(g2) / 4, Counter(g2.values()))
 hw = list(csv.DictReader(open(os.path.join(T, "highways_road_closures_jul2021.csv"), encoding="utf-8")))
-b5131 = [r for r in hw if r["road_number"] == "B5131" and " to " not in r["location"]]
-ok("ask 2 the route closure's two ends are B5131 sections in the log, and every B5131 section lies between them on the "
-   "B5131", {r["location"].split(",")[-1].strip() for r in b5131} >= {"Hollinside", "Lunnerby"}
-   and len({r["location"] for r in b5131}) == 3)
+pol = list(csv.DictReader(open(os.path.join(T, "police_road_closures_jul2021.csv"), encoding="utf-8")))
+sites = {(s[1], s[2].split(",")[-1].strip()) for s in A.SECTIONS}
+ok("ask 2 the duty log's clock is in its own header (closed_bst, reopened_bst) and the police log's in its own "
+   "(closed_utc, opened_utc)", "closed_bst" in hw[0] and "reopened_bst" in hw[0] and "closed_utc" in pol[0])
+for r in hw:
+    site = (r["road_number"], r["location"].split(",")[-1].strip())
+    ok("ask 2 closure %s at %s is entered against one of the log's nine closure sites" % (r["closure_ref"], r["location"]),
+       site in sites, site)
+route = [r for r in hw if r["barrier_position"].startswith("route closure")]
+ok("ask 2 the B5131 route closure is entered once at each closure site it covered, the three B5131 sites, and nowhere "
+   "else", sorted(r["location"] for r in route) == sorted(s[2] for s in A.SECTIONS if s[0] in A.ROUTE[4])
+   and len({(r["closed_bst"], r["reopened_bst"], r["closure_ref"]) for r in route}) == 1, [r["location"] for r in route])
+for r in pol:
+    road, place = r["location_text"].split(" ", 1)
+    ok("ask 2 police incident %s is at one of the log's closure sites" % r["incident"], (road, place) in sites)
+gtxt2 = V.pdf_text("flood_ready_fund_guidance_2027.pdf").replace("\n", " ")
+ok("ask 2 nothing in the guidance or the model report speaks of a closure site, a route closure or a diversion",
+   not re.search(r"closure site|route closure|diversion", gtxt2 + V.pdf_text("quarnell_flood_model_report_2025.pdf")))
 
 a3 = A.ask3_golden()
 r3_ref = CL.ask3(True, "reference")
@@ -257,6 +272,16 @@ ok("ask 3 every re-keyed or re-addressed instalment fits inside its 2026 award's
 ok("ask 3 the payment posted after 31 October moves Wrennick when counted",
    a3["Wrennick"] == 460 and any(p[0] > "2026-10-31" for p in dict((x[0], x[4]) for x in A.AWARDS_2026)["Wrennick"]))
 ok("ask 3 blind response: no parish's unpaid figure is nil", all(v != 0 for v in a3.values()), a3)
+rule = ("The Fund pays an award to the parish council or, at the parish council's written request, to its clerk or to "
+        "a village body it names.")
+ok("ask 3 the guidance files the Fund's general payment rule once", " ".join(gtxt2.split()).count(rule) == 1)
+ok("ask 3 the golden is the rule's literal reading: every instalment to another payee goes to a clerk or a village body "
+   "and carries its parish's 2026 award reference, and the golden counts it as paid",
+   all(("Clerk to" in p or "Village" in p) for p in A.PAYEE.values())
+   and all(a3[k] != r3_pay[k] for k in A.PAYEE) and all(a3[k] == r3_ref[k] for k in A.PAYEE))
+ok("ask 3 no ledger row carries a remark on who asked for a payment (the ledger has no remark column)",
+   [c.value for c in next(load_workbook(os.path.join(T, "flood_ready_ledger_2026.xlsx"), read_only=True)["Transactions"].iter_rows(max_row=1))]
+   == ["Posted", "Type", "Reference", "Payee", "Method", "Cheque no", "Amount GBP"])
 
 # ------------------------------------------------------------------------------- separation line
 main_files = {"storage_area_stages_QRN25_D100CC.csv", "highways_levels_survey_2019.csv", "highways_network_2025.geojson",
@@ -325,6 +350,21 @@ sigs = [f for f in files if f.endswith((".pdf", ".xlsx")) and re.search(rb"repor
         b"".join(zipfile.ZipFile(os.path.join(T, f)).read(n) for n in zipfile.ZipFile(os.path.join(T, f)).namelist()
                  if n.startswith("docProps/")), re.I)]
 ok("H1 no writer signature in any shipped PDF or workbook", not sigs, sigs)
+from pypdf import PdfReader
+for f, who in (("flood_ready_fund_guidance_2027.pdf", "Gareth Johnston"), ("quarnell_flood_model_report_2025.pdf", "Eleanor Rose")):
+    md = PdfReader(os.path.join(T, f)).metadata
+    ok("realism: %s names its author (%s), no creator or producer, and a creation time with real seconds" % (f, who),
+       md.get("/Author") == who and not md.get("/Creator") and not md.get("/Producer")
+       and md.get("/CreationDate", "")[14:16] not in ("", "00"), dict(md))
+mtxt = " ".join(V.pdf_text("quarnell_flood_model_report_2025.pdf").split())
+gtxt3 = " ".join(V.pdf_text("flood_ready_fund_guidance_2027.pdf").split())
+ok("leak: the model report says nothing of one storage area peaking or draining against another, of routes or of "
+   "isolation", not re.search(r"\broutes?\b|isolat|cut off|\bdrain|\blags?\b|earlier than|later than|"
+                              r"peaks? (?:before|after)|time to peak|\baccess", mtxt, re.I), mtxt[:200])
+ok("leak: the guidance names no hour, time step or moment of the flood", not re.search(r"\bhour|\bmoment|time step|at any time",
+                                                                                     gtxt3, re.I))
+ok("realism: the guidance carries the trustees' approval block with names from the card",
+   all(n in gtxt3 for n in ("Kirsty Grant", "Mitchell Metcalfe", "Approved for the trustees")))
 zpath = os.path.join(TASK, "target.zip")
 zfresh = os.path.exists(zpath) and sorted(zipfile.ZipFile(zpath).namelist()) == sorted("target/" + f for f in files) and all(
     zipfile.ZipFile(zpath).read("target/" + f) == open(os.path.join(T, f), "rb").read() for f in files)

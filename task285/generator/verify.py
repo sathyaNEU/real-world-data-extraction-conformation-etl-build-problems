@@ -142,7 +142,7 @@ def ask1():
     code_to_parish["E04014119"] = "Hawkesbridge North"
     out = defaultdict(int)
     for r in reg:
-        if not (r["CLASS"].startswith("RD") or r["CLASS"].startswith("RH")):
+        if not r["CLASS"].startswith("RD"):
             continue
         x, y = float(r["EASTING"]), float(r["NORTHING"])
         sa = next((s for s, ring in polys.items() if in_poly(x, y, ring)), None)
@@ -165,33 +165,24 @@ def ask1():
 
 
 def ask2():
+    """hours in all each closure site in the highways duty log was closed, by highways or police: the union of every
+    closure in force at the site, police times converted from UTC to BST."""
     spans = defaultdict(list)
-    routes = []
     for r in rows("highways_road_closures_jul2021.csv"):
-        a = datetime.strptime(r["closed_local"], "%d/%m/%Y %H:%M")
-        b = datetime.strptime(r["reopened_local"], "%d/%m/%Y %H:%M")
-        if " to " in r["location"]:
-            routes.append((r["road_number"], r["location"], a, b))
-            continue
-        spans[(r["road_number"], r["location"].split(",")[-1].strip())].append((a, b, r["closure_ref"]))
-    # a route closure closes every section of its road between its two ends (the B5131 sections all lie
-    # between Hollinside and Lunnerby on the network)
-    for road, loc, a, b in routes:
-        ends = [x.strip() for x in loc.split(" to ")]
-        for k in list(spans):
-            if k[0] == road:
-                spans[k].append((a, b, "route"))
-        assert all(any(k == (road, e) for k in spans) for e in ends), (road, ends)
-    # a section is a road at a place; it is labelled with the reference its first barrier row carries
-    ref = {k: min(z for z in v if z[2] != "route")[2] for k, v in spans.items()}
+        a = datetime.strptime(r["closed_bst"], "%d/%m/%Y %H:%M")
+        b = datetime.strptime(r["reopened_bst"], "%d/%m/%Y %H:%M")
+        own = not r["barrier_position"].startswith("route closure")
+        spans[(r["road_number"], r["location"].split(",")[-1].strip())].append((a, b, r["closure_ref"] if own else None))
+    # a site is labelled with the reference its first barrier carries
+    ref = {k: min(z for z in v if z[2])[2] for k, v in spans.items()}
     for r in rows("police_road_closures_jul2021.csv"):
         road, place = r["location_text"].split(" ", 1)
         a = datetime.strptime(r["closed_utc"], "%Y-%m-%dT%H:%MZ") + timedelta(hours=1)
         if r["opened_utc"]:
             b = datetime.strptime(r["opened_utc"], "%Y-%m-%dT%H:%MZ") + timedelta(hours=1)
         else:
-            # handed to highways: closed until the first highways barrier at the section went up
-            b = min(z[0] for z in spans[(road, place)] if z[2] != "route")
+            # handed to highways: closed until the first highways barrier at the site went up
+            b = min(z[0] for z in spans[(road, place)] if z[2])
         spans[(road, place)].append((a, b, None))
     out = {}
     for k, v in spans.items():

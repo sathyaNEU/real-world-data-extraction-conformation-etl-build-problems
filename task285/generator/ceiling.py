@@ -5,9 +5,8 @@ Routes scored figure by figure against figures.json:
                  closure with no opening run to the first barrier, the guidance's dwelling, flat and threshold rules
                  executed, cancelled cheques and the 31 October cut applied; reads every level as recorded and keys
                  every record by the reference it carries;
-  full includer  the cracker plus the datum seen and every closure keyed by road and place (the route closure
-                 kept as a closure of its own), keying ledger payments by payee because some references do not
-                 name a 2026 award;
+  full includer  the cracker plus the datum seen and every closure keyed by its site, keying ledger payments
+                 by payee because some references do not name a 2026 award;
   mirror         files the envelope (off the call) and stops at each ask's most attractive wrong rung: each block's
                  threshold for every flat in it, barrier rows added up by reference, the police closure with no
                  opening left out, every ledger payment counted against the reference it carries.
@@ -36,7 +35,7 @@ def ask1(datum_fix, upper_flats_out):
     code_to_parish["E04014119"] = "Hawkesbridge North"
     out = defaultdict(int)
     for r in V.rows("address_register_extract_oct2026.csv"):
-        if not (r["CLASS"].startswith("RD") or r["CLASS"].startswith("RH")):
+        if not r["CLASS"].startswith("RD"):
             continue
         x, y = float(r["EASTING"]), float(r["NORTHING"])
         sa = next((s for s, ring in polys.items() if V.in_poly(x, y, ring)), None)
@@ -55,27 +54,18 @@ def ask1(datum_fix, upper_flats_out):
     return out
 
 
-def ask2(by_ref, union, blank_to_barrier, route_to_sections=False, utc_convert=True):
+def ask2(by_ref, union, blank_to_barrier, utc_convert=True):
     hw = V.rows("highways_road_closures_jul2021.csv")
-    if route_to_sections:
-        route = [r for r in hw if " to " in r["location"]]
-        hw = [r for r in hw if " to " not in r["location"]]
     place = lambda r: (r["road_number"], r["location"].split(",")[-1].strip())
     first = {}
-    for r in sorted(hw, key=lambda r: datetime.strptime(r["closed_local"], "%d/%m/%Y %H:%M")):
-        first.setdefault(place(r), r["closure_ref"])
+    for r in sorted(hw, key=lambda r: datetime.strptime(r["closed_bst"], "%d/%m/%Y %H:%M")):
+        if not r["barrier_position"].startswith("route closure"):
+            first.setdefault(place(r), r["closure_ref"])
     spans = defaultdict(list)
     for r in hw:
-        a = datetime.strptime(r["closed_local"], "%d/%m/%Y %H:%M")
-        b = datetime.strptime(r["reopened_local"], "%d/%m/%Y %H:%M")
+        a = datetime.strptime(r["closed_bst"], "%d/%m/%Y %H:%M")
+        b = datetime.strptime(r["reopened_bst"], "%d/%m/%Y %H:%M")
         spans[r["closure_ref"] if by_ref else first[place(r)]].append((a, b))
-    if route_to_sections:
-        for r in route:
-            a = datetime.strptime(r["closed_local"], "%d/%m/%Y %H:%M")
-            b = datetime.strptime(r["reopened_local"], "%d/%m/%Y %H:%M")
-            for k, ref in first.items():
-                if k[0] == r["road_number"]:
-                    spans[ref].append((a, b))
     for r in V.rows("police_road_closures_jul2021.csv"):
         road, pl = r["location_text"].split(" ", 1)
         key = first[(road, pl)]
@@ -84,8 +74,8 @@ def ask2(by_ref, union, blank_to_barrier, route_to_sections=False, utc_convert=T
         if r["opened_utc"]:
             b = datetime.strptime(r["opened_utc"], "%Y-%m-%dT%H:%MZ") + off
         elif blank_to_barrier:
-            b = min(datetime.strptime(z["closed_local"], "%d/%m/%Y %H:%M") for z in hw
-                    if place(z) == (road, pl))
+            b = min(datetime.strptime(z["closed_bst"], "%d/%m/%Y %H:%M") for z in hw
+                    if place(z) == (road, pl) and not z["barrier_position"].startswith("route closure"))
         else:
             continue
         spans[key].append((a, b))
@@ -102,6 +92,31 @@ def ask2(by_ref, union, blank_to_barrier, route_to_sections=False, utc_convert=T
             v = m
         out[k] = int(round(sum((b - a).total_seconds() for a, b in v) / 3600))
     return out
+
+
+def ask2_span(by_ref=False):
+    """first closing to last reopening at each site, the reading the asking sentence's "in all" rules out."""
+    hw = V.rows("highways_road_closures_jul2021.csv")
+    place = lambda r: (r["road_number"], r["location"].split(",")[-1].strip())
+    first = {}
+    for r in sorted(hw, key=lambda r: datetime.strptime(r["closed_bst"], "%d/%m/%Y %H:%M")):
+        if not r["barrier_position"].startswith("route closure"):
+            first.setdefault(place(r), r["closure_ref"])
+    lo, hi = {}, {}
+    for r in hw:
+        k = first[place(r)]
+        a = datetime.strptime(r["closed_bst"], "%d/%m/%Y %H:%M")
+        b = datetime.strptime(r["reopened_bst"], "%d/%m/%Y %H:%M")
+        lo[k] = min(lo.get(k, a), a)
+        hi[k] = max(hi.get(k, b), b)
+    for r in V.rows("police_road_closures_jul2021.csv"):
+        road, pl = r["location_text"].split(" ", 1)
+        k = first[(road, pl)]
+        a = datetime.strptime(r["closed_utc"], "%Y-%m-%dT%H:%MZ") + timedelta(hours=1)
+        lo[k] = min(lo[k], a)
+        if r["opened_utc"]:
+            hi[k] = max(hi[k], datetime.strptime(r["opened_utc"], "%Y-%m-%dT%H:%MZ") + timedelta(hours=1))
+    return {k: int(round((hi[k] - lo[k]).total_seconds() / 3600)) for k in lo}
 
 
 def ask3(cancel, key):
@@ -150,7 +165,7 @@ def main():
     crack = score(ask1(False, True), ask2(True, True, True), ask3(True, "reference"))
     full = score(ask1(True, True), ask2(False, True, True), ask3(True, "payee"))
     mirror = score(ask1(False, False), ask2(True, False, False), ask3(False, "reference"))
-    gold = score(ask1(True, True), ask2(False, True, True, True), ask3(True, "award"))
+    gold = score(ask1(True, True), ask2(False, True, True), ask3(True, "award"))
     C = 38 + 7 + 55 * crack[3]
     S = 5 + 7 + 55 * mirror[3]
     print("| route | ask 1 kept | ask 2 kept | ask 3 kept | share of ask weight |")
