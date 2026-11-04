@@ -329,3 +329,144 @@ not allocated to districts, and no earlier designation, memo or ranking ships.
   repair (the extract notes out of the pack, leak.py sweeps 1 and 12 LEAK; "our 12 districts" out of the prompt;
   survivor anatomy written, precut 61 checks, 0 WARN) went green on every free gate with no graded figure moved and
   is not shipped; the shipped pack (5a46ee5a) stays at the portal, pending.
+- 2026-11-04, architecture 3 draw (the re-root after architecture 2's 11-01 SEND_BACK, run as a background agent of
+  the orchestrating session, under its stop rule of forty screens across five task types): 55 candidates screened across
+  the six task types that serve ETL, each with a default path ending wrong, the swap test, the survivor anatomy and the
+  bin test on paper, the strongest priced in code; none clears guard.py check and the three rules together, so no card
+  is registered and nothing is cut. The window at the draw is task276, task461 v2 and task193: emissions-inventory
+  BLOCKs on ban.pairing and ban.subdomain against task461 v2, and the strategies binding_constraint, other and
+  population_selection are banned against the three; probe cards on the other five cells clear every axis, so what
+  refuses them is the mechanism, line by line below (S3.1 to S3.52, three lines holding two or more screens). Read beside task464 architecture 5's cell map
+  (10-27), task479's screens 1 to 16 and task461 v2's screens 1 to 12, none of which is re-screened here.
+- S3.1, the strongest, emissions-inventory, written in full. Default path: each 2026 load at a terminal's uncontrolled
+  distillate bays charged by the loading-loss equation at the loaded product's own true vapour pressure (submerged
+  loading, dedicated normal service), about 0.0165 lb per 1,000 gal, which files every rack far under a 10-tonne
+  control threshold. Golden: a compartment whose previous load was petrol delivered through a Stage I station's vapour
+  balance returns holding saturated petrol vapour, so diesel loaded into it at an uncontrolled bay pushes out about 9
+  lb per 1,000 gal; the switch-loaded compartments read from each trailer's own load sequence across the main rack's
+  automation export and the distillate rack's older meter system. Swap: holds (no vapour space, displacement or vapour
+  balance in another field's nouns). Anatomy: Actor, Link (two systems, trailer identifiers crosswalked), Reflex,
+  Back-test (the vapour combustion unit's test confirms saturation at the petrol bays), Second use, Shock and Pins all hold
+  on paper. Bin: priced in proto_switch.py (session scratchpad, three seeds, six terminals): rung 0 files 0.2 to 0.8
+  tonnes per rack, the compartment-history golden 10 to 125, the trailer-level shortcuts (any petrol in 2026; any
+  petrol on the previous load) 2.0 and 1.6 times the golden. Dead the same hour, before any card: task461 v2 registered
+  this mechanism at 03:18Z (its driver: a transfer into a container pushes out whatever the container held, so the
+  release is set by the container's previous use), so the step is that build's, its honest strategy (other) is banned
+  against it, and the cell is barred besides.
+- S3.2, emissions-inventory, an anaerobic digester's gas holder venting at its relief valve only once a CHP outage has
+  filled the holder's free volume (storage with memory): without a holder level log or a production meter the free
+  volume at each outage is unidentified (Gate B); with either, the venting is one subtraction of metered flows (the
+  linear death) or a row predicate on the level column (readability test 2); and its abstraction sits beside task479
+  v7's (gas above a device's capacity leaving untreated).
+- S3.3, emissions-inventory, prescribed and savanna fire emissions with fuel load by years since the last fire on each
+  piece of ground: the field's savanna method already reads fuel age from the fire scar history (the golden is the
+  method), and a within-year reburn needs a fuel load at age zero no table files (Gate B).
+- S3.4, emissions-inventory, cold-start excess read from each vehicle's gap since its previous trip: the soak curve is a
+  filed MOVES or COPERT function (rule application) and the gap is a sort and a difference (readable).
+- S3.5, emissions-inventory, haul-road dust control decaying with time since the water truck's last pass: AP-42
+  13.2.2's watering equation is filed and linear in the interval and the traffic (the linear death), and the water
+  truck's log against the dust plan is record against operation alone (G3, a lone defect flip).
+- S3.6, emissions-inventory, at-berth auxiliary engines on shore power, with the ship's load above the connection's
+  rating met by its own engines: the plug-in log is the field's input (a header-found join), and the capped variant is
+  task479 v7's driver; S3.7, the same at airport stands with ground power and air: the same two deaths.
+- S3.8, emissions-inventory, portable equipment moved between permitted sites, its hours attributed through the
+  transport log: attribution at a transition (G4: a sub-period error cannot carry an annual figure) under a filed rule.
+- S3.9, emissions-inventory, a storage tank switched from diesel to petrol service, its register naming only the current
+  product: a stored label before a silent switch, task479's ask device D2 and data semantics as a main call.
+- S3.10, emissions-inventory, a batch vessel's purge venting the solvent of the previous step's wash: task479's world
+  (a closed-vent batch plant) and the EIIP vapour equations filed (rule application).
+- S3.11, emissions-inventory, refinery fuel gas carbon content set by which units feed the header at the hour:
+  task479 v7's abstraction (a shared stream's property set by coincident contributors).
+- S3.12, emissions-inventory, vapour balancing between tanks, a filling tank's vapour taken up by an emptying tank only
+  when the two coincide: the coincidence family (task479 v7).
+- S3.13, emissions-inventory, leaks on delay of repair venting until the turnaround: architecture 2's world (leaks) and
+  the protocol's leak duration rule.
+- S3.14, emissions-inventory, storage pile wind erosion per disturbance period: AP-42 13.2.5 files the per-disturbance
+  method (the library test).
+- S3.15, emissions-inventory, truck vapour tightness lapsed at the load date: an as-of join on a shipped key (readable)
+  under a filed capture factor (rule application).
+- S3.16, emissions-inventory, a recirculating scrubber's removal falling with the solvent the liquid has absorbed since
+  its last change-out: the efficiency against loading is a fitted curve (Gate C) or a vendor curve that names the
+  quantity (readability test 1), task479's screen 16 fork.
+- S3.17, emissions-inventory, a feed additive's methane reduction lost on the days the premix ran out between
+  deliveries: the swap fails (a stock-out of any input reads the same) and the ration log against deliveries is G3
+  alone.
+- S3.18, emissions-inventory, a marine loading's displaced vapour by the vessel's arrival tank condition read from its
+  previous voyage: AP-42 tabulates loading factors by arrival condition (filed) and the cargo inspector's report
+  carries the condition (a column).
+- S3.19, emissions-inventory, an anaerobic lagoon's volatile solids carried month to month and reset at each emptying:
+  the monthly conversion is a filed rate model and the emptying dates against the nominal plan are G3 alone.
+- S3.20, emissions-inventory, a hydropower reservoir's degassing at the turbines by intake depth: the dissolved methane
+  profile is sampled monthly (a model of the measurement).
+- S3.21, emissions-inventory, a coal pile's reclaim order setting the fired coal's carbon against the as-delivered
+  analyses: the sampling basis is a filed monitoring rule (rule application) and a lag that moves only the year-end
+  stock.
+- S3.22, emissions-inventory, a crematorium's mercury by the decedents' dental cohort: a composition one survey table
+  hands over (task482 architecture 8's screen).
+- S3.23, payment-claims, an anaesthesiologist directing more than four concurrent cases, so the cases fall to
+  supervision payment: a stated rule over a hard construction (rule application).
+- S3.24, payment-claims, non-emergency transport trips shared in one vehicle: a filed shared-ride rate (rule) and a
+  self-join on vehicle and time (readable).
+- S3.25, payment-claims, a hospice's aggregate cap under the proportional method across providers: a filed regulation
+  (rule application).
+- S3.26, payment-claims, single-dose vial wastage rebuilt from doses and vial sizes against the reported discard lines:
+  the refund basis is the filed discard reporting (rule), and finding under-reporting is anomaly detection.
+- S3.27, payment-claims, a family's out-of-pocket maximum across the medical and pharmacy vendors' accumulators: rule
+  application over an identity link.
+- S3.28, payment-claims, short stays discharged home with home health inside three days paid as transfers: a filed
+  transfer policy and a key join.
+- S3.29, payment-claims, specialty drugs dispensed by the pharmacy and billed again under the medical benefit: duplicate
+  detection (a planted defect as the call, and anomaly detection ground).
+- S3.30, payment-claims, retroactive re-enrolment claims after the Medicaid unwinding: the completion family (task451,
+  task479 v5).
+- S3.31, payment-claims, charge compression under a department's cost-to-charge ratio: the swap fails (any department
+  markup ratio reads the same).
+- S3.32, payment-claims, global maternity care billed at delivery, so prenatal care rendered in 2026 is unbilled for
+  continuing pregnancies: task482 v14's episodes recorded only at their end.
+- S3.33, payment-claims, rebate accruals at the old market-share tier after a generic launch: the contract's tier table
+  (rule) over a group-by.
+- S3.34, payment-claims, network adequacy against the locations providers actually bill from: the swap fails (a store
+  locator reads the same) and the directory against claims is G3 alone.
+- S3.35, payment-claims, a claims case definition's positive predictive value by setting, recovered from the treatment
+  fills only true cases produce: task241 v2's driver in claims nouns (the abstraction test).
+- S3.36, payment-claims, auto-refill shipments inflating adherence after a therapy switch: the adherence measure's
+  specification is filed (rule application) and the measure is pharmacology ground.
+- S3.37, payment-claims, out-of-network claims in independent dispute resolution at year end: decided awards not yet
+  paid are an inner join (rule application) and pending outcomes a fitted win rate (Gate C).
+- S3.38, census-register, a communal establishment's register count capped at its licensed capacity: a plausibility
+  edit (rule application), and the lesser-of prints the capacity on every bound row.
+- S3.39, census-register, addresses geocoded to postcode centroids placed in the wrong small area: allocation across
+  areas is task486's driver, and identical coordinates are readable.
+- S3.40, census-register, dwellings read as vacant from low grid import when rooftop solar covers the load: the signs of
+  life family (task471 architecture 4, task464 architecture 5's three arms) with the solar register an inner join.
+- S3.41, census-register, cattle on the tracing system never reported dead, caught by the herd's whole-herd test: the
+  exact arm (a second register confirming every unit is an inner join, rule application).
+- S3.42, census-register, a dwelling's vacancy observed only at the annual canvass taken in each ward's own month:
+  architecture 2's driver in census nouns (test.own_lineage and the abstraction).
+- S3.43, census-register, an address survey's unknown-eligibility cases that are vacant: the signs of life family, and
+  the eligibility share is a filed response-rate convention.
+- S3.44, official time-series production, seasonally closed establishments imputed as open non-respondents in the
+  accommodation statistics: the pincer; the closure is confirmed by a record (a nil tourist-tax return, an inner join,
+  rule application) or inferred from the unit's own past closures, which a judge reads as a competing imputation that
+  only a sentence naming the step closes (the fork is the stump), and the register's establishment type is a proxy.
+- S3.45, official time-series production, product relaunches under new barcodes in a scanner-data index: identity
+  resolution may not decide, and the field's relaunch linking is its own method.
+- S3.46, official time-series production, job vacancies as a stock on the reference date against postings in the
+  month: re-timing (task123).
+- S3.47, official time-series production, electricity consumption gross of rooftop self-consumption: a modelled yield
+  and self-consumption ratio (a model of the measurement).
+- S3.48, official time-series production, rail journeys per season ticket re-estimated from gated stations' taps: the
+  audit arm (a selected subsample carried to the ungated stations, its interval wider than the step).
+- S3.49, official time-series production, single against double deflation of a volume index after an input price
+  shock: the field's textbook method is the golden (1.1b); S3.50, a rent index as a stock or a flow: a WHAT fork; S3.51,
+  outlet substitution in a matched-outlet price index: a contested method (Gate C).
+- S3.52, item-response-theory-test-equating and data-integration, four screens: forms assigned by test centre rather
+  than spiralled (the random-groups precondition) is card 3's method and the cell's conversion closure; testlet local
+  dependence is a model fork; instructional-weeks norms are a conversion; namesakes over-merged by a master patient
+  index, split where their stays overlap, is linkage error propagation (task449, task456, task468, task473) with a
+  partial correction landing further away (law L3).
+- The three strongest, for the orchestrating session: S3.1 (blocked by task461 v2's registration of the same driver and
+  by the window), S3.44 (blocked by the ETL pincer and the fork-is-the-stump test), S3.35 (blocked by the abstraction
+  test against task241 v2). What the draw leaves: the ETL ground outside emissions-inventory is closed on mechanism by
+  this pass and the earlier maps; emissions-inventory reopens to a new physical mechanism (neither capacity, task479 v7,
+  nor a container's previous use, task461 v2) once task461 v2 leaves the three-build window.

@@ -1,11 +1,11 @@
 {
  "task": "task476",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-11-01",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-11-04",
  "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
  "architecture": 2,
  "loops": 0,
@@ -28,7 +28,7 @@
   "report": "task476/determinism_check_report_pass4.md"
  },
  "returned": [],
- "resume": "Architecture 2 spent at the 11-01 re-check (judge SEND_BACK, the fork is the stump); not re-rooted on the orchestrating session's rule. The shipped pack (5a46ee5a) stays at the portal, pending. Next step is the author's or orchestrator's call: re-root the number in another world (one architecture per world) or leave the shipped version to the portal.",
+ "resume": "PAUSED at stage 1 on the orchestrating session's stop rule (forty screens across five task types): the 2026-11-04 architecture 3 re-root screened 55 candidates across the six task types that serve ETL (S3.1 to S3.52 in DESIGN_NOTE.md's Tried and rejected, the strongest written in full and priced in code) and none clears guard.py check and the three rules together; no card is registered and nothing is cut. The strongest, S3.1 (switch loading at a terminal's uncontrolled distillate bays: the loading-loss equation at each product's own vapour pressure files 0.2 to 0.8 tonnes per rack against 10 to 125 for the compartment-history construction on three seeds), was registered by task461 v2 at 03:18Z the same morning as its own driver, and emissions-inventory BLOCKs on ban.pairing and ban.subdomain against task461 v2 while it sits in the three-build window. The other five cells clear every axis and die on mechanism (a spent driver, the ETL pincer, a swap failure or a filed rule). Next action: re-draw architecture 3 in emissions-inventory on a physical mechanism that is neither capacity (task479 v7) nor a container's previous use (task461 v2) once task461 v2 leaves the window, or the author's call to move the number. Architecture 2's shipped pack (5a46ee5a) stays at the portal, pending, untouched.",
  "approved": null,
  "delivered": "2026-10-20",
  "portal": null,
@@ -45,5 +45,17 @@
   "surface": "9 pairs promoted for the author's /clone-check, no shared persona or name",
   "leak_reader": "clean: no decisive-step sentence, no helper file, no ranking artifact; names the surveyed leak's start as unstated",
   "judge": "pass 4 NOT_DETERMINISTIC, SEND_BACK: the surveyed leak's start convention is an open fork (0, 12, 3 or 5 districts) and the closing sentence would name the decisive step; fork is the stump; architecture 2 spent"
+ },
+ "draw_2026_11_04": {
+  "screens": 55,
+  "task_types": 6,
+  "window": "task276, task461 v2, task193 (emissions-inventory BLOCKs ban.pairing and ban.subdomain against task461 v2; strategies binding_constraint, other and population_selection banned)",
+  "probe_cards": "the other five ETL cells clear every axis (only the empty people list, a probe artifact, blocks)",
+  "strongest": [
+   "S3.1 switch loading at uncontrolled distillate bays (emissions-inventory): all seven anatomy lines on paper, priced in proto_switch.py; taken by task461 v2 (same driver) and barred by the window",
+   "S3.44 seasonal closures imputed as open non-respondents (official time-series production): the ETL pincer, a confirming record makes it an inner join and an inference from past closures is a fork only the step's own sentence closes",
+   "S3.35 a claims case definition's predictive value by setting from treatment fills (payment-claims): the abstraction test against task241 v2"
+  ],
+  "card_registered": false
  }
 }
