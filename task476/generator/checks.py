@@ -21,8 +21,8 @@ import world as W
 FAILS = []
 FORMS = [("shift", "mean"), ("shift", "median"), ("shift", "ls"), ("shift", "each"), ("shift", "stage"),
          ("ratio", "mean"), ("ratio", "median"), ("ratio", "ls"), ("ratio", "each")]
-ONSETS = ("day27", "day28", "day29", "ramp")
-MET_ONLY = (dt.date(2026, 7, 27), dt.date(2026, 7, 28))
+ONSETS = ("day27", "day28", "day29", "visit", "ramp")
+MET_ONLY = G.MET_ONLY_DAYS
 
 
 def chk(label, ok, detail=""):
@@ -163,10 +163,14 @@ def main(target, gdir, x):
     du = max(abs(v["daily"][k] - g["daily"][k]) for v in lic.values() for k in graded)
     dr = max(abs(G.r0(v["daily"][k]) - G.r0(g["daily"][k])) for v in lic.values() for k in graded)
     chk("B2 every licensed form's whole-cfs daily mean sits within the %d cfs band of the golden's on every record day "
-        "but 27 and 28 July (unrounded within 1.5)" % G.BAND_CFS, dr <= G.BAND_CFS and du < 1.5,
+        "but 27, 28 and 29 July (unrounded within 1.5)" % G.BAND_CFS, dr <= G.BAND_CFS and du < 1.5,
         "largest %d cfs whole, %.2f unrounded" % (dr, du))
-    chk("B3 27 and 28 July meet the minimum under every form and onset (graded on met only)",
-        all(met(v, k) for v in lic.values() for k in MET_ONLY))
+    gap = min(abs(v["daily"][k] - d["minimum"](k)) for v in list(lic.values()) + [g] for k in MET_ONLY)
+    chk("B3 27, 28 and 29 July carry the golden's verdict under every form and onset (27 and 28 met, 29 below; graded on "
+        "met only), 0.25 cfs or more from the minimum", all(met(v, k) == met(g, k) for v in lic.values() for k in MET_ONLY)
+        and met(g, MET_ONLY[0]) and met(g, MET_ONLY[1]) and not met(g, MET_ONLY[2]) and gap >= 0.25,
+        "closest %.2f cfs (29 July with the correction from the first measurement after the storm: %.1f cfs)"
+        % (gap, lic[("shift", "mean", "visit", "none", False)]["daily"][MET_ONLY[2]]))
     sf = sorted(v["shortfall"] for v in lic.values())
     chk("B4 the shortfall rounds to the golden's 100 acre-feet under every licensed form",
         all(G.r100(s) == G.r100(g["shortfall"]) for s in sf), "%.1f to %.1f" % (sf[0], sf[-1]))
@@ -181,7 +185,7 @@ def main(target, gdir, x):
         "May %.0f to %.0f, June %.0f to %.0f" % (min(v["vol"][5] for v in lic.values()), max(v["vol"][5] for v in lic.values()),
                                                  min(v["vol"][6] for v in lic.values()), max(v["vol"][6] for v in lic.values())))
     post_days = [k for k in graded if k >= dt.date(2026, 7, 29)]
-    chk("B6 the band separates: Rating 7 throughout falls outside it on every day from 29 July",
+    chk("B6 the band separates: Rating 7 throughout falls outside it on every graded day after the storm",
         all(abs(G.r0(easy["daily"][k]) - G.r0(g["daily"][k])) > G.BAND_CFS for k in post_days),
         "closest %d cfs" % min(abs(G.r0(easy["daily"][k]) - G.r0(g["daily"][k])) for k in post_days))
 
@@ -191,7 +195,7 @@ def main(target, gdir, x):
         all(G.r0(stated["daily"][k]) == G.r0(g["daily"][k]) for k in rec) and stated["periods"] == g["periods"] and
         G.r100(stated["shortfall"]) == G.r100(g["shortfall"]) and stated["vol"] == g["vol"])
     tenth = G.compute(d, fixed=-0.10)
-    chk("B7 the shift rounded to 0.10 ft lands inside every band (cells within %d cfs, 27 and 28 July met, the shortfall "
+    chk("B7 the shift rounded to 0.10 ft lands inside every band (cells within %d cfs, every met flag the golden's, the shortfall "
         "to the same 100)" % G.BAND_CFS, all(abs(G.r0(tenth["daily"][k]) - G.r0(g["daily"][k])) <= G.BAND_CFS for k in graded)
         and all(met(tenth, k) == met(g, k) for k in rec) and G.r100(tenth["shortfall"]) == G.r100(g["shortfall"]),
         "%d cells differ by 1 cfs" % sum(1 for k in rec if G.r0(tenth["daily"][k]) != G.r0(g["daily"][k])))
@@ -205,8 +209,8 @@ def main(target, gdir, x):
                                                                        if v <= d["minimum"](k)) == g["dev"])
     sub = lambda f: [v for k, v in lic.items() if f(k)]
     same = lambda vs: all(v["periods"] == g["periods"] for v in vs)
-    chk("SF5 the correction's onset (the storm's peak, local midnight on 27, 28 or 29 July, ramped from the last "
-        "measurement on the rating): same call", same(sub(lambda k: k[2] != "peak")))
+    chk("SF5 the correction's onset (the storm's peak, local midnight on 27, 28 or 29 July, the first measurement off "
+        "the rating, ramped from the last measurement on it): same call", same(sub(lambda k: k[2] != "peak")))
     chk("SF6 the correction's form, a stage shift or a flow ratio: same call", same(sub(lambda k: k[0] == "ratio")))
     chk("SF7 the correction's level (mean, median, least squares, each measurement's own prorated, varying with stage): "
         "same call", same(sub(lambda k: k[0] == "shift")))

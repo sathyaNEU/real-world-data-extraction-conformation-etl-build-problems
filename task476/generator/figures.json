@@ -166,7 +166,8 @@
  "may_june_af": "27,800",
  "met_only_days": [
   "27 July",
-  "28 July"
+  "28 July",
+  "29 July"
  ],
  "minimums_cfs": [
   50,
@@ -190,6 +191,10 @@
   "-0.0986"
  ],
  "post_storm_visits": 4,
+ "pre_storm_pct_extremes": [
+  "1.6",
+  "2.2"
+ ],
  "pre_storm_pct_max": "2.2",
  "record_days": 123,
  "setpoints_cfs": [

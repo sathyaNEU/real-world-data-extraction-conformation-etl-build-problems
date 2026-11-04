@@ -1,6 +1,6 @@
 """The pair ceiling on the cut pack, from the same code the golden runs, graded as the rubric grades: the periods and the
-day count exact, the shortfall within its 100 acre-foot band, each daily mean within its 2 cfs band (27 and 28 July on
-met only), the spring volumes to the nearest 100 acre-feet and the peak's flow and time exact. The cracker lands the
+day count exact, the shortfall within its 100 acre-foot band, each daily mean within its 2 cfs band (27, 28 and 29
+July on met only), the spring volumes to the nearest 100 acre-feet and the peak's flow and time exact. The cracker lands the
 call: it sets the 2026 measurements against Rating 7, applies the post-storm shift from the storm's peak and files the
 periods, the count, the shortfall and the cause; above the register's table (4.00 ft) it extends the table's own law, so
 the freshet days, the spring volumes and the peak come out on that extension. The mirror stops at Rating 7 throughout and
@@ -29,7 +29,7 @@ def score(gold, resp, cause, minimum):
     may = W_MAY if G.r100(resp["vol"][5]) == G.r100(gold["vol"][5]) else 0
     jun = W_JUN if G.r100(resp["vol"][6]) == G.r100(gold["vol"][6]) else 0
     rec = [k for k in gold["daily"] if k.month >= 7]
-    met_only = (dt.date(2026, 7, 27), dt.date(2026, 7, 28))
+    met_only = G.MET_ONLY_DAYS
     hit = sum(1 for k in rec if ((resp["daily"][k] >= minimum(k)) == (gold["daily"][k] >= minimum(k)) if k in met_only
                                  else abs(G.r0(resp["daily"][k]) - G.r0(gold["daily"][k])) <= G.BAND_CFS))
     main += W_DAILY * hit / len(rec)

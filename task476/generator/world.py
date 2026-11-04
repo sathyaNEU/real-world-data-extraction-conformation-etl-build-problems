@@ -1,6 +1,6 @@
 """task476 architecture 5: the fixed world. Tallis Creek Paper Company's mill's run-of-river hydro project, its bypassed reach and
-gauge BP-1, the gauge's Rating 7, the 2026 season's inflows, the plant's bypass setpoints and the 27 July storm that left
-gravel on the gauge's riffle control. Every figure the pack carries is drawn here or in sim.py from fixed seeds."""
+gauge BP-1, the gauge's Rating 7, the 2026 season's inflows, the plant's bypass setpoints and the 27 July storm that shifted
+the gauge's riffle control. Every figure the pack carries is drawn here or in sim.py from fixed seeds."""
 import datetime as dt
 
 SEED = 476_05
@@ -26,7 +26,7 @@ R7_E, R7_C, R7_B = 0.80, 22.0, 2.30
 R7_TOP = 4.00
 R7_HI_A, R7_HI_K, R7_HI_P = None, 260.0, 1.60      # Q = Q_low(4.00) + K (h - 4.00)^P above the break
 TABLE_LO, TABLE_HI = 1.00, 4.00
-SHIFT_FT = 0.10                     # gravel on the control: the riffle's zero-flow stage rises by this
+SHIFT_FT = 0.10                     # the storm shifts the control: the riffle's zero-flow stage rises by this
 STORM_PEAK = dt.datetime(2026, 7, 27, 22, 40, tzinfo=PST)
 
 TURBINE_MAX, TURBINE_MIN = 150.0, 25.0

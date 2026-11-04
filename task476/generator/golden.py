@@ -11,8 +11,10 @@ import os
 import bundle as B
 
 AF_PER_CFS_DAY = 1.98347
-BAND_CFS = 2            # a daily mean is graded within this many cfs of the golden's (27 and 28 July on met only)
+BAND_CFS = 2            # a daily mean is graded within this many cfs of the golden's (MET_ONLY_DAYS on met only)
 SHORT_BAND_AF = 100     # the season's shortfall is graded within this many acre-feet
+MET_ONLY_DAYS = (dt.date(2026, 7, 27), dt.date(2026, 7, 28), dt.date(2026, 7, 29))   # graded on met only: the storm's two
+# days and the day of the first measurement after it, whose means turn on the hour the correction starts
 
 
 def r1(v):
@@ -131,8 +133,9 @@ def compute(d, route="golden", hiwater="memo", days="local", form="shift", level
     measurements establish; its options are the correction forms checks.py runs against the golden's: form 'shift' (a
     stage correction) or 'ratio' (measured over rated flow); level 'mean', 'median', 'ls' (least squares on the measured
     flows), 'each' (each measurement's own, prorated in time) or 'stage' (a shift linear in gauge height); onset 'peak'
-    (from the storm's peak), 'day27', 'day28', 'day29' (from local midnight that day) or 'ramp' (prorated from the last
-    measurement on the rating to the first off it); pre 'none' (Rating 7 as published before the storm), 'each' (each
+    (from the storm's peak), 'day27', 'day28', 'day29' (from local midnight that day), 'visit' (from the first measurement
+    off the rating) or 'ramp' (prorated from the last measurement on the rating to the first off it); pre 'none' (Rating 7
+    as published before the storm), 'each' (each
     earlier measurement's own small correction prorated, the first held back to the record's start) or 'each0' (the
     same, none before the first); ghcorr applies the staff readings' differences from the logger, prorated between
     visits, as gauge-height corrections; fixed replaces the post-storm level with a stated value (the solution's own
@@ -172,7 +175,7 @@ def compute(d, route="golden", hiwater="memo", days="local", form="shift", level
     if fixed is not None:
         lvl = fixed
     t0 = {"peak": peak, "day27": dt.datetime(2026, 7, 27, tzinfo=B.PDT), "day28": dt.datetime(2026, 7, 28, tzinfo=B.PDT),
-          "day29": dt.datetime(2026, 7, 29, tzinfo=B.PDT), "ramp": off[0]["mid"]}[onset]
+          "day29": dt.datetime(2026, 7, 29, tzinfo=B.PDT), "visit": off[0]["mid"], "ramp": off[0]["mid"]}[onset]
 
     def post_val(t, h):
         if level == "each":
@@ -246,11 +249,12 @@ def figures(d):
         "post_storm_shift_fitted_ft": "%.4f" % g["s_mean"],
         "post_storm_shift_fitted_abs_ft": "%.4f" % abs(g["s_mean"]),
         "post_storm_shifts_ft": ["%.4f" % v["shift"] for v in g["post"]],
-        "daily_band_cfs": BAND_CFS, "shortfall_band_af": "%d" % SHORT_BAND_AF, "met_only_days": ["27 July", "28 July"],
+        "daily_band_cfs": BAND_CFS, "shortfall_band_af": "%d" % SHORT_BAND_AF, "met_only_days": [k.strftime("%-d %B") for k in MET_ONLY_DAYS],
         "post_storm_pct_range": ["%.1f" % min(v["pct"] for v in g["post"]), "%.1f" % max(v["pct"] for v in g["post"])],
         "post_storm_pct_below_range": ["%.1f" % abs(max(v["pct"] for v in g["post"])),
                                        "%.1f" % abs(min(v["pct"] for v in g["post"]))],
         "pre_storm_pct_max": "%.1f" % max(abs(v["pct"]) for v in pre),
+        "pre_storm_pct_extremes": ["%.1f" % abs(min(v["pct"] for v in pre)), "%.1f" % max(v["pct"] for v in pre)],
         "storm_peak_pst": g["peak"].strftime("%Y-%m-%d %H:%M"),
         "storm_peak_local": g["peak"].astimezone(B.PDT).strftime("%-d %B %Y %H:%M"),
         "held_aug_cfs": "%.1f" % r1(sum(v for k, v in g["daily"].items() if k.month == 8) / 31.0),

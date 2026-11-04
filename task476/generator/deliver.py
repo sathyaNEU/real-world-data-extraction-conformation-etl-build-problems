@@ -109,16 +109,17 @@ def write_report(path, d, g, fig):
             "%d days in all, with a total shortfall of %s acre-feet below the minimum." % (per[0], per[1],
                                                                                          fig["deviation_days"],
                                                                                          fig["shortfall_af"]))
-    _p(doc, "Cause. The 27 July thunderstorm sent the reach over 6.5 feet at gauge BP-1 and left gravel on the riffle "
-            "that controls the gauge. From then on the gauge read the same stage at a lower flow, so Rating 7 overstated "
-            "the flow. The plant's gate controller holds the bypass at the flow BP-1 reads on Rating 7, 54 cfs in July "
+    _p(doc, "Cause. The 27 July thunderstorm sent the reach over 6.5 feet at gauge BP-1 and shifted the gauge's "
+            "stage-discharge control, the riffle below the orifice. From then on the gauge read the same stage at a lower "
+            "flow, so Rating 7 overstated the flow. The plant's gate controller holds the bypass at the flow BP-1 reads on Rating 7, 54 cfs in July "
             "through September and 33 cfs in October, and it held that reading throughout. The four discharge "
             "measurements made after the storm were %s to %s per cent below Rating 7 at the gauge heights the controller "
-            "held, against no more than %s per cent either side before it; on the relation they establish (Rating 7 "
+            "held, against %s per cent below to %s per cent above before it; on the relation they establish (Rating 7 "
             "with a stage shift of %s feet, about %s foot, from the storm's peak), the reach carried about %s cfs "
             "through August and %s cfs in October."
          % (fig["post_storm_pct_range"][1].lstrip("-"), fig["post_storm_pct_range"][0].lstrip("-"),
-            fig["pre_storm_pct_max"], fig["post_storm_shift_fitted_ft"], fig["post_storm_shift_ft"], fig["held_aug_cfs"],
+            fig["pre_storm_pct_extremes"][0], fig["pre_storm_pct_extremes"][1], fig["post_storm_shift_fitted_ft"],
+            fig["post_storm_shift_ft"], fig["held_aug_cfs"],
             fig["held_oct_cfs"]))
     _p(doc, "Corrective action. The gate controller will run on the shifted rating from November 5, and Corvid "
             "Hydrometric Services will develop Rating 8 from the 2026 measurements before the 2027 season.")

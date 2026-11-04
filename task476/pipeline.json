@@ -1,10 +1,10 @@
 {
  "task": "task476",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-04",
  "stump": "The default path converts the stage record through Rating 7 and files no deviation, because the plant's controller held the rated flow on its targets; on the relation the post-storm measurements establish, the reach fell below its minimum from 29 July through 13 September and from 21 September through 31 October.",
  "architecture": 5,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-11-04 --asof 2026-11-04 on a8e37491 (no LEAK; sweep 3 article numbers, a memo table value and the 2025 report's shared words, sweep 4 the memo's and plan's genre nouns, each answered in the design note)",
-  "reader": "isolated reader 2026-11-04 on 7e78020a (leak_check_report.md, Solver's-eye read): no file announces the decisive step; a mild leak in the 29 July remark (the riffle reworked by the flood) and tidiness tells in the visit log and the memo's table, all fixed in the FIX_NOW pass; the reader runs once more on the new pack"
+  "reader": "two isolated reads 2026-11-04 (leak_check_report.md): on 7e78020a a mild leak in the 29 July remark and tidiness tells in the visit log and the memo, fixed in the FIX_NOW pass; on a8e37491 clean, the control entries recording what the hydrographer saw and announcing nothing"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-11-04 after the pull to b87fe69 (repeat.gate_g against task462 v2 only); gate_g corrected to method_or_model_selection, the build's mechanism, the 11-04 relabel withdrawn",
@@ -25,18 +25,22 @@
   "nearest": "task178 lineage at 0.08"
  },
  "judge": {
-  "verdict": "DETERMINISTIC, SOLUTION_WRONG (minor)",
-  "disposition": "FIX_NOW",
-  "date": "2026-11-04",
-  "report": "task476/determinism_check_report_arch5.md",
-  "pack": "7e78020a",
-  "failed_gate": "A (solution_incorrect, minor: the stated 0.10 ft gave 276 for 28 July against the golden's 277), with Gate C/E exposure on the per-day asks only; H, G, B, D and F pass",
-  "rejudge": "pending: the single FIX_NOW re-judge on a8e37491"
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW on pass 2 (ask 2's cause wording, Gate B answer_contradicts_files), applied in the ask layer at ship",
+  "report": "task476/determinism_check_report_arch5_pass2.md",
+  "gate_h": "decisive step analytical; sole_data_defect no; stump power good",
+  "note": "pass 2 on a8e37491 reproduced every graded figure: 88 days (3, 31, 23, 31), the shortfall 629.5 acre-feet unrounded with variants 568 to 649, the daily means within 0.27 cfs, May, June and the peak on either clock",
+  "pass_1": {
+   "verdict": "DETERMINISTIC, SOLUTION_WRONG (minor)",
+   "disposition": "FIX_NOW",
+   "pack": "7e78020a",
+   "report": "task476/determinism_check_report_arch5.md"
+  }
  },
  "returned": [],
- "resume": "Stage 4: the leak reader once more and the single FIX_NOW re-judge (both medium, run by the orchestrating session) on a fresh unzip of task476/target.zip (sha256 a8e374913341245ee85b43b5fff8051c88150b9961a1afec36f0623123e3c532) with prompt.txt and submission.md's graded blocks; fix any finding in the generator in one pass, rebuild with `python3 task476/generator/build.py` (two byte-identical builds, target.zip from the final rebuild), re-run precut.py, figures_check.py, leak.py --asof 2026-11-04 and guard.py check, heart and surface; ship only on the coordinator's word",
+ "resume": "shipped 2026-11-04: target.zip sha256 a8e374913341245ee85b43b5fff8051c88150b9961a1afec36f0623123e3c532, rebuilt byte for byte by python3 task476/generator/build.py; the portal result goes to the ledger row the day the author reports it",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-04",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -84,13 +88,14 @@
  },
  "call": "report Tallis Creek's bypass below its minimum from 29 July to 13 September and from 21 September to 31 October 2026 (88 days, 600 acre-feet short)",
  "gates_2026_11_04": {
-  "generator": "checks.py 0 failures (I, R incl. R3d, L, G, B1 to B7, SF1 to SF13, A, X incl. X7 and X8); verify.py 0 failures",
-  "rebuild": "two builds byte-identical; target.zip cut from the final rebuild",
-  "figures_check": "151 figures in blocks 1 to 4, 0 absent",
+  "generator": "checks.py 0 failures (I, R incl. R3d, L, G, B1 to B7 over 144 licensed forms, SF1 to SF13, A, X); verify.py 0 failures",
+  "rebuild": "two builds byte-identical; target.zip cut from the final rebuild (a8e37491)",
+  "figures_check": "156 figures in blocks 1 to 4, 0 absent",
   "voice_check": "PASS",
   "precut": "61 checks, 0 FAIL, 0 WARN",
   "ceiling": "generator/ceiling.py: cracker 45.0, mirror 9.3, pair ceiling 27.1, mirror leakage 0.0; with the full includer on the call 54.6",
-  "scrub": "target and golden clean"
+  "scrub": "target and golden clean",
+  "h25": "every shipped PDF reads the same in pypdf strict and pdfplumber"
  },
  "target_zip_sha256": "a8e374913341245ee85b43b5fff8051c88150b9961a1afec36f0623123e3c532",
  "fix_now_2026_11_04": {
@@ -120,5 +125,14 @@
   ],
   "graded_unmoved": "the periods, 88 days (3, 31, 23, 31), 600 acre-feet, May 18,800, June 9,000, the spring peak 575 cfs at 27 May 2026 20:30 PDT, 46.1 and 27.0 cfs held, 53.8 cfs on Rating 7, every other daily mean",
   "remarks_move_no_figure": true
+ },
+ "ship_repair_2026_11_04": {
+  "scope": "ask layer and write-up only; the pack unchanged (target.zip a8e37491)",
+  "moved": [
+   "ask 2's cause stated as the files license it: the 27 July storm shifted BP-1's stage-discharge control (no gravel), in submission.md, the golden report, the design note and the card",
+   "29 July graded on met only beside 27 and 28 July, the shift stated as running from the storm; the visit-time onset joins the licensed forms (checks.py B1 to B5, 144 forms; B3 29 July 0.39 cfs below at the closest)",
+   "H29: the earlier measurements stated as their extremes, 1.6 per cent below to 2.2 per cent above"
+  ],
+  "graded_moved": "none (29 July's graded item is its met flag, below, unchanged)"
  }
 }
