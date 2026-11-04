@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Skarvgrund, 42 days of floating-vessel weather downtime avoided (Lillevig Banke 39, Fjernhav 38)",
+  "answer_source": "task211/generator/figures.json",
   "gap": [
     "objective",
     "population"
@@ -33,27 +33,28 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who converts the progress reports' local times, joins the buoy record and reads the vessel and port registers correctly replays each floating vessel's shelter procedure over the eighteen winters, credits every site with its own vessel's downtime (the eastern site's passages on to the alternate shelter included) and names the far site at about 50 days, when the jack-up at the western site also removes the eastern vessel's diversions and avoids about 56.",
+  "analyst_test": "A strong analyst who stacks both buoy exports, keeps the 2016/17 winter once, cuts each winter to the Danish-time window and replays every floating vessel's filed weather procedure with the registers' limits, passage hours and berth counts credits each placement with the downtime of the vessel it releases and names Fjernhav at 38 days, when the jack-up at Skarvgrund also removes Lillevig Banke's recorded passages on to Kalvholm and avoids 42.",
   "domain_test": "The deciding quantity is the campaign's floating-vessel weather downtime under each jack-up placement, estimated the way installation logistics planning estimates it, by running every floating vessel's shelter procedure over the storm record with the marshalling ports' heavy-lift berths shared between vessels; in another field's nouns there is no front passing west to east, no shelter passage and no berth two vessels reach in the order the weather sets.",
   "layer2_family": "allocation_constraints",
   "layer2_pattern": "own:shared-shelter-berth-taken-by-the-first-vessel-the-front-reaches",
   "layer1": [
-    "buoy records in two layouts, three-hourly to March 2017 and hourly after the buoy upgrade, in UTC, with gaps for servicing",
-    "daily progress reports kept in the vessels' local time as 24-hour activity blocks, with the October clock change inside past campaigns",
-    "the port register in nautical miles against the vessel register's service speeds in knots",
-    "port dues invoices issued as PDFs per call with berth hours and the berth's number, not the vessel's site",
-    "the developer's acknowledgement file as a preliminary and a revised release that overlap",
-    "vessel names that changed with a sale in 2021, so one hull appears under two names"
+    "buoy record in two export layouts: centimetres and tenths of a second under the old buoy names with compact UTC stamps for 2008/09 to 2016/17, metres and seconds under station ids with ISO UTC stamps for 2016/17 to 2025/26, the 2016/17 winter in both, servicing gaps filled from the regional model and flagged",
+    "a UTC record against a campaign filed in Danish time",
+    "daily progress reports kept in local time as activity blocks split at midnight",
+    "developer statements in quarter days with revisions under new numbers",
+    "the jack-up's shift reports across a reporting-system go-live, codes reused",
+    "a payables extract across an ERP change, weekly port statements and yearly invoice sequences"
   ],
   "stakeholder_role": "marine operations manager",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "buoy_hourly_2008_2026.csv",
-    "rows": 259200,
+    "file": "buoy_hs_2016_2026.csv",
+    "rows": 148800,
     "entity": "one hourly sea-state reading at one site's buoy",
     "grain": "site x hour",
-    "source": "synthetic"
+    "source": "synthetic",
+    "companion": "buoy_hm0_2008_2017.csv, 133,920 rows in the old export layout, winters 2008/09 to 2016/17"
   },
   "forum": "committee_or_panel",
   "forcing_event": "purchase_order_or_contract",
@@ -77,22 +78,24 @@
     "people": [
       "Andreas Jespersen",
       "Simone Schou",
-      "Gert Skov"
+      "Gert Skov",
+      "Marine Operations"
     ]
   },
   "deliverables": [
-    "jackup_placement_winter_2026_27.pptx",
-    "jackup_placement_winter_2026_27.xlsx"
+    "placement.xlsx",
+    "panel_deck.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "where",
   "driver": "The decisive quantity is the system total that each placement of one immune unit leaves, because two exposed units share a resource that admits one at a time and every shock reaches one of them first, so the second's delays at the resource disappear when the scarce unit stands at the first; a per-unit measure books those delays where they appear and never credits the unit that causes them.",
   "driver_concrete": "Fronts reach the western site hours before the eastern one, so the western site's floating vessel takes the one heavy-lift berth at the shared marshalling port first and the eastern vessel steams on to the alternate shelter; the jack-up at the western site avoids that site's own downtime and the eastern vessel's extra passages, which per-site downtime books at the eastern site.",
-  "stump": "A competent solver replays each floating vessel's shelter procedure over the buoy record, credits each site with its own vessel's downtime, the eastern site's diversions included, and names the far site at about 50 days; the step that lands them there is crediting the jack-up only with the downtime of the site where it stands.",
+  "stump": "A competent analyst replays each floating vessel's weather procedure over the buoy record, credits the jack-up with the downtime of the vessel it releases and names Fjernhav at 38 days; the step that lands them there is treating the vessels as independent, when Skarvgrund's and Lillevig Banke's share Bramso Havn's one heavy-lift berth and the past progress reports show the later arrival going on to Kalvholm, so the jack-up at Skarvgrund avoids 42 days.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task147": "task147 loses a request when any unit of its run of consecutive nights is already full at the forecast date, a run-length capacity inside one unit's own intake; this build credits one scarce vessel's placement with the shelter diversions its absence lifts from a second site whose vessel reaches a shared single-berth port after it in every passing front.",
-    "task159": "task159 separates a backlog that builds while services arrive with less room than an interval's arrivals from the one-interval stock at each stop; this build has no backlog and no stock, it counts the extra passages one site's vessel makes because another site's vessel already holds the one berth, and books them to the placement that removes the first vessel."
+    "task159": "task159 separates a backlog that builds while services arrive with less room than an interval's arrivals from the one-interval stock at each stop; this build has no backlog and no stock, it counts the extra passages one site's vessel makes because another site's vessel already holds the one berth, and books them to the placement that removes the first vessel.",
+    "task160": "task160 carries a recurring wave's lag between groups into a fixed forward window and asks which groups' waves fall inside it; here the west-to-east lag only sets which of two vessels reaches one shared berth first, and the decisive step credits a placement with the other vessel's diversions, a contention cost read from the past records, not a timing window."
   },
   "lineage": [],
   "notes": "Strategy binding_constraint and family allocation_constraints: the single heavy-lift berth binds and moves the pick; both unspent on anomaly detection. The seed mechanism (round trip against storm sequences) is a lower rung. Keyed gap objective with G8 decisive (which vessel reaches the shared berth first, against each site's downtime magnitude); forum redrawn from executive_team (ban.forum against task403) to committee_or_panel, the campaign planning panel that signs vessel allocations; deliverable set moved off pdf+xlsx (task403) to a planning-panel deck and a workbook.",
