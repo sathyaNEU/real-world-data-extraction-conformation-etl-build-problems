@@ -1,0 +1,151 @@
+{
+ "call": {
+  "expunged_exact": 5920,
+  "notice": 5900,
+  "ratings_given": 6517,
+  "held": 597,
+  "accounts_suspended": 241,
+  "rings": 5
+ },
+ "rings": [
+  {
+   "ring": "musa_danj_swap",
+   "accounts": 53,
+   "given": 1379,
+   "held": 131,
+   "expunged": 1248
+  },
+  {
+   "ring": "kumasiotc64",
+   "accounts": 39,
+   "given": 1263,
+   "held": 36,
+   "expunged": 1227
+  },
+  {
+   "ring": "gwarimpapay15",
+   "accounts": 50,
+   "given": 1355,
+   "held": 153,
+   "expunged": 1202
+  },
+  {
+   "ring": "yusuf.desk",
+   "accounts": 55,
+   "given": 1341,
+   "held": 186,
+   "expunged": 1155
+  },
+  {
+   "ring": "chebetfx",
+   "accounts": 44,
+   "given": 1179,
+   "held": 91,
+   "expunged": 1088
+  }
+ ],
+ "disputes": {
+  "NG": {
+   "disputed": 978,
+   "for_buyer": 557
+  },
+  "GH": {
+   "disputed": 354,
+   "for_buyer": 209
+  },
+  "KE": {
+   "disputed": 367,
+   "for_buyer": 210
+  },
+  "GB": {
+   "disputed": 107,
+   "for_buyer": 62
+  }
+ },
+ "onchain": {
+  "Jul": {
+   "withdrawn": 1361363,
+   "fees": 14862
+  },
+  "Aug": {
+   "withdrawn": 1429646,
+   "fees": 15605
+  },
+  "Sep": {
+   "withdrawn": 1421931,
+   "fees": 15102
+  }
+ },
+ "cashback": {
+  "NG": {
+   "cashback": 1856,
+   "buyers": 815
+  },
+  "GH": {
+   "cashback": 191,
+   "buyers": 81
+  },
+  "KE": {
+   "cashback": 613,
+   "buyers": 289
+  },
+  "GB": {
+   "cashback": 130,
+   "buyers": 51
+  }
+ },
+ "raw": {
+  "onchain": {
+   "Jul": {
+    "withdrawn": 1361362.91,
+    "fees": 14861.6539
+   },
+   "Aug": {
+    "withdrawn": 1429646.05,
+    "fees": 15605.4049
+   },
+   "Sep": {
+    "withdrawn": 1421931.08,
+    "fees": 15102.3005
+   }
+  },
+  "cashback": {
+   "NG": {
+    "cashback": 1856.25,
+    "buyers": 815
+   },
+   "GH": {
+    "cashback": 190.76,
+    "buyers": 81
+   },
+   "KE": {
+    "cashback": 613.22,
+    "buyers": 289
+   },
+   "GB": {
+    "cashback": 130.04,
+    "buyers": 51
+   }
+  }
+ },
+ "rivals": {
+  "default_exact": 2357,
+  "default_notice": 2400,
+  "q2_notice": 9800,
+  "q2_ratings": 181400,
+  "prevalence_pct": 5.3,
+  "q2_scaled": 10288,
+  "prevalence_scaled": 10093
+ },
+ "refs": {
+  "playbook_clauses": [
+   "1.2",
+   "3.1",
+   "3.3"
+  ],
+  "desk_procedure_clause": "1.2",
+  "notice_date": "1 December 2026",
+  "request_limit_usdt": 1000
+ },
+ "seed": 3
+}

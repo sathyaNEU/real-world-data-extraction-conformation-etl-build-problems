@@ -1,0 +1,63 @@
+PASS  golden equals the clean ring set  241 accounts
+PASS  figures.json carries this golden  5920
+PASS  notice figure mid-bin (edge >= 7 of 100)  5920 -> 5900, edge 30
+PASS  SF14 SF15 every operationalisation of the loop files one set  67 of 67 variants equal
+PASS  refuted parameters find no loop (funding inside an hour; amount-matched return)  0, 0
+PASS  SF13 wallet clock unconverted: one set at windows of a day and more  [True, True, True]
+PASS  first look and readers (a) to (e), d2, d3 and cycle searches land wrong  nearest first_prevalence_x_ratings
+PASS  the cross-ledger 3-cycle is the golden loop itself  5920
+PASS  analyst test: the default path files the phone-sharing rings only  Ends on 2357 (0.40x)
+PASS  SF1 ring ratings clear of the quarter edges by more than a day  2.1 days
+PASS  SF2 ring ratings are never edited  render writes no second version for a ring rater
+PASS  SF3 received ratings are not counted  count reads rater only (playbook 3.2)
+PASS  SF4 holdback literal reading is the golden; the open-only reading is ruled out by 3.3  filed 5920, other 6516
+PASS  SF5 holdback base read as written (as the seller, every rater)  other base 4820
+PASS  SF6 half rounded down  floor division in the holdback
+PASS  SF7 nearest hundred mid-bin  
+PASS  SF8 ring window reading moves nothing  every ring rating is on a ring account's own trade
+PASS  SF9 the Calabash Point clause never touches the ring set  
+PASS  SF10 accounts per ring count every ring account  241
+PASS  SF11 handle mapping as-of or current gives one set  786 renames
+PASS  SF12 wallet-number mapping as-of or current gives one set  199 reissued numbers
+PASS  SF12 recomputed under the current mapping  
+PASS  SF16 units moot for the loop  
+PASS  SF17 cancelled and returned orders never involve a ring account  
+PASS  SF18 orphan ratings are honest  ring trades start on day 2
+PASS  separation: no dispute on a ring account  
+PASS  separation: no reissued wallet, rename or treasury change on a ring account  
+PASS  separation: no ring account withdraws on chain  
+PASS  every held rating sits on a seller rated by one ring only  597 held, 1 on sellers outside the rings
+PASS  every USDT ask figure clear of its whole-USDT edge by 0.07  tightest onchain Aug fees 0.095
+PASS  ask 1 device: cited orders overcount disputed trades  1995 against 1806
+PASS  ask 2 device: sweeps sit among outbound transfers  12436 sweeps
+PASS  ask 3 device: one group in each market changed treasury wallet  
+PASS  R1 the field's raw material ships: the decisive step reads released orders, wallet transfers and ratings at row level  118880 orders, 64704 transfers, 190425 ratings
+PASS  R1 no shipped column isolates the ring accounts (largest ring share of any tier value)  0.012
+PASS  R2 every Layer 1 item is neutral on the call (SF2, SF11, SF12, SF13, SF16 asserted above)  
+PASS  R3a the analyst test files the named wrong answer on the clean truth  2357
+PASS  R3b the easy route with only the decisive step changed files the golden  
+PASS  R3b each lower rung's single correction stays wrong  
+PASS  input gate: 10 or more files  17 files
+PASS  input gate: 3 or more formats  ['csv', 'parquet', 'pdf', 'xlsx']
+PASS  input gate: two declared distractors  
+PASS  no describing file under target/  
+PASS  no describing sheet  ['Groups', 'Desks', 'Cases', 'Outcome codes']
+PASS  input gate: a file of 25,000 rows or more  125867 escrow orders
+PASS  realism: no id column steps by a constant  
+PASS  realism: point names take more than two shapes  8 shapes
+PASS  realism: monthly order counts differ  {'2026-07': 43220, '2026-08': 42183, '2026-09': 40464}
+PASS  realism: no round headline total  
+PASS  R3c no copied block: no two orders identical but for their number  0
+PASS  metadata.json names no method vocabulary  
+PASS  H1 custodian_outbound_2026q3.parquet carries no pandas schema metadata  
+PASS  H1 device_links_2026q3.parquet carries no pandas schema metadata  
+PASS  H1 integrity_notices_2026.pdf names its issuer as producer  
+PASS  H1 merchant_programme_2026-09-30.xlsx carries the organisation as creator  
+PASS  H1 merchant_programme_terms_mp2.pdf names its issuer as producer  
+PASS  H1 moderation_playbook_v4.2.pdf names its issuer as producer  
+PASS  H1 ratings_2026q3.parquet carries no pandas schema metadata  
+PASS  H1 support_cases_2026q3.xlsx carries the organisation as creator  
+PASS  H1 support_desk_procedure_sd04.pdf names its issuer as producer  
+PASS  H1 transparency_report_2026q2.pdf names its issuer as producer  
+PASS  H1 wallet_ledger_2026q3.parquet carries no pandas schema metadata  
+{"first_fair": 1001, "e_tablets_kept": 16700, "DEFAULT": 2357, "b_dev_small": 0, "b_smallticket": 28986, "b_forwarders": 39745, "b_fanin_collectors": 20294, "b_tfund_fwdbuyers": 32495, "c_cell": 13599, "c_cell_sellers": 31851, "c_cell_recips_sellers": 21139, "d_wash_pairrt": 38618, "d_mutual_core": 114179, "d2_any_1h": 10283, "d2_self_1h": 10283, "d2_any_1d": 29967, "d2_self_1d": 31009, "d2_any_1w": 39847, "d2_self_1w": 51082, "d2_any_Q": 41427, "d2_self_Q": 52372, "d2_amount_1w": 0, "d2_direct_Q": 0, "d3_all": 52518, "d3_fanin": 20294, "d3_fanin_fast": 20294, "cyc2": 40765, "cyc3_mixed": 5920, "cyc3_mixed_timed": 5920, "cyc4_mixed": 69710, "cyc3_escrow_only": 45386, "cyc3_wallet_only": 40765, "cyc3_any": 67457, "a_decompose": 74710, "first_prevalence_x_ratings": 10093, "first_q2_notice_scaled": 10288}

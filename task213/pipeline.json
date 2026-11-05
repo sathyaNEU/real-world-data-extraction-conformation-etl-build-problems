@@ -1,27 +1,46 @@
 {
   "task": "task213",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "banking-credit-financial-risk/fraud-aml-detection (Calabash Exchange, a Lagos peer-to-peer USDT marketplace)",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-11-05",
   "seed": "AD36 (header and Situation only)",
-  "stump": "A competent analyst links accounts through the phones they sign in on, sets the agent-shop tablets aside, confirms the linked groups as rings in the rating graph, applies the cap and files the phone-sharing rings' ratings, never following each buyer's purchased USDT out of the escrow into the wallet ledger, where the purchases of the rings run from one phone per account return within the hour to an account that funds the very sellers they bought from.",
+  "stump": "A competent analyst links accounts through the phones they sign in on, sets the agent-shop tablets aside, confirms the linked groups as rings in the rating graph, applies the holdback and files 2,400 ratings, never following each buyer's purchased USDT out of the escrow into the wallet ledger, where the purchases of the rings run from one phone per account return within the hour to an account that tops up the very seller they were bought from.",
   "architecture": 1,
   "loops": 0,
-  "card": {"registered": "2026-11-05T00:02:45Z", "check_after_register": "WARN (repeat.gate_g against task212, answered in the note); same-puzzle and same-driver older collisions differentiated", "merged_parent_at": "0568995"},
-  "screens": "proto7, clean truth, 20 redraws: golden equals the true ring set 20/20; golden variants (loops 1/3/5, forward windows 1 h/1 d/1 wk/quarter) identical 20/20; nearest rival 1.60x (prior notice scaled), default path 0.14-0.43x; first look, readers (a) to (e) and literal execution wrong 20/20",
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "card": {
+    "registered": "2026-11-05T00:02:45Z",
+    "check_after_register": "WARN (repeat.gate_g against task212, answered in the note); same-puzzle and same-driver older collisions differentiated",
+    "merged_parent_at": "0568995"
+  },
+  "screens": "final generator, clean truth, 20 redraws: golden equals the ring set 20/20; 67 loop operationalisations identical 20/20; nearest rival 1.44x (prevalence scaled), default path 0.15-0.45x; first look, readers (a) to (e), d2, d3 and every cycle search but the cross-ledger 3-cycle (the golden loop itself) wrong 20/20; shipped seed 3: 5,920 -> 5,900",
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-05"
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (2026-11-05, --asof 2026-11-05; every REVIEW line answered in the pre-ship check)",
+    "reader": "pending: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t213/stage4/reader/BRIEF.md"
+  },
+  "duplicate_check": {
+    "heart": "WARN (repeat.gate_g against task212, answered in the Draw); nearest driver 0.06",
+    "nearest": "surface promotes task452 (0.092) and task265 (0.090) on card axes only, answered on the card"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": "pending: /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t213/stage4/judge/BRIEF.md"
+  },
   "returned": [],
-  "resume": "Stage 2: write the semantic fork table, ladder, closure table, literal reader, oracles and ask sheet; write prompt.txt; write generator/ (gen.py, checks.py with the screens and every SF row on the shipped seed, ceiling.py); leave stage 2 on precut.py exit 0.",
+  "resume": "Stage 4: the parent runs the leak reader (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t213/stage4/reader/BRIEF.md, sonnet medium) and the determinism judge (/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t213/stage4/judge/BRIEF.md, medium) together on target.zip md5 c745b735; collect reader_report.md and verdict.md, fix every finding in the generator in one pass (build.py, then checks.py, verify.py, ceiling.py, figures_check, precut, leak.py, guard heart and surface, two byte-identical builds), re-judge once on FIX_NOW, settle any Gate H split by recomputing the easy routes; then ship: ledger row, card current, git add -f task213/target.zip task213/golden/, commit SHIPPED (task213): 5,900 ratings expunged.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "target_zip_md5": "c745b73559e2dd743b1b492844b84abf",
+  "gates": "final cut seed 3: checks.py 62/62, verify.py 36/36, figures_check 71/71, precut exit 0, voice-check PASS, two builds byte-identical, PDFs read alike by strict, lenient and pdftotext readers; ceiling.py pair 48.5 (one on, one off), 55.0 two on, cracker 0/22, full includer 8/22, mirror leakage 36.4"
 }
