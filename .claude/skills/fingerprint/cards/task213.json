@@ -1,0 +1,94 @@
+{
+  "task": "task213",
+  "architecture": "v1",
+  "drawn": "2026-11-05",
+  "slot_note": "seed AD36 (wave 8, Anomaly Detection & Diagnostics): the world, the decision and the quantity only; the seed's product-analytics tag serves no AD task type, so the pairing moves to Banking, Credit & Financial Risk / fraud-aml-detection",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a Lagos peer-to-peer stablecoin marketplace's quarterly rating-ring sweep: how many Q3 ratings the November sweep expunges, stated to the nearest hundred in the 1 December integrity notice",
+  "objective": "anomaly-detection",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G3"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly links accounts through the phones and tablets they share, keeps the linked groups that traded with and rated one another, applies the half-of-received-ratings cap and files the agent points' ratings as the ring count, never following each buyer's purchased USDT out of the escrow into the wallet ledger, where the ring's purchases return within the hour to an account that funds the very sellers they bought from.",
+  "domain_test": "The deciding quantity is the ratings given by accounts one person or group runs, established the way fraud and AML work establishes common control on a trading platform, by the economic substance of the accounts' trades (whether what a buyer pays for stays with the buyer or comes back to the seller's side) read across the escrow and wallet ledgers; with hospital or school nouns there are no escrowed coins, no wallet transfers and no rating ring, so the question stops parsing.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:common-control-read-from-each-buyers-coins-across-escrow-and-wallet",
+  "layer1": [
+    "escrow export keyed by user handle, wallet ledger keyed by wallet number, accounts table mapping both with handle renames over time",
+    "escrow and ratings in UTC ISO timestamps, wallet ledger in Lagos local time without an offset, session log in epoch milliseconds",
+    "wallet amounts as integer micro-USDT, escrow amounts in USDT to six decimals",
+    "ratings service rows per version (a rating edited within 72 hours carries two rows)",
+    "device fingerprints in two schemes after the July app release",
+    "escrow export split by month with a renamed column from August"
+  ],
+  "stakeholder_role": "head of integrity policy",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "ratings_2026q3.parquet",
+    "rows": 190000,
+    "entity": "one rating version",
+    "grain": "rating x version",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "period_close",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "Nigeria (a Lagos-based peer-to-peer stablecoin marketplace also serving Ghana, Kenya and the UK diaspora)",
+    "currency": "USD",
+    "org_type": "peer-to-peer USDT marketplace with escrow and two-way ratings",
+    "invented_names": [
+      "Calabash Exchange",
+      "Calabash Wallet"
+    ],
+    "people": [
+      "Gabriel Nnamani",
+      "Nathaniel Ogunleye"
+    ]
+  },
+  "deliverables": [
+    "q3_ratings_sweep.xlsx",
+    "q3_sweep_chart.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive set is units one controller runs, and the identifiers the units share mark ordinary shared use rather than control; control shows only where what each unit receives in the first ledger, followed into a second ledger, returns to the source that supplied it, so linking units by shared identifiers or by density in the first ledger names the wrong set.",
+  "driver_concrete": "Follow each buyer's purchased USDT from the escrow into the wallet ledger: the ring's purchases go within the hour to a collecting account that funds the very sellers they bought from, while the accounts that share phones (agent points, households) and the dense merchant cliques keep, withdraw or spend what they buy, and the ring runs every account from its own phone, so the device links every trust-and-safety pipeline starts from name the agent points instead.",
+  "stump": "A competent solver links accounts through shared phones and tablets, keeps the linked groups that traded with and rated one another, applies the cap and files the agent points' ratings, never following each buyer's coins into the wallet ledger, where the ring's purchases return to the account that funds the sellers they bought from.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task48": "task48 found a marketplace ring by aggregating orders to buyer-seller pairs where repeat counts draw an absolute gap; here no pair repeats beyond ordinary loyalty and the ring is read from where each buyer's coins go next across a second ledger, never from a pair count.",
+    "task156": "task156 v1 loop 3 read a closed pool's falling exit rate from members leaving at their own steady rates; here nothing is a rate or a survival, the set is the accounts one controller runs, read from a value loop across two ledgers.",
+    "task452": "task452 v2 reweights reference observations by inclusion probabilities from a revised classification; here nothing is sampled or weighted, the set is read from each buyer's coins returning to the account that funds its seller.",
+    "task139": "task139 v1 read a randomised intervention per assigned unit, conversion times cost; here there is no assignment and no effect, only which accounts one controller runs, read from coins returning through a second ledger.",
+    "task182": "task182 v4 corrects length-biased snapshots of items in progress; here no duration is sampled, and the set is read from where each buyer's purchase goes next in a second ledger.",
+    "task265": "task265 v1 corrects delayed entry in a survival estimate; here no time to an event is estimated, and the decisive set comes from a value loop across the escrow and the wallet.",
+    "task270": "task270 v1 corrected range restriction among members picked in rank order and v6 reassigned items to the slot they landed in; here the population is the accounts one controller runs, read from coins returning to the seller's funder through a second ledger."
+  },
+  "lineage": [],
+  "notes": "Seed AD36, header and Situation only. Gate G method_or_model_selection: two defensible ways of establishing that accounts are run together, the platform's identifier links against the coins' path across the escrow and the wallet, the data forcing the second (the device-linked shop and household groups keep what they buy, and most rings share no phone). Furniture redrawn after task212 merged at 0568995: forum executive_team and role operations_director to line_manager_or_team and policy_adviser.",
+  "registered": "2026-11-05T00:02:45Z"
+}
