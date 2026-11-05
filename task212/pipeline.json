@@ -1,22 +1,35 @@
 {
   "task": "task212",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science/exploratory-data-analysis-distribution-assessment (Brujula Paqueteria outbound cage audits, Spain)",
   "objective": "anomaly-detection",
   "stage": 2,
   "stage_name": "design",
-  "updated": "2026-11-04",
+  "updated": "2026-11-05",
   "stump": "A competent analyst standardises each hub's audited damage on the parcels' own weight, size, packaging, service and sender, allows for the cartons sharing each cage and books the survey to Zaragoza, never reading each parcel's crush load from the weight scanned into its cage after it, which accounts for Zaragoza and leaves Ribarroja del Turia with the damage the survey can remove.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
   "seed_screen": "AD35's world screened at stage 1 on 2026-11-04 with clean-truth prototypes, 20 redraws each, and set aside: (1) the FY2027 severity-table regroup is rule application, a lower rung at most; (2) the severity-validation family is closed (validators or the benchmark reach any plain upcoding; task190 architecture 7 measured the two-provider and look-back members dead); (3) repeated diagnoses on same-hospital readmissions read against readmissions elsewhere: naive repeat count on the golden 11 to 19 of 20 across five parameter sets while the golden held 15 to 20, and the one set that pushed the naive counts wrong (20 and 19 of 20) dropped the golden to 1 to 8 of 20; (4) admission-day occupancy setting the admission threshold: the ladder formed on one seed but over 20 redraws truth split 10/8/2 and the golden named a large cell on benchmark noise 9 of 20; (5) forward behaviour (sentinel effect, code substitution) would need a filed practice; (6) probe and close-out extrapolation is spent (task482 lineage, task190 architecture 3). Measured detail in DESIGN_NOTE.md, Tried and rejected.",
   "draw_screens": "2026-11-04, scratch t212/redraw/proto_stack7.py, 20 redraws: first look Zaragoza 20/20; careful readers (a) field cells, (b) constructing (position, cage weight, cartons in cage, position bands, top third), (c) per-record with interactions, (d) mechanism-naming (cartons sharing the cage), (e) literal replay, each Zaragoza 20/20; golden family Ribarroja 20/20 on five specifications (lead 2.04 or more), 19/20 on the log of the weight on top; wrong-reason exclusion of Zaragoza lands Dos Hermanas 18/20.",
-  "resume": "Stage 2 design: invoke stumping, determinism-check, supplemental-stumping and guide-to-prompt; write the note's Three rules, Survivor anatomy, Readability screen, Semantic fork table, Ladder (widen Dos Hermanas as the wrong-reason runner-up), Closure table, Literal reader, Oracles and Ask sheet; draft prompt.txt; then the generator with checks.py asserting every screen at the shipped seed; leave stage 2 only on precut.py exit 0.",
+  "resume": "Stage 2 in progress when a container restart stopped the build agent (2026-11-05): the design note carries drafts of the Default path, Stump sentence, Three rules, Survivor anatomy, Readability screen, Semantic fork table, Ladder, Closure table, Literal reader, Oracles and Ask sheet sections, and generator/ holds world.py, records.py, analysis.py, asks.py, screen.py and screen_light.py (uncommitted work preserved in this PAUSED commit; scratch measurements in scratchpad t212/redraw and t212/proto). Resume: read the note and the coordinator's five review points (reader d2 crush named with declared weights; load-order and DWS join determinacy; the forward figure filed as WHAT with the lead at or above 1.2 under every form; Gate G no ranked audit summary; the asks' limits), re-run the screens on the generator, finish stage 2 to precut exit 0, message main, then stage 3 to the stage-4 hand-off.",
   "approved": null,
   "delivered": null,
   "portal": null,
