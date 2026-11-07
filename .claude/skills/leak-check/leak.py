@@ -635,8 +635,23 @@ def sweep_metadata(target, rep):
         from pypdf import PdfReader
     except ImportError:
         PdfReader = None
+    import zipfile as _zf
     for root, _, files in os.walk(target):
         for fn in sorted(files):
+            if fn.lower().endswith((".xlsx", ".docx", ".pptx")):
+                # Office writes AppVersion as a two-part release ("16.0300"); openpyxl's "3.1" is a known tell,
+                # and so is its two-line app.xml with no TitlesOfParts
+                try:
+                    app = _zf.ZipFile(os.path.join(root, fn)).read("docProps/app.xml").decode("utf-8", "replace")
+                except Exception:
+                    continue
+                v = re.search(r"<AppVersion>([^<]*)</AppVersion>", app)
+                if v and not re.fullmatch(r"\d\d\.\d{4}", v.group(1)):
+                    rep.add("10 container metadata", "LEAK", fn,
+                            "docProps/app.xml AppVersion is %r, not an Office release (openpyxl writes 3.1)" % v.group(1))
+                if fn.lower().endswith(".xlsx") and "TitlesOfParts" not in app:
+                    rep.add("10 container metadata", "REVIEW", fn, "docProps/app.xml has no TitlesOfParts, which Excel always writes")
+                continue
             if not fn.lower().endswith(".pdf") or PdfReader is None:
                 continue
             try:

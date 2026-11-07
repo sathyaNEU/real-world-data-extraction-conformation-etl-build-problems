@@ -32,6 +32,9 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   Producer or Creator is the organisation, one whose library header was overwritten, and a Subject left at
   the placeholder "(unspecified)" (task127, task482). Fix the export's date, /DocChecksum and /ID at equal
   length so two builds stay byte-identical (task482/generator/officepdf.py).
+  An xlsx input's docProps/app.xml reads as Excel saves it: AppVersion an Office release ("16.0300") and the
+  sheet names in TitlesOfParts. The portal fails openpyxl's AppVersion 3.1 (task118); the scrub script
+  rewrites app.xml and leak.py sweep 10 refuses it.
   Timestamps: scrub every shipped file whose body states a date, goldens included.
 - **Check.** Sweep the pack and the deliverables (two generators): no writer name, no stamp outside the
   band. Wire OOXML, PDF and image branches even before a file of that kind ships.

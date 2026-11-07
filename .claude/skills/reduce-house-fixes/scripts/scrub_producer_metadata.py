@@ -78,6 +78,26 @@ def out_of_band(iso_date, floor, ceiling):
     return (floor and iso_date < floor) or (ceiling and iso_date > ceiling)
 
 
+APPVERSION = {".docx": "16.0000", ".xlsx": "16.0300", ".pptx": "16.0000"}
+
+
+def excel_app_xml(workbook):
+    """docProps/app.xml as Excel saves it: the sheet names in TitlesOfParts, never openpyxl's two-line stub."""
+    names = [re.sub(rb"&(?!amp;|lt;|gt;|quot;|apos;)", b"&amp;", m)
+             for m in re.findall(rb'<(?:\w+:)?sheet\b[^>]*\bname="([^"]*)"', workbook)]
+    parts = b"".join(b"<vt:lpstr>" + n + b"</vt:lpstr>" for n in names)
+    return (b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+            b'<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+            b'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+            b"<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>"
+            b"<HeadingPairs><vt:vector size=\"2\" baseType=\"variant\"><vt:variant><vt:lpstr>Worksheets</vt:lpstr>"
+            b"</vt:variant><vt:variant><vt:i4>" + str(len(names)).encode() + b"</vt:i4></vt:variant></vt:vector>"
+            b"</HeadingPairs><TitlesOfParts><vt:vector size=\"" + str(len(names)).encode() + b"\" baseType=\"lpstr\">"
+            + parts + b"</vt:vector></TitlesOfParts><Company></Company><LinksUpToDate>false</LinksUpToDate>"
+            b"<SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged>"
+            b"<AppVersion>16.0300</AppVersion></Properties>")
+
+
 def scrub_ooxml(path, producer, stamp, floor=None, ceiling=None):
     ext = os.path.splitext(path)[1].lower()
     iso = f"{stamp}T00:00:00Z".encode()
@@ -95,6 +115,11 @@ def scrub_ooxml(path, producer, stamp, floor=None, ceiling=None):
                    b"<dc:description></dc:description>", b)
         b = re.sub(rb"(<Application>)[^<]*(</Application>)",
                    rb"\g<1>" + APPNAME[ext].encode() + rb"\g<2>", b)
+        if name == "docProps/app.xml" and ext == ".xlsx":
+            b = excel_app_xml(data.get("xl/workbook.xml", b""))
+        # Office writes AppVersion as a two-part release ("16.0300"); openpyxl writes "3.1", a known tell
+        b = re.sub(rb"(<AppVersion>)(?!\d\d\.\d{4}<)[^<]*(</AppVersion>)",
+                   rb"\g<1>" + APPVERSION[ext].encode() + rb"\g<2>", b)
         # rewrite only the stamps the audit flagged. Silently moving an in-band date would be
         # a change to a field nothing reported, which is how a repair introduces its own defect.
         b = ISO.sub(lambda m: iso if out_of_band(m.group(0).decode()[:10], floor, ceiling)
