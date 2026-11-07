@@ -1,0 +1,98 @@
+{
+ "decision": "which shortlisted community area the 2027 Homes in Use pilot runs in",
+ "deliverables": [
+  "homes_in_use_pilot_2027.xlsx",
+  "empty_homes_by_area_2026.png"
+ ],
+ "distractor_files": [
+  "target/census2021_household_spaces_oa.csv",
+  "target/oa21_to_community_area_bestfit.csv",
+  "target/housing_needs_assessment_2024_summary.pdf"
+ ],
+ "files": {
+  "target/census2021_household_spaces_oa.csv": {
+   "covers": "Census 2021 household spaces by output area for the shortlisted areas",
+   "date": "2023-01-05",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/council_taxbase_returns_october_2025.pdf": {
+   "covers": "the two councils' published Council Taxbase returns, October 2025",
+   "date": "2025-10-20",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/county_gazetteer_extract_2026-10.csv": {
+   "covers": "county address gazetteer extract, shortlisted community areas",
+   "date": "2026-10-07",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/homes_in_use_pilot_terms_of_reference_v1-2.pdf": {
+   "covers": "National Homes Agency, Homes in Use pilot terms of reference, version 1.2",
+   "date": "2026-09-08",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/housing_needs_assessment_2024_summary.pdf": {
+   "covers": "Teversby and Swanholt Housing Needs Assessment 2024, summary report",
+   "date": "2024-11-28",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/meter_reads_daily_2025-26.parquet": {
+   "covers": "Pennimouth Water smart meter head end, daily consumption extract (PW-DSA-2026-014)",
+   "date": "2026-10-12",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/ndr_self_catering_entries_2026-10.csv": {
+   "covers": "business rates list, self-catering entries for the shortlisted areas, as at the extract",
+   "date": "2026-10-08",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/oa21_to_community_area_bestfit.csv": {
+   "covers": "county research team best-fit lookup, 2021 output areas to community areas",
+   "date": "2024-02-19",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/pennimouth_water_data_sharing_agreement_PW-DSA-2026-014.pdf": {
+   "covers": "Pennimouth Water data sharing agreement PW-DSA-2026-014",
+   "date": "2026-09-01",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/pw_property_uprn_match_2026-10.csv": {
+   "covers": "Pennimouth Water property to gazetteer UPRN match (PW-DSA-2026-014)",
+   "date": "2026-10-12",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/swanholt_ctax_extract_2026-10-06.csv": {
+   "covers": "Swanholt Borough Council revenues system, council tax liabilities extract",
+   "date": "2026-10-06",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/teversby_ctax_extract_2026-10-05.xlsx": {
+   "covers": "Teversby District Council revenues system, council tax liabilities extract",
+   "date": "2026-10-05",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  },
+  "target/teversby_ctax_legacy_archive_to_2026-05-04.csv": {
+   "covers": "Teversby District Council legacy revenues system archive, liabilities to go-live",
+   "date": "2026-05-04",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented county, its councils, its water company and a fictional national housing agency)"
+  }
+ },
+ "task": "task286",
+ "wrong_basis_distractor": {
+  "basis": "household spaces with no usual residents on census day, 21 March 2021, by community area, which ranks Tarnhithe and Kittlesea first; it counts homes nobody was living in on one day five years before the pilot's weeks, second homes and holiday lets in use that season included",
+  "file": "target/housing_needs_assessment_2024_summary.pdf",
+  "ruled_out_by": "terms of reference 4.1 and 4.3 (homes_in_use_pilot_terms_of_reference_v1-2.pdf): the pilot goes to the area with the most homes nobody used for at least 26 of the 52 weeks from 29 September 2025 to 27 September 2026, a week counting as a week of use if anybody lived in, stayed at or used the home on any day of it"
+ }
+}

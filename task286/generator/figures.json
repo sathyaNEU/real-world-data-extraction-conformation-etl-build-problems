@@ -1,0 +1,105 @@
+{
+ "areas": {
+  "Brackwater": {
+   "district": "Teversby",
+   "holiday_let_homes": 13,
+   "homes": 1010,
+   "left_empty": 104,
+   "lte_ctb": 30,
+   "w26_38": 18,
+   "w39_51": 58,
+   "w52": 28
+  },
+  "Crackmoor": {
+   "district": "Swanholt",
+   "holiday_let_homes": 7,
+   "homes": 450,
+   "left_empty": 49,
+   "lte_ctb": 15,
+   "w26_38": 9,
+   "w39_51": 26,
+   "w52": 14
+  },
+  "Ellingsea": {
+   "district": "Swanholt",
+   "holiday_let_homes": 23,
+   "homes": 870,
+   "left_empty": 159,
+   "lte_ctb": 39,
+   "w26_38": 21,
+   "w39_51": 97,
+   "w52": 41
+  },
+  "Kittlesea": {
+   "district": "Swanholt",
+   "holiday_let_homes": 27,
+   "homes": 600,
+   "left_empty": 113,
+   "lte_ctb": 6,
+   "w26_38": 22,
+   "w39_51": 84,
+   "w52": 7
+  },
+  "Orrimouth": {
+   "district": "Swanholt",
+   "holiday_let_homes": 9,
+   "homes": 930,
+   "left_empty": 203,
+   "lte_ctb": 20,
+   "w26_38": 15,
+   "w39_51": 108,
+   "w52": 80
+  },
+  "Quellby": {
+   "district": "Teversby",
+   "holiday_let_homes": 6,
+   "homes": 790,
+   "left_empty": 55,
+   "lte_ctb": 17,
+   "w26_38": 5,
+   "w39_51": 28,
+   "w52": 22
+  },
+  "Tarnhithe": {
+   "district": "Teversby",
+   "holiday_let_homes": 51,
+   "homes": 560,
+   "left_empty": 119,
+   "lte_ctb": 14,
+   "w26_38": 50,
+   "w39_51": 60,
+   "w52": 9
+  },
+  "Wennaby": {
+   "district": "Teversby",
+   "holiday_let_homes": 10,
+   "homes": 520,
+   "left_empty": 51,
+   "lte_ctb": 10,
+   "w26_38": 10,
+   "w39_51": 37,
+   "w52": 4
+  }
+ },
+ "band_edges": [
+  38,
+  39,
+  51
+ ],
+ "call": "Orrimouth",
+ "call_count": 203,
+ "gap": 44,
+ "margin_corridor_l": [
+  30,
+  75
+ ],
+ "meter_rows": 2286365,
+ "min_weeks": 26,
+ "runner_up": "Ellingsea",
+ "runner_up_count": 159,
+ "total_homes": 5730,
+ "total_left_empty": 853,
+ "use_margin_l": 50,
+ "weeks": 52,
+ "window": "Monday 29 September 2025 to Sunday 27 September 2026"
+}

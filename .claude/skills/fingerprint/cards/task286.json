@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Orrimouth: 203 homes nobody used for at least 26 of the 52 weeks to 27 September 2026, 44 more than Ellingsea's 159",
+  "answer_source": "submission.md block 1; generator/figures.json call and call_count",
   "gap": [
     "population"
   ],
@@ -36,20 +36,21 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:occupancy-read-from-day-to-day-variation-where-leaks-flow-steadily",
   "layer1": [
-    "two council tax layouts across one council's 2025 move to a new revenues system, status histories effective-dated",
-    "water company properties matched to gazetteer UPRNs, with unmatched properties carried only by their billing address",
+    "two council tax layouts across Teversby's May 2026 move to a new revenues system: an archive closed at go-live and a new extract whose carried accounts restart at go-live",
+    "water company properties matched to gazetteer UPRNs, with unmatched properties carried only by their billing address and postcode",
     "meter exchanges part-way through the year on a continuing property, two rows on the exchange day",
-    "estimated daily reads after communication gaps, apportioned flat across the gap and flagged by read type",
-    "daily totals on UTC days against Monday-to-Sunday weeks",
+    "estimated daily reads after communication gaps, spread evenly across the gap and flagged by read type",
+    "daily totals on UTC meter days against Monday-to-Sunday weeks",
     "census 2021 output areas carried to community areas by a best-fit lookup",
-    "the business rates self-catering list keyed by its own property reference rather than UPRN"
+    "the business rates list keyed by its own BA reference, linked through the gazetteer's cross-reference, a holiday site's cottages under one entry",
+    "dates in two formats (the legacy archive's dd/mm/yyyy, ISO elsewhere)"
   ],
   "stakeholder_role": "the agency's housing evidence lead, preparing the pilot area recommendation the minister signs",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
     "file": "meter_reads_daily_2025-26.parquet",
-    "rows": 1000000,
+    "rows": 2286365,
     "entity": "one day's metered water through one supply point",
     "grain": "supply point x day (UTC)",
     "source": "synthetic"
@@ -91,7 +92,7 @@
   "question_form": "where",
   "driver": "The decisive quantity is how many units stood unused for most of a period, read through an instrument whose daily totals carry, for some units, a steady flow that has nothing to do with use; any line drawn on the total reads the steady flow as use and drops the unused units it runs through, so each unit's totals are split into the part that repeats from day to day and the part that varies, and only the varying part is use.",
   "driver_concrete": "Each home's weeks left empty are read from its own daily water totals as the weeks in which no day rose above the home's own steady flow, not as the weeks it drew under a volume line, because a running cistern or a weeping supply pipe in an empty home records the same litres every day and every volume rule reads it as a household.",
-  "stump": "A competent analyst counts each home's void weeks from the daily meter totals (no water, or under a few days of one person's use) and names Ellingsea, whose empty homes are mostly sound-plumbed flats; the step that lands it there is reading a leak's steady daily flow as use, which drops Orrimouth, whose neglected empty terraces run their cisterns all year, out of first place.",
+  "stump": "A competent analyst counts each home's void weeks from the daily meter totals (no water, or under 300 litres in the week) and names Ellingsea with 161 homes, whose empty homes are mostly sound-plumbed flats; the step that lands it there is reading a leak's steady daily flow as use, which keeps 119 of Orrimouth's 203 unused homes out of its count and leaves Orrimouth fifth at 85.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task236": "236 reads a surveillance source's capture against an independent fixed-protocol sample; here no second sample exists and the steady flow is separated inside each home's own daily series by its constancy.",
