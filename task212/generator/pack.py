@@ -11,6 +11,10 @@ import docs
 import world
 
 V_TARGET = 161600   # Ribarroja's planned parcels a week over peak weeks 48 to 52 (checks.py asserts the bin)
+# CS-FIN 07, section 2: a flat-rate case's grain and its approval basis (checks.py and verify.py read it back)
+FLAT_RATE_CASE = ("A business account on flat-rate terms opens one case for all the damaged cartons of a consignment, "
+                  "under the tracking number of its first carton, and Customer Service approves it at the account's "
+                  "rate for each damaged carton.")
 
 
 def _tbl(rows, widths, head=True, size=8.2):
@@ -107,9 +111,10 @@ def claims_note(path):
                         "first hub sort in the parcel's tracking history, and belongs to the quarter of that sorting "
                         "night. Sorting nights are dated by the evening they start, in Spanish time.", body),
               Paragraph("2. What counts", h),
-              Paragraph("A damaged parcel counts once, however many cases are opened on it. Its claim counts as "
-                        "approved when Customer Service first approves a case on it. For the quarter's report, claims "
-                        "approved and money paid up to and including 20 October count.", body),
+              Paragraph("A damaged parcel counts once, however many cases are opened on it. %s A parcel's claim "
+                        "counts as approved when Customer Service first approves a case on it. For the quarter's "
+                        "report, claims approved and money paid up to and including 20 October count." % FLAT_RATE_CASE,
+                        body),
               Paragraph("3. The money", h),
               Paragraph("The cost of a claim is the money paid to the claimant: by bank transfer in the weekly payment "
                         "run for business accounts, and as a refund to the card the sender paid with for private "

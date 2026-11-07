@@ -146,6 +146,15 @@ for c in pv.itertuples():
             add.append((s.h.get(c.tracking_no), float(cand.amount.iloc[0])))
 ad = pd.DataFrame(add, columns=["h", "a"]).groupby("h").a.sum()
 eur = eur.add(ad, fill_value=0)
+from pypdf import PdfReader
+note = re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in PdfReader(p("damage_claims_handling_note.pdf")).pages))
+chk("CS-FIN 07 files a flat-rate case's grain and approval basis (read back from the PDF)",
+    "opens one case for all the damaged cartons of a consignment, under the tracking number of its first carton" in note
+    and "approves it at the account's rate for each damaged carton" in note and "counts once" in note, len(note))
+fr = cases[(cases.status == "APPROVED") & cases.account.isin(terms.index)]
+mult = fr.approved_eur / fr.account.map(terms)
+chk("every approved flat-rate case is a whole number of cartons at its account's rate",
+    len(fr) > 0 and bool(((mult - mult.round()).abs() < 1e-9).all()), "%d cases" % len(fr))
 for k in KEYS:
     chk("claims %s" % k, int(cnt.get(k, 0)) == F["claims_%s" % k], int(cnt.get(k, 0)))
     chk("claims euros %s" % k, int(round(eur.get(k, 0))) == F["claims_eur_%s" % k], "%.2f" % eur.get(k, 0))
@@ -172,23 +181,16 @@ def spells(src):
 
 
 plc, lone = spells("PLC")
-sis, _ = spells("SIS")
+trip = ev[(ev.source == "SIS") & (ev.event == "TRIP")]
+chk("the safety system logs TRIPs with a cause code and nothing else", set(ev[ev.source == "SIS"].event) == {"TRIP"} and
+    trip.reason.str.len().gt(0).all(), ev[ev.source == "SIS"].event.value_counts().to_dict())
+pair = [((plc[(plc.h == x.h) & (plc.r == "SAFETY")].t0 - x.ts).dt.total_seconds().abs().min()) for x in trip.itertuples()]
+chk("every TRIP sits within a second of a PLC SAFETY stop or inside a spell whose STOP the log lost",
+    sum(v <= 1 for v in pair) + len(lone) == len(trip), "%d echoed, %d RUNs no STOP precedes" % (sum(v <= 1 for v in pair), len(lone)))
 extra = []
-for h, g in sis.groupby("h"):
-    sf = plc[(plc.h == h) & (plc.r == "SAFETY")]
-    xs, ys = [], []
-    for x in g.itertuples():
-        c = sf[(sf.t0 >= x.t0) & (sf.t0 <= x.t0 + pd.Timedelta(minutes=12))]
-        c = c[((c.t1 - c.t0) - (x.t1 - x.t0)).dt.total_seconds().between(0, 60)]
-        if len(c) == 1:
-            xs.append((x.t0 - pd.Timestamp("2026-07-01")).total_seconds() / 86400)
-            ys.append((c.t0.iloc[0] - x.t0).total_seconds())
-    b, a = np.polyfit(xs, ys, 1)
-    for x in g.itertuples():
-        trip = x.t0 + pd.Timedelta(seconds=a + b * (x.t0 - pd.Timestamp("2026-07-01")).total_seconds() / 86400)
-        if not ((sf.t0 - trip).abs() <= pd.Timedelta(seconds=20)).any():
-            nx = lone[(lone.h == h) & (lone.t1 > trip)].sort_values("t1")
-            extra.append((h, trip, nx.t1.iloc[0], "SAFETY"))
+for x in lone.itertuples():
+    prev = trip[(trip.h == x.h) & (trip.ts < x.t1)].ts.max()   # the TRIP before each RUN no STOP precedes
+    extra.append((x.h, prev, x.t1, "SAFETY"))
 allsp = pd.concat([plc, pd.DataFrame(extra, columns=plc.columns)], ignore_index=True)
 wo = pd.read_excel(p("sorter_work_orders_q3_2026.xlsx"), dtype=str)
 wo = wo[wo.order_type == "CORRECTIVE"]
@@ -213,6 +215,6 @@ for k, v in F.items():
     if isinstance(v, (int, float)) and not isinstance(v, bool):
         txt = "{:,}".format(v) if isinstance(v, int) else ("%.1f" % v)
         chk("write-up carries %s" % k, txt in SUB, txt)
-chk("no em or en dash in the write-up", "—" not in SUB and "–" not in SUB)
+chk("no em or en dash in the write-up", "\u2014" not in SUB and "\u2013" not in SUB)
 print("%d FAIL" % len(BAD))
 sys.exit(1 if BAD else 0)

@@ -21,8 +21,8 @@
 3. Ordered each cage's LOAD scans in cage_build_log_q3_2026.parquet and summed the DWS weights of the parcels scanned after each parcel: its load on top.
 4. Fitted the six-hub logistic expectation on shape, log weight, fragility, service and the heavy-carton flag with the load in each form tried (steps at several weights, linear, log, cartons above, heaviest parcel above, with and without packaging terms, with the position and cage-weight terms added) and kept the lowest BIC, per the programme: 60 kg or more on top, by packaging; Ribarroja 50 per 10,000 above, no other hub within 30 of it.
 5. Applied that rate to Ribarroja's mean planned parcels over weeks 48 to 52 in peak_plan_2026.xlsx (161,620): 800 damaged parcels a week.
-6. Claims: charged each parcel's first approved case to its first hub sort in tracking_events_claimed_parcels.parquet, counted a flat-rate account's case as its approved amount over the account's rate in flat_rate_damage_terms.xlsx, and added to the transfers in claims_transfers_2026.xlsx the card refunds in card_refunds_settlement_2026-07-01_2026-10-22.csv of each private sender's approved amount made on or after its decision.
-7. Stoppages: took the PLC's STOP to RUN spells in sorter_event_log_q3_2026.csv, read the safety system's STOPs on the PLC's clock through the offset of the stops both record, started each PLC RUN no STOP precedes at its safety STOP, and added each corrective order in sorter_work_orders_q3_2026.xlsx that matches no logged spell.
+6. Claims, per note CS-FIN 07: charged each parcel's first case in damage_claims_cases_2026-10-23.csv approved by 20 October to the hub and sorting night of its first SORT in tracking_events_claimed_parcels.parquet and counted a flat-rate account's case as its damaged cartons, the approved amount over the account's rate in flat_rate_damage_terms.xlsx; the euros paid by 20 October are the transfers in claims_transfers_2026.xlsx by value date, net of returned ones, and the card refund in card_refunds_settlement_2026-07-01_2026-10-22.csv of each private sender's approved amount made on or after its decision.
+7. Stoppages, per standard ENG-11: took the PLC's STOP to RUN spells in sorter_event_log_q3_2026.csv, started each PLC RUN no STOP precedes at the safety system's TRIP before it, and added each corrective order in sorter_work_orders_q3_2026.xlsx that matches no logged spell.
 8. Recommended the survey for Ribarroja del Turia.
 
 ## 4. Deliverable Answers
@@ -57,8 +57,8 @@
    - El Prat: 199
    - Basauri: 153
 4. Hours stood, by hub:
-   - Zaragoza Plaza: 32.2
-   - Ribarroja: 39.5
+   - Zaragoza Plaza: 32.0
+   - Ribarroja: 39.4
    - Dos Hermanas: 34.8
    - San Fernando: 32.7
    - El Prat: 35.2

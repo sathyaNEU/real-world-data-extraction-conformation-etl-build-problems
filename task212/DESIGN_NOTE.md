@@ -1,6 +1,8 @@
 # task212 design note
 
-**Status: architecture 1, drawn 2026-11-04; stage 2 resumed 2026-11-05 after a container restart, then stage 3.** Wave 8, Anomaly Detection & Diagnostics. The seed's
+**Status: architecture 1, drawn 2026-11-04; stage 2 resumed 2026-11-05 after a container restart, then stage 3; stage 4
+round 1 on 2026-11-07 (leak reader CLEAN; judge NOT_DETERMINISTIC on two ask conventions, the main call forced, G and H
+passing), both fixed in the generator (SF17, SF18); stage 4 round 2 pending.** Wave 8, Anomaly Detection & Diagnostics. The seed's
 world (AD35, a public insurer's prepayment review team) was screened dead at stage 1 and set aside with its
 measurements (`## Tried and rejected`); the number moved to another client domain, world and dataset under the same
 objective (`CLAUDE.md`, A stuck build is unblocked): General Statistics & Data Science, a Spanish parcel carrier's
@@ -122,7 +124,8 @@ outbound cage audits.
   with the log and the sub-35 kg edges refuted by the fit. (4) Gate G: no shipped file summarises or ranks the hubs;
   the audits ship as records. (5) The asks were redrawn: each counting unit filed as WHAT, four primaries from four
   families each a reconstruction across two systems; the cracker keeps 0 of 24 figures and the worst full includer 6 of 24
-  (`## Ask sheet`); Dos Hermanas is the wrong-reason landing 20 of 20.
+  (`## Ask sheet`); Dos Hermanas is the wrong-reason landing 20 of 20. After the stage-4 fix (the flat-rate grain
+  filed, the safety system on the controller's clock) the cracker keeps 6 of 24 and the deep cracker 12 (`## Ask sheet`).
 
 ## Default path
 
@@ -208,6 +211,10 @@ Ribarroja del Turia, whose tile cartons go in first, with the damage the survey 
 | SF14 | a cage split across two trunks | one label, opened and closed once | two physical cages under one label | one load order | asserted (every cage one OPEN, one CLOSE, every LOAD between) |
 | SF15 | the quarter's cages | build dates 1 July to 30 September | audits dated in the quarter | same population | asserted (every audited cage's build date in the window) |
 | SF16 | the load's form and any added terms | the lowest-BIC estimate: the 60 kg step by packaging | the log of the load (about 640 a week); the step with position, cage weight and carton count added (about 640 a week); no pack terms; sender sector | same call; the graded hundred only under the lowest BIC | the programme (the estimate with the lowest BIC on the quarter's routine audits stands); asserted at the shipped seed (log +145, the step with position and cage terms +100, every rival +446 or more) and over 20 redraws (20 of 20) |
+| SF17 | a flat-rate case's grain (ask: damaged parcels with an approved claim) | one case covers every damaged carton of its consignment, each a damaged parcel: the approved amount over the account's rate in the flat-rate terms (1,267 / 888 / 967 / 1,449 / 1,081 / 464) | one damaged parcel a tracking number (1,101 / 772 / 827 / 1,232 / 935 / 411, the stage-4 judge's) | same call; the six counts 53 to 217 apart | CS-FIN 07 section 2, after its first sentence: "A business account on flat-rate terms opens one case for all the damaged cartons of a consignment, under the tracking number of its first carton, and Customer Service approves it at the account's rate for each damaged carton."; asserted: every approved flat-rate amount an exact whole multiple of its rate (671 cases, 1 to 7 cartons), no case before its terms date, no ordinary, reopened or second case on a flat-rate account, the literal reading gives the six counts and the excluded reading the judge's six |
+| SF18 | the safety system's times and the end of a spell the PLC lost (ask: stoppages and hours stood) | one clock: a TRIP lands in the PLC STOP's second or the next; a spell whose STOP the log lost runs from its TRIP to the PLC's next RUN, the RUN no STOP precedes; every corrective order keys its minutes inside its logged spell | (ii) earliest stop record to the latest RUN over every source, work orders included; (iii) TRIPs shifted by an offset from the paired stops (mean, median, nearest pair, straight line), each zero to the second; (iv) the raw TRIP times; a lost spell ended at a RESET; the order's minutes in place of the log's | same call; (i) to (iv) one count and the same hours to 0.002 h at every hub, each 0.33 of a bin from its edge; RESET readings closed by logging no RESET; the order's minutes 0.9 to 1.2 h lower | the world (one clock, TRIPs only, orders inside their spell) and ENG-11 ("from the moment it stops to the moment it runs again, whichever record shows it": an order's later minute is not the moment the sorter stopped); asserted, with RESETs measured on a re-cut log: a lost spell ended at its RESET puts San Fernando 0.04 of a bin from its edge, TRIP to RESET moves San Fernando, El Prat and Basauri |
+
+Forward figure (the stage-4 judge's note, not a gate failure): filing the BIC candidate family would name the load, the thing the decisive step recognises, so that fork is the stump and is not pinned. Under the filed criterion the judge's own lowest-BIC model gives 787 a week, which is 800 to the hundred; the weaker forms it lists (739, 844) carry higher BIC and are set aside by the programme's sentence.
 
 ## Ladder
 
@@ -251,7 +258,10 @@ damage for parcels of the same weight, size, packaging, fragility and service) f
 estimand with "the same parcels" taken to include the load each carried in its cage, read from the build log and the
 DWS, and the programme's lowest-BIC sentence choosing among the estimates built (on the attributes alone it keeps
 an attribute model and files Zaragoza; with the load it keeps the 60 kg step by packaging and files Ribarroja at 800). Every differing reading of a term (SF1 to SF15) gives the same call and the same hundred; nothing in the bundle
-reads to another answer.
+reads to another answer. The asks' two conventions the stage-4 judge found open are closed: CS-FIN 07 read literally
+gives the six claims counts (SF17), and ENG-11 read under every reading of the safety system's TRIPs, the union of
+every record included, gives each hub's stoppages and hours stood to 0.002 h (SF18); write-up steps 6 and 7 execute
+to the same figures.
 
 ## Oracles
 - The 2025 survey report (Basauri): records a closed survey at a hub whose cages carry parcels only, where both routes
@@ -275,14 +285,19 @@ the tracking history, the flat-rate terms, the hub register, the claims note.
 - The WHAT, filed in Customer Service and Finance's note CS-FIN 07: the hub (the first hub sort in the parcel's
   tracking history), the period (the quarter of that sorting night, dated by the evening, Spanish time), the counting
   unit (a damaged parcel counts once however many cases are opened on it; approved when Customer Service first
-  approves a case), the boundary (approvals and money up to and including 20 October), the money (paid to the
-  claimant by transfer for business accounts, as a refund to the card for private senders; a returned transfer is not
-  paid until made again).
+  approves a case), a flat-rate case's grain (one case for all the damaged cartons of a consignment, under its first
+  carton's tracking number, approved at the account's rate for each damaged carton; filed after the stage-4 judge,
+  SF17), the boundary (approvals and money up to and including 20 October), the money (paid to the claimant by
+  transfer for business accounts, as a refund to the card for private senders; a returned transfer is not paid until
+  made again).
 - Primary 1, D6 (a row at another grain than its name), block = the six counts: a business account on flat-rate
   terms opens one case for a consignment's damaged cartons, under the first carton's tracking number, approved at its
   per-carton rate times the cartons. Remedy: the approved amount over the account's rate in the commercial team's
-  flat-rate terms (a recorded allocation weight). Wrong paths: one parcel a case misses every hub by 53 to 217 at the
-  shipped seed (checks.py, D6).
+  flat-rate terms (a recorded allocation weight). Since the stage-4 judge counted one parcel a tracking number and no
+  shipped sentence said otherwise, CS-FIN 07 files the case's grain and approval basis (never the arithmetic), so the
+  block is now executed from the note: every careful reader keeps the six counts and the device holds nothing. Wrong
+  path, the reading the sentence excludes: one parcel a tracking number misses every hub by 53 to 217 (checks.py,
+  SF17).
 - Primary 2, D7 (the true key elsewhere), block = the six euro figures: the card gateway's settlement report carries
   its own refund ids, amounts and UTC times and no case reference. Remedy: each private sender's approved case
   matched to the refund of its amount made on or after its decision, one refund a case, the label-price refunds
@@ -294,8 +309,8 @@ the tracking history, the flat-rate terms, the hub register, the claims note.
   the first approval while the transfer runs pay the top-up; returned and re-made transfers; the tracking history in
   UTC with the sorting night across Spanish midnight; parcels collected in late June and early October.
 - Pin test: the sentence fixes the hubs, the period, the counting unit and the roundings; the note files the hub, the
-  period, the boundary and the money; the devices sit in how many parcels a case covers and which refund is which
-  case's, which no sentence names.
+  period, a flat-rate case's grain, the boundary and the money; the device left sits in which refund is which case's,
+  which no sentence names (the grain, filed after the stage-4 judge, holds nothing).
 
 **Ask S: sorter stoppages by hub.** For each hub, the sorter's stoppages and hours stood over the July to September
 sorting nights (12 figures: counts whole, hours to one decimal). H18 home: the survey's engineering case, the
@@ -310,12 +325,17 @@ historian's event log, the work orders, the stoppage standard ENG-11, the hub re
   are in the night engineer's corrective work orders only. Remedy: each corrective order whose machine-stopped and
   machine-running times (Spanish time, to the minute) match no logged spell is a stoppage (a keyless match across two
   systems and two clocks). Measured: one set under order windows of 1 to 5 minutes.
-- Primary 2, D1 (the same records under two sources where the copy is not exact), block = the three newer sorters (San
-  Fernando, El Prat, Basauri), both measures: the safety system logs every safety standstill on its own clock, which
-  runs behind and drifts from under a minute to about seven over the quarter; when a safety trip floods the PLC's
-  event buffer the PLC's STOP is lost and its RUN stands alone. Remedy: read the safety system's STOPs on the PLC's
-  clock through the offset of the stops both record (a straight line through the paired stops), set the echoes
-  aside, and start each lone PLC RUN at its safety STOP. Measured: one set under safety tolerances of 10 to 40 s.
+- Primary 2, D1 (the same records under two sources), block = the three newer sorters (San Fernando, El Prat,
+  Basauri), both measures: the safety system logs every safety trip to the historian as a TRIP with its cause code, on
+  the controller's clock, in the second of the PLC's STOP or the next; when a safety trip floods the PLC's event buffer
+  the PLC's STOP is lost and its RUN stands alone. Remedy: set aside the TRIPs a PLC SAFETY stop echoes and start each
+  RUN no STOP precedes at the TRIP before it. Measured: one set under TRIP tolerances of 1 to 40 s, and every reading
+  of the TRIP's time one figure to 0.002 h (SF18). The drifting safety clock and its offset fit died at the stage-4
+  judge (`## Tried and rejected`); with one clock the deep cracker reaches this block (the deep route below).
+- Every corrective order keys its stop minute at or after the logged STOP and its run minute at or before the logged
+  RUN (the minute the night engineer acknowledged the stop, the clock minute at the restart), so the union of every
+  source's records is the golden (SF18); the stage-4 judge's earliest-stop-to-latest-run reading had added 0.2 to
+  0.3 h at the older sorters through nearest-minute orders.
 - Hazards: the event log in UTC against the orders in Spanish time; the sorting night across midnight; preventive
   orders with no stoppage; corrective orders for logged spells; SORT_START and SORT_END rows.
 - Pin test: the sentence fixes the hubs, the nights and the roundings; ENG-11 files the spell, the night and the
@@ -334,28 +354,39 @@ the sorting hub moves every national parcel. Each is seen and repaired right by 
 **Referee.** None: every route completes and reconciles to its own totals (the transfer runs to themselves, the
 gateway report to itself, the PLC's spells to its own STOP and RUN pairs).
 
-| Cracker sheet, on the cut pack (digest 262ae1134cd05476, ceiling.py) | Claims counts, D6 | Claims euros, D7 | Stoppages and hours, older sorters, D4 | Stoppages and hours, newer sorters, D1 | Kept of 24 | Verdict |
+| Cracker sheet, on the cut pack (digest 8e3dda16f1beaea0, ceiling.py) | Claims counts, D6 | Claims euros, D7 | Stoppages and hours, older sorters, D4 | Stoppages and hours, newer sorters, D1 | Kept of 24 | Verdict |
 |---|---|---|---|---|---|---|
-| Cracker: lands the call, runs the battery, executes CS-FIN 07 and ENG-11, takes the PLC's spells and sets the safety rows aside as an echo | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
-| Deep cracker: also counts each PLC RUN no STOP precedes, timed from the safety STOP as written | 0 of 6 | 0 of 6 | 0 of 6 | 3 of 6 | 3 | miss |
-| Cracker who reads a flat-rate case's amount over its rate as its cartons | 6 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 6 | miss |
-| Full includer A: every file and stated fact; every source's spells with exact duplicates dropped; the card refunds spread over hubs pro rata | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
-| Full includer B: the PLC's spells plus every corrective work order | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
-| Full includer C: as A, and the flat rates read as cartons | 6 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 6 | miss |
-| No repair: every row as it stands, the case export's hub and approved amounts | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
+| Cracker: lands the call, runs the battery, executes CS-FIN 07 (a flat-rate case's cartons included) and ENG-11, takes the PLC's spells and sets the TRIPs aside as an echo | 6 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 6 | miss |
+| Full includer A: every file and stated fact; every source's records as spells (each TRIP to the next RUN), exact duplicates dropped; the card refunds spread over hubs pro rata | 6 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 6 | miss |
+| Full includer B: the PLC's spells plus every corrective work order | 6 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 6 | miss |
+| Full includer C: as A, and the flat rates read as cartons (now the filed reading, so C is A) | 6 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 6 | miss |
+| No repair: every row as it stands, the case export's hub and approved amounts, every STOP and TRIP row a stoppage | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
 
-- Verdict: a responder misses when it keeps under two fifths of the 24 ask figures; every row above keeps a quarter or
-  less, the cracker none.
-- Pair ceiling: 35.4 with the cracker on the call and the worst full includer off it (55 x 0.000 and 55 x 0.250 on 38 + 7
-  and 5 + 7); 45.0 with two crackers on the call; 51.9 with two deep crackers on it; 58.8 with two crackers on it who read
-  the flat rates as cartons.
-- Mirror leakage: 25.0 per cent of the ask weight (full includer C).
-- Measured by: generator/ceiling.py, which reads only target/ and imports nothing from the generator; its golden
-  equals the generator's on all 24 figures.
+| Deep route, measured beside the sheet and over the bar (same digest, ceiling.py) | Claims counts, D6 | Claims euros, D7 | Stoppages and hours, older sorters, D4 | Stoppages and hours, newer sorters, D1 | Kept of 24 | Over two fifths |
+|---|---|---|---|---|---|---|
+| Deep cracker: the cracker, and each PLC RUN no STOP precedes counted as a stoppage, timed from the TRIP before it | 6 of 6 | 0 of 6 | 0 of 6 | 6 of 6 | 12 | keeps half |
+
+- Verdict: a responder misses when it keeps under two fifths of the 24 ask figures; the cracker and every full
+  includer keep a quarter (the six counts CS-FIN 07 now files), the no-repair reader none. The deep cracker keeps half:
+  with the safety system on the controller's clock, timing a lost spell from its TRIP is the golden, so the D1 block
+  holds only against the cracker who sets the TRIPs aside. Reported as measured, no device tuned.
+- Pair ceiling: 42.2 with the cracker on the call and the worst full includer off it (55 x 0.250 and 55 x 0.250 on 38 + 7
+  and 5 + 7); 49.1 with the deep cracker on it and the full includer off; 58.8 with two crackers on the call; 72.5 with
+  two deep crackers on it.
+- Mirror leakage: 25.0 per cent of the ask weight (full includers A, B and C).
+- Measured by: generator/ceiling.py, which reads only target/ and imports nothing from the generator; its golden (the
+  log swept, a third route independent of asks.py and verify.py) equals the generator's on all 24 figures.
 
 ## Leak sweep
-`leak.py --asof 2026-10-29` on target.zip 7f4cee14: REVIEW, no LEAK (the earlier LEAKs fixed in the generator: the
-shipment file no longer carries the word manifest, and 10,000 is the programme's filed unit, under `stated_inputs`).
+`leak.py --asof 2026-10-29` on the stage-4 fix cut, target.zip c782cfef: REVIEW, no LEAK, the same eight REVIEW lines
+as on 7f4cee14 (the earlier LEAKs fixed in the generator: the shipment file no longer carries the word manifest, and
+10,000 is the programme's filed unit, under `stated_inputs`). Three files changed from 7f4cee14 and every main-call
+file is byte-identical: CS-FIN 07 (the flat-rate sentence), the event log (the safety rows as TRIPs on the controller's
+clock, no RESET, and one ordinary spell a hub re-seated mid-bin) and the work orders (minutes inside the logged spell).
+- The changed CS-FIN 07 raises no line: two of the stump paragraph's terms (parcel, cartons), and it names no load,
+  order, cage, trailer or weight; "flat-rate" in it is exempt from the pack check the way the card-refund wording is,
+  because the claims note is where Customer Service and Finance file the case's grain, and the word stays banned in
+  every other PDF (asserted).
 - Sweep 3, the programme carries the call's distinctive words: harmless; it files the survey, its worth and the
   comparison the call answers, and names no hub.
 - Sweep 4, the procedure, the programme and the 2025 report carry 4 to 8 of the stump paragraph's words: harmless;
@@ -363,10 +394,10 @@ shipment file no longer carries the word manifest, and 10,000 is the programme's
   an order, a stratum or a cage's contents.
 - Sweep 6, the peak plan, the maker's visit log and the work orders name the hubs beside numbers: harmless; weekly
   parcels sorted and planned, technician hours and order times, none a damage figure or a ranking on the survey.
-- Guard on the merged corpus (claude/jolly-hypatia-06c61h at 36504aa, every sibling card present; task214 has none
-  yet): `heart` WARN (repeat.decision against task211, answered in `## Draw`; nearest driver or stump 0.06),
-  `surface` promoted four pairs on percentile at an absolute similarity of about 0.10 (task213, task453, task164,
-  task277), each answered on the card's differentiation.
+- Guard on the merged corpus at 63753fc (every card on the 20 batch4 refs already present, so none copied; task214
+  has none): `heart` WARN (repeat.decision against task211, answered in `## Draw`; nearest driver or stump 0.06,
+  task181 v6), `surface` promoted three pairs on percentile at an absolute similarity of about 0.10 (task213, task453,
+  task277), each answered on the card's differentiation; task164 is now a neighbour only.
 
 ## Tried and rejected
 
@@ -441,3 +472,20 @@ shipment file no longer carries the word manifest, and 10,000 is the programme's
   load form in 18 of 20 redraws and the kitchen-sink in 2; with Basauri kept as a carton-first hub (its paper account a
   2026 customer) the lowest BIC picks a supported load form in 20 of 20, setting the kitchen-sink aside by 41 or more
   (100 at the shipped seed) and the log by 66 or more (145).
+- 2026-11-07, a flat-rate case's grain left unfiled (D6 riding silent on the approved amount over the account's rate):
+  died at the stage-4 judge, who counted one damaged parcel a tracking number (1,101 / 772 / 827 / 1,232 / 935 / 411),
+  read the golden's counts as more than the approved parcels that exist and found nothing shipped saying a flat-rate
+  case covers several cartons; CS-FIN 07 section 2 now files the case's grain and approval basis in Customer Service and
+  Finance's voice (SF17), the golden counts unchanged, and the device holds nothing.
+- 2026-11-07, the safety system on its own clock, its stamps 34 to 426 s earlier than the PLC's and drifting over the
+  quarter, with the golden
+  reading its STOPs through a straight line fitted to the paired offsets, beside work orders keyed to the nearest
+  minute: died at the stage-4 judge, who put San Fernando at 38.0 h (earliest stop to latest run), 33.6 h (the raw
+  safety STOP) or 32.8 to 33.0 h (a mean or median offset) against the golden's 32.7, El Prat and Basauri unpinned too,
+  while the same earliest-to-latest reading added 0.2 to 0.3 h at the older hubs through the nearest-minute orders. The
+  safety system now keeps the controller's time and logs TRIPs only (with RESET rows, a lost spell ended at its RESET
+  left San Fernando 0.04 of a bin from its edge and TRIP to RESET moved three hubs), each order keys its minutes inside
+  its logged spell, and every reading is one figure (SF18). Moved, accepted with `freeze.py --allow hours_ZAZ,hours_VLC`:
+  Zaragoza Plaza's hours stood 32.2 to 32.0 and Ribarroja's 39.5 to 39.4, because the older hubs' spells recorded only
+  in the orders (7 and 6) are now keyed inside their minutes, each about a minute shorter, and each hub is re-seated
+  mid-bin; every other graded figure is unchanged.

@@ -22,7 +22,8 @@ Q3 = (dt.date(2026, 7, 1), dt.date(2026, 9, 30))
 CUTOFF = dt.date(2026, 10, 20)
 EXPORT_DAY = dt.date(2026, 10, 23)
 OLD_SORTERS = ("ZAZ", "VLC", "SVQ")      # historian collector on the older control network: link losses
-SIS_SORTERS = ("MAD", "BCN", "BIO")      # safety system logs to the historian on its own clock
+SIS_SORTERS = ("MAD", "BCN", "BIO")      # safety system logs its trips to the historian on the controller's clock
+LOG_RESETS = False                       # the safety system's RESET rows: not logged (checks.py measures them, LOG_RESETS=1)
 LABEL_TARIFF = (4.95, 5.90, 6.95, 8.50, 9.90, 12.90)
 
 
@@ -354,13 +355,13 @@ def stoppages(seed):
     return st, gp
 
 
-def stoppage_records(st, gp, seed):
+def stoppage_records(st, gp, seed, log_resets=None):
     """The historian's event log (UTC; the historian's own ALIVE rows every quarter hour; the sorter PLC's STOP, RUN,
-    SORT_START and SORT_END; at the newer sorters the safety system's STOP and RUN on its own clock) and the
-    engineering work orders (local, to the minute)."""
+    SORT_START and SORT_END; at the newer sorters the safety system's TRIP, with its cause code, and RESET, on the
+    controller's clock) and the engineering work orders (local, to the minute)."""
+    log_resets = LOG_RESETS if log_resets is None else log_resets
     r = np.random.default_rng(seed + 21)
     ev = []
-    q3_start = dt.datetime(2026, 7, 1)
     nights = st.drop_duplicates(["hub", "night"])[["hub", "night", "open_", "close"]]
     for n in nights.itertuples():
         ev.append((n.hub, "PLC", "SORT_START", "", n.open_))
@@ -380,12 +381,14 @@ def stoppage_records(st, gp, seed):
             ev.append((s.hub, "PLC", "STOP", reason, s.t0))
         ev.append((s.hub, "PLC", "RUN", "", s.t1))
         if s.safety and s.hub in SIS_SORTERS:
-            days = (s.t0 - q3_start).total_seconds() / 86400.0
-            off = dt.timedelta(seconds=int(38 + 4.1 * days + r.integers(0, 6)))
+            # the trip reaches the historian in the controller's second or the next; the reset comes before the
+            # operator restarts the sorter
+            lag = dt.timedelta(seconds=int(r.integers(0, 2)))
             reset = s.t1 - dt.timedelta(seconds=int(r.integers(6, 45)))
             code = "%s_%02d" % (r.choice(SIS_REASONS), int(r.integers(1, 15)))
-            ev.append((s.hub, "SIS", "STOP", code, s.t0 - off))
-            ev.append((s.hub, "SIS", "RUN", "", reset - off))
+            ev.append((s.hub, "SIS", "TRIP", code, s.t0 + lag))
+            if log_resets:
+                ev.append((s.hub, "SIS", "RESET", "", reset))
     st["lost_stop"] = lost
     e = pd.DataFrame(ev, columns=["hub", "source", "event", "reason", "ts_local"])
     e["hub_no"] = e.hub.map(HUB_NO)
@@ -405,12 +408,15 @@ def stoppage_records(st, gp, seed):
         if not (s.in_gap or (s.t1 - s.t0).total_seconds() >= 600 or u < 0.05):
             continue
         seq += int(r.integers(1, 9))
-        ms = (s.t0 + dt.timedelta(seconds=30)).replace(second=0)
-        mr = (s.t1 + dt.timedelta(seconds=30)).replace(second=0)
+        # the night engineer keys the minute the stop was acknowledged and the clock minute at the restart
+        ms = s.t0.replace(second=0) + (dt.timedelta(minutes=1) if s.t0.second else dt.timedelta(0))
+        mr = s.t1.replace(second=0)
         rep = ms + dt.timedelta(minutes=int(r.integers(1, 6)))
         clo = mr + dt.timedelta(minutes=int(r.integers(5, 90)))
-        wo.append(("OT-%d" % seq, CMMS_SITE[s.hub], str(r.choice(assets)), "CORRECTIVE", rep, ms, mr, clo,
-                   str(r.choice(actions))))
+        row = ("OT-%d" % seq, CMMS_SITE[s.hub], str(r.choice(assets)), "CORRECTIVE", rep, ms, mr, clo,
+               str(r.choice(actions)))
+        if ms <= mr:      # a standstill inside one minute gets no order
+            wo.append(row)
     for h in HUB_KEYS:
         for d in weekdays(dt.date(2026, 6, 29), dt.date(2026, 10, 2)):
             if d.weekday() == 1 or (d.weekday() == 3 and r.random() < 0.5):
@@ -443,60 +449,37 @@ def plc_spells(events):
             pd.DataFrame(lone, columns=["hub", "t1"]))
 
 
-def sis_pairs(events, sp, window=12, tol=20):
-    """Pair the safety system's STOPs with the PLC's SAFETY stops through the safety clock's own offset: a first
-    pass on the unmistakable pairs (the next SAFETY stop within the window whose spell outlasts the safety spell by
-    under a minute), a straight line through their offsets, then every safety STOP read against that line."""
-    s = events[(events.source == "SIS") & events.event.isin(["STOP", "RUN"])].copy()
+def trips(events):
+    """The safety system's TRIPs (local time), each with its cause code."""
+    s = events[(events.source == "SIS") & (events.event == "TRIP")].copy()
     s["ts"] = pd.to_datetime(s.ts_utc) + pd.Timedelta(hours=UTC_OFFSET_H)
     no2key = {v: k for k, v in HUB_NO.items()}
     s["hub"] = s.hub_no.map(no2key)
-    rows = []
-    for h, g in s.groupby("hub"):
-        g = g.sort_values("ts", kind="mergesort")
-        stop = None
-        for x in g.itertuples():
-            if x.event == "STOP":
-                stop = x.ts
-            elif stop is not None:
-                rows.append((h, stop, x.ts)); stop = None
-    ss = pd.DataFrame(rows, columns=["hub", "s0", "s1"])
+    return s[["hub", "ts", "reason"]].reset_index(drop=True)
+
+
+def lost_spells(events, sp, lone, tol=2):
+    """A TRIP that no PLC SAFETY stop echoes within tol seconds is a safety stop whose PLC STOP the log lost: its spell
+    runs from the TRIP to the PLC's next RUN, the RUN no STOP precedes."""
     saf = sp[sp.reason == "SAFETY"]
     out = []
-    for h, g in ss.groupby("hub"):
-        f = saf[saf.hub == h]
-        first = []
-        for x in g.itertuples():
-            c = f[(f.t0 >= x.s0) & (f.t0 <= x.s0 + pd.Timedelta(minutes=window))]
-            c = c[((c.t1 - c.t0) - (x.s1 - x.s0)).dt.total_seconds().between(0, 60)]
-            if len(c) == 1:
-                first.append(((x.s0 - pd.Timestamp("2026-07-01")).total_seconds() / 86400.0,
-                              (c.t0.iloc[0] - x.s0).total_seconds()))
-        a = np.array(first)
-        slope, icpt = np.polyfit(a[:, 0], a[:, 1], 1)
-        for x in g.itertuples():
-            d = (x.s0 - pd.Timestamp("2026-07-01")).total_seconds() / 86400.0
-            trip = x.s0 + pd.Timedelta(seconds=float(icpt + slope * d))
-            hit = f[(f.t0 - trip).abs() <= pd.Timedelta(seconds=tol)]
-            out.append((h, x.s0, x.s1, trip, len(hit) > 0))
-    return pd.DataFrame(out, columns=["hub", "s0", "s1", "trip", "echo"])
+    for x in trips(events).itertuples():
+        f = saf[saf.hub == x.hub]
+        if ((f.t0 - x.ts).abs() <= pd.Timedelta(seconds=tol)).any():
+            continue
+        nxt = lone[(lone.hub == x.hub) & (lone.t1 > x.ts)].sort_values("t1")
+        if len(nxt):
+            out.append((x.hub, x.ts, nxt.t1.iloc[0], "sis"))
+    return pd.DataFrame(out, columns=["hub", "t0", "t1", "src"])
 
 
-def stoppages_golden(events, wos, tol=20, wo_window=2):
+def stoppages_golden(events, wos, tol=2, wo_window=2):
     """Per hub over the July to September sorting nights: the PLC's spells; a safety stop whose PLC STOP the log lost
-    starts at the safety system's STOP read on the PLC's clock and ends at the PLC's next RUN; an attended standstill
-    the log lost entirely is its corrective order's machine stopped to machine running."""
+    runs from the safety system's TRIP to the PLC's next RUN; an attended standstill the log lost entirely is its
+    corrective order's machine stopped to machine running."""
     sp, lone = plc_spells(events)
     sp["src"] = "plc"
-    parts = [sp[["hub", "t0", "t1", "src"]]]
-    pr = sis_pairs(events, sp, tol=tol)
-    extra = []
-    for x in pr[~pr.echo].itertuples():
-        nxt = lone[(lone.hub == x.hub) & (lone.t1 > x.trip)].sort_values("t1")
-        if len(nxt):
-            extra.append((x.hub, x.trip, nxt.t1.iloc[0], "sis"))
-    parts.append(pd.DataFrame(extra, columns=["hub", "t0", "t1", "src"]))
-    logged = pd.concat(parts, ignore_index=True)
+    logged = pd.concat([sp[["hub", "t0", "t1", "src"]], lost_spells(events, sp, lone, tol)], ignore_index=True)
     site2key = {v: k for k, v in CMMS_SITE.items()}
     w = wos[wos.order_type == "CORRECTIVE"].copy()
     w["hub"] = w.site.map(site2key)

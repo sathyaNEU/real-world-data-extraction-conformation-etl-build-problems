@@ -189,8 +189,9 @@ def workbook(path, F):
                               "the lowest-BIC logistic estimate (shape, log weight, fragility, service, heavy-carton "
                               "flag, and 60 kg or more scanned in on top, by packaging), to the nearest 10; none "
                               "where at or below (survey programme, section 2)."),
-        ("Claims", "Damaged parcels whose first case was approved by 20 October, charged to the hub of the parcel's "
-                   "first sort; money paid by 20 October by transfer or card refund (note CS-FIN 07)."),
+        ("Claims", "Damaged parcels whose first case was approved by 20 October, a flat-rate case counting each damaged "
+                   "carton it covers, charged to the hub of the parcel's first sort; money paid by 20 October by "
+                   "transfer or card refund (note CS-FIN 07)."),
         ("Stoppages", "Spells the sorter stood still on the sorting nights, whichever record shows them, each once "
                       "(standard ENG-11)."),
         ("As of", "Audits closed 9 October 2026; claims export 23 October 2026; prepared 29 October 2026.")],
