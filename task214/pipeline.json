@@ -1,0 +1,44 @@
+{
+  "task": "task214",
+  "status": "PAUSED",
+  "domain": "business-operations-analytics/service-operations-sla (client General Statistics & Data Science, exploratory-data-analysis-distribution-assessment); Almring Bank Group's private-cloud batch platform Larix, Vienna",
+  "objective": "anomaly-detection",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-11-07",
+  "seed": "AD37 (header and Situation only)",
+  "stump": "",
+  "architecture": 1,
+  "loops": 0,
+  "card": {
+    "registered": "",
+    "check_after_register": "",
+    "merged_parent_at": "36504aa"
+  },
+  "screens": "candidate 1 (reverse-causality straggler) spent at screen 4(c) before registration: per-record host x night, x 4h and x 8h residual readers reach the golden set 16 to 20 of 20 (v9, v10, scratch t214/proto); every other reader wrong 20/20",
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "Stage 1, draw: candidate 1 spent (DESIGN_NOTE ## Tried and rejected). Screen the next candidate on the Larix world with generator/world.py (replace its mechanism block) and generator/screens.py (five screens over 20 redraws, readers a to e including per-record host x time-cell residuals at 60, 120, 240, 480 and 1440 minutes). Queued on paper: (1) a straggler whose last minutes are a commit wait behind another family's write to the shared output table, read from the executor heartbeat trajectory (a copy redoes the work and waits again; risk: a status column or a dedicated heartbeat file makes it readable); (2) shard-level input waits read through the catalogue's shard-to-part mapping against part landings (risk: the field's critical path at shard level is a reflex); (3) a self-dependent job whose late night pushes the next night's start (risk: a careful dependency replay is the field's method). If none passes all five screens, move to another client domain, world and dataset under AD (CLAUDE.md). Guard probes and personas in the note's ## Draw; draft card in scratch t214.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}
