@@ -48,7 +48,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "ratings_2026q3.parquet",
-    "rows": 201093,
+    "rows": 200480,
     "entity": "one rating version",
     "grain": "rating x version",
     "source": "synthetic"
@@ -90,5 +90,11 @@
   },
   "lineage": [],
   "notes": "Seed AD36, header and Situation only. Gate G method_or_model_selection: two defensible ways of establishing that accounts are run together, the platform's identifier links against the coins' path across the escrow and the wallet, the data forcing the second (the device-linked shop and household groups keep what they buy, and most rings share no phone). Furniture redrawn after task212 merged at 0568995: forum executive_team and role operations_director to line_manager_or_team and policy_adviser. Built 2026-11-05 on seed 3: the coordinator's review points measured (d2 forward-to-counterparty and d3 funder-to-source readers wrong 20 of 20; 67 loop operationalisations one set; the only landing search is the cross-ledger 3-cycle, the golden loop itself). Asks: disputes by market (a case on the order the escrow held when it opened), users' on-chain withdrawals by confirmation month (sweeps and split requests), merchant-group cashback (treasury wallets changed in August); ceiling.py: cracker 0 of 22, full includer 8 of 22, pair 48.5.",
-  "registered": "2026-11-05T00:02:45Z"
+  "registered": "2026-11-05T00:02:45Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "send",
+    "rounding opener": "counts",
+    "deliverable set": "png+xlsx"
+  }
 }

@@ -421,6 +421,22 @@ Written at the stage-4 hand-off, on the final cut (seed 3; the zip's digest is i
   the full includer holds 8 of 22 ask figures (36.4 per cent of the ask weight), the worst pairing of one response on the
   call and one off is 48.5, two on the call 55.0, two crackers 45.0, all under 60.
 - Card current (answer, stump, analyst test, concrete driver, spine, Layer 1); no ledger row until ship.
+- Stage 4 (2026-11-07, target.zip c745b735): the judge returned DETERMINISTIC, APPROVE, every figure reproduced (Gate F
+  strong; Gate G etl_conformance, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical). Its
+  two optional pins were applied without changing the pack: the prompt's disputes ask files the counting unit ("orders
+  with a case opened on them, withdrawn or decided, each counted once"), closing the withdrawn-only reading at the
+  golden's figures, and the submission names each ring by its account count, in any order and by any of its accounts.
+  Its fork on device-less wallet clusters is not pinned: the sentence that would close it names what the decisive step
+  recognises (the fork is the stump), and the judge found the evidence data-forced. The leak reader's two rounds were
+  clean on the main call; every ask reading round 2 raised (the Q3 window, a two-case order's decision, the market, the
+  withdrawn amount's source) gives one set of figures and is asserted in `checks.py`.
+- Known stump-power risk: the judge's blind derivation found the three device-less rings as closed wallet clusters. The
+  route a strong analyst takes after reading everything correctly (shared phones, the agent tablets set aside) still
+  files 2,400; the bar needs one of the top two responses stumped, and the portal is the only stump oracle.
+- Ship gates on the final cut: `checks.py` 67 of 67, `verify.py` 36 of 36, `figures_check.py` 71 of 71, `precut.py` exit
+  0, `voice-check.py` PASS, two builds byte-identical (target.zip c745b735, unchanged from the judged cut), `leak.py
+  --asof 2026-11-05` REVIEW with the same lines ruled above and no LEAK, `guard.py heart` WARN (repeat.gate_g, answered)
+  and `surface` with no persona and no new promoted pair.
 
 ## Tried and rejected
 

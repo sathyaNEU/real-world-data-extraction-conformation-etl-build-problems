@@ -145,9 +145,9 @@ def submission(F, path):
           '7. For the cashback, took each group\'s treasury as the wallet that funded its desks in each week (four groups in merchant_programme_2026-09-30.xlsx moved theirs in August, the old wallet sending its balance to the new one) and summed its transfers to buyers\' accounts in Q3 by the group\'s market, with the different buyers paid.',
           '8. The notice reports %s ratings expunged.' % fmt(c['notice']), '']
     L += ['## 4. Deliverable Answers', '', '### q3_ratings_sweep.xlsx', '',
-          '1. One line per ring (accounts suspended, Q3 ratings given, held for manual review, expunged):']
+          '1. One line per ring, in any order and named by any of its accounts (accounts suspended, Q3 ratings given, held for manual review, expunged):']
     for r in F['rings']:
-        L.append('   - %s: %s accounts, %s given, %s held, %s expunged' % (r['ring'], fmt(r['accounts']), fmt(r['given']), fmt(r['held']), fmt(r['expunged'])))
+        L.append('   - Ring of %s accounts (busiest seller %s): %s given, %s held, %s expunged' % (fmt(r['accounts']), r['ring'], fmt(r['given']), fmt(r['held']), fmt(r['expunged'])))
     L.append('   - All rings: %s accounts, %s given, %s held, %s expunged' % (fmt(c['accounts_suspended']), fmt(c['ratings_given']), fmt(c['held']), fmt(c['expunged_exact'])))
     L.append('2. Notice figure: %s ratings expunged' % fmt(c['notice']))
     L.append('3. Q3 disputes by market (disputed orders, decided for the buyer):')

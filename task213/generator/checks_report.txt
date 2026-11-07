@@ -31,6 +31,11 @@ PASS  every USDT ask figure clear of its whole-USDT edge by 0.07  tightest oncha
 PASS  ask 1 device: cited orders overcount disputed trades  1995 against 1806
 PASS  ask 2 device: sweeps sit among outbound transfers  12436 sweeps
 PASS  ask 3 device: one group in each market changed treasury wallet  
+PASS  ask 1 window: every case opened and decided more than an hour inside Q3 (opened or decided, WAT or UTC alike)  opened from day 3.8, decided by day 88.0
+PASS  ask 1 decision: the cases on each order point one way (for the buyer, for the seller, or withdrawn)  
+PASS  ask 1 market: every disputed order's buyer and seller share a market  
+PASS  ask 2 amount: each transfer equals the requests behind it, so the ledger and the custodian give one withdrawn total  32991 transfers
+PASS  ask 3 market: every cashback buyer is in its group's market  1860 payments
 PASS  R1 the field's raw material ships: the decisive step reads released orders, wallet transfers and ratings at row level  118880 orders, 64704 transfers, 190425 ratings
 PASS  R1 no shipped column isolates the ring accounts (largest ring share of any tier value)  0.012
 PASS  R2 every Layer 1 item is neutral on the call (SF2, SF11, SF12, SF13, SF16 asserted above)  

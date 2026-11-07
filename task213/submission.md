@@ -30,12 +30,12 @@ The sweep suspends 241 accounts in 5 rings, which gave 6,517 Q3 ratings; the hol
 
 ### q3_ratings_sweep.xlsx
 
-1. One line per ring (accounts suspended, Q3 ratings given, held for manual review, expunged):
-   - musa_danj_swap: 53 accounts, 1,379 given, 131 held, 1,248 expunged
-   - kumasiotc64: 39 accounts, 1,263 given, 36 held, 1,227 expunged
-   - gwarimpapay15: 50 accounts, 1,355 given, 153 held, 1,202 expunged
-   - yusuf.desk: 55 accounts, 1,341 given, 186 held, 1,155 expunged
-   - chebetfx: 44 accounts, 1,179 given, 91 held, 1,088 expunged
+1. One line per ring, in any order and named by any of its accounts (accounts suspended, Q3 ratings given, held for manual review, expunged):
+   - Ring of 53 accounts (busiest seller musa_danj_swap): 1,379 given, 131 held, 1,248 expunged
+   - Ring of 39 accounts (busiest seller kumasiotc64): 1,263 given, 36 held, 1,227 expunged
+   - Ring of 50 accounts (busiest seller gwarimpapay15): 1,355 given, 153 held, 1,202 expunged
+   - Ring of 55 accounts (busiest seller yusuf.desk): 1,341 given, 186 held, 1,155 expunged
+   - Ring of 44 accounts (busiest seller chebetfx): 1,179 given, 91 held, 1,088 expunged
    - All rings: 241 accounts, 6,517 given, 597 held, 5,920 expunged
 2. Notice figure: 5,900 ratings expunged
 3. Q3 disputes by market (disputed orders, decided for the buyer):

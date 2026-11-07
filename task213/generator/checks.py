@@ -138,6 +138,24 @@ def main():
     ok('ask 2 device: sweeps sit among outbound transfers', (ch.kind == 'sweep').sum() > 1000, '%d sweeps' % (ch.kind == 'sweep').sum())
     ok('ask 3 device: one group in each market changed treasury wallet', sorted(r['market'] for r in x['repl']) == ['GB', 'GH', 'KE', 'NG'], '')
 
+    # ask readings the round-2 leak reader raised, each closed by the data: one set of figures under every reading
+    H = 3600
+    ok('ask 1 window: every case opened and decided more than an hour inside Q3 (opened or decided, WAT or UTC alike)',
+       bool((C.opened > H).all() and (C.decided < Q - H).all()), 'opened from day %.1f, decided by day %.1f' % (C.opened.min() / DAY, C.decided.max() / DAY))
+    dr = np.where(C.code == 'W', 'W', np.where((C.role == 'buyer') == (C.code == 'U'), 'B', 'S'))
+    ok('ask 1 decision: the cases on each order point one way (for the buyer, for the seller, or withdrawn)',
+       bool((C.assign(dr=dr).groupby('true_tid').dr.nunique() == 1).all()), '')
+    mkt = x['A'].market.to_dict(); T_, ret_ = x['T'], x['ret']
+    sel_ = dict(zip(T_.tid, T_.seller)); sel_.update(dict(zip(ret_.tid, ret_.seller)))
+    buy_ = dict(zip(T_.tid, T_.buyer)); buy_.update(dict(zip(ret_.tid, ret_.buyer)))
+    ok('ask 1 market: every disputed order\'s buyer and seller share a market', all(mkt[sel_[t]] == mkt[buy_[t]] for t in C.true_tid.unique()), '')
+    req = x['wds'].groupby('tx').amt.sum()
+    chw = x['chain'][x['chain'].kind == 'withdrawal'].set_index('tx').amt
+    ok('ask 2 amount: each transfer equals the requests behind it, so the ledger and the custodian give one withdrawn total',
+       bool((req.reindex(chw.index) - chw).abs().max() < 0.005), '%d transfers' % len(chw))
+    _, cbk = golden.ask_cashback(d, x)
+    ok('ask 3 market: every cashback buyer is in its group\'s market', bool((cbk.dst.map(mkt) == cbk.mk).all()), '%d payments' % len(cbk))
+
     # the three rules, executed on the clean truth (dataset-generation 7.1)
     A = x['A']
     ok('R1 the field\'s raw material ships: the decisive step reads released orders, wallet transfers and ratings at row level',
