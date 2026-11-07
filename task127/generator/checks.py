@@ -466,8 +466,9 @@ def realism(target):
             m = PdfReader(p).metadata
             ok(b"(unspecified)" not in b and m.get("/Subject") not in (None, "", "(unspecified)"),
                "PDF %s carries a real Subject, no placeholder" % f)
-            ok("ReportLab" in (m.get("/Producer") or "") and "ReportLab" in (m.get("/Creator") or ""),
-               "PDF %s names the tool that wrote it in Producer and Creator" % f)
+            ok("LibreOffice" in (m.get("/Producer") or "") and (m.get("/Creator") or "") == "Writer"
+               and b"ReportLab" not in b and b"reportlab" not in b,
+               "PDF %s exported by an office application, no programming library in it" % f)
         else:
             ok(b"openpyxl" not in b and b"ReportLab" not in b and b"python" not in b.lower()[:4000],
                "container scrubbed %s" % f)

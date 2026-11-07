@@ -10,7 +10,10 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
 from reportlab.platypus import Paragraph, SimpleDocTemplate
 
+import datetime as dt
+
 import core
+import officepdf as O
 import postprocess as PP
 
 GUIDANCE = [
@@ -86,21 +89,18 @@ def _footer(text):
 
 
 def guidance_pdf(path):
+    """System Flow writes the note in Writer and exports it to PDF (officepdf)."""
     st = _styles()
-    buf = io.BytesIO()
-    doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=2.0 * cm, rightMargin=2.0 * cm, topMargin=1.6 * cm,
-                            bottomMargin=2.0 * cm, title="Winter Discharge Fund 2026/27: discharge-to-assess packages",
-                            author="System Flow, NHS Marchshire ICB", subject="Allocation note SF-2026-14",
-                            creator="ReportLab PDF Library - www.reportlab.com")
     story = [Paragraph(core.ICB, st["lh"]), Paragraph("System Flow, Marchford House, 14 Castle Street, Marchford",
                                                       st["lh2"])]
     for kind, text in GUIDANCE:
         sty = {"t": st["title"], "s": st["small"], "h": st["head"]}.get(kind, st["body"])
         story.append(Paragraph(text, sty))
-    foot = _footer("Winter Discharge Fund 2026/27, allocation note SF-2026-14, 28 September 2026")
-    doc.build(story, onFirstPage=foot, onLaterPages=foot)
-    open(path, "wb").write(buf.getvalue())
-    PP.normalize_pdf(path, b"D:20260928101347+01'00'")
+    bst = dt.timezone(dt.timedelta(hours=1))
+    O.build(path, story, "Winter Discharge Fund 2026/27: discharge-to-assess packages", "System Flow, NHS Marchshire ICB",
+            "Allocation note SF-2026-14", "Winter Discharge Fund 2026/27, allocation note SF-2026-14, 28 September 2026",
+            dt.datetime(2026, 9, 28, 10, 13, 47, tzinfo=bst), dt.datetime(2026, 9, 28, 10, 13, 47, tzinfo=bst),
+            margin_mm=20, top_mm=16, bottom_mm=20)
 
 
 def guidance_text():

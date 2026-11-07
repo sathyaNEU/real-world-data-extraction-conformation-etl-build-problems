@@ -49,9 +49,15 @@
    "portal": "inputs: the allocation note PDF's Subject was the library placeholder (unspecified) and its Producer and Creator named the organisation, the header comment overwritten; prompt flagged templated (4 of 7 signals)",
    "repair": "the PDF keeps ReportLab in Producer and Creator and its header comment, Subject 'Allocation note SF-2026-14', Author the organisation; prompt rewritten as one question with each file named where its reason is given; no data file, golden or graded figure changed",
    "commit": "RESHIPPED (task127) 1ea0a989"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "the same provenance reading as task482's second review applies: a PDF naming ReportLab reads as generated",
+   "repair": "the allocation note is now written as a Word document and exported by LibreOffice Writer (Producer LibreOffice 24.2, Creator Writer, no library header), Subject and Author kept; no data file, golden or graded figure changed",
+   "commit": "RESHIPPED (task127), LibreOffice-exported PDF, 2026-11-07"
   }
  ],
- "resume": "Reshipped 2026-11-07 after the portal's input and prompt feedback; target.zip c6160d3f rebuilt byte-identically, every graded figure unchanged. Waits on the portal.",
+ "resume": "Reshipped 2026-11-07 with the allocation note exported by LibreOffice Writer (target.zip eb4fa63c, figures unchanged). The prompt rewrite waits on the author's templating-checker result.",
  "approved": null,
  "delivered": "2026-10-31",
  "portal": null,
@@ -121,7 +127,8 @@
    "event": "RESHIPPED: batch 1 keep-and-repair; judge pass 3 DETERMINISTIC APPROVE, leak read clean",
    "zip": "0747c7d8839d4ed974f2ffa01202567e18b99251186c786ca2eefc6be146dc32"
   },
-  "2026-11-07": "RESHIPPED: PDF metadata made honest and the prompt de-templated, per the portal's feedback"
+  "2026-11-07": "RESHIPPED: PDF metadata made honest and the prompt de-templated, per the portal's feedback",
+  "2026-11-07 (2)": "RESHIPPED: the allocation note exported by LibreOffice Writer instead of written by ReportLab"
  },
  "restored": "2026-10-14: architecture 3 (a full refresh at the author's request) drew judge SEND_BACK at stage 4, and the author chose to restore this architecture as task127's live build (pack unchanged from SHIPPED 59aaaba)"
 }
