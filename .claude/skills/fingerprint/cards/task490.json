@@ -8,11 +8,11 @@
   "client_domain": "general-statistics-data-science",
   "niche": "a waterways charity's lockage at its canal summits over the 2026 boating season, rebuilt from the lock counters' boat movements, the lock-keepers' logs and the lock register into one ledger of chamber fillings, to site the 2027/28 back-pumping scheme",
   "objective": "etl",
-  "shape": "07",
+  "shape": "15",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Kelsby summit (1,460.8 Ml drawn by filling its summit locks' chambers, 1 April to 31 October 2026; Tilsey 1,186.5, Harnock 1,140.8)",
+  "answer_source": "golden/summit_water_2026.xlsx, Lockage sheet; submission.md block 1",
   "gap": [
     "objective"
   ],
@@ -35,12 +35,12 @@
   "analyst_test": "A strong analyst who cleans the counter records, stitches the keepers' log into the camera outage, reads the lock register correctly and charges each summit a lockful for every boat, or replays each summit lock's chamber one boat at a time, names Harnock, because two boats that share a broad chamber are two records and one filling.",
   "domain_test": "The deciding quantity is lockage, the water a summit pound loses to filling the chambers of the locks that rise to it, which canal water managers estimate by replaying each lock's chamber through its boat movements (a boat going up always fills it, a boat going down fills it only when the boat before left it empty, boats that share a chamber fill it once); swapped into another field's nouns the task loses the chamber whose state makes one boat's water depend on the boat before it.",
   "layer1": [
-    "two lock counter firmware versions across the season, the later writing UTC where the earlier wrote the counter's clock time, and naming direction by the camera's A-to-B axis where the earlier wrote UP and DOWN",
-    "a three-week camera outage at one summit lock covered only by the lock-keepers' daily log, a scanned PDF of hand-entered tables in local time, overlapping the counter on the days the camera failed and returned",
-    "duplicate detections when a boat holds under the camera, the same index number seconds apart",
+    "two lock counter firmware versions across the season, the later writing UTC with a Z where the earlier wrote the outstation's UK clock time, and naming direction on the camera's A-to-B axis where the earlier wrote UP and DOWN",
+    "a three-week camera outage at Tilsey Top Lock covered only by the volunteer lock-keepers' typed-up log in local time (boat names and plate numbers), overlapping the camera on the days it failed and returned",
+    "repeat reads when a boat holds under the camera, the same plate seconds apart",
     "unpowered craft (canoes, paddleboards) logged by the camera though they portage round the lock",
-    "boat index plates the camera could not read, carried as blanks, and visiting boats under a visitor pass number rather than a licence index",
-    "chamber dimensions in feet and inches on the historic lock schedule and lockfuls in cubic metres on the 2025 asset survey, one lock re-measured between them"
+    "plates the camera could not read, left blank, and visiting boats under visitor pass numbers",
+    "chamber dimensions in feet and inches on the 1951 schedule against metres and lockfuls on the 2025 chamber survey"
   ],
   "layer2_family": "field_method",
   "layer2_pattern": "own:lock-chamber-state-replayed-through-chamber-cycles",
@@ -49,13 +49,13 @@
   "scoring_unit": "other",
   "spine": {
     "file": "lock_counter_movements_2026.csv",
-    "rows": 66000,
+    "rows": 46423,
     "entity": "one boat movement recorded by a lock counter camera",
     "grain": "boat movement x summit lock (counter clock)",
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
-  "forcing_event": "budget_or_appropriation",
+  "forcing_event": "vote_or_meeting",
   "org_family": "nonprofit_or_charity",
   "world": {
     "geography": "England (an invented canal network in the West Midlands)",
@@ -66,7 +66,10 @@
       "Kelsby summit",
       "Harnock summit",
       "Tilsey summit",
-      "Kelsby Wharf"
+      "Kelsby Wharf",
+      "Coldmere Reservoir",
+      "Fox Bridge",
+      "Kelsby Ring"
     ],
     "people": [
       "Elaine Freeman",
@@ -78,11 +81,12 @@
     ]
   },
   "deliverables": [
-    "summit_lockage_2026.xlsx",
+    "summit_lockage_return_2026.csv",
+    "summit_water_2026.xlsx",
     "backpumping_site_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "Each operation that consumes the shared resource serves one or two consecutive records, and whether a record needs one at all depends on the state the previous operation left, so consumption follows the order and grouping of the records rather than their number; only replaying the state through the records grouped into operations recovers it.",
   "driver_concrete": "A summit lock draws a lockful from its summit pound only when its chamber is filled, which every cycle going up does and a cycle going down does only when the cycle before left the chamber empty, and two boats sharing a broad chamber make one cycle; so a summit's water follows the order and pairing of its boats, and only replaying each chamber through its cycles, not counting or replaying boats, ranks the summits.",
   "stump": "A competent analyst charges each summit a lockful a boat, or replays each lock's chamber one boat at a time, and names Harnock, whose broad chambers hold the most water; the step that lands it there is treating two boats that share a broad chamber as two fillings, which hides that Kelsby, whose holiday ring sends most boats up one summit lock and down the other so that each chamber is left set against the next boat, draws the most.",
@@ -92,6 +96,6 @@
     "task311": "311 projects a standard error from variance components when interviews are added inside fixed areas; here nothing is estimated, the quantity is a count of chamber fillings rebuilt exactly from the ordered boat movements, and the grain that decides is the chamber cycle and the state it leaves."
   },
   "lineage": [],
-  "notes": "Drawn after the seed's price-paid world and a bridge weigh-in-motion draw died (design note, Tried and rejected). G2 decisive: one unit of the decided thing is a chamber filling, the counter's unit is a boat movement, and no key bridges them; G1 carries rung 0 (a boat charged at a lockful). stump_strategy grain_or_unit: the decisive step finds the grain that draws water (the chamber cycle, one boat or two) and the state each cycle leaves, which no grouping of the movement file reproduces. Calibration none: the physics of a chamber closes the reconstruction without a sensor. Priced on a clean-truth prototype before registering (five seeds): a lockful a boat and the boat-by-boat replay file Harnock, cycles at a lockful each file Tilsey, the replay through cycles files Kelsby on every seed.",
-  "registered": "2026-11-07T19:45:07Z"
+  "notes": "Drawn after the seed's price-paid world and a bridge weigh-in-motion draw died (design note, Tried and rejected). G2 decisive: one unit of the decided thing is a chamber filling, the counter's unit is a boat movement, and no key bridges them; G1 carries rung 0 (a boat charged at a lockful). stump_strategy grain_or_unit: the decisive step finds the grain that draws water (the chamber cycle, one boat or two) and the state each cycle leaves, which no grouping of the movement file reproduces. Calibration none: the physics of a chamber closes the reconstruction without a sensor. Priced on a clean-truth prototype before registering (five seeds): a lockful a boat and the boat-by-boat replay file Harnock, cycles at a lockful each file Tilsey, the replay through cycles files Kelsby on every seed. Redrawn after registering: task315 registered two minutes earlier with shape 07 and budget_or_appropriation, so the shape is 15 (the deliverable is the conformed lockage return, a summit lock and day grain, its fields carried from three record systems) and the forcing event is the trustees' capital meeting on 10 December 2026, which votes the scheme's site (the money for one scheme was set in the 2026/27 plan).",
+  "registered": "2026-11-07T20:01:52Z"
 }

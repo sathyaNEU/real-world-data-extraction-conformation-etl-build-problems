@@ -1,0 +1,99 @@
+{
+ "decision": "which summit the Coldmere Canals Trust's 2027/28 back-pumping scheme serves",
+ "deliverables": [
+  "summit_lockage_return_2026.csv",
+  "summit_water_2026.xlsx",
+  "backpumping_site_2027.docx"
+ ],
+ "distractor_files": [
+  "target/boat_licence_register_extract_2026-11.csv",
+  "target/reservoir_storage_weekly_2026.csv"
+ ],
+ "files": {
+  "target/abstraction_licences_2026.xlsx": {
+   "covers": "water abstraction agreements on the summit pounds",
+   "date": "2026-10-12",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/abstraction_meter_readings_2026.csv": {
+   "covers": "abstraction meter month-end readings, March to October 2026",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/backpumping_programme_2027-28.pdf": {
+   "covers": "Water Management, back-pumping programme 2027/28: scope and siting, version 1.1",
+   "date": "2026-09-21",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/boat_licence_register_extract_2026-11.csv": {
+   "covers": "boat licence register extract, licensed craft of the region",
+   "date": "2026-11-01",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/coldmere_outlet_15min_2026.csv": {
+   "covers": "Coldmere Reservoir outlet gauging weir telemetry, 15-minute means",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/counter_sites_2026.json": {
+   "covers": "LockCount Mk3 counter network, site configuration export",
+   "date": "2026-11-03",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/lock_counter_movements_2026.csv": {
+   "covers": "LockCount Mk3 counter network, season movement export for the six summit locks",
+   "date": "2026-11-03",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/lock_register_2026.xlsx": {
+   "covers": "the trust's lock chamber survey 2025 and the transcribed 1951 schedule of locks",
+   "date": "2026-01-19",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/navigation_notices_2026.csv": {
+   "covers": "the trust's navigation notices for the three summit lines, 2026",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/reservoir_register_extract_2025.pdf": {
+   "covers": "Reservoir Safety and Engineering, reservoir register extract",
+   "date": "2026-07-07",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/reservoir_returns_2026.xlsx": {
+   "covers": "daily returns from the three valve-operated supply reservoirs",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/reservoir_storage_weekly_2026.csv": {
+   "covers": "weekly reservoir storage, the trust's published reservoir watch figures",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/tilsey_lock_keepers_log_2026.xlsx": {
+   "covers": "Tilsey summit volunteer lock-keepers' log, typed up from the paper log, April to September",
+   "date": "2026-11-04",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  },
+  "target/works_orders_2026.csv": {
+   "covers": "the trust's field works orders, January to October 2026",
+   "date": "2026-11-02",
+   "licence": "CC BY 4.0 (constructed for this task)",
+   "source": "constructed for this task (an invented waterways charity, its canals, reservoirs, counters and records)"
+  }
+ },
+ "task": "task490"
+}

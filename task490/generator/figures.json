@@ -1,0 +1,122 @@
+{
+ "abstraction_m3": {
+  "HA/007": 467827,
+  "HA/019": 27299,
+  "HA/026": 12904,
+  "KA/014": 30500,
+  "KA/022": 17790,
+  "KA/031": 6088,
+  "TA/003": 19398,
+  "TA/011": 24099,
+  "TA/018": 11185
+ },
+ "abstraction_summit_m3": {
+  "Harnock": 508030,
+  "Kelsby": 54378,
+  "Tilsey": 54682
+ },
+ "call": "Kelsby",
+ "camera_gap": [
+  "2026-08-03 11:45:53",
+  "2026-08-23 15:10:16"
+ ],
+ "fox_bridge_ml": {
+  "Harnock arm": 4462.5,
+  "Tilsey arm": 2396.6
+ },
+ "gap_ml": 274.3,
+ "keepers_entries_taken": 1077,
+ "lockage_ml": {
+  "Harnock": 1140.8,
+  "Kelsby": 1460.8,
+  "Tilsey": 1186.5
+ },
+ "lockfuls_m3": {
+  "HN/L31": 186.4,
+  "HN/L32": 175.7,
+  "KC/L12": 145.1,
+  "KC/L13": 131.1,
+  "TC/L08": 103.6,
+  "TC/L09": 99.1
+ },
+ "locks": {
+  "HN/L31": {
+   "boats": 7005,
+   "cycles": 4995,
+   "down": 3467,
+   "dups": 130,
+   "fills": 3248,
+   "ml": 605.4,
+   "unpowered": 280,
+   "up": 3538
+  },
+  "HN/L32": {
+   "boats": 6501,
+   "cycles": 4637,
+   "down": 3284,
+   "dups": 145,
+   "fills": 3047,
+   "ml": 535.4,
+   "unpowered": 259,
+   "up": 3217
+  },
+  "KC/L12": {
+   "boats": 6643,
+   "cycles": 6601,
+   "down": 1354,
+   "dups": 150,
+   "fills": 5379,
+   "ml": 780.5,
+   "unpowered": 225,
+   "up": 5289
+  },
+  "KC/L13": {
+   "boats": 6229,
+   "cycles": 6214,
+   "down": 5079,
+   "dups": 130,
+   "fills": 5189,
+   "ml": 680.3,
+   "unpowered": 242,
+   "up": 1150
+  },
+  "TC/L08": {
+   "boats": 9368,
+   "cycles": 9269,
+   "down": 4706,
+   "dups": 187,
+   "fills": 5807,
+   "ml": 601.6,
+   "unpowered": 216,
+   "up": 4662
+  },
+  "TC/L09": {
+   "boats": 9329,
+   "cycles": 9247,
+   "down": 4637,
+   "dups": 207,
+   "fills": 5902,
+   "ml": 584.9,
+   "unpowered": 254,
+   "up": 4692
+  }
+ },
+ "movement_rows": 46423,
+ "records_left_out": {
+  "duplicate_reads": 949,
+  "unpowered_craft": 1476
+ },
+ "reservoir_release_ml": {
+  "Coldmere Reservoir": 6859.1,
+  "Lower Kelsby Reservoir": 2246.9,
+  "Tilsey Reservoir": 1090.6,
+  "Upper Kelsby Reservoir": 527.2
+ },
+ "runner_up": "Tilsey",
+ "summit_received_ml": {
+  "Harnock": 4462.5,
+  "Kelsby": 2246.9,
+  "Tilsey": 3487.2
+ },
+ "third": "Harnock"
+}
