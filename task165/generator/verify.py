@@ -99,7 +99,11 @@ def main():
         if g in utc_from:
             utc = utc.where(t < utc_from[g], t)             # the cellular logger's UTC stamps
         return utc.dt.tz_localize("UTC").dt.tz_convert(TZ).dt.tz_localize(None)
-    vis = pd.read_excel(os.path.join(T, "rain_gauge_field_service_2014-2025.xlsx"))
+    allvis = pd.read_excel(os.path.join(T, "rain_gauge_field_service_2014-2025.xlsx"))
+    mech = allvis[allvis.Notes.str.replace(" mm", "mm").str.contains("0.2mm")]
+    swaps = {r.Gauge: pd.Timestamp(r.Date).normalize() + pd.Timedelta(hours=int(r.Arrived[:2]), minutes=int(r.Arrived[3:]))
+             for r in mech.itertuples()}
+    vis = allvis
     vis = vis[vis.Notes.str.contains("Cal check", case=False) & ~vis.Notes.str.contains("No cal check", case=False)]
     for g in ["RG-1", "RG-2", "RG-3", "RG-4"]:
         x = tips[tips.gauge_id == g].copy()
@@ -114,8 +118,8 @@ def main():
         for d in pd.to_datetime(vis[vis.Gauge == g].Date).dt.date:
             same = x["loc"].dt.date == d
             x.loc[same & (x.run_len >= 20), "pour"] = True
-        swap = pd.Timestamp("2025-05-15 09:35")
-        x["inch"] = np.where((g == "RG-4") & (x["loc"] >= swap), 0.2 / 25.4, 0.01)
+        swap = swaps.get(g, pd.Timestamp("2100-01-01"))
+        x["inch"] = np.where(x["loc"] >= swap, 0.2 / 25.4, 0.01)
         y = x[(~x.pour) & (x["loc"].dt.year == 2025)]
         m = y.groupby(y["loc"].dt.month).inch.sum().reindex(range(1, 13), fill_value=0.0)
         for k in range(1, 13):
@@ -126,7 +130,7 @@ def main():
     sc = pd.read_csv(os.path.join(T, "northside_tank_scada_2020-2025.csv"))
     from pypdf import PdfReader
     txt = "\n".join(p.extract_text() for p in PdfReader(os.path.join(T, "northside_tank_om_manual_section4.pdf")).pages)
-    tab = re.findall(r"(\d+\.\d)\s+(\d+\.\d{3})", txt.split("Table 4-1. Tank stage-storage")[-1])
+    tab = re.findall(r"(\d+\.\d\d)\s+(\d+\.\d{4})", txt.split("Table 4-1. Tank stage-storage")[-1])
     hh = np.array([float(a) for a, _ in tab])
     vv = np.array([float(b) for _, b in tab])
     sc["t"] = pd.to_datetime(sc.Timestamp)
@@ -135,7 +139,8 @@ def main():
     lv[after] = lv[after] - lv[after].min()
     vol = pd.Series(np.interp(lv.fillna(0), hh, vv)).where(lv.notna())
     run = (sc.NT_P1_RUN + sc.NT_P2_RUN + sc.NT_P3_RUN) > 0
-    drop = (vol.shift(1) - vol).where(run & (vol < vol.shift(1)) & vol.notna() & vol.shift(1).notna(), 0.0)
+    # mass balance on every quarter hour a pump ran: the fall in storage plus FIT-600's inflow
+    drop = (vol.shift(1) - vol + sc.NT_FIT600_MGD / 96.0).where(run & vol.notna() & vol.shift(1).notna(), 0.0)
     yr = drop.groupby(sc.t.dt.year).sum()
     for y in range(2021, 2026):
         ok("Northside returns %d" % y, int(round(yr[y])) == f["nt_%d" % y], "%.2f" % yr[y])

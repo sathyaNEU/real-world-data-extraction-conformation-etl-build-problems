@@ -82,8 +82,9 @@ def main():
     # the Northside back-test confirms the rating replay (and the room replay) at Northside
     nt = W.northside_tank()
     det = G.events(nt["over"])
-    rep = G.events(G.replay(nt["inflow"], P.NT_VOL, P.NT_CURVE[3]))
-    check("BACKTEST the rating replay reproduces Outfall 006's detector events within 3", abs(det - rep) <= 3,
+    rep = G.events(_replay_hold(nt["inflow"], P.NT_VOL, P.NT_CURVE[3]))
+    check("BACKTEST the rating replay (O&M 4.3's hold) reproduces Outfall 006's detector events within 3",
+          abs(det - rep) <= 3,
           "detector %d, replay %d (the August 2023 cleanout bypass included)" % (det, rep))
     nsroom = np.repeat(P.NS_CAP - w["ns"], 4)[nt["i0"]:]
     pumping = nt["deliv"] > 0
@@ -159,10 +160,10 @@ def main():
         ok &= bool(np.abs(tru - a1[g]).max() < 1e-9)
     check("ASK1 the golden recovers every gauge-month's recorded rain exactly", ok)
     edge = min(abs((a1[g][m] * 100 + 1e-9) % 1 - 0.5) for g in a1 for m in range(12))
-    check("ASK1 no cell within 0.03 hundredths of a rounding edge", edge > 0.03, "%.3f" % edge)
-    for name, kw, least in (("pours kept", dict(pours="keep"), 15), ("clocks unread", dict(handle_clock=False), 6),
-                            ("pours by the logged window", dict(pours="window"), 6),
-                            ("RG-4 at 0.01 in", dict(bucket=False), 7), ("re-sent tips kept", dict(dedupe=False), 4)):
+    check("ASK1 no cell on a rounding edge at the exact 0.2/25.4 in a tip (0.002 hundredths)", edge > 0.002, "%.3f" % edge)
+    for name, kw, least in (("pours kept", dict(pours="keep"), 25), ("clocks unread", dict(handle_clock=False), 6),
+                            ("pours by the logged window", dict(pours="window"), 15),
+                            ("every tip at 0.01 in", dict(bucket=False), 22), ("re-sent tips kept", dict(dedupe=False), 4)):
         v = G.ask1(T, **kw)
         moved = sum(int(round(v[g][m] + 1e-9, 2) != round(a1[g][m] + 1e-9, 2)) for g in a1 for m in range(12))
         check("ASK1 device moves at least %d cells: %s" % (least, name), moved >= least, "%d cells" % moved)
@@ -171,14 +172,21 @@ def main():
     for k in range(len(nt["deliv"])):
         y = W.local_of(nt["i0"] + k).year
         nt_true[y] = nt_true.get(y, 0.0) + nt["deliv"][k]
-    check("ASK2 the level route is the delivered volume within 0.1 MG a year",
-          all(abs(a2[y] - nt_true[y]) < 0.1 for y in a2), str({y: round(a2[y] - nt_true[y], 3) for y in a2}))
+    check("ASK2 the mass balance is the delivered volume within 0.4 MG a year, same whole MG",
+          all(abs(a2[y] - nt_true[y]) < 0.4 and round(a2[y]) == round(nt_true[y]) for y in a2),
+          str({y: round(a2[y] - nt_true[y], 3) for y in a2}))
     check("ASK2 every year sits 0.1 MG or more from a rounding edge",
           all(abs(a2[y] % 1 - 0.5) > 0.1 for y in a2), str({y: round(a2[y], 2) for y in a2}))
     check("ASK2 the re-mounted transducer's floor is 0.45 ft", abs(floor - P.NT_TRANSDUCER_OFFSET) < 1e-9)
     raw = G.ask2(T, offset=False)[0]
-    check("ASK2 the uncorrected level moves 2024 and 2025 out of their bins",
-          round(raw[2024]) != round(a2[2024]) and round(raw[2025]) != round(a2[2025]))
+    check("ASK2 the uncorrected level moves 2023, 2024 and 2025 out of their bins",
+          all(round(raw[y]) != round(a2[y]) for y in (2023, 2024, 2025)))
+    noin = G.ask2(T, inflow=False)[0]
+    check("ASK2 the level falls without FIT-600's inflow miss 2022 to 2025 (SG-600's leak-by)",
+          all(round(noin[y]) != round(a2[y]) for y in (2022, 2023, 2024, 2025)),
+          str({y: round(noin[y]) for y in noin}))
+    both = G.ask2(T, offset=False, inflow=False)[0]
+    check("ASK2 neither handling keeps 2023 to 2025", all(round(both[y]) != round(a2[y]) for y in (2023, 2024, 2025)))
     import ceiling as CE
     pr = CE.pump_route(T)
     check("ASK2 run states times the station curve miss every year", all(round(pr[y]) != round(a2[y]) for y in a2),
@@ -202,6 +210,25 @@ def main():
 
     print("%d checks, %d FAIL" % (N[0], len(FAILS)))
     sys.exit(1 if FAILS else 0)
+
+
+def _replay_hold(inflow, vol, pump, hold=1.0):
+    """The rating replay with O&M 4.3's rule: the station held off while FIT-600 reads 1.0 MGD or more."""
+    dtd = 15 / 1440.0
+    out = np.zeros(len(inflow))
+    s = 0.0
+    for i in range(len(inflow)):
+        q = inflow[i] * dtd
+        if inflow[i] >= hold:
+            take = min(vol - s, q)
+            s += take
+            out[i] = (q - take) / dtd
+        else:
+            s = max(0.0, s + q - pump * dtd)
+            if s > vol:
+                out[i] = (s - vol) / dtd
+                s = vol
+    return out
 
 
 def _replay_full(inflow, vol, pump, room):

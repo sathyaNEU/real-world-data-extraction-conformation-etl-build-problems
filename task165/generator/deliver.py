@@ -185,8 +185,9 @@ def write_xlsx(path, f, yearly):
         c = wr.cell(4 + k, 14, "=SUM(B%d:M%d)" % (4 + k, 4 + k))
         c.number_format = "0.00"
     wr["A9"] = ("Calibration pours removed (steady tip runs on cal-check visits); re-sent duplicate tips dropped; "
-                "RG-3 and RG-4 TipLink loggers read as UTC from May 2024; RG-4 tips at 0.2 mm (0.0079 in) after the "
-                "12 Aug 2025 mechanism swap.")
+                "RG-3 and RG-4 TipLink loggers read as UTC from May 2024; every gauge's tips at 0.2 mm (0.0079 in) "
+                "from the July 2025 contract visit that fitted its new mechanism (field log), the inventory's 0.01 in "
+                "before it.")
     wr.column_dimensions["A"].width = 10
 
     wn = wb.create_sheet("Northside returns")
@@ -196,9 +197,11 @@ def write_xlsx(path, f, yearly):
     for k, y in enumerate(YEARS):
         wn.cell(4 + k, 1, y)
         wn.cell(4 + k, 2, f["nt_%d" % y])
-    wn["A10"] = ("From LIT-601 level falls while a pump ran, through O&M Table 4-1; readings after the 23 Aug 2023 "
-                 "re-mount read 0.45 ft high (empty tank) and are corrected. P-2 has delivered less than its "
-                 "nameplate since its March 2023 rebuild, so run hours times the station curve overstate.")
+    wn["A10"] = ("Mass balance on each 15-minute interval a pump ran: fall in storage (LIT-601 through O&M Table "
+                 "4-1) plus FIT-600 inflow over the interval. LIT-601 readings after the 23 Aug 2023 re-mount read "
+                 "0.45 ft high (empty tank) and are corrected. FIT-600 carries SG-600's leak-by while its seals were "
+                 "failing (2022 to 2025 work orders), pumped back with the stored flow. P-2 has delivered less than "
+                 "its nameplate since its March 2023 rebuild, so run states times the station curve overstate.")
     wn.column_dimensions["A"].width = 10
     wn.column_dimensions["B"].width = 16
     wb.properties.creator = "QSA Engineering and Planning"
@@ -326,10 +329,11 @@ def submission(f):
              "the least-cost alternative at or under 4 (TM-7 4)." % (ev("A"), ev("B"), ev("C"), ev("D")))
     L.append("5. Rainfall 2025: dropped repeated tips, removed each calibration pour (a steady run of tips on a "
              "cal-check visit in rain_gauge_field_service_2014-2025.xlsx), read the TipLink C200 loggers (RG-3 and RG-4 "
-             "from May 2024) as UTC and the HOBO loggers as Eastern Standard Time, and counted RG-4 at 0.2 mm a tip "
-             "after its 12 August 2025 mechanism swap.")
-    L.append("6. Northside returns: summed each fall in NT_LIT601_FT while a pump ran through O&M Table 4-1, the "
-             "readings from the 23 August 2023 re-mount less the 0.45 ft the empty tank reads.")
+             "from May 2024) as UTC and the HOBO loggers as Eastern Standard Time, and counted each gauge's tips at 0.2 mm "
+             "from the July 2025 visit the field log records its new mechanism on.")
+    L.append("6. Northside returns: on each quarter hour a pump ran in northside_tank_scada_2020-2025.csv, the fall "
+             "in storage (NT_LIT601_FT through O&M Table 4-1, readings from the 23 August 2023 re-mount less the 0.45 "
+             "ft the empty tank reads) plus NT_FIT600_MGD over the quarter hour, summed by year.")
     L.append("7. Recommended Alternative C at %s events a year.\n" % ev("C"))
     L.append("## 4. Deliverable Answers\n")
     L.append("### clay_street_storage_evaluation.xlsx\n")

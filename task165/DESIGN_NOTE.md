@@ -25,7 +25,7 @@ file was pulled on Friday 16 January 2026.
 | Decision | `pick_one_of_n`, answer unit `named_option` (Alternative C, 38 MG) |
 | Mechanism | gap time (decisive: the tank's free volume when each storm starts is carried from the storms before it and is set by how fast the tank can empty, which depends on the receiving plant's room after each storm), pattern none; generators G7 (the operating window: the dewatering pumps can only run into the room the Southside plant has left), G3 (the record of a pump station's rating against its operation); Gate G `binding_constraint`; strategy `binding_constraint` |
 | Layer 2 family / pattern | `allocation_constraints` (capacity on a receiving system binding through a stored state); `own:storage-drawdown-bound-by-receiving-plant-headroom` |
-| Layer 1 | the Outfall 014 meter replaced in June 2019 (cubic feet per second in Eastern Standard Time all year, then million gallons a day in UTC, the loggers overlapping a dry week); the plant historian's hourly export in local time with the daylight saving repeat and gap and its 2021 tag rename; on the asks' rows only, two rain gauge loggers replaced in May 2024 by cellular loggers stamping UTC, technicians' calibration pours logged as tips, a tipping mechanism swapped for a 0.2 mm one in August 2025 without the inventory changing, the Northside SCADA's local clock with its repeated November hour, a dewatering pump rebuilt in March 2023 on its old tag, and the level transducer re-mounted 0.45 ft lower after the August 2023 cleanout (full inventory in `## Layer 1 inventory`) |
+| Layer 1 | the Outfall 014 meter replaced in June 2019 (cubic feet per second in Eastern Standard Time all year, then million gallons a day in UTC, the loggers overlapping a dry week); the plant historian's hourly export in local time with the daylight saving repeat and gap and its 2021 tag rename; on the asks' rows only, two rain gauge loggers replaced in May 2024 by cellular loggers stamping UTC, technicians' calibration pours logged as tips (monthly from the July 2025 maintenance contract), every gauge's tipping mechanism swapped for a 0.2 mm one at the contract's July visit without the inventory changing, the Northside SCADA's local clock with its repeated November hour, a dewatering pump rebuilt in March 2023 on its old tag, the level transducer re-mounted 0.45 ft lower after the August 2023 cleanout, and the diversion gate passing dry weather flow into the tank while its seals failed (full inventory in `## Layer 1 inventory`) |
 | Furniture | forum `regulator_or_inspector` (the selection is filed with EPA and the state in the facility plan), forcing event `purchase_order_or_contract` (the design task order to Ostrem Calder names one tank by 1 March 2026), organisation family `utility_or_infrastructure`, role family `capacity_planner` (the authority's director of engineering and planning), context artifact `filed_standard` (the decree's Appendix C), calibration `existing_book_actuals` (the Northside tank's own record), opening `question-first`, question form `which` |
 | Spine | the Outfall 014 overflow pipe's flow meter, 15-minute readings from 1 January 2014 to 31 December 2025 (about 420,000 rows across the two loggers), beside both plants' hourly influent from the plant historian (about 210,000 rows) |
 | Deliverables | `clay_street_storage_evaluation.xlsx` (the replay, the events a year by alternative and by year, the two ask tables) and `clay_street_tank_selection_board.pptx` (four slides for the board with the chart of events a year by alternative against the limit) |
@@ -275,57 +275,75 @@ prints events for any tank. The overflow detectors' public notification log for 
 ## Ask sheet
 
 Two asks, 53 figures, plus the deck's chart of the call's own figures (a main-call deliverable, not an ask). Both are
-the annual report's own items (Appendix C 4.1), wanted from the same pull; neither reads a row the call reads.
+the annual report's own items (Appendix C 4.1), wanted from the same pull; neither reads a row the call reads. Every
+figure a device moves is moved by a second, independent reconstruction across another system or grain as well, so no
+single fix hands over the figures the first one moves.
 
 **Ask 1: each rain gauge's recorded rainfall in each month of 2025** (48 figures, inches to the hundredth).
 - H18 home: the annual report's rainfall table; use: the decree requires it each year.
 - Files and columns on the path: `rain_gauge_tips_2014-2025.csv` (gauge_id, tip_time), `rain_gauge_field_service_2014-2025.xlsx`
   (Date, Gauge, Arrived, Departed, Notes), `rain_gauge_inventory.csv` (gauge_id, depth_per_tip_in, logger_model,
   logger_installed), `consent_decree_appendix_C_cso_control.pdf` (4.1, months in Eastern time).
-- Primary device 1 (D5, out-of-scope rows known by structure): the technicians' calibration pours are logged as tips;
-  the field log says "Cal check 500 mL" and gives arrival and departure to the five minutes, and the pour often runs
-  past the logged departure, so only the steady run of tips (one every 8 to 10 seconds) finds all of it. 21 cells move
-  if the pours stay, 7 if they are cut by the logged window.
-- Primary device 2 (D8, clocks): the HOBO loggers stamp Eastern Standard Time all year, the TipLink C200 cellular
+- Primary device 1 (D5, out-of-scope rows known by structure): the technicians' calibration pours are logged as tips.
+  From July 2025 the field maintenance contract visits every gauge monthly and every visit carries a cal check, the
+  crew waiting for a dry spell on the day; before it, visits come every five to eight weeks and most carry one. The
+  field log gives arrival and departure to the five minutes, departure as the van leaves, which a pour's tail often
+  outlasts, so only the steady run of tips (one every 8 to 10 seconds) finds all of it. 29 cells move if the pours stay.
+- Primary device 2 (D2 across a second system, layered on the same cells): the contract's July visit fitted every
+  gauge with a new 0.2 mm tipping mechanism (field log: "new TB mechanism installed (0.2mm unit, contract stock)"); the
+  inventory still says 0.01 in a tip for all four. Every July to December cell carries a pour and the new mechanism,
+  so finding either alone keeps none of them. 24 cells move on the mechanism alone.
+- Primary device 3 (D8, clocks): the HOBO loggers stamp Eastern Standard Time all year, the TipLink C200 cellular
   loggers installed at RG-3 and RG-4 in May 2024 stamp UTC; nothing in the file says so (the inventory gives the model
-  and the date). The logged-window removal misses every pour at RG-3 and RG-4 and the summer pours at RG-1 and RG-2;
-  month-end storms move between months. 8 cells move on the clock alone.
-- Primary device 3 (D2, a label stored before a silent switch): RG-4's mechanism was swapped for a 0.2 mm unit on 15 May
-  2025 (field log: "Swapped mech w/ spare 0.2mm unit from stores"); the inventory still says 0.01 in. 8 cells move.
-- Hazard (D1): the cellular platform re-sent four buffered batches at each TipLink gauge, exact duplicates (the battery
-  removes them); 6 cells move if kept.
+  and the date). Pours cut by the logged window miss at RG-3 and RG-4 and in summer at RG-1 and RG-2; month-end
+  storms move between months.
+- Hazard (D1): the cellular platform re-sent four buffered batches at each TipLink gauge, exact duplicates.
 - Pin test: the asking sentence pins the gauge, the month and the unit; Appendix C 4.1 pins Eastern time and "recorded
-  at the Authority's rain gauges"; no pin names a pour, a clock or a bucket.
+  at the Authority's rain gauges"; no pin names a pour, a clock or a mechanism.
 - Realism: a tipping-bucket network's export, field log and inventory, as a utility's field services keep them.
 
 **Ask 2: the volume the Northside tank returned to the Northside interceptor in each year 2021 to 2025** (5 figures,
 nearest million gallons).
 - H18 home: the annual report's storage facility line; use: Appendix C 4.1.
-- Files and columns: `northside_tank_scada_2020-2025.csv` (Timestamp, NT_LIT601_FT, NT_P1_RUN to NT_P3_RUN),
-  `northside_tank_om_manual_section4.pdf` (Table 4-1, the station curve), `cmms_work_orders_2020-2025.csv`.
+- Files and columns: `northside_tank_scada_2020-2025.csv` (Timestamp, NT_LIT601_FT, NT_FIT600_MGD, NT_P1_RUN to
+  NT_P3_RUN), `northside_tank_om_manual_section4.pdf` (Table 4-1, the station curve, the control),
+  `cmms_work_orders_2020-2025.csv`.
 - Primary device 1 (D3, a reading re-referenced): LIT-601 was re-mounted on a new bracket on 23 August 2023 and reads
-  0.45 ft with the tank empty; the level route uncorrected moves 2024 and 2025 (and 2023 by one), because the hopper
-  floor's stage-storage is not linear.
-- Primary device 2 (D2, a silent switch): P-2 came back from rebuild on 14 March 2023 with a trimmed impeller and
-  delivers less than its nameplate; the run states times the O&M station curve miss every year (they also count a full
-  quarter hour where the tank emptied part way through it).
-- Pin test: the sentence pins the tank, the year and the unit; no pin names the transducer, the pump or the route.
+  0.45 ft with the tank empty; the hopper floor's stage-storage is not linear, so every fall read uncorrected is
+  wrong, most of all the lead pump's short cycles near the floor; 2023 to 2025 move.
+- Primary device 2 (another system, layered on the same years): the diversion's sluice gate SG-600 passed dry weather
+  flow into the tank while its seals were failing (June 2022 to February 2023, September 2023 to January 2024, July
+  2024 to March 2025, August 2025 on; the work orders record the operators' reports and the seal replacements), and
+  storm tails under O&M 4.3's 1.0 MGD hold enter while the pumps run; what the pumps returned is the fall in storage
+  plus FIT-600's inflow over each pumping quarter hour. Level falls alone miss 2022 to 2025.
+- Primary device 3 (D2, a silent switch): P-2 came back from rebuild on 14 March 2023 with a trimmed impeller; the
+  run states times the O&M station curve miss every year (they also count a full quarter hour where the tank emptied
+  part way through it).
+- Pin test: the sentence pins the tank, the year and the unit; no pin names the transducer, the gate, the meter or the
+  route.
 
 **Main population, zero counts:** the Outfall 014 meter carries no duplicate quarter hour outside the dry overlap
 week and no ask device; the Southside historian rows carry none (asserted, `SEP` in `checks.py`).
 
-**Referee:** none arbitrates a device; the Northside detector and the inflow meter tie under every handling.
+**Referee:** none arbitrates a device; the Northside detector ties under every handling.
 
 | Path (cracker = lands the call, runs the battery, executes filed documents) | Rainfall kept | Returns kept | Verdict |
 |---|---|---|---|
-| Ask 1, cracker: duplicates dropped, pours cut by the logged window, stamps as logged, 0.01 in a tip | 21 of 48 | | miss |
-| Ask 2, cracker: the better of run states times the station curve and the uncorrected level | | 2 of 5 | miss |
-| Ask 1, full includer with the clocks found but the window kept | 35 of 48 | | miss |
-| Ask 1, full includer with the pours found by their run but the clocks and bucket missed | 32 of 48 | | miss |
+| Ask 1, cracker: duplicates dropped, pours cut by the logged window, stamps as logged, 0.01 in a tip | 12 of 48 | | miss |
+| Ask 2, cracker: the better of run states times the station curve and the uncorrected level falls | | 1 of 5 | miss |
+| Ask 1, one crack: pours by their steady run | 16 of 48 | | miss |
+| Ask 1, one crack: the loggers' clocks | 18 of 48 | | miss |
+| Ask 1, one crack: the 0.2 mm mechanisms | 12 of 48 | | miss |
+| Ask 2, one crack: the re-mounted transducer | | 1 of 5 | miss |
+| Ask 2, one crack: FIT-600's inflow while pumping | | 2 of 5 | miss |
 
-Mirror leakage: 43.4 per cent of ask weight (the mirror takes the cracker's ask paths off the call).
+Single cracks keep 24.5 to 35.8 per cent of ask weight; the worst, the loggers' clocks found by both top responses,
+puts the pair at 48.2. Two cracks on one ask (pours and mechanisms) keep 75.5 per cent of the ask weight, which is the
+full includer's ground, not the reflex.
 
-Pair ceiling: 52.4 (cracker on the call 68.9, mirror off it 35.9).
+Mirror leakage: 24.5 per cent of ask weight (the mirror takes the cracker's ask paths off the call).
+
+Pair ceiling: 42.0 (cracker on the call 58.5, mirror off it 25.5); worst single crack 48.2.
 
 Measured by: generator/ceiling.py, run on the cut pack.
 
@@ -340,10 +358,12 @@ Measured by: generator/ceiling.py, run on the cut pack.
 | Work order numbering and date format change in July 2022 | the CMMS replacement | work orders | no |
 | Calibration pours as tips; field times to five minutes | technicians' practice | tips, field log | ask 1 only |
 | TipLink loggers stamping UTC from May 2024 | the cellular logger replacement | tips | ask 1 only |
-| RG-4's 0.2 mm mechanism from 15 May 2025, inventory unchanged | a spare from stores | tips, field log | ask 1 only |
+| Every gauge's 0.2 mm mechanism from the July 2025 contract visit, inventory unchanged | the field maintenance contract | tips, field log | ask 1 only |
+| Monthly contract visits from July 2025, each with a cal check | the field maintenance contract | field log, tips | ask 1 only |
 | Re-sent duplicate batches | the cellular platform | tips | ask 1 only |
 | LIT-601 re-mounted 23 August 2023, reading 0.45 ft high; blank during the cleanout | maintenance | SCADA | ask 2 only |
 | P-2 rebuilt March 2023 on its old tag | maintenance | SCADA, work orders | ask 2 only |
+| SG-600 passing dry weather flow into the tank while its seals failed; the lead pump cycling | the diversion gate, operations | SCADA (FIT-600), work orders | ask 2 only |
 | Northside overflow detector firing through the August 2023 cleanout bypass | operations | SCADA | the back-test only (asserted within 3 events) |
 
 ## Tried and rejected
@@ -522,3 +542,18 @@ Architecture 2 (the Clay Street tank):
   the room replay could part at Northside; rated 125 MGD, the room never binds while the station pumps (asserted).
 - 2026-11-07, Appendix C 1.3 saying flow above the headworks capacity is held back in the interceptor: it states the
   mechanism the decisive step recognises; cut to the plant's rating alone.
+- 2026-11-07, the first ask layer at stage 3 (pours in about half the gauge-months, one gauge's 0.2 mm mechanism,
+  the transducer alone on the Northside returns): the cracker kept 43.4 per cent of the ask weight and one crack (the
+  loggers' clocks, or the pours by their run) kept 70, a pair near 67 if both top responses found it. Each figure a
+  device moves now carries a second, independent reconstruction: the contract's monthly cal checks and every gauge's
+  new mechanism from July 2025 on the same cells; SG-600's leak-by metered by FIT-600 on the same years as the
+  transducer. The main call, the stump and every main-call figure frozen (freeze.py rubric PASS).
+- 2026-11-07, the contract and the new mechanisms from January 2025: no device-free cell was left (the cracker kept
+  0 of 53), harder than the ask layer needs and short of the third the asks aim at; moved to July 2025 (24.5 per cent
+  kept, worst single crack 35.8).
+- 2026-11-07, O&M Table 4-1 printed at 0.25 ft steps with levels to one decimal: the extracted table paired 0.25 ft
+  rows with 0.2 ft labels; printed at 0.1 ft in the hopper, levels to two decimals and volumes to four, so the
+  mass balance reproduces the delivered volume within 0.4 MG a year.
+- 2026-11-07, the Northside tank's inflow added before its pumps ran in a quarter hour: a full tank sent the storm
+  tail over the crest in the same quarter hour the pumps started, which no meter sees; the pumps now draw down while
+  the trickle enters.

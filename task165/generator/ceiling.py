@@ -54,15 +54,19 @@ def keep2(a, gold):
 def main():
     gold1 = G.ask1(TARGET)
     gold2 = G.ask2(TARGET)[0]
+    base1 = G.ask1(TARGET, handle_clock=False, pours="window", bucket=False)
+    lvl = G.ask2(TARGET, offset=False, inflow=False)[0]
+    pr = pump_route(TARGET)
+    base2 = max((pr, lvl), key=lambda a: keep2(a, gold2))
     paths = {
-        "cracker/mirror": (G.ask1(TARGET, handle_clock=False, pours="window", bucket=False),
-                           max((pump_route(TARGET), G.ask2(TARGET, offset=False)[0]), key=lambda a: keep2(a, gold2))),
-        "cracker, pours by steady run": (G.ask1(TARGET, handle_clock=False, pours="steady", bucket=False),
-                                         G.ask2(TARGET, offset=False)[0]),
-        "cracker, clocks found": (G.ask1(TARGET, handle_clock=True, pours="window", bucket=False),
-                                  G.ask2(TARGET, offset=False)[0]),
-        "cracker, pours kept": (G.ask1(TARGET, handle_clock=False, pours="keep", bucket=False),
-                                pump_route(TARGET)),
+        "cracker/mirror (no device found)": (base1, base2),
+        "one crack: pours by their steady run": (G.ask1(TARGET, handle_clock=False, pours="steady", bucket=False), base2),
+        "one crack: the loggers' clocks": (G.ask1(TARGET, handle_clock=True, pours="window", bucket=False), base2),
+        "one crack: the 0.2 mm mechanisms": (G.ask1(TARGET, handle_clock=False, pours="window", bucket=True), base2),
+        "one crack: the re-mounted transducer": (base1, G.ask2(TARGET, offset=True, inflow=False)[0]),
+        "one crack: the inflow while pumping": (base1, G.ask2(TARGET, offset=False, inflow=True)[0]),
+        "two cracks: pours and mechanisms": (G.ask1(TARGET, handle_clock=False, pours="steady", bucket=True), base2),
+        "two cracks: transducer and inflow": (base1, gold2),
         "full includer": (gold1, gold2),
     }
     n = 48 + 5
@@ -70,14 +74,22 @@ def main():
     for name, (a1, a2) in paths.items():
         k1, k2 = keep1(a1, gold1), keep2(a2, gold2)
         rows[name] = (k1, k2, (k1 + k2) / n)
-        print("%-32s rainfall %2d/48  returns %d/5  ask keep %.3f" % (name, k1, k2, (k1 + k2) / n))
-    L = rows["cracker/mirror"][2]
+        print("%-42s rainfall %2d/48  returns %d/5  ask keep %.3f" % (name, k1, k2, (k1 + k2) / n))
+
+    def pair_of(L):
+        return ((W_CALL + W_IF + W_ASK * L) + (R_OFF + W_IF + W_ASK * L)) / 2
+    L = rows["cracker/mirror (no device found)"][2]
+    singles = {k: v[2] for k, v in rows.items() if k.startswith("one crack")}
+    worst = max(singles, key=singles.get)
     on = W_CALL + W_IF + W_ASK * L
     off = R_OFF + W_IF + W_ASK * L
-    pair = (on + off) / 2
     print("cracker on the call %.1f; mirror off the call %.1f; pair %.1f; mirror leakage %.1f per cent of ask weight"
-          % (on, off, pair, 100 * L))
-    json.dump(dict(rows={k: list(v) for k, v in rows.items()}, pair=round(pair, 1), mirror_leak=round(100 * L, 1)),
+          % (on, off, pair_of(L), 100 * L))
+    print("worst single crack (%s, both top responses): ask keep %.3f, pair %.1f"
+          % (worst, singles[worst], pair_of(singles[worst])))
+    json.dump(dict(rows={k: list(v) for k, v in rows.items()}, pair=round(pair_of(L), 1),
+                   mirror_leak=round(100 * L, 1), worst_single=worst,
+                   worst_single_keep=round(singles[worst], 3), worst_single_pair=round(pair_of(singles[worst]), 1)),
               open(os.path.join(HERE, "ceiling.json"), "w"), indent=1)
 
 

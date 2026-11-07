@@ -15,7 +15,7 @@
   "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, on target.zip d49deba6 (2026-11-07, --asof 2026-01-16): sweep 3 figures (1.3 a section number, 140 the plant rating, 2.8 a stage-storage row, TM-7 listing the alternatives), sweep 4 the documents' own nouns",
+  "leak_py": "REVIEW, no LEAK, on target.zip b8c8ebc1 (2026-11-07, --asof 2026-01-16): sweep 3 figures (1.3 a section number, 140 the plant rating, 1.50 and 2.70 stage-storage rows, TM-7 listing the alternatives), sweep 4 the documents' own nouns; the Parquet footer carries no writer name",
   "reader": "pending (brief at the scratchpad's task165_stage4_leak_brief.md, copy at leak-task165/)"
  },
  "duplicate_check": {
@@ -73,7 +73,7 @@
    "commit": ""
   }
  ],
- "resume": "stage 4 in the main thread, on Sonnet at medium: spawn the leak reader with the scratchpad's task165_stage4_leak_brief.md (copy at leak-task165/) and the determinism judge on the same cut (target.zip d49deba6) together; fix every finding in the generator in one pass (python3 task165/generator/make.py rebuilds, checks, verifies and re-cuts), re-run precut, leak.py, figures_check and guard heart and surface, then ship",
+ "resume": "stage 4 in the main thread, on Sonnet at medium: spawn the leak reader with the scratchpad's task165_stage4_leak_brief.md (copy at leak-task165/) and the determinism judge on the same cut (target.zip b8c8ebc1) together; fix every finding in the generator in one pass (python3 task165/generator/make.py rebuilds, checks, verifies and re-cuts), re-run precut, leak.py, figures_check and guard heart and surface, then ship",
  "approved": null,
  "delivered": null,
  "portal": "landed by one response (R1 2,200 t at 100 per cent, R2 2,600 t at 70 per cent), reported 2026-11-07",
@@ -83,13 +83,14 @@
  "wave": "wave 6 (new), seed FC36 (world, decision and quantity kept; the seed's planning-tool ranking, usage-model back-tests and route-register field reading not shipped)",
  "guard": "PASS at registration (2026-10-18T14:10:39Z) after waiting out bans on honest keys; the forum redrawn in the build to council_or_assembly when line_manager_or_team was banned against task247",
  "stage3": {
-  "generator_checks": "55 PASS",
+  "generator_checks": "57 PASS",
   "verify": "PASS",
   "byte_identical": true,
   "figures_check": "PASS (85)",
   "voice_check": "PASS",
-  "ceiling": "pair 52.4, mirror leakage 43.4 (generator/ceiling.py)",
-  "zip": "d49deba612a198c82858da15bf68d1eddc9ec71b3460397c4dff4073720e0232"
+  "ceiling": "pair 42.0, mirror leakage 24.5, worst single crack 48.2 (the loggers' clocks, ask keep 0.358) (generator/ceiling.py)",
+  "zip": "b8c8ebc161b66881ec001eda739d24317bcee8172b5e7ec07f73ef94a49c5197",
+  "freeze": "rubric PASS: main call, stump and every frozen figure unchanged; 11 ask figures moved"
  },
  "history": [
   {
@@ -103,6 +104,10 @@
   {
    "date": "2026-11-07",
    "event": "architecture 2 built through stage 3; PAUSED for stage 4 in the main thread"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "asks hardened before stage 4: every device-moved figure carries a second independent reconstruction"
   }
  ]
 }

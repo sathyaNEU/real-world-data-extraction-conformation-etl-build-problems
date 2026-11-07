@@ -16,6 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import docs as D     # noqa: E402
 import ooxml         # noqa: E402
+import parquetfix    # noqa: E402
 import params as P   # noqa: E402
 import world as W    # noqa: E402
 
@@ -73,7 +74,8 @@ def write_meter(out):
                     "reading_time": pa.array(old_t + new_t),
                     "flow": pa.array(old_v + new_v, type=pa.float64()),
                     "flow_unit": pa.array(["cfs"] * n0 + ["MGD"] * n1)})
-    pq.write_table(tbl, os.path.join(out, F_METER), compression="snappy", use_dictionary=True)
+    pq.write_table(tbl, os.path.join(out, F_METER), compression="snappy", use_dictionary=True, store_schema=False)
+    parquetfix.drop_created_by(os.path.join(out, F_METER))
     return n0 + n1
 
 
@@ -221,6 +223,19 @@ def write_wo(out):
               "returned to service, diversion opened."),
              (dt.date(2022, 11, 2), "NT-FIT600", "Northside tank inflow meter", "PM",
               "Verified FIT-600 against portable meter during dewatering test, within 2 percent.")]
+    seal_texts = ["SG-600 sluice gate seals worn, gate passing flow in dry weather. Replaced side and invert seals, "
+                  "gate closed tight, checked FIT-600 at zero.",
+                  "Replaced SG-600 seals (leaking past closed gate). Adjusted wedges, tested closed.",
+                  "SG-600 leaking by in dry weather per operators. New seal kit installed, gate re-seated.",
+                  "Sluice gate SG-600: invert seal torn, replaced. Leak-by stopped.",
+                  "SG-600 seals replaced under contract; gate stroked and tested."]
+    for k, (a, b, q) in enumerate(P.NT_LEAKS):
+        if b.year < 2026 and b < dt.datetime(2025, 12, 31):
+            rows.append((b.date(), "NT-SG600", "Northside tank diversion sluice gate", "CM", seal_texts[k]))
+        rows.append(((a + dt.timedelta(days=int(rs(10 + k).integers(9, 30)))).date(), "NT-FIT600",
+                     "Northside tank inflow meter", "CM",
+                     "Operators report FIT-600 reading a steady trickle in dry weather and the lead pump cycling. "
+                     "Meter checked, reads true. Referred to mechanical."))
     rows.sort(key=lambda r: (r[0], r[1]))
     out_rows = []
     for k, (d, asset, desc, typ, text) in enumerate(rows):

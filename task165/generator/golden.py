@@ -9,9 +9,10 @@
                  steady run of tips on a visit the field log says carried a cal check) removed, every logger's clock
                  taken to local time (Eastern Standard Time on the original loggers, UTC on the cellular ones), RG-4's
                  tips at 0.2 mm after the mechanism swap.
-    ask 2        the Northside tank's returned volume by local year from the level transducer: each fall in level
-                 while a pump runs, through the O&M manual's stage-storage table, the re-mounted transducer's 0.45 ft
-                 taken off from its re-installation."""
+    ask 2        the Northside tank's returned volume by local year, a mass balance on each quarter hour a pump ran:
+                 the fall in storage (the level transducer through the O&M manual's stage-storage table, the
+                 re-mounted transducer's 0.45 ft taken off from its re-installation) plus the inflow FIT-600 metered
+                 into the tank meanwhile (storm tails, and the dry weather flow SG-600 passed while its seals failed)."""
 import csv
 import datetime as dt
 import os
@@ -149,7 +150,6 @@ def ladder(target):
 
 # ----------------------------------------------------------------------------------------------- ask 1
 GAUGE_NEW = {"RG-3": dt.datetime(2024, 5, 7), "RG-4": dt.datetime(2024, 5, 8)}
-RG4_SWAP_LOCAL = dt.datetime(2025, 5, 15, 9, 35)
 TIP_02MM = 0.2 / 25.4
 
 
@@ -231,11 +231,14 @@ def ask1(target, handle_clock=True, dedupe=True, pours="steady", bucket=True):
                     drop.update(pour_runs(ts, lo, hi))
                 else:   # the visit window as logged
                     drop.update(j for j, t in enumerate(ts) if v["arrive"] <= t <= v["depart"])
+        # a gauge's 0.2 mm mechanism counts from the visit the field log records it on
+        swaps = [v["arrive"] for v in visits if v["gauge"] == g and "0.2mm" in v["note"].replace(" mm", "mm")]
+        swap = min(swaps) if (swaps and bucket) else dt.datetime(2100, 1, 1)
         m = np.zeros(12)
         for j, t in enumerate(ts):
             if j in drop or t.year != 2025:
                 continue
-            b = TIP_02MM if (bucket and g == "RG-4" and t >= RG4_SWAP_LOCAL) else 0.01
+            b = TIP_02MM if t >= swap else 0.01
             m[t.month - 1] += b
         out[g] = m
     return out
@@ -246,13 +249,13 @@ def stage_table(target):
     from pypdf import PdfReader
     txt = "\n".join(p.extract_text() for p in PdfReader(os.path.join(target, "northside_tank_om_manual_section4.pdf")).pages)
     tail = txt.split("Table 4-1. Tank stage-storage")[-1]
-    pairs = re.findall(r"(\d+\.\d)\s+(\d+\.\d{3})", tail)
+    pairs = re.findall(r"(\d+\.\d\d)\s+(\d+\.\d{4})", tail)
     h = np.array([float(a) for a, _ in pairs])
     v = np.array([float(b) for _, b in pairs])
     return h, v
 
 
-def ask2(target, offset=True, years=range(2021, 2026)):
+def ask2(target, offset=True, inflow=True, years=range(2021, 2026)):
     h_tab, v_tab = stage_table(target)
     rows = []
     with open(os.path.join(target, "northside_tank_scada_2020-2025.csv"), newline="") as f:
@@ -273,8 +276,14 @@ def ask2(target, offset=True, years=range(2021, 2026)):
         if offset and t >= remount:
             lv -= floor
         pumping = r["NT_P1_RUN"] == "1" or r["NT_P2_RUN"] == "1" or r["NT_P3_RUN"] == "1"
-        if prev is not None and pumping and lv < prev and t.year in tot:
-            tot[t.year] += float(np.interp(prev, h_tab, v_tab)) - float(np.interp(lv, h_tab, v_tab))
+        if prev is not None and pumping and t.year in tot:
+            # what the pumps returned is the fall in storage plus what flowed in meanwhile (FIT-600)
+            d = float(np.interp(prev, h_tab, v_tab)) - float(np.interp(lv, h_tab, v_tab))
+            if inflow:
+                d += float(r["NT_FIT600_MGD"]) / 96.0
+            elif d < 0:
+                d = 0.0
+            tot[t.year] += d
         prev = lv
     return tot, floor
 

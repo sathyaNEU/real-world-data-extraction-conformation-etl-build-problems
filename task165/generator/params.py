@@ -51,7 +51,14 @@ NT_P2_OUT_LOCAL = dt.datetime(2023, 3, 6, 9, 30)
 NT_P2_REBUILT_LOCAL = dt.datetime(2023, 3, 14, 13, 0)
 NT_CLEANOUT_LOCAL = (dt.datetime(2023, 8, 14, 7, 0), dt.datetime(2023, 8, 23, 11, 0))
 NT_CURVE_P2 = {("P2",): 3.3, ("P1", "P2"): 6.9, ("P2", "P3"): 6.9, ("P1", "P2", "P3"): 9.6}
-NT_TRANSDUCER_LOCAL = dt.datetime(2023, 8, 23, 11, 0)
+NT_HOLD_MGD = 1.0        # the station is held off while storm flow enters the tank (O&M 4.3)
+NT_START_FT = 1.0        # the lead pump starts at 1.0 ft when the station is idle
+# SG-600's seals failing: (from, to, MGD of dry weather flow passing into the tank), local times
+NT_LEAKS = [(dt.datetime(2022, 6, 20, 8, 0), dt.datetime(2023, 2, 14, 11, 0), 0.27),
+            (dt.datetime(2023, 9, 5, 8, 0), dt.datetime(2024, 1, 30, 14, 0), 0.31),
+            (dt.datetime(2024, 7, 15, 8, 0), dt.datetime(2025, 3, 18, 10, 0), 0.29),
+            (dt.datetime(2025, 8, 4, 8, 0), dt.datetime(2025, 12, 31, 23, 45), 0.36)]
+NT_TRANSDUCER_LOCAL =dt.datetime(2023, 8, 23, 11, 0)
 NT_TRANSDUCER_OFFSET = 0.45   # ft the re-mounted transducer reads above the water's depth
 
 # Rain gauges: id, site, logger replaced (local date) to a cellular logger that stamps UTC, or None.
@@ -60,7 +67,9 @@ GAUGES = [("RG-1", "Northside WRP", None), ("RG-2", "Clay Street pump station", 
           ("RG-4", "Midtown public works yard", dt.datetime(2024, 5, 8, 9, 50))]
 TIP_IN = 0.01
 TIP_02MM_IN = 0.2 / 25.4
-RG4_BUCKET_SWAP_LOCAL = dt.datetime(2025, 5, 15, 9, 35)
+CONTRACT_START = dt.date(2025, 7, 1)    # the field maintenance contract's monthly visits begin
+MECH_SWAPS = {"RG-1": dt.datetime(2025, 7, 8, 10, 5), "RG-2": dt.datetime(2025, 7, 9, 13, 40),
+              "RG-3": dt.datetime(2025, 7, 15, 9, 15), "RG-4": dt.datetime(2025, 7, 22, 11, 30)}
 ORIFICE_IN = 8.0
 
 # The Outfall 014 meter replacement.

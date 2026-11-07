@@ -219,7 +219,10 @@ def northside_tank():
     ir = index_of_local(P.NT_P2_REBUILT_LOCAL)
     iout = index_of_local(P.NT_P2_OUT_LOCAL)
     room = np.repeat(P.NS_CAP - w["ns"], STEPS_PER_H)
-    inflow = w["o06"]
+    inflow = w["o06"].copy()
+    # the diversion's sluice gate SG-600 passing dry weather flow into the tank while its seals were failing
+    for a, b, q in P.NT_LEAKS:
+        inflow[index_of_local(a):index_of_local(b)] += q
     dtd = P.STEP_MIN / 1440.0
     n = N - i0
     vol = np.zeros(n)
@@ -228,19 +231,28 @@ def northside_tank():
     over = np.zeros(n)
     order = ("P1", "P2", "P3")
     s = 0.0
+    running = False
     ca, cb = (index_of_local(x) for x in P.NT_CLEANOUT_LOCAL)
     for k in range(n):
         i = i0 + k
         q = inflow[i] * dtd
         if ca <= i < cb:
-            assert s == 0.0, "the tank is empty when it is taken out for the cleanout"
+            assert s < 0.5, "the tank is near empty when it is taken out for the cleanout"
+            s = 0.0
+            running = False
             over[k] = inflow[i]
             continue
-        if q > 0:
+        if inflow[i] >= P.NT_HOLD_MGD:
+            running = False
+        elif not running and nt_depth_of_volume(min(P.NT_VOL, s + q)) >= P.NT_START_FT:
+            running = True
+        if not running:
             take = min(P.NT_VOL - s, q)
             s += take
             over[k] = (q - take) / dtd
-        elif s > 1e-9:
+        if running and s + q > 1e-9:
+            # the pumps draw down while the trickle comes in; what they return is the fall plus the inflow
+            s += q
             depth = nt_depth_of_volume(s)
             m = 3 if depth > 12.0 else (2 if depth > 5.0 else 1)
             week = (k // (96 * 7)) % 3
@@ -251,11 +263,15 @@ def northside_tank():
             rate = min(station_rate(pumps, i >= ir), room[i])
             d = min(s, rate * dtd)
             s -= d
+            if s > P.NT_VOL:
+                over[k] = (s - P.NT_VOL) / dtd
+                s = P.NT_VOL
             deliv[k] = d
             for p in pumps:
                 run[k, order.index(p)] = 1
             if s < 1e-9:
                 s = 0.0
+                running = False
         vol[k] = s
     return dict(i0=i0, vol=vol, run=run, deliv=deliv, over=over, inflow=inflow[i0:])
 
@@ -272,13 +288,19 @@ PLAIN_NOTES = ["Routine visit. Screen clear, no service needed.", "Site check on
 
 
 def _visit_dates(rng, g):
+    """Visits every five to eight weeks to May 2025; from June 2025 the maintenance contract's monthly visit."""
     d = dt.date(2014, 1, 6) + dt.timedelta(days=int(rng.integers(0, 30)))
     out = []
-    while d <= dt.date(2025, 12, 19):
+    while d <= dt.date(2025, 6, 13):
         while d.weekday() >= 5:
             d += dt.timedelta(days=1)
         out.append(d)
         d += dt.timedelta(days=int(rng.integers(35, 56)))
+    for m in range(7, 13):
+        d = dt.date(2025, m, int(rng.integers(3, 20)))
+        while d.weekday() >= 5:
+            d += dt.timedelta(days=1)
+        out.append(d)
     return out
 
 
@@ -293,16 +315,17 @@ def rain_gauges():
     each tip measured, and the field service visits."""
     w = simulate()
     rng = np.random.default_rng([P.SEED, 2])
-    swap4 = index_of_local(P.RG4_BUCKET_SWAP_LOCAL)
     tips = {}
     visits = []
     for gi, (g, site, logger_new) in enumerate(P.GAUGES):
         r = w["rain"][gi]
+        swap = P.MECH_SWAPS[g]
+        iswap = index_of_local(swap)
         sec = []
         bucket = []
         cum = 0.0
         for i in np.flatnonzero(r > 0):
-            b = P.TIP_02MM_IN if (g == "RG-4" and i >= swap4) else P.TIP_IN
+            b = P.TIP_02MM_IN if i >= iswap else P.TIP_IN
             cum += r[i]
             k = int(cum // b)
             if k:
@@ -319,14 +342,33 @@ def rain_gauges():
             special = None
             if logger_new is not None and d == logger_new.date():
                 arrive, special = logger_new, "logger"
+            if (d.year, d.month) == (swap.year, swap.month):
+                arrive, special = swap, "mech"
+                d = swap.date()
+            contract = d >= P.CONTRACT_START
+            if contract and special != "mech":
+                # the contract's monthly visit carries a cal check: the crew waits for a dry spell on the day
+                for _ in range(40):
+                    if not _gauge_raining(r, index_of_local(arrive), 8, 12):
+                        break
+                    arrive += dt.timedelta(hours=1)
+                    if arrive.hour > 15:
+                        arrive = (arrive + dt.timedelta(days=1)).replace(hour=8, minute=30)
+                        while arrive.weekday() >= 5:
+                            arrive += dt.timedelta(days=1)
+                d = arrive.date()
             dur = int(rng.integers(20, 46))
             ia = index_of_local(arrive)
-            raining = _gauge_raining(r, ia)
-            pour = (not raining) and rng.random() < 0.78 and special is None
+            raining = _gauge_raining(r, ia, 8, 12) if contract else _gauge_raining(r, ia)
+            pour = (not raining) and (contract or rng.random() < 0.78) and special != "logger"
             ml = int(rng.choice([500, 500, 500, 1000, 250]))
             v = "%.1f" % rng.uniform(12.2, 13.4)
             if special == "logger":
                 note = "Replaced datalogger with TipLink C200 cellular unit; old logger returned to shop. No cal check."
+            elif special == "mech":
+                note = ("Contract work: new TB mechanism installed (0.2mm unit, contract stock), old mech bagged for "
+                        "return. Leveled. Cal check {ml} mL.").format(ml=ml) if pour else \
+                    "Contract work: new TB mechanism installed (0.2mm unit, contract stock), old mech bagged for return."
             elif pour:
                 note = POUR_NOTES[int(rng.integers(0, len(POUR_NOTES)))].format(ml=ml, v=v)
             else:
@@ -339,7 +381,7 @@ def rain_gauges():
             if pour:
                 start = arrive + dt.timedelta(minutes=int(rng.integers(12, 33)))
                 u0 = int((start.replace(tzinfo=NY).astimezone(P.UTC) - P.START_UTC).total_seconds())
-                b = P.TIP_02MM_IN if (g == "RG-4" and u0 >= swap4 * 900) else P.TIP_IN
+                b = P.TIP_02MM_IN if u0 >= iswap * 900 else P.TIP_IN
                 n_tips = int(round(ml / ORIFICE_CM2 / 2.54 / b))
                 t = u0
                 for _ in range(n_tips):
@@ -348,12 +390,6 @@ def rain_gauges():
                     bucket.append(b)
                     kind.append("pour")
             visits.append(dict(gauge=g, date=d, arrive=arrive, depart=depart, note=note, pour=pour, ml=ml if pour else 0))
-        # the RG-4 tipping mechanism swap, a visit of its own
-        if g == "RG-4":
-            a = P.RG4_BUCKET_SWAP_LOCAL
-            visits.append(dict(gauge=g, date=a.date(), arrive=a, depart=a + dt.timedelta(minutes=55), pour=False, ml=0,
-                               note="TB mech sticking. Swapped mech w/ spare 0.2mm unit from stores, old unit to shop "
-                                    "for repair. Leveled, screen clear."))
         order = np.argsort(np.array(sec, dtype=np.int64), kind="stable")
         s = np.array(sec, dtype=np.int64)[order]
         bk = np.array(bucket)[order]

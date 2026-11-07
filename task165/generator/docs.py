@@ -154,8 +154,8 @@ def om_section4(path):
     rows = [["Level (ft)", "Volume (MG)"]]
     h = 0.0
     while h <= P.NT_CREST_FT + 1e-9:
-        rows.append(["%.1f" % h, "%.3f" % W.nt_volume_of_depth(h)])
-        h += 0.25 if h < P.NT_HOPPER_FT - 1e-9 else 1.0
+        rows.append(["%.2f" % h, "%.4f" % W.nt_volume_of_depth(h)])
+        h = round(h + (0.1 if h < P.NT_HOPPER_FT - 1e-9 else 1.0), 2)
     s = [Paragraph("Section 4. Northside Storage Tank and Dewatering Pump Station", H1),
          Paragraph("Operation and Maintenance Manual, Northside Storage Tank (Outfall 006). Quessling Sewer Authority, "
                    "Operations. Issued at commissioning, April 2020.", SMALL),
@@ -169,9 +169,9 @@ def om_section4(path):
                    "through a common force main to the Northside Interceptor. The station curve tested at "
                    "commissioning: one pump 4.0 MGD, two pumps 7.4 MGD, three pumps 10.2 MGD.", BODY),
          Paragraph("4.3 Control", H2),
-         Paragraph("The station is held off while flow enters the tank. When the inflow has stopped the lead pump "
-                   "runs; the lag pump runs above 5.0 ft and the second lag above 12.0 ft. The lead pump rotates each "
-                   "week. Pumps stop when the tank is empty.", BODY),
+         Paragraph("The station is held off while storm flow enters the tank (FIT-600 at or above 1.0 MGD). Otherwise "
+                   "the lead pump starts at 1.0 ft; the lag pump runs above 5.0 ft and the second lag above 12.0 ft. The "
+                   "lead pump rotates each week. Pumps stop when the tank is empty.", BODY),
          Paragraph("4.4 Instrumentation", H2),
          _table([["Tag", "Instrument"],
                  ["LIT-601", "tank level transducer, ft"],
