@@ -1,6 +1,6 @@
 {
  "task": "task306",
- "status": "SHIPPED",
+ "status": "FAILED_TO_STUMP",
  "domain": "quantitative-finance / portfolio-construction-risk (client quantitative-finance)",
  "objective": "opportunity-sizing-decision",
  "stage": 5,
@@ -63,16 +63,23 @@
    "zip": "e379b86a",
    "moves": "the market-data parquet written without the Arrow schema and with created_by left out of the footer (data unchanged); both PDFs written as Word documents and exported by LibreOffice Writer (task306/generator/officepdf.py), Producer LibreOffice 24.2, Creator Writer, the issuing body as Author, the real Subject kept; only those three files moved, no figure moved",
    "checks": "generator checks (46, 0 failed), verify PASS, two byte-identical builds, leak.py REVIEW with no LEAK; no reader, judge or clone check (author's minor-fix rule)"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "FAILED_TO_STUMP: both responses NOT stumped. Both filed the golden exactly: UK Mid Cap Value keeps GBP 8 million, UK Large Cap Quality 6, UK Smaller Companies Momentum 5 (gross 12, 7 and 20 less recurring cost 4, 1 and 15), runner-up UK Large Cap Quality, gap GBP 2 million. Both executed the field's full careful method: replayed fills deduplicated, GBX to GBP, failover recreations merged into the original instruction, blocks kept whole for impact and split for attribution, the account register's effective dates (the reused WM-DYN-01 code), strictly prior 20-session ADV and 60-session volatility, per-band regressions IS_bps = a + b * vol_bps * sqrt(participation) on the desk's economic orders validated on a July to November holdout (RMSE 13.6, 8.5 and 18.9 bps against 26.6, 12.7 and 40.2 for flat band costs), every candidate rebalance trade priced at GBP 400 million, flip points reported. The ask layer landed whole: both reported all 24 ask figures equal to submission.md (the 16 quarterly shortfalls and the 8 half-year traded values), where generator/ceiling.py had scored the cracker at zero on both asks; the failover merge and the block allocation were executed because TCA standard section 1 and the allocation export filed them",
+   "why": "the participation-dependent cost (the square-root impact law carried to size) is the field's textbook and a careful response executes it; the desk's thin-name orders let a holdout validate the curve against the band average, so the data revealed the right method by fit; both ask devices were executable from filed rules",
+   "repair": "design (re-root: architecture 4 spent with its world, the market-impact capacity driver and its prompt shell; architecture 5 in another client domain, world and dataset)",
+   "commit": ""
   }
  ],
- "resume": "Shipped 2026-10-31 on architecture 4 after the FIX_NOW repair: the re-judge DETERMINISTIC, APPROVE (decisive step analytical, the participation-dependent cost carried to GBP 400 million), leak read 2 clean with question 6 analytical, every free gate re-run on target.zip 7f2aba02 (two byte-identical builds, 46 checks, verify PASS, figures_check 51 of 51, precut 61 checks, voice-check PASS with the 'which' quota WARN). Waits on the portal.",
+ "resume": "re-root at stage 1: architecture 5 in another client domain and world (EV pack refurbishment, regional GVA induced round, windstorm reinsurance and market-impact capacity all spent), with a new world, dataset, generator and prompt shell, under the author's five conditions of 2026-11-07 (the textbook method done carefully files the wrong call; no fit, back-test or reconciliation picks the golden route; asks ride an unstated cross-system reconstruction; the ladder keeps one of the top two off the call; the three rules in writing)",
  "approved": null,
  "delivered": "2026-10-31",
- "portal": null,
+ "portal": "FAILED_TO_STUMP",
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "architecture_spent": false,
+ "portal_status": "FAILED_TO_STUMP",
+ "portal_status_date": "2026-11-07",
+ "architecture_spent": true,
  "history": [
   {
    "date": "2026-10-31",
@@ -145,6 +152,10 @@
   {
    "date": "2026-10-31",
    "event": "SHIPPED: architecture 4, give the GBP 400 million to UK Mid Cap Value (8 against UK Large Cap Quality 6 and momentum 5); re-judge DETERMINISTIC, APPROVE; target.zip 7f2aba02"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "portal FAILED_TO_STUMP on architecture 4: both responses landed the golden (UK Mid Cap Value 8, UK Large Cap Quality 6, momentum 5, gap 2) and all 24 ask figures, by the square-root impact law fitted per band and validated on a holdout; architecture 4 spent"
   }
  ],
  "zip_sha256_16": "e379b86a41a4f95c"
