@@ -1,86 +1,85 @@
 {
   "task": "task482",
-  "architecture": "v16 (re-root into a UK secondary aluminium works' 2026 product-family carbon intensities for a car maker's 2027 low-carbon premium: each family's direct emissions read from the gas each process burned, the shared site meter attributed to melting by the tonnes melted and to the homogenizing furnace and the solution oven by the hours they fired)",
-  "drawn": "2026-10-31",
-  "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation), batch 1; architecture 15 (the Missouri foundry's employee dental maximum) spent at stage 4 when the judge sent it back on a withheld costing rule; architectures 5 to 14 recorded in the note; new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell",
-  "domain": "physical-environmental-sciences",
-  "client_domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "niche": "a UK secondary aluminium works' 2026 direct emissions per tonne of each product family (two extrusion billet alloys, foundry ingot, heat-treated castings), conformed from the site gas meter's 15-minute export, the gas supplier's invoices, the melting furnaces' charge logs, the homogenizing furnace and solution oven logs and the production records, for a car maker's 2027 low-carbon premium",
+  "architecture": "v17 (re-root into a New Zealand independent schools' assessment trust: which of three draft Year 10 science papers goes to print for the November 2027 sitting, each pre-equated from the trust's Rasch item bank, whose Term 3 unit items were calibrated at the August 2026 sitting while each school was part-way through those units on its own scheme of work)",
+  "drawn": "2026-11-07",
+  "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation); architecture 16 (the West Midlands aluminium works' product carbon intensities) spent on its first portal round when both responses landed the firing-hours allocation; architectures 1 to 15 recorded in the note; new client domain (education-learning-sciences), world, dataset, generator and shell",
+  "domain": "education-learning-sciences",
+  "client_domain": "education-learning-sciences",
+  "subdomain": "item-response-theory-test-equating",
+  "niche": "a New Zealand independent schools' assessment trust choosing which of three draft Year 10 science papers to print for the November 2027 sitting, each pre-equated from the trust's Rasch item bank, whose items on the two Term 3 units were calibrated at the August 2026 sitting when each member school had reached its own point in those units on its own scheme of work",
   "objective": "etl",
-  "shape": "05",
-  "decision_type": "quantity_figure",
-  "answer_unit": "currency",
-  "answer": "EUR 342,000: Velden pays EUR 38 a tonne on 7,200 t of 6063 extrusion billet and 1,800 t of LM25 foundry ingot, the two families at or under SCR-2's 0.235 t CO2/t in 2026 (6063 billet 0.211, LM25 ingot 0.168); 6082 billet (0.263) and the LM25-TF castings (0.501) are over the limit",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
   "answer_source": "generator (golden.py on the cut pack, recomputed by verify.py)",
   "gap": [
-    "objective",
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G2",
-    "G7",
-    "G14"
+    "G13",
+    "G6"
   ],
-  "gate_g": "decomposition_attribution",
+  "gate_g": "etl_conformance",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "filed_model",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the meter export (UTC, the imperial meter's hundreds of cubic feet before the meter exchange, each invoice period's calorific value), dedupes the furnace logs and the production lots, reads the car maker's requirement correctly and attributes each process's gas per tonne processed gives the two billet alloys the same 0.225 t CO2/t and pays EUR 456,000 (the mass allocation, every family at the works' 0.22, pays EUR 480,700); the call is wrong because the homogenizing furnace burns gas by the hours its loads fire, not the tonnes they hold, and a 6082 load soaks about two and a half times as long as a 6063 load, so 6082 billet is at 0.263, over the limit, and the premium is EUR 342,000.",
-  "domain_test": "The deciding quantity is each product family's specific direct emissions, tonnes of CO2 per tonne, the product carbon footprint an emissions inventory attributes from shared combustion to the processes that burn the fuel, with melting energy scaling with the mass melted and soaking energy with time at temperature; put hospital wards or library loans in and there is no furnace, no soak and no melt yield, so the task stops making sense.",
+  "analyst_test": "A strong analyst who conforms the bank's two item-numbering schemes, the August 2026 response export (times in UTC, duplicate records where a session reconnected), reads the paper specification correctly and pre-equates each draft from the bank's Rasch difficulties by the test characteristic curve at the Achieved ability, after screening the anchors for drift and checking item fit (every item inside the usual mean-square limits), picks Paper A, whose expected mark sits nearest 25 of 50; the items on the two Term 3 units were calibrated on a sitting at which most students' schools had not yet finished those units, so they are banked harder than they will be in November 2027 when every school has finished them, and recalibrated on the responses of the students whose own school had finished the unit before their sitting day Paper C is nearest, a step no fit statistic or back-test on the August sittings asks for.",
+  "domain_test": "The deciding quantity is each draft paper's expected mark at the Achieved ability under the Rasch model, the true-score pre-equating a testing programme runs from its calibrated item bank; the decisive step is whether the banked difficulties hold for a sitting at which every candidate has been taught every unit, item parameter invariance across opportunity to learn, worked by recalibrating each item on the responses whose takers had been taught its content. A noun swap breaks it: no other field's item bank carries difficulties calibrated on respondents part-way through their own teaching sequence, read against each school's scheme of work.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:shared-meter-process-attribution",
+  "layer2_pattern": "own:opportunity-to-learn-recalibration",
   "layer1": [
-    "the site gas meter exported in UTC at 15-minute intervals, the imperial meter's hundreds of cubic feet until the meter exchange and cubic metres after it",
-    "the gas supplier's invoices by meter-read period, each with its own calorific value and the volume correction factor",
-    "melting furnace charge logs in local time with re-charged and aborted heats",
-    "production lots re-inspected under the same lot number and rejected lots returned to the furnace",
-    "the homogenizing furnace's loads straddling midnight and month ends"
+    "the item bank renumbered its items at the 2025 migration, the drafts listing old numbers and the bank new ones",
+    "the August 2026 response export time-stamped in UTC while schools sat on New Zealand school days",
+    "duplicate response records where a student's online session reconnected",
+    "each member school's scheme of work filed in its own format, units named in each school's own words",
+    "late sitters and make-up sessions recorded under the make-up centre's code",
+    "a preliminary and a final calibration run of the bank overlapping in the bank history"
   ],
-  "stakeholder_role": "the car maker's purchasing lead for aluminium semi-finished goods, who awards the 2027 low-carbon premium under the supplier carbon requirement",
-  "role_family": "procurement_lead",
-  "scoring_unit": "per certified output",
+  "stakeholder_role": "the trust's head of assessment, who recommends the 2027 paper to the assessment committee",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
   "spine": {
-    "file": "brackwell_site_gas_meter_2026.csv",
-    "rows": 35040,
-    "entity": "one 15-minute interval of the works' gas meter (volume, unit, meter serial)",
-    "grain": "15-minute interval",
+    "file": "y10sci_responses_2026.csv",
+    "rows": 0,
+    "entity": "one scored response of one student to one item at the August 2026 sitting",
+    "grain": "student x item",
     "source": "synthetic"
   },
-  "forum": "other",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "manufacturer",
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United Kingdom, West Midlands (a fictional secondary aluminium works with a casthouse and a sand foundry, and a fictional German car maker; the companies and people are fictional)",
-    "currency": "GBP",
-    "org_type": "a secondary aluminium works supplying a car maker under its supplier carbon requirement",
+    "geography": "New Zealand (a fictional trust owned by its member independent schools; schools and people fictional)",
+    "currency": "NZD",
+    "org_type": "an independent schools' assessment trust running an annual Year 10 science paper for its member schools",
+    "invented_nouns": [],
     "people": [
-      "Rosemary Kent",
-      "Tony Coleman",
-      "Reece Parker"
+      "Paul Shailer",
+      "Theo Stevens",
+      "Jeremy York"
     ]
   },
-  "deliverables": [
-    "velden_low_carbon_premium_2027.docx",
-    "brackwell_scr2_figures_2026.csv"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The decisive quantity is each product's share of fuel burned by shared equipment, recorded only by one meter, where one process burns fuel by the mass it melts and others by the hours they hold heat whatever they hold; spreading the meter's fuel over the products by their output mass gives every product the plant's average, while the processes' own fuel, read from the meter's response to when each process runs and how much it melts, puts the long-soaked product and the low-yield product well above it.",
-  "driver_concrete": "Each family's 2026 direct emissions are the gas its processes burned: melting attributed by the tonnes melted for the family (castings melt about 1.6 tonnes per tonne shipped), the homogenizing furnace by its firing hours on the family's loads (6082 billet soaks about twice as long as 6063), the solution oven only to the castings, and the gas burned with no process running shared by tonnes; each process's gas is read from the site meter's 15-minute record against the charge and furnace logs, since no process is sub-metered.",
-  "stump": "The default path reads each process's gas from the site meter as a quantity per tonne and gives the homogenizing furnace's gas to the two billet alloys by the tonnes each put through it, so 6082 billet sits level with 6063 at 0.225 t CO2/t and the premium comes to EUR 456,000; the furnace burns by the hour whatever a load weighs, a 6082 load soaks about 15 hours against about 6 for 6063, and 6082 takes 47 per cent of the furnace's hours on 26 per cent of its billet, which puts it at 0.263, over the limit, and the premium at EUR 342,000.",
+  "question_form": "which",
+  "driver": "Each candidate instrument is judged on the score a respondent at one fixed level is expected to make, built from item parameters estimated at a sitting where many respondents had not yet been taught some items' content, a state no column records that only each respondent's own institution's teaching calendar set against the day they responded shows; the coming sitting follows the end of all teaching, so those items are easier than banked by an amount that grows with each instrument's share of them, and the pick turns on re-estimating each such item from the respondents who had been taught it.",
+  "driver_concrete": "Each draft's expected mark at the Achieved ability is the sum of its items' Rasch probabilities; the bank calibrated the two Term 3 units' items at the August 2026 sitting, when most students' schools were still part-way through those units on their own schemes of work, while the 2027 paper is sat in November after every school has finished them; recalibrated on the responses of students whose own school had finished the unit before their sitting day, the drafts with most Term 3 items move up and Paper C, not the bank's Paper A, sits nearest 25.",
+  "stump": "The default path pre-equates the three drafts from the bank's Rasch difficulties and prints Paper A, whose expected Achieved mark sits nearest 25 of 50; the bank set the Term 3 units' items on a sitting at which most students had not yet been taught them, which shows only when each student's sitting day is set against their own school's scheme of work, and with those items recalibrated on the taught responses Paper C is nearest.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task65": "task65 regroups child emission units into sources under a per-entity fee cap, so the total moves through the cap without any child's value changing; here no record is regrouped and nothing is capped: the site meter's fuel is split among processes by each process's own physical driver (mass melted against hours at temperature), which the meter's response to the process logs reveals, and the product families' intensities move because the time-driven furnaces' fuel follows hours, not output",
-    "task67": "task67 constitutes entities from child records by location under a cap, read through a filed grouping rule; here the attribution rule is filed only as its WHAT (each process carries the fuel it burned) and the work is estimating each process's fuel from one meter's interval record against the logs, an estimation from the data's structure with no grouping and no cap",
-    "task84": "task84 groups concurrently live campaigns on a composite key and prices the copies' premium from removal episodes; here there is no duplicate entity and no key to group on: one meter's interval series is decomposed into the fuel of processes that run at different times and burn by different drivers, and the products carry their processes' fuel"
+    "task482": "architecture 6 carried items from the slot they were calibrated in to a new slot, a position term a model reads off a column; here no column holds the state: each response is taught or not by its student's sitting day against its own school's scheme of work, three files, and the coming sitting follows all teaching",
+    "task122": "task122 v2 credits outcomes to the session open when they happened, a log that drops outcomes after a timeout; here nothing is credited late: the items were calibrated on respondents not yet taught their content, and the coming sitting follows all teaching",
+    "task194": "task194 v3 develops counts that crystallise after their period through a coding lag measured across two vintages; here no record develops: each response is taught or not by its own sitting day against its own school calendar, and the item is re-estimated on the taught responses",
+    "task501": "task501 v4 reads a threshold from the dominant eigenvalue of a who-passes-to-whom matrix; here the quantity is an expected score on a calibrated item bank, re-estimated on the responses whose takers had been taught each item"
   },
   "lineage": [
     {
@@ -449,6 +448,63 @@
       },
       "version": "v15",
       "spent": "2026-10-31: stage 4 judge NOT_DETERMINISTIC, SEND_BACK, the reconciliation confirmed a withheld rule (F-17 executed word for word files 3,000; the golden's 2,000 needed the put-off work added back, filed nowhere)"
+    },
+    {
+      "architecture": "v16",
+      "drawn": "2026-10-31",
+      "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation), batch 1; architecture 15 (the Missouri foundry's employee dental maximum) spent at stage 4 when the judge sent it back on a withheld costing rule; architectures 5 to 14 recorded in the note; new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell",
+      "domain": "physical-environmental-sciences",
+      "client_domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "niche": "a UK secondary aluminium works' 2026 direct emissions per tonne of each product family (two extrusion billet alloys, foundry ingot, heat-treated castings), conformed from the site gas meter's 15-minute export, the gas supplier's invoices, the melting furnaces' charge logs, the homogenizing furnace and solution oven logs and the production records, for a car maker's 2027 low-carbon premium",
+      "objective": "etl",
+      "shape": "05",
+      "decision_type": "quantity_figure",
+      "answer": "EUR 342,000: Velden pays EUR 38 a tonne on 7,200 t of 6063 extrusion billet and 1,800 t of LM25 foundry ingot, the two families at or under SCR-2's 0.235 t CO2/t in 2026 (6063 billet 0.211, LM25 ingot 0.168); 6082 billet (0.263) and the LM25-TF castings (0.501) are over the limit",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G2",
+        "G7",
+        "G14"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:shared-meter-process-attribution",
+      "world": {
+        "geography": "United Kingdom, West Midlands (a fictional secondary aluminium works with a casthouse and a sand foundry, and a fictional German car maker; the companies and people are fictional)",
+        "currency": "GBP",
+        "org_type": "a secondary aluminium works supplying a car maker under its supplier carbon requirement",
+        "people": [
+          "Rosemary Kent",
+          "Tony Coleman",
+          "Reece Parker"
+        ]
+      },
+      "forum": "other",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "manufacturer",
+      "deliverables": [
+        "velden_low_carbon_premium_2027.docx",
+        "brackwell_scr2_figures_2026.csv"
+      ],
+      "question_form": "how-much",
+      "driver": "The decisive quantity is each product's share of fuel burned by shared equipment, recorded only by one meter, where one process burns fuel by the mass it melts and others by the hours they hold heat whatever they hold; spreading the meter's fuel over the products by their output mass gives every product the plant's average, while the processes' own fuel, read from the meter's response to when each process runs and how much it melts, puts the long-soaked product and the low-yield product well above it.",
+      "driver_concrete": "Each family's 2026 direct emissions are the gas its processes burned: melting attributed by the tonnes melted for the family (castings melt about 1.6 tonnes per tonne shipped), the homogenizing furnace by its firing hours on the family's loads (6082 billet soaks about twice as long as 6063), the solution oven only to the castings, and the gas burned with no process running shared by tonnes; each process's gas is read from the site meter's 15-minute record against the charge and furnace logs, since no process is sub-metered.",
+      "stump": "The default path reads each process's gas from the site meter as a quantity per tonne and gives the homogenizing furnace's gas to the two billet alloys by the tonnes each put through it, so 6082 billet sits level with 6063 at 0.225 t CO2/t and the premium comes to EUR 456,000; the furnace burns by the hour whatever a load weighs, a 6082 load soaks about 15 hours against about 6 for 6063, and 6082 takes 47 per cent of the furnace's hours on 26 per cent of its billet, which puts it at 0.263, over the limit, and the premium at EUR 342,000.",
+      "shell": {
+        "question form": "how-much",
+        "second-sentence opener": "set",
+        "rounding opener": "tonnes",
+        "deliverable set": "csv+docx"
+      },
+      "fate": "spent 2026-11-07 on its first portal round: both responses landed the golden premium of EUR 342,000, allocating the homogenizing furnace's gas by its loads' firing hours, the method a careful analyst reaches for, which the hourly gas fitted at R-squared 0.9985; Domains Fit flagged; the emissions-inventory world and the furnace-allocation driver are spent"
     }
   ],
   "lineage_shells": [
@@ -463,15 +519,20 @@
       "second-sentence opener": "price",
       "rounding opener": "round",
       "deliverable set": "csv+pdf+svg"
+    },
+    {
+      "question form": "how-much",
+      "second-sentence opener": "set",
+      "rounding opener": "tonnes",
+      "deliverable set": "csv+docx"
     }
   ],
-  "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell (how-much | csv+docx); stump_strategy decomposition_attribution: a shared site meter's gas attributed to processes by their own drivers (mass melted, hours fired) rather than by output mass; the slot's lesson filed: the requirement's word-for-word execution (each process attributed the gas it burned) is the golden, and the difficulty is computing it from the meter's record; the asks read the weighbridge's visits (a two-grade load's middle weighing, a dross lift that first unloads returned metal)",
-  "registered": "2026-10-31T21:50:49Z",
+  "notes": "re-rooted 2026-11-07 after architecture 16's portal return; new client domain, world, dataset, generator and shell (which | docx+png+xlsx); stump_strategy composition_mix: the bank's difficulties are a mix of taught and untaught responses, the coming sitting all taught, the property rebuilt from each school's calendar against each student's sitting day",
+  "registered": "2026-11-07T22:59:25Z",
   "shell": {
-    "question form": "how-much",
-    "second-sentence opener": "set",
-    "rounding opener": "tonnes",
-    "deliverable set": "csv+docx"
-  },
-  "architecture_spent": true
+    "question form": "which",
+    "second-sentence opener": "write",
+    "rounding opener": "write",
+    "deliverable set": ""
+  }
 }

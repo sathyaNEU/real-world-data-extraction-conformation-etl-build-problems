@@ -1,37 +1,31 @@
 {
  "task": "task482",
- "status": "FAILED_TO_STUMP",
- "domain": "physical-environmental-sciences / emissions-inventory (client physical-environmental-sciences)",
+ "status": "DESIGN",
+ "domain": "education-learning-sciences / item-response-theory-test-equating (client education-learning-sciences)",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-07",
- "stump": "the homogenizing furnace's gas by its loads' firing hours, not their tonnes: 6082 billet at 0.263 over the 0.235 limit, the premium EUR 342,000 against the per-tonne route's EUR 456,000",
- "architecture": 16,
+ "stump": "the bank's Term 3 items recalibrated on the responses of students whose own school had finished the unit before their sitting day: Paper C nearest 25 at the Achieved standard, against the bank's Paper A",
+ "architecture": 17,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-31",
-  "checks": "61 of 61, no FAIL or WARN"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-31 on target.zip 433ff500 (--asof 2027-01-28, no LEAK; sweeps 1 and 4 ruled in the note's Leak sweep)",
-  "reader": "read 1 on 433ff500, isolated, pack and prompt only: no leak, question 6 analytical (attributing the single site meter's gas to the processes); leak_check_report.md"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-31 on the registered card (how-much repeats task306; nearest driver 0.12, task484 v3)",
-  "heart": "WARN 2026-10-31 on the final cut (driver.near 0.12 against task484 v3, a fuel read from the period before)",
-  "surface": "exit 0 on the final cut 2026-10-31 (no BLOCK; the card's three personas only: Reece Parker, Rosemary Kent, Tony Coleman)"
+  "guard_check": "WARN 2026-11-07 on the registered card (Paul in one older build, task117; which repeats task127's question form; older-build signature differentiated against task122 v2, task194 v3, task501 v4)",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "pass": 1,
-  "date": "2026-10-31",
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task482/determinism_check_report.md",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "residual": "the family intensities are method-dependent at the second decimal (6063 0.21 to 0.22, 6082 0.26 to 0.27, the castings 0.36 to 0.52 across regression grains) and no family crosses the limit under any variant; the write-up grades each family's side of the 0.235 limit and the memo shows the intensities unrounded, as the design note's rounding row files (writeup.py, the pack unchanged)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -50,17 +44,17 @@
    "date": "2026-11-07",
    "portal": "FAILED_TO_STUMP: both responses landed the golden premium of EUR 342,000 (the homogenizing furnace's gas allocated by its loads' firing hours, 6082 billet at 0.263 over the 0.235 limit); Domains Fit flagged",
    "repair": "design (re-root: architecture 16 spent, the world and the driver with it)",
-   "commit": ""
+   "commit": "DRAWN (task482), architecture 17, 2026-11-07"
   }
  ],
- "resume": "re-root at stage 1: architecture 17 in another client domain (physical-environmental-sciences out), with a new world, dataset, generator and prompt shell; architectures 1 to 16 spent",
+ "resume": "stage 2: write the survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles and the ask sheet in the note, then prompt.txt to voice-check, until precut.py exits 0",
  "approved": null,
- "delivered": "2026-10-31",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "source_note": "re-root into a new world (a West Midlands secondary aluminium works' product-family direct emissions for a car maker's 2027 low-carbon premium); architectures 1 to 15 spent",
+ "source_note": "re-root into a new client domain (a New Zealand independent schools' assessment trust choosing which draft Year 10 science paper to print for November 2027, pre-equated from its Rasch bank); architectures 1 to 16 spent",
  "lineage_v11": {
   "zip": "ce5456c3620c70081c8372bb8f8231421d635c03a6e7d284bc3af350eac671f7",
   "leak": {
@@ -213,24 +207,11 @@
   ],
   "spent": "2026-11-07 on its first portal round: both responses landed the golden premium of EUR 342,000, each allocating the homogenizing furnace's gas by its loads' firing hours, not their tonnes (6082 billet 0.263 over the 0.235 limit); the method a careful analyst reaches for, and the hourly gas fitted it at R-squared 0.9985, which handed over the route; the portal also flagged Domains Fit. The emissions-inventory world and the furnace-allocation driver are spent."
  },
- "build": {
-  "zip": "433ff500dd8e84b789b2ac3f42cdb0060c6f1b351b9fce363f62eb7b8c81b6ed",
-  "rebuild": "python3 task482/generator/make.py",
-  "gates": "two byte-identical builds; generator checks 47 of 47; the independent verifier on every graded figure; figures_check.py 79 of 79; precut.py 61 of 61; voice-check.py PASS; leak.py REVIEW with no LEAK; guard.py heart WARN and surface as recorded; pair ceiling 28.5 and mirror leakage 0.0 by generator/ceiling.py",
-  "call": "EUR 342,000 on 7,200 t of 6063 billet and 1,800 t of LM25 ingot"
- },
+ "build": {},
  "history": [
   {
-   "date": "2026-10-31",
-   "event": "SHIPPED: architecture 16, EUR 342,000 on 7,200 t of 6063 billet and 1,800 t of LM25 ingot; judge DETERMINISTIC, APPROVE; target.zip 433ff500"
-  },
-  {
    "date": "2026-11-07",
-   "event": "RESHIPPED: both PDFs' metadata made honest per the portal's input feedback"
-  },
-  {
-   "date": "2026-11-07",
-   "event": "RESHIPPED: both PDFs exported by LibreOffice Writer instead of written by ReportLab, per the portal's provenance feedback"
+   "event": "DRAWN: architecture 17 registered (WARN only), six screens measured on the prototype before registration"
   }
  ]
 }
