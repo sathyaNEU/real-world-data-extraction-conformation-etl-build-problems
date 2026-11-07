@@ -24,8 +24,12 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   real-clock timestamp into metadata, unseen by text checks.
 - **Cost.** The signature says generated; the timestamp contradicts the setting, both ways (`python-docx`
   stamps 2013). Assert a band, not a ceiling.
-- **Line.** Signatures: scrub inputs; a script-made golden may keep its own. Timestamps: scrub every shipped
-  file whose body states a date, goldens included. Scrubbing both everywhere is the cheap way out.
+- **Line.** Signatures: scrub OOXML and image inputs; a script-made golden may keep its own. A PDF is the
+  exception: it keeps the library that wrote it in Producer and Creator and the library's own header
+  comment, puts the issuing organisation in Author only, and carries a real Subject. The portal reads a PDF
+  whose Producer or Creator is the organisation, whose header comment was overwritten, or whose Subject is
+  the library's placeholder "(unspecified)" as a masked generator and fails the inputs (task127, task482).
+  Timestamps: scrub every shipped file whose body states a date, goldens included.
 - **Check.** Sweep the pack and the deliverables (two generators): no writer name, no stamp outside the
   band. Wire OOXML, PDF and image branches even before a file of that kind ships.
 - **Repair.** Byte-level, never a re-save (it re-stamps). OOXML: repack same entries in order, change only
