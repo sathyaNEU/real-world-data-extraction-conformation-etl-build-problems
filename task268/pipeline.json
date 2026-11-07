@@ -1,54 +1,54 @@
 {
- "task": "task268",
- "status": "DESIGN",
- "domain": "general-statistics-data-science",
- "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-07",
- "stump": "A competent analyst takes each service's SLI over the spans the trace store kept, or reweights each day by its kept share, and passes the high-volume services, whose slow requests cluster in the busy minutes the sampler's per-second cap thins most; weighted minute by minute by the load balancer's counts, those services breach their budgets.",
- "architecture": 6,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": ""
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [
-  {
-   "date": "2026-10-28",
-   "portal": "determinism block failed by both judges (answer_contradicts_files: charter 3.2 read as the deaths on file, Fennick); both responses missed the call; rubric average 12.5",
-   "repair": "design",
-   "commit": ""
+  "task": "task268",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-07",
+  "stump": "A competent analyst who sees the trace store's sample thin in the busy hours reweights each service's kept server spans hour by hour by that service's own load balancer count, which lands the edge services, and passes partner-gateway at 1.4 per cent against its 2 per cent budget, because its spans were kept with the traces journey-search, seat-map and booking started at very different keep shares; weighted by each trace's own edge keep share, partner-gateway breaches at 2.9.",
+  "architecture": 6,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
   },
-  {
-   "date": "2026-11-07",
-   "portal": "architecture 5: both responses landed the call (Oro Rosso), each assembling homes from the settlement file's shared card reference; rubric scores not reported",
-   "repair": "design (re-root: the filed unit announces the linkage)",
-   "commit": ""
-  }
- ],
- "resume": "stage 2: default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder (tune the budgets on the prototype so the designated set moves), closure, asks; then precut.py",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "FAILED_TO_STUMP",
- "portal_status_date": "2026-11-07",
- "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
- "seed_world": 273,
- "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30",
- "zip_sha256_16": "56492de5d6701f85"
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [
+    {
+      "date": "2026-10-28",
+      "portal": "determinism block failed by both judges (answer_contradicts_files: charter 3.2 read as the deaths on file, Fennick); both responses missed the call; rubric average 12.5",
+      "repair": "design",
+      "commit": ""
+    },
+    {
+      "date": "2026-11-07",
+      "portal": "architecture 5: both responses landed the call (Oro Rosso), each assembling homes from the settlement file's shared card reference; rubric scores not reported",
+      "repair": "design (re-root: the filed unit announces the linkage)",
+      "commit": ""
+    }
+  ],
+  "resume": "stage 2 on the edge-sampler draw (seed 2886, card re-registered): default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles, asks, prompt with the asks; then precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "FAILED_TO_STUMP",
+  "portal_status_date": "2026-11-07",
+  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
+  "seed_world": 273,
+  "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30",
+  "zip_sha256_16": "56492de5d6701f85"
 }

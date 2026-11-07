@@ -6,7 +6,7 @@
   "domain": "general-statistics-data-science",
   "subdomain": "missing-data-censoring-measurement-error",
   "client_domain": "general-statistics-data-science",
-  "niche": "a ticketing marketplace's internal service latency SLIs read from a trace store whose adaptive sampler keeps a fixed number of server spans per second, so its keep fraction falls in the busy minutes",
+  "niche": "a ticketing marketplace's internal service latency SLIs read from a trace store that keeps or drops whole traces at the edge, each edge service's keep rate reset every hour from its last hour of traffic, so a downstream service's kept spans carry the keep rate of the edge request that started their trace",
   "objective": "descriptive-distribution",
   "shape": "14",
   "decision_type": "designation_set",
@@ -30,12 +30,12 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, the easy route takes each internal service's latency SLI over the spans the trace store kept for it, as the tracing tool's own service view does, or reweights each day by its kept share, and passes the high-volume services whose slow requests cluster in the busy minutes when the sampler's per-second cap keeps the smallest share of them.",
-  "domain_test": "The deciding quantity is each service's latency SLI, the share of its 2026 requests slower than its threshold, estimated from a sample whose inclusion probability is set minute by minute by a per-second cap and recovered from the load balancer's request counts; replacing that estimate with the kept spans' own share, or a whole-day reweighting, changes which services breach their budget.",
+  "analyst_test": "With every file conformed and every rule read, the easy route reweights each service's kept server spans hour by hour by its own load balancer count over its own kept spans, the standard post-stratified correction for a sample that thins under load, and passes partner-gateway, whose spans the store kept with the traces journey-search, seat-map and booking started at very different rates; the kept spans' own share passes journey-search, places and seat-map as well.",
+  "domain_test": "The deciding quantity is each service's latency SLI, a population share estimated from a cluster sample of traces whose inclusion probability is set at each trace's edge service hour by hour and recovered from that service's load balancer count; post-stratifying each service's own spans by hour, the textbook correction, treats the cluster sample as a stratified simple random sample of the service's requests and changes which services breach their budget.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:span-share-weighted-by-each-minutes-own-keep-fraction-under-a-per-second-cap",
+  "layer2_pattern": "own:span-share-weighted-by-the-trace-roots-hourly-keep-rate-under-whole-trace-sampling",
   "layer1": [
     "span timestamps in microseconds since the epoch (UTC) against the SLO year in Lisbon time",
     "duplicate span rows from exporter batch retries",
@@ -55,8 +55,8 @@
     "grain": "span",
     "source": "synthetic (the tracing backend's span export for calendar 2026)"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "period_close",
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
   "org_family": "software_or_platform",
   "world": {
     "geography": "Portugal (Lisbon)",
@@ -75,17 +75,19 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "The decisive quantity is the share of a unit's events beyond a line, read from a store that keeps at most a fixed number of events per second, so its keep fraction falls in the busy minutes when slow events cluster; weighting each minute's kept events by that minute's own count, which a separate usage record holds, restores the share, where the kept events' own share or a whole-day reweighting understates it.",
-  "driver_concrete": "Each internal service's 2026 latency SLI weights its kept server spans minute by minute by the load balancer's request count over the spans the adaptive sampler kept that minute (at most ten a second), because the busy minutes, when queueing makes requests slow, are the ones the cap thins most; the tracing tool's own share and a day-by-day reweighting both pass the busiest services.",
-  "stump": "A competent analyst takes each service's SLI over the spans the trace store kept, or reweights each day by its kept share, and passes the high-volume services, where the sampler's per-second cap keeps the smallest share of exactly the busy minutes in which their requests are slow; weighted minute by minute by the load balancer's counts, those services breach their budgets.",
+  "driver": "The decisive quantity is the share of a unit's events beyond a line, read from a store that keeps or drops whole chains of events by a decision taken where each chain starts, at a rate reset every hour from that starting unit's last hour of traffic; a downstream unit's kept events carry the inclusion probability of the unit that started their chain, recovered from that unit's hourly count in a separate usage record, and reweighting them by their own unit's hourly keep share under-weights the busiest upstream caller, whose calls are the slow ones.",
+  "driver_concrete": "Each internal service's December latency SLI weights every kept server span by the inverse of its trace's keep rate, the share of requests the edge service that started the trace kept that hour against the load balancer's count of them, because the trace store keeps or drops traces whole at the edge; partner-gateway's slow availability lookups come from journey-search's searches, kept at the smallest rate, so reweighting partner-gateway's spans hour by hour by its own count, or not at all, passes it.",
+  "stump": "A competent analyst who sees the trace store's sample thin in the busy hours reweights each service's kept server spans hour by hour by that service's own load balancer count, which lands the edge services, and passes partner-gateway, whose spans were kept with the traces that journey-search, seat-map and booking started at very different rates; journey-search's searches, which make partner-gateway's slow availability lookups, are kept at the smallest rate, so weighted by each trace's own edge keep rate partner-gateway breaches its 2 per cent budget.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task245": "task245 rebuilds whole recording periods a failing recorder lost, from each period's driver; here no minute is lost: the sampler keeps a uniform sample of every minute at a rate the load balancer's count recovers, and the share weights the kept spans minute by minute.",
-    "task265": "task265 admits units to a survival risk set only from when a late-starting record first saw them; here there is no duration or entry time, only a share of requests sampled at a minute-varying rate.",
-    "task139": "task139 v1 reads a randomised intervention per assigned unit rather than per recorded case; here there is no intervention or assignment, only a sampling fraction that moves with load.",
-    "task182": "task182 v4 corrects snapshots that see each item in proportion to its own duration; here inclusion is set by a per-second cap on the count of requests, not by any item's length.",
-    "task270": "task270 v1 corrects correlations among members picked in rank order of a weighted sum, and v6 joins sales to landings to place items outside their slot; here nothing is selected on the measured values and no item's two records are joined: a per-minute count from a second system sets each minute's weight.",
-    "task452": "task452 v2 weights reference points by the preliminary stratum they were drawn from after a reclassification; here there are no strata or reclassification: the inclusion probability is recorded nowhere and is recovered minute by minute from the load balancer's request count, falling as load rises."
+    "task245": "task245 rebuilds whole recording periods a failing recorder lost, from each period's driver; here no hour is lost: the store keeps whole traces at a rate each edge service resets hourly, and a span's weight comes from the edge request that started its trace.",
+    "task265": "task265 admits units to a survival risk set only from when a late-starting record first saw them; here there is no duration or entry time, only a share of requests in traces kept at an hourly edge rate.",
+    "task139": "task139 v1 reads a randomised intervention per assigned unit rather than per recorded case; here there is no intervention or assignment, only an inclusion probability set where each trace starts.",
+    "task182": "task182 v4 corrects snapshots that see each item in proportion to its own duration; here inclusion is set by the edge service that started a trace, at a rate its own hourly traffic sets, not by any item's length.",
+    "task270": "task270 v1 corrects correlations among members picked in rank order of a weighted sum, and v6 joins sales to landings to place items outside their slot; here nothing is selected on the measured values: a span inherits the keep rate of its trace's edge service, recovered from that service's hourly count in a second system.",
+    "task452": "task452 v2 weights reference points by the preliminary stratum they were drawn from after a reclassification; here the inclusion probability is recorded nowhere, belongs to the unit that started the trace rather than the unit measured, and is recovered hour by hour from the load balancer's count.",
+    "task264": "task264 weights each sampled person by the inverse of an inclusion probability proportional to their own visit count; here a span's inclusion probability is not its own unit's at all but that of the edge service whose request started its trace, at that service's hourly keep share.",
+    "task268": "The card on file is this same architecture 6 as drawn before the prototype moved the sampler to the edge, with each service's spans kept at that service's own hourly rate; this card supersedes it: a span's keep rate is that of the edge request that started its trace, so the per-service hourly reweighting the old card made the golden is rung 3 here. No earlier architecture of the slot (1 to 5) shares the decisive gap, pattern and decision type."
   },
   "lineage": [
     {
@@ -246,7 +248,7 @@
     }
   ],
   "notes": "Architecture 6, re-root 2026-11-07 after architecture 5 landed on the portal (both responses on the golden). Candidates 1 (inherited trace sampling, task452 v2) and 2 (onboarding critical path, task127 v2 and task472 v2) were set aside at the draw. This draw was prototyped on the clean truth before registration (scratch p1.py): the kept spans' own share and a day-by-day reweighting understate the busy services, hourly and minute weighting agree. WARN repeat.decision (designation_set against task156) answered in the note.",
-  "registered": "2026-11-07T21:54:53Z",
+  "registered": "2026-11-07T22:59:26Z",
   "shell": {
     "question form": "how-many",
     "second-sentence opener": "each",

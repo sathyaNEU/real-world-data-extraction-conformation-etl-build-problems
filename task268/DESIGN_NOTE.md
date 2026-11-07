@@ -7,40 +7,52 @@ both responses on the golden (STATUS commit 134d71b8). Architectures 1 to 5 are 
 
 ## Draw
 
-- **Card.** `.claude/skills/fingerprint/cards/task268.json`, architecture v6, registered 2026-11-07T21:54:53Z. `guard.py check`
-  on the filed card: WARN only, `repeat.decision` (designation_set against task156). Answer: the decision is a set of services
-  measured against their own budgets, which is the call's natural form; task156 (a union branch's ballot councils) shares no
-  world, driver or shell. The older same-puzzle and same-driver signatures (task245, task265, task139 v1, task182 v4, task270
-  v1 and v6, task452 v2) carry one differentiation line each on the card.
+- **Card.** `.claude/skills/fingerprint/cards/task268.json`, architecture v6, re-registered 2026-11-07 after the edge-sampler
+  redraw (the first registration, 21:54:53Z, carried the per-service sampler now in `## Tried and rejected`). `guard.py check`
+  on the filed card: WARN only, `repeat.gate_g` (method_or_model_selection against task127 v4) and `overuse.gate_g` (5 of the
+  last 12). Answer: the gate names the decisive step, the choice of inclusion probability for a cluster sample of traces;
+  task127 (a bank's support packages valued by the write-off they keep off the book) shares no world, driver or shell.
+  Three axes were redrawn after task127 v4 was registered at 22:27Z with the same values: context artifact monitoring_export
+  to operations_log (the decisive file is the trace store's span export, an event log of every call a kept request made),
+  forum line_manager_or_team to executive_team (the engineering leadership group approved PR-SLO-3 and staffs the reliability
+  programme the call assigns engineers in), forcing event period_close to budget_or_appropriation (the call is the January
+  allocation of reliability engineers for the first half of 2027). The older same-puzzle and same-driver signatures (task245,
+  task265, task139 v1, task182 v4, task270 v1 and v6, task452 v2), task264 and the slot's own superseded registration carry
+  one differentiation line each on the card.
 - **Pairing.** general-statistics-data-science / missing-data-censoring-measurement-error / descriptive-distribution. The
   setting is the platform reliability team of Rotalinha, a Lisbon marketplace selling intercity bus and ferry tickets in
-  Portugal and Spain; the statistics is the field: an estimate from a sample whose inclusion probability is set minute by
-  minute and recorded nowhere.
+  Portugal and Spain; the statistics is the field: a population share estimated from a cluster sample of traces whose
+  inclusion probability is set where each trace starts and recorded nowhere.
 - **Decision.** Which internal services ran over their 2026 latency error budget. Each one that did gets a reliability engineer
   for the first half of 2027. Retrospective by design: the SLO year closed on 31 December 2026 and the programme starts in
   January.
-- **The quantity.** Each service's 2026 latency SLI, the share of the requests it handled in 2026 whose server-side duration
-  exceeded its threshold, against its error budget (both in the SLO standard).
-- **Data-native sentence.** The trace store's adaptive sampler keeps about ten server spans a second per service, resetting its
-  probability each minute, so in the busy minutes, when queueing makes requests slow, it keeps the smallest share of them;
-  the load balancer counts every request per minute for billing, and no file records the keep fraction.
+- **The quantity.** Each service's 2026 latency SLI as the annual review reads it, over December in Lisbon time (PR-SLO-3
+  section 3.1): the share of the requests it handled whose server-side duration exceeded its threshold, against its error
+  budget (both in the standard).
+- **Data-native sentence.** The trace store's sampler sits at the edge: each edge service keeps a share of its requests that
+  it resets at the top of every hour from its previous hour's traffic, and a kept request's whole trace is kept with it, so
+  an internal service's kept spans carry the keep share of whichever edge service started their trace; partner-gateway's
+  slow availability lookups are made by journey-search's searches, the busiest edge service and the one kept at the smallest
+  share, while seat-map and booking, kept at far larger shares, make its fast calls. The load balancer counts every request
+  each service handled per hour; no file records a keep share.
 - **Abstraction sentence (nearest builds).** The nearest approved builds are task275 (an invariant total raised to unobserved
   trips) and task253 (a count past a line as the sum of probabilities), and neither shares the move. A reviewer holding
   task452 v2 (delivered) would say both weight a sample by its inclusion probability: there the probability belongs to a
-  drawn stratum, recorded in the design, and the trap is a reclassification after the draw; here there is no stratum, the
-  probability is recorded nowhere and moves with the load that also makes requests slow, and it is recovered minute by minute
-  from a billing count. task258 (approved) is the nearest world (web performance) and shares no step.
+  drawn stratum, recorded in the design, and the trap is a reclassification after the draw; task264 weights a sampled person
+  by a probability proportional to their own visits. Here the probability belongs to another unit, the edge service whose
+  request started the trace, is recorded nowhere, and is recovered hour by hour from that unit's load balancer count.
+  task258 (approved) is the nearest world (web performance) and shares no step.
 - **Shape.** 14, cuts of a distribution per segment: for each internal service its SLI and whether it breached, the call, the
-  chart, the files, and the asks (designed at stage 2).
+  chart, the files, and the asks.
 - **Strategy.** population_selection, gate method_or_model_selection, generators G9 (the measured outcome is the kept one),
   G6, G13; gap population; Layer 2 estimation_fit.
-- **Prototype on the clean truth (scratch `p1.py`, 2026-11-07).** Twelve services, a year at minute grain, latency rising with
-  load, a cap of ten spans a second: the kept spans' own share and a day-by-day reweighting understate every high-volume
-  service (search 5.61 and 5.78 against 7.62 per cent; places 15.93 and 16.70 against 27.41); hourly and minute weighting agree
-  (7.57 and 7.62). Levels are untuned; stage 2 sets the budgets so the designated set moves between the routes.
-- **Sources.** The client's missing-data card (an estimate under data missing by design) is the family; adaptive and
-  rate-limiting trace samplers (keep a target number of traces per second, adjusting the probability every minute) are
-  real practice in the open-source tracing tools; no file in the pack names the sampler's behaviour.
+- **Prototype on the world's own kept spans (scratch `sweepB.py`, `rank.py`, 2026-11-07).** 205 of 250 seeds hold the ladder
+  and the one-decimal corridor. Seed 2886: the golden puts journey-search 1.3, places 1.5, seat-map 1.5, partner-gateway 2.9
+  and notifications 1.6 over budget; reweighting each service's spans hour by hour by its own count passes partner-gateway at
+  1.44 against 2.0, pooling by hour of day at 1.26, and the kept share and a day reweighting pass journey-search, places,
+  seat-map and partner-gateway (0.69, 0.71, 0.74, 0.84). Smallest golden ratio to budget 1.32; partner-gateway 0.28 under
+  its budget on the per-service rung; every graded one-decimal figure at least 0.018 from a rounding line under
+  Horvitz-Thompson on the balancer's count, Hajek, hour-calibrated, own-hour weights and either orphan handling.
 
 ### Spent insights on this objective (`guard.py mechanisms --objective descriptive-distribution`, 2026-11-07)
 
@@ -154,3 +166,16 @@ One line per insight a live or lineage card has spent, so no candidate re-screen
 - Architecture 5 (the rival whose buying homes least often also bought the Roastery, homes assembled from the Rewards cards and online accounts that share a bank-card token in Faircourt's settlement file), spent at its first portal round on 2026-11-07: both responses named Oro Rosso, each building homes through the settlement file's card reference (one response lists its "household-linkage" assumptions). The prompt and the brief file the unit as the home, which determinism requires, and once the home is filed the shared payment card is the only record that joins two cards, so the linkage ran as a work order: filing the estimand announced the rung, and the construction is the join that cleaning the data already asks for (Layer 1 carrying the stump). No closure keeps it, since leaving the unit unfiled forks the call between cards and homes. The slot re-roots to architecture 6 in another world, dataset, generator and prompt shell, with a decisive step that no filed unit or join announces.
 - Architecture 6's first candidate, set aside at the draw on 2026-11-07 before registration: a Lisbon ticketing marketplace's internal service latency SLIs read from a trace store kept under head-based sampling set per entry route, each downstream span inheriting its trace's entry rate (checkout in full, search at one per cent), so the services checkout calls look slow until each span is weighted by the inverse of its trace's entry rate. The setting and driver hit no slot note, but task452 v2 (shipped) already teaches the insight: weight each sampled record by the inclusion probability of the stratum it was drawn in, not the grouping it is analysed by. One sentence covers both, so the draw would read as a clone. The guard also showed the signature crowded: gap population with method_or_model_selection is spent on G14 (ten builds), G9 (five), G6 (nine) and E (the slot's own architecture 1), and G12 is banned against task190.
 - Architecture 6's second candidate, set aside at the draw on 2026-11-07: a ride-hailing platform's 2027 background-check vendor, which moves a driver sign-up inside the activation target only where the check cleared last, the other requirements (documents, vehicle inspection, training) running alongside it. The slot screen found it spent: task127 v2 (the portal landed it) credits an intervention only with the replaced step's excess over a concurrent step, and task472 v2 credits saved work only where it moves a release into an earlier window.
+- Architecture 6 first drawn with a per-service hourly sampler (2026-11-07, registered 21:54:53Z, pack built and golden
+  reproduced on seed 2718): it cleared the ladder on 51 of 60 seeds (golden ratio 1.31, wrong-route margin 0.14) and was
+  superseded before stage 2, because once a service's kept spans read flat at the sampler's target each hour, the hourly
+  reweighting is one join from the load balancer's counts and both top responses would take it; it is rung 3 here.
+- SLIs to two decimals on the edge-sampler world (2026-11-07): the standing estimators (Horvitz-Thompson on the balancer's
+  count, Hajek, hour-calibrated) spread 0.01 to 0.08 points on the internal services, so almost no seed held all three on one
+  two-decimal figure; SLIs are reported to one decimal, the precision 744 hours of about 24 kept traces an edge service carry
+  (the golden and the world's truth differ by 0.05 to 0.1).
+- accounts' sign-in texts sent through notifications (2026-11-07): 4 per cent of sign-ins, about one kept text an hour, each
+  weighted at about 150 requests, moved notifications' estimate 0.3 points between seeds and opened the corridor to 0.08;
+  removed from the call graph.
+- Partner-gateway's seat inventory read set to a target slow share (2026-11-07): 0.25 per cent at 1,000 ms forced a 340 ms
+  median, which alone put 19 per cent of seat maps over their 500 ms line; set to a fixed 85 ms read.
