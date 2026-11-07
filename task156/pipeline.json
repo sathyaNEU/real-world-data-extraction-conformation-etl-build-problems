@@ -1,11 +1,11 @@
 {
  "task": "task156",
- "status": "SHIPPED",
+ "status": "FAILED_TO_STUMP",
  "domain": "physical-environmental-sciences/hydrology-flood-frequency (client domain physical-environmental-sciences; world: a New Zealand district council's wastewater pump station and its discharge consent)",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
+ "updated": "2026-11-07",
  "stump": "Fitting one unit-hydrograph response per millimetre and the meter's own dry weather flow on 2024 to 2026 and replaying 2004 to 2023 files about 1 overflow a year with the subdivision (0.70), inside the consent's two, and connects it; the station's infiltration rises 4.2 L/s for every kilometre of sewer below the water table, which stood a median 0.2 km over the meter and 2.1 km over the replay, so the replay each day with its own water table files about 3 a year (3.20): hold the connection until the upgrade.",
  "architecture": 2,
  "loops": 0,
@@ -28,14 +28,21 @@
   "disposition": "APPROVE",
   "report": "determinism_check_report.md (the card's stale replay years fixed; SF7 records ask 1's one-pump reading)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-07",
+   "portal": "FAILED_TO_STUMP: both responses landed the hold call. Response 1 replayed 2004 to 2023 and filed 48 overflows against the 40 the consent allows, then 2 after the upgrade; Response 2 filed the same hold. Any full-record replay with the subdivision already breaks the consent, so the decisive step (each replay day's own water table) was never needed.",
+   "lesson": "The easy route has to be the one strong solvers actually file, and it has to land on the wrong side of the call: an exceedance count of rare events spreads with every modelling choice, and the designed naive replay (0.70 a year) was not the replay the solvers ran.",
+   "repair": "re-root (architecture 3) in a new domain and world, 2026-11-07"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": null,
- "portal": null,
+ "portal": "FAILED_TO_STUMP",
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
+ "portal_status": "FAILED_TO_STUMP",
+ "portal_status_date": "2026-11-07",
  "history": [
   {
    "architecture": 1,

@@ -447,3 +447,9 @@ Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 12 of 33 a
 - Assumed unit hydrograph shapes and a crown or centreline reference for the submerged length: the replay spread 2.1 to
   5.0 a year, but only because those variants fit the meter two to three times worse; among fits within a few per cent of
   the best the figures agree inside the whole-number bin, so the figures are graded to whole overflows a year.
+- Architecture 2 (the PS03 overflow replay with each day's own water table), returned FAILED_TO_STUMP on 2026-11-07:
+  both responses landed the hold call. Response 1 replayed 2004 to 2023 and filed 48 overflows against the 40 the
+  consent allows, then 2 after the upgrade; Response 2 filed the same hold. Any full-record replay with the subdivision
+  already broke the consent, so the decisive step (each replay day's own water table) was never needed. Lesson: the easy
+  route has to be the one strong solvers actually file, and it has to land on the wrong side; a count of rare
+  exceedances spreads with every modelling choice, so the call now sits on a mean quantity whose naive family is tight.
