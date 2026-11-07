@@ -1,33 +1,30 @@
 {
  "task": "task165",
- "status": "SHIPPED",
- "domain": "urban-regional-science",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences / hydrology-flood-frequency (client physical-environmental-sciences)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-31",
- "stump": "Taking the Priority 1 collectors' rock salt per lane-km per severity point less the 424 lane-km's own Priority 2 salt at the planning severity files 2,600 t; the moved collectors' Priority 1 salt rises with how much of each street Priority 2 already salted and the gain is mostly the length Priority 2 left untreated, so only the earlier moves' gain read at the new streets' own Priority 2 salt files 2,200 t.",
- "architecture": 1,
- "loops": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-07",
+ "stump": "A competent solver replays Outfall 014's metered overflows through each tank pumped out at its station's rated dewatering flow (the continuous simulation the decree evaluates by, which reproduces the Northside tank's overflows since 2020) and selects Alternative B, the 26 MG tank, at 2.9 events a year; the step that lands it there is taking the pumps' rating as the pace the tank empties, when it empties into the Southside interceptor at the headworks of a plant that sits at its 140 MGD limit for days after wet-season storms, so only a replay bounded by Southside's own headroom hour by hour shows the 20 MG tank at 5.7 events and selects Alternative C, the 38 MG tank, at 3.0.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-31",
-  "checks": 61
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, on target.zip d9c24521 (2026-10-31): the plan's 61.7 planning severity, the call's words in the procedure and the plan, the stump vocabulary the documents use as their own",
-  "reader": "10-31 reader on the repair cut clean, Q6 analytical; 10-31 second reader after the prompt's second-sentence reword clean, Q6 analytical (the per-point sentence read as rung 0's normalisation)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-31 (people.first Andre against task482; repeat.deliverables docx+xlsx against task244); the shell repeat against task305 v3 answered by the second sentence's opener",
-  "surface": "exit 0 on 2026-10-31: 8 pairs promoted (task164 back to back; task167 and task163 two apart; task159, task465, task134, task146 and task54 on surface similarity), each with a differentiation line on the card, left to the author's optional clone-check"
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC (10-31, on target.zip d9c24521: the call 2,203.7 t, estimator variants 2,158 to 2,209 t, every dome and arterial figure reproduced)",
-  "disposition": "APPROVE; one minor Gate C residual (the two unremarked double weighings' yard) kept as device A4 and forced by the later ticket's gross (author's note in the report)",
-  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "report": "task165/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -66,12 +63,19 @@
    "moves": "the data dictionary and the export manifest withdrawn, the material codes filed in the plan, the legacy export's KG magnitude asserted, the prompt without the moved length and with a fresh shell, the survivor anatomy written, differentiation against task173 on the card",
    "freeze": "no main-call figure, stump, ladder, default path or call sentence moved, and no ask figure moved",
    "commit": "RESHIPPED (task165): describing files withdrawn, prompt without a data count, shell redrawn"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "call landed by one response: R1 filed 2,200 t, the golden, by reading each earlier move's gain against its own Priority 2 salt and scored 100 per cent; R2 filed the default 2,600 t and still scored 70 per cent, keeping about 58 of the asks' 55 points' share; the pair averaged 85",
+   "repair": "design",
+   "disposition": "re-root: the decisive step (a carried gain conditioned on a covariate each unit's record prints) is the strong solver's reflex and the asks were executable, so the world is spent (one architecture per world); architecture 2 drawn in a new world, dataset and shell",
+   "commit": ""
   }
  ],
- "resume": "Reshipped 2026-10-31 on target.zip d9c24521. Next: the portal result.",
+ "resume": "stage 2: finish the ask sheet and Layer 1 inventory, then build",
  "approved": null,
- "delivered": "2026-10-31",
- "portal": null,
+ "delivered": null,
+ "portal": "landed by one response (R1 2,200 t at 100 per cent, R2 2,600 t at 70 per cent), reported 2026-11-07",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
@@ -91,6 +95,10 @@
   {
    "date": "2026-10-31",
    "event": "RESHIPPED: batch 1 keep-and-repair; judge DETERMINISTIC APPROVE, two leak reads clean"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "architecture 2 drawn (re-root after the portal landing of architecture 1)"
   }
  ]
 }

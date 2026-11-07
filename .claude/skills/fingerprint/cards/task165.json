@@ -1,108 +1,141 @@
 {
   "task": "task165",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "wave 6, new; seed FC36 (world, decision and quantity only; the seed's planning-tool ranking, usage-model back-tests and route-register field reading dropped)",
-  "domain": "urban-regional-science",
-  "subdomain": "municipal-service-demand-resource-allocation",
-  "client_domain": "urban-regional-science",
-  "niche": "a lakeshore Ontario city's roads division committing seasonal rock salt above its rolled-over supply contract for the first winter after a bus network redesign moved 424 lane-km of collectors from hazard-spot (Priority 2) to bare-pavement (Priority 1) treatment, when the collectors it moved to Priority 1 before were mostly hill, school and hospital-access streets whose Priority 2 salting already covered much of their length",
+  "architecture": "v2 (re-root after the portal return of 2026-11-07: a Pennsylvania sewer authority choosing the Clay Street storage tank that brings combined sewer Outfall 014 to the consent decree's four untreated overflows in an average year, the tank emptied only as fast as the Southside plant has room for its dewatering flow)",
+  "drawn": "2026-11-07",
+  "slot_note": "re-root of the wave 6 slot after the arch 1 portal landing; one architecture per world, so a new world, dataset and shell",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "hydrology-flood-frequency",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a Pennsylvania city sewer authority selecting, for its consent decree's facility plan, which of four storage tank alternatives at the Clay Street regulator brings combined sewer Outfall 014 to no more than four untreated overflow events in an average year of the 2014 to 2025 metered record, when the tank drains into the Southside interceptor at the plant headworks and the Southside plant runs at its hydraulic limit for one to four days after most wet-season storms",
   "objective": "forecasting",
-  "shape": "single-figure",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "Commit 2,200 t of rock salt above the rolled-over 39,100 t contract for November 2026 to March 2027.",
+  "shape": "08",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Select Alternative C, the 38 MG tank: it leaves Outfall 014 3.0 untreated overflow events a year, where the 26 MG Alternative B leaves 5.7.",
   "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
   "gap": [
-    "population",
     "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G6",
-    "G13"
+    "G7",
+    "G3"
   ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "gate_g": "binding_constraint",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "binding_constraint",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "the roads division's winter operations manager, who files the seasonal salt commitment above the rolled-over contract by 1 October",
-  "role_family": "operations_director",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the sewer authority's director of engineering and planning, who takes the tank selection to the board before the consent decree's facility plan is filed",
+  "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "telematics_segment_passes_2023-10-01_2026-09-23.parquet (the fleet telematics platform's segment passes from the October 2023 replacement) beside avl_legacy_segment_shift_2021-11-01_2023-03-31.csv (the legacy AVL's segment-by-shift summaries for the two winters before it)",
-    "rows": 344770,
-    "entity": "one spreader truck's pass over one route segment, with the rock salt it put down",
-    "grain": "truck pass x segment",
-    "source": "synthetic (constructed in the layout of a winter-maintenance telematics platform's segment-pass export, beside a legacy AVL's segment-by-shift material summary)"
+    "file": "outfall_014_flow_monitoring_2014-2025.parquet (Outfall 014's overflow pipe flow meter, 15-minute readings, with the 2019 meter replacement) beside wrp_influent_hourly_2014-2025.csv (both reclamation plants' hourly influent from the plant historian)",
+    "rows": 420000,
+    "entity": "one 15-minute interval of discharge through the Clay Street overflow pipe",
+    "grain": "outfall x 15 minutes",
+    "source": "synthetic (constructed in the layout of a sewer authority's flow monitoring export and a treatment plant historian's hourly export)"
   },
-  "forum": "council_or_assembly",
+  "forum": "regulator_or_inspector",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "local_government",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Canada, Ontario (Quellbrook, a fictional lakeshore city of about 410,000; the city, its regional transit agency, the salt supplier, the people, systems and data are fictional)",
-    "currency": "CAD",
-    "org_type": "a city public works department's roads division running winter maintenance from four works yards",
+    "geography": "United States, Pennsylvania (Quessling, a fictional river city of about 180,000 with a combined sewer system; the authority, its plants, consultant, people, systems and data are fictional)",
+    "currency": "USD",
+    "org_type": "a municipal sewer authority running two water reclamation plants and the city's combined sewer outfalls under a federal and state consent decree",
     "invented_names": [
-      "Quellbrook",
-      "Quellbrook Regional Transit",
-      "Northgrit Salt Supply",
-      "Tessaline Geomatics",
-      "Kettlewood Road Services",
-      "Quellbrook General",
-      "Quellbrook District School Board",
-      "Northgrit Transport"
+      "Quessling",
+      "Quessling Sewer Authority",
+      "Southside Water Reclamation Plant",
+      "Northside Water Reclamation Plant",
+      "Clay Street",
+      "Ostrem Calder Engineers",
+      "Wennick River"
     ],
     "people": [
-      "Doris Wilkerson",
-      "Kristin Gonzalez",
-      "Andre Nixon"
+      "Tammy Williams",
+      "Nicholas Hernandez",
+      "Jesus Thompson"
     ]
   },
   "deliverables": [
-    "salt_commitment_2026-27.xlsx",
-    "seasonal_salt_commitment_council_report.docx"
+    "clay_street_storage_evaluation.xlsx",
+    "clay_street_tank_selection_board.pptx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:service-upgrade-gain-conditioned-on-prior-partial-coverage",
+  "question_form": "which",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:storage-drawdown-bound-by-receiving-plant-headroom",
   "layer1": [
-    "AVL platform replaced in October 2023: layout, clock (local time to UTC), units (kilograms to tonnes) and grain (segment by shift to one row per pass) change across years",
-    "segment re-identification through a GIS crosswalk that splits some old segments",
-    "storm log layout changed in 2023 (title block and event points to coded events and a Season WSI row)",
-    "free-text route audit reasons in the revision log",
-    "supplier dispatch schedule re-issued; dome survey capture times in UTC; loads weighed at another yard's scale house during scale outages, and the first trucks after each scale came back weighed there again on their way to their own yard, among supplier trucks on round trips from the terminal and scale houses keeping one stored tare a truck for each account; inter-yard transfers",
-    "older spreader controllers writing a run's total, salt and brine together, on every segment row, four of them replaced in 2025 in Fleet Services' work orders; contractor circuits reporting outside the telematics; a yard boundary realignment, the telematics platform carrying the renamed circuits' current codes on their old passes",
-    "trucks rotating between circuits of their yard; route audit changes keyed in a few sittings, some after their effective dates; a register pull of the salted network only; each winter's own swing in salt per point, which the severity index does not carry"
+    "the Outfall 014 meter replaced in June 2019 (cubic feet per second in Eastern Standard Time all year, then million gallons a day in UTC), with the two loggers overlapping for a week",
+    "the plant historian's hourly export in local time with the daylight saving repeat and gap, its two plants in one long file, and the 2021 historian upgrade that renamed the influent tags",
+    "tipping-bucket rain gauge loggers replaced in 2024 at two of four gauges, the new loggers stamping UTC, and technicians' calibration pours recorded as tips among the rain",
+    "the Northside tank SCADA's pump run states every 15 minutes, a dewatering pump rebuilt and re-rated in 2023 that kept its SCADA tag, and the level transducer reset during the 2023 cleanout",
+    "the regulator register's interceptor codes, a field service log in free text, and a work order export across a CMMS change"
   ],
-  "driver": "The extra input an upgraded service level puts into a unit is the part of the unit the old level left untreated, so the average gain measured on units upgraded earlier, chosen because the old level already treated much of them, understates the gain for units the old level barely reached, while their upgraded level less the new units' present input overstates it; only the gain conditioned on how much of each unit the old level already treated, read from each unit's own record under it, carries across to the new units.",
-  "driver_concrete": "Quellbrook's Priority 2 trucks salt a collector only at its intersections, hills and curves, so a collector's gain on moving to Priority 1 is mostly the stretch between them at the Priority 1 rate; the collectors moved from 2022 to 2025 were mostly hill, school and hospital-access streets whose Priority 2 salt already covered much of their length, while the redesign's 424 lane-km are long flat outer-suburb grid collectors whose Priority 2 trucks salted about a sixth of them, so the moved streets' average gain understates theirs and the Priority 1 collectors' rate less the new streets' own Priority 2 salt overstates it; only the gain read off each moved street's own Priority 2 salt, at the new streets' Priority 2 salt, carries across.",
-  "stump": "A competent solver takes the Priority 1 collectors' salt per lane-km per severity point less the 424 lane-km's own Priority 2 salt and files 2,600 t at the planning severity, or takes the before-and-after gain of the collectors moved to Priority 1 since 2022 and files 1,500 to 1,600 t; the step that lands it there is carrying an average across streets whose Priority 2 coverage differs, when the gain is the length Priority 2 left untreated and the earlier moves were mostly hill, school and inner-suburb streets Priority 2 had already salted along much of their length, so only the gain conditioned on each street's own Priority 2 salt files 2,200 t.",
+  "driver": "A storage buffer that captures a discharge until it is full empties only through a receiving channel whose spare capacity vanishes for one to several days after each wet event, so in a run of events the buffer meets the next one still partly full; counting each event against an empty buffer, or a buffer emptied at its outlet's rated pace, understates how often it spills, and only replaying the record with the outlet bounded by the receiving channel's spare capacity, read from that channel's own record, prices the size the limit needs.",
+  "driver_concrete": "Clay Street's tank is pumped out into the Southside interceptor at the plant headworks, and the Southside plant, its sewershed full of groundwater and inflow, takes its 140 MGD hydraulic limit for one to four days after most storms from March to June; the Northside tank, whose plant has room within hours, empties at its pumps' rating and its overflows replay exactly that way, but Clay Street's pumps can only send what Southside has room for, so in a wet spell the tank meets the next storm still full and the 26 MG alternative that clears four events at its pumps' rating leaves 5.7 a year; only the 38 MG tank, at 3.0, meets the decree.",
+  "stump": "A competent solver replays Outfall 014's metered overflows through each tank pumped out at its station's rated dewatering flow (the continuous simulation the decree evaluates by, which reproduces the Northside tank's overflows since 2020) and selects Alternative B, the 26 MG tank, at 2.9 events a year; the step that lands it there is taking the pumps' rating as the pace the tank empties, when it empties into the Southside interceptor at the headworks of a plant that sits at its 140 MGD limit for days after wet-season storms, so only a replay bounded by Southside's own headroom hour by hour shows the 20 MG tank at 5.7 events and selects Alternative C, the 38 MG tank, at 3.0.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who maps both AVL exports onto the current segments, converts the legacy export from kilograms and the platform from UTC, normalises every winter by the filed severity index and takes the Priority 1 collectors' salt per lane-km less the new streets' own Priority 2 salt files 2,600 t; one who measures the gain on the collectors moved to Priority 1 since 2022 files 1,500 to 1,600 t; only the gain conditioned on each street's own Priority 2 salt files 2,200 t.",
-  "domain_test": "The quantity that decides the call is the extra rock salt per lane-km a collector needs when it moves from Priority 2 (intersections, hills and curves) to Priority 1 (bare pavement over its whole length), sized the way winter maintenance engineers size a level-of-service change, the newly treated length at the Priority 1 rate per point of storm severity, carried across from the spreader records of streets moved before by how much of each street Priority 2 already treated; with hospital beds or megawatt-hours in place of lane-km there is no hazard-spot treatment whose coverage sets the gain and no storm severity to normalise by.",
+  "analyst_test": "A strong analyst who converts the old meter from cubic feet per second and Eastern Standard Time, joins the two loggers across their overlap, counts events with the decree's 24-hour separation and replays each alternative through the tank dewatered at its pump station's rated flow, checking the method on the Northside tank's record, files Alternative B (26 MG, 2.9 events a year); only bounding the dewatering by the Southside plant's hourly headroom files Alternative C (38 MG, 3.0 a year, with B at 5.7).",
+  "domain_test": "The quantity that decides the call is the exceedance frequency of a storage-regulated outfall over the period of record, found the way hydrologists find overflow and flood frequency for a regulated system, by continuous simulation of the record through the storage with its outflow bounded by the receiving system; with hospital beds or school places in place of million gallons there is no storm record, no event separation and no receiving plant whose wet-weather recession sets the storage's drawdown.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task134": "there a lot's forward yield is its chance of being rebuilt once the best permitted option pays, here no unit chooses anything: a service upgrade's added salt is the street length the old service left untreated, carried across from earlier upgrades by each street's own prior coverage",
-    "task146": "there a calendar turn releases a pool of refused units at segment rates weighed by when each was refused, here an upgrade's gain is read off earlier upgrades by each street's prior coverage, with no pool, release or timing",
-    "task465": "there a joint count of two traits needs a small source's within-cell association, here a measured treatment gain is carried from earlier treated units to new ones by a baseline covariate each unit's own history carries",
-    "task54": "there loss is borne per event by every unit in custody under a rule recovered from closed investigations, here nothing is withheld: the gain varies with each street's prior coverage and the earlier upgrades show it in their records",
-    "task118": "there a team's gain is netted of the volume each unit already treats itself and the netting is the correction, here netting each street's own present salt from the upgraded level is the wrong route, because the upgraded level itself rises with prior coverage and only the gain conditioned on it carries across",
-    "task164": "there each plug-in vehicle adds its schedule's effect to a shared transformer's recorded summer peak, measured on a panel of transformers that gained one; here nothing is added to a shared asset: a service upgrade's added salt is the street length the old service left untreated, read off earlier upgrades by each street's own Priority 2 salt",
-    "task167": "there each fund's calls follow one of two unnamed schedules, a class read from the funds financed like it; here no class is read from entry data: the gain falls continuously with each street's own measured Priority 2 salt",
-    "task163": "there a cut in the cost of entry adds marginal entrants who seldom convert, read against untreated states; here no entrant is added and nothing is read against an untreated group: every earlier street's gain is its own before and after, carried to the new streets by their own prior coverage",
-    "task453": "there a questionnaire redesign's effect is read from the rotation groups newest to the panel net of their time-in-sample drift; here no measurement changes: the service level changes, and its gain depends on how much of each street the old service already treated",
-    "task159": "there a platform's crowd is the backlog left by services arriving with less room than an interval's arrivals; here nothing queues or binds: an upgrade's added salt is the length the old service left untreated, read at the new streets' own Priority 2 salt",
-    "task173": "there a pooled desk's comeback chance is conditioned on who opened each case and their tenure, an estimator grouping over first-contact takers that never shipped; here nothing is grouped by who acted: a service upgrade's added salt is the street length the old service left untreated, carried from earlier upgrades by each street's own prior coverage"
+    "task156": "there a pump station's infiltration scales with the sewer length below a fluctuating water table read from a bore, so one response fitted on a dry record understates a wet replay; here nothing scales the inflow: the metered overflows are taken as recorded, and what decides is how fast a storage tank can empty into a receiving plant that stays at its limit for days after storms",
+    "task162": "there each pressure valve acts only in hours its inlet runs above the setting, an hourly threshold with no memory; here the decisive structure is a stored volume carried from one storm to the next, emptied only as fast as another system's headroom allows",
+    "task118": "there a resource drawn from a buffer that refills only partly between consecutive calls responds less with each call of a run, and the run is the decisive step; here the run is the field's own continuous simulation, a rung below the call, and what decides is that the tank empties into another system whose headroom, read from that plant's own record, bounds its pumps after storms",
+    "task105": "there a new outlet wins only its side of the bisector with a sister outlet, a market cut no closed opening could show; here no market is divided: one tank's spills follow from how full it still is when the next storm comes, set by how fast another plant lets it empty",
+    "task460": "there a new zero-rate source displaces the marginal units of the intervals it runs in, weighted by its own profile; here nothing displaces anything at a margin: a stored volume is carried between storms and emptied only into the room a receiving plant has left",
+    "task127": "there a fixed team's spare capacity shows only as the ceiling it held through an earlier surge and caps how many units it can finish; here no team or count is capped: the receiving plant's headroom after each storm sets how much of a tank is empty when the next one arrives",
+    "task87": "there two owed items in one slot cannot both be taken by one unit, an exclusivity the closed record never paid for; here no slot is exclusive: a tank's volume is shared across storms through the time it takes to empty into a plant that stays at its limit",
+    "task32": "there a constraint binds at a finer time resolution than the natural forecast; here the binding limit is on another system, the receiving plant, and it binds through a state the tank carries between events, not within one period"
   },
-  "lineage": [],
+  "lineage": [
+    {
+      "domain": "urban-regional-science",
+      "subdomain": "municipal-service-demand-resource-allocation",
+      "objective": "forecasting",
+      "shape": "single-figure",
+      "decision_type": "quantity_figure",
+      "answer_unit": "count",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G6",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "driver": "The extra input an upgraded service level puts into a unit is the part of the unit the old level left untreated, so the average gain measured on units upgraded earlier, chosen because the old level already treated much of them, understates the gain for units the old level barely reached, while their upgraded level less the new units' present input overstates it; only the gain conditioned on how much of each unit the old level already treated, read from each unit's own record under it, carries across to the new units.",
+      "stump_strategy": "composition_mix",
+      "forum": "council_or_assembly",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "local_government",
+      "role_family": "operations_director",
+      "drawn": "2026-10-18",
+      "stump": "A competent solver takes the Priority 1 collectors' salt per lane-km per severity point less the 424 lane-km's own Priority 2 salt and files 2,600 t at the planning severity, or takes the before-and-after gain of the collectors moved to Priority 1 since 2022 and files 1,500 to 1,600 t; the step that lands it there is carrying an average across streets whose Priority 2 coverage differs, when the gain is the length Priority 2 left untreated and the earlier moves were mostly hill, school and inner-suburb streets Priority 2 had already salted along much of their length, so only the gain conditioned on each street's own Priority 2 salt files 2,200 t.",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:service-upgrade-gain-conditioned-on-prior-partial-coverage",
+      "driver_concrete": "Quellbrook's Priority 2 trucks salt a collector only at its intersections, hills and curves, so a collector's gain on moving to Priority 1 is mostly the stretch between them at the Priority 1 rate; the collectors moved from 2022 to 2025 were mostly hill, school and hospital-access streets whose Priority 2 salt already covered much of their length, while the redesign's 424 lane-km are long flat outer-suburb grid collectors whose Priority 2 trucks salted about a sixth of them, so the moved streets' average gain understates theirs and the Priority 1 collectors' rate less the new streets' own Priority 2 salt overstates it; only the gain read off each moved street's own Priority 2 salt, at the new streets' Priority 2 salt, carries across.",
+      "architecture": "v1 (loops 2)",
+      "fate": "landed on the portal (2026-11-07): one response filed the golden 2,200 t by regressing each earlier move's gain on its own Priority 2 salt and reading it at the new streets' (100 per cent), the other filed the default 2,600 t and still kept 70 per cent on the asks; conditioning a carried gain on a covariate each unit's history prints is the strong solver's reflex, so the world is spent"
+    }
+  ],
   "notes": "",
-  "registered": "2026-10-18T14:10:39Z"
+  "registered": "2026-11-07T21:11:47Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "alongside",
+    "rounding opener": "the",
+    "deliverable set": "docx+xlsx"
+  }
 }
