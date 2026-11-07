@@ -21,7 +21,8 @@
 4. Tied each weighed dose in gravimetric_check_register_2026.xlsx to its dose by batch and dose number; delivered volume is the net weight (gross weight less the container tare to 30 June) divided by the specific gravity, as a per cent of the labelled volume.
 5. For each product fitted the weighed doses' per cent deviation as the set's start plus a loss per litre pumped (one slope across the product's sets, the start varying from set to set about its mean, a dose-to-dose scatter about the line).
 6. Summed over every completed dose the normal chance of lying outside the tolerance at its litres pumped, with the start's spread and the scatter, per hundred thousand doses made; the call is the products over 10.
-7. Counted each station's completed doses by Ontario-local month and each product's sets (distinct set lots on their devices, the product of the doses filled on them).
+7. For each product's 90 per cent interval, resampled its sets with replacement, refitted step 5 and re-summed step 6 over its 2026 doses, taking the 5th and 95th percentiles; placed the limit of 10 below, inside or above each interval.
+8. Counted each station's completed doses by Ontario-local month and each product's sets (distinct set lots on their devices, the product of the doses filled on them).
 
 ## 4. Deliverable Answers
 
@@ -41,7 +42,20 @@
    - Vancomycin 1 g in 200 mL bag: out
    - Ondansetron 8 mg in 50 mL bag: out
    - Heparin 1,000 units/mL 5 mL syringe: out
-3. Chart: each product's 2026 out-of-tolerance rate per hundred thousand doses made against the limit of 10, the products going on verification in red.
+3. Where the limit of 10 sits against each product's 90 per cent interval:
+   - Cefoxitin 2 g in 20 mL syringe: below its interval
+   - Phenylephrine 100 mcg/mL 10 mL syringe: below its interval
+   - Cefazolin 2 g in 20 mL syringe: below its interval
+   - Midazolam 1 mg/mL 50 mL syringe: below its interval
+   - Ampicillin 2 g in 50 mL bag: above its interval
+   - Cefazolin 1 g in 10 mL syringe: above its interval
+   - Ephedrine 5 mg/mL 10 mL syringe: above its interval
+   - Ketamine 10 mg/mL 10 mL syringe: above its interval
+   - Piperacillin-tazobactam 4.5 g in 100 mL bag: above its interval
+   - Vancomycin 1 g in 200 mL bag: above its interval
+   - Ondansetron 8 mg in 50 mL bag: above its interval
+   - Heparin 1,000 units/mL 5 mL syringe: above its interval
+4. Chart: each product's estimated 2026 out-of-tolerance rate per hundred thousand doses made with its 90 per cent interval against the limit of 10, the products going on verification in red.
 
 ### compounding_review_2026.csv
 

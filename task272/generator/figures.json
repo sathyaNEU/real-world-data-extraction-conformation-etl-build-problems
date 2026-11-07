@@ -282,6 +282,68 @@
    "rate": 0.0
   }
  },
+ "interval": {
+  "P0412": {
+   "hi": 183.3,
+   "limit": "below",
+   "lo": 84.0
+  },
+  "P0413": {
+   "hi": 0.0,
+   "limit": "above",
+   "lo": 0.0
+  },
+  "P0431": {
+   "hi": 541.3,
+   "limit": "below",
+   "lo": 375.2
+  },
+  "P0507": {
+   "hi": 356.5,
+   "limit": "below",
+   "lo": 190.8
+  },
+  "P0509": {
+   "hi": 0.0,
+   "limit": "above",
+   "lo": 0.0
+  },
+  "P0522": {
+   "hi": 0.0,
+   "limit": "above",
+   "lo": 0.0
+  },
+  "P0610": {
+   "hi": 0.3,
+   "limit": "above",
+   "lo": 0.1
+  },
+  "P0614": {
+   "hi": 0.0,
+   "limit": "above",
+   "lo": 0.0
+  },
+  "P0618": {
+   "hi": 0.1,
+   "limit": "above",
+   "lo": 0.0
+  },
+  "P0625": {
+   "hi": 0.0,
+   "limit": "above",
+   "lo": 0.0
+  },
+  "P0702": {
+   "hi": 100.8,
+   "limit": "below",
+   "lo": 16.6
+  },
+  "P0705": {
+   "hi": 0.3,
+   "limit": "above",
+   "lo": 0.0
+  }
+ },
  "ladder": {
   "checked": [
    "P0431"
@@ -323,6 +385,8 @@
   ]
  },
  "policy": {
+  "interval_level_pct": 90,
+  "interval_reps": 1000,
   "limit_value": 10.0
  },
  "products": {

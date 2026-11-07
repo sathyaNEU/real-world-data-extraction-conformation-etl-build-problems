@@ -49,15 +49,22 @@ def write(path, fig):
           "dose-to-dose scatter about the line).",
           "6. Summed over every completed dose the normal chance of lying outside the tolerance at its litres "
           "pumped, with the start's spread and the scatter, per hundred thousand doses made; the call is the products over 10.",
-          "7. Counted each station's completed doses by Ontario-local month and each product's sets (distinct set "
+          "7. For each product's 90 per cent interval, resampled its sets with replacement, refitted step 5 and "
+          "re-summed step 6 over its 2026 doses, taking the 5th and 95th percentiles; placed the limit of 10 below, "
+          "inside or above each interval.",
+          "8. Counted each station's completed doses by Ontario-local month and each product's sets (distinct set "
           "lots on their devices, the product of the doses filled on them).", ""]
     L += ["## 4. Deliverable Answers", "", "### %s" % GD.PDF, "",
           "1. Products configured for gravimetric verification of every dose: %s." % "; ".join(name[c] for c in sorted(call)),
           "2. Every batch-compounded product marked in or out:"]
     for c in order:
         L.append("   - %s: %s" % (name[c], "in" if c in call else "out"))
-    L += ["3. Chart: each product's 2026 out-of-tolerance rate per hundred thousand doses made against the limit of 10, the "
-          "products going on verification in red.", "", "### %s" % GD.CSV, "",
+    L.append("3. Where the limit of 10 sits against each product's 90 per cent interval:")
+    for c in order:
+        L.append("   - %s: %s its interval" % (name[c], fig["interval"][c]["limit"]))
+    L += ["4. Chart: each product's estimated 2026 out-of-tolerance rate per hundred thousand doses made with its 90 per "
+          "cent interval against the limit of 10, the products going on verification in red.", "",
+          "### %s" % GD.CSV, "",
           "1. Each compounder's doses made in each month of 2026 (Ontario local time), whole numbers:"]
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     for st in ("PC-1", "PC-2", "PC-3", "PC-4", "GC-1"):

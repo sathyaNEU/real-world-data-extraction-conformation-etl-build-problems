@@ -19,9 +19,11 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Paragraph, Spacer, Table
 
+import officepdf as O
 import params as P
+import parquetio as PQ
 import world as W
 
 FILES = {
@@ -84,11 +86,18 @@ def _xlsx(path, sheets, creator, created, modified, widths=(12, 10, 12, 40, 9, 1
                 data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)",
                               b"\\g<1>" + created.strftime("%Y-%m-%dT%H:%M:%SZ").encode() + b"\\g<2>", data)
             if info.filename == "docProps/app.xml":
-                data = (b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
-                        b'<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">'
-                        b'<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity>'
-                        b'<ScaleCrop>false</ScaleCrop><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc>'
-                        b'<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>')
+                names = [t[0] for t in sheets]
+                parts = "".join("<vt:lpstr>%s</vt:lpstr>" % n.replace("&", "&amp;") for n in names)
+                data = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+                        '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+                        'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+                        '<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity>'
+                        '<ScaleCrop>false</ScaleCrop><HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant>'
+                        '<vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>%d</vt:i4></vt:variant>'
+                        '</vt:vector></HeadingPairs><TitlesOfParts><vt:vector size="%d" baseType="lpstr">%s'
+                        '</vt:vector></TitlesOfParts><Company></Company><LinksUpToDate>false</LinksUpToDate>'
+                        '<SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged>'
+                        '<AppVersion>16.0300</AppVersion></Properties>' % (len(names), len(names), parts)).encode()
             zi = zipfile.ZipInfo(info.filename, date_time=modified.timetuple()[:6])
             zi.compress_type = zipfile.ZIP_DEFLATED
             z.writestr(zi, data)
@@ -104,18 +113,8 @@ def _styles():
 
 
 def pdf(path, blocks, title, author, created, modified, footer, first_col=0.30, subject=None):
+    """A document as the pharmacy writes it: a Word document exported to PDF by LibreOffice Writer (officepdf.py)."""
     st = _styles()
-
-    def page(canvas, d):
-        canvas.saveState()
-        canvas.setFont("Helvetica", 7.5)
-        canvas.setFillColor(colors.HexColor("#5b6670"))
-        canvas.drawString(20 * mm, 10 * mm, footer)
-        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
-        canvas.restoreState()
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                            bottomMargin=18 * mm, title=title, author=author, subject=subject or title, creator=author, producer="Microsoft Word",
-                            invariant=1)
     story = []
     for kind, val in blocks:
         if kind == "table":
@@ -123,26 +122,21 @@ def pdf(path, blocks, title, author, created, modified, footer, first_col=0.30, 
             n = len(val[0])
             widths = [width * first_col] + [width * (1 - first_col) / (n - 1)] * (n - 1) if n > 1 else [width]
             rows = [[Paragraph(str(c).replace("&", "&amp;"), st["cell"]) for c in r] for r in val]
-            t = Table(rows, colWidths=widths, hAlign="LEFT", repeatRows=1)
-            t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#8a949c")),
-                                   ("VALIGN", (0, 0), (-1, -1), "TOP"), ("BOTTOMPADDING", (0, 0), (-1, -1), 3)]))
-            story += [t, Spacer(1, 6)]
+            story += [Table(rows, colWidths=widths, hAlign="LEFT", repeatRows=1), Spacer(1, 6)]
         elif kind == "img":
             story.append(val)
         else:
             story.append(Paragraph(val, st[kind]))
-    doc.build(story, onFirstPage=page, onLaterPages=page)
-    data = open(path, "rb").read()
-    data = re.sub(rb"/CreationDate \(D:[^)]*\)", b"/CreationDate (" + created.encode() + b")", data)
-    data = re.sub(rb"/ModDate \(D:[^)]*\)", b"/ModDate (" + modified.encode() + b")", data)
-    for sig in (b"ReportLab Generated PDF document (opensource)", b"ReportLab generated PDF document -- digest (opensource)",
-                b"ReportLab PDF Library - www.reportlab.com"):
-        data = data.replace(sig, b" " * len(sig))
-    open(path, "wb").write(data)
+    O.build(path, story, title, author, subject or title, footer, created, modified, margin_mm=20, top_mm=18,
+            bottom_mm=18)
+
+
+EST = dt.timezone(dt.timedelta(hours=-5))
 
 
 def _pdfdate(d):
-    return "D:%s-05'00'" % d.strftime("%Y%m%d%H%M%S")
+    """An Ontario winter clock time as an aware datetime."""
+    return d.replace(tzinfo=EST)
 
 
 # ------------------------------------------------------------------------------------------------ the records
@@ -179,7 +173,7 @@ def write_doses(path):
         "programmed_ml": pa.array([ml[i] for i in order], pa.float64()),
         "status": pa.array([status[i] for i in order], pa.string()),
     })
-    pq.write_table(tbl, path, compression="snappy", use_dictionary=True, write_statistics=False)
+    PQ.write_table(tbl, path, compression="snappy", use_dictionary=True, write_statistics=False)
     return len(order)
 
 
@@ -385,7 +379,8 @@ def write_policy(path):
         ("p", "SC-SOP-12 Batch compounding on the unit's compounders. PH-QP-02 Beyond-use dating of compounded sterile "
               "preparations. PH-QP-11 Deviation reporting."),
     ]
-    pdf(path, blocks, "PH-QP-07 Batch-compounded sterile products: gravimetric verification", P.PEOPLE["director"],
+    pdf(path, blocks, "PH-QP-07 Batch-compounded sterile products: gravimetric verification",
+        "%s Pharmacy Services" % P.ORG,
         _pdfdate(dt.datetime(2025, 11, 24, 10, 41, 3)), _pdfdate(dt.datetime(2025, 12, 9, 15, 12, 47)),
         "%s Pharmacy Services   PH-QP-07 v3   Controlled copy" % P.ORG,
         subject="Pharmacy policy PH-QP-07, gravimetric verification of batch-compounded sterile products")
@@ -423,7 +418,7 @@ def write_sop(path):
         ("h", "6. Release"),
         ("p", "A batch is released by a pharmacist once its checks are entered and any sort is closed."),
     ]
-    pdf(path, blocks, "SC-SOP-12 Batch compounding on the unit's compounders", P.PEOPLE["lead_tech"],
+    pdf(path, blocks, "SC-SOP-12 Batch compounding on the unit's compounders", "%s, %s" % (P.HOSPITAL, P.UNIT),
         _pdfdate(dt.datetime(2025, 2, 11, 9, 2, 55)), _pdfdate(dt.datetime(2025, 3, 3, 8, 21, 9)),
         "%s   SC-SOP-12 v6   Printed copies are uncontrolled" % P.HOSPITAL,
         subject="Standard operating procedure SC-SOP-12, batch compounding")

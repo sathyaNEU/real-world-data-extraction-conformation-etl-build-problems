@@ -1,6 +1,6 @@
 # leak check, task272
 
-**Verdict: LEAK.** 12 files read, 75 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 75 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -8,7 +8,7 @@ Stump terms swept: weighed, register, tolerance, golden, family, weights, litres
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 3.1 appears: ...l time. 3. Gravimetric verification of every dose 3.1 At each configuration of the pharmacy's IV workfl...
-- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 100 appears: ...its out-of-tolerance doses made in that year per 100,000 of its doses made in that year. The year is t...
+- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 100 appears: ...its out-of-tolerance doses made in that year per 100,000 of its doses made in that year. The year is...
 - **REVIEW** `SC-SOP-12_batch_compounding_procedure.pdf`: golden figure 3.1 appears: ...s are in the compounded product master. 3. Set-up 3.1 Install the set, prime it with the product's sour...
 
 ## 4 design-note vocabulary (REVIEW 2)
@@ -18,14 +18,7 @@ Stump terms swept: weighed, register, tolerance, golden, family, weights, litres
 ## 9 dates after the setting (INFO 1)
 - **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
-## 10 container metadata (LEAK 4, REVIEW 3, INFO 1)
-- **LEAK** `PH-QP-07_batch_compounded_products_policy.pdf`: Creator names 'Cynthia Underwood', not the application that wrote the PDF
-- **LEAK** `SC-SOP-12_batch_compounding_procedure.pdf`: Creator names 'Jacob Burgess', not the application that wrote the PDF
-- **LEAK** `compounder_dose_log_2026.parquet`: parquet created_by names 'parquet-cpp-arrow version 26.0.0'; leave it out of the footer
-- **LEAK** `compounder_dose_log_2026.parquet`: parquet key-value metadata carries the Arrow or pandas schema
-- **REVIEW** `compounded_product_master.xlsx`: docProps/app.xml has no TitlesOfParts, which Excel always writes
-- **REVIEW** `gravimetric_check_register_2026.xlsx`: docProps/app.xml has no TitlesOfParts, which Excel always writes
-- **REVIEW** `quarantine_register_2026.xlsx`: docProps/app.xml has no TitlesOfParts, which Excel always writes
+## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 1)
