@@ -35,11 +35,14 @@ ICS = {
     'BM9': ('Z15', 'Z12'), 'BM10': ('Z07', 'Z03'), 'BM11': ('Z16', 'Z10'),
 }
 BAD = 'BM3'                       # the boundary main with the damaged air valve
-OCC = 2.45                        # residents per property
+PLANNED = {('FM11', 0, 0, 'BM3'), ('LM12', 0, 0, 'BM7')}   # the renewal's arrangement, evaluated as one state
+# usually resident population per occupied property, 2023 census, by zone (Stats NZ national mean about 2.6)
+OCC = {'Z01': 2.71, 'Z02': 2.58, 'Z03': 2.33, 'Z04': 2.64, 'Z05': 2.77, 'Z06': 2.49, 'Z07': 2.86, 'Z08': 2.52,
+       'Z09': 2.69, 'Z10': 2.61, 'Z11': 2.74, 'Z12': 2.43, 'Z13': 2.57, 'Z14': 2.38, 'Z15': 2.66, 'Z16': 2.55}
 
 
 def residents():
-    return {z: ZONES[z][2] * OCC for z in ZONES}
+    return {z: ZONES[z][2] * OCC[z] for z in ZONES}
 
 
 def rainfall(rng):
@@ -83,6 +86,8 @@ def paths(reps):
     """paths[d][zone] = tuple of assets the zone's water passed through on day d (reservoir first)."""
     shut = [dict() for _ in range(NDAYS)]
     for m, f, l, bf in reps:
+        if l == f and f >= 0 and (m, f, l, bf) not in PLANNED:
+            continue      # a repair shut and restored within the day leaves the day's supply as it was
         for d in range(max(f, 0), min(l, NDAYS - 1) + 1):
             shut[d][m] = bf
     P = []

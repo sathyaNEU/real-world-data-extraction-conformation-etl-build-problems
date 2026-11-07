@@ -1,0 +1,137 @@
+{
+ "decision": "which drinking-water asset the council takes out of service before the 26 October 2027 feed main renewal",
+ "deliverables": [
+  "outbreak_source.xlsx",
+  "incident_brief.docx"
+ ],
+ "distractor_files": [
+  "target/council/rainfall_daily_council_gauges_2027.csv",
+  "target/council/drinking_water_compliance_samples_2027.csv",
+  "target/council/treatment_plant_daily_log_2027.csv"
+ ],
+ "domain": "epidemiology-public-health",
+ "files": {
+  "target/council/afterhours_service_calls_2027.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "After-hours service call log"
+  },
+  "target/council/crew_job_times_2027.xlsx": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Field crew mobile job export"
+  },
+  "target/council/crm_water_contacts_2027-07-01_2027-10-18.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council customer request system export"
+  },
+  "target/council/drinking_water_compliance_samples_2027.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Drinking water compliance sampling results"
+  },
+  "target/council/kowhai_hills_feed_main_renewal_plan_revB.pdf": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council capital works plan, revision B"
+  },
+  "target/council/network_model_export_2027-10-01.xlsx": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council GIS network model export"
+  },
+  "target/council/rainfall_daily_council_gauges_2027.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council rain gauge network"
+  },
+  "target/council/rating_connections_2027-10-18.parquet": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "District council rating database export"
+  },
+  "target/council/service_requests_2027-07-01_2027-10-18.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council service request export"
+  },
+  "target/council/supply_zone_register_issue7.pdf": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council supply zone register, issue 7"
+  },
+  "target/council/treatment_plant_daily_log_2027.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Water treatment plant daily log"
+  },
+  "target/council/valve_operations_2027-07-01_2027-10-18.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council valve management system export"
+  },
+  "target/council/water_services_performance_measures_2027-28.pdf": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council water services performance measures 2027/28"
+  },
+  "target/council/website_water_quality_reports_2027.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council website form submissions export"
+  },
+  "target/council/work_orders_2027-07-01_2027-10-18.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council maintenance management system export"
+  },
+  "target/laboratories/community_lab_faecal_parasites_2027-07-01_2027-10-18.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Community laboratory results export"
+  },
+  "target/laboratories/reference_lab_cryptosporidium_typing_2027.xlsx": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Reference laboratory typing report"
+  },
+  "target/public_health/case_line_list_cryptosporidiosis_2027.xlsx": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Public Health Service line list export"
+  },
+  "target/public_health/meshblock_usually_resident_2023_by_supply_zone.csv": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Council GIS meshblock concordance with 2023 Census usually resident counts"
+  },
+  "target/public_health/outbreak_control_team_terms_of_reference_v1-1.pdf": {
+   "date": "2027-10-19",
+   "licence": "synthetic data, CC BY 4.0",
+   "made": "simulated district records written by generator/build.py",
+   "source": "Outbreak Control Team terms of reference v1.1"
+  }
+ },
+ "objective": "anomaly-detection",
+ "task": "task214"
+}
