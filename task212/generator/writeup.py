@@ -50,15 +50,16 @@ def main():
           % F["vlc_own_damage_per_10k"],
           "5. Applied that rate to Ribarroja's mean planned parcels over weeks %s in peak_plan_2026.xlsx (%s): %s damaged "
           "parcels a week." % (F["peak_weeks"], n(F["vlc_planned_parcels_week"]), n(F["parcels_week_stopped"])),
-          "6. Claims: charged each parcel's first approved case to its first hub sort in "
-          "tracking_events_claimed_parcels.parquet, counted a flat-rate account's case as its approved amount over the "
-          "account's rate in flat_rate_damage_terms.xlsx, and added to the transfers in claims_transfers_2026.xlsx the "
-          "card refunds in card_refunds_settlement_2026-07-01_2026-10-22.csv of each private sender's approved amount "
-          "made on or after its decision.",
-          "7. Stoppages: took the PLC's STOP to RUN spells in sorter_event_log_q3_2026.csv, read the safety system's "
-          "STOPs on the PLC's clock through the offset of the stops both record, started each PLC RUN no STOP precedes "
-          "at its safety STOP, and added each corrective order in sorter_work_orders_q3_2026.xlsx that matches no "
-          "logged spell.",
+          "6. Claims, per note CS-FIN 07: charged each parcel's first case in damage_claims_cases_2026-10-23.csv "
+          "approved by 20 October to the hub and sorting night of its first SORT in "
+          "tracking_events_claimed_parcels.parquet and counted a flat-rate account's case as its damaged cartons, the "
+          "approved amount over the account's rate in flat_rate_damage_terms.xlsx; the euros paid by 20 October are "
+          "the transfers in claims_transfers_2026.xlsx by value date, net of returned ones, and the card refund in "
+          "card_refunds_settlement_2026-07-01_2026-10-22.csv of each private sender's approved amount made on or after "
+          "its decision.",
+          "7. Stoppages, per standard ENG-11: took the PLC's STOP to RUN spells in sorter_event_log_q3_2026.csv, "
+          "started each PLC RUN no STOP precedes at the safety system's TRIP before it, and added each corrective "
+          "order in sorter_work_orders_q3_2026.xlsx that matches no logged spell.",
           "8. Recommended the survey for %s." % F["call"], ""]
     L += ["## 4. Deliverable Answers", "", "### survey_case_note.pdf", "",
           "1. Survey hub: %s." % F["call"],

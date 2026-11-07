@@ -145,54 +145,55 @@ def stop_fig(sp):
             g.apply(lambda d: (d.t1 - d.t0).dt.total_seconds().sum() / 3600).reindex(KEYS).fillna(0))
 
 
+def trips():
+    return ev[(ev.source == "SIS") & (ev.event == "TRIP")][["hub", "ts", "reason"]]
+
+
 def stop_golden():
-    plc, lone = spells(["PLC"])
-    sis, _ = spells(["SIS"])
-    saf = plc[plc.reason == "SAFETY"]
-    add = []
-    for h, g in sis.groupby("hub"):
-        fh = saf[saf.hub == h]
-        pts = []
-        for x in g.itertuples():
-            c = fh[(fh.t0 >= x.t0) & (fh.t0 <= x.t0 + pd.Timedelta(minutes=12))]
-            c = c[((c.t1 - c.t0) - (x.t1 - x.t0)).dt.total_seconds().between(0, 60)]
-            if len(c) == 1:
-                pts.append(((x.t0 - pd.Timestamp("2026-07-01")).total_seconds() / 86400, (c.t0.iloc[0] - x.t0).total_seconds()))
-        n = len(pts)
-        mx = sum(p[0] for p in pts) / n; my = sum(p[1] for p in pts) / n
-        b = sum((p[0] - mx) * (p[1] - my) for p in pts) / sum((p[0] - mx) ** 2 for p in pts)
-        a = my - b * mx
-        for x in g.itertuples():
-            d = (x.t0 - pd.Timestamp("2026-07-01")).total_seconds() / 86400
-            trip = x.t0 + pd.Timedelta(seconds=a + b * d)
-            if not ((fh.t0 - trip).abs() <= pd.Timedelta(seconds=20)).any():
-                nx = lone[(lone.hub == h) & (lone.t1 > trip)].sort_values("t1")
-                add.append((h, "SIS", trip, nx.t1.iloc[0], "SAFETY"))
-    lg = pd.concat([plc, pd.DataFrame(add, columns=plc.columns)], ignore_index=True)
+    """The log swept hub by hub: a PLC STOP or a safety TRIP opens a standstill while the sorter runs, the next RUN
+    closes it; then each corrective order that matches no logged standstill."""
+    rows = []
+    e = ev[ev.event.isin(["STOP", "TRIP", "RUN"])]
+    for h, g in e.groupby("hub"):
+        t0 = None
+        for x in g.sort_values("ts", kind="mergesort").itertuples():
+            if x.event in ("STOP", "TRIP"):
+                t0 = x.ts if t0 is None else t0
+            elif t0 is not None:
+                rows.append((h, "LOG", t0, x.ts, ""))
+                t0 = None
+    lg = pd.DataFrame(rows, columns=["hub", "src", "t0", "t1", "reason"])
     extra = []
     for x in wo.itertuples():
         hit = lg[(lg.hub == x.hub) & (lg.t0 <= x.mr + pd.Timedelta(minutes=2)) & (lg.t1 >= x.ms - pd.Timedelta(minutes=2))]
         if not len(hit):
             extra.append((x.hub, "WO", x.ms, x.mr, ""))
-    return pd.concat([lg, pd.DataFrame(extra, columns=plc.columns)], ignore_index=True)
+    return pd.concat([lg, pd.DataFrame(extra, columns=lg.columns)], ignore_index=True)
 
 
 def stop_deep():
     """A cracker past the battery: counts each PLC RUN no STOP precedes as a stoppage, timed from the safety
-    system's STOP before it as written."""
+    system's TRIP before it as written."""
     plc, lone = spells(["PLC"])
-    sis, _ = spells(["SIS"])
+    tp = trips()
     add = []
     for x in lone.itertuples():
-        prev = sis[(sis.hub == x.hub) & (sis.t0 < x.t1)].sort_values("t0")
+        prev = tp[(tp.hub == x.hub) & (tp.ts < x.t1)].sort_values("ts")
         if len(prev):
-            add.append((x.hub, "SIS", prev.t0.iloc[-1], x.t1, ""))
+            add.append((x.hub, "SIS", prev.ts.iloc[-1], x.t1, ""))
     return pd.concat([plc, pd.DataFrame(add, columns=plc.columns)], ignore_index=True)
 
 
 def stop_all_sources():
-    sp, _ = spells(["PLC", "SIS"])
-    return sp.drop_duplicates(["hub", "t0"])
+    """Every source's records as spells: the PLC's STOP to RUN, and each safety TRIP to the next RUN; exact
+    duplicates (one hub, one start second) dropped."""
+    sp, _ = spells(["PLC"])
+    run = ev[ev.event == "RUN"]
+    add = []
+    for x in trips().itertuples():
+        nx = run[(run.hub == x.hub) & (run.ts > x.ts)].ts.min()
+        add.append((x.hub, "SIS", x.ts, nx, ""))
+    return pd.concat([sp, pd.DataFrame(add, columns=sp.columns)], ignore_index=True).drop_duplicates(["hub", "t0"])
 
 
 def stop_plc_plus_orders():
@@ -211,15 +212,15 @@ def main():
     gc, ge = claims_fig(True, "matched")
     gs, gh = stop_fig(stop_golden())
     gold = {"claims": (gc, 1), "claims_eur": (ge.round(2), 1), "stoppages": (gs, 1), "hours": (gh, 0.1)}
+    # CS-FIN 07 files a flat-rate case's grain, so every reader who executes the note counts its cartons
     resp = {
-        "cracker": dict(zip(gold, list(claims_fig(False, "none")) + list(stop_fig(spells(["PLC"])[0])))),
-        "deep_cracker": dict(zip(gold, list(claims_fig(False, "none")) + list(stop_fig(stop_deep())))),
-        "full_includer_a": dict(zip(gold, list(claims_fig(False, "pro_rata")) + list(stop_fig(stop_all_sources())))),
-        "full_includer_b": dict(zip(gold, list(claims_fig(False, "none")) + list(stop_fig(stop_plc_plus_orders())))),
+        "cracker": dict(zip(gold, list(claims_fig(True, "none")) + list(stop_fig(spells(["PLC"])[0])))),
+        "deep_cracker": dict(zip(gold, list(claims_fig(True, "none")) + list(stop_fig(stop_deep())))),
+        "full_includer_a": dict(zip(gold, list(claims_fig(True, "pro_rata")) + list(stop_fig(stop_all_sources())))),
+        "full_includer_b": dict(zip(gold, list(claims_fig(True, "none")) + list(stop_fig(stop_plc_plus_orders())))),
         "full_includer_c": dict(zip(gold, list(claims_fig(True, "pro_rata")) + list(stop_fig(stop_all_sources())))),
-        "cracker_expand": dict(zip(gold, list(claims_fig(True, "none")) + list(stop_fig(spells(["PLC"])[0])))),
-        "no_repair": dict(zip(gold, list(claims_raw()) + [ev[ev.event == "STOP"].groupby("hub").size().reindex(KEYS).fillna(0),
-                                                           stop_fig(stop_all_sources())[1]])),
+        "no_repair": dict(zip(gold, list(claims_raw()) + [ev[ev.event.isin(["STOP", "TRIP"])].groupby("hub").size()
+                                                           .reindex(KEYS).fillna(0), stop_fig(stop_all_sources())[1]])),
     }
     n = sum(len(v[0]) for v in gold.values())
     print("pack digest", digest(), "| ask figures", n)
@@ -233,14 +234,15 @@ def main():
     lc = kept["cracker"]
     ls = max(kept["full_includer_a"], kept["full_includer_b"], kept["full_includer_c"])
     on_off = ((38 + 7 + 55 * lc) + (5 + 7 + 55 * ls)) / 2
+    deep_off = ((38 + 7 + 55 * kept["deep_cracker"]) + (5 + 7 + 55 * ls)) / 2
     both_on = 38 + 7 + 55 * lc
     deep_on = 38 + 7 + 55 * kept["deep_cracker"]
     print("pair, cracker on the call and the full includer off it: %.1f" % on_off)
+    print("pair, deep cracker on the call and the full includer off it: %.1f" % deep_off)
     print("pair, two crackers on the call: %.1f" % both_on)
     print("pair, two deep crackers on the call: %.1f" % deep_on)
-    print("pair, two crackers who read the flat rates as cartons on the call: %.1f" % (38 + 7 + 55 * kept["cracker_expand"]))
     print("mirror leakage (the full includer's keep of the ask weight): %.1f per cent" % (100 * ls))
-    return dict(kept=kept, on_off=on_off, both_on=both_on, deep_on=deep_on, digest=digest())
+    return dict(kept=kept, on_off=on_off, deep_off=deep_off, both_on=both_on, deep_on=deep_on, digest=digest())
 
 
 if __name__ == "__main__":

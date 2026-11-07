@@ -200,6 +200,167 @@ def main_call(S):
     return out
 
 
+def stop_summary(df):
+    """Stoppage count and hours stood by hub over the July to September sorting nights."""
+    df = df.copy()
+    df["night"] = df.t0.map(asks.night_of)
+    df = df[(df.night >= asks.Q3[0]) & (df.night <= asks.Q3[1])]
+    g = df.groupby("hub")
+    return (g.size().reindex(asks.HUB_KEYS).fillna(0).astype(int),
+            g.apply(lambda d: (d.t1 - d.t0).dt.total_seconds().sum() / 3600).reindex(asks.HUB_KEYS).fillna(0.0))
+
+
+def stop_readings(S, SG):
+    """SF18: every hub's stoppage count and hours stood are one figure, to 0.01 h, under every reading of the safety
+    system's TRIPs and of a spell the PLC lost; the readings that need RESET rows are measured on a re-cut log."""
+    ev, wos = S["events"], S["wos"]
+    U = asks.UTC_OFFSET_H
+    no2key = {v: k for k, v in asks.HUB_NO.items()}
+    sp, lone = asks.plc_spells(ev)
+    tr = asks.trips(ev)
+    w = wos[wos.order_type == "CORRECTIVE"].copy()
+    w["hub"] = w.site.map({v: k for k, v in asks.CMMS_SITE.items()})
+
+    def with_orders(logged):
+        add = []
+        for x in w.itertuples():
+            if not ((logged.hub == x.hub) & (logged.t0 <= x.machine_running + pd.Timedelta(minutes=2)) &
+                    (logged.t1 >= x.machine_stopped - pd.Timedelta(minutes=2))).any():
+                add.append((x.hub, x.machine_stopped, x.machine_running))
+        return pd.concat([logged[["hub", "t0", "t1"]], pd.DataFrame(add, columns=["hub", "t0", "t1"])], ignore_index=True)
+
+    def merged(iv):
+        out = []
+        for h, g in iv.groupby("hub"):
+            cur = None
+            for x in g.sort_values(["t0", "t1"]).itertuples():
+                if cur is None or x.t0 > cur[1]:
+                    if cur:
+                        out.append((h,) + cur)
+                    cur = (x.t0, x.t1)
+                else:
+                    cur = (cur[0], max(cur[1], x.t1))
+            out.append((h,) + cur)
+        return pd.DataFrame(out, columns=["hub", "t0", "t1"])
+
+    R = {}
+    # (ii) the event log swept: any stop record (PLC STOP or safety TRIP) opens a standstill, a RUN closes it
+    e = ev[ev.event.isin(["STOP", "TRIP", "RUN"])].copy()
+    e["ts"] = pd.to_datetime(e.ts_utc) + pd.Timedelta(hours=U)
+    e["hub"] = e.hub_no.map(no2key)
+    rows = []
+    for h, g in e.groupby("hub"):
+        t0 = None
+        for x in g.sort_values("ts", kind="mergesort").itertuples():
+            if x.event in ("STOP", "TRIP"):
+                t0 = x.ts if t0 is None else t0
+            elif t0 is not None:
+                rows.append((h, t0, x.ts))
+                t0 = None
+    R["(ii) earliest stop record to the RUN, the log swept"] = stop_summary(
+        with_orders(pd.DataFrame(rows, columns=["hub", "t0", "t1"])))
+    # (ii) the union of every source's records, the work orders included: earliest stop to latest run when they overlap
+    tx = []
+    for x in tr.itertuples():
+        nxt = pd.concat([sp[(sp.hub == x.hub) & (sp.t1 > x.ts)].t1, lone[(lone.hub == x.hub) & (lone.t1 > x.ts)].t1])
+        tx.append((x.hub, x.ts, nxt.min()))
+    iv = pd.concat([sp[["hub", "t0", "t1"]], pd.DataFrame(tx, columns=["hub", "t0", "t1"]),
+                    w.rename(columns={"machine_stopped": "t0", "machine_running": "t1"})[["hub", "t0", "t1"]]],
+                   ignore_index=True)
+    R["(ii) earliest stop record to the latest RUN over every source, the work orders included"] = stop_summary(merged(iv))
+    # (iii) TRIPs shifted by an offset estimated from the paired stops; (iv) the raw TRIP times
+    saf = sp[sp.reason == "SAFETY"]
+    pairs, lost = [], []
+    for x in tr.itertuples():
+        d = (saf[saf.hub == x.hub].t0 - x.ts).dt.total_seconds()
+        near = d[d.abs() <= 60]
+        if len(near):
+            pairs.append((x.hub, x.ts, float(near.iloc[near.abs().argmin()])))
+        else:
+            lost.append((x.hub, x.ts))
+    P = pd.DataFrame(pairs, columns=["hub", "ts", "off"])
+    P["days"] = (P.ts - pd.Timestamp("2026-07-01")).dt.total_seconds() / 86400.0
+    L = pd.DataFrame(lost, columns=["hub", "ts"])
+    est = {}
+    for h, g in P.groupby("hub"):
+        b, a = np.polyfit(g.days, g.off, 1)
+        est[h] = dict(mean=float(g.off.mean()), median=float(g.off.median()), a=float(a), b=float(b))
+
+    def lost_from(shift):
+        rows = [(x.hub, x.ts + pd.Timedelta(seconds=float(shift(x))), lone[(lone.hub == x.hub) & (lone.t1 > x.ts)].t1.min())
+                for x in L.itertuples()]
+        return stop_summary(with_orders(pd.concat([sp[["hub", "t0", "t1"]], pd.DataFrame(rows, columns=["hub", "t0", "t1"])],
+                                                  ignore_index=True)))
+
+    line = lambda x: est[x.hub]["a"] + est[x.hub]["b"] * (x.ts - pd.Timestamp("2026-07-01")).total_seconds() / 86400.0
+    nearest = lambda x: float(P[P.hub == x.hub].off.iloc[(P[P.hub == x.hub].ts - x.ts).abs().argmin()])
+    R["(iii) TRIPs shifted by the mean paired offset"] = lost_from(lambda x: est[x.hub]["mean"])
+    R["(iii) TRIPs shifted by the median paired offset"] = lost_from(lambda x: est[x.hub]["median"])
+    R["(iii) TRIPs shifted by the nearest pair's offset"] = lost_from(nearest)
+    R["(iii) TRIPs shifted by a straight line through the paired offsets"] = lost_from(line)
+    R["(iv) the raw TRIP times"] = lost_from(lambda x: 0.0)
+    shifts = [abs(v[k]) for v in est.values() for k in ("mean", "median")] + \
+        [abs(line(x)) for x in L.itertuples()] + [abs(nearest(x)) for x in L.itertuples()]
+    ok("SF18 (iii) every offset estimated from the paired stops (mean, median, nearest pair, straight line) is zero to "
+       "the log's second", len(P) > 0 and max(shifts) <= 1.0 + 1e-9 and P.off.isin([0.0, -1.0]).all(),
+       "%d paired TRIPs, %d lost; offsets %s; largest estimate %.2f s" % (len(P), len(L), P.off.value_counts().to_dict(),
+                                                                       max(shifts)))
+    for name, (c, hrs) in R.items():
+        d = (hrs - SG.hours_stood).abs()
+        okp = all(round(float(hrs[h]), 1) == round(float(SG.loc[h, "hours_stood"]), 1) and
+                  edge(float(hrs[h]), 0.1) >= MIN_EDGE for h in asks.HUB_KEYS)
+        ok("SF18 %s: every hub's stoppages and hours stood one figure with the golden (to 0.01 h)" % name,
+           (c == SG.stoppages).all() and float(d.max()) < 0.01 and okp,
+           "max |dh| %.4f h; %s" % (float(d.max()), hrs.round(3).to_dict()))
+    ok("SF18 the golden is reading (i); the safety system's rows ship as TRIP with a cause code and nothing else, on "
+       "the controller's clock", set(ev[ev.source == "SIS"].event) == {"TRIP"} and
+       ev[ev.event == "TRIP"].reason.str.match(r"^(ESTOP|LCURTAIN|GATE)_\d\d$").all() and
+       not ev.event.isin(["RESET"]).any(), ev[ev.source == "SIS"].event.value_counts().to_dict())
+    # the readings a RESET row would open, measured on the same world with the RESETs logged
+    ev_r, wos_r = asks.stoppage_records(S["st"].copy(), S["gp"], world.SEED, log_resets=True)
+    base_rows = ev_r[ev_r.event != "RESET"].reset_index(drop=True)
+    same_world = base_rows.equals(ev.reset_index(drop=True)) and wos_r.equals(wos)
+    rs = ev_r[ev_r.event == "RESET"].copy()
+    rs["ts"] = pd.to_datetime(rs.ts_utc) + pd.Timedelta(hours=U)
+    rs["hub"] = rs.hub_no.map(no2key)
+    nxt_reset = lambda x: rs[(rs.hub == x.hub) & (rs.ts > x.ts)].ts.min()
+    r1 = stop_summary(with_orders(pd.concat([sp[["hub", "t0", "t1"]], pd.DataFrame(
+        [(x.hub, x.ts, nxt_reset(x)) for x in L.itertuples()], columns=["hub", "t0", "t1"])], ignore_index=True)))
+    nonsaf = sp[~((sp.reason == "SAFETY") & sp.hub.isin(asks.SIS_SORTERS))][["hub", "t0", "t1"]]
+    r2 = stop_summary(with_orders(pd.concat([nonsaf, pd.DataFrame(
+        [(x.hub, x.ts, nxt_reset(x)) for x in tr.itertuples()], columns=["hub", "t0", "t1"])], ignore_index=True)))
+    d1 = (r1[1] - SG.hours_stood).abs()
+    e1 = min(edge(float(r1[1][h]), 0.1) for h in asks.SIS_SORTERS)
+    moved2 = [h for h in asks.HUB_KEYS if round(float(r2[1][h]), 1) != round(float(SG.loc[h, "hours_stood"]), 1)]
+    ok("SF18 RESET rows not logged: with them on the same world, a lost spell ended at its RESET is not one figure with "
+       "the golden (max |dh| %.3f h, nearest edge %.2f of a bin) and every safety spell read TRIP to RESET moves %s; "
+       "the shipped log carries TRIPs only" % (float(d1.max()), e1, ", ".join(moved2) or "no hub"),
+       same_world and len(rs) == len(tr) and (float(d1.max()) >= 0.01 or e1 < MIN_EDGE or moved2) and
+       not ev.event.isin(["RESET"]).any(), "reset-ended %s; TRIP to RESET %s" % (r1[1].round(3).to_dict(),
+                                                                                r2[1].round(3).to_dict()))
+    # the work orders' minutes sit inside the spell the log records, so the union of every record is the golden
+    lg = pd.concat([sp[["hub", "t0", "t1"]], asks.lost_spells(ev, sp.assign(src="plc"), lone)[["hub", "t0", "t1"]]],
+                   ignore_index=True)
+    inside_n, matched, govern = 0, 0, []
+    for x in w.itertuples():
+        m = lg[(lg.hub == x.hub) & (lg.t0 <= x.machine_running + pd.Timedelta(minutes=2)) &
+               (lg.t1 >= x.machine_stopped - pd.Timedelta(minutes=2))]
+        if len(m):
+            matched += 1
+            inside_n += int(len(m) == 1 and x.machine_stopped >= m.t0.iloc[0] and x.machine_running <= m.t1.iloc[0])
+    lgk = lg.copy()
+    for i, x in lgk.iterrows():
+        m = w[(w.hub == x.hub) & (w.machine_stopped <= x.t1 + pd.Timedelta(minutes=2)) &
+              (w.machine_running >= x.t0 - pd.Timedelta(minutes=2))]
+        if len(m) == 1:
+            lgk.at[i, "t0"], lgk.at[i, "t1"] = m.machine_stopped.iloc[0], m.machine_running.iloc[0]
+    gv = stop_summary(with_orders(lgk))
+    ok("SF18 every corrective order for a logged spell keys its stop and run minutes inside that spell (the union of "
+       "every record is the golden; the order's later stop minute is not the moment the sorter stopped)",
+       matched > 0 and inside_n == matched, "%d of %d orders inside their spell; order minutes in place of the "
+                                            "log's: %s" % (inside_n, matched, gv[1].round(2).to_dict()))
+
+
 def ask_checks(S):
     out = {}
     G, first = asks.claims_golden(S["cases"], S["pays"], S["refunds"], S["trk"], S["flat"])
@@ -208,6 +369,40 @@ def ask_checks(S):
        (G.claims == T.claims).all() and (G.claims_eur - T.claims_eur).abs().max() < 0.005, G.to_dict())
     one = first.assign(k=1).groupby("hub").k.sum().reindex(asks.HUB_KEYS)
     ok("D6 one parcel a case misses every hub's count by 3 or more", ((G.claims - one) >= 3).all(), (G.claims - one).to_dict())
+    # ---- SF17: a flat-rate case's grain and approval basis, filed in CS-FIN 07 section 2
+    cases, flat = S["cases"], S["flat"]
+    rate = flat.set_index("account").eur_per_carton
+    since = flat.set_index("account").terms_since
+    fc = cases[cases.account.isin(rate.index)]
+    ap = fc[fc.status == "APPROVED"]
+    kk = ap.approved_eur / ap.account.map(rate)
+    ok("SF17 every approved flat-rate case's amount is an exact whole multiple of its account's rate in the terms",
+       len(ap) > 0 and bool(((kk - kk.round()).abs() < 1e-9).all()) and bool((kk.round() >= 1).all()),
+       "%d approved flat-rate cases; cartons a case %s" % (len(ap), sorted(kk.round().astype(int).unique())))
+    ok("SF17 no flat-rate account has a case opened before its terms date (the terms carry no end date)",
+       len(fc) > 0 and bool((fc.opened >= fc.account.map(since)).all()) and list(flat.columns) ==
+       ["account", "home_hub", "eur_per_carton", "terms_since"], "%d cases; latest terms date %s" % (len(fc), since.max()))
+    tt = S["t"]
+    tf = tt[tt.account.isin(rate.index)]
+    ok("SF17 no flat-rate account files an ordinary case, and no flat-rate case is reopened or shares its tracking number",
+       bool((tf.kind == "FLAT").all()) and not bool(tf.reopen.any()) and fc.tracking_no.is_unique and
+       not bool(tt[tt.kind != "FLAT"].account.isin(rate.index).any()), "%d flat-rate cases in the truth" % len(tf))
+    srt = S["trk"][S["trk"].event == "SORT"].sort_values(["tracking_no", "ts_utc"]).drop_duplicates("tracking_no")
+    srt = srt.set_index("tracking_no")
+    hub_of = srt.location.map({"PLAT-%02d" % v: k for k, v in asks.HUB_NO.items()})
+    nite = (pd.to_datetime(srt.ts_utc.str[:19]) + pd.Timedelta(hours=asks.UTC_OFFSET_H)).map(asks.night_of)
+    f1 = cases.sort_values(["opened", "case_ref"]).drop_duplicates("tracking_no")
+    f1 = f1[(f1.status == "APPROVED") & (f1.decided <= asks.CUTOFF.isoformat())]
+    f1 = f1[f1.tracking_no.map(nite).between(asks.Q3[0], asks.Q3[1])]
+    cartons = np.where(f1.account.isin(rate.index), (f1.approved_eur / f1.account.map(rate)).round(), 1).astype(int)
+    lit = pd.Series(cartons, index=f1.index).groupby(f1.tracking_no.map(hub_of)).sum().reindex(asks.HUB_KEYS)
+    ok("SF17 the filed sentence read literally (a flat-rate case covers every damaged carton of its consignment, "
+       "approved at the account's rate for each) gives the golden's six counts", (lit == G.claims).all(), lit.to_dict())
+    one_tn = f1.groupby(f1.tracking_no.map(hub_of)).size().reindex(asks.HUB_KEYS)
+    JUDGE_R1 = {"ZAZ": 1101, "VLC": 772, "SVQ": 827, "MAD": 1232, "BCN": 935, "BIO": 411}
+    ok("SF17 the reading the sentence excludes, one damaged parcel a tracking number, gives the stage-4 judge's six "
+       "counts, every hub below the golden", one_tn.to_dict() == JUDGE_R1 and bool(((G.claims - one_tn) > 0).all()),
+       one_tn.to_dict())
     tr = S["trk"][S["trk"].event == "SORT"].sort_values(["tracking_no", "ts_utc"]).drop_duplicates("tracking_no")
     sh = tr.set_index("tracking_no").location.map({"PLAT-%02d" % v: k for k, v in asks.HUB_NO.items()})
     keep = set(first.tracking_no)
@@ -231,9 +426,16 @@ def ask_checks(S):
     SG, allsp = asks.stoppages_golden(S["events"], S["wos"])
     st = S["st"]
     q = st[st.night.between(asks.Q3[0], asks.Q3[1])]
-    ok("stoppages golden equals the truth count; hours within the work orders' minute",
-       (SG.stoppages == q.groupby("hub").size().reindex(asks.HUB_KEYS)).all() and
-       (SG.hours_stood - q.groupby("hub").hours.sum().reindex(asks.HUB_KEYS)).abs().max() < 0.04, SG.to_dict())
+    nwo = q[q.in_gap].groupby("hub").size().reindex(asks.HUB_KEYS).fillna(0)
+    nlost = q[q.lost_stop].groupby("hub").size().reindex(asks.HUB_KEYS).fillna(0)
+    short = q.groupby("hub").hours.sum().reindex(asks.HUB_KEYS) - SG.hours_stood
+    ok("stoppages golden equals the truth count; hours short of the truth only by the work orders' minutes on the "
+       "spells the log lost entirely and a TRIP's second on the spells whose STOP it lost",
+       (SG.stoppages == q.groupby("hub").size().reindex(asks.HUB_KEYS)).all() and bool((short >= -1e-9).all()) and
+       bool((short <= (nwo * 120 + nlost * 1) / 3600 + 1e-9).all()),
+       "short %s; order-only spells %s; lost STOPs %s" % (short.round(3).to_dict(), nwo.astype(int).to_dict(),
+                                                         nlost.astype(int).to_dict()))
+    stop_readings(S, SG)
     sp, lone = asks.plc_spells(S["events"])
     sp["night"] = sp.t0.map(asks.night_of)
     spq = sp[sp.night.between(asks.Q3[0], asks.Q3[1])]
@@ -244,11 +446,23 @@ def ask_checks(S):
     ok("D4 and D1: the PLC's own spells miss every hub's hours by 3 bins or more", ((SG.hours_stood - ph) >= 0.3).all(),
        (SG.hours_stood - ph).round(2).to_dict())
     same = True
-    for tol in (10, 20, 40):
+    for tol in (1, 2, 5, 20, 40):
         for w in (1, 2, 5):
             g2, _ = asks.stoppages_golden(S["events"], S["wos"], tol=tol, wo_window=w)
             same &= (g2.stoppages == SG.stoppages).all() and (g2.hours_stood - SG.hours_stood).abs().max() < 0.01
-    ok("D1 and D4 selections one set under safety tolerances 10 to 40 s and order windows 1 to 5 min", same)
+    ok("D1 and D4 selections one set under TRIP tolerances 1 to 40 s and order windows 1 to 5 min", same)
+    ev_r, _ = asks.stoppage_records(S["st"].copy(), S["gp"], world.SEED, log_resets=True)
+    ev = pd.concat([S["events"], ev_r[ev_r.event == "RESET"]])
+    ev = ev[ev.event.isin(["STOP", "RUN", "TRIP", "RESET"])]
+    ev_min = (pd.to_datetime(ev.ts_utc) + pd.Timedelta(hours=asks.UTC_OFFSET_H)).pipe(lambda t: t.dt.hour * 60 + t.dt.minute)
+    wc = S["wos"][S["wos"].order_type == "CORRECTIVE"]
+    wo_min = pd.concat([wc.machine_stopped, wc.machine_running]).pipe(lambda t: t.dt.hour * 60 + t.dt.minute)
+    sp_min = pd.concat([allsp.t0, allsp.t1]).pipe(lambda t: t.dt.hour * 60 + t.dt.minute)
+    inside = lambda m: bool(((m >= 20 * 60 + 30) | (m < 5 * 60)).all())
+    ok("ask 2 night: every PLC STOP and RUN, every safety TRIP (and every RESET the safety system holds), every "
+       "corrective order's stop and run, and every golden spell sits inside 20:30 to 05:00 Spanish time, so no spell "
+       "crosses a night's edge and clipping at the edge is the same call", inside(ev_min) and inside(wo_min) and
+       inside(sp_min), (len(ev_min), len(wo_min), len(sp_min)))
     for h in asks.HUB_KEYS:
         ok("mid-bin: hours stood %s" % h, edge(float(SG.loc[h, "hours_stood"]), 0.1) >= MIN_EDGE, float(SG.loc[h, "hours_stood"]))
     lines = set(S["R"]["lines"].barcode)
@@ -358,13 +572,17 @@ def pack_checks():
             pt = subprocess.run(["pdftotext", "-layout", fp, "-"], capture_output=True, text=True).stdout
             ok("H25 %s reads the same under a strict reader and extracts with pdftotext" % f,
                lax == strict and len(pt) > 300 and lax[:40].split()[0] in pt)
+    from pack import FLAT_RATE_CASE
+    note = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(T, "damage_claims_handling_note.pdf")).pages))
+    ok("positive control: CS-FIN 07 section 2 carries the flat-rate case sentence, read back", FLAT_RATE_CASE in note,
+       FLAT_RATE_CASE[:60])
     for f in files:
         if f.endswith(".pdf"):
             tx = " ".join(p.extract_text() for p in PdfReader(os.path.join(T, f)).pages).lower()
             ok("positive control: %s reads back" % f, len(tx) > 300)
             for word in ("on top", "crush", "stack", "loaded last", "loaded first", "trailer", "echo", "offset", "gap",
                          "flat-rate", "refund to the card the sender"):
-                if word == "refund to the card the sender" and f.startswith("damage_claims"):
+                if word in ("refund to the card the sender", "flat-rate") and f.startswith("damage_claims"):
                     continue
                 if word in ("crush",) and f.startswith("outbound_cage"):
                     continue
