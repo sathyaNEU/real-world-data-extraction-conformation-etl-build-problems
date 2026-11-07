@@ -385,3 +385,8 @@ Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 12 of 48 a
   realised_outcome_roster repeated two builds apart: redrawn to counterparty_acknowledgement, the agent's declared
   results being a counterparty's record) and task265 (left truncation in a descriptive survival estimate,
   differentiated on the card); heart PASS; left for the author's adjudicated clone check.
+- Architecture 3 (the union branch's protected action ballots, each member read with the delegate in post at the
+  ballot): FAILED_TO_STUMP on the portal 2026-11-07, both responses on the golden 11 councils. Both put worksite
+  delegate coverage in the turnout model from the start and evaluated it at the ballot close with the 2026-28
+  delegates, so the decisive step was the forecaster's reflex (a recorded covariate's forward value), and the July
+  2026 election return, read by nothing else, announced it. Re-rooted to architecture 4 in a new domain and world.

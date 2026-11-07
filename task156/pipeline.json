@@ -1,6 +1,6 @@
 {
  "task": "task156",
- "status": "SHIPPED",
+ "status": "FAILED_TO_STUMP",
  "domain": "political-science-public-policy/election-polling-forecasting (client domain political-science-public-policy; world: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027)",
  "objective": "forecasting",
  "stage": 5,
@@ -35,14 +35,21 @@
   "repair": "FP-04 files the Sunday period-end convention; the prompt files the diary unit and scopes both asks to the round (24 each, platform councils re-sited inside the round, no in-round figure moved); the guide and tracker file the ballot period close for each member's state; ask 1 asks the side only (five councils within 0.05 of a half point); freeze.py: main side unmoved, 12 out-of-round ask figures and block 4 turnout percentages dropped (allowed)",
   "round2": "DETERMINISTIC (2026-11-07, /tmp/determinism-check-task156-r2/verdict.md, report task156/determinism_check_report.md): the call reproduced, 6 points either side, no respecification flipping a council; stump power moderate to high; FIX_NOW on step 8 wording only, applied"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-07",
+   "portal": "FAILED_TO_STUMP: both responses landed the 11 councils. Each fitted a member-level turnout logit with worksite delegate coverage as a covariate from the start (the delegate register and the July 2026 election return joined to members on the worksite code), evaluated every covariate at the ballot close with the 2026-28 delegates in post, set one log-odds shift on the 32 declarations (0.8995 and 0.8985) and validated leaving each council out (0.70 points); both named the 2024-26 delegates carried forward as a rejected alternative that reverses eight councils. Asks: Response 2 matched all 48 dues and hours figures; Response 1 all 24 hours and 12 of 24 dues (it kept the Thursday-dated period ends as dated).",
+   "lesson": "A covariate the pack ships as its own register on a key the members already carry is in every strong solver's model, and a forecaster evaluates each covariate at the forecast date by reflex, so a recorded covariate that changes between the history and the window is rung 0, not a stump; the July 2026 election return had no use but the decisive step and its name dated the change. The designed default path (vote history without the covariate) was not the route either response ran. Ask devices the hygiene battery executes (the latest update per organiser, invitation and day; every organiser on a visit; one copy of a re-sent advice) held nothing; only the weekday pattern in the platform's advices held, on one response, and FP-04's Sunday sentence pointed at it.",
+   "repair": "re-root (architecture 4) in a new domain and world, 2026-11-07"
+  }
+ ],
  "resume": "shipped; the main thread runs one leak re-read on the final cut (the 2026-28 term now ships as its own election return), then the author's portal list",
  "approved": null,
  "delivered": "2026-11-07",
- "portal": null,
+ "portal": "FAILED_TO_STUMP",
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
+ "portal_status": "FAILED_TO_STUMP",
+ "portal_status_date": "2026-11-07",
  "history": [
   {
    "architecture": 1,
