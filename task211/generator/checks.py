@@ -265,19 +265,40 @@ def run(tgt, T, g, info, figs):
     ok("A the swap moves no pass or fail", all(reg[c][1] == g["checks"][c]["passed"] for c in g["checks"]))
     ok("A two probes fail", sorted(c for c, v in g["checks"].items() if not v["passed"]) == ["MV184", "MV243"])
     ok("A every station checked once in the quarter", len(g["checks"]) == len(S))
-    log = {}
-    with open(os.path.join(tgt, pack.FILES["pump"]), newline="") as f:
-        for s_, ts_, st_, fl_, tot_ in list(csv.reader(f))[1:]:
-            log.setdefault(s_, []).append((dt.datetime.strptime(ts_, "%Y-%m-%dT%H:%M:%SZ"), float(fl_)))
+    series = G.pump_series(tgt)
     q15 = dt.timedelta(minutes=15)
+    filled = {}
     for fid, a_ in g["air"].items():
-        rows_ = log[a_["sampler"]]
-        alt = [sum(fl * 0.25 for t, fl in rows_ if a_["on"] <= t < a_["off"]),
-               sum(fl * 0.25 for t, fl in rows_ if a_["on"] - q15 < t <= a_["off"]),
-               sum(fl * 0.25 for t, fl in rows_ if a_["on"] - q15 <= t <= a_["off"] + q15)]
+        t_, x_ = series[a_["sampler"]]
+        alt = [sum(x_[k] * 0.25 for k in range(len(t_)) if a_["on"] <= t_[k] < a_["off"]),
+               sum(x_[k] * 0.25 for k in range(len(t_)) if a_["on"] - q15 < t_[k] <= a_["off"]),
+               sum(x_[k] * 0.25 for k in range(len(t_)) if a_["on"] - q15 <= t_[k] <= a_["off"] + q15)]
         for v_ in alt:
             ok("B %s integration bounds converge" % fid, "%.2f" % (a_["activity"] / v_ * 1000) == "%.2f" % a_["conc"])
         ok("B %s clear of its rounding line" % fid, abs((a_["conc"] * 100) % 1 - 0.5) / 100 > 0.0012, a_["conc"])
+    for sampler, code, flow, style in W.AIR:
+        A = T["air"][sampler]
+        for f_ in A["filters"]:
+            fid = f_["fid"]
+            ok("B %s the golden volume is the measured flow with dropouts interpolated" % fid,
+               abs(g["air"][fid]["volume"] - f_["gold_vol"]) < 1e-6, (g["air"][fid]["volume"], f_["gold_vol"]))
+            concs = {how: round(g["air"][fid]["activity"] / v_ * 1000, 2) for how, v_ in f_["vols"].items()}
+            ok("B %s every way of filling a dropout gives the same figure" % fid, len(set(concs.values())) == 1, concs)
+    drops = sum(1 for s_ in W.AIR for f_ in T["air"][s_[0]]["filters"] if f_["dropout_rows"])
+    ok("B flow dropouts sit inside most filters' weeks (%d of 39), never beside a stop" % drops, drops >= 25)
+    with open(os.path.join(tgt, pack.FILES["pump"]), newline="") as f:
+        head = f.readline().strip().split(",")
+    ok("B the controller export names its measured flow and its set-flow totaliser",
+       head == ["sampler_id", "timestamp_utc", "pump_state", "measured_flow_m3_h", "run_totaliser_at_set_flow_m3"], head)
+    fh, frows = G.read_rows(os.path.join(tgt, pack.FILES["field"]), "AS2")
+    ok("B AS2's field sheet names its volume as hours at the set flow", "Volume at set flow (m3)" in fh, fh)
+    ok("B the procedure files the volume of air drawn through the filter",
+       "divided by the volume of air drawn through it" in proc.replace("\n", " "))
+    log = {}
+    with open(os.path.join(tgt, pack.FILES["pump"]), newline="") as f:
+        for s_, ts_, st_, fl_, tot_ in list(csv.reader(f))[1:]:
+            if fl_:
+                log.setdefault(s_, []).append((dt.datetime.strptime(ts_, "%Y-%m-%dT%H:%M:%SZ"), float(fl_)))
     tot_inc = {}
     with open(os.path.join(tgt, pack.FILES["pump"]), newline="") as f:
         prev = {}
@@ -305,6 +326,15 @@ def run(tgt, T, g, info, figs):
     cr = CL.timely_by_ingest(tgt)
     for c in W.GLAND_BATCH:
         ok("C %s fault records move its figure" % c, cr[c] != round(g["timely"][c]["pct"], 1), (cr[c], g["timely"][c]))
+    bare = G.timeliness(tgt, vals, stat)
+    for c in g["timely"]:
+        ok("C %s the same figure with test-mode values left out" % c,
+           round(bare[c]["pct"], 1) == round(g["timely"][c]["pct"], 1), (bare[c]["pct"], g["timely"][c]["pct"]))
+        x2 = bare[c]["pct"]
+        ok("C %s clear of its rounding line with test-mode values left out" % c,
+           abs((x2 * 10) % 1 - 0.5) / 10 >= 100.0 / W.N10 or x2 == 100.0, x2)
+    ok("C the agreement counts a test-mode value", "in test mode for a source check is the station's value" in
+       agr.replace("\n", " "))
     ok("C the denominator is the quarter's intervals", all(t["pct"] == t["timely"] / W.N10 * 100 for t in
                                                            g["timely"].values()))
     m = CL.measure(tgt, g)
@@ -356,4 +386,11 @@ def run(tgt, T, g, info, figs):
         c for c, m_, cap in ann if cap == figs["timely"][c] or m_ == figs["timely"][c] or cap == figs["checks"][c]["pct"]])
     regtext = open(os.path.join(tgt, pack.FILES["sources"]), encoding="utf-8").read()
     ok("REAL the register records the transfer out and back", "transfer out" in regtext and "transfer in" in regtext)
+    ok("A the register records CS-0583's return into KIT-2", "transfer in,KIT-2" in regtext)
+    gs_text = pdf_text(os.path.join(tgt, pack.FILES["gammaspec"]))
+    ok("PDF the spectrometry report carries its nuclide library", "Pb-214" in gs_text and "26.8 min" in gs_text and
+       "Bi-214" in gs_text and "19.9 min" in gs_text)
+    low = gs_text.lower()
+    for term in ("dose rate", "rain", "rainfall", "washout", "increase", "fall", "falls", "excursion"):
+        ok("PDF the spectrometry report says nothing of %s" % term, not re.search(r"\b%s\b" % term, low))
     return N[0]

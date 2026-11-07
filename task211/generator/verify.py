@@ -201,11 +201,15 @@ def run(tgt, figures_path):
     field = os.path.join(tgt, "air_sampler_field_sheets_2026Q3.xlsx")
     for sampler in ("AS1", "AS2", "AS3"):
         h, rows = sheet_rows(field, sampler)
-        lg = pump[pump.sampler_id == sampler]
+        lg = pump[pump.sampler_id == sampler].sort_values("t").reset_index(drop=True)
+        check("%s logs RUN rows with no measured flow (transmitter dropouts)" % sampler,
+              bool((lg.measured_flow_m3_h.isna() & (lg.pump_state == "RUN")).any()) and
+              not bool((lg.measured_flow_m3_h.isna() & (lg.pump_state != "RUN")).any()))
+        lg["filled"] = lg.measured_flow_m3_h.interpolate(method="linear")
         for r in rows:
             on = local_to_utc(r[1], "%d/%m/%Y %H:%M"); off = local_to_utc(r[2], "%d/%m/%Y %H:%M")
             sel = lg[(lg.t > pd.Timestamp(on) - pd.Timedelta(minutes=15)) & (lg.t < pd.Timestamp(off))]
-            vol = float((sel.flow_m3_h * 0.25).sum())
+            vol = float((sel.filled * 0.25).sum())
             conc = lab[r[0]][0] / vol * 1000
             check("filter %s" % r[0], "%.2f" % conc == F["air"][r[0]]["conc"], (conc, F["air"][r[0]]))
 
@@ -222,7 +226,7 @@ def run(tgt, figures_path):
         np.minimum(seg, m, out=seg)
     ends = np.arange(NI) * 10.0 + 10.0
     for code in val:
-        has = ~np.isnan(val[code])
+        has = ~np.isnan(val[code])        # a test-mode value counts (agreement 2.3); a fault record has none
         pct = float((has & (first[code] - ends <= 60.0)).sum()) / NI * 100
         check("timeliness %s" % code, "%.1f" % pct == F["timely"][code], (pct, F["timely"][code]))
     return N[0]

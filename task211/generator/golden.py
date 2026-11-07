@@ -168,20 +168,35 @@ def source_checks(tgt, cert_table=None):
 
 # ------------------------------------------------------------------ ask B: air filters
 
+def pump_series(tgt):
+    """sampler -> (UTC row times, measured flow with every dropout filled by linear interpolation in time)."""
+    raw = {}
+    with open(os.path.join(tgt, pack.FILES["pump"]), newline="") as f:
+        rd = csv.reader(f); next(rd)
+        for s, ts, st, fl, tot in rd:
+            raw.setdefault(s, []).append((dt.datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ"), float(fl) if fl else np.nan))
+    out = {}
+    for s, rows in raw.items():
+        rows.sort()
+        t = [r[0] for r in rows]
+        x = np.array([r[1] for r in rows])
+        gaps = np.isnan(x)
+        idx = np.arange(len(x))
+        x[gaps] = np.interp(idx[gaps], idx[~gaps], x[~gaps])
+        out[s] = (t, x)
+    return out
+
+
 def air(tgt):
     """A filter's volume is the air the pump drew through it: the controller's measured flow, integrated over the
-    fifteen-minute rows from the filter going on to its coming off (the rows of a change are stopped)."""
+    fifteen-minute rows from the filter going on to its coming off (the rows of a change are stopped), the rows where
+    the flow transmitter dropped out filled by linear interpolation of the measured flow."""
     fpath = os.path.join(tgt, pack.FILES["field"])
     sheets = {}
     for sampler, code, flow, style in W.AIR:
         h, rows = read_rows(fpath, sampler)
         sheets[sampler] = (h, rows)
-    log = {}
-    with open(os.path.join(tgt, pack.FILES["pump"]), newline="") as f:
-        rd = csv.reader(f); next(rd)
-        for s, ts, st, fl, tot in rd:
-            log.setdefault(s, []).append((dt.datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ"), st, float(fl),
-                                          float(tot) if tot else None))
+    series = pump_series(tgt)
     lab = {}
     h, rows = read_rows(os.path.join(tgt, pack.FILES["beta"]), "Gross beta")
     for r in rows:
@@ -192,12 +207,12 @@ def air(tgt):
     q15 = dt.timedelta(minutes=15)
     for sampler, code, flow, style in W.AIR:
         h, rows = sheets[sampler]
-        rows_log = log[sampler]
+        t, x = series[sampler]
         for r in rows:
             fid = r[0]
             on = dt.datetime.strptime(r[1], "%d/%m/%Y %H:%M") - W.BST
             off = dt.datetime.strptime(r[2], "%d/%m/%Y %H:%M") - W.BST
-            vol = sum(fl * 0.25 for t, st, fl, tot in rows_log if on - q15 < t < off)
+            vol = float(sum(x[k] for k in range(len(t)) if on - q15 < t[k] < off) * 0.25)
             act = lab[fid][0]
             out[fid] = dict(sampler=sampler, volume=vol, activity=act, conc=act / vol * 1000.0, on=on, off=off)
     return out
@@ -205,10 +220,13 @@ def air(tgt):
 
 # ------------------------------------------------------------------ ask C: timeliness
 
-def timeliness(tgt, vals):
+def timeliness(tgt, vals, stat=None):
     """An interval counts when the platform received the station's value for it (a record with a dose rate)
-    within sixty minutes of the interval's end; fault records carry no value."""
+    within sixty minutes of the interval's end; fault records carry no value, and test-mode values count
+    (agreement 2.3). With stat given, test-mode values are left out (the reading the agreement rules out)."""
     have = {c: ~np.isnan(v) for c, v in vals.items()}
+    if stat is not None:
+        have = {c: h & (stat[c] != "T") for c, h in have.items()}
     first = {c: np.full(W.N10, np.inf) for c in vals}
     with open(os.path.join(tgt, pack.FILES["ingest"]), newline="") as f:
         rd = csv.reader(f); next(rd)

@@ -41,21 +41,30 @@ def table(rows, widths, head=True, bold_cols=()):
     return t
 
 
+HOUSES = {
+    "lab": ("#1F3B57", "Helvetica-Bold", "Microsoft Word for Microsoft 365", "Microsoft: Print To PDF"),
+    "committee": ("#2E4A36", "Times-Bold", "Microsoft Word 2016", "Adobe PDF Library 15.0"),
+    "metrology": ("#5A1F2C", "Helvetica-Bold", "LabWare LIMS 8 certificate module", "iText 7.1.16"),
+    "radiochem": ("#1D4F5C", "Helvetica-Bold", "LabWare LIMS 8 report designer", "iText 7.1.16"),
+}
+
+
 class Doc:
     """A document with a letterhead band and a footer carrying its reference, revision and page of pages."""
 
-    def __init__(self, path, title, author, subject, band, right, footer):
+    def __init__(self, path, title, author, subject, band, right, footer, house="lab"):
         self.path, self.title, self.author, self.subject = path, title, author, subject
         self.band, self.right, self.footer = band, right, footer
+        self.colour, self.font, self.creator, self.producer = HOUSES[house]
         self.pages = 1
 
     def _frame(self, canvas, doc):
         canvas.saveState()
         w, h = A4
-        canvas.setFillColor(colors.HexColor("#1F3B57"))
+        canvas.setFillColor(colors.HexColor(self.colour))
         canvas.rect(0, h - 17 * mm, w, 17 * mm, fill=1, stroke=0)
         canvas.setFillColor(colors.white)
-        canvas.setFont("Helvetica-Bold", 11)
+        canvas.setFont(self.font, 11)
         canvas.drawString(18 * mm, h - 10.8 * mm, self.band)
         canvas.setFont("Helvetica", 8.2)
         canvas.drawRightString(w - 18 * mm, h - 10.8 * mm, self.right)
@@ -68,7 +77,7 @@ class Doc:
     def _build(self, target, story):
         doc = BaseDocTemplate(target, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=25 * mm,
                               bottomMargin=20 * mm, title=self.title, author=self.author, subject=self.subject,
-                              creator="", producer="", invariant=1)
+                              creator=self.creator, producer=self.producer, invariant=1)
         fr = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="f")
         doc.addPageTemplates([PageTemplate(id="p", frames=[fr], onPage=self._frame)])
         doc.build(story)
@@ -165,7 +174,7 @@ def procedure(path):
 def agreement(path):
     ref = "MVJC/SA/2024/03"
     d = Doc(path, "Service agreement, Schedule 2", W.PEOPLE["clerk"], ref, W.COMMITTEE, "Service agreement %s" % ref,
-            "%s  Schedule 2: service levels and reporting  Version 2, 1 April 2024" % ref)
+            "%s  Schedule 2: service levels and reporting  Version 2, 1 April 2024" % ref, house="committee")
 
     def story():
         s = [Paragraph("Schedule 2: service levels and reporting", H1)]
@@ -187,7 +196,9 @@ def agreement(path):
         s.append(Paragraph("2.3 Timeliness", H2))
         s.append(Paragraph(
             "Timeliness for a station is the percentage of the quarter's ten-minute intervals for which the "
-            "platform received the station's value by telemetry within sixty minutes of the end of the interval.",
+            "platform received the station's value by telemetry within sixty minutes of the end of the interval. "
+            "A value recorded while the station is in test mode for a source check is the station's value for its "
+            "interval and counts.",
             BODY))
         s.append(Paragraph("2.4 Quarterly report", H2))
         s.append(Paragraph(
@@ -223,7 +234,8 @@ def received(serial, ref):
 def certificates(path):
     d = Doc(path, "Calibration certificates, check sources", "Radiation Metrology Unit", "HCX-CAL",
             W.UNIVERSITY + " Radiation Metrology Unit", "Calibration laboratory 4217",
-            "Calibration certificates for sealed check sources  Issued by the Radiation Metrology Unit")
+            "Calibration certificates for sealed check sources  Issued by the Radiation Metrology Unit",
+            house="metrology")
 
     def story():
         s = []
@@ -298,7 +310,8 @@ def annual_report(path, rows):
 
 def gamma_spec(path, rows):
     d = Doc(path, "Gamma spectrometry of air filter composites", W.PEOPLE["chem"], "RCS-26-Q3-GS",
-            W.LAB_GB, "Report RCS-26-Q3-GS", "RCS-26-Q3-GS  Gamma spectrometry of monthly air filter composites, Q3 2026")
+            W.LAB_GB, "Report RCS-26-Q3-GS", "RCS-26-Q3-GS  Gamma spectrometry of monthly air filter composites, Q3 2026",
+            house="radiochem")
 
     def story():
         s = [Paragraph("Gamma spectrometry of monthly air filter composites, July to September 2026", H1)]
@@ -308,7 +321,25 @@ def gamma_spec(path, rows):
             "Results below the minimum detectable activity are shown as less than that activity.", BODY))
         body = [["Sampler", "Month", "Be-7 (mBq/m3)", "Pb-210 (mBq/m3)", "K-40 (mBq/m3)", "Cs-137 (mBq/m3)", "I-131 (mBq/m3)"]]
         body += [list(r) for r in rows]
-        s.append(table(body, [16, 20, 26, 28, 26, 28, 28]))
+        s.append(table(body, [19, 20, 25, 27, 25, 28, 28]))
+        s.append(Spacer(1, 8))
+        s.append(Paragraph("Nuclide library", H2))
+        s.append(Paragraph(
+            "Peaks are identified against the laboratory's air filter library, below. Half-lives and emission "
+            "probabilities are from the DDEP and ENSDF evaluations as held in the analysis software.", BODY))
+        lib = [["Nuclide", "Half-life", "Gamma energy (keV)", "Emission probability (%)"],
+               ["Be-7", "53.22 d", "477.6", "10.44"],
+               ["K-40", "1.248E+09 y", "1460.8", "10.66"],
+               ["Pb-210", "22.2 y", "46.5", "4.25"],
+               ["Pb-212", "10.64 h", "238.6", "43.6"],
+               ["Pb-214", "26.8 min", "351.9", "35.6"],
+               ["Bi-214", "19.9 min", "609.3", "45.5"],
+               ["Ac-228", "6.15 h", "911.2", "25.8"],
+               ["I-131", "8.02 d", "364.5", "81.5"],
+               ["Cs-134", "2.065 y", "604.7", "97.6"],
+               ["Cs-137", "30.05 y", "661.7", "85.1"],
+               ["Am-241", "432.6 y", "59.5", "35.9"]]
+        s.append(table(lib, [26, 34, 40, 46]))
         s.append(Spacer(1, 10))
         s.append(table([["Analyst", W.PEOPLE["chem"], "06/10/2026"], ["Checked", "Gerard Buckley", "07/10/2026"]],
                        [24, 118, 30], head=False, bold_cols=(0,)))

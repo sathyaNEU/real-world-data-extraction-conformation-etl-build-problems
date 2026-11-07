@@ -460,6 +460,19 @@ def air(T):
             rq = q(dt.datetime(2026, 8, 20, 16, 0))
             tot[rq:] = tot[rq:] - tot[rq]
         tot = np.round(tot, 1)
+        drop = np.zeros(nq, dtype=bool)          # the flow transmitter's signal drops out; the pump keeps running
+        rd = rng("dropouts/" + sampler)
+        for k in range(len(bounds) - 2):
+            lo_, hi_ = bounds[k] + 6, bounds[k + 1] - 6
+            if rd.random() < 0.85:
+                for _ in range(int(rd.choice([1, 1, 2]))):
+                    ln = int(rd.integers(12, 41))
+                    for _try in range(40):
+                        st = int(rd.integers(lo_, hi_ - ln))
+                        if (status[st - 3:st + ln + 3] == "RUN").all() and not drop[st - 12:st + ln + 12].any():
+                            drop[st:st + ln] = True
+                            break
+        logged = np.where(drop, np.nan, flows)
         hm0 = 18412.6
         hours = np.concatenate([[0.0], np.cumsum(np.where(status == "RUN", 0.25, 0.0))[:-1]]) + hm0
         filters = []
@@ -471,13 +484,47 @@ def air(T):
             conc = float(rs.lognormal(math.log(0.52 if sampler != "AS3" else 0.41), 0.28))
             act = conc * true_vol / 1000.0
             meas = act * rs.normal(1, 0.025)
+            vols = {how: logged_volume(logged, a, b, how) for how in VOLUME_ROUTES}
             filters.append(dict(sampler=sampler, k=k, on=on, off=off, true_vol=true_vol, hours_run=hours_run,
+                                gold_vol=vols["linear"], vols=vols, logged_vol=float(np.nansum(logged[a:b]) * 0.25),
+                                dropout_rows=int(drop[a:b].sum()),
                                 set_vol=hours_run * flow, tot_on=float(tot[a]), tot_off=float(tot[b]),
                                 hm_on=float(hours[a]), hm_off=float(hours[b]), conc=conc, act=act, meas=meas,
                                 a=a, b=b))
         out[sampler] = dict(code=code, flow=flow, style=style, status=status, flows=flows, tot=tot,
-                            filters=filters, start=start)
+                            filters=filters, start=start, drop=drop)
     return out
+
+
+VOLUME_ROUTES = ("linear", "mean2", "ffill", "bfill", "filtermean")
+
+
+def logged_volume(fl, a, b, how):
+    """The air drawn from row a to row b (exclusive) on the logged measured flow, a dropout filled by `how`:
+    linear interpolation, the mean of the values either side, the value before, the value after, or the filter's
+    mean measured flow."""
+    x = fl.copy()
+    gaps = np.isnan(x)
+    if gaps.any():
+        idx = np.arange(len(x))
+        if how == "linear":
+            x[gaps] = np.interp(idx[gaps], idx[~gaps], x[~gaps])
+        elif how == "filtermean":
+            seg = x[a:b]
+            x[gaps] = float(np.nanmean(seg[seg > 0]))
+        else:
+            t = 0
+            while t < len(x):
+                if gaps[t]:
+                    e = t
+                    while e < len(x) and gaps[e]:
+                        e += 1
+                    before, after = x[t - 1], x[e]
+                    x[t:e] = {"mean2": (before + after) / 2.0, "ffill": before, "bfill": after}[how]
+                    t = e
+                else:
+                    t += 1
+    return float(x[a:b].sum() * 0.25)
 
 
 def probe_faults(T):
@@ -518,9 +565,12 @@ def probe_faults(T):
     return out
 
 
-def timely_counts(T):
-    """Each station's intervals whose value the platform first received within an hour of the interval's end."""
+def timely_counts(T, without_test=False):
+    """Each station's intervals whose value the platform first received within an hour of the interval's end
+    (without_test: test-mode values left out, the reading agreement 2.3 rules out)."""
     have = ~(T["rec"]["lost"] | T["rec"]["fault"])
+    if without_test:
+        have &= T["rec"]["status"] != "T"
     idx = {s["code"]: i for i, s in enumerate(T["S"])}
     first = {s["code"]: np.full(W.N10, np.inf) for s in T["S"]}
     for bid, code, ch, ints, rec in T["ingest"]["rows"]:
@@ -532,17 +582,23 @@ def timely_counts(T):
 
 
 def rounding_clearance(T):
-    """Stations whose timeliness sits less than one interval from a rounding line, and how many values to lose."""
+    """Stations whose timeliness sits less than one interval from a rounding line, or rounds differently with its
+    test-mode values left out, and how many values to lose to clear both."""
     need = {}
     unit = W.N10 / 1000.0
-    for c, n in timely_counts(T).items():
+
+    def dist(m):
+        edge = (math.floor(m / unit - 0.5) + 0.5) * unit
+        return min(abs(m - edge), abs(m - edge - unit))
+
+    full, bare = timely_counts(T), timely_counts(T, without_test=True)
+    for c, n in full.items():
         if n == W.N10:
             continue
-        for k in range(0, 4):
-            m = n - k
-            edge = (math.floor(m / unit - 0.5) + 0.5) * unit
-            d = min(abs(m - edge), abs(m - edge - unit))
-            if d >= 1.0:
+        n2 = bare[c]
+        for k in range(0, 13):
+            m, m2 = n - k, n2 - k
+            if dist(m) >= 1.0 and dist(m2) >= 1.0 and round(m / unit) == round(m2 / unit):
                 break
         if k:
             need[c] = k
@@ -574,7 +630,8 @@ def run():
             for st, en in T["ingest"]["outages"][code]:
                 down[st * 6:en * 6 + 6] = True
             quiet = [t for t in range(600, W.N10 - 600) if not down[t - 12:t + 12].any() and
-                     T["wash"][i, t - 12:t + 12].max() < 2.0 and T["rec"]["status"][i, t - 12:t + 12].tolist() ==
+                     T["wash"][i, t - 12:t + 12].max() < 2.0 and T["art"][i, t - 12:t + 12].max() == 0 and
+                     T["rec"]["status"][i, t - 12:t + 12].tolist() ==
                      ["V"] * 24 and not T["rec"]["lost"][i, t - 12:t + 12].any() and t % 6 not in (0, 5)]
             for t in sorted(r.choice(quiet, size=k, replace=False)):
                 T["rec"]["lost"][i, t] = True

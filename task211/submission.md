@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Yes: notify increases of artificial origin at MV334 Headland Lookout on 6 days (08/07/2026, 17/07/2026, 20/07/2026, 22/07/2026, 07/08/2026, 13/08/2026), highest ten-minute value 155 nSv/h, and at MV129 Old Brickworks on 5 days (24/08/2026, 28/08/2026, 13/09/2026, 14/09/2026, 17/09/2026), highest 164 nSv/h.** No other station recorded one; the procedure's rain screen would have notified 16 stations.
+**Yes: notify increases of artificial origin at MV334 Headland Lookout on 6 days (08/07/2026, 17/07/2026, 20/07/2026, 22/07/2026, 07/08/2026, 13/08/2026), highest ten-minute value 155 nSv/h, and at MV129 Old Brickworks on 5 days (24/08/2026, 28/08/2026, 13/09/2026, 14/09/2026, 17/09/2026), highest 164 nSv/h.** No other station recorded one; clearing increases on rain at the nearest gauge would notify many more and miss the radiography on wet evenings.
 
 ## 2. Critical Components
 
@@ -19,9 +19,9 @@
 2. Took each station's excess over its centred 48-hour running median of valid values.
 3. Flagged every step where an excess of 30 nSv/h or more fell by more than half and the next value stayed below half of it; none occurs outside MV334 and MV129 (natural falls stop at 41 per cent).
 4. Walked back from each flagged step over values more than 15 nSv/h above the median; dated each increase by its start and took its highest ten-minute value.
-5. Source checks: kit's source on the day from `sealed_source_register_2026.csv` (the spare CS-0417 in KIT-2 while CS-0583 was at the metrology unit), certificate in force by date of issue, jig, Cs-137 decay; repeat is the check.
-6. Telemetry: earliest receipt per interval from `platform_ingest_log_2026Q3.csv`, LoRa UK clock converted, against the interval's end; F records carry no value; over the quarter's 13,248 intervals.
-7. Air filters: air drawn from each pump's measured flow in `air_pump_controller_log_2026Q3.csv` integrated from filter on to off (the totalisers and AS2's hour meter count running time at the set flow); latest result version.
+5. Source checks: each kit's source is the kit register's, except while `sealed_source_register_2026.csv` has it out: CS-0583 went out 5 August and back into KIT-2 4 September, so KIT-2 carried the spare CS-0417 (21 August stock check); certificate in force by date of issue, jig, Cs-137 decay; repeat is the check.
+6. Telemetry: earliest receipt per interval from `platform_ingest_log_2026Q3.csv`, LoRa UK clock converted, against the interval's end; test-mode (T) values count (the agreement's timeliness clause), F records carry no value; over the quarter's 13,248 intervals.
+7. Air filters: air drawn is `measured_flow_m3_h` in `air_pump_controller_log_2026Q3.csv` integrated from filter on to off, the transmitter's blank RUN rows filled by linear interpolation (the set-flow totaliser and AS2's set-flow volume do not measure it); latest result version.
 8. Notified MV334 and MV129 with their dates and highest values.
 
 ## 4. Deliverable Answers
@@ -60,11 +60,11 @@
    - MV327 (27/08/2026): 99.9, Pass
    - MV334 (03/09/2026): 102.8, Pass
 2. Telemetry, per cent of the quarter's intervals received within 60 minutes:
-   - MV103 98.6; MV112 99.4; MV118 99.0; MV129 99.8; MV135 96.9; MV142 97.8; MV149 97.8; MV157 100.0; MV158 98.4; MV166 99.1; MV171 99.8; MV176 95.9; MV184 99.5; MV192 99.9; MV207 98.7; MV214 96.8; MV226 99.9; MV231 99.7; MV243 99.6; MV305 99.1; MV311 98.6; MV318 100.0; MV327 98.9; MV334 100.0
+   - MV103 98.6; MV112 99.4; MV118 99.0; MV129 99.8; MV135 96.9; MV142 97.8; MV149 97.7; MV157 99.9; MV158 98.4; MV166 99.0; MV171 99.8; MV176 95.9; MV184 99.4; MV192 99.9; MV207 98.7; MV214 96.8; MV226 99.9; MV231 99.7; MV243 99.5; MV305 99.1; MV311 98.6; MV318 100.0; MV327 98.9; MV334 100.0
 3. Gross beta, mBq/m3 by filter:
-   - AS1: AF1-26-027 0.64; AF1-26-028 0.35; AF1-26-029 0.70; AF1-26-030 0.59; AF1-26-031 0.52; AF1-26-032 0.55; AF1-26-033 0.49; AF1-26-034 0.37; AF1-26-035 0.37; AF1-26-036 0.95; AF1-26-037 0.64; AF1-26-038 0.55; AF1-26-039 1.04
-   - AS2: AF2-26-027 0.62; AF2-26-028 0.66; AF2-26-029 0.52; AF2-26-030 0.49; AF2-26-031 0.44; AF2-26-032 0.47; AF2-26-033 0.67; AF2-26-034 0.57; AF2-26-035 0.41; AF2-26-036 0.54; AF2-26-037 0.54; AF2-26-038 0.44; AF2-26-039 0.54
-   - AS3: AF3-26-027 0.43; AF3-26-028 0.52; AF3-26-029 0.46; AF3-26-030 0.35; AF3-26-031 0.25; AF3-26-032 0.33; AF3-26-033 0.25; AF3-26-034 0.61; AF3-26-035 0.29; AF3-26-036 0.51; AF3-26-037 0.33; AF3-26-038 0.53; AF3-26-039 0.46
+   - AS1: AF1-26-027 0.64; AF1-26-028 0.35; AF1-26-029 0.70; AF1-26-030 0.59; AF1-26-031 0.52; AF1-26-032 0.54; AF1-26-033 0.48; AF1-26-034 0.37; AF1-26-035 0.37; AF1-26-036 0.95; AF1-26-037 0.64; AF1-26-038 0.55; AF1-26-039 1.04
+   - AS2: AF2-26-027 0.62; AF2-26-028 0.66; AF2-26-029 0.52; AF2-26-030 0.50; AF2-26-031 0.44; AF2-26-032 0.47; AF2-26-033 0.67; AF2-26-034 0.57; AF2-26-035 0.41; AF2-26-036 0.54; AF2-26-037 0.54; AF2-26-038 0.45; AF2-26-039 0.54
+   - AS3: AF3-26-027 0.43; AF3-26-028 0.52; AF3-26-029 0.46; AF3-26-030 0.35; AF3-26-031 0.25; AF3-26-032 0.33; AF3-26-033 0.25; AF3-26-034 0.61; AF3-26-035 0.29; AF3-26-036 0.51; AF3-26-037 0.33; AF3-26-038 0.54; AF3-26-039 0.46
 
 ### excursion_traces_2026Q3.svg
 

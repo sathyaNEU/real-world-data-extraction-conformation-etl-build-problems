@@ -250,8 +250,8 @@ def visits(tgt, T):
             rows.append((d.strftime("%d/%m/%Y"), src_, "Cs-137", what, where, note, rps))
     rows.append((away0.strftime("%d/%m/%Y"), "CS-0583", "Cs-137", "transfer out", W.RMU,
                  "for calibration, carrier consignment HX/26/0412", rps))
-    rows.append((back.strftime("%d/%m/%Y"), "CS-0583", "Cs-137", "transfer in", "source store",
-                 "returned with certificate HCX-CAL-26-0164", rps))
+    rows.append((back.strftime("%d/%m/%Y"), "CS-0583", "Cs-137", "transfer in", "KIT-2",
+                 "returned with certificate HCX-CAL-26-0164, refitted in KIT-2", rps))
     rows.sort(key=lambda z: (dt.datetime.strptime(z[0], "%d/%m/%Y"), z[1], z[3]))
     write_csv(os.path.join(tgt, FILES["sources"]), ["entry_date", "source_serial", "nuclide", "entry_type", "held_at", "remarks",
                                                    "recorded_by"], rows)
@@ -282,17 +282,18 @@ def ingest(tgt, T):
 REISSUED = ("AF1-26-033", "AF3-26-032")
 
 
-def clear_activity(meas, vol, factor):
+def clear_activity(meas, vols, factor):
     """The counted activity to the 0.001 Bq the laboratory reports, kept clear of a rounding line of the
-    concentration by a step or two of the counting statistics."""
-    for adj in (0.0, 0.002, -0.002, 0.004, -0.004, 0.006, -0.006):
+    concentration, under every way of filling a flow dropout, by a step or two of the counting statistics."""
+    for adj in (0.0, 0.002, -0.002, 0.004, -0.004, 0.006, -0.006, 0.008, -0.008):
         v = round(meas + adj, 3)
         if factor != 1.0:
             v = round(v * factor, 3)
-        conc = v / vol * 1000.0
-        if abs((conc * 100.0) % 1.0 - 0.5) / 100.0 > 0.0015:
+        concs = [v / vol * 1000.0 for vol in vols]
+        if all(abs((c * 100.0) % 1.0 - 0.5) / 100.0 > 0.0012 for c in concs) and \
+                len({round(c, 2) for c in concs}) == 1:
             return meas + adj
-    return meas
+    raise AssertionError("no clear activity for %r" % (vols,))
 
 
 def air(tgt, T):
@@ -320,7 +321,7 @@ def air(tgt, T):
                              who, note))
         if style == "hourmeter":
             sheet(wb, sampler, ["Filter ID", "On (local)", "Off (local)", "Hour meter on", "Hour meter off",
-                                "Volume (m3)", "Changed by", "Remarks"], rows, widths=[13, 17, 17, 13, 13, 11, 16, 30],
+                                "Volume at set flow (m3)", "Changed by", "Remarks"], rows, widths=[13, 17, 17, 13, 13, 14, 16, 30],
                   first=first)
         else:
             sheet(wb, sampler, ["Filter ID", "On (local)", "Off (local)", "Totaliser on (m3)", "Totaliser off (m3)",
@@ -331,10 +332,11 @@ def air(tgt, T):
             if when >= W.Q_END:
                 break
             tot = "" if sampler == "AS2" else "%.1f" % (A["tot"][q] % 100000.0)
-            pump_rows.append((sampler, when.strftime("%Y-%m-%dT%H:%M:%SZ"), A["status"][q], "%.2f" % A["flows"][q], tot))
+            fl = "" if A["drop"][q] else "%.2f" % A["flows"][q]
+            pump_rows.append((sampler, when.strftime("%Y-%m-%dT%H:%M:%SZ"), A["status"][q], fl, tot))
         for f in A["filters"]:
             factor = 1.083 if f["fid"] in REISSUED else 1.0
-            f["meas"] = clear_activity(f["meas"], f["true_vol"], factor)
+            f["meas"] = clear_activity(f["meas"], list(f["vols"].values()), factor)
             labno += int(r.integers(2, 9))
             received = (f["off"] + dt.timedelta(days=int(r.integers(1, 3)))).date()
             counted = received + dt.timedelta(days=int(r.integers(5, 8)))
@@ -347,7 +349,7 @@ def air(tgt, T):
     ensure(path)
     wb.save(path)
     pump_rows.sort(key=lambda z: (z[0], z[1]))
-    write_csv(os.path.join(tgt, FILES["pump"]), ["sampler_id", "timestamp_utc", "pump_state", "flow_m3_h", "totaliser_m3"],
+    write_csv(os.path.join(tgt, FILES["pump"]), ["sampler_id", "timestamp_utc", "pump_state", "measured_flow_m3_h", "run_totaliser_at_set_flow_m3"],
               pump_rows)
     # a recount: the laboratory re-issued report RCS-26-Q3-02 for two filters after a counter efficiency check
     reissue = []

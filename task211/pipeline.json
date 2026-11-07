@@ -8,29 +8,29 @@
  "updated": "2026-11-07",
  "seed": "AD34 (analytical_tasks/02_anomaly_detection/AD34_jackup-site-storm-sequence-round-trip.md): the objective kept, the world, decision and quantity moved (an allocation call whose storm-sequence mechanism is the weather-window persistence replay task170's seventh cell measured as the field's own method)",
  "call": "Notify increases of artificial origin at MV334 Headland Lookout on 6 dates (08/07, 17/07, 20/07, 22/07, 07/08 and 13/08/2026; highest ten-minute value 155 nSv/h) and at MV129 Old Brickworks on 5 dates (24/08, 28/08, 13/09, 14/09 and 17/09/2026; highest 164 nSv/h); no other station recorded one",
- "stump": "The procedure's own screen, every investigation-level period cleared as washout when the nearest valley gauge recorded rain within an hour, files 16 stations (upland and coastal stations whose showers the six valley gauges missed, beside the two radiography stations) and clears five of the eleven radiography evenings that ran through rain; only reading each excursion's own end against the decay of the natural excess (radon decay products cannot lose more than about a quarter of themselves in ten minutes, and every artificial increase lost 85 per cent or more in one step) files the two stations and their eleven dates.",
+ "stump": "A rain screen, the analyst's own reflex and no filed rule (every period of the procedure's investigation-level values cleared as washout when the nearest valley gauge recorded rain within an hour), files 15 or 16 stations by its tolerance and clears five of the eleven radiography evenings that ran through rain; only reading each excursion's own end against the decay of the natural excess (natural falls stop at 41 per cent a step, every artificial increase falls 85 per cent or more) files the two stations and their eleven dates.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "card": ".claude/skills/fingerprint/cards/task211.json, registered 2026-11-04T18:43:09Z at WARN (overuse.domain, repeat.gate_g, answered in the design note); brought up to date at the build (answer, niche, layer1, spine, invented names, people, and differentiation lines for the surface screen's three promoted pairs)",
  "clean_truth": "checks.py R2a and R2b on the simulation's own records before any mess: the nearest-gauge rain screen flags a set with four or more non-radiography stations and clears three or more radiography nights; the decay-bound fall finds exactly the eleven radiography nights; the clean natural excess never falls by more than about a quarter in a step (R2c)",
  "gates": {
-  "generator_assertions": 452,
-  "independent_checks": 121,
+  "generator_assertions": 593,
+  "independent_checks": 124,
   "rebuilds_byte_identical": true,
   "figures_check": "PASS, 104 figures",
   "realism_sweep": "in checks.py, PASS",
-  "container_audit": "normalised (OOXML and PDF stamps in the fiction, in-fiction authors and company); golden-realism pass on the notification, workbook and chart",
+  "container_audit": "normalised; each issuing body's PDFs carry their own house style, creator and producer, stamps on real seconds",
   "input_gates": "18 files, 4 formats (csv, xlsx, json, pdf), 317,592-row dose-rate export and 26,784-row pump log, 2 distractors named in metadata.json",
-  "ceiling": "pair 46.8, mirror leakage 33.3, cracker keep 33.3 (ceiling.py, pack digest 9724459a3f30f554)",
-  "voice_check": "PASS, 883 characters, no shell-quota warning"
+  "ceiling": "pair 48.1, mirror leakage 35.6, cracker keep 35.6 (ceiling.py, pack digest 2a012d867beea3ee)",
+  "voice_check": "PASS, prompt unchanged"
  },
  "precut": {
   "exit": 0,
   "date": "2026-11-07"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-07 --asof 2026-10-09 on the final cut (sweep 3 on the annual report and the agreement, sweep 4 on the procedure and the agreement, sweep 12 on the annual report; every REVIEW answered in the design note); no LEAK",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-07 --asof 2026-10-09 on the FIX_NOW cut (sweep 3 on the annual report, the spectrometry library and the agreement, sweep 4 on four documents' subject words, sweep 12 on the annual report; every REVIEW answered in the design note); no LEAK",
+  "reader": "pass 1 on 4c5bcbb4: clean, question 6 an analytical choice, no file says how natural and artificial origin are told apart; documents changed in the FIX_NOW pass, so a reader pass on the new cut follows"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.domain, repeat.gate_g against task399), nearest driver 0.05 task257",
@@ -38,16 +38,17 @@
   "nearest": "0.05 task257 (driver)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW applied 2026-11-07, re-judge owed once on the new cut",
+  "report": "task211/determinism_check_report.md (pass 1 on 4c5bcbb4: Gate G method_or_model_selection, analytical_non_defect; Gate H domain, layers and decisive step pass; stump power moderate to high)"
  },
  "returned": [],
- "resume": "Stage 4: spawn the leak reader and the determinism judge together on target.zip sha256 4c5bcbb4a4425d67873bb2563649ea6e76f07d279b47acd76bfb96ce6bfe06b3; rebuild with `cd task211/generator && python3 build.py` (byte-identical: 452 generator assertions, 121 independent checks, pack digest 9724459a3f30f554, call MV129 and MV334)",
+ "resume": "Stage 4 after the FIX_NOW pass: one re-judge and one reader pass on target.zip sha256 d9bf3d82abf772638c5cc32bbea29f89367744b8dc763586522958d45e63d165; rebuild with `cd task211/generator && python3 build.py` (byte-identical: 593 generator assertions, 124 independent checks, pack digest 2a012d867beea3ee, call MV129 and MV334)",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "fix_now": "2026-11-07: the rain screen credited to the analyst, not OP-04 (submission and note), its count dropped from the recommendation; the KIT-2 default and the test-mode convention in the steps; the spectrometry report's nuclide library (Pb-214 26.8 min, Bi-214 19.9 min among eleven); the producing systems' field names for the measured flow, the set-flow totaliser and AS2's set-flow volume, with ask B's device moved to the flow transmitter's dropouts; agreement 2.3 counts a test-mode value, every timeliness figure clear under both readings; CS-0583's return into KIT-2 recorded on 4 September; ten graded figures moved (five timeliness, five gross beta)"
 }

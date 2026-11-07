@@ -5,13 +5,13 @@ response, each computed here from target/ by its own route:
            gateway's UK clock converted, the earliest receipt of a re-sent hour, the latest version of a re-issued
            result, the outstation codes mapped, microsieverts converted, a negative totaliser difference read as the
            rollover or the controller replacement it is) and executes every filed rule (the repeat is the check, a
-           certificate applies from its date of issue, the jig used, the quarter's intervals); it takes each kit's
-           source from the kit register, each filter's volume from its totaliser readings (AS2's from its hour-meter
-           volume) and each interval from the ingest log's batches;
+           certificate applies from its date of issue, the jig used, the quarter's intervals, the measured flow the
+           controller export names); it takes each kit's source from the kit register, each filter's volume from the
+           measured flow as logged and each interval from the ingest log's batches;
   mirror   misses the call (it clears the increases the procedure's rain screen clears) and takes the asks by the
            same careful route;
   naive    the asks with the battery half run (LoRa read as UTC, the first certificate a source has, the field
-           sheets' totaliser readings differenced as they stand);
+           sheets' totaliser readings differenced as they stand and AS2's volume at its set flow);
   full     the golden.
 
 A hit is a figure within half a unit of its stated rounding (a source check's percentage with its result). Scores on
@@ -49,7 +49,25 @@ def checks_by_register(tgt, latest_cert=False):
     return out
 
 
+def air_by_logged_flow(tgt, g):
+    """Each filter's volume from the measured flow as the controller logged it, summed over its rows: a dropout's
+    blank rows add nothing."""
+    sums = {}
+    with open(os.path.join(tgt, pack.FILES["pump"]), newline="") as f:
+        rows = list(csv.reader(f))[1:]
+    q15 = dt.timedelta(minutes=15)
+    out = {}
+    by = {}
+    for s, ts, st, fl, tot in rows:
+        by.setdefault(s, []).append((dt.datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ"), float(fl) if fl else 0.0))
+    for fid, a in g["air"].items():
+        vol = sum(fl * 0.25 for t, fl in by[a["sampler"]] if a["on"] - q15 < t < a["off"])
+        out[fid] = round(a["activity"] / vol * 1000.0, 2)
+    return out
+
+
 def air_by_totaliser(tgt, g, replacement=True):
+    """Each filter's volume from its totaliser readings (AS2's from its hour-meter volume at the set flow)."""
     wb = load_workbook(os.path.join(tgt, pack.FILES["field"]), read_only=True)
     log = {}
     with open(os.path.join(tgt, pack.FILES["pump"]), newline="") as f:
@@ -102,7 +120,7 @@ def measure(tgt, g):
     gold_B = {k: round(v["conc"], 2) for k, v in g["air"].items()}
     gold_C = {c: round(v["pct"], 1) for c, v in g["timely"].items()}
     routes = {
-        "cracker": (checks_by_register(tgt), air_by_totaliser(tgt, g), timely_by_ingest(tgt)),
+        "cracker": (checks_by_register(tgt), air_by_logged_flow(tgt, g), timely_by_ingest(tgt)),
         "naive": (checks_by_register(tgt, latest_cert=True), air_by_totaliser(tgt, g, replacement=False),
                   timely_by_ingest(tgt, lora_local=False)),
         "full": (gold_A, gold_B, gold_C),

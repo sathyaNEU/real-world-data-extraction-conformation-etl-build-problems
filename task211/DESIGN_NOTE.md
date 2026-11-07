@@ -45,6 +45,8 @@ rejected`); energy's one anomaly task type is the most occupied anomaly cell on 
 physics bounds the natural cause is what the recent survivors on this objective share (task192, task193,
 task210), and only this domain and energy carry one.
 
+**Against task210 (same client domain and objective, drawn back to back).** task210 decides which sewage pumping station's storm overflow is self-reported, from the delivered rate a wet well's fill and draw cycles give against a permit's pass-forward flow; task211 decides which dose-rate stations notify artificial radioactivity, from the decay bound on each excursion's own ten-minute fall. They share no world, file, quantity, decision or decisive step. What they share is Layer 1 furniture any telemetered network carries: a platform clock against UTC, re-sent telemetry, a replaced unit. That furniture decides neither call, and the adjudicated clone read is the author's.
+
 **Data-native sentence.** The network's probes count gamma rays every ten minutes and nothing else; rain
 brings down radon's short-lived decay products and raises the count at whatever station the shower crosses, and
 the excess that rain leaves can only fade as lead-214 and bismuth-214 decay, losing at most about a quarter of
@@ -104,10 +106,11 @@ on 5 dates (164 nSv/h).
 
 ## Stump sentence
 
-The procedure's own screen, every investigation-level period cleared as washout when the nearest valley gauge
-recorded rain within an hour, files 16 stations (upland and coastal stations whose showers the six valley
-gauges missed, beside the two radiography stations) and clears five of the eleven radiography evenings that ran
-through rain; only reading each excursion's own end against the decay of the natural excess (radon decay
+A rain screen, the analyst's own reflex and no filed rule (every period of the procedure's investigation-level
+values cleared as washout when the nearest valley gauge recorded rain within an hour), files 16 stations (15 if
+only periods with no rain at all are kept, 16 at a 1 mm tolerance: upland and coastal stations whose showers the
+six valley gauges missed, beside the two radiography stations) and clears five of the eleven radiography
+evenings that ran through rain; only reading each excursion's own end against the decay of the natural excess (radon decay
 products cannot lose more than about a quarter of themselves in ten minutes, and every artificial increase
 lost 85 per cent or more in one step) files the two stations and their eleven dates.
 
@@ -119,9 +122,9 @@ record, from the natural increases that look like it.
 
 **Domain test:** the quantity that decides is each dose-rate excursion's origin, natural washout or artificial,
 which the field reads for a counting network without spectrometric probes by its coincidence with rainfall,
-clearing increases that rain explains (the washout screen against precipitation records, here the procedure's
-review against the water company's gauges); the deciding physics is the radon decay chain the washout excess
-comes from.
+clearing increases that rain explains (the washout screen against precipitation records, which no document in
+this pack files: the analyst brings it to the procedure's investigation level and the water company's gauges);
+the deciding physics is the radon decay chain the washout excess comes from.
 
 **Swap:** "Two hospital wards recorded infections of external origin on eleven dates" does not survive: the
 deciding quantity is how fast a natural signal can end, set here by lead-214 (26.8 minutes) and bismuth-214
@@ -148,12 +151,12 @@ lead-214 and bismuth-214 decaying, whatever the gauges recorded.
 
 **Not semantics:** reading every field, code, unit and definition correctly (the V, T and F statuses, UTC
 interval starts, the microsieverts, the duplicates, the gauges' UK clock, the alarm configuration's levels)
-leaves the procedure's screen on 16 stations; the difference between 16 and 2 is the physics of each
+leaves the rain screen on 15 or 16 stations; the difference between them and 2 is the physics of each
 excursion's fall, not a reading of any file.
 
 **Not rule application:** no filed rule or procedure performs the step: procedure section 3 files the
-investigation level and its review, the agreement files what is notified, and executing both with the gauges
-gives 16 stations. The enumerated family (the nearest-gauge, any-gauge, neighbour and night screens, the
+investigation level and its review, the agreement files what is notified, and neither says how origin is told;
+the rain screen a strong analyst adds to them gives 15 or 16 stations. The enumerated family (the nearest-gauge, any-gauge, neighbour and night screens, the
 investigation-level count, the decay-bound fall test at any reasonable setting) spreads from 2 to 16 stations;
 the standing family, what the filed rules and the data leave defensible, spreads the same 2 to 16, because no
 sentence and no column rules a rain screen out; what rules them out is silent physics no document states (a
@@ -161,7 +164,7 @@ natural excess fell 41 per cent in a step at most, every artificial increase 85 
 the decay-bound family the standing spread is zero (72 of 72 settings file the golden).
 
 **Analyst test:** a strong analyst who cleans the export, reads every status and unit, applies the procedure's
-investigation level and clears every period the nearest gauge saw rain in files 16 stations (the default
+investigation level and, by the field's reflex, clears every period the nearest gauge saw rain in files 16 stations (the default
 path's `Ends on:`), and with the neighbour and night refinements 16 and then 12, all wrong: yes, the easy
 route lands wrong with every field read and every rule applied.
 
@@ -171,7 +174,7 @@ the date of the increase and the highest ten-minute value recorded during it, th
 excluded; the window is the prompt's 1 July to 30 September 2026, the record the procedure's (section 2).
 
 **No decoy:** nothing is planted to be caught: no copied block, hidden rule, memo, draft, briefing or stakeholder
-figure carries an answer; the procedure's screen is the organisation's own review step, nowhere certified, and
+figure carries an answer; the rain screen is the analyst's own reflex, written nowhere in the pack, and
 the two distractors (the 2025 annual report, the quarter's gamma spectrometry) rank nothing on origin.
 
 **No certified replay:** the method is not hidden and recovered by reproducing certified figures: no file holds a
@@ -191,10 +194,13 @@ states; the export's columns are station, interval, dose rate, unit, status and 
 
 **Link:** the signal is read through a comparison the field's screen never asks for, each excursion's end
 against the rate a washout excess can fade, instead of the join to the rain record the procedure invites; no key
-offers it, and no sentence names radon, decay or a fall (asserted, R3b).
+offers it, and no sentence names radon, decay or a fall (asserted, R3b); the spectrometry report's nuclide library
+lists lead-214's and bismuth-214's half-lives among eleven nuclides as plain nuclide data, and says nothing of
+dose rates, rain or increases (asserted).
 
 **Reflex:** the field's method for a counting network without spectrometry, clearing an increase on coincident
-rain, sits at rung 0 (the procedure's own review) and files 16 stations; its refinements, the neighbour and night
+rain, sits at rung 0 (the analyst's addition to the procedure's investigation-level review) and files 16
+stations; its refinements, the neighbour and night
 checks, sit at rungs 1 and 2 and file 16 and 12.
 
 **Back-test:** the textbook route validates on its own terms: every period it clears has rain at the gauge and
@@ -202,7 +208,7 @@ every period it notifies is dry there, the 2025 annual report records no notific
 and the quarter's gamma spectrometry finds no artificial nuclide in air, which a solver reads as consistent with
 whatever the screen files because radiography leaves nothing airborne.
 
-**Second use:** the decisive step reads only the dose-rate export, which every rung, the procedure's screen, the
+**Second use:** the decisive step reads only the dose-rate export, which every rung, the rain screen, the
 telemetry ask and the quarterly report read for their own reasons; delete the step and the pack carries every
 file it carries now.
 
@@ -219,7 +225,7 @@ threshold or the clock the step rides on.
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| R0 the procedure's rain screen | fires: procedure section 3 files the investigation level and its review | fires: the gauges and the alarm levels are shipped columns | fires: the field's washout screen | no | no | no | no | readable |
+| R0 the rain screen | fires: procedure section 3 files the investigation level and its review (the rain clearing is the analyst's) | fires: the gauges and the alarm levels are shipped columns | fires: the field's washout screen | no | no | no | no | readable |
 | R1 the neighbour check | no | fires: the register's grid references | fires: a careful analyst's regional check | no | no | no | no | readable |
 | R2 the night check | no | fires: the interval start's hour | fires: radiography is a night trade | no | no | no | no | readable |
 | R3 the decay-bound fall (decisive) | no: no document names radon, decay or a fall | no: the fall is a relation between consecutive rows, no column | no: the field's reflex is the rain screen, and the bound is no named correction | no: no control scores a route | no: the battery computes no step ratio | no: the ratio is of the excess over a running median, recovered per excursion, not of a reported figure | no: the export is the network's record, read by every rung | silent |
@@ -321,24 +327,32 @@ controllers' logs and the laboratory's results (asserted, SEP).
 - Ask A, primary device D2 and D7 (a state the register does not show, rebuilt from a record no question
   invites): CS-0583 was out at the Radiation Metrology Unit from 5 August to 4 September; the sealed source
   register's transfer out and back and its 21 August stock check place the spare CS-0417 in KIT-2 meanwhile,
-  while the kit register still names CS-0583 and the visit sheets record kits, not sources. Seven KIT-2 checks
+  while the kit register still names CS-0583 and the visit sheets record kits, not sources; the register records
+  CS-0583's return into KIT-2 on 4 September (the stage 4 judge's fork on the 8, 10 and 17 September checks,
+  closed), and CS-0417's August place rests on the stock check and elimination. Seven KIT-2 checks
   (MV166, MV157, MV135, MV327, MV207, MV158, MV334) move by about 5 per cent; no result flips (asserted).
   Hazards: the certificate in force by its date of issue (CS-0583's recalibration, issued 27 August, for its five
   checks after 4 September), the jig (KIT-3's J2 sleeve from the kit register, for the sheet with no jig
   column), the outstation codes and microsieverts on that sheet, and the three repeats.
-- Ask B, primary device D9 (a second source that agrees on the wrong reading): the AS1 and AS3 controllers'
-  totalisers count running time at the set flow (2.5 m3 every running quarter-hour, asserted) and AS2's field
-  sheet computes its volume from its hour meter at the set flow, while each pump's measured flow, logged every
-  fifteen minutes, falls through the week as its filter loads; the field sheets' totaliser readings tie to the
-  logs' totalisers, so the wrong volume reconciles wherever it is checked. 38 of 39 filters move. Hazards: AS1's
-  controller replaced on 20 August (its totaliser restarts at zero), AS3's totaliser rolling over at 100,000,
-  two results re-issued as version 2.
-- Ask C, primary device D4 (absence evidenced in a file no habitual join reaches): at the eleven gland-batch
+- Ask B, primary device D4 (absence evidenced in the series itself): each sampler's flow transmitter drops out for
+  three to ten hours in most weeks while the pump runs, so the controller logs RUN rows with a blank measured flow;
+  the air drawn through the filter (procedure section 5) is the measured flow integrated over the filter's rows
+  with every dropout filled from the measured flow either side, and the five ways of filling it (linear, the mean
+  of the values either side, the value before, the value after, the filter's mean flow) give the same figure on
+  every filter (asserted). Summing the logged flow as it stands leaves the dropouts out and moves 34 of 39
+  filters. The producing systems name their counters in their own field names (the pump controller export's
+  `measured_flow_m3_h` and `run_totaliser_at_set_flow_m3`, AS2's field sheet's `Volume at set flow (m3)`), so the
+  set-flow volumes are not readings of the air drawn (the stage 4 judge's fork, closed). Hazards: AS1's
+  controller replaced on 20 August (its totaliser restarts at zero), AS3's totaliser rolling over at 100,000, two
+  results re-issued as version 2.
+- Ask C, primary device D4 and D6 (absence evidenced in a file no habitual join reaches): at the eleven gland-batch
   stations the outstation's fault records arrive on time but carry no dose rate (procedure section 2), so the
   platform did not receive the station's value for those intervals (agreement 2.3); the ingest log counts them
-  among its records, and only the export shows which carry none. Hazards: the LoRa gateway's UK clock, re-sent
-  hours (the earliest receipt counts), the quarter's 13,248 intervals as the denominator, and a few watchdog
-  resets inside batch ranges.
+  among its records, and only the export shows which carry none. Agreement 2.3 now says in its own voice that a
+  value recorded in test mode for a source check counts (the stage 4 judge's fork, closed), and every figure is
+  an interval clear of its rounding line with test-mode values counted or left out (asserted). Hazards: the LoRa
+  gateway's UK clock, re-sent hours (the earliest receipt counts), the quarter's 13,248 intervals as the
+  denominator, and a few watchdog resets inside batch ranges.
 - Pin test: the asking sentence pins each quantity's name, unit and rounding; the procedure files the source
   check (section 4) and the concentration (section 5), the agreement timeliness (2.3); the devices sit in which
   source a kit held, which record measures the air drawn and which records carry a value, and no sentence names
@@ -348,36 +362,38 @@ controllers' logs and the laboratory's results (asserted, SEP).
   the field sheets, the pump logs and the laboratory's results for B; the ingest log, the export and the
   register for C: eleven files on the asks' causal paths.
 
-| Ask | Figures | Cracker (lands the call, hygiene battery, every filed rule, the kit register's source, the totaliser and hour-meter volumes, the ingest log's records) | Mirror (the rain screen's call, same ask route) | Cracker |
+| Ask | Figures | Cracker (lands the call, hygiene battery, every filed rule, the kit register's source, the measured flow as logged, the ingest log's records) | Mirror (the rain screen's call, same ask route) | Cracker |
 |---|---|---|---|---|
 | A source checks | 24 | 17 of 24 (the seven KIT-2 checks while CS-0583 was away) | 17 of 24 | miss |
-| B gross beta concentrations | 39 | 1 of 39 | 1 of 39 | miss |
-| C timeliness | 24 | 11 of 24 (the eleven gland-batch stations and two watchdog resets) | 11 of 24 | miss |
+| B gross beta concentrations | 39 | 5 of 39 (the filters whose dropouts move nothing past a line, or have none) | 5 of 39 | miss |
+| C timeliness | 24 | 9 of 24 (the eleven gland-batch stations and the watchdog resets) | 9 of 24 | miss |
 
-Cracker keep: 33.3 per cent of the 87 ask figures; the naive route (the LoRa clock read as UTC, a source's first
-certificate, the totaliser readings differenced as they stand) keeps 16.1 per cent; the full includer keeps 87 of
-87.
+Cracker keep: 35.6 per cent of the 87 ask figures; the naive route (the LoRa clock read as UTC, a source's first
+certificate, the set-flow volumes) keeps 16.1 per cent; the full includer keeps 87 of 87.
 
-Pair ceiling: 46.8 (cracker 63.3 on the call, mirror 30.3 off it, on 38, 7 and 55 L)
+Pair ceiling: 48.1 (cracker 64.6 on the call, mirror 31.6 off it, on 38, 7 and 55 L)
 
-Mirror leakage: 33.3 per cent of ask weight
+Mirror leakage: 35.6 per cent of ask weight
 
-Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest 9724459a3f30f554
+Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest 2a012d867beea3ee
 
 ## Leak sweep answered
 
-`leak.py task211 --asof 2026-10-09` on the final cut: verdict REVIEW, no LEAK; every REVIEW answered here.
+`leak.py task211 --asof 2026-10-09` on the FIX_NOW cut: verdict REVIEW, no LEAK; every REVIEW answered here.
 
-- Sweep 3, seven golden figures in `mvgn_annual_report_2025.pdf` (97.5, 99.4, 99.6, 97.8, 99.5, 99.3, 98.6):
-  each is another station's 2025 annual mean or data capture, coinciding at one decimal with a Q3 2026 timeliness
-  or source-check figure in the same narrow band; no station's 2025 figure equals its own Q3 figure (asserted in
-  `checks.py`), and the report is a declared distractor that ranks nothing on origin.
-- Sweep 3, `MVJC_service_agreement_schedule2.pdf` carries 8 of 12 distinctive words of the call: they are the
-  words of the notification clause itself (2.2, the filed estimand), which the call repeats; the clause names no
-  station, date or figure.
-- Sweep 4, the procedure (7 of 25 stump-paragraph terms) and the agreement (6): the shared words are the
-  documents' own subject (stations, natural, radiation, increase, university, procedure); neither names radon,
-  decay, a fall, a half or a step (asserted, R3b), so neither names the move.
+- Sweep 3, six golden figures in `mvgn_annual_report_2025.pdf` (99.5, 99.3, 98.6, 97.8, 99.4, 97.5): each is another
+  station's 2025 annual mean or data capture, coinciding at one decimal with a Q3 2026 timeliness or source-check
+  figure in the same narrow band; no station's 2025 figure equals its own Q3 figure (asserted in `checks.py`),
+  and the report is a declared distractor that ranks nothing on origin.
+- Sweep 3, 97.6 in `air_filter_gamma_spectrometry_2026Q3.pdf`: the emission probability of Cs-134's 604.7 keV line
+  in the nuclide library, which coincides with MV103's source check; it is nuclide data, not a station figure.
+- Sweep 3, `MVJC_service_agreement_schedule2.pdf` carries 8 of 12 distinctive words of the call: they are the words
+  of the notification clause itself (2.2, the filed estimand), which the call repeats; the clause names no station,
+  date or figure.
+- Sweep 4, the procedure (7 of 25 stump-paragraph terms), the agreement (7), the spectrometry report (3) and the
+  annual report (3): the shared words are the documents' own subject (stations, natural, report, increase,
+  radiation, university, analyst); none names radon, decay, a fall, a half or a step, and the spectrometry
+  report's nuclide library gives half-lives and gamma lines only (asserted), so none names the move.
 - Sweep 12, the annual report names four data values that the register's first rows carry (Beck Side, Carr Lane
   Allotments, MV166, MV176): it is the network's own annual record listing its stations, not a note written for
   the analyst, and it names no column of any file.
@@ -418,3 +434,5 @@ Measured by: generator/ceiling.py, run on the cut pack by build.py at every buil
 - The radiation world's first prototype (`scratchpad/t211proto/rad1.py`): radiography and a density-gauge van
   too loud and too frequent, so the plain investigation-level count landed both artificial stations as the top
   two on all three seeds. Rebalanced in `rad2.py` (above) before the card was filed.
+- The set-flow counters as ask B's device (the totaliser and AS2's hour-meter volume read as the air drawn): the stage 4 judge found it the weakest ask fork, closed by the producing systems' own field names; the device moved to the flow transmitter's dropouts, filled the same way by every reasonable fill (2026-11-07).
+- Crediting the rain screen to the procedure (the submission's and this note's first wording): OP-04 files the investigation level and its review, never a rain test; the screen is the analyst's reflex, 15 or 16 stations by its tolerance, and the submission no longer states its count (2026-11-07).
