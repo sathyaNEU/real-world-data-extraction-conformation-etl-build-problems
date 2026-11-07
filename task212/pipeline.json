@@ -3,33 +3,33 @@
   "status": "PAUSED",
   "domain": "general-statistics-data-science/exploratory-data-analysis-distribution-assessment (Brujula Paqueteria outbound cage audits, Spain)",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-11-05",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-11-07",
   "stump": "A competent analyst standardises each hub's audited damage on the parcels' own weight, size, packaging, service and sender, allows for the cartons sharing each cage and books the survey to Zaragoza, never reading each parcel's crush load from the weight scanned into its cage after it, which accounts for Zaragoza and leaves Ribarroja del Turia with the damage the survey can remove.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-07"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK, target.zip sha256 7f4cee14 (md5 eb1682f0), 2026-11-07; REVIEW lines answered in DESIGN_NOTE ## Leak sweep",
+    "reader": "pending: brief written at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4/reader/BRIEF.md"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (repeat.decision against task211 only), corpus merged at claude/jolly-hypatia-06c61h 36504aa, 2026-11-07",
+    "nearest": "task181 v6 driver 0.06; surface promoted task213, task453, task164, task277 on percentile (about 0.10), answered on the card"
   },
   "judge": {
     "verdict": "",
     "disposition": "",
-    "report": ""
+    "report": "pending: brief written at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4/judge/BRIEF.md"
   },
   "returned": [],
   "seed_screen": "AD35's world screened at stage 1 on 2026-11-04 with clean-truth prototypes, 20 redraws each, and set aside: (1) the FY2027 severity-table regroup is rule application, a lower rung at most; (2) the severity-validation family is closed (validators or the benchmark reach any plain upcoding; task190 architecture 7 measured the two-provider and look-back members dead); (3) repeated diagnoses on same-hospital readmissions read against readmissions elsewhere: naive repeat count on the golden 11 to 19 of 20 across five parameter sets while the golden held 15 to 20, and the one set that pushed the naive counts wrong (20 and 19 of 20) dropped the golden to 1 to 8 of 20; (4) admission-day occupancy setting the admission threshold: the ladder formed on one seed but over 20 redraws truth split 10/8/2 and the golden named a large cell on benchmark noise 9 of 20; (5) forward behaviour (sentinel effect, code substitution) would need a filed practice; (6) probe and close-out extrapolation is spent (task482 lineage, task190 architecture 3). Measured detail in DESIGN_NOTE.md, Tried and rejected.",
-  "draw_screens": "2026-11-04, scratch t212/redraw/proto_stack7.py, 20 redraws: first look Zaragoza 20/20; careful readers (a) field cells, (b) constructing (position, cage weight, cartons in cage, position bands, top third), (c) per-record with interactions, (d) mechanism-naming (cartons sharing the cage), (e) literal replay, each Zaragoza 20/20; golden family Ribarroja 20/20 on five specifications (lead 2.04 or more), 19/20 on the log of the weight on top; wrong-reason exclusion of Zaragoza lands Dos Hermanas 18/20.",
-  "resume": "Stage 2 in progress when a container restart stopped the build agent (2026-11-05): the design note carries drafts of the Default path, Stump sentence, Three rules, Survivor anatomy, Readability screen, Semantic fork table, Ladder, Closure table, Literal reader, Oracles and Ask sheet sections, and generator/ holds world.py, records.py, analysis.py, asks.py, screen.py and screen_light.py (uncommitted work preserved in this PAUSED commit; scratch measurements in scratchpad t212/redraw and t212/proto). Resume: read the note and the coordinator's five review points (reader d2 crush named with declared weights; load-order and DWS join determinacy; the forward figure filed as WHAT with the lead at or above 1.2 under every form; Gate G no ranked audit summary; the asks' limits), re-run the screens on the generator, finish stage 2 to precut exit 0, message main, then stage 3 to the stage-4 hand-off.",
+  "draw_screens": "2026-11-07, generator/screens.py on the final world (Basauri a second carton-first hub), 20 redraws (seeds 3000 to 3019): first look Zaragoza 20/20 (lead >= 1.09); careful readers each Zaragoza 20/20: (a) field cells 1.29, (b) constructing 1.47, position bands 1.16, top third 1.12, (c) per-record 1.27, (d) mechanism-naming 1.47, (d2) declared-kg load 1.58, 2.06, 1.49, (e) literal replay 1.29; golden family Ribarroja 20/20 in every member (log 1.37 and 1.20, refuted by the fit at 66+ deviance every redraw); the programme's lowest-BIC sentence picks a supported load form naming Ribarroja 20/20 (FIT_ONLY=1 screens.py); wrong-reason reader Dos Hermanas 20/20 (>= 1.34); truth Ribarroja 20/20.",
+  "resume": "Stage 4 hand-off (2026-11-07): every free gate green on target.zip sha256 7f4cee14 / md5 eb1682f0 (two byte-identical builds, checks.py 216/216 (with --redraws the BIC redraw file), verify.py 64/64, figures_check 45/45, ceiling.py pair 35.4 one on one off, 45.0 two crackers on, 58.8 worst, mirror 25 per cent, precut 61 PASS, voice-check PASS, leak.py REVIEW no LEAK, heart WARN, surface pairs answered on the card). Next: the parent spawns the leak reader (general-purpose, sonnet, medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4/reader/BRIEF.md and the determinism judge (general-purpose, sonnet, medium) from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/77fa9de9-3064-520d-a4df-ed5eaf8d3d05/scratchpad/t212/stage4/judge/BRIEF.md together, each on its own byte-identical copy; fix every finding in the generator in one pass (python3 task212/generator/build.py 3 twice and compare, then FIT_ONLY=1 python3 screens.py 20 <out.json> 3000 and checks.py --redraws <out.json> (the BIC redraw file from this session is scratch t212/resume/bic20_twin.json), verify.py, figures_check.py, ceiling.py, leak.py --asof 2026-10-29, guard.py heart and surface after merging claude/jolly-hypatia-06c61h with the sibling-card procedure, precut.py); re-judge once on FIX_NOW, re-read only if a document or the prompt changed; then ship: ledger row, card current, SHIPPED (task212) commit with target.zip and golden/ force-added.",
   "approved": null,
   "delivered": null,
   "portal": null,

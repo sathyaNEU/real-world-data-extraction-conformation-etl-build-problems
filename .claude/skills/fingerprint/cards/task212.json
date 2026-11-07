@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Ribarroja del Turia; its repairs stop about 800 damaged parcels a week over peak weeks 48 to 52",
+  "answer_source": "task212/submission.md, 1. Final Recommendation",
   "gap": [
     "objective",
     "population"
@@ -37,19 +37,21 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:crush-load-from-each-parcels-place-in-its-cage-load-order",
   "layer1": [
-    "sortation load scans stamped in UTC against audits and DWS records in Spanish summer time (UTC+2), a sorting night running across local midnight",
-    "DWS weights in grams against the audit sheet's declared kilograms",
-    "re-scans of a parcel into the same cage after a no-read",
-    "a damage code list replaced on 1 August with old codes still keyed by two depots",
-    "hub numbers in the sortation export against hub names in the audit system",
-    "re-audited cages and audit lines for parcels not found in the cage"
+    "cage build log stamped in UTC against the audit app and the DWS in Spanish summer time, a sorting night across local midnight",
+    "DWS weights in grams and dimensions in millimetres against declared kilograms",
+    "no-reads re-scanned by handheld and parcels scanned twice into the same cage",
+    "re-weighs at the DWS",
+    "a damage code list replaced on 1 August with two depots' handhelds still keying old codes",
+    "hub numbers in the sorter export against hub names in the audit app, customer-service areas and maintenance sites",
+    "supervisors' check audits and NOT FOUND lines",
+    "sender-declared weights as account defaults"
   ],
   "stakeholder_role": "head of hub engineering",
   "role_family": "operations_director",
   "scoring_unit": "per accepted item",
   "spine": {
     "file": "audit_findings_q3_2026.parquet",
-    "rows": 155000,
+    "rows": 165744,
     "entity": "one audited parcel",
     "grain": "parcel x cage audit",
     "source": "synthetic"
@@ -80,7 +82,12 @@
   "driver_concrete": "An audited parcel is crushed by the weight of the parcels scanned into its cage after it, which only the sortation load scans set against the DWS weights show; Zaragoza's auto-parts cartons arrive on the last trunk and go on top of every cage while Ribarroja's tile cartons arrive first and sit at the bottom, so Zaragoza's light parcels carry the cartons and Ribarroja's sorter damage is hidden by its favourable loading.",
   "stump": "A competent analyst nets the re-audits and re-scans, joins the audits to the DWS, risk-adjusts each hub's damaged parcels on weight, size, packaging, service and sender, allows for the cartons sharing each cage and sends the survey to Zaragoza; the step that lands them there is never reading each parcel's crush load from the weight scanned into its cage after it, which accounts for Zaragoza and leaves Ribarroja with the excess the survey can remove.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task213": "surface pair, back to back in the wave: a stablecoin marketplace's rating-ring sweep counted in expunged ratings (banking fraud), against which hub's own sorter damages parcels; no shared domain, data, decision or driver",
+    "task453": "surface pair: a labour force survey's rate restated across a questionnaire redesign (ETL); 'survey' here is a sortation engineering survey; different objective, data and driver",
+    "task164": "surface pair: a utility's transformer replacements allocated to districts (forecasting); shares peak-plan vocabulary only; different domain, objective and driver",
+    "task277": "surface pair, the nearest setting (warehouse operations): a contract-logistics site's pick-accuracy forecast; no cage, load order, audit or hub comparison, a forecast and not a diagnosis"
+  },
   "lineage": [
     {
       "architecture": "v0 (seed AD35, screened only, never registered)",
