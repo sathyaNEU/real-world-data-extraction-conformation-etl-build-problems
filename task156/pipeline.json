@@ -1,48 +1,28 @@
 {
  "task": "task156",
- "status": "FAILED_TO_STUMP",
- "domain": "physical-environmental-sciences/hydrology-flood-frequency (client domain physical-environmental-sciences; world: a New Zealand district council's wastewater pump station and its discharge consent)",
+ "status": "DESIGN",
+ "domain": "political-science-public-policy/election-polling-forecasting (client domain political-science-public-policy; world: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-07",
- "stump": "Fitting one unit-hydrograph response per millimetre and the meter's own dry weather flow on 2024 to 2026 and replaying 2004 to 2023 files about 1 overflow a year with the subdivision (0.70), inside the consent's two, and connects it; the station's infiltration rises 4.2 L/s for every kilometre of sewer below the water table, which stood a median 0.2 km over the meter and 2.1 km over the replay, so the replay each day with its own water table files about 3 a year (3.20): hold the connection until the upgrade.",
- "architecture": 2,
+ "stump": "",
+ "architecture": 3,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-31",
-  "checks": "61 checks, 0 FAIL, 0 WARN"
- },
- "leak": {
-  "leak_py": "REVIEW, both lines ruled in the design note",
-  "reader": "read 1 on 200b0014: no leak, question 6 analytical"
- },
+ "precut": null,
+ "leak": null,
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-31T18:27:04Z on the registered card after rebasing on main (repeat.question_form against task250, answered in the design note; test.same_driver_older differentiated against task134, task146, task165 and task173 v1); forum, forcing event and context artifact redrawn after task191 and task250 entered the window",
-  "heart": "WARN 2026-10-31 after the PAUSED rebase (repeat.question_form); forcing event and role family redrawn in place (other, capacity_planner) when task191 re-registered after this draw and task250 changed its role family; task130 v5 differentiated",
-  "surface": "personas are the three drawn names; five pairs promoted on card axes alone (task130, task134, task146, task165 differentiated; task154 on calibration and artifact, left for the author's adjudicated clone check)"
+  "guard_check": "PASS 2026-11-07 on the registered card (gap population, pattern A), after gap time with pattern E or none blocked against task445, task130 and older builds"
  },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (the card's stale replay years fixed; SF7 records ask 1's one-pump reading)"
- },
- "returned": [
-  {
-   "date": "2026-11-07",
-   "portal": "FAILED_TO_STUMP: both responses landed the hold call. Response 1 replayed 2004 to 2023 and filed 48 overflows against the 40 the consent allows, then 2 after the upgrade; Response 2 filed the same hold. Any full-record replay with the subdivision already breaks the consent, so the decisive step (each replay day's own water table) was never needed.",
-   "lesson": "The easy route has to be the one strong solvers actually file, and it has to land on the wrong side of the call: an exceedance count of rare events spreads with every modelling choice, and the designed naive replay (0.70 a year) was not the replay the solvers ran.",
-   "repair": "re-root (architecture 3) in a new domain and world, 2026-11-07"
-  }
- ],
- "resume": "",
+ "judge": null,
+ "returned": [],
+ "resume": "stage 2: the design note to precut.py exit 0 from the prototype calibration, then the generator",
  "approved": null,
  "delivered": null,
- "portal": "FAILED_TO_STUMP",
+ "portal": null,
  "portal_id": "",
- "portal_status": "FAILED_TO_STUMP",
- "portal_status_date": "2026-11-07",
+ "portal_status": "",
+ "portal_status_date": "",
  "history": [
   {
    "architecture": 1,
@@ -69,31 +49,67 @@
    },
    "answer": "Request 32 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 6 above finance's 26-FTE envelope",
    "fate": "spent 2026-10-31 at the batch 1 triage: loop 3 reshipped 10-27 (target.zip f17b387d) after the portal's FAILED_TO_STUMP on loops 1 and 2, keeping the world, prompt and asks the portal had solved once; re-rooted in a new world before any portal result on loop 3"
-  }
- ],
- "gates_stage3": {
-  "checks": "59 assertions, 0 failed",
-  "verify": "independent verifier reproduces the three call figures and every ask figure, 0 failed",
-  "rebuild": "two consecutive builds byte-identical: target (20 files), 3 goldens, figures.json, submission.md",
-  "target_zip_sha256": "200b0014d310ee60e8a5fb9b86bb8eec3ea9b5845bbfc7ed7f5e4c3daf9f91e3",
-  "figures_check": "PASS, 45 figures in blocks 1 to 4, 0 absent",
-  "voice_check": "PASS (977 characters)",
-  "container": "scrub_producer_metadata audit clean on target",
-  "ceiling": {
-   "pair": 48.5,
-   "cracker": 65.0,
-   "mirror": 32.0,
-   "mirror_leakage": 36.4,
-   "script": "generator/ceiling.py"
   },
-  "figures": {
-   "existing": 2.9,
-   "with_subdivision": 3.2,
-   "after_upgrade": 0.75,
-   "single_response": 0.7,
-   "seasonal": 0.85,
-   "bore_level_straight": 1.0
+  {
+   "architecture": 2,
+   "domain": "physical-environmental-sciences/hydrology-flood-frequency (client domain physical-environmental-sciences; world: a New Zealand district council's wastewater pump station and its discharge consent)",
+   "objective": "forecasting",
+   "stump": "Fitting one unit-hydrograph response per millimetre and the meter's own dry weather flow on 2024 to 2026 and replaying 2004 to 2023 files about 1 overflow a year with the subdivision (0.70), inside the consent's two, and connects it; the station's infiltration rises 4.2 L/s for every kilometre of sewer below the water table, which stood a median 0.2 km over the meter and 2.1 km over the replay, so the replay each day with its own water table files about 3 a year (3.20): hold the connection until the upgrade.",
+   "precut": {
+    "exit": 0,
+    "date": "2026-10-31",
+    "checks": "61 checks, 0 FAIL, 0 WARN"
+   },
+   "leak": {
+    "leak_py": "REVIEW, both lines ruled in the design note",
+    "reader": "read 1 on 200b0014: no leak, question 6 analytical"
+   },
+   "duplicate_check": {
+    "guard_check": "WARN 2026-10-31T18:27:04Z on the registered card after rebasing on main (repeat.question_form against task250, answered in the design note; test.same_driver_older differentiated against task134, task146, task165 and task173 v1); forum, forcing event and context artifact redrawn after task191 and task250 entered the window",
+    "heart": "WARN 2026-10-31 after the PAUSED rebase (repeat.question_form); forcing event and role family redrawn in place (other, capacity_planner) when task191 re-registered after this draw and task250 changed its role family; task130 v5 differentiated",
+    "surface": "personas are the three drawn names; five pairs promoted on card axes alone (task130, task134, task146, task165 differentiated; task154 on calibration and artifact, left for the author's adjudicated clone check)"
+   },
+   "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md (the card's stale replay years fixed; SF7 records ask 1's one-pump reading)"
+   },
+   "returned": [
+    {
+     "date": "2026-11-07",
+     "portal": "FAILED_TO_STUMP: both responses landed the hold call. Response 1 replayed 2004 to 2023 and filed 48 overflows against the 40 the consent allows, then 2 after the upgrade; Response 2 filed the same hold. Any full-record replay with the subdivision already breaks the consent, so the decisive step (each replay day's own water table) was never needed.",
+     "lesson": "The easy route has to be the one strong solvers actually file, and it has to land on the wrong side of the call: an exceedance count of rare events spreads with every modelling choice, and the designed naive replay (0.70 a year) was not the replay the solvers ran.",
+     "repair": "re-root (architecture 3) in a new domain and world, 2026-11-07"
+    }
+   ],
+   "gates_stage3": {
+    "checks": "59 assertions, 0 failed",
+    "verify": "independent verifier reproduces the three call figures and every ask figure, 0 failed",
+    "rebuild": "two consecutive builds byte-identical: target (20 files), 3 goldens, figures.json, submission.md",
+    "target_zip_sha256": "200b0014d310ee60e8a5fb9b86bb8eec3ea9b5845bbfc7ed7f5e4c3daf9f91e3",
+    "figures_check": "PASS, 45 figures in blocks 1 to 4, 0 absent",
+    "voice_check": "PASS (977 characters)",
+    "container": "scrub_producer_metadata audit clean on target",
+    "ceiling": {
+     "pair": 48.5,
+     "cracker": 65.0,
+     "mirror": 32.0,
+     "mirror_leakage": 36.4,
+     "script": "generator/ceiling.py"
+    },
+    "figures": {
+     "existing": 2.9,
+     "with_subdivision": 3.2,
+     "after_upgrade": 0.75,
+     "single_response": 0.7,
+     "seasonal": 0.85,
+     "bore_level_straight": 1.0
+    }
+   },
+   "zip_sha256_16": "200b0014d310ee60",
+   "answer": "Hold the Ngaio Road connection until the PS03 storage upgrade is commissioned (3.20 overflows a year with the subdivision against the consent's 2)",
+   "delivered": "2026-10-31",
+   "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the hold call; re-rooted as architecture 3 in a new domain and world the same day"
   }
- },
- "zip_sha256_16": "200b0014d310ee60"
+ ]
 }

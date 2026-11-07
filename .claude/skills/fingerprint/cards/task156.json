@@ -1,29 +1,28 @@
 {
   "task": "task156",
-  "architecture": "v2 (re-root in batch 1: a New Zealand district council's wastewater pump station, whether a subdivision can connect in 2027 within the station's consented overflows, the infiltration each storm and each dry day drives read from the length of sewer below the water table)",
-  "drawn": "2026-10-31",
-  "slot_note": "re-root of task156 in the same objective (Forecasting), batch 1; architecture 1 in lineage",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "hydrology-flood-frequency",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a district council's wastewater pump station whose discharge consent caps its average wet-weather overflows a year, a subdivision asking to connect in 2027 ahead of the station's storage upgrade, the infiltration a storm and a dry day drive read per kilometre of sewer lying below the water table",
+  "architecture": "v3 (re-root in batch 1: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027, a ballot counting only if half the roll votes, each member's vote carried from the branch's own online votes and lifted where an elected workplace delegate is active at the member's worksite)",
+  "drawn": "2026-11-07",
+  "slot_note": "re-root of task156 in the same objective (Forecasting), batch 1; architectures 1 and 2 in lineage",
+  "domain": "political-science-public-policy",
+  "subdomain": "election-polling-forecasting",
+  "client_domain": "political-science-public-policy",
+  "niche": "a union branch covering council workers in Victoria, Australia, choosing the councils whose enterprise agreements are being renegotiated in 2027 at which it applies to the Fair Work Commission for protected action ballot orders, a ballot being valid only if at least half the employees on the roll vote; turnout forecast member by member from the branch's own online votes and the ballot agent's declared results, with the mobilisation an elected worksite delegate brings",
   "objective": "forecasting",
-  "shape": "other",
-  "decision_type": "go_hold_or_stop",
-  "answer_unit": "named_option",
-  "answer": "Hold the Ngaio Road connection until the PS03 storage upgrade is commissioned: replayed through 2004 to 2023 each day as it occurred, PS03 overflows about 3 times a year with the subdivision (3.20) against the consent's limit of 2, 3 without it and 1 after the upgrade",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Apply for protected action ballot orders at the councils whose March 2027 ballots are expected to clear half the roll once each member's vote is read with the delegate active at their worksite after the July 2026 delegate elections (design target: 11 of the 24 councils, against 15 on the members' own voting history)",
   "answer_source": "submission.md block 1; generator/figures.json (call)",
   "gap": [
-    "population",
-    "time"
+    "population"
   ],
   "pattern": [
-    "none"
+    "A"
   ],
   "generators": [
     "G14",
-    "G16",
-    "G13"
+    "G13",
+    "G4"
   ],
   "gate_g": "forecasting",
   "calibration_form": "realised_outcome_roster",
@@ -31,70 +30,100 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly separates the dry-weather flow, fits the station's rainfall-derived infiltration and inflow as one unit-hydrograph response per millimetre of rain on the 2024 to 2026 storms (one set per season if they look for seasonality), carries the meter's base flow into the consent's 2004 to 2023 replay with the subdivision's flow added, and finds the station inside its consented two overflows a year, so the connection proceeds; the meter's storms fell while the water table mostly stood below the low terrace's sewers, and the replay's wet years, when it stood above most of them, overflow far more often.",
-  "domain_test": "The deciding quantity is the station's average overflows a year under the consent's continuous simulation, worked the way urban hydrology works rainfall-derived infiltration and inflow and groundwater infiltration: the infiltration a storm and a dry day drive scales with the length of sewer below the water table, read from the bore's groundwater level against the pipes' invert levels, and the model is chosen on storms it was not fitted on; with another field's nouns there is no water table, no pipe invert and no infiltration through joints, so the task stops reading the same.",
+  "analyst_test": "A strong analyst who reads every file and rule correctly builds each member's turnout from their participation in the branch's 2022, 2023 and 2025 online votes and their age, membership and employment, calibrates it to the ballot agent's declared 2021 and 2023-24 turnouts, confirms it reproduces the 2023-24 round council by council, applies it to the January 2027 roll and files 15 councils; members vote about 20 points more often where an elected delegate is active at their worksite, and the July 2026 delegate elections, after the last online vote, emptied worksites at some councils and filled others, so six of the 15 fall under half and two councils left out clear it.",
+  "domain_test": "The deciding quantity is each council's expected turnout in a ballot whose validity turns on half the roll voting, worked the way election forecasting works turnout: a vote-history model of each elector, calibrated on declared results, carrying the mobilisation effect of personal contact that turnout research estimates (the canvass or workplace contact lift), here the elected worksite delegate; with another field's nouns there is no roll, no turnout threshold and no mobilisation.",
   "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:submerged-length-conditioned-infiltration-chosen-out-of-sample",
+  "layer2_pattern": "own:vote-history-turnout-carried-past-a-change-in-workplace-mobilisation",
   "layer1": [
     "utc-local",
-    "datum-mismatch",
-    "sensor-gaps",
-    "duplicate-alarm-events",
-    "unit-mismatch",
-    "layout-change-across-years"
+    "layout-change-across-years",
+    "preliminary-and-final-release",
+    "code-migration",
+    "duplicate-records",
+    "pdf-tables"
   ],
-  "stakeholder_role": "the district council's three waters operations manager, whose report to the elected council recommends whether the subdivision connects in 2027 or waits for the station's storage upgrade",
-  "role_family": "capacity_planner",
+  "stakeholder_role": "the branch's research and bargaining officer, whose memo to the Branch Committee of Management recommends the councils at which the branch applies for protected action ballot orders",
+  "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "pump_station_inflow_2024-2026.csv",
-    "rows": 99360,
-    "entity": "one row is the station's inflow in one 15-minute interval",
-    "grain": "station x 15 minutes",
+    "file": "online_vote_invitations_2022-2025.csv",
+    "rows": 85000,
+    "entity": "one row is one invitation the branch's online voting service sent one member for one online vote",
+    "grain": "member x online vote",
     "source": "constructed for task156, no real dataset"
   },
-  "forum": "council_or_assembly",
-  "forcing_event": "other",
-  "org_family": "local_government",
+  "forum": "board_of_directors",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "New Zealand (a fictional river terrace town, Rauwhero, in a fictional Kahuwera region)",
-    "currency": "NZD",
-    "org_type": "district council three waters unit",
+    "geography": "Victoria, Australia (fictional councils and a fictional union branch)",
+    "currency": "AUD",
+    "org_type": "trade union branch covering local government workers",
     "invented_names": [
-      "Rauwhero District Council",
-      "Kahuwera Regional Council",
-      "Kahuwera River",
-      "Ngaio Road subdivision",
-      "Riverbank Road pump station",
-      "Kahuwera Lines"
+      "Local Services Union, Victoria Branch",
+      "Tallyhouse Ballot Services",
+      "Bellcourt City Council",
+      "Marlow Coast Shire Council",
+      "Tallis Creek Shire Council"
     ],
     "people": [
-      "Aaliyah Beattie",
-      "Benjamin Gilbert",
-      "Anaru Boyce"
+      "Samantha Taylor",
+      "Dennis Kim",
+      "Eric Goodwin"
     ]
   },
   "deliverables": [
-    "ps03_ngaio_road_connection_2027.xlsx",
-    "council_report_ngaio_road_2027.docx",
-    "replay_overflows_2004-2023.png"
+    "pab_2027_turnout_forecast.xlsx",
+    "pab_2027_recommendation_bcom.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The decisive quantity is how often a fixed capacity is exceeded once a steady load is added, when both the standing load and the response each driving event adds scale with how much of a fixed network lies below a fluctuating level read from a separate record, so one response and one standing load read off a short record whose level mostly stayed low understate a long record whose level often rose past most of the network.",
-  "driver_concrete": "The infiltration reaching the pump station on a dry day and in a storm scales with the length of the catchment's sewers whose inverts lie below the water table that day, read from the regional bore's level against the asset register's invert levels; the 2024 to 2026 meter ran through years when the water table mostly stood below the low terrace's sewers, while the consent's 2004 to 2023 replay holds wet years with it above most of them, so one response per millimetre and the meter's base flow carried into the replay understate the overflows the subdivision's added flow takes past the consent.",
-  "stump": "Fitting one unit-hydrograph response per millimetre and the meter's own dry weather flow on 2024 to 2026 and replaying 2004 to 2023 files about 1 overflow a year with the subdivision (0.70), inside the consent's two, and connects it; the step that lands it there is reading the station's response as fixed when its infiltration rises 4.2 L/s for every kilometre of sewer below the water table, which stood a median 0.2 km over the meter and 2.1 km over the replay.",
+  "question_form": "which",
+  "driver": "Each unit's chance of acting in a coming event is carried from its own record of past acts and lifted where a contact a separate dated register places at its site is in post, and the register's contacts changed after the last past act the record holds, so every route carried on the units' own record, each of which reproduces the last closed event, brings the old contacts into the coming event.",
+  "driver_concrete": "A member's chance of voting in a protected action ballot rises about 20 points where an elected delegate is active at their worksite, read from the branch's delegate register terms against each member's worksite on the roll; the July 2026 delegate elections, held after the last online vote in October 2025, left worksites at some councils with no delegate and filled others, so turnout carried from members' own votes over-forecasts the councils that lost delegates and under-forecasts those that gained them.",
+  "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round, files 15 councils above half; the step that lands it there is reading each member's past votes as their own when they rode the delegate active at their worksite at the time, and the July 2026 delegate elections moved those delegates.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task134": "task134 conditions a rebuild chance on whether an option's payoff beats the standing use, a threshold on each unit's economics; here the condition is a daily physical exposure, the length of network below a moving level, built from two records that share no key and carried by the forecast years far past the measured range.",
-    "task146": "task146 releases a pool at each period turn weighed by when within the period each unit was refused; here no pool or timing within a period enters: a dry day's and a storm's response is a fixed part plus a part proportional to a network length below a level that the replay rebuilds day by day from a separate twenty-year record.",
-    "task165": "task165 conditions an upgrade's gain on the share of each site the old level left untreated, read from each site's own record; here the units are days and storms, not sites, and the conditioning state is in no record of theirs but is constructed from a level series against fixed asset elevations.",
-    "task173": "task173 v1 conditions a comeback chance on who opened the case and their tenure, a mix of people the bench changes; here no population of agents is re-mixed: the state is a continuous physical exposure, network length under a water level, which the forecast window carries past the measured range and which only the physics of infiltration through joints extrapolates.",
-    "task130": "task130 v5 conditions an inspector's mark on how often that inspector has visited the establishment before, a judge's criterion re-read for a redrawn assignment of people to units; here no judge, mark or assignment exists: a station's physical inflow is conditioned on a constructed exposure, the length of sewer below a water level, built from a level record against asset elevations, and the forecast years are replayed hour by hour through the station's storage."
+    "task179": "task179 lifts each supervisee's booking chance by a status another agency records about the person, linked by name and birth date; here the lift is not a property of the person but of their worksite's elected delegate in post on the ballot date, a dated term in the union's own register, and the forecast turns on how those terms changed between the last observed vote and the ballot.",
+    "task157": "task157 expands a petition sample's validity rate with pair defects whose inclusion goes as the square of the sampling fraction; here no sample is expanded: every member's turnout is forecast and summed against a roll threshold.",
+    "task107": "task107 moves a tight intake to the experienced rate at a service anniversary just before the window; here no anniversary or pay step exists: a worksite contact's elected term changes the propensity of every member at the site, in both directions."
   },
   "lineage": [
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "hydrology-flood-frequency",
+      "objective": "forecasting",
+      "shape": "other",
+      "decision_type": "go_hold_or_stop",
+      "answer_unit": "named_option",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "driver": "The decisive quantity is how often a fixed capacity is exceeded once a steady load is added, when both the standing load and the response each driving event adds scale with how much of a fixed network lies below a fluctuating level read from a separate record, so one response and one standing load read off a short record whose level mostly stayed low understate a long record whose level often rose past most of the network.",
+      "stump_strategy": "forecast_method_backtest",
+      "forum": "council_or_assembly",
+      "forcing_event": "other",
+      "org_family": "local_government",
+      "role_family": "capacity_planner",
+      "drawn": "2026-10-31",
+      "stump": "Fitting one unit-hydrograph response per millimetre and the meter's own dry weather flow on 2024 to 2026 and replaying 2004 to 2023 files about 1 overflow a year with the subdivision (0.70), inside the consent's two, and connects it; the step that lands it there is reading the station's response as fixed when its infiltration rises 4.2 L/s for every kilometre of sewer below the water table, which stood a median 0.2 km over the meter and 2.1 km over the replay.",
+      "layer2_family": "forecast_uncertainty",
+      "layer2_pattern": "own:submerged-length-conditioned-infiltration-chosen-out-of-sample",
+      "driver_concrete": "The infiltration reaching the pump station on a dry day and in a storm scales with the length of the catchment's sewers whose inverts lie below the water table that day, read from the regional bore's level against the asset register's invert levels; the 2024 to 2026 meter ran through years when the water table mostly stood below the low terrace's sewers, while the consent's 2004 to 2023 replay holds wet years with it above most of them, so one response per millimetre and the meter's base flow carried into the replay understate the overflows the subdivision's added flow takes past the consent.",
+      "architecture": "v2 (re-root in batch 1: a New Zealand district council's wastewater pump station, whether a subdivision can connect in 2027 within the station's consented overflows, the infiltration each storm and each dry day drives read from the length of sewer below the water table)",
+      "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the hold call; Response 1 replayed 2004 to 2023 and filed 48 overflows against the 40 allowed, then 2 after the upgrade, so any full-record replay with the subdivision already broke the consent and the water-table step was never needed; driver spent"
+    },
     {
       "domain": "product-analytics",
       "subdomain": "retention-cohort-lifetime-value-modeling",
@@ -158,14 +187,20 @@
       "second-sentence opener": "put",
       "rounding opener": "give",
       "deliverable set": "pptx+xlsx"
+    },
+    {
+      "question form": "whether",
+      "second-sentence opener": "the",
+      "rounding opener": "overflows",
+      "deliverable set": "docx+png+xlsx"
     }
   ],
-  "notes": "forcing_event other: the developer's request, under the subdivision's development agreement, to connect stage 1 from March 2027, which consent condition 8 makes the council assess before it accepts the connection. Redrawn in place on 2026-10-31 after the window moved under the registered card (task191 re-registered after this draw, task250's role family changed): vote_or_meeting met task306 and operations_director met task250; capacity_planner is the honester label for an assessment of a station's capacity for growth.",
-  "registered": "2026-10-31T18:27:04Z",
+  "notes": "forcing_event statutory_or_regulatory_filing: the branch's applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027 for ballots opening 1 March 2027.",
   "shell": {
     "question form": "whether",
     "second-sentence opener": "the",
     "rounding opener": "overflows",
     "deliverable set": "docx+png+xlsx"
-  }
+  },
+  "registered": "2026-11-07T20:22:39Z"
 }
