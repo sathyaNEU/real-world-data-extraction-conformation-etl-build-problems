@@ -228,5 +228,6 @@
   }
  ],
  "notes": "Architecture 5, re-root 2026-10-31 under the survivor anatomy (stumping 1.4); MCR has never carried a descriptive build. The dead architecture's prompt shell is in lineage_shells.",
- "registered": "2026-10-31T16:14:11Z"
+ "registered": "2026-10-31T16:14:11Z",
+ "architecture_spent": true
 }

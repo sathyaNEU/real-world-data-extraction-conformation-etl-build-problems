@@ -1,11 +1,11 @@
 {
  "task": "task268",
- "status": "SHIPPED",
+ "status": "FAILED_TO_STUMP",
  "domain": "marketing-consumer-research",
  "objective": "descriptive-distribution",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
+ "updated": "2026-11-07",
  "stump": "A competent analyst builds the duplication of purchase table on the Rewards card, the chain's customer unit, and names Nordhavn; homes assembled from the Rewards cards and online accounts that pay with one bank card in Faircourt's settlement file put Oro Rosso lowest.",
  "architecture": 5,
  "loops": 0,
@@ -32,15 +32,21 @@
    "portal": "determinism block failed by both judges (answer_contradicts_files: charter 3.2 read as the deaths on file, Fennick); both responses missed the call; rubric average 12.5",
    "repair": "design",
    "commit": ""
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "architecture 5: both responses landed the call (Oro Rosso), each assembling homes from the settlement file's shared card reference; rubric scores not reported",
+   "repair": "design (re-root: the filed unit announces the linkage)",
+   "commit": ""
   }
  ],
- "resume": "",
+ "resume": "re-root at stage 1: architecture 6 in another world, dataset, generator and prompt shell (architecture 5 spent on its first portal round, see the note's Tried and rejected)",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
+ "portal_status": "FAILED_TO_STUMP",
+ "portal_status_date": "2026-11-07",
  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
  "seed_world": 273,
  "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30",
