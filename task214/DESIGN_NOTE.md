@@ -60,3 +60,10 @@ any card is registered. What stays valid for the next candidate:
   fail-slow episode separates the two; no realistic setting separates them in time without starving the golden's
   own before and after test. A copy escapes exactly the host component, so a correct host-versus-rest
   decomposition by cells is a correct method, which is the blind route.
+- 2026-11-07, queued on paper after candidate 1 (not yet screened): (a) a commit wait behind another family's write
+  to a shared output table read from heartbeat trajectories (risk: output-table x time cells recover it); (b)
+  shard-level input waits through the catalogue's shard-to-part mapping (risk: the field's critical path at shard
+  level is a reflex); (c) a self-dependent job whose late night pushes the next night's start (risk: a careful
+  dependency replay is the field's method). Preferred next: transient stalls (escaped by any fresh copy) against a
+  shard's heavy nights set by its clients' own cycles through the client-to-shard table (repeated by every copy),
+  which no host-time cell, day-of-month interaction or lag reveals (pipeline.json resume).
