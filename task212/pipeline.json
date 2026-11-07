@@ -1,0 +1,29 @@
+{
+  "task": "task212",
+  "status": "PAUSED",
+  "objective": "anomaly-detection",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-11-07",
+  "seed": "AD35 (analytical_tasks/02_anomaly_detection/AD35_prepayment-review-forward-severity-regroup.md): which hospital and DRG family gets next year's prepayment review team",
+  "call": "",
+  "stump": "",
+  "architecture": 1,
+  "loops": 0,
+  "hold": "Held by the author from 2026-11-07; lifted only on the author's word.",
+  "resume": "HELD by the author from 2026-11-07, lifted only on the author's word; do not resume before then. When lifted, stage 1 draw continues: no card is registered and nothing is committed but this file and four draw-pricing prototypes in generator/proto/. The candidate being priced kept the seed's world (hospitals by MS-DRG family under prepayment review): one hospital codes an extra major complication only where it would be the claim's only one, against honest hospitals that are sicker (transfers, an older nursing-home population, a chronic burden no claim field records). p1 and p2 price the clean-truth world and every route, p3 the estimators, p4 the septicemia family as the target. Next: run guard.py recent, coverage and mechanisms --objective anomaly-detection, finish pricing on clean truth across seeds, then guard.py check, register the card and commit DRAWN.",
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": []
+}
