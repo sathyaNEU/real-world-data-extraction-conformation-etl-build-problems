@@ -1,0 +1,104 @@
+{
+  "task": "task286",
+  "architecture": "v1",
+  "drawn": "2026-11-07",
+  "slot_note": "Seed DA36 (a preprint server's moderator by category) set aside at the draw: moderation load is a count of logged actions, a routing or credit rule, or which category an item belongs to, and the swap test reads it the same for any review queue. Moved to General Statistics and Data Science under the same objective.",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "homes left empty for at least half of a year, read from each home's daily water meter totals against the occupancy the council tax record declares, for a national housing agency choosing its 2027 pilot area",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G12"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and rule correctly, matches each water property to its address and community area, and counts each home's weeks in which it drew no water, or less than a few days of one person's use, names the area whose empty homes are mostly sound-plumbed flats, because every volume rule reads the steady flow of an unfixed leak in an empty home as a household living there.",
+  "domain_test": "The deciding quantity is each home's weeks without use, which the water industry reads off the meter as void weeks (no consumption, or less than a low volume); a customer-side leak breaks that method's precondition, because it flows through the meter every day an empty home stands, so the measurement-error model splits each home's daily totals into a steady non-use flow, which does not vary from one day to the next, and use, which always does. Swapped for a generic summary of the volume (weekly or yearly totals under any line), the call moves from the area with the neglected leaking empties to the area whose empties have sound plumbing.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:occupancy-read-from-day-to-day-variation-where-leaks-flow-steadily",
+  "layer1": [
+    "two council tax layouts across one council's 2025 move to a new revenues system, status histories effective-dated",
+    "water company properties matched to gazetteer UPRNs, with unmatched properties carried only by their billing address",
+    "meter exchanges part-way through the year on a continuing property, two rows on the exchange day",
+    "estimated daily reads after communication gaps, apportioned flat across the gap and flagged by read type",
+    "daily totals on UTC days against Monday-to-Sunday weeks",
+    "census 2021 output areas carried to community areas by a best-fit lookup",
+    "the business rates self-catering list keyed by its own property reference rather than UPRN"
+  ],
+  "stakeholder_role": "the agency's housing evidence lead, preparing the pilot area recommendation the minister signs",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "meter_reads_daily_2025-26.parquet",
+    "rows": 1000000,
+    "entity": "one day's metered water through one supply point",
+    "grain": "supply point x day (UTC)",
+    "source": "synthetic"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "England, an invented coastal county",
+    "currency": "GBP",
+    "org_type": "national housing agency",
+    "invented_names": [
+      "National Homes Agency",
+      "Homes in Use",
+      "Pennimouth Water",
+      "Teversby District Council",
+      "Swanholt Borough Council",
+      "Orrimouth",
+      "Ellingsea",
+      "Kittlesea",
+      "Brackwater",
+      "Wennaby",
+      "Quellby",
+      "Tarnhithe",
+      "Crackmoor"
+    ],
+    "people": [
+      "Toby Hunt",
+      "Tracy Hawkins",
+      "Robert James",
+      "Melissa Robson"
+    ]
+  },
+  "deliverables": [
+    "homes_in_use_pilot_2027.xlsx",
+    "empty_homes_by_area_2026.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is how many units stood unused for most of a period, read through an instrument whose daily totals carry, for some units, a steady flow that has nothing to do with use; any line drawn on the total reads the steady flow as use and drops the unused units it runs through, so each unit's totals are split into the part that repeats from day to day and the part that varies, and only the varying part is use.",
+  "driver_concrete": "Each home's weeks left empty are read from its own daily water totals as the weeks in which no day rose above the home's own steady flow, not as the weeks it drew under a volume line, because a running cistern or a weeping supply pipe in an empty home records the same litres every day and every volume rule reads it as a household.",
+  "stump": "A competent analyst counts each home's void weeks from the daily meter totals (no water, or under a few days of one person's use) and names Ellingsea, whose empty homes are mostly sound-plumbed flats; the step that lands it there is reading a leak's steady daily flow as use, which drops Orrimouth, whose neglected empty terraces run their cisterns all year, out of first place.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task236": "236 reads a surveillance source's capture against an independent fixed-protocol sample; here no second sample exists and the steady flow is separated inside each home's own daily series by its constancy.",
+    "task260": "260 widens an interval by resampling both raters and items; here no interval decides, and the call turns on splitting a steady non-use flow from use inside each home's own meter series.",
+    "task464": "464 v8 corrects a composition of coded free text for unequal recall with a moderation subsample; here there is no coding, no subsample and no recall rate, and the instrument's error is identified by its own signature, a flow that never varies from one day to the next."
+  },
+  "lineage": [],
+  "notes": "Redrawn at the draw: generators G3 (record versus operation, the most literal label) is banned against task399, and G16 with method_or_model_selection repeats a signature spent in eight builds; gate_g decomposition_attribution is the honester label anyway, because the meter's volume is correctly reported and the decisive step splits it between a steady non-use flow and use. stump_strategy population_selection: the decisive step decides which homes are in the population left empty, built from each home's meter history and never from a status word; classification_error would be the other honest label and is banned against task399, and decomposition_attribution as a strategy is banned against task211.",
+  "registered": "2026-11-07T18:39:50Z"
+}
