@@ -1,186 +1,161 @@
-"""Larix batch platform, first half of 2027: the clean truth (task214).
+"""Clean-truth simulator: a district council's drinking-water network and a spring cryptosporidiosis outbreak.
 
-Everything here is the generating process. Nothing in this module is shipped; render.py writes the
-records the platform keeps. Times are minutes from EPOCH (UTC). Deterministic from the seed.
+Six service reservoirs feed sixteen supply zones through feed mains; normally closed boundary mains
+(interconnectors) join zones of different reservoirs and are opened to back-feed a zone while its own feed
+main is shut for a repair. One boundary main carries a damaged air valve in a grazed paddock: whenever it
+carries water within two days of heavy rain, runoff is drawn in. Cases follow the water each zone actually
+received, through each case's own incubation period.
+
+simulate(seed) returns the network, the day-by-day supply paths, rainfall, the operations and the cases.
 """
-from datetime import date, datetime, timedelta, timezone
-from zoneinfo import ZoneInfo
+import datetime as dt
 
 import numpy as np
 
-VIENNA = ZoneInfo('Europe/Vienna')
-UTC = timezone.utc
-EPOCH = datetime(2026, 12, 18, 0, 0, tzinfo=UTC)
-HIST_START = date(2026, 12, 18)          # history nights (expected runtimes for early January)
-H1_START, H1_END = date(2027, 1, 1), date(2027, 6, 30)
-CUTOVER = date(2027, 4, 19)              # first business night on the new orchestrator
-NIGHTS = [HIST_START + timedelta(days=k) for k in range((H1_END - HIST_START).days + 1)]
-N_HIST = (H1_START - HIST_START).days
+D0 = dt.date(2027, 7, 1)          # first day of the record
+SETTING = dt.date(2027, 10, 19)   # the decision date (Tuesday)
+NDAYS = (SETTING - D0).days       # days 0 .. NDAYS-1 are 1 July .. 18 October
 
-GENERAL, STORAGE, RESERVE = 36, 12, 6
-HOSTS = GENERAL + STORAGE
-
-# Physics (levels and sources in the design note's ## Draw and ## Ladder).
-SIG_WORK, SIG_ENV = 0.08, 0.33
-FAILSLOW_RATE = 1.6                      # episodes per host per half
-FAILSLOW_MEDIAN_H, FAILSLOW_SIG = 16.0, 0.6
-FAILSLOW_FACTOR = (6.0, 10.0)            # slowdown of fully disk-bound work
-HEAVY_M = (3.0, 18.0)                    # heavy-shard work multiplier, log-uniform
-VICTIM = (1.5, 1.9)                      # co-tenant slowdown under a heavy shard
-LAUNCH_DELAY = (60.0, 140.0)             # seconds from trigger to a reserve copy running (pilot)
-COMMIT = (1.5, 3.0)                      # minutes, commit step after the last shard
-LOAD_RETRY_P = 0.004
-
-# Families. SLA job: (job, deliverable, shards, expected minutes, local start minute after 18:00, slack,
-#                     credit band 1 EUR, feed late probability, feed late mean minutes)
-FAMILIES = {
-    'CSET': dict(name='Card settlement', q=0.15, qload=0.15, ph=0.022, phl=0.010, place='general',
-                 victim=VICTIM, load=(6, 26, 20), sig=SIG_WORK, sla=[
-                     ('cset_merchant_settlement', 'CS-01', 24, 22, 60, 24, 2200, 0.02, 30),
-                     ('cset_scheme_reconciliation', 'CS-02', 20, 25, 140, 26, 2000, 0.02, 30),
-                     ('cset_posting_extract', 'CS-03', 28, 18, 220, 22, 2100, 0.02, 30)]),
-    'PCLR': dict(name='Payments clearing', q=0.90, qload=0.15, ph=0.001, phl=0.001, place='general',
-                 victim=VICTIM, load=(6, 26, 18), sig=SIG_WORK, sla=[
-                     ('pclr_sct_inbound', 'PC-01', 14, 12, 60, 14, 4800, 0.02, 20),
-                     ('pclr_sdd_collections', 'PC-02', 12, 13, 190, 14, 4600, 0.02, 20),
-                     ('pclr_inst_settlement_file', 'PC-03', 16, 11, 320, 13, 4800, 0.02, 20)]),
-    'TXIX': dict(name='Transaction search index', q=0.90, qload=0.90, ph=0.002, phl=0.002, place='storage',
-                 victim=VICTIM, load=(8, 26, 22), sig=SIG_WORK, sla=[
-                     ('txix_card_tx_index', 'TX-01', 20, 25, 80, 26, 1100, 0.10, 50),
-                     ('txix_account_tx_index', 'TX-02', 22, 22, 180, 26, 1000, 0.10, 50),
-                     ('txix_statement_search', 'TX-03', 18, 28, 280, 24, 1100, 0.10, 50)]),
-    'REGR': dict(name='Regulatory reporting', q=0.90, qload=0.15, ph=0.001, phl=0.001, place='general',
-                 victim=VICTIM, load=(6, 26, 16), sig=SIG_WORK, sla=[
-                     ('regr_finrep_extract', 'RG-01', 14, 12, 420, 12, 4300, 0.02, 20),
-                     ('regr_corep_liquidity', 'RG-02', 12, 13, 540, 12, 4200, 0.02, 20),
-                     ('regr_anacredit_delta', 'RG-03', 16, 11, 660, 12, 4300, 0.02, 20)]),
-    'RISK': dict(name='Risk aggregation', q=0.15, qload=0.15, ph=0.002, phl=0.002, place='general',
-                 victim=(2.6, 3.4), load=(6, 26, 20), sig=SIG_WORK, sla=[
-                     ('risk_market_var_cube', 'RK-01', 28, 13, 100, 10, 1900, 0.02, 20),
-                     ('risk_credit_exposure_cube', 'RK-02', 24, 14, 230, 10, 1900, 0.02, 20),
-                     ('risk_limits_snapshot', 'RK-03', 24, 12, 340, 9, 1800, 0.02, 20)]),
-    'CAMS': dict(name='Customer analytics scoring', q=0.15, qload=0.15, ph=0.002, phl=0.002, place='general',
-                 victim=VICTIM, load=(10, 30, 18), sig=0.35, sla=[
-                     ('cams_next_best_offer', 'CA-01', 34, 16, 110, 40, 1300, 0.08, 40),
-                     ('cams_churn_scores', 'CA-02', 32, 18, 240, 40, 1300, 0.08, 40),
-                     ('cams_campaign_audiences', 'CA-03', 34, 15, 360, 38, 1300, 0.08, 40)]),
+RES = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6']
+# zone: (normal parent node, link main, properties, x km, y km)
+ZONES = {
+    'Z01': ('R1', 'FM01', 2600, 1.0, 9.0), 'Z02': ('Z01', 'LM02', 1900, 2.2, 8.1), 'Z03': ('R1', 'FM03', 2100, 0.6, 7.0),
+    'Z04': ('R2', 'FM04', 2900, 3.1, 6.2), 'Z05': ('R2', 'FM05', 2400, 4.2, 5.0), 'Z06': ('Z05', 'LM06', 1500, 3.4, 4.1),
+    'Z07': ('R3', 'FM07', 2200, 1.4, 4.6), 'Z08': ('R3', 'FM08', 1700, 0.8, 3.0),
+    'Z09': ('R5', 'FM09', 2300, 2.6, 1.6), 'Z10': ('R5', 'FM10', 1800, 4.0, 1.0),
+    'Z11': ('R4', 'FM11', 2500, 5.6, 4.0), 'Z12': ('Z11', 'LM12', 1600, 6.5, 3.2),
+    'Z13': ('R5', 'FM13', 1400, 5.2, 2.2), 'Z14': ('R6', 'FM14', 2000, 7.2, 1.4),
+    'Z15': ('R6', 'FM15', 1300, 7.8, 2.6), 'Z16': ('R6', 'FM16', 1700, 8.2, 0.6),
 }
-FAMILY_ORDER = ['CSET', 'PCLR', 'TXIX', 'REGR', 'RISK', 'CAMS']
-LOAD_NAMES = {
-    'CSET': ['cset_auth_match', 'cset_chargeback_feed', 'cset_interchange_calc', 'cset_merchant_fees',
-             'cset_dispute_aging', 'cset_bin_refresh'],
-    'PCLR': ['pclr_returns_sweep', 'pclr_iban_validate', 'pclr_sanctions_hits', 'pclr_fx_rates_apply',
-             'pclr_liquidity_forecast', 'pclr_archive_rollup'],
-    'TXIX': ['txix_segment_merge', 'txix_tokenise', 'txix_dedupe_merchants', 'txix_geo_enrich',
-             'txix_snapshot_compact', 'txix_category_tags', 'txix_mcc_backfill', 'txix_reindex_hot'],
-    'REGR': ['regr_gl_mapping', 'regr_counterparty_master', 'regr_collateral_join', 'regr_validation_rules',
-             'regr_xbrl_render', 'regr_audit_trail'],
-    'RISK': ['risk_position_load', 'risk_curve_build', 'risk_scenario_shocks', 'risk_greeks',
-             'risk_pnl_explain', 'risk_backtest_window'],
-    'CAMS': ['cams_feature_daily', 'cams_feature_weekly', 'cams_web_sessions', 'cams_app_events',
-             'cams_propensity_train', 'cams_segment_refresh', 'cams_consent_filter', 'cams_contact_policy',
-             'cams_uplift_eval', 'cams_export_crm'],
+RES_XY = {'R1': (0.4, 8.6), 'R2': (3.0, 5.4), 'R3': (0.6, 4.0), 'R4': (6.2, 4.6), 'R5': (3.6, 2.0), 'R6': (7.6, 0.4)}
+# boundary mains, normally closed: name -> (zone a, zone b)
+ICS = {
+    'BM1': ('Z03', 'Z04'), 'BM2': ('Z02', 'Z04'), 'BM3': ('Z05', 'Z11'), 'BM4': ('Z06', 'Z07'),
+    'BM5': ('Z08', 'Z09'), 'BM6': ('Z10', 'Z13'), 'BM7': ('Z12', 'Z13'), 'BM8': ('Z13', 'Z14'),
+    'BM9': ('Z15', 'Z12'), 'BM10': ('Z07', 'Z03'), 'BM11': ('Z16', 'Z10'),
 }
+BAD = 'BM3'                       # the boundary main with the damaged air valve
+OCC = 2.45                        # residents per property
 
 
-def local_to_min(d, minute_after_18):
-    """Minutes from EPOCH for a wall-clock time in Vienna, given as minutes after 18:00 of business date d."""
-    wall = datetime(d.year, d.month, d.day, 18, 0) + timedelta(minutes=float(minute_after_18))
-    aware = wall.replace(tzinfo=VIENNA)
-    return (aware.astimezone(UTC) - EPOCH).total_seconds() / 60.0
+def residents():
+    return {z: ZONES[z][2] * OCC for z in ZONES}
 
 
-def build_jobs():
-    """The job catalogue: every job with its family, schedule, shards, expected minutes and SLA terms."""
-    jobs = []
-    for fam in FAMILY_ORDER:
-        F = FAMILIES[fam]
-        for (jn, dv, n, E, sched, slack, credit, fp, fm) in F['sla']:
-            dl = sched + E * 1.6 + 2.5 + slack + 6
-            dl = 5 * int(np.ceil(dl / 5.0))
-            jobs.append(dict(family=fam, job=jn, deliverable='SLA-' + dv, sla=True, shards=n, E=float(E),
-                             sched=float(sched), deadline=float(dl), credit=float(credit), q=F['q'],
-                             ph=F['ph'], feed_p=fp, feed_mean=fm, sig=F['sig']))
-        k, nl, El = F['load']
-        for t in range(k):
-            sched = 20 + t * (700.0 / k)
-            jobs.append(dict(family=fam, job=LOAD_NAMES[fam][t], deliverable=None, sla=False, shards=nl,
-                             E=float(El), sched=float(round(sched / 5.0) * 5), deadline=None, credit=0.0,
-                             q=F['qload'], ph=F['phl'], feed_p=0.02, feed_mean=20, sig=F['sig']))
-    for j, J in enumerate(jobs):
-        J['jid'] = j
-    return jobs
+def rainfall(rng):
+    """Daily rainfall (mm), winter-spring, with the wet spell of 2 to 5 October fixed."""
+    r = rng.gamma(0.55, 6.0, NDAYS) * (rng.random(NDAYS) < 0.55)
+    for date, mm in ((dt.date(2027, 10, 2), 31.0), (dt.date(2027, 10, 3), 44.0), (dt.date(2027, 10, 4), 19.0),
+                     (dt.date(2027, 10, 5), 8.0)):
+        r[(date - D0).days] = mm
+    return r
 
 
-def simulate(seed=214):
-    rng = np.random.default_rng(seed)
-    jobs = build_jobs()
-    total_min = (len(NIGHTS) + 1) * 1440.0
-    # fail-slow episodes
-    eps = []
-    for h in range(HOSTS):
-        for _ in range(rng.poisson(FAILSLOW_RATE * len(NIGHTS) / 181.0)):
-            s = rng.uniform(0, total_min)
-            dur = 60.0 * float(np.clip(np.exp(rng.normal(np.log(FAILSLOW_MEDIAN_H), FAILSLOW_SIG)), 4, 72))
-            eps.append((h, s, s + dur, rng.uniform(*FAILSLOW_FACTOR)))
-    eps = np.array(eps, dtype=float).reshape(-1, 4)
-    storage = np.arange(GENERAL, HOSTS)
-    cols = {k: [] for k in ['jid', 'night', 'shard', 'host', 'start', 'Wwork', 'env', 'q', 'heavy', 'm',
-                            'E', 'vlo', 'vhi']}
-    runs = []
-    for J in jobs:
-        F = FAMILIES[J['family']]
-        n = J['shards']
-        for d_i, d in enumerate(NIGHTS):
-            sched_min = local_to_min(d, J['sched'])
-            late = rng.random() < J['feed_p']
-            land = sched_min - 10 + (rng.exponential(J['feed_mean']) if late else rng.uniform(0, 8))
-            start = max(sched_min, land) + rng.uniform(0.3, 1.5)
-            vw = np.exp(rng.normal(0, J['sig'], n))
-            heavy = rng.random(n) < J['ph']
-            m = np.where(heavy, np.exp(rng.uniform(np.log(HEAVY_M[0]), np.log(HEAVY_M[1]), n)), 1.0)
-            if F['place'] == 'storage':
-                hosts = rng.choice(storage, n)
-            elif J['sla']:
-                hosts = rng.choice(GENERAL, n, replace=False)
+def repairs(rng):
+    """Feed- and link-main repairs: (main, first day, last day, back-feed boundary main or None)."""
+    mains = [ZONES[z][1] for z in ZONES]
+    zone_of_main = {ZONES[z][1]: z for z in ZONES}
+    out = []
+    fixed = [('FM11', dt.date(2027, 10, 4), dt.date(2027, 10, 6), 'BM3'),
+             ('FM11', dt.date(2027, 8, 10), dt.date(2027, 8, 11), 'BM3')]
+    for m, a, b, bf in fixed:
+        out.append((m, (a - D0).days, (b - D0).days, bf))
+    quiet = {'FM05', 'FM11', 'LM12', 'FM13', 'FM15'}
+    q_lo, q_hi = (dt.date(2027, 9, 20) - D0).days, NDAYS - 1
+    n = rng.poisson(34)
+    for _ in range(n):
+        m = mains[rng.integers(len(mains))]
+        z = zone_of_main[m]
+        first = int(rng.integers(0, NDAYS - 3))
+        last = first + int(rng.choice([0, 0, 1, 1, 2, 3, 4]))
+        if m in quiet and not (last < q_lo or first > q_hi):
+            continue
+        cands = [k for k, (a, b) in ICS.items() if z in (a, b) and k != BAD]
+        bf = cands[rng.integers(len(cands))] if cands and rng.random() < 0.8 else None
+        # keep the record physical: no second repair on a main already shut
+        if any(mm == m and not (last < f or first > l) for mm, f, l, _ in out):
+            continue
+        out.append((m, first, last, bf))
+    return sorted(out, key=lambda t: (t[1], t[0]))
+
+
+def paths(reps):
+    """paths[d][zone] = tuple of assets the zone's water passed through on day d (reservoir first)."""
+    shut = [dict() for _ in range(NDAYS)]
+    for m, f, l, bf in reps:
+        for d in range(max(f, 0), min(l, NDAYS - 1) + 1):
+            shut[d][m] = bf
+    P = []
+    for d in range(NDAYS):
+        closed = shut[d]
+        open_bm = {bf for bf in closed.values() if bf}
+        cache = {}
+
+        def path(z, seen=()):
+            if z in cache:
+                return cache[z]
+            parent, link, *_ = ZONES[z]
+            if link not in closed:
+                up = (parent,) if parent in RES else path(parent, seen + (z,))
+                res = None if up is None else up + (link,)
             else:
-                hosts = rng.integers(0, GENERAL, n)
-            cols['jid'].append(np.full(n, J['jid'])); cols['night'].append(np.full(n, d_i))
-            cols['shard'].append(np.arange(n)); cols['host'].append(hosts)
-            cols['start'].append(start + rng.uniform(0, 0.6, n)); cols['Wwork'].append(J['E'] * vw * m)
-            cols['env'].append(np.exp(rng.normal(0, SIG_ENV, n))); cols['q'].append(np.full(n, J['q']))
-            cols['heavy'].append(heavy); cols['m'].append(m); cols['E'].append(np.full(n, J['E']))
-            cols['vlo'].append(np.full(n, F['victim'][0])); cols['vhi'].append(np.full(n, F['victim'][1]))
-            runs.append(dict(jid=J['jid'], night=d_i, sched=sched_min, land=land, start=start,
-                             commit=rng.uniform(*COMMIT)))
-    R = {k: np.concatenate(v) for k, v in cols.items()}
-    N = len(R['jid'])
-    hw = np.ones(N)
-    for (h, s, e, f) in eps:
-        sel = (R['host'] == h) & (R['start'] >= s) & (R['start'] < e)
-        hw[sel] = 1 + R['q'][sel] * (f - 1)
-    mix = R['heavy'] & (hw > 1)
-    R['Wwork'][mix] /= R['m'][mix]
-    R['m'][mix] = 1.0
-    R['heavy'][mix] = False
-    base = R['Wwork'] * R['env'] * hw
-    rt = base.copy()
-    order = np.lexsort((R['start'], R['host']))
-    bnd = np.searchsorted(R['host'][order], np.arange(HOSTS + 1))
-    for c in np.where(R['heavy'])[0]:
-        h = R['host'][c]
-        cs, ce = R['start'][c], R['start'][c] + base[c]
-        seg = order[bnd[h]:bnd[h + 1]]
-        s = R['start'][seg]
-        cand = seg[np.searchsorted(s, cs - 600):np.searchsorted(s, ce)]
-        js, je = R['start'][cand], R['start'][cand] + base[cand]
-        ov = np.clip(np.minimum(je, ce) - np.maximum(js, cs), 0, None)
-        ov[cand == c] = 0
-        cf = R['vlo'][cand] + rng.random(len(cand)) * (R['vhi'][cand] - R['vlo'][cand])
-        rt[cand] += ov * (cf - 1)
-    R['rt'] = rt
-    R['end'] = R['start'] + rt
-    R['hw'] = hw
-    R['launch_delay'] = rng.uniform(*LAUNCH_DELAY, N) / 60.0
-    R['backup_env'] = np.exp(rng.normal(0, SIG_ENV, N))
-    return dict(R=R, jobs=jobs, runs=runs, eps=eps, seed=seed)
+                res = None
+                for k in sorted(open_bm):
+                    a, b = ICS[k]
+                    if z in (a, b):
+                        other = b if z == a else a
+                        if other in seen:
+                            continue
+                        up = path(other, seen + (z,))
+                        if up is not None and link not in up:
+                            res = up + (k,)
+                            break
+            cache[z] = res
+            return res
+        P.append({z: path(z) for z in ZONES})
+    return P
+
+
+def incubation_pmf(median=7.0, sigma=0.38, kmax=14):
+    k = np.arange(1, kmax + 1)
+    from math import erf, log, sqrt
+    cdf = lambda x: 0.5 * (1 + erf((log(x) - log(median)) / (sigma * sqrt(2))))
+    p = np.array([cdf(i + 0.5) - cdf(i - 0.5) for i in k])
+    return p / p.sum()
+
+
+def simulate(seed=214, p_case=2.6e-3, bg_per_100k_year=32.0):
+    rng = np.random.default_rng(seed)
+    rain = rainfall(rng)
+    reps = repairs(rng)
+    P = paths(reps)
+    pop = residents()
+    rain48 = np.array([rain[max(d - 2, 0):d + 1].sum() for d in range(NDAYS)])
+    inc = incubation_pmf()
+    cases = []
+    # outbreak: water through the bad boundary main within two days of heavy rain
+    for d in range(NDAYS):
+        if rain48[d] < 25.0:
+            continue
+        c = min((rain48[d] - 20.0) / 40.0, 1.5)
+        for z, pth in P[d].items():
+            if pth and BAD in pth:
+                n = rng.poisson(pop[z] * p_case * c)
+                for _ in range(n):
+                    onset = d + 1 + int(rng.choice(len(inc), p=inc))
+                    cases.append((z, onset, 'outbreak', d))
+    # background: sporadic cases (farm animals, travel, recreational water), spring peak
+    for z in ZONES:
+        for d in range(NDAYS):
+            month = (D0 + dt.timedelta(days=d)).month
+            f = {7: 0.6, 8: 0.9, 9: 1.7, 10: 2.0}[month]
+            n = rng.poisson(pop[z] * bg_per_100k_year / 1e5 / 365.0 * f)
+            for _ in range(n):
+                cases.append((z, d, 'background', None))
+    # notification: report a few days after onset; only reports by 18 October are on file
+    out = []
+    for z, onset, kind, exp_day in cases:
+        rep = onset + int(rng.integers(2, 10))
+        if rep < NDAYS:
+            out.append(dict(zone=z, onset=onset, report=rep, kind=kind, exposure_day=exp_day))
+    return dict(seed=seed, rain=rain, rain48=rain48, reps=reps, P=P, pop=pop, cases=out, inc=inc)

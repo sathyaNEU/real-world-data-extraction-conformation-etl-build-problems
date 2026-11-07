@@ -1,183 +1,181 @@
-"""The replay of the backup scheme on the first half's nights, for the golden and every rival reader.
+"""The golden and its rivals on the clean truth.
 
-Input is a canonical instance table (one completed attempt per row) and a job-run table, either from the
-clean truth (world.py) or parsed back from the shipped records (verify.py builds its own copy).
+Golden: each case's own incubation window laid over the supply path its zone actually had on each day,
+read from the operations through the network; each asset's attack rate is the cases its water carried per
+100,000 resident-days it served over the window. Rivals: the register, the onset-day path, the dated event,
+the nearest reservoir, the per-record cells, the literal WHAT.
 """
-import itertools
-
 import numpy as np
 
-TRIGGER = 1.5           # policy 3.2: a copy once an attempt has run 1.5 times its expected runtime
-HISTORY = 14            # policy 3.3: median over the job's previous 14 nightly runs
-CAP = 0.05              # policy 2.1: backups launched may add at most 5 per cent to instances run
-BANDS = ((30, 1.0), (90, 2.5), (None, 5.0))
+import world
+
+WIN_FROM = 62     # 1 September 2027 (day index), the outbreak review window opens
+ONSET_TO = world.NDAYS - 1
 
 
-def credit(base, late):
-    late = np.asarray(late, float)
-    return base * np.where(late <= 0, 0.0, np.where(late <= 30, 1.0, np.where(late <= 90, 2.5, 5.0)))
+def in_window(c, lo=WIN_FROM):
+    return lo <= c['onset'] <= ONSET_TO
 
 
-def expected_runtime(T, runs_by_job):
-    """Median runtime of the job's instances over its previous HISTORY nightly runs (completed attempts)."""
-    exp = np.full(len(T['start']), np.nan)
-    for jid, nights in runs_by_job.items():
-        hist = []
-        for night, ids in nights:
-            if hist:
-                exp[ids] = np.median(np.concatenate(hist[-HISTORY:]))
-            hist.append(T['end'][ids] - T['start'][ids])
-    return exp
+def assets(W):
+    a = set(world.RES) | set(world.ICS) | {world.ZONES[z][1] for z in world.ZONES}
+    return sorted(a)
 
 
-class Host:
-    def __init__(self, T):
-        self.T = T
-        self.by_start = {}
-        self.by_end = {}
-        for h in np.unique(T['host']):
-            ids = np.where(T['host'] == h)[0]
-            self.by_start[h] = ids[np.argsort(T['start'][ids], kind='stable')]
-            self.by_end[h] = ids[np.argsort(T['end'][ids], kind='stable')]
-        self.maxrt = float((T['end'] - T['start']).max())
-
-    def overlapping(self, i):
-        T = self.T
-        seg = self.by_start[T['host'][i]]
-        s = T['start'][seg]
-        c = seg[np.searchsorted(s, T['start'][i] - self.maxrt):np.searchsorted(s, T['end'][i])]
-        c = c[T['end'][c] > T['start'][i]]
-        return c[c != i]
-
-    def ended_in(self, i, lo, hi):
-        seg = self.by_end[self.T['host'][i]]
-        e = self.T['end'][seg]
-        c = seg[np.searchsorted(e, lo):np.searchsorted(e, hi)]
-        return c[c != i]
-
-    def started_in(self, i, lo, hi):
-        seg = self.by_start[self.T['host'][i]]
-        s = self.T['start'][seg]
-        c = seg[np.searchsorted(s, lo, side='right'):np.searchsorted(s, hi, side='right')]
-        return c[c != i]
+def served(W, lo=WIN_FROM, hi=ONSET_TO):
+    """Resident-days each asset's water reached, days lo..hi."""
+    S = {k: 0.0 for k in assets(W)}
+    for d in range(lo, hi + 1):
+        for z, pth in W['P'][d].items():
+            if pth:
+                for k in pth:
+                    S[k] += W['pop'][z]
+    return S
 
 
-def features(T, exp, cand, H=None, wins=(30, 60, 120)):
-    """Per candidate instance: the host's co-tenants before, during and after its run."""
-    H = H or Host(T)
-    ratio = (T['end'] - T['start']) / exp
-    F = {k: np.zeros(len(cand)) for k in ['ov_med', 'ov_max', 'n_ov']}
-    for w in wins:
-        for k in ('bef', 'aft', 'pool', 'nb', 'na'):
-            F['%s%d' % (k, w)] = np.zeros(len(cand))
-    for c in (0.3, 0.5, 0.8):
-        F['cover%.1f' % c] = np.zeros(len(cand), bool)
-    for k, i in enumerate(cand):
-        si, ei = T['start'][i], T['end'][i]
-        ov = H.overlapping(i)
-        r = ratio[ov]
-        r = r[np.isfinite(r)]
-        F['n_ov'][k] = len(r)
-        F['ov_med'][k] = np.median(r) if len(r) else 1.0
-        F['ov_max'][k] = r.max() if len(r) else 0.0
-        if len(ov):
-            cov = np.minimum(T['end'][ov], ei) - np.maximum(T['start'][ov], si)
-            slower = (ratio[ov] > ratio[i])
-            for c in (0.3, 0.5, 0.8):
-                F['cover%.1f' % c][k] = bool(np.any(slower & (cov >= c * (ei - si))))
-        for w in wins:
-            b = ratio[H.ended_in(i, si - w, si)]
-            a = ratio[H.started_in(i, ei, ei + w)]
-            b, a = b[np.isfinite(b)], a[np.isfinite(a)]
-            F['bef%d' % w][k] = np.median(b) if len(b) else 0.0
-            F['aft%d' % w][k] = np.median(a) if len(a) else 0.0
-            p = np.concatenate([b, a])
-            F['pool%d' % w][k] = np.median(p) if len(p) else 0.0
-            F['nb%d' % w][k] = len(b)
-            F['na%d' % w][k] = len(a)
-    return F
-
-
-def golden_escape(F, ratio_c, win=60, thr=1.5, rule='pooled', cover=0.5):
-    """A copy escapes unless the straggler's own run brackets the host's slowdown.
-
-    Escapes: the host was slow outside the straggler's run (a fault of the host), or a slower co-tenant
-    covered most of the straggler's run (the straggler was the one slowed). Otherwise its slowness is its own.
-    """
-    if rule == 'pooled':
-        outside = F['pool%d' % win] >= thr
-    elif rule == 'either':
-        outside = (F['bef%d' % win] >= thr) | (F['aft%d' % win] >= thr)
-    else:
-        outside = (F['bef%d' % win] >= thr) & (F['aft%d' % win] >= thr)
-    covered = F['cover%.1f' % cover] if cover <= 1 else np.zeros(len(ratio_c), bool)
-    return outside | covered
-
-
-READERS = {
-    'textbook': lambda F, r: np.ones(len(r), bool),
-    'hostcheck': lambda F, r: (F['n_ov'] > 0) & (F['ov_med'] >= 1.25),
-    'magnitude': lambda F, r: r / np.maximum(F['ov_med'], 1e-9) <= 1.6,
-    'slowest': lambda F, r: (F['n_ov'] > 0) & (r < F['ov_max']),
-    'outside_only': lambda F, r: F['pool60'] >= 1.5,
-}
-
-
-def replay(T, J, exp, cand, escape, dur_override=None):
-    """Replay the scheme for every family. escape[k] says whether candidate k's copy runs at the expected
-    runtime (True) or repeats the straggler's own run (False). Returns per-family figures."""
-    run_t = T['end'] - T['start']
-    trig = T['start'] + TRIGGER * exp
-    pos = {i: k for k, i in enumerate(cand)}
-    fin = T['end'].copy()
-    backup_min = np.zeros(len(T['start']))
-    for k, i in enumerate(cand):
-        bs = trig[i] + T['delay'][i]
-        if dur_override is not None:
-            dur = dur_override[k]
-        else:
-            dur = exp[i] if escape[k] else run_t[i] + 1.0
-        nf = min(T['end'][i], bs + dur)
-        backup_min[i] = max(0.0, nf - bs)
-        fin[i] = nf
-    out = {}
-    for fam in J['families']:
-        out[fam] = dict(avoided=0.0, backup_hours=0.0, launched=0, rescued=0, late_runs=0)
-    fam_of = T['family']
-    for fam in J['families']:
-        sel = fam_of == fam
-        out[fam]['launched'] = int(np.isin(np.where(sel)[0], cand).sum())
-        out[fam]['backup_hours'] = float(backup_min[sel].sum() / 60.0)
-    for run in J['sla_runs']:
-        ids = run['ids']
-        late0 = T['end'][ids].max() + run['commit'] - run['deadline']
-        late1 = fin[ids].max() + run['commit'] - run['deadline']
-        c0, c1 = credit(run['credit'], late0), credit(run['credit'], late1)
-        f = run['family']
-        out[f]['avoided'] += float(c0 - c1)
-        if late0 > 0:
-            out[f]['late_runs'] += 1
-            if late1 <= 0:
-                out[f]['rescued'] += 1
-    return out
-
-
-def price_cost(out, price_eur_hour):
-    for f, v in out.items():
-        v['cost'] = v['backup_hours'] * price_eur_hour
-        v['net'] = v['avoided'] - v['cost']
-    return out
-
-
-def pairs(out, instances_run, cap=CAP):
-    """Every admissible set within the cap, best first. A family is admitted only with a positive net."""
-    fams = sorted(out)
-    res = []
-    for r in (1, 2, 3):
-        for S in itertools.combinations(fams, r):
-            if sum(out[f]['launched'] for f in S) > cap * instances_run:
+def golden(W, kmin=1, kmax=14, weights='pmf', lo=WIN_FROM, case_lo=None):
+    """Attack rate per asset: incubation-weighted cases per 100,000 resident-days served."""
+    inc = W['inc'] if weights == 'pmf' else None
+    A = {k: 0.0 for k in assets(W)}
+    case_lo = lo + 7 if case_lo is None else case_lo
+    for c in W['cases']:
+        if not (case_lo <= c['onset'] <= ONSET_TO):
+            continue
+        ks = list(range(kmin, kmax + 1))
+        w = np.array([inc[k - 1] if inc is not None and k - 1 < len(inc) else 1.0 for k in ks])
+        w = w / w.sum()
+        for k, wk in zip(ks, w):
+            d = c['onset'] - k
+            if d < 0:
                 continue
-            if any(out[f]['net'] <= 0 for f in S):
-                continue
-            res.append((sum(out[f]['net'] for f in S), S))
-    return sorted(res, reverse=True)
+            pth = W['P'][d][c['zone']]
+            if pth:
+                for a in pth:
+                    A[a] += wk
+    S = served(W, lo, ONSET_TO)
+    return {k: (A[k] / S[k] * 1e5 if S[k] > 0 else 0.0) for k in A}, A, S
+
+
+def top(rates):
+    s = sorted(rates.items(), key=lambda kv: -kv[1])
+    lead = s[0][1] / s[1][1] if s[1][1] > 0 else float('inf')
+    return s[0][0], lead, s[1][0]
+
+
+def register_rates(W):
+    """Rung 0/1: attack rate per reservoir through the supply-zone register."""
+    pop = W['pop']
+    cases = {r: 0 for r in world.RES}
+    res = {r: 0.0 for r in world.RES}
+    for z in world.ZONES:
+        r = home(z)
+        res[r] += pop[z]
+    for c in W['cases']:
+        if in_window(c):
+            cases[home(c['zone'])] += 1
+    return {r: cases[r] / res[r] * 1e5 for r in world.RES}
+
+
+def home(z):
+    p = world.ZONES[z][0]
+    return p if p in world.RES else home(p)
+
+
+def first_look(W):
+    cnt = {}
+    for c in W['cases']:
+        if in_window(c):
+            cnt[c['zone']] = cnt.get(c['zone'], 0) + 1
+    z = max(cnt, key=cnt.get)
+    return home(z)
+
+
+def onset_path(W):
+    """Constructing reader: the path the case's zone had on the onset day."""
+    A = {k: 0.0 for k in assets(W)}
+    for c in W['cases']:
+        if in_window(c):
+            pth = W['P'][c['onset']][c['zone']]
+            if pth:
+                for a in pth:
+                    A[a] += 1
+    S = served(W)
+    return {k: (A[k] / S[k] * 1e5 if S[k] else 0.0) for k in A}
+
+
+def report_path(W):
+    A = {k: 0.0 for k in assets(W)}
+    for c in W['cases']:
+        if in_window(c):
+            pth = W['P'][min(c['report'], world.NDAYS - 1)][c['zone']]
+            if pth:
+                for a in pth:
+                    A[a] += 1
+    S = served(W)
+    return {k: (A[k] / S[k] * 1e5 if S[k] else 0.0) for k in A}
+
+
+def dated_event(W):
+    """Constructing reader: the last repair on the worst zone's own supply before its first case."""
+    cnt = {}
+    first = {}
+    for c in W['cases']:
+        if in_window(c) and c['kind'] == 'outbreak' or in_window(c):
+            cnt[c['zone']] = cnt.get(c['zone'], 0) + 1
+    z = max(cnt, key=cnt.get)
+    onsets = sorted(c['onset'] for c in W['cases'] if c['zone'] == z and in_window(c))
+    peak = int(np.median(onsets))
+    chain = []
+    q = z
+    while q not in world.RES:
+        chain.append(world.ZONES[q][1])
+        q = world.ZONES[q][0]
+    best = None
+    for m, f, l, bf in W['reps']:
+        if m in chain and peak - 21 <= f <= peak:
+            best = m if best is None or f > best[1] else best
+            best = (m, f)
+    return best[0] if best else home(z)
+
+
+def nearest_reservoir(W):
+    xs, ys = [], []
+    for c in W['cases']:
+        if in_window(c):
+            _, _, _, x, y = world.ZONES[c['zone']]
+            xs.append(x)
+            ys.append(y)
+    cx, cy = np.mean(xs), np.mean(ys)
+    return min(world.RES, key=lambda r: (world.RES_XY[r][0] - cx) ** 2 + (world.RES_XY[r][1] - cy) ** 2)
+
+
+def cluster_nearest(W):
+    """Spatial cluster of the two worst zones by rate, then the nearest reservoir to it."""
+    pop = W['pop']
+    cnt = {z: 0 for z in world.ZONES}
+    for c in W['cases']:
+        if in_window(c):
+            cnt[c['zone']] += 1
+    rate = {z: cnt[z] / pop[z] for z in world.ZONES}
+    top2 = sorted(rate, key=lambda z: -rate[z])[:2]
+    cx = np.mean([world.ZONES[z][3] for z in top2])
+    cy = np.mean([world.ZONES[z][4] for z in top2])
+    return min(world.RES, key=lambda r: (world.RES_XY[r][0] - cx) ** 2 + (world.RES_XY[r][1] - cy) ** 2)
+
+
+def per_record_cells(W, width=7):
+    """Per-record reader: zone-by-week cells on every joinable attribute, Poisson main effects; the asset it
+    names is the register reservoir with the largest fitted effect (the network operations join to nothing)."""
+    pop = W['pop']
+    weeks = (world.NDAYS - WIN_FROM) // width + 1
+    Y = {}
+    for c in W['cases']:
+        if in_window(c):
+            key = (c['zone'], (c['onset'] - WIN_FROM) // width)
+            Y[key] = Y.get(key, 0) + 1
+    eff = {}
+    for r in world.RES:
+        num = sum(v for (z, w), v in Y.items() if home(z) == r)
+        den = sum(pop[z] for z in world.ZONES if home(z) == r) * weeks
+        eff[r] = num / den
+    return max(eff, key=eff.get)
