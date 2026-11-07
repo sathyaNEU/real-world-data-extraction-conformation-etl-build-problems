@@ -5,13 +5,13 @@
 
 ## 1. Final Recommendation
 
-**Yes: notify increases of artificial origin at MV334 Headland Lookout on 6 days (08/07/2026, 17/07/2026, 20/07/2026, 22/07/2026, 07/08/2026, 13/08/2026), highest ten-minute value 155 nSv/h, and at MV129 Old Brickworks on 5 days (24/08/2026, 28/08/2026, 13/09/2026, 14/09/2026, 17/09/2026), highest 164 nSv/h.** No other station recorded one; clearing increases on rain at the nearest gauge would notify many more and miss the radiography on wet evenings.
+**Yes: notify increases of artificial origin at MV334 Headland Lookout on 6 days (08/07/2026, 17/07/2026, 20/07/2026, 22/07/2026, 07/08/2026, 13/08/2026), highest ten-minute value 155 nSv/h, and at MV129 Old Brickworks on 5 days (24/08/2026, 28/08/2026, 13/09/2026, 14/09/2026, 17/09/2026), highest 164 nSv/h.** No other station recorded one; clearing increases on rain at the nearest gauge would notify many more stations and clear five of these days.
 
 ## 2. Critical Components
 
 1. A natural excess (rain-washed radon progeny) never fell by more than **41 per cent** in one ten-minute step anywhere in the quarter.
 2. Each of the **11** detection days ended with the excess falling by **85 per cent or more** in one step and staying down.
-3. On **5** of those days the nearest valley rain gauge recorded rain within an hour of the increase, so rain coincidence does not decide origin.
+3. On **5** of those days the nearest rain gauge recorded rain within an hour of the increase, so rain coincidence does not decide origin.
 
 ## 3. Step-by-Step Solution
 
@@ -20,7 +20,7 @@
 3. Flagged every step where an excess of 30 nSv/h or more fell by more than half and the next value stayed below half of it; none occurs outside MV334 and MV129 (natural falls stop at 41 per cent).
 4. Walked back from each flagged step over values more than 15 nSv/h above the median; dated each increase by its start and took its highest ten-minute value.
 5. Source checks: each kit's source is the kit register's, except while `sealed_source_register_2026.csv` has it out: CS-0583 went out 5 August and back into KIT-2 4 September, so KIT-2 carried the spare CS-0417 (21 August stock check); certificate in force by date of issue, jig, Cs-137 decay; repeat is the check.
-6. Telemetry: earliest receipt per interval from `platform_ingest_log_2026Q3.csv`, LoRa UK clock converted, against the interval's end; test-mode (T) values count (the agreement's timeliness clause), F records carry no value; over the quarter's 13,248 intervals.
+6. Telemetry: earliest receipt per interval from `platform_ingest_log_2026Q3.csv`, LoRa receipts read as UK clock time and all others as UTC (OP-04 section 2), against the interval's end; test-mode (T) values count (the agreement's timeliness clause); an F record carries no value, so it is not a received value (OP-04 section 2); over the quarter's 13,248 intervals.
 7. Air filters: air drawn is `measured_flow_m3_h` in `air_pump_controller_log_2026Q3.csv` integrated from filter on to off, the transmitter's blank RUN rows filled by linear interpolation (the set-flow totaliser and AS2's set-flow volume do not measure it); latest result version.
 8. Notified MV334 and MV129 with their dates and highest values.
 

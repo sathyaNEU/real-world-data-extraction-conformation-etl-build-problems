@@ -220,13 +220,17 @@ def air(tgt):
 
 # ------------------------------------------------------------------ ask C: timeliness
 
-def timeliness(tgt, vals, stat=None):
+def timeliness(tgt, vals, stat=None, lora_utc=False, faults=None):
     """An interval counts when the platform received the station's value for it (a record with a dose rate)
-    within sixty minutes of the interval's end; fault records carry no value, and test-mode values count
-    (agreement 2.3). With stat given, test-mode values are left out (the reading the agreement rules out)."""
+    within sixty minutes of the interval's end; an F record carries no value (OP-04 section 2), test-mode values
+    count (agreement 2.3) and LoRa receipts are stamped in UK clock time (OP-04 section 2). The readings those
+    sentences rule out, for the checks: stat given, test-mode values left out; lora_utc, LoRa stamps read as UTC;
+    faults given (station -> F mask), F records counted as received values."""
     have = {c: ~np.isnan(v) for c, v in vals.items()}
     if stat is not None:
         have = {c: h & (stat[c] != "T") for c, h in have.items()}
+    if faults is not None:
+        have = {c: h | faults[c] for c, h in have.items()}
     first = {c: np.full(W.N10, np.inf) for c in vals}
     with open(os.path.join(tgt, pack.FILES["ingest"]), newline="") as f:
         rd = csv.reader(f); next(rd)
@@ -234,7 +238,7 @@ def timeliness(tgt, vals, stat=None):
             if rec.endswith("Z"):
                 when = dt.datetime.strptime(rec, "%Y-%m-%dT%H:%M:%SZ")
             else:
-                when = dt.datetime.strptime(rec, "%d/%m/%Y %H:%M:%S") - W.BST
+                when = dt.datetime.strptime(rec, "%d/%m/%Y %H:%M:%S") - (dt.timedelta(0) if lora_utc else W.BST)
             m = (when - W.Q_START).total_seconds() / 60.0
             ta, tb = t_of(a), t_of(b)
             seg = first[code][ta:tb + 1]

@@ -249,6 +249,8 @@ threshold or the clock the step rides on.
 | SF13 | the baseline the excess is read over | a centred 48-hour running median | a trailing 24-hour median, a seven-day 30th percentile | same call | same call over the family |
 | SF14 | the fall test's settings | more than half, from 30 nSv/h, the next value staying down | more than half to 70 per cent, from 30 or 35, zero to two values staying down | same call, 72 of 72 | same call (the corners at 45 and 80 per cent, floors 25 and 40, at least half exact) |
 | SF15 | an increase spanning midnight | dated by its start | both dates | same call | same call (no increase spans a BST midnight) |
+| SF16 | the LoRa gateway's receipt stamps (the timeliness ask) | UK clock time, every other receipt UTC | the LoRa stamps read as UTC | same call (19 timeliness figures would move, asserted) | OP-04 section 2, "Receipts logged by the LoRa gateway are stamped in UK clock time; all other receipts are in UTC."; same call |
+| SF17 | an F record against "the station's value" (the timeliness ask) | not a received value | counted as received | same call (the eleven gland-batch figures would move, asserted) | OP-04 section 2, "A record with the status F carries no value, so the platform has not received the station's value for that interval."; same call |
 
 ## Ladder
 
@@ -348,7 +350,12 @@ controllers' logs and the laboratory's results (asserted, SEP).
 - Ask C, primary device D4 and D6 (absence evidenced in a file no habitual join reaches): at the eleven gland-batch
   stations the outstation's fault records arrive on time but carry no dose rate (procedure section 2), so the
   platform did not receive the station's value for those intervals (agreement 2.3); the ingest log counts them
-  among its records, and only the export shows which carry none. Agreement 2.3 now says in its own voice that a
+  among its records, and only the export shows which carry none. OP-04 section 2 files what an F record is ("A
+  record with the status F carries no value, so the platform has not received the station's value for that
+  interval.") and the receipt clocks ("Receipts logged by the LoRa gateway are stamped in UK clock time; all other
+  receipts are in UTC."), both at revision 6 with the platform migration (the pass-2 judge's two forks, closed,
+  SF16 and SF17); the device's work stays the cross-file cut, since the ingest log alone shows no F. Agreement 2.3
+  now says in its own voice that a
   value recorded in test mode for a source check counts (the stage 4 judge's fork, closed), and every figure is
   an interval clear of its rounding line with test-mode values counted or left out (asserted). Hazards: the LoRa
   gateway's UK clock, re-sent hours (the earliest receipt counts), the quarter's 13,248 intervals as the
@@ -375,11 +382,11 @@ Pair ceiling: 48.1 (cracker 64.6 on the call, mirror 31.6 off it, on 38, 7 and 5
 
 Mirror leakage: 35.6 per cent of ask weight
 
-Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest 2a012d867beea3ee
+Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest 82da52791b7d2981
 
 ## Leak sweep answered
 
-`leak.py task211 --asof 2026-10-09` on the FIX_NOW cut: verdict REVIEW, no LEAK; every REVIEW answered here.
+`leak.py task211 --asof 2026-10-09` on the pass-2 cut: verdict REVIEW, no LEAK; every REVIEW answered here.
 
 - Sweep 3, six golden figures in `mvgn_annual_report_2025.pdf` (99.5, 99.3, 98.6, 97.8, 99.4, 97.5): each is another
   station's 2025 annual mean or data capture, coinciding at one decimal with a Q3 2026 timeliness or source-check
@@ -390,9 +397,9 @@ Measured by: generator/ceiling.py, run on the cut pack by build.py at every buil
 - Sweep 3, `MVJC_service_agreement_schedule2.pdf` carries 8 of 12 distinctive words of the call: they are the words
   of the notification clause itself (2.2, the filed estimand), which the call repeats; the clause names no station,
   date or figure.
-- Sweep 4, the procedure (7 of 25 stump-paragraph terms), the agreement (7), the spectrometry report (3) and the
-  annual report (3): the shared words are the documents' own subject (stations, natural, report, increase,
-  radiation, university, analyst); none names radon, decay, a fall, a half or a step, and the spectrometry
+- Sweep 4, the procedure (6 of 25 stump-paragraph terms), the agreement (6), the spectrometry report (3) and the
+  annual report (4): the shared words are the documents' own subject (stations, natural, report, increase,
+  radiation, university, analyst, annual); none names radon, decay, a fall, a half or a step, and the spectrometry
   report's nuclide library gives half-lives and gamma lines only (asserted), so none names the move.
 - Sweep 12, the annual report names four data values that the register's first rows carry (Beck Side, Carr Lane
   Allotments, MV166, MV176): it is the network's own annual record listing its stations, not a note written for
@@ -436,3 +443,4 @@ Measured by: generator/ceiling.py, run on the cut pack by build.py at every buil
   two on all three seeds. Rebalanced in `rad2.py` (above) before the card was filed.
 - The set-flow counters as ask B's device (the totaliser and AS2's hour-meter volume read as the air drawn): the stage 4 judge found it the weakest ask fork, closed by the producing systems' own field names; the device moved to the flow transmitter's dropouts, filled the same way by every reasonable fill (2026-11-07).
 - Crediting the rain screen to the procedure (the submission's and this note's first wording): OP-04 files the investigation level and its review, never a rain test; the screen is the analyst's reflex, 15 or 16 stations by its tolerance, and the submission no longer states its count (2026-11-07).
+- Leaving the LoRa receipt clock to the delay distribution and the F record to a reading of "value" (the pass-2 judge's two open ask forks, 19 and 11 graded figures): both filed in OP-04 section 2 as WHAT sentences, no graded figure moved (2026-11-07).

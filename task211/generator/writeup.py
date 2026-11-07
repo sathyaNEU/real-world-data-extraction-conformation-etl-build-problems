@@ -16,7 +16,7 @@ def write(task_dir, f):
     md.append("## 1. Final Recommendation\n")
     md.append("**Yes: notify increases of artificial origin at %s %s on %d days (%s), highest ten-minute value %d nSv/h, "
               "and at %s %s on %d days (%s), highest %d nSv/h.** No other station recorded one; clearing increases "
-              "on rain at the nearest gauge would notify many more and miss the radiography on wet evenings.\n" % (
+              "on rain at the nearest gauge would notify many more stations and clear five of these days.\n" % (
                   c1, A["site"], A["days"], ", ".join(A["dates"]), A["peak"], c0, B["site"], B["days"],
                   ", ".join(B["dates"]), B["peak"]))
     md.append("## 2. Critical Components\n")
@@ -24,7 +24,7 @@ def write(task_dir, f):
               "ten-minute step anywhere in the quarter." % f["nat_max_fall_pct"])
     md.append("2. Each of the **%d** detection days ended with the excess falling by **%d per cent or more** in one step "
               "and staying down." % (f["detection_days"], f["art_min_fall_pct"]))
-    md.append("3. On **%d** of those days the nearest valley rain gauge recorded rain within an hour of the increase, so rain "
+    md.append("3. On **%d** of those days the nearest rain gauge recorded rain within an hour of the increase, so rain "
               "coincidence does not decide origin.\n" % f["wet_detection_days"])
     md.append("## 3. Step-by-Step Solution\n")
     md.append("1. Read `%s`, exact duplicate rows once, microsieverts converted, T and F records set aside." %
@@ -39,9 +39,10 @@ def write(task_dir, f):
               "went out 5 August and back into KIT-2 4 September, so KIT-2 carried the spare CS-0417 (21 August "
               "stock check); certificate in force by date of issue, jig, Cs-137 decay; repeat is the check." %
               pack.FILES["sources"])
-    md.append("6. Telemetry: earliest receipt per interval from `%s`, LoRa UK clock converted, against the interval's "
-              "end; test-mode (T) values count (the agreement's timeliness clause), F records carry no value; over the quarter's 13,248 "
-              "intervals." % pack.FILES["ingest"])
+    md.append("6. Telemetry: earliest receipt per interval from `%s`, LoRa receipts read as UK clock time and all "
+              "others as UTC (OP-04 section 2), against the interval's end; test-mode (T) values count (the "
+              "agreement's timeliness clause); an F record carries no value, so it is not a received value (OP-04 "
+              "section 2); over the quarter's 13,248 intervals." % pack.FILES["ingest"])
     md.append("7. Air filters: air drawn is `measured_flow_m3_h` in `%s` integrated from filter on to off, the "
               "transmitter's blank RUN rows filled by linear interpolation (the set-flow totaliser and AS2's set-flow "
               "volume do not measure it); latest result version." % pack.FILES["pump"])

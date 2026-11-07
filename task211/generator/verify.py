@@ -213,7 +213,14 @@ def run(tgt, figures_path):
             conc = lab[r[0]][0] / vol * 1000
             check("filter %s" % r[0], "%.2f" % conc == F["air"][r[0]]["conc"], (conc, F["air"][r[0]]))
 
-    # timeliness: the earliest telemetry receipt of each interval holding a value, against the interval's end
+    # timeliness: the earliest telemetry receipt of each interval holding a value, against the interval's end, on
+    # the receipt clocks and the F record OP-04 section 2 files
+    op4 = " ".join(" ".join(p.extract_text() for p in PdfReader(os.path.join(
+        tgt, "MVGN-OP-04_network_operating_procedure.pdf")).pages).split())
+    check("OP-04 files the receipt clocks", "Receipts logged by the LoRa gateway are stamped in UK clock time; all "
+          "other receipts are in UTC." in op4)
+    check("OP-04 files that an F record carries no value", "A record with the status F carries no value, so the "
+          "platform has not received the station's value for that interval." in op4)
     ing = pd.read_csv(os.path.join(tgt, "platform_ingest_log_2026Q3.csv"), dtype=str)
     first = {c: np.full(NI, np.inf) for c in val}
     for code, a, b, rec in zip(ing.station_code, ing.first_interval_start, ing.last_interval_start, ing.received_at):

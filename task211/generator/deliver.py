@@ -111,9 +111,9 @@ def write_docx(g, path):
              g["nat_max_fall"], g["art_min_fall"], NAMES[codes[1]], NAMES[codes[0]],
              g["routes"]["wet_days"], n_days), space=8)
     para("The source has not been identified. The shape of the increases is that of a gamma source switched on and "
-         "off near the probe, such as industrial radiography; we have asked both councils' environmental health "
-         "teams whether any radiography was permitted near the two sites in the quarter, and will report what we "
-         "learn in the quarterly report.", space=12)
+         "off near the probe; we have asked both councils' environmental health teams whether any work with gamma "
+         "sources was permitted near the two sites in the quarter, and will report what we learn in the quarterly "
+         "report.", space=12)
     para(W.PEOPLE["duty"], bold=True, space=0)
     para("Duty Radiation Scientist, %s" % W.LAB, size=9, space=0, color="52514E")
     para("cc %s, Network Manager" % W.PEOPLE["manager"], size=8.5, space=0, color="52514E")

@@ -115,7 +115,9 @@ def procedure(path):
             "value for every ten minutes. The platform stores each value against the start of its ten-minute "
             "interval in UTC. A value recorded while a station is in test mode carries the status T and is not "
             "monitoring data. When a probe reports a fault the outstation still sends a record for the interval, "
-            "with the status F and no dose rate. Every other value carries the status V.", BODY))
+            "with the status F and no dose rate. A record with the status F carries no value, so the platform has "
+            "not received the station's value for that interval. Every other value carries the status V. Receipts "
+            "logged by the LoRa gateway are stamped in UK clock time; all other receipts are in UTC.", BODY))
         s.append(Paragraph("3. Reference levels and review", H2))
         s.append(Paragraph(
             "Each station's reference level for a quarter is entered on the platform's alarm configuration on the "
@@ -158,7 +160,7 @@ def procedure(path):
                        ["3", "11/02/2019", "Air sampling added", "Rosemary Wood"],
                        ["4", "27/09/2021", "Investigation level set at reference level plus 30 nSv/h", "Rosemary Wood"],
                        ["5", "08/01/2024", "Field kits and jigs; source check repeats", W.PEOPLE["manager"]],
-                       ["6", issued, "Platform migration: interval start in UTC, test and fault status, platform codes",
+                       ["6", issued, "Platform migration: interval start in UTC, test and fault status, receipt clocks, platform codes",
                         W.PEOPLE["manager"]]], [12, 22, 108, 30]),
                 Spacer(1, 10),
                 table([["Prepared", "%s, Duty Radiation Scientist" % W.PEOPLE["duty"], "30/05/2025"],

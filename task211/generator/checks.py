@@ -335,6 +335,23 @@ def run(tgt, T, g, info, figs):
            abs((x2 * 10) % 1 - 0.5) / 10 >= 100.0 / W.N10 or x2 == 100.0, x2)
     ok("C the agreement counts a test-mode value", "in test mode for a source check is the station's value" in
        agr.replace("\n", " "))
+    proc_flat = " ".join(proc.split())
+    ok("SF16 the procedure files the receipt clocks", "receipts logged by the lora gateway are stamped in uk clock "
+       "time; all other receipts are in utc." in proc_flat)
+    ok("SF17 the procedure files that an F record is not a received value", "a record with the status f carries no "
+       "value, so the platform has not received the station's value for that interval." in proc_flat)
+    as_utc = G.timeliness(tgt, vals, lora_utc=True)
+    moved16 = sorted(c for c in vals if round(as_utc[c]["pct"], 1) != round(g["timely"][c]["pct"], 1))
+    ok("SF16 the golden reads LoRa stamps as UK clock time; read as UTC, %d figures move" % len(moved16),
+       len(moved16) >= 10, moved16)
+    fmask = {c: stat[c] == "F" for c in vals}
+    as_recv = G.timeliness(tgt, vals, faults=fmask)
+    moved17 = sorted(c for c in vals if round(as_recv[c]["pct"], 1) != round(g["timely"][c]["pct"], 1))
+    ok("SF17 the golden sets F records aside; counted as received, the gland-batch figures move",
+       moved17 == sorted(W.GLAND_BATCH), moved17)
+    filed = G.timeliness(tgt, vals)
+    for c in vals:
+        ok("SF16 SF17 %s the golden is the filed reading" % c, filed[c]["pct"] == g["timely"][c]["pct"])
     ok("C the denominator is the quarter's intervals", all(t["pct"] == t["timely"] / W.N10 * 100 for t in
                                                            g["timely"].values()))
     m = CL.measure(tgt, g)
@@ -359,12 +376,29 @@ def run(tgt, T, g, info, figs):
               "Katie Clarke", "Kim Simpson", "Shirley Collins", "Brian Smith", "Cameron Brown", "Hazel Lambert",
               "Rosemary Wood", "Gerard Buckley"}
     ok("REAL every persona from guard.py names", people <= listed, people - listed)
+    import subprocess
+    margin = 18 * 72 / 25.4
     for f in glob.glob(os.path.join(tgt, "*.pdf")):
         t = pdf_text(f)
-        ok("REAL %s carries page numbers" % os.path.basename(f), "Page 1 of" in t)
+        name = os.path.basename(f)
+        ok("REAL %s carries page numbers" % name, "Page 1 of" in t)
         info_ = PdfReader(f).metadata
         made = str(info_.get("/CreationDate", ""))[2:10]
-        ok("REAL %s made before the export" % os.path.basename(f), made <= "20261009", made)
+        ok("REAL %s made before the export" % name, made <= "20261009", made)
+        creator, producer = str(info_.get("/Creator", "")), str(info_.get("/Producer", ""))
+        ok("REAL %s names its authoring tool, not an organisation" % name,
+           creator and producer and not any(o in creator + producer for o in (W.UNIVERSITY, W.COMMITTEE, "Council")),
+           (creator, producer))
+        for key in ("/CreationDate", "/ModDate"):
+            stamp = str(info_.get(key, ""))
+            ok("REAL %s %s is not on a round minute" % (name, key), len(stamp) >= 16 and stamp[14:16] != "00", stamp)
+        bbox = subprocess.run(["pdftotext", "-bbox", f, "-"], capture_output=True, text=True, check=True).stdout
+        for pg in bbox.split("<page ")[1:]:
+            w = float(re.search(r'width="([\d.]+)"', pg).group(1))
+            out = [m.group(5) for m in re.finditer(
+                r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">([^<]*)</word>', pg)
+                if float(m.group(3)) > w - margin + 0.5 or float(m.group(1)) < margin - 0.5]
+            ok("REAL %s no word crosses a page margin" % name, not out, out[:5])
     counts = {c: int((~np.isnan(v)).sum()) for c, v in vals.items()}
     short = [n for n in counts.values() if n < W.N10]
     ok("REAL the stations' value counts are spread, not uniform", len(set(short)) >= len(short) - 3 and
