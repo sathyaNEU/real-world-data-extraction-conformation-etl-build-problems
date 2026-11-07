@@ -1,68 +1,122 @@
 ## Tags
 
-**Domain:** Physical and environmental sciences (hydrology and flood frequency).
+**Domain:** Political science and public policy (election and polling forecasting).
 **Analytical objective:** Forecasting and predictive modelling.
 
 ## 1. Final Recommendation
 
-**Hold the Ngaio Road connection until the PS03 storage upgrade is commissioned: replayed through 2004 to 2023 each day as it occurred, PS03 overflows about 3 times a year with the subdivision, above the consent's limit of 2.**
-Not the station's own record of 2 overflows since 2024, nor one response per millimetre fitted on the meter (about 1 a year): both carry the meter's low water table into years when it stood far higher. After the upgrade the station overflows about 1 a year with the subdivision.
+**Apply for protected action ballot orders at 11 councils: Ardeen Shire Council; Copeland Downs Shire Council; Corrigan Valley Shire Council; Fairholme Shire Council; Halston City Council; Lindale City Council; Northvale City Council; Pellham City Council; Stanwick Shire Council; Valmont City Council; Westhaven Shire Council.**
+Not the 15 councils members' own voting records put above half: Bellcourt City Council, Elmhurst Bay City Council, Jerrick Rural City Council, Marlow Coast Shire Council, Rosedene City Council, Tallis Creek Shire Council fall below half once each member is read with the delegate in post at their worksite after the July 2026 delegate elections, and Copeland Downs Shire Council and Pellham City Council rise above it.
 
 ## 2. Critical Components
 
-1. PS03's dry weather infiltration rises by **4.2 L/s** for each kilometre of its sewer below the water table.
-2. The median day had **0.2 km** of sewer below the water table in 2024 to 2026 against **2.1 km** in 2004 to 2023, with about **21 km** at the wettest in both.
-3. The station overflows about **3** times a year as connected now, **3** with Ngaio Road and **1** with Ngaio Road after the upgrade.
-4. Held out of each fit, the June 2025 high-river weeks are missed by **43 L/s** on average by one response per millimetre and by **0.2 L/s** by the conditioned model.
+1. Members at a worksite with an elected delegate in post vote markedly more often: about **24 points** at the 2027 rolls (log odds 1.05).
+2. Members' voting records alone reproduce the 2023-24 declared turnouts within about **1 point** on average, because the 2022 and 2024 delegates sat at much the same worksites.
+3. Six councils that cleared half at their last ballot fall below it in 2027 (Bellcourt City Council, Elmhurst Bay City Council, Jerrick Rural City Council, Marlow Coast Shire Council, Rosedene City Council, Tallis Creek Shire Council), and two that did not now clear it (Copeland Downs Shire Council and Pellham City Council).
 
 ## 3. Step-by-Step Solution
 
-1. Averaged the SCADA export's good 15-minute inflow into UTC hours, setting aside hours with the wet well at the weir crest, beside the climate station's hourly rain (archive NZST hour ending, 2026 provisional 15-minute UTC).
-2. Turned bore 72_1043's depth below its measuring point into the water level and, against the asset register's PS03 in-service mains, into each day's kilometres of sewer below it: medians 0.2 km (2024 to 2026) and 2.1 km (2004 to 2023).
-3. Fitted the dry hours (no rain in the previous 72 hours) as a weekly domestic pattern plus 4.2 L/s per km below the water table, then the rest as a fast rain response (30 m3 per mm) and a slow one scaled by those kilometres (6.0 m3 per mm per km).
-4. Refitted both models without the June 2025 high-river weeks and scored them there and on 2026: mean errors 0.2 and 0.0 L/s for the conditioned model, 43 and 1.1 L/s for one response per millimetre.
-5. Ran the model through every hour of 2004 to 2023, each day with its own water table, at the data sheet's 112.0 L/s and 350 m3, counting overflows under consent condition 3: 58 in 20 years as connected now, 64 with the subdivision's 260 dwellings at the code of practice's 2.7 persons, 200 litres and Table 5.2, 15 after adding the upgrade's 1,100 m3.
-6. Water use per dwelling per the billing policy's section 4, each rating unit's dwellings dated by the building consents' code compliance certificates rather than carried back from the 31 October 2026 rating snapshot.
-7. Other stations from the monitors' own NZST message times, each serial placed by the monitor installation history, an overflow emergency where it began inside an outage at any ICP the council's electricity site list gives the station's address.
-8. With the subdivision the replay averages 3.20 overflows a year against condition 6's limit of 2, so condition 8 bars the connection until the upgrade, which brings it to about 1.
+1. Placed every member of membership_register_extract_2026-11-02.csv at their worksite, moving the codes used before July 2024 to today's through worksites_2026-11.csv.
+2. Marked each member, on each online vote's close and on the extract, as at a worksite with a delegate of the term in force (delegate_register_2018-2028.xlsx) who was still a member that day.
+3. Fitted a logit of voting on online_vote_invitations_2022-2025.csv: vote and council effects, age band, log years of membership, employment and the delegate mark.
+4. Set the ballots' level with one shift returning every ballot the two Tallyhouse declarations report, each roll the members employed on its roll date.
+5. Ran each member of the 2 November 2026 roll at the councils in bargaining_round_2027.xlsx with the 2026-28 delegates in post on the extract and averaged by council.
+6. Applied the guide's rule: apply where expected turnout is at least 50 per cent.
+7. Dues: one copy of each advice, the bureau's runs split by its statements, Thursday-dated platform runs moved back four days to their Sunday period end.
+8. Organiser hours: travel and administration out, one row per organiser, invitation and day at its last update, each forum's hours shared by the sign-ins placed through the register.
 
 ## 4. Deliverable Answers
 
-### ps03_ngaio_road_connection_2027.xlsx
+### pab_2027_turnout_forecast.xlsx
 
-1. Average wet weather overflows a year over the consent's 2004 to 2023 replay, whole numbers:
-   - Without the subdivision: 3
-   - With the subdivision: 3
-   - With the subdivision after the upgrade: 1
-2. Residential water use per dwelling per day, litres:
-   - 2024 Q1: 448
-   - 2024 Q2: 381
-   - 2024 Q3: 340
-   - 2024 Q4: 414
-   - 2025 Q1: 456
-   - 2025 Q2: 394
-   - 2025 Q3: 315
-   - 2025 Q4: 419
-   - 2026 Q1: 477
-   - 2026 Q2: 374
-   - 2026 Q3: 313
-3. Other stations' wet weather overflows and spill hours (whole hours):
-   - PS01 2024: 3 overflows, 9 spill hours
-   - PS01 2025: 2 overflows, 7 spill hours
-   - PS02 2024: 6 overflows, 16 spill hours
-   - PS02 2025: 5 overflows, 16 spill hours
-   - PS04 2024: 2 overflows, 6 spill hours
-   - PS04 2025: 2 overflows, 6 spill hours
-   - PS05 2024: 4 overflows, 11 spill hours
-   - PS05 2025: 5 overflows, 13 spill hours
-   - PS06 2024: 1 overflows, 2 spill hours
-   - PS06 2025: 2 overflows, 6 spill hours
-4. Network emergency overflows: 2024: 3; 2025: 3
+1. Each council's expected turnout and whether it reaches half the roll:
+   - Ardeen Shire Council: about 66 per cent, reaches half
+   - Bellcourt City Council: about 45 per cent, below half
+   - Brackley Ranges Shire Council: about 38 per cent, below half
+   - Copeland Downs Shire Council: about 57 per cent, reaches half
+   - Corrigan Valley Shire Council: about 63 per cent, reaches half
+   - Darnley Plains Shire Council: about 35 per cent, below half
+   - Elmhurst Bay City Council: about 45 per cent, below half
+   - Fairholme Shire Council: about 65 per cent, reaches half
+   - Glenvale Hills Shire Council: about 41 per cent, below half
+   - Halston City Council: about 60 per cent, reaches half
+   - Jerrick Rural City Council: about 44 per cent, below half
+   - Kelvale Shire Council: about 45 per cent, below half
+   - Lindale City Council: about 62 per cent, reaches half
+   - Marlow Coast Shire Council: about 43 per cent, below half
+   - Northvale City Council: about 72 per cent, reaches half
+   - Oakmere Shire Council: about 32 per cent, below half
+   - Pellham City Council: about 58 per cent, reaches half
+   - Quarrington Shire Council: about 39 per cent, below half
+   - Rosedene City Council: about 46 per cent, below half
+   - Stanwick Shire Council: about 61 per cent, reaches half
+   - Tallis Creek Shire Council: about 45 per cent, below half
+   - Underhill Rural City Council: about 41 per cent, below half
+   - Valmont City Council: about 58 per cent, reaches half
+   - Westhaven Shire Council: about 67 per cent, reaches half
+2. Dues each council's payroll deducted for the branch, pay periods ending in 2025-26, whole dollars:
+   - Ardeen Shire Council: 166,601
+   - Ashby Shire Council: 155,544
+   - Bellcourt City Council: 574,860
+   - Brackley Ranges Shire Council: 105,135
+   - Burnleigh City Council: 424,710
+   - Carrow Shire Council: 110,825
+   - Copeland Downs Shire Council: 240,851
+   - Corrigan Valley Shire Council: 359,790
+   - Darnley Plains Shire Council: 124,844
+   - Denholm City Council: 328,920
+   - Eastbourne Rural City Council: 139,989
+   - Elmhurst Bay City Council: 505,092
+   - Fairholme Shire Council: 75,422
+   - Glenvale Hills Shire Council: 190,456
+   - Greystone Shire Council: 217,632
+   - Halston City Council: 636,735
+   - Jerrick Rural City Council: 214,912
+   - Kelvale Shire Council: 77,155
+   - Lindale City Council: 538,832
+   - Marlow Coast Shire Council: 270,358
+   - Northvale City Council: 365,691
+   - Oakmere Shire Council: 160,222
+   - Pellham City Council: 428,717
+   - Quarrington Shire Council: 116,900
+   - Rosedene City Council: 339,517
+   - Stanwick Shire Council: 174,757
+   - Tallis Creek Shire Council: 233,411
+   - Underhill Rural City Council: 94,016
+   - Valmont City Council: 450,653
+   - Westhaven Shire Council: 248,663
+3. Organiser hours at each council in 2025-26, whole hours:
+   - Ardeen Shire Council: 254
+   - Ashby Shire Council: 263
+   - Bellcourt City Council: 295
+   - Brackley Ranges Shire Council: 277
+   - Burnleigh City Council: 266
+   - Carrow Shire Council: 273
+   - Copeland Downs Shire Council: 266
+   - Corrigan Valley Shire Council: 320
+   - Darnley Plains Shire Council: 277
+   - Denholm City Council: 346
+   - Eastbourne Rural City Council: 281
+   - Elmhurst Bay City Council: 260
+   - Fairholme Shire Council: 242
+   - Glenvale Hills Shire Council: 188
+   - Greystone Shire Council: 241
+   - Halston City Council: 247
+   - Jerrick Rural City Council: 252
+   - Kelvale Shire Council: 298
+   - Lindale City Council: 260
+   - Marlow Coast Shire Council: 284
+   - Northvale City Council: 253
+   - Oakmere Shire Council: 180
+   - Pellham City Council: 354
+   - Quarrington Shire Council: 327
+   - Rosedene City Council: 274
+   - Stanwick Shire Council: 249
+   - Tallis Creek Shire Council: 239
+   - Underhill Rural City Council: 246
+   - Valmont City Council: 214
+   - Westhaven Shire Council: 326
 
-### council_report_ngaio_road_2027.docx
+### pab_2027_recommendation_bcom.docx
 
-1. Recommends deferring the Ngaio Road connection until the PS03 storage upgrade is commissioned, with the three replay figures (about 3, 3 and 1 a year) and the chart.
-
-### replay_overflows_2004-2023.png
-
-1. Bars for each year 2004 to 2023, PS03 as connected now and with Ngaio Road, the consent limit of 2 drawn across, titled with the 3.2 a year the subdivision brings.
+1. Recommendation: apply at Ardeen Shire Council; Copeland Downs Shire Council; Corrigan Valley Shire Council; Fairholme Shire Council; Halston City Council; Lindale City Council; Northvale City Council; Pellham City Council; Stanwick Shire Council; Valmont City Council; Westhaven Shire Council; do not apply at the other 13 councils in the round.

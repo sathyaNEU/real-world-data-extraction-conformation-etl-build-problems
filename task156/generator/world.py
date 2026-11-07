@@ -1,99 +1,99 @@
-"""task156 constants: the Rauwhero District Council's wastewater network, the Riverbank Road pump station (PS03) and the
-Ngaio Road subdivision.
+"""task156 architecture 3: the world. A Victorian union branch covering council workers (the Local Services Union,
+Victoria Branch), the councils it bargains with, their worksites, the branch's elected worksite delegates by term,
+its online votes, the protected action ballot rounds the ballot agent declared, and the 2027 bargaining round.
 
-Rauwhero is a river terrace town on the Kahuwera River. Its wastewater drains by gravity to six pump stations, each with
-an engineered overflow to the river under the Kahuwera Regional Council's network discharge consent AUTH-2024-0418,
-granted in March 2024 on the hourly rainfall record of 2004 to 2023. PS03 at Riverbank Road takes the low terrace and
-part of the upper terrace and pumps to the treatment plant. The developer of the Ngaio Road subdivision (260 dwellings
-in three stages) has asked to connect from 2027; the council's PS03 storage upgrade is in its Long-Term Plan for 2029.
-The officers' report goes to the council's 10 December 2026 meeting; every export was pulled on 3 or 4 November 2026.
-
-The seed was fixed by rule before any data was generated: the task number, then the as-of month and day."""
-from __future__ import annotations
-
+Everything is constructed for this build; no real dataset, council, union or ballot agent is used. Council names are
+invented and checked against Victoria's 79 local government areas."""
 import datetime as dt
-import hashlib
 
-import numpy as np
+SEED = 156
+UNION = "Local Services Union, Victoria Branch"
+UNION_SHORT = "LSU Victoria"
+AGENT = "Tallyhouse Ballot Services Pty Ltd"
+BUREAU = "Western Shires Payroll Services"
+PEOPLE = {"research": "Samantha Taylor", "secretary": "Dennis Kim", "organising": "Eric Goodwin"}
 
-SEED = 1561104
+# The forecast is struck on this extract of the membership register; the ballots open on BALLOT_OPEN.
+EXTRACT = dt.date(2026, 11, 2)
+BALLOT_OPEN = dt.date(2027, 3, 1)
+BALLOT_CLOSE = dt.date(2027, 3, 15)
 
-COUNCIL = "Rauwhero District Council"
-REGIONAL = "Kahuwera Regional Council"
-TOWN = "Rauwhero"
-RIVER = "Kahuwera River"
-STATION = "PS03"
-STATION_NAME = "Riverbank Road"
-SUBDIVISION = "Ngaio Road"
-CONSENT = "AUTH-2024-0418"
-SUB_RM = "RM26-0187"
-CLIMATE_SITE = "Rauwhero at Treatment Plant"
-CLIMATE_ID = "KRC 1187"
-BORE = "72_1043"
-BORE_NAME = "Rauwhero Terrace"
-
-PEOPLE = {
-    "consents": "Aaliyah Beattie",      # the regional council's consents officer who signed the consent
-    "engineer": "Benjamin Gilbert",     # the developer's consulting engineer, author of the servicing report
-    "network": "Anaru Boyce",           # the council's wastewater network engineer, owner of the station data sheet
-}
-
-UTC = dt.timezone.utc
-NZST = dt.timezone(dt.timedelta(hours=12))
-
-# ------------------------------------------------------------------------------------------------- calendar
-REPLAY_Y0, REPLAY_Y1 = 2004, 2023          # the consent's record years
-METER_D0 = dt.date(2024, 1, 1)             # the station's SCADA export starts
-METER_D1 = dt.date(2026, 10, 31)           # last day in every export (NZ time)
-PULL = dt.date(2026, 11, 3)
-ASOF = dt.date(2026, 11, 4)
-MEETING = dt.date(2026, 12, 10)
-CONSENT_DATE = dt.date(2024, 3, 18)
-COP_DATE = dt.date(2022, 7, 1)
-REPORT_DATE = dt.date(2026, 9, 21)         # the developer's servicing report
-BRIEF_DATE = dt.date(2026, 8, 12)          # the upgrade project brief
-DATASHEET_DATE = dt.date(2023, 11, 7)
-POLICY_DATE = dt.date(2023, 7, 1)          # the water metering and billing policy
-H0 = dt.datetime(2003, 12, 31, 12, tzinfo=UTC)      # 2004-01-01 00:00 NZST
-H1 = dt.datetime(2026, 10, 31, 11, tzinfo=UTC)      # 2026-11-01 00:00 NZDT
-
-# ------------------------------------------------------------------------------------------------- PS03
-QP = 112.0                 # L/s, both pumps together, the 2023 drawdown test
-STORE = 350.0             # m3 from the duty pump's start level to the overflow weir crest
-WET_WELL_STORE = 38.0     # m3 of that in the wet well, the rest in the emergency storage chamber
-UPGRADE = 1100.0          # m3 the 2029 tank adds below the weir crest
-WEIR_ABOVE_FLOOR = 4.20   # m, the overflow weir crest above the wet well floor
-FLOOR_RL = 10.85          # m NZVD2016, the wet well floor
-DUTY_START = 1.10         # m above the floor where the duty pump starts
-SPILL_SEP_H = 24          # overflows less than 24 hours apart are one overflow (consent condition 3)
-
-# ------------------------------------------------------------------------------------------------- catchment
-DWELLINGS_EXISTING = 2151          # PS03 catchment dwellings, steady through the meter
-PERSONS_PER_DWELLING = 2.63        # the catchment's own occupancy (census meshblocks); the code of practice uses 2.7
-LPD_ACTUAL = 196.0                 # litres per person per day returned to the sewer
-SUB_DWELLINGS = (96, 88, 76)       # Ngaio Road stages 1, 2, 3
-SUB_YEARS = (2027, 2028, 2029)
-COP_LPD = 200.0
-COP_OCC = 2.7
-
-# the true response (generator only; nothing ships these)
-C0 = 2.1          # L/s of infiltration that never dries (upper terrace, perched water)
-G = 4.2           # L/s per km of sewer below the water table
-RF = 30.0         # m3 per mm of rain, the fast inflow
-RS = 6.0          # m3 per mm of rain per km of sewer below the water table, the rain-induced infiltration
-UH_FAST = (1.0, 6)
-UH_SLOW = (9.0, 72)
+# Delegate terms: elected each even July for two years.
+TERMS = [2018, 2020, 2022, 2024, 2026]
 
 
-def rng(*keys):
-    h = hashlib.sha256(("%d|" % SEED + "|".join(str(k) for k in keys)).encode()).digest()
-    return np.random.default_rng(int.from_bytes(h[:8], "little"))
+def term_of(d):
+    """The delegate term in force on date d (terms start 1 July of an even year)."""
+    y = d.year if d.month >= 7 else d.year - 1
+    return y - (y % 2)
 
 
-def token(*keys, n=6):
-    return hashlib.sha256(("%d|" % SEED + "|".join(str(k) for k in keys)).encode()).hexdigest()[:n]
+# Online votes: (id, title, open local, close local, utc offset hours during the window)
+VOTES = [
+    ("V2203", "2022 log of claims endorsement", dt.datetime(2022, 3, 16, 9, 0), dt.datetime(2022, 3, 25, 17, 0), 11),
+    ("V2308", "2023 model agreement consultation", dt.datetime(2023, 8, 8, 9, 0), dt.datetime(2023, 8, 18, 17, 0), 10),
+    ("V2409", "2024 rules amendment vote", dt.datetime(2024, 9, 10, 9, 0), dt.datetime(2024, 9, 20, 17, 0), 10),
+    ("V2510", "2026-27 bargaining claims endorsement", dt.datetime(2025, 10, 14, 9, 0),
+     dt.datetime(2025, 10, 24, 17, 0), 11),
+]
+# Logit level of each online vote (the vote's own salience).
+VOTE_ALPHA = {"V2203": -1.10, "V2308": -1.00, "V2409": -1.15, "V2510": -0.95}
+# Logit level of a protected action ballot (postal and online, run by the agent); the same in every round.
+PAB_ALPHA = 0.00
+GAMMA = 1.25          # logit lift of an active delegate at the member's worksite
+U_SD = 0.90           # sd of each member's own propensity
 
+# Councils: code, name, candidate in 2027, members on the extract (target), sites, delegate coverage of members by
+# term (2020, 2022, 2024, 2026), the 2027 turnout a ballot would show on the 2024-26 delegates (target), past ballots.
+# Coverage in 2018 equals 2020.
+COUNCILS = [
+    # code, name, cand, n, sites, cov20, cov22, cov24, cov26, base27, hist
+    ("ARD", "Ardeen Shire Council", True, 420, 12, .70, .71, .70, .72, .63, "24"),
+    ("BEL", "Bellcourt City Council", True, 1480, 28, .76, .78, .78, .23, .57, "21 24"),
+    ("BRK", "Brackley Ranges Shire Council", True, 260, 9, .55, .54, .55, .52, .41, ""),
+    ("COP", "Copeland Downs Shire Council", True, 610, 14, .31, .30, .30, .80, .445, "24"),
+    ("COR", "Corrigan Valley Shire Council", True, 890, 18, .80, .82, .82, .44, .70, "21 24"),
+    ("DAR", "Darnley Plains Shire Council", True, 330, 10, .80, .81, .80, .82, .38, "21"),
+    ("ELM", "Elmhurst Bay City Council", True, 1210, 24, .71, .72, .72, .24, .57, "24"),
+    ("FAI", "Fairholme Shire Council", True, 180, 7, .36, .35, .35, .38, .66, ""),
+    ("GLE", "Glenvale Hills Shire Council", True, 450, 13, .26, .25, .25, .60, .33, "21"),
+    ("HAL", "Halston City Council", True, 1620, 30, .67, .68, .68, .70, .59, "21 24"),
+    ("JER", "Jerrick Rural City Council", True, 520, 13, .84, .85, .85, .36, .58, "21"),
+    ("KEL", "Kelvale Shire Council", True, 210, 8, .45, .46, .45, .45, .44, ""),
+    ("LIN", "Lindale City Council", True, 1340, 26, .74, .75, .75, .42, .67, "24"),
+    ("MAR", "Marlow Coast Shire Council", True, 690, 15, .79, .80, .82, .30, .58, "24"),
+    ("NOR", "Northvale City Council", True, 950, 20, .60, .61, .60, .63, .72, "21 24"),
+    ("OAK", "Oakmere Shire Council", True, 390, 11, .61, .62, .62, .60, .33, "21"),
+    ("PEL", "Pellham City Council", True, 1050, 22, .29, .28, .28, .76, .45, "21 24"),
+    ("QUA", "Quarrington Shire Council", True, 300, 9, .21, .20, .20, .44, .36, ""),
+    ("ROS", "Rosedene City Council", True, 860, 18, .75, .76, .76, .22, .585, "24"),
+    ("STA", "Stanwick Shire Council", True, 470, 12, .50, .50, .50, .48, .61, "24"),
+    ("TAL", "Tallis Creek Shire Council", True, 580, 14, .81, .82, .82, .32, .57, "21 24"),
+    ("UND", "Underhill Rural City Council", True, 240, 8, .52, .53, .53, .70, .38, "21"),
+    ("VAL", "Valmont City Council", True, 1180, 24, .69, .70, .70, .36, .66, "24"),
+    ("WES", "Westhaven Shire Council", True, 640, 15, .41, .40, .40, .42, .68, ""),
+    # councils outside the 2027 round (agreements run to 2028 or later)
+    ("ASH", "Ashby Shire Council", False, 380, 11, .58, .60, .59, .60, .55, "21"),
+    ("BUR", "Burnleigh City Council", False, 1100, 22, .66, .65, .67, .66, .58, "21 24"),
+    ("CAR", "Carrow Shire Council", False, 290, 9, .40, .42, .41, .43, .50, "21"),
+    ("DEN", "Denholm City Council", False, 820, 18, .72, .70, .71, .70, .62, "24"),
+    ("EAS", "Eastbourne Rural City Council", False, 350, 10, .50, .52, .50, .51, .47, "24"),
+    ("GRE", "Greystone Shire Council", False, 560, 14, .62, .61, .62, .60, .53, "24"),
+]
+CODES = [c[0] for c in COUNCILS]
+NAME = {c[0]: c[1] for c in COUNCILS}
+CANDIDATES = [c[0] for c in COUNCILS if c[2]]
+BUREAU_CLIENTS = ["BRK", "KEL", "QUA"]          # pay through the shared payroll bureau
 
-def round_half_up(x, nd=0):
-    q = 10 ** nd
-    return np.floor(x * q + 0.5) / q
+# Protected action ballot rounds: (round, close dates spread over the window)
+PAB_ROUNDS = {"21": (dt.date(2021, 3, 22), dt.date(2021, 6, 25)),
+              "24": (dt.date(2023, 10, 16), dt.date(2024, 3, 22))}
+
+# Site kinds with relative size
+SITE_KINDS = [("Civic Centre", 3.0), ("Operations Depot", 2.6), ("Library", 0.9), ("Aquatic and Leisure Centre", 1.2),
+              ("Maternal and Child Health Centre", 0.6), ("Customer Service Centre", 0.8), ("Transfer Station", 0.5),
+              ("Works Depot", 1.8), ("Community Care Office", 1.0), ("Parks Depot", 1.1), ("Arts Centre", 0.5),
+              ("Early Learning Centre", 0.9), ("Local Laws Office", 0.5), ("Waste Services Depot", 1.0),
+              ("Youth Services Hub", 0.4), ("Visitor Information Centre", 0.3)]
+TOWNS = ["North", "South", "East", "West", "Central", "Riverside", "Hillside", "Lakeside", "Station Street",
+         "Market Street", "Mill Road", "Bridge Street"]

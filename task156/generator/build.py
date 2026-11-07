@@ -18,41 +18,44 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import docs as D            # noqa: E402
+import askdata as AD        # noqa: E402
+import docs as DC           # noqa: E402
 import postprocess as PP    # noqa: E402
 import records as R         # noqa: E402
 
 TASK = os.path.dirname(HERE)
-MTIME = time.mktime((2026, 11, 4, 9, 30, 0, 0, 0, -1))
-ZIP_TIME = (2026, 11, 4, 9, 30, 0)
+SCRATCH = os.environ.get("TASK156_SCRATCH", "/tmp")
+MTIME = time.mktime((2026, 11, 3, 10, 15, 0, 0, 0, -1))
+ZIP_TIME = (2026, 11, 3, 10, 15, 0)
 
 
 def build_data(out):
     p = lambda f: os.path.join(out, f)
     n = {}
-    n[R.F_SCADA] = R.write_csv(p(R.F_SCADA), R.SCADA_COLS, R.scada_rows())
-    n[R.F_RAIN] = R.write_csv(p(R.F_RAIN), R.RAIN_COLS, R.rain_archive_rows(), head=R.RAIN_HEAD, crlf=True)
-    n[R.F_RAIN26] = R.write_csv(p(R.F_RAIN26), R.RAIN26_COLS, R.rain26_rows())
-    n[R.F_BORE] = R.write_csv(p(R.F_BORE), R.BORE_COLS, R.bore_rows(), head=R.BORE_HEAD, crlf=True)
-    n[R.F_ASSETS] = R.write_assets(p(R.F_ASSETS))
-    n[R.F_MONITOR] = R.write_csv(p(R.F_MONITOR), R.SMS_COLS, R.sms_rows())
-    n[R.F_OUTAGES] = R.write_csv(p(R.F_OUTAGES), R.OUTAGE_COLS, R.outage_rows())
-    n[R.F_ICPS] = R.write_csv(p(R.F_ICPS), R.ICP_COLS, R.icp_rows())
-    n[R.F_READS] = R.write_csv(p(R.F_READS), R.READ_COLS, R.read_rows())
-    n[R.F_ACCOUNTS] = R.write_csv(p(R.F_ACCOUNTS), R.ACCOUNT_COLS, R.account_rows())
-    n[R.F_RATING] = R.write_csv(p(R.F_RATING), R.RATING_COLS, R.rating_rows())
-    n[R.F_BC] = R.write_csv(p(R.F_BC), R.BC_COLS, R.bc_rows())
-    n[R.F_WWTP] = R.write_csv(p(R.F_WWTP), R.WWTP_COLS, R.wwtp_rows())
-    n[R.F_WORKS] = R.write_csv(p(R.F_WORKS), R.WORKS_COLS, R.works_rows())
-    PP.normalize_ooxml(p(R.F_ASSETS), "Asset Information", "Asset Information", "2019-05-14T03:12:00Z",
-                       "2026-10-29T21:05:00Z", excel=True)
+    n[R.F_REG] = R.write_csv(p(R.F_REG), R.REG_COLS, R.register_rows())
+    n[R.F_INV] = R.write_csv(p(R.F_INV), R.INV_COLS, R.invitation_rows())
+    n[R.F_VOTES] = R.write_csv(p(R.F_VOTES), R.VOTE_COLS, R.vote_rows())
+    n[R.F_SITES] = R.write_csv(p(R.F_SITES), R.SITE_COLS, R.site_rows())
+    n[R.F_DELEG] = R.write_delegates(p(R.F_DELEG))
+    n[R.F_ROUND] = R.write_round(p(R.F_ROUND))
+    n[R.F_REMIT] = R.write_csv(p(R.F_REMIT), AD.REMIT_COLS, AD.remit_rows(), crlf=True)
+    n[R.F_DIARY] = R.write_csv(p(R.F_DIARY), AD.DIARY_COLS, AD.diary_rows())
+    n[R.F_SIGNIN] = R.write_csv(p(R.F_SIGNIN), AD.SIGNIN_COLS, AD.signin_rows())
+    n[R.F_WORKFORCE] = R.write_csv(p(R.F_WORKFORCE), AD.WORKFORCE_COLS, AD.workforce_rows(), crlf=True)
+    n[R.F_SURVEY] = R.write_survey(p(R.F_SURVEY))
+    PP.normalize_ooxml(p(R.F_DELEG), "Eric Goodwin", "Eric Goodwin", "2018-06-29T03:40:00Z", "2026-10-28T05:21:00Z",
+                       excel=True, title="Delegate register")
+    PP.normalize_ooxml(p(R.F_ROUND), "Samantha Taylor", "Samantha Taylor", "2026-08-11T00:52:00Z",
+                       "2026-10-31T04:07:00Z", excel=True, title="2027 bargaining round")
+    PP.normalize_ooxml(p(R.F_SURVEY), "Samantha Taylor", "Samantha Taylor", "2024-10-03T02:15:00Z",
+                       "2024-10-09T06:48:00Z", excel=True, title="Member survey 2024")
     return n
 
 
 def build(out, quiet=False):
     os.makedirs(out, exist_ok=True)
     n = build_data(out)
-    D.write_all(out)
+    DC.write_all(out)
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     if not quiet:
@@ -89,7 +92,7 @@ def main():
     ap.add_argument("--no-second", action="store_true")
     a = ap.parse_args()
     if a.out:
-        build(a.out)
+        build(a.out, quiet=True)
         return
     target = os.path.join(TASK, "target")
     if os.path.isdir(target):
@@ -104,7 +107,7 @@ def main():
     r2 = subprocess.run([sys.executable, os.path.join(HERE, "verify.py"), target])
     same = same_g = same_f = same_s = True
     if not a.no_second:
-        tmp = tempfile.mkdtemp(prefix="b156_", dir="/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad")
+        tmp = tempfile.mkdtemp(prefix="b156_", dir=SCRATCH)
         try:
             subprocess.run([sys.executable, os.path.join(HERE, "build.py"), "--out", os.path.join(tmp, "target")],
                            check=True, capture_output=True)
@@ -114,9 +117,12 @@ def main():
                            check=True, capture_output=True)
             same = digest(target) == digest(os.path.join(tmp, "target"))
             same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
-            same_f = open(os.path.join(HERE, "figures.json"), "rb").read() == open(os.path.join(tmp, "figures.json"), "rb").read()
-            same_s = open(os.path.join(TASK, "submission.md"), "rb").read() == open(os.path.join(tmp, "submission.md"), "rb").read()
-            print("rebuild byte-identical: target %s, golden %s, figures %s, submission %s" % (same, same_g, same_f, same_s))
+            same_f = open(os.path.join(HERE, "figures.json"), "rb").read() == open(os.path.join(tmp, "figures.json"),
+                                                                                    "rb").read()
+            same_s = open(os.path.join(TASK, "submission.md"), "rb").read() == open(os.path.join(tmp, "submission.md"),
+                                                                                     "rb").read()
+            print("rebuild byte-identical: target %s, golden %s, figures %s, submission %s" % (same, same_g, same_f,
+                                                                                               same_s))
         finally:
             shutil.rmtree(tmp)
     z = cut_zip(TASK)
