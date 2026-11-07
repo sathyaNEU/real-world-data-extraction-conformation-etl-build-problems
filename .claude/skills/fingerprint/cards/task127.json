@@ -1,88 +1,90 @@
 {
   "task": "task127",
-  "architecture": "v2 (re-root after SEND_BACK: winter discharge-to-assess packages across five hospitals)",
-  "drawn": "2026-10-12",
-  "slot_note": "re-root of task127 in the same objective (Opportunity Sizing), wave 1 of sathay3012",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "patient-flow-beds-workforce-optimization",
-  "niche": "an NHS integrated care board dividing its winter discharge fund's discharge-to-assess home-care packages across five acute hospitals by the occupied bed-days each package frees, when a pathway-1 patient's delayed nights fuse the wait for home care with a wait for community equipment delivered alongside it",
+  "architecture": "v4 (re-root after the portal landed architecture 2: Fernmark Bank's 2027 business support packages, valued by the write-off each keeps off the whole book when smaller borrowers take most of their receipts from the supported firm)",
+  "drawn": "2026-11-07",
+  "slot_note": "re-root of task127 in Opportunity Sizing after the portal's FAILED_TO_STUMP on architecture 2; moved out of healthcare delivery to banking, a new world, dataset and shell",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "expected-credit-loss-provisioning",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a New Zealand member-owned bank's business support unit choosing which two watch-list borrowers get its 2027 support packages by the credit write-off each package keeps off the bank's book, when some of the bank's smaller business borrowers take most of their receipts from one watch-list firm through payments the bank itself processes",
   "objective": "opportunity-sizing-decision",
   "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "count",
-  "answer": "Give Royal Marchford Hospital 508 packages, Wendlebury Hospital 350, Holmford Infirmary 120, Cleeve Park Hospital 222 and Ashby Vale Hospital none; they free 6,816 occupied bed-days.",
-  "answer_source": "task127/generator/figures.json (call, packages, bed_days, bed_days_total, nights_per_package), asserted in task127/generator/checks.py",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "objective"
+    "objective",
+    "population"
   ],
   "pattern": [
-    "C"
+    "E"
   ],
   "generators": [
-    "G3",
-    "G11",
-    "G8"
+    "G14",
+    "G16",
+    "G3"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "none",
-  "stakeholder_role": "the integrated care board's deputy director of finance, who allocates the winter discharge fund's discharge-to-assess packages across the five hospitals",
-  "role_family": "finance_controller",
-  "scoring_unit": "per episode",
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "An analyst who reads every field and rule correctly sums each watch-list borrower's IFRS 9 twelve-month PD x LGD x EAD from the bank's validated run and gives the two packages to the two largest (Ends on: Kinloch Engineering and Ridgeway Precast, about NZ$3.1 million kept off the book), missing the write-off a package to Matai Valley Foods also keeps off the borrowers in the book that take most of their receipts from it.",
+  "domain_test": "Write-off a support package prevents is an expected credit loss computation (PD x LGD x EAD) with one obligor's 2027 default averted and the dependent obligors' default chance conditioned on it, read from the bank's own record of defaults following a main payer's default; with another field's nouns there is no loss given default, no exposure at default and no trade dependence carrying one firm's default to its suppliers, so the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:credit-write-off-a-support-package-prevents-across-trade-dependent-borrowers",
+  "layer1": [
+    "a payments export with New Zealand account numbers written with and without dashes and with two- or three-digit suffixes, and payer names, particulars, codes and references as free text",
+    "a customer master listing several accounts per customer, trading names apart from legal names, and a 2023 core banking migration that renumbered accounts behind an old-to-new crosswalk",
+    "the IFRS 9 run at facility grain while the watch list and the support terms speak of borrowers",
+    "the December watch list as a credit committee PDF table",
+    "watch-list borrowers' annual accounts in a workbook whose layout changed with the bank's 2024 template",
+    "a default register in which the unlikely-to-pay flag and the 90-days-past-due date of one default fall on different days"
+  ],
+  "stakeholder_role": "Fernmark Bank's head of business support, who decides which two watch-list borrowers the unit takes on in 2027",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per resolved case",
   "spine": {
-    "file": "acute_discharges_65plus_2024-12_2026-09.csv",
-    "rows": 65524,
-    "entity": "one submission of an inpatient spell of a patient aged 65 and over ending in a discharge from one of the two trusts' sites, with its pathway, care package, discharge ready date and discharge time",
-    "grain": "spell submission",
+    "file": "business_account_transactions_2021-2026.csv",
+    "rows": 0,
+    "entity": "one posted transaction on a business customer's transaction account",
+    "grain": "transaction",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "government_agency",
+  "forum": "line_manager_or_team",
+  "forcing_event": "period_close",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "United Kingdom, England",
-    "currency": "GBP",
-    "org_type": "an NHS integrated care board with a winter discharge fund, five acute hospitals in two trusts, and the county council's home-care brokerage",
+    "geography": "New Zealand, lower North Island",
+    "currency": "NZD",
+    "org_type": "a member-owned bank with a business lending book and its borrowers' transaction accounts",
     "invented_names": [
-      "Marchshire",
-      "Royal Marchford Hospital",
-      "Wendlebury Hospital",
-      "Ashby Vale Hospital",
-      "Cleeve Park Hospital",
-      "Holmford Infirmary"
+      "Fernmark Bank",
+      "Matai Valley Foods",
+      "Kinloch Engineering",
+      "Ridgeway Precast"
     ],
     "people": [
-      "Lauren Simpson",
-      "Dennis Mahmood",
-      "Hollie Bird"
+      "Stella Perano",
+      "Lance Middlemiss"
     ]
   },
   "deliverables": [
-    "d2a_package_split_winter_2026-27.xlsx",
-    "delayed_bed_days_winter_2025-26.svg"
+    "bsu_intake_2027.xlsx",
+    "bsu_intake_2027.md"
   ],
   "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The decisive quantity is the part of each unit's recorded wait that the offered intervention removes, because the recorded wait fuses the step the intervention replaces with a concurrent step it leaves in place, so only the replaced step's excess over the concurrent one, built by joining separate operational logs, counts; ranking units by the recorded wait, or by the replaced step measured from the same start, credits the units whose concurrent step is slowest.",
-  "driver_concrete": "A discharge-to-assess package removes only the nights a pathway-1 patient spends waiting for home care after the community equipment ordered for their discharge has arrived, so the bed-days it frees are the nights from the later of the discharge ready date and the delivery to discharge, built per patient by joining the equipment service's order lines to the warehouse's spells; the delayed nights on record, which the brokerage's start dates present as the wait for care, credit the hospitals whose equipment waits are longest.",
-  "stump": "A competent solver keeps last winter's covered patients, values a package at their nights after the discharge ready date (every record presents them as the wait for home care, since care starts on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,507 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 6,816; the step that lands it there is counting nights the patient also spent waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
-  "stump_class": "analytical",
-  "analyst_test": "An analyst who reads every field and rule correctly keeps the patients the fund covers, caps each hospital at them and values a package at the nights after the discharge ready date, which every record presents as the wait for home care (the brokerage started care for each on the day they went home, and patients whose care restarted barely waited), and so fills Ashby Vale and Cleeve Park first, whose equipment waits ran alongside most of that wait.",
-  "domain_test": "Bed-days freed by a discharge scheme is patient-flow analysis (the counterfactual length of stay with one discharge dependency removed and the others left in place); with another field's nouns there is no medically optimised patient waiting at once for home care and for community equipment, no national delayed-discharge count fusing the two, and the task stops reading the same.",
+  "question_form": "which",
+  "driver": "The decisive quantity is what preventing one unit's failure removes across a population of units, when some units draw most of their inflow from that unit and in the population's own record failed at a high rate within months of their main payer's failure, so a value read on the unit's own expected loss misses the failures it would set off; the dependence comes from the flows between units and the conditional failure rate from the population's past failures, neither stored in any field.",
+  "driver_concrete": "A business support package that keeps a watch-list borrower out of default in 2027 also keeps out of default the Fernmark borrowers that take most of their receipts from it, which in the bank's 2021 to 2026 record defaulted far more often within twelve months of their main payer's default than otherwise; a package's prevented write-off is the borrower's own PD x LGD x EAD plus its PD times that uplift times each dependent's LGD x EAD, with dependence read from the on-us payments.",
+  "stump": "A competent solver values each package at the supported borrower's own 2027 expected write-off from the IFRS 9 run and gives the two packages to Kinloch Engineering and Ridgeway Precast, when Matai Valley Foods pays most of the receipts of several borrowers in the book whose defaults followed their main payer's in the bank's own record, so a package there keeps more write-off off the book than one at Ridgeway.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task127": "v1 capped rebate slots by a co-op crew's weekly meter-set capacity queueing to year end; here nothing queues: the decisive move is which recorded waiting days a package removes when two discharge dependencies run at once",
-    "task128": "task128 books requests against a budget stated for the whole period and spent per interval; here the cap is a count of packages and the decisive move is the part of each patient's recorded wait that a package removes",
-    "task119": "task119 credits a unit with failed waits it could have shortened because its own beds stood free or held empty for planned work; here no bed is held: the patient's wait for home care runs at the same time as the wait for community equipment, and only the nights after the equipment arrives are removable",
-    "task38": "task38 recovers a remediation rule from closed cases; here no rule is recovered: the removable nights are built per patient from the warehouse's spells and the equipment service's deliveries",
-    "task254": "task254 v1 apportions burned area across zones by each event's footprint; here the decomposition is in time, the overlap of two concurrent waits in one patient's stay",
-    "task36": "task36's Osterhout R1 finds a decline in the joint distribution of two flat factors through a computed feasibility margin; here nothing declines: each patient's removable days are the care wait's excess over a concurrent process, built per patient",
-    "task83": "task83 v1 enumerates a population only by re-scoring current records under an archived model; here no model is involved: the removable nights are cut from each stay by the dates of its discharge dependencies"
+    "task482": "task482 v11 re-estimates a group's share from its members' own sparse answers instead of imputations from a population model; here nothing is imputed: the decisive move adds to one unit's own expected loss the failures its survival prevents among other units that draw most of their inflow from it, read from flows between units and their past failures"
   },
   "lineage": [
     {
@@ -137,17 +139,48 @@
       "architecture": "v3 (Ninebark Mutual motor bodily injury reserve at year end 2026, the paid development restated at the latest closed shares)",
       "drawn": "2026-10-14",
       "fate": "spent 2026-10-14: the determinism judge returned NOT_DETERMINISTIC, SEND_BACK (method_or_model_selection, analytical_non_defect, competing_defensible_answer): the reserving basis leaves the method to the actuary, and frequency-severity on paid per closed feature carries $350 million against the restatement's $400 million with nothing shipped selecting between them; the author restored architecture 2"
+    },
+    {
+      "domain": "healthcare-delivery-health-economics",
+      "subdomain": "patient-flow-beds-workforce-optimization",
+      "objective": "opportunity-sizing-decision",
+      "shape": "05",
+      "decision_type": "allocation_to_total",
+      "answer_unit": "count",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G3",
+        "G11",
+        "G8"
+      ],
+      "gate_g": "decomposition_attribution",
+      "driver": "The decisive quantity is the part of each unit's recorded wait that the offered intervention removes, because the recorded wait fuses the step the intervention replaces with a concurrent step it leaves in place, so only the replaced step's excess over the concurrent one, built by joining separate operational logs, counts; ranking units by the recorded wait, or by the replaced step measured from the same start, credits the units whose concurrent step is slowest.",
+      "stump_strategy": "decomposition_attribution",
+      "architecture": "v2 (re-root after SEND_BACK: winter discharge-to-assess packages across five hospitals)",
+      "drawn": "2026-10-12",
+      "fate": "spent 2026-11-07 at the portal (FAILED_TO_STUMP): both responses filed the golden split exactly (Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222, Ashby Vale none, 6,816 bed-days); the equipment wait running alongside the care wait was a hidden overlap a careful response found by joining the depot's deliveries to the covered patients"
     }
   ],
-  "notes": "v2 drawn 2026-10-12 by sathay3012 for the wave-1 re-root (architecture 2). World seeded by analytical_tasks/04_opportunity_sizing/OS36 (discharge-to-assess packages); the note's acknowledgement-baseline driver is not used: the pitfall is re-found as concurrency (the care wait overlapping the wait for community equipment), pinned by the data. overuse.org_family WARN answered: the decision belongs to the NHS integrated care board that holds the winter discharge fund, a statutory body; the deliverable set is xlsx+svg. Registered with --force only to replace the v1 card file on re-root; the check returned WARN, no BLOCK. Stage 3 (2026-10-12): the concurrent dependency moved from take-home medicines and transport (the first stage-2 draft) to community equipment, the pack carrying no calibration corpus and no context artifact; card fields updated in place to the build. Loop 1 (2026-10-16, at the author's request after the 10/10 audit): the equipment notes' route definition files what discharge equipment is for (equipment the patient needs at home from the day they go home); the three-rules block, the lens-swap test and SF15 run in checks.py; closed practices' codes only on spells admitted before each merger; every wait drawn right-skewed and a working week in the services at the stage 4 readers' realism findings (the packages unchanged, the bed-days 6,816 from 7,160).",
-  "client_domain": "healthcare-delivery-health-economics",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:bed-days-a-discharge-package-frees-beyond-the-concurrent-discharge-process",
-  "layer1": [
-    "several sources for one picture: the ICB warehouse's acute discharges and ward stays, the community equipment service's order lines, the council brokerage's referrals, finance's spot-care invoice lines, the GP practice list and the council's postcode lookup, each with its own keys, grain and clock",
-    "imperfect keys: NHS numbers plain in the warehouse and spaced in the equipment and brokerage exports, finance's BRK references for brokerage referrals, practices closed by merger on the spells admitted before the merger",
-    "time and formats: ward stays written ISO by one trust and day/month/year by the other, invoice dates day/month/year, nights dated to the evening they begin",
-    "genuine overlap: a trust's corrected resubmissions kept beside the rows they correct, delayed patients moved between a trust's sites inside one spell",
-    "geographies that do not nest: a postcode district straddling the county line, community postcodes typed without spaces or in lower case"
-  ]
+  "lineage_shells": [
+    {
+      "question form": "whether",
+      "second-sentence opener": "the",
+      "rounding opener": "packages",
+      "deliverable set": "svg+xlsx"
+    }
+  ],
+  "notes": "v4 drawn 2026-11-07 for the re-root after the portal's FAILED_TO_STUMP on architecture 2 (both responses landed the golden split). The discharge world's decisive step (a concurrent wait) is spent; one architecture per world, so the slot moved to banking-credit-financial-risk / expected-credit-loss-provisioning, never carded on this objective on main. No seed: task127 has none in START_HERE.md.",
+  "registered": "2026-11-07T22:27:30Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "every",
+    "rounding opener": "dollar",
+    "deliverable set": "xlsx"
+  }
 }
