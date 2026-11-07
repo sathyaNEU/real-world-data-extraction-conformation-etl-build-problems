@@ -1,0 +1,87 @@
+{
+ "budget": "14,630,000",
+ "covered_members": "11,105",
+ "allocation": {
+  "Coconino Home Support Services": "1,002,560",
+  "Yavapai Senior In-Home Care": "2,920,730",
+  "Rim Country Visiting Nurses Association": "1,380,661",
+  "Valley Home Support Partners": "4,674,222",
+  "Pinal Community Home Care": "1,388,566",
+  "Desert Willow Caregivers of Southern Arizona": "2,283,097",
+  "River Region Home Health Cooperative": "980,164"
+ },
+ "covered_by_region": {
+  "Coconino": "761",
+  "Yavapai": "2,217",
+  "Rim Country": "1,048",
+  "Maricopa": "3,548",
+  "Pinal": "1,054",
+  "Southern Arizona": "1,733",
+  "Colorado River": "744"
+ },
+ "visits_by_quarter": {
+  "Coconino Home Support Services Q1": "42",
+  "Coconino Home Support Services Q2": "283",
+  "Coconino Home Support Services Q3": "326",
+  "Coconino Home Support Services Q4": "210",
+  "Yavapai Senior In-Home Care Q1": "205",
+  "Yavapai Senior In-Home Care Q2": "468",
+  "Yavapai Senior In-Home Care Q3": "497",
+  "Yavapai Senior In-Home Care Q4": "371",
+  "Rim Country Visiting Nurses Association Q1": "136",
+  "Rim Country Visiting Nurses Association Q2": "231",
+  "Rim Country Visiting Nurses Association Q3": "249",
+  "Rim Country Visiting Nurses Association Q4": "156",
+  "Valley Home Support Partners Q1": "539",
+  "Valley Home Support Partners Q2": "1,323",
+  "Valley Home Support Partners Q3": "1,411",
+  "Valley Home Support Partners Q4": "1,016",
+  "Pinal Community Home Care Q1": "141",
+  "Pinal Community Home Care Q2": "281",
+  "Pinal Community Home Care Q3": "291",
+  "Pinal Community Home Care Q4": "184",
+  "Desert Willow Caregivers of Southern Arizona Q1": "189",
+  "Desert Willow Caregivers of Southern Arizona Q2": "500",
+  "Desert Willow Caregivers of Southern Arizona Q3": "515",
+  "Desert Willow Caregivers of Southern Arizona Q4": "358",
+  "River Region Home Health Cooperative Q1": "56",
+  "River Region Home Health Cooperative Q2": "217",
+  "River Region Home Health Cooperative Q3": "202",
+  "River Region Home Health Cooperative Q4": "124"
+ },
+ "visits_2025": {
+  "Coconino Home Support Services": "861",
+  "Yavapai Senior In-Home Care": "1,541",
+  "Rim Country Visiting Nurses Association": "772",
+  "Valley Home Support Partners": "4,289",
+  "Pinal Community Home Care": "897",
+  "Desert Willow Caregivers of Southern Arizona": "1,562",
+  "River Region Home Health Cooperative": "599"
+ },
+ "average_visit_minutes": {
+  "Coconino Home Support Services": "127.4",
+  "Yavapai Senior In-Home Care": "140.0",
+  "Rim Country Visiting Nurses Association": "120.5",
+  "Valley Home Support Partners": "140.8",
+  "Pinal Community Home Care": "140.8",
+  "Desert Willow Caregivers of Southern Arizona": "142.9",
+  "River Region Home Health Cooperative": "128.3"
+ },
+ "medical_spend_usd_thousands": {
+  "Coconino": "259.7",
+  "Yavapai": "635.8",
+  "Rim Country": "311.5",
+  "Maricopa": "1,136.1",
+  "Pinal": "325.6",
+  "Southern Arizona": "574.6",
+  "Colorado River": "220.1"
+ },
+ "filed_constants": [
+  "65",
+  "74",
+  "75",
+  "81",
+  "02",
+  "10"
+ ]
+}

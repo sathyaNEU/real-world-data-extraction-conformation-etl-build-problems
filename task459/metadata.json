@@ -1,0 +1,103 @@
+{
+ "architecture": 2,
+ "as_of": "2026-10-16",
+ "decision": "how Pinyon Valley Health Plan's 2027 in-home support budget is divided among its regional agencies under Schedule B of the 2027 agreement, with the 2025 use of members aged 65 to 74",
+ "deliverables": [
+  "member_regions_2025.csv",
+  "home_care_allocation_2027.pdf"
+ ],
+ "distractor_files": [
+  "az_pop_75plus_by_county_2025.csv",
+  "network_adequacy_review_2025Q4.xlsx"
+ ],
+ "distractor_notes": {
+  "az_pop_75plus_by_county_2025.csv": "county population aged 75 and over; relevant to a regional budget, unused by the solution",
+  "network_adequacy_review_2025Q4.xlsx": "time and distance standards and results by county; relevant to the regional network, unused by the solution"
+ },
+ "domain": "Healthcare Delivery & Health Economics, payment, claims and health plan analytics",
+ "files": {
+  "SC_2027_IHS_Agreement_Schedule_B.pdf": {
+   "date": "2026-09-22",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Pinyon Valley Health Plan, Senior Choice 2027 In-Home Support Agreement, Schedule B (approved 22 September 2026); synthetic"
+  },
+  "az_pop_75plus_by_county_2025.csv": {
+   "date": "2026-05-18",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "rows": 16,
+   "source": "county population estimates, Arizona residents aged 75 and over by county, 1 July 2025; synthetic"
+  },
+  "ihs_visit_claims_2025.csv": {
+   "date": "2026-04-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 31827,
+   "source": "in-home support agencies' claims to the plan for 2025 dates of service; synthetic"
+  },
+  "med_claims_svc2025_paid_thru_20260630.csv": {
+   "date": "2026-07-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 224381,
+   "source": "Pinyon Valley Health Plan claims system, medical claim lines for 2025 dates of service paid through 30 June 2026; synthetic"
+  },
+  "network_adequacy_review_2025Q4.xlsx": {
+   "date": "2026-01-27",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Pinyon Valley Health Plan network management, network adequacy review for the fourth quarter of 2025; synthetic"
+  },
+  "pbm_claims_2025_PVHP.txt": {
+   "date": "2026-03-04",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 132991,
+   "source": "the plan's pharmacy benefit manager, pharmacy claims file for 2025 fills (pipe-delimited); synthetic"
+  },
+  "pharmacy_network_2025.csv": {
+   "date": "2026-01-09",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 87,
+   "source": "the plan's pharmacy network listing for 2025; synthetic"
+  },
+  "provider_directory_20261001.xlsx": {
+   "date": "2026-10-01",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 372,
+   "source": "Pinyon Valley Health Plan provider data management, provider directory extract of 1 October 2026; synthetic"
+  },
+  "provider_location_changes_2025.csv": {
+   "date": "2026-01-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 19,
+   "source": "Pinyon Valley Health Plan provider data management, practice location change log for 2025; synthetic"
+  },
+  "sc_enrollment_spans_20260102.csv": {
+   "date": "2026-01-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 18120,
+   "source": "Pinyon Valley Health Plan enrollment system, enrollment spans, snapshot of 2 January 2026; synthetic"
+  },
+  "sc_member_address_history_20260102.csv": {
+   "date": "2026-01-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 18533,
+   "source": "Pinyon Valley Health Plan enrollment system, member address history, snapshot of 2 January 2026; synthetic"
+  },
+  "sc_member_extract_20260102.csv": {
+   "date": "2026-01-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "rows": 18086,
+   "source": "Pinyon Valley Health Plan enrollment system, Senior Choice member extract, year-end snapshot of 2 January 2026; synthetic"
+  }
+ },
+ "objective": "Data Extraction & Conformation (ETL)"
+}

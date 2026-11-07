@@ -148,7 +148,7 @@ def main_call(target, T=None):
             n += 1
             e += ent
         yearly[Y] = (n, e)
-        out_n[Y] = sum(1 for (b, pc, nr, ad), g in idx[Y].items() if g == 1 and pc[:4] not in CATCH)
+        out_n[Y] = sum(1 for k_, g in idx[Y].items() if g == 1 and k_[1][:4] not in CATCH)
     rates = {k: v[1] / v[0] for k, v in tot.items()}
     pooled = (tot[True][1] + tot[False][1]) / (tot[True][0] + tot[False][0])
     mean_yearly = float(np.mean([e / n for n, e in yearly.values()]))

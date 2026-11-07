@@ -61,7 +61,7 @@ PH_WIN = {"OPEN-UP": (0.0, 0.045), "INSPECT": (0.04, 0.22), "REPAIR": (0.20, 0.7
           "TEST": (0.93, 1.0)}
 PH_MH = {"OPEN-UP": 1.9, "INSPECT": 2.7, "REPAIR": 3.6, "CLOSE-UP": 2.5, "TEST": 2.3}
 SESSION_MAX_H = 7.0
-CREW_MH_PER_SHIFT = 150.0     # the hangar's standing crew on one aircraft, man-hours booked per shift
+CREW_MH_PER_SHIFT = 162.0     # the hangar's standing crew on one aircraft, man-hours booked per shift
 AREA_CAP = 44                 # card sessions one work area's docks and access can take in a shift
 
 # The world's defect process (clean truth): each session's chance of a check-related defect is

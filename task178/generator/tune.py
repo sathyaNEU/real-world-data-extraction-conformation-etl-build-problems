@@ -65,23 +65,23 @@ def plan_table(cards, ses):
 
 
 def fit(T, col, form, use_tf=True):
+    """Profile Poisson likelihood in the crowding coefficient (the scale profiled out), maximised by bounded search."""
+    from scipy.optimize import minimize_scalar
     mh, tf, x, y = T[:, 0], T[:, 1], T[:, col], T[:, 6]
     w = tf if use_tf else 1.0
-    best = None
-    grids = {"lin": np.linspace(0, 0.8, 1601), "exp": np.linspace(0, 0.2, 2001), "power": np.linspace(0, 2.0, 2001)}
-    if col == 3:
-        grids = {"lin": np.linspace(0, 0.2, 2001), "exp": np.linspace(0, 0.05, 2001), "power": np.linspace(0, 2.0, 2001)}
-    if col == 5:
-        grids = {"lin": np.linspace(0, 0.05, 2001), "exp": np.linspace(0, 0.02, 2001), "power": np.linspace(0, 2.0, 2001)}
-    for k in grids[form]:
+    hi = {"lin": 3.0, "exp": 0.5, "power": 4.0}[form] * (0.25 if col == 3 else 1.0) * (0.1 if col == 5 else 1.0)
+
+    def nll(k):
         f = {"lin": 1 + k * x, "exp": np.exp(k * x), "power": (1 + x) ** k}[form]
         u = mh * w * f
         b = y.sum() / u.sum()
         mu = b * u
-        ll = float((y * np.log(mu) - mu).sum())
-        if best is None or ll > best[0]:
-            best = (ll, float(k), float(b))
-    return best
+        return -float((y * np.log(mu) - mu).sum())
+    r = minimize_scalar(nll, bounds=(0.0, hi), method="bounded", options={"xatol": 1e-6})
+    k = float(r.x)
+    f = {"lin": 1 + k * x, "exp": np.exp(k * x), "power": (1 + x) ** k}[form]
+    b = float(y.sum() / (mh * w * f).sum())
+    return (-float(r.fun), k, b)
 
 
 def apply(T, col, form, k, b, use_tf=True):

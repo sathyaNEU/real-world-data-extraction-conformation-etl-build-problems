@@ -107,7 +107,7 @@ def main():
     ok("R3b'' every child entering files 2028-29", M["calls"]["everyone"] == 2028)
     ok("R3c PV-2 names the circumstance and lists no child, share or join key",
        "same circumstance" in proc and "brother or sister from the same household" in proc and
-       not re.search(r"\d+\s*per cent|birth date|postcode", proc))
+       not re.search(r"\d+\s*per cent|birth date|house number", proc))
     ok("R3d the circumstance is nameable without the outcome (newest lesson)",
        all(p["sib_at_entry"] == any(q is not p and q["child"] and q["birth"] < p["birth"] and W.on_roll(q, A.cohort(p["birth"]))
                                     for q in p["hh"]["members"])
