@@ -1,0 +1,44 @@
+{
+  "task": "task214",
+  "status": "PAUSED",
+  "domain": "business-operations-analytics/service-operations-sla (client General Statistics & Data Science, exploratory-data-analysis-distribution-assessment); Almring Bank Group's private-cloud batch platform Larix, Vienna",
+  "objective": "anomaly-detection",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-11-07",
+  "seed": "AD37 (header and Situation only)",
+  "stump": "",
+  "architecture": 1,
+  "loops": 0,
+  "card": {
+    "registered": "",
+    "check_after_register": "",
+    "merged_parent_at": "36504aa"
+  },
+  "screens": "candidate 1 (reverse-causality straggler) spent at screen 4(c) before registration: per-record host x night, x 4h and x 8h residual readers reach the golden set 16 to 20 of 20 (v9, v10, scratch t214/proto); every other reader wrong 20/20",
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "Stage 1, draw, no card registered. Candidate 1 spent at screen 4(c) (DESIGN_NOTE ## Tried and rejected). Lesson: a copy escapes exactly the host component, so any host-versus-rest split is recovered by a per-record reader reading host x time-cell residuals; the next decisive split must sit among non-host causes. First candidate to screen: a straggler's excess is a transient stall (any fresh copy escapes it), a fail-slow host (a copy elsewhere escapes it) or the shard's own heavy night (every copy repeats it), with the heavy nights set by the shard's clients' own cycles (a second calendar, e.g. corporate payroll or merchant settlement cycles anchored per client, mapped to shards through the client-to-shard table) so that no runtime column, cell, day-of-month interaction or lag reveals them; the textbook replay credits the heavy nights, the cell readers kill the transient stalls, the golden separates them. Give the calendar a second use (an ask or the capacity forecast) so it is not a dedicated organ. Harness: generator/world.py (replace its mechanism block), generator/method.py, generator/screens.py (readers a to e, cell widths 60 to 1440 minutes, lag and day-of-month readers added). Fallbacks queued in the note. If no candidate passes all five screens, move to another client domain, world and dataset under AD (CLAUDE.md). Guard probes and personas in the note's ## Draw; draft card in scratch t214/task214_card.json.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}
