@@ -1,10 +1,10 @@
 {
  "task": "task250",
- "status": "DRAWING",
+ "status": "PAUSED",
  "domain": "demographic-social-science",
  "objective": "data-quality-monitoring",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-07",
  "stump": "A competent analyst judges each survey and mode by its respondents set against the adults on their own household grids and by the confirmation item, and moves to the household grid the streams whose respondents skew from their households by sex or age; whom a household substitutes follows the survey's topic, not how often it substitutes, so that set moves streams that seldom substitute and keeps one that often does, and only the respondents' days from the letter to their own next birthday, read against the order statistics of the adults' seasonal birthday distribution at that letter's date for a household of their size, finds the streams below the standard's line.",
  "architecture": 4,
@@ -34,7 +34,7 @@
    "commit": ""
   }
  ],
- "resume": "",
+ "resume": "Held by the author on 2026-11-07 at stage 2 (precut.py not yet run). Next action: write the design note's stage-2 sections (Survivor anatomy, Readability screen, Semantic fork table, Ladder with the rung sets measured by generator/proto/tune_world.py, Closure table over the 22 axes, Literal reader, Oracles, Ask sheet with Pair ceiling, Mirror leakage and Measured by) and pass precut.py, then continue stage 3. Half-done: the generator draft (params, world, records, pack, docs, officedoc) builds all 14 target files in about 45 s with cd task250/generator && python3 pack.py; golden.py, checks.py, verify.py, ceiling.py, writeup.py, make.py, metadata.json, the two goldens and submission.md are not written. Open fixes before any gate: (1) every Parquet footer still carries created_by, so copy _drop_created_by from task470/generator/parquetio.py into pack.write_parquet; (2) checks.py must assert no library name (python-docx, openpyxl, pandas, pyarrow, reportlab, matplotlib) in any PDF Author, Creator, Producer or Subject or in any docx or xlsx core.xml and app.xml, and AppVersion 16.0300 with TitlesOfParts in every xlsx; (3) QS-HS section 4 says the selection question sits on the web welcome page while records.py numbers the welcome page 1 and the selection question page 2, so align the page numbering with the document before the breakoff ask is computed; (4) QS-HS section 4 no longer says a resumed session or a replacement code is the same household (removed on purpose so the device stays silent; record it in the Ask sheet). leak.py runs with --asof 2027-01-15; at ship the card's spine moves to core_module_web_2026.parquet with its row count.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -81,6 +81,14 @@
   {
    "date": "2026-11-07",
    "event": "DRAWN architecture 4: a Portuguese social research institute's push-to-web household survey programme, each survey and mode's 2027 within-household selection (keep the next-birthday instruction or move to a household grid with a random selection), judged on the share of its 2026 responding households of two or more adults whose respondent was the next-birthday adult; demographic-social-science in survey-research-official-statistics, nonresponse-calibration-measurement-error-adjustment; guard WARN only (repeat.decision and repeat.deliverables against task156; the two older structural repeats differentiated)"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "another session reshipped architecture 3 on main (d766e450, 2026-11-07 22:58 UTC: each hub's rate with a 90 per cent interval, no figure moved); on 2026-11-07 the author decided that architecture 4 supersedes it"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "PAUSED: the author paused the build on 2026-11-07 at stage 2 (the design note's stage-2 sections unwritten, precut.py not run; the pack generator drafted and building target/); state saved for the next session"
   }
  ],
  "client_domain": "survey-research-official-statistics"
