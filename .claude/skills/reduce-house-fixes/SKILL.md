@@ -24,11 +24,14 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   real-clock timestamp into metadata, unseen by text checks.
 - **Cost.** The signature says generated; the timestamp contradicts the setting, both ways (`python-docx`
   stamps 2013). Assert a band, not a ceiling.
-- **Line.** Signatures: scrub OOXML and image inputs; a script-made golden may keep its own. A PDF is the
-  exception: it keeps the library that wrote it in Producer and Creator and the library's own header
-  comment, puts the issuing organisation in Author only, and carries a real Subject. The portal reads a PDF
-  whose Producer or Creator is the organisation, whose header comment was overwritten, or whose Subject is
-  the library's placeholder "(unspecified)" as a masked generator and fails the inputs (task127, task482).
+- **Line.** Signatures: scrub OOXML and image inputs; a script-made golden may keep its own. A PDF input is
+  made by an office application, not a programming library: write the document as .docx and export it with
+  LibreOffice Writer (`soffice --headless --convert-to pdf`), so Producer and Creator honestly read
+  "LibreOffice" and "Writer" and no library header comment exists; the issuing organisation goes in Author
+  only and the Subject is real. The portal fails a PDF that names ReportLab or another library, one whose
+  Producer or Creator is the organisation, one whose library header was overwritten, and a Subject left at
+  the placeholder "(unspecified)" (task127, task482). Fix the export's date, /DocChecksum and /ID at equal
+  length so two builds stay byte-identical (task482/generator/officepdf.py).
   Timestamps: scrub every shipped file whose body states a date, goldens included.
 - **Check.** Sweep the pack and the deliverables (two generators): no writer name, no stamp outside the
   band. Wire OOXML, PDF and image branches even before a file of that kind ships.

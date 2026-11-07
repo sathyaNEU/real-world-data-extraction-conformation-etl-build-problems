@@ -368,8 +368,9 @@ local. Assert each of these in the realism sweep, per column and per document.
    and assert both no fixed period in the sequence and no name that names one service while its rows deliver
    another.
 5. **A document never states a position later than its own file date**, and a document's author is the body
-   that issued it: a regulator's fee schedule carrying the plan's name as Author is a defect (a PDF's
-   Producer and Creator name the library that wrote it, never an organisation: `reduce-house-fixes` H1), and so is
+   that issued it: a regulator's fee schedule carrying the plan's name as Author is a defect (a PDF is
+   exported by an office application, which its Producer and Creator name, never a programming library or an
+   organisation: `reduce-house-fixes` H1), and so is
    `Application` "Microsoft Excel" beside the writing library's own `AppVersion`. Assert both per document
    against its issuer.
 

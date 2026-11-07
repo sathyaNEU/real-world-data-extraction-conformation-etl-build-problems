@@ -616,11 +616,11 @@ def sweep_metadata(target, rep):
     flagged = [l for l in out.split("\n")
                if re.search(r"python-docx|openpyxl|reportlab|matplotlib|pypdf|LibreOffice|Microsoft|outside the band|out-of-band timestamp", l, re.I)
                and not re.search(r"\bno (producer|writer|out-of-band)|clean\b", l, re.I)]
-    # A PDF names the library that wrote it in Producer and Creator, as every real PDF does; a portal reviewer
-    # reads a PDF whose Producer is the issuing organisation, or whose header comment was overwritten, as a
-    # masked generator. ReportLab on a PDF is therefore honest, not a leak.
-    honest = [l for l in flagged if ".pdf" in l and re.search(r"reportlab", l, re.I)
-              and not re.search(r"python-docx|openpyxl|matplotlib|pypdf|outside the band|out-of-band", l, re.I)]
+    # A PDF is written by an office application (LibreOffice Writer or Word export) and names it in Producer and
+    # Creator, as a real office's PDF does. The portal fails a PDF that names a programming library (ReportLab),
+    # a PDF whose Producer or Creator is the issuing organisation, and a placeholder Subject.
+    honest = [l for l in flagged if ".pdf" in l and re.search(r"libreoffice|microsoft", l, re.I)
+              and not re.search(r"reportlab|python-docx|openpyxl|matplotlib|pypdf|outside the band|out-of-band", l, re.I)]
     flagged = [l for l in flagged if l not in honest]
     if flagged:
         for l in flagged[:15]:
@@ -628,9 +628,9 @@ def sweep_metadata(target, rep):
     else:
         rep.add("10 container metadata", "INFO", "-", "audit reported no writer signature (%d lines)" % len(out.split("\n")))
     for l in honest[:15]:
-        rep.add("10 container metadata", "INFO", "-", "PDF names the library that wrote it: " + l.strip()[:160])
-    tool = re.compile(r"reportlab|microsoft|word|excel|acrobat|adobe|distiller|libreoffice|openoffice|quartz|"
-                      r"ghostscript|chrom|skia|cairo|pdf|tex|prince|wkhtml|itext|foxit|nitro", re.I)
+        rep.add("10 container metadata", "INFO", "-", "PDF names the office application that wrote it: " + l.strip()[:160])
+    tool = re.compile(r"microsoft|word|excel|acrobat|adobe|distiller|libreoffice|openoffice|writer|quartz|"
+                      r"ghostscript|chrom|skia|cairo|print|pdf", re.I)
     try:
         from pypdf import PdfReader
     except ImportError:
@@ -647,7 +647,10 @@ def sweep_metadata(target, rep):
                 rep.add("10 container metadata", "LEAK", fn, "Subject is the library's placeholder (unspecified)")
             for k in ("/Producer", "/Creator"):
                 v = (m.get(k) or "").strip()
-                if v and not tool.search(v):
+                if re.search(r"reportlab|fpdf|python|pypdf", v, re.I):
+                    rep.add("10 container metadata", "LEAK", fn,
+                            "%s names a programming library (%r); export the PDF from an office application" % (k[1:], v[:60]))
+                elif v and not tool.search(v):
                     rep.add("10 container metadata", "LEAK", fn,
                             "%s names %r, not the application that wrote the PDF" % (k[1:], v[:60]))
 
