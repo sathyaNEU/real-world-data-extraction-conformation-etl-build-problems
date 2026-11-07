@@ -5,7 +5,7 @@
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "ship (architecture 2, reship 10-31)",
- "updated": "2026-10-31",
+ "updated": "2026-11-07",
  "stump": "The default path values a discharge-to-assess package at each hospital by its covered patients' nights after the discharge ready date (every record presents them as the wait for home care, since the brokerage starts care on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,507 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 6,816; most of Ashby Vale's and Cleeve Park's covered patients were also waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
  "architecture": 2,
  "loops": 1,
@@ -43,9 +43,15 @@
    "moves": "the equipment notes withdrawn (a file describing the data), the prompt without a data count and with a fresh shell, the survivor anatomy written, the ceiling measured on the cut pack (generator/ceiling.py: pair 31.2, mirror leakage 4.9 per cent), submission.md rewritten to the pack, the note's issuer redrawn from the head of system flow to the deputy director of finance (ban.role against task449)",
    "freeze": "no main-call figure, stump, ladder, default path or call sentence moved, and no ask figure moved",
    "commit": "RESHIPPED (task127): describing file withdrawn, prompt without a data count, issuer role redrawn, ceiling measured"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "inputs: the allocation note PDF's Subject was the library placeholder (unspecified) and its Producer and Creator named the organisation, the header comment overwritten; prompt flagged templated (4 of 7 signals)",
+   "repair": "the PDF keeps ReportLab in Producer and Creator and its header comment, Subject 'Allocation note SF-2026-14', Author the organisation; prompt rewritten as one question with each file named where its reason is given; no data file, golden or graded figure changed",
+   "commit": "RESHIPPED (task127) 1ea0a989"
   }
  ],
- "resume": "Reshipped 2026-10-31 on target.zip 0747c7d8. Next: the portal result.",
+ "resume": "Reshipped 2026-11-07 after the portal's input and prompt feedback; target.zip c6160d3f rebuilt byte-identically, every graded figure unchanged. Waits on the portal.",
  "approved": null,
  "delivered": "2026-10-31",
  "portal": null,
@@ -114,7 +120,8 @@
   "architecture_2_reship_2026-10-31": {
    "event": "RESHIPPED: batch 1 keep-and-repair; judge pass 3 DETERMINISTIC APPROVE, leak read clean",
    "zip": "0747c7d8839d4ed974f2ffa01202567e18b99251186c786ca2eefc6be146dc32"
-  }
+  },
+  "2026-11-07": "RESHIPPED: PDF metadata made honest and the prompt de-templated, per the portal's feedback"
  },
  "restored": "2026-10-14: architecture 3 (a full refresh at the author's request) drew judge SEND_BACK at stage 4, and the author chose to restore this architecture as task127's live build (pack unchanged from SHIPPED 59aaaba)"
 }
