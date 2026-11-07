@@ -1,413 +1,374 @@
-"""task165 deliverables: the golden workbook and memo, generator/figures.json and submission.md, every figure computed
-from the shipped pack by calc.py."""
-from __future__ import annotations
-
+"""task165 architecture 2: the goldens (the evaluation workbook and the board deck), figures.json and submission.md,
+every figure carried from golden.py's reading of the shipped pack."""
 import datetime as dt
 import io
 import json
 import os
-import sys
+import zipfile
 
-import matplotlib
+import openpyxl
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from pptx import Presentation
+from pptx.chart.data import CategoryChartData
+from pptx.dml.color import RGBColor
+from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION
+from pptx.enum.shapes import MSO_CONNECTOR
+from pptx.util import Emu, Inches, Pt
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt                                      # noqa: E402
-import numpy as np                                                   # noqa: E402
-from docx import Document                                            # noqa: E402
-from docx.enum.text import WD_ALIGN_PARAGRAPH                         # noqa: E402
-from docx.shared import Mm, Pt, RGBColor                              # noqa: E402
-from openpyxl import Workbook                                        # noqa: E402
-from openpyxl.styles import Alignment, Font, PatternFill              # noqa: E402
-from openpyxl.utils import get_column_letter                         # noqa: E402
+import golden as G
+import ooxml
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import calc as C            # noqa: E402
-import common as K          # noqa: E402
-import postprocess as PP    # noqa: E402
-
-WINTERS3 = ["2023-24", "2024-25", "2025-26"]
-YNAME = {"KLV": "Kelvin Road", "MPF": "Mapleford", "RDG": "Ridge", "LKS": "Lakeshore"}
-SERIES = ["#2a78d6", "#eb6834", "#1baf7a"]      # reference categorical slots 1 to 3
-F_WB = "salt_commitment_2026-27.xlsx"
-F_MEMO = "seasonal_salt_commitment_council_report.docx"
+F_XLSX = "clay_street_storage_evaluation.xlsx"
+F_PPTX = "clay_street_tank_selection_board.pptx"
+MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+GAUGES = ["RG-1", "RG-2", "RG-3", "RG-4"]
+YEARS = [2021, 2022, 2023, 2024, 2025]
+COST = {"A": 78.6, "B": 96.0, "C": 128.5, "D": 158.9}
+STAMP = dt.datetime(2026, 1, 22, 16, 40)
+ZIP_TIME = (2026, 1, 22, 16, 40, 0)
 
 
-def rt(v):
-    return int(round(v + 1e-9))
+def r1(x):
+    return round(x + 1e-9, 1)
 
 
-def r50(v):
-    return C.r50(v)
+def r2(x):
+    return round(x + 1e-9, 2)
 
 
-def r100(v):
-    return int(round(v / 100.0) * 100)
+def r0(x):
+    return int(round(x + 1e-9))
 
 
-def r1(v):
-    return float("%.1f" % (v + 0.0))
-
-
-def compute(target):
-    P = C.Pack(target)
-    raw = C.golden(P)
-    nn = P.new_rates()
-    L = float(nn["lane_km"].sum())
-    x0 = float((nn["p2"] * nn["lane_km"]).sum() / L)
-    b = C.gain_coefficients(P)
-    d = P.prepost()
-    stock, room = C.ask_a(target)
-    art = C.arterial_salt(target)
-    per_seg = []
-    reg = P.reg.set_index("segment_id")
-    for _, r in nn.iterrows():
-        g = (b[0] + b[1] * r["p2"]) * r["lane_km"] * C.PLAN_SEV
-        per_seg.append((r["segment_id"], reg.loc[r["segment_id"], "street"], reg.loc[r["segment_id"], "from_street"],
-                        reg.loc[r["segment_id"], "to_street"], r["yard"], float(r["lane_km"]),
-                        float(r["p2"] * C.PLAN_SEV), float(g)))
-    return {"raw": raw, "commitment": int(round(raw / 100.0) * 100), "lane_km": L, "own_p2": x0 * C.PLAN_SEV,
-            "own_total": x0 * C.PLAN_SEV * L, "gain_per_lkm": raw / L, "b0": float(b[0]), "b1": float(b[1]), "n_moves": len(d),
-            "moves_lkm": float(d["lane_km"].sum()), "stock": stock, "room": room, "art": art, "per_seg": per_seg,
-            "wsi": P.wsi}
-
-
-# ---------------------------------------------------------------------------------------------- workbook
-BOLD = Font(bold=True)
-HEAD = PatternFill("solid", fgColor="DCE6F1")
-
-
-def _head(ws, row, vals, widths=None):
-    for j, v in enumerate(vals, 1):
-        c = ws.cell(row=row, column=j, value=v)
-        c.font = BOLD
-        c.fill = HEAD
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    if widths:
-        for j, w in enumerate(widths, 1):
-            ws.column_dimensions[get_column_letter(j)].width = w
-
-
-def workbook(g, path):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Commitment"
-    ws["A1"] = "Commit {:,} t of rock salt above the rolled-over 39,100 t for November 2026 to March 2027".format(
-        g["commitment"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Roads Division, winter operations. Prepared 28 September 2026 for Council."
-    rows = [
-        ("Contract quantity rolled over on 1 October 2026 (t)", 39100),
-        ("Service change since the 2025-26 winter closed", "Collectors moved to Priority 1 on 30 August 2026 (QRT frequent network)"),
-        ("Lane-km moved", round(g["lane_km"], 2)),
-        ("Planning severity (WSI points)", 61.7),
-        ("Their Priority 2 rock salt over the five winters, in a planning-severity winter (t, nearest 100)",
-         r100(g["own_total"])),
-        ("Gain on moving to Priority 1 in a planning-severity winter (t per lane-km, nearest tonne)",
-         rt(g["gain_per_lkm"])),
-        ("Seasonal tonnage to commit (t, nearest 100)", g["commitment"]),
-    ]
-    fmts = ["#,##0", "@", "0.0", "0.0", "#,##0", "0", "#,##0"]
-    for i, (k, v) in enumerate(rows, 4):
-        ws.cell(row=i, column=1, value=k)
-        c = ws.cell(row=i, column=2, value=v)
-        c.number_format = fmts[i - 4]
-        if isinstance(v, (int, float)):
-            c.alignment = Alignment(horizontal="right")
-        if i == 4 + len(rows) - 1:
-            ws.cell(row=i, column=1).font = BOLD
-            c.font = BOLD
-    ws.column_dimensions["A"].width = 72
-    ws.column_dimensions["B"].width = 62
-    r0 = 4 + len(rows) + 1
-    ws.cell(row=r0, column=1, value="Gain line from the %d collectors moved to Priority 1 from 1 November 2022 to "
-                                    "1 November 2025 (%.1f lane-km), each street's salt per lane-km per WSI point "
-                                    "after its move less before, against before, weighted by lane-km"
-            % (g["n_moves"], g["moves_lkm"]))
-    ws.cell(row=r0 + 1, column=1, value="Gain at no Priority 2 salt, planning-severity winter (t per lane-km)")
-    ws.cell(row=r0 + 1, column=2, value=round(g["b0"] * C.PLAN_SEV, 2)).number_format = "0.00"
-    ws.cell(row=r0 + 2, column=1, value="Change in gain per tonne a lane-km of Priority 2 salt")
-    ws.cell(row=r0 + 2, column=2, value=round(g["b1"], 3)).number_format = "0.000"
-    ws2 = wb.create_sheet("By segment")
-    _head(ws2, 1, ["Segment", "Street", "From", "To", "Yard", "Lane-km", "Priority 2 salt, planning winter (t per lane-km)",
-                   "Gain, planning winter (t)"], [11, 24, 24, 24, 7, 9, 22, 14])
-    for i, row in enumerate(sorted(g["per_seg"], key=lambda r: (r[4], r[1], r[0])), 2):
-        sid, st, fr, to, y, lk, p2, gain = row
-        for j, v in enumerate([sid, st, fr, to, y, lk, round(p2, 2), round(gain, 1)], 1):
-            c = ws2.cell(row=i, column=j, value=v)
-            if j >= 6:
-                c.number_format = ["0.00", "0.00", "0.0"][j - 6]
-    n = len(g["per_seg"]) + 2
-    ws2.cell(row=n, column=1, value="Total").font = BOLD
-    c = ws2.cell(row=n, column=6, value=round(g["lane_km"], 2))
-    c.font, c.number_format = BOLD, "0.00"
-    c = ws2.cell(row=n, column=8, value=round(sum(r[7] for r in g["per_seg"]), 1))
-    c.font, c.number_format = BOLD, "#,##0.0"
-    ws2.freeze_panes = "B2"
-    ws2.print_title_rows = "1:1"
-    ws2.page_setup.orientation = "landscape"
-    ws2.page_setup.fitToWidth = 1
-    ws2.auto_filter.ref = "A1:H%d" % (n - 1)
-    ws3 = wb.create_sheet("Domes 1 Nov 2026")
-    _head(ws3, 1, ["Yard", "Rock salt in the dome on 1 November 2026 (t)", "Tonnes more the dome can take (t)"],
-          [16, 28, 28])
-    for i, y in enumerate(C.YARDS, 2):
-        ws3.cell(row=i, column=1, value=YNAME[y])
-        ws3.cell(row=i, column=2, value=r1(g["stock"][y])).number_format = "#,##0.0"
-        ws3.cell(row=i, column=3, value=r1(g["room"][y])).number_format = "#,##0.0"
-    ws3.cell(row=7, column=1, value="Survey stock brought forward by every weighing in to and out of each dome after "
-                                    "its capture, and the October bookings in the 21 September dispatch issue.")
-    ws4 = wb.create_sheet("Arterial salt")
-    _head(ws4, 1, ["Yard"] + ["%s (t, nearest 50)" % w for w in WINTERS3], [16, 18, 18, 18])
-    for i, y in enumerate(C.YARDS, 2):
-        ws4.cell(row=i, column=1, value=YNAME[y])
-        for j, w in enumerate(WINTERS3, 2):
-            ws4.cell(row=i, column=j, value=r50(g["art"][(y, w)])).number_format = "#,##0"
-    ws4.cell(row=7, column=1, value="Rock salt spread on each yard's Priority 1 arterial circuits, 1 November to 31 "
-                                    "March, each circuit under the yard it belonged to that winter, contract circuits "
-                                    "included.")
-    for wsx in (ws3, ws4):
-        wsx.freeze_panes = "A2"
-    ws5 = wb.create_sheet("Notes")
-    notes = [
-        "Data pulled 25 September 2026: legacy AVL segment-by-shift summaries (November 2021 to March 2023, kilograms, "
-        "local time) and telematics segment passes (from 1 October 2023, tonnes, UTC, taken to Eastern time).",
-        "Legacy segment ids taken to the current segments through the 2023 GIS crosswalk by length share.",
-        "Winters run 1 November to 31 March. Each winter's salt is divided by its Winter Severity Index from the storm "
-        "log (" + ", ".join("%s %.1f" % (w, g["wsi"][w]) for w in K.WINTERS) + " points).",
-        "Planning severity 61.7 WSI points (winter maintenance plan 2026-27, section 4). Seasonal tonnage per RO-PR-07 "
-        "4.2, rounded to the nearest 100 t.",
-        "Collector figures are rock salt (RS) only; the collector and local circuits spread dry salt.",
-        "Dome stock: survey report TG-2026-0917 brought forward by the scale house weighings after each capture, loads "
-        "weighed at another yard's scale counted at the dome named in the remarks, the five supplier loads weighed "
-        "again at another yard's scale on their way to their own yard (the same truck on the same gross, back at a "
-        "City scale inside its round trip from the supplier) counted once, on their own yard's ticket (RO-PR-07 section "
-        "2: deliveries weighed at the yard's scale house), and the BOOKED October loads of the 21 September dispatch "
-        "issue.",
-        "Arterial salt: the M410 spreader controllers' runs (up to each unit's replacement in Fleet Services' work "
-        "orders), which carry one total of salt and brine on every row, counted once with the spinner brine taken off "
-        "at 1.18 kg a litre; Kettlewood Road Services circuits from its monthly returns; each circuit under the yard it "
-        "belonged to that winter, the platform's current circuit codes taken back through the route audit's 1 July "
-        "2026 changes.",
-    ]
-    ws5.column_dimensions["A"].width = 120
-    for i, t in enumerate(notes, 1):
-        ws5.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
-    wb.save(path)
-    PP.normalize_ooxml(path, K.PEOPLE["winter_manager"], K.PEOPLE["winter_manager"], "2026-09-25T18:20:00Z",
-                       "2026-09-28T19:05:00Z", excel=True, company=K.ORG)
-
-
-# ---------------------------------------------------------------------------------------------- chart and memo
-def chart_png(g):
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5, "svg.hashsalt": "task165"})
-    fig, ax = plt.subplots(figsize=(6.3, 2.9), dpi=150)
-    x = np.arange(len(C.YARDS))
-    wd = 0.26
-    for k, w in enumerate(WINTERS3):
-        vals = [g["art"][(y, w)] for y in C.YARDS]
-        bars = ax.bar(x + (k - 1) * (wd + 0.02), vals, wd, color=SERIES[k], label=w, zorder=2)
-        for b_, v in zip(bars, vals):
-            ax.text(b_.get_x() + b_.get_width() / 2, v + 120, "{:,.0f}".format(r50(v)), ha="center", va="bottom",
-                    fontsize=6.2, color="#33332f", rotation=90)
-    ax.set_xticks(x)
-    ax.set_xticklabels([YNAME[y] for y in C.YARDS])
-    ax.set_ylabel("Rock salt (t)", color="#52514e")
-    ax.set_ylim(0, max(g["art"].values()) * 1.22)
-    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, p: "{:,.0f}".format(v)))
-    ax.grid(axis="y", color="#e2e1dc", linewidth=0.6, zorder=0)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    ax.spines["left"].set_color("#b9b8b2")
-    ax.spines["bottom"].set_color("#b9b8b2")
-    ax.tick_params(colors="#52514e")
-    ax.set_title("Priority 1 arterial rock salt by yard: 2024-25 the heaviest winter at all four yards", fontsize=9,
-                 color="#0b0b0b", loc="left")
-    ax.legend(frameon=False, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.11), fontsize=7.5)
-    fig.tight_layout()
+def normalize_zip(path):
+    """Rewrite an OOXML package with every member at one fixed time, so two builds are byte-identical."""
+    src = zipfile.ZipFile(path)
+    items = [(i.filename, src.read(i.filename)) for i in src.infolist()]
+    src.close()
     buf = io.BytesIO()
-    fig.savefig(buf, format="png", metadata={"Software": None})
-    plt.close(fig)
-    return buf.getvalue()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        for name, data in items:
+            zi = zipfile.ZipInfo(name, date_time=ZIP_TIME)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o600 << 16
+            z.writestr(zi, data)
+    open(path, "wb").write(buf.getvalue())
 
 
-def memo(g, path):
-    d = Document()
-    sec = d.sections[0]
-    sec.page_width, sec.page_height = Mm(215.9), Mm(279.4)
-    sec.left_margin = sec.right_margin = Mm(22)
-    sec.top_margin, sec.bottom_margin = Mm(18), Mm(16)
-    st = d.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-
-    def para(text, bold=False, size=None, after=6, color=None):
-        p = d.add_paragraph()
-        r = p.add_run(text)
-        r.bold = bold
-        if size:
-            r.font.size = Pt(size)
-        if color:
-            r.font.color.rgb = RGBColor.from_string(color)
-        p.paragraph_format.space_after = Pt(after)
-        return p
-
-    para("City of Quellbrook, Public Works, Roads Division", bold=True, size=9, after=0, color="1F4E79")
-    para("Report to Council", bold=True, size=15, after=4)
-    for k, v in (("To", "Mayor and Members of Council"),
-                 ("From", "%s, manager, winter operations" % K.PEOPLE["winter_manager"]),
-                 ("Date", "28 September 2026"),
-                 ("Subject", "{:,} t of seasonal rock salt for 2026-27, for approval before 1 October".format(
-                     g["commitment"]))):
-        p = d.add_paragraph()
-        r = p.add_run("%s: " % k)
-        r.bold = True
-        p.add_run(v)
-        p.paragraph_format.space_after = Pt(0)
-    para("", after=2)
-    para("Recommendation", bold=True, size=10.5, after=1, color="1F4E79")
-    para("That Council approve a seasonal commitment of {:,} t of rock salt with Northgrit above the rolled-over "
-         "39,100 t contract, for November 2026 to March 2027.".format(g["commitment"]), bold=True, after=6)
-    para("Analysis", bold=True, size=10.5, after=1, color="1F4E79")
-    para("The commitment covers the collectors the route audit moved to Priority 1 on 30 August for Quellbrook "
-         "Regional Transit's frequent network, {:.1f} lane-km, sized as RO-PR-07 4.2 sets it out: the extra salt "
-         "those streets will need over what they took at Priority 2, in a winter of 61.7 WSI points.".format(
-             g["lane_km"]), after=6)
-    para("At Priority 2 our trucks salted these streets at their intersections and little else, about {:,} t in a "
-         "winter of that severity, under 2 t a lane-km. The collectors we moved to Priority 1 between 2022 and 2025 "
-         "were mostly hill, school and hospital streets that Priority 2 already salted along much of their length, "
-         "and their spreader records show the gain from the move falling the more Priority 2 salt a street already "
-         "took. Read at these streets' own Priority 2 salt, the move adds about {:d} t a lane-km.".format(
-             r100(g["own_total"]), rt(g["gain_per_lkm"])), after=6)
-    para("The rolled-over 39,100 t carries the existing programme, whose Priority 1 arterial circuits are charted below "
-         "for the last three winters. The working, each yard's dome stock and room for 1 November, and those arterial "
-         "figures are in salt_commitment_2026-27.xlsx.", after=6)
-    pic = io.BytesIO(chart_png(g))
-    d.add_picture(pic, width=Mm(168))
-    d.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
-    para("Tonnes to the nearest 50. Contract circuits are included; each yard's figure is for the arterial circuits it "
-         "ran that winter. WSI is the Roads Operations Centre's Winter Severity Index (plan section 4).", size=8.5,
-         after=0, color="52514E")
-    d.save(path)
-    res = PP.normalize_docx(path, K.PEOPLE["winter_manager"], K.PEOPLE["winter_manager"], "2026-09-28T13:40:00Z",
-                            "2026-09-28T19:10:00Z", revision=5, total_time=48, seed="memo-salt-2026",
-                            title="Seasonal rock salt 2026-27", company=K.ORG)
-    assert res["pages"] == 1, res["pages"]
+def by_year(target, room=True):
+    """Each alternative's events in each year of the record (the event's start year, Eastern time)."""
+    o = G.read_meter(target)
+    ss = G.read_plant(target)
+    import numpy as np
+    rm = np.repeat(G.CAP - ss, 4) if room else None
+    out = {}
+    for lab, v, p in G.ALTS:
+        s = G.replay(o, v, p, rm)
+        on = np.flatnonzero(s > 1e-9)
+        starts = [on[0]] + [on[c + 1] for c in np.flatnonzero(np.diff(on) > 96)] if len(on) else []
+        ys = {}
+        for i in starts:
+            y = (G.T0 + dt.timedelta(minutes=15 * int(i))).astimezone(G.NY).year
+            ys[y] = ys.get(y, 0) + 1
+        out[lab] = ys
+    return out
 
 
-# ---------------------------------------------------------------------------------------------- figures and write-up
-def figures(g):
-    f = {"commitment_t": g["commitment"], "rollover_t": 39100, "lane_km": round(g["lane_km"], 1),
-         "segments": len(g["per_seg"]), "planning_wsi": 61.7, "own_p2_t": r100(g["own_total"]),
-         "own_p2_t_per_lkm_under": 2, "own_p2_t_per_lkm": round(g["own_p2"], 2),
-         "gain_t_per_lkm": rt(g["gain_per_lkm"]), "earlier_moves": g["n_moves"], "procedure_clause": "4.2",
-         "rounding_unit_t": 100, "arterial_unit_t": 50}
-    for y in C.YARDS:
-        f["stock_%s" % y] = r1(g["stock"][y])
-        f["room_%s" % y] = r1(g["room"][y])
-        for w in WINTERS3:
-            f["art_%s_%s" % (y, w)] = r50(g["art"][(y, w)])
-    return f
+def figures(target):
+    res = G.solve(target)
+    ev = res["events"]
+    lad = res["ladder"]
+    f = {"pick": res["pick"], "limit": 4}
+    for lab, v, p in G.ALTS:
+        f["events_%s" % lab] = r1(ev[lab])
+        f["rated_%s" % lab] = r1(lad["r1"][lab])
+        f["vol_%s" % lab] = int(v)
+        f["pump_%s" % lab] = int(p)
+        f["cost_%s" % lab] = COST[lab]
+    f["cost_step_CD"] = round(COST["D"] - COST["C"], 1)
+    f["plant_cap"] = 140
+    f["record_years"] = 12
+    for g in GAUGES:
+        for m in range(12):
+            f["rain_%s_%02d" % (g, m + 1)] = r2(res["ask1"][g][m])
+    for y in YEARS:
+        f["nt_%d" % y] = r0(res["ask2"][y])
+    f["transducer_offset_ft"] = 0.45
+    f["rg4_tip_in"] = 0.0079
+    f["rg4_tip_mm"] = 0.2
+    f["cfs_to_mgd"] = G.CFS
+    return f, res
 
 
-def write_submission(path, g):
-    f = figures(g)
+# ----------------------------------------------------------------------------------------------- workbook
+THIN = Side(style="thin", color="999999")
+HEAD = Font(bold=True, color="FFFFFF")
+FILL = PatternFill("solid", fgColor="1F4E79")
+
+
+def _head(ws, row, values):
+    for j, v in enumerate(values, 1):
+        c = ws.cell(row, j, v)
+        c.font = HEAD
+        c.fill = FILL
+        c.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+
+def write_xlsx(path, f, yearly):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Selection"
+    ws["A1"] = "Outfall 014 (Clay Street) storage: alternative to carry into design"
+    ws["A1"].font = Font(bold=True, size=13)
+    ws["A2"] = ("Carry Alternative C (38 MG) into design. Untreated overflow events in an average year, 2014 to "
+                "2025 metered record, Appendix C criterion no more than 4.")
+    _head(ws, 4, ["Alternative", "Storage (MG)", "Dewatering firm capacity (MGD)", "Capital cost (USD M, 2025)",
+                  "Events a year, dewatering held to Southside room", "Meets Appendix C",
+                  "Events a year at pump rating (for reference)"])
+    for k, (lab, v, p) in enumerate(G.ALTS):
+        r = 5 + k
+        vals = [lab, f["vol_%s" % lab], f["pump_%s" % lab], f["cost_%s" % lab], f["events_%s" % lab],
+                "Yes" if f["events_%s" % lab] <= 4 else "No", f["rated_%s" % lab]]
+        for j, x in enumerate(vals, 1):
+            c = ws.cell(r, j, x)
+            c.border = Border(top=THIN, bottom=THIN, left=THIN, right=THIN)
+            if j in (4,):
+                c.number_format = "0.0"
+            if j in (5, 7):
+                c.number_format = "0.0"
+        if lab == f["pick"]:
+            for j in range(1, 8):
+                ws.cell(r, j).font = Font(bold=True)
+    ws["A10"] = "Basis"
+    ws["A10"].font = Font(bold=True)
+    notes = ["Overflow record: OF-014 meter, FM-0142 (cfs, EST) to 9 Jun 2019 and AV-3315 (MGD, UTC) from 2 Jun 2019, "
+             "all readings on UTC; overlap week dry.",
+             "Each tank fills from the overflow and is pumped back once the overflow stops (TM-7 3.2).",
+             "Pump-back limited each hour to the lesser of the station's firm capacity and the Southside WRP's "
+             "room at SI-1: 140 MGD headworks capacity less the historian's hourly influent (local time to UTC).",
+             "Events: discharges less than 24 hours apart counted once (Appendix C 2.2); average year = 2014 to 2025 "
+             "events / 12.",
+             "Southside holds its 140 MGD limit for one to four days after most March to June storms, so the "
+             "pump stations' ratings overstate how fast a Clay Street tank empties."]
+    for k, t in enumerate(notes):
+        ws.cell(11 + k, 1, t)
+    for col, w in zip("ABCDEFG", (14, 12, 16, 14, 22, 12, 20)):
+        ws.column_dimensions[col].width = w
+    ws.row_dimensions[4].height = 46
+
+    wy = wb.create_sheet("Events by year")
+    _head(wy, 1, ["Year"] + ["Alt %s (%d MG)" % (lab, int(v)) for lab, v, _ in G.ALTS])
+    for k, y in enumerate(range(2014, 2026)):
+        wy.cell(2 + k, 1, y)
+        for j, (lab, _, _) in enumerate(G.ALTS):
+            wy.cell(2 + k, 2 + j, yearly[lab].get(y, 0))
+    wy.cell(14, 1, "Total")
+    wy.cell(15, 1, "Per year")
+    for j, (lab, _, _) in enumerate(G.ALTS):
+        col = openpyxl.utils.get_column_letter(2 + j)
+        wy.cell(14, 2 + j, "=SUM(%s2:%s13)" % (col, col))
+        wy.cell(15, 2 + j, "=ROUND(%s14/12,1)" % col)
+        wy.cell(14, 2 + j).font = Font(bold=True)
+    wy.column_dimensions["A"].width = 10
+    for col in "BCDE":
+        wy.column_dimensions[col].width = 15
+
+    wr = wb.create_sheet("Rainfall 2025")
+    wr["A1"] = "Rainfall recorded at the Authority's rain gauges, 2025, inches (calendar months, Eastern time)"
+    wr["A1"].font = Font(bold=True)
+    _head(wr, 3, ["Gauge"] + MONTHS + ["Year"])
+    for k, g in enumerate(GAUGES):
+        wr.cell(4 + k, 1, g)
+        for m in range(12):
+            c = wr.cell(4 + k, 2 + m, f["rain_%s_%02d" % (g, m + 1)])
+            c.number_format = "0.00"
+        c = wr.cell(4 + k, 14, "=SUM(B%d:M%d)" % (4 + k, 4 + k))
+        c.number_format = "0.00"
+    wr["A9"] = ("Calibration pours removed (steady tip runs on cal-check visits); re-sent duplicate tips dropped; "
+                "RG-3 and RG-4 TipLink loggers read as UTC from May 2024; every gauge's tips at 0.2 mm (0.0079 in) "
+                "from the July 2025 contract visit that fitted its new mechanism (field log), the inventory's 0.01 in "
+                "before it.")
+    wr.column_dimensions["A"].width = 10
+
+    wn = wb.create_sheet("Northside returns")
+    wn["A1"] = "Northside tank: volume returned to the Northside Interceptor, million gallons"
+    wn["A1"].font = Font(bold=True)
+    _head(wn, 3, ["Year", "Returned (MG)"])
+    for k, y in enumerate(YEARS):
+        wn.cell(4 + k, 1, y)
+        wn.cell(4 + k, 2, f["nt_%d" % y])
+    wn["A10"] = ("Mass balance on each 15-minute interval a pump ran: fall in storage (LIT-601 through O&M Table "
+                 "4-1) plus FIT-600 inflow over the interval. LIT-601 readings after the 23 Aug 2023 re-mount read "
+                 "0.45 ft high (empty tank) and are corrected. FIT-600 carries SG-600's leak-by while its seals were "
+                 "failing (2022 to 2025 work orders), pumped back with the stored flow. P-2 has delivered less than "
+                 "its nameplate since its March 2023 rebuild, so run states times the station curve overstate.")
+    wn.column_dimensions["A"].width = 10
+    wn.column_dimensions["B"].width = 16
+    wb.properties.creator = "QSA Engineering and Planning"
+    wb.properties.lastModifiedBy = "QSA Engineering and Planning"
+    wb.properties.created = STAMP
+    wb.properties.modified = STAMP
+    wb.save(path)
+    ooxml.normalize(path, STAMP, STAMP)
+
+
+# ----------------------------------------------------------------------------------------------- deck
+def _text(slide, x, y, w, h, text, size=16, bold=False, color="1F1F1F"):
+    tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
+    tf = tb.text_frame
+    tf.word_wrap = True
+    for k, line in enumerate(text if isinstance(text, list) else [text]):
+        p = tf.paragraphs[0] if k == 0 else tf.add_paragraph()
+        p.text = line
+        p.font.size = Pt(size)
+        p.font.bold = bold
+        p.font.color.rgb = RGBColor.from_string(color)
+    return tb
+
+
+def write_pptx(path, f):
+    prs = Presentation()
+    prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
+    blank = prs.slide_layouts[6]
+    s = prs.slides.add_slide(blank)
+    _text(s, 0.7, 2.3, 12, 1.2, "Outfall 014 Clay Street storage: alternative for the design task order", 32, True,
+          "1F4E79")
+    _text(s, 0.7, 3.6, 12, 1.0, "Board of Directors, February 2026. Engineering and Planning.", 18)
+
+    s = prs.slides.add_slide(blank)
+    _text(s, 0.6, 0.4, 12.2, 0.9, "Recommendation: carry Alternative C (38 MG) into design", 28, True, "1F4E79")
+    _text(s, 0.6, 1.25, 12.2, 0.8,
+          "Alternative C leaves %.1f untreated overflow events in an average year against the decree's limit of 4. "
+          "Alternative B (26 MG) leaves %.1f." % (f["events_C"], f["events_B"]), 16)
+    cd = CategoryChartData()
+    cd.categories = ["A (19 MG)", "B (26 MG)", "C (38 MG)", "D (50 MG)"]
+    cd.add_series("Events a year", [f["events_%s" % lab] for lab, _, _ in G.ALTS])
+    x, y, cx, cy = Inches(0.8), Inches(2.1), Inches(8.6), Inches(5.0)
+    ch = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, x, y, cx, cy, cd).chart
+    ch.has_legend = False
+    ch.has_title = True
+    ch.chart_title.text_frame.text = "Untreated overflow events a year at Outfall 014, 2014 to 2025 record"
+    ch.chart_title.text_frame.paragraphs[0].font.size = Pt(13)
+    va = ch.value_axis
+    va.maximum_scale, va.minimum_scale, va.major_unit = 12.0, 0.0, 2.0
+    va.has_major_gridlines = True
+    va.tick_labels.font.size = Pt(11)
+    ch.category_axis.tick_labels.font.size = Pt(12)
+    pl = ch.plots[0]
+    pl.has_data_labels = True
+    pl.data_labels.number_format = "0.0"
+    pl.data_labels.number_format_is_linked = False
+    pl.data_labels.position = XL_LABEL_POSITION.OUTSIDE_END
+    pl.data_labels.font.size = Pt(12)
+    ser = pl.series[0]
+    for k, (lab, _, _) in enumerate(G.ALTS):
+        pt = ser.points[k]
+        pt.format.fill.solid()
+        pt.format.fill.fore_color.rgb = RGBColor.from_string("1F4E79" if lab == f["pick"] else "9DB3C8")
+    # the decree's limit, drawn across the plot at 4 events a year (the plot area estimated from the chart frame)
+    top, bottom = y + Emu(int(cy * 0.16)), y + Emu(int(cy * 0.91))
+    yl = bottom - Emu(int((bottom - top) * 4.0 / 12.0))
+    ln = s.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, x + Emu(int(cx * 0.08)), yl, x + cx - Emu(int(cx * 0.03)), yl)
+    ln.line.color.rgb = RGBColor.from_string("C00000")
+    ln.line.width = Pt(2)
+    _text(s, 7.6, yl / 914400 - 0.42, 1.8, 0.4, "Limit: 4", 12, True, "C00000")
+    _text(s, 9.7, 2.3, 3.3, 4.6,
+          ["Each tank is replayed through the 2014 to 2025 Outfall 014 record.",
+           "Pump-back to SI-1 is limited to the room the Southside WRP has under its 140 MGD headworks capacity, "
+           "hour by hour from the plant historian.",
+           "At their stations' ratings alone the tanks would leave A %.1f, B %.1f, C %.1f, D %.1f; Southside's "
+           "days at capacity after spring storms keep the tanks full into the next storm." %
+           (f["rated_A"], f["rated_B"], f["rated_C"], f["rated_D"])], 13)
+
+    s = prs.slides.add_slide(blank)
+    _text(s, 0.6, 0.4, 12.2, 0.9, "Cost and next steps", 28, True, "1F4E79")
+    _text(s, 0.6, 1.4, 12.2, 5.0,
+          ["Alternative C: USD %.1f million (TM-7, Class 4, 2025 dollars), the least-cost alternative that meets "
+           "Appendix C at Outfall 014." % f["cost_C"],
+           "Alternative D adds USD %.1f million for performance the decree does not require." % f["cost_step_CD"],
+           "Design task order to Ostrem Calder for Alternative C by 1 March 2026; Facility Plan to EPA and the "
+           "Department by 30 June 2026; in service by 31 December 2029.",
+           "The pump station and force main to SI-1 are sized in design against the Southside room, not the "
+           "rated capacity alone."], 17)
+    cp = prs.core_properties
+    cp.author = "QSA Engineering and Planning"
+    cp.last_modified_by = "QSA Engineering and Planning"
+    cp.title = "Outfall 014 Clay Street storage alternative"
+    cp.created = STAMP
+    cp.modified = STAMP
+    cp.revision = 3
+    prs.save(path)
+    ooxml.normalize(path, STAMP, STAMP)
+
+
+# ----------------------------------------------------------------------------------------------- submission
+def submission(f):
+    ev = lambda lab: "%.1f" % f["events_%s" % lab]  # noqa: E731
     L = []
     L.append("## Tags\n")
-    L.append("**Domain:** Urban & Regional Science (municipal service demand and resource allocation: a city's winter "
-             "road salt for a change of service level, forecast from the spreader records of the streets that went "
-             "through the same change before).")
+    L.append("**Domain:** Physical & Environmental Sciences (hydrology, flood frequency).  ")
     L.append("**Analytical objective:** Forecasting & Predictive Modeling.\n")
     L.append("## 1. Final Recommendation\n")
-    L.append("**Commit {:,} t of rock salt above the rolled-over 39,100 t contract for November 2026 to March 2027.** "
-             "The redesign's collectors took under {:d} t a lane-km of Priority 2 salt in a 61.7-point winter, far "
-             "less than the collectors moved to Priority 1 before them, and read off those earlier moves at each "
-             "street's own Priority 2 salt the move adds about {:d} t a lane-km over {:.1f} lane-km. Not the Priority 1 "
-             "collectors' rate less these streets' own salt, which carries the higher Priority 1 level of streets with "
-             "more intersections, hills and curves onto flat ones; not the earlier moves' average gain, which belongs "
-             "to streets Priority 2 had already salted along much of their length.\n".format(
-                 f["commitment_t"], f["own_p2_t_per_lkm_under"], f["gain_t_per_lkm"], g["lane_km"]))
+    L.append("**Carry Alternative C, the 38 MG tank, into design.**")
+    L.append("It leaves Outfall 014 %s untreated overflow events in an average year against the decree's limit of 4. "
+             "Not Alternative B (26 MG), which meets the limit only at its pump station's 31 MGD rating (%s) and "
+             "leaves %s once its pump-back is held to the room the Southside plant has under its 140 MGD headworks "
+             "capacity. Not Alternative D, which meets the limit too but costs USD %.1f million more.\n" %
+             (ev("C"), "%.1f" % f["rated_B"], ev("B"), f["cost_step_CD"]))
     L.append("## 2. Critical Components\n")
-    L.append("1. The {:.1f} lane-km's own Priority 2 rock salt over the five winters, in a winter of 61.7 WSI points: "
-             "**about {:,} t, under {:d} t per lane-km**.".format(g["lane_km"], f["own_p2_t"],
-                                                                f["own_p2_t_per_lkm_under"]))
-    L.append("2. Their gain on moving to Priority 1 in that winter: **about {:d} t per lane-km**.\n".format(
-        f["gain_t_per_lkm"]))
+    L.append("1. Alternative B, pumped back no faster than the Southside plant's room: **%s events a year**" % ev("B"))
+    L.append("2. Alternative C on the same replay: **%s events a year**\n" % ev("C"))
     L.append("## 3. Step-by-Step Solution\n")
-    L.append("1. Took the {} segments route_audit_revision_log.csv moves from priority 2 to 1 on 2026-08-30, {:.1f} "
-             "lane-km in winter_route_register_2026-09-14.csv.".format(f["segments"], g["lane_km"]))
-    L.append("2. Summed each collector segment's rock salt from 1 November to 31 March in each winter, from "
-             "avl_legacy_segment_shift_2021-11-01_2023-03-31.csv (kilograms, legacy ids through "
-             "gis_segment_crosswalk_2023.csv) and telematics_segment_passes_2023-10-01_2026-09-23.parquet (UTC to local), "
-             "per lane-km and per point of the winter's WSI in storm_log_2021-22_to_2025-26.xlsx.")
-    L.append("3. For the {} collectors the revision log moves from priority 2 to 1 on 1 November 2022, 2023, 2024 and "
-             "2025, took each street's salt per lane-km per point in its winters before and after the move.".format(
-                 f["earlier_moves"]))
-    L.append("4. Fitted each moved street's gain against its own Priority 2 salt, weighted by lane-km: the gain falls "
-             "as a street's Priority 2 salt rises.")
-    L.append("5. Read the line at the new segments' own Priority 2 salt and scaled to 61.7 WSI points "
-             "(winter_maintenance_plan_2026-27.pdf, section 4) over their {:.1f} lane-km, the additional salt "
-             "road_salt_procurement_procedure_RO-PR-07.pdf 4.2 commits: {:,} t to the nearest 100 t.".format(
-                 g["lane_km"], f["commitment_t"]))
-    L.append("6. Brought each dome's stock in dome_stock_survey_2026-09.pdf forward by the loads weighed in to it and "
-             "out of it after its capture's end (winter_maintenance_plan_2026-27.pdf section 5) in "
-             "scale_house_log_2026-08-24_to_2026-09-24.xlsx, the flight log's UTC taken to Eastern daylight time and a "
-             "weighing for another yard counted at the dome its remarks name, and counted each of the five supplier "
-             "loads also weighed at another yard's scale on its way to its own yard once, on its own yard's ticket, "
-             "since deliveries for each yard are \"weighed at the yard's scale house\" "
-             "(road_salt_procurement_procedure_RO-PR-07.pdf section 2) and the earlier ticket is the same delivery "
-             "weighed again (the same truck on the same gross, back at a City scale inside its own round trip from the "
-             "supplier); with the BOOKED October loads in northgrit_dispatch_2026-10_issued_2026-09-21.csv added, the "
-             "stock in each dome on 1 November is {}, and each dome's room is its rated capacity in "
-             "salt_dome_register.csv less that stock.".format(
-                 ", ".join("{} {:,.1f} t".format(YNAME[y], f["stock_%s" % y]) for y in C.YARDS[:-1]) +
-                 " and {} {:,.1f} t".format(YNAME[C.YARDS[-1]], f["stock_%s" % C.YARDS[-1]])))
-    L.append("7. Summed the rock salt on the arterial circuits in telematics_segment_passes_2023-10-01_2026-09-23.parquet "
-             "from 1 November to 31 March local time, counting each run of the M410 controllers (the units whose "
-             "segment rows repeat the run's total, salt and brine together, up to each M410 replacement in "
-             "fleet_work_orders_2023-07_to_2026-09.csv) once, less its pre-wet litres at the brine's weight in "
-             "winter_maintenance_plan_2026-27.pdf section 2, KLV-A15 and KLV-A16 under Mapleford before their 1 July "
-             "2026 entries in route_audit_revision_log.csv, and added Kettlewood's contract circuits under their City "
-             "circuits' yards from kettlewood_material_returns_2023-24_to_2025-26.xlsx: {} in 2023-24, 2024-25 and "
-             "2025-26.".format(
-                 ", ".join("{} {:,}, {:,} and {:,} t".format(YNAME[y], f["art_%s_2023-24" % y],
-                                                             f["art_%s_2024-25" % y], f["art_%s_2025-26" % y])
-                           for y in C.YARDS[:-1]) +
-                 " and {} {:,}, {:,} and {:,} t".format(YNAME[C.YARDS[-1]], f["art_%s_2023-24" % C.YARDS[-1]],
-                                                       f["art_%s_2024-25" % C.YARDS[-1]],
-                                                       f["art_%s_2025-26" % C.YARDS[-1]])))
-    L.append("8. Commit {:,} t of rock salt above the rolled-over 39,100 t contract for November 2026 to March "
-             "2027.\n".format(f["commitment_t"]))
+    L.append("1. Joined the two loggers in outfall_014_flow_monitoring_2014-2025.parquet onto UTC, FM-0142's cfs "
+             "(Eastern Standard Time) times 0.646317 and AV-3315's MGD, the overlap week once.")
+    L.append("2. Took the Southside WRP's hourly influent from wrp_influent_hourly_2014-2025.csv (both tag sets, local "
+             "time with its repeated and missing hours, to UTC) and its room as 140 MGD less the influent.")
+    L.append("3. Replayed the record through each TM-7 tank filling from the overflow and pumped back after the overflow "
+             "stops (TM-7 3.2) at the lesser of the station's firm capacity and that hour's room.")
+    L.append("4. Counted untreated overflow events under Appendix C 2.2 and 2.3: A %s, B %s, C %s, D %s a year; C is "
+             "the least-cost alternative at or under 4 (TM-7 4)." % (ev("A"), ev("B"), ev("C"), ev("D")))
+    L.append("5. Rainfall 2025: dropped repeated tips, removed each calibration pour (a steady run of tips on a "
+             "cal-check visit in rain_gauge_field_service_2014-2025.xlsx), read the TipLink C200 loggers (RG-3 and RG-4 "
+             "from May 2024) as UTC and the HOBO loggers as Eastern Standard Time, and counted each gauge's tips at 0.2 mm "
+             "from the July 2025 visit the field log records its new mechanism on.")
+    L.append("6. Northside returns: on each quarter hour a pump ran in northside_tank_scada_2020-2025.csv, the fall "
+             "in storage (NT_LIT601_FT through O&M Table 4-1, readings from the 23 August 2023 re-mount less the 0.45 "
+             "ft the empty tank reads) plus NT_FIT600_MGD over the quarter hour, summed by year.")
+    L.append("7. Recommended Alternative C at %s events a year.\n" % ev("C"))
     L.append("## 4. Deliverable Answers\n")
-    L.append("### %s\n" % F_WB)
-    L.append("1. Seasonal tonnage above the rolled-over contract: {:,} t.".format(f["commitment_t"]))
-    L.append("2. Rock salt in each yard's dome on 1 November 2026 once the October deliveries booked with the supplier "
-             "have landed, and the tonnes more the dome can then take:")
-    for y in C.YARDS:
-        L.append("   - {}: {:,.1f} t in the dome, {:,.1f} t more".format(YNAME[y], f["stock_%s" % y], f["room_%s" % y]))
-    L.append("3. Rock salt spread on each yard's Priority 1 arterial circuits, each circuit under the yard it belonged to "
-             "that winter, to the nearest 50 t:")
-    for y in C.YARDS:
-        L.append("   - {}: 2023-24 {:,} t, 2024-25 {:,} t, 2025-26 {:,} t".format(
-            YNAME[y], f["art_%s_2023-24" % y], f["art_%s_2024-25" % y], f["art_%s_2025-26" % y]))
-    L.append("\n### %s\n" % F_MEMO)
-    L.append("1. One-page report to council stating the seasonal commitment of {:,} t, with a grouped bar "
-             "chart of the arterial figures, each yard's three winters as labelled bars.".format(f["commitment_t"]))
-    open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
-    return f
+    L.append("### clay_street_storage_evaluation.xlsx\n")
+    L.append("1. Events a year each alternative would leave, to one decimal:")
+    for lab, v, _ in G.ALTS:
+        L.append("   - Alternative %s (%d MG): %s" % (lab, int(v), ev(lab)))
+    L.append("2. Alternative to carry into design: Alternative C (38 MG)")
+    L.append("3. Rainfall recorded in 2025, inches:")
+    for g in GAUGES:
+        L.append("   - %s: %s" % (g, ", ".join("%s %.2f" % (MONTHS[m], f["rain_%s_%02d" % (g, m + 1)]) for m in range(12))))
+    L.append("4. Volume the Northside tank returned to the Northside interceptor, million gallons:")
+    for y in YEARS:
+        L.append("   - %d: %d" % (y, f["nt_%d" % y]))
+    L.append("")
+    L.append("### clay_street_tank_selection_board.pptx\n")
+    L.append("1. Selection: Alternative C (38 MG), on slide 2")
+    L.append("2. Column chart of events a year by alternative (A %s, B %s, C %s, D %s) against the limit of 4, on "
+             "slide 2, Alternative C highlighted" % (ev("A"), ev("B"), ev("C"), ev("D")))
+    return "\n".join(L) + "\n"
 
 
-def main(target, golden_dir, figures_path, submission_path):
+def main(target, golden_dir, fig_path, sub_path):
+    f, res = figures(target)
+    yearly = by_year(target)
     os.makedirs(golden_dir, exist_ok=True)
-    g = compute(target)
-    workbook(g, os.path.join(golden_dir, F_WB))
-    memo(g, os.path.join(golden_dir, F_MEMO))
-    f = write_submission(submission_path, g)
-    json.dump(f, open(figures_path, "w"), indent=1, sort_keys=True)
-    return g, f
+    write_xlsx(os.path.join(golden_dir, F_XLSX), f, yearly)
+    write_pptx(os.path.join(golden_dir, F_PPTX), f)
+    json.dump(f, open(fig_path, "w"), indent=1, sort_keys=True)
+    open(sub_path, "w").write(submission(f))
+    return f
 
 
 if __name__ == "__main__":
-    task = os.path.dirname(HERE)
-    main(os.path.join(task, "target"), os.path.join(task, "golden"), os.path.join(HERE, "figures.json"),
+    import sys
+    here = os.path.dirname(os.path.abspath(__file__))
+    task = os.path.dirname(here)
+    main(os.path.join(task, "target"), os.path.join(task, "golden"), os.path.join(here, "figures.json"),
          os.path.join(task, "submission.md"))

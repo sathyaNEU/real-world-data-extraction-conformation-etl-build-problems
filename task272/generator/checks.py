@@ -206,14 +206,29 @@ def main():
     nums = [int(x.split("-")[1]) for x in lots]
     check("H set lots have no fixed step", len({b - a for a, b in zip(sorted(nums), sorted(nums)[1:])}) > 50)
     stamps = []
+    from pypdf import PdfReader
+    import pyarrow.parquet as pq
     for k, fn in K.FILES.items():
         path = os.path.join(TARGET, fn)
         if fn.endswith(".pdf"):
             data = open(path, "rb").read()
-            c = re.search(rb"/CreationDate \(D:(\d{14})", data).group(1)
-            m = re.search(rb"/ModDate \(D:(\d{14})", data).group(1)
-            check("H %s created before modified" % fn, c < m)
+            c = re.search(rb"/CreationDate\s*\(D:(\d{14})", data).group(1)
+            meta = PdfReader(path).metadata
+            check("H %s exported by LibreOffice Writer, no library in its bytes" % fn,
+                  (meta.get("/Producer") or "").startswith("LibreOffice") and meta.get("/Creator") == "Writer"
+                  and b"ReportLab" not in data and b"reportlab" not in data, "%s / %s" % (meta.get("/Producer"),
+                                                                                     meta.get("/Creator")))
+            check("H %s carries a real Subject and the issuing body as Author" % fn,
+                  (meta.get("/Subject") or "") not in ("", "(unspecified)")
+                  and (P.ORG in (meta.get("/Author") or "") or P.HOSPITAL in (meta.get("/Author") or "")),
+                  "%s / %s" % (meta.get("/Subject"), meta.get("/Author")))
             stamps.append(c)
+        if fn.endswith(".parquet"):
+            md = pq.ParquetFile(path).metadata
+            check("H %s names no writer" % fn, not md.created_by and not md.metadata, repr(md.created_by))
+        if fn.endswith(".xlsx"):
+            app = zipfile.ZipFile(path).read("docProps/app.xml").decode()
+            check("H %s app.xml as Excel saves it" % fn, "TitlesOfParts" in app and "<AppVersion>16.0300<" in app)
         if fn.endswith(".xlsx"):
             z = zipfile.ZipFile(path)
             core = z.read("docProps/core.xml").decode()
@@ -255,6 +270,30 @@ def main():
     check("G every product off the list is under 3", max(fig["golden"][c]["rate"] for c in cands if c not in call) < 3)
     check("G midazolam does not move with litres pumped", abs(fig["fits"]["P0702"]["loss_per_litre"]) < 0.1)
     check("G the bags start high", min(fig["fits"][c]["start"] for c in ("P0610", "P0614", "P0618")) > 1.5)
+
+    # I: the 90 per cent interval is graded only by where the limit sits against it, and that side must hold under
+    # every reasonable way to draw the interval: sets resampled under other seeds, each resample's count drawn as
+    # realised, the weighed doses resampled one by one, and each model of the line's set-to-set start
+    want = {c: ("below" if c in call else "above") for c in cands}
+    check("I the golden interval puts the limit below every product on the list and above every other",
+          all(fig["interval"][c]["limit"] == want[c] for c in cands),
+          "%s" % {c: fig["interval"][c]["limit"] for c in cands})
+    variants = {}
+    for c in cands:
+        v = [F.interval(rec, c, reps=400, seed=s) for s in (1, 2)]
+        v.append(F.interval(rec, c, reps=400, seed=3, realised=True))
+        v.append(F.interval_doses(rec, c, reps=300))
+        variants[c] = v
+    flips = [(c, i) for c in cands for i, (lo, hi) in enumerate(variants[c]) if F.side(lo, hi) != want[c]]
+    check("I SF12 every interval method puts the limit on the golden side", not flips, "%s" % flips)
+    lows = {c: min(lo for lo, _ in variants[c] + [(fig["interval"][c]["lo"], 0)]) for c in call}
+    highs = {c: max(hi for _, hi in variants[c] + [(0, fig["interval"][c]["hi"])]) for c in cands if c not in call}
+    check("I SF12 the closest product on the list keeps its lower bound over the limit", min(lows.values()) > 10.5,
+          "%s" % {c: round(v, 1) for c, v in lows.items()})
+    check("I SF12 every product off the list keeps its upper bound under a tenth of the limit",
+          max(highs.values()) < 1.0, "%.2f" % max(highs.values()))
+    fam_side = [(c, m) for c in cands for m, v in fig["family"][c].items() if (v > 10) != (c in call)]
+    check("I SF12 every model of the set-to-set start keeps each estimate on its side", not fam_side, "%s" % fam_side)
 
     print("%d checks, %d failed" % (N[0], len(FAIL)))
     return 1 if FAIL else 0

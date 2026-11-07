@@ -27,7 +27,6 @@ import world as W        # noqa: E402
 TASK = os.path.dirname(HERE)
 OSLO = dt.timezone(dt.timedelta(hours=1))
 
-PDF_STAMPS = {"regulation": (b"D:20261014113207+02'00'", b"D:20261014113207+02'00'")}
 AS_OF = {   # each file's date as its source dated it
     "regulation": "2026-10-14", "assignment": "2026-12-01", "cadastre": "2027-01-04", "municipalities": "2026-01-02",
     "meterpoints": "2027-01-04", "hourly": "2026-12-14", "register": "2027-01-05", "events": "2027-01-05",
@@ -62,8 +61,6 @@ def build(out, w=None, quiet=False):
     n["outages"] = P.write_outages(w, f("outages"))
     DC.write_regulation(f("regulation"))
     DC.write_assignment(f("assignment"))
-    for k, (c, m) in PDF_STAMPS.items():
-        PP.normalize_pdf(f(k), c, m)
     PP.normalize_ooxml(f("outages"), "Driftssentralen", "Driftssentralen", "2026-12-02T13:05:00Z",
                        "2026-12-03T08:41:27Z", excel=True, company="Hvitfjell Nett AS")
     for i, k in enumerate(W.FILES):

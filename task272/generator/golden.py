@@ -19,30 +19,48 @@ PDF = "gravimetric_verification_2027.pdf"
 CSV = "compounding_review_2026.csv"
 
 
+def _fmt(v):
+    return ("%.1f" % v) if v >= 0.05 else "under 0.1"
+
+
+def _ci(ci):
+    if ci["hi"] < 0.05:
+        return "under 0.1"
+    return "%s to %s" % (_fmt(ci["lo"]), _fmt(ci["hi"]))
+
+
 def chart(path_png, fig):
     cands = sorted(fig["golden"], key=lambda c: fig["golden"][c]["rate"])
     names = [W.product(c)["name"] for c in cands]
-    vals = [max(fig["golden"][c]["rate"], 0.05) for c in cands]
+    floor = 0.05
+    vals = [max(fig["golden"][c]["rate"], floor) for c in cands]
+    lo = [max(fig["interval"][c]["lo"], floor) for c in cands]
+    hi = [max(fig["interval"][c]["hi"], floor) for c in cands]
     red = set(fig["call"]["products"])
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5, "svg.hashsalt": "task272"})
-    f, ax = plt.subplots(figsize=(7.0, 4.3), dpi=150)
-    cols = ["#c0392b" if c in red else "#7f8c97" for c in cands]
-    ax.barh(range(len(cands)), vals, color=cols, height=0.62)
+    f, ax = plt.subplots(figsize=(7.4, 4.6), dpi=150)
+    for i, c in enumerate(cands):
+        col = "#c0392b" if c in red else "#7f8c97"
+        ax.plot([lo[i], hi[i]], [i, i], color=col, lw=2.2, solid_capstyle="butt")
+        ax.plot([lo[i], lo[i]], [i - 0.18, i + 0.18], color=col, lw=1.0)
+        ax.plot([hi[i], hi[i]], [i - 0.18, i + 0.18], color=col, lw=1.0)
+        ax.plot([vals[i]], [i], marker="o", ms=5.2, color=col, mec="white", mew=0.8)
+        g = fig["golden"][c]["rate"]
+        ci = fig["interval"][c]
+        lab = "under 0.1" if ci["hi"] < 0.05 else "%s (%s)" % (_fmt(g), _ci(ci))
+        ax.text(hi[i] * 1.15, i, lab, va="center", fontsize=7.0, color="#333333")
     ax.set_xscale("log")
-    ax.set_xlim(0.05, 3000)
+    ax.set_xlim(floor, 40000)
+    ax.set_ylim(-0.7, len(cands) - 0.3)
     ax.axvline(P.LIMIT_PER_100K, color="#1f2d3a", lw=1.1, ls="--")
-    ax.text(P.LIMIT_PER_100K * 1.08, len(cands) - 0.4, "PH-QP-07 limit: 10", fontsize=7.8, color="#1f2d3a",
+    ax.text(P.LIMIT_PER_100K * 1.08, len(cands) - 0.45, "PH-QP-07 limit: 10", fontsize=7.8, color="#1f2d3a",
             va="top")
     ax.set_yticks(range(len(cands)))
     ax.set_yticklabels(names, fontsize=7.6)
-    for i, c in enumerate(cands):
-        v = fig["golden"][c]["rate"]
-        ax.text(max(v, 0.05) * 1.12, i, ("%.1f" % v) if v >= 0.05 else "under 0.1", va="center", fontsize=7.2,
-                color="#333333")
-    ax.set_xlabel("Out-of-tolerance doses per 100,000 doses made, 2026 (log scale)")
+    ax.set_xlabel("Out-of-tolerance doses per 100,000 doses made (log scale)")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.set_title("Batch-compounded products, 2026 out-of-tolerance rate", fontsize=9.5, loc="left")
+    ax.set_title("Estimated 2026 out-of-tolerance rate and 90% interval", fontsize=9.5, loc="left")
     f.tight_layout()
     f.savefig(path_png, metadata={"Software": None})
     plt.close(f)
@@ -70,12 +88,16 @@ def write_pdf(path, fig, tmpdir):
     png = os.path.join(tmpdir, "chart.png")
     chart(png, fig)
     call = fig["call"]["products"]
-    rows = [["Product", "Station", "Doses made, 2026", "Out-of-tolerance rate (per 100,000)", "PH-QP-07 3.1"]]
+    rows = [["Product", "Station", "Doses made, 2026", "Out-of-tolerance rate (per 100,000)", "90% interval",
+             "Limit of 10", "PH-QP-07 3.1"]]
+    where = {"below": "Below the interval", "above": "Above the interval", "inside": "Inside the interval"}
     for c in sorted(fig["golden"], key=lambda c: -fig["golden"][c]["rate"]):
         p = W.product(c)
         g = fig["golden"][c]
-        rows.append([p["name"], p["station"], "{:,}".format(g["doses"]), ("%.1f" % g["rate"]) if g["rate"] >= 0.05
-                     else "under 0.1", "In: verify every dose" if c in call else "Out: SC-SOP-12 checks"])
+        ci = fig["interval"][c]
+        rows.append([p["name"], p["station"], "{:,}".format(g["doses"]), _fmt(g["rate"]),
+                     _ci(ci), where[ci["limit"]],
+                     "In: verify every dose" if c in call else "Out: SC-SOP-12 checks"])
     names = [W.product(c)["name"] for c in sorted(call, key=lambda c: -fig["golden"][c]["rate"])]
     blocks = [
         ("t", "Gravimetric verification at the IV workflow cutover: batch-compounded products"),
@@ -97,6 +119,13 @@ def write_pdf(path, fig, tmpdir):
               "tied to each dose in the server's dose log, each dose placed on its set from the compounders' set-up "
               "events), took every completed dose at the litres its set had pumped, and added up each dose's chance of "
               "lying outside the product's tolerance."),
+        ("p", "The 90 per cent interval on each rate comes from refitting the line on the product's sets drawn again "
+              "with replacement, a thousand times, and adding up its 2026 doses each time. The limit sits below the "
+              "interval of every product on the list (midazolam's lower bound is %s) and above the interval of every "
+              "other product (the highest upper bound is %s), so the list does not turn on where in its interval a "
+              "rate falls." % (
+                  _fmt(fig["interval"]["P0702"]["lo"]),
+                  _fmt(max(fig["interval"][c]["hi"] for c in fig["golden"] if c not in call)))),
         ("p", "The rate is driven by the sets that carried extra batches. Cefazolin 2 g and phenylephrine sets that ran "
               "three batches ended near the bottom of the band after the batch's last weighed dose, so almost none of "
               "their low doses were weighed and %s. Cefoxitin's large batches cross the limit inside a second batch "
@@ -109,7 +138,7 @@ def write_pdf(path, fig, tmpdir):
               "before it is changed." % (min(fig["fits"][c]["start"] for c in BAGS),
                                          max(fig["fits"][c]["start"] for c in BAGS), _bag_loss(fig))),
         ("table", rows),
-        ("img", Image(png, width=170 * mm, height=104 * mm)),
+        ("img", Image(png, width=170 * mm, height=105.7 * mm)),
         ("s", "Sources: compounder dose log and event export (pharmacy server, exported 18 January 2027); gravimetric "
               "check register and quarantine register, 2026; compounded product master; equipment register. Weights "
               "converted to volume with each product's specific gravity; gross weights before 1 July less the "
@@ -117,7 +146,8 @@ def write_pdf(path, fig, tmpdir):
     ]
     K.pdf(path, blocks, "Gravimetric verification at cutover: batch products", P.PEOPLE["quality"],
           K._pdfdate(dt.datetime(2027, 2, 5, 16, 22, 41)), K._pdfdate(dt.datetime(2027, 2, 8, 9, 3, 18)),
-          "%s Pharmacy Services   Sterile Compounding Unit" % P.ORG, first_col=0.34)
+          "%s Pharmacy Services   Sterile Compounding Unit" % P.ORG, first_col=0.25,
+          subject="Gravimetric verification of batch-compounded products at the April 2027 IV workflow cutover")
 
 
 def review_rows(fig):

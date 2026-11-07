@@ -1,5 +1,5 @@
 """task470 checks: the three rules executed on the clean truth (R1 to R4), the ladder and its margins, the household-day
-family, the semantic fork table (SF1 to SF23), the separation of the asks' devices from the call, the two tables and
+family, the semantic fork table (SF1 to SF24), the separation of the asks' devices from the call, the two tables and
 their stops, the Shock and back-test screens, every graded figure's distance to its bin edge, the input gates and
 distractors, the realism sweeps and the deliverables' agreement with figures.json."""
 import datetime as dt
@@ -283,6 +283,18 @@ def run(target, golden, w=None, meta_path=None, fig_path=None):
             ta[w.by_id[p["nov1_unit"]]["nr"]]["u18" if age <= 17 else ("18-66" if age <= 66 else "67+")] += 1
         A = M.ask_a(d)
         check("table A: the golden equals the clean truth in all 30 cells", A == ta)
+        T = truth(w)
+        per = M.persons_nov1(d).groupby("dw").size()
+        gold_reg = np.array([int(per.get(str(u["id"]), 0)) for u in T["dws"]])
+        moved = [str(u["id"]) for u, a, b in zip(T["dws"], gold_reg, T["reg"]) if a != b]
+        check("table A: every counted dwelling holds the persons the world registered there on 1 November, a resident "
+              "who left a renumbered block before its day read one floor up (%d dwellings differ)" % len(moved),
+              not moved, moved[:6])
+        if F is not None:
+            check("critical component 3 equals the world's: %s vacant with a registered resident, %s lived in with "
+                  "nobody registered" % (F["vacant_registered"], F["lived_unregistered"]),
+                  (int(F["vacant_registered"].replace(",", "")), int(F["lived_unregistered"].replace(",", ""))) ==
+                  (int(((T["reg"] > 0) & T["vacant"]).sum()), int(((T["reg"] == 0) & ~T["vacant"]).sum())))
         stops = {"the register as it stands on 5 January": M.ask_a(d, "snapshot"),
                  "every event undone as written, the renumberings as moves (the cracker)": M.ask_a(d, "book"),
                  "moves undone, the dead and the emigrated not added back": M.ask_a(d, "no_deaths"),
@@ -386,8 +398,44 @@ def run(target, golden, w=None, meta_path=None, fig_path=None):
         summ = {str(r[0]): r for r in wb["By municipality"].iter_rows(min_row=2, values_only=True) if r[0]}
         check("deliverables: the workbook's summary agrees with figures.json", all(
             summ[m["nr"]][3] == m["vacant"] and "%.1f" % summ[m["nr"]][4] == m["share"] for m in F["municipalities"]))
+        check("deliverables: the workbook's summary carries each share's 90 per cent interval as figures.json", all(
+            "%.1f" % summ[m["nr"]][5] == m["low"] and "%.1f" % summ[m["nr"]][6] == m["high"]
+            for m in F["municipalities"]))
+        # the interval: the ministry files the exact binomial interval; the reasonable alternatives (Wilson, Jeffreys,
+        # the normal approximation) give other bounds at one decimal, which is why the convention is filed
+        import golden as GD
+        from statsmodels.stats.proportion import proportion_confint
+        edge, alt_differs = 1.0, False
+        for m in F["municipalities"]:
+            n, v = int(m["counted"].replace(",", "")), m["vacant"]
+            lo, hi = GD.interval(v, n)
+            for x in (lo, hi):
+                edge = min(edge, abs((x * 10) % 1 - 0.5) / 10)
+            for meth in ("wilson", "jeffreys", "normal"):
+                a, b = proportion_confint(v, n, alpha=0.10, method=meth)
+                alt_differs |= ("%.1f" % (100 * a), "%.1f" % (100 * b)) != (m["low"], m["high"])
+            assert ("%.1f" % lo, "%.1f" % hi) == (m["low"], m["high"])
+        check("SF24 interval: every exact bound clears a rounding edge by at least 0.001 points (closest %.4f)" % edge,
+              edge >= 0.001)
+        check("SF24 interval: the other common intervals round differently, so the assignment files the exact one",
+              alt_differs)
+        import email
+        import email.policy
+        eml_txt = email.message_from_bytes(open(os.path.join(target, W.FILES["assignment"]), "rb").read(),
+                                           policy=email.policy.default).get_body().get_content()
+        check("interval: the ministry's assignment files the 90 per cent exact binomial interval on the counted "
+              "dwellings", "90 per cent interval, the exact binomial (Clopper-Pearson) interval" in
+              " ".join(eml_txt.split()))
+        clears = sorted(m["nr"] for m in F["municipalities"] if float(m["low"]) >= 5.0)
+        check("SF25 the designation rests on the share: the whole interval above the line would give %s, which the "
+              "prompt's 'judged on the estimated share' and Section 6 rule out" % " ".join(clears),
+              clears == ["5802", "5803", "5807"])
+        check("interval: the call does not move with it (the regulation designates on the share)",
+              sorted(m["nr"] for m in F["municipalities"] if m["qualifies"]) ==
+              ["5802", "5803", "5805", "5807", "5809"])
         tx = ooxml_text(dx)
-        need = [m["share"] for m in F["municipalities"]] + [r["held"] for r in F["ask_b"]] + \
+        need = [m["share"] for m in F["municipalities"]] + ["%s to %s" % (m["low"], m["high"])
+                                                            for m in F["municipalities"]] + [r["held"] for r in F["ask_b"]] + \
             [r["under_18"] for r in F["ask_a"]] + [r["name"] for r in F["qualifying"]]
         check("deliverables: the letter carries every share, both tables and the qualifying names",
               all(x in tx for x in need))

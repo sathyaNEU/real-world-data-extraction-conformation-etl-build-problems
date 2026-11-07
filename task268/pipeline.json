@@ -1,48 +1,54 @@
 {
- "task": "task268",
- "status": "SHIPPED",
- "domain": "marketing-consumer-research",
- "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-31",
- "stump": "A competent analyst builds the duplication of purchase table on the Rewards card, the chain's customer unit, and names Nordhavn; homes assembled from the Rewards cards and online accounts that pay with one bank card in Faircourt's settlement file put Oro Rosso lowest.",
- "architecture": 5,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-31"
- },
- "leak": {
-  "leak_py": "REVIEW, every line ruled",
-  "reader": "architecture 5 read and two re-reads after the counter repair: no leak, question 6 analytical"
- },
- "duplicate_check": {
-  "heart": "WARN 2026-10-31 (three_rules.strategy_risk; older same-puzzle and same-driver notes differentiated)",
-  "nearest": "surface 2026-10-31: task267 and task264 promoted for adjudication, both differentiated on the card"
- },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (pass 1, FIX_NOW on the counter ask) and determinism_check_report_pass2.md (APPROVE)"
- },
- "returned": [
-  {
-   "date": "2026-10-28",
-   "portal": "determinism block failed by both judges (answer_contradicts_files: charter 3.2 read as the deaths on file, Fennick); both responses missed the call; rubric average 12.5",
-   "repair": "design",
-   "commit": ""
-  }
- ],
- "resume": "",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
- "seed_world": 273,
- "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30",
- "zip_sha256_16": "56492de5d6701f85"
+  "task": "task268",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-07",
+  "stump": "A competent analyst who sees the trace store's sample thin in the busy hours reweights each service's kept server spans hour by hour by that service's own load balancer count, which lands the edge services, and passes partner-gateway at 1.4 per cent against its 2 per cent budget, because its spans were kept with the traces journey-search, seat-map and booking started at very different keep shares; weighted by each trace's own edge keep share, partner-gateway breaches at 2.9.",
+  "architecture": 6,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [
+    {
+      "date": "2026-10-28",
+      "portal": "determinism block failed by both judges (answer_contradicts_files: charter 3.2 read as the deaths on file, Fennick); both responses missed the call; rubric average 12.5",
+      "repair": "design",
+      "commit": ""
+    },
+    {
+      "date": "2026-11-07",
+      "portal": "architecture 5: both responses landed the call (Oro Rosso), each assembling homes from the settlement file's shared card reference; rubric scores not reported",
+      "repair": "design (re-root: the filed unit announces the linkage)",
+      "commit": ""
+    }
+  ],
+  "resume": "stage 2 on the edge-sampler draw (seed 2886, card re-registered): default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles, asks, prompt with the asks; then precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "FAILED_TO_STUMP",
+  "portal_status_date": "2026-11-07",
+  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
+  "seed_world": 273,
+  "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30",
+  "zip_sha256_16": "56492de5d6701f85"
 }

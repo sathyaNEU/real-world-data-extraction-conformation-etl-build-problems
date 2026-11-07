@@ -1,97 +1,49 @@
-"""Write task165/metadata.json from the built pack: the distractors, the input gates and every shipped file's source,
-date and licence."""
+"""task165 architecture 2: metadata.json (file roles, provenance, distractors)."""
 import json
 import os
 
-import pack as P
-
-ORG = "City of Quellbrook"
-SOURCES = {
-    P.F_LEGACY: ORG + " Roads Division, legacy AVL segment-by-shift material summaries, 1 November 2021 to 31 March 2023",
-    P.F_PASSES: ORG + " Roads Division, fleet telematics platform segment passes, 1 October 2023 to 23 September 2026 (UTC)",
-    P.F_XWALK: ORG + " GIS Services, segment crosswalk for the 21 August 2023 GIS release",
-    P.F_REGISTER: ORG + " Roads Operations Centre, winter route register at 14 September 2026",
-    P.F_REVLOG: ORG + " Roads Operations Centre, route audit revision log to 14 September 2026",
-    P.F_STORM: ORG + " Roads Operations Centre, storm log and Winter Severity Index, winters 2021-22 to 2025-26",
-    P.F_FLEET: ORG + " Fleet Services, winter fleet units at 24 September 2026",
-    P.F_WORKORDERS: ORG + " Fleet Services, work orders on the winter fleet units, 1 July 2023 to 23 September 2026",
-    P.F_QRT: "Quellbrook Regional Transit Service Planning, frequent network streets for the 30 August 2026 network",
-    P.F_PELLARD: "Kettlewood Road Services, monthly material returns under contract RW-2023-07, winters 2023-24 to 2025-26",
-    P.F_DOMES: ORG + " Facilities Services, salt dome register at 2 September 2026",
-    P.F_SCALE: ORG + " Roads Division, yard scale house logs, 24 August to 24 September 2026",
-    P.F_DISPATCH1: "Northgrit Salt Supply, October 2026 dispatch schedule for the City of Quellbrook, issued 14 September 2026",
-    P.F_DISPATCH2: "Northgrit Salt Supply, October 2026 dispatch schedule for the City of Quellbrook, issued 21 September 2026",
-    P.F_SURVEY: "Tessaline Geomatics, salt dome stock survey report TG-2026-0917 for the City of Quellbrook (16 September 2026)",
-    P.F_PLAN: ORG + " Roads Division, winter maintenance plan 2026-27 (18 September 2026)",
-    P.F_PROC: ORG + " Roads Division, road salt procurement procedure RO-PR-07, revision 3 (12 May 2025)",
-    P.F_TIMESHEETS: ORG + " Payroll, yard winter timesheets, winter 2025-26",
-    P.F_BRINE: ORG + " Roads Division, yard brine plant production log, 1 October 2023 to 23 September 2026",
+LIC = "CC0 1.0 (synthetic, authored for this task)"
+FILES = [
+    ("outfall_014_flow_monitoring_2014-2025.parquet", "evidence",
+     "synthetic: the authority's flow monitoring export for the Outfall 014 overflow pipe, both loggers", "2026-01-16"),
+    ("wrp_influent_hourly_2014-2025.csv", "evidence",
+     "synthetic: the plant historian's hourly influent export for the Southside and Northside WRPs", "2026-01-16"),
+    ("outfall_regulator_register.csv", "evidence",
+     "synthetic: the authority's register of CSO regulators, receiving sewers and plants", "2025-11-03"),
+    ("TM-7_clay_street_storage_alternatives.pdf", "evidence",
+     "synthetic: the consultant's technical memorandum on the Clay Street storage alternatives", "2025-12-18"),
+    ("consent_decree_appendix_C_cso_control.pdf", "evidence",
+     "synthetic: the authority's conformed copy of the consent decree's Appendix C", "2021-09-27"),
+    ("northside_tank_scada_2020-2025.csv", "evidence",
+     "synthetic: the Northside storage tank's SCADA export, 15-minute values", "2026-01-16"),
+    ("northside_tank_om_manual_section4.pdf", "evidence",
+     "synthetic: section 4 of the Northside storage tank's O&M manual", "2020-04-24"),
+    ("cmms_work_orders_2020-2025.csv", "evidence",
+     "synthetic: the maintenance system's completed work orders for the tank, pump station and nearby assets",
+     "2026-01-16"),
+    ("rain_gauge_tips_2014-2025.csv", "evidence",
+     "synthetic: the rain gauge network's tip export, one row per tip", "2026-01-16"),
+    ("rain_gauge_inventory.csv", "evidence", "synthetic: the rain gauge network's inventory", "2024-05-08"),
+    ("rain_gauge_field_service_2014-2025.xlsx", "evidence",
+     "synthetic: the field services technicians' visit log for the rain gauges", "2026-01-09"),
+    ("wennick_river_stage_daily_2014-2025.csv", "distractor",
+     "synthetic: daily mean stage at the river gauge below the city", "2026-01-12"),
+    ("cso_overflow_notifications_2025.csv", "distractor",
+     "synthetic: the 2025 public overflow notifications raised by the outfall detectors", "2026-01-05"),
+]
+DISTRACTOR_REASONS = {
+    "wennick_river_stage_daily_2014-2025.csv": "the receiving river's stage looks relevant to how an outfall discharges, "
+    "but the outfall meter records the discharge itself and no criterion turns on the river",
+    "cso_overflow_notifications_2025.csv": "the notices count 2025's overflows without a tank; the decree evaluates "
+    "the whole 2014 to 2025 metered record and no ask needs the notices",
 }
-DISTRACTORS = [P.F_TIMESHEETS, P.F_BRINE]
-TITLE = "Seasonal rock salt commitment, winter 2026-27"
-
-
-def rows_of(path):
-    if path.endswith(".csv"):
-        with open(path, encoding="utf-8") as fh:
-            return sum(1 for _ in fh) - 1
-    if path.endswith(".xlsx"):
-        import openpyxl
-        wb = openpyxl.load_workbook(path, read_only=True)
-        n = sum(max(ws.max_row - 1, 0) for ws in wb.worksheets)
-        wb.close()
-        return n
-    if path.endswith(".parquet"):
-        import pyarrow.parquet as pq
-        return pq.ParquetFile(path).metadata.num_rows
-    return None
 
 
 def write(task_dir):
-    target = os.path.join(task_dir, "target")
-    out = []
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        out.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                    "source": "Constructed: " + SOURCES[f], "date": "2026-09-25",
-                    "license": "CC0-1.0 (original work, constructed for this task)"})
-    big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
-    meta = {
-        "task": "task165",
-        "title": TITLE,
-        "domain": "Urban & Regional Science",
-        "client_domain": "Urban & Regional Science",
-        "house_domain": "urban-regional-science",
-        "subdomain": "municipal service demand and resource allocation (winter road salt)",
-        "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed seasonal tonnage, each works yard's dome stock and room before the season, each "
-                        "yard's arterial rock salt by winter, and a one-page council report with a chart",
-        "as_of": "2026-09-25",
-        "deliverables": ["salt_commitment_2026-27.xlsx", "seasonal_salt_commitment_council_report.docx"],
-        "distractor_files": DISTRACTORS,
-        "field_terms": [],
-        "stated_inputs": [],
-        "input_gates": {
-            "files": len(out),
-            "formats": sorted({x["format"] for x in out}),
-            "largest_file": big["path"],
-            "largest_file_rows": big["rows"],
-        },
-        "sources": [{
-            "files": "all files under target/",
-            "origin": "constructed for this task by task165/generator/build.py (seeded, deterministic) around a "
-                      "fictional Ontario city's roads division, in the layouts of a legacy AVL's segment-by-shift "
-                      "summaries and a fleet telematics platform's segment-pass export, a route register and its "
-                      "revision log, a storm log, scale house logs, a supplier's dispatch schedules, a "
-                      "contractor's returns, a fleet list and its work orders, a drone survey report and the "
-                      "division's plan and procedure; no real "
-                      "organisation's records or person is depicted.",
-            "date": "2026-09-25",
-            "license": "CC0-1.0 (original work)",
-        }],
-        "created": "2026-10-18",
-        "generator": "task165/generator/build.py",
-        "files": out,
-    }
-    json.dump(meta, open(os.path.join(task_dir, "metadata.json"), "w"), indent=2)
-    return meta
+    md = {"task": "task165", "architecture": 2, "setting": "2026-01-16",
+          "files": [dict(name=n, role=r, source=s, date=d, license=LIC) for n, r, s, d in FILES],
+          "distractors": [n for n, r, _, _ in FILES if r == "distractor"],
+          "distractor_reasons": DISTRACTOR_REASONS,
+          "stated_inputs": [n for n, r, _, _ in FILES if r != "distractor"],
+          "deliverables": ["clay_street_storage_evaluation.xlsx", "clay_street_tank_selection_board.pptx"]}
+    json.dump(md, open(os.path.join(task_dir, "metadata.json"), "w"), indent=1)

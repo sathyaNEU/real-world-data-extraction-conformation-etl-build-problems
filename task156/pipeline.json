@@ -1,24 +1,44 @@
 {
  "task": "task156",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "political-science-public-policy/election-polling-forecasting (client domain political-science-public-policy; world: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-07",
- "stump": "",
+ "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round within a point, files 15 councils above half; the step that lands it there is reading each member's past votes as theirs alone when they rode the elected delegate in post at their worksite at the time, and the July 2026 delegate elections left worksites at six of those councils without one and filled worksites at two others, so with the 2026-28 delegates the set is 11.",
  "architecture": 3,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": {
-  "guard_check": "PASS 2026-11-07 on the registered card (gap population, pattern A), after gap time with pattern E or none blocked against task445, task130 and older builds"
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-07",
+  "checks": "61 checks, 0 FAIL, 0 WARN"
  },
- "judge": null,
+ "leak": {
+  "leak_py": "REVIEW, no LEAK, on 4610bc97 (every line ruled in the design note)",
+  "reader": "round 1 (Sonnet, on e4be2d15): clean, no leak, Q6 analytical; FP-04 and the prompt changed since, copy refreshed at scratchpad/leak-task156/",
+  "reader_r2": "round 2 re-read clean (scratchpad leak-task156/reader_answers_r2.md)",
+  "pending": "the 2026-28 term moved into delegate_election_return_2026.xlsx after the round 2 re-read: one leak re-read owed before the ship counts (main thread)"
+ },
+ "duplicate_check": {
+  "guard_check": "PASS 2026-11-07 on the registered card (gap population, pattern A)",
+  "heart": "PASS 2026-11-07 after a final fetch of main (nearest drivers 0.05, task179 v5 and task177 v4)",
+  "surface": "no pair promoted for task156; people: Samantha Taylor, and \"Branch Secretary\" as a title in the guide (no name)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE after the step 8 rewording",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task156/determinism_check_report.md",
+  "round1": "FIX_NOW on the asks (2026-11-07, /tmp/determinism-check-task156-r1/verdict.md): call forced and reproduced, Gate G analytical_non_defect, Gate H pass; asks open on the dues window, the diary unit, the asks scope and ask 1 rounding",
+  "repair": "FP-04 files the Sunday period-end convention; the prompt files the diary unit and scopes both asks to the round (24 each, platform councils re-sited inside the round, no in-round figure moved); the guide and tracker file the ballot period close for each member's state; ask 1 asks the side only (five councils within 0.05 of a half point); freeze.py: main side unmoved, 12 out-of-round ask figures and block 4 turnout percentages dropped (allowed)",
+  "round2": "DETERMINISTIC (2026-11-07, /tmp/determinism-check-task156-r2/verdict.md, report task156/determinism_check_report.md): the call reproduced, 6 points either side, no respecification flipping a council; stump power moderate to high; FIX_NOW on step 8 wording only, applied"
+ },
  "returned": [],
- "resume": "stage 2: the design note to precut.py exit 0 from the prototype calibration, then the generator",
+ "resume": "shipped; the main thread runs one leak re-read on the final cut (the 2026-28 term now ships as its own election return), then the author's portal list",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-07",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -111,5 +131,32 @@
    "delivered": "2026-10-31",
    "fate": "FAILED_TO_STUMP on the portal (2026-11-07): both responses landed the hold call; re-rooted as architecture 3 in a new domain and world the same day"
   }
- ]
+ ],
+ "gates_stage3": {
+  "checks": "39 assertions, 0 failed",
+  "verify": "0 disagreements",
+  "rebuild": "two consecutive builds byte-identical: target (17 files), 2 goldens, figures.json, submission.md",
+  "target_zip_sha256": "4610bc9768a15a5be6815094628909eaa60860a47adf8b843af23037fa79bc0f",
+  "figures_check": "PASS, 52 figures",
+  "voice_check": "PASS (900 characters)",
+  "ceiling": {
+   "pair": 42.2,
+   "cracker": 58.8,
+   "mirror": 25.8,
+   "mirror_leakage": 25.0,
+   "script": "generator/ceiling.py"
+  },
+  "figures": {
+   "golden_set": 11,
+   "history_set": 15,
+   "delegate_lift_logit": 1.054,
+   "lift_points": 23.9,
+   "backtest_mae_points": 0.68
+  },
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "heart": "PASS after round 1 repair",
+  "freeze": "PASS (determinism mode) on the round 2 pre-ship fixes",
+  "pdf_xref": "every PDF cross-reference offset verified; 2021 declarations Producer LibreOffice 7.1"
+ },
+ "zip_sha256_16": "4610bc9768a15a5b"
 }

@@ -137,6 +137,7 @@ the cut that would separate them is nowhere in the pack.
 | SF9 | exceeded 10 | more than 10 per 100,000 | 10 or more | same call (every product off the list under 3, every product on it over 40, asserted) | PH-QP-07 3.1 |
 | SF10 | Ask A's doses and months | completed fills by Ontario-local month, a compounder its station across serials | UTC months, a serial each | moves Ask A (asserted) | PH-QP-07 2 and the equipment register |
 | SF11 | Ask B's sets | a distinct lot on its device, its product the doses filled on it | each SET_UP row | moves Ask B (asserted) | the event export's lots |
+| SF12 | the 90 per cent interval | the product's sets resampled with replacement, the line refitted and its 2026 doses re-summed, 5th and 95th percentiles | other seeds, each resample's count drawn as realised (Poisson), the weighed doses resampled one by one, any model of the set-to-set start | same call and the same side of the limit for every product (asserted, I: the closest lower bound on the list over 10.5, every upper bound off it under 1) | only the side is graded, never an endpoint |
 
 ## Ladder
 
@@ -170,7 +171,7 @@ the cut that would separate them is nowhere in the pack.
 | 7 Weighting | every dose once | C1 |
 | 8 Window length | the year | filed |
 | 9 Boundary inclusivity | outside the tolerance is beyond it; exceeded 10 is more than 10 | SF9 |
-| 10 Rounding path | rates compared unrounded; the asks whole numbers | C1 |
+| 10 Rounding path | rates and their intervals compared unrounded and graded by side of the limit only; the asks whole numbers | C1, SF12 |
 | 11 Tie-break | none needed | C1 |
 | 12 Maturity and censoring | the year closed on 31 December; every dose made is in the export | C1 |
 | 13 Order of operations | conform, place on sets, fit, sum | C1 |
@@ -344,3 +345,4 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip 81176264)
   27251, 27259 of the ten screened): the seed was chosen where it does not (27267, cefazolin 2 g at 0.4); a bounded
   fit lands only when the long sets' third batches leave a visible shoulder in the weighed doses, so this is the rung
   to watch at stage 4.
+- 2026-11-07, Domains Fit return (the prompt read as PH-QP-07's 10 per cent rule applied to rates, with counting asks): the prompt now asks for each product's estimated 2026 rate with its 90 per cent interval and where the limit sits against it, the chart drawing each interval; the interval's endpoints are left ungraded because they move with the method (the estimate itself ranges 131 to 205 for cefazolin 2 g across the family), only the side of the limit is graded, and it holds under every method tried (SF12). The call, the stump and every earlier figure stay as they were.

@@ -5,7 +5,7 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
+ "updated": "2026-11-07",
  "stump": "A competent solver conforms the cadastre and the hub's hourly values, counts as vacant the dwellings whose average daily use over the fortnight sits under a consumption floor, sees the floor agree with the register, and files that no municipality qualifies at any floor from 1 to 10 kWh a day; an empty dwelling in a Norwegian November is left heated, so the vacant dwellings use a median 20.5 kWh a day against 19.5 for the lived-in ones, and only a household's morning or evening rise over the dwelling's own night-time use on some day shows that someone lived there, which designates five.",
  "architecture": 2,
  "loops": 0,
@@ -14,8 +14,8 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW on target.zip 52fc465d, both lines ruled",
-  "reader": "read 1 on 26076f7e: no leak; question 6 ruled analytical (the household's day); the shareholder register's regularity fixed"
+  "leak_py": "REVIEW on target.zip bc4fe60e, no LEAK, sweep 10 clean (the regulation's 5.0 and its own nouns ruled)",
+  "reader": "2026-11-07 isolated reader (Sonnet, medium) on bc4fe60e: no leak, Q6 analytical; the Clopper-Pearson interval reads as a defensible statistics-office convention; one re-read owed on the final prompt"
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-10-31 on the registered card (task477 differentiated)",
@@ -23,11 +23,29 @@
   "surface": "clean 2026-10-31"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md"
+  "verdict": "DETERMINISTIC, SOLUTION_WRONG minor (2026-11-07, Sonnet thread, on bc4fe60e): the main call forced at every household-day threshold from 0.2 to 1.0 kWh (the rise bimodal, nothing between 0.3 and 0.8); shares, intervals and both tables reproduced; component 3's 557 reproduced as 556",
+  "disposition": "FIX_NOW, fixed: component 3 corrected to 556 (a resident who left a renumbered block's flat before its day read one floor up, asserted against the world); the call sentence reworded so the designation rests on the share (SF25)",
+  "gate_g": "etl_conformance, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task470/determinism_check_report.md"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-07",
+   "portal": "portal input check: the ministry email used the reserved .example domains. Domains Fit: read as a regulation's threshold applied to counts and shares",
+   "repair": "metadata, then Domains Fit",
+   "zip": "64c862d8",
+   "moves": "the email's addresses and Message-ID on kbd.dep.no and statkontoret.no; only the email moved, no figure moved. Domains Fit left for the author's call",
+   "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)",
+   "domains_fit": {
+    "date": "2026-11-07",
+    "choice": "the author's: reword plus interval, and fix the unflagged metadata tells",
+    "moves": "the question asks for the grant on an estimate of each municipality's vacant dwellings from the register and meter data and their share of its housing with a 90 per cent interval; the ministry's letter files the interval as the exact binomial (Clopper-Pearson) interval on the counted dwellings (SF24); the letter gives each share with its interval, charts the intervals and names the five whose intervals take in the line; the workbook's summary carries the bounds; the regulation exported by LibreOffice Writer; the hub's parquet without its writer's name; at the judge's read the call sentence reworded to 'judged on the estimated share ... with that share's 90 per cent interval beside it' (SF25) and component 3 corrected to 556",
+    "frozen": "freeze.py rubric mode: only component 3 (557 to 556, the judge's SOLUTION_WRONG) and the reworded call sentence moved; the stump, the ladder and every other main-call figure did not; 26 ask figures added (the 20 bounds and the straddling names)",
+    "zip": "bc4fe60e"
+   }
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": null,
@@ -63,11 +81,11 @@
   }
  ],
  "gates": {
-  "checks": "84 of 84",
-  "verify": "every graded figure",
-  "byte_identical": true,
-  "figures_check": "123 of 123",
-  "voice_check": "PASS",
+  "checks": "92 of 92",
+  "verify": "PASS, every bound and component 3 recomputed independently",
+  "byte_identical": "two builds",
+  "figures_check": "166 of 166",
+  "voice_check": "PASS, 997 characters",
   "target_zip_sha256": "26076f7e43ec0c97b2c28988ecfa57066c891a809a12576809f748f028542a10",
   "ceiling": {
    "pair": 29.0,
@@ -75,7 +93,13 @@
    "best_mirror": "13.0 on a consumption floor of 10 kWh a day",
    "mirror_leakage": 0.0,
    "script": "generator/ceiling.py"
-  }
+  },
+  "precut": "61 of 61",
+  "leak_py": "REVIEW, no LEAK, sweep 10 clean",
+  "surface": "exit 0",
+  "heart": "BLOCK on draw-time recency bans (pattern and artifact against task464, forum against task273 v5) read from the unchanged card; WARN only on 2026-10-31",
+  "pair_ceiling": "29.0 (unchanged; the bounds ride the counts)",
+  "date": "2026-11-07"
  },
- "zip_sha256_16": "52fc465dedb924b1"
+ "zip_sha256_16": "bc4fe60e0ba401d6"
 }

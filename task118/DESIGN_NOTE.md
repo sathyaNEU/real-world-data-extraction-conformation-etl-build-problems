@@ -536,3 +536,9 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip 90561f0e)
 - IDLE's change of meaning as an ask A device (no field dated the switch): judge pass 9 found the ask open, since no
   file said what IDLE meant or whether a retired thermostat counts; OP-7 section 6 now files both, the ask keeps the
   address link, and the same section files Business Demand Partners' meters.
+- Architecture 5, each demand-response programme read on the record's fourth consecutive event days (2026-11-07, spent
+  on its first portal round): both responses filed the golden (Home Battery Network 6 MW, runner-up Peak Time Rewards
+  4 MW, every programme's MW) because a frontier analyst puts a consecutive-call streak in the event regression by
+  reflex once the design hour's place in its heat spell is visible, splits the batteries' contract regimes on the
+  amendment, and validates season-out; a named covariate the field already models (fatigue, streak, regime) is executed,
+  so the energy demand-response world and the run-position driver are spent.

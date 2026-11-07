@@ -8,12 +8,15 @@ Stump terms swept: weighed, register, tolerance, golden, family, weights, litres
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 3.1 appears: ...l time. 3. Gravimetric verification of every dose 3.1 At each configuration of the pharmacy's IV workfl...
-- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 100 appears: ...its out-of-tolerance doses made in that year per 100,000 of its doses made in that year. The year is t...
+- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 100 appears: ...its out-of-tolerance doses made in that year per 100,000 of its doses made in that year. The year is...
 - **REVIEW** `SC-SOP-12_batch_compounding_procedure.pdf`: golden figure 3.1 appears: ...s are in the compounded product master. 3. Set-up 3.1 Install the set, prime it with the product's sour...
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: 7 of 25 stump-paragraph terms appear (weighed, register, tolerance, calendar, volume, outside); read whether the document names the move
 - **REVIEW** `SC-SOP-12_batch_compounding_procedure.pdf`: 7 of 25 stump-paragraph terms appear (weighed, register, tolerance, hospital, volume, outside); read whether the document names the move
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -32,8 +35,6 @@ Stump terms swept: weighed, register, tolerance, golden, family, weights, litres
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 
 ## Solver's-eye read
@@ -65,4 +66,3 @@ in tolerance, harmless.
 Realism: the PDFs carry a named author and plausible dates, the workbooks different authors, the quarantine register
 recount rows, the check register varying initials, the equipment register a PC-3 serial swap on 14 July; the sorts'
 100 quarantined and 100 weighed match the SOP's sampling interval.
-

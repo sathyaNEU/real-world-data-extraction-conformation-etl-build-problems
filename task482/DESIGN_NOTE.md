@@ -1,303 +1,178 @@
 # task482 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 16, drawn 2026-10-31 after architectures 1
-to 15 were spent: a new world, dataset and shell. Brackwell Alloys, a secondary aluminium works in the West Midlands,
-melts scrap in two casthouse reverberatory furnaces and a foundry tower melter, casts 6063 and 6082 extrusion billet
-and LM25 foundry ingot in its casthouse and LM25 sand castings in its foundry, homogenizes the billet in one furnace and
-solution-treats the castings in one oven, and burns all of its natural gas through one site meter. Velden, a German car
-maker, pays a low-carbon premium on its 2027 call-offs of every product family whose 2026 specific direct emissions
-are at or below the limit of its Supplier Carbon Requirement SCR-2, which files what a family's emissions are: each
-process is attributed the gas it burned, a family carries the gas each process burned on its metal, and gas burned
-with no process running is shared over the families by the tonnes produced. The question is how much premium Velden
-pays on 2027.
+Status lives in `pipeline.json`; this note holds the design. Architecture 17, drawn 2026-11-07 after architectures 1
+to 16 were spent: a new client domain, world, dataset and shell. The Corlinn Schools Assessment Trust, owned by its
+member independent schools across New Zealand, sets one Year 10 science paper each year (the Year 10 Science
+Benchmark) and reports every candidate against its Achieved standard. Its Rasch item bank was calibrated on the August
+2026 sitting, held in weeks 3 to 5 of Term 3, when every member school was part-way through the course outline's two
+Term 3 units (forces and motion; Earth's systems) on its own scheme of work. The Trust's council has moved the 2027
+sitting to November, after every school has finished every unit. The assessment committee must choose which of three
+draft papers to print; the paper specification files the choice: the draft whose expected mark at the Achieved
+standard sits nearest 25 of its 50 marks.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v16, lineage v1 to v15 spent), registered
-  2026-10-31 after a fetch of main: WARN only (the how-much question form repeats task306's, the decision being a
-  sum of money; the nearest driver on file 0.12, task484 v3, a fuel's use read from a survey of the period before,
-  nothing alike). A first draft read BLOCK on four axes and was redrawn, never relabelled: shape 10 (task191's),
-  the committee forum (task306's and task191's) and then the line manager's (task130's), and the decisive gap,
-  pattern and mechanism shared with task65, task67 and task84, each now differentiated on the card in one line (no
-  regrouped record, no cap, no duplicate key: one meter's series decomposed by the processes' own physical drivers).
-- **Pairing:** Physical & Environmental Sciences, task type `emissions-inventory`, which serves ETL. The works' gas
-  meter export, the supplier's invoices, three melting furnaces' charge logs, the homogenizing furnace's and the
-  solution oven's cycle logs and the production lots are conformed into one row per product family of 2026 direct
-  emissions, and the premium is read off that table. The slot's emissions architecture (v7, a state agency's VOC
-  inventory of printing plants) is another world, another pollutant and another driver.
-- **Strategy:** `decomposition_attribution`: a shared meter's fuel is split among processes by each process's own
-  physical driver, melting by the mass melted and the homogenizing furnace and the solution oven by the hours they
-  fire, and the families carry their processes' fuel. Not composition_mix (no rate is fixed within a mix), not
-  grain_or_unit (the unit, a family's tonnes, is filed), not identity_resolution (no key is resolved).
-- **Data-native sentence:** a homogenizing furnace fires for as long as its load soaks, whatever the load weighs, and
-  6082 billet soaks more than twice as long as 6063; a melting furnace burns gas by the tonne melted, and a casting
-  ships only about three fifths of the metal melted for it; so the works' gas, spread by tonnes shipped, gives every
-  family the works' average, while the gas each process burned puts 6082 billet and the castings well above it.
-- **Abstraction sentence:** a single meter's record of a shared fuel carries every process's burn at once, and the
-  share each product owes follows the driver each process burns by (mass for one, time for another), which only the
-  meter's response to when each process ran reveals. No approved or delivered build on file reads this way: task65
-  regroups records under a cap; task84 groups duplicate entities; task173 v2 shares one meter between two supply
-  sources, not between processes; task484 v3 reads a fuel from the period before.
-- **The decision and the quantity:** the premium Velden pays Brackwell on its 2027 call-offs: the per-tonne premium of
-  SCR-2 on the call-off tonnes of each family whose 2026 specific direct emissions (tonnes of CO2 per tonne produced)
-  are at or below SCR-2's limit, decided by each family's 2026 emissions per tonne.
-- **Sources, one line each (all synthetic, shaped on public secondary aluminium practice and UK gas billing; the
-  works, the car maker and the people are fictional):** the site gas meter's 15-minute export for 2026 (the spine,
-  UTC, the imperial meter's hundreds of cubic feet before the April exchange); the gas supplier's invoices by meter-read
-  period with their calorific values; the casthouse and foundry furnace charge logs; the homogenizing furnace's load
-  log; the solution oven's batch log; the production lots with their final-inspection results; SCR-2; Velden's 2027
-  call-off schedule; the request email; for the asks, the half-hourly electricity export, the dross weighbridge
-  tickets and the scrap goods-in register; distractors, the plant asset register (burner ratings) and the shift
-  roster.
+- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v17; lineage v1 to v16 spent, v16 moved in
+  with its fate and shell), registered 2026-11-07 after a fetch of main and of the second line's cards
+  (claude/jolly-hypatia-06c61h, copied untracked for each run and deleted after). The last act of stage 1, `check` on
+  the registered card: WARN only (Paul appears in one older build, task117; the which question form repeats task127's,
+  the decision being a pick among three). A first draft read BLOCK and was redrawn, never relabelled: the decisive gap
+  and pattern (population with G6) repeat thirteen older builds, so the decisive gap is time (the calibration is a
+  mid-year sitting, the decision a year-end one) with G13 leading, which is the honester reading of what moves; Gate G
+  is etl_conformance (the conformed difficulties judged against the paper specification, a contract); the shell was
+  still v16's (read off the old prompt) and is redrawn with the world. The remaining older-build signature (time, G13,
+  a pick) is differentiated on the card against task122 v2, task194 v3 and task501 v4. The window when drawn: task214,
+  task268 and task127 (decomposition_attribution, population_selection and causal_design banned; composition_mix free
+  again since task212 left it).
+- **Pairing:** Education & Learning Sciences, task type `item-response-theory-test-equating`, which serves ETL. The
+  August 2026 response export, its session log, the bank and its 2025 renumbering, each school's scheme of work and the
+  three drafts are conformed into one table of the difficulty each draft item will have in November 2027 and each
+  draft's expected Achieved mark, from which the pick is read. The slot's two earlier equating architectures (v6, a
+  community college's mathematics placement form and its items' field-test positions; v11, plausible values by school)
+  are other worlds and other drivers.
+- **Strategy:** `composition_mix`: each Term 3 item's banked difficulty is a mix of the responses whose takers had
+  finished the unit and those who had not, and the November 2027 sitting is all of the first kind; the property is
+  rebuilt for each response from its student's sitting day against its own school's scheme of work, never read off a
+  column. Not grain_or_unit (the unit, a draft's expected mark, is filed), not time_semantics (no clock is misread),
+  not maturity_censoring (nothing is still arriving).
+- **Data-native sentence:** the bank's Term 3 items were calibrated at a sitting held in weeks 3 to 5 of Term 3,
+  while the course outline gives each Term 3 unit at least five weeks, so every school's first Term 3 unit ends in or
+  after its own sitting days and its second at the end of term; most responses to those items came from students whose
+  school had not yet finished the unit, and the November 2027 sitting follows every school's last unit.
+- **Abstraction sentence:** a calibrated parameter carried to a coming administration whose takers will all have been
+  taught what many of the calibration's takers had not, the state set for each taker by their own institution's
+  teaching calendar against the day they took it. No approved or delivered build on file reads this way: v6 carried
+  items to new positions by a position term read off a column; task474 measured a retest gain on repeaters; task450
+  linked through carried-over items; task445 read a choice advantage among optional questions.
+- **The decision and the quantity:** which draft (A, B or C) the committee prints for November 2027, decided by each
+  draft's expected mark at the Achieved standard under the Rasch model, the specification picking the draft nearest 25.
+- **Sources (all synthetic, shaped on New Zealand Year 10 science practice and Rasch pre-equating; the Trust, the schools
+  and the people are fictional):** the August 2026 response export (the spine, one row per scored response); the
+  session log (each student's sitting, UTC); the item bank (Rasch difficulties, item unit and type, the 2025
+  renumbering); the bank history (the preliminary and final 2026 calibration runs); each school's Year 10 science
+  scheme of work (term weeks per unit, in each school's own format); the Trust's course outline; the paper
+  specification; the council's minute moving the sitting; the three drafts' item lists; the standard-setting record
+  (the Achieved ability on the bank scale); the request email; for the asks, the entries register, the make-up
+  session roster and the moderation log; distractors, the candidate survey of science attitudes and the schools'
+  timetable bell schedules.
+- **People (guard.py names, en_NZ, seed 482):** Paul Shailer, head of assessment (asks for the recommendation); Theo
+  Stevens, chair of the assessment committee; Jeremy York, the Trust's psychometrician (keeps the bank).
+
+### The six go/no-go screens (prototype on the clean truth, `scratchpad/t482/otl_pick3.py` and `otl_screens.py`)
+
+Bank and three drafts held fixed; each redraw re-draws the 48 schools' students, sitting days, unit end days and
+responses (about 6,400 students, a 15-school-day window, each school sitting over 5 to 8 days, each Term 3 unit ending
+1 to 12 days after the school's first sitting day, an untaught response 1.0 logit harder, Achieved at 0.35 logits).
+
+1. **Levels and the lever.** Golden marks A 26.2, B 25.9, C 25.2 against the target 25 (lead 0.90 / 0.21 = 4.3, guide
+   1.2); the golden picks C in 20 of 20; no rival estimate picks C in any redraw (below). Levels: the untaught effect of
+   1.0 logit sits inside the item-level instructional sensitivity reported for content not yet taught (Polikoff 2010,
+   Educational Measurement: Issues and Practice 29(4); the CRESST topic coding of new, reviewed and not-taught
+   content, report 328); Rasch fit norms 0.8 to 1.2 mean square (Wright and Linacre 1994, Rasch Measurement
+   Transactions 8(3)); true-score pre-equating from a calibrated bank (Kolen and Brennan, Test Equating, Scaling, and
+   Linking, 3rd ed., 2014). Mid-bin placement of every graded figure is asserted at the shipped seed in checks.py.
+2. **The golden's own method holds.** Taught counted from the unit's last day, or 2 or 4 days after it, and a joint
+   recalibration dropping the untaught responses instead of fixing abilities on the Term 1 and 2 items: every variant
+   picks C in 20 of 20; the joint recalibration matches the fixed-ability one to 0.02 marks.
+3. **The first look lands wrong** in 20 of 20: the bank's difficulties pick A in 17 and B in 3 (mean marks A 25.7, B
+   24.2, C 21.9).
+4. **The careful readers land wrong**, each in 20 of 20: (a) the field-decomposing reader (true-score pre-equating on
+   the bank after an anchor drift screen and item fit, all clean) is the bank, A or B; (b) the constructing readers:
+   the last-week sitters' recalibration picks B in 18 and A in 2, the within-window trend carried to the window's end
+   picks B in 20; (c) the per-record reader (school by item rates and interactions) has no all-taught cell to carry
+   and returns the bank's ordering; (d) the mechanism-naming reader with the course outline's model weeks instead of
+   each school's own picks A or B in 20, and with whole schools that had finished a unit before sitting finds none
+   (no school finishes a five-week unit before its first sitting day) and falls back to the bank; (e) the literal
+   replay of every filed fact is the bank, A.
+5. **Fit parity.** Under the bank calibration the Term 3 items' infit (mean 1.00, max 1.06) and outfit (max 1.11) sit
+   inside the Term 1 and 2 items' range (max 1.04 and 1.11) in 20 of 20; the August 2025 and 2026 sittings share the
+   same weeks, so every back-test of pre-equating against a sitting on file agrees with the bank. No diagnostic a careful
+   analyst runs points at the Term 3 items.
+6. **Literal execution.** The specification, the standard-setting record and the bank read word for word pre-equate on
+   the banked difficulties and print A; no filed sentence says to compute a response's taught state, and nothing the
+   golden uses is a practice the filed WHAT omits (the council's minute files that the 2027 sitting follows every
+   school's last unit; each scheme of work files its own unit weeks).
 
 ## Default path
 
-1. Conform the meter: the 15-minute export from UTC to local time, the imperial meter's hundreds of cubic feet at the
-   bill's 2.83 before the 14 April exchange, each interval at its invoice period's calorific value and the volume
-   correction factor (55,650 MWh for 2026).
-2. Conform the logs and the lots: one row per furnace and heat (the re-keyed rows dropped), the tower melter's
-   kilograms in tonnes, the homogenizing furnace's and the oven's local stamps to UTC, each lot at its last result.
-3. Read each process's gas from the meter as the field reads a shared fuel: fit each local day's gas on what each
-   process put through (tonnes melted in the casthouse, tonnes charged to the tower melter, billet tonnes through the
-   homogenizing furnace, castings through the oven) and heating degree days, or fit the furnace on its hours to get
-   its year's total; either way each process's gas becomes a quantity per tonne processed.
-4. Give each family its processes' gas per tonne processed: the casthouse's by tonnes melted, the homogenizing
-   furnace's by the billet tonnes each alloy put through it, the tower melter's and the oven's to the castings, and
-   share the rest by tonnes produced (SCR-2 section 3).
-5. Compare each family with 0.235 and pay EUR 38 a tonne on the call-offs of the families at or under it.
-
-Ends on: EUR 456,000 (6063 billet, 6082 billet and LM25 ingot earn it, the two billet alloys level at 0.225 t CO2/t,
-0.218 with a tonnes driver in the fit).
-Golden: EUR 342,000 (6063 billet at 0.211 and LM25 ingot at 0.168 earn it; 6082 billet at 0.263 and the castings at
-0.501 are over the limit).
+1. Conform the bank: map each draft's item numbers (the drafts list the pre-2025 numbers) to the bank's through the
+   renumbering file, and take each item's final 2026 Rasch difficulty (the bank history's final run, not the
+   preliminary one).
+2. Read the Achieved ability on the bank scale from the standard-setting record.
+3. Pre-equate each draft by the test characteristic curve: the expected mark at the Achieved ability is the sum of its
+   items' Rasch probabilities.
+4. Check the bank the way the field does: the anchors' drift between the 2025 and 2026 runs (none flagged) and every
+   item's infit and outfit (all inside 0.8 to 1.2).
+5. Pick the draft whose expected mark sits nearest 25: **Ends on:** Paper A (expected Achieved mark about 25.7, B about
+   24.2, C about 21.9; the shipped seed's figures are filed in figures.json at stage 3).
 
 ## Stump sentence
 
-The default path reads each process's gas from the site meter as a quantity per tonne and gives the homogenizing
-furnace's gas to the two billet alloys by the tonnes each put through it, so 6082 billet sits level with 6063 at 0.225
-t CO2/t and the premium comes to EUR 456,000; the furnace burns by the hour whatever a load weighs, a 6082 load soaks
-about 15 hours against about 6 for 6063, and 6082 takes 47 per cent of the furnace's hours on 26 per cent of its
-billet, which puts it at 0.263, over the limit, and the premium at EUR 342,000.
+The default path pre-equates the three drafts from the bank's Rasch difficulties and prints Paper A, whose expected
+Achieved mark sits nearest 25 of 50; the bank set the two Term 3 units' items on the August 2026 sitting, at which most
+students' schools had not yet finished those units, which shows only when each student's sitting day is set against
+their own school's scheme of work, and with those items recalibrated on the responses of students whose school had
+finished the unit before they sat, Paper C is nearest.
 
 ## Three rules
 
-- Task type: emissions-inventory (Physical & Environmental Sciences), which serves ETL: the works' gas meter export,
-  the supplier's invoices, three melting furnaces' charge logs, the homogenizing furnace's and the oven's cycle logs
-  and the production lots are conformed into one row per product family of 2026 direct emissions, from which the
-  premium is read.
-- Domain test: the deciding quantity is each product family's specific direct emissions, tonnes of CO2 per tonne, the
-  product carbon footprint an emissions inventory builds from shared combustion by giving each product the fuel the
-  processes that worked it burned; the swap fails because hospital wards or library loans have no furnace, no melt
-  yield and no soak at temperature.
-- Swap: "how much premium does the car maker pay on the families under the limit" with wards for families and
-  bed-days for tonnes becomes "which wards' energy per bed-day is under a limit", and the melting rate per tonne, the
-  soak that lasts as long as the alloy needs whatever the load weighs and the castings' melt yield stop making sense.
-- Layer 1: the meter exported in UTC at 15-minute intervals, the imperial meter's hundreds of cubic feet until the April
-  exchange and cubic metres after; invoices by meter-read period, each with its own calorific value, read dates off the
-  month ends, the first and last periods running into 2025 and 2027; furnace logs in local time with heats re-keyed
-  from the shift sheets; the tower melter in kilograms beside the casthouse's tonnes; loads and batches straddling
-  midnights, month ends and the clock changes; lots re-inspected under the same number; call-offs by Velden's part
-  numbers. Each is what those systems produce, and none carries the call.
-- Layer 2: estimation from the data's structure: the works' one meter records every process's burn at once, so each
-  process's gas has to be read from the meter's response to when and how much each process ran, and the driver each
-  process burns by (mass for the melting furnaces, time at temperature for the homogenizing furnace and the oven) is
-  what the data has to decide.
-- Decisive step: recognise that the homogenizing furnace's gas follows its loads' firing hours and not their tonnes
-  (the meter's daily response tracks the hours fired, not the billet loaded) and give each billet alloy the furnace's
-  gas for the hours its own loads fired.
-- Not semantics: every field (each interval's volume and unit, each invoice's calorific value, each heat's tonnes, each
-  load's door times and tonnes, each lot's last result, every SCR-2 sentence) can be read correctly and the per-tonne
-  route still files EUR 456,000, because no field holds a process's gas: the hours driver shows only in the meter's
-  response to the logs.
-- Not rule application: SCR-2 files what a family carries (the fuel each process burned on its metal) and how the rest
-  is shared, and no rule or procedure says how a process's fuel is read from a shared meter or which driver a furnace
-  burns by; the routes SCR-2 and the data leave open (per tonne, per hour, rated input scaled to the meter) differ in
-  the driver, and the meter's daily record separates them.
-- Analyst test: a strong analyst who conforms the meter (UTC, hundreds of cubic feet, each invoice's calorific value),
-  dedupes the logs and the lots, reads SCR-2 correctly and attributes each process's gas per tonne processed gives the
-  two billet alloys the same 0.225 and pays EUR 456,000 (the mass allocation, every family at the works' 0.22, pays
-  EUR 480,700); the homogenizing furnace burns by the hour, so 6082 billet is at 0.263, over the limit, and the premium
-  is EUR 342,000.
-- Estimand: SCR-2 files it: a family's specific direct emissions for 2026 are the CO2 from the fuel the works burned to
-  make it (each process attributed the fuel it burned, a family the fuel each process burned on its metal, the fuel no
-  process burned shared by tonnes produced) at the supplier's billed energy and 0.18296 kg per kWh, over the tonnes of
-  it that passed final inspection, years in local time; section 7 files the premium (EUR 38 a tonne of 2027 call-offs of
-  each family at or under 0.235).
-- No decoy: nothing is planted to be caught; no memo, quote or earlier declaration states a family's emissions, the
-  asset register's burner ratings are the works' own plant record (relevant, unused, a named distractor), and every file
-  is what the works, its gas supplier and Velden keep for their own reasons.
-- No certified replay: no certified figure blesses the per-tonne route; the invoices reconcile the meter's energy on
-  every route alike, because every route attributes all of the metered gas.
-- Lesson: a model learns that a shared meter's fuel follows each process's own physical driver, that a soak burns by
-  time whatever it holds while a melt burns by the tonne, and that per-tonne attribution inside a time-driven process
-  moves the long-cycle product's burden onto the short-cycle one; no build on file reads a process's fuel from a shared
-  meter.
+- Task type: item-response-theory-test-equating (Education & Learning Sciences), which serves ETL: the August 2026
+  response export, the session log, the bank and its renumbering, the schools' schemes of work and the three drafts are
+  conformed into one table of each draft item's 2027 difficulty and each draft's expected Achieved mark, from which the
+  pick is read.
+- Domain test: the deciding quantity is each draft's expected mark at the Achieved ability under the Rasch model, the
+  true-score pre-equating a testing programme runs from its bank; the decisive step is whether the banked difficulties
+  hold for a sitting at which every candidate has been taught every unit (item parameter invariance across opportunity
+  to learn). The swap fails: hospital forms or library loans have no item bank calibrated mid-way through a teaching
+  sequence, no scheme of work, no sitting day.
+- Swap: "which draft paper should the Trust print" with clinics for schools and questionnaires for papers becomes
+  "which questionnaire should the clinics use", and the unit not yet taught, the scheme of work and the sitting day
+  that decide it stop making sense.
+- Layer 1: the bank renumbered its items in 2025 (the drafts list old numbers); the response export carries UTC times
+  while schools sat on New Zealand school days; sessions that reconnected left duplicate response rows; each school's
+  scheme of work is in its own format with units named in its own words; make-up sitters appear under the make-up
+  centre's code; the bank history overlaps a preliminary and a final 2026 run. Each is what those systems produce, and
+  none carries the call.
+- Layer 2: estimation from the data's structure: each Term 3 item's banked difficulty mixes responses whose takers had
+  and had not been taught its unit, and the coming sitting is all taught; the item has to be re-estimated on the taught
+  responses, with abilities from the items every student had been taught.
+- Decisive step: set each student's sitting day (the session log, in New Zealand time) against their own school's last
+  day of each Term 3 unit (its scheme of work), recalibrate each Term 3 item on the responses of students whose school
+  had finished its unit before they sat, abilities fixed on the Term 1 and 2 items, and pre-equate the drafts.
+- No decoy: nothing is planted to be caught; no memo, earlier paper or published figure ranks the drafts; the bank's
+  difficulties are the Trust's own calibration, correct for the sitting it was run on, and every file is what the
+  Trust, its schools and its delivery platform keep for their own reasons.
+- Not semantics: every field (each response's score, each session's time, each item's unit and difficulty, each scheme
+  of work's weeks, every specification sentence) can be read correctly and the bank's difficulties still pick A,
+  because no field holds whether a response was taught: the state exists only as each student's sitting day against
+  their own school's calendar.
+- Not rule application: the specification files what is chosen (the draft nearest 25 at the Achieved standard for the
+  November 2027 sitting) and the standard-setting record files the Achieved ability; no rule or procedure says which
+  responses an item's difficulty is estimated on, and the routes the files leave open (the bank as run, recalibration on
+  late sitters, on whole schools, on the course outline's model weeks, on each response's own taught state) differ in
+  the population behind each difficulty, which the data's structure decides.
+- Analyst test: a strong analyst who conforms the renumbering, the UTC sessions and the duplicate rows, reads the
+  specification correctly and pre-equates the drafts from the bank after a clean drift screen and clean item fit picks
+  Paper A; the Term 3 items were calibrated on a sitting at which most students had not been taught them, and
+  recalibrated on the taught responses Paper C is nearest.
+- Estimand: the specification files it: the draft whose expected mark at the Achieved standard, for candidates sitting
+  in November 2027, sits nearest 25 of 50, the expected mark being the Rasch model's at the Achieved ability on the
+  bank's scale.
+- No certified replay: no certified figure blesses the bank's route; the 2025 and 2026 sittings' own results agree with
+  the bank because they were sat in the same weeks, which is what a sitting in November does not share.
+- Lesson: a model learns that a bank's difficulties carry the teaching state of the sitting they were calibrated on,
+  that a unit not yet taught makes its items look harder for every student who sat before their school finished it,
+  and that a sitting after all teaching needs those items re-estimated on the responses whose takers had been taught.
 
-## Survivor anatomy
+## Architecture 16 record (spent 2026-11-07)
 
-- Actor: the gas each process burned has no column in any file; the works has one site meter and no sub-meter, the
-  furnace logs carry tonnes and times, and the invoices carry the site's energy by read period.
-- Link: a load of billet is tied to the gas it burned only through time, its door-closed and door-opened stamps in local
-  time against the meter's UTC intervals, with every other process burning on the same meter at the same moments; no
-  key joins a load to the meter.
-- Reflex: the field's way with shared fuel, sharing a process's fuel over what it processed by mass (and the works' fuel
-  over its output by mass, the GHG Protocol's physical allocation), sits on the default path and ends on EUR 456,000
-  (EUR 480,700 for the works' average), not the golden EUR 342,000.
-- Back-test: every route attributes all of the metered gas, so the year's energy reconciles to the invoices on each;
-  a per-tonne fit of the furnace still explains 99.3 per cent of the daily variation against 99.85 for the hours fit,
-  and nothing a solver checks fails on the per-tonne route.
-- Second use: the homogenizing log is the billet lots' traceability record, the meter export and the invoices are the
-  billing record, the weather file serves the heating term, the weighbridge and the goods-in register serve the asks;
-  deleting the decisive step drops no file.
-- Shock: 6082's longer soak is ordinary metallurgy (the alloy's manganese and chromium need a longer homogenization),
-  visible only as door-to-door times in a log kept for traceability, with every load of either alloy near 50 t.
-- Pins: SCR-2 files the WHAT at authority in the car maker's own genre (each process the fuel it burned, a family the
-  fuel its processes burned on its metal, the rest by tonnes produced, billed energy, the factor, production at final
-  inspection, local time, the limit and the premium); no filed sentence names a driver, a soak or hours.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| R0 the works' gas by tonnes produced | SCR-2 section 3 names tonnes for the shared part | the lots | the physical allocation by mass | the invoices reconcile | none | a ratio | yes | readable |
-| R1 each process per tonne, the furnace by billet tonnes | SCR-2 section 3 (each process the fuel it burned) | the logs' tonnes | the field's per-unit sharing within a process | the meter's year balances | none | a fit and a share | yes | readable |
-| R1b a tonnes driver for the furnace in the fit | as R1 | the load log's tonnes | as R1 | the fit explains 99.3 per cent | none | a fit and a share | yes | readable |
-| R2 (decisive) the furnace by its loads' firing hours | no sentence names hours, a soak or a driver | no column holds a load's gas | the field shares by mass | every control balances on every route | the battery conforms and stops | the driver chosen against the meter's daily response across two systems' clocks | the load log is the billet traceability record | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Readings | Ruled out by |
-|---|---|---|---|
-| SF1 | the year and its days | local time; UTC | SCR-2 section 6 files local time; same call (asserted) |
-| SF2 | the fuel | natural gas; gas and electricity | SCR-2 sections 2 and 4 (the fuel the works burned, natural gas at billed energy) |
-| SF3 | the billed energy | each invoice period's calorific value; one average for the year | SCR-2 section 4 and the invoices' own formula; same call (asserted) |
-| SF4 | the imperial conversion | the bill's 2.83; 2.831685 | the invoices state 2.83; same call (asserted) |
-| SF5 | production | the last result passed; the first result; every lot inspected | SCR-2 section 5; same call (asserted) |
-| SF6 | gas burned on rejected lots | in the family's numerator; taken out | SCR-2 section 2 (the fuel burned to make the family); same call (asserted) |
-| SF7 | pilot flames while a process runs | no process; the running process | SCR-2 section 3 (pilot flames whether or not a process is running); same call (asserted) |
-| SF8 | the heating term | degree days on 15.5 C; 18 C; 14 C; none | same call on each (asserted) |
-| SF9 | the fit's grain | local days; weeks; the days a process ran | same call on each (asserted) |
-| SF10 | melting's driver | tonnes melted; tonnes produced | SCR-2 section 3 (the fuel burned on the family's metal); same call (asserted) |
-| SF11 | re-keyed heats | dropped; kept | same call (asserted) |
-| SF12 | the call-offs | the schedule's months summed; its totals | identical (asserted) |
-| SF13 | the limit | 0.235 or less; under 0.235 | SCR-2 section 7; no family within 0.015 of it (asserted) |
-| SF14 | firing hours | stamps converted to UTC; local stamps unconverted | same call (asserted) |
-
-## Ladder
-
-| Rung | Route | Families earning | Premium |
-|---|---|---|---|
-| R0 | the works' gas over the families by tonnes produced | all four, each at the works' 0.2215 | EUR 480,700 |
-| R1 | each process per tonne processed, the homogenizing furnace's gas by billet tonnes | 6063, 6082 (both 0.225), LM25 ingot | EUR 456,000 |
-| R1b | a tonnes driver for the homogenizing furnace in the fit | 6063, 6082 (both 0.218), LM25 ingot | EUR 456,000 |
-| R2 (decisive) | the homogenizing furnace by its loads' firing hours | 6063 (0.211), LM25 ingot (0.168) | EUR 342,000 |
-
-Every defensible fit (degree days on 14, 15.5 or 18 C or none, local days, weeks or the days a process ran, melting
-by tonnes melted or produced, re-keyed heats kept) files EUR 342,000; across them 6063 spans 0.209 to 0.214, 6082
-0.260 to 0.268, LM25 ingot 0.166 to 0.175 and the castings 0.45 to 0.52. The call is graded on the premium and the
-families earning it, and the intensities are shown, not pinned to a rounding.
-
-## Closure table
-
-| Axis | Reading in this build | Move |
-|---|---|---|
-| 1 Population | the product families Brackwell supplies Velden, the four on the call-off schedule | filed (SCR-2 section 1) |
-| 2 Unit of account | the family, tonnes of CO2 per tonne produced | filed (SCR-2 section 2) |
-| 3 Attribution window | fuel burned in 2026 on 2026's metal; no work in progress crosses the year | filed (SCR-2 section 2); the world asserts the casthouse, foundry and furnaces clear before 24 December |
-| 4 As-of dating | the data package of 21 January 2027 | the email and the files' dates; C5 |
-| 5 Version basis | each lot at its last inspection result; each heat once | filed (SCR-2 section 5); SF5, SF11 |
-| 6 Denominator | tonnes that passed final inspection in 2026 | filed (SCR-2 section 5); C4 |
-| 7 Weighting | none: a family's CO2 over its tonnes | filed (SCR-2 section 2) |
-| 8 Window length | the calendar year 2026 in local time | filed (SCR-2 section 6); SF1 |
-| 9 Boundary inclusivity | 0.235 or less | filed (SCR-2 section 7); SF13 |
-| 10 Rounding path | intensities compared unrounded; the premium on whole call-off tonnes to the euro | the prompt; C9 |
-| 11 Tie-break | none: four families and one limit | C11 (no family within 0.015 of the limit) |
-| 12 Maturity and censoring | the year is closed; every 2026 lot inspected by 23 December | the world asserts it |
-| 13 Order of operations | conform, fit, attribute, share, divide, compare | C1 (every variant on the same pipeline) |
-| 14 Row order | none: sums keyed by family | C1 |
-| 15 Duplicate resolution | one row per furnace and heat; a lot at its last result | SF5, SF11 |
-| 16 Identity normalisation | the logs' alloy codes and the lots' product names to the four families; Velden's parts to families by description | SF12; C4 |
-| 17 Netting against gross | none on the call; the asks net weighings | A1, A3 |
-| 18 Dimensional units | hundreds of cubic feet and cubic metres to kWh; kilograms and tonnes | units in the data; SF4 |
-| 19 Code and status semantics | PASS and REJECT; the meter's read type | the systems' own codes; never the stump |
-| 20 Integerisation | energy in kWh unrounded to the end; weights in kilograms | C5 |
-| 21 Clause scope | fuel burned (natural gas), not electricity | filed (SCR-2 section 2); SF2 |
-| 22 Forward window contents | the 2027 call-off schedule, revision 0 | the schedule; SF12 |
-
-## Literal reader
-
-Executed word for word, SCR-2 files the population (the families on the supply agreement, the call-off schedule's
-four), the year (2026, local time), the numerator (the CO2 of the fuel each family's processes burned on its metal,
-the fuel no process burned shared by tonnes produced, at billed energy and 0.18296 kg per kWh), the denominator
-(tonnes that passed final inspection, each lot at its last result), the limit (0.235 or less) and the premium (EUR 38 a
-tonne of 2027 call-offs). What it leaves to the reader is how much fuel each process burned, which no file records:
-the literal reader has to read it from the one meter. Every reading that reads the homogenizing furnace's fuel by the
-hours its loads fired files EUR 342,000 on every defensible fit; every reading that shares it by billet tonnes files
-EUR 456,000, and the meter's daily record fits hours better than tonnes (99.85 against 99.3 per cent). Each convention
-the call needs is closed in the fork table and asserted in checks.py. Every step of the write-up executes as written.
-
-## Oracles
-
-No shipped file ranks the families on the call: no declaration, memo or quote states a family's emissions, and the cover
-email names the files only. The invoices reconcile the meter's energy on every route alike. The asset register's rated
-inputs say what each burner can fire; at full rating over the logged hours they overstate the meter by about half, and
-scaled to the meter they reproduce the hours route, so they referee nothing. Ask A's referee is the weighbridge's own
-weighing sequence and the declared weights' sizes; ask B's is the goods-in line for the returned metal on the same
-ticket. Nothing ties only under the golden.
-
-## Ask sheet
-
-Two asks on the works' weighbridge and goods-in register, files the main call never reads, each on visits whose
-weighings no row labels.
-
-**Ask A, scrap bought in by grade and quarter (16 figures).**
-- Files: the goods-in register and the weighbridge export.
-- Primary (which records are one event, from a cardinality): a two-grade load is weighed in, between its tips and out,
-  three weighings under one ticket against two goods-in lines entered in grade order; each grade's weight is the drop
-  across its own tip, which only the declared weights' sizes match to its line; the merchant's note splits the load by
-  eye, so sharing the load's net by the declared weights moves every grade in every quarter by several tonnes.
-- Hazards: the weighbridge indicator replaced on 29 June restarts its tickets at 1 (the join is ticket and date);
-  rejected loads leave loaded; returned toll metal comes in on Midland's tickets; UTC stamps.
-
-**Ask B, dross sent off for recovery by quarter (4 figures).**
-- Files: the weighbridge export and the goods-in register.
-- Primary (which records are one event): on about a third of Midland's lifts the hook loader first unloads returned
-  metal, so the lift is weighed in, after the unloading and out; the dross is the rise from the second weighing, and
-  out-weigh less in-weigh understates every quarter by 12 to 28 tonnes.
-- Hazard: the returned metal's goods-in line on the same ticket.
-
-| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at R0) | Verdict |
-|---|---|---|---|
-| A, 16 quarterly grade figures | joins on ticket and date, drops the rejected and toll lines, shares a two-grade load's net by its declared weights | sums the declared weights | miss |
-| B, 4 quarterly dross figures | takes each lift as out-weigh less in-weigh | the same | miss |
-
-Pair ceiling: 28.5 (the cracker on the call at 45.0, the mirror off it at 12.0, each keeping 0 of 20 ask figures).
-Mirror leakage: 0.0 per cent of the ask weight.
-Measured by: generator/ceiling.py (run on the cut pack, target.zip 433ff500)
-
-## Leak sweep
-
-`leak.py task482 --asof 2027-01-28` on target.zip 433ff500: REVIEW, no LEAK; each line ruled.
-- Sweep 1, the call-off schedule's sheet named Notes: harmless; it is Velden's own schedule note (supplier number,
-  delivery plants, issue date and revision) and says nothing of a column, a file or a computation.
-- Sweep 4 on `velden_scr2_supplier_carbon_requirement.pdf` (ten of the note's terms: process, burned, shared,
-  invoices, energy, record and the like): harmless; SCR-2 files the WHAT in the car maker's own words (each process the fuel it burned, the rest shared by tonnes, the
-  supplier's records in the data package) and names no driver, no soak, no hours and no way of reading a process's
-  fuel from a meter.
-- Fixed before this run: the oven log's file name (an author word), the filed constants declared as stated inputs, and
-  the cover email's sign-off (the surface screen read a first name twice as a persona).
-
-## Pre-ship check
-
-1. Three rules: the decisive step (the homogenizing furnace's gas by its loads' firing hours) is analytical; nothing
-   planted, read or executed decides (the Three rules lines).
-2. Determinism: SCR-2 files the WHAT; every defensible fit files EUR 342,000 (C6 to C11, SF1 to SF14 asserted), the
-   intensities are shown and not pinned, the asks are exact weighbridge sums with no figure on a half tonne (A9).
-3. Gates on the final cut (target.zip 433ff500): generator checks 47 of 47, the independent verifier on every graded
-   figure, two byte-identical builds, figures_check.py 79 of 79, precut.py 61 of 61, voice-check.py PASS, leak.py
-   REVIEW with no LEAK, guard.py heart WARN (the nearest driver 0.12, task484 v3, a fuel read from the period before;
-   the how-much form against task306, the decision being a sum of money) and surface on the final cut; the leak reader
-   and the determinism judge run from the main thread.
+Brackwell Alloys' 2026 product-family direct emissions for Velden's 2027 low-carbon premium (physical-environmental-
+sciences, emissions-inventory, decomposition_attribution): the homogenizing furnace's gas allocated by its loads' firing
+hours, not their tonnes, put 6082 billet at 0.263 over SCR-2's 0.235 and the premium at EUR 342,000 against the
+per-tonne route's EUR 456,000. Shipped 2026-10-31 (judge DETERMINISTIC, APPROVE; target.zip 433ff500), reshipped
+twice on 2026-11-07 for PDF provenance, and returned FAILED_TO_STUMP the same day: both portal responses filed EUR
+342,000 on the firing-hours allocation, the method a careful analyst reaches for, which the hourly gas fitted at
+R-squared 0.9985; the portal also flagged Domains Fit. The full record is in `pipeline.json` (`lineage_v16`).
 
 ## Architecture 15 record (spent 2026-10-31)
 
@@ -828,3 +703,32 @@ Architecture 11 (the contractor's plausible values drawn from a conditioning mod
 - Architecture 16 design (2026-10-31): the family intensities graded to two decimals, dropped on the measured spread:
   the defensible fits put 6082 billet between 0.260 and 0.268 and the castings between 0.45 and 0.52, so the call is
   graded on the premium and the families earning it, and the prompt pins no rounding on the intensities.
+- Architecture 16, the homogenizing furnace's gas allocated by its loads' firing hours (2026-11-07, spent on its first
+  portal round): both responses landed the golden premium of EUR 342,000 on the firing-hours allocation, the method a
+  careful analyst reaches for, which the hourly gas fitted at R-squared 0.9985, so the fit handed over the route; the
+  portal also flagged Domains Fit. The emissions-inventory world and the furnace-allocation driver are spent.
+- Architecture 17 draw screens (2026-11-07), each set aside before a card: a linkage precision carried from a
+  validation run onto a run with rarer true matches (task446's invariant, error rates carry and the yield moves, already
+  screened at task174); claims completion by each nursing facility's own monthly billing day against the extract (the
+  trap is per-reporter completion, 181's route, 445's reporters, task451's sender delay); IBNR from each member's
+  infusion rhythm across the medical and pharmacy benefits (v14's skeleton: a per-member amount incurred and unbilled,
+  read from a second stream, past a per-member threshold); same-event double capture across two lists, an ED-initiated
+  treatment start recorded in both (task196's approved driver); chain-linked volume non-additivity (a named correction
+  in the accounts manuals, the library test); construction value put in place spread by each project's own endpoints
+  (the progress reports back-test the duration scaling, so the fit points at the golden); Medicaid encounter
+  completeness by subcapitated vendor (encounter data validation is the actuary's own step); a regional series'
+  seasonality rebuilt from its units' histories (one join and a per-cell mean); a year-end processing pattern absorbed
+  as seasonality (the change is dated and visible).
+- Architecture 17 draw, the due-contact family (2026-11-07, five prototypes): register children counted resident only
+  where activity shows, and absence of activity is evidence of departure only where a well-child contact fell due under
+  the child's own centre's schedule. District schedules put inactivity at 6 per cent against 36 (the pack's largest
+  anomaly); masking it with district emigration biased the golden by +5.4 per cent; centre catchments left the pooled
+  route within the golden's own noise (pooled minus golden sd 1.6, golden sd 1.1); a previous cohort's complete outcome
+  made the golden exact (sd 0.8) but per-centre calibration landed within 1.4; a recall rule keyed to each child's own
+  history removed the anomaly and the district by age-year calibration landed at +0.1 per cent. Its world also sat
+  beside task471 v4's register-adjusted municipal population, and its honest label, composition_mix, was banned when
+  the family was screened.
+- Architecture 17, first prototype of the drawn mechanism (2026-11-07): with schools whose Term 3 unit ended before
+  their first sitting day, recalibrating on whole schools that had finished the unit landed the golden in 20 of 20; the
+  world gives every Term 3 unit at least five weeks against a sitting in weeks 3 to 5, so no school has finished one
+  before it sits and taught responses exist only inside schools, after each school's own last lesson.

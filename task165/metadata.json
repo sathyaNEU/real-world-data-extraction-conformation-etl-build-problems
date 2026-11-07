@@ -1,215 +1,123 @@
 {
-  "task": "task165",
-  "title": "Seasonal rock salt commitment, winter 2026-27",
-  "domain": "Urban & Regional Science",
-  "client_domain": "Urban & Regional Science",
-  "house_domain": "urban-regional-science",
-  "subdomain": "municipal service demand and resource allocation (winter road salt)",
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed seasonal tonnage, each works yard's dome stock and room before the season, each yard's arterial rock salt by winter, and a one-page council report with a chart",
-  "as_of": "2026-09-25",
-  "deliverables": [
-    "salt_commitment_2026-27.xlsx",
-    "seasonal_salt_commitment_council_report.docx"
-  ],
-  "distractor_files": [
-    "yard_timesheets_2025-26.csv",
-    "brine_production_log_2023-10_to_2026-09.csv"
-  ],
-  "field_terms": [],
-  "stated_inputs": [],
-  "input_gates": {
-    "files": 19,
-    "formats": [
-      "csv",
-      "parquet",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "telematics_segment_passes_2023-10-01_2026-09-23.parquet",
-    "largest_file_rows": 344770
+ "task": "task165",
+ "architecture": 2,
+ "setting": "2026-01-16",
+ "files": [
+  {
+   "name": "outfall_014_flow_monitoring_2014-2025.parquet",
+   "role": "evidence",
+   "source": "synthetic: the authority's flow monitoring export for the Outfall 014 overflow pipe, both loggers",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task165/generator/build.py (seeded, deterministic) around a fictional Ontario city's roads division, in the layouts of a legacy AVL's segment-by-shift summaries and a fleet telematics platform's segment-pass export, a route register and its revision log, a storm log, scale house logs, a supplier's dispatch schedules, a contractor's returns, a fleet list and its work orders, a drone survey report and the division's plan and procedure; no real organisation's records or person is depicted.",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-18",
-  "generator": "task165/generator/build.py",
-  "files": [
-    {
-      "path": "avl_legacy_segment_shift_2021-11-01_2023-03-31.csv",
-      "format": "csv",
-      "bytes": 8029436,
-      "rows": 164095,
-      "source": "Constructed: City of Quellbrook Roads Division, legacy AVL segment-by-shift material summaries, 1 November 2021 to 31 March 2023",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "brine_production_log_2023-10_to_2026-09.csv",
-      "format": "csv",
-      "bytes": 5136,
-      "rows": 189,
-      "source": "Constructed: City of Quellbrook Roads Division, yard brine plant production log, 1 October 2023 to 23 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "dome_stock_survey_2026-09.pdf",
-      "format": "pdf",
-      "bytes": 35531,
-      "rows": null,
-      "source": "Constructed: Tessaline Geomatics, salt dome stock survey report TG-2026-0917 for the City of Quellbrook (16 September 2026)",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "fleet_units_2026-09.csv",
-      "format": "csv",
-      "bytes": 8194,
-      "rows": 241,
-      "source": "Constructed: City of Quellbrook Fleet Services, winter fleet units at 24 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "fleet_work_orders_2023-07_to_2026-09.csv",
-      "format": "csv",
-      "bytes": 554585,
-      "rows": 4690,
-      "source": "Constructed: City of Quellbrook Fleet Services, work orders on the winter fleet units, 1 July 2023 to 23 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "gis_segment_crosswalk_2023.csv",
-      "format": "csv",
-      "bytes": 91130,
-      "rows": 2166,
-      "source": "Constructed: City of Quellbrook GIS Services, segment crosswalk for the 21 August 2023 GIS release",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kettlewood_material_returns_2023-24_to_2025-26.xlsx",
-      "format": "xlsx",
-      "bytes": 9192,
-      "rows": 51,
-      "source": "Constructed: Kettlewood Road Services, monthly material returns under contract RW-2023-07, winters 2023-24 to 2025-26",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "northgrit_dispatch_2026-10_issued_2026-09-14.csv",
-      "format": "csv",
-      "bytes": 9773,
-      "rows": 201,
-      "source": "Constructed: Northgrit Salt Supply, October 2026 dispatch schedule for the City of Quellbrook, issued 14 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "northgrit_dispatch_2026-10_issued_2026-09-21.csv",
-      "format": "csv",
-      "bytes": 9827,
-      "rows": 202,
-      "source": "Constructed: Northgrit Salt Supply, October 2026 dispatch schedule for the City of Quellbrook, issued 21 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "qrt_frequent_network_2026_streets.xlsx",
-      "format": "xlsx",
-      "bytes": 8315,
-      "rows": 37,
-      "source": "Constructed: Quellbrook Regional Transit Service Planning, frequent network streets for the 30 August 2026 network",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "road_salt_procurement_procedure_RO-PR-07.pdf",
-      "format": "pdf",
-      "bytes": 41417,
-      "rows": null,
-      "source": "Constructed: City of Quellbrook Roads Division, road salt procurement procedure RO-PR-07, revision 3 (12 May 2025)",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "route_audit_revision_log.csv",
-      "format": "csv",
-      "bytes": 153273,
-      "rows": 1294,
-      "source": "Constructed: City of Quellbrook Roads Operations Centre, route audit revision log to 14 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "salt_dome_register.csv",
-      "format": "csv",
-      "bytes": 274,
-      "rows": 4,
-      "source": "Constructed: City of Quellbrook Facilities Services, salt dome register at 2 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "scale_house_log_2026-08-24_to_2026-09-24.xlsx",
-      "format": "xlsx",
-      "bytes": 25425,
-      "rows": 230,
-      "source": "Constructed: City of Quellbrook Roads Division, yard scale house logs, 24 August to 24 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "storm_log_2021-22_to_2025-26.xlsx",
-      "format": "xlsx",
-      "bytes": 18357,
-      "rows": 163,
-      "source": "Constructed: City of Quellbrook Roads Operations Centre, storm log and Winter Severity Index, winters 2021-22 to 2025-26",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "telematics_segment_passes_2023-10-01_2026-09-23.parquet",
-      "format": "parquet",
-      "bytes": 8478628,
-      "rows": 344770,
-      "source": "Constructed: City of Quellbrook Roads Division, fleet telematics platform segment passes, 1 October 2023 to 23 September 2026 (UTC)",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "winter_maintenance_plan_2026-27.pdf",
-      "format": "pdf",
-      "bytes": 42982,
-      "rows": null,
-      "source": "Constructed: City of Quellbrook Roads Division, winter maintenance plan 2026-27 (18 September 2026)",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "winter_route_register_2026-09-14.csv",
-      "format": "csv",
-      "bytes": 240412,
-      "rows": 2166,
-      "source": "Constructed: City of Quellbrook Roads Operations Centre, winter route register at 14 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "yard_timesheets_2025-26.csv",
-      "format": "csv",
-      "bytes": 341085,
-      "rows": 7942,
-      "source": "Constructed: City of Quellbrook Payroll, yard winter timesheets, winter 2025-26",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "name": "wrp_influent_hourly_2014-2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the plant historian's hourly influent export for the Southside and Northside WRPs",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "outfall_regulator_register.csv",
+   "role": "evidence",
+   "source": "synthetic: the authority's register of CSO regulators, receiving sewers and plants",
+   "date": "2025-11-03",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "TM-7_clay_street_storage_alternatives.pdf",
+   "role": "evidence",
+   "source": "synthetic: the consultant's technical memorandum on the Clay Street storage alternatives",
+   "date": "2025-12-18",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "consent_decree_appendix_C_cso_control.pdf",
+   "role": "evidence",
+   "source": "synthetic: the authority's conformed copy of the consent decree's Appendix C",
+   "date": "2021-09-27",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "northside_tank_scada_2020-2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the Northside storage tank's SCADA export, 15-minute values",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "northside_tank_om_manual_section4.pdf",
+   "role": "evidence",
+   "source": "synthetic: section 4 of the Northside storage tank's O&M manual",
+   "date": "2020-04-24",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "cmms_work_orders_2020-2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the maintenance system's completed work orders for the tank, pump station and nearby assets",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "rain_gauge_tips_2014-2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the rain gauge network's tip export, one row per tip",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "rain_gauge_inventory.csv",
+   "role": "evidence",
+   "source": "synthetic: the rain gauge network's inventory",
+   "date": "2024-05-08",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "rain_gauge_field_service_2014-2025.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the field services technicians' visit log for the rain gauges",
+   "date": "2026-01-09",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "wennick_river_stage_daily_2014-2025.csv",
+   "role": "distractor",
+   "source": "synthetic: daily mean stage at the river gauge below the city",
+   "date": "2026-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "cso_overflow_notifications_2025.csv",
+   "role": "distractor",
+   "source": "synthetic: the 2025 public overflow notifications raised by the outfall detectors",
+   "date": "2026-01-05",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  }
+ ],
+ "distractors": [
+  "wennick_river_stage_daily_2014-2025.csv",
+  "cso_overflow_notifications_2025.csv"
+ ],
+ "distractor_reasons": {
+  "wennick_river_stage_daily_2014-2025.csv": "the receiving river's stage looks relevant to how an outfall discharges, but the outfall meter records the discharge itself and no criterion turns on the river",
+  "cso_overflow_notifications_2025.csv": "the notices count 2025's overflows without a tank; the decree evaluates the whole 2014 to 2025 metered record and no ask needs the notices"
+ },
+ "stated_inputs": [
+  "outfall_014_flow_monitoring_2014-2025.parquet",
+  "wrp_influent_hourly_2014-2025.csv",
+  "outfall_regulator_register.csv",
+  "TM-7_clay_street_storage_alternatives.pdf",
+  "consent_decree_appendix_C_cso_control.pdf",
+  "northside_tank_scada_2020-2025.csv",
+  "northside_tank_om_manual_section4.pdf",
+  "cmms_work_orders_2020-2025.csv",
+  "rain_gauge_tips_2014-2025.csv",
+  "rain_gauge_inventory.csv",
+  "rain_gauge_field_service_2014-2025.xlsx"
+ ],
+ "deliverables": [
+  "clay_street_storage_evaluation.xlsx",
+  "clay_street_tank_selection_board.pptx"
+ ]
 }

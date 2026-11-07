@@ -21,6 +21,33 @@ REF = dt.date(2026, 11, 1)
 START = dt.datetime(2026, 11, 9)
 
 
+def exact_interval(v, n, level=0.90):
+    """The exact binomial interval by inverting the binomial tail sums (bisection), independent of the beta quantile
+    golden.py uses: the lower bound is the p at which P(X >= v) = (1 - level) / 2, the upper the p at which
+    P(X <= v) = (1 - level) / 2. In per cent."""
+    from math import comb
+    a = (1 - level) / 2
+
+    def tail_ge(p):
+        return 1.0 - sum(comb(n, k) * p ** k * (1 - p) ** (n - k) for k in range(v))
+
+    def tail_le(p):
+        return sum(comb(n, k) * p ** k * (1 - p) ** (n - k) for k in range(v + 1))
+
+    def solve(f, rising):
+        lo, hi = 0.0, 1.0
+        for _ in range(80):
+            mid = (lo + hi) / 2
+            if (f(mid) < a) == rising:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2
+    low = 0.0 if v == 0 else solve(tail_ge, True)
+    high = 1.0 if v == n else solve(tail_le, False)
+    return 100 * low, 100 * high
+
+
 def rows(target, pattern):
     name = [f for f in os.listdir(target) if re.match(pattern, f)][0]
     with open(os.path.join(target, name), encoding="utf-8", newline="") as fh:
@@ -98,6 +125,10 @@ def main(target, fig_path):
         ok &= good
         print("%s  verify %s %s: %d counted, %d vacant, %s per cent" % ("ok  " if good else "FAIL", m["nr"], m["name"], n,
                                                                      v, share))
+        lo, hi = exact_interval(v, n)
+        good = ("%.1f" % lo, "%.1f" % hi) == (m["low"], m["high"])
+        ok &= good
+        print("%s  verify %s 90 per cent interval: %.1f to %.1f" % ("ok  " if good else "FAIL", m["nr"], lo, hi))
     # ---------------------------------------------------------------- table A
     reg = rows(target, r"folkeregister_bosatte_")
     ev = rows(target, r"folkeregister_hendelser_")
@@ -143,16 +174,29 @@ def main(target, fig_path):
             where[p] = [frm, when]
     dkey = {key(r["kommunenr"], r["adressenavn"], r["husnr"], r["bokstav"], r["bruksenhetsnr"]): r for r in counted}
     tab = {}
+    # a renumbered block moves every flat one floor up on its day, a label nobody held that day included
+    block_day = {(k[0], k[1]): v[1] for k, v in relabel.items()}
+    persons_at = {}
     for p, (k, when) in where.items():
-        if k in relabel and when < relabel[k][1]:
-            k = relabel[k][0]
+        if k in relabel:
+            if when < relabel[k][1]:
+                k = relabel[k][0]
+        elif (k[0], k[1]) in block_day and when < block_day[(k[0], k[1])] and re.fullmatch(r"H\d{4}", k[2]):
+            k = (k[0], k[1], "H%02d%s" % (int(k[2][1:3]) + 1, k[2][3:]))
         r = dkey.get(k)
         if r is None:
             continue
+        persons_at[r["bruksenhet_id"]] = persons_at.get(r["bruksenhet_id"], 0) + 1
         b = born[p]
         age = REF.year - b.year - ((REF.month, REF.day) < (b.month, b.day))
         band = 0 if age < 18 else (1 if age < 67 else 2)
         tab.setdefault(r["kommunenr"], [0, 0, 0])[band] += 1
+    vac_reg = sum(1 for r in counted if not lived.get(r["bruksenhet_id"], False) and persons_at.get(r["bruksenhet_id"]))
+    noreg = sum(1 for r in counted if lived.get(r["bruksenhet_id"], False) and not persons_at.get(r["bruksenhet_id"]))
+    good = (vac_reg, noreg) == (int(F["vacant_registered"].replace(",", "")), int(F["lived_unregistered"].replace(",", "")))
+    ok &= good
+    print("%s  verify vacant with a registered resident %d, lived in with nobody registered %d" % (
+        "ok  " if good else "FAIL", vac_reg, noreg))
     for x in F["ask_a"]:
         want = [int(x[k].replace(",", "")) for k in ("under_18", "age_18_66", "age_67")]
         good = tab.get(x["nr"]) == want

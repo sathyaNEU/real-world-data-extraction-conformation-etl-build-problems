@@ -1,6 +1,6 @@
 # leak check, task118
 
-**Verdict: REVIEW.** 21 files read, 29 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 21 files read, 29 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -16,10 +16,16 @@ Stump terms swept: headline, release, national, readers, design, clicks, archite
 - **INFO** `dr_expansion_costs_2027.xlsx`: names 4 of 4 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `op7_demand_response_dispatch_rev3.pdf`: names 4 of 4 answer-set candidates; confirm it does not rank them on the decision question
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `appendix_b_design_year_2027.csv`: 2928 ISO dates after 2026-10-19, e.g. 2027-06-01, 2027-06-02, 2027-06-03, 2027-06-04, 2027-06-05
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
-## 10 container metadata (INFO 1)
+## 10 container metadata (LEAK 6, INFO 1)
+- **LEAK** `hbn_participation_agreement_schedule2.pdf`: Producer names 'CBMU', not the application that wrote the PDF
+- **LEAK** `hbn_participation_agreement_schedule2.pdf`: Creator names 'Brightwell Storage LLC', not the application that wrote the PDF
+- **LEAK** `op7_demand_response_dispatch_rev3.pdf`: Producer names 'CBMU', not the application that wrote the PDF
+- **LEAK** `op7_demand_response_dispatch_rev3.pdf`: Creator names 'CBMU System Operations', not the application that wrote the PDF
+- **LEAK** `ra_plan_2027_capacity_accreditation.pdf`: Producer names 'CBMU', not the application that wrote the PDF
+- **LEAK** `ra_plan_2027_capacity_accreditation.pdf`: Creator names 'CBMU Resource Planning', not the application that wrote the PDF
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 12 describing content (REVIEW 1)

@@ -162,6 +162,81 @@ def rebuilt_rate(rec, code, mode="fixed"):
     return 1e5 * tot / n, n
 
 
+def _per_set(rec, code):
+    per = {}
+    for c in rec["checks"]:
+        if c["product"] == code:
+            per.setdefault(c["dose"]["set"], []).append((c["dose"]["L"], c["dev"]))
+    return [(np.array([x[0] for x in v]), np.array([x[1] for x in v])) for v in per.values()]
+
+
+def _fit_sets(per):
+    """fit()'s estimates on a list of (litres, deviation) arrays, one per set."""
+    num = den = 0.0
+    for L, v in per:
+        if len(L) < 2:
+            continue
+        num += float(((L - L.mean()) * (v - v.mean())).sum())
+        den += float(((L - L.mean()) ** 2).sum())
+    b = num / den if den > 0 else 0.0
+    res, ints = [], []
+    for L, v in per:
+        a = float(v.mean() - b * L.mean())
+        ints.append(a)
+        res.append(v - a - b * L)
+    res = np.concatenate(res)
+    sig = math.sqrt(float((res * res).sum()) / max(1, len(res) - len(per) - 1))
+    ints = np.array(ints)
+    tau2 = max(0.0, float(ints.var(ddof=1)) - sig * sig / max(1.0, float(np.mean([len(L) for L, _ in per]))))
+    return float(ints.mean()), b, sig, tau2
+
+
+def _rate_vec(mu, b, sig, tau2, Ld, tol):
+    from scipy.special import erfc
+    m = mu + b * Ld
+    s = math.sqrt(sig * sig + tau2)
+    return 1e5 * float((0.5 * erfc((tol + m) / s / math.sqrt(2.0)) + 0.5 * erfc((tol - m) / s / math.sqrt(2.0))).mean())
+
+
+def interval(rec, code, level=0.90, reps=1000, seed=272, realised=False):
+    """The golden rate's 90 per cent interval: the product's sets resampled with replacement, the line refitted and
+    every 2026 dose re-summed; with realised, each resample's count of out-of-tolerance doses drawn as Poisson."""
+    per = _per_set(rec, code)
+    tol = rec["products"][code]["tol"]
+    Ld = np.array([d["L"] for d in rec["doses"] if d["product"] == code and d["status"] == "COMPLETE"])
+    rng = np.random.default_rng(seed)
+    bs = np.array([_rate_vec(*_fit_sets([per[i] for i in rng.integers(0, len(per), len(per))]), Ld, tol)
+                   for _ in range(reps)])
+    if realised:
+        bs = rng.poisson(bs * len(Ld) / 1e5) * 1e5 / len(Ld)
+    q = (1 - level) / 2
+    return float(np.quantile(bs, q)), float(np.quantile(bs, 1 - q))
+
+
+def interval_doses(rec, code, level=0.90, reps=500, seed=7):
+    """The same interval with the weighed doses resampled one by one, sets ignored."""
+    per = _per_set(rec, code)
+    tol = rec["products"][code]["tol"]
+    Ld = np.array([d["L"] for d in rec["doses"] if d["product"] == code and d["status"] == "COMPLETE"])
+    flat = [(k, i) for k, (L, _) in enumerate(per) for i in range(len(L))]
+    rng = np.random.default_rng(seed)
+    bs = []
+    for _ in range(reps):
+        pp = {}
+        for j in rng.integers(0, len(flat), len(flat)):
+            k, i = flat[j]
+            pp.setdefault(k, []).append((per[k][0][i], per[k][1][i]))
+        bs.append(_rate_vec(*_fit_sets([(np.array([x[0] for x in v]), np.array([x[1] for x in v]))
+                                        for v in pp.values()]), Ld, tol))
+    q = (1 - level) / 2
+    return float(np.quantile(bs, q)), float(np.quantile(bs, 1 - q))
+
+
+def side(lo, hi):
+    """Where the policy's limit sits against an interval."""
+    return "below" if LIMIT < lo else ("above" if LIMIT > hi else "inside")
+
+
 # --------------------------------------------------------------------------------------------- the rungs
 
 def ppk_rate(rec, code):
@@ -254,10 +329,15 @@ def compute(target):
     ladder.update({m: sorted(c for c in cands if fam[c][m] > LIMIT) for m in ("fixed", "shrunk", "own_slope")})
     a = ask_a(rec)
     b = ask_b(rec)
+    ci = {}
+    for c in cands:
+        lo, hi = interval(rec, c)
+        ci[c] = dict(lo=round(lo, 1), hi=round(hi, 1), limit=side(lo, hi))
     fig = dict(
+        interval=ci,
         call=dict(products=call, count=len(call)),
         products={c: rec["products"][c]["name"] for c in cands},
-        policy=dict(limit_value=LIMIT),
+        policy=dict(limit_value=LIMIT, interval_level_pct=90, interval_reps=1000),
         golden={c: dict(rate=round(gold[c]["rate"], 1), doses=gold[c]["doses"]) for c in cands},
         family={c: {m: round(v, 1) for m, v in fam[c].items()} for c in cands},
         fits=fits,

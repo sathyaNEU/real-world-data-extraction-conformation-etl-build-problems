@@ -11,6 +11,8 @@ import numpy as np
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+import parquetio as PQ
+
 import world as W
 
 OUTSIDE = ["4601", "0301", "5001", "1103", "3301", "1508"]
@@ -147,12 +149,8 @@ def write_hourly(w, path, rng):
         "kvalitet": pa.array(np.array(qual)[order], pa.string()),
         "leveranse": pa.array(np.array(ver)[order], pa.int8()),
     })
-    pq.write_table(tab, path, compression="zstd", use_dictionary=True, write_statistics=False)
-    with open(path, "rb") as fh:
-        b = fh.read()
-    b = re.sub(rb"parquet-cpp-arrow version \d{2}\.\d\.\d", b"parquet-cpp-arrow version 16.1.0", b)
-    with open(path, "wb") as fh:
-        fh.write(b)
+    pq.write_table(tab, path, compression="zstd", use_dictionary=True, write_statistics=False, store_schema=False)
+    PQ._drop_created_by(path)
     return tab.num_rows
 
 

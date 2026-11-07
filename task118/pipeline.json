@@ -1,11 +1,11 @@
 {
  "task": "task118",
- "status": "SHIPPED",
+ "status": "FAILED_TO_STUMP",
  "domain": "energy-systems-utilities / generation-capacity-planning (client energy-systems-utilities)",
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
+ "updated": "2026-11-07",
  "stump": "each programme's 18:00 reduction read on the record's fourth consecutive event days, the design peak hour being the fourth weekday OP-7 calls (default: Cool Credit about 11 MW on the average or weather-matched reduction; golden: Home Battery Network about 6 MW)",
  "architecture": 5,
  "loops": 0,
@@ -62,14 +62,28 @@
    "portal": "architecture 4 (the duty envelope): the call landed three times and the determinism block failed twice; the golden was the field's own welfare method, applied by reflex",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 5"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "portal input check: both xlsx carried openpyxl's AppVersion 3.1 in docProps/app.xml",
+   "repair": "metadata",
+   "zip": "64af0836",
+   "moves": "docProps/app.xml written as Excel saves it (AppVersion 16.0300, the sheet names in TitlesOfParts) by the house scrub; only the two xlsx moved, no figure moved",
+   "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "FAILED_TO_STUMP (architecture 5): both responses filed Home Battery Network 6 MW with runner-up Peak Time Rewards 4 MW and every programme's MW (Cool Credit 3, Business Demand Partners 2), most ask figures identical. Both placed the 23 July 2027 18:00 peak as the fourth consecutive OP-7 call day by applying the weekday, 110F, holiday and window rules to the design year, fitted each programme's 18:00 reduction on the day's high plus a consecutive-call streak (indicators or a count) and read it at day four, validated leave-one-season-out against a constant mean, and fitted the batteries on the 38 events under the 3.0 kW contract only; both named the historical average (Cool Credit about 11 MW) and the temperature-only fit as the rejected routes.",
+   "repair": "re-root (the run-position covariate, the contract-regime split and the season-out validation are reflexes; architecture 5 spent on its first portal round)",
+   "commit": ""
   }
  ],
- "resume": "",
+ "resume": "re-root at stage 1: architecture 6 in another client domain, world, dataset, generator and prompt shell under opportunity-sizing-decision (architecture 5 spent on its first portal round, see the note's Tried and rejected)",
  "approved": null,
  "delivered": null,
- "portal": "FAILED_TO_STUMP 2026-10-27 (architecture 3): both responses filed the golden, Saltreach Coast at 19, runner-up Hethermoss 4 fewer",
- "portal_status": "",
- "portal_status_date": "",
+ "portal": "FAILED_TO_STUMP 2026-11-07 (architecture 5): both responses filed the golden, Home Battery Network 6 MW, runner-up Peak Time Rewards 4 MW",
+ "portal_status": "FAILED_TO_STUMP",
+ "portal_status_date": "2026-11-07",
  "source_note": "",
- "zip_sha256_16": "1b48e1a3deae2619"
+ "zip_sha256_16": "64af0836b0feec37"
 }

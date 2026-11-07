@@ -32,11 +32,15 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   Producer or Creator is the organisation, one whose library header was overwritten, and a Subject left at
   the placeholder "(unspecified)" (task127, task482). Fix the export's date, /DocChecksum and /ID at equal
   length so two builds stay byte-identical (task482/generator/officepdf.py).
-  A Parquet input carries no `pandas` schema metadata: `pyarrow.Table.from_pandas` writes a key-value
-  block naming pandas, pyarrow and their versions into the footer, and the portal fails the file as
-  generated (task250). Build the table from arrays, or drop the schema metadata
-  (`table.replace_schema_metadata(None)`) before `write_table`, and assert the footer's key-value
-  metadata holds no `pandas` key.
+  An xlsx input's docProps/app.xml reads as Excel saves it: AppVersion an Office release ("16.0300") and the
+  sheet names in TitlesOfParts. The portal fails openpyxl's AppVersion 3.1 (task118); the scrub script
+  rewrites app.xml and leak.py sweep 10 refuses it.
+  A Parquet input carries no writer and no `pandas` schema metadata: `pyarrow.Table.from_pandas` writes a
+  key-value block naming pandas, pyarrow and their versions into the footer (task250), and the writer stamps
+  "parquet-cpp-arrow version ..." as `created_by` (task306); the portal fails either as generated. Build the
+  table from arrays or drop the schema metadata (`table.replace_schema_metadata(None)`), write with
+  `store_schema=False`, leave `created_by` out of the footer (task306/generator/pack.py `_drop_created_by`),
+  and assert the footer holds no `pandas` key and no writer.
   Timestamps: scrub every shipped file whose body states a date, goldens included.
 - **Check.** Sweep the pack and the deliverables (two generators): no writer name, no stamp outside the
   band. Wire OOXML, PDF and image branches even before a file of that kind ships.

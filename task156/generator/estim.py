@@ -1,302 +1,271 @@
-"""The golden method, run on the shipped files in target/ and nothing else.
-
-The call: PS03's inflow on the 2024 to 2026 SCADA record is the town's dry weather flow, an infiltration that runs
-with the length of the catchment's sewer lying below the terrace water table (the regional council's bore against the
-asset register's inverts), and a storm response with a fast part and a slow part, the slow part again scaled by that
-length. Fitted on the meter and checked on storms it was not fitted on, the model is run through every hour of the
-consent's 2004 to 2023 record, each day with its own water table, with and without the subdivision's code of practice
-flow and with the upgrade's storage, and the overflows are counted the consent's way. The asks are in asks.py."""
-from __future__ import annotations
-
+"""task156: the main call recomputed from the shipped pack (target/). The golden: a member-level turnout model fitted
+on the branch's online votes with the delegate active at each member's worksite on each vote's close, set on the
+protected action ballots' level by the ballot agent's declared turnouts, and run on the 2 November 2026 roll with the
+delegates of the 2026-28 term. The rungs below it (the vote-history routes) are computed here too, for the checks."""
 import csv
 import datetime as dt
 import functools
+import math
 import os
-import zoneinfo
+import re
+import subprocess
 
 import numpy as np
+import statsmodels.api as sm
+from openpyxl import load_workbook
 
-AKL = zoneinfo.ZoneInfo("Pacific/Auckland")
-UTC = dt.timezone.utc
-NZST = dt.timezone(dt.timedelta(hours=12))
-H0 = dt.datetime(2003, 12, 31, 12, tzinfo=UTC)
-H1 = dt.datetime(2026, 10, 31, 11, tzinfo=UTC)
-NH = int((H1 - H0).total_seconds() // 3600)
-
-F_SCADA = "ps03_riverbank_rd_scada_15min_2024-2026.csv"
-F_RAIN = "krc_rainfall_1187_hourly_2004-2025.csv"
-F_RAIN26 = "krc_rainfall_1187_15min_2026_provisional.csv"
-F_BORE = "krc_groundwater_72_1043_daily_2004-2026.csv"
-F_ASSETS = "rauwhero_wastewater_assets_2026-10.xlsx"
-
-QP = 112.0            # the 2023 drawdown test, both pumps (data sheet)
-STORE = 350.0         # duty start to the weir crest (data sheet)
-UPGRADE = 1100.0      # the brief's tank
-WEIR = 4.20           # weir crest above the wet well floor (data sheet)
-SUB_DWELLINGS = 260   # the servicing report, full development
-OCC, LPD = 2.7, 200.0
-TABLE_5_2 = [0.45, 0.38, 0.34, 0.33, 0.37, 0.52, 0.98, 1.55, 1.80, 1.62, 1.38, 1.20,
-             1.10, 1.03, 0.97, 0.95, 1.00, 1.10, 1.26, 1.36, 1.27, 1.05, 0.82, 0.57]
+BALLOT_CLOSE = dt.date(2027, 3, 15)
+EXTRACT = dt.date(2026, 11, 2)
+END24 = dt.date(2026, 6, 30)
+F_REG = "membership_register_extract_2026-11-02.csv"
+F_INV = "online_vote_invitations_2022-2025.csv"
+F_VOTES = "online_votes_2022-2025.csv"
+F_SITES = "worksites_2026-11.csv"
+F_DELEG = "delegate_register_2018-2026.xlsx"
+F_RETURN = "delegate_election_return_2026.xlsx"
+F_ROUND = "bargaining_round_2027.xlsx"
+PAB_PDFS = ["tallyhouse_pab_declarations_2021.pdf", "tallyhouse_pab_declarations_2023-24.pdf"]
 
 
-def hidx(t):
-    return int((t - H0).total_seconds() // 3600)
+def pdate(s):
+    return dt.date.fromisoformat(s) if s else None
 
 
-@functools.lru_cache(maxsize=4)
-def clock():
-    utc = [H0 + dt.timedelta(hours=i) for i in range(NH)]
-    loc = [u.astimezone(AKL) for u in utc]
-    nz = [u.astimezone(NZST) for u in utc]
-    C = type("C", (), {})()
-    C.year = np.array([x.year for x in nz])
-    C.how = np.array([x.weekday() * 24 + x.hour for x in loc])
-    C.how_nzst = np.array([x.weekday() * 24 + x.hour for x in nz])
-    C.hour = np.array([x.hour for x in loc])
-    C.day = np.array([(x.date() - dt.date(2004, 1, 1)).days for x in nz])
-    C.nd = int(C.day[-1]) + 1
-    C.meter = np.array([u >= dt.datetime(2023, 12, 31, 11, tzinfo=UTC) for u in utc])
-    return C
+def years(a, b):
+    return (b - a).days / 365.25
 
 
-def read_rows(path, skip_to_header):
-    with open(path, encoding="utf-8") as f:
-        lines = f.read().splitlines()
-    i = next(k for k, ln in enumerate(lines) if ln.startswith(skip_to_header))
-    return list(csv.reader(lines[i:]))
+def age_band(age):
+    return 0 if age < 30 else (1 if age < 45 else (2 if age < 60 else 3))
 
 
-@functools.lru_cache(maxsize=4)
-def rainfall(target, shift=0):
-    """Hourly rain on the UTC hour index: the archive's NZST hour-ending totals to 2025, the provisional 15-minute
-    telemetry (UTC, interval end) summed into hours for 2026. shift moves the archive's hours (a stamp misread)."""
-    r = np.zeros(NH)
-    for row in read_rows(os.path.join(target, F_RAIN), "Time (NZST)")[1:]:
-        end = dt.datetime.strptime(row[0], "%d/%m/%Y %H:%M").replace(tzinfo=NZST)
-        i = hidx(end - dt.timedelta(hours=1)) + shift
-        if 0 <= i < NH:
-            r[i] = float(row[1])
-    for row in read_rows(os.path.join(target, F_RAIN26), "interval_end_utc")[1:]:
-        if not row[1]:
-            continue
-        end = dt.datetime.strptime(row[0], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
-        i = hidx(end - dt.timedelta(minutes=15))
-        if 0 <= i < NH:
-            r[i] += float(row[1])
-    return np.round(r, 1)
+class Pack:
+    pass
 
 
-@functools.lru_cache(maxsize=4)
-def water_level(target):
-    """Daily water table (m NZVD2016): the measuring point's level less the depth to water, gaps joined straight."""
-    rows = read_rows(os.path.join(target, F_BORE), "Date")
-    head = open(os.path.join(target, F_BORE), encoding="utf-8").read().split("Measuring point,Top of casing at ")[1]
-    mp = float(head.split(" m NZVD2016")[0])
-    C = clock()
-    lv = np.full(C.nd, np.nan)
-    for row in rows[1:]:
-        d = dt.date.fromisoformat(row[0])
-        k = (d - dt.date(2004, 1, 1)).days
-        if row[1] and 0 <= k < C.nd:
-            lv[k] = mp - float(row[1])
-    ok = ~np.isnan(lv)
-    lv[~ok] = np.interp(np.nonzero(~ok)[0], np.nonzero(ok)[0], lv[ok])
-    return lv
+@functools.lru_cache(maxsize=None)
+def load(target):
+    K = Pack()
+    sites = list(csv.DictReader(open(os.path.join(target, F_SITES), encoding="utf-8")))
+    K.old2new = {r["code_before_2024_07"]: r["worksite_code"] for r in sites}
+    K.site_council = {r["worksite_code"]: r["council"] for r in sites}
+    names = sorted(set(K.site_council.values()))
+    K.councils = names
+    K.members = {}
+    for r in csv.DictReader(open(os.path.join(target, F_REG), encoding="utf-8")):
+        site = r["worksite"] if r["worksite"] in K.site_council else K.old2new[r["worksite"]]
+        K.members[int(r["member_no"])] = {"site": site, "council": K.site_council[site], "dob": pdate(r["date_of_birth"]),
+                                          "join": pdate(r["joined"]), "cease": pdate(r["ceased"]),
+                                          "emp": r["employment"]}
+    K.votes = {}
+    for r in csv.DictReader(open(os.path.join(target, F_VOTES), encoding="utf-8")):
+        K.votes[r["vote_id"]] = dt.datetime.strptime(r["closes_local"], "%Y-%m-%d %H:%M").date()
+    K.inv = [(r["vote_id"], int(r["member_no"]), r["voted_utc"] != "")
+             for r in csv.DictReader(open(os.path.join(target, F_INV), encoding="utf-8"))]
+    # delegates: (term start year, site) -> member numbers
+    K.deleg = {}
+    sheets = [ws for f in (F_DELEG, F_RETURN) for ws in load_workbook(os.path.join(target, f), read_only=True).worksheets]
+    for ws in sheets:
+        for i, row in enumerate(ws.iter_rows(values_only=True)):
+            if i == 0 or row[0] is None:
+                continue
+            term = row[7].year
+            code = str(row[1])
+            site = code if code in K.site_council else K.old2new[code]
+            K.deleg.setdefault((term, site), []).append(int(row[3]))
+    wb = load_workbook(os.path.join(target, F_ROUND), read_only=True)
+    ws = wb["2027 round"]
+    K.candidates = [r[0] for i, r in enumerate(ws.iter_rows(values_only=True)) if i > 0 and r[0]]
+    K.pab = pab_declarations(target)
+    return K
 
 
-@functools.lru_cache(maxsize=4)
-def ps03_pipes(target, include_abandoned=False):
-    from openpyxl import load_workbook
-    wb = load_workbook(os.path.join(target, F_ASSETS), read_only=True)
+def pab_declarations(target):
+    """Every final declaration in the agent's two reports: council, roll date, close date, roll, ballots returned."""
     out = []
-    for i, row in enumerate(wb["Gravity mains"].iter_rows(values_only=True)):
-        if i == 0 or row[0] is None:
-            continue
-        if not str(row[1]).startswith("PS03"):
-            continue
-        if row[10] != "In service" and not include_abandoned:
-            continue
-        out.append((float(row[4]), float(row[9]), float(row[8]), int(row[5]), str(row[6])))
-    return tuple(out)
+    for f in PAB_PDFS:
+        txt = subprocess.run(["pdftotext", "-layout", os.path.join(target, f), "-"], capture_output=True,
+                             text=True, check=True).stdout
+        for block in re.split(r"\n(?=\s*DECLARATION\b)", txt):
+            m = re.search(r"Employer:\s+(.+?Council)", block)
+            if not m or "DECLARATION" not in block:
+                continue
+            council = m.group(1).strip()
+
+            def grab(*pats):
+                for p in pats:
+                    g = re.search(p, block, re.I)
+                    if g:
+                        return g.group(1)
+                raise ValueError("no %s in a declaration for %s" % (pats[0], council))
+            roll = int(grab(r"Persons on the roll\s+([\d,]+)", r"persons on roll\s+([\d,]+)").replace(",", ""))
+            ret = int(grab(r"Ballot papers returned\s+([\d,]+)", r"Total votes received[^\d\n]*([\d,]+)").replace(",", ""))
+            rd = grab(r"Roll date\s+(\d{1,2} \w+ \d{4})", r"Roll closed\s+(\d{1,2} \w+ \d{4})")
+            cd = grab(r"Ballot closed\s+(\d{1,2} \w+ \d{4})", r"ballot closed\s+(\d{1,2} \w+ \d{4})")
+            out.append({"council": council, "roll": roll, "returned": ret,
+                        "roll_date": dt.datetime.strptime(rd, "%d %B %Y").date(),
+                        "close": dt.datetime.strptime(cd, "%d %B %Y").date()})
+    return out
 
 
-def lsub(levels, pipes, ref="invert", skip_pe=False):
-    levels = np.asarray(levels, dtype=float)
-    out = np.zeros_like(levels)
-    for L, dsi, usi, dia, mat in pipes:
-        if skip_pe and mat == "PE":
-            continue
-        off = {"invert": 0.0, "centre": dia / 2000.0, "crown": dia / 1000.0}[ref]
-        out += L * np.clip((levels - dsi - off) / max(usi - dsi, 1e-6), 0.0, 1.0)
-    return out / 1000.0
+def term_of(d):
+    y = d.year if d.month >= 7 else d.year - 1
+    return y - (y % 2)
 
 
-@functools.lru_cache(maxsize=4)
-def scada_hourly(target):
-    """The SCADA's calculated inflow averaged into UTC hours (all four quarters good), and the hours in which the
-    wet well stood at or above the weir crest (the RTU's inflow then reads the pumps alone)."""
-    q = np.full(NH, np.nan)
-    spill = np.zeros(NH, dtype=bool)
-    acc = {}
-    for row in read_rows(os.path.join(target, F_SCADA), "timestamp_utc")[1:]:
-        t = dt.datetime.strptime(row[0], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
-        i = hidx(t)
-        a = acc.setdefault(i, [0.0, 0, False])
-        if row[4] == "Good":
-            a[0] += float(row[1])
-            a[1] += 1
-            if float(row[2]) >= WEIR:
-                a[2] = True
-    for i, (s, n, sp) in acc.items():
-        if 0 <= i < NH:
-            if n == 4:
-                q[i] = s / 4
-            spill[i] = sp
-    return q, spill
+def active(m, d):
+    return m["join"] <= d and (m["cease"] is None or m["cease"] > d)
 
 
-def uh(tp, tb):
-    t = np.arange(0, tb + 0.5, 1.0)
-    u = np.clip(np.where(t <= tp, t / tp, (tb - t) / (tb - tp)), 0, None)
-    return u / u.sum()
+def D(K, site, d, term=None):
+    t = term_of(d) if term is None else term
+    return 1.0 if any(active(K.members[n], d) for n in K.deleg.get((t, site), []) if n in K.members) else 0.0
 
 
-SHAPES_F = [(1.0, 4), (1.0, 6), (1.5, 6), (1.0, 8), (2.0, 8)]
-SHAPES_S = [(6.0, 48), (9.0, 60), (9.0, 72), (12.0, 72), (12.0, 96)]
+def features(K, m, d):
+    age = years(m["dob"], d)
+    b = age_band(age)
+    return [1.0 if b == 0 else 0.0, 1.0 if b == 1 else 0.0, 1.0 if b == 3 else 0.0,
+            math.log(1 + max(0.0, years(m["join"], d))),
+            1.0 if m["emp"] == "Part time" else 0.0, 1.0 if m["emp"] == "Casual" else 0.0]
 
 
-def fit(target, conditioned=True, ref="invert", skip_pe=False, shapes=None, train=None, include_abandoned=False,
-        dry_h=72, keep_spill=False, profile_clock="local", rain_shift=0, exposure=None):
-    """Fit on the meter's good hours (spill hours out). conditioned=False is the single response: the dry weather
-    flow by hour of the week as the meter ran, and one fast and one slow response per millimetre. The other keywords
-    are the conventions checks.py turns one at a time."""
-    C = clock()
-    rain = rainfall(target, rain_shift)
-    q, spill = scada_hourly(target)
-    lv = water_level(target)
-    ls_d = lsub(lv, ps03_pipes(target, include_abandoned), ref, skip_pe) if exposure is None else exposure
-    ls_h = ls_d[C.day]
-    how = C.how if profile_clock == "local" else C.how_nzst
-    good = C.meter & ~np.isnan(q) & (keep_spill | ~spill)
-    if train is not None:
-        good &= train
-    r72 = np.convolve(rain, np.ones(dry_h + 1))[:NH]
-    dry = good & (r72 == 0)
-    if conditioned:
-        X = np.zeros((int(dry.sum()), 169))
-        X[np.arange(int(dry.sum())), how[dry]] = 1.0
-        X[:, 168] = ls_h[dry]
-        coef = np.linalg.lstsq(X, q[dry], rcond=None)[0]
-        base = coef[:168]
-        g = coef[168]
-        base_h = base[how] + g * ls_h
-    else:
-        base = np.array([q[dry & (how == k)].mean() for k in range(168)])
-        g = 0.0
-        base_h = base[how]
-    best = None
-    for sf in ([shapes[0]] if shapes else SHAPES_F):
-        F = np.convolve(rain, uh(*sf))[:NH] / 3.6
-        for ss in ([shapes[1]] if shapes else SHAPES_S):
-            S = np.convolve(rain * (ls_h if conditioned else 1.0), uh(*ss))[:NH] / 3.6
-            A = np.vstack([F[good], S[good]]).T
-            ab = np.linalg.lstsq(A, (q - base_h)[good], rcond=None)[0]
-            pred = base_h + ab[0] * F + ab[1] * S
-            rmse = float(np.sqrt(np.mean((q - pred)[good] ** 2)))
-            if best is None or rmse < best["rmse"]:
-                best = dict(rmse=rmse, sf=sf, ss=ss, a=float(ab[0]), b=float(ab[1]))
-    best.update(base=base, g=float(g), ls_d=ls_d, conditioned=conditioned, ref=ref, profile_clock=profile_clock,
-                rain_shift=rain_shift)
-    return best
+@functools.lru_cache(maxsize=None)
+def fit(target, with_d=True):
+    """Pooled logit on the online votes: vote and council effects, age band, membership years, employment, and the
+    delegate active at the member's worksite on the vote's close."""
+    K = load(target)
+    vids = sorted(K.votes)
+    cidx = {c: i for i, c in enumerate(K.councils)}
+    X, y = [], []
+    for vid, no, voted in K.inv:
+        m = K.members[no]
+        d = K.votes[vid]
+        row = [1.0 if vid == v else 0.0 for v in vids]
+        row += [1.0 if cidx[m["council"]] == j else 0.0 for j in range(1, len(K.councils))]
+        row += features(K, m, d)
+        if with_d:
+            row.append(D(K, m["site"], d))
+        X.append(row)
+        y.append(1.0 if voted else 0.0)
+    X, y = np.array(X), np.array(y)
+    res = sm.Logit(y, X).fit(disp=0, maxiter=200)
+    b = res.params
+    nv, nc = len(vids), len(K.councils) - 1
+    out = {"vote": dict(zip(vids, b[:nv])), "council": {K.councils[0]: 0.0}, "beta": b[nv + nc:nv + nc + 6],
+           "gamma": float(b[-1]) if with_d else 0.0, "se_gamma": float(res.bse[-1]) if with_d else 0.0}
+    for j in range(1, len(K.councils)):
+        out["council"][K.councils[j]] = float(b[nv + j - 1])
+    return out
 
 
-def model_flow(target, M, extra=None):
-    C = clock()
-    rain = rainfall(target, M.get("rain_shift", 0))
-    ls_h = M["ls_d"][C.day]
-    how = C.how if M.get("profile_clock", "local") == "local" else C.how_nzst
-    F = np.convolve(rain, uh(*M["sf"]))[:NH] / 3.6
-    S = np.convolve(rain * (ls_h if M["conditioned"] else 1.0), uh(*M["ss"]))[:NH] / 3.6
-    q = M["base"][how] + M["g"] * ls_h + M["a"] * F + M["b"] * S
-    if extra is not None:
-        q = q + extra
-    return q
+def eta(K, f, m, d, dval):
+    return float(np.dot(f["beta"], features(K, m, d)) + f["council"][m["council"]] + f["gamma"] * dval)
 
 
-def subdivision(dwellings=SUB_DWELLINGS, profile="table"):
-    C = clock()
-    f = np.array(TABLE_5_2) / np.mean(TABLE_5_2)
-    if profile == "flat":
-        f = np.ones(24)
-    return dwellings * OCC * LPD / 86400.0 * f[C.hour]
+@functools.lru_cache(maxsize=None)
+def pab_level(target, with_d=True):
+    """The protected action ballots' level: one shift on the online-vote scale that returns, over every declared
+    ballot, the ballots the agent declared (each member on the roll at the ballot's close)."""
+    K = load(target)
+    f = fit(target, with_d)
+    etas, obs, rolls = [], [], []
+    for r in K.pab:
+        roll = [m for m in K.members.values() if m["council"] == r["council"] and active(m, r["roll_date"])]
+        e = np.array([eta(K, f, m, r["close"], D(K, m["site"], r["close"]) if with_d else 0.0) for m in roll])
+        etas.append(e)
+        obs.append(r["returned"])
+        rolls.append(r["roll"])
+    lo, hi = -5.0, 5.0
+    tot = sum(obs)
+    for _ in range(80):
+        mid = (lo + hi) / 2
+        pred = sum(float((1 / (1 + np.exp(-(e + mid)))).sum() * (rl / max(1, len(e)))) for e, rl in zip(etas, rolls))
+        if pred < tot:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2
 
 
-def overflows(q, qp=QP, store=STORE, sep=24):
-    s = 0.0
-    hours = []
-    for i in range(len(q)):
-        s += (q[i] - qp) * 3.6
-        if s < 0:
-            s = 0.0
-        elif s > store:
-            hours.append(i)
-            s = store
-    ev = []
-    last = -10 ** 9
-    for i in hours:
-        if i - last > sep:
-            ev.append(i)
-        last = i
-    return np.array(ev, dtype=int)
-
-
-def replay(target, M, extra=None, store=STORE):
-    C = clock()
-    q = model_flow(target, M, extra)
-    ev = overflows(q, store=store)
-    years = C.year[ev]
-    per = np.array([int(np.sum(years == y)) for y in range(2004, 2024)])
-    meter = [int(np.sum(years == y)) for y in (2024, 2025, 2026)]
-    return dict(mean=float(per.mean()), per_year=per, meter=meter)
-
-
-@functools.lru_cache(maxsize=2)
-def golden(target):
-    M = fit(target, True)
-    sub = subdivision()
-    ex = replay(target, M)
-    su = replay(target, M, sub)
-    up = replay(target, M, sub, STORE + UPGRADE)
-    N = fit(target, False)
-    nex = replay(target, N)
-    nsu = replay(target, N, sub)
-    C = clock()
-    lv = water_level(target)
-    md = np.array([dt.date(2004, 1, 1) + dt.timedelta(days=int(k)) >= dt.date(2024, 1, 1) for k in range(C.nd)])
-    rd = np.array([dt.date(2004, 1, 1) + dt.timedelta(days=int(k)) <= dt.date(2023, 12, 31) for k in range(C.nd)])
-    G = dict(model=M, naive=N, existing=ex, with_sub=su, with_upgrade=up, naive_existing=nex, naive_sub=nsu,
-             lsub_meter_max=float(M["ls_d"][md].max()), lsub_replay_max=float(M["ls_d"][rd].max()),
-             lsub_meter_median=float(np.median(M["ls_d"][md])),
-             lsub_replay_median=float(np.median(M["ls_d"][rd])), level_meter_max=float(lv[md].max()))
-    return G
-
-
-def validation(target):
-    """Out of sample: each model fitted on 2024 and 2025 but the June 2025 high-river weeks, scored on those weeks
-    and on 2026; the score is the hourly root mean square error on the held-out good hours."""
-    C = clock()
-    q, spill = scada_hourly(target)
-    utc0 = H0
-    t = np.array([utc0 + dt.timedelta(hours=i) for i in range(NH)])
-    spell = np.array([dt.datetime(2025, 5, 25, tzinfo=UTC) <= x < dt.datetime(2025, 7, 20, tzinfo=UTC) for x in t])
-    late = np.array([x >= dt.datetime(2025, 12, 31, 11, tzinfo=UTC) for x in t])
-    train = C.meter & ~spell & ~late
+def forecast(target, with_d=True, term=2026, when=BALLOT_CLOSE):
+    """Each candidate council's expected 2027 turnout: the mean over the 2 November 2026 roll."""
+    K = load(target)
+    f = fit(target, with_d)
+    a = pab_level(target, with_d)
     out = {}
-    for name, cond in (("conditioned", True), ("single", False)):
-        M = fit(target, cond, train=train)
-        pred = model_flow(target, M)
-        good = ~np.isnan(q) & ~spill
-        for part, sel in (("high river weeks", spell & good), ("2026", late & good)):
-            out[(name, part)] = float(np.sqrt(np.mean((q - pred)[sel] ** 2)))
-            out[(name, part, "bias")] = float(np.mean((q - pred)[sel]))
+    for c in K.candidates:
+        roll = [m for m in K.members.values() if m["council"] == c and active(m, EXTRACT)]
+        if with_d:
+            dd = [D(K, m["site"], EXTRACT if term == 2026 else END24, term) for m in roll]
+        else:
+            dd = [0.0] * len(roll)
+        e = np.array([eta(K, f, m, when, dv) for m, dv in zip(roll, dd)]) + a
+        out[c] = float((1 / (1 + np.exp(-e))).mean())
+    return out
+
+
+def golden(target):
+    return forecast(target, True, 2026)
+
+
+def naive_history(target):
+    """Rung 1: the same model with no delegate term in it (the members' own voting record carries the history)."""
+    return forecast(target, False)
+
+
+def naive_carried(target):
+    """Rung 1': the delegate term fitted, but each worksite carried at the delegates it had when members last voted."""
+    return forecast(target, True, 2024)
+
+
+def naive_last_pab(target):
+    """Rung 0: each council's last declared turnout carried forward; the model without delegates where none."""
+    K = load(target)
+    hist = naive_history(target)
+    last = {}
+    for r in sorted(K.pab, key=lambda r: r["close"]):
+        last[r["council"]] = r["returned"] / r["roll"]
+    return {c: last.get(c, hist[c]) for c in K.candidates}
+
+
+def member_share(target):
+    """Rung 1'': each member's own share of the online votes they were invited to, put on the ballots' scale by the
+    ratio of declared turnout to the roll's mean share at the councils balloted in 2023-24."""
+    K = load(target)
+    seen, cast = {}, {}
+    for vid, no, voted in K.inv:
+        seen[no] = seen.get(no, 0) + 1
+        cast[no] = cast.get(no, 0) + (1 if voted else 0)
+    mean_all = sum(cast.values()) / max(1, sum(seen.values()))
+
+    def share(no):
+        return cast[no] / seen[no] if no in seen else mean_all
+    ratios = []
+    for r in K.pab:
+        if r["close"].year < 2023:
+            continue
+        roll = [no for no, m in K.members.items() if m["council"] == r["council"] and active(m, r["roll_date"])]
+        s = np.mean([share(no) for no in roll])
+        ratios.append((r["returned"] / r["roll"]) / s)
+    k = float(np.mean(ratios))
+    out = {}
+    for c in K.candidates:
+        roll = [no for no, m in K.members.items() if m["council"] == c and active(m, EXTRACT)]
+        out[c] = float(min(0.99, k * np.mean([share(no) for no in roll])))
+    return out
+
+
+def backtest(target, with_d=False):
+    """The 2023-24 round recomputed from the online votes before it, against the declared turnouts."""
+    K = load(target)
+    f = fit(target, with_d)
+    a = pab_level(target, with_d)
+    out = {}
+    for r in K.pab:
+        if r["close"].year < 2023:
+            continue
+        roll = [m for m in K.members.values() if m["council"] == r["council"] and active(m, r["roll_date"])]
+        e = np.array([eta(K, f, m, r["close"], D(K, m["site"], r["close"]) if with_d else 0.0) for m in roll]) + a
+        out[r["council"]] = (float((1 / (1 + np.exp(-e))).mean()), r["returned"] / r["roll"])
     return out

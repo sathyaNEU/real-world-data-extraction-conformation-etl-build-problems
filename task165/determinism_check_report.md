@@ -1,71 +1,88 @@
-# determinism-check report, task165, 2026-10-31
+# determinism-check report, task165, 2026-11-07
 
 ## Verdict
 DETERMINISTIC
-**Disposition:** APPROVE (the minor Gate C residual below is being closed in the generator by the main session; no rerun requested)
-**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Disposition:** APPROVE (thread's disposition; main-thread notes under Findings)
+**Stumping type:** mechanism: binding_constraint (etl_conformance on the asks), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+Author-side note: the main thread is closing two residual ask forks before ship, (a) the monthly rainfall months filed in Eastern local time, and (b) the RG-1 8 July install day made free of rain tips. They are the thread's residual forks 2 and 4. This pass judged the bundle as rebuilt at target.zip sha256 b8c8ebc1...c5197; the closures change the bundle or prompt, so the rainfall ask rows should be re-confirmed after they land (the thread's own note: a prompt change after judging needs a rerun of the affected ask).
 
 ## Why
-One judge thread (sonnet, medium) saw only a fresh unzip of target.zip and the five blocks. The call of 2,200 t reproduced from the files, and every estimator in the family it tried (weighted and unweighted linear, quadratic, cubic, log-log) lands in 2,158 to 2,209 t, all rounding to 2,200. The tempting routes land clearly elsewhere (2,570 to 2,660 t on the Priority 1 level less own salt, about 1,505 t on the average gain). The dome and arterial figures reproduce to the stated rounding. Gates A to E pass. The one soft spot was the dome figures' dependence on counting five double-weighed loads once (Gate C, below).
-
-Note: the thread was not run by me (my runtime had no Agent tool); the main session spawned it from the brief I wrote and handed back verdict.md at /tmp/determinism-check-task165-1793463743/verdict.md.
+One isolated Sonnet thread (medium) rebuilt the replay from the shipped files only and got A 9.67, B 6.83, C 2.92, D 1.33 events a year, matching the golden at one decimal. C is the least-cost alternative at or under 4 (TM-7 cost difference to D, 30.4). B meets the limit (2.83) only if pump-back ignores the Southside headworks room. The call survived every convention varied (reading-time convention, BAD influent rows, pump start delay, 23 h gap, 24 h wait C 3.42, FM-0142 clock misread C 2.83). All 48 rainfall cells and the five Northside returns reproduce.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| New segments moved 2026-08-30 | 216 segments, 424.0 lane-km | 216, 424.0 (matches QRT street list) | yes |
-| Earlier P2 to P1 moves | 377 | 377 (136, 69, 119, 53) | yes |
-| WSI by winter | 61.7 planning point | 63.4, 50.1, 38.9, 67.2, 58.4 | yes |
-| New segments' own P2 salt | about 700 t, under 2 t/lane-km | 665 t, 1.57 t/lane-km | approximately (loose "about") |
-| Gain vs own P2 salt, 377 | falls with own P2 salt | corr -0.95; fit gain = 0.1009 - 0.657 x pre | yes |
-| Seasonal tonnage | 2,200 t | 2,203.7 t (bootstrap SD 15 t, 95% 2,173 to 2,232) | yes |
-| Dome 1 Nov, Kelvin Road / room | 7,843.2 / 1,356.8 t | same | yes |
-| Mapleford | 7,142.4 / 1,257.6 | same | yes |
-| Ridge | 8,447.4 / 2,352.6 | same | yes |
-| Lakeshore | 6,279.6 / 1,320.4 | same | yes |
-| Arterial Kelvin Road, 3 winters | 5,100 / 10,000 / 8,200 | 5,105.9 / 10,007.1 / 8,200.9 | yes |
-| Mapleford | 7,000 / 13,700 / 11,300 | 6,997.4 / 13,695.3 / 11,300.4 | yes |
-| Ridge | 6,650 / 13,200 / 10,700 | 6,645.7 / 13,196.8 / 10,695.1 | yes |
-| Lakeshore | 2,750 / 5,400 / 4,500 | 2,747.7 / 5,394.9 / 4,496.6 | yes |
+| Events a year A, B, C, D | 9.7, 6.8, 2.9, 1.3 | 9.67, 6.83, 2.92, 1.33 (116, 82, 35, 16 events) | yes (flow parquet, WRP influent CSV, TM-7, Decree 2.2 to 2.3) |
+| Pump-back at firm capacity (competing) | B 2.8 | A 5.83, B 2.83, C 0.58, D 0.08 | yes, the easy route |
+| Cost D minus C | 30.4 | 30.4 | yes (TM-7 3.1) |
+| Rainfall 2025, 48 gauge-months | per submission | all 48 to the hundredth | yes (tips CSV, field-service xlsx, inventory) |
+| Northside returns 2021 to 2025 | 261, 214, 300, 302, 372 | same | yes (SCADA, O&M Table 4-1, CMMS) |
+| 2025 events vs notices (clock check) | n/a | 54 built, 54 notices match | yes |
 
 ## Competing answers that survived
-- Procedure 4.1 read as total need less 39,100 t (about 46,000 to 48,600 t): does not survive, since 4.2 and the prompt pin the commitment to the change's additional salt. Mild latent tension only.
-- Gate C residual (minor, being fixed): no file states trucks are weighed at two scales. Five pairs share vehicle and gross within 20 kg, 0.58 to 0.97 h apart. Three carry a destination remark on the first ticket; two (KLV-041051 / MPF-042539 and RDG-044077 / LKS-045505) do not, so counting at the later yard was an inference. Each moves a dome figure by about 44 t (without dedup: KLV 7,887.6, MPF 7,185.6, RDG 8,491.6, LKS 6,367.1; unremarked pairs kept at the first yard: MPF 7,098.2, LKS 6,235.6). The coordinator reports the generator is being changed so every double-weighed pair carries its destination remark. That change is not in the pack the thread judged and is not verified here; the dome figures must be re-checked on the rebuilt pack.
-- Brine deduction alternatives (water only, 23%, none) move cells across a 25 t boundary; the literal reading (total less litres at 1.18 kg, both stated in the plan) is the golden.
+1. Pump-back room rule: no sentence states return flow is limited to 140 MGD minus influent. A literal reader pumping at firm capacity files B (2.8). Closed only by inference (Decree 1.3 headworks rating, influent flat at 140.00 in 10.7 percent of hours, TM-7 3.2 "treated with the plant's influent"). Design fork SF8 covers the 140 figure, not the rule. This is the designed stump, but see Findings.
+2. Rainfall month basis: Eastern civil time (golden) vs fixed EST, differing 0.03 in for March and April (RG-1 March 7.54 vs 7.57). Being closed by the main thread.
+3. Northside returns method: golden is the level and inflow mass balance; pump curve times runtime gives 263, 245, 336, 350, 429. Files separate them (P-2 impeller trimmed March 2023, WO 2023-01149; curve tested only at commissioning; decree says volume "returned"), but the prompt does not name the method. NOT on the main thread's closing list.
+4. RG-1 July switch time: counting the 09:45 to 09:59 tips at 0.01 in adds 0.09 in to July. Being closed by the main thread.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10+ | 19 in target.zip and target/ (the thread's hygiene line said 20; the count is 19) | yes |
-| Formats | 3+ | csv, pdf, xlsx, parquet (4) | yes |
-| Large file | 25,000+ rows | telematics parquet 344,770 rows, AVL csv 164,095 | yes |
-| Distractors | 2+, named, not in file names | metadata.json names yard_timesheets_2025-26.csv and brine_production_log_2023-10_to_2026-09.csv; file names do not label them | yes |
-| Distractor behaviour | unused, weighable, ruled out by a shipped fact | thread found none used by the solution; neither answers a graded quantity (not independently tested by me) | yes |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, docx), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 8 dome figures, 12 arterial figures; unit and rounding in the prompt | yes |
-| Prompt shape / 25 criteria | identifiable, 25+ | single-figure with decoupled asks; 21 graded figures plus call and chart. The 25-criterion count is the design note's, not recomputed | yes (per note) |
-| Reads as real, not LLM generated | | thread found no provenance leakage; golden realism not re-judged here | yes |
+| Files | 10 or more | 13 | yes |
+| Formats | 3 or more | 4 (CSV, PDF, parquet, xlsx) | yes |
+| Large file | 25,000 rows or more | rain tips CSV 219,584 rows (WRP influent 210,385) | yes |
+| Distractors | 2 or more in metadata.json, none labelled by file name | wennick_river_stage_daily, cso_overflow_notifications_2025; names are plain data names | yes |
+| Distractor weight | unused, relevant, ruled out by a shipped fact | river stage plausible for discharge but the meter records discharge; notices count 2025 without a tank and match the replay, so they do not answer a graded quantity | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, pptx), both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | 48 rainfall cells, 5 yearly returns, 4 events; one decimal, hundredth of an inch, nearest million gallons stated | yes |
+| Prompt | one paragraph under 1,000 chars, question first, no data count | 802 chars; no gauge or alternative count stated | yes |
+| Prompt shape and 25 criteria | identifiable, 25 or more | card shape 08; graded figures well over 60 (4 events, selection, 48 rainfall, 5 returns, chart items); the generated rubric itself was not inspected | yes (inferred) |
+| Reads as real work product | no LLM tells | thread found no authoring language in PDFs, xlsx notes or CMMS; golden sheets Selection, Events by year, Rainfall 2025, Northside returns; golden-realism not re-run here | yes (thread) |
 
 ## Gate G reconciliation
-Thread: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: stump is an estimation_fit (gain conditioned on each street's own Priority 2 salt), rivals are the pooled gain and the pooled Priority 1 level, no planted defect. Match. Declared distractors (timesheets, brine log) are not named as the surface read carrying the task; the surface reads the thread names are the P1-level-less-own-salt and average-gain routes, which are the design note's declared rivals and sit in no shipped artifact as a ranked answer. Gate G: pass, analytical, no surface-read dependency.
-
-Gate H: thread says domain pass, layers pass, decisive_step analytical. Design note's Three rules lines (Not semantics, Not rule application, No decoy, Domain, Layers, Analyst test) agree: decisive step is carrying the earlier moves' gain conditioned on own P2 salt; layer 1 is AVL/GIS/UTC/kg/M410/double-weighing mess. Match, no mismatch finding.
+Thread: mechanism binding_constraint, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and card: allocation under real constraints, drawdown bounded by the receiving plant's room, stump_class analytical, analyst test files B 2.8 on the rating replay and C 2.9 only with the hourly headroom bound. These match. The thread did not name either declared distractor as the surface read, so neither is too load-bearing. Gate H: thread `domain: pass, layers: pass, decisive_step: analytical`; the note's Three rules (task type hydrology-flood-frequency, hospital-ward swap fails, Layer 1 clocks and units, Layer 2 constrained drawdown) agree. No mismatch.
 
 ## Stump power (Gate F)
-Strong per the thread: the naive routes land at 1,500 and 2,600 to 2,700 t, 400 to 500 t or more away from the golden; a strong analyst who cleans everything and reads every rule can still file them. The conditioned-gain method is an estimation choice the data separate (corr -0.95), not a textbook route the thread flagged as landable by default. The main thread weighs it against the design note's ladder.
+Moderate per the thread: B at 2.8 is cheaper and plausible, but strong models that join the influent record will probably get the call, so some difficulty sits in the exactness of the asks (clock reconciliation, pour removal, 0.2 mm change, level offset). The decisive step is not "the field's standard method applied": it needs a judgment (the room bound) the data must settle, so it is not a plain textbook route; the main thread weighs this against the note's ladder.
 
 ## Findings, ranked
-1. Gate C, minor: two unremarked double-weighed pairs make the dome figures rest on an inference. Coordinator is adding the destination remark to every pair; re-verify the four dome figures after the rebuild.
-2. Cosmetic: the golden's "about 700 t" for the new streets' own P2 salt is 665 t on recompute (still under 2 t/lane-km); consider "about 650 t" or the exact figure.
-3. Latent: procedure 4.1 wording versus 4.2 does not survive but is a reading a careless reviewer could raise.
+1. Pump-back room limit is inferred, not filed. The thread calls it forced by the files but borderline. The design note records that the Appendix C 1.3 sentence stating the holding-back mechanism was deliberately cut to the plant's rating alone. Under CLAUDE.md, a decisive rule left unstated against a stated one is a guard concern; here the filed text (TM-7 3.2, Decree 1.3 rating, influent record) supports it but no sentence says it. Main thread to weigh whether to file the WHAT (the receiving plant's headworks limit applies to the return) without filing the HOW.
+2. Northside returns method fork (fork 3) is open and not on the closing list; differs at the nearest MG in every year. Thread suggests "from the tank's own level and inflow record" in the ask.
+3. Forks 2 and 4 are being closed by the main thread; re-confirm the affected rainfall cells after the change.
+4. Cfs to MGD constant 0.646317 is not in the package; thread treats it as domain knowledge (Gate B passes).
+5. Cross-batch fingerprint not checked by the thread (only this bundle readable).
 
 ## Next action for the author
-After the generator change, rebuild twice byte-identical, recompute the four dome stock/room pairs and confirm they still equal 7,843.2 / 7,142.4 / 8,447.4 / 6,279.6 t, then update the "about 700 t" figure in submission.md section 2 if you want it to match the 665 t recompute.
+Close the two named forks, decide whether to pin the Northside method in the prompt (fork 3), then re-run any ask recomputation touched by the Eastern-time and RG-1 changes before ship; no rerun of the main-call judge is needed unless the main-call text moves.
 
-## Author's note on the Gate C residual (main thread, 2026-10-31)
+## Main-thread disposition (round 1)
 
-The residual is kept, not closed: the two unremarked pairs are Ask A's device A4. Remarks on them would move A4's
-double count onto Lakeshore and Mapleford and hand back Ridge's and Kelvin Road's four dome figures on every careful
-path. The yard is forced without a remark: the later ticket carries the same gross, so the load was still on the truck
-when it reached the receiving yard's scale, and only that ticket shows the 14 to 31 minutes of a load tipped. No file
-changed; target.zip d9c24521 is the pack judged.
+APPROVE stands; the build ships on this verdict. Each finding:
+
+1. **Pump-back room limit unfiled: kept unfiled (coordinator's call).** It is the stump's own constraint. The files
+   force it: Appendix C 1.3 gives the headworks rating, the historian shows Southside's influent flat at 140, and TM-7
+   3.2 says the returned flow is "treated with the plant's influent". Filing it would turn the decisive step into rule
+   application.
+2. **Northside returns method (fork 3): kept unpinned (coordinator's call).** The pump-curve route is the device's
+   designed wrong path: P-2's impeller was trimmed in March 2023 and the curve was tested only at commissioning. The
+   files point to the mass balance. Pinning "from the tank's own level and inflow record" would hand over the leak-by
+   device.
+3. **Forks 2 and 4: closed in the generator, not by a sentence on the method.**
+   - Fork 2: the prompt files the months "on local Eastern time" (the WHAT). It does not name the UTC loggers.
+   - Fork 4: every gauge's mechanism install now falls on a day with no rain at that gauge (RG-1 9 July, RG-2 14 July,
+     RG-3 18 July, RG-4 23 July 2025), so the only tips that day are the cal-check pour after the install.
+   - `checks.py` asserts both closures. Moving the install days shifted six rainfall cells by 0.01 in each, through
+     the bucket remainder: RG-1 November, RG-2 August, September and October, and RG-3 December. All 48 cells were
+     re-confirmed against the world's truth. Every main-call figure, the stump and the ladder are unchanged
+     (freeze.py rubric PASS).
+4. **Cfs to MGD:** domain knowledge, as the thread found (Gate B passes).
+5. **Cross-batch fingerprint:** guard.py heart WARN and surface exit 0 on the final cut.
+
+The leak reader's realism notes are fixed in the generator:
+- The 2025 notification log gives each outfall its own times and varied action text; Outfall 014's rows are
+  unchanged.
+- The work orders' task texts now fit each asset class and order type.
+- The field service log's creator is the field maintenance contractor, created at its June 2025 mobilisation.
+
+The prompt changed, so one leak re-read runs on the final pack.

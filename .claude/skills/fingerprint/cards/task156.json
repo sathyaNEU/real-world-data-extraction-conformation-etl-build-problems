@@ -11,7 +11,7 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Apply for protected action ballot orders at the councils whose March 2027 ballots are expected to clear half the roll once each member's vote is read with the delegate active at their worksite after the July 2026 delegate elections (design target: 11 of the 24 councils, against 15 on the members' own voting history)",
+  "answer": "Apply for protected action ballot orders at 11 councils (Ardeen, Copeland Downs, Corrigan Valley, Fairholme, Halston, Lindale, Northvale, Pellham, Stanwick, Valmont, Westhaven), each member's turnout read with the delegate in post at their worksite after the July 2026 delegate elections, against 15 on members' own voting history",
   "answer_source": "submission.md block 1; generator/figures.json (call)",
   "gap": [
     "population"
@@ -25,31 +25,30 @@
     "G4"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "realised_outcome_roster",
+  "calibration_form": "counterparty_acknowledgement",
   "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly builds each member's turnout from their participation in the branch's 2022, 2023 and 2025 online votes and their age, membership and employment, calibrates it to the ballot agent's declared 2021 and 2023-24 turnouts, confirms it reproduces the 2023-24 round council by council, applies it to the January 2027 roll and files 15 councils; members vote about 20 points more often where an elected delegate is active at their worksite, and the July 2026 delegate elections, after the last online vote, emptied worksites at some councils and filled others, so six of the 15 fall under half and two councils left out clear it.",
+  "analyst_test": "A strong analyst who reads every file and rule correctly builds each member's turnout from their participation in the branch's 2022, 2023 and 2025 online votes and their age, membership and employment, calibrates it to the ballot agent's declared 2021 and 2023-24 turnouts, confirms it reproduces the 2023-24 round council by council, applies it to the January 2027 roll and files 15 councils; members vote about 24 points more often where an elected delegate is active at their worksite, and the July 2026 delegate elections, after the last online vote, emptied worksites at some councils and filled others, so six of the 15 fall under half and two councils left out clear it.",
   "domain_test": "The deciding quantity is each council's expected turnout in a ballot whose validity turns on half the roll voting, worked the way election forecasting works turnout: a vote-history model of each elector, calibrated on declared results, carrying the mobilisation effect of personal contact that turnout research estimates (the canvass or workplace contact lift), here the elected worksite delegate; with another field's nouns there is no roll, no turnout threshold and no mobilisation.",
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:vote-history-turnout-carried-past-a-change-in-workplace-mobilisation",
   "layer1": [
     "utc-local",
     "layout-change-across-years",
-    "preliminary-and-final-release",
     "code-migration",
-    "duplicate-records",
-    "pdf-tables"
+    "pdf-tables",
+    "stale-register-entries"
   ],
   "stakeholder_role": "the branch's research and bargaining officer, whose memo to the Branch Committee of Management recommends the councils at which the branch applies for protected action ballot orders",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
     "file": "online_vote_invitations_2022-2025.csv",
-    "rows": 85000,
+    "rows": 54892,
     "entity": "one row is one invitation the branch's online voting service sent one member for one online vote",
     "grain": "member x online vote",
     "source": "constructed for task156, no real dataset"
@@ -79,15 +78,17 @@
     "pab_2027_recommendation_bcom.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "Each unit's chance of acting in a coming event is carried from its own record of past acts and lifted where a contact a separate dated register places at its site is in post, and the register's contacts changed after the last past act the record holds, so every route carried on the units' own record, each of which reproduces the last closed event, brings the old contacts into the coming event.",
-  "driver_concrete": "A member's chance of voting in a protected action ballot rises about 20 points where an elected delegate is active at their worksite, read from the branch's delegate register terms against each member's worksite on the roll; the July 2026 delegate elections, held after the last online vote in October 2025, left worksites at some councils with no delegate and filled others, so turnout carried from members' own votes over-forecasts the councils that lost delegates and under-forecasts those that gained them.",
-  "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round, files 15 councils above half; the step that lands it there is reading each member's past votes as their own when they rode the delegate active at their worksite at the time, and the July 2026 delegate elections moved those delegates.",
+  "driver_concrete": "A member's chance of voting in a protected action ballot rises about 24 points where an elected delegate is active at their worksite, read from the branch's delegate register terms against each member's worksite on the roll; the July 2026 delegate elections, held after the last online vote in October 2025, left worksites at some councils with no delegate and filled others, so turnout carried from members' own votes over-forecasts the councils that lost delegates and under-forecasts those that gained them.",
+  "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round within a point, files 15 councils above half; the step that lands it there is reading each member's past votes as theirs alone when they rode the elected delegate in post at their worksite at the time, and the July 2026 delegate elections left worksites at six of those councils without one and filled worksites at two others, so with the 2026-28 delegates the set is 11.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task179": "task179 lifts each supervisee's booking chance by a status another agency records about the person, linked by name and birth date; here the lift is not a property of the person but of their worksite's elected delegate in post on the ballot date, a dated term in the union's own register, and the forecast turns on how those terms changed between the last observed vote and the ballot.",
-    "task157": "task157 expands a petition sample's validity rate with pair defects whose inclusion goes as the square of the sampling fraction; here no sample is expanded: every member's turnout is forecast and summed against a roll threshold.",
-    "task107": "task107 moves a tight intake to the experienced rate at a service anniversary just before the window; here no anniversary or pay step exists: a worksite contact's elected term changes the propensity of every member at the site, in both directions."
+    "task157": "task157 expands a petition sample's validity rate with pair defects whose inclusion goes as the square of the sampling fraction; here no sample is expanded: every member's turnout is forecast and summed against a roll threshold. Both sit in election forecasting, but task157's population is a petition's signature lines and its estimate an expansion of a sample; here it is a ballot roll forecast member by member against a turnout threshold.",
+    "task107": "task107 moves a tight intake to the experienced rate at a service anniversary just before the window; here no anniversary or pay step exists: a worksite contact's elected term changes the propensity of every member at the site, in both directions.",
+    "task265": "task265 estimates an event-free share from a record that admits earlier starters only if still event-free (left truncation in a descriptive survival estimate); here nothing is truncated: every member's vote is recorded, and the forecast turns on a dated workplace contact that changed between the last observed vote and the ballot.",
+    "task154": "task154 deflates a stock reported at purchase prices across each holder's own holding period; here no price or valuation enters: turnout carried from members' votes is re-read through the delegate in post at each worksite."
   },
   "lineage": [
     {
@@ -195,12 +196,12 @@
       "deliverable set": "docx+png+xlsx"
     }
   ],
-  "notes": "forcing_event statutory_or_regulatory_filing: the branch's applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027 for ballots opening 1 March 2027.",
+  "notes": "forcing_event statutory_or_regulatory_filing: the branch's applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027 for ballots opening 1 March 2027. The 2026-28 delegate term ships as the returning officer's July 2026 election return (delegate_election_return_2026.xlsx), the register holding the terms to 2024-26. Calibration redrawn to counterparty_acknowledgement at ship (the ballot agent's declared results), after surface promoted the realised_outcome_roster repeat against task154.",
   "shell": {
-    "question form": "whether",
+    "question form": "where",
     "second-sentence opener": "the",
-    "rounding opener": "overflows",
-    "deliverable set": "docx+png+xlsx"
+    "rounding opener": "the",
+    "deliverable set": "docx+xlsx"
   },
   "registered": "2026-11-07T20:22:39Z"
 }

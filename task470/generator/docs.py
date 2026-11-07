@@ -9,7 +9,9 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+from reportlab.platypus import Paragraph, Spacer
+
+import officepdf as O
 
 import world as W
 
@@ -49,13 +51,9 @@ SECTIONS = [
 
 def write_regulation(path):
     st_t = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=13, leading=17, spaceAfter=4)
-    st_s = ParagraphStyle("s", fontName="Helvetica", fontSize=9, leading=12, textColor="#444444", spaceAfter=10)
+    st_s = ParagraphStyle("s", fontName="Helvetica", fontSize=9, leading=12, spaceAfter=10)
     st_h = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=10.5, leading=14, spaceBefore=8, spaceAfter=3)
     st_p = ParagraphStyle("p", fontName="Helvetica", fontSize=10, leading=14, alignment=TA_LEFT)
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=24 * mm, rightMargin=24 * mm, topMargin=22 * mm,
-                            bottomMargin=20 * mm, title="Regulation on the 2027 vacant dwelling activation grant",
-                            author=W.MINISTRY, subject="Pilot, %s county" % W.COUNTY, creator=W.MINISTRY,
-                            producer=W.MINISTRY, invariant=1)
     story = [Paragraph("Regulation on the 2027 grant for activating vacant dwellings, pilot in %s county" % W.COUNTY,
                        st_t),
              Paragraph("Laid down by the %s on 14 October 2026 under the Act on state grants to municipalities, "
@@ -63,7 +61,11 @@ def write_regulation(path):
     for h, p in SECTIONS:
         story += [Paragraph(h, st_h), Paragraph(p, st_p)]
     story.append(Spacer(1, 10))
-    doc.build(story)
+    issued = dt.datetime(2026, 10, 14, 11, 32, 7, tzinfo=dt.timezone(dt.timedelta(hours=2)))
+    O.build(path, story, "Regulation on the 2027 vacant dwelling activation grant", W.MINISTRY,
+            "Regulation, 2027 vacant dwelling activation grant, pilot in %s county" % W.COUNTY,
+            "%s  |  Regulation on the 2027 vacant dwelling activation grant" % W.MINISTRY, issued, issued,
+            margin_mm=24, top_mm=22, bottom_mm=20)
 
 
 def regulation_text():
@@ -73,7 +75,9 @@ def regulation_text():
 ASSIGNMENT = (
     "Dear %s,\n\n"
     "Under Section 7 of the regulation on the 2027 grant for activating vacant dwellings, please send the ministry the "
-    "certification for the %s pilot by 15 January 2027.\n\n"
+    "certification for the %s pilot by 15 January 2027. As in the office's register statistics, please give each "
+    "municipality's vacancy share with its 90 per cent interval, the exact binomial (Clopper-Pearson) interval on the "
+    "municipality's counted dwellings, so that we can see how firmly each share sits against the threshold.\n\n"
     "For our follow-up of the pilot we would also like two tables in the certification letter. For each municipality, "
     "the persons the population register held as resident in its counted dwellings on 1 November 2026, by their age "
     "on that day: under 18, 18 to 66, and 67 and over. And for each municipality, how many of its counted dwellings "
@@ -87,11 +91,11 @@ ASSIGNMENT = (
 def write_assignment(path):
     m = email.message.EmailMessage()
     sh, mi = W.PEOPLE["section_head"], W.PEOPLE["ministry"]
-    m["From"] = "%s <%s>" % (mi[0], "eirik.haug@kdd.dep.example")
-    m["To"] = "%s <%s>" % (sh[0], "martine.strom@statoffice.example")
+    m["From"] = "%s <%s>" % (mi[0], "eirik.haug@kbd.dep.no")
+    m["To"] = "%s <%s>" % (sh[0], "martine.strom@statkontoret.no")
     m["Subject"] = "Certification for the 2027 vacant dwelling grant, %s pilot" % W.COUNTY
     m["Date"] = email.utils.format_datetime(dt.datetime(2026, 12, 1, 10, 42, tzinfo=dt.timezone(dt.timedelta(hours=1))))
-    m["Message-ID"] = "<20261201094211.4470@kdd.dep.example>"
+    m["Message-ID"] = "<20261201094211.4470@kbd.dep.no>"
     m.set_content(ASSIGNMENT % (sh[0].split()[0], W.COUNTY, mi[0], mi[1], W.MINISTRY))
     with open(path, "wb") as fh:
         fh.write(bytes(m))

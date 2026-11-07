@@ -1,44 +1,51 @@
 ## Tags
 
-**Domain:** Urban & Regional Science (municipal service demand and resource allocation: a city's winter road salt for a change of service level, forecast from the spreader records of the streets that went through the same change before).
+**Domain:** Physical & Environmental Sciences (hydrology, flood frequency).  
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Commit 2,200 t of rock salt above the rolled-over 39,100 t contract for November 2026 to March 2027.** The redesign's collectors took under 2 t a lane-km of Priority 2 salt in a 61.7-point winter, far less than the collectors moved to Priority 1 before them, and read off those earlier moves at each street's own Priority 2 salt the move adds about 5 t a lane-km over 424.0 lane-km. Not the Priority 1 collectors' rate less these streets' own salt, which carries the higher Priority 1 level of streets with more intersections, hills and curves onto flat ones; not the earlier moves' average gain, which belongs to streets Priority 2 had already salted along much of their length.
+**Carry Alternative C, the 38 MG tank, into design.**
+It leaves Outfall 014 2.9 untreated overflow events in an average year against the decree's limit of 4. Not Alternative B (26 MG), which meets the limit only at its pump station's 31 MGD rating (2.8) and leaves 6.8 once its pump-back is held to the room the Southside plant has under its 140 MGD headworks capacity. Not Alternative D, which meets the limit too but costs USD 30.4 million more.
 
 ## 2. Critical Components
 
-1. The 424.0 lane-km's own Priority 2 rock salt over the five winters, in a winter of 61.7 WSI points: **about 700 t, under 2 t per lane-km**.
-2. Their gain on moving to Priority 1 in that winter: **about 5 t per lane-km**.
+1. Alternative B, pumped back no faster than the Southside plant's room: **6.8 events a year**
+2. Alternative C on the same replay: **2.9 events a year**
 
 ## 3. Step-by-Step Solution
 
-1. Took the 216 segments route_audit_revision_log.csv moves from priority 2 to 1 on 2026-08-30, 424.0 lane-km in winter_route_register_2026-09-14.csv.
-2. Summed each collector segment's rock salt from 1 November to 31 March in each winter, from avl_legacy_segment_shift_2021-11-01_2023-03-31.csv (kilograms, legacy ids through gis_segment_crosswalk_2023.csv) and telematics_segment_passes_2023-10-01_2026-09-23.parquet (UTC to local), per lane-km and per point of the winter's WSI in storm_log_2021-22_to_2025-26.xlsx.
-3. For the 377 collectors the revision log moves from priority 2 to 1 on 1 November 2022, 2023, 2024 and 2025, took each street's salt per lane-km per point in its winters before and after the move.
-4. Fitted each moved street's gain against its own Priority 2 salt, weighted by lane-km: the gain falls as a street's Priority 2 salt rises.
-5. Read the line at the new segments' own Priority 2 salt and scaled to 61.7 WSI points (winter_maintenance_plan_2026-27.pdf, section 4) over their 424.0 lane-km, the additional salt road_salt_procurement_procedure_RO-PR-07.pdf 4.2 commits: 2,200 t to the nearest 100 t.
-6. Brought each dome's stock in dome_stock_survey_2026-09.pdf forward by the loads weighed in to it and out of it after its capture's end (winter_maintenance_plan_2026-27.pdf section 5) in scale_house_log_2026-08-24_to_2026-09-24.xlsx, the flight log's UTC taken to Eastern daylight time and a weighing for another yard counted at the dome its remarks name, and counted each of the five supplier loads also weighed at another yard's scale on its way to its own yard once, on its own yard's ticket, since deliveries for each yard are "weighed at the yard's scale house" (road_salt_procurement_procedure_RO-PR-07.pdf section 2) and the earlier ticket is the same delivery weighed again (the same truck on the same gross, back at a City scale inside its own round trip from the supplier); with the BOOKED October loads in northgrit_dispatch_2026-10_issued_2026-09-21.csv added, the stock in each dome on 1 November is Kelvin Road 7,843.2 t, Mapleford 7,142.4 t, Ridge 8,447.4 t and Lakeshore 6,279.6 t, and each dome's room is its rated capacity in salt_dome_register.csv less that stock.
-7. Summed the rock salt on the arterial circuits in telematics_segment_passes_2023-10-01_2026-09-23.parquet from 1 November to 31 March local time, counting each run of the M410 controllers (the units whose segment rows repeat the run's total, salt and brine together, up to each M410 replacement in fleet_work_orders_2023-07_to_2026-09.csv) once, less its pre-wet litres at the brine's weight in winter_maintenance_plan_2026-27.pdf section 2, KLV-A15 and KLV-A16 under Mapleford before their 1 July 2026 entries in route_audit_revision_log.csv, and added Kettlewood's contract circuits under their City circuits' yards from kettlewood_material_returns_2023-24_to_2025-26.xlsx: Kelvin Road 5,100, 10,000 and 8,200 t, Mapleford 7,000, 13,700 and 11,300 t, Ridge 6,650, 13,200 and 10,700 t and Lakeshore 2,750, 5,400 and 4,500 t in 2023-24, 2024-25 and 2025-26.
-8. Commit 2,200 t of rock salt above the rolled-over 39,100 t contract for November 2026 to March 2027.
+1. Joined the two loggers in outfall_014_flow_monitoring_2014-2025.parquet onto UTC, FM-0142's cfs (Eastern Standard Time) times 0.646317 and AV-3315's MGD, the overlap week once.
+2. Took the Southside WRP's hourly influent from wrp_influent_hourly_2014-2025.csv (both tag sets, local time with its repeated and missing hours, to UTC) and its room as 140 MGD less the influent.
+3. Replayed the record through each TM-7 tank filling from the overflow and pumped back after the overflow stops (TM-7 3.2) at the lesser of the station's firm capacity and that hour's room.
+4. Counted untreated overflow events under Appendix C 2.2 and 2.3: A 9.7, B 6.8, C 2.9, D 1.3 a year; C is the least-cost alternative at or under 4 (TM-7 4).
+5. Rainfall 2025: dropped repeated tips, removed each calibration pour (a steady run of tips on a cal-check visit in rain_gauge_field_service_2014-2025.xlsx), read the TipLink C200 loggers (RG-3 and RG-4 from May 2024) as UTC and the HOBO loggers as Eastern Standard Time, and counted each gauge's tips at 0.2 mm from the July 2025 visit the field log records its new mechanism on.
+6. Northside returns: on each quarter hour a pump ran in northside_tank_scada_2020-2025.csv, the fall in storage (NT_LIT601_FT through O&M Table 4-1, readings from the 23 August 2023 re-mount less the 0.45 ft the empty tank reads) plus NT_FIT600_MGD over the quarter hour, summed by year.
+7. Recommended Alternative C at 2.9 events a year.
 
 ## 4. Deliverable Answers
 
-### salt_commitment_2026-27.xlsx
+### clay_street_storage_evaluation.xlsx
 
-1. Seasonal tonnage above the rolled-over contract: 2,200 t.
-2. Rock salt in each yard's dome on 1 November 2026 once the October deliveries booked with the supplier have landed, and the tonnes more the dome can then take:
-   - Kelvin Road: 7,843.2 t in the dome, 1,356.8 t more
-   - Mapleford: 7,142.4 t in the dome, 1,257.6 t more
-   - Ridge: 8,447.4 t in the dome, 2,352.6 t more
-   - Lakeshore: 6,279.6 t in the dome, 1,320.4 t more
-3. Rock salt spread on each yard's Priority 1 arterial circuits, each circuit under the yard it belonged to that winter, to the nearest 50 t:
-   - Kelvin Road: 2023-24 5,100 t, 2024-25 10,000 t, 2025-26 8,200 t
-   - Mapleford: 2023-24 7,000 t, 2024-25 13,700 t, 2025-26 11,300 t
-   - Ridge: 2023-24 6,650 t, 2024-25 13,200 t, 2025-26 10,700 t
-   - Lakeshore: 2023-24 2,750 t, 2024-25 5,400 t, 2025-26 4,500 t
+1. Events a year each alternative would leave, to one decimal:
+   - Alternative A (19 MG): 9.7
+   - Alternative B (26 MG): 6.8
+   - Alternative C (38 MG): 2.9
+   - Alternative D (50 MG): 1.3
+2. Alternative to carry into design: Alternative C (38 MG)
+3. Rainfall recorded in 2025, inches:
+   - RG-1: Jan 3.94, Feb 1.79, Mar 7.54, Apr 6.31, May 6.85, Jun 2.81, Jul 3.31, Aug 2.13, Sep 3.50, Oct 10.14, Nov 1.27, Dec 2.24
+   - RG-2: Jan 3.78, Feb 1.74, Mar 7.14, Apr 6.58, May 6.56, Jun 2.74, Jul 3.39, Aug 2.33, Sep 2.69, Oct 11.08, Nov 1.50, Dec 2.02
+   - RG-3: Jan 3.57, Feb 1.95, Mar 7.02, Apr 6.83, May 5.93, Jun 2.79, Jul 4.01, Aug 2.12, Sep 3.81, Oct 11.87, Nov 1.36, Dec 2.01
+   - RG-4: Jan 3.74, Feb 1.71, Mar 7.34, Apr 6.31, May 6.13, Jun 3.17, Jul 3.13, Aug 2.46, Sep 3.69, Oct 10.81, Nov 1.16, Dec 2.14
+4. Volume the Northside tank returned to the Northside interceptor, million gallons:
+   - 2021: 261
+   - 2022: 214
+   - 2023: 300
+   - 2024: 302
+   - 2025: 372
 
-### seasonal_salt_commitment_council_report.docx
+### clay_street_tank_selection_board.pptx
 
-1. One-page report to council stating the seasonal commitment of 2,200 t, with a grouped bar chart of the arterial figures, each yard's three winters as labelled bars.
+1. Selection: Alternative C (38 MG), on slide 2
+2. Column chart of events a year by alternative (A 9.7, B 6.8, C 2.9, D 1.3) against the limit of 4, on slide 2, Alternative C highlighted

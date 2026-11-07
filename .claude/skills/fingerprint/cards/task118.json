@@ -194,5 +194,6 @@
     }
   ],
   "notes": "surface (2026-10-31): promoted task120 (same domain and objective, approved; a campus water system's peak draw rebuilt from storage, a different driver), task119 (gap, decision type and artifact; a public administration wait decomposition) and task462 (surface top 1 per cent; an emissions inventory); heart PASS",
-  "registered": "2026-10-31T17:17:16Z"
+  "registered": "2026-10-31T17:17:16Z",
+  "architecture_spent": true
 }
