@@ -34,6 +34,9 @@ def _hub(fig, code):
     return [x for x in fig["hubs"] if x["hub_code"] == code][0]
 
 
+BAND = {"above": "wholly above the tolerance", "below": "wholly below the tolerance", "across": "across the tolerance"}
+
+
 def _n(v):
     return "{:,}".format(v)
 
@@ -72,6 +75,10 @@ def submission(fig, ex):
                      ex["overflow_missed_pruszkow"], ex["plan"]["HWAW"], ex["plan"]["HLDZ"], ex["shares"]["HLDZ"],
                      ex["left_out"]["HWAW"], ex["left_out"]["HLDZ"], ex["excess"]["HLDZ"], ex["excess"]["HWAW"]))
     w("")
+    w("Taking each parcel a hub handled as an independent chance of a missed sort scan, the 90 per cent interval on "
+      "each of the three rates lies wholly above the tolerance, and each other hub's lies wholly below it, so no "
+      "verdict rests on a rate the month's chance variation could carry across the line.")
+    w("")
     w("## 2. Critical Components")
     w("")
     w("1. Missed-scan rate by hub: " + "; ".join("%s **%.2f** per cent" % (x["hub_name"], x["rate"]) for x in fig["hubs"]))
@@ -81,6 +88,8 @@ def submission(fig, ex):
       "parcels off Strykow's trailers, **%d** of them without a sort scan" % (ex["mixed_mornings"],
                                                                           _n(ex["overflow_parcels"]),
                                                                           ex["overflow_missed_strykow"]))
+    w("4. The 90 per cent interval against the tolerance: " + "; ".join(
+        "%s **%s**" % (x["hub_name"], BAND[x["band"]]) for x in fig["hubs"]))
     w("")
     w("## 3. Step-by-Step Solution")
     w("")
@@ -93,11 +102,15 @@ def submission(fig, ex):
       "carrying one hub." % ex["unloadings"])
     w("4. Charged each parcel without a sort scan to its unloading's hub, then counted each hub's parcels, missed sort "
       "scans and rate, and fired the alert above 1.00 per cent (s.2.3).")
-    w("5. Courier events sent twice (TDS-4 s.3): a later-received record of the same parcel, event, courier and handheld "
+    w("5. Put a 90 per cent interval on each hub's rate, its parcels handled taken as independent chances of a missed "
+      "sort scan (the Wilson score interval; the normal, Clopper-Pearson, Jeffreys and Agresti-Coull intervals place "
+      "every hub on the same side of the tolerance), and read whether it lies wholly above the tolerance, across it or "
+      "wholly below it.")
+    w("6. Courier events sent twice (TDS-4 s.3): a later-received record of the same parcel, event, courier and handheld "
       "carrying the first record's time cut to the minute, as local time from a TC52 and as UTC from a TC51 (two hours "
       "behind local until 25 October, one after); a second loop or the afternoon wave is a new scan; counted under the "
       "depot the event names.")
-    w("6. Pre-advised parcels never picked up (TDS-4 s.4): each consignment's latest version with an October collection "
+    w("7. Pre-advised parcels never picked up (TDS-4 s.4): each consignment's latest version with an October collection "
       "date, D-KRK1 read as D-KRK3 from 12 October, its pieces as parcels; a parcel the platform holds a pickup, sort, "
       "arrival or delivery record for was collected (trailer collections carry no pickup scan) and a failed pickup is "
       "not a collection; a piece label is the consignment number plus a three-digit piece number, and a marketplace "
@@ -107,11 +120,12 @@ def submission(fig, ex):
     w("")
     w("### %s" % GD.XLSX)
     w("")
-    w("1. Each hub's parcels handled, missed sort scans, missed-scan rate and alert:")
+    w("1. Each hub's parcels handled, missed sort scans, missed-scan rate, where its 90 per cent interval lies against "
+      "the tolerance, and alert:")
     for x in fig["hubs"]:
-        w("   - %s (%s): %s parcels, %s missed, %.2f per cent, %s" % (x["hub_name"], x["hub_code"], _n(x["parcels"]),
-                                                                       _n(x["missed"]), x["rate"],
-                                                                       "fires" if x["fires"] else "does not fire"))
+        w("   - %s (%s): %s parcels, %s missed, %.2f per cent, interval %s, %s" % (
+            x["hub_name"], x["hub_code"], _n(x["parcels"]), _n(x["missed"]), x["rate"], BAND[x["band"]],
+            "fires" if x["fires"] else "does not fire"))
     w("2. Each depot's courier events sent twice and pre-advised parcels never picked up:")
     for x in fig["depots"]:
         w("   - %s %s: %s sent twice, %s never picked up" % (x["depot_code"], x["depot_name"], _n(x["sent_twice"]),
@@ -119,16 +133,17 @@ def submission(fig, ex):
     w("")
     w("### %s" % GD.PPTX)
     w("")
-    w("3. One slide: a horizontal bar chart of each hub's missed-scan rate against the 1.00 per cent tolerance line, "
-      "the bars of %s marked as firing and the other three under the line, beside the six hubs' parcels, missed sort "
-      "scans, rates and alerts." % fired)
+    w("3. One slide: a horizontal bar chart of each hub's missed-scan rate with its 90 per cent interval against the "
+      "1.00 per cent tolerance line, the bars of %s marked as firing and their intervals clear of the line, the other "
+      "three under it, beside the six hubs' parcels, missed sort scans, rates, intervals and alerts." % fired)
     w("")
     return "\n".join(lines)
 
 
 def write_figures(path, fig, ex):
-    out = {"call": sorted(fig["fired"]), "tolerance": fig["tolerance"], "parcels": fig["n_parcels"],
-           "hubs": [{k: x[k] for k in ("hub_code", "hub_name", "parcels", "missed", "rate", "fires")} for x in fig["hubs"]],
+    out = {"call": sorted(fig["fired"]), "tolerance": fig["tolerance"], "interval_level": round(100 * GD.LEVEL),
+           "parcels": fig["n_parcels"],
+           "hubs": [{k: x[k] for k in ("hub_code", "hub_name", "parcels", "missed", "rate", "fires", "band")} for x in fig["hubs"]],
            "depots": fig["depots"], "routes": ex}
     with open(path, "w") as fh:
         json.dump(out, fh, indent=1)

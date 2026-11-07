@@ -20,6 +20,21 @@ PPTX = "scan_alerts_2026-10.pptx"
 MONTH = ("2026-10-01", "2026-10-31")
 TOLERANCE = 1.00          # TDS-4 2.3, per cent
 GAP_MIN = 10.0            # a pause at a door longer than this ends one unloading
+LEVEL = 0.90              # the interval the request asks for, each parcel handled an independent chance of a miss
+Z90 = 1.6448536269514722  # the normal quantile for a two-sided 90 per cent interval
+
+
+def interval(m, n, z=Z90):
+    """the Wilson score interval on m misses in n parcels, per cent"""
+    p = m / n
+    c = (p + z * z / (2 * n)) / (1 + z * z / n)
+    h = z * (p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5 / (1 + z * z / n)
+    return 100.0 * (c - h), 100.0 * (c + h)
+
+
+def band(lo, hi, tol=None):
+    tol = TOLERANCE if tol is None else tol
+    return "above" if lo > tol else ("below" if hi < tol else "across")
 
 
 # ------------------------------------------------------------------ reading the pack
@@ -191,8 +206,10 @@ def figures(target, F):
     H = []
     for h in hubs:
         x = r[h]
+        lo, hi = interval(x["missed"], x["parcels"])
         H.append({"hub_code": h, "hub_name": name[h], "parcels": x["parcels"], "missed": x["missed"],
-                  "rate": round(x["rate"], 2), "rate_exact": x["rate"], "fires": x["rate"] > TOLERANCE})
+                  "rate": round(x["rate"], 2), "rate_exact": x["rate"], "fires": x["rate"] > TOLERANCE,
+                  "lo": round(lo, 2), "hi": round(hi, 2), "band": band(lo, hi)})
     cp = sent_twice(d["courier"], d["handhelds"])
     twice = cp.groupby("depot_code").size().to_dict() if len(cp) else {}
     never, _ = never_picked(d["pre"], d["depots"], d["courier"], d["hub"], d["depot"])
@@ -207,6 +224,8 @@ def figures(target, F):
 
 
 # ------------------------------------------------------------------ the deliverables
+BAND = {"above": "wholly above", "below": "wholly below", "across": "across"}
+
 def _workbook(path, fig):
     wb = Workbook()
     ws = wb.active
@@ -214,22 +233,27 @@ def _workbook(path, fig):
     bold = Font(bold=True)
     ws["A1"] = "Kurier Warta, tracking scorecard, October 2026 (TDS-4 v4.1; platform extract 6 Nov 2026 07:40)"
     ws["A1"].font = Font(bold=True, size=11)
-    head = ["Hub", "Hub code", "Parcels handled", "Missed sort scans", "Missed-scan rate (%)", "Scan alert"]
+    head = ["Hub", "Hub code", "Parcels handled", "Missed sort scans", "Missed-scan rate (%)", "90% interval, low (%)",
+            "90% interval, high (%)", "Interval against tolerance", "Scan alert"]
     ws.append([])
     ws.append(head)
     for c in ws[3]:
         c.font = bold
         c.fill = PatternFill("solid", fgColor="DDE3EA")
     for x in fig["hubs"]:
-        ws.append([x["hub_name"], x["hub_code"], x["parcels"], x["missed"], x["rate"], "Fires" if x["fires"] else "-"])
+        ws.append([x["hub_name"], x["hub_code"], x["parcels"], x["missed"], x["rate"], x["lo"], x["hi"],
+                   BAND[x["band"]], "Fires" if x["fires"] else "-"])
     for row in ws.iter_rows(min_row=4, max_row=3 + len(fig["hubs"])):
         row[2].number_format = "#,##0"
         row[3].number_format = "#,##0"
-        row[4].number_format = "0.00"
-        row[5].alignment = Alignment(horizontal="center")
+        for c in row[4:7]:
+            c.number_format = "0.00"
+        row[8].alignment = Alignment(horizontal="center")
     n = 4 + len(fig["hubs"])
     ws.cell(row=n + 1, column=1, value="Tolerance 1.00%; the alert fires above it (TDS-4 2.3).")
-    for i, wd in enumerate([22, 10, 16, 18, 20, 11], 1):
+    ws.cell(row=n + 2, column=1, value="Interval: Wilson score, 90%, each parcel handled taken as an independent chance "
+                                       "of a missed sort scan.")
+    for i, wd in enumerate([22, 10, 16, 18, 20, 19, 20, 24, 11], 1):
         ws.column_dimensions[get_column_letter(i)].width = wd
     ws.freeze_panes = "A4"
     ws2 = wb.create_sheet("Depots")
@@ -263,14 +287,19 @@ def _chart(fig):
     fires = [x["fires"] for x in H][::-1]
     f, ax = plt.subplots(figsize=(6.6, 4.1), dpi=200)
     cols = ["#B5462F" if z else "#8C96A3" for z in fires]
-    ax.barh(names, rates, color=cols, height=0.62)
+    los = [x["lo"] for x in H][::-1]
+    his = [x["hi"] for x in H][::-1]
+    err = [[v - lo for v, lo in zip(rates, los)], [hi - v for v, hi in zip(rates, his)]]
+    ax.barh(names, rates, color=cols, height=0.62, xerr=err, error_kw={"ecolor": "#333333", "elinewidth": 0.9,
+                                                                      "capsize": 3})
     ax.axvline(TOLERANCE, color="#222222", lw=1.0, ls="--")
     ax.text(TOLERANCE + 0.02, len(H) - 0.45, "tolerance 1.00%", fontsize=7.5, color="#222222", va="center")
-    for i, (v, z) in enumerate(zip(rates, fires)):
-        ax.text(v + 0.02, i, "%.2f%%%s" % (v, "  alert" if z else ""), va="center", fontsize=7.8,
-                color="#7A2A1A" if z else "#333333", fontweight="bold" if z else "normal")
-    ax.set_xlim(0, max(rates) * 1.32)
-    ax.set_xlabel("Missed sort scans, % of parcels handled, October 2026", fontsize=8)
+    for i, (v, hi, z) in enumerate(zip(rates, his, fires)):
+        ax.text(hi + 0.03, i, "%.2f%%%s" % (v, "  alert" if z else ""), va="center", fontsize=7.8,
+                color="#7A2A1A" if z else "#333333", fontweight="bold" if z else "normal",
+                bbox={"facecolor": "white", "edgecolor": "none", "pad": 0.6})
+    ax.set_xlim(0, max(his) * 1.30)
+    ax.set_xlabel("Missed sort scans, % of parcels handled, October 2026 (whiskers: 90% interval)", fontsize=8)
     ax.tick_params(labelsize=8)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
@@ -311,12 +340,12 @@ def _slide(path, fig):
          [("Scan alerts, October 2026: fire at %s" % lead, 26, True, "1F2A36"),
           ("TDS-4 v4.1, tolerance 1.00% of parcels handled. Platform extract 6 Nov 2026, 07:40.", 13, False, "4A5563")])
     s.shapes.add_picture(_chart(fig), Emu(457200), Emu(1350000), width=Emu(7000000))
-    rows = [["Hub", "Parcels", "Missed", "Rate", "Alert"]]
+    rows = [["Hub", "Parcels", "Missed", "Rate", "90% interval", "Alert"]]
     for x in fig["hubs"]:
         rows.append([x["hub_name"], "{:,}".format(x["parcels"]), "{:,}".format(x["missed"]), "%.2f%%" % x["rate"],
-                     "fires" if x["fires"] else "-"])
-    gt = s.shapes.add_table(len(rows), 5, Emu(7700000), Emu(1500000), Emu(4100000), Emu(2600000)).table
-    widths = [1500000, 760000, 620000, 640000, 580000]
+                     "%.2f-%.2f" % (x["lo"], x["hi"]), "fires" if x["fires"] else "-"])
+    gt = s.shapes.add_table(len(rows), 6, Emu(7600000), Emu(1500000), Emu(4300000), Emu(2600000)).table
+    widths = [1300000, 660000, 560000, 560000, 760000, 460000]
     for j, wd in enumerate(widths):
         gt.columns[j].width = Emu(wd)
     for i, r in enumerate(rows):
@@ -324,8 +353,8 @@ def _slide(path, fig):
             cell = gt.cell(i, j)
             cell.text = v
             para = cell.text_frame.paragraphs[0]
-            para.runs[0].font.size = Pt(11)
-            para.runs[0].font.bold = i == 0 or (j == 4 and v == "fires")
+            para.runs[0].font.size = Pt(10)
+            para.runs[0].font.bold = i == 0 or (j == 5 and v == "fires")
             para.runs[0].font.name = "Calibri"
     text(7700000, 4500000, 4100000, 1400000,
          [("A parcel without a sort event is charged to the hub whose trailer it came off at its delivery depot.",

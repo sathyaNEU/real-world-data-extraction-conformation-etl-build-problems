@@ -1,5 +1,5 @@
 """task250 generator checks: the input gates and the no-describing-file rule, the three rules on the clean truth (R1,
-R2 per mess item, R3a to R3c), every semantic fork row (SF1 to SF22), the ladder with its margins, the unloadings'
+R2 per mess item, R3a to R3c), every semantic fork row (SF1 to SF24), the ladder with its margins, the unloadings'
 purity and threshold independence, the separation line and the deletion tests, the asks against the clean truth with
 their devices, the realism sweep and the clocks.
     C.run(target, world, fig, golden) -> number of assertions passed"""
@@ -172,6 +172,31 @@ def run(target, w, fig, golden):
     alt = {x["hub_code"]: {"rate": 100.0 * x["missed"] / (x["parcels"] - x["missed"])} for x in fig["hubs"]}
     ok(alerts_of(alt) == gold_set, "SF4 the rate over sorted parcels")
     ok(min(abs(x["rate_exact"] - GD.TOLERANCE) for x in fig["hubs"]) > 0.2, "SF5 no hub within 0.2 of the line")
+    # SF24: the 90 per cent interval, each parcel handled an independent chance of a miss; every standard binomial
+    # interval and a parcel bootstrap put each hub on the same side of the tolerance, at least 0.05 points clear
+    from scipy import stats as _st
+    import numpy as _np
+    z, a = GD.Z90, 1 - GD.LEVEL
+    rng = _np.random.default_rng(250)
+    for x in fig["hubs"]:
+        m, n = x["missed"], x["parcels"]
+        p = m / n
+        ac_n, ac_p = n + z * z, (m + z * z / 2) / (n + z * z)
+        ivs = {"wilson": GD.interval(m, n),
+               "wald": (100 * (p - z * (p * (1 - p) / n) ** 0.5), 100 * (p + z * (p * (1 - p) / n) ** 0.5)),
+               "clopper-pearson": (100 * _st.beta.ppf(a / 2, m, n - m + 1), 100 * _st.beta.ppf(1 - a / 2, m + 1, n - m)),
+               "jeffreys": (100 * _st.beta.ppf(a / 2, m + .5, n - m + .5), 100 * _st.beta.ppf(1 - a / 2, m + .5, n - m + .5)),
+               "agresti-coull": (100 * (ac_p - z * (ac_p * (1 - ac_p) / ac_n) ** 0.5),
+                                 100 * (ac_p + z * (ac_p * (1 - ac_p) / ac_n) ** 0.5))}
+        boot = 100 * rng.binomial(n, p, 20000) / n
+        ivs["parcel bootstrap"] = tuple(_np.quantile(boot, [a / 2, 1 - a / 2]))
+        bands = {k: GD.band(lo, hi) for k, (lo, hi) in ivs.items()}
+        ok(set(bands.values()) == {x["band"]}, "SF24 %s interval side moves with the method %s" % (x["hub_code"], bands))
+        gap = min(min(abs(lo - GD.TOLERANCE), abs(hi - GD.TOLERANCE)) for lo, hi in ivs.values())
+        ok(gap >= 0.05, "SF24 %s interval within 0.05 of the line (%.3f)" % (x["hub_code"], gap))
+        ok(x["band"] == ("above" if x["fires"] else "below"), "SF24 %s band against its alert" % x["hub_code"])
+    ptxt = open(os.path.join(os.path.dirname(target), "prompt.txt")).read()
+    ok("90 per cent interval" in ptxt and "independent chance" in ptxt, "SF24 the prompt files the interval's level and model")
     ok(sorted(x["hub_code"] for x in fig["hubs"] if x["rate"] > GD.TOLERANCE) == gold_set, "SF6 rounded rates")
     raw = d["depot"][(d["depot"]["scanned_at"].str[:7] == "2026-10")]
     ok(len(raw) > len(arr), "the re-sent batch ships")

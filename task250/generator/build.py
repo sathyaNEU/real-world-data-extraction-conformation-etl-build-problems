@@ -23,7 +23,6 @@ def run(target):
     pack.write_tables(w, target)
     docs.standard(F["standard"])
     docs.request(F["request"])
-    postprocess.scrub(F["standard"], "Microsoft Word 2019", "2026-03-02")
     for k, (created, modified) in OFFICE.items():
         postprocess.scrub(F[k], P.ORG, modified[:10])
         postprocess.finish_office(F[k], created, modified, P.ORG)

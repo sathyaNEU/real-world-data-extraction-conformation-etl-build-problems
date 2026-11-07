@@ -1,10 +1,10 @@
 {
  "task": "task250",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "supply-chain-logistics",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-07",
  "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the unloading each unscanned parcel came off at its delivery depot fires Strykow as well.",
  "architecture": 3,
@@ -19,7 +19,9 @@
  },
  "duplicate_check": {
   "heart": "WARN (2026-10-31): repeat.decision and repeat.question_form only, after the redraw of the decisive generator (G17) and the requester (operations_director)",
-  "surface": "exit 0 (2026-10-31): no surface overlap; one card-axis pair promoted against task480 (gap time, G17, designation_set), the card's differentiation line names how the driver differs"
+  "surface": "exit 0 (2026-10-31): no surface overlap; one card-axis pair promoted against task480 (gap time, G17, designation_set), the card's differentiation line names how the driver differs",
+  "heart_2026-11-07": "BLOCK on the recency window only (ban.strategy population_selection and ban.forcing_event season_or_peak against task273 v5); WARN at ship on 10-31; the card is unchanged by this repair and was not relabelled",
+  "surface_2026-11-07": "exit 0"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -33,10 +35,11 @@
    "repair": "metadata",
    "zip": "7dd4b6b4",
    "moves": "both extracts written with no pandas or Arrow schema metadata and no created_by in the footer (generator/parquetio.py), every column a string so no value moved; only the two parquet files moved, no figure moved. Domains Fit left for the author's call",
-   "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
+   "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)",
+   "domains_fit": "prompt reworded: the deciding figure is each hub's rate over the parcels it handled with a 90 per cent interval, each parcel an independent chance of a missed sort scan, graded as lying wholly above, across or wholly below the tolerance (SF24: Wald, Wilson, Clopper-Pearson, Jeffreys, Agresti-Coull and a parcel bootstrap agree, every bound at least 0.05 points from the line; the bounds themselves are not graded); TDS-4 exported by LibreOffice Writer; the call, the stump, the ladder and every existing figure unchanged (freeze.py: only the interval sides and the level 90 added)"
   }
  ],
- "resume": "",
+ "resume": "stage 4 of the Domains Fit rework: spawn the leak reader (scratchpad task250_leak_brief.md, leak copy leak-task250/) and the determinism judge thread (/tmp/determinism-check-task250-dfit/judge_brief.md) on Sonnet at medium; on clean reads rebuild with python3 task250/generator/make.py (target.zip d5630ad1) and commit RESHIPPED with target.zip and golden/",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -1,11 +1,15 @@
 """task250 documents: the tracking data standard TDS-4 (pdf) and the director of network operations' request (eml)."""
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
 
+import datetime as dt
+
+import officepdf as O
 import params as P
+
+CET = dt.timezone(dt.timedelta(hours=1))
 
 DOMAIN = "kurierwarta.pl"
 HEAD = ("Inga Blaut", "i.blaut")
@@ -32,26 +36,8 @@ def _grid(rows, widths, cell):
     return t
 
 
-def _footer(text):
-    def foot(canvas, d):
-        canvas.saveState()
-        canvas.setFont("Helvetica", 7.5)
-        canvas.setFillColor(colors.HexColor("#555555"))
-        canvas.drawString(20 * mm, 10 * mm, text)
-        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
-        canvas.restoreState()
-    return foot
-
-
-def _doc(path, title, author, subject):
-    return SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                             bottomMargin=18 * mm, title=title, author=author, creator=author, subject=subject,
-                             invariant=1)
-
-
 def standard(path):
     body, h1, h2, small, cell = _styles()
-    doc = _doc(path, "TDS-4 Tracking data standard, version 4.1", P.ORG, "Standard")
     s = [Paragraph("%s, Tracking Data Quality" % P.ORG, small),
          Paragraph("TDS-4 Tracking data standard", h1),
          Paragraph("Version 4.1, issued 2 March 2026, in force from the April 2026 scorecard. Replaces version 4.0 "
@@ -109,7 +95,10 @@ def standard(path):
                    [22 * mm, 30 * mm, 118 * mm], cell))
     s.append(Spacer(1, 6))
     s.append(Paragraph("Approved by the Chief Operating Officer, 27 February 2026.", small))
-    doc.build(s, onFirstPage=_footer("TDS-4 v4.1  |  " + P.ORG), onLaterPages=_footer("TDS-4 v4.1  |  " + P.ORG))
+    O.build(path, s, "TDS-4 Tracking data standard, version 4.1", P.ORG,
+            "Tracking data standard TDS-4, version 4.1: sort scan completeness, events sent twice and pre-advices",
+            "TDS-4 v4.1  |  " + P.ORG, dt.datetime(2026, 3, 2, 9, 14, 37, tzinfo=CET),
+            dt.datetime(2026, 3, 2, 11, 2, 9, tzinfo=CET), margin_mm=20, top_mm=18, bottom_mm=18)
 
 
 def _mail(who):

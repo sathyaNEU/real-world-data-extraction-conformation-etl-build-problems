@@ -5,6 +5,7 @@
   "Strykow"
  ],
  "tolerance": 1.0,
+ "interval_level": 90,
  "parcels": 91324,
  "hubs": [
   {
@@ -13,7 +14,8 @@
    "parcels": 12600,
    "missed": 61,
    "rate": 0.48,
-   "fires": false
+   "fires": false,
+   "band": "below"
   },
   {
    "hub_code": "HWRO",
@@ -21,7 +23,8 @@
    "parcels": 11963,
    "missed": 95,
    "rate": 0.79,
-   "fires": false
+   "fires": false,
+   "band": "below"
   },
   {
    "hub_code": "HKTW",
@@ -29,7 +32,8 @@
    "parcels": 16530,
    "missed": 222,
    "rate": 1.34,
-   "fires": true
+   "fires": true,
+   "band": "above"
   },
   {
    "hub_code": "HKRK",
@@ -37,7 +41,8 @@
    "parcels": 13628,
    "missed": 86,
    "rate": 0.63,
-   "fires": false
+   "fires": false,
+   "band": "below"
   },
   {
    "hub_code": "HLDZ",
@@ -45,7 +50,8 @@
    "parcels": 12178,
    "missed": 189,
    "rate": 1.55,
-   "fires": true
+   "fires": true,
+   "band": "above"
   },
   {
    "hub_code": "HWAW",
@@ -53,7 +59,8 @@
    "parcels": 24425,
    "missed": 301,
    "rate": 1.23,
-   "fires": true
+   "fires": true,
+   "band": "above"
   }
  ],
  "depots": [
