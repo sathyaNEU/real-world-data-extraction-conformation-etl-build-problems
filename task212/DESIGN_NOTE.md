@@ -1,6 +1,6 @@
 # task212 design note
 
-**Status: DRAWN 2026-11-04, architecture 1 (stage 2 next).** Wave 8, Anomaly Detection & Diagnostics. The seed's
+**Status: architecture 1, drawn 2026-11-04; stage 2 resumed 2026-11-05 after a container restart, then stage 3.** Wave 8, Anomaly Detection & Diagnostics. The seed's
 world (AD35, a public insurer's prepayment review team) was screened dead at stage 1 and set aside with its
 measurements (`## Tried and rejected`); the number moved to another client domain, world and dataset under the same
 objective (`CLAUDE.md`, A stuck build is unblocked): General Statistics & Data Science, a Spanish parcel carrier's
@@ -20,10 +20,11 @@ outbound cage audits.
   (Barcelona) and Basauri (Bilbao). Each night a hub sorts collected parcels into outbound roll cages, one or more per
   delivery depot, filled in scan order through the sorting night (about 21:00 to 04:00 local). The network's quality
   team audits about ten outbound cages per hub per night at the destination depots and records every parcel's
-  condition. Three hubs carry a B2B account's heavy cartons in the same outbound cages as e-commerce parcels, because
-  they have no heavy-goods chute: Zaragoza's auto-parts cartons come on the last trunk of the night, Ribarroja's
-  ceramic tile cartons on the first, Dos Hermanas's olive oil and wine cases on a mid-wave trunk. Madrid, El Prat and
-  Basauri sort cartons to a heavy-goods chute with cages of their own.
+  condition. Four hubs carry a B2B account's heavy cartons in the same outbound cages as e-commerce parcels, because
+  they have no heavy-goods chute: Zaragoza's auto-parts cartons come on the last trailer of the night, Ribarroja's
+  tile cartons and Basauri's paper cartons (a customer since January 2026) on trailers before the sort opens, Dos
+  Hermanas's olive oil and wine cases after midnight. Madrid and El Prat sort cartons to a heavy-goods chute with
+  cages of their own.
 - **Decision and call:** one sortation engineering survey (the hub engineering team with the sorter maker's
   technician, who inspect and repair merges, transfers, chutes and accumulation lines) is booked for one hub in the
   three weeks before the Black Friday peak. The call: which hub gets it, and how many damaged parcels a week its
@@ -57,42 +58,71 @@ outbound cage audits.
   state rebuilt across two systems (each audited parcel's crush load from the sortation load scans against the DWS
   weights), and the mechanism-naive count rides a different quantity (cartons sharing the cage, unordered, or the
   cage's weight).
-- **Sources (planned, every one synthetic, the carrier and its people fictional, the six towns real):** audit headers
-  and audit findings (the quality team's audit app), sortation load scans (each hub's sorter control system, UTC),
-  DWS records (the dimension and weight scanners that feed billing), the accounts register, the hub register, the
-  trunk timetable and arrivals, the peak plan, the survey programme (the governing document), the audit procedure with
-  its damage code list, customer damage claims, sorter maintenance work orders, and the 2025 survey report.
+- **Sources (every one synthetic, the carrier and its people fictional, the six towns real; 21 files):** the audit
+  app's headers and findings (the spine, one line per parcel of an audited cage), each hub's cage build log (the sorter
+  control system, UTC: OPEN, LOAD, NOREAD, CLOSE), the DWS induction records (grams, millimetres, local time with
+  offset), the shipment lines (sender declared kg), the accounts register (collection arrangement), the hub register,
+  the peak plan, the survey programme (the governing document), the outbound cage audit procedure with both damage code
+  lists, the 2025 Basauri survey report and the sorter maker's visit log (the two distractors), and for the asks the
+  claims case export, the transfer runs, the card gateway's refund settlement report, the tracking history of every
+  parcel with a case, the flat-rate terms, the claims note, the sorter historian's event log, the work orders and the
+  stoppage standard. No trunk timetable ships: each night's cartons arrive as a block, which the DWS induction times
+  and the accounts register's "dedicated trailer" show as an ordinary cause, and nothing states where they sit.
 - **Levels, each cited:** carrier damage rates of 1 to 3 per cent of e-commerce parcels, about 3 per cent at holiday
-  peaks (ShipMatrix via withanansi.com; alexanderjarvis.com; ajot.com); the prototype's audited rate is 1.9 per cent
+  peaks (ShipMatrix via withanansi.com; alexanderjarvis.com; ajot.com); the generator's audited rate is 1.9 per cent
   overall, 1.1 to 3.2 by hub. Conveyor and sort impacts and drops at transfers are a named damage point in parcel
   sortation (ajot.com, designing e-commerce packaging for high-speed sortation); the equipment effect at Ribarroja is
-  an odds ratio of 1.7. Stacking loads in parcel transit are dynamic and are what ISTA 3A's compression with vibration
+  an odds ratio of 1.8. Stacking loads in parcel transit are dynamic and are what ISTA 3A's compression with vibration
   simulates for parcels of 70 kg or less (ista.org 3A overview; lso-inc.com); a small single-wall e-commerce box has a
   McKee box compression strength near 200 kg static and a usable stacking load of 40 to 70 kg after the 3 to 5
   distribution safety factor, so the crush response rises steeply around 60 kg on top and a light box under a carton
-  batch of 120 to 170 kg takes an odds ratio of about 4.3.
-- **Screening harness (scratch, not shipped):** `t212/redraw/proto_stack7.py` with `multi_stack2.py`, clean truth, 20
-  redraws (seeds 1 to 20), about 156,000 audited parcels a redraw (six hubs, 65 nights, ten cages a night), logistic
-  observed against expected per hub per 10,000 parcels, the pick and its lead over the runner-up.
-- **Screen 1, levels and the lever against the rivals' estimates:** the golden family names Ribarroja 20 of 20 with a
-  lead of at least 2.04 (crush load as weight on top, 2.07; Poisson, 2.04; heaviest parcel on top, 2.41; cartons on
-  top, 2.44; banded standardisation, 2.45); the true equipment excess names Ribarroja 20 of 20. Mid-bin figures and the
-  pack size are asserted at the shipped seed in stage 3.
-- **Screen 2, the golden's own method holds the call:** five of six specifications hold 20 of 20 with leads of 2 or
-  more; the log of the weight on top holds 19 of 20 (lead 1.10 at the worst seed), so the shipped seed is chosen and
-  asserted with every specification leading by 1.2 or more, the variant table in `checks.py`.
-- **Screen 3, the first look lands wrong:** the raw audited rate names Zaragoza 20 of 20 (lead at least 1.13).
-- **Screen 4, the careful readers land wrong, each 20 of 20:** (a) field-decomposing (standardisation within packaging,
-  weight band, fragility and service cells) Zaragoza, lead 1.46 or more; (b) constructing, with position in the cage,
-  cage weight, cartons in the cage and position times cage weight, Zaragoza, lead 4.18 or more; the same with position
-  bands, Zaragoza, 1.42 or more; the top third of each cage alone, Zaragoza, 1.61 or more; (c) per-record, every
-  attribute two shipped files give plus cage fill and interactions, Zaragoza, 1.65 or more; (d) mechanism-naming, crush
-  read the naive way as cartons sharing the cage and the cage's weight, Zaragoza, 4.68 or more; (e) literal replay of
-  the survey programme's comparison against like parcels, Zaragoza, 1.46 or more. A reader who rules Zaragoza out for a
-  wrong reason (an auditor, a crew) lands on Dos Hermanas 18 of 20, Ribarroja 2 of 20: stage 2 widens Dos Hermanas.
-- **Screen 5, literal execution:** the filed WHAT (equipment-caused damage per 10,000 parcels against the damage the
-  same parcels suffer across the network) executed on the parcels' attributes names Zaragoza 20 of 20; the golden needs
-  the crush load each parcel carried, which no filed sentence asks for and no column holds.
+  batch of 105 to 190 kg takes an odds ratio of about 4.3. Sorter stoppages of 2.4 to 3.8 a night and a third of them
+  safety stops, damage claims on 0.03 to 0.05 per cent of parcels sorted.
+- **Screening harness:** `generator/screens.py` on the generator itself (world, records, the readers on the record
+  tables as cut), 20 redraws (seeds 3000 to 3019), about 160,000 inspected parcels a redraw (six hubs, 66 nights, about
+  ten cages a night), observed against expected per hub per 10,000 inspected, the pick and its lead over the runner-up.
+  Output kept in scratch `t212/resume/screens20d.json` and, for the BIC sentence, `t212/resume/bic20_twin.json`.
+- **Screen 1, levels and the lever against the rivals' estimates:** the golden family names Ribarroja 20 of 20 in
+  every member, worst-seed leads: cells within the load stratum at 35 to 95 kg 2.97 to 3.79, load bands 3.61, logistic
+  with the 60 kg step 3.78, Poisson 3.77, linear 2.51, carton count above 3.37, heaviest parcel above 3.74, sender
+  sector added 3.81, each form without pack interactions 2.21 to 3.39; the true equipment excess names Ribarroja 20 of
+  20. The supported family's spread at one seed is 3.0 to 4.9 per 10,000 (median 4.0, about 5 per cent of the figure),
+  so the forward figure is graded to the nearest hundred parcels a week.
+- **Screen 2, the golden's own method holds the call:** every specification above names Ribarroja 20 of 20; the log of
+  the load holds 20 of 20 at a worst-seed lead of 1.37 with interactions and 1.20 without, and the record's own fit
+  refutes it (deviance 66 or more above the 60 kg step at equal parameters, every redraw); a 30 kg edge holds the call
+  (1.78) and is refuted by the fit too. The programme's lowest-BIC sentence picks a supported load form naming
+  Ribarroja in 20 of 20 redraws (the 45, 60 or 80 kg step, once the heaviest parcel above), setting aside the log by 66
+  or more, the step with position and cage terms by 41 or more and every rival by 278 or more. At the shipped seed every
+  member, the log included, leads by 1.35 or more, the lowest BIC is the 60 kg step, and the forward figure sits in one
+  hundred under every supported member (tightest 13.9 per cent of a bin clear).
+- **Screen 3, the first look lands wrong:** the raw audited rate names Zaragoza 20 of 20 (lead at least 1.09).
+- **Screen 4, the careful readers land wrong, each 20 of 20 on Zaragoza:** (a) field-decomposing (cells of shape,
+  weight band, fragility and service) lead 1.29 or more; (b) constructing, position in the cage, cage weight, cartons
+  in the cage and their interactions 1.47 or more, position bands 1.16, the top third of each cage alone 1.12; (c)
+  per-record, every attribute two shipped files give with sender sector, cage fill and interactions, 1.27; (d)
+  mechanism-naming, crush read the naive way as cartons sharing the cage and the cage's weight, 1.47; (d2) crush named
+  and each parcel's load read from the scan order but weighed with the sender's declared kg, linear 1.58, as a 60 kg
+  step 2.06, in bands 1.49; (e) literal replay of the programme's comparison on the parcels' attributes 1.29. A reader
+  who sets Zaragoza aside for a reason other than the load lands Dos Hermanas 20 of 20 (lead 1.34 or more).
+- **Screen 5, literal execution:** the filed WHAT (the parcels a hub's own sortation equipment damaged per 10,000
+  inspected, measured against the damage the same parcels would suffer across the network) executed on the parcels'
+  recorded attributes names Zaragoza 20 of 20; the golden needs each parcel's load in its cage, which no filed
+  sentence asks for and no column holds.
+- **The coordinator's five review points (2026-11-05), measured:** (1) the d2 reader names crush and orders the cage
+  but weighs it with the declared kg: Zaragoza 20 of 20 in three forms; what separates it from the golden is the
+  carrier's measured weight, the DWS weight the attribute model already joins, because three business accounts declare
+  a flat default of 2.0, 5.0 and 4.0 kg on cartons that weigh 15 to 21 kg, so the declared load never reaches the crush
+  range; the golden needs the DWS join for every parcel scanned after an audited one. (2) Every cage's load order is
+  one order under first and last LOAD, no-read re-scans and ties (none share a second), every cage is opened and
+  closed once; the DWS join is one set under the printed, the normalised and the barcode-and-hub keys; the call and the
+  forward figure's hundred hold under each (SF6 to SF9, SF14). (3) The programme files the peak's window and volume as
+  WHAT (the plan's weeks 48 to 52) and what the repairs stop (the hub's own equipment damage); the call's lead holds at
+  1.2 or more under every member at the shipped seed (the log without interactions at 1.35), and the forward figure's corridor runs over the supported forms
+  with the log and the sub-35 kg edges refuted by the fit. (4) Gate G: no shipped file summarises or ranks the hubs;
+  the audits ship as records. (5) The asks were redrawn: each counting unit filed as WHAT, four primaries from four
+  families each a reconstruction across two systems; the cracker keeps 0 of 24 figures and the worst full includer 6 of 24
+  (`## Ask sheet`); Dos Hermanas is the wrong-reason landing 20 of 20.
 
 ## Default path
 
@@ -100,9 +130,9 @@ The field's method at rungs 0 and 1: audited damage per hub, then indirect stand
 from a pooled model of the parcels' own attributes), cut every way, with the cartons in each cage allowed for.
 
 1. Read the survey programme: the survey goes to the hub whose own sortation equipment damaged the most parcels per
-   10,000 it loaded in the July to September 2026 audits, and its value is the damaged parcels a week its repairs stop
+   10,000 inspected in the July to September 2026 routine audits, and its value is the damaged parcels a week its repairs stop
    over the peak.
-2. Build the audited parcels: keep each cage's first audit, drop lines for parcels not found, map hub numbers to names
+2. Build the audited parcels: keep the routine audits, drop lines for parcels not found, map hub numbers to names
    and the old damage codes to the new list, convert DWS grams to kilograms, join audits to DWS by barcode and accounts
    to sectors.
 3. Raw audited damage per 10,000 parcels by hub: Zaragoza highest by about 1.5 times the network.
@@ -129,110 +159,214 @@ Ribarroja del Turia, whose tile cartons go in first, with the damage the survey 
 - Task type: general-statistics-data-science / exploratory-data-analysis-distribution-assessment, which serves anomaly detection in the taxonomy; the anomaly is one hub's audited damage standing out, and the deciding analysis reads it within the structure that generates the damage before naming the hub whose sorter causes it.
 - Domain test: the deciding quantity is each hub's sorter damage per 10,000 parcels inspected, a damage rate read within the structure that generates it, which is this task type's own object; the field's estimator for an excess is indirect standardisation, observed against the network's expected rate for like parcels.
 - Swap: in General Statistics the swap is of the method: with the pooled or the attribute-standardised rate in place of the rate read within each parcel's load stratum the call moves from Ribarroja del Turia to Zaragoza; with hospital wards for hubs and patients for parcels nothing loads cases on top of other cases in scan order, so the task stops making sense.
-- Layer 1: sortation load scans in UTC against audits and DWS records in Spanish summer time (each hub's sorter control system against the audit app and the DWS); DWS weights in grams and dimensions in millimetres (the DWS); re-scans of a parcel into its cage after a no-read (the sorter control system); re-weighs at the DWS; the damage code list replaced on 1 August with two depots' handhelds still keying old codes (the audit app); hub numbers in the sorter export against hub names in the audit app; supervisors' check audits and NOT FOUND lines (the audit app); sender-declared weights as account defaults (the manifest system). Each is produced by its own system, none is placed to be caught, none moves the call (R2 assertions).
-- Layer 2: estimand_identification, a Simpson's reversal across a constructed stratum: each audited parcel's crush load, the weight scanned into its cage after it, separates crush in the cage from the sorter's own damage; Zaragoza's excess is crush under the auto-parts cartons it loads last, and Ribarroja's sorter damage hides because its tile cartons go into the cage first.
+- Layer 1: the cage build log in UTC against the audit app and the DWS in Spanish summer time (each hub's sorter control system against the audit app and the DWS); DWS weights in grams and dimensions in millimetres (the DWS); no-reads re-scanned by handheld and parcels scanned twice (the sorter control system); re-weighs at the DWS; the damage code list replaced on 1 August with two depots' handhelds still keying old codes (the audit app); hub numbers in the build log against hub names in the audit app; supervisors' check audits and NOT FOUND lines (the audit app); sender-declared weights as account defaults (the senders' shipment data). Each is produced by its own system, none is placed to be caught, none moves the call (R2 assertions in checks.py).
+- Layer 2: estimand_identification, a Simpson's reversal across a constructed stratum: each audited parcel's load, the weight scanned into its cage after it, separates crush in the cage from the sorter's own damage; Zaragoza's excess is crush under the auto-parts cartons its last trailer brings, and Ribarroja's sorter damage hides because its tile cartons go into the cage first.
 - Decisive step: rebuilding each audited parcel's load from the parcels scanned into its cage after it, weighed through the DWS records, and comparing the hubs' damage within load strata, which accounts for Zaragoza and Dos Hermanas and leaves Ribarroja's excess as the sorter's.
-- Not semantics: every field read correctly (the damage codes and their crosswalk, check audits, NOT FOUND lines, the cage's build date, the DWS grams, the scan clock, the declared weights) still leaves the attribute-standardised excess on Zaragoza; no field, code or flag holds a parcel's load, and the declared weights a reader might use for it are account defaults.
-- Not rule application: no filed rule names a load, an order or a stratum, and executing the survey programme's comparison on the parcels' attributes files Zaragoza. The enumerated family (raw rate, field cells, attribute logit, per-record logit with cage fill and interactions, position in the cage, cage weight, position bands, top third, unordered cartons in the cage, scan order weighed with declared weights, scan order weighed with DWS weights as a 60 kg step, bands, cartons on top, heaviest parcel on top, linear and log) spreads the call over Zaragoza (eleven members) and Ribarroja (twelve); the standing family, the DWS-weighted order in the forms the record's own fit supports (deviance 29,475 for the step, 29,494 to 29,511 for heaviest on top, cartons on top and linear, against 29,611 for the log and 30,410 with no load term), names Ribarroja in every member at 45.3 to 48.0 per 10,000 at the shipped seed; the ruling-out is loud, the no-load model's deviance about 935 above the step's.
-- Analyst test: a strong analyst who reads every field and rule correctly standardises each hub's audited damage on the parcels' weight, size, packaging, fragility and service, cuts it every way, allows for the cartons sharing three hubs' cages and books the survey to Zaragoza, the default path's `Ends on:`.
-- Estimand: the survey programme (Network Operations, filed) fixes the population (parcels found and inspected in routine audits of the regional outbound cages built on the sorting nights of 1 July to 30 September 2026), the outcome (the damaged parcels a hub's own sorting equipment accounts for, done between induction and the chute), the unit (per 10,000 parcels inspected), the comparison (the damage the same parcels take across the network's six hubs) and the forward value (that rate times the hub's planned parcels a week averaged over peak weeks 48 to 52 of the 2026 peak plan).
-- No decoy: nothing is planted to be caught; Zaragoza's cartons arrive on the night's last trunk by the timetable, no memo, draft, summary or ranking argues for a hub, the audit records are records and the 2025 survey report records a closed survey at Basauri.
+- Not semantics: every field read correctly (both damage code lists, check audits, NOT FOUND lines, the cage's build date, the DWS grams, the scan clock, the declared weights) still leaves the attribute-standardised excess on Zaragoza; no field, code or flag holds a parcel's load, and the declared weights a reader might weigh it with are account defaults that land Zaragoza too.
+- Not rule application: no filed rule names a load, an order or a stratum, and executing the survey programme's comparison on the parcels' attributes files Zaragoza. The enumerated family (raw rate, field cells, attribute logit, per-record logit with sector, cage fill and interactions, position in the cage, cage weight, position bands, top third, unordered cartons in the cage, scan order weighed with declared weights in three forms, and the DWS-weighted order in cells at five edges, bands, steps at five edges, linear, log, carton count above, heaviest parcel above, each with and without pack interactions, Poisson and with sender sector) spreads the call over Zaragoza (eleven members) and Ribarroja (twenty-two); the standing family, the DWS-weighted order in the forms the record's own fit supports, names Ribarroja in every member at 47.6 to 51.7 per 10,000 at the shipped seed; the ruling-out is loud, the no-load model's deviance 860 above the 60 kg step's and the log's 145 above, and the programme's one selection sentence (the lowest BIC stands) chooses among the estimates an analyst builds and names no term: on the parcels' attributes alone it keeps an attribute model and files Zaragoza.
+- Analyst test: a strong analyst who reads every field and rule correctly standardises each hub's audited damage on the parcels' weight, size, packaging, fragility and service, cuts it every way, allows for the cartons sharing four hubs' cages and books the survey to Zaragoza, the default path's `Ends on:`.
+- Estimand: the survey programme (Network Operations, filed) fixes the population (parcels found in the routine audits of the regional outbound cages built on the sorting nights of 1 July to 30 September 2026), the outcome (the parcels a hub's own sortation equipment damaged), the unit (per 10,000 parcels inspected), the comparison (the damage the same parcels would suffer across the network's six hubs) and the forward value (that rate applied to the hub's planned parcels a week, averaged over peak weeks 48 to 52 of the 2026 peak plan).
+- No decoy: nothing is planted to be caught; each business account's cartons arrive on its dedicated trailer at its own hour, no memo, draft, summary or ranking argues for a hub, the audits ship as records and the 2025 survey report records a closed survey at Basauri.
 - No certified replay: no certified or published figure is reproduced to recover a method; the 2025 report's before and after rates are Basauri's own audits and every route reads them alike.
 - Lesson: read a damage rate within the structure that generates it before naming the unit that causes it, here the weight each parcel carried in its cage, rebuilt from the order of the cage's load scans against the DWS weights; no build on file reads an order relation inside a container.
 
 ## Survivor anatomy
 
-- Actor: the deciding property, the weight sitting on an audited parcel in its cage, has no column in any file; the parcel has rows (an audit line, a load scan, a DWS record, a manifest line) and the property is a relation between its load scan and the later load scans of the same cage, weighed through the DWS.
-- Link: the signal is read through a comparison no key offers: the order of a cage's load scans set against the DWS weights of the parcels scanned after each audited one; the cage label joins the parcels but nothing orders or weighs them, and no sentence mentions a cage's order or load.
-- Reflex: the field's method (indirect standardisation on the parcels' attributes, cut by every field) sits at rungs 0 and 1 and files Zaragoza, lead 1.88 at the shipped seed.
-- Back-test: the textbook route validates: the 2025 survey went to Basauri on its standardised excess, a worn transfer plate was replaced and Basauri's audited rate fell; Basauri sorts its cartons to a heavy-goods chute, so both routes agree on that closed case.
-- Second use: the load scans carry each cage's contents and build night (the audit's load list), the DWS records carry the parcels' weights, sizes and shapes for the attribute model and billing, the manifest the service and fragility; none ships for the decisive step alone.
-- Shock: Ribarroja is third on the raw rate and third on the standardised excess, never first on any shipped statistic; the movement the step recovers reads as an ordinary middling hub.
-- Pins: the survey programme files the population, outcome, unit, comparison and forward value in Network Operations' own voice and names no cage, order, load, weight on top, scan or stratum; deleting any of its sentences unforces nothing the decisive step rides on.
+- Actor: the deciding property, the weight sitting on an audited parcel in its cage, has no column in any file; the parcel has rows (an audit line, a LOAD scan, a DWS record, a shipment line) and the property is a relation between its LOAD scan and the later LOAD scans of the same cage, weighed through the DWS.
+- Link: the signal is read through a comparison no key offers: the order of a cage's LOAD scans set against the DWS weights of the parcels scanned after each audited one; the cage label joins the parcels but nothing orders or weighs them, and no sentence mentions a cage's order or load.
+- Reflex: the field's method (indirect standardisation on the parcels' attributes, cut by every field) sits at rungs 0 and 1 and files Zaragoza, lead 1.38 at the shipped seed and 1.37 or more over 20 redraws.
+- Back-test: the textbook route validates: the 2025 survey went to Basauri on its standardised excess, a worn transfer plate was replaced and Basauri's audited rate fell; Basauri's cages carried parcels only until its paper account arrived in January 2026, so both routes agree on that closed case.
+- Second use: the build log is the audit's load list (the auditor scans against it, and NOT FOUND lines come from it), the DWS records carry the parcels' weights, sizes and shapes for the attribute comparison and for billing, the shipment lines the service and fragility; none ships for the decisive step alone.
+- Shock: Ribarroja is third on the raw rate and third on the attribute-standardised excess, never first on any shipped statistic; the movement the step recovers reads as an ordinary middling hub.
+- Pins: the survey programme files the population, outcome, unit, comparison, forward value and a selection rule (the lowest BIC stands) in Network Operations' own voice and names no cage order, load, weight on top, scan or stratum; deleting any of its sentences unforces nothing the decisive step rides on.
 
 ## Readability screen
-
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | 7 dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
 | 0 raw audited rate (Zaragoza) | fires (the programme's unit) | fires (audit lines) | fires | no | no | fires | no | readable |
-| 1 attribute standardisation (Zaragoza) | fires (the comparison) | fires (DWS and manifest columns) | fires | no | no | no | no | readable |
-| 2 cartons sharing the cage, cage weight, position (Zaragoza) | no | fires (cage label) | fires (crush named naively) | no | no | no | no | readable |
-| 2b scan order weighed with declared weights (Zaragoza) | no | fires (declared_kg) | fires | no | no | no | no | readable |
-| 3 crush load from load scans against DWS weights (decisive, Ribarroja) | no | no (no column holds order or load) | no | no | no | no | no (scans and DWS ship for the load list and the attributes) | silent |
+| 1 attribute standardisation (Zaragoza) | fires (the comparison) | fires (DWS and shipment-line columns) | fires | no | no | no | no | readable |
+| 2 cartons sharing the cage, cage weight, position (Zaragoza) | no | fires (cage label) | fires (crush named the naive way) | no | no | no | no | readable |
+| 2b scan order weighed with the declared kg (Zaragoza) | no | fires (declared_kg on the shipment lines) | fires | no | no | no | no | readable |
+| 3 each parcel's load from the build log's LOAD order against the DWS weights (decisive, Ribarroja) | no (no sentence names a load, an order or a stratum; the programme's BIC sentence chooses among estimates and names no term) | no (no column holds order, position or load) | no (the reflex for crush is rung 2) | no | no | no | no (the build log ships as the audit's load list, the DWS for the attributes) | silent |
 
 ## Semantic fork table
-
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | damaged | any damage code the auditor records, old or new list | crush codes only | same call | same call, asserted |
-| SF2 | inspected | parcels found in the cage at a routine audit | NOT FOUND lines counted as inspected and OK | same call | audit procedure: a parcel not found is not inspected; same call asserted |
-| SF3 | which audits | routine audits | routine and check audits | same call | audit procedure: a check audit verifies the auditor and does not replace the routine audit; same call asserted |
-| SF4 | the window | cages built on the sorting nights of 1 July to 30 September (label build date) | audit date | same call | survey programme names the sorting nights; same call asserted |
-| SF5 | the comparison pool | the network's six hubs | the other five hubs | same call | survey programme: across the network's six hubs |
-| SF6 | a re-scanned parcel's place | its first load scan | its last load scan | same call and figures | same call asserted, figure moves under 0.1 |
-| SF7 | ties in scan time | none in any cage | not applicable | same call | asserted: no two load scans in a cage share a second |
-| SF8 | a re-weighed parcel's weight | first DWS record | last or mean | same call and figures | same call asserted |
-| SF9 | the DWS join key | the barcode as printed | normalised barcode | same set | asserted: one set under both readings |
-| SF10 | the load stratum's edge | 60 kg on top | any edge from 35 to 95 kg | same call | asserted over the corridor |
-| SF11 | the forward volume | mean of planned parcels a week, weeks 48 to 52 | the five-week total over five | same figure | identical arithmetic |
-| SF12 | the cartons' own damage | inside the hub's damage | light parcels only | same call | same call asserted |
+| SF1 | damaged | any damage code, old or new list | crush codes only | same call | the audit procedure (any code records a damaged parcel); same call asserted |
+| SF2 | inspected | found in the cage at a routine audit | NOT FOUND lines read as inspected and OK | same call and hundred | the audit procedure (a parcel NOT FOUND has not been inspected); asserted |
+| SF3 | which audits | routine audits | routine and check audits | same call and hundred | the audit procedure (check audit lines are not counted as inspections); asserted |
+| SF4 | the window | the sorting night printed on the cage label | the audit date | same call and hundred | the programme (a cage belongs to the sorting night printed on its label); asserted |
+| SF5 | the comparison pool | the network's six hubs | the other five hubs | same call | the programme (across the network's six hubs); asserted |
+| SF6 | a re-scanned parcel's place | its first LOAD | its last LOAD | same call and hundred | asserted |
+| SF7 | ties and no-reads | no two parcels share a second; a no-read's handheld LOAD keeps its place | first against last LOAD | one order in every cage | asserted |
+| SF8 | a re-weighed parcel's weight | its first DWS weighing | its last, or the mean | same call and hundred | asserted |
+| SF9 | the DWS join key | the barcode as printed | normalised; with the hub number | one set | asserted |
+| SF10 | the load stratum's edge | 60 kg on top | any edge from 35 to 95 kg | same call and hundred | asserted (a corridor); 20 and 30 kg refuted by the fit |
+| SF11 | the forward volume | the mean planned week, weeks 48 to 52 | the five-week total over five | same figure | identical arithmetic, asserted |
+| SF12 | the cartons' own damage | inside the hub's damage | light parcels only | same call | asserted |
+| SF13 | the specification of the comparison at equal load | cells of shape, weight band, fragility and load | a fitted model with the load in it: sender sector, no pack interactions, Poisson | same call and hundred | asserted; the log of the load refuted by the fit |
+| SF14 | a cage split across two trunks | one label, opened and closed once | two physical cages under one label | one load order | asserted (every cage one OPEN, one CLOSE, every LOAD between) |
+| SF15 | the quarter's cages | build dates 1 July to 30 September | audits dated in the quarter | same population | asserted (every audited cage's build date in the window) |
+| SF16 | the load's form and any added terms | the lowest-BIC estimate: the 60 kg step by packaging | the log of the load (about 640 a week); the step with position, cage weight and carton count added (about 640 a week); no pack terms; sender sector | same call; the graded hundred only under the lowest BIC | the programme (the estimate with the lowest BIC on the quarter's routine audits stands); asserted at the shipped seed (log +145, the step with position and cage terms +100, every rival +446 or more) and over 20 redraws (20 of 20) |
 
 ## Ladder
 
-- Rung 0, raw audited damage per 10,000 parcels inspected: Zaragoza 319.6, Dos Hermanas 258.2, Ribarroja 186.3 (shipped seed 2120). Ribarroja third.
-- Rung 1, the field's method (attribute standardisation; the literal execution of the programme's comparison): Zaragoza +130.5, Dos Hermanas +69.5, Ribarroja third; lead 1.88.
-- Rung 2, crush named naively (cartons sharing the cage, cage weight, position in the cage, position bands, top third): Zaragoza in every form, leads 1.64 to 9.3; a reader who rules Zaragoza out for a wrong reason lands Dos Hermanas.
-- Rung 2b, scan order weighed with the sender's declared weights: Zaragoza, lead 9.84 (the declared weights are account defaults, 2.0 kg on every auto-parts carton).
-- Rung 3 (decisive), each parcel's load from the weight scanned into its cage after it, DWS-weighed: Ribarroja +45.3 to +48.0 per 10,000 across the supported forms, every other hub at or below zero; lead infinite or 2.39 at the worst form (log).
-- Worth: the decisive rung moves the call across three places and Ribarroja's excess from third to sole; the forward value is Ribarroja's excess times its planned parcels a peak week.
-- Pricing: the step is a reconstruction over rows the records supply exactly (the weight above is arithmetic on scans and DWS weights); the stratum edge is a C3 corridor (35 to 95 kg give the same strata to within the light-only stacks); the sampling interval of Ribarroja's excess is about plus or minus 13 per 10,000, far inside its distance to the next hub (about 50).
+- Rung 0, raw audited damage per 10,000 parcels inspected (shipped seed 2120): Zaragoza 305.0, Dos Hermanas 272.2, Ribarroja 184.3, the other three 128.1, 120.3, 116.7. Ribarroja third.
+- Rung 1, the field's method (attribute standardisation; the literal execution of the programme's comparison): Zaragoza +117.8, Dos Hermanas +85.1, Ribarroja -2.8; lead 1.38.
+- Rung 2, crush named the naive way (cartons sharing the cage, cage weight, position, position bands, top third): Zaragoza in every form, leads 1.33 to 1.61; a reader who sets Zaragoza aside for another reason lands Dos Hermanas (lead infinite).
+- Rung 2b, scan order weighed with the sender's declared kg: Zaragoza, leads 5.21, 2.08, 3.87 (three business accounts declare 2.0, 5.0 and 4.0 kg on cartons of 15 to 21 kg).
+- Rung 3 (decisive), each parcel's load from the weight scanned into its cage after it, DWS-weighed: Ribarroja 51.7 per 10,000 under the programme's lowest-BIC estimate (the 60 kg step by packaging), 51.6 in cells within the 60 kg stratum, 47.6 to 51.7 across the supported forms, every other hub at or below the network; the log forms 39.6 and 37.3 (leads 1.65 and 1.35), refuted by the fit.
+- Worth: the decisive rung moves the call across three places and Ribarroja's excess from third to sole; the forward value is Ribarroja's lowest-BIC excess times its planned 161,620 parcels a peak week: 836 to the hundred 800, every supported form inside it (769 to 836).
+- Pricing: the step is a reconstruction over rows the records supply exactly (the weight above is arithmetic on LOAD scans and DWS weights); the stratum edge is a corridor (35 to 95 kg give the same strata to within the light-only stacks; 20 and 30 kg refuted by the fit); the forward bin test reads, in hundreds: the decisive step's worth (the default path would size Zaragoza's excess on Zaragoza's plan, 2,100 a week, 13 bins from the golden) against the supported family's spread (0.68 of a hundred) and the golden's binomial interval (plus or minus 2.5); the sampling interval of Ribarroja's excess is about plus or minus 15 per 10,000, inside its distance to the next hub (about 50).
 
 ## Closure table
-
 | Axis | Reading | Closure |
 |---|---|---|
-| 1 Population | parcels found in routine audits of regional cages built 1 July to 30 September | filed in the survey programme; C1 asserted against check audits and NOT FOUND lines |
+| 1 Population | parcels found in routine audits of regional cages built 1 July to 30 September | filed in the programme; C1 asserted against check audits and NOT FOUND lines (SF2, SF3) |
 | 2 Unit of account | a parcel inspected | filed (per 10,000 parcels inspected) |
-| 3 Attribution window | the cage's sorting night on its label | filed; no audit straddles a quarter edge by build date |
-| 4 As-of dating | records as of the audit export | static; nothing revised |
-| 5 Version basis | old and new damage codes both mean damaged | C1 asserted (SF1) |
+| 3 Attribution window | the cage's sorting night on its label | filed; SF4 and SF15 asserted |
+| 4 As-of dating | records as of the quarter's audit close (9 October) | static; nothing revised |
+| 5 Version basis | old and new damage codes both mean damaged | filed in the procedure; SF1 |
 | 6 Denominator | parcels inspected | filed |
 | 7 Weighting | each parcel once | filed by the unit |
 | 8 Window length | the whole quarter | filed |
 | 9 Boundary inclusivity | 1 July to 30 September inclusive | filed |
-| 10 Rounding path | rates computed then rounded once | asserted |
-| 11 Tie-break | none needed, the lead is wide | asserted lead at least 1.2 under every supported form |
-| 12 Maturity and censoring | every cage audited the next morning | none open |
-| 13 Order of operations | standardise within load strata | C1, every supported form agrees |
-| 14 Row order | file order irrelevant; scan time orders a cage | asserted over a shuffled read |
+| 10 Rounding path | the rate computed, applied to the plan, rounded once to the hundred | asserted mid-bin over the supported family |
+| 11 Tie-break | none needed; between forms, the lowest BIC | the call's lead 1.2 or more under every member, asserted; SF16 |
+| 12 Maturity and censoring | every audited cage audited the next morning | none open |
+| 13 Order of operations | compare at equal load, then apply to the plan | C2, the programme's lowest-BIC sentence selects the form (SF16); every supported member in one hundred |
+| 14 Row order | file order irrelevant; the LOAD time orders a cage | SF7 asserted |
 | 15 Duplicate resolution | re-scans and re-weighs | C1 asserted (SF6, SF8) |
-| 16 Identity normalisation | barcode as printed in all systems | C1 asserted (SF9) |
-| 17 Netting against gross | none | not applicable |
-| 18 Dimensional units | grams in the DWS, kilograms declared | units in the column names |
-| 19 Code and status semantics | the damage code crosswalk | shipped crosswalk; C1 |
-| 20 Integerisation | counts are whole parcels | by construction |
-| 21 Clause scope | the programme covers the sorter between induction and the chute | filed |
-| 22 Forward window contents | planned parcels a week, peak weeks 48 to 52 | the peak plan ships |
+| 16 Identity normalisation | barcode as printed in every system | C1 asserted (SF9) |
+| 17 Netting against gross | none on the main call | not applicable |
+| 18 Dimensional units | grams in the DWS, kilograms declared, UTC build log | units and zones in the column names |
+| 19 Code and status semantics | both damage code lists | the procedure's table |
+| 20 Integerisation | parcels a week to the nearest hundred | asserted mid-bin |
+| 21 Clause scope | the programme's survey covers induction to the chutes | filed |
+| 22 Forward window contents | planned parcels a week, peak weeks 48 to 52 | the peak plan ships; SF11 |
 
 ## Literal reader
-
-Executing the survey programme word for word on the parcels' own attributes (indirect standardisation against the network's like parcels) files Zaragoza; the golden is the same estimand computed with the parcels' load read from the records, and every differing reading of a term (SF1 to SF12) gives the same call; nothing in the bundle reads to another answer.
+Executing the programme word for word on the parcels' recorded attributes (observed against the network's expected
+damage for parcels of the same weight, size, packaging, fragility and service) files Zaragoza; the golden is the same
+estimand with "the same parcels" taken to include the load each carried in its cage, read from the build log and the
+DWS, and the programme's lowest-BIC sentence choosing among the estimates built (on the attributes alone it keeps
+an attribute model and files Zaragoza; with the load it keeps the 60 kg step by packaging and files Ribarroja at 800). Every differing reading of a term (SF1 to SF15) gives the same call and the same hundred; nothing in the bundle
+reads to another answer.
 
 ## Oracles
-
-- The 2025 survey report (Basauri): confirms the standardised route on a hub with a heavy-goods chute, where both routes agree; it ties under every basis.
-- The hub register's heavy-goods chute column and the trunk timetable: an ordinary cause for where cartons travel; neither ranks hubs nor ties only under the golden.
+- The 2025 survey report (Basauri): records a closed survey at a hub whose cages carry parcels only, where both routes
+  agree; it ties under every basis and names no 2026 hub.
+- The hub register's heavy-goods chute column and the accounts register's collection column: an ordinary cause for
+  where cartons travel and when they arrive; neither ranks hubs nor ties only under the golden.
 - None ties only under the golden.
 
 ## Ask sheet
+Rubric sum (about 35 criteria): the call (1), the parcels a week stopped (1), Ribarroja's own sorter damage per 10,000
+(1), the rivals ruled out and why (2), the chart's named parts (each hub's audited damage, the part its own sorter
+accounts for, the six hubs, the unit, the window: 5), the two files (2), and the asks (24). The asks are one grid of
+six hubs by four measures, two asks of twelve figures, each a component of the survey's case on rows outside the main
+population.
 
-- Ask 1, sorter stoppages and hours stood per hub (twelve figures). H18 home: the survey's own capacity case (the slot takes the sorter out of service). Files: the sorter event log (two controllers, UTC, heartbeats), the engineering work orders (local), the stoppage reporting standard. Primary 1, D1: one standstill recorded by both the PLC and the safety controller; primary 2, D4: stoppages inside the event logger's heartbeat gaps, held only by the work orders' machine stopped and running times. Pin test: the standard files a stoppage as a spell of standing still, from stop to restart, over the sorting nights of July to September; neither device's dimension is named.
-- Ask 2, damage claims and euros paid per hub (twelve figures). H18 home: the survey's value in money terms for the network. Files: the customer service export, finance's payment lines, the claimed parcels' tracking history, the claims handling note. Primary 1, D2: a reopened claim takes a new reference whose approved amount carries the first approval, while finance pays only the top-up; primary 2, D7: the export's hub is the delivery hub, while the note charges a claim to the hub that sorted the parcel the night it was collected, read from the tracking history's first sort scan. Pin test: the note files the counting unit (a damaged parcel is one claim), the cost (money paid), the hub and the window; neither device's dimension is named.
-- Separation: zero ask rows in the main call's population (stoppages and claims are other systems' records; claimed parcels are not audited parcels, asserted by count).
-- Cracker and mirror sheets: pending `generator/ceiling.py` on the cut pack.
-- Pair ceiling: pending
-- Mirror leakage: pending
-- Measured by: generator/ceiling.py (to be written; shares no code with the generator)
+**Ask C: damage claims by hub.** For each hub, the damaged parcels with an approved claim and the euros paid on them,
+over parcels collected on the July to September sorting nights (12 figures: counts whole, euros to the nearest euro).
+H18 home: the survey's case in money, what damage costs each hub, read by the network operations meeting beside the
+call. Files (7 on the path, 14 columns): the case export, the transfer runs, the card gateway's refund settlement report,
+the tracking history, the flat-rate terms, the hub register, the claims note.
+- The WHAT, filed in Customer Service and Finance's note CS-FIN 07: the hub (the first hub sort in the parcel's
+  tracking history), the period (the quarter of that sorting night, dated by the evening, Spanish time), the counting
+  unit (a damaged parcel counts once however many cases are opened on it; approved when Customer Service first
+  approves a case), the boundary (approvals and money up to and including 20 October), the money (paid to the
+  claimant by transfer for business accounts, as a refund to the card for private senders; a returned transfer is not
+  paid until made again).
+- Primary 1, D6 (a row at another grain than its name), block = the six counts: a business account on flat-rate
+  terms opens one case for a consignment's damaged cartons, under the first carton's tracking number, approved at its
+  per-carton rate times the cartons. Remedy: the approved amount over the account's rate in the commercial team's
+  flat-rate terms (a recorded allocation weight). Wrong paths: one parcel a case misses every hub by 53 to 217 at the
+  shipped seed (checks.py, D6).
+- Primary 2, D7 (the true key elsewhere), block = the six euro figures: the card gateway's settlement report carries
+  its own refund ids, amounts and UTC times and no case reference. Remedy: each private sender's approved case
+  matched to the refund of its amount made on or after its decision, one refund a case, the label-price refunds
+  (cancelled labels at the tariff's prices) left out. Measured: one set under windows of 2 to 10 days, earliest or
+  latest first (checks.py, D7). Wrong paths: transfers only, every hub about a fifth low; the gateway total spread
+  pro rata, every hub off by tens to hundreds of euros.
+- Hazards (seen, repaired right by a careful reader): the case export's hub column is the customer-service area that
+  handles the case (the delivering area); a reopened business case is a new reference whose approved amount carries
+  the first approval while the transfer runs pay the top-up; returned and re-made transfers; the tracking history in
+  UTC with the sorting night across Spanish midnight; parcels collected in late June and early October.
+- Pin test: the sentence fixes the hubs, the period, the counting unit and the roundings; the note files the hub, the
+  period, the boundary and the money; the devices sit in how many parcels a case covers and which refund is which
+  case's, which no sentence names.
+
+**Ask S: sorter stoppages by hub.** For each hub, the sorter's stoppages and hours stood over the July to September
+sorting nights (12 figures: counts whole, hours to one decimal). H18 home: the survey's engineering case, the
+stoppage record of every candidate's sorter beside the one slot. Files (4 on the path, 12 columns): the sorter
+historian's event log, the work orders, the stoppage standard ENG-11, the hub register.
+- The WHAT, filed in ENG-11: a stoppage is a spell in which the sorter stands still during a sorting night, from the
+  moment it stops to the moment it runs again, whichever record shows it, each spell once; a sorting night runs 20:30
+  to 05:00 Spanish time, dated by the evening; hours stood are the spells' lengths added.
+- Primary 1, D4 (absence evidenced in a file no habitual join reaches), block = the three older sorters (Zaragoza
+  Plaza, Ribarroja, Dos Hermanas), both measures: the historian's collector loses its link to the older control
+  network for an hour or more on some nights while its own ALIVE rows carry on, so the standstills in those spells
+  are in the night engineer's corrective work orders only. Remedy: each corrective order whose machine-stopped and
+  machine-running times (Spanish time, to the minute) match no logged spell is a stoppage (a keyless match across two
+  systems and two clocks). Measured: one set under order windows of 1 to 5 minutes.
+- Primary 2, D1 (the same records under two sources where the copy is not exact), block = the three newer sorters (San
+  Fernando, El Prat, Basauri), both measures: the safety system logs every safety standstill on its own clock, which
+  runs behind and drifts from under a minute to about seven over the quarter; when a safety trip floods the PLC's
+  event buffer the PLC's STOP is lost and its RUN stands alone. Remedy: read the safety system's STOPs on the PLC's
+  clock through the offset of the stops both record (a straight line through the paired stops), set the echoes
+  aside, and start each lone PLC RUN at its safety STOP. Measured: one set under safety tolerances of 10 to 40 s.
+- Hazards: the event log in UTC against the orders in Spanish time; the sorting night across midnight; preventive
+  orders with no stoppage; corrective orders for logged spells; SORT_START and SORT_END rows.
+- Pin test: the sentence fixes the hubs, the nights and the roundings; ENG-11 files the spell, the night and the
+  hours; the devices sit in which records are one standstill and where a lost spell is recorded, which no sentence
+  names.
+
+**Separation.** Zero ask rows in the main call's population: no claimed parcel is an audited parcel (checks.py,
+asserted by set), stoppages and claims come from other systems' records, and no document the call reads carries an
+ask organ (the programme and the audit procedure name neither claims nor stoppages).
+
+**Hazard table.** UTC against Spanish time moves the claims and stoppages at the window's two edge nights only (a few
+parcels and spells, every hub); a reopened case read as a second parcel moves each hub's count by its reopened cases
+and the case export's approved amounts read as money by their first approvals; the case export's hub column read as
+the sorting hub moves every national parcel. Each is seen and repaired right by a careful reader and none is a primary.
+
+**Referee.** None: every route completes and reconciles to its own totals (the transfer runs to themselves, the
+gateway report to itself, the PLC's spells to its own STOP and RUN pairs).
+
+| Cracker sheet, on the cut pack (digest 262ae1134cd05476, ceiling.py) | Claims counts, D6 | Claims euros, D7 | Stoppages and hours, older sorters, D4 | Stoppages and hours, newer sorters, D1 | Kept of 24 | Verdict |
+|---|---|---|---|---|---|---|
+| Cracker: lands the call, runs the battery, executes CS-FIN 07 and ENG-11, takes the PLC's spells and sets the safety rows aside as an echo | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
+| Deep cracker: also counts each PLC RUN no STOP precedes, timed from the safety STOP as written | 0 of 6 | 0 of 6 | 0 of 6 | 3 of 6 | 3 | miss |
+| Cracker who reads a flat-rate case's amount over its rate as its cartons | 6 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 6 | miss |
+| Full includer A: every file and stated fact; every source's spells with exact duplicates dropped; the card refunds spread over hubs pro rata | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
+| Full includer B: the PLC's spells plus every corrective work order | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
+| Full includer C: as A, and the flat rates read as cartons | 6 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 6 | miss |
+| No repair: every row as it stands, the case export's hub and approved amounts | 0 of 6 | 0 of 6 | 0 of 6 | 0 of 6 | 0 | miss |
+
+- Verdict: a responder misses when it keeps under two fifths of the 24 ask figures; every row above keeps a quarter or
+  less, the cracker none.
+- Pair ceiling: 35.4 with the cracker on the call and the worst full includer off it (55 x 0.000 and 55 x 0.250 on 38 + 7
+  and 5 + 7); 45.0 with two crackers on the call; 51.9 with two deep crackers on it; 58.8 with two crackers on it who read
+  the flat rates as cartons.
+- Mirror leakage: 25.0 per cent of the ask weight (full includer C).
+- Measured by: generator/ceiling.py, which reads only target/ and imports nothing from the generator; its golden
+  equals the generator's on all 24 figures.
+
+## Leak sweep
+`leak.py --asof 2026-10-29` on target.zip 7f4cee14: REVIEW, no LEAK (the earlier LEAKs fixed in the generator: the
+shipment file no longer carries the word manifest, and 10,000 is the programme's filed unit, under `stated_inputs`).
+- Sweep 3, the programme carries the call's distinctive words: harmless; it files the survey, its worth and the
+  comparison the call answers, and names no hub.
+- Sweep 4, the procedure, the programme and the 2025 report carry 4 to 8 of the stump paragraph's words: harmless;
+  they are the world's basic nouns (parcel, records, network, audits, programme, Basauri), and none names a load,
+  an order, a stratum or a cage's contents.
+- Sweep 6, the peak plan, the maker's visit log and the work orders name the hubs beside numbers: harmless; weekly
+  parcels sorted and planned, technician hours and order times, none a damage figure or a ranking on the survey.
+- Guard on the merged corpus (claude/jolly-hypatia-06c61h at 36504aa, every sibling card present; task214 has none
+  yet): `heart` WARN (repeat.decision against task211, answered in `## Draw`; nearest driver or stump 0.06),
+  `surface` promoted four pairs on percentile at an absolute similarity of about 0.10 (task213, task453, task164,
+  task277), each answered on the card's differentiation.
 
 ## Tried and rejected
 
@@ -286,3 +420,24 @@ Executing the survey programme word for word on the parcels' own attributes (ind
   of 20. The kept calibration (`proto_stack7.py`): light e-commerce parcels near 0.6 kg so a light-only stack stays
   under the crush range, a consignment of seven to nine cartons of 15 to 21 kg placed by the trunk timetable 97 per
   cent of nights, a crush response centred on 60 kg on top.
+- 2026-11-05, the first ask draft (sorter stoppages with one standstill recorded by both the PLC and the safety
+  controller, and stoppages inside the event logger's heartbeat gaps; claims with a reopened case's cumulative
+  approval and the case export's delivering hub): every device but the gaps was executed by a filed WHAT or the
+  hygiene battery (the claims note files the sorting hub, the transfer runs pay only the top-up, a PLC that logs every
+  standstill makes setting the safety rows aside correct), and heartbeats that stop announce the gap, so the cracker
+  kept most of the layer; replaced by the four primaries in `## Ask sheet`.
+- 2026-11-05, the three business accounts' own sectors (automotive parts, ceramic tiles, olive oil and wine) were each
+  unique to one hub, so a sender-sector dummy absorbed that hub's cartons and moved Ribarroja's figure by 4.7 per
+  10,000 at the shipped seed; the accounts now carry sectors e-commerce senders share and the sector reader holds.
+- 2026-11-05, cartons placed at a fixed share of each cage's scan sequence put a hub's cartons into its cages over 42
+  to 142 minutes a night, which one dedicated trailer cannot produce; each hub-night now has one trailer arrival and
+  the cartons enter every cage as it is unloaded. With Dos Hermanas's trailer at 00:32 the wrong-reason reader landed
+  Ribarroja 3 of 20; at 01:20 it lands Dos Hermanas.
+- 2026-11-07, closing the forward figure's load form by "the best-fitting estimate stands" (raw fit or AIC): the
+  step with the constructing reader's position, cage-weight and carton-count terms added fits best on both and puts
+  Ribarroja at 16.6 per 10,000 (about 300 a week), because a cage of cartons with little on a parcel occurs almost
+  only at Ribarroja, so cage terms stand in for the hub; a second carton-first hub (Basauri, tried in the world)
+  narrowed it to 39.7 against 51.7. A sentence naming BIC alone, in the world without the twin, picked a supported
+  load form in 18 of 20 redraws and the kitchen-sink in 2; with Basauri kept as a carton-first hub (its paper account a
+  2026 customer) the lowest BIC picks a supported load form in 20 of 20, setting the kitchen-sink aside by 41 or more
+  (100 at the shipped seed) and the log by 66 or more (145).
