@@ -1,6 +1,6 @@
 {
   "task": "task315",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "urban-regional-science/optimization",
   "subdomain": "optimization",
   "objective": "opportunity-sizing-decision",
@@ -12,16 +12,30 @@
   "stump": "The default path funds package A, the Saudalen lowland infill, because every rated, derated, pooled or climb-adjusted energy it applies to the Ramnfjell plateau crossing keeps that crossing within range; only the same cars' consecutive sessions either side of the plateau, read month by month, show the winter crossing stranding most models, which makes the Ramnfjell summit site (package B) the package that completes the most 2027 trips.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "0.06 task122 v3 (guard.py check at register)"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.06 task122 v3 (guard.py check at register)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "Stage 2 design: widen the clean-truth margins of the twin-crossing world (proto_ev2.py in the session scratchpad), write the ladder, fork table, closure table, asks and prompt, then the generator.",
+  "resume": "HELD by the author from 2026-11-07, lifted only on the author's word; do not resume before then. When lifted, stage 2 design continues. The design note holds the draw, the default path, the stump sentence and the three rules; the ladder, the fork table, the closure table, the asks and prompt.txt are not written and precut.py has not run. A first generator draft (world.py, routes.py, records.py, remote.py, build.py, golden.py) was written ahead of the note and is committed untested; generator/proto_clean_truth.py is the clean-truth prototype the draw was priced on. Next: widen the prototype's clean-truth margins between packages A, B and C, write the ladder, fork table, closure table, asks and prompt to precut.py exit 0, then bring the generator draft in line with the note and gate it (checks, verify, two byte-identical builds, figures_check, leak.py, guard.py heart and surface).",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "hold": "Held by the author from 2026-11-07; lifted only on the author's word."
 }
