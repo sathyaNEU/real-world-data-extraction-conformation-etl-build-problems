@@ -41,7 +41,7 @@ def _table(rows, widths, right=()):
     return t
 
 
-def _pdf(path, title, author, story, footer):
+def _pdf(path, title, author, story, footer, subject=""):
     def page(canvas, doc):
         canvas.saveState()
         canvas.setFont("Helvetica", 7)
@@ -50,7 +50,8 @@ def _pdf(path, title, author, story, footer):
         canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "Page %d" % doc.page)
         canvas.restoreState()
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=17 * mm,
-                            bottomMargin=17 * mm, title=title, author=author, creator=author, producer=author)
+                            bottomMargin=17 * mm, title=title, author=author, subject=subject,
+                            creator="ReportLab PDF Library - www.reportlab.com")
     doc.build(story, onFirstPage=page, onLaterPages=page)
 
 
@@ -94,7 +95,8 @@ def scr2_pdf(path):
          Spacer(1, 6), Paragraph("Issued by Velden Purchasing, light metals. Approved: Head of Sustainable Sourcing.",
                                  SMALL)]
     _pdf(path, "SCR-2 Product carbon intensity", "Velden Automobil AG", s, "Velden SCR-2 Revision 2  |  public to "
-         "suppliers")
+         "suppliers",
+         subject="Supplier carbon requirement SCR-2, Revision 2")
     PP.normalize_pdf(path, _pdfdate(dt.datetime(2025, 11, 20, 9, 12, 0), "+01'00'"),
                      _pdfdate(dt.datetime(2025, 12, 8, 14, 3, 0), "+01'00'"))
 
@@ -127,7 +129,8 @@ def invoices_pdf(path, invoices):
         s.append(_table(rows, [100, 50]))
         if inv.get("note"):
             s += [Spacer(1, 3), Paragraph(inv["note"], SMALL)]
-    _pdf(path, "Gas invoices 2026", "Northgate Gas Supply Ltd", s, "Northgate Gas Supply Ltd  |  MPRN 8804419362")
+    _pdf(path, "Gas invoices 2026", "Northgate Gas Supply Ltd", s, "Northgate Gas Supply Ltd  |  MPRN 8804419362",
+         subject="VAT invoices, Brackwell Alloys Ltd, MPRN 8804419362, 2026")
     PP.normalize_pdf(path, _pdfdate(dt.datetime(2027, 1, 12, 10, 40, 0)), _pdfdate(dt.datetime(2027, 1, 12, 10, 40, 0)))
 
 

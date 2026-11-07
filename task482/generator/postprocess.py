@@ -348,8 +348,8 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
 
 def normalize_pdf(path, created, modified):
     """created, modified: the in-fiction stamps as PDF dates of the invariant date's length, D:YYYYMMDDHHMMSS+HH'MM'
-    (the info dictionary carries the creation date before the modification date). The library's banners are blanked
-    and its sequential font-subset tags (AAAAAA+, AAAAAB+) become the six-letter tags other producers write, each
+    (the info dictionary carries the creation date before the modification date). The library's header comment and Producer stay as written;
+    its sequential font-subset tags (AAAAAA+, AAAAAB+) become the six-letter tags other producers write, each
     substitution at equal length so the cross-reference offsets hold."""
     import hashlib
     b = open(path, "rb").read()
@@ -357,8 +357,6 @@ def normalize_pdf(path, created, modified):
     inv = b"D:20000101000000+00'00'"
     assert len(created) == len(modified) == len(inv) and b.count(inv) == 2
     b = b.replace(inv, created, 1).replace(inv, modified, 1)
-    for banner in (b"ReportLab Generated PDF document (opensource)", b"ReportLab generated PDF document -- digest (opensource)"):
-        b = b.replace(banner, b" " * len(banner))
     tags = {}
     for m in re.finditer(rb"/([A-Z]{6})\+([A-Za-z0-9-]+)", b):
         key = m.group(0)
@@ -367,5 +365,5 @@ def normalize_pdf(path, created, modified):
             tags[key] = b"/" + bytes(65 + x % 26 for x in h[:6]) + b"+" + m.group(2)
     for old, new in tags.items():
         b = re.sub(re.escape(old) + rb"(?![A-Za-z0-9-])", new, b)
-    assert len(b) == n and b"ReportLab" not in b and b"reportlab" not in b and b"AAAAAA+" not in b
+    assert len(b) == n and b"(unspecified)" not in b and b"AAAAAA+" not in b
     open(path, "wb").write(b)
