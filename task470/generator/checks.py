@@ -283,6 +283,18 @@ def run(target, golden, w=None, meta_path=None, fig_path=None):
             ta[w.by_id[p["nov1_unit"]]["nr"]]["u18" if age <= 17 else ("18-66" if age <= 66 else "67+")] += 1
         A = M.ask_a(d)
         check("table A: the golden equals the clean truth in all 30 cells", A == ta)
+        T = truth(w)
+        per = M.persons_nov1(d).groupby("dw").size()
+        gold_reg = np.array([int(per.get(str(u["id"]), 0)) for u in T["dws"]])
+        moved = [str(u["id"]) for u, a, b in zip(T["dws"], gold_reg, T["reg"]) if a != b]
+        check("table A: every counted dwelling holds the persons the world registered there on 1 November, a resident "
+              "who left a renumbered block before its day read one floor up (%d dwellings differ)" % len(moved),
+              not moved, moved[:6])
+        if F is not None:
+            check("critical component 3 equals the world's: %s vacant with a registered resident, %s lived in with "
+                  "nobody registered" % (F["vacant_registered"], F["lived_unregistered"]),
+                  (int(F["vacant_registered"].replace(",", "")), int(F["lived_unregistered"].replace(",", ""))) ==
+                  (int(((T["reg"] > 0) & T["vacant"]).sum()), int(((T["reg"] == 0) & ~T["vacant"]).sum())))
         stops = {"the register as it stands on 5 January": M.ask_a(d, "snapshot"),
                  "every event undone as written, the renumberings as moves (the cracker)": M.ask_a(d, "book"),
                  "moves undone, the dead and the emigrated not added back": M.ask_a(d, "no_deaths"),
@@ -414,6 +426,10 @@ def run(target, golden, w=None, meta_path=None, fig_path=None):
         check("interval: the ministry's assignment files the 90 per cent exact binomial interval on the counted "
               "dwellings", "90 per cent interval, the exact binomial (Clopper-Pearson) interval" in
               " ".join(eml_txt.split()))
+        clears = sorted(m["nr"] for m in F["municipalities"] if float(m["low"]) >= 5.0)
+        check("SF25 the designation rests on the share: the whole interval above the line would give %s, which the "
+              "prompt's 'judged on the estimated share' and Section 6 rule out" % " ".join(clears),
+              clears == ["5802", "5803", "5807"])
         check("interval: the call does not move with it (the regulation designates on the share)",
               sorted(m["nr"] for m in F["municipalities"] if m["qualifies"]) ==
               ["5802", "5803", "5805", "5807", "5809"])

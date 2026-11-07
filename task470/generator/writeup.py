@@ -55,8 +55,9 @@ def write(fig_path, out_path):
         "designated those at 5.0 per cent or more (Section 6); gave each share the 90 per cent exact binomial "
         "(Clopper-Pearson) interval on its counted dwellings that the ministry's assignment asks for.",
         "6. Rolled the population register of 5 January 2027 back to 1 November by undoing every later event, reading "
-        "the November block renumberings as a change of unit number and the earlier events' old numbers as the "
-        "renumbered flats; ages on 1 November.",
+        "the November block renumberings as a change of unit number and every old number written before a block's "
+        "day as the flat one floor up, a flat whose residents had all left before the day included; ages on 1 "
+        "November.",
         "7. Rolled the land register back to 1 November by tinglyst date and counted the dwellings held by the "
         "municipality, its KF or a company whose shares it holds all of with its own companies, titles without an "
         "organisation number in the municipality's own name included.",

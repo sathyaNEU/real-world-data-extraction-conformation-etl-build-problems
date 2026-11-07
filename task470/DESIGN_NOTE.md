@@ -204,6 +204,7 @@ evening rise over the dwelling's own night-time use on some day shows that someo
 | SF22 | table B, how many | dwellings | titles | every figure moves | the ministry's letter (how many of its counted dwellings) |
 | SF23 | table B, the inter-municipal company | not the municipality's | counted | Brekkevoll and Ravnsund move | the ministry's letter (all the shares) |
 | SF24 | the share's 90 per cent interval | the exact binomial (Clopper-Pearson) interval on the municipality's counted dwellings | Wilson, Jeffreys, the normal approximation | bounds move at one decimal, the call does not | the ministry's letter (the exact binomial interval on the counted dwellings); every exact bound clears a rounding edge by at least 0.0013 points (asserted) |
+| SF25 | what the designation rests on | the estimated share, as Section 6 sets it, the interval reported beside it | the whole interval above the threshold | three qualify (5802, 5803, 5807) | the prompt (judged on the estimated share, the interval beside it) and Section 6 (asserted) |
 
 ## Ladder
 
@@ -361,9 +362,9 @@ Mirror leakage: 0.0 per cent of ask weight
 7. leak.py REVIEW, sweep 4: the regulation's section, statistics, fortnight, points, office and cadastre are its
    own nouns, none names the decisive step, harmless (ruled here, not sent to the reader).
 8. Domains Fit repair (portal, 2026-11-07: the prompt read as a regulation's threshold applied to counts and
-   shares): the question now asks for the grant on an estimate of each municipality's vacant dwellings from the
-   register and meter data, with a 90 per cent interval on each share, and the letter charts each share with its
-   interval. The interval is a reporting statistic the ministry's letter files as the exact binomial interval on the
+   shares): the question now asks for the grant judged on the estimated share of each municipality's housing standing
+   vacant, from the register and meter data, with that share's 90 per cent interval beside it, and the letter charts
+   each share with its interval; the designation rests on the share (SF25, the judge's mild fork closed). The interval is a reporting statistic the ministry's letter files as the exact binomial interval on the
    counted dwellings (SF24); Wilson, Jeffreys and the normal approximation round differently somewhere, which is why
    the convention is filed, and the call does not move with any of them. The intervals of Kvernhaug, Solmoen,
    Ravnsund, Fjordeid and Snøholt take in the 5.0 line; the regulation designates on the share. The decisive step is
@@ -371,6 +372,10 @@ Mirror leakage: 0.0 per cent of ask weight
 9. Metadata repair (leak.py sweep 10): the regulation is exported by LibreOffice Writer (generator/officepdf.py), the
    ministry as Author and a real Subject; the hub's extract is written with no Arrow schema and no created_by
    (generator/parquetio.py), its timestamps read back in milliseconds, UTC, the same values.
+10. Critical component 3 corrected at the judge's read (2026-11-07): a resident who left a renumbered block before
+   its day from a flat nobody else held that day (Haugveien 6 H0302) is read one floor up like the rest of the block,
+   as the world renumbers every flat; lived in with nobody registered is 556, not 557, and every counted dwelling's
+   persons now equal the world's (asserted).
 
 ## Tried and rejected
 

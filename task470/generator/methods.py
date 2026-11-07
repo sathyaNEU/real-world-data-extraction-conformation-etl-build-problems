@@ -2,6 +2,7 @@
 dwelling's occupancy in the fortnight) and its rungs, the two annex tables and their stops."""
 import datetime as dt
 import os
+import re
 
 import numpy as np
 import pandas as pd
@@ -182,6 +183,26 @@ def renumberings(d):
     return set(rows.index), relabel
 
 
+def block_relabels(relabel):
+    """A renumbered block's rule: the day, and every flat to the floor above (each observed relabelling is one floor
+    up, the same flat). An address written before the day in a label nobody still held on the day (a resident who left
+    first) is in the old numbering too."""
+    blocks = {}
+    for (nr, adr, old), ((_n, _a, new), day) in relabel.items():
+        assert int(new[1:3]) == int(old[1:3]) + 1 and new[3:] == old[3:], (adr, old, new)
+        blocks[(nr, adr)] = day
+    return blocks
+
+
+def relabelled(k, when, relabel, blocks):
+    if k in relabel:
+        return relabel[k][0] if when < relabel[k][1] else k
+    day = blocks.get(k[:2])
+    if day is not None and when < day and re.fullmatch(r"H\d{4}", k[2]):
+        return (k[0], k[1], "H%02d%s" % (int(k[2][1:3]) + 1, k[2][3:]))
+    return k
+
+
 def persons_nov1(d, handling="golden"):
     """The register rolled back from the 5 January snapshot to 1 November 2026: each person with the counted
     dwelling they were registered in that day.
@@ -220,9 +241,10 @@ def persons_nov1(d, handling="golden"):
     idx = {_key(r.kommunenr, r.adressenavn, r.husnr, r.bokstav, r.bruksenhetsnr): r.bruksenhet_id
            for r in cnt.itertuples()}
     rows = []
+    blocks = block_relabels(relabel)
     for pid, (k, when) in state.items():
-        if handling != "book" and k in relabel and when < relabel[k][1]:
-            k = relabel[k][0]
+        if handling != "book":
+            k = relabelled(k, when, relabel, blocks)
         if k in idx:
             rows.append((pid, idx[k], k[0]))
     return pd.DataFrame(rows, columns=["pid", "dw", "nr"])

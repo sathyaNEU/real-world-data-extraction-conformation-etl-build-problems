@@ -12,7 +12,7 @@ Their vacancy shares run from 5.4 to 8.2 per cent against the regulation's 5.0; 
 
 1. Counted dwellings in the county: **8,020**; vacant in the fortnight: **396**.
 2. A dwelling was lived in when, on at least one day, its morning or evening use rose above its own night-time use by more than **0.5 kWh** an hour; vacant when no day did.
-3. Vacant dwellings still carrying a registered resident on 1 November: **118**; lived-in dwellings with nobody registered: **557**.
+3. Vacant dwellings still carrying a registered resident on 1 November: **118**; lived-in dwellings with nobody registered: **556**.
 
 ## 3. Step-by-Step Solution
 
@@ -21,7 +21,7 @@ Their vacancy shares run from 5.4 to 8.2 per cent against the regulation's 5.0; 
 3. Put the hourly values on Norwegian time (UTC+1), kept the later delivery where an estimated day was replaced, and added a dwelling's two points where its meter changed.
 4. For each day took the mean of 06 to 09 and of 16 to 22 against the mean of 01 to 05; a rise above 0.5 kWh on any day marks the dwelling as lived in (Section 4: nobody lived in it on any day).
 5. Divided each municipality's vacant dwellings by its counted dwellings, rounded to one decimal, and designated those at 5.0 per cent or more (Section 6); gave each share the 90 per cent exact binomial (Clopper-Pearson) interval on its counted dwellings that the ministry's assignment asks for.
-6. Rolled the population register of 5 January 2027 back to 1 November by undoing every later event, reading the November block renumberings as a change of unit number and the earlier events' old numbers as the renumbered flats; ages on 1 November.
+6. Rolled the population register of 5 January 2027 back to 1 November by undoing every later event, reading the November block renumberings as a change of unit number and every old number written before a block's day as the flat one floor up, a flat whose residents had all left before the day included; ages on 1 November.
 7. Rolled the land register back to 1 November by tinglyst date and counted the dwellings held by the municipality, its KF or a company whose shares it holds all of with its own companies, titles without an organisation number in the municipality's own name included.
 
 ## 4. Deliverable Answers
