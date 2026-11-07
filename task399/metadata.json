@@ -46,7 +46,7 @@
    "source": "Synthetic, Wyvern Route operating records as exported",
    "dated": "2026-10-06",
    "licence": "CC0 1.0 (synthetic, generated for this task)",
-   "covers": "Delay attribution review decisions moving minutes between incidents."
+   "covers": "Moves of delay minutes between TRUST numbers, agreed, rejected or pending."
   },
   {
    "path": "control_system/workstation_layout_export_r8.2.1.json",

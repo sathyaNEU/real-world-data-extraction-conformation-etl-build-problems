@@ -11,7 +11,7 @@ def metadata():
         PK.PATHS["reg25"]: "Incident register, 2025-26 financial year.",
         PK.PATHS["reg26"]: "Incident register, 2026-27 financial year to date, from the new incident tool.",
         PK.PATHS["delay"]: "Delay records attributed to the operating centre, April 2025 to September 2026.",
-        PK.PATHS["reviews"]: "Delay attribution review decisions moving minutes between incidents.",
+        PK.PATHS["reviews"]: "Moves of delay minutes between TRUST numbers, agreed, rejected or pending.",
         PK.PATHS["layout"]: "Workstation display configuration export, release 8.2.1.",
         PK.PATHS["ros25"]: "Published signalling rosters, periods 7 to 13 of 2025-26.",
         PK.PATHS["ros26"]: "Published signalling rosters, periods 1 to 7 of 2026-27, new rostering tool.",

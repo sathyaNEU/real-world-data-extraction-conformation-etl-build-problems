@@ -440,6 +440,24 @@ def run(S_, target, res):
             if s0 < m < s1:
                 cross += 1
     C.ok("SF15: no worked span crosses a qualification or second anniversary", cross == 0)
+    on_ann = [(s, ws, s0) for s, ws, s0, s1, how in S_["ros"]["spans"]
+              if s0.date() <= W.second_anniversary(byp[s]["qualified"]) <= (s1 - dt.timedelta(seconds=1)).date()]
+    C.ok("SF22: no worked shift falls on a signaller's second-anniversary day", not on_ann, "%d" % len(on_ann))
+    incl = collections.defaultdict(float)
+    for s, ws, s0, s1, how in S_["ros"]["spans"]:
+        a_, b_ = max(s0, lo), min(s1, hi)
+        if b_ <= a_:
+            continue
+        q = byp[s]["qualified"]
+        band = "first two years" if q <= a_.date() <= W.second_anniversary(q) else "other"
+        incl[(ws, band)] += (W.local_to_utc(b_) - W.local_to_utc(a_)).total_seconds() / 3600.0
+    C.ok("SF22: counting the anniversary day inside the first two years gives the same twelve hours cells",
+         all(abs(incl[k] - H[k]) < 1e-9 for k in H))
+    frozen = {"W01": (1296.0, 7464.0), "W02": (1828.0, 6932.0), "W03": (1729.5, 7030.5), "W04": (3947.5, 4812.5),
+              "W05": (1143.5, 7616.5), "W06": (1975.5, 6784.5)}
+    C.ok("freeze: the twelve hours cells are the values shipped and reproduced by both judge passes",
+         all((round(H[(w, "first two years")] + 1e-9, 1), round(H[(w, "other")] + 1e-9, 1)) == v
+             for w, v in frozen.items()))
     dst = [(ws, s0) for s, ws, s0, s1, how in S_["ros"]["spans"] if s0.date() in (dt.date(2025, 10, 25), dt.date(2026, 3, 28))
            and s0.hour == 19]
     C.ok("SF16: the clock-change nights are worked and last 13 and 11 hours", len(dst) == 12)

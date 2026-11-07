@@ -265,6 +265,44 @@ def first_two_years(person, day):
     return q <= day < anniversary
 
 
+def second_anniversary(q):
+    try:
+        return q.replace(year=q.year + 2)
+    except ValueError:
+        return q.replace(year=q.year + 2, day=28)
+
+
+def settle_anniversaries(staff, spans):
+    """No worked shift falls on a signaller's second-anniversary day, so "then in their first two years" reads
+    the same whether that day counts in or out: where one does, the qualification date sits a day or a few
+    earlier, on days the signaller did not work, and every shift keeps the band it had."""
+    worked = {}
+    for sn, ws, s0, s1, how in spans:
+        worked.setdefault(sn, []).append((s0, s1))
+
+    def touches(sn, day):
+        a = dt.datetime.combine(day, dt.time(0))
+        b = a + dt.timedelta(days=1)
+        return any(s0 < b and s1 > a for s0, s1 in worked.get(sn, []))
+
+    moved = []
+    for p in staff:
+        q = p["qualified"]
+        ann = second_anniversary(q)
+        if not touches(p["staff_no"], ann):
+            continue
+        for k in range(1, 6):
+            gone = [ann - dt.timedelta(days=j) for j in range(1, k + 1)]
+            if not any(touches(p["staff_no"], d) for d in gone):
+                p["qualified"] = q - dt.timedelta(days=k)
+                assert second_anniversary(p["qualified"]) == ann - dt.timedelta(days=k)
+                moved.append((p["staff_no"], q, p["qualified"]))
+                break
+        else:
+            raise RuntimeError("no free day before the second anniversary of %s" % p["staff_no"])
+    return moved
+
+
 # ------------------------------------------------------------------------------------------------ calendar
 
 def days(a, b):

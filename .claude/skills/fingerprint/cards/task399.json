@@ -12,7 +12,7 @@
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
   "answer": "B, the workstation display renewal, 8,985 delay minutes, delivery beginning on W03 Hatherby",
-  "answer_source": "task399/submission.md block 1, from generator/figures.json",
+  "answer_source": "task399/generator/figures.json (call, call_minutes, start_ws), submission.md block 1",
   "gap": [
     "objective",
     "population"
@@ -95,5 +95,6 @@
   },
   "lineage": [],
   "notes": "Seed RC05's world (an electricity distributor's one reliability programme) is closed for this number: grid-reliability-outage-analysis holds seven cards and its slot notes spend auto-reclose completion (task198 H4), protection coordination (task129), shared substation supply (task303) and same-phase repeats (task192). The build keeps the seed's decision (one programme from a catalogue of five) and quantity (the outcome units the funded programme's cause accounted for over the last twelve months) and moves to Human Factors & Ergonomics under Root-Cause.",
-  "registered": "2026-11-04T16:20:21Z"
+  "registered": "2026-11-04T16:20:21Z",
+  "shipped": "2026-11-04, target.zip d8877b8429d36d4872ccc262fff63082d9f486878062b7aba2d82270084e4e17"
 }

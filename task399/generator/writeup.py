@@ -70,13 +70,14 @@ def main():
     a("7. Rebuilt each workstation's shifts from both roster workbooks and roster_changes_2025-26_2026-27.csv, took "
       "each shift's signaller as the one whose actions roc_signaller_actions_20251001_20260930.csv shows on that "
       "workstation (which also places every relief duty and the changes made on the day that the changes list "
-      "lacks), counted hours on the clock across both clock changes, and split each signaller's hours at the "
-      "second anniversary of the date qualified in signaller_competence_register.xlsx.")
-    a("8. Read server B's stamps in ars_status_log_20251001_20260930.csv as Central European time (its copies of "
-      "server A's events sit one hour behind in winter and two in summer), merged both servers into one event per "
-      "change, mapped the old sub-area codes through the layout export, applied each workstation-wide switch-off "
-      "to all of that workstation's sub-areas, and summed each sub-area's hours off within each UK calendar "
-      "quarter.")
+      "lacks), counted elapsed hours, so the night of 25 to 26 October 2025 ran 13 hours and the night of 28 to 29 "
+      "March 2026 ran 11, and split each signaller's hours at the second anniversary of the date qualified in "
+      "signaller_competence_register.xlsx, a day no signaller worked.")
+    a("8. Read server B's stamps in ars_status_log_20251001_20260930.csv as Central European time (they run one hour "
+      "ahead of server A's in winter and two in summer), merged both servers into one event per change, mapped the "
+      "old sub-area codes through the layout export, counted each workstation-wide FAIL row as its state reads, "
+      "switched off, for every sub-area of that workstation until each was switched back on, and summed each "
+      "workstation's sub-area hours off within each UK calendar quarter.")
     a("")
     a("## 4. Deliverable Answers")
     a("")

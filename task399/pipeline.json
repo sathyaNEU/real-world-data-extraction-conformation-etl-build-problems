@@ -1,10 +1,10 @@
 {
   "task": "task399",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "human-factors-ergonomics/safety-incident-error-analysis",
   "objective": "root-cause",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-04",
   "stump": "A competent solver books the operating centre's delay minutes by each local investigation's underlying cause and funds signaller competence training (A) at 8,240 minutes, confirmed by the higher wrong-route rate per request among first-two-years signallers, because no column marks a slip and the investigations book every wrong route to the signaller; the 76 wrong routes whose two exits are drawn 8.0 to 11.5 pixels apart are slips every signaller makes at the same rate in quiet and busy hours, and the display renewal (B) accounts for 8,985 minutes.",
   "architecture": 1,
@@ -14,22 +14,22 @@
     "date": "2026-11-04"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-11-04 after the FIX_NOW pass, as of 2026-10-09: six lines, each answered in DESIGN_NOTE.md; no LEAK",
-    "reader": "clean 2026-11-04 (pass 1); question 6 an analytical choice; realism notes fixed in the generator (catalogue properties and approval block, the consultant's own toolchain)"
+    "leak_py": "REVIEW on the shipped cut, --asof 2026-10-09: each line answered in DESIGN_NOTE.md; no LEAK",
+    "reader": "two reads, both no leak (pass 1 on 63ad083e, pass 2 on 5156aef8); question 6 an analytical choice both times; the first read's realism notes fixed in the generator"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-11-04 after the FIX_NOW pass (driver.near 0.13 against two undrawn task307 entries; repeat.question_form; repeat.deliverables against task489, whose card took pptx and xlsx after this draw)",
-    "nearest": "surface 2026-11-04: one promoted pair, task398 back to back on gap objective and decision root_cause_named (surface 0.017), differentiated on the card; adjudication is the author's call"
+    "heart": "WARN 2026-11-04 on the shipped cut after the final pull (driver.near 0.13 against two undrawn task307 entries; repeat.question_form; repeat.deliverables against task489, whose card took pptx and xlsx after this draw)",
+    "nearest": "surface: one promoted pair, task398 back to back on gap objective and decision root_cause_named (surface 0.017), differentiated on the card and left for the author's adjudicated read"
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW (pass 1), fixed 2026-11-04: step 4 reworded to all but three of 360; SF19 closed by the catalogue's VDS-3 removal sentence; in total added to the ARS ask; SF20 and SF21 added",
-    "report": "task399/determinism_check_report.md"
+    "disposition": "pass 1 FIX_NOW (step 4's quick-cancel count, the display faults' effect on the figure, the ARS ask's unit, the FAIL rows' convention), fixed; pass 2 FIX_NOW on wording and ask conventions only (elapsed hours, server B's offset, the second-anniversary day, the FAIL rows in step 8), read against the gate table with no architecture spent and closed; Gate H pass, decisive_step analytical; Gate G decomposition_attribution",
+    "report": "task399/determinism_check_report.md (pass 1), task399/determinism_check_report_pass2.md (pass 2)"
   },
   "returned": [],
-  "resume": "stage 4: the one re-judge and a reader pass on target.zip sha256 5156aef810cef4008ca21339ddd39431c0aa234b2845ce1cbfa4c4f4bb2b78fa (the prompt and two documents changed in the FIX_NOW pass); rebuild with `python3 task399/generator/build.py` (byte-identical, runs checks.py, ceiling.py and verify.py); then ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-04",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -37,13 +37,15 @@
   "call": "B, the workstation display renewal, 8,985 delay minutes, delivery beginning on W03 Hatherby",
   "gates": {
     "date": "2026-11-04",
-    "checks_py": "89 of 89",
+    "checks_py": "92 of 92",
     "verify_py": "0 failures",
     "byte_identical_rebuilds": true,
     "figures_check": "62 of 62",
     "voice_check": "PASS",
     "precut": "61 checks, 0 FAIL, 0 WARN",
-    "ceiling": "pair 35.4, both on the call 51.9, mirror leakage 25.0, cracker 0 of 36"
+    "ceiling": "pair 35.4, both on the call 51.9, mirror leakage 25.0, cracker 0 of 36",
+    "container_scrub": "clean on target/ and golden/"
   },
-  "target_zip_sha256": "5156aef810cef4008ca21339ddd39431c0aa234b2845ce1cbfa4c4f4bb2b78fa"
+  "target_zip_sha256": "d8877b8429d36d4872ccc262fff63082d9f486878062b7aba2d82270084e4e17",
+  "rebuild": "python3 task399/generator/build.py (byte-identical; runs checks.py, ceiling.py and verify.py)"
 }

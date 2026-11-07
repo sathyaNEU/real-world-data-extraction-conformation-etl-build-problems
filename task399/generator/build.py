@@ -26,6 +26,7 @@ def world():
     net["rmap"] = {rt["route_id"]: rt for rt in net["routes"]}
     staff = W.build_signallers()
     ros = S.build(staff)
+    W.settle_anniversaries(staff, ros["spans"])
     res = O.simulate(net, staff, ros)
     inc = res["incidents"]
     O.delays(inc, O.Trains(W.rng(30)))

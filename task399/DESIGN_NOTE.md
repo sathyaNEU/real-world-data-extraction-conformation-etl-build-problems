@@ -230,7 +230,8 @@ the 37 drawn-close pairs that carry the 76 slips, and those pairs select the sam
 | SF13 | an incident's minutes | the attribution records | the register's initial delay (4,190 for B) | same call | ToR 2.4 names the attribution records |
 | SF14 | then in their first two years | the band on the date worked | the band on the shift's start | same figures | records converge: both window-edge nights worked outside the first two years (asserted) |
 | SF15 | the second anniversary | split at that midnight | the band at the shift start | same figures | no worked span crosses a qualification date or second anniversary (asserted) |
-| SF16 | hours worked | on the clock | twelve per shift | the clock-change nights move the bands | the prompt's "hours"; the 13 and 11 hour nights are on the clock (asserted) |
+| SF16 | hours worked | elapsed hours | twelve per shift | W04's two cells move 1.0 h | the prompt's "hours ... was worked", left literal by the coordinator's ruling; step 7 names the 13-hour night of 25 to 26 October 2025 and the 11-hour night of 28 to 29 March 2026 (asserted) |
+| SF22 | the second-anniversary day | outside the first two years | inside them | same figures | records converge: no worked shift falls on a signaller's second-anniversary day, the three that did settled by a qualification date one day earlier on a day the signaller did not work (asserted, with the twelve cells frozen) |
 | SF17 | calendar quarter | UK quarters | UTC quarters | same figures | records converge: no ARS interval within two hours of a quarter boundary or clock change (asserted) |
 | SF18 | a workstation-wide switch-off | applies to every sub-area of the workstation | one row, one sub-area | every cell moves | the row names the workstation, not a sub-area; each sub-area comes back on separately (asserted) |
 | SF19 | the display renewal's cause | slips and the VDS-3 display faults | slips alone (8,173) | same call, but the figure moves (8,985 against 8,173) and so do five of the six workstation bars | the catalogue's B scope, "The VDS-3 equipment removed from every workstation.", with ToR 2.3: the faults of equipment the programme removes would not have happened; asserted that the sentence ships, that the figure moves without the faults and that the call holds |
@@ -300,8 +301,8 @@ sentence pins the window, the band and "worked"; the device sits in which person
 
 **Ask 2, ARS sub-area hours off by workstation and UK quarter (24 figures).** H18 home: the ARS record ToR 3.2
 names. Use: the timetable manager's read of where ARS is taken out. Primary device D8 (a clock): server B's
-ARS process stamps Central European time into the `logged_utc` column, so its copies of A's events sit one hour
-behind in winter and two in summer; merging the servers within seconds leaves every short interval counted twice.
+ARS process stamps Central European time into the `logged_utc` column, so its stamps run one hour ahead of A's
+in winter and two in summer; merging the servers within seconds leaves every short interval counted twice.
 Second device D1/D4: on A's monthly maintenance nights only B logged (32 rows, with users), so the master-server
 read loses them. Hazards: old sub-area codes on each server until its own release date (D2), workstation-wide
 switch-off rows (D6), quarters in UK time against a UTC log. Files: the ARS log, the layout export's crosswalk (2
@@ -348,13 +349,13 @@ Measured by: generator/ceiling.py, run on the cut pack by `generator/checks.py` 
 - Sweep 3, the terms of reference carry ten of the call sentence's words: they are the filed estimand's own words
   (2.1, "the programme whose cause produced the most of the operating centre's delay minutes"); no programme, no
   figure and neither "display" nor "renewal" appear in it. Harmless.
-- Sweep 4, the terms of reference (register, incident, review, performance): the WHAT in the Panel's own genre;
+- Sweep 4, the terms of reference (register, incident, review, attribution, performance): the WHAT in the Panel's own genre;
   nothing names a slip, a distance, the drawing or the log's cancellations. Harmless.
 - Sweep 4, the catalogue (signaller, competence, layout, Hatherby, screen, display): programme scopes in the
   operating centre's words; B's scope says the renewal redraws every screen's track layout on the new product,
   which is what a display renewal does and what makes the but-for clause true of the slips; it names no fault
   in the present drawing. Open for the reader and the judge: whether that clause points at the screens.
-- Sweep 4, the workload assessment (signaller, routes, Hatherby, recorded, request, workload): a declared distractor whose
+- Sweep 4, the workload assessment (signaller, routes, Hatherby, recorded, request): a declared distractor whose
   genre is workload; it says nothing of wrong routes, slips or the display. Harmless.
 - Sweep 9, the 2026-27 roster runs to 10 October 2026: a roster is a plan published before its period (file dated
   9 September 2026), so its last period ends after the as-of date. Harmless, on the forward-records allow-list.
@@ -396,6 +397,38 @@ of `figures.json` the write-up grades is unchanged; the ARS raw cells moved by l
   extras (its thumbnail, the 2010 styles part, the bibliography stub); its 1980-01-01 part dates stay, which is
   what Word itself writes. The consultant's report is typeset in LaTeX (pdfTeX 1.40.25, PDF 1.5) with its own
   author and checker; the route's terms of reference stay on its office suite (LibreOffice 24.2, PDF 1.7).
+
+## Stage 4, pass 2: the re-judge
+
+The re-judge returned DETERMINISTIC with FIX_NOW on wording and ask conventions only: its derivation reproduced
+every graded value (the call, the minutes, the six bars, all 12 hours cells and all 24 ARS cells) before it read
+the graded blocks, it rated stump power high, and Gate H passed (decisive_step analytical); read against the gate
+table no architecture is spent and no further judge pass is needed. Gate G is decomposition_attribution, which the
+thread labelled "mixed" against the card's analytical; the judge agent reconciled it: the register's causes are
+per-incident findings a solver sums, not a shipped ranking, and the decisive step is the clause 2.3
+exposure-normalised attribution, not the rejection of a wrong number. The second leak read was clean. Closed with
+nothing graded moving:
+- Step 7 now says elapsed hours and names the 13-hour night of 25 to 26 October 2025 and the 11-hour night of 28 to
+  29 March 2026 (SF16).
+- Step 8 and the Ask sheet now say server B's stamps run one hour ahead of A's in winter and two in summer; step 8
+  says the workstation-wide FAIL rows count as switched off, as their state reads (SF20).
+- The second-anniversary day fell on three worked shifts (474844 on 17 December 2025 at W01, 461744 on 9 April 2026
+  at W01, 905596 on 14 May 2026 at W04); `world.settle_anniversaries` sets each of those qualification dates one day
+  earlier, on a day the signaller did not work, so every shift keeps its band and the day itself carries no shift
+  (SF22, asserted with the twelve cells frozen).
+- The golden workbook's subtitle and notes say "elapsed hours" and "run one hour ahead"; its cells, the deck and
+  every graded value of `figures.json` are unchanged.
+
+## Ship
+
+Shipped 2026-11-04 on target.zip d8877b8429d36d4872ccc262fff63082d9f486878062b7aba2d82270084e4e17, after the pass 2
+repairs, with every free gate re-run on the final cut: checks.py 92 of 92, verify.py green, two byte-identical
+builds, figures_check 62 of 62, precut 61 checks 0 FAIL 0 WARN, voice-check PASS, ceiling pair 35.4 (51.9 with both
+on the call), leak.py REVIEW with the six lines above answered and both reader sections carried, container scrub
+clean, guard heart WARN and surface with the task398 pair left for the author's adjudicated read. Against the
+pass 1 cut, figures.json's graded values, the deck and the workbook's graded sheets are unchanged; the pack moved
+only in the competence register (three qualification dates a day earlier) and the workbook only in its subtitle and
+notes.
 
 ## Tried and rejected
 

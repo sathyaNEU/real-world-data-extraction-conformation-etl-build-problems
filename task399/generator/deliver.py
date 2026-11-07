@@ -54,7 +54,7 @@ def write_book(F, path):
     sh.title = "Signaller hours"
     sh["A1"] = "Hours worked on each workstation, 1 October 2025 to 30 September 2026"
     sh["A1"].font = Font(bold=True, size=12)
-    sh["A2"] = "Signallers in their first two years since qualifying at the time worked, and the rest. Hours on the clock."
+    sh["A2"] = "Signallers in their first two years since qualifying at the time worked, and the rest. Elapsed hours."
     sh["A2"].font = Font(italic=True, size=9, color="595959")
     cols = ["Workstation", "First two years (h)", "Other signallers (h)", "All (h)"]
     for c, v in enumerate(cols, start=1):
@@ -130,16 +130,16 @@ def write_book(F, path):
                             "(roc_signaller_actions_20251001_20260930.csv): relief duties have no desk in the rosters, "
                             "and some changes made on the day never reached the roster changes list."),
         ("", "Shift times from the 2025-26 and 2026-27 rosters and the roster changes list; sickness cover from the "
-             "time on the changes list. Hours are on the clock: the nights of 25 October 2025 and 28 March 2026 "
-             "ran 13 and 11 hours."),
+             "time on the changes list. Elapsed hours: the nights of 25 October 2025 and 28 March 2026 ran 13 and "
+             "11 hours."),
         ("", "First two years: from the date qualified in the signaller competence register to its second "
              "anniversary, by the date and time worked."),
         ("ARS off", "From ars_status_log_20251001_20260930.csv. Server B stamps Central European time in the "
-                    "logged_utc column (its copies of server A's events sit one hour behind in winter, two in "
-                    "summer); read as such, both servers merged into one event per change."),
+                    "logged_utc column (its stamps run one hour ahead of server A's in winter, two in summer); read "
+                    "as such, both servers merged into one event per change."),
         ("", "Sub-area codes before release 8.2 mapped to the current codes through the r8.2.1 layout export; a "
-             "workstation-wide switch-off applies to every sub-area of the workstation until each is switched "
-             "back on."),
+             "workstation-wide switch-off (the FAIL rows, whose state reads OFF) applies to every sub-area of the "
+             "workstation until each is switched back on."),
         ("", "Hours summed over each workstation's sub-areas within each calendar quarter, UK time."),
         ("Rounding", "Hours to one decimal; totals from unrounded hours."),
     ]
