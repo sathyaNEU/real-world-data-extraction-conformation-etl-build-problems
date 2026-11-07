@@ -1,10 +1,10 @@
 {
  "task": "task165",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences / hydrology-flood-frequency (client physical-environmental-sciences)",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-07",
  "stump": "A competent solver replays Outfall 014's metered overflows through each tank pumped out at its station's rated dewatering flow (the continuous simulation the decree evaluates by, which reproduces the Northside tank's overflows since 2020) and selects Alternative B, the 26 MG tank, at 2.9 events a year; the step that lands it there is taking the pumps' rating as the pace the tank empties, when it empties into the Southside interceptor at the headworks of a plant that sits at its 140 MGD limit for days after wet-season storms, so only a replay bounded by Southside's own headroom hour by hour shows the 20 MG tank at 5.7 events and selects Alternative C, the 38 MG tank, at 3.0.",
  "architecture": 2,
@@ -15,17 +15,19 @@
   "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, on target.zip b8c8ebc1 (2026-11-07, --asof 2026-01-16): sweep 3 figures (1.3 a section number, 140 the plant rating, 1.50 and 2.70 stage-storage rows, TM-7 listing the alternatives), sweep 4 the documents' own nouns; the Parquet footer carries no writer name",
-  "reader": "pending (brief at the scratchpad's task165_stage4_leak_brief.md, copy at leak-task165/)"
+  "leak_py": "REVIEW, no LEAK, on target.zip bc14740a (2026-11-07, --asof 2026-01-16): sweep 3 figures (a section number, the plant rating, stage-storage rows, TM-7 listing the alternatives), sweep 4 the documents' own nouns",
+  "reader": "round 1 (Sonnet, medium) on b8c8ebc1: no leak, Q6 analytical; realism notes on the notices, work orders and field log fixed in the generator; the prompt changed (months on local Eastern time), so one re-read on the final pack is due from the main thread"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-11-07 (repeat.question_form what against task456; NOTEs same_puzzle and same_driver differentiated on the card)",
-  "surface": "exit 0 on 2026-11-07: 4 promoted (task164 back to back, task453, task460, task87), each with a differentiation line on the card, left to the author's optional clone-check"
+  "heart": "WARN 2026-11-07 (repeat.question_form what against task456; NOTEs differentiated)",
+  "surface": "exit 0 on 2026-11-07: 4 promoted (task164, task453, task460, task87), each differentiated on the card, left to the author's optional clone-check"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (round 1, Sonnet, on b8c8ebc1: A 9.67, B 6.83, C 2.92, D 1.33; all 48 rainfall and 5 return figures reproduce)",
+  "disposition": "APPROVE; two ask forks closed in the generator (months on local Eastern time in the asking sentence; every mechanism install on a day without rain), six rainfall cells moved 0.01 in through the bucket remainder; the room limit stays unfiled and the Northside method unpinned (coordinator's calls)",
+  "gate_g": "binding_constraint, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task165/determinism_check_report.md"
  },
  "returned": [
   {
@@ -73,9 +75,9 @@
    "commit": ""
   }
  ],
- "resume": "stage 4 in the main thread, on Sonnet at medium: spawn the leak reader with the scratchpad's task165_stage4_leak_brief.md (copy at leak-task165/) and the determinism judge on the same cut (target.zip b8c8ebc1) together; fix every finding in the generator in one pass (python3 task165/generator/make.py rebuilds, checks, verifies and re-cuts), re-run precut, leak.py, figures_check and guard heart and surface, then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-07",
  "portal": "landed by one response (R1 2,200 t at 100 per cent, R2 2,600 t at 70 per cent), reported 2026-11-07",
  "portal_id": "",
  "portal_status": "",
@@ -83,14 +85,14 @@
  "wave": "wave 6 (new), seed FC36 (world, decision and quantity kept; the seed's planning-tool ranking, usage-model back-tests and route-register field reading not shipped)",
  "guard": "PASS at registration (2026-10-18T14:10:39Z) after waiting out bans on honest keys; the forum redrawn in the build to council_or_assembly when line_manager_or_team was banned against task247",
  "stage3": {
-  "generator_checks": "57 PASS",
+  "generator_checks": "64 PASS",
   "verify": "PASS",
   "byte_identical": true,
   "figures_check": "PASS (85)",
   "voice_check": "PASS",
-  "ceiling": "pair 42.0, mirror leakage 24.5, worst single crack 48.2 (the loggers' clocks, ask keep 0.358) (generator/ceiling.py)",
-  "zip": "b8c8ebc161b66881ec001eda739d24317bcee8172b5e7ec07f73ef94a49c5197",
-  "freeze": "rubric PASS: main call, stump and every frozen figure unchanged; 11 ask figures moved"
+  "ceiling": "pair 39.9, mirror leakage 20.8, worst single crack 46.1 (generator/ceiling.py)",
+  "zip": "bc14740addeeb2ad4a615e6883f3677afb9e6dcfa283f54c36850c1ab78e7991",
+  "freeze": "rubric PASS (main call, stump, every main-call figure unchanged)"
  },
  "history": [
   {
@@ -108,6 +110,10 @@
   {
    "date": "2026-11-07",
    "event": "asks hardened before stage 4: every device-moved figure carries a second independent reconstruction"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "SHIPPED architecture 2: Alternative C, the 38 MG tank, 2.9 events a year"
   }
  ]
 }

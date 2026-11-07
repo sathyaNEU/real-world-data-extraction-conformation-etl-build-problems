@@ -34,9 +34,9 @@ It leaves Outfall 014 2.9 untreated overflow events in an average year against t
    - Alternative D (50 MG): 1.3
 2. Alternative to carry into design: Alternative C (38 MG)
 3. Rainfall recorded in 2025, inches:
-   - RG-1: Jan 3.94, Feb 1.79, Mar 7.54, Apr 6.31, May 6.85, Jun 2.81, Jul 3.31, Aug 2.13, Sep 3.50, Oct 10.14, Nov 1.28, Dec 2.24
-   - RG-2: Jan 3.78, Feb 1.74, Mar 7.14, Apr 6.58, May 6.56, Jun 2.74, Jul 3.39, Aug 2.32, Sep 2.70, Oct 11.07, Nov 1.50, Dec 2.02
-   - RG-3: Jan 3.57, Feb 1.95, Mar 7.02, Apr 6.83, May 5.93, Jun 2.79, Jul 4.01, Aug 2.12, Sep 3.81, Oct 11.87, Nov 1.36, Dec 2.02
+   - RG-1: Jan 3.94, Feb 1.79, Mar 7.54, Apr 6.31, May 6.85, Jun 2.81, Jul 3.31, Aug 2.13, Sep 3.50, Oct 10.14, Nov 1.27, Dec 2.24
+   - RG-2: Jan 3.78, Feb 1.74, Mar 7.14, Apr 6.58, May 6.56, Jun 2.74, Jul 3.39, Aug 2.33, Sep 2.69, Oct 11.08, Nov 1.50, Dec 2.02
+   - RG-3: Jan 3.57, Feb 1.95, Mar 7.02, Apr 6.83, May 5.93, Jun 2.79, Jul 4.01, Aug 2.12, Sep 3.81, Oct 11.87, Nov 1.36, Dec 2.01
    - RG-4: Jan 3.74, Feb 1.71, Mar 7.34, Apr 6.31, May 6.13, Jun 3.17, Jul 3.13, Aug 2.46, Sep 3.69, Oct 10.81, Nov 1.16, Dec 2.14
 4. Volume the Northside tank returned to the Northside interceptor, million gallons:
    - 2021: 261

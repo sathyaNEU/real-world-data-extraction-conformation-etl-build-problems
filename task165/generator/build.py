@@ -34,6 +34,7 @@ F_INV = "rain_gauge_inventory.csv"
 F_FIELD = "rain_gauge_field_service_2014-2025.xlsx"
 F_RIVER = "wennick_river_stage_daily_2014-2025.csv"
 F_NOTIF = "cso_overflow_notifications_2025.csv"
+CONTRACTOR = "Ridgeline Hydrometric Services"
 OLD_LOGGER, NEW_LOGGER = "FM-0142", "AV-3315"
 
 
@@ -187,17 +188,46 @@ def write_scada(out):
 
 
 # ----------------------------------------------------------------------------------------------- work orders
-WO_ASSETS = [("NTPS-P1", "Northside tank pump station, pump P-1"), ("NTPS-P2", "Northside tank pump station, pump P-2"),
-             ("NTPS-P3", "Northside tank pump station, pump P-3"), ("NT-TANK", "Northside storage tank"),
-             ("NT-LIT601", "Northside tank level transducer"), ("NT-FIT600", "Northside tank inflow meter"),
-             ("OF006-LSH", "Outfall 006 overflow detector"), ("R-14", "Clay Street regulator"),
-             ("OF014-FM", "Outfall 014 flow meter"), ("SSWRP-HW", "Southside WRP headworks"),
-             ("SSWRP-BS1", "Southside WRP bar screen 1"), ("NSWRP-INF", "Northside WRP influent pump station"),
-             ("R-08", "Market Street regulator"), ("R-13", "Wennick Avenue regulator")]
-WO_ROUTINE = ["Quarterly PM: inspect, megger test, check seals", "PM: clean and inspect, no defects",
-              "Inspect after storm, cleared debris", "Annual PM, lubricate, check alignment",
-              "Check calibration against portable meter, within tolerance", "Cleared rag ball at inlet",
-              "Replace desiccant, check cable", "Exercise gate, grease stem"]
+WO_ASSETS = [("NTPS-P1", "Northside tank pump station, pump P-1", "pump"),
+             ("NTPS-P2", "Northside tank pump station, pump P-2", "pump"),
+             ("NTPS-P3", "Northside tank pump station, pump P-3", "pump"), ("NT-TANK", "Northside storage tank", "tank"),
+             ("NT-LIT601", "Northside tank level transducer", "instrument"),
+             ("NT-FIT600", "Northside tank inflow meter", "meter"),
+             ("OF006-LSH", "Outfall 006 overflow detector", "instrument"), ("R-14", "Clay Street regulator", "regulator"),
+             ("OF014-FM", "Outfall 014 flow meter", "meter"), ("SSWRP-HW", "Southside WRP headworks", "headworks"),
+             ("SSWRP-BS1", "Southside WRP bar screen 1", "screen"),
+             ("NSWRP-INF", "Northside WRP influent pump station", "pump"),
+             ("R-08", "Market Street regulator", "regulator"), ("R-13", "Wennick Avenue regulator", "regulator")]
+# the maintenance planner's task texts, by asset class and order type
+WO_TEXT = {
+    ("pump", "PM"): ["Quarterly PM: megger test motor, check seal chamber, vibration readings normal",
+                     "Annual PM: lift pump, inspect impeller and wear ring, lubricate, reinstall",
+                     "Quarterly PM: check amps under load, inspect cable and float switches"],
+    ("pump", "CM"): ["Pump tripped on overload, cleared rag ball from impeller, reset and tested",
+                     "Seal fail alarm, moisture probe dried and reset, monitor",
+                     "Lead pump not starting, replaced contactor, tested OK"],
+    ("tank", "PM"): ["Monthly inspection: hatches, vents and odor control, no defects",
+                     "Washdown after event, sediment flushed to sump"],
+    ("tank", "CM"): ["Debris on inlet screen after storm, cleared", "Odor complaint, carbon unit media checked and topped up"],
+    ("instrument", "PM"): ["Quarterly check against staff gauge, within tolerance, cleaned sensor face",
+                           "Replace desiccant pack, check cable and junction box"],
+    ("instrument", "CM"): ["Signal dropping out, reseated connector, loop checked",
+                           "Alarm stuck on, cleaned float and housing, tested"],
+    ("meter", "PM"): ["Verify calibration against portable meter, within tolerance",
+                      "Clean sensor, check velocity profile, download and clear logger"],
+    ("meter", "CM"): ["No data to SCADA, replaced modem battery, communication restored",
+                      "Readings flat, sensor fouled with grease, cleaned and verified"],
+    ("regulator", "PM"): ["Quarterly inspection: weir and orifice clear, exercised tide gate",
+                          "Inspect after storm season, removed grit from chamber"],
+    ("regulator", "CM"): ["Dry weather overflow reported, cleared blockage at orifice",
+                          "Tide gate hung open, freed and greased hinge pins"],
+    ("headworks", "PM"): ["Monthly PM: grit classifier and channel gates, lubricate, no defects",
+                          "Exercise influent gates, grease stems, check limit switches"],
+    ("headworks", "CM"): ["Influent gate actuator fault, reset torque switch, tested", "Grit pump plugged, cleared and restarted"],
+    ("screen", "PM"): ["Monthly PM: lubricate rake chain, check tension and shear pin",
+                       "Inspect rake teeth and screenings conveyor, no defects"],
+    ("screen", "CM"): ["Rake jammed on rag mat, cleared, replaced shear pin", "Conveyor belt tracking off, adjusted"],
+}
 
 
 def write_wo(out):
@@ -208,7 +238,9 @@ def write_wo(out):
     while d < dt.date(2025, 12, 31):
         a = WO_ASSETS[int(rng.integers(0, len(WO_ASSETS)))]
         n += 1
-        rows.append((d, a[0], a[1], "PM" if rng.random() < 0.7 else "CM", WO_ROUTINE[int(rng.integers(0, len(WO_ROUTINE)))]))
+        typ = "PM" if rng.random() < 0.7 else "CM"
+        texts = WO_TEXT[(a[2], typ)]
+        rows.append((d, a[0], a[1], typ, texts[int(rng.integers(0, len(texts)))]))
         d += dt.timedelta(days=int(rng.integers(3, 12)))
     rows += [(dt.date(2023, 3, 6), "NTPS-P2", "Northside tank pump station, pump P-2", "CM",
               "P-2 high vibration and low amps on lead. Pulled P-2, sent to Keystone Pump Service for rebuild. Station "
@@ -303,12 +335,13 @@ def write_field(out):
                    v["note"]])
         ws.cell(ws.max_row, 1).number_format = "mm/dd/yyyy"
     ws.column_dimensions["F"].width = 90
-    wb.properties.creator = "Nicholas Hernandez"
-    wb.properties.lastModifiedBy = "Nicholas Hernandez"
-    wb.properties.created = dt.datetime(2014, 1, 6, 15, 0)
+    # the field maintenance contractor keeps the log from its mobilisation, the authority's history loaded into it
+    wb.properties.creator = CONTRACTOR
+    wb.properties.lastModifiedBy = CONTRACTOR
+    wb.properties.created = dt.datetime(2025, 6, 24, 15, 10)
     wb.properties.modified = dt.datetime(2026, 1, 9, 15, 20)
     wb.save(os.path.join(out, F_FIELD))
-    ooxml.normalize(os.path.join(out, F_FIELD), dt.datetime(2014, 1, 6, 20, 0), dt.datetime(2026, 1, 9, 20, 20))
+    ooxml.normalize(os.path.join(out, F_FIELD), dt.datetime(2025, 6, 24, 19, 10), dt.datetime(2026, 1, 9, 20, 20))
     return len(rg["visits"])
 
 
@@ -329,18 +362,25 @@ def write_river(out):
 
 
 def write_notifications(out):
-    """The 2025 public notifications the overflow detectors raised, one per outfall event (no tank at 014)."""
+    """The 2025 public notifications the overflow detectors raised, one per outfall event (no tank at 014). Each
+    outfall's detector sees its own storm: a lag behind Clay Street, its own threshold and its own tail."""
     w = W.simulate()
     rng = rs(7)
     i25 = W.index_of_local(dt.datetime(2025, 1, 1))
+    actions = ["Posted to website and alert subscribers", "Website posting; text and email alert sent",
+               "Posted; county health department notified by email", "Alert sent to subscribers, sign posted at outfall",
+               "Posted to website", "Website and alert sent; downstream water intake notified"]
     rows = []
     n = 0
-    for of, factor, reg in [("014", 1.0, P.O14_REG), ("008", 0.55, 0.0), ("010", 0.7, 0.0), ("013", 0.9, 0.0),
-                            ("001", 0.5, 0.0), ("003", 0.6, 0.0)]:
+    for of, factor, lag, tail in [("014", 1.0, 0, 0), ("008", 0.55, 2, 3), ("010", 0.7, -1, 5), ("013", 0.9, 1, -2),
+                                  ("001", 0.5, 3, 6), ("003", 0.6, -2, 1)]:
         if of == "014":
             series = w["o14"][i25:]
         else:
-            series = np.maximum(0.0, w["o14"][i25:] * factor - rng.uniform(0.5, 3.0))
+            base = np.roll(w["o14"], lag)[i25:]
+            kern = np.ones(max(1, 1 + tail)) / max(1, 1 + tail) if tail > 0 else np.ones(1)
+            sm = np.convolve(base, kern)[:len(base)]
+            series = np.maximum(0.0, sm * factor * rng.uniform(0.9, 1.1) - rng.uniform(0.5, 3.0))
         starts = W.events(series)
         for s0 in starts:
             e = s0
@@ -349,9 +389,14 @@ def write_notifications(out):
             n += 1
             st = W.local_of(i25 + s0)
             en = W.local_of(i25 + e + 1)
-            rows.append(["N25-%04d" % n, "Outfall %s" % of, st.strftime("%m/%d/%Y %I:%M %p"),
-                         en.strftime("%m/%d/%Y %I:%M %p"), "Posted to website and alert subscribers"])
-    rows.sort(key=lambda r: dt.datetime.strptime(r[2], "%m/%d/%Y %I:%M %p"))
+            if of != "014":
+                st += dt.timedelta(minutes=int(rng.integers(0, 15)))
+                en += dt.timedelta(minutes=int(rng.integers(0, 15)))
+            rows.append(["", "Outfall %s" % of, st.strftime("%m/%d/%Y %I:%M %p"),
+                         en.strftime("%m/%d/%Y %I:%M %p"), actions[int(rng.integers(0, len(actions)))]])
+    rows.sort(key=lambda r: (dt.datetime.strptime(r[2], "%m/%d/%Y %I:%M %p"), r[1]))
+    for k, r in enumerate(rows):
+        r[0] = "N25-%04d" % (k + 1)
     write_csv(os.path.join(out, F_NOTIF), ["notice_id", "outfall", "discharge_start", "discharge_end", "action"], rows)
     return len(rows)
 

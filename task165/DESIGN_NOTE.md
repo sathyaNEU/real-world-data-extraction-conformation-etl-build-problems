@@ -298,8 +298,10 @@ single fix hands over the figures the first one moves.
   and the date). Pours cut by the logged window miss at RG-3 and RG-4 and in summer at RG-1 and RG-2; month-end
   storms move between months.
 - Hazard (D1): the cellular platform re-sent four buffered batches at each TipLink gauge, exact duplicates.
-- Pin test: the asking sentence pins the gauge, the month and the unit; Appendix C 4.1 pins Eastern time and "recorded
-  at the Authority's rain gauges"; no pin names a pour, a clock or a mechanism.
+- Pin test: the asking sentence pins the gauge, the month on local Eastern time (closing the judge's round 1 fork
+  against fixed Eastern Standard Time) and the unit; Appendix C 4.1 pins "recorded at the Authority's rain gauges"; no
+  pin names a pour, a clock or a mechanism. Every install falls on a day without rain at its gauge (the judge's round 1
+  fork on which mechanism counts that day), asserted in `checks.py`.
 - Realism: a tipping-bucket network's export, field log and inventory, as a utility's field services keep them.
 
 **Ask 2: the volume the Northside tank returned to the Northside interceptor in each year 2021 to 2025** (5 figures,
@@ -329,21 +331,21 @@ week and no ask device; the Southside historian rows carry none (asserted, `SEP`
 
 | Path (cracker = lands the call, runs the battery, executes filed documents) | Rainfall kept | Returns kept | Verdict |
 |---|---|---|---|
-| Ask 1, cracker: duplicates dropped, pours cut by the logged window, stamps as logged, 0.01 in a tip | 12 of 48 | | miss |
+| Ask 1, cracker: duplicates dropped, pours cut by the logged window, stamps as logged, 0.01 in a tip | 10 of 48 | | miss |
 | Ask 2, cracker: the better of run states times the station curve and the uncorrected level falls | | 1 of 5 | miss |
 | Ask 1, one crack: pours by their steady run | 16 of 48 | | miss |
-| Ask 1, one crack: the loggers' clocks | 18 of 48 | | miss |
-| Ask 1, one crack: the 0.2 mm mechanisms | 12 of 48 | | miss |
+| Ask 1, one crack: the loggers' clocks | 16 of 48 | | miss |
+| Ask 1, one crack: the 0.2 mm mechanisms | 11 of 48 | | miss |
 | Ask 2, one crack: the re-mounted transducer | | 1 of 5 | miss |
 | Ask 2, one crack: FIT-600's inflow while pumping | | 2 of 5 | miss |
 
-Single cracks keep 24.5 to 35.8 per cent of ask weight; the worst, the loggers' clocks found by both top responses,
-puts the pair at 48.2. Two cracks on one ask (pours and mechanisms) keep 75.5 per cent of the ask weight, which is the
-full includer's ground, not the reflex.
+Single cracks keep 20.8 to 32.1 per cent of ask weight; the worst (the pours by their steady run, or the loggers'
+clocks, found by both top responses) puts the pair at 46.1. Two cracks on one ask (pours and mechanisms) keep 77.4 per
+cent of the ask weight, which is the full includer's ground, not the reflex.
 
-Mirror leakage: 24.5 per cent of ask weight (the mirror takes the cracker's ask paths off the call).
+Mirror leakage: 20.8 per cent of ask weight (the mirror takes the cracker's ask paths off the call).
 
-Pair ceiling: 42.0 (cracker on the call 58.5, mirror off it 25.5); worst single crack 48.2.
+Pair ceiling: 39.9 (cracker on the call 56.4, mirror off it 23.4); worst single crack 46.1.
 
 Measured by: generator/ceiling.py, run on the cut pack.
 
@@ -365,6 +367,23 @@ Measured by: generator/ceiling.py, run on the cut pack.
 | P-2 rebuilt March 2023 on its old tag | maintenance | SCADA, work orders | ask 2 only |
 | SG-600 passing dry weather flow into the tank while its seals failed; the lead pump cycling | the diversion gate, operations | SCADA (FIT-600), work orders | ask 2 only |
 | Northside overflow detector firing through the August 2023 cleanout bypass | operations | SCADA | the back-test only (asserted within 3 events) |
+
+## Pre-ship check
+
+- The 10/10 rules re-read against the built pack: the decisive step is still analytical (the tank's drawdown bounded
+  by the Southside plant's room, read from its own historian); the mess is Layer 1 only (the meter swap, the historian
+  clock, BAD hours: every one asserted to leave the call alone); nothing is planted.
+- Stage 4, round 1: the leak reader found no leak and read Q6 as analytical. The judge returned DETERMINISTIC and
+  APPROVE: A 9.67, B 6.83, C 2.92, D 1.33, and all 48 rainfall and 5 return figures reproduce; Gate G
+  binding_constraint, analytical_non_defect; Gate H pass.
+- Two ask forks were closed in the generator (`determinism_check_report.md`, main-thread disposition): months filed on
+  local Eastern time in the asking sentence, and every install moved to a day without rain at its gauge.
+- On the coordinator's call, two items stay as designed:
+  - the room limit stays unfiled, because filing it would make the decisive step rule application;
+  - the Northside returns method stays unpinned, because pinning it would hand over the leak-by device.
+- The leak reader's realism notes are fixed: notices with each outfall's own times and varied actions, work-order texts
+  that fit their asset class and order type, and the field log's creator set to the contractor.
+- Every gate was re-run on the final cut. The prompt changed, so one leak re-read runs on the final pack after ship.
 
 ## Tried and rejected
 
@@ -557,3 +576,11 @@ Architecture 2 (the Clay Street tank):
 - 2026-11-07, the Northside tank's inflow added before its pumps ran in a quarter hour: a full tank sent the storm
   tail over the crest in the same quarter hour the pumps started, which no meter sees; the pumps now draw down while
   the trickle enters.
+- 2026-11-07, judge round 1 forks on the rainfall ask: the month basis (Eastern civil time against fixed Eastern Standard
+  Time, 0.03 in in March and April) closed by filing "on local Eastern time" in the asking sentence; the RG-1 install
+  inside a rain spell on 8 July (0.09 in on which mechanism counted) closed by moving every install to a day without
+  rain at its gauge, not by a sentence. Six cells moved by 0.01 in through the bucket remainder.
+- 2026-11-07, the 2025 notices with the other outfalls' times copied from Clay Street's and one action string, work
+  orders with stock texts on any asset, the field log authored by a technician from 2014 (the leak reader's realism
+  read): each outfall's detector now lags and tails on its own, texts follow asset class and order type, and the
+  contractor authored the log at its June 2025 mobilisation.

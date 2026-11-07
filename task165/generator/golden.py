@@ -166,7 +166,7 @@ def read_visits(target):
     return out
 
 
-def tips_local(target, handle_clock=True, dedupe=True):
+def tips_local(target, handle_clock=True, dedupe=True, eastern="civil"):
     """Each gauge's tips as local wall times, in file order."""
     rows = []
     with open(os.path.join(target, "rain_gauge_tips_2014-2025.csv"), newline="") as f:
@@ -181,9 +181,9 @@ def tips_local(target, handle_clock=True, dedupe=True):
             new = GAUGE_NEW.get(g)
             # the cellular loggers stamp UTC; their first tip comes after the install visit
             if new is not None and d >= new.replace(hour=12):
-                loc = d.replace(tzinfo=UTC).astimezone(NY).replace(tzinfo=None)
+                loc = d.replace(tzinfo=UTC).astimezone(NY if eastern == "civil" else EST).replace(tzinfo=None)
             else:
-                loc = d.replace(tzinfo=EST).astimezone(NY).replace(tzinfo=None)
+                loc = d.replace(tzinfo=EST).astimezone(NY if eastern == "civil" else EST).replace(tzinfo=None)
         else:
             loc = d
         out.setdefault(g, []).append(loc)
@@ -215,8 +215,8 @@ def pour_runs(times, lo, hi, min_len=20, gmin=5.0, gmax=20.0):
     return idx
 
 
-def ask1(target, handle_clock=True, dedupe=True, pours="steady", bucket=True):
-    tips = tips_local(target, handle_clock, dedupe)
+def ask1(target, handle_clock=True, dedupe=True, pours="steady", bucket=True, eastern="civil"):
+    tips = tips_local(target, handle_clock, dedupe, eastern)
     visits = read_visits(target)
     out = {}
     for g, ts in tips.items():

@@ -68,8 +68,8 @@ GAUGES = [("RG-1", "Northside WRP", None), ("RG-2", "Clay Street pump station", 
 TIP_IN = 0.01
 TIP_02MM_IN = 0.2 / 25.4
 CONTRACT_START = dt.date(2025, 7, 1)    # the field maintenance contract's monthly visits begin
-MECH_SWAPS = {"RG-1": dt.datetime(2025, 7, 8, 10, 5), "RG-2": dt.datetime(2025, 7, 9, 13, 40),
-              "RG-3": dt.datetime(2025, 7, 15, 9, 15), "RG-4": dt.datetime(2025, 7, 22, 11, 30)}
+MECH_SWAPS = {"RG-1": dt.datetime(2025, 7, 9, 10, 5), "RG-2": dt.datetime(2025, 7, 14, 13, 40),
+              "RG-3": dt.datetime(2025, 7, 18, 9, 15), "RG-4": dt.datetime(2025, 7, 23, 11, 30)}
 ORIFICE_IN = 8.0
 
 # The Outfall 014 meter replacement.

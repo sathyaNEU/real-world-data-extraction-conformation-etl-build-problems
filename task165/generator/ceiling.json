@@ -1,9 +1,9 @@
 {
  "rows": {
   "cracker/mirror (no device found)": [
-   12,
+   10,
    1,
-   0.24528301886792453
+   0.20754716981132076
   ],
   "one crack: pours by their steady run": [
    16,
@@ -11,34 +11,34 @@
    0.32075471698113206
   ],
   "one crack: the loggers' clocks": [
-   18,
+   16,
    1,
-   0.3584905660377358
+   0.32075471698113206
   ],
   "one crack: the 0.2 mm mechanisms": [
-   12,
+   11,
    1,
-   0.24528301886792453
+   0.22641509433962265
   ],
   "one crack: the re-mounted transducer": [
-   12,
+   10,
    1,
-   0.24528301886792453
+   0.20754716981132076
   ],
   "one crack: the inflow while pumping": [
-   12,
+   10,
    2,
-   0.2641509433962264
+   0.22641509433962265
   ],
   "two cracks: pours and mechanisms": [
-   39,
+   40,
    1,
-   0.7547169811320755
+   0.7735849056603774
   ],
   "two cracks: transducer and inflow": [
-   12,
+   10,
    5,
-   0.32075471698113206
+   0.2830188679245283
   ],
   "full includer": [
    48,
@@ -46,9 +46,9 @@
    1.0
   ]
  },
- "pair": 42.0,
- "mirror_leak": 24.5,
- "worst_single": "one crack: the loggers' clocks",
- "worst_single_keep": 0.358,
- "worst_single_pair": 48.2
+ "pair": 39.9,
+ "mirror_leak": 20.8,
+ "worst_single": "one crack: pours by their steady run",
+ "worst_single_keep": 0.321,
+ "worst_single_pair": 46.1
 }

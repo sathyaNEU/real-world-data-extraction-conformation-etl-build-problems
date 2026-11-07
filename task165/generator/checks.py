@@ -159,6 +159,27 @@ def main():
                 tru[loc.month - 1] += b_
         ok &= bool(np.abs(tru - a1[g]).max() < 1e-9)
     check("ASK1 the golden recovers every gauge-month's recorded rain exactly", ok)
+    # judge round 1 fork 2: no rain tip on any gauge's install day, so the mechanism a tip counts at is never in doubt
+    tl = G.tips_local(T)
+    swaps = {v["gauge"]: v["arrive"] for v in G.read_visits(T) if "0.2mm" in v["note"].replace(" mm", "mm")}
+    vis_pour = {}
+    for v in G.read_visits(T):
+        vis_pour.setdefault((v["gauge"], v["arrive"].date()), []).append(v)
+    clash = 0
+    for g, sw in swaps.items():
+        same_day = [t for t in tl[g] if t.date() == sw.date()]
+        run = set(G.pour_runs(tl[g], sw - dt.timedelta(hours=6), sw + dt.timedelta(hours=6)))
+        clash += sum(1 for j, t in enumerate(tl[g]) if t.date() == sw.date() and j not in run)
+        check("ASK1 %s's install day (%s) holds no rain tip, only its cal-check pour" % (g, sw.date()),
+              all(t >= sw for t in same_day), "%d tips that day" % len(same_day))
+    check("ASK1 no rain tip falls on any install day", clash == 0, "%d" % clash)
+    # judge round 1 fork 1: the prompt files the months on local Eastern time
+    pr = open(os.path.join(TASK, "prompt.txt")).read()
+    check("ASK1 the prompt files the months on local Eastern time", "on local Eastern time" in pr)
+    fixed = G.ask1(T, eastern="fixed")
+    moved = sum(int(round(fixed[g][m] + 1e-9, 2) != round(a1[g][m] + 1e-9, 2)) for g in a1 for m in range(12))
+    check("ASK1 fixed Eastern Standard Time months (the closed reading) would move cells", moved >= 1,
+          "%d cells" % moved)
     edge = min(abs((a1[g][m] * 100 + 1e-9) % 1 - 0.5) for g in a1 for m in range(12))
     check("ASK1 no cell on a rounding edge at the exact 0.2/25.4 in a tip (0.002 hundredths)", edge > 0.002, "%.3f" % edge)
     for name, kw, least in (("pours kept", dict(pours="keep"), 25), ("clocks unread", dict(handle_clock=False), 6),
