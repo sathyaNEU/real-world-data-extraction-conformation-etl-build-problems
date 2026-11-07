@@ -18,6 +18,7 @@ Account email: not yet recorded; until it is, the author names the handle at the
 - **No retirement (the author's rule, 2026-10-20).** No task number is ever retired: a spent architecture is re-rooted
   with a fresh design, however many architectures it takes, until one ships. This replaces the build-pipeline cap for
   this backlog.
+- **Hold (the author, 2026-11-07).** Every build in flight is held where it stands and resumed only on the author's word: task490 (stage 4, leak read clean, the determinism judge to run), task315 (stage 2, design note unfinished, a generator draft committed untested), task212 (stage 1, draw prototypes only, no card) and task400 (not started, nothing committed). Each held build's `pipeline.json` names its next step. The rest of wave 13 (task287, task491, task316) waits behind the hold.
 - **Status board:** https://claude.ai/artifact/U4syUnRUycHUsWwhonBYoQ (Batch 5 Build Queue: one row per task in queue
   order, its work item and where it stands, the call, links to the prompt, submission and `target.zip` on `main`),
   updated as each task moves.
