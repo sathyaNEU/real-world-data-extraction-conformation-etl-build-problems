@@ -103,7 +103,7 @@ def _styles():
             "cell": ParagraphStyle("c", parent=base, fontSize=8.6, leading=10.6, spaceAfter=0)}
 
 
-def pdf(path, blocks, title, author, created, modified, footer, first_col=0.30):
+def pdf(path, blocks, title, author, created, modified, footer, first_col=0.30, subject=None):
     st = _styles()
 
     def page(canvas, d):
@@ -114,7 +114,7 @@ def pdf(path, blocks, title, author, created, modified, footer, first_col=0.30):
         canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
         canvas.restoreState()
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                            bottomMargin=18 * mm, title=title, author=author, creator=author, producer="Microsoft Word",
+                            bottomMargin=18 * mm, title=title, author=author, subject=subject or title, creator=author, producer="Microsoft Word",
                             invariant=1)
     story = []
     for kind, val in blocks:
@@ -387,7 +387,8 @@ def write_policy(path):
     ]
     pdf(path, blocks, "PH-QP-07 Batch-compounded sterile products: gravimetric verification", P.PEOPLE["director"],
         _pdfdate(dt.datetime(2025, 11, 24, 10, 41, 3)), _pdfdate(dt.datetime(2025, 12, 9, 15, 12, 47)),
-        "%s Pharmacy Services   PH-QP-07 v3   Controlled copy" % P.ORG)
+        "%s Pharmacy Services   PH-QP-07 v3   Controlled copy" % P.ORG,
+        subject="Pharmacy policy PH-QP-07, gravimetric verification of batch-compounded sterile products")
 
 
 def write_sop(path):
@@ -424,17 +425,18 @@ def write_sop(path):
     ]
     pdf(path, blocks, "SC-SOP-12 Batch compounding on the unit's compounders", P.PEOPLE["lead_tech"],
         _pdfdate(dt.datetime(2025, 2, 11, 9, 2, 55)), _pdfdate(dt.datetime(2025, 3, 3, 8, 21, 9)),
-        "%s   SC-SOP-12 v6   Printed copies are uncontrolled" % P.HOSPITAL)
+        "%s   SC-SOP-12 v6   Printed copies are uncontrolled" % P.HOSPITAL,
+        subject="Standard operating procedure SC-SOP-12, batch compounding")
 
 
 def write_request(path):
     msg = EmailMessage()
-    msg["From"] = "%s <spencer.frank@ashcombevalley.example>" % P.PEOPLE["project"]
-    msg["To"] = "%s <cynthia.underwood@ashcombevalley.example>" % P.PEOPLE["director"]
-    msg["Cc"] = "%s <erin.stewart@ashcombevalley.example>" % P.PEOPLE["quality"]
+    msg["From"] = "%s <spencer.frank@ashcombevalleyhealth.ca>" % P.PEOPLE["project"]
+    msg["To"] = "%s <cynthia.underwood@ashcombevalleyhealth.ca>" % P.PEOPLE["director"]
+    msg["Cc"] = "%s <erin.stewart@ashcombevalleyhealth.ca>" % P.PEOPLE["quality"]
     msg["Subject"] = "IV workflow go-live: batch products for dose-by-dose weighing"
     msg["Date"] = format_datetime(dt.datetime(2027, 1, 18, 9, 37, 12, tzinfo=W.TZ))
-    msg["Message-ID"] = "<20270118093712.5521@ashcombevalley.example>"
+    msg["Message-ID"] = "<20270118093712.5521@ashcombevalleyhealth.ca>"
     msg.set_content(
         "Cynthia,\n\n"
         "The IV workflow system goes live in the Sterile Compounding Unit on Monday 5 April 2027. The vendor locks the "

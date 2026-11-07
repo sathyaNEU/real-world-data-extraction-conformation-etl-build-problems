@@ -1,6 +1,6 @@
 # leak check, task272
 
-**Verdict: REVIEW.** 12 files read, 75 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 12 files read, 75 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -15,7 +15,17 @@ Stump terms swept: weighed, register, tolerance, golden, family, weights, litres
 - **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: 7 of 25 stump-paragraph terms appear (weighed, register, tolerance, calendar, volume, outside); read whether the document names the move
 - **REVIEW** `SC-SOP-12_batch_compounding_procedure.pdf`: 7 of 25 stump-paragraph terms appear (weighed, register, tolerance, hospital, volume, outside); read whether the document names the move
 
-## 10 container metadata (INFO 1)
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
+## 10 container metadata (LEAK 4, REVIEW 3, INFO 1)
+- **LEAK** `PH-QP-07_batch_compounded_products_policy.pdf`: Creator names 'Cynthia Underwood', not the application that wrote the PDF
+- **LEAK** `SC-SOP-12_batch_compounding_procedure.pdf`: Creator names 'Jacob Burgess', not the application that wrote the PDF
+- **LEAK** `compounder_dose_log_2026.parquet`: parquet created_by names 'parquet-cpp-arrow version 26.0.0'; leave it out of the footer
+- **LEAK** `compounder_dose_log_2026.parquet`: parquet key-value metadata carries the Arrow or pandas schema
+- **REVIEW** `compounded_product_master.xlsx`: docProps/app.xml has no TitlesOfParts, which Excel always writes
+- **REVIEW** `gravimetric_check_register_2026.xlsx`: docProps/app.xml has no TitlesOfParts, which Excel always writes
+- **REVIEW** `quarantine_register_2026.xlsx`: docProps/app.xml has no TitlesOfParts, which Excel always writes
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 1)
@@ -32,8 +42,6 @@ Stump terms swept: weighed, register, tolerance, golden, family, weights, litres
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 
 ## Solver's-eye read
@@ -65,4 +73,3 @@ in tolerance, harmless.
 Realism: the PDFs carry a named author and plausible dates, the workbooks different authors, the quarantine register
 recount rows, the check register varying initials, the equipment register a PC-3 serial swap on 14 July; the sorts'
 100 quarantined and 100 weighed match the SOP's sampling interval.
-
