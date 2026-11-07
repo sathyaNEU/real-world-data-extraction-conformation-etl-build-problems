@@ -205,10 +205,12 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   sentence at authority (162's SF15, 151's SF23). A closure that would name the thing the decisive step recognises
   is the fork-is-the-stump case (section 1) and re-roots the build instead.
 - **A clock an ask rides on is stated where the producing system writes it**: the logger export, ingest log or
-  gateway receipt file names its zone in its own header or column, as real exports do. task211's receipt log
-  carried no zone, and read as UTC it made every gateway record an hour late and moved about 14 stations'
-  timeliness figures; task398's logger exports were closed the same way. This is Layer 1 provenance, never a
-  pin, and the clock the main call's stump rides on stays unfiled (section 1).
+  gateway receipt file names its zone in its own header or column, as real exports do (task398's logger
+  exports). Where one file mixes clocks by channel, the procedure that governs that system states each
+  channel's clock: task211's ingest log carried gateway receipts in UK clock time beside UTC ones, read as UTC
+  every gateway record fell an hour late and about 14 stations' timeliness figures moved, and its operating
+  procedure's records section now says which receipts are which. This is Layer 1 provenance, never a pin, and
+  the clock the main call's stump rides on stays unfiled (section 1).
 - **The deciding configuration must be in the record.** A forecast or model whose deciding configuration is out of
   sample cannot be forced by any filing short of the HOW; where the golden family's own spread exceeds the graded
   band, re-root into a world where that configuration is recorded and the construction replays it.
