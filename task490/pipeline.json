@@ -12,12 +12,26 @@
  "architecture": 1,
  "loops": 0,
  "card": ".claude/skills/fingerprint/cards/task490.json",
- "precut": {"exit": 0, "date": "2026-11-07"},
- "leak": {"leak_py": "REVIEW (no LEAK) on the hand-off cut, --asof 2026-11-06; every REVIEW answered in the note's Gate answers", "reader": ""},
- "duplicate_check": {"heart": "WARN 2026-11-07 (three_rules.strategy_risk, repeat.decision, repeat.question_form; older same-puzzle notes differentiated on the card)", "surface": "two pairs promoted for adjudication, no hard tell: task211 (surface 0.100, corpus top 1 percent) and task192 (gap, generator and decision type, differentiated on the card); personas in the pack all drawn", "nearest": "0.08 task117"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-07"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) on the hand-off cut, --asof 2026-11-06; every REVIEW answered in the note's Gate answers",
+  "reader": "clean: the isolated leak reader read cut 65c71f873a930e9dbe1fec3d3f54dff7b28f852a1f23cc528304e4b892099a9e on 2026-11-07 and found no LEAK; its answers and the orchestrator's rulings are under \"## Solver's-eye read\" in leak_check_report.md"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-11-07 (three_rules.strategy_risk, repeat.decision, repeat.question_form; older same-puzzle notes differentiated on the card)",
+  "surface": "two pairs promoted for adjudication, no hard tell: task211 (surface 0.100, corpus top 1 percent) and task192 (gap, generator and decision type, differentiated on the card); personas in the pack all drawn",
+  "nearest": "0.08 task117"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": "none: the brief was written and the thread stopped before it returned, so the first pass is still to run"
+ },
  "returned": [],
- "resume": "Stage 4: the orchestrator runs the leak reader and the determinism judge on target.zip sha256 65c71f873a930e9dbe1fec3d3f54dff7b28f852a1f23cc528304e4b892099a9e (14 files). Fix every finding in the generator in one pass, then rebuild and re-gate with: cd task490/generator && python3 build.py && python3 checks.py && python3 verify.py && python3 ceiling.py; then precut.py task490, figures_check.py task490, leak.py task490 --asof 2026-11-06, guard.py heart task490 and guard.py surface task490, and confirm a second build is byte-identical before shipping.",
+ "resume": "HELD by the author from 2026-11-07, lifted only on the author's word; do not resume before then. When lifted, stage 4 continues on cut 65c71f873a930e9dbe1fec3d3f54dff7b28f852a1f23cc528304e4b892099a9e (14 files): the leak read is clean on that cut (leak.py --asof 2026-11-06 REVIEW with no LEAK, and the isolated leak reader found no LEAK; keep its answers and the rulings under \"## Solver's-eye read\" in leak_check_report.md). The determinism judge has not returned a verdict and is to be run from the start as a first pass on that cut. One realism fix is queued for the fix pass after the judge, made in the generator together with any judge findings: vary the repeated \"Lock cottage gutter repair / Complete.\" rows in works_orders_2026.csv and the keepers' log notes that only ever say \"cruiser\". After the fix pass, rebuild and re-gate with: cd task490/generator && python3 build.py && python3 checks.py && python3 verify.py && python3 ceiling.py; then precut.py task490, figures_check.py task490, leak.py task490 --asof 2026-11-06, guard.py heart task490 and guard.py surface task490, and confirm a second build is byte-identical before shipping.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -37,5 +51,10 @@
   "heart": "WARN",
   "surface": "2 pairs promoted for adjudication (task211 surface, task192 core axes), no hard tell"
  },
- "target_zip_sha256": "65c71f873a930e9dbe1fec3d3f54dff7b28f852a1f23cc528304e4b892099a9e"
+ "target_zip_sha256": "65c71f873a930e9dbe1fec3d3f54dff7b28f852a1f23cc528304e4b892099a9e",
+ "hold": {
+  "by": "author",
+  "from": "2026-11-07",
+  "lifted": "only on the author's word"
+ }
 }
