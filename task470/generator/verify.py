@@ -21,6 +21,33 @@ REF = dt.date(2026, 11, 1)
 START = dt.datetime(2026, 11, 9)
 
 
+def exact_interval(v, n, level=0.90):
+    """The exact binomial interval by inverting the binomial tail sums (bisection), independent of the beta quantile
+    golden.py uses: the lower bound is the p at which P(X >= v) = (1 - level) / 2, the upper the p at which
+    P(X <= v) = (1 - level) / 2. In per cent."""
+    from math import comb
+    a = (1 - level) / 2
+
+    def tail_ge(p):
+        return 1.0 - sum(comb(n, k) * p ** k * (1 - p) ** (n - k) for k in range(v))
+
+    def tail_le(p):
+        return sum(comb(n, k) * p ** k * (1 - p) ** (n - k) for k in range(v + 1))
+
+    def solve(f, rising):
+        lo, hi = 0.0, 1.0
+        for _ in range(80):
+            mid = (lo + hi) / 2
+            if (f(mid) < a) == rising:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2
+    low = 0.0 if v == 0 else solve(tail_ge, True)
+    high = 1.0 if v == n else solve(tail_le, False)
+    return 100 * low, 100 * high
+
+
 def rows(target, pattern):
     name = [f for f in os.listdir(target) if re.match(pattern, f)][0]
     with open(os.path.join(target, name), encoding="utf-8", newline="") as fh:
@@ -98,6 +125,10 @@ def main(target, fig_path):
         ok &= good
         print("%s  verify %s %s: %d counted, %d vacant, %s per cent" % ("ok  " if good else "FAIL", m["nr"], m["name"], n,
                                                                      v, share))
+        lo, hi = exact_interval(v, n)
+        good = ("%.1f" % lo, "%.1f" % hi) == (m["low"], m["high"])
+        ok &= good
+        print("%s  verify %s 90 per cent interval: %.1f to %.1f" % ("ok  " if good else "FAIL", m["nr"], lo, hi))
     # ---------------------------------------------------------------- table A
     reg = rows(target, r"folkeregister_bosatte_")
     ev = rows(target, r"folkeregister_hendelser_")

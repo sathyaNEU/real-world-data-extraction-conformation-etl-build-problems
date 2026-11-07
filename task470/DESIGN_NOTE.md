@@ -203,6 +203,7 @@ evening rise over the dwelling's own night-time use on some day shows that someo
 | SF21 | table B, a title without an organisation number | the municipality when the name is its own | left out | every figure moves | the land register's holder name and the business register's names |
 | SF22 | table B, how many | dwellings | titles | every figure moves | the ministry's letter (how many of its counted dwellings) |
 | SF23 | table B, the inter-municipal company | not the municipality's | counted | Brekkevoll and Ravnsund move | the ministry's letter (all the shares) |
+| SF24 | the share's 90 per cent interval | the exact binomial (Clopper-Pearson) interval on the municipality's counted dwellings | Wilson, Jeffreys, the normal approximation | bounds move at one decimal, the call does not | the ministry's letter (the exact binomial interval on the counted dwellings); every exact bound clears a rounding edge by at least 0.0013 points (asserted) |
 
 ## Ladder
 
@@ -231,7 +232,7 @@ exact because the household day separates every dwelling (lived-in minimum 1.00 
 | 7 Weighting | none: a count over a count | filed in Section 6 |
 | 8 Window length | the whole fortnight, a dwelling lived in if any day shows a household | filed in Section 4 (on any day); SF13 records the averaged reading's other call |
 | 9 Boundary inclusivity | 5.0 per cent or more qualifies | filed in Section 6; no share within 0.2 points of the rounding line (C1) |
-| 10 Rounding path | each share rounded once to one decimal, the threshold read on the rounded share | filed in Section 6; C1, the unrounded reading gives the same call (SF8) |
+| 10 Rounding path | each share rounded once to one decimal, the threshold read on the rounded share; each interval bound rounded once to one decimal from the exact bound | filed in Section 6 and the prompt; C1, the unrounded reading gives the same call (SF8); SF24 |
 | 11 Tie-break | none needed: the designation is a set, no ranking | C1 |
 | 12 Maturity and censoring | none: the fortnight is closed and fully delivered; a few hours missing per meter | C1 (SF10) |
 | 13 Order of operations | join, clock, deduplicate, classify, count | C1: each order prints the same call (SF3, SF4, SF5 asserted on every variant) |
@@ -331,7 +332,9 @@ old titles.
 Measured by: generator/ceiling.py on the cut pack: the cracker keeps 0 of the 40 table figures (table A 0 of 30, table B
 0 of 10); the mirror (stopped at the 10 kWh floor, its best rung) keeps 0 of 40 and 6.0 of the 38 recommendation points.
 
-Pair ceiling: 29.0 ((38 + 7 + 55 x 0) and (6.0 + 7 + 55 x 0), averaged)
+Pair ceiling: 29.0 ((38 + 7 + 55 x 0) and (6.0 + 7 + 55 x 0), averaged); the main block's 38 is the call's 8 and
+0.75 for each of the 40 municipality figures (vacant dwellings, share and the share's two bounds), and the mirror's
+counts carry its bounds with them (8 of 40 at the 10 kWh floor).
 
 Mirror leakage: 0.0 per cent of ask weight
 
@@ -357,6 +360,17 @@ Mirror leakage: 0.0 per cent of ask weight
    harmless.
 7. leak.py REVIEW, sweep 4: the regulation's section, statistics, fortnight, points, office and cadastre are its
    own nouns, none names the decisive step, harmless (ruled here, not sent to the reader).
+8. Domains Fit repair (portal, 2026-11-07: the prompt read as a regulation's threshold applied to counts and
+   shares): the question now asks for the grant on an estimate of each municipality's vacant dwellings from the
+   register and meter data, with a 90 per cent interval on each share, and the letter charts each share with its
+   interval. The interval is a reporting statistic the ministry's letter files as the exact binomial interval on the
+   counted dwellings (SF24); Wilson, Jeffreys and the normal approximation round differently somewhere, which is why
+   the convention is filed, and the call does not move with any of them. The intervals of Kvernhaug, Solmoen,
+   Ravnsund, Fjordeid and Snøholt take in the 5.0 line; the regulation designates on the share. The decisive step is
+   unchanged: what in a dwelling's own hourly record shows that someone lived there.
+9. Metadata repair (leak.py sweep 10): the regulation is exported by LibreOffice Writer (generator/officepdf.py), the
+   ministry as Author and a real Subject; the hub's extract is written with no Arrow schema and no created_by
+   (generator/parquetio.py), its timestamps read back in milliseconds, UTC, the same values.
 
 ## Tried and rejected
 

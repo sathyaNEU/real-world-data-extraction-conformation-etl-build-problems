@@ -20,7 +20,7 @@ Their vacancy shares run from 5.4 to 8.2 per cent against the regulation's 5.0; 
 2. Joined each to its household metering points by bruksenhet_id, else by municipality and address for a single-unit house; Snøholt's points carry Fjordeid's old municipality number.
 3. Put the hourly values on Norwegian time (UTC+1), kept the later delivery where an estimated day was replaced, and added a dwelling's two points where its meter changed.
 4. For each day took the mean of 06 to 09 and of 16 to 22 against the mean of 01 to 05; a rise above 0.5 kWh on any day marks the dwelling as lived in (Section 4: nobody lived in it on any day).
-5. Divided each municipality's vacant dwellings by its counted dwellings, rounded to one decimal, and designated those at 5.0 per cent or more (Section 6).
+5. Divided each municipality's vacant dwellings by its counted dwellings, rounded to one decimal, and designated those at 5.0 per cent or more (Section 6); gave each share the 90 per cent exact binomial (Clopper-Pearson) interval on its counted dwellings that the ministry's assignment asks for.
 6. Rolled the population register of 5 January 2027 back to 1 November by undoing every later event, reading the November block renumberings as a change of unit number and the earlier events' old numbers as the renumbered flats; ages on 1 November.
 7. Rolled the land register back to 1 November by tinglyst date and counted the dwellings held by the municipality, its KF or a company whose shares it holds all of with its own companies, titles without an organisation number in the municipality's own name included.
 
@@ -44,8 +44,20 @@ Their vacancy shares run from 5.4 to 8.2 per cent against the regulation's 5.0; 
 ### vacancy_grant_certification_2027.docx
 
 1. Qualifying municipalities: Tverrvika (7.3 per cent), Hesteby (6.4 per cent), Solmoen (6.5 per cent), Ørnevik (8.2 per cent) and Fjordeid (5.4 per cent).
-2. Bar chart of the ten municipalities' vacancy shares against the 5.0 per cent threshold, the qualifying municipalities highlighted.
-3. Persons registered in the counted dwellings on 1 November 2026, under 18, 18 to 66, 67 and over:
+2. Each municipality's vacancy share with its 90 per cent interval, per cent:
+   - Brekkevoll (5801): 4.0, 3.3 to 4.9
+   - Tverrvika (5802): 7.3, 5.5 to 9.5
+   - Hesteby (5803): 6.4, 5.2 to 7.9
+   - Kvernhaug (5804): 3.8, 2.8 to 5.1
+   - Solmoen (5805): 6.5, 4.7 to 8.8
+   - Ravnsund (5806): 4.6, 3.4 to 6.1
+   - Ørnevik (5807): 8.2, 6.0 to 10.9
+   - Langgrav (5808): 3.2, 2.4 to 4.2
+   - Fjordeid (5809): 5.4, 3.9 to 7.2
+   - Snøholt (5810): 4.7, 3.5 to 6.1
+   Intervals taking in the 5.0 per cent threshold: Kvernhaug, Solmoen, Ravnsund, Fjordeid and Snøholt.
+3. Bar chart of the ten municipalities' vacancy shares with their intervals against the 5.0 per cent threshold, the qualifying municipalities highlighted.
+4. Persons registered in the counted dwellings on 1 November 2026, under 18, 18 to 66, 67 and over:
    - Brekkevoll (5801): 115, 1,748, 636
    - Tverrvika (5802): 86, 670, 227
    - Hesteby (5803): 106, 1,122, 425
@@ -56,7 +68,7 @@ Their vacancy shares run from 5.4 to 8.2 per cent against the regulation's 5.0; 
    - Langgrav (5808): 141, 1,342, 503
    - Fjordeid (5809): 78, 716, 228
    - Snøholt (5810): 128, 936, 351
-4. Counted dwellings held on the land register on 1 November 2026 by the municipality or a company it owns:
+5. Counted dwellings held on the land register on 1 November 2026 by the municipality or a company it owns:
    - Brekkevoll (5801): 133
    - Tverrvika (5802): 17
    - Hesteby (5803): 149

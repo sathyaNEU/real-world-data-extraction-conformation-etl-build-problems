@@ -41,7 +41,9 @@
    "counted": "1,640",
    "vacant": 66,
    "share": "4.0",
-   "qualifies": false
+   "qualifies": false,
+   "low": "3.3",
+   "high": "4.9"
   },
   {
    "nr": "5802",
@@ -49,7 +51,9 @@
    "counted": "520",
    "vacant": 38,
    "share": "7.3",
-   "qualifies": true
+   "qualifies": true,
+   "low": "5.5",
+   "high": "9.5"
   },
   {
    "nr": "5803",
@@ -57,7 +61,9 @@
    "counted": "980",
    "vacant": 63,
    "share": "6.4",
-   "qualifies": true
+   "qualifies": true,
+   "low": "5.2",
+   "high": "7.9"
   },
   {
    "nr": "5804",
@@ -65,7 +71,9 @@
    "counted": "860",
    "vacant": 33,
    "share": "3.8",
-   "qualifies": false
+   "qualifies": false,
+   "low": "2.8",
+   "high": "5.1"
   },
   {
    "nr": "5805",
@@ -73,7 +81,9 @@
    "counted": "430",
    "vacant": 28,
    "share": "6.5",
-   "qualifies": true
+   "qualifies": true,
+   "low": "4.7",
+   "high": "8.8"
   },
   {
    "nr": "5806",
@@ -81,7 +91,9 @@
    "counted": "740",
    "vacant": 34,
    "share": "4.6",
-   "qualifies": false
+   "qualifies": false,
+   "low": "3.4",
+   "high": "6.1"
   },
   {
    "nr": "5807",
@@ -89,7 +101,9 @@
    "counted": "380",
    "vacant": 31,
    "share": "8.2",
-   "qualifies": true
+   "qualifies": true,
+   "low": "6.0",
+   "high": "10.9"
   },
   {
    "nr": "5808",
@@ -97,7 +111,9 @@
    "counted": "1,120",
    "vacant": 36,
    "share": "3.2",
-   "qualifies": false
+   "qualifies": false,
+   "low": "2.4",
+   "high": "4.2"
   },
   {
    "nr": "5809",
@@ -105,7 +121,9 @@
    "counted": "560",
    "vacant": 30,
    "share": "5.4",
-   "qualifies": true
+   "qualifies": true,
+   "low": "3.9",
+   "high": "7.2"
   },
   {
    "nr": "5810",
@@ -113,8 +131,18 @@
    "counted": "790",
    "vacant": 37,
    "share": "4.7",
-   "qualifies": false
+   "qualifies": false,
+   "low": "3.5",
+   "high": "6.1"
   }
+ ],
+ "level": "90",
+ "straddling": [
+  "Kvernhaug",
+  "Solmoen",
+  "Ravnsund",
+  "Fjordeid",
+  "Snøholt"
  ],
  "lowest_qualifying": {
   "name": "Fjordeid",

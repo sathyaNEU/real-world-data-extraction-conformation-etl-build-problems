@@ -1,5 +1,5 @@
 """task470 checks: the three rules executed on the clean truth (R1 to R4), the ladder and its margins, the household-day
-family, the semantic fork table (SF1 to SF23), the separation of the asks' devices from the call, the two tables and
+family, the semantic fork table (SF1 to SF24), the separation of the asks' devices from the call, the two tables and
 their stops, the Shock and back-test screens, every graded figure's distance to its bin edge, the input gates and
 distractors, the realism sweeps and the deliverables' agreement with figures.json."""
 import datetime as dt
@@ -386,8 +386,40 @@ def run(target, golden, w=None, meta_path=None, fig_path=None):
         summ = {str(r[0]): r for r in wb["By municipality"].iter_rows(min_row=2, values_only=True) if r[0]}
         check("deliverables: the workbook's summary agrees with figures.json", all(
             summ[m["nr"]][3] == m["vacant"] and "%.1f" % summ[m["nr"]][4] == m["share"] for m in F["municipalities"]))
+        check("deliverables: the workbook's summary carries each share's 90 per cent interval as figures.json", all(
+            "%.1f" % summ[m["nr"]][5] == m["low"] and "%.1f" % summ[m["nr"]][6] == m["high"]
+            for m in F["municipalities"]))
+        # the interval: the ministry files the exact binomial interval; the reasonable alternatives (Wilson, Jeffreys,
+        # the normal approximation) give other bounds at one decimal, which is why the convention is filed
+        import golden as GD
+        from statsmodels.stats.proportion import proportion_confint
+        edge, alt_differs = 1.0, False
+        for m in F["municipalities"]:
+            n, v = int(m["counted"].replace(",", "")), m["vacant"]
+            lo, hi = GD.interval(v, n)
+            for x in (lo, hi):
+                edge = min(edge, abs((x * 10) % 1 - 0.5) / 10)
+            for meth in ("wilson", "jeffreys", "normal"):
+                a, b = proportion_confint(v, n, alpha=0.10, method=meth)
+                alt_differs |= ("%.1f" % (100 * a), "%.1f" % (100 * b)) != (m["low"], m["high"])
+            assert ("%.1f" % lo, "%.1f" % hi) == (m["low"], m["high"])
+        check("SF24 interval: every exact bound clears a rounding edge by at least 0.001 points (closest %.4f)" % edge,
+              edge >= 0.001)
+        check("SF24 interval: the other common intervals round differently, so the assignment files the exact one",
+              alt_differs)
+        import email
+        import email.policy
+        eml_txt = email.message_from_bytes(open(os.path.join(target, W.FILES["assignment"]), "rb").read(),
+                                           policy=email.policy.default).get_body().get_content()
+        check("interval: the ministry's assignment files the 90 per cent exact binomial interval on the counted "
+              "dwellings", "90 per cent interval, the exact binomial (Clopper-Pearson) interval" in
+              " ".join(eml_txt.split()))
+        check("interval: the call does not move with it (the regulation designates on the share)",
+              sorted(m["nr"] for m in F["municipalities"] if m["qualifies"]) ==
+              ["5802", "5803", "5805", "5807", "5809"])
         tx = ooxml_text(dx)
-        need = [m["share"] for m in F["municipalities"]] + [r["held"] for r in F["ask_b"]] + \
+        need = [m["share"] for m in F["municipalities"]] + ["%s to %s" % (m["low"], m["high"])
+                                                            for m in F["municipalities"]] + [r["held"] for r in F["ask_b"]] + \
             [r["under_18"] for r in F["ask_a"]] + [r["name"] for r in F["qualifying"]]
         check("deliverables: the letter carries every share, both tables and the qualifying names",
               all(x in tx for x in need))

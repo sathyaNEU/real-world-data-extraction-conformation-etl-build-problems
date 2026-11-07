@@ -52,7 +52,8 @@ def write(fig_path, out_path):
         "4. For each day took the mean of 06 to 09 and of 16 to 22 against the mean of 01 to 05; a rise above %s kWh "
         "on any day marks the dwelling as lived in (Section 4: nobody lived in it on any day)." % f["cut"],
         "5. Divided each municipality's vacant dwellings by its counted dwellings, rounded to one decimal, and "
-        "designated those at 5.0 per cent or more (Section 6).",
+        "designated those at 5.0 per cent or more (Section 6); gave each share the 90 per cent exact binomial "
+        "(Clopper-Pearson) interval on its counted dwellings that the ministry's assignment asks for.",
         "6. Rolled the population register of 5 January 2027 back to 1 November by undoing every later event, reading "
         "the November block renumberings as a change of unit number and the earlier events' old numbers as the "
         "renumbered flats; ages on 1 November.",
@@ -76,13 +77,19 @@ def write(fig_path, out_path):
         "### %s" % W.GOLDEN["docx"],
         "",
         "1. Qualifying municipalities: %s." % _join(["%s (%s per cent)" % (r["name"], r["share"]) for r in q]),
-        "2. Bar chart of the ten municipalities' vacancy shares against the %s per cent threshold, the qualifying "
-        "municipalities highlighted." % f["threshold"],
-        "3. Persons registered in the counted dwellings on 1 November 2026, under 18, 18 to 66, 67 and over:",
+        "2. Each municipality's vacancy share with its 90 per cent interval, per cent:",
+    ]
+    for m in f["municipalities"]:
+        lines.append("   - %s (%s): %s, %s to %s" % (m["name"], m["nr"], m["share"], m["low"], m["high"]))
+    lines += [
+        "   Intervals taking in the %s per cent threshold: %s." % (f["threshold"], _join(f["straddling"])),
+        "3. Bar chart of the ten municipalities' vacancy shares with their intervals against the %s per cent "
+        "threshold, the qualifying municipalities highlighted." % f["threshold"],
+        "4. Persons registered in the counted dwellings on 1 November 2026, under 18, 18 to 66, 67 and over:",
     ]
     for r in f["ask_a"]:
         lines.append("   - %s (%s): %s, %s, %s" % (r["name"], r["nr"], r["under_18"], r["age_18_66"], r["age_67"]))
-    lines.append("4. Counted dwellings held on the land register on 1 November 2026 by the municipality or a company it "
+    lines.append("5. Counted dwellings held on the land register on 1 November 2026 by the municipality or a company it "
                  "owns:")
     for r in f["ask_b"]:
         lines.append("   - %s (%s): %s" % (r["name"], r["nr"], r["held"]))

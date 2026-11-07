@@ -7,7 +7,8 @@ shareholder register with its own companies' shares added, title holders matched
 title has none, by exact name in the business register. The mirror stops on the best-scoring wrong rung of the ladder
 and takes the same route through the two tables, which no rung changes.
 
-Weights 38 / 7 / 55: the main block's 38 as the call 8 and each municipality's vacant dwellings and share 1.5 each;
+Weights 38 / 7 / 55: the main block's 38 as the call 8 and each municipality's vacant dwellings, share and the share's
+two 90 per cent bounds 0.75 each;
 the 55 over the 40 table figures (30 cells of table A, ten of table B).
 
     python3 task470/generator/ceiling.py [target]
@@ -21,6 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 warnings.filterwarnings("ignore")
 
+import golden as G      # noqa: E402
 import methods as M     # noqa: E402
 import world as W       # noqa: E402
 
@@ -34,10 +36,14 @@ def main(target):
     gold = M.designated(gres)
     ga, gb = M.ask_a(d), M.ask_b(d)
 
+    def bounds(r):
+        return tuple("%.1f" % x for x in G.interval(r["vacant"], r["counted"]))
+
     def main_score(res):
         call = M.designated(res) == gold
-        hits = sum((res[nr]["vacant"] == gres[nr]["vacant"]) + (res[nr]["share"] == gres[nr]["share"]) for nr in ALL)
-        return 8 * call + 1.5 * hits, call, hits
+        hits = sum((res[nr]["vacant"] == gres[nr]["vacant"]) + (res[nr]["share"] == gres[nr]["share"]) +
+                   sum(a == b for a, b in zip(bounds(res[nr]), bounds(gres[nr]))) for nr in ALL)
+        return 8 * call + 0.75 * hits, call, hits
 
     def ask_score(a, b):
         ha = sum(a[nr][k] == ga[nr][k] for nr in ALL for k in ga[nr])
@@ -58,7 +64,7 @@ def main(target):
     for k, res in rungs.items():
         m, call, hits = main_score(res)
         S = m + 7 + c_ask
-        print("mirror on %-55s main %.1f (call %s, %2d of 20 figures) + 7 + tables %.1f = %.1f" % (k, m, call, hits,
+        print("mirror on %-55s main %.1f (call %s, %2d of 40 figures) + 7 + tables %.1f = %.1f" % (k, m, call, hits,
                                                                                                 c_ask, S))
         if best is None or S > best[0]:
             best = (S, k)

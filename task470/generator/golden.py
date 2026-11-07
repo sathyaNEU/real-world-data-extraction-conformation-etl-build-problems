@@ -19,6 +19,19 @@ import world as W       # noqa: E402
 BLUE = "#1f4e79"
 GREY = "#a6adb4"
 RED = "#9c2f2f"
+LEVEL = 0.90
+
+
+def interval(v, n, level=LEVEL):
+    """The share's exact binomial interval on the counted dwellings, in per cent (the office's convention, filed in
+    the ministry's assignment)."""
+    from scipy.stats import beta
+    a = (1 - level) / 2
+    lo = beta.ppf(a, v, n - v + 1) if v > 0 else 0.0
+    hi = beta.ppf(1 - a, v + 1, n - v) if v < n else 1.0
+    return 100 * lo, 100 * hi
+
+
 WORDS = {0: "No", 1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
          10: "Ten"}
 
@@ -62,7 +75,13 @@ def figures(X):
         threshold="5.0",
         qualifying=[dict(nr=nr, name=names[nr], vacant=res[nr]["vacant"], share="%.1f" % res[nr]["share"]) for nr in q],
         municipalities=[dict(nr=nr, name=names[nr], counted=fmt(res[nr]["counted"]), vacant=res[nr]["vacant"],
-                             share="%.1f" % res[nr]["share"], qualifies=nr in q) for nr in res],
+                             share="%.1f" % res[nr]["share"], qualifies=nr in q,
+                             low="%.1f" % interval(res[nr]["vacant"], res[nr]["counted"])[0],
+                             high="%.1f" % interval(res[nr]["vacant"], res[nr]["counted"])[1]) for nr in res],
+        level="90",
+        straddling=[names[nr] for nr in res
+                    if interval(res[nr]["vacant"], res[nr]["counted"])[0] <= 5.0 <= interval(res[nr]["vacant"],
+                                                                                           res[nr]["counted"])[1]],
         lowest_qualifying=dict(name=names[above], share="%.1f" % res[above]["share"]),
         highest_below=dict(name=names[below], share="%.1f" % res[below]["share"]),
         totals=dict(counted=fmt(sum(r["counted"] for r in res.values())), vacant=fmt(sum(r["vacant"] for r in
@@ -112,22 +131,22 @@ def write_xlsx(X, F, path):
     ws.auto_filter.ref = "A1:G%d" % (len(c) + 1)
     s = wb.create_sheet("By municipality")
     s.append(["Municipality no.", "Municipality", "Counted dwellings", "Vacant dwellings", "Vacancy share (%)",
-              "Qualifies"])
+              "90% interval, low (%)", "90% interval, high (%)", "Qualifies"])
     for m in F["municipalities"]:
         s.append([int(m["nr"]), m["name"], int(m["counted"].replace(",", "")), m["vacant"], float(m["share"]),
-                  "Yes" if m["qualifies"] else "No"])
+                  float(m["low"]), float(m["high"]), "Yes" if m["qualifies"] else "No"])
     s.append([None, "County", int(F["totals"]["counted"].replace(",", "")), int(F["totals"]["vacant"].replace(",", "")),
-              None, None])
+              None, None, None, None])
     for cell in s[1]:
         cell.font = bold
         cell.fill = fill
         cell.alignment = Alignment(wrap_text=True, vertical="top")
     for cell in s[s.max_row]:
         cell.font = bold
-    for row in s.iter_rows(min_row=2, min_col=5, max_col=5):
+    for row in s.iter_rows(min_row=2, min_col=5, max_col=7):
         for cell in row:
             cell.number_format = "0.0"
-    for col, wd in zip("ABCDEF", (14, 14, 11, 10, 11, 10)):
+    for col, wd in zip("ABCDEFGH", (14, 14, 11, 10, 11, 11, 11, 10)):
         s.column_dimensions[col].width = wd
     s.freeze_panes = "A2"
     wb.save(path)
@@ -142,15 +161,18 @@ def chart_png(F):
     vals = [float(m["share"]) for m in ms]
     fig, ax = plt.subplots(figsize=(6.4, 3.6), dpi=150)
     cols = [BLUE if m["qualifies"] else GREY for m in ms]
-    ax.barh(range(len(ms)), vals, color=cols, height=0.62)
+    lo = [v - float(m["low"]) for v, m in zip(vals, ms)]
+    hi = [float(m["high"]) - v for v, m in zip(vals, ms)]
+    ax.barh(range(len(ms)), vals, color=cols, height=0.62, xerr=[lo, hi],
+            error_kw=dict(ecolor="#3b3b3b", elinewidth=0.8, capsize=2.2))
     ax.axvline(5.0, color=RED, linewidth=1.0, linestyle=(0, (4, 2)))
     ax.text(5.07, len(ms) - 0.45, "Threshold 5.0 %", color=RED, fontsize=7.4, va="center")
-    for i, v in enumerate(vals):
-        ax.text(v + 0.08, i, "%.1f" % v, va="center", fontsize=7.2, color="#2b2b2b")
+    for i, (v, m) in enumerate(zip(vals, ms)):
+        ax.text(float(m["high"]) + 0.12, i, "%.1f" % v, va="center", fontsize=7.2, color="#2b2b2b")
     ax.set_yticks(range(len(ms)))
     ax.set_yticklabels(["%s (%s)" % (m["name"], m["nr"]) for m in ms], fontsize=7.6)
     ax.set_xlabel("Vacant dwellings, per cent of counted dwellings, 9 to 22 November 2026", fontsize=7.6)
-    ax.set_xlim(0, max(vals) * 1.15)
+    ax.set_xlim(0, max(float(m["high"]) for m in ms) * 1.1)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.tick_params(axis="x", labelsize=7.4)
@@ -239,14 +261,16 @@ def write_docx(X, F, path):
               "threshold is %s's %s per cent. Across the county %s of the %s counted dwellings stood vacant." % (
                   F["threshold"], F["highest_below"]["name"], F["highest_below"]["share"], F["totals"]["vacant"],
                   F["totals"]["counted"]))
-    _table(doc, ["Municipality", "No.", "Counted dwellings", "Vacant dwellings", "Vacancy share (%)", "Qualifies"],
-           [[m["name"], m["nr"], m["counted"], m["vacant"], m["share"], "Yes" if m["qualifies"] else "No"]
-            for m in F["municipalities"]] + [["County", "", F["totals"]["counted"], F["totals"]["vacant"], "", ""]])
+    _table(doc, ["Municipality", "No.", "Counted dwellings", "Vacant dwellings", "Vacancy share (%)",
+                 "90% interval (%)", "Qualifies"],
+           [[m["name"], m["nr"], m["counted"], m["vacant"], m["share"], "%s to %s" % (m["low"], m["high"]),
+             "Yes" if m["qualifies"] else "No"]
+            for m in F["municipalities"]] + [["County", "", F["totals"]["counted"], F["totals"]["vacant"], "", "", ""]])
     doc.add_paragraph()
     doc.add_picture(io.BytesIO(chart_png(F)), width=Inches(6.2))
     cap = doc.add_paragraph()
-    rc = cap.add_run("Figure 1. Vacancy share by municipality against the Section 6 threshold. Qualifying "
-                     "municipalities in blue.")
+    rc = cap.add_run("Figure 1. Vacancy share by municipality with its 90 per cent interval, against the Section 6 "
+                     "threshold. Qualifying municipalities in blue.")
     rc.italic = True
     rc.font.size = Pt(8)
     doc.add_paragraph(
@@ -260,6 +284,11 @@ def write_docx(X, F, path):
         "%s for the lived-in ones. Nor does the register: %s of the vacant dwellings still had someone registered in "
         "them on 1 November, and %s lived-in dwellings had nobody registered." % (
             F["cut"], F["vacant_median_kwh"], F["lived_median_kwh"], F["vacant_registered"], F["lived_unregistered"]))
+    doc.add_paragraph(
+        "Each share is given with its 90 per cent interval, the exact binomial interval on the municipality's counted "
+        "dwellings, as the ministry asked. The intervals of %s take in the %s per cent threshold; the regulation "
+        "designates on the share itself (Section 6), so they do not change the certification, but they show where "
+        "a share sits close to the line." % (_join(F["straddling"]), F["threshold"]))
     doc.add_paragraph("The dwelling-level list is in %s." % W.GOLDEN["xlsx"])
     a = doc.add_paragraph()
     a.add_run("Table A. Persons registered as resident in the counted dwellings on 1 November 2026, by age that "
