@@ -39,7 +39,9 @@ input and `KEY_ASSUMPTIONS` stays empty.
 ## Isolating the thread
 
 The thread sees **only** a fresh unzip of `target.zip` at `/tmp/determinism-check-<taskid>-<runid>/target/`
-(made by you with Bash on every run) and the extracted blocks inlined in its spawn prompt. It never opens
+(made by you with Bash on every run), its brief, and the graded blocks in
+`/tmp/determinism-check-<taskid>-<runid>/graded_blocks.md`, which it opens only once its own derivation is
+on disk. It never opens
 `submission.md`, `DESIGN_NOTE.md`, `DATASET_NOTES.md`, `generator/`, `answer_key/`, any verifier,
 `pipeline.json`, any earlier report, `guidelines/`, or another task folder. Enforce this with an
 allow-list of the one scratch prefix and name the forbidden paths.
@@ -59,7 +61,18 @@ The spawn prompt carries:
 
 - `guidelines/determinism_judge_system_prompt.md` in full, read with Bash and inlined verbatim. Never
   paraphrase or summarise the gates.
-- The blocks under the judge's labels, and the scratch path as the only readable directory.
+- `TASK_PROMPT` and the scratch path as the only readable directory. The other four blocks never sit in
+  the brief: write them under the judge's labels to `<scratch>/graded_blocks.md`, which the brief names
+  (`determinism-check`, the judge run). Check by grep that no graded answer reached the brief.
+- **An ORDER section.** First answer the main question and every ask from the bundle alone, executing the
+  text literally, and write `<scratch>/derivation.md` with every figure, the file and field it came from,
+  and the answer each reading gives where the text is silent. Only once that file is on disk, open
+  `graded_blocks.md` and judge the submission against the derivation and the files. State in `verdict.md`
+  whether the order was kept and where the derivation differed from the submission before the thread saw
+  it. A pass that broke the order does not spend the architecture's one re-judge.
+- **Readings to test**, when the orchestrator names them: each executed literally, with the answer it gives
+  and whether a shipped file's own words or data rule it out (quoted), worded so it never says which
+  reading the golden takes or which way the files resolve it.
 - **The literal reading first.** Execute the prompt and every filed definition and rule word for word,
   inferring nothing, list every option where the text is silent, and record the answer each literal
   reading gives. A golden that holds only under an unstated population, window or method is an open fork
