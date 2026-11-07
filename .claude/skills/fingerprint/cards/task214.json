@@ -1,0 +1,87 @@
+{
+  "task": "task214",
+  "architecture": "v1",
+  "drawn": "2026-11-07",
+  "slot_note": "wave 8, Anomaly Detection & Diagnostics; a new draw in another client domain after the Larix world (seed AD37) was set aside: its only honest AD home was General Statistics & Data Science, held by task212 in flight, and its candidate 1 died at screen 4(c) before registration. Seed AD37 contributes nothing to this draw.",
+  "domain": "epidemiology-public-health",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+  "client_domain": "epidemiology-public-health",
+  "niche": "a New Zealand district's spring cryptosporidiosis outbreak: which drinking-water asset the council takes out of service before a planned feed-main renewal, the asset being the one whose water reached the cases during their incubation periods through the network's back-feed operations, not the reservoir the supply-zone register names for the worst zones",
+  "objective": "anomaly-detection",
+  "shape": "18",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "generator/figures.json call",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G5",
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans every file and reads every rule correctly computes each supply zone's attack rate over the outbreak weeks, maps the zones to their sources through the supply-zone register, confirms the tap-water dose-response in the case interviews and names reservoir R4, the register's source for the two worst zones, never laying each case's incubation window over the supply path its zone actually had, which the valve operations and the network model rebuild and which put the worst zones on boundary main BM3 from another reservoir's network for the three wet days that made people ill.",
+  "domain_test": "The deciding quantity is each water asset's attack rate among the residents its water actually reached during their own incubation windows, the exposure-based attack rate a waterborne outbreak investigation computes, with the supply-zone register's normal source as the field's routine shortcut; with hospital or school nouns no valve-routed water reaches anyone through an incubation window, so the question stops parsing.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:exposure-traced-through-network-operations",
+  "layer1": [
+    "the valve operations log keys valves by SCADA tag while the network model keys them by GIS asset number, joined through the valve register",
+    "SCADA operations stamped in UTC against work orders and notifications in New Zealand local time across the 26 September 2027 daylight-saving change",
+    "duplicate notifications for one person from the laboratory and the clinician, under two name spellings",
+    "properties in the rating database against residents in the census meshblock estimates",
+    "a supply-zone register reissued in August after two zones were renumbered"
+  ],
+  "stakeholder_role": "medical officer of health",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "valve_operations.parquet",
+    "rows": 0,
+    "entity": "one valve operation",
+    "grain": "valve x operation",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "incident_or_complaint",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "New Zealand (a fictional district, its council water supply and the regional public health service; personas on the en_NZ index)",
+    "currency": "NZD",
+    "org_type": "regional public health service advising a district council water supplier",
+    "invented_names": [],
+    "people": [
+      "Anna Gullery",
+      "Rhys Cook"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The unit an event belongs to is set by a configuration that changes through raw switch operations on a network, so the published register of which source serves which area misattributes the events; the true source is the one whose output reached each event's area during that event's own exposure window, rebuilt by tracing the network through the switch log day by day.",
+  "driver_concrete": "Each case zone's water during the case's incubation window came from whichever source the valve operations connected it to, so the supply-zone register points the outbreak at reservoir R4, which normally feeds the two worst zones, while the water that made people ill came through boundary main BM3 from another reservoir's network on the three wet days the zones were back-fed during a feed-main repair.",
+  "stump": "A competent solver computes attack rates by supply zone, maps them through the supply-zone register and names reservoir R4 as the asset to take out of service, never tracing the worst zones' supply through the valve operations over each case's incubation window, which puts their exposure on boundary main BM3.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 candidate 1 (never registered)",
+      "world": "Almring Bank Group's private-cloud batch platform Larix, Vienna (seed AD37), general-statistics-data-science / exploratory-data-analysis-distribution-assessment through business-operations-analytics",
+      "fate": "spent 2026-11-07 at go/no-go screen 4(c) before registration: per-record host by night, 4-hour and 8-hour residual readers reached the golden set 16 to 20 of 20; the world was then set aside because its only honest AD home was held by task212",
+      "driver": "The decisive quantity is which units' failures a remedy that reruns a unit's work on fresh capacity would have prevented, and because a heavy unit slows everything sharing its resource while it runs, only the resource's state outside the unit's own run tells a resource fault from the unit's own load."
+    }
+  ],
+  "notes": "Five go/no-go screens measured on the clean truth over 40 redraws before registration (generator/screens.py, scratch t214/w3_20.json and w3_40.json): golden = truth 40/40, lead min 3.80; every golden variant 20/20; first look and every careful reader wrong 20/20.",
+  "registered": "2026-11-07T21:42:13Z"
+}
