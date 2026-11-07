@@ -5,7 +5,7 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
+ "updated": "2026-11-07",
  "stump": "A competent solver conforms the cadastre and the hub's hourly values, counts as vacant the dwellings whose average daily use over the fortnight sits under a consumption floor, sees the floor agree with the register, and files that no municipality qualifies at any floor from 1 to 10 kWh a day; an empty dwelling in a Norwegian November is left heated, so the vacant dwellings use a median 20.5 kWh a day against 19.5 for the lived-in ones, and only a household's morning or evening rise over the dwelling's own night-time use on some day shows that someone lived there, which designates five.",
  "architecture": 2,
  "loops": 0,
@@ -27,7 +27,16 @@
   "disposition": "APPROVE",
   "report": "determinism_check_report.md"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-07",
+   "portal": "portal input check: the ministry email used the reserved .example domains. Domains Fit: read as a regulation's threshold applied to counts and shares",
+   "repair": "metadata",
+   "zip": "64c862d8",
+   "moves": "the email's addresses and Message-ID on kbd.dep.no and statkontoret.no; only the email moved, no figure moved. Domains Fit left for the author's call",
+   "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": null,
@@ -77,5 +86,5 @@
    "script": "generator/ceiling.py"
   }
  },
- "zip_sha256_16": "52fc465dedb924b1"
+ "zip_sha256_16": "64c862d8929ac852"
 }

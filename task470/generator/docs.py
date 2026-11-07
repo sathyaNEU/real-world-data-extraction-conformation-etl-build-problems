@@ -87,11 +87,11 @@ ASSIGNMENT = (
 def write_assignment(path):
     m = email.message.EmailMessage()
     sh, mi = W.PEOPLE["section_head"], W.PEOPLE["ministry"]
-    m["From"] = "%s <%s>" % (mi[0], "eirik.haug@kdd.dep.example")
-    m["To"] = "%s <%s>" % (sh[0], "martine.strom@statoffice.example")
+    m["From"] = "%s <%s>" % (mi[0], "eirik.haug@kbd.dep.no")
+    m["To"] = "%s <%s>" % (sh[0], "martine.strom@statkontoret.no")
     m["Subject"] = "Certification for the 2027 vacant dwelling grant, %s pilot" % W.COUNTY
     m["Date"] = email.utils.format_datetime(dt.datetime(2026, 12, 1, 10, 42, tzinfo=dt.timezone(dt.timedelta(hours=1))))
-    m["Message-ID"] = "<20261201094211.4470@kdd.dep.example>"
+    m["Message-ID"] = "<20261201094211.4470@kbd.dep.no>"
     m.set_content(ASSIGNMENT % (sh[0].split()[0], W.COUNTY, mi[0], mi[1], W.MINISTRY))
     with open(path, "wb") as fh:
         fh.write(bytes(m))

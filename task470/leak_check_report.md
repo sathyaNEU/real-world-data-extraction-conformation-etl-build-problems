@@ -1,6 +1,6 @@
 # leak check, task470
 
-**Verdict: REVIEW.** 14 files read, 51 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 14 files read, 51 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -12,7 +12,14 @@ Stump terms swept: section, household, statistics, fortnight, points, hourly, he
 ## 4 design-note vocabulary (REVIEW 1)
 - **REVIEW** `regulation_vacant_dwelling_grant_2027.pdf`: 8 of 25 stump-paragraph terms appear (section, statistics, fortnight, points, office, cadastre); read whether the document names the move
 
-## 10 container metadata (INFO 1)
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
+## 10 container metadata (LEAK 4, INFO 1)
+- **LEAK** `elhub_timeverdier_2026-11-09_2026-11-22.parquet`: parquet created_by names 'parquet-cpp-arrow version 16.1.0'; leave it out of the footer
+- **LEAK** `elhub_timeverdier_2026-11-09_2026-11-22.parquet`: parquet key-value metadata carries the Arrow or pandas schema
+- **LEAK** `regulation_vacant_dwelling_grant_2027.pdf`: Producer names 'Ministry of Local Government and Housing', not the application that wrote the PDF
+- **LEAK** `regulation_vacant_dwelling_grant_2027.pdf`: Creator names 'Ministry of Local Government and Housing', not the application that wrote the PDF
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 1 file names (clean)
@@ -26,8 +33,6 @@ Stump terms swept: section, household, statistics, fortnight, points, hourly, he
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 
