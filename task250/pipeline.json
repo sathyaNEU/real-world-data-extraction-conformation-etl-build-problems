@@ -1,39 +1,46 @@
 {
  "task": "task250",
- "status": "SHIPPED",
- "domain": "supply-chain-logistics",
+ "status": "DRAWING",
+ "domain": "demographic-social-science",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-31",
- "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the unloading each unscanned parcel came off at its delivery depot fires Strykow as well.",
- "architecture": 3,
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-11-07",
+ "stump": "A competent analyst judges each survey and mode by its respondents set against the adults on their own household grids and by the confirmation item, and moves to the household grid the streams whose respondents skew from their households by sex or age; whom a household substitutes follows the survey's topic, not how often it substitutes, so that set moves streams that seldom substitute and keeps one that often does, and only the respondents' days from the letter to their own next birthday, read against the order statistics of the adults' seasonal birthday distribution at that letter's date for a household of their size, finds the streams below the standard's line.",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-31"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW on target.zip 1b8dcbc7, every line ruled",
-  "reader": "reads 1 and 2: no leak; question 6 ruled analytical"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (2026-10-31): repeat.decision and repeat.question_form only, after the redraw of the decisive generator (G17) and the requester (operations_director)",
-  "surface": "exit 0 (2026-10-31): no surface overlap; one card-axis pair promoted against task480 (gap time, G17, designation_set), the card's differentiation line names how the driver differs"
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md and determinism_check_report_pass2.md (the courier-event window pinned in the prompt)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-07",
+   "portal": "Returned on two findings (the author's portal result of 2026-11-07). Input files: both Parquet files (courier_events_2026-10.parquet, hub_sort_events_2026-10.parquet) carried the pyarrow creator and pandas_version keys in their schema metadata, a generator provenance tell that fails the provenance check. Domains Fit: the deciding work was applying a stated tolerance to missed-scan rates, counting duplicates and uncollected parcels and certifying whether an alert fires (counts, rates and rule checking), where a General Statistics & Data Science task would model or forecast an error rate, detect anomalous patterns with statistical methods or assess measurement error and its uncertainty.",
+   "repair": "design: re-root to architecture 4 at stage 1 (the 10/10 rules fail at rule 1, so the build is redesigned, not patched)",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
+ "portal_status": "RETURNED",
+ "portal_status_date": "2026-11-07",
  "history": [
   {
    "date": "2026-10-20",
@@ -66,7 +73,15 @@
   {
    "date": "2026-10-31",
    "event": "PAUSED at stage 4 for the main thread: the leak reader and the determinism judge cannot be spawned from a fork"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "architecture 3 returned by the portal (Domains Fit: a stated tolerance over missed-scan rates read as rule checking; Parquet inputs carrying the pandas schema metadata block); spent, the courier world left"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "DRAWN architecture 4: a Portuguese social research institute's push-to-web household survey programme, each survey and mode's 2027 within-household selection (keep the next-birthday instruction or move to a household grid with a random selection), judged on the share of its 2026 responding households of two or more adults whose respondent was the next-birthday adult; demographic-social-science in survey-research-official-statistics, nonresponse-calibration-measurement-error-adjustment; guard WARN only (repeat.decision and repeat.deliverables against task156; the two older structural repeats differentiated)"
   }
  ],
- "zip_sha256_16": "1b8dcbc76a43565c"
+ "client_domain": "survey-research-official-statistics"
 }
