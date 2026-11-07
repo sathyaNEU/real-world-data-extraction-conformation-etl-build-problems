@@ -246,7 +246,8 @@ def submission(R, path):
     L.append("1. Placed every member of membership_register_extract_2026-11-02.csv at their worksite, moving the codes "
              "used before July 2024 to today's through worksites_2026-11.csv.")
     L.append("2. Marked each member, on each online vote's close and on the extract, as at a worksite with a delegate "
-             "of the term in force (delegate_register_2018-2028.xlsx) who was still a member that day.")
+             "of the term in force (delegate_register_2018-2026.xlsx, and delegate_election_return_2026.xlsx for "
+             "2026-28) who was still a member that day.")
     L.append("3. Fitted a logit of voting on online_vote_invitations_2022-2025.csv: vote and council effects, age band, "
              "log years of membership, employment and the delegate mark.")
     L.append("4. Set the ballots' level with one shift returning every ballot the two Tallyhouse declarations report, "
@@ -257,7 +258,8 @@ def submission(R, path):
     L.append("7. Dues: one copy of each advice, the bureau's runs split by its statements, each run placed at the "
              "Sunday its pay period ends (FP-04), a Thursday-dated platform advice moved back four days.")
     L.append("8. Organiser hours: travel and administration out, one row per organiser, invitation and day at its last "
-             "update (a moved booking keeps its earlier row), each forum's hours shared by all its sign-ins.")
+             "update (a moved booking counted at its later row, the one updated last), each forum's hours shared "
+             "by all its sign-ins.")
     L.append("")
     L.append("## 4. Deliverable Answers\n")
     L.append("### %s\n" % XLSX)

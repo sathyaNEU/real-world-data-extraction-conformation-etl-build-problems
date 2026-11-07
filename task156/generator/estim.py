@@ -21,7 +21,8 @@ F_REG = "membership_register_extract_2026-11-02.csv"
 F_INV = "online_vote_invitations_2022-2025.csv"
 F_VOTES = "online_votes_2022-2025.csv"
 F_SITES = "worksites_2026-11.csv"
-F_DELEG = "delegate_register_2018-2028.xlsx"
+F_DELEG = "delegate_register_2018-2026.xlsx"
+F_RETURN = "delegate_election_return_2026.xlsx"
 F_ROUND = "bargaining_round_2027.xlsx"
 PAB_PDFS = ["tallyhouse_pab_declarations_2021.pdf", "tallyhouse_pab_declarations_2023-24.pdf"]
 
@@ -62,13 +63,13 @@ def load(target):
     K.inv = [(r["vote_id"], int(r["member_no"]), r["voted_utc"] != "")
              for r in csv.DictReader(open(os.path.join(target, F_INV), encoding="utf-8"))]
     # delegates: (term start year, site) -> member numbers
-    wb = load_workbook(os.path.join(target, F_DELEG), read_only=True)
     K.deleg = {}
-    for ws in wb.worksheets:
-        term = int(ws.title[:4])
+    sheets = [ws for f in (F_DELEG, F_RETURN) for ws in load_workbook(os.path.join(target, f), read_only=True).worksheets]
+    for ws in sheets:
         for i, row in enumerate(ws.iter_rows(values_only=True)):
             if i == 0 or row[0] is None:
                 continue
+            term = row[7].year
             code = str(row[1])
             site = code if code in K.site_council else K.old2new[code]
             K.deleg.setdefault((term, site), []).append(int(row[3]))

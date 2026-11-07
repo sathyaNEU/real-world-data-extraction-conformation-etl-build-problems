@@ -26,10 +26,16 @@
    "rows": 30
   },
   {
-   "file": "target/delegate_register_2018-2028.xlsx",
-   "source": "LSU Victoria Branch delegate register: workplace delegates by term, 2018-20 to 2026-28, kept by the organising coordinator",
+   "file": "target/delegate_election_return_2026.xlsx",
+   "source": "LSU Victoria Branch returning officer's return of the July 2026 worksite delegate elections",
    "licence": "Constructed for this task; no third-party data; free to use with the task.",
-   "rows": 1130
+   "rows": 233
+  },
+  {
+   "file": "target/delegate_register_2018-2026.xlsx",
+   "source": "LSU Victoria Branch delegate register: workplace delegates by term, 2018-20 to 2024-26, kept by the organising coordinator",
+   "licence": "Constructed for this task; no third-party data; free to use with the task.",
+   "rows": 897
   },
   {
    "file": "target/lsu_dues_and_remittances_procedure_2025.pdf",

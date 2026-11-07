@@ -104,7 +104,8 @@ def pab_pdfs(out):
                  "Protected action ballots 2023-24: declarations")
         O.build(os_join(out, f), _decl_story(rows, rnd), title, W.AGENT,
                 "Declarations of protected action ballot results for %s" % W.UNION,
-                "%s, declarations issued to %s" % (W.AGENT, W.UNION), when, when, margin_mm=22)
+                "%s, declarations issued to %s" % (W.AGENT, W.UNION), when, when, margin_mm=22,
+                producer="LibreOffice 7.1" if rnd == "21" else None)
 
 
 def os_join(a, b):

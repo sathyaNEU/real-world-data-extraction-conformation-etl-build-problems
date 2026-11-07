@@ -17,13 +17,13 @@ Not the 15 councils members' own voting records put above half: Bellcourt City C
 ## 3. Step-by-Step Solution
 
 1. Placed every member of membership_register_extract_2026-11-02.csv at their worksite, moving the codes used before July 2024 to today's through worksites_2026-11.csv.
-2. Marked each member, on each online vote's close and on the extract, as at a worksite with a delegate of the term in force (delegate_register_2018-2028.xlsx) who was still a member that day.
+2. Marked each member, on each online vote's close and on the extract, as at a worksite with a delegate of the term in force (delegate_register_2018-2026.xlsx, and delegate_election_return_2026.xlsx for 2026-28) who was still a member that day.
 3. Fitted a logit of voting on online_vote_invitations_2022-2025.csv: vote and council effects, age band, log years of membership, employment and the delegate mark.
 4. Set the ballots' level with one shift returning every ballot the two Tallyhouse declarations report, each roll the members employed on its roll date.
 5. Ran each member of the 2 November 2026 roll at the councils in bargaining_round_2027.xlsx with the 2026-28 delegates in post on the extract and averaged by council.
 6. Applied the guide's rule: apply where expected turnout is at least 50 per cent.
 7. Dues: one copy of each advice, the bureau's runs split by its statements, each run placed at the Sunday its pay period ends (FP-04), a Thursday-dated platform advice moved back four days.
-8. Organiser hours: travel and administration out, one row per organiser, invitation and day at its last update (a moved booking keeps its earlier row), each forum's hours shared by all its sign-ins.
+8. Organiser hours: travel and administration out, one row per organiser, invitation and day at its last update (a moved booking counted at its later row, the one updated last), each forum's hours shared by all its sign-ins.
 
 ## 4. Deliverable Answers
 

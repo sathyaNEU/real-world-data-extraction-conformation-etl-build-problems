@@ -134,7 +134,9 @@ def _page_field(par):
     r.font.size = Pt(7)
 
 
-def build(path, story, title, author, subject, footer, created, modified, margin_mm=18, top_mm=17, bottom_mm=17):
+def build(path, story, title, author, subject, footer, created, modified, margin_mm=18, top_mm=17, bottom_mm=17,
+          producer=None):
+    """producer: the LibreOffice release the issuing office ran at the document's date (default: the one installed)."""
     """created and modified: aware datetimes, the document's in-fiction issue and last-saved times."""
     doc = Document()
     sec = doc.sections[0]
@@ -180,6 +182,8 @@ def build(path, story, title, author, subject, footer, created, modified, margin
         b = open(os.path.join(work, "document.pdf"), "rb").read()
     finally:
         shutil.rmtree(work, ignore_errors=True)
+    if producer:
+        b = _producer(b, producer)
     b = _fix(b, created, modified)
     open(path, "wb").write(b)
 
@@ -189,6 +193,26 @@ def _pdfdate(d):
     sign = "+" if off >= dt.timedelta(0) else "-"
     mins = abs(int(off.total_seconds())) // 60
     return ("D:%s%s%02d'%02d'" % (d.strftime("%Y%m%d%H%M%S"), sign, mins // 60, mins % 60)).encode()
+
+
+def _producer(b, name):
+    """Set the info dictionary's Producer to the release the office ran, as Writer writes it (UTF-16 hex). The info
+    dictionary is the last object before the cross-reference table, so only startxref moves; every object offset
+    in the table is asserted to sit before the change."""
+    m = re.search(rb"/Producer<(FEFF[0-9A-F]*)>", b)
+    assert m, "no Producer in the export"
+    new = ("FEFF" + "".join("%04X" % ord(ch) for ch in name)).encode()
+    delta = len(new) - len(m.group(1))
+    x = b.rfind(b"\nxref\n")
+    assert m.end() < x
+    offs = [int(o) for o in re.findall(rb"^(\d{10}) \d{5} n", b[x:], re.M)]
+    assert max(offs) < m.start(1), "an object after the info dictionary"
+    b = b[:m.start(1)] + new + b[m.end(1):]
+    s = re.search(rb"startxref\n(\d+)\n%%EOF", b)
+    old = int(s.group(1))
+    assert old == x + 1, (old, x)
+    b = b[:s.start(1)] + str(old + delta).encode() + b[s.end(1):]
+    return b
 
 
 def _fix(b, created, modified):

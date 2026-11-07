@@ -1,10 +1,10 @@
 {
  "task": "task156",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "political-science-public-policy/election-polling-forecasting (client domain political-science-public-policy; world: a Victorian local government union branch choosing the councils at which it applies for protected action ballot orders for ballots opening 1 March 2027)",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-07",
  "stump": "Carrying each member's own voting history, calibrated to the 2021 and 2023-24 declared turnouts and checked on the 2023-24 round within a point, files 15 councils above half; the step that lands it there is reading each member's past votes as theirs alone when they rode the elected delegate in post at their worksite at the time, and the July 2026 delegate elections left worksites at six of those councils without one and filled worksites at two others, so with the 2026-28 delegates the set is 11.",
  "architecture": 3,
@@ -15,8 +15,10 @@
   "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK, on 952e2c71 after the round 1 repair (the new FP-04 and Notes sheets ruled in the design note)",
-  "reader": "round 1 (Sonnet, on e4be2d15): clean, no leak, Q6 analytical; FP-04 and the prompt changed since, copy refreshed at scratchpad/leak-task156/"
+  "leak_py": "REVIEW, no LEAK, on 4610bc97 (every line ruled in the design note)",
+  "reader": "round 1 (Sonnet, on e4be2d15): clean, no leak, Q6 analytical; FP-04 and the prompt changed since, copy refreshed at scratchpad/leak-task156/",
+  "reader_r2": "round 2 re-read clean (scratchpad leak-task156/reader_answers_r2.md)",
+  "pending": "the 2026-28 term moved into delegate_election_return_2026.xlsx after the round 2 re-read: one leak re-read owed before the ship counts (main thread)"
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-11-07 on the registered card (gap population, pattern A)",
@@ -24,19 +26,19 @@
   "surface": "no pair promoted for task156; people: Samantha Taylor, and \"Branch Secretary\" as a title in the guide (no name)"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC round 1 (2026-11-07, Sonnet thread, on e4be2d15): the main call forced and reproduced (11 councils, none within 5 points of half); asks 1 to 3 rest on unfiled conventions",
-  "disposition": "FIX_NOW, ask layer: the dues Sunday period end, the diary's one entry per organiser, invitation and day at its last update, the 30 against 24 council scope, turnout rounding",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE after the step 8 rewording",
   "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
   "gate_h": "domain pass, layers pass, decisive_step analytical",
   "report": "task156/determinism_check_report.md",
   "round1": "FIX_NOW on the asks (2026-11-07, /tmp/determinism-check-task156-r1/verdict.md): call forced and reproduced, Gate G analytical_non_defect, Gate H pass; asks open on the dues window, the diary unit, the asks scope and ask 1 rounding",
   "repair": "FP-04 files the Sunday period-end convention; the prompt files the diary unit and scopes both asks to the round (24 each, platform councils re-sited inside the round, no in-round figure moved); the guide and tracker file the ballot period close for each member's state; ask 1 asks the side only (five councils within 0.05 of a half point); freeze.py: main side unmoved, 12 out-of-round ask figures and block 4 turnout percentages dropped (allowed)",
-  "round2": "pending: scratch /tmp/determinism-check-task156-r2/ (fresh target/, judge_brief.md); main thread spawns on Sonnet"
+  "round2": "DETERMINISTIC (2026-11-07, /tmp/determinism-check-task156-r2/verdict.md, report task156/determinism_check_report.md): the call reproduced, 6 points either side, no respecification flipping a council; stump power moderate to high; FIX_NOW on step 8 wording only, applied"
  },
  "returned": [],
- "resume": "stage 4: the main thread spawns the one re-judge on Sonnet on /tmp/determinism-check-task156-r2/; on APPROVE, re-run the leak reader only if asked (FP-04 and the prompt changed), then every gate on the final cut and SHIPPED with target.zip and golden/ added with -f; rebuild with `python3 task156/generator/build.py`",
+ "resume": "shipped; the main thread runs one leak re-read on the final cut (the 2026-28 term now ships as its own election return), then the author's portal list",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-07",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -131,11 +133,11 @@
   }
  ],
  "gates_stage3": {
-  "checks": "39 assertions, 0 failed (Gate F: 0 of 4 cheap routes land the call; 5 standing variants file the golden)",
-  "verify": "independent verifier reproduces the call, every council side and every ask figure, 0 disagreements",
-  "rebuild": "two consecutive builds byte-identical: target (16 files), 2 goldens, figures.json, submission.md",
-  "target_zip_sha256": "952e2c71b0d5239a897c6a97bb25db58f96bb057bf8b64b5d39fa95bfced993f",
-  "figures_check": "PASS, 52 figures in blocks 1 to 4, 0 absent",
+  "checks": "39 assertions, 0 failed",
+  "verify": "0 disagreements",
+  "rebuild": "two consecutive builds byte-identical: target (17 files), 2 goldens, figures.json, submission.md",
+  "target_zip_sha256": "4610bc9768a15a5be6815094628909eaa60860a47adf8b843af23037fa79bc0f",
+  "figures_check": "PASS, 52 figures",
   "voice_check": "PASS (900 characters)",
   "ceiling": {
    "pair": 42.2,
@@ -152,7 +154,9 @@
    "backtest_mae_points": 0.68
   },
   "precut": "61 checks, 0 FAIL, 0 WARN",
-  "heart": "PASS after round 1 repair"
+  "heart": "PASS after round 1 repair",
+  "freeze": "PASS (determinism mode) on the round 2 pre-ship fixes",
+  "pdf_xref": "every PDF cross-reference offset verified; 2021 declarations Producer LibreOffice 7.1"
  },
- "zip_sha256_16": "952e2c71b0d5239a"
+ "zip_sha256_16": "4610bc9768a15a5b"
 }

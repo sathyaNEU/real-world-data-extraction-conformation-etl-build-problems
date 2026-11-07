@@ -37,17 +37,21 @@ def build_data(out):
     n[R.F_VOTES] = R.write_csv(p(R.F_VOTES), R.VOTE_COLS, R.vote_rows())
     n[R.F_SITES] = R.write_csv(p(R.F_SITES), R.SITE_COLS, R.site_rows())
     n[R.F_DELEG] = R.write_delegates(p(R.F_DELEG))
+    n[R.F_RETURN] = R.write_return(p(R.F_RETURN))
     n[R.F_ROUND] = R.write_round(p(R.F_ROUND))
     n[R.F_REMIT] = R.write_csv(p(R.F_REMIT), AD.REMIT_COLS, AD.remit_rows(), crlf=True)
     n[R.F_DIARY] = R.write_csv(p(R.F_DIARY), AD.DIARY_COLS, AD.diary_rows())
     n[R.F_SIGNIN] = R.write_csv(p(R.F_SIGNIN), AD.SIGNIN_COLS, AD.signin_rows())
     n[R.F_WORKFORCE] = R.write_csv(p(R.F_WORKFORCE), AD.WORKFORCE_COLS, AD.workforce_rows(), crlf=True)
     n[R.F_SURVEY] = R.write_survey(p(R.F_SURVEY))
-    PP.normalize_ooxml(p(R.F_DELEG), "Eric Goodwin", "Eric Goodwin", "2018-06-29T03:40:00Z", "2026-10-28T05:21:00Z",
+    org = "Local Services Union, Victoria Branch"
+    PP.normalize_ooxml(p(R.F_DELEG), org, org, "2018-06-29T03:40:00Z", "2026-06-30T05:21:00Z",
                        excel=True, title="Delegate register")
-    PP.normalize_ooxml(p(R.F_ROUND), "Samantha Taylor", "Samantha Taylor", "2026-08-11T00:52:00Z",
+    PP.normalize_ooxml(p(R.F_RETURN), org, org, "2026-07-14T23:05:00Z", "2026-10-28T05:21:00Z",
+                       excel=True, title="Delegate elections July 2026: return")
+    PP.normalize_ooxml(p(R.F_ROUND), org, org, "2026-08-11T00:52:00Z",
                        "2026-10-31T04:07:00Z", excel=True, title="2027 bargaining round")
-    PP.normalize_ooxml(p(R.F_SURVEY), "Samantha Taylor", "Samantha Taylor", "2024-10-03T02:15:00Z",
+    PP.normalize_ooxml(p(R.F_SURVEY), org, org, "2024-10-03T02:15:00Z",
                        "2024-10-09T06:48:00Z", excel=True, title="Member survey 2024")
     return n
 

@@ -18,7 +18,7 @@ card's `lineage` with their fates.
 | Decision | `designation_set`, answer unit `set_of_items`: the councils at which the branch applies for protected action ballot orders in February 2027 |
 | Mechanism | population: the members whose past votes the history records are not, at some councils, the electorate the 2027 ballot meets, because the delegate active at their worksite when they voted is no longer there or a new one is (pattern A, past exceedance against forward yield: the councils' past ballots cleared half, the forward yield at some does not); generators G14 (turnout conditioned on an active delegate at the member's worksite), G13 (the July 2026 delegate elections fall between the last online vote and the ballot), G4 (a member's past votes attributed to the member when part belongs to the delegate in post at the time); Gate G `forecasting`; strategy `forecast_method_backtest` (the vote-history model reproduces the last closed round and misses the next) |
 | Layer 2 family / pattern | `forecast_uncertainty` (a forecast validated out of sample on the last round, whose precondition, the mobilisation the history embedded, fails in the forward window); `own:vote-history-turnout-carried-past-a-change-in-workplace-mobilisation` |
-| Furniture | forum `board_of_directors` (the Branch Committee of Management, the branch's governing body, resolves which applications are lodged), forcing event `statutory_or_regulatory_filing` (the applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027), organisation family `cooperative_or_member_body` (a registered trade union branch), role family `research_desk` (the branch's research and bargaining officer), context artifact `register` (the branch's delegate register), calibration `realised_outcome_roster` (the ballot agent's declared turnouts, which both routes reproduce), opening `question-first`, question form `which` |
+| Furniture | forum `board_of_directors` (the Branch Committee of Management, the branch's governing body, resolves which applications are lodged), forcing event `statutory_or_regulatory_filing` (the applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027), organisation family `cooperative_or_member_body` (a registered trade union branch), role family `research_desk` (the branch's research and bargaining officer), context artifact `register` (the branch's delegate register), calibration `counterparty_acknowledgement` (the ballot agent's declared turnouts, which both routes reproduce), opening `question-first`, question form `which` |
 | Spine | `online_vote_invitations_2022-2025.csv`, one row per invitation the branch's online voting service sent a member for one of its online votes (about 85,000 rows, UTC), beside the membership register, the delegate register, the worksite list and the ballot agent's declared results; constructed for this build, no real dataset |
 | Deliverables | `pab_2027_turnout_forecast.xlsx` (the forecast and the asks), `pab_2027_recommendation_bcom.docx` (the memo to the Branch Committee of Management) |
 | People | drawn with `guard.py names --geo australia --seed 156`: Samantha Taylor, Dennis Kim, Eric Goodwin (John Howard passed over, a former prime minister; Margaret Montgomery passed over, her first name already on task258) |
@@ -32,8 +32,8 @@ forward yield at some does not (pattern A). Forum, forcing event and organisatio
 builds (task232, task190, task456).
 
 **The data-native sentence.** The branch's own online votes record who voted but not who was asked to by a delegate,
-and the delegate register's elected terms, read against each member's worksite, are the only place the July 2026
-delegate elections show; the history the forecast is carried on was all gathered under the delegates elected in 2020,
+and the delegate register's elected terms with the returning officer's July 2026 return, read against each member's
+worksite, are the only place the July 2026 delegate elections show; the history the forecast is carried on was all gathered under the delegates elected in 2020,
 2022 and 2024.
 
 ## Shape
@@ -92,7 +92,7 @@ Actor: members and worksites have rows, but whether an elected delegate was in p
 Link: the join is member to worksite (old codes through the worksite list) to the register's term for the vote's date, with the delegate checked against their own membership row; no shared key carries a delegate to an elector, and the field's vote-history method never asks for the comparison.
 Reflex: the field's named method, a vote-history turnout logit calibrated on declared results (or each member's own share of past votes), sits at rung 1 and files 15 councils.
 Back-test: the textbook route rebuilds the 2023-24 declarations within 0.7 points on average and 3.5 at worst (asserted), because the 2022 and 2024 delegates sat at much the same worksites; the validation record confirms the easy route.
-Second use: the delegate register is the organising coordinator's term-by-term record and is what any solver reads to see who represents a worksite; the online votes are the vote-history route's own input; the declarations calibrate every route; the worksite list maps the 2024 code migration for the register itself. Deleting the decisive step drops no file.
+Second use: the delegate register is the organising coordinator's term-by-term record to 2024-26 and the July 2026 return is the returning officer's declaration of the new term, each what any solver reads to see who represents a worksite; the online votes are the vote-history route's own input; the declarations calibrate every route; the worksite list maps the 2024 code migration for the register itself. Deleting the decisive step drops no file.
 Shock: the July 2026 elections' changes sit inside ordinary term-to-term churn (worksites gain and lose delegates every term); the golden set is not an interval of any shipped statistic (it holds Valmont at 36 per cent coverage and leaves out Darnley Plains at 82, and its turnouts run from 57 to 72 while Bellcourt's last declaration was 56).
 Pins: the guide files the threshold, the roll, the window and the comparison; no sentence names delegates, mobilisation, the 2026 elections or any grouping; deleting any filed sentence leaves the decisive step where it was.
 
@@ -226,7 +226,7 @@ Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 12 of 48 a
   declarations are past realised turnouts, the easy route's own input and a past fact, never a forecast); the three
   stump-paragraph words in the 2023-24 declarations are "carried", "question" and "declarations", the agent's own
   ordinary wording; the dates after the setting are the agreements' nominal expiry dates in the round tracker and the
-  2026-28 term's end date in the delegate register, both future by nature. After round 1: the tracker's and the
+  2026-28 term's end date in the July 2026 election return, both future by nature. After round 1: the tracker's and the
   survey's 'Notes' sheets are the organisation's own notes (the round's lodgement and ballot period; the survey's
   fieldwork dates), describing no column or file; FP-04's three stump-paragraph words are 'register', 'member' and
   'record' in finance's ordinary sense (the remittance register), naming no move.
@@ -372,3 +372,16 @@ Measured by: generator/ceiling.py (on the cut pack: the cracker keeps 12 of 48 a
   the call): ship the 2026-28 term as the organising coordinator's separate July 2026 election return rather than a
   sheet of the delegate register, so the register a solver opens holds the terms the online votes cover and the new
   term sits in a file read for its own purpose; the call, the stump and every figure would stay frozen.
+- Judge round 2 (2026-11-07): DETERMINISTIC, the call reproduced with 6 points either side and no respecification
+  flipping a council, stump power moderate to high. Before ship: step 8 reworded (the golden keeps the later, last
+  updated row of a moved booking); the xlsx inputs' creator and last-modified-by set to the branch, the body that
+  issues them; the 2021 declarations given the Producer of the LibreOffice release current at their June 2021 export
+  (7.1; the info dictionary is the last object, so startxref moves and every object offset is asserted unchanged), the
+  other four PDFs dated after 24.2's February 2024 release; and the hardening above applied: the 2026-28 term now ships
+  as `delegate_election_return_2026.xlsx`, the returning officer's return, and `delegate_register_2018-2026.xlsx` holds
+  the terms to 2024-26. No graded figure moved (freeze.py); the input gates hold (17 files).
+- Surface at ship promoted three pairs on card axes alone: task157 (back to back, the same domain and objective; a
+  petition sample's pair defects, not a turnout forecast, differentiated on the card), task154 (the calibration form
+  realised_outcome_roster repeated two builds apart: redrawn to counterparty_acknowledgement, the agent's declared
+  results being a counterparty's record) and task265 (left truncation in a descriptive survival estimate,
+  differentiated on the card); heart PASS; left for the author's adjudicated clone check.

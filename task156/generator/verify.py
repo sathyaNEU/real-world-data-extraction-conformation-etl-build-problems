@@ -44,12 +44,13 @@ for c in ("date_of_birth", "joined", "ceased"):
     reg[c] = pd.to_datetime(reg[c])
 reg = reg.set_index("member_no")
 
-xl = pd.ExcelFile(os.path.join(T, "delegate_register_2018-2028.xlsx"))
 dl = []
-for sh in xl.sheet_names:
-    df = xl.parse(sh, dtype={"Worksite code": str})
-    df["term"] = int(sh[:4])
-    dl.append(df)
+for fn in ("delegate_register_2018-2026.xlsx", "delegate_election_return_2026.xlsx"):
+    xl = pd.ExcelFile(os.path.join(T, fn))
+    for sh in xl.sheet_names:
+        df = xl.parse(sh, dtype={"Worksite code": str})
+        df["term"] = pd.to_datetime(df["Term starts"]).dt.year
+        dl.append(df)
 dl = pd.concat(dl)
 dl["site"] = dl["Worksite code"].map(code_map)
 dl = dl.join(reg[["joined", "ceased"]], on="Member no")

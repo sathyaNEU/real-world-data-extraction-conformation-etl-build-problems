@@ -1,10 +1,10 @@
 # leak check, task156
 
-**Verdict: REVIEW.** 16 files read, 46 golden figures and 24 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 46 golden figures and 24 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: delegate, register, member, decisive, carries, record, replay, declarations, golden, question, carried, delegates, worksite, window, prompt, vote-history, network, inside, review, reviewers, dropped, months, history, sentence, elector
+Stump terms swept: delegate, register, member, declarations, golden, decisive, carries, record, replay, question, carried, delegates, worksite, window, prompt, vote-history, network, inside, points, review, reviewers, dropped, months, history, sentence
 
 ## 1 file names (REVIEW 2)
 - **REVIEW** `bargaining_round_2027.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
@@ -22,10 +22,11 @@ Stump terms swept: delegate, register, member, decisive, carries, record, replay
 - **REVIEW** `lsu_dues_and_remittances_procedure_2025.pdf`: 3 of 25 stump-paragraph terms appear (register, member, record); read whether the document names the move
 - **REVIEW** `tallyhouse_pab_declarations_2023-24.pdf`: 3 of 25 stump-paragraph terms appear (declarations, question, carried); read whether the document names the move
 
-## 6 ranking artifacts (REVIEW 10, INFO 1)
+## 6 ranking artifacts (REVIEW 11, INFO 1)
 - **REVIEW** `bargaining_round_2027.xlsx`: names 24 of 24 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `council_workforce_returns_2026.csv`: names 24 of 24 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `delegate_register_2018-2028.xlsx`: names 24 of 24 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `delegate_election_return_2026.xlsx`: names 24 of 24 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `delegate_register_2018-2026.xlsx`: names 24 of 24 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `member_survey_2024_results.xlsx`: names 24 of 24 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `membership_register_extract_2026-11-02.csv`: names 24 of 24 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `payroll_remittance_advices_2025-26.csv`: names 21 of 24 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -37,7 +38,7 @@ Stump terms swept: delegate, register, member, decisive, carries, record, replay
 
 ## 9 dates after the setting (REVIEW 2)
 - **REVIEW** `bargaining_round_2027.xlsx`: 22 ISO dates after 2026-11-03, e.g. 2026-12-30, 2027-03-30, 2027-06-30
-- **REVIEW** `delegate_register_2018-2028.xlsx`: 233 ISO dates after 2026-11-03, e.g. 2028-06-30
+- **REVIEW** `delegate_election_return_2026.xlsx`: 233 ISO dates after 2026-11-03, e.g. 2028-06-30
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

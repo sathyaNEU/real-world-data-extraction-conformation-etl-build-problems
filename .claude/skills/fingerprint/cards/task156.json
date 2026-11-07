@@ -25,7 +25,7 @@
     "G4"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "realised_outcome_roster",
+  "calibration_form": "counterparty_acknowledgement",
   "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
@@ -85,8 +85,10 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task179": "task179 lifts each supervisee's booking chance by a status another agency records about the person, linked by name and birth date; here the lift is not a property of the person but of their worksite's elected delegate in post on the ballot date, a dated term in the union's own register, and the forecast turns on how those terms changed between the last observed vote and the ballot.",
-    "task157": "task157 expands a petition sample's validity rate with pair defects whose inclusion goes as the square of the sampling fraction; here no sample is expanded: every member's turnout is forecast and summed against a roll threshold.",
-    "task107": "task107 moves a tight intake to the experienced rate at a service anniversary just before the window; here no anniversary or pay step exists: a worksite contact's elected term changes the propensity of every member at the site, in both directions."
+    "task157": "task157 expands a petition sample's validity rate with pair defects whose inclusion goes as the square of the sampling fraction; here no sample is expanded: every member's turnout is forecast and summed against a roll threshold. Both sit in election forecasting, but task157's population is a petition's signature lines and its estimate an expansion of a sample; here it is a ballot roll forecast member by member against a turnout threshold.",
+    "task107": "task107 moves a tight intake to the experienced rate at a service anniversary just before the window; here no anniversary or pay step exists: a worksite contact's elected term changes the propensity of every member at the site, in both directions.",
+    "task265": "task265 estimates an event-free share from a record that admits earlier starters only if still event-free (left truncation in a descriptive survival estimate); here nothing is truncated: every member's vote is recorded, and the forecast turns on a dated workplace contact that changed between the last observed vote and the ballot.",
+    "task154": "task154 deflates a stock reported at purchase prices across each holder's own holding period; here no price or valuation enters: turnout carried from members' votes is re-read through the delegate in post at each worksite."
   },
   "lineage": [
     {
@@ -194,7 +196,7 @@
       "deliverable set": "docx+png+xlsx"
     }
   ],
-  "notes": "forcing_event statutory_or_regulatory_filing: the branch's applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027 for ballots opening 1 March 2027.",
+  "notes": "forcing_event statutory_or_regulatory_filing: the branch's applications to the Fair Work Commission for protected action ballot orders, lodged in February 2027 for ballots opening 1 March 2027. The 2026-28 delegate term ships as the returning officer's July 2026 election return (delegate_election_return_2026.xlsx), the register holding the terms to 2024-26. Calibration redrawn to counterparty_acknowledgement at ship (the ballot agent's declared results), after surface promoted the realised_outcome_roster repeat against task154.",
   "shell": {
     "question form": "where",
     "second-sentence opener": "the",

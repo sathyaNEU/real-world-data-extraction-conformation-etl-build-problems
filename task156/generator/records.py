@@ -15,7 +15,8 @@ F_REG = "membership_register_extract_2026-11-02.csv"
 F_INV = "online_vote_invitations_2022-2025.csv"
 F_VOTES = "online_votes_2022-2025.csv"
 F_SITES = "worksites_2026-11.csv"
-F_DELEG = "delegate_register_2018-2028.xlsx"
+F_DELEG = "delegate_register_2018-2026.xlsx"
+F_RETURN = "delegate_election_return_2026.xlsx"
 F_ROUND = "bargaining_round_2027.xlsx"
 F_REMIT = "payroll_remittance_advices_2025-26.csv"
 F_DIARY = "organiser_diary_export_2025-26.csv"
@@ -117,13 +118,44 @@ def _sheet(ws, cols, rows, widths=None):
     ws.freeze_panes = "A2"
 
 
+DELEG_COLS = ["Council", "Worksite code", "Worksite", "Member no", "Role", "Election", "Declared", "Term starts",
+              "Term ends"]
+
+
+def _deleg_rows(P, term):
+    old = site_old(P)
+    sitename = {s["code"]: s["name"] for s in P.sites}
+    rows = []
+    for r in sorted([x for x in P.deleg if x["term"] == term], key=lambda x: (W.NAME[x["council"]], x["site"],
+                                                                               x["role"] != "Senior delegate")):
+        sc = r["site"] if term >= 2024 else old[r["site"]]
+        rows.append([W.NAME[r["council"]] if term >= 2024 else LEGACY[r["council"]], sc, sitename[r["site"]],
+                     r["member"], r["role"], r["status"], r["elected"], r["start"], r["end"]])
+    return rows
+
+
+def write_return(path):
+    """The returning officer's return of the July 2026 worksite delegate elections: every delegate declared."""
+    P = PO.build()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Declared delegates"
+    rows = _deleg_rows(P, 2026)
+    _sheet(ws, DELEG_COLS, rows, [30, 13, 34, 11, 15, 11, 12, 12, 12])
+    for row in ws.iter_rows(min_row=2, min_col=7, max_col=9):
+        for c in row:
+            c.number_format = "dd/mm/yyyy"
+    wb.save(path)
+    return len(rows)
+
+
 def write_delegates(path):
     P = PO.build()
     old = site_old(P)
     sitename = {s["code"]: s["name"] for s in P.sites}
     wb = Workbook()
     first = True
-    for term in reversed(W.TERMS):
+    for term in reversed([t for t in W.TERMS if t < 2026]):
         ws = wb.active if first else wb.create_sheet()
         first = False
         ws.title = "%d-%02d" % (term, (term + 2) % 100)
@@ -139,7 +171,7 @@ def write_delegates(path):
             for c in row:
                 c.number_format = "dd/mm/yyyy"
     wb.save(path)
-    return sum(1 for _ in P.deleg)
+    return sum(1 for x in P.deleg if x["term"] < 2026)
 
 
 def write_survey(path):
