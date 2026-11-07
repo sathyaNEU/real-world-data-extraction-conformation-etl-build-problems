@@ -1,0 +1,86 @@
+{
+  "task": "task315",
+  "architecture": "v1",
+  "drawn": "2026-11-07",
+  "slot_note": "Opportunity Sizing, wave 12 (oviya1301). Seed OS17 kept for its decision shape only: its pairing (policy-education with Opportunity Sizing) is served by no task type, and every honest driver its childcare world offers was priced and found spent or rule application (design note, Tried and rejected), so the number moved to urban-regional-science/optimization in a county charging world.",
+  "domain": "urban-regional-science",
+  "subdomain": "optimization",
+  "client_domain": "urban-regional-science",
+  "niche": "a county council choosing which fast-charging site package to fund on its inland mountain roads, sized by the long-distance car trips each makes completable in 2027",
+  "objective": "opportunity-sizing-decision",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "objective"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G8",
+    "G13",
+    "G14"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst checks every 2027 route's stretches between chargers against each car model's WLTP energy, a winter derate, a climb-and-valley-temperature model or the network's pooled kWh per km from the session exports, and funds the lowland infill package (or the sheltered pass's summit site once the high stretches are derated), because the exposed plateau crossing looks within range on every one of those figures.",
+  "domain_test": "The deciding quantity is how many 2027 long-distance car trips each charging package makes completable, the flow-refuelling coverage that corridor charging location analysis computes stretch by stretch against what the cars can actually drive; put clinics in for chargers and there are no stretches or ranges left to cover, so the task stops reading.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:stretch-energy-as-driven",
+  "layer1": [
+    "two operators' session exports, one stamped in UTC with energy in Wh, one in local time with energy in kWh",
+    "station identifiers that differ between each operator's export and the county's site register",
+    "car models named differently in the vehicle registry extract and the session exports",
+    "records an operator re-sent after correction overlapping the original monthly export",
+    "a travel survey projection workbook with merged headers, footnotes and suppressed cells"
+  ],
+  "stakeholder_role": "the county's charging programme manager",
+  "role_family": "programme_officer",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "fast_charging_sessions_2024-2026.csv",
+    "rows": 60000,
+    "entity": "one fast-charging session",
+    "grain": "session",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "local_government",
+  "world": {
+    "geography": "Norway (an inland mountain county)",
+    "currency": "NOK",
+    "org_type": "county council transport department",
+    "invented_names": [],
+    "people": [
+      "Ann Henriksen",
+      "Kjersti Rasmussen"
+    ]
+  },
+  "deliverables": [
+    "county_charging_package_2027.pdf",
+    "completable_trips_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A route counts only if every stretch between successive refill points is within what the unit can actually cover on that stretch in that month, and one exposed stretch costs far more in its cold months than any rated, derated, pooled or climb-and-valley-weather figure shows, a cost recorded only as the energy the same units used between the refill points either side of it, read from their consecutive refills; sizing each option on any of those figures credits the option that infills the long low gap or splits the higher sheltered stretch and misses the one that splits the exposed stretch.",
+  "driver_concrete": "Each package's 2027 long-distance trips made completable, with every mountain stretch's energy in each month read from the same cars' consecutive fast-charging sessions on either side of it, not from the models' WLTP figures, a winter derate, a climb-and-valley-temperature model or the network's pooled kWh per km: the exposed plateau crossing costs a mid-size car far more per kilometre in January than the higher, sheltered pass.",
+  "stump": "A strong solver checks each route's stretches against every model's WLTP, derated or climb-adjusted energy and funds the lowland infill (or, derating the high stretches, the summit site on the higher sheltered pass), because the exposed plateau crossing looks well within range until the cars' own sessions either side of it show what a winter crossing costs.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task258": "task258 v1 rebuilt slow page loads part by part on a web platform; this build reads each road stretch's winter energy from consecutive charging sessions to decide which stretches a car can cross, a different quantity, record and decision."
+  },
+  "lineage": [],
+  "notes": "Organisation family redrawn from government_agency (a state charging fund) to local_government (a county council funding sites on its own county mountain roads) when task286 filed government_agency into the ban window; the county is the honest owner too, since county councils fund charging on county roads. Context artifact capacity_report, the county's coverage report, not filed_standard, register or monitoring_export (all in the window).",
+  "registered": "2026-11-07T19:42:53Z"
+}
