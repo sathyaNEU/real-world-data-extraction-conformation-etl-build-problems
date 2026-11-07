@@ -1,0 +1,31 @@
+{
+ "rows": {
+  "cracker/mirror": [
+   21,
+   2,
+   0.4339622641509434
+  ],
+  "cracker, pours by steady run": [
+   32,
+   2,
+   0.6415094339622641
+  ],
+  "cracker, clocks found": [
+   35,
+   2,
+   0.6981132075471698
+  ],
+  "cracker, pours kept": [
+   18,
+   0,
+   0.33962264150943394
+  ],
+  "full includer": [
+   48,
+   5,
+   1.0
+  ]
+ },
+ "pair": 52.4,
+ "mirror_leak": 43.4
+}

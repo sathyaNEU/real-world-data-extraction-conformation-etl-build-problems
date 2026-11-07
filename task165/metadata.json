@@ -1,0 +1,123 @@
+{
+ "task": "task165",
+ "architecture": 2,
+ "setting": "2026-01-16",
+ "files": [
+  {
+   "name": "outfall_014_flow_monitoring_2014-2025.parquet",
+   "role": "evidence",
+   "source": "synthetic: the authority's flow monitoring export for the Outfall 014 overflow pipe, both loggers",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "wrp_influent_hourly_2014-2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the plant historian's hourly influent export for the Southside and Northside WRPs",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "outfall_regulator_register.csv",
+   "role": "evidence",
+   "source": "synthetic: the authority's register of CSO regulators, receiving sewers and plants",
+   "date": "2025-11-03",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "TM-7_clay_street_storage_alternatives.pdf",
+   "role": "evidence",
+   "source": "synthetic: the consultant's technical memorandum on the Clay Street storage alternatives",
+   "date": "2025-12-18",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "consent_decree_appendix_C_cso_control.pdf",
+   "role": "evidence",
+   "source": "synthetic: the authority's conformed copy of the consent decree's Appendix C",
+   "date": "2021-09-27",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "northside_tank_scada_2020-2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the Northside storage tank's SCADA export, 15-minute values",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "northside_tank_om_manual_section4.pdf",
+   "role": "evidence",
+   "source": "synthetic: section 4 of the Northside storage tank's O&M manual",
+   "date": "2020-04-24",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "cmms_work_orders_2020-2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the maintenance system's completed work orders for the tank, pump station and nearby assets",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "rain_gauge_tips_2014-2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the rain gauge network's tip export, one row per tip",
+   "date": "2026-01-16",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "rain_gauge_inventory.csv",
+   "role": "evidence",
+   "source": "synthetic: the rain gauge network's inventory",
+   "date": "2024-05-08",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "rain_gauge_field_service_2014-2025.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the field services technicians' visit log for the rain gauges",
+   "date": "2026-01-09",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "wennick_river_stage_daily_2014-2025.csv",
+   "role": "distractor",
+   "source": "synthetic: daily mean stage at the river gauge below the city",
+   "date": "2026-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "cso_overflow_notifications_2025.csv",
+   "role": "distractor",
+   "source": "synthetic: the 2025 public overflow notifications raised by the outfall detectors",
+   "date": "2026-01-05",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  }
+ ],
+ "distractors": [
+  "wennick_river_stage_daily_2014-2025.csv",
+  "cso_overflow_notifications_2025.csv"
+ ],
+ "distractor_reasons": {
+  "wennick_river_stage_daily_2014-2025.csv": "the receiving river's stage looks relevant to how an outfall discharges, but the outfall meter records the discharge itself and no criterion turns on the river",
+  "cso_overflow_notifications_2025.csv": "the notices count 2025's overflows without a tank; the decree evaluates the whole 2014 to 2025 metered record and no ask needs the notices"
+ },
+ "stated_inputs": [
+  "outfall_014_flow_monitoring_2014-2025.parquet",
+  "wrp_influent_hourly_2014-2025.csv",
+  "outfall_regulator_register.csv",
+  "TM-7_clay_street_storage_alternatives.pdf",
+  "consent_decree_appendix_C_cso_control.pdf",
+  "northside_tank_scada_2020-2025.csv",
+  "northside_tank_om_manual_section4.pdf",
+  "cmms_work_orders_2020-2025.csv",
+  "rain_gauge_tips_2014-2025.csv",
+  "rain_gauge_inventory.csv",
+  "rain_gauge_field_service_2014-2025.xlsx"
+ ],
+ "deliverables": [
+  "clay_street_storage_evaluation.xlsx",
+  "clay_street_tank_selection_board.pptx"
+ ]
+}

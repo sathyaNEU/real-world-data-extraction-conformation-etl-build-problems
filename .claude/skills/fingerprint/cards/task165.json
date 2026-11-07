@@ -11,7 +11,7 @@
   "shape": "08",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Select Alternative C, the 38 MG tank: it leaves Outfall 014 3.0 untreated overflow events a year, where the 26 MG Alternative B leaves 5.7.",
+  "answer": "Select Alternative C, the 38 MG tank: it leaves Outfall 014 2.9 untreated overflow events a year, where the 26 MG Alternative B leaves 6.8.",
   "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
   "gap": [
     "time"
@@ -67,7 +67,7 @@
     "clay_street_tank_selection_board.pptx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "what",
   "layer2_family": "allocation_constraints",
   "layer2_pattern": "own:storage-drawdown-bound-by-receiving-plant-headroom",
   "layer1": [
@@ -78,10 +78,10 @@
     "the regulator register's interceptor codes, a field service log in free text, and a work order export across a CMMS change"
   ],
   "driver": "A storage buffer that captures a discharge until it is full empties only through a receiving channel whose spare capacity vanishes for one to several days after each wet event, so in a run of events the buffer meets the next one still partly full; counting each event against an empty buffer, or a buffer emptied at its outlet's rated pace, understates how often it spills, and only replaying the record with the outlet bounded by the receiving channel's spare capacity, read from that channel's own record, prices the size the limit needs.",
-  "driver_concrete": "Clay Street's tank is pumped out into the Southside interceptor at the plant headworks, and the Southside plant, its sewershed full of groundwater and inflow, takes its 140 MGD hydraulic limit for one to four days after most storms from March to June; the Northside tank, whose plant has room within hours, empties at its pumps' rating and its overflows replay exactly that way, but Clay Street's pumps can only send what Southside has room for, so in a wet spell the tank meets the next storm still full and the 26 MG alternative that clears four events at its pumps' rating leaves 5.7 a year; only the 38 MG tank, at 3.0, meets the decree.",
-  "stump": "A competent solver replays Outfall 014's metered overflows through each tank pumped out at its station's rated dewatering flow (the continuous simulation the decree evaluates by, which reproduces the Northside tank's overflows since 2020) and selects Alternative B, the 26 MG tank, at 2.9 events a year; the step that lands it there is taking the pumps' rating as the pace the tank empties, when it empties into the Southside interceptor at the headworks of a plant that sits at its 140 MGD limit for days after wet-season storms, so only a replay bounded by Southside's own headroom hour by hour shows the 20 MG tank at 5.7 events and selects Alternative C, the 38 MG tank, at 3.0.",
+  "driver_concrete": "Clay Street's tank is pumped out into the Southside interceptor at the plant headworks, and the Southside plant, its sewershed full of groundwater and inflow, takes its 140 MGD hydraulic limit for one to four days after most storms from March to June; the Northside tank, whose plant has room within hours, empties at its pumps' rating and its overflows replay exactly that way, but Clay Street's pumps can only send what Southside has room for, so in a wet spell the tank meets the next storm still full and the 26 MG alternative that clears four events at its pumps' rating leaves 6.8 a year; only the 38 MG tank, at 2.9, meets the decree.",
+  "stump": "A competent solver replays Outfall 014's metered overflows through each tank pumped out at its station's rated dewatering flow (the continuous simulation the decree evaluates by, which reproduces the Northside tank's overflows since 2020) and selects Alternative B, the 26 MG tank, at 2.8 events a year; the step that lands it there is taking the pumps' rating as the pace the tank empties, when it empties into the Southside interceptor at the headworks of a plant that sits at its 140 MGD limit for days after wet-season storms, so only a replay bounded by Southside's own headroom hour by hour shows the 20 MG tank at 6.8 events and selects Alternative C, the 38 MG tank, at 2.9.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who converts the old meter from cubic feet per second and Eastern Standard Time, joins the two loggers across their overlap, counts events with the decree's 24-hour separation and replays each alternative through the tank dewatered at its pump station's rated flow, checking the method on the Northside tank's record, files Alternative B (26 MG, 2.9 events a year); only bounding the dewatering by the Southside plant's hourly headroom files Alternative C (38 MG, 3.0 a year, with B at 5.7).",
+  "analyst_test": "A strong analyst who converts the old meter from cubic feet per second and Eastern Standard Time, joins the two loggers across their overlap, counts events with the decree's 24-hour separation and replays each alternative through the tank dewatered at its pump station's rated flow, checking the method on the Northside tank's record, files Alternative B (26 MG, 2.8 events a year); only bounding the dewatering by the Southside plant's hourly headroom files Alternative C (38 MG, 2.9 a year, with B at 6.8).",
   "domain_test": "The quantity that decides the call is the exceedance frequency of a storage-regulated outfall over the period of record, found the way hydrologists find overflow and flood frequency for a regulated system, by continuous simulation of the record through the storage with its outflow bounded by the receiving system; with hospital beds or school places in place of million gallons there is no storm record, no event separation and no receiving plant whose wet-weather recession sets the storage's drawdown.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -92,7 +92,9 @@
     "task460": "there a new zero-rate source displaces the marginal units of the intervals it runs in, weighted by its own profile; here nothing displaces anything at a margin: a stored volume is carried between storms and emptied only into the room a receiving plant has left",
     "task127": "there a fixed team's spare capacity shows only as the ceiling it held through an earlier surge and caps how many units it can finish; here no team or count is capped: the receiving plant's headroom after each storm sets how much of a tank is empty when the next one arrives",
     "task87": "there two owed items in one slot cannot both be taken by one unit, an exclusivity the closed record never paid for; here no slot is exclusive: a tank's volume is shared across storms through the time it takes to empty into a plant that stays at its limit",
-    "task32": "there a constraint binds at a finer time resolution than the natural forecast; here the binding limit is on another system, the receiving plant, and it binds through a state the tank carries between events, not within one period"
+    "task32": "there a constraint binds at a finer time resolution than the natural forecast; here the binding limit is on another system, the receiving plant, and it binds through a state the tank carries between events, not within one period",
+    "task164": "there each plug-in vehicle adds its charging schedule to a shared transformer's summer peak, read from a panel that gained one; here nothing is added to the plant: a tank already on the record's overflows empties only into the room the receiving plant has left after each storm",
+    "task453": "there a questionnaire redesign is read from the rotation groups newest to a panel, net of their time-in-sample drift; here nothing is measured differently: a storage tank's spills follow from how full it still is when the next storm comes"
   },
   "lineage": [
     {

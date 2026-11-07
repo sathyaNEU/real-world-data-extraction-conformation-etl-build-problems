@@ -97,20 +97,20 @@ Every figure below is built by `generator/golden.py` from the shipped pack and a
 4. Replay the record through each tank emptied at its station's firm capacity, the field's continuous simulation, and
    check the method on the Northside tank: its 2020 to 2025 inflow replayed through 8.0 MG at its station curve gives
    the detector's own overflow events at Outfall 006, year by year.
-5. Count events a year: A 6.1, B 2.9, C 0.9, D 0.2. The smallest under four is B.
+5. Count events a year: A 5.8, B 2.8, C 0.6, D 0.1. The smallest under four is B.
 
-Ends on: Alternative B (26 MG), 2.9 events a year.
+Ends on: Alternative B (26 MG), 2.8 events a year.
 
-Golden: Alternative C (38 MG), 3.0 events a year, with B at 5.7.
+Golden: Alternative C (38 MG), 2.9 events a year, with B at 6.8.
 
 ## Stump sentence
 
 A competent solver replays Outfall 014's metered overflows through each TM-7 tank emptied at its pump station's firm
 capacity, the continuous simulation the Northside tank's own record confirms, and selects Alternative B, the 26 MG
-tank, at 2.9 events a year; the step that lands it there is taking the pumps' rating as the pace the tank empties, when
+tank, at 2.8 events a year; the step that lands it there is taking the pumps' rating as the pace the tank empties, when
 the tank empties into the interceptor at the headworks of a plant that holds its 140 MGD limit for days after
 wet-season storms, so only a replay whose dewatering is bounded hour by hour by the Southside plant's own room shows the
-26 MG tank at 5.7 events and selects Alternative C, the 38 MG tank, at 3.0.
+26 MG tank at 6.8 events and selects Alternative C, the 38 MG tank, at 2.9.
 
 ## Three rules
 
@@ -136,18 +136,18 @@ wet-season storms, so only a replay whose dewatering is bounded hour by hour by 
   it discharges into an interceptor whose plant sits at its headworks limit for days after wet-season storms, and
   bounding the drawdown hour by hour by that plant's room read from its own historian.
 - **Not semantics:** every field read correctly (cubic feet per second converted, both clocks aligned, the event rule
-  applied, each station's capacity taken from TM-7) still files B at 2.9 events a year; nothing in any column, code or
+  applied, each station's capacity taken from TM-7) still files B at 2.8 events a year; nothing in any column, code or
   unit changes when the plant's room is read, because no column holds the room or the tank's state.
 - **Not rule application:** no filed rule or procedure says how fast a tank empties or names the plant's room; executing
   Appendix C, TM-7 and every convention files B. The enumerated family (event volumes against an empty tank, the
   continuous replay at the station's rating with or without pumping during inflow, the replay bounded by the plant's
-  room at 15-minute, hourly or daily grain, with the room taken as 139 or 140 MGD) spans 0.2 to 9.3 events a year
-  across the four tanks and picks B or C; the standing family (the replays bounded by the room, the literal 24-hour rule
-  and TM-7's start-after-overflow) spans 5.3 to 5.9 events at B and 2.8 to 3.3 at C and picks C in every member; the
+  room at 15-minute, hourly or daily grain, with the room taken as 139 or 140 MGD) spans 0.0 to 9.8 events a year
+  across the four tanks and picks A, B or C; the standing family (the replays bounded by the room, the literal 24-hour
+  rule and TM-7's start-after-overflow) spans 6.4 to 7.0 events at B and 2.8 to 3.1 at C and picks C in every member; the
   ruling-out is quiet: the room is read from the plant's own historian, where a flat 140.0 top is the only sign.
 - **Analyst test:** a strong analyst who converts the old meter, aligns the clocks, applies the 24-hour rule, replays
   each alternative through its tank emptied at its pump station's firm capacity and checks the method on the Northside
-  tank files Alternative B (26 MG), 2.9 events a year, the default path's `Ends on:`.
+  tank files Alternative B (26 MG), 2.8 events a year, the default path's `Ends on:`.
 - **Estimand:** Appendix C 2.1 to 2.4: the untreated overflow events from Outfall 014 to the Wennick River, discharges
   less than 24 hours apart one event, averaged over the twelve years of the 2014 to 2025 metered record, for each
   alternative TM-7 offers, against no more than four; the file is `consent_decree_appendix_C_cso_control.pdf`.
@@ -170,7 +170,7 @@ wet-season storms, so only a replay whose dewatering is bounded hour by hour by 
   UTC) and the plant historian (hourly, local time with daylight saving), two systems with no shared key, invited by no
   sentence; TM-7 names where the pumps discharge, as any design memorandum must, and nothing names the room.
 - **Reflex:** the field's method, continuous simulation of the record with the tank emptied at its pump station's
-  rating, is rung 1 and files B at 2.9 events a year; the event-volume screen beneath it, rung 0, files B at 3.8.
+  rating, is rung 1 and files B at 2.8 events a year; the event-volume screen beneath it, rung 0, files B at 3.7.
 - **Back-test:** the textbook route validates: the Northside tank's 2020 to 2025 inflow replayed through its 8.0 MG at
   its station curve reproduces the overflow detector's events at Outfall 006 in every year, because the Northside plant
   always has room within hours.
@@ -201,30 +201,30 @@ wet-season storms, so only a replay whose dewatering is bounded hour by hour by 
 | SF1 | untreated overflow event | discharges from Outfall 014 less than 24 hours apart are one event | a discharge per 15-minute run with any gap: more events, same call (C) | Appendix C 2.2 |
 | SF2 | average year | the record's events over twelve years | the mean of yearly counts: identical (twelve full years) | same call, asserted |
 | SF3 | the record | 1 January 2014 to 31 December 2025, Eastern time | UTC year ends: same call | Appendix C 2.3; same call asserted |
-| SF4 | meets the limit | no more than four events a year | under four: same call (C at 3.0) | Appendix C 2.4 |
-| SF5 | dewatering start | once flow to the tank has stopped | pumping during the overflow: B 5.7, C 3.0, same call | TM-7 3.2; same call asserted |
+| SF4 | meets the limit | no more than four events a year | under four: same call (C at 2.9) | Appendix C 2.4 |
+| SF5 | dewatering start | once flow to the tank has stopped | pumping during the overflow: B 6.7, C 2.9, same call | TM-7 3.2; same call asserted |
 | SF6 | the meter overlap week | each interval once | both loggers summed: the week is dry, same call | same call, asserted (no discharge in the overlap) |
 | SF7 | replay grain | the meter's 15 minutes with the plant's hour held | hourly means of the meter: identical counts | same call, asserted |
 | SF8 | the plant's limit | 140 MGD, the headworks limit | 139 MGD (a margin): B 5.9, C 3.2, same call | Appendix C 1.3 (the plant's rated peak); same call asserted |
 | SF9 | the tank's start | empty on 1 January 2014 | full: same call | same call, asserted |
-| SF10 | the plant clock | local time converted with its daylight saving hour | the clock taken as standard time or UTC (misread): B 5.7 to 5.8, C 3.0 to 3.1, same call | same call, asserted |
+| SF10 | the plant clock | local time converted with its daylight saving hour | the clock taken as standard time or UTC (misread by one to five hours): B 6.8 to 7.0, C 2.9 to 3.1, same call | same call, asserted |
 | SF11 | the alternative carried | the smallest that meets the limit | a larger one with margin: D, not the decree's test; costs in TM-7 rise with size | TM-7 4 (the authority carries the least-cost alternative that meets Appendix C) |
 
 ## Ladder
 
 | Rung | Construction | A | B | C | D | Pick | Dies to |
 |---|---|---|---|---|---|---|---|
-| R0 | each event's volume against an empty tank | 6.8 | 3.8 | 1.5 | 0.8 | B | the replay: storms within a day of an emptying tank |
-| R1 | continuous replay at the station's firm capacity | 6.1 | 2.9 | 0.9 | 0.2 | B | the Southside room |
-| R1b | R1 with pumping during the overflow | 6.0 | 2.8 | 0.9 | 0.2 | B | TM-7 3.2 and the room |
-| R2 | replay bounded by the Southside plant's hourly room (golden) | 8.7 | 5.7 | 3.0 | 1.4 | C | nothing |
+| R0 | each event's volume against an empty tank | 6.8 | 3.7 | 1.3 | 0.3 | B | the replay: storms within a day of an emptying tank |
+| R1 | continuous replay at the station's firm capacity | 5.8 | 2.8 | 0.6 | 0.1 | B | the Southside room |
+| R1b | R1 with pumping during the overflow, against TM-7 3.2 | 3.9 | 1.1 | 0.1 | 0.0 | A | TM-7 3.2 and the room |
+| R2 | replay bounded by the Southside plant's hourly room (golden) | 9.7 | 6.8 | 2.9 | 1.3 | C | nothing |
 
 - Position: the default path's B is one size below the golden; A fails every rung, D passes every rung.
-- Margins: R1's B sits 1.1 events under the limit, so no hedge reaches C from it; R2's B sits 1.7 over and C 1.0
-  under; every standing member keeps B over and C under (5.3 to 5.9, 2.8 to 3.3).
-- Dominance: the room moves every alternative by 1.2 to 2.8 events a year, more than any convention (at most 0.4).
+- Margins: R1's B sits 1.2 events under the limit, so no hedge reaches C from it; R2's B sits 2.8 over and C 1.1
+  under; every standing member keeps B over and C under (6.4 to 7.0, 2.8 to 3.1).
+- Dominance: the room moves every alternative by 1.2 to 4.0 events a year, more than any convention (at most 0.4).
 - Pricing (stumping Part 3): 1) the residue the WHAT leaves is the drawdown pace, a method; 2) the move the call needs
-  at B is 1.1 events, the room produces 2.8; 3) the one-group-by route (events a year off the event volumes) files B;
+  at B is 1.2 events, the room produces 4.0; 3) the one-group-by route (events a year off the event volumes) files B;
   4) the step estimates nothing (a deterministic replay on the record), so its standard error is the record's own;
   5) the lever is the plant's room, not the outfall's noise; 6) not a change call; 7) no subset of rows hands over the
   room except the flat 140.0 tops, which are the plant's whole wet-weather record; 8) the reflex sweep (event volumes,
@@ -274,11 +274,77 @@ prints events for any tank. The overflow detectors' public notification log for 
 
 ## Ask sheet
 
-To be completed at build with the ceiling script's measured figures.
+Two asks, 53 figures, plus the deck's chart of the call's own figures (a main-call deliverable, not an ask). Both are
+the annual report's own items (Appendix C 4.1), wanted from the same pull; neither reads a row the call reads.
+
+**Ask 1: each rain gauge's recorded rainfall in each month of 2025** (48 figures, inches to the hundredth).
+- H18 home: the annual report's rainfall table; use: the decree requires it each year.
+- Files and columns on the path: `rain_gauge_tips_2014-2025.csv` (gauge_id, tip_time), `rain_gauge_field_service_2014-2025.xlsx`
+  (Date, Gauge, Arrived, Departed, Notes), `rain_gauge_inventory.csv` (gauge_id, depth_per_tip_in, logger_model,
+  logger_installed), `consent_decree_appendix_C_cso_control.pdf` (4.1, months in Eastern time).
+- Primary device 1 (D5, out-of-scope rows known by structure): the technicians' calibration pours are logged as tips;
+  the field log says "Cal check 500 mL" and gives arrival and departure to the five minutes, and the pour often runs
+  past the logged departure, so only the steady run of tips (one every 8 to 10 seconds) finds all of it. 21 cells move
+  if the pours stay, 7 if they are cut by the logged window.
+- Primary device 2 (D8, clocks): the HOBO loggers stamp Eastern Standard Time all year, the TipLink C200 cellular
+  loggers installed at RG-3 and RG-4 in May 2024 stamp UTC; nothing in the file says so (the inventory gives the model
+  and the date). The logged-window removal misses every pour at RG-3 and RG-4 and the summer pours at RG-1 and RG-2;
+  month-end storms move between months. 8 cells move on the clock alone.
+- Primary device 3 (D2, a label stored before a silent switch): RG-4's mechanism was swapped for a 0.2 mm unit on 15 May
+  2025 (field log: "Swapped mech w/ spare 0.2mm unit from stores"); the inventory still says 0.01 in. 8 cells move.
+- Hazard (D1): the cellular platform re-sent four buffered batches at each TipLink gauge, exact duplicates (the battery
+  removes them); 6 cells move if kept.
+- Pin test: the asking sentence pins the gauge, the month and the unit; Appendix C 4.1 pins Eastern time and "recorded
+  at the Authority's rain gauges"; no pin names a pour, a clock or a bucket.
+- Realism: a tipping-bucket network's export, field log and inventory, as a utility's field services keep them.
+
+**Ask 2: the volume the Northside tank returned to the Northside interceptor in each year 2021 to 2025** (5 figures,
+nearest million gallons).
+- H18 home: the annual report's storage facility line; use: Appendix C 4.1.
+- Files and columns: `northside_tank_scada_2020-2025.csv` (Timestamp, NT_LIT601_FT, NT_P1_RUN to NT_P3_RUN),
+  `northside_tank_om_manual_section4.pdf` (Table 4-1, the station curve), `cmms_work_orders_2020-2025.csv`.
+- Primary device 1 (D3, a reading re-referenced): LIT-601 was re-mounted on a new bracket on 23 August 2023 and reads
+  0.45 ft with the tank empty; the level route uncorrected moves 2024 and 2025 (and 2023 by one), because the hopper
+  floor's stage-storage is not linear.
+- Primary device 2 (D2, a silent switch): P-2 came back from rebuild on 14 March 2023 with a trimmed impeller and
+  delivers less than its nameplate; the run states times the O&M station curve miss every year (they also count a full
+  quarter hour where the tank emptied part way through it).
+- Pin test: the sentence pins the tank, the year and the unit; no pin names the transducer, the pump or the route.
+
+**Main population, zero counts:** the Outfall 014 meter carries no duplicate quarter hour outside the dry overlap
+week and no ask device; the Southside historian rows carry none (asserted, `SEP` in `checks.py`).
+
+**Referee:** none arbitrates a device; the Northside detector and the inflow meter tie under every handling.
+
+| Path (cracker = lands the call, runs the battery, executes filed documents) | Rainfall kept | Returns kept | Verdict |
+|---|---|---|---|
+| Ask 1, cracker: duplicates dropped, pours cut by the logged window, stamps as logged, 0.01 in a tip | 21 of 48 | | miss |
+| Ask 2, cracker: the better of run states times the station curve and the uncorrected level | | 2 of 5 | miss |
+| Ask 1, full includer with the clocks found but the window kept | 35 of 48 | | miss |
+| Ask 1, full includer with the pours found by their run but the clocks and bucket missed | 32 of 48 | | miss |
+
+Mirror leakage: 43.4 per cent of ask weight (the mirror takes the cracker's ask paths off the call).
+
+Pair ceiling: 52.4 (cracker on the call 68.9, mirror off it 35.9).
+
+Measured by: generator/ceiling.py, run on the cut pack.
 
 ## Layer 1 inventory
 
-To be completed at build.
+| Item | System that produces it | Where | Moves the call? |
+|---|---|---|---|
+| Outfall 014 meter replaced June 2019: cfs on Eastern Standard Time, then MGD on UTC; one week of overlap | the flow monitoring contractor's two loggers | meter parquet | no: the overlap week is dry; the conversion is a header (flow_unit) |
+| Plant historian in local time, the November hour twice and the March hour missing; tags renamed 15 March 2021 | the plant SCADA historian and its upgrade | influent csv | no (SF10 asserted) |
+| Ten spells of BAD-quality hours in settled weather, value 0 | historian communication drops | influent csv | no: every tank is empty then (asserted) |
+| Southside readings at the limit hover a little under 140.0 | the headworks gates throttling | influent csv | no (SF8) |
+| Work order numbering and date format change in July 2022 | the CMMS replacement | work orders | no |
+| Calibration pours as tips; field times to five minutes | technicians' practice | tips, field log | ask 1 only |
+| TipLink loggers stamping UTC from May 2024 | the cellular logger replacement | tips | ask 1 only |
+| RG-4's 0.2 mm mechanism from 15 May 2025, inventory unchanged | a spare from stores | tips, field log | ask 1 only |
+| Re-sent duplicate batches | the cellular platform | tips | ask 1 only |
+| LIT-601 re-mounted 23 August 2023, reading 0.45 ft high; blank during the cleanout | maintenance | SCADA | ask 2 only |
+| P-2 rebuilt March 2023 on its old tag | maintenance | SCADA, work orders | ask 2 only |
+| Northside overflow detector firing through the August 2023 cleanout bypass | operations | SCADA | the back-test only (asserted within 3 events) |
 
 ## Tried and rejected
 
@@ -443,3 +509,16 @@ Architecture 2 (the Clay Street tank):
   Pennsylvania norm), the regulator raised to 26 MGD and the sizes redrawn to 19, 26, 38 and 50 MG.
 - 2026-11-07, Alternative A at 18 MG: its golden count (111 events, 9.25 a year) sat on a twelfth's half at one
   decimal; moved to 19 MG (104 events, 8.7).
+- 2026-11-07, storms wettest by far in late April (8 inches in April 2025, 0.3 in July): unlike Pennsylvania; the storm
+  season was flattened and the spring weight left to the groundwater's reach into the Southside sewers.
+- 2026-11-07, calibration pours whose logged visit always covered them: a path that found the loggers' clocks and cut
+  the pours by the logged window kept 43 of 48 rainfall cells; the log now gives times to five minutes and departure
+  as the van leaves, which a pour's tail often outlasts (35 of 48 on that path).
+- 2026-11-07, RG-4's 0.2 mm mechanism from August 2025: it moved five cells; moved to 15 May 2025 (eight cells), the
+  hour chosen so that no cell sits within 0.03 hundredths of a rounding edge.
+- 2026-11-07, Northside returns at the first draw of Outfall 006's runoff: 2022 sat 0.02 MG from a rounding edge; the
+  runoff factor moved from 9.5 to 9.9, every Northside year now 0.1 MG or more from an edge.
+- 2026-11-07, the Northside plant at 110 MGD: its room bound the tank's pumps in a few hours, so the rating replay and
+  the room replay could part at Northside; rated 125 MGD, the room never binds while the station pumps (asserted).
+- 2026-11-07, Appendix C 1.3 saying flow above the headworks capacity is held back in the interceptor: it states the
+  mechanism the decisive step recognises; cut to the plant's rating alone.

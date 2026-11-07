@@ -1,25 +1,26 @@
 {
  "task": "task165",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences / hydrology-flood-frequency (client physical-environmental-sciences)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-07",
  "stump": "A competent solver replays Outfall 014's metered overflows through each tank pumped out at its station's rated dewatering flow (the continuous simulation the decree evaluates by, which reproduces the Northside tank's overflows since 2020) and selects Alternative B, the 26 MG tank, at 2.9 events a year; the step that lands it there is taking the pumps' rating as the pace the tank empties, when it empties into the Southside interceptor at the headworks of a plant that sits at its 140 MGD limit for days after wet-season storms, so only a replay bounded by Southside's own headroom hour by hour shows the 20 MG tank at 5.7 events and selects Alternative C, the 38 MG tank, at 3.0.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-07",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK, on target.zip d49deba6 (2026-11-07, --asof 2026-01-16): sweep 3 figures (1.3 a section number, 140 the plant rating, 2.8 a stage-storage row, TM-7 listing the alternatives), sweep 4 the documents' own nouns",
+  "reader": "pending (brief at the scratchpad's task165_stage4_leak_brief.md, copy at leak-task165/)"
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": ""
+  "heart": "WARN 2026-11-07 (repeat.question_form what against task456; NOTEs same_puzzle and same_driver differentiated on the card)",
+  "surface": "exit 0 on 2026-11-07: 4 promoted (task164 back to back, task453, task460, task87), each with a differentiation line on the card, left to the author's optional clone-check"
  },
  "judge": {
   "verdict": "",
@@ -72,7 +73,7 @@
    "commit": ""
   }
  ],
- "resume": "stage 2: finish the ask sheet and Layer 1 inventory, then build",
+ "resume": "stage 4 in the main thread, on Sonnet at medium: spawn the leak reader with the scratchpad's task165_stage4_leak_brief.md (copy at leak-task165/) and the determinism judge on the same cut (target.zip d49deba6) together; fix every finding in the generator in one pass (python3 task165/generator/make.py rebuilds, checks, verifies and re-cuts), re-run precut, leak.py, figures_check and guard heart and surface, then ship",
  "approved": null,
  "delivered": null,
  "portal": "landed by one response (R1 2,200 t at 100 per cent, R2 2,600 t at 70 per cent), reported 2026-11-07",
@@ -82,14 +83,13 @@
  "wave": "wave 6 (new), seed FC36 (world, decision and quantity kept; the seed's planning-tool ranking, usage-model back-tests and route-register field reading not shipped)",
  "guard": "PASS at registration (2026-10-18T14:10:39Z) after waiting out bans on honest keys; the forum redrawn in the build to council_or_assembly when line_manager_or_team was banned against task247",
  "stage3": {
-  "generator_checks": "green on the reship cut",
-  "verify": "33 checks, 0 failed",
-  "rebuild": "byte-identical",
-  "figures_check": "exit 0 (57 figures)",
-  "voice_check": "exit 0",
-  "ceiling": "pair 33.3 on both blind readers' paths, mirror leakage 8.7 per cent (generator/cracker.py on the cut pack); measured pair 28.5 (scored-task165c, scored-task165d)",
-  "call": "commit 2,200 t of rock salt above the rolled-over 39,100 t (golden 2,213.7 t)",
-  "zip": "target.zip d9c24521246e0ec40967760009d63626e8557f904329c42be2b40fe770ca25e7"
+  "generator_checks": "55 PASS",
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "PASS (85)",
+  "voice_check": "PASS",
+  "ceiling": "pair 52.4, mirror leakage 43.4 (generator/ceiling.py)",
+  "zip": "d49deba612a198c82858da15bf68d1eddc9ec71b3460397c4dff4073720e0232"
  },
  "history": [
   {
@@ -99,6 +99,10 @@
   {
    "date": "2026-11-07",
    "event": "architecture 2 drawn (re-root after the portal landing of architecture 1)"
+  },
+  {
+   "date": "2026-11-07",
+   "event": "architecture 2 built through stage 3; PAUSED for stage 4 in the main thread"
   }
  ]
 }
