@@ -5,7 +5,7 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
+ "updated": "2026-11-07",
  "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the unloading each unscanned parcel came off at its delivery depot fires Strykow as well.",
  "architecture": 3,
  "loops": 0,
@@ -26,7 +26,16 @@
   "disposition": "APPROVE",
   "report": "determinism_check_report.md and determinism_check_report_pass2.md (the courier-event window pinned in the prompt)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-07",
+   "portal": "portal input check: both parquet extracts carried the pandas and pyarrow creator metadata. Domains Fit: read as a stated tolerance applied to rates, with counting asks",
+   "repair": "metadata",
+   "zip": "7dd4b6b4",
+   "moves": "both extracts written with no pandas or Arrow schema metadata and no created_by in the footer (generator/parquetio.py), every column a string so no value moved; only the two parquet files moved, no figure moved. Domains Fit left for the author's call",
+   "checks": "generator checks, verify and the byte-identical rebuild; no reader, judge or clone check (author's minor-fix rule)"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": null,
@@ -68,5 +77,5 @@
    "event": "PAUSED at stage 4 for the main thread: the leak reader and the determinism judge cannot be spawned from a fork"
   }
  ],
- "zip_sha256_16": "1b8dcbc76a43565c"
+ "zip_sha256_16": "7dd4b6b4dd80fe08"
 }

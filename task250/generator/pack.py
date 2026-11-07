@@ -12,6 +12,7 @@ from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 
 import params as P
+import parquetio as PQ
 import sim
 
 FILES = {
@@ -325,11 +326,11 @@ def register_xlsx(path, w, seed=P.SEED):
 def write_tables(w, out):
     f = lambda k: os.path.join(out, FILES[k])
     hub = hub_feed(w)
-    hub.to_parquet(f("hub"), index=False, compression="zstd")
+    PQ.write(hub, f("hub"), compression="zstd")
     dep = depot_feed(w)
     dep.to_csv(f("depot"), index=False)
     cou = courier_feed(w)
-    cou.to_parquet(f("courier"), index=False, compression="zstd")
+    PQ.write(cou, f("courier"), compression="zstd")
     pre = preadvice_file(w)
     pre.to_csv(f("preadvice"), index=False)
     accounts_file(w).to_csv(f("accounts"), index=False)

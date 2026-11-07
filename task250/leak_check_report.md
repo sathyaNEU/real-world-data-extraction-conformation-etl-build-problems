@@ -1,6 +1,6 @@
 # leak check, task250
 
-**Verdict: REVIEW.** 11 files read, 47 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 11 files read, 47 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -12,10 +12,11 @@ Stump terms swept: record, parcel, pruszkow, strykow, sorted, unscanned, decisiv
 ## 4 design-note vocabulary (REVIEW 1)
 - **REVIEW** `TDS-4_tracking_data_standard.pdf`: 9 of 25 stump-paragraph terms appear (record, parcel, sorted, network, nights, mornings); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `sort_plan_2026Q4.xlsx`: 12 ISO dates after 2026-11-06, e.g. 2026-12-31
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
-## 10 container metadata (INFO 1)
+## 10 container metadata (LEAK 1, INFO 1)
+- **LEAK** `TDS-4_tracking_data_standard.pdf`: Creator names 'Kurier Warta sp. z o.o.', not the application that wrote the PDF
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 1 file names (clean)

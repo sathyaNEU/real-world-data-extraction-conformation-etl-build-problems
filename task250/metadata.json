@@ -45,7 +45,7 @@
     {
       "path": "hub_sort_events_2026-10.parquet",
       "format": "parquet",
-      "bytes": 3031853,
+      "bytes": 3029194,
       "rows": 92035,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-06",
@@ -63,7 +63,7 @@
     {
       "path": "courier_events_2026-10.parquet",
       "format": "parquet",
-      "bytes": 8921264,
+      "bytes": 8917607,
       "rows": 280378,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-06",
