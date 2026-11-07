@@ -14,7 +14,7 @@ reasons in `## Tried and rejected`.
 | Client domain / task type | Physical & Environmental Sciences (`physical-environmental-sciences`), `environmental-monitoring-exceedance` (serves AD and DQ): telling an increase of artificial origin in a monitored environmental quantity from the natural ones, read from the monitor's own record, is the field's exceedance determination |
 | Objective | Anomaly Detection & Diagnostics: a real event (artificial radiation at a station) separated from artifacts that look like one (radon-progeny washout in showers that no rain gauge records, at the upland granite and coastal stations) and from an artificial source the field's natural-cause test clears (weld radiography that carries on through rain) |
 | Decision | whether any station recorded radioactivity of artificial origin in the quarter, and if so which stations and which nights go into the notification (`designation_set`, none licensed on equal footing). Retrospective by necessity: a notification concerns detections that have happened; the forward action is the notification itself and the regulator's follow-up of the source before more exposures |
-| Shape | `other`: a designation over every station (each station's verdict), the nights and peak dose rates at each designated station, and the network's quarter workbook (each station's monthly mean and data capture), with the chart's named parts; arithmetic in `## Ask sheet` |
+| Shape | `other`: a designation over every station (each station's verdict), the dates and highest ten-minute value at each designated station, with the chart's named parts, and the quarter's network workbook (each station's source check with its result, each station's timeliness, every weekly filter's gross beta concentration): 2 stations, 11 dates and 2 peaks, then 24, 24 and 39 figures; arithmetic in `## Ask sheet` |
 | Gap / pattern / generators | `objective` decisive (the measure the screening runs on, an exceedance cleared by coincident rain, is not the quantity the notification is about, an excursion's origin), with `time` (the origin is read on the decay clock of each excursion's fall); pattern `none`; `G7` decisive (when can a natural excess physically vanish: no faster than lead-214 and bismuth-214 decay), `G12` (a dry record at a rain gauge is not a dry station) |
 | Gate G | `decomposition_attribution`: each correctly reported excursion is assigned to its driver, natural washout or an artificial source |
 | Strategy | `decomposition_attribution`; Layer 2 family `estimation_fit` (each excursion decomposed by the data's own physical structure); pattern `own:decay-bound-excursion-origin` |
@@ -22,7 +22,7 @@ reasons in `## Tried and rejected`.
 | Role | the network's duty radiation scientist preparing the quarter's notification (`operations_director`) |
 | Context artifact | `monitoring_export`: the network's ten-minute ambient dose equivalent rate export |
 | Calibration | none |
-| Personas | Cameron Brown, Julia French, Hazel Lambert, Antony Connolly (`guard.py names --geo uk --seed 211`; Marian Ward and Wayne Sanderson from the same draw were dropped on `people.first` against task200 and task120) |
+| Personas | Cameron Brown (network manager), Hazel Lambert (duty radiation scientist), Julia French and Antony Connolly (field engineers), Frances Stevens (radiochemistry analyst), Katie Clarke (clerk to the joint committee), Rosemary Wood (radiation protection supervisor), and on the documents' signature blocks Kim Simpson, Brian Smith and Gerard Buckley, from `guard.py names --geo uk --seed 211` (`--n 20` for the last five); Marian Ward and Wayne Sanderson were dropped on `people.first` against task200 and task120, Shirley Collins against task123, Carole Davies against task105 and Lynne Rees against task305 |
 | Fiction as-of date | 2026-10-09 (the duty scientist's quarter-end export; every record ends 30 September 2026 23:50 UTC) |
 | Guard | `guard.py check` on the draft: BLOCK `ban.forcing_event` (statutory filing, task399) redrawn to `period_close`, the honest key (the quarter's close forces the report the notification travels with); BLOCK `ban.org_family` (`local_government`, task314) redrawn to `university_or_school` (a university laboratory runs the network under contract, as several regional networks are run); WARN `overuse.org_family` on `government_agency` cleared by the same redraw; the deliverable set from docx+png+xlsx (task314's) to docx+svg+xlsx; the question form from which to whether (the decision is a gate first, whether any station, then a designation, and `which` repeats task314 and task399); two personas. Standing at registration: WARN `overuse.domain` (answered below), WARN `repeat.gate_g` against task399 (task399 attributes delay minutes to a signalling display's button geometry; nothing shared but the label), NOTEs `test.same_puzzle_older` and `test.same_driver_older` answered by differentiation lines on the card (task249 v6, task111 v1) |
 
@@ -74,11 +74,314 @@ and the thirty-minute tail ratio land both radiography stations, at 5 to 8 event
 else. Night share grazed the truth on one seed of four, so the build gives the coastal stations their
 nocturnal showers and spreads the radiography into evenings and dawns; measured again at the generator.
 
-**Sources.** Fully constructed for a fictional university laboratory, a fictional joint committee of three
-county councils and a fictional region of England (granite uplands, a coastal strip, a lowland vale): the
-network's ten-minute dose-rate export, the station register, the probe calibration certificates, the
-maintenance visit log, the rain gauge telemetry, the network's operating procedure and the councils' service
-agreement, and distractors. Provenance in `metadata.json`.
+**Sources.** Fully constructed for a fictional university laboratory, a fictional joint committee of three county councils and a fictional region of England (granite uplands, a coastal strip, a lowland vale), every file generated by `generator/` from a fixed seed: the platform's ten-minute dose-rate export (317,592 rows), the station register, the 2025 code migration table, the alarm configuration, a water company's rain gauge telemetry and site list, the operating procedure (MVGN-OP-04), the service agreement's Schedule 2, the source check visit sheets, the check source certificates, the field kit register, the sealed source register, the platform's ingest log, the air sampler field sheets, the pump controllers' logs and the laboratory's gross beta results, with two declared distractors (the 2025 annual report, the quarter's gamma spectrometry). Provenance in `metadata.json`.
+
+**Invented names (H21).** The station, site and organisation names were redrawn after a check against real places and bodies: the first draw's university ("Hallcross", against Hall Cross Academy, Doncaster), its water company (against Dales Water Services) and a dozen station names that are real English villages or hills (Thorlby, Scarth Nab, Greygarth, Marrick, Stainby, Wansford, Saltholme and others) gave way to descriptive site names (Headland Lookout, Old Brickworks, Upper Reservoir), a region name (Northvale) with no university, water company or council of that name found, and three councils named for their ground (North Moors, Mid Vale, Saltmarsh Coast). Figures unchanged.
+
+## Default path
+
+The pipeline a competent analyst builds from the prompt's words, the operating procedure and the files' grain,
+with the field's own screen for the deciding quantity in it (a counting network without spectrometry clears an
+increase as radon washout when rain coincides with it):
+
+1. Read `mvgn_dose_rate_10min_2026Q3.csv`, exact duplicate rows once, the three old-firmware outstations'
+   microsieverts converted, test-mode (T) and fault (F) records set aside, as procedure section 2 defines them.
+2. Take each station's reference level from `mvgn_alarm_config_2026Q3.json`; every value 30 nSv/h or more above
+   it is investigation-level (procedure section 3); consecutive ones make a period.
+3. Find each station's nearest rain gauge from the register's and the gauge site list's grid references, and
+   put the gauges' fifteen-minute totals (`Time (GMT/BST)`) onto UTC.
+4. Clear every period with rain at that gauge within an hour either side as washout; notify the rest, by
+   station and date, with each station's highest value.
+5. The careful analyst's refinements: clear a dry period too when a neighbour within 18 km was elevated at the
+   same time, then keep only the dry, lonely periods that begin at night.
+
+Ends on: 16 stations notified (MV129, MV142, MV158, MV166, MV176, MV184, MV207, MV214, MV226, MV231, MV243,
+MV305, MV311, MV318, MV327, MV334), with MV334's 17/07, 20/07 and 07/08 and MV129's 24/08 and 17/09 cleared as
+rain; the refinements still file 16 and then 12.
+
+Golden: 2 stations, MV334 Headland Lookout on 6 dates (highest ten-minute value 155 nSv/h) and MV129 Old Brickworks
+on 5 dates (164 nSv/h).
+
+## Stump sentence
+
+The procedure's own screen, every investigation-level period cleared as washout when the nearest valley gauge
+recorded rain within an hour, files 16 stations (upland and coastal stations whose showers the six valley
+gauges missed, beside the two radiography stations) and clears five of the eleven radiography evenings that ran
+through rain; only reading each excursion's own end against the decay of the natural excess (radon decay
+products cannot lose more than about a quarter of themselves in ten minutes, and every artificial increase
+lost 85 per cent or more in one step) files the two stations and their eleven dates.
+
+## Three rules
+
+**Task type:** `environmental-monitoring-exceedance` in Physical & Environmental Sciences, which serves Anomaly
+Detection & Diagnostics in the taxonomy: a real increase of artificial origin separated, in a monitor's own
+record, from the natural increases that look like it.
+
+**Domain test:** the quantity that decides is each dose-rate excursion's origin, natural washout or artificial,
+which the field reads for a counting network without spectrometric probes by its coincidence with rainfall,
+clearing increases that rain explains (the washout screen against precipitation records, here the procedure's
+review against the water company's gauges); the deciding physics is the radon decay chain the washout excess
+comes from.
+
+**Swap:** "Two hospital wards recorded infections of external origin on eleven dates" does not survive: the
+deciding quantity is how fast a natural signal can end, set here by lead-214 (26.8 minutes) and bismuth-214
+(19.9 minutes) decaying on the ground, and with another field's nouns there is no decay chain to bound the
+natural cause, so nothing separates the two origins.
+
+**Layer 1:** the platform re-read four station-days of a delayed backfill (exact duplicate rows); three
+old-firmware outstations send microsieverts; source checks leave test-mode records; the 2025 batch of cable
+glands at eleven stations lets water in after heavy rain and the outstation sends fault records with no dose
+rate; power cuts leave no record; MV157's exchanged probe ran on the old probe's factor for eight days; the
+water company's gauges keep UK clock time in 0.2 mm tips; one engineer records against the outstation codes in
+microsieverts; the LoRa gateway stamps UK clock time; the gateway re-sends unacknowledged hours; a pump
+controller was replaced and another's totaliser rolled over; the laboratory re-issued two results. Each is the
+named system's own behaviour; none is placed to be caught, and none decides the call.
+
+**Layer 2:** `estimation_fit`, each excursion decomposed by the data's own physical structure; the choice that
+flips the call is whether an excursion's origin is judged by its trigger (rain recorded at a gauge) or by its
+own end, against the rate at which a washout excess can physically fade.
+
+**Decisive step:** recognising that clearing an increase on coincident rain presumes the gauges stand for every
+station and that only natural increases coincide with rain, both false here, and judging each excursion by its
+last step instead: an excess that falls by more than half in one ten-minute step and stays down cannot be
+lead-214 and bismuth-214 decaying, whatever the gauges recorded.
+
+**Not semantics:** reading every field, code, unit and definition correctly (the V, T and F statuses, UTC
+interval starts, the microsieverts, the duplicates, the gauges' UK clock, the alarm configuration's levels)
+leaves the procedure's screen on 16 stations; the difference between 16 and 2 is the physics of each
+excursion's fall, not a reading of any file.
+
+**Not rule application:** no filed rule or procedure performs the step: procedure section 3 files the
+investigation level and its review, the agreement files what is notified, and executing both with the gauges
+gives 16 stations. The enumerated family (the nearest-gauge, any-gauge, neighbour and night screens, the
+investigation-level count, the decay-bound fall test at any reasonable setting) spreads from 2 to 16 stations;
+the standing family, what the filed rules and the data leave defensible, spreads the same 2 to 16, because no
+sentence and no column rules a rain screen out; what rules them out is silent physics no document states (a
+natural excess fell 41 per cent in a step at most, every artificial increase 85 per cent or more), and inside
+the decay-bound family the standing spread is zero (72 of 72 settings file the golden).
+
+**Analyst test:** a strong analyst who cleans the export, reads every status and unit, applies the procedure's
+investigation level and clears every period the nearest gauge saw rain in files 16 stations (the default
+path's `Ends on:`), and with the neighbour and night refinements 16 and then 12, all wrong: yes, the easy
+route lands wrong with every field read and every rule applied.
+
+**Estimand:** agreement Schedule 2, paragraph 2.2 (`MVJC_service_agreement_schedule2.pdf`): every increase in
+the ambient dose equivalent rate recorded at a network station that is of artificial origin, giving the station,
+the date of the increase and the highest ten-minute value recorded during it, the Contractor's own source checks
+excluded; the window is the prompt's 1 July to 30 September 2026, the record the procedure's (section 2).
+
+**No decoy:** nothing is planted to be caught: no copied block, hidden rule, memo, draft, briefing or stakeholder
+figure carries an answer; the procedure's screen is the organisation's own review step, nowhere certified, and
+the two distractors (the 2025 annual report, the quarter's gamma spectrometry) rank nothing on origin.
+
+**No certified replay:** the method is not hidden and recovered by reproducing certified figures: no file holds a
+past notification, a classified excursion or a validated detection, and the 2025 annual report records only that
+nothing was notified that year.
+
+**Lesson:** a coincidence screen fails both ways when its trigger is measured at points while it falls
+everywhere and the artificial source runs through it, and a natural cause's own physics, here the decay of the
+products rain brings down, bounds how its signal can end; no build on file classifies events by a physical
+decay bound on their own record (nearest driver 0.05).
+
+## Survivor anatomy
+
+**Actor:** the deciding property, an excursion's last step against the decay bound, has no column in any file:
+it is a relation between consecutive ten-minute rows of one station's record, measured against physics no file
+states; the export's columns are station, interval, dose rate, unit, status and probe serial.
+
+**Link:** the signal is read through a comparison the field's screen never asks for, each excursion's end
+against the rate a washout excess can fade, instead of the join to the rain record the procedure invites; no key
+offers it, and no sentence names radon, decay or a fall (asserted, R3b).
+
+**Reflex:** the field's method for a counting network without spectrometry, clearing an increase on coincident
+rain, sits at rung 0 (the procedure's own review) and files 16 stations; its refinements, the neighbour and night
+checks, sit at rungs 1 and 2 and file 16 and 12.
+
+**Back-test:** the textbook route validates on its own terms: every period it clears has rain at the gauge and
+every period it notifies is dry there, the 2025 annual report records no notification under the same procedure,
+and the quarter's gamma spectrometry finds no artificial nuclide in air, which a solver reads as consistent with
+whatever the screen files because radiography leaves nothing airborne.
+
+**Second use:** the decisive step reads only the dose-rate export, which every rung, the procedure's screen, the
+telemetry ask and the quarterly report read for their own reasons; delete the step and the pack carries every
+file it carries now.
+
+**Shock:** the two stations are not the top or bottom two on any shipped per-station statistic (investigation-level
+values rank them seventh and ninth, the screen's dry days first and joint fourth, the highest value, the mean, the
+timeliness and the source check elsewhere), asserted as SHOCK in `generator/checks.py`; the radiography increases
+peak at 155 and 164 nSv/h, under the upland washouts' maxima.
+
+**Pins:** the WHAT is filed in the organisation's own genre, the agreement's notification clause (2.2) and the
+procedure's record and review sections (2, 3); no filed sentence names the fall, the decay, the baseline, the
+threshold or the clock the step rides on.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the procedure's rain screen | fires: procedure section 3 files the investigation level and its review | fires: the gauges and the alarm levels are shipped columns | fires: the field's washout screen | no | no | no | no | readable |
+| R1 the neighbour check | no | fires: the register's grid references | fires: a careful analyst's regional check | no | no | no | no | readable |
+| R2 the night check | no | fires: the interval start's hour | fires: radiography is a night trade | no | no | no | no | readable |
+| R3 the decay-bound fall (decisive) | no: no document names radon, decay or a fall | no: the fall is a relation between consecutive rows, no column | no: the field's reflex is the rain screen, and the bound is no named correction | no: no control scores a route | no: the battery computes no step ratio | no: the ratio is of the excess over a running median, recovered per excursion, not of a reported figure | no: the export is the network's record, read by every rung | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | station | the platform code the export carries | the outstation code | same call | same call (the export carries platform codes only) |
+| SF2 | of artificial origin, against the network's own source checks | test-mode (T) records left out | T records read as monitoring data | adds five or more checked stations | agreement 2.2, "the Contractor's own source checks, are not notified"; procedure section 2, T "is not monitoring data" |
+| SF3 | between 1 July and 30 September 2026 | UTC interval starts | BST bounds | same call | same call (every increase two days clear of either edge) |
+| SF4 | on which dates | the date the increase starts, UTC | the BST date | same call | same call (every increase starts on the same date in both) |
+| SF5 | the highest ten-minute dose rate | the highest value recorded | the highest excess above background | 155 and 164 against 89 and 94 | agreement 2.2, "the highest ten-minute value recorded during it" |
+| SF6 | during its detections | one highest value per station over all its increases | one per increase | same per-station figure (the notification gives both) | the prompt's "each recorded during its detections" |
+| SF7 | re-read station-days | exact duplicates read once | read twice | same call | same call |
+| SF8 | microsieverts at three outstations | converted to nSv/h | read as nSv/h | same call | same call (none of the three is detected either way) |
+| SF9 | fault (F) records | no value | blank read as zero | same call when set aside | procedure section 2, F records carry "no dose rate"; same call |
+| SF10 | test mode | outside the record of monitoring data | inside it | see SF2 | procedure section 2 |
+| SF11 | MV157's eight days on the old probe's factor | as recorded | corrected by the factor ratio | same call | same call (a 3 per cent step, MV157 detected under neither) |
+| SF12 | consecutive values across a gap | adjacent intervals only | consecutive valid values across a power cut or fault | same call | same call |
+| SF13 | the baseline the excess is read over | a centred 48-hour running median | a trailing 24-hour median, a seven-day 30th percentile | same call | same call over the family |
+| SF14 | the fall test's settings | more than half, from 30 nSv/h, the next value staying down | more than half to 70 per cent, from 30 or 35, zero to two values staying down | same call, 72 of 72 | same call (the corners at 45 and 80 per cent, floors 25 and 40, at least half exact) |
+| SF15 | an increase spanning midnight | dated by its start | both dates | same call | same call (no increase spans a BST midnight) |
+
+## Ladder
+
+| Rung | Route | Ends on | Dies to |
+|---|---|---|---|
+| R0 (default path) | investigation-level periods cleared by rain at the nearest gauge within an hour | 16 stations, MV334 and MV129 among them, five of their eleven dates cleared as rain and three wrong ones added | upland and coastal showers the valley gauges miss; radiography that runs through rain |
+| R1 | R0, a dry period also cleared when a neighbour within 18 km was elevated | 16 stations | local showers have no elevated neighbour; coastal night showers are single-station |
+| R2 | R1, keeping the dry, lonely periods that begin at night | 12 stations | the coastal stations' night showers |
+| R3 (decisive) | an excess of 30 nSv/h or more falling by more than half in one step and staying down | 2 stations, 11 dates | (the golden) |
+
+Winners and margins: on the decisive rung the smallest fall that ended an artificial increase is 85 per cent and
+the largest natural fall anywhere in the quarter 41 per cent, so the two populations sit 44 points apart against
+a counting noise of about 10 points on the fall fraction at an excess of 30 nSv/h; no other station carries a
+qualifying fall. Position: the truth is not the top or bottom two on any rung's statistic (investigation-level
+values rank the stations seventh and ninth; the screen's dry days rank MV334 first and MV129 joint fourth). The
+investigation-level count's top five are the upland granite stations (MV231 302 values, MV207 255, MV214 248,
+MV226 247, MV243 193). Grid: three baselines, four fall settings, two floors and three persistence settings, 72
+members, all the golden. Worth: the whole call, a designation of 2 stations with 11 dates and 2 highest values.
+The pricing sequence: the residue the filed WHAT leaves is a method (which excursions are artificial), not a
+knob; R0 files 14 wrong stations and clears 5 of the 11 true dates; no shipped column is affine to the decisive
+quantity, which is a ratio of consecutive rows; the counting noise is the standard error of the fall, and the
+two populations sit four noise widths apart.
+
+## Closure table
+
+| Axis | Name | Reading here | Closure |
+|---|---|---|---|
+| 1 | Population | every network station's record for the quarter | C1: every station's record ships and is read |
+| 2 | Unit of account | the station, the date of an increase, the highest value | filed: agreement 2.2 |
+| 3 | Attribution window | the quarter's UTC intervals | C1: every increase two days clear of an edge (SF3) |
+| 4 | As-of dating | the export of 09/10/2026, every record ending 30/09 23:50 UTC | static: the quarter closed before the export |
+| 5 | Version basis | the re-read station-days | C1: exact duplicates (SF7) |
+| 6 | Denominator | none for the call; the asks' denominators filed | filed: agreement 2.3, procedure sections 4 and 5 |
+| 7 | Weighting | none | none needed: a designation |
+| 8 | Window length | the baseline's window | C1 over 48 hours centred, 24 trailing, 7 days (SF13) |
+| 9 | Boundary inclusivity | more than half | C1: falls of 85 per cent or more against 41 at most |
+| 10 | Rounding path | the record is in whole nSv/h; the highest value is a recorded value | C1: nothing is rounded |
+| 11 | Tie-break | none arises | none needed |
+| 12 | Maturity and censoring | the quarter complete at the export | static |
+| 13 | Order of operations | units and duplicates before the fall test | C1 (SF7, SF8) |
+| 14 | Row order | the export's row order | C1: every route sorts by interval |
+| 15 | Duplicate resolution | exact duplicates | C1 (SF7) |
+| 16 | Identity normalisation | platform against outstation codes | the migration table; the call reads platform codes (SF1) |
+| 17 | Netting against gross | the recorded value is gross | filed: agreement 2.2 (SF5) |
+| 18 | Dimensional units | nSv/h against microsieverts | units in the data (SF8) |
+| 19 | Code and status semantics | V, T and F | filed: procedure section 2 (SF2, SF9, SF10) |
+| 20 | Integerisation | none | none needed |
+| 21 | Clause scope | the notification clause covers network stations | filed: agreement 2.2 |
+| 22 | Forward window contents | none: the quarter is closed | none needed (retrospective, the reason under `## Draw`) |
+
+## Literal reader
+
+Executing the prompt, agreement 2.2 and procedure sections 2 and 3 word for word fixes the estimand (every
+network station, increases of artificial origin between 1 July and 30 September 2026, each dated, each station's
+highest ten-minute value recorded); every term and convention has a row above, closed by a sentence or `same
+call`, each asserted in `generator/checks.py`; the method is open and forced by the data, the decay-bound family
+filing the golden 72 of 72 while the rain screens file 16, 16 and 12 stations, so a literal reader who reads the
+excursions lands on the golden and one who executes the screen lands on a different estimator of the same
+estimand, never on a different reading.
+
+## Oracles
+
+None. No shipped control scores a route or arbitrates between them: the 2025 annual report's means and data
+capture and the quarter's gamma spectrometry rank nothing on origin and are declared distractors, and nothing in
+the pack validates or refutes the rain screen.
+
+## Ask sheet
+
+Three asks, all in `network_quarter_2026Q3.xlsx`, each the quarterly report's own content under agreement 2.4 (each
+station's source check and its result, each station's timeliness, the gross beta results of the quarter's
+filters): 24 source-check figures (per cent of expected, with the result), 24 timeliness figures and 39 filter
+concentrations. None reads the call's population: the call reads the export's V records only, and the asks read
+the visit sheets, the certificates, the kit and source registers, the ingest log, the field sheets, the pump
+controllers' logs and the laboratory's results (asserted, SEP).
+
+- Ask A, primary device D2 and D7 (a state the register does not show, rebuilt from a record no question
+  invites): CS-0583 was out at the Radiation Metrology Unit from 5 August to 4 September; the sealed source
+  register's transfer out and back and its 21 August stock check place the spare CS-0417 in KIT-2 meanwhile,
+  while the kit register still names CS-0583 and the visit sheets record kits, not sources. Seven KIT-2 checks
+  (MV166, MV157, MV135, MV327, MV207, MV158, MV334) move by about 5 per cent; no result flips (asserted).
+  Hazards: the certificate in force by its date of issue (CS-0583's recalibration, issued 27 August, for its five
+  checks after 4 September), the jig (KIT-3's J2 sleeve from the kit register, for the sheet with no jig
+  column), the outstation codes and microsieverts on that sheet, and the three repeats.
+- Ask B, primary device D9 (a second source that agrees on the wrong reading): the AS1 and AS3 controllers'
+  totalisers count running time at the set flow (2.5 m3 every running quarter-hour, asserted) and AS2's field
+  sheet computes its volume from its hour meter at the set flow, while each pump's measured flow, logged every
+  fifteen minutes, falls through the week as its filter loads; the field sheets' totaliser readings tie to the
+  logs' totalisers, so the wrong volume reconciles wherever it is checked. 38 of 39 filters move. Hazards: AS1's
+  controller replaced on 20 August (its totaliser restarts at zero), AS3's totaliser rolling over at 100,000,
+  two results re-issued as version 2.
+- Ask C, primary device D4 (absence evidenced in a file no habitual join reaches): at the eleven gland-batch
+  stations the outstation's fault records arrive on time but carry no dose rate (procedure section 2), so the
+  platform did not receive the station's value for those intervals (agreement 2.3); the ingest log counts them
+  among its records, and only the export shows which carry none. Hazards: the LoRa gateway's UK clock, re-sent
+  hours (the earliest receipt counts), the quarter's 13,248 intervals as the denominator, and a few watchdog
+  resets inside batch ranges.
+- Pin test: the asking sentence pins each quantity's name, unit and rounding; the procedure files the source
+  check (section 4) and the concentration (section 5), the agreement timeliness (2.3); the devices sit in which
+  source a kit held, which record measures the air drawn and which records carry a value, and no sentence names
+  any of them. Realism: a source away for recalibration with the spare in its place, time-based totalisers on
+  cheap samplers, a bad batch of glands.
+- Span: the visit sheets, the kit register, the source register, the certificates and the migration table for A;
+  the field sheets, the pump logs and the laboratory's results for B; the ingest log, the export and the
+  register for C: eleven files on the asks' causal paths.
+
+| Ask | Figures | Cracker (lands the call, hygiene battery, every filed rule, the kit register's source, the totaliser and hour-meter volumes, the ingest log's records) | Mirror (the rain screen's call, same ask route) | Cracker |
+|---|---|---|---|---|
+| A source checks | 24 | 17 of 24 (the seven KIT-2 checks while CS-0583 was away) | 17 of 24 | miss |
+| B gross beta concentrations | 39 | 1 of 39 | 1 of 39 | miss |
+| C timeliness | 24 | 11 of 24 (the eleven gland-batch stations and two watchdog resets) | 11 of 24 | miss |
+
+Cracker keep: 33.3 per cent of the 87 ask figures; the naive route (the LoRa clock read as UTC, a source's first
+certificate, the totaliser readings differenced as they stand) keeps 16.1 per cent; the full includer keeps 87 of
+87.
+
+Pair ceiling: 46.8 (cracker 63.3 on the call, mirror 30.3 off it, on 38, 7 and 55 L)
+
+Mirror leakage: 33.3 per cent of ask weight
+
+Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest 9724459a3f30f554
+
+## Leak sweep answered
+
+`leak.py task211 --asof 2026-10-09` on the final cut: verdict REVIEW, no LEAK; every REVIEW answered here.
+
+- Sweep 3, seven golden figures in `mvgn_annual_report_2025.pdf` (97.5, 99.4, 99.6, 97.8, 99.5, 99.3, 98.6):
+  each is another station's 2025 annual mean or data capture, coinciding at one decimal with a Q3 2026 timeliness
+  or source-check figure in the same narrow band; no station's 2025 figure equals its own Q3 figure (asserted in
+  `checks.py`), and the report is a declared distractor that ranks nothing on origin.
+- Sweep 3, `MVJC_service_agreement_schedule2.pdf` carries 8 of 12 distinctive words of the call: they are the
+  words of the notification clause itself (2.2, the filed estimand), which the call repeats; the clause names no
+  station, date or figure.
+- Sweep 4, the procedure (7 of 25 stump-paragraph terms) and the agreement (6): the shared words are the
+  documents' own subject (stations, natural, radiation, increase, university, procedure); neither names radon,
+  decay, a fall, a half or a step (asserted, R3b), so neither names the move.
+- Sweep 12, the annual report names four data values that the register's first rows carry (Beck Side, Carr Lane
+  Allotments, MV166, MV176): it is the network's own annual record listing its stations, not a note written for
+  the analyst, and it names no column of any file.
+- Sweep 10, INFO: no writer signature in any container.
 
 ## Tried and rejected
 

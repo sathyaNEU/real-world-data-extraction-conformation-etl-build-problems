@@ -1,0 +1,520 @@
+{
+ "air": {
+  "AF1-26-027": {
+   "conc": "0.64",
+   "sampler": "AS1",
+   "volume": "1628.2"
+  },
+  "AF1-26-028": {
+   "conc": "0.35",
+   "sampler": "AS1",
+   "volume": "1617.2"
+  },
+  "AF1-26-029": {
+   "conc": "0.70",
+   "sampler": "AS1",
+   "volume": "1625.9"
+  },
+  "AF1-26-030": {
+   "conc": "0.59",
+   "sampler": "AS1",
+   "volume": "1646.4"
+  },
+  "AF1-26-031": {
+   "conc": "0.52",
+   "sampler": "AS1",
+   "volume": "1469.7"
+  },
+  "AF1-26-032": {
+   "conc": "0.55",
+   "sampler": "AS1",
+   "volume": "1620.0"
+  },
+  "AF1-26-033": {
+   "conc": "0.49",
+   "sampler": "AS1",
+   "volume": "1623.7"
+  },
+  "AF1-26-034": {
+   "conc": "0.37",
+   "sampler": "AS1",
+   "volume": "1129.9"
+  },
+  "AF1-26-035": {
+   "conc": "0.37",
+   "sampler": "AS1",
+   "volume": "1634.6"
+  },
+  "AF1-26-036": {
+   "conc": "0.95",
+   "sampler": "AS1",
+   "volume": "1628.9"
+  },
+  "AF1-26-037": {
+   "conc": "0.64",
+   "sampler": "AS1",
+   "volume": "1618.5"
+  },
+  "AF1-26-038": {
+   "conc": "0.55",
+   "sampler": "AS1",
+   "volume": "1639.3"
+  },
+  "AF1-26-039": {
+   "conc": "1.04",
+   "sampler": "AS1",
+   "volume": "1634.6"
+  },
+  "AF2-26-027": {
+   "conc": "0.62",
+   "sampler": "AS2",
+   "volume": "1289.5"
+  },
+  "AF2-26-028": {
+   "conc": "0.66",
+   "sampler": "AS2",
+   "volume": "1288.7"
+  },
+  "AF2-26-029": {
+   "conc": "0.52",
+   "sampler": "AS2",
+   "volume": "1283.9"
+  },
+  "AF2-26-030": {
+   "conc": "0.49",
+   "sampler": "AS2",
+   "volume": "1307.9"
+  },
+  "AF2-26-031": {
+   "conc": "0.44",
+   "sampler": "AS2",
+   "volume": "1274.1"
+  },
+  "AF2-26-032": {
+   "conc": "0.47",
+   "sampler": "AS2",
+   "volume": "1298.1"
+  },
+  "AF2-26-033": {
+   "conc": "0.67",
+   "sampler": "AS2",
+   "volume": "1285.4"
+  },
+  "AF2-26-034": {
+   "conc": "0.57",
+   "sampler": "AS2",
+   "volume": "1313.5"
+  },
+  "AF2-26-035": {
+   "conc": "0.41",
+   "sampler": "AS2",
+   "volume": "1288.1"
+  },
+  "AF2-26-036": {
+   "conc": "0.54",
+   "sampler": "AS2",
+   "volume": "1274.9"
+  },
+  "AF2-26-037": {
+   "conc": "0.54",
+   "sampler": "AS2",
+   "volume": "1236.7"
+  },
+  "AF2-26-038": {
+   "conc": "0.44",
+   "sampler": "AS2",
+   "volume": "1266.2"
+  },
+  "AF2-26-039": {
+   "conc": "0.54",
+   "sampler": "AS2",
+   "volume": "1270.5"
+  },
+  "AF3-26-027": {
+   "conc": "0.43",
+   "sampler": "AS3",
+   "volume": "1623.6"
+  },
+  "AF3-26-028": {
+   "conc": "0.52",
+   "sampler": "AS3",
+   "volume": "1602.2"
+  },
+  "AF3-26-029": {
+   "conc": "0.46",
+   "sampler": "AS3",
+   "volume": "1604.8"
+  },
+  "AF3-26-030": {
+   "conc": "0.35",
+   "sampler": "AS3",
+   "volume": "1594.9"
+  },
+  "AF3-26-031": {
+   "conc": "0.25",
+   "sampler": "AS3",
+   "volume": "1644.0"
+  },
+  "AF3-26-032": {
+   "conc": "0.33",
+   "sampler": "AS3",
+   "volume": "1425.9"
+  },
+  "AF3-26-033": {
+   "conc": "0.25",
+   "sampler": "AS3",
+   "volume": "1626.1"
+  },
+  "AF3-26-034": {
+   "conc": "0.61",
+   "sampler": "AS3",
+   "volume": "1623.1"
+  },
+  "AF3-26-035": {
+   "conc": "0.29",
+   "sampler": "AS3",
+   "volume": "1631.4"
+  },
+  "AF3-26-036": {
+   "conc": "0.51",
+   "sampler": "AS3",
+   "volume": "1640.9"
+  },
+  "AF3-26-037": {
+   "conc": "0.33",
+   "sampler": "AS3",
+   "volume": "1632.8"
+  },
+  "AF3-26-038": {
+   "conc": "0.53",
+   "sampler": "AS3",
+   "volume": "1602.6"
+  },
+  "AF3-26-039": {
+   "conc": "0.46",
+   "sampler": "AS3",
+   "volume": "1628.7"
+  }
+ },
+ "air_range": [
+  "0.25",
+  "1.04"
+ ],
+ "art_min_fall_pct": 85,
+ "call": {
+  "MV129": {
+   "dates": [
+    "24/08/2026",
+    "28/08/2026",
+    "13/09/2026",
+    "14/09/2026",
+    "17/09/2026"
+   ],
+   "days": 5,
+   "peak": 164,
+   "peak_day": "24/08/2026",
+   "site": "Old Brickworks"
+  },
+  "MV334": {
+   "dates": [
+    "08/07/2026",
+    "17/07/2026",
+    "20/07/2026",
+    "22/07/2026",
+    "07/08/2026",
+    "13/08/2026"
+   ],
+   "days": 6,
+   "peak": 155,
+   "peak_day": "13/08/2026",
+   "site": "Headland Lookout"
+  }
+ },
+ "call_stations": [
+  "MV129",
+  "MV334"
+ ],
+ "checks": {
+  "MV103": {
+   "cert": "HCX-CAL-22-0071",
+   "date": "20/07/2026",
+   "jig": "J2",
+   "kit": "KIT-3",
+   "pct": "97.6",
+   "result": "Pass",
+   "source": "CS-0729"
+  },
+  "MV112": {
+   "cert": "HCX-CAL-22-0071",
+   "date": "17/09/2026",
+   "jig": "J2",
+   "kit": "KIT-3",
+   "pct": "100.7",
+   "result": "Pass",
+   "source": "CS-0729"
+  },
+  "MV118": {
+   "cert": "HCX-CAL-22-0071",
+   "date": "21/08/2026",
+   "jig": "J2",
+   "kit": "KIT-3",
+   "pct": "99.3",
+   "result": "Pass",
+   "source": "CS-0729"
+  },
+  "MV129": {
+   "cert": "HCX-CAL-20-0118",
+   "date": "17/07/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "97.5",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV135": {
+   "cert": "HCX-CAL-19-0233",
+   "date": "24/08/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "97.9",
+   "result": "Pass",
+   "source": "CS-0417"
+  },
+  "MV142": {
+   "cert": "HCX-CAL-26-0164",
+   "date": "22/09/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "101.6",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV149": {
+   "cert": "HCX-CAL-26-0164",
+   "date": "17/09/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "101.2",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV157": {
+   "cert": "HCX-CAL-19-0233",
+   "date": "11/08/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "99.4",
+   "result": "Pass",
+   "source": "CS-0417"
+  },
+  "MV158": {
+   "cert": "HCX-CAL-19-0233",
+   "date": "02/09/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "102.6",
+   "result": "Pass",
+   "source": "CS-0417"
+  },
+  "MV166": {
+   "cert": "HCX-CAL-19-0233",
+   "date": "06/08/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "96.8",
+   "result": "Pass",
+   "source": "CS-0417"
+  },
+  "MV171": {
+   "cert": "HCX-CAL-26-0164",
+   "date": "08/09/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "98.4",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV176": {
+   "cert": "HCX-CAL-20-0118",
+   "date": "07/07/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "103.4",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV184": {
+   "cert": "HCX-CAL-22-0071",
+   "date": "11/09/2026",
+   "jig": "J2",
+   "kit": "KIT-3",
+   "pct": "112.6",
+   "result": "Fail",
+   "source": "CS-0729"
+  },
+  "MV192": {
+   "cert": "HCX-CAL-22-0071",
+   "date": "01/09/2026",
+   "jig": "J2",
+   "kit": "KIT-3",
+   "pct": "95.8",
+   "result": "Pass",
+   "source": "CS-0729"
+  },
+  "MV207": {
+   "cert": "HCX-CAL-19-0233",
+   "date": "31/08/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "103.4",
+   "result": "Pass",
+   "source": "CS-0417"
+  },
+  "MV214": {
+   "cert": "HCX-CAL-20-0118",
+   "date": "16/07/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "106.2",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV226": {
+   "cert": "HCX-CAL-26-0164",
+   "date": "10/09/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "99.1",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV231": {
+   "cert": "HCX-CAL-20-0118",
+   "date": "03/08/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "99.8",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV243": {
+   "cert": "HCX-CAL-20-0118",
+   "date": "24/07/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "89.5",
+   "result": "Fail",
+   "source": "CS-0583"
+  },
+  "MV305": {
+   "cert": "HCX-CAL-20-0118",
+   "date": "08/07/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "104.2",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV311": {
+   "cert": "HCX-CAL-26-0164",
+   "date": "21/09/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "96.6",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV318": {
+   "cert": "HCX-CAL-20-0118",
+   "date": "04/08/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "101.6",
+   "result": "Pass",
+   "source": "CS-0583"
+  },
+  "MV327": {
+   "cert": "HCX-CAL-19-0233",
+   "date": "27/08/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "99.9",
+   "result": "Pass",
+   "source": "CS-0417"
+  },
+  "MV334": {
+   "cert": "HCX-CAL-19-0233",
+   "date": "03/09/2026",
+   "jig": "J1",
+   "kit": "KIT-2",
+   "pct": "102.8",
+   "result": "Pass",
+   "source": "CS-0417"
+  }
+ },
+ "checks_failed": [
+  "MV184",
+  "MV243"
+ ],
+ "counts": {
+  "export_rows": 317592,
+  "gauge_rows": 52992,
+  "ingest_rows": 55869,
+  "pump_rows": 26784
+ },
+ "default_path_count": 16,
+ "default_path_stations": [
+  "MV129",
+  "MV142",
+  "MV158",
+  "MV166",
+  "MV176",
+  "MV184",
+  "MV207",
+  "MV214",
+  "MV226",
+  "MV231",
+  "MV243",
+  "MV305",
+  "MV311",
+  "MV318",
+  "MV327",
+  "MV334"
+ ],
+ "detection_days": 11,
+ "method": {
+  "baseline_hours": 48,
+  "elevated_nsv_h": 15,
+  "floor_nsv_h": 30,
+  "quarter_intervals": "13,248",
+  "receipt_window_minutes": 60
+ },
+ "nat_max_fall_pct": 41,
+ "timely": {
+  "MV103": "98.6",
+  "MV112": "99.4",
+  "MV118": "99.0",
+  "MV129": "99.8",
+  "MV135": "96.9",
+  "MV142": "97.8",
+  "MV149": "97.8",
+  "MV157": "100.0",
+  "MV158": "98.4",
+  "MV166": "99.1",
+  "MV171": "99.8",
+  "MV176": "95.9",
+  "MV184": "99.5",
+  "MV192": "99.9",
+  "MV207": "98.7",
+  "MV214": "96.8",
+  "MV226": "99.9",
+  "MV231": "99.7",
+  "MV243": "99.6",
+  "MV305": "99.1",
+  "MV311": "98.6",
+  "MV318": "100.0",
+  "MV327": "98.9",
+  "MV334": "100.0"
+ },
+ "wet_detection_days": 5
+}
