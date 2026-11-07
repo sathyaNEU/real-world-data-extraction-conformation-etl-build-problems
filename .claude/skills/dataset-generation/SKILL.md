@@ -371,6 +371,15 @@ local. Assert each of these in the realism sweep, per column and per document.
    that issued it: a regulator's fee schedule carrying the plan's name as Producer is a defect, and so is
    `Application` "Microsoft Excel" beside the writing library's own `AppVersion`. Assert both per document
    against its issuer.
+6. **Every table cell wraps inside its border.** A cell written as a plain string runs past its rule, into
+   the next column or off the page: task286's terms of reference shipped a risks table whose mitigation ran
+   off page 2 and a document control row whose change ran into the By column, and the leak reader saw it at
+   once. Write every cell as a wrapped paragraph, and assert per page that no character crosses a table rule
+   or the right margin.
+7. **A document's length and metadata fit its author's tool.** Readers flagged a two-page, 5.8 KB "final
+   report", Creator and Producer set to an organisation's name, and creation times on round minutes. Give
+   each document the length, sections, letterhead, page numbering, revision block and sign-off its real
+   author would produce, and assert the metadata per document.
 
 **Byte-identical rebuilds:** two consecutive runs give identical `target/` bytes (fixed seeds, one RNG
 stream per period, fixed mtimes, scrubbed metadata). A pack that does not rebuild has a broken generator.
