@@ -392,6 +392,17 @@ def run(tgt, T, g, info, figs):
         for key in ("/CreationDate", "/ModDate"):
             stamp = str(info_.get(key, ""))
             ok("REAL %s %s is not on a round minute" % (name, key), len(stamp) >= 16 and stamp[14:16] != "00", stamp)
+        flat = " ".join(t.split())
+        months = ("January|February|March|April|May|June|July|August|September|October|November|December")
+        stated = ["%s%s%s" % (y, m, d) for d, m, y in re.findall(r"\b(\d{2})/(\d{2})/(\d{4})\b", flat)]
+        stated += [dt.datetime.strptime("%s %s %s" % (d, m, y), "%d %B %Y").strftime("%Y%m%d")
+                   for d, m, y in re.findall(r"\b(\d{1,2}) (%s) (\d{4})\b" % months, flat)]
+        made = str(info_.get("/CreationDate", ""))[2:10]
+        moved = str(info_.get("/ModDate", ""))[2:10]
+        ok("REAL %s created no earlier than any date it states (%s)" % (name, max(stated)),
+           stated and made >= max(stated), (made, max(stated) if stated else None))
+        ok("REAL %s created and modified by the as-of, modified no earlier than created" % name,
+           made <= moved <= "20261009", (made, moved))
         bbox = subprocess.run(["pdftotext", "-bbox", f, "-"], capture_output=True, text=True, check=True).stdout
         for pg in bbox.split("<page ")[1:]:
             w = float(re.search(r'width="([\d.]+)"', pg).group(1))

@@ -382,11 +382,29 @@ Pair ceiling: 48.1 (cracker 64.6 on the call, mirror 31.6 off it, on 38, 7 and 5
 
 Mirror leakage: 35.6 per cent of ask weight
 
-Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest 82da52791b7d2981
+Measured by: generator/ceiling.py, run on the cut pack by build.py at every build, pack digest 0926d14f2981bd9c
+
+## Pre-ship check
+
+- The 10/10 rules re-read against the built pack: the call turns on each dose-rate excursion's origin, read the
+  field's way from the physics of the radon decay chain behind a washout excess (domain); the mess is the systems'
+  own (re-read station-days, microsieverts, outstation codes, test and fault statuses, power cuts, UK clock time
+  at the gauges and the LoRa gateway, re-sent hours, a probe exchange, a source on loan, a controller replacement,
+  a rollover, transmitter dropouts, re-issued results) and none moves the call (Layer 1, SF7 to SF12 and SEP
+  asserted); the decisive step is judging each excursion by its own last step against the rate a washout excess
+  can fade, which no filed sentence performs and no column holds (Layer 2), and both judge passes read it
+  analytical (Gate H), the three reader passes finding no file that says how the origins differ.
+- Every gate re-run on the final cut: 655 generator assertions, 126 independent checks, two builds byte-identical,
+  `figures_check.py` PASS (104 figures), `precut.py` 61 PASS with `voice-check.py`, `ceiling.py` pair 48.1 and
+  mirror leakage 35.6, `leak.py --asof 2026-10-09` REVIEW answered above, `guard.py heart` WARN (overuse.domain,
+  repeat.gate_g, answered under `## Draw`) and `surface` with its three promoted pairs answered on the card, the
+  realism sweep in `checks.py` (no PDF word outside its margins, each PDF created after every date it states and
+  by the as-of); target.zip from the final rebuild, sha256 932c04d44daf3577ea47dd109886a34fb9f8f217135f07d81c67276324aa9e08.
+- The card current (answer, deliverables, layer 1, spine, shell, asks, shipped), the ledger row written at ship.
 
 ## Leak sweep answered
 
-`leak.py task211 --asof 2026-10-09` on the pass-2 cut: verdict REVIEW, no LEAK; every REVIEW answered here.
+`leak.py task211 --asof 2026-10-09` on the final cut: verdict REVIEW, no LEAK; every REVIEW answered here.
 
 - Sweep 3, six golden figures in `mvgn_annual_report_2025.pdf` (99.5, 99.3, 98.6, 97.8, 99.4, 97.5): each is another
   station's 2025 annual mean or data capture, coinciding at one decimal with a Q3 2026 timeliness or source-check
@@ -444,3 +462,4 @@ Measured by: generator/ceiling.py, run on the cut pack by build.py at every buil
 - The set-flow counters as ask B's device (the totaliser and AS2's hour-meter volume read as the air drawn): the stage 4 judge found it the weakest ask fork, closed by the producing systems' own field names; the device moved to the flow transmitter's dropouts, filled the same way by every reasonable fill (2026-11-07).
 - Crediting the rain screen to the procedure (the submission's and this note's first wording): OP-04 files the investigation level and its review, never a rain test; the screen is the analyst's reflex, 15 or 16 stations by its tolerance, and the submission no longer states its count (2026-11-07).
 - Leaving the LoRa receipt clock to the delay distribution and the F record to a reading of "value" (the pass-2 judge's two open ask forks, 19 and 11 graded figures): both filed in OP-04 section 2 as WHAT sentences, no graded figure moved (2026-11-07).
+- Stamping two PDFs before the content they hold (the certificate set created in 2019 holding a 2026 certificate, the agreement created before its last signature and its effective date) and two before their own approval or check dates: every PDF now created after each date it states and by the as-of, asserted, text unchanged (2026-11-07).

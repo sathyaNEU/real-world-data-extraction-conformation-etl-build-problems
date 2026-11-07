@@ -1,10 +1,10 @@
 {
  "task": "task211",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-07",
  "seed": "AD34 (analytical_tasks/02_anomaly_detection/AD34_jackup-site-storm-sequence-round-trip.md): the objective kept, the world, decision and quantity moved (an allocation call whose storm-sequence mechanism is the weather-window persistence replay task170's seventh cell measured as the field's own method)",
  "call": "Notify increases of artificial origin at MV334 Headland Lookout on 6 dates (08/07, 17/07, 20/07, 22/07, 07/08 and 13/08/2026; highest ten-minute value 155 nSv/h) and at MV129 Old Brickworks on 5 dates (24/08, 28/08, 13/09, 14/09 and 17/09/2026; highest 164 nSv/h); no other station recorded one",
@@ -14,14 +14,14 @@
  "card": ".claude/skills/fingerprint/cards/task211.json, registered 2026-11-04T18:43:09Z at WARN (overuse.domain, repeat.gate_g, answered in the design note); brought up to date at the build (answer, niche, layer1, spine, invented names, people, and differentiation lines for the surface screen's three promoted pairs)",
  "clean_truth": "checks.py R2a and R2b on the simulation's own records before any mess: the nearest-gauge rain screen flags a set with four or more non-radiography stations and clears three or more radiography nights; the decay-bound fall finds exactly the eleven radiography nights; the clean natural excess never falls by more than about a quarter in a step (R2c)",
  "gates": {
-  "generator_assertions": 645,
+  "generator_assertions": 655,
   "independent_checks": 126,
   "rebuilds_byte_identical": true,
   "figures_check": "PASS, 104 figures",
   "realism_sweep": "in checks.py, PASS",
-  "container_audit": "normalised; each issuing body's PDFs carry their own house style, creator and producer, stamps on real seconds; no word of any PDF crosses a page margin, table cells wrap",
+  "container_audit": "normalised; each issuing body's PDFs carry their own house style, creator and producer, stamps on real seconds, each created after every date it states and by the as-of; no word of any PDF crosses a page margin, table cells wrap",
   "input_gates": "18 files, 4 formats (csv, xlsx, json, pdf), 317,592-row dose-rate export and 26,784-row pump log, 2 distractors named in metadata.json",
-  "ceiling": "pair 48.1, mirror leakage 35.6, cracker keep 35.6 (ceiling.py, pack digest 82da52791b7d2981)",
+  "ceiling": "pair 48.1, mirror leakage 35.6, cracker keep 35.6 (ceiling.py, pack digest 0926d14f2981bd9c)",
   "voice_check": "PASS, prompt unchanged"
  },
  "precut": {
@@ -29,8 +29,8 @@
   "date": "2026-11-07"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-07 --asof 2026-10-09 on the pass-2 cut (sweep 3 on the annual report, the spectrometry library and the agreement, sweep 4 on four documents' subject words, sweep 12 on the annual report; every REVIEW answered in the design note); no LEAK",
-  "reader": "pass 1 on 4c5bcbb4: clean, question 6 an analytical choice; documents changed in both FIX_NOW passes, so a reader pass on the pass-2 cut follows before the ship"
+  "leak_py": "REVIEW 2026-11-07 --asof 2026-10-09 on the final cut (sweeps 3, 4 and 12; every REVIEW answered in the design note); no LEAK",
+  "reader": "three isolated reads, all clean: pass 1 on 4c5bcbb4 (question 6 an analytical choice), pass 2 on the FIX_NOW cut and pass 3 on 7f4ef45c (both OP-04 sentences bear only on timeliness; no file says how an artificial increase differs from a natural one); the ship cut changes PDF stamps only, text unchanged"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.domain, repeat.gate_g against task399), nearest driver 0.05 task257",
@@ -43,13 +43,15 @@
   "report": "task211/determinism_check_report.md (pass 1 on 4c5bcbb4) and task211/determinism_check_report_pass2.md (pass 2 on d9bf3d82)"
  },
  "returned": [],
- "resume": "Stage 4 after the pass-2 FIX_NOW: the reader pass on target.zip sha256 7f4ef45cc2734a5b1b6f36035468661cf0323f6bde14be42890629ddc832df35, then the ship instruction; rebuild with `cd task211/generator && python3 build.py` (byte-identical: 645 generator assertions, 126 independent checks, pack digest 82da52791b7d2981, call MV129 and MV334)",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-07",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "fix_now": "2026-11-07: the rain screen credited to the analyst, not OP-04 (submission and note), its count dropped from the recommendation; the KIT-2 default and the test-mode convention in the steps; the spectrometry report's nuclide library (Pb-214 26.8 min, Bi-214 19.9 min among eleven); the producing systems' field names for the measured flow, the set-flow totaliser and AS2's set-flow volume, with ask B's device moved to the flow transmitter's dropouts; agreement 2.3 counts a test-mode value, every timeliness figure clear under both readings; CS-0583's return into KIT-2 recorded on 4 September; ten graded figures moved (five timeliness, five gross beta)",
- "fix_now_pass2": "2026-11-07: OP-04 section 2 files the receipt clocks (\"Receipts logged by the LoRa gateway are stamped in UK clock time; all other receipts are in UTC.\") and what an F record is (\"A record with the status F carries no value, so the platform has not received the station's value for that interval.\"), revision 6's change row naming the receipt clocks; SF16 and SF17 added and asserted (the UTC reading moves 19 timeliness figures, the F-as-received reading 11); \"radiography\" and \"valley\" out of the write-up and the notification; no graded figure moved"
+ "fix_now_pass2": "2026-11-07: OP-04 section 2 files the receipt clocks (\"Receipts logged by the LoRa gateway are stamped in UK clock time; all other receipts are in UTC.\") and what an F record is (\"A record with the status F carries no value, so the platform has not received the station's value for that interval.\"), revision 6's change row naming the receipt clocks; SF16 and SF17 added and asserted (the UTC reading moves 19 timeliness figures, the F-as-received reading 11); \"radiography\" and \"valley\" out of the write-up and the notification; no graded figure moved",
+ "metadata_fix": "2026-11-07: the certificate set, the agreement, the annual report and the spectrometry report re-stamped to be created after every date they state and by the as-of; text unchanged in all five PDFs",
+ "shipped_zip_sha256": "932c04d44daf3577ea47dd109886a34fb9f8f217135f07d81c67276324aa9e08"
 }

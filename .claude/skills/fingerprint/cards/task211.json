@@ -47,7 +47,8 @@
     "a LoRa backup gateway stamping receipts in UK clock time, and unacknowledged hours re-sent",
     "a check source on loan for recalibration with the laboratory's spare carried in its kit",
     "pump controllers totalising running time at the set flow, one replaced mid-quarter and one rolling over",
-    "two laboratory results re-issued as a second version"
+    "two laboratory results re-issued as a second version",
+    "flow transmitter dropouts at the air samplers, the controller logging RUN with no measured flow"
   ],
   "stakeholder_role": "the network's duty radiation scientist preparing the quarter's notification",
   "role_family": "operations_director",
@@ -106,6 +107,15 @@
     "task271": "task271 measures how far a market level moves against an asset manager in the minute after each fill, per venue, isolating fills that stand alone from sequences of the same actor's orders; task211 shares only the decisive gap label, the designation decision and a monitoring export, and reads each dose-rate excursion's origin from the decay bound on its own fall, with no actor, venue, sequence or post-event window."
   },
   "lineage": [],
-  "notes": "",
-  "registered": "2026-11-04T18:43:09Z"
+  "notes": "Stage 4: two judge passes DETERMINISTIC with FIX_NOW (the rain screen credited to the analyst; the producing systems' counter names; the register's return row; the LoRa receipt clock and the F record filed in OP-04 section 2), three reader passes clean.",
+  "registered": "2026-11-04T18:43:09Z",
+  "status": "SHIPPED",
+  "shipped": "2026-11-07",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "if",
+    "rounding opener": "dose",
+    "deliverable set": "docx+svg+xlsx"
+  },
+  "asks": "the quarter's network workbook: each station's source check as a percentage of what its check source should have read that day, with its result; each station's timeliness; every weekly filter's gross beta concentration. Devices: the spare source in KIT-2 while CS-0583 was out for calibration (the sealed source register's transfer and stock check against the kit register), the flow transmitter's dropouts inside most filters' weeks (blank measured flow on running rows), the gland batch's fault records that reach the ingest log on time with no value"
 }
