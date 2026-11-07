@@ -338,3 +338,4 @@ Stage 3 builds `generator/` (world, records, pack, docs, analysis, golden, check
   month with one such night; the brokerage's wait in calendar days from receipt to start) moved into the fund note's
   monitoring section, and every other field reads from its own column. The prompt dropped its counts of hospitals,
   districts and months and opens on where the packages go.
+- 2026-11-07, portal FAILED_TO_STUMP on architecture 2: both responses filed the golden split exactly (Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222, Ashby Vale none, 6,816 bed-days). The equipment wait running alongside the care wait is an overlap a careful response finds by joining the depot's deliveries to the covered patients, so the stump was a hidden overlap rather than a method the field's full practice gets wrong; the discharge world is spent and the slot re-roots in another domain.

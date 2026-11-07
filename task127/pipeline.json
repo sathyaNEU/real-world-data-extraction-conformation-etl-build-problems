@@ -1,6 +1,6 @@
 {
  "task": "task127",
- "status": "SHIPPED",
+ "status": "FAILED_TO_STUMP",
  "domain": "healthcare-delivery-health-economics",
  "objective": "opportunity-sizing-decision",
  "stage": 5,
@@ -55,12 +55,18 @@
    "portal": "the same provenance reading as task482's second review applies: a PDF naming ReportLab reads as generated",
    "repair": "the allocation note is now written as a Word document and exported by LibreOffice Writer (Producer LibreOffice 24.2, Creator Writer, no library header), Subject and Author kept; no data file, golden or graded figure changed",
    "commit": "RESHIPPED (task127), LibreOffice-exported PDF, 2026-11-07"
+  },
+  {
+   "date": "2026-11-07",
+   "portal": "FAILED_TO_STUMP: both responses landed the call, each filing the golden split exactly (Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222, Ashby Vale none, 6,816 bed-days freed).",
+   "lesson": "The stump (the South depot's equipment wait running alongside the care wait, so a package frees none of those nights) is a hidden overlap that a careful response finds in the data: both did. A stronger stump needs the field's full method, done carefully, to file the wrong call, with no fit, back-test or reconciliation on the history able to pick the golden route.",
+   "repair": "re-root (architecture 4) in a new client domain and world, 2026-11-07"
   }
  ],
- "resume": "Reshipped 2026-11-07 with the allocation note exported by LibreOffice Writer (target.zip eb4fa63c, figures unchanged). The prompt rewrite waits on the author's templating-checker result.",
+ "resume": "Re-root at stage 1 as architecture 4 (new draw, dataset and generator, Opportunity Sizing kept), bound to the author's five conditions of 2026-11-07.",
  "approved": null,
  "delivered": "2026-10-31",
- "portal": null,
+ "portal": "FAILED_TO_STUMP",
  "history": {
   "architecture_1": {
    "domain": "nonprofit-grant-making",
@@ -130,5 +136,7 @@
   "2026-11-07": "RESHIPPED: PDF metadata made honest and the prompt de-templated, per the portal's feedback",
   "2026-11-07 (2)": "RESHIPPED: the allocation note exported by LibreOffice Writer instead of written by ReportLab"
  },
- "restored": "2026-10-14: architecture 3 (a full refresh at the author's request) drew judge SEND_BACK at stage 4, and the author chose to restore this architecture as task127's live build (pack unchanged from SHIPPED 59aaaba)"
+ "restored": "2026-10-14: architecture 3 (a full refresh at the author's request) drew judge SEND_BACK at stage 4, and the author chose to restore this architecture as task127's live build (pack unchanged from SHIPPED 59aaaba)",
+ "portal_status": "FAILED_TO_STUMP",
+ "portal_status_date": "2026-11-07"
 }
